@@ -7,7 +7,9 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.runmode;
 
-import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
+import java.util.Optional;
+
+import org.csstudio.opibuilder.runmode.RunModeService.DisplayMode;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IEditorLauncher;
 
@@ -25,6 +27,6 @@ public class DisplayLauncher implements IEditorLauncher
     @Override
     public void open(final IPath path)
     {
-        RunModeService.runOPIInView(path, null, null, Position.DEFAULT_VIEW);
+        RunModeService.openDisplay(path, Optional.empty(), DisplayMode.NEW_TAB, Optional.empty());
     }
 }

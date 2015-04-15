@@ -13,7 +13,6 @@ import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
-import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
 import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.opibuilder.runmode.RunModeService.DisplayMode;
 import org.csstudio.opibuilder.util.MacrosInput;
@@ -100,25 +99,25 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 		}
 	}
 
-	public static void runOPI(final MacrosInput macrosInput, final IPath path) {
-		String position = null;
-		if (macrosInput != null) {
-			position = macrosInput.getMacrosMap().get(TOP_OPI_POSITION_KEY);
+	public static void runOPI(final MacrosInput macrosInput, final IPath path)
+	{
+	    DisplayMode mode =  DisplayMode.NEW_TAB;  
+		if (macrosInput != null)
+		{
+		    final String position = macrosInput.getMacrosMap().get(TOP_OPI_POSITION_KEY);
+		    if (position != null)
+		    {
+		        try
+		        {
+		            mode = DisplayMode.valueOf("NEW_TAB_" + position.toUpperCase());
+		        }
+		        catch (IllegalArgumentException ex)
+		        {
+		            // Ignore
+		        }
+		    }
 		}
-		if (position != null) {
-			Position pos = null;
-			for (Position p : Position.values()) {
-				if (p.name().equals(position.toUpperCase())) {
-					pos = p;
-					break;
-				}
-			}
-			if (pos != null) {
-				RunModeService.runOPIInView(path, null, macrosInput, pos);
-				return;
-			}
-		}
-		RunModeService.openDisplay(path, Optional.ofNullable(macrosInput), DisplayMode.NEW_TAB, Optional.empty(), Optional.empty(), Optional.empty());
+		RunModeService.openDisplay(path, Optional.ofNullable(macrosInput), mode, Optional.empty());
 	}
 
 	public static void runOther(final IPath path) {

@@ -20,6 +20,7 @@ import org.csstudio.opibuilder.runmode.RunModeService.DisplayMode;
 import org.csstudio.opibuilder.runmode.RunnerInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.action.Action;
@@ -51,7 +52,7 @@ public class RunOPIAction extends Action implements IWorkbenchWindowActionDelega
     public static String ID = "org.csstudio.opibuilder.editor.run";
     public static String ACITON_DEFINITION_ID = "org.csstudio.opibuilder.runopi";
     
-    private static IWorkbenchWindow runtime_window = null;
+    private static IWorkbenchPage runtime_page = null;
 
     public RunOPIAction()
     {
@@ -86,74 +87,82 @@ public class RunOPIAction extends Action implements IWorkbenchWindowActionDelega
     public void run()
     {
         final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        final IEditorPart activeEditor = page.getActiveEditor();
-        if (! (activeEditor instanceof OPIEditor))
-            return;
-        
-        // TODO: Should perform the 'save' in background, then return to UI thread when done..
-        if (PreferencesHelper.isAutoSaveBeforeRunning() && activeEditor.isDirty())
-            activeEditor.doSave(null);
-
-        final DisplayModel displayModel = ((OPIEditor)activeEditor).getDisplayModel();
-        
-        if (runtime_window == null)
-        {   //  (Re-)create runtime window
-            final Rectangle bounds = new Rectangle(displayModel.getLocation(), displayModel.getSize());
-            runtime_window = RunModeService.createNewWindow(Optional.of(bounds));
-            // Track when it's closed
-            runtime_window.addPageListener(new IPageListener()
-            {
-                @Override
-                public void pageClosed(IWorkbenchPage page)
+        try
+        {
+            final IEditorPart activeEditor = page.getActiveEditor();
+            if (! (activeEditor instanceof OPIEditor))
+                return;
+            
+            // TODO: Should perform the 'save' in background, then return to UI thread when done..
+            if (PreferencesHelper.isAutoSaveBeforeRunning() && activeEditor.isDirty())
+                activeEditor.doSave(null);
+    
+            final DisplayModel displayModel = ((OPIEditor)activeEditor).getDisplayModel();
+            
+            if (runtime_page == null)
+            {   //  (Re-)create runtime window
+                final Rectangle bounds = new Rectangle(displayModel.getLocation(), displayModel.getSize());
+                runtime_page = RunModeService.createNewWorkbenchPage(Optional.of(bounds));
+                // Track when it's closed
+                runtime_page.getWorkbenchWindow().addPageListener(new IPageListener()
                 {
-                    runtime_window = null;
-                }
-
-                @Override
-                public void pageActivated(IWorkbenchPage page)
-                {
-                    // NOP
-                }
-
-                @Override
-                public void pageOpened(IWorkbenchPage page)
-                {
-                    // NOP
-                }
-            });
-        }
-        
-        final IEditorInput input = activeEditor.getEditorInput();    
-        IPath path = ResourceUtil.getPathInEditor(input);
-        final RunnerInput new_input = new RunnerInput(path, null);
-
-        // If this display is already executing, update it to the new content,
-        // because RunModeService would only pop old content back to the front.
-        final IWorkbenchPage runtime_page = runtime_window.getActivePage();
-        for (IViewReference view_ref : runtime_page.getViewReferences())
-            if (view_ref.getId().startsWith(OPIView.ID))
-            {   
-                final IViewPart view = view_ref.getView(true);
-                if (view instanceof OPIView)
-                {
-                    final OPIView opi_view = (OPIView)view;
-                    if (new_input.equals(opi_view.getOPIInput()))
+                    @Override
+                    public void pageClosed(IWorkbenchPage page)
                     {
-                        try
+                        if (page == runtime_page)
+                            runtime_page = null;
+                    }
+    
+                    @Override
+                    public void pageActivated(IWorkbenchPage page)
+                    {
+                        // NOP
+                    }
+    
+                    @Override
+                    public void pageOpened(IWorkbenchPage page)
+                    {
+                        // NOP
+                    }
+                });
+            }
+            
+            final IEditorInput input = activeEditor.getEditorInput();    
+            IPath path = ResourceUtil.getPathInEditor(input);
+            final RunnerInput new_input = new RunnerInput(path, null);
+    
+            // If this display is already executing, update it to the new content,
+            // because RunModeService would only pop old content back to the front.
+            for (IViewReference view_ref : runtime_page.getViewReferences())
+                if (view_ref.getId().startsWith(OPIView.ID))
+                {   
+                    final IViewPart view = view_ref.getView(true);
+                    if (view instanceof OPIView)
+                    {
+                        final OPIView opi_view = (OPIView)view;
+                        if (new_input.equals(opi_view.getOPIInput()))
                         {
-                            opi_view.setOPIInput(new_input);
+                            try
+                            {
+                                opi_view.setOPIInput(new_input);
+                            }
+                            catch (PartInitException ex)
+                            {
+                                OPIBuilderPlugin.getLogger().log(Level.WARNING,
+                                    "Failed to update existing runtime for " + new_input.getName(), ex);
+                            }
+                            return;
                         }
-                        catch (PartInitException ex)
-                        {
-                            OPIBuilderPlugin.getLogger().log(Level.WARNING,
-                                "Failed to update existing runtime for " + new_input.getName(), ex);
-                        }
-                        return;
                     }
                 }
-            }
-                
-        RunModeService.openDisplayInView(runtime_page, new_input, DisplayMode.NEW_TAB);
+                    
+            RunModeService.openDisplayInView(runtime_page, new_input, DisplayMode.NEW_TAB);
+        }
+        catch (Exception ex)
+        {
+            ExceptionDetailsErrorDialog.openError(page.getWorkbenchWindow().getShell(),
+                    "Cannot launch display runtime", ex);
+        }
     }
 
     public void dispose()

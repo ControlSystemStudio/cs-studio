@@ -19,10 +19,8 @@ import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
@@ -31,14 +29,13 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.WorkbenchException;
 
 /** Service for executing a display
  *  @author Xihui Chen - Original author
  *  @author Kay Kasemir
  */
-public class RunModeService {
-
+public class RunModeService
+{
     /** How/where a new display is presented */
     public enum DisplayMode
     {
@@ -80,265 +77,162 @@ public class RunModeService {
         }
     }
 
-    // TODO Remove
-    public enum TargetWindow {
-        NEW_WINDOW,
-        SAME_WINDOW,
-        NEW_SHELL;
-    }
-    
-    // TODO Make all static?
-    private static RunModeService instance;
-
-    public static RunModeService getInstance(){
-        if(instance == null)
-            instance = new RunModeService();
-        return instance;
-    }
-
-    // TODO Update methods: Fewer, take DisplayMode
-
-    public static void runOPIInView(final IPath path,
-            final DisplayOpenManager displayOpenManager, final MacrosInput macrosInput, final Position position)
+    /** Open a display in runtime
+     * 
+     *  @param path Path to the display file
+     *  @param macros Optional macros
+     *  @param mode {@link DisplayMode}
+     *  @param runtime Runtime to update in case DisplayMode is 'replace'
+     */
+    public static void openDisplay(final IPath path, final Optional<MacrosInput> macros,
+                              DisplayMode mode,
+                              final Optional<IOPIRuntime> runtime)
     {
-        OPIView.setOpenedByUser(true);
-        final RunnerInput runnerInput = new RunnerInput(path, displayOpenManager, macrosInput);
-        UIBundlingThread.getInstance().addRunnable(new Runnable()
+        final RunnerInput input = new RunnerInput(path, null, macros.orElse(null));
+        try
         {
-            @Override
-            public void run()
+            if (mode == DisplayMode.REPLACE)
+            {   // Anything to replace?
+                if (!runtime.isPresent())
+                    mode = DisplayMode.NEW_TAB;
+                // Shell cannot be replaced, needs new shell
+                else if (runtime.get() instanceof OPIShell)
+                    mode = DisplayMode.NEW_SHELL;
+                else
+                {   // Replace display in current runtime
+                    final DisplayOpenManager manager = (DisplayOpenManager) runtime.get().getAdapter(DisplayOpenManager.class);
+                    manager.openNewDisplay();
+                    runtime.get().setOPIInput(new RunnerInput(path, manager, macros.orElse(null)));
+                    return;
+                }
+            }
+        
+            switch (mode)
+            {
+            case NEW_TAB:
+            case NEW_TAB_LEFT:
+            case NEW_TAB_RIGHT:
+            case NEW_TAB_TOP:
+            case NEW_TAB_BOTTOM:
+            case NEW_TAB_DETACHED:
             {
                 final IWorkbench workbench = PlatformUI.getWorkbench();
                 final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
                 final IWorkbenchPage page = window.getActivePage();
-                try
-                {
-                    IViewReference[] viewReferences = page.getViewReferences();
-                    //If it is already opened.
-                    for (IViewReference viewReference : viewReferences)
-                        if (viewReference.getId().startsWith(OPIView.ID))
-                        {
-                            final IViewPart view = viewReference.getView(true);
-                            if (view instanceof OPIView)
-                            {
-                                final OPIView opi_view = (OPIView)view;
-                                if (runnerInput.equals(opi_view.getOPIInput()))
-                                {
-                                    page.showView(viewReference.getId(), viewReference.getSecondaryId(), IWorkbenchPage.VIEW_ACTIVATE);
-                                    return;
-                                }
-                            }
-                            else
-                                OPIBuilderPlugin.getLogger().log(Level.WARNING,
-                                    "Found view " + view.getTitle() + " but its type is " + view.getClass().getName());
-                        }
-                    openNewOPIView(runnerInput, page, position);
-                }
-                catch (Exception e)
-                {
-                    ErrorHandlerUtil.handleError(NLS.bind("Failed to run OPI {1} in view.", path), e);
-                }
+                openDisplayInView(page, input, mode);
+                break;
             }
-        });
+            case NEW_WINDOW:
+                if (SWT.getPlatform().startsWith("rap"))
+                    SingleSourceHelper.rapOpenOPIInNewWindow(path);
+                else
+                {
+                    final IWorkbenchPage page = createNewWorkbenchPage(Optional.empty());
+                    final Shell shell = page.getWorkbenchWindow().getShell();
+                    if (shell.getMinimized())
+                        shell.setMinimized(false);
+                    shell.forceActive();
+                    shell.forceFocus();
+                    openDisplayInView(page, input, DisplayMode.NEW_TAB);
+                    shell.moveAbove(null);
+                }
+                break;
+            case NEW_SHELL:
+                OPIShell.openOPIShell(path, macros.orElse(null));
+                break;
+            default:
+                throw new Exception("Unknown display mode " + mode);
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorHandlerUtil.handleError(NLS.bind("Failed to open {0}", path), ex);
+        }
     }
 
-    /** Open a new View that executes a display
-     *  @param runnerInput {@link RunnerInput}
-     *  @param page {@link IWorkbenchPage}
-     *  @param position {@link Position}
-     *  @return {@link OPIView}
+    /** Open new workbench page
+     *  @param bounds Optional location (unless 0) and size (unless empty)
+     *  @return IWorkbenchPage
      *  @throws Exception on error
      */
-    public static OPIView openNewOPIView(final RunnerInput runnerInput, final IWorkbenchPage page, final Position position) throws Exception
+    public static IWorkbenchPage createNewWorkbenchPage(final Optional<Rectangle> bounds) throws Exception
     {
-        // Open new View
-        // View will receive input from us, should ignore previous memento.
-        // No need to revert back to "use memento" because that is only
-        // applicable at CSS restart, loading saved state.
-        // Once the user opens a new view, all mementos need to be ignored.
-        OPIView.ignoreMemento();
-        // Create view ID that - when used with OPIRunnerPerspective -
-        // causes view to appear in desired location
-        final String secondID =  OPIView.createSecondaryID();
-        final IViewPart view = page.showView(position.getOPIViewID(), secondID, IWorkbenchPage.VIEW_ACTIVATE);
-        if (! (view instanceof OPIView))
-            throw new PartInitException("Expected OPIView, got " + view);
-        final OPIView opiView = (OPIView) view;
-
-        // Set content of view
-        opiView.setOPIInput(runnerInput);
-
-        // Adjust position
-        if (position == Position.DETACHED)
-            SingleSourcePlugin.getUIHelper().detachView(opiView);
-
-        return opiView;
+        final IWorkbenchWindow window = PlatformUI.getWorkbench().openWorkbenchWindow(
+                OPIRunnerPerspective.ID, null);
+        if (bounds.isPresent())
+        {
+            if (bounds.get().x >=0  &&  bounds.get().y > 1)
+                window.getShell().setLocation(bounds.get().x, bounds.get().y);
+            window.getShell().setSize(bounds.get().width+45, bounds.get().height + 165);
+        }
+        return window.getActivePage();
     }
-
-    /** Open new workbench window
-     *  @param bounds Optional location (unless 0) and size (unless empty)
-     *  @return Window
+    
+    /** Display a view on a specific workbench page
+     *  @param page Page to use
+     *  @param input {@link RunnerInput}
+     *  @param mode Mode, must be one related to Views ("NEW_TAB_*")
      */
-    public static IWorkbenchWindow createNewWindow(final Optional<Rectangle> bounds)
-    {
-        try
-        {
-            final IWorkbenchWindow window = PlatformUI.getWorkbench().openWorkbenchWindow(
-                    OPIRunnerPerspective.ID, null);
-            if (bounds.isPresent())
-            {
-                if (bounds.get().x >=0  &&  bounds.get().y > 1)
-                    window.getShell().setLocation(bounds.get().x, bounds.get().y);
-                window.getShell().setSize(bounds.get().width+45, bounds.get().height + 165);
-            }
-            return window;
-        }
-        catch (WorkbenchException e)
-        {
-            OPIBuilderPlugin.getLogger().log(Level.WARNING, "Failed to open new window", e);
-        }
-        return null;
-    }
-    
-    // TODO: Use only this method
-    public static void openDisplay(final IPath path, final Optional<MacrosInput> macros,
-                              DisplayMode mode,
-                              final Optional<DisplayOpenManager> display_manager, // TODO remove display_manager?
-                              final Optional<Rectangle> bounds,
-                              final Optional<IOPIRuntime> runtime)
-    {
-        final RunnerInput input = new RunnerInput(path, display_manager.orElse(null), macros.orElse(null));
-        
-        if (mode == DisplayMode.REPLACE)
-        {   // Anything to replace?
-            if (!runtime.isPresent())
-                mode = DisplayMode.NEW_TAB;
-            // Shell cannot be replaced, needs new shell
-            else if (runtime.get() instanceof OPIShell)
-                mode = DisplayMode.NEW_SHELL;
-            else
-            {   // Replace current OPIView.
-                DisplayOpenManager manager = (DisplayOpenManager) (runtime.get()
-                    .getAdapter(DisplayOpenManager.class));
-                manager.openNewDisplay();
-                try
-                {
-                    runtime.get().setOPIInput(new RunnerInput(path, manager, macros.orElse(null)));
-                }
-                catch (PartInitException e)
-                {
-                    OPIBuilderPlugin.getLogger().log(Level.WARNING,
-                            "Failed to open " + path, e);
-                    MessageDialog.openError(Display.getDefault().getActiveShell(),
-                            "Open file error",
-                            NLS.bind("Failed to open {0}", path));
-                }
-            }
-        }
-        
-        switch (mode)
-        {
-        case NEW_TAB:
-        case NEW_TAB_LEFT:
-        case NEW_TAB_RIGHT:
-        case NEW_TAB_TOP:
-        case NEW_TAB_BOTTOM:
-        case NEW_TAB_DETACHED:
-            final IWorkbench workbench = PlatformUI.getWorkbench();
-            final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-            final IWorkbenchPage page = window.getActivePage();
-            openDisplayInView(page, input, mode);
-            break;
-        case NEW_WINDOW:
-            if (SWT.getPlatform().startsWith("rap"))
-                SingleSourceHelper.rapOpenOPIInNewWindow(path);
-            else
-            {
-                final IWorkbenchWindow targetWindow = createNewWindow(bounds);
-                final Shell shell = targetWindow.getShell();
-                if (shell.getMinimized())
-                    shell.setMinimized(false);
-                targetWindow.getShell().forceActive();
-                targetWindow.getShell().forceFocus();
-                openDisplayInView(targetWindow.getActivePage(), input, DisplayMode.NEW_TAB);
-                targetWindow.getShell().moveAbove(null);
-            }
-            break;
-        case NEW_SHELL:
-            OPIShell.openOPIShell(path, macros.orElse(null));
-            break;
-        case REPLACE:
-            break;
-        default:
-            throw new Error("Cannot handle " + mode);
-        }
-        
-    }
-    
     public static void openDisplayInView(final IWorkbenchPage page, final RunnerInput input, final DisplayMode mode)
     {
         OPIView.setOpenedByUser(true);
-        UIBundlingThread.getInstance().addRunnable(new Runnable()
+        UIBundlingThread.getInstance().addRunnable(() ->
         {
-            @Override
-            public void run()
+            try
             {
-                try
-                {
-                    // Check for existing view with same input.
-                    for (IViewReference viewReference : page.getViewReferences())
-                        if (viewReference.getId().startsWith(OPIView.ID))
-                        {
-                            final IViewPart view = viewReference.getView(true);
-                            if (view instanceof OPIView)
-                            {
-                                final OPIView opi_view = (OPIView)view;
-                                if (input.equals(opi_view.getOPIInput()))
-                                {
-                                    page.showView(viewReference.getId(), viewReference.getSecondaryId(), IWorkbenchPage.VIEW_ACTIVATE);
-                                    return;
-                                }
-                            }
-                            else
-                                OPIBuilderPlugin.getLogger().log(Level.WARNING,
-                                    "Found view " + view.getTitle() + " but its type is " + view.getClass().getName());
-                        }
-                    
-                    // Open new View
-                    // View will receive input from us, should ignore previous memento.
-                    // No need to revert back to "use memento" because that is only
-                    // applicable at CSS restart, loading saved state.
-                    // Once the user opens a new view, all mementos need to be ignored.
-                    OPIView.ignoreMemento();
-                    // Create view ID that - when used with OPIRunnerPerspective -
-                    // causes view to appear in desired location
-                    final String secondID =  OPIView.createSecondaryID();
-                    final Position position;
-                    switch (mode)
+                // Check for existing view with same input.
+                for (IViewReference viewReference : page.getViewReferences())
+                    if (viewReference.getId().startsWith(OPIView.ID))
                     {
-                    case NEW_TAB_LEFT:     position = Position.LEFT;     break;
-                    case NEW_TAB_RIGHT:    position = Position.RIGHT;    break;
-                    case NEW_TAB_TOP:      position = Position.TOP;      break;
-                    case NEW_TAB_BOTTOM:   position = Position.BOTTOM;   break;
-                    case NEW_TAB_DETACHED: position = Position.DETACHED; break;
-                    default:               position = Position.DEFAULT_VIEW;
+                        final IViewPart view = viewReference.getView(true);
+                        if (view instanceof OPIView)
+                        {
+                            final OPIView opi_view = (OPIView)view;
+                            if (input.equals(opi_view.getOPIInput()))
+                            {
+                                page.showView(viewReference.getId(), viewReference.getSecondaryId(), IWorkbenchPage.VIEW_ACTIVATE);
+                                return;
+                            }
+                        }
+                        else
+                            OPIBuilderPlugin.getLogger().log(Level.WARNING,
+                                "Found view " + view.getTitle() + " but its type is " + view.getClass().getName());
                     }
-                    final IViewPart view = page.showView(position.getOPIViewID(), secondID, IWorkbenchPage.VIEW_ACTIVATE);
-                    if (! (view instanceof OPIView))
-                        throw new PartInitException("Expected OPIView, got " + view);
-                    final OPIView opiView = (OPIView) view;
-
-                    // Set content of view
-                    opiView.setOPIInput(input);
-
-                    // Adjust position
-                    if (position == Position.DETACHED)
-                        SingleSourcePlugin.getUIHelper().detachView(opiView);
-                }
-                catch (Exception e)
+                
+                // Open new View
+                // View will receive input from us, should ignore previous memento.
+                // No need to revert back to "use memento" because that is only
+                // applicable at CSS restart, loading saved state.
+                // Once the user opens a new view, all mementos need to be ignored.
+                OPIView.ignoreMemento();
+                // Create view ID that - when used with OPIRunnerPerspective -
+                // causes view to appear in desired location
+                final String secondID =  OPIView.createSecondaryID();
+                final Position position;
+                switch (mode)
                 {
-                    ErrorHandlerUtil.handleError(NLS.bind("Failed to run OPI {1} in view.", input.getPath()), e);
+                case NEW_TAB_LEFT:     position = Position.LEFT;     break;
+                case NEW_TAB_RIGHT:    position = Position.RIGHT;    break;
+                case NEW_TAB_TOP:      position = Position.TOP;      break;
+                case NEW_TAB_BOTTOM:   position = Position.BOTTOM;   break;
+                case NEW_TAB_DETACHED: position = Position.DETACHED; break;
+                default:               position = Position.DEFAULT_VIEW;
                 }
+                final IViewPart view = page.showView(position.getOPIViewID(), secondID, IWorkbenchPage.VIEW_ACTIVATE);
+                if (! (view instanceof OPIView))
+                    throw new PartInitException("Expected OPIView, got " + view);
+                final OPIView opiView = (OPIView) view;
+
+                // Set content of view
+                opiView.setOPIInput(input);
+
+                // Adjust position
+                if (position == Position.DETACHED)
+                    SingleSourcePlugin.getUIHelper().detachView(opiView);
+            }
+            catch (Exception e)
+            {
+                ErrorHandlerUtil.handleError(NLS.bind("Failed to open {0} in view.", input.getPath()), e);
             }
         });
     }

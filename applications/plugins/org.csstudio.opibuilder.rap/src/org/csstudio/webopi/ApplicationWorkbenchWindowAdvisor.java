@@ -49,7 +49,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 			if(path == null)
 				return;
 			if (path.getFileExtension().toLowerCase().equals("opi")) {
-				RunModeService.openDisplay(path, Optional.empty(), DisplayMode.NEW_TAB, Optional.empty(), Optional.empty(), Optional.empty());
+				RunModeService.openDisplay(path, Optional.empty(), DisplayMode.NEW_TAB, Optional.empty());
 			} else {
 				runOther(path);
 			}
@@ -57,7 +57,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 			IPath path = runnerInput.getPath();
 			if (path != null) {
 				if (path.getFileExtension().toLowerCase().equals("opi")) {
-					RunModeService.openDisplay(path, Optional.ofNullable(runnerInput.getMacrosInput()), DisplayMode.NEW_TAB, Optional.empty(), Optional.empty(), Optional.empty());
+					RunModeService.openDisplay(path, Optional.ofNullable(runnerInput.getMacrosInput()), DisplayMode.NEW_TAB, Optional.empty());
 				} else {
 					runOther(path);
 				}
