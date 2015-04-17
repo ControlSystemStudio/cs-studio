@@ -200,6 +200,31 @@ public class OPIShell implements IOPIRuntime {
         }
     }
 
+    /**
+     *  Getter for the Shell associated with this OPIShell
+     */
+    public Shell getShell() {
+        return this.shell;
+    }
+
+    /** Search the cache of open OPIShells to find a match for the
+     *  input Shell object.
+     *
+     * 	Return associated OPIShell or Null if none found
+     */
+    public static OPIShell getOPIShellForShell(final Shell target) {
+        OPIShell foundShell = null;
+        if (target != null) {
+            for (OPIShell os : OPIShell.openShells) {
+                if (os.getShell() == target) {
+                    foundShell = os;
+                    break;
+                }
+            }
+        }
+        return foundShell;
+    }
+
     /********************************************
      * Partial implementation of IOPIRuntime
      ********************************************/
@@ -301,31 +326,6 @@ public class OPIShell implements IOPIRuntime {
     @Override
     public DisplayModel getDisplayModel() {
         return displayModel;
-    }
-
-    /**
-     *  Getter for the Shell associated with this OPIShell
-     */
-    public Shell getShell() {
-    	return this.shell;
-    }
-
-    /** Search the cache of open OPIShells to find a match for the
-     *  input Shell object.
-     *
-     * 	Return associated OPIShell or Null if none found
-     */
-    public static OPIShell getOPIShellForShell(final Shell target) {
-    	OPIShell foundShell = null;
-    	if (target != null) {
-    		for (OPIShell os : OPIShell.openShells) {
-    			if (os.getShell() == target) {
-    				foundShell = os;
-    				break;
-    			}
-    		}
-    	}
-    	return foundShell;
     }
 
 }
