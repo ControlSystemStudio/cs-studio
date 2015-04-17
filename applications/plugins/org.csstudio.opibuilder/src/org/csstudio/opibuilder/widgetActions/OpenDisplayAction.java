@@ -203,32 +203,25 @@ public class OpenDisplayAction extends AbstractWidgetAction
         case NEW_SHELL:
             OPIShell.openOPIShell(absolutePath, getMacrosInput());
             return;
-            
+
         case REPLACE:
         default:
             IOPIRuntime opiRuntime =
                 getWidgetModel().getRootDisplayModel().getOpiRuntime();
-            if (opiRuntime instanceof OPIShell)
-                // Default behaviour for OPIShell is to open another OPIShell.
-                OPIShell.openOPIShell(absolutePath, getMacrosInput());
-            else
-            {   // Replace current OPIView.
-                DisplayOpenManager manager = (DisplayOpenManager) (opiRuntime
-                    .getAdapter(DisplayOpenManager.class));
+               // Replace current OPIView.
+            DisplayOpenManager manager = (DisplayOpenManager) (opiRuntime.getAdapter(DisplayOpenManager.class));
+            if (manager != null) {
                 manager.openNewDisplay();
-                try
-                {
-                    RunModeService.replaceOPIRuntimeContent(opiRuntime, new RunnerInput(
-                            absolutePath, manager, getMacrosInput()));
-                }
-                catch (PartInitException e)
-                {
-                    OPIBuilderPlugin.getLogger().log(Level.WARNING,
-                            "Failed to open " + absolutePath, e);
-                    MessageDialog.openError(Display.getDefault().getActiveShell(),
-                            "Open file error",
-                            NLS.bind("Failed to open {0}", absolutePath));
-                }
+            }
+            try {
+                RunModeService.replaceOPIRuntimeContent(opiRuntime, new RunnerInput(
+                        absolutePath, manager, getMacrosInput()));
+            } catch (PartInitException e) {
+                OPIBuilderPlugin.getLogger().log(Level.WARNING,
+                        "Failed to open " + absolutePath, e);
+                MessageDialog.openError(Display.getDefault().getActiveShell(),
+                        "Open file error",
+                        NLS.bind("Failed to open {0}", absolutePath));
             }
         }
     }
