@@ -62,20 +62,6 @@ public class OPIShell implements IOPIRuntime {
         this.actionRegistry = new ActionRegistry();
 
         final GraphicalViewer viewer = new GraphicalViewerImpl();
-        shell.setLayout(new FillLayout());
-
-        try {
-            XMLUtil.fillDisplayModelFromInputStream(ResourceUtil.pathToInputStream(path), displayModel);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if(macrosInput != null) {
-            macrosInput = macrosInput.getCopy();
-            macrosInput.getMacrosMap().putAll(displayModel.getMacrosInput().getMacrosMap());
-            displayModel.setPropertyValue(AbstractContainerModel.PROP_MACROS, macrosInput);
-        }
-
         viewer.createControl(shell);
         viewer.setEditPartFactory(new WidgetEditPartFactory(ExecutionMode.RUN_MODE));
         viewer.setRootEditPart(new ScalableFreeformRootEditPart() {
@@ -103,16 +89,10 @@ public class OPIShell implements IOPIRuntime {
         getSite().registerContextMenu(contextMenuProvider, viewer);
         viewer.setContextMenu(contextMenuProvider);
 
-        viewer.setContents(displayModel);
-        displayModel.setViewer(viewer);
+        displayModel = createDisplayModel(path, macrosInput, viewer);
+        setTitle();
 
-        // Set title
-        if (displayModel.getName() != null && displayModel.getName().trim().length() > 0) {
-            shell.setText(displayModel.getName());
-        } else { // If the name doesn't exist, use the OPI path
-            shell.setText(path.toString());
-        }
-
+        shell.setLayout(new FillLayout());
         shell.addShellListener(new ShellListener() {
             private boolean firstRun = true;
             public void shellIconified(ShellEvent e) {}
@@ -147,7 +127,35 @@ public class OPIShell implements IOPIRuntime {
         shell.setVisible(true);
     }
 
-    public void resizeToContents() {
+    private DisplayModel createDisplayModel(IPath path, MacrosInput macrosInput, GraphicalViewer viewer) {
+        displayModel = new DisplayModel(path);
+        try {
+            XMLUtil.fillDisplayModelFromInputStream(ResourceUtil.pathToInputStream(path), displayModel);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if(macrosInput != null) {
+            macrosInput = macrosInput.getCopy();
+            macrosInput.getMacrosMap().putAll(displayModel.getMacrosInput().getMacrosMap());
+            displayModel.setPropertyValue(AbstractContainerModel.PROP_MACROS, macrosInput);
+        }
+
+        viewer.setContents(displayModel);
+        displayModel.setViewer(viewer);
+        displayModel.setOpiRuntime(this);
+        return displayModel;
+    }
+
+    private void setTitle() {
+        if (displayModel.getName() != null && displayModel.getName().trim().length() > 0) {
+            shell.setText(displayModel.getName());
+        } else { // If the name doesn't exist, use the OPI path
+            shell.setText(path.toString());
+        }
+    }
+
+    private void resizeToContents() {
         int frameX = shell.getSize().x - shell.getClientArea().width;
         int frameY = shell.getSize().y - shell.getClientArea().height;
         shell.setSize(displayModel.getSize().width + frameX, displayModel.getSize().height + frameY);
@@ -298,23 +306,8 @@ public class OPIShell implements IOPIRuntime {
         }
         MacrosInput macrosInput = displayModel.getMacrosInput();
         GraphicalViewer viewer = displayModel.getViewer();
-
-        displayModel = new DisplayModel(path);
-        try {
-            XMLUtil.fillDisplayModelFromInputStream(ResourceUtil.pathToInputStream(path), displayModel);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if(macrosInput != null) {
-            macrosInput = macrosInput.getCopy();
-            macrosInput.getMacrosMap().putAll(displayModel.getMacrosInput().getMacrosMap());
-            displayModel.setPropertyValue(AbstractContainerModel.PROP_MACROS, macrosInput);
-        }
-
-        viewer.setContents(displayModel);
-        displayModel.setViewer(viewer);
-        displayModel.setOpiRuntime(this);
+        displayModel = createDisplayModel(path, macrosInput, viewer);
+        setTitle();
         resizeToContents();
     }
 
