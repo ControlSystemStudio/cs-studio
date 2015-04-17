@@ -314,6 +314,7 @@ public class OPIShell implements IOPIRuntime {
 
         viewer.setContents(displayModel);
         displayModel.setViewer(viewer);
+        displayModel.setOpiRuntime(this);
         resizeToContents();
     }
 
