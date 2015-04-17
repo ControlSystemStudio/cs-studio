@@ -95,18 +95,17 @@ public class RunModeService
             {   // Anything to replace?
                 if (!runtime.isPresent())
                     mode = DisplayMode.NEW_TAB;
-                // Shell cannot be replaced, needs new shell
-                else if (runtime.get() instanceof OPIShell)
-                    mode = DisplayMode.NEW_SHELL;
                 else
                 {   // Replace display in current runtime
                     final DisplayOpenManager manager = (DisplayOpenManager) runtime.get().getAdapter(DisplayOpenManager.class);
-                    manager.openNewDisplay();
+                    if (manager != null) {
+                        manager.openNewDisplay();
+                    }
                     runtime.get().setOPIInput(new RunnerInput(path, manager, macros.orElse(null)));
                     return;
                 }
             }
-        
+
             switch (mode)
             {
             case NEW_TAB:

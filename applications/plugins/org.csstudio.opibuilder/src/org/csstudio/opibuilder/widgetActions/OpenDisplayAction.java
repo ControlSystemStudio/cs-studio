@@ -166,7 +166,7 @@ public class OpenDisplayAction extends AbstractWidgetAction
     private void openOPI(final IPath absolutePath, final boolean ctrlPressed, final boolean shiftPressed)
     {
         DisplayMode mode = getDisplayMode();
-        
+
         if (ctrlPressed && !shiftPressed)
             mode = DisplayMode.NEW_TAB;
         else if (!ctrlPressed && shiftPressed)

@@ -126,9 +126,7 @@ public class OPIShell implements IOPIRuntime {
                 if (firstRun) {
                     // Resize the shell after it's open, so we can take into account different window borders.
                     // Do this only the first time it's activated.
-                    int frameX = shell.getSize().x - shell.getClientArea().width;
-                    int frameY = shell.getSize().y - shell.getClientArea().height;
-                    shell.setSize(displayModel.getSize().width + frameX, displayModel.getSize().height + frameY);
+                    resizeToContents();
                     shell.setFocus();
                     firstRun = false;
                 }
@@ -140,15 +138,21 @@ public class OPIShell implements IOPIRuntime {
          * Wait until the window is open, then call shell.setFocus() in the activated listener.
          *
          * Make some attempt at sizing the shell, sometimes a shell is not given focus and the shellActivated
-         * listener callback doesn't resize the window. It's better to have something a little to large as the
+         * listener callback doesn't resize the window. It's better to have something a little too large as the
          * default. Related to Eclipse bug 96700.
          */
         int windowBorderX = 30;
         int windowBorderY = 30;
-        shell.setVisible(true);
         shell.setSize(displayModel.getSize().width + windowBorderX, displayModel.getSize().height + windowBorderY);
+        shell.setVisible(true);
     }
-    
+
+    public void resizeToContents() {
+        int frameX = shell.getSize().x - shell.getClientArea().width;
+        int frameY = shell.getSize().y - shell.getClientArea().height;
+        shell.setSize(displayModel.getSize().width + frameX, displayModel.getSize().height + frameY);
+    }
+
     public MacrosInput getMacrosInput() {
         return macrosInput;
     }
@@ -194,6 +198,31 @@ public class OPIShell implements IOPIRuntime {
         } catch (Exception e) {
                 e.printStackTrace();
         }
+    }
+
+    /**
+     *  Getter for the Shell associated with this OPIShell
+     */
+    public Shell getShell() {
+        return this.shell;
+    }
+
+    /** Search the cache of open OPIShells to find a match for the
+     *  input Shell object.
+     *
+     * 	Return associated OPIShell or Null if none found
+     */
+    public static OPIShell getOPIShellForShell(final Shell target) {
+        OPIShell foundShell = null;
+        if (target != null) {
+            for (OPIShell os : OPIShell.openShells) {
+                if (os.getShell() == target) {
+                    foundShell = os;
+                    break;
+                }
+            }
+        }
+        return foundShell;
     }
 
     /********************************************
@@ -261,7 +290,12 @@ public class OPIShell implements IOPIRuntime {
 
     @Override
     public void setOPIInput(IEditorInput input) throws PartInitException {
-        IPath path = ((IFileEditorInput) input).getFile().getFullPath();
+        IPath path = null;
+        if (input instanceof IFileEditorInput) {
+            path = ((IFileEditorInput) input).getFile().getFullPath();
+        } else if (input instanceof RunnerInput) {
+            path = ((RunnerInput) input).getPath();
+        }
         MacrosInput macrosInput = displayModel.getMacrosInput();
         GraphicalViewer viewer = displayModel.getViewer();
 
@@ -280,6 +314,7 @@ public class OPIShell implements IOPIRuntime {
 
         viewer.setContents(displayModel);
         displayModel.setViewer(viewer);
+        resizeToContents();
     }
 
     @Override
@@ -291,31 +326,6 @@ public class OPIShell implements IOPIRuntime {
     @Override
     public DisplayModel getDisplayModel() {
         return displayModel;
-    }
-
-    /**
-     *  Getter for the Shell associated with this OPIShell
-     */
-    public Shell getShell() {
-    	return this.shell;
-    }
-
-    /** Search the cache of open OPIShells to find a match for the
-     *  input Shell object.
-     *
-     * 	Return associated OPIShell or Null if none found
-     */
-    public static OPIShell getOPIShellForShell(final Shell target) {
-    	OPIShell foundShell = null;
-    	if (target != null) {
-    		for (OPIShell os : OPIShell.openShells) {
-    			if (os.getShell() == target) {
-    				foundShell = os;
-    				break;
-    			}
-    		}
-    	}
-    	return foundShell;
     }
 
 }
