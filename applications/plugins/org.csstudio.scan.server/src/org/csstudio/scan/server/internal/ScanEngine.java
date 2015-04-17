@@ -24,6 +24,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.csstudio.scan.log.DataLogFactory;
+import org.csstudio.scan.server.NamedThreadFactory;
 import org.csstudio.scan.server.Scan;
 import org.csstudio.scan.server.UnknownScanException;
 
@@ -31,9 +32,10 @@ import org.csstudio.scan.server.UnknownScanException;
  *  them in order
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanEngine
 {
-    final private ExecutorService executor = Executors.newSingleThreadExecutor();
+    final private ExecutorService executor = Executors.newSingleThreadExecutor(new NamedThreadFactory("ScanEngine"));
 
     /** All the scans handled by this engine
      *

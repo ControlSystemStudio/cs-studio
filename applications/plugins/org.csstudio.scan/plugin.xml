@@ -57,5 +57,17 @@
             id="wait"
             name="Wait">
       </command>
+      <command
+            class="org.csstudio.scan.command.SequenceCommand"
+            icon="icons/sequencecommand.gif"
+            id="sequence"
+            name="Sequence">
+      </command>
+      <command
+            class="org.csstudio.scan.command.ParallelCommand"
+            icon="icons/parallelcommand.gif"
+            id="parallel"
+            name="Parallel">
+      </command>
    </extension>
 </plugin>

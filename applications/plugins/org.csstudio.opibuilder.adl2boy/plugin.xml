@@ -20,9 +20,6 @@
       </perspective>
    </extension>
    <extension
-         point="org.eclipse.ui.views">
-   </extension>
-   <extension
          point="org.eclipse.ui.commands">
       <category
             description="A category to hold references to boy commands"
@@ -145,9 +142,6 @@
             file="xml/toc.xml"
             primary="true">
       </toc>
-   </extension>
-   <extension
-         point="org.eclipse.ui.preferencePages">
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">

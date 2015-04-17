@@ -22,7 +22,9 @@
 		<!-- VERSIONS -->
 		<tycho.version>0.22.0</tycho.version>
 		<tycho-extras.version>0.22.0</tycho-extras.version>
+		<cs-studio.version>4.1</cs-studio.version>
 		<cs-studio-central.url>http://download.controlsystemstudio.org/core/4.1</cs-studio-central.url>
+		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository</orbit-site>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
 		<baselineMode>fail</baselineMode>
@@ -70,7 +72,8 @@
 				<eclipse-site>http://download.eclipse.org/releases/luna</eclipse-site>
 				<eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.4</eclipse-update-site>
 				<rap-site>http://download.eclipse.org/rt/rap/2.3</rap-site>
-				<rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/nightly/gef</rap-incubator-site>
+				<rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/nightly/gef/20150122-1538</rap-incubator-site>
+<!--				<rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/nightly/gef</rap-incubator-site>    LATEST RAP HAS PROBLEMS -->
 				<platform-version>[4.3,4.4)</platform-version>
 				<swtbot-site>http://download.eclipse.org/technology/swtbot/luna/dev-build/update-site</swtbot-site>
 			</properties>
@@ -87,7 +90,8 @@
 				<eclipse-site>http://download.eclipse.org/releases/luna</eclipse-site>
 				<eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.4</eclipse-update-site>
 				<rap-site>http://download.eclipse.org/rt/rap/2.3</rap-site>
-				<rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/nightly/gef</rap-incubator-site>
+				<rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/nightly/gef/20150122-1538</rap-incubator-site>
+<!--				<rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/nightly/gef</rap-incubator-site>    LATEST RAP HAS PROBLEMS -->
 				<platform-version>[4.3,4.4)</platform-version>
 				<swtbot-site>http://download.eclipse.org/technology/swtbot/luna/dev-build/update-site</swtbot-site>
 			</properties>
@@ -151,7 +155,7 @@
 			</pluginRepositories>
 		</profile>
 		<profile>
-			<id>cs-studio</id>
+			<id>cs-studio-sites</id>
 			<activation>
 				<property>
 					<name>!cs-studio</name>
@@ -176,40 +180,65 @@
 				</repository>
 			</repositories>
 		</profile>
+		<profile>
+			<id>eclipse-sites</id>
+			<activation>
+				<property>
+					<name>!eclipse</name>
+				</property>
+			</activation>
+			<repositories>
+				<repository>
+					<id>eclipse</id>
+					<url>${eclipse-site}</url>
+					<layout>p2</layout>
+				</repository>
+				<repository>
+					<id>eclipse-updates</id>
+					<url>${eclipse-update-site}</url>
+					<layout>p2</layout>
+				</repository>
+				<repository>
+					<id>rap</id>
+					<url>${rap-site}</url>
+					<layout>p2</layout>
+				</repository>
+				<repository>
+					<id>rap-incubator</id>
+					<url>${rap-incubator-site}</url>
+					<layout>p2</layout>
+				</repository>
+				<repository>
+					<id>orbit</id>
+					<url>${orbit-site}</url>
+					<layout>p2</layout>
+				</repository>
+				<repository>
+					<id>efx</id>
+					<url>http://download.eclipse.org/efxclipse/runtime-released/1.2.0/site</url>
+					<layout>p2</layout>
+				</repository>
+			</repositories>
+		</profile>
 	</profiles>
 
-	<repositories>
+	<distributionManagement>
+		<site>
+			<id>s3.site</id>
+			<url>s3://maven.controlsystemstudio.org/site</url>
+		</site>
 		<repository>
-			<id>eclipse</id>
-			<url>${eclipse-site}</url>
-			<layout>p2</layout>
+			<id>s3.release</id>
+			<url>s3://maven.controlsystemstudio.org/release</url>
 		</repository>
-		<repository>
-			<id>eclipse-updates</id>
-			<url>${eclipse-update-site}</url>
-			<layout>p2</layout>
-		</repository>
-		<repository>
-			<id>rap</id>
-			<url>${rap-site}</url>
-			<layout>p2</layout>
-		</repository>
-		<repository>
-			<id>rap-incubator</id>
-			<url>${rap-incubator-site}</url>
-			<layout>p2</layout>
-		</repository>
-		<repository>
-			<id>orbit</id>
-			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository</url>
-			<layout>p2</layout>
-		</repository>
-	</repositories>
+		<snapshotRepository>
+			<id>s3.snapshot</id>
+			<url>s3://maven.controlsystemstudio.org/snapshot</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<!-- CHILD MODULES -->
 	<modules>
-		
-		
 		<module>repository</module>
 		<module>utility</module>
 		<module>diirt</module>
@@ -221,6 +250,14 @@
 
 
 	<build>
+		<extensions>
+			<extension>
+				<groupId>org.kuali.maven.wagons</groupId>
+				<artifactId>maven-s3-wagon</artifactId>
+				<version>1.2.1</version>
+			</extension>
+		</extensions>
+		
 		<!-- PLUGIN MANAGEMENT -->
 		<pluginManagement>
 			<plugins>

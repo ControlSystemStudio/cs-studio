@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010-2014 ITER Organization.
+ * Copyright (c) 2010-2015 ITER Organization.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,8 +19,9 @@ import org.csstudio.swt.widgets.Activator;
 import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
 import org.csstudio.swt.widgets.util.IJobErrorHandler;
 import org.csstudio.swt.widgets.util.ResourceUtil;
+import org.csstudio.utility.batik.SVGHandler;
+import org.csstudio.utility.batik.SVGHandlerListener;
 import org.csstudio.utility.batik.SVGUtils;
-import org.csstudio.utility.batik.SimpleImageTranscoder;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.Graphics;
@@ -29,6 +30,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.w3c.dom.Document;
+import org.w3c.dom.svg.SVGDocument;
 
 public class SVGSymbolImage extends AbstractSymbolImage {
 
@@ -36,34 +38,66 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 
 	private boolean loadingImage = false;
 	private boolean failedToLoadDocument = false;
-	private SimpleImageTranscoder transcoder;
+	private SVGHandler svgHandler;
 	private Document svgDocument;
+
+	private boolean needRender = true;
 
 	public SVGSymbolImage(SymbolImageProperties sip, boolean runMode) {
 		super(sip, runMode);
+	}
+
+	public void dispose() {
+		super.dispose();
+		if (svgHandler != null) {
+			svgHandler.dispose();
+			svgHandler = null;
+		}
+	}
+
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		if (svgHandler == null) {
+			return;
+		}
+		if (visible) {
+			svgHandler.resumeProcessing();
+		} else {
+			svgHandler.suspendProcessing();
+		}
 	}
 
 	// ************************************************************
 	// Image color & paint
 	// ************************************************************
 
-	public synchronized void paintFigure(final Graphics gfx) {
-		if (loadingImage || originalImageData == null)
+	public void paintFigure(final Graphics gfx) {
+		if (disposed || loadingImage || originalImageData == null) {
 			return;
+		}
 		// Generate Data
-		if (imageData == null) {
-			dispose();
+		if (needRender) {
 			generateSVGData();
+			if (image != null && !image.isDisposed()) {
+				image.dispose();
+				image = null;
+			}
+			if (svgHandler != null && svgHandler.isDynamicDocument()
+					&& !animationDisabled) {
+				svgHandler.startProcessing();
+			}
 		}
 		// Create image
 		if (image == null) {
-			if (imageData == null)
+			if (imageData == null) {
 				return;
+			}
 			image = new Image(Display.getDefault(), imageData);
 		}
 		// Calculate areas
-		if (bounds == null || imgDimension == null)
+		if (bounds == null || imgDimension == null) {
 			return;
+		}
 		int cropedWidth = imageData.width - (int) Math.round(scale * (leftCrop + rightCrop));
 		int cropedHeight = imageData.height - (int) Math.round(scale * (bottomCrop + topCrop));
 		Rectangle srcArea = new Rectangle((int) Math.round(scale * leftCrop),
@@ -81,23 +115,28 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 
 	@Override
 	public void resetData() {
-		imageData = null;
+		needRender = true;
 	}
 
 	private void generateSVGData() {
+		if (disposed) {
+			return;
+		}
 		// Load document if do not exist
 		Document document = getDocument();
 		if (document == null) {
 			return;
 		}
-		transcoder.setColorToChange(colorToChange);
-		if (!isEditMode() && !colorToChange.equals(currentColor))
-			transcoder.setColor(currentColor);
-		if (permutationMatrix != null)
-			transcoder.setTransformMatrix(permutationMatrix.getMatrix());
+		svgHandler.setColorToChange(colorToChange);
+		if (!isEditMode() && !colorToChange.equals(currentColor)) {
+			svgHandler.setColorToApply(currentColor);
+		}
+		if (permutationMatrix != null) {
+			svgHandler.setTransformMatrix(permutationMatrix.getMatrix());
+		}
 
 		// Scale image
-		java.awt.Dimension dims = transcoder.getDocumentSize();
+		java.awt.Dimension dims = svgHandler.getDocumentSize();
 		int imgWidth = dims.width;
 		int imgHeight = dims.height;
 		if (stretch) {
@@ -113,9 +152,9 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 		rightCrop = (imgWidth - leftCrop - rightCrop) < 0 ? 0 : rightCrop;
 		imgWidth = (int) Math.round(scale * (imgWidth + leftCrop + rightCrop));
 		imgHeight = (int) Math.round(scale * (imgHeight + bottomCrop + topCrop));
-		transcoder.setCanvasSize(imgWidth, imgHeight);
+		svgHandler.setCanvasSize(imgWidth, imgHeight);
 
-		BufferedImage awtImage = transcoder.getBufferedImage();
+		BufferedImage awtImage = svgHandler.getOffScreen();
 		if (awtImage != null) {
 			imageData = SVGUtils.toSWT(Display.getCurrent(), awtImage);
 		}
@@ -130,6 +169,7 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 				|| newImgDimension.height != imgDimension.height)
 			fireSizeChanged();
 		imgDimension = newImgDimension;
+		needRender = false;
 	}
 
 	// ************************************************************
@@ -144,10 +184,37 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 		    resizeImage();
 	}
 
-	public synchronized Dimension getAutoSizedDimension() {
+	public Dimension getAutoSizedDimension() {
 		// if (imgDimension == null)
 		// generateSVGData();
 		return imgDimension;
+	}
+
+	// ************************************************************
+	// Animated images
+	// ************************************************************
+
+	public void setAnimationDisabled(final boolean stop) {
+		super.setAnimationDisabled(stop);
+		if (svgHandler == null) {
+			return;
+		}
+		if (stop) {
+			svgHandler.suspendProcessing();
+			// display static image
+			svgHandler.refreshContent();
+			resetData();
+		} else if (svgHandler.isDynamicDocument()) {
+			svgHandler.startProcessing();
+		}
+	}
+
+	public void setAlignedToNearestSecond(boolean aligned) {
+		super.setAlignedToNearestSecond(aligned);
+		if (svgHandler == null) {
+			return;
+		}
+		svgHandler.setAlignedToNearestSecond(aligned);
 	}
 
 	// ************************************************************
@@ -155,7 +222,7 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 	// ************************************************************
 
 	public void syncLoadImage() {
-		transcoder = null;
+		svgHandler = null;
 		failedToLoadDocument = false;
 		try {
 			final InputStream inputStream = ResourceUtil.pathToInputStream(imagePath);
@@ -219,7 +286,7 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 	}
 
 	private void loadDocument(final InputStream inputStream) {
-		transcoder = null;
+		svgHandler = null;
 		failedToLoadDocument = true;
 		if (imagePath == null || imagePath.isEmpty()) {
 			return;
@@ -232,13 +299,32 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 					+ (workSpacePath == null ? "" : workSpacePath.toOSString()) //$NON-NLS-1$ 
 					+ imagePath.toString();
 			svgDocument = factory.createDocument(uri, inputStream);
-			transcoder = new SimpleImageTranscoder(svgDocument);
+			svgHandler = new SVGHandler((SVGDocument) svgDocument);
+			svgHandler.setAlignedToNearestSecond(alignedToNearestSecond);
 			initRenderingHints();
-			BufferedImage awtImage = transcoder.getBufferedImage();
+			BufferedImage awtImage = svgHandler.getOffScreen();
 			if (awtImage != null) {
 				this.originalImageData = SVGUtils.toSWT(Display.getCurrent(), awtImage);
 				resetData();
 			}
+			svgHandler.setRenderListener(new SVGHandlerListener() {
+				public void newImage(final BufferedImage awtImage) {
+					if (disposed) {
+						return;
+					}
+					imageData = SVGUtils.toSWT(Display.getCurrent(), awtImage);
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+						    if (image != null && !image.isDisposed()) {
+						        image.dispose();
+						        image = null;
+						    }
+							repaint();
+						}
+					});
+				}
+			});
+			needRender = true;
 			failedToLoadDocument = false;
 		} catch (Exception e) {
 			Activator.getLogger().log(Level.WARNING,
@@ -250,26 +336,22 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 		if (failedToLoadDocument) {
 			return null;
 		}
-		if (transcoder == null) {
+		if (svgHandler == null) {
 			syncLoadImage();
 		}
-		return transcoder == null ? null : transcoder.getDocument();
+		return svgHandler == null ? null : svgHandler.getOriginalDocument();
 	}
 
 	private void initRenderingHints() {
-		transcoder.getRenderingHints().put(
-				RenderingHints.KEY_RENDERING,
+		svgHandler.setRenderingHint(RenderingHints.KEY_RENDERING,
 				RenderingHints.VALUE_RENDER_QUALITY);
-		transcoder.getRenderingHints().put(
-				RenderingHints.KEY_TEXT_ANTIALIASING,
+		svgHandler.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
 				RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
-		transcoder.getRenderingHints().put(RenderingHints.KEY_ANTIALIASING,
+		svgHandler.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
-		transcoder.getRenderingHints().put(
-				RenderingHints.KEY_FRACTIONALMETRICS,
+		svgHandler.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
 				RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-		transcoder.getRenderingHints().put(
-				RenderingHints.KEY_STROKE_CONTROL,
+		svgHandler.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
 				RenderingHints.VALUE_STROKE_PURE);
 	}
 

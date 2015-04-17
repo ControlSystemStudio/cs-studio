@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.command.ScanCommandWithBody;
 
 /** Model of a scan tree
  *
@@ -74,10 +74,10 @@ public class ScanTreeModel
      */
     public List<ScanCommand> getChildren(final ScanCommand command)
     {
-        if (command instanceof LoopCommand)
+        if (command instanceof ScanCommandWithBody)
         {
-            final LoopCommand loop = (LoopCommand) command;
-            return loop.getBody();
+            final ScanCommandWithBody cmd = (ScanCommandWithBody) command;
+            return cmd.getBody();
         }
         return null;
     }
@@ -124,7 +124,7 @@ public class ScanTreeModel
     }
 
 
-    /** @param commands Commands, either 'root' of model or body of a loop
+    /** @param commands Commands, either 'root' of model or body of a command with body
      *  @param target Item before or after which new command should be inserted.
      *                If <code>null</code>, inserts at start of list.
      *  @param command New command to insert
@@ -166,25 +166,15 @@ public class ScanTreeModel
                     listener.commandAdded(command);
                 return true;
             }
-            else if (current instanceof LoopCommand)
-            {   // Recurse into loop, because target may be inside that loop.
-                final LoopCommand loop = (LoopCommand) current;
-                if (doInsert(loop.getBody(), target, command, after))
+            else if (current instanceof ScanCommandWithBody)
+            {   // Recurse into body, because target may be there.
+                final ScanCommandWithBody cmd = (ScanCommandWithBody) current;
+                if (doInsert(cmd.getBody(), target, command, after))
                     return true;
-                // else: target wasn't in that loop
+                // else: target wasn't in that body
             }
         }
         return false;
-    }
-
-    /** @param loop Loop to which to add a command
-     *  @param command New command to insert
-     */
-    public void addToLoop(final LoopCommand loop, final ScanCommand command)
-    {
-        loop.getBody().add(0, command);
-        for (ScanTreeModelListener listener : listeners)
-            listener.commandAdded(command);
     }
 
     /** @param command Command to remove
@@ -217,14 +207,14 @@ public class ScanTreeModel
                     listener.commandRemoved(current);
                 return new RemovalInfo(this, parent, i > 0 ? commands.get(i-1) : null, command);
             }
-            else if (current instanceof LoopCommand)
-            {   // Recurse into loop, because target may be inside that loop.
-                final LoopCommand loop = (LoopCommand) current;
-                final List<ScanCommand> body = loop.getBody();
-                final RemovalInfo info = remove(loop, body, command);
+            else if (current instanceof ScanCommandWithBody)
+            {   // Recurse into body, because target may be inside.
+                final ScanCommandWithBody cmd = (ScanCommandWithBody) current;
+                final List<ScanCommand> body = cmd.getBody();
+                final RemovalInfo info = remove(cmd, body, command);
                 if (info != null)
                     return info;
-                // else: target wasn't in that loop
+                // else: target wasn't in that body
             }
         }
         return null;

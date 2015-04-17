@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010-2014 ITER Organization.
+ * Copyright (c) 2010-2015 ITER Organization.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,6 +78,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 
 	@Override
 	public void dispose() {
+		super.dispose();
 		stopAnimation();
 		if (offScreenImage != null && !offScreenImage.isDisposed()) {
 			offScreenImage.dispose();
@@ -87,7 +88,6 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 			offScreenImageGC.dispose();
 			offScreenImage = null;
 		}
-		super.dispose();
 	}
 
 	public void setVisible(boolean visible) {
@@ -100,13 +100,16 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 	// Image color & paint
 	// ************************************************************
 
-	public synchronized void paintFigure(final Graphics gfx) {
-		if (loadingImage || originalImageData == null)
+	public void paintFigure(final Graphics gfx) {
+		if (disposed || loadingImage || originalImageData == null)
 			return;
 		// Generate Data
 		if (imageData == null) {
-			dispose();
 			generateAnimatedData();
+			if (image != null && !image.isDisposed()) {
+				image.dispose();
+				image = null;
+			}
 			if(animated)
 				startAnimation();
 		}
@@ -179,6 +182,9 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 	}
 
 	private void generateAnimatedData() {
+		if (disposed) {
+			return;
+		}
 		if (animated) {
 			imageDataArray = new ImageData[originalImageDataArray.length];
 			for (int i = 0; i < originalImageDataArray.length; i++) {
@@ -225,7 +231,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 	// Image size calculation
 	// ************************************************************
 
-	public synchronized void resizeImage() {
+	public void resizeImage() {
 		super.resizeImage();
 		if (refreshing && animated) {
 			stopAnimation();
@@ -233,7 +239,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 		}
 	}
 
-	public synchronized Dimension getAutoSizedDimension() {
+	public Dimension getAutoSizedDimension() {
 		// if (imgDimension == null)
 		// generateAnimatedData();
 		return imgDimension;
@@ -243,7 +249,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 	// Animated images
 	// ************************************************************
 
-	public synchronized void setAnimationDisabled(final boolean stop) {
+	public void setAnimationDisabled(final boolean stop) {
 		super.setAnimationDisabled(stop);
 		if (stop) {
 			stopAnimation();
@@ -264,7 +270,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 	 * Start animation. The request will be pended until figure painted for the
 	 * first time.
 	 */
-	public synchronized void startAnimation() {
+	public void startAnimation() {
 		startAnimationRequested = true;
 		repaint();
 	}
@@ -272,7 +278,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 	/**
 	 * stop the animation if the image is an animated GIF image.
 	 */
-	public synchronized void stopAnimation() {
+	public void stopAnimation() {
 		if (scheduledFuture != null) {
 			scheduledFuture.cancel(true);
 			scheduledFuture = null;
@@ -340,7 +346,6 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 			long initialDelay = 100;
 			if(alignedToNearestSecond) {
 				Date now = new Date();
-				DateUtils.round(now, Calendar.SECOND);
 				Date nearestSecond = DateUtils.round(now, Calendar.SECOND);
 				initialDelay = nearestSecond.getTime() - now.getTime();
 				if (initialDelay < 0)
@@ -435,7 +440,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 		});
 	}
 
-	private synchronized void loadAnimatedImage(IJobErrorHandler errorHandler) {
+	private void loadAnimatedImage(IJobErrorHandler errorHandler) {
 		AbstractInputStreamRunnable uiTask = new AbstractInputStreamRunnable() {
 
 			@Override

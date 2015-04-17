@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010-2014 ITER Organization.
+ * Copyright (c) 2010-2015 ITER Organization.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,13 +17,13 @@ import org.csstudio.alarm.beast.notifier.PVSnapshot;
 
 /**
  * Handles history of previously executed automated actions & alarm updates.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
- * 
+ *
  */
 public class AlarmNotifierHistory {
 
-	private static AlarmNotifierHistory instance;
+	private static AlarmNotifierHistory instance = new AlarmNotifierHistory();
 
 	private final Map<ActionID, ActionHistoryEntry> actions;
 	// map PV path (unique) => PVHistoryEntry
@@ -35,8 +35,6 @@ public class AlarmNotifierHistory {
 	}
 
 	public static AlarmNotifierHistory getInstance() {
-		if (instance == null)
-			instance = new AlarmNotifierHistory();
 		return instance;
 	}
 

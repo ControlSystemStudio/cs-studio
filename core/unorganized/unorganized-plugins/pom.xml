@@ -9,7 +9,6 @@
   <packaging>pom</packaging>
   <name>Unorganized plugins</name>
   <modules>
-  	<module>org.csstudio.autocomplete</module>
   	<module>org.csstudio.autocomplete.pvmanager.formula</module>
   	<module>org.csstudio.autocomplete.pvmanager.formula.test</module>
   	<module>org.csstudio.autocomplete.pvmanager.loc</module>
@@ -18,36 +17,16 @@
   	<module>org.csstudio.autocomplete.pvmanager.sim.test</module>
   	<module>org.csstudio.autocomplete.pvmanager.sys</module>
   	<module>org.csstudio.autocomplete.pvmanager.sys.test</module>
-  	<module>org.csstudio.autocomplete.ui</module>
-  	<module>org.csstudio.autocomplete.ui.rap</module>
-  	<module>org.csstudio.autocomplete.ui.rcp</module>
-  	<module>org.csstudio.csdata</module>
-  	<module>org.csstudio.csdata.test</module>
   	<module>org.csstudio.dal</module>
 <!--   	<module>org.csstudio.dal.epics</module> -->
 <!--   	<module>org.csstudio.dal.simulator</module> -->
 <!--   	<module>org.csstudio.dal.test</module> -->
 <!--   	<module>org.csstudio.dal.tine</module> -->
+<!--   	<module>org.csstudio.dal.tine.test</module> -->
 <!--   	<module>org.csstudio.dal.ui</module> -->
-  	<module>org.csstudio.data</module>
-  	<module>org.csstudio.data.test</module>
-  	<module>org.csstudio.java</module>
-  	<module>org.csstudio.java.test</module>
-  	<module>org.csstudio.logging</module>
-  	<module>org.csstudio.logging.test</module>
-  	<module>org.csstudio.logging.ui</module>
-  	<module>org.csstudio.openfile</module>
-  	<module>org.csstudio.rap.core</module>
-  	<module>org.csstudio.rap.ui.util</module>
-  	<module>org.csstudio.security</module>
-  	<module>org.csstudio.security.test</module>
-  	<module>org.csstudio.security.ui</module>
   	<module>org.csstudio.simplepv</module>
   	<module>org.csstudio.simplepv.pvmanager</module>
   	<module>org.csstudio.simplepv.pvmanager.test</module>
   	<module>org.csstudio.simplepv.testutil</module>
-  	<module>org.csstudio.startup</module>
-  	<module>org.csstudio.startup.helper</module>
-  	<module>org.csstudio.workspace</module>
   </modules>
 </project>

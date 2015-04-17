@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2014 ITER Organization.
+* Copyright (c) 2010-2015 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -171,7 +171,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 	/**
 	 * Dispose the image resources used by this figure.
 	 */
-	public synchronized void dispose() {
+	public void dispose() {
 		if (onImage != null && !onImage.isDisposed()) {
 			onImage.dispose();
 			onImage = null;
@@ -210,7 +210,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 		this.imageListener = listener;
 	}
 
-	public synchronized void fireImageResized() {
+	public void fireImageResized() {
 		if (imageListener != null)
 			imageListener.imageResized(this);
 	}
@@ -228,7 +228,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 	 * @param model
 	 * @param imagePath The path to the selected image (on or off or other)
 	 */
-	public synchronized void setSymbolImagePath(ControlBoolSymbolModel model,
+	public void setSymbolImagePath(ControlBoolSymbolModel model,
 			IPath imagePath) {
 		if (imagePath == null || imagePath.isEmpty()) {
 			return;
@@ -259,7 +259,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 		});
 	}
 
-	private synchronized void loadAllImages() {
+	private void loadAllImages() {
 		if (offImagePath == null || onImagePath == null)
 			return;
 		baseImagePath = SymbolUtils.getBaseImagePath(offImagePath, statesMap);
@@ -299,7 +299,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 	// Image size calculation delegation
 	// ************************************************************
 
-	public synchronized void resizeImage() {
+	public void resizeImage() {
 		Rectangle bounds = getBounds().getCopy();
 		if (!hasDisconnectedBorder())
 			ImageUtils.crop(bounds, this.getInsets());
@@ -308,7 +308,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 		repaint();
 	}
 
-	public synchronized void setAutoSize(final boolean autoSize) {
+	public void setAutoSize(final boolean autoSize) {
 		if (symbolProperties != null) {
 			symbolProperties.setAutoSize(autoSize);
 		}
@@ -317,7 +317,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 		repaint();
 	}
 
-	public synchronized Dimension getAutoSizedDimension() {
+	public Dimension getAutoSizedDimension() {
 		// Widget dimension = Symbol Image + insets
 		Dimension dim = getCurrentImage().getAutoSizedDimension();
 		if (dim == null) return null;
@@ -342,7 +342,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 	// Image crop calculation delegation
 	// ************************************************************
 
-	public synchronized void setLeftCrop(final int newval) {
+	public void setLeftCrop(final int newval) {
 		if (symbolProperties != null) {
 			symbolProperties.setLeftCrop(newval);
 		}
@@ -351,7 +351,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 		repaint();
 	}
 
-	public synchronized void setRightCrop(final int newval) {
+	public void setRightCrop(final int newval) {
 		if (symbolProperties != null) {
 			symbolProperties.setRightCrop(newval);
 		}
@@ -360,7 +360,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 		repaint();
 	}
 
-	public synchronized void setBottomCrop(final int newval) {
+	public void setBottomCrop(final int newval) {
 		if (symbolProperties != null) {
 			symbolProperties.setBottomCrop(newval);
 		}
@@ -369,7 +369,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 		repaint();
 	}
 
-	public synchronized void setTopCrop(final int newval) {
+	public void setTopCrop(final int newval) {
 		if (symbolProperties != null) {
 			symbolProperties.setTopCrop(newval);
 		}
@@ -382,7 +382,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 	// Image flip & degree & stretch calculation delegation
 	// ************************************************************
 
-	public synchronized void setStretch(final boolean newval) {
+	public void setStretch(final boolean newval) {
 		if (symbolProperties != null) {
 			symbolProperties.setStretch(newval);
 		}
@@ -414,7 +414,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 	 * @param gfx The {@link Graphics} to use
 	 */
 	@Override
-	public synchronized void paintFigure(final Graphics gfx) {
+	public void paintFigure(final Graphics gfx) {
 		if (isLoadingImage())
 			return;
 		Rectangle bounds = getBounds().getCopy();
@@ -451,7 +451,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 	/**
 	 * @param onColor the onColor to set
 	 */
-	public synchronized void setOnColor(Color onColor) {
+	public void setOnColor(Color onColor) {
 		if (this.onColor != null && this.onColor.equals(onColor)) {
 			return;
 		}
@@ -466,7 +466,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 	/**
 	 * @param offColor  the offColor to set
 	 */
-	public synchronized void setOffColor(Color offColor) {
+	public void setOffColor(Color offColor) {
 		if (this.offColor != null && this.offColor.equals(offColor)) {
 			return;
 		}
@@ -541,11 +541,11 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 	/**
 	 * @return the animationDisabled
 	 */
-	public synchronized boolean isAnimationDisabled() {
+	public boolean isAnimationDisabled() {
 		return animationDisabled;
 	}
 
-	public synchronized void setAnimationDisabled(final boolean stop) {
+	public void setAnimationDisabled(final boolean stop) {
 		if (animationDisabled == stop)
 			return;
 		animationDisabled = stop;
@@ -557,7 +557,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 		repaint();
 	}
 
-	public synchronized void setAlignedToNearestSecond(final boolean aligned) {
+	public void setAlignedToNearestSecond(final boolean aligned) {
 		if (symbolProperties != null) {
 			symbolProperties.setAlignedToNearestSecond(aligned);
 		}

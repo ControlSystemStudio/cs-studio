@@ -32,7 +32,15 @@
 <dt>Message Body</dt>
 <dd>XML-formatted scan</dd>
 <dt>Result</dt>
-<dd>XML with scan ID, example: <code>&ltid>42&lt/id></code></dd>
+<dd>
+  <ul>
+  <li>On success, XML with scan ID, example: <code>&ltid>42&lt/id></code>
+  </li>
+  <li>On error, XML with error message and trace, example:
+      <code>&lterror>&ltmessage>Failed to submit&lt/message>&lttrace>java.lang.Exception at ..&lt/trace>&lt/error></code>
+  </li>
+  </ul>
+</dd>
 </dl>
 
 <p>Submit a scan for simulation.</p>
@@ -44,7 +52,15 @@
 <dt>Message Body</dt>
 <dd>XML-formatted scan</dd>
 <dt>Result</dt>
-<dd>XML with scan similation</dd>
+<dd>
+  <ul>
+  <li>On success, XML with scan ID, example: <code>&ltid>42&lt/id></code>
+  </li>
+  <li>On error, XML with error message and trace, example:
+      <code>&lterror>&ltmessage>Failed to submit&lt/message>&lttrace>java.lang.Exception at ..&lt/trace>&lt/error></code>
+  </li>
+  </ul>
+</dd>
 </dl>
 
 

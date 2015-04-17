@@ -2,21 +2,27 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CS-Studio Batik Util
 Bundle-SymbolicName: org.csstudio.utility.batik;singleton:=true
-Bundle-Version: 0.0.1.qualifier
+Bundle-Version: 0.1.0.qualifier
 Bundle-Vendor: CS-Studio <cs-studio-core@lists.sourceforge.net>
 Bundle-Activator: org.csstudio.utility.batik.Activator
-Require-Bundle: org.apache.batik.bridge;bundle-version="1.6.0",
- org.apache.batik.dom;bundle-version="1.6.0",
- org.apache.batik.dom.svg;bundle-version="1.6.0",
- org.apache.batik.transcoder;bundle-version="1.6.0",
- org.apache.batik.util;bundle-version="1.6.0",
+Require-Bundle: org.apache.batik.bridge;bundle-version="1.7.0",
+ org.apache.batik.dom;bundle-version="1.7.0",
+ org.apache.batik.dom.svg;bundle-version="1.7.0",
+ org.apache.batik.transcoder;bundle-version="1.7.0",
+ org.apache.batik.util;bundle-version="1.7.0",
+ org.apache.batik.css;bundle-version="1.7.0",
+ org.apache.batik.xml;bundle-version="1.7.0",
+ org.apache.batik.ext.awt;bundle-version="1.7.0",
  org.w3c.dom.svg,
- org.apache.batik.css;bundle-version="1.6.0",
  org.eclipse.core.runtime,
  org.eclipse.ui;resolution:=optional,
- org.eclipse.rap.ui;resolution:=optional
+ org.eclipse.rap.ui;resolution:=optional,
+ org.apache.commons.lang,
+ org.csstudio.java
 Export-Package: org.csstudio.utility.batik
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Description: Extra utils for apache batik
 Bundle-ClassPath: .
+Import-Package: org.w3c.dom,
+ org.w3c.dom.events

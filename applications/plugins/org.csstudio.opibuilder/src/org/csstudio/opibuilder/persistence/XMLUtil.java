@@ -13,11 +13,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -29,6 +29,7 @@ import org.csstudio.opibuilder.model.AbstractLinkingContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.DisplayModel;
+import org.csstudio.opibuilder.persistence.LineAwareXMLParser.LineAwareElement;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
@@ -410,6 +411,10 @@ public class XMLUtil {
 		String versionOnFile = element.getAttributeValue(XMLATTR_VERSION);
 		model.setVersionOnFile(Version.parseVersion(versionOnFile));
 		
+		if (element instanceof LineAwareElement) {
+		    model.setLineNumber(((LineAwareElement) element).getLineNumber());
+		}
+		
 		List children = element.getChildren();
 		Iterator iterator = children.iterator();
 		Set<String> propIdSet = model.getAllPropertyIDs();
@@ -443,7 +448,7 @@ public class XMLUtil {
 		fillLinkingContainerSub(container, new ArrayList<IPath>());
 	}
 
-	public static void fillLinkingContainerSub(final AbstractLinkingContainerModel container, List<IPath> trace)  
+	private static void fillLinkingContainerSub(final AbstractLinkingContainerModel container, List<IPath> trace)  
 		throws Exception {
 
 		if(container == null) return;
@@ -483,7 +488,6 @@ public class XMLUtil {
 					container.addChild(w, true);
 
 				container.setDisplayModel(inside);
-				container.setBackgroundColor(inside.getBackgroundColor());
 			}
 		}
 	}
@@ -606,7 +610,7 @@ public class XMLUtil {
 	}
 
 	private static Element inputStreamToXML(InputStream stream) throws JDOMException, IOException {
-		SAXBuilder saxBuilder = new SAXBuilder();	
+	    SAXBuilder saxBuilder = LineAwareXMLParser.createBuilder(); 
 		Document doc = saxBuilder.build(stream);
 		Element root = doc.getRootElement();
 		return root;

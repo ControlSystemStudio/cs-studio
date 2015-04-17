@@ -8,7 +8,24 @@
   <artifactId>utility-plugins</artifactId>
   <packaging>pom</packaging>
   <modules>
+  	<module>org.csstudio.data</module>
+  	<module>org.csstudio.data.test</module>
+  	<module>org.csstudio.logging</module>
+  	<module>org.csstudio.logging.test</module>
+  	<module>org.csstudio.logging.ui</module>
+  	<module>org.csstudio.openfile</module>
+  	<module>org.csstudio.rap.core</module>
+  	<module>org.csstudio.rap.ui.util</module>
+  	<module>org.csstudio.security</module>
+  	<module>org.csstudio.security.test</module>
+  	<module>org.csstudio.security.ui</module>
+  	<module>org.csstudio.security.ui.test</module>
+  	<module>org.csstudio.startup</module>
+  	<module>org.csstudio.startup.helper</module>
   	<module>org.csstudio.utility.batik</module>
+  	<module>org.csstudio.utility.product</module>
+  	<module>org.csstudio.utility.product.test</module>
+  	<module>org.csstudio.utility.product.default</module>
   	<module>org.csstudio.utility.pv</module>
   	<module>org.csstudio.utility.pv.epics</module>
   	<module>org.csstudio.utility.pv.epics.test</module>
@@ -22,6 +39,7 @@
   	<module>org.csstudio.utility.singlesource.rcp</module>
   	<module>org.csstudio.utility.singlesource.test</module>
   	<module>org.csstudio.utility.test</module>
-  	<module>org.csstudio.utility.pvmanager.widgets.test</module>
+  	<module>org.csstudio.utility.test.test</module>
+  	<!--module>org.csstudio.utility.pvmanager.widgets.test</module-->
   </modules>
 </project>

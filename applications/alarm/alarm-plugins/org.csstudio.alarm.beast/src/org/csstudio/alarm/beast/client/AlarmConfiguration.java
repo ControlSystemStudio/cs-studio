@@ -605,6 +605,24 @@ public class AlarmConfiguration
         }
     }
 
+    /** Write updated PV enablement to RDB
+     *  @param pv Alarm PV
+     *  @param enabled Enabled or not?
+     *  @throws Exception on error
+     */
+    public void updatePVEnablement(final AlarmTreePV pv, final boolean enabled) throws Exception
+    {
+        try
+        (
+            final PreparedStatement statement = rdb.getConnection().prepareStatement(sql.update_pv_enablement);
+        )
+        {
+            statement.setBoolean(1, enabled);
+            statement.setInt(2, pv.getID());
+            statement.executeUpdate();
+        }
+    }
+
     /** Change item's name
      *  @param item Item to change
      *  @param new_name New name for the item
@@ -619,7 +637,7 @@ public class AlarmConfiguration
         AlarmTreeItem existing = config_tree.getItemByPath(new_path);
         if (existing != null)
             throw new Exception("Found existing entry " + new_path);
-        
+
         rdb.getConnection().setAutoCommit(false);
         final PreparedStatement statement =
             rdb.getConnection().prepareStatement(sql.rename_item);

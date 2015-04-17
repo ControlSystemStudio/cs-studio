@@ -9,12 +9,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -52,13 +54,8 @@ import org.eclipse.ui.dialogs.ListSelectionDialog;
  */
 public class Install extends AbstractHandler {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.
-     * ExecutionEvent)
-     */
+    private Map<String, URL> selectedURLS = Collections.emptyMap();
+
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
 	final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -96,24 +93,28 @@ public class Install extends AbstractHandler {
 	if (listSelectionDialog.open() != Window.OK) {
 	    return null;
 	} else {
-	    List<Object> selectedExamples = Arrays.asList(listSelectionDialog
-		    .getResult());
-	    for (Object key : urls.keySet()) {
-		if (!selectedExamples.contains(key)) {
-		    urls.remove(key);
-		}
-	    }
+	    List<Object> selectedExamples = Arrays.asList(listSelectionDialog.getResult());
+            selectedURLS  = urls
+                    .entrySet()
+                    .stream()
+                    .filter(url -> {
+                        return selectedExamples.contains(url.getKey());
+                    })
+                    .collect(
+                            Collectors.toMap(url -> url.getKey(),
+                                    url -> url.getValue()));
 	}
 	// check for the projects that will be overwritten and ask for
 	// confirmation.
-	Set<String> overwrite = new HashSet<String>(urls.keySet());
+	Set<String> overwrite = new HashSet<String>(selectedURLS.keySet());
 	overwrite.retainAll(existingProjects);
 	if (!overwrite.isEmpty()) {
 	    String eol = System.getProperty("line.separator");
 	    StringBuffer sb = new StringBuffer(
 		    "The following example projects will be reinstalled:" + eol);
+	    sb.append(eol);
 	    for (String projectName : overwrite) {
-		sb.append("-");
+		sb.append(" \u2022 ");
 		sb.append(projectName);
 		sb.append(eol);
 	    }
@@ -132,7 +133,7 @@ public class Install extends AbstractHandler {
 	    protected IStatus run(IProgressMonitor monitor) {
 		// copy the sample displays
 		try {
-		    for (Entry<String, URL> entry : urls.entrySet()) {
+		    for (Entry<String, URL> entry : selectedURLS.entrySet()) {
 			String name = entry.getKey();
 			if (name == null) {
 			    name = "";

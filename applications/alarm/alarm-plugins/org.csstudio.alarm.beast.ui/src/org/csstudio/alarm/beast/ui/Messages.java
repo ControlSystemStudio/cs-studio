@@ -88,6 +88,8 @@ public class Messages extends NLS
 	public static String DefaultEMailTitle;
 	public static String Detail;
 	public static String Delay;
+    public static String DisableAlarms;
+    public static String DisableAlarmsFmt;
     public static String DuplicatePV;
     public static String DuplicatePVMesgFmt;
     public static String Duration;
@@ -97,6 +99,9 @@ public class Messages extends NLS
     public static String EditAAItemDialog_Delay;
     public static String EditAAItemDialog_Detail;
     public static String EditAAItemDialog_Title;
+    public static String EnableAlarms;
+    public static String EnableAlarmsFmt;
+    public static String EnablementErrorFmt;
     public static String Error;
     public static String ErrorInFilter;
 	public static String Filter;

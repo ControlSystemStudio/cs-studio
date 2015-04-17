@@ -334,5 +334,42 @@ public class ColorMap {
 		return palette;
 	}
 	
-	
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        if (predefinedColorMap != null && predefinedColorMap != PredefinedColorMap.None) {
+            result = prime * result + predefinedColorMap.hashCode();
+        } else {
+            result = prime * result + (autoScale ? 1231 : 1237);
+            result = prime * result + ((colorMap == null) ? 0 : colorMap.hashCode());
+            result = prime * result + (interpolate ? 1231 : 1237);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ColorMap other = (ColorMap) obj;
+        //if predefined, ignore everything else
+        if (predefinedColorMap != null && predefinedColorMap != PredefinedColorMap.None) {
+            return predefinedColorMap == other.getPredefinedColorMap();
+        }        
+        if (autoScale != other.autoScale)
+            return false;
+        if (colorMap == null) {
+            if (other.colorMap != null)
+                return false;
+        } else if (!colorMap.equals(other.colorMap))
+            return false;
+        if (interpolate != other.interpolate)
+            return false;
+        return true;
+    }
 }

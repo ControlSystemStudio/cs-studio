@@ -80,6 +80,12 @@
                style="push">
          </command>
          <command
+               commandId="org.csstudio.utility.channel.modifychannel"
+               icon="icons/channel_edit.png"
+               label="Modify Channel"
+               style="push">
+         </command>
+         <command
                commandId="org.csstudio.utility.channel.addTag"
                icon="icons/add_tag.png"
                label="Add Tag"
@@ -89,6 +95,18 @@
                commandId="org.csstudio.utility.channel.removeTag"
                icon="icons/remove_tag.png"
                label="Remove Tag"
+               style="push">
+         </command>
+         <command
+               commandId="org.csstudio.utility.channel.addProperty"
+               icon="icons/add_properties.png"
+               label="Add Property"
+               style="push">
+         </command>
+         <command
+               commandId="org.csstudio.utility.channel.removeProperty"
+               icon="icons/remove_properties.png"
+               label="Remove Property"
                style="push">
          </command>
       </menuContribution>
@@ -109,9 +127,24 @@
       </command>
       <command
             defaultHandler="org.csstudio.utility.channel.actions.RemoveTagCommandHandler"
-            description="Tag the selected channels"
+            description="Remove tag from the selected channels"
             id="org.csstudio.utility.channel.removeTag"
             name="Remove Tag">
+      </command>
+      <command
+            defaultHandler="org.csstudio.utility.channel.actions.AddPropertyCommandHandler"
+            id="org.csstudio.utility.channel.addProperty"
+            name="Add Property">
+      </command>
+      <command
+            defaultHandler="org.csstudio.utility.channel.actions.RemovePropertyCommandHandler"
+            id="org.csstudio.utility.channel.removeProperty"
+            name="Remove property">
+      </command>
+      <command
+            defaultHandler="org.csstudio.utility.channel.actions.ModifyCommandHandler"
+            id="org.csstudio.utility.channel.modifychannel"
+            name="Modify Channel">
       </command>
    </extension>
 

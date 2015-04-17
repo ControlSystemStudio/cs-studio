@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010-2014 ITER Organization.
+ * Copyright (c) 2010-2015 ITER Organization.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,12 +41,18 @@ public class SymbolImageFactory {
 	private static SymbolImage createImageFromPath(IPath imagePath,
 			SymbolImageProperties sip, boolean runMode) {
 		SymbolImage symbolImage = null;
-		if ("png".equals(imagePath.getFileExtension().toLowerCase()))
+		String ext = imagePath.getFileExtension().toLowerCase();
+		if ("png".equals(ext) || "jpg".equals(ext) || "jpeg".equals(ext)
+				|| "bmp".equals(ext)) {
 			symbolImage = new PNGSymbolImage(sip, runMode);
-		if ("svg".equals(imagePath.getFileExtension().toLowerCase()))
+		} else if ("svg".equals(ext)) {
 			symbolImage = new SVGSymbolImage(sip, runMode);
-		if ("gif".equals(imagePath.getFileExtension().toLowerCase()))
+		} else if ("gif".equals(ext)) {
 			symbolImage = new GIFSymbolImage(sip, runMode);
+		}
+		if (symbolImage == null) {
+			return createEmptyImage(runMode);
+		}
 		symbolImage.setImagePath(imagePath);
 		return symbolImage;
 	}

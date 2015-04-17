@@ -173,6 +173,8 @@ public class Messages extends NLS
     public static String LogScale;
     public static String Miscellaneous;
     public static String Model_Disconnected;
+    public static String MoveItemDown;
+    public static String MoveItemUp;
     public static String Name;
     public static String NameLbl;
     public static String NegErrColumn;
@@ -254,6 +256,8 @@ public class Messages extends NLS
     public static String StatusColumn;
     public static String TimeAxis;
     public static String TimeColumn;
+    public static String TitleFontLbl;
+    public static String TitleFontTT;
     public static String TitleLbl;
     public static String TitleTT;
     public static String TraceDisplayName;

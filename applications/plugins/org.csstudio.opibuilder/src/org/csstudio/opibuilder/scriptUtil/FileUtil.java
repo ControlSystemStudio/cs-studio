@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.scriptUtil;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -27,7 +28,6 @@ import org.jdom.input.SAXBuilder;
  *
  */
 public class FileUtil {
-
 	
 	/**Load the root element of an XML file. The element is a JDOM Element.
 	 * @param filePath path of the file. It must be an absolute path which can be either<br>
@@ -52,13 +52,19 @@ public class FileUtil {
 	 * @return root element of the XML file.
 	 * @throws Exception if the file does not exist or is not a correct XML file. 
 	 */
-	public static Element loadXMLFile(String filePath, AbstractBaseEditPart widget) throws Exception{	
-		IPath path = buildAbsolutePath(filePath, widget);
-		InputStream inputStream = ResourceUtil.pathToInputStream(path);
+	public static Element loadXMLFile(final String filePath, final AbstractBaseEditPart widget) throws Exception{	
+		final IPath path = buildAbsolutePath(filePath, widget);
 		SAXBuilder saxBuilder = new SAXBuilder();
-		Document doc = saxBuilder.build(inputStream);
-		Element root = doc.getRootElement();
-		return root;
+		File file = ResourceUtil.getFile(path);
+		final Document doc;
+		if (file == null) {
+		    InputStream inputStream = ResourceUtil.pathToInputStream(path);
+		    doc = saxBuilder.build(inputStream);
+		    inputStream.close();
+		} else {
+		    doc = saxBuilder.build(file);
+		}
+        return doc.getRootElement();        
 	}
 	
 	/**Return an {@link InputStream} of the file on the specified path.

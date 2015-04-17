@@ -21,8 +21,22 @@ import org.epics.vtype.VType;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanCommandUtil
 {
+    /** Write to device without readback
+     *
+     *  @param device_name Name of device
+     *  @param value Value to write to the device
+     *  @throws Exception on error
+     */
+    public static void write(final ScanContext context,
+            final String device_name, final Object value) throws Exception
+    {
+        write(context, device_name, value, false, false, "", 0.0, null);
+    }
+
+
     /** Write to device with readback, waiting forever, logging if the context
      *  was configured to auto-log
      *

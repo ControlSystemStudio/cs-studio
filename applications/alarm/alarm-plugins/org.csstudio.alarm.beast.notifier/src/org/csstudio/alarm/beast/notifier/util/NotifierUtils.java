@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2014 ITER Organization.
+* Copyright (c) 2010-2015 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -35,11 +35,12 @@ import org.epics.util.time.Timestamp;
  * @author Fred Arnaud (Sopra Group)
  *
  */
+@SuppressWarnings("nls")
 public class NotifierUtils {
-	
+
 	/** Pattern for automated action command scheme */
     final private static Pattern SchemePattern = Pattern.compile("^([_A-Za-z0-9]+):.*");
-	
+
 	/**
 	 * Read automated action extension points from plugin.xml.
 	 * @return Map<String, IAutomatedAction>, extension points referenced by their scheme.
@@ -99,7 +100,7 @@ public class NotifierUtils {
         return new AlarmUpdateInfo(name, current_severity, current_message,
                 severity, status, value, timestamp);
     }
-	
+
 	/**
 	 * Perform a validation on automated action details.
 	 * @param details

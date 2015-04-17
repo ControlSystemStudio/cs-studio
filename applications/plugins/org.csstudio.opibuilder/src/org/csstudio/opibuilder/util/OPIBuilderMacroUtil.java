@@ -77,7 +77,7 @@ class WidgetMacroTableProvider implements IMacroTableProvider{
 		if(macroMap != null && macroMap.containsKey(macroName))
 			return macroMap.get(macroName);
 		else if(widgetModel.getAllPropertyIDs().contains(macroName)){
-			Object propertyValue = widgetModel.getPropertyValue(macroName);
+			Object propertyValue = widgetModel.getRawPropertyValue(macroName);
 			if(propertyValue != null)
 				return propertyValue.toString();
 		}		

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010-2014 ITER Organization.
+ * Copyright (c) 2010-2015 ITER Organization.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,202 +28,202 @@ import org.csstudio.logging.JMSLogMessage;
 
 /**
  * Main thread for automated actions.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
- * 
+ * @author Kay Kasemir - One loop in handleAlarmUpdate for all actions up the tree
  */
+@SuppressWarnings("nls")
 public class AlarmNotifier {
 
-	private boolean debug = false;
+    private boolean debug = false;
 
-	/** Name of alarm tree root element */
-	final String rootName = Preferences.getAlarmTreeRoot();
+    /** Name of alarm tree root element */
+    final String rootName = Preferences.getAlarmTreeRoot();
 
-	/** Alarm model handler */
-	final private IAlarmRDBHandler rdb;
+    /** Alarm model handler */
+    final private IAlarmRDBHandler rdb;
 
-	/** Automated actions factory */
-	final private AutomatedActionFactory factory;
+    /** Automated actions factory */
+    final private AutomatedActionFactory factory;
 
-	/** Queue which handles pending actions */
-	final private WorkQueue workQueue;
+    /** Queue which handles pending actions */
+    final private WorkQueue workQueue;
 
-	private boolean maintenanceMode = false;
+    private boolean maintenanceMode = false;
 
-	public AlarmNotifier(final String root_name,
-			final IAlarmRDBHandler rdbHandler,
-			final AutomatedActionFactory factory, final int timer_threshold)
-			throws Exception {
-		this.rdb = rdbHandler;
-		this.factory = factory;
-		this.workQueue = new WorkQueue(timer_threshold, 60000); // 60s
-	}
+    public AlarmNotifier(final String root_name,
+            final IAlarmRDBHandler rdbHandler,
+            final AutomatedActionFactory factory, final int timer_threshold)
+            throws Exception {
+        this.rdb = rdbHandler;
+        this.factory = factory;
+        this.workQueue = new WorkQueue(timer_threshold, 60000); // 60s
+    }
 
-	/** @return Name of configuration root element */
-	public String getRootName() {
-		return rootName;
-	}
+    /** @return Name of configuration root element */
+    public String getRootName() {
+        return rootName;
+    }
 
-	/** Connect to JMS */
-	public void start() {
-		Activator.getLogger().log(Level.INFO, "Alarm Notifier started");
-	}
+    /** Connect to JMS */
+    public void start() {
+        Activator.getLogger().log(Level.INFO, "Alarm Notifier started");
+    }
 
-	/** Release all resources */
-	public void stop() {
-		rdb.close();
-		workQueue.flush();
-		Activator.getLogger().log(Level.INFO, "Alarm Notifier stopped");
-	}
+    /** Release all resources */
+    public void stop() {
+        rdb.close();
+        workQueue.flush();
+        Activator.getLogger().log(Level.INFO, "Alarm Notifier stopped");
+    }
 
-	/**
-	 * Read info about {@link AlarmTreeItem} from model.
-	 * 
-	 * @param path, path of the item
-	 * @return ItemInfo
-	 */
-	public ItemInfo getItemInfo(String path) {
-		AlarmTreeItem item = rdb.findItem(path);
-		return ItemInfo.fromItem(item);
-	}
+    /**
+     * Read info about {@link AlarmTreeItem} from model.
+     *
+     * @param path, path of the item
+     * @return ItemInfo
+     */
+    public ItemInfo getItemInfo(String path) {
+        AlarmTreeItem item = rdb.findItem(path);
+        return ItemInfo.fromItem(item);
+    }
 
-	/**
-	 * Start automated action for the given PV and its parents.
-	 * 
-	 * @param pvItem
-	 */
-	public synchronized void handleAlarmUpdate(AlarmTreePV pvItem) {
-		final PVSnapshot snapshot = PVSnapshot.fromPVItem(pvItem);
-		if (!pvItem.isEnabled()) {
-			// Ignore PV, it's disabled
-			AlarmNotifierHistory.getInstance().clear(snapshot);
-			return;
-		}
-		// Avoid to send 'fake' alarms when the PV is re-enabled for example
-		if (snapshot.getValue() != null && snapshot.getValue().isEmpty())
-			return;
-		// Configuration update results in an alarm update with no changes
-		PVHistoryEntry pv_history = AlarmNotifierHistory.getInstance().getPV(snapshot.getPath());
-		if (pv_history == null
-				&& snapshot.getSeverity().equals(SeverityLevel.OK))
-			return;
-		if (pv_history != null
-				&& snapshot.getSeverity().equals(pv_history.getSeverity())
-				&& snapshot.getCurrentSeverity().equals(pv_history.getCurrentSeverity()))
-			return;
-		// Process PV automated actions
-		if (pvItem.getAutomatedActions() != null) {
-			for (AADataStructure aa : pvItem.getAutomatedActions()) {
-				handleAutomatedAction(snapshot, pvItem, aa);
-			}
-		}
-		// Process System automated actions
-		AlarmTreeItem item = pvItem.getParent();
-		while (item != null) {
-			for (AADataStructure aa : item.getAutomatedActions()) {
-				handleAutomatedAction(snapshot, item, aa);
-			}
-			item = item.getParent();
-			if (item.getPosition().equals(AlarmTreePosition.Root))
-				break;
-		}
-		AlarmNotifierHistory.getInstance().addSnapshot(snapshot);
-	}
+    /**
+     * Start automated action for the given PV and its parents.
+     *
+     * @param pvItem
+     */
+    public synchronized void handleAlarmUpdate(final AlarmTreePV pvItem) {
+        final PVSnapshot snapshot = PVSnapshot.fromPVItem(pvItem);
+        final AlarmNotifierHistory history = AlarmNotifierHistory.getInstance();
+        if (!pvItem.isEnabled()) {
+            // Ignore PV, it's disabled
+            history.clear(snapshot);
+            return;
+        }
+        // Avoid to send 'fake' alarms when the PV is re-enabled for example
+        if (snapshot.getValue() != null && snapshot.getValue().isEmpty())
+            return;
+        // Configuration update results in an alarm update with no changes
+        final PVHistoryEntry pv_history = history.getPV(snapshot.getPath());
+        if (pv_history == null
+                && snapshot.getSeverity().equals(SeverityLevel.OK))
+            return;
+        if (pv_history != null
+                && snapshot.getSeverity().equals(pv_history.getSeverity())
+                && snapshot.getCurrentSeverity().equals(pv_history.getCurrentSeverity()))
+            return;
+        // Process automated actions of PV, recursing up to root
+        for (AlarmTreeItem item = pvItem;
+             item != null  &&  !item.getPosition().equals(AlarmTreePosition.Root);
+             item = item.getParent()) {
+            for (AADataStructure aa : item.getAutomatedActions())
+                handleAutomatedAction(snapshot, item, aa);
+        }
 
-	private void handleAutomatedAction(PVSnapshot snapshot,
-			AlarmTreeItem aaItem, AADataStructure aa) {
-		final ActionID naID = NotifierUtils.getActionID(aaItem, aa);
-		AlarmHandler actionTask = workQueue.find(naID);
-		if (actionTask != null) {
-			// Update only if action is scheduled and not yet executed
-			actionTask.updateAlarms(snapshot);
-			if (actionTask.getStatus().equals(EActionStatus.NO_DELAY)) {
-				workQueue.interrupt(actionTask);
-				if (!maintenanceMode
-						|| (maintenanceMode && actionTask.getPriority().equals(
-								EActionPriority.IMPORTANT))) {
-					actionTask.setStatus(EActionStatus.FORCED);
-					workQueue.schedule(actionTask, true);
-				}
-			} else if (actionTask.getStatus().equals(
-					EActionStatus.CANCELED_NO_DELAY)) {
-				workQueue.interrupt(actionTask);
-				if (debug) AlarmNotifierHistory.getInstance().addAction(actionTask);
-			}
-			// Pending action updated => no need to create a new one
-			return;
-		}
-		final ItemInfo info = ItemInfo.fromItem(aaItem);
-		// No automated action if PV disabled
-		if (info.isPV() && !info.isEnabled())
-			return;
-		final IAutomatedAction newAction = factory.getNotificationAction(aaItem, aa);
-		if (newAction == null)
-			return;
-		final AlarmHandler newTask = new AlarmHandler(naID, info, newAction, aa.getDelay());
-		newTask.updateAlarms(snapshot);
-		if (newTask.getStatus().equals(EActionStatus.CANCELED)
-				|| newTask.getStatus().equals(EActionStatus.CANCELED_NO_DELAY)) {
-			// Do not schedule canceled actions
-			if (debug) AlarmNotifierHistory.getInstance().addAction(newTask);
-			return;
-		}
-		if (!maintenanceMode
-				|| (maintenanceMode && newTask.getPriority().equals(
-						EActionPriority.IMPORTANT))) {
-			if (newTask.getStatus().equals(EActionStatus.NO_DELAY)) {
-				newTask.setStatus(EActionStatus.FORCED);
-				workQueue.schedule(newTask, true);
-			} else {
-				workQueue.schedule(newTask, false);
-			}
-		}
-	}
+        // When only notifying on escalation, and the current
+        // severity is OK, forget that this happened.
+        // Otherwise remember so that we can notify with NO_DELAY
+        // as the PV re-enters an alarm
+        if (PVAlarmHandler.notify_escalating_alarms_only == false  ||
+            snapshot.getCurrentSeverity() != SeverityLevel.OK)
+            history.addSnapshot(snapshot);
+    }
 
-	/**
-	 * Cancel all current running automated actions when a new configuration is
-	 * set.
-	 */
-	public void handleNewAlarmConfiguration() {
-		workQueue.interruptAll();
-		Activator.getLogger().config("New alarm configuration loaded, pending actions interrupted");
-	}
+    private void handleAutomatedAction(PVSnapshot snapshot,
+            AlarmTreeItem aaItem, AADataStructure aa) {
+        final ActionID naID = NotifierUtils.getActionID(aaItem, aa);
+        AlarmHandler actionTask = workQueue.find(naID);
+        if (actionTask != null) {
+            // Update only if action is scheduled and not yet executed
+            actionTask.updateAlarms(snapshot);
+            if (actionTask.getStatus().equals(EActionStatus.NO_DELAY)) {
+                workQueue.interrupt(actionTask);
+                if (!maintenanceMode
+                        || (maintenanceMode && actionTask.getPriority().equals(
+                                EActionPriority.IMPORTANT))) {
+                    actionTask.setStatus(EActionStatus.FORCED);
+                    workQueue.schedule(actionTask, true);
+                }
+            } else if (actionTask.getStatus().equals(
+                    EActionStatus.CANCELED_NO_DELAY)) {
+                workQueue.interrupt(actionTask);
+                if (debug) AlarmNotifierHistory.getInstance().addAction(actionTask);
+            }
+            // Pending action updated => no need to create a new one
+            return;
+        }
+        final ItemInfo info = ItemInfo.fromItem(aaItem);
+        // No automated action if PV disabled
+        if (info.isPV() && !info.isEnabled())
+            return;
+        final IAutomatedAction newAction = factory.getNotificationAction(aaItem, aa);
+        if (newAction == null)
+            return;
+        final AlarmHandler newTask = new AlarmHandler(naID, info, newAction, aa.getDelay());
+        newTask.updateAlarms(snapshot);
+        if (newTask.getStatus().equals(EActionStatus.CANCELED)
+                || newTask.getStatus().equals(EActionStatus.CANCELED_NO_DELAY)) {
+            // Do not schedule canceled actions
+            if (debug) AlarmNotifierHistory.getInstance().addAction(newTask);
+            return;
+        }
+        if (!maintenanceMode
+                || (maintenanceMode && newTask.getPriority().equals(
+                        EActionPriority.IMPORTANT))) {
+            if (newTask.getStatus().equals(EActionStatus.NO_DELAY)) {
+                newTask.setStatus(EActionStatus.FORCED);
+                workQueue.schedule(newTask, true);
+            } else {
+                workQueue.schedule(newTask, false);
+            }
+        }
+    }
 
-	/**
-	 * Cancel all current running automated actions when maintenance mode is set
-	 * to <code>true</code>
-	 */
-	public void handleModeUpdate(boolean maintenance_mode) {
-		this.maintenanceMode = maintenance_mode;
-		AlarmNotifierHistory.getInstance().clearAll();
-		if (maintenance_mode)
-			workQueue.interruptAll();
-		Activator.getLogger().config("Maintenance mode "
-						+ (maintenance_mode ? "activated, pending actions interrupted"
-								: "deactivated") + ", history cleaned");
-	}
+    /**
+     * Cancel all current running automated actions when a new configuration is
+     * set.
+     */
+    public void handleNewAlarmConfiguration() {
+        workQueue.interruptAll();
+        Activator.getLogger().config("New alarm configuration loaded, pending actions interrupted");
+    }
 
-	/** Dump to stdout */
-	public void dump() {
-		System.out.println("== Alarm Notifier Snapshot ==");
+    /**
+     * Cancel all current running automated actions when maintenance mode is set
+     * to <code>true</code>
+     */
+    public void handleModeUpdate(boolean maintenance_mode) {
+        this.maintenanceMode = maintenance_mode;
+        AlarmNotifierHistory.getInstance().clearAll();
+        if (maintenance_mode)
+            workQueue.interruptAll();
+        Activator.getLogger().config("Maintenance mode "
+                        + (maintenance_mode ? "activated, pending actions interrupted"
+                                : "deactivated") + ", history cleaned");
+    }
 
-		// Log memory usage in MB
-		final double free = Runtime.getRuntime().freeMemory() / (1024.0 * 1024.0);
-		final double total = Runtime.getRuntime().totalMemory() / (1024.0 * 1024.0);
-		final double max = Runtime.getRuntime().maxMemory() / (1024.0 * 1024.0);
-		final DateFormat format = new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
-		System.out.format("%s == Alarm Notifier Memory: Max %.2f MB, Free %.2f MB (%.1f %%), total %.2f MB (%.1f %%)\n",
-						format.format(new Date()), max, free, 100.0 * free / max, total, 100.0 * total / max);
+    /** Dump to stdout */
+    public void dump() {
+        System.out.println("== Alarm Notifier Snapshot ==");
 
-		workQueue.dump();
-	}
+        // Log memory usage in MB
+        final double free = Runtime.getRuntime().freeMemory() / (1024.0 * 1024.0);
+        final double total = Runtime.getRuntime().totalMemory() / (1024.0 * 1024.0);
+        final double max = Runtime.getRuntime().maxMemory() / (1024.0 * 1024.0);
+        final DateFormat format = new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
+        System.out.format("%s == Alarm Notifier Memory: Max %.2f MB, Free %.2f MB (%.1f %%), total %.2f MB (%.1f %%)\n",
+                        format.format(new Date()), max, free, 100.0 * free / max, total, 100.0 * total / max);
 
-	public WorkQueue getWorkQueue() {
-		return workQueue;
-	}
+        workQueue.dump();
+    }
 
-	public void setDebug(boolean debug) {
-		this.debug = debug;
-	}
+    public WorkQueue getWorkQueue() {
+        return workQueue;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
 
 }

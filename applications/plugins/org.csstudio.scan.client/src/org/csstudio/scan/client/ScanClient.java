@@ -44,6 +44,7 @@ import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.server.ScanState;
 import org.csstudio.scan.server.SimulationResult;
 import org.csstudio.scan.util.IOUtils;
+import org.csstudio.scan.util.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -61,8 +62,11 @@ public class ScanClient
     final private String host;
     final private int port;
 
-    /** Timeout in seconds */
-    final private long timeout = 10;
+    /** Timeout in seconds for most operations */
+    final private int default_timeout = 10;
+
+    /** Timeout in seconds for operations that tend to take longer */
+    final private int long_timeout = 60;
 
     /** Initialize */
     public ScanClient()
@@ -83,18 +87,29 @@ public class ScanClient
 
     /** Connect to "http://server:port/path"
      *  @param path Path to use in scan server REST interface
+     *  @param timeout_seconds Timeout to use for operations
      *  @return {@link HttpURLConnection}
      *  @throws Exception on error
      */
-    private HttpURLConnection connect(final String path) throws Exception
+    private HttpURLConnection connect(final String path, final int timeout_seconds) throws Exception
     {
         // URI will properly escape content of path
         final URI uri = new URI("http", null, host, port, path, null, null);
         final URL url = uri.toURL();
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Content-Type", "text/xml");
-        connection.setReadTimeout((int) SECONDS.toMillis(timeout));
+        connection.setReadTimeout((int) SECONDS.toMillis(timeout_seconds));
         return connection;
+    }
+
+    /** Connect to "http://server:port/path"
+     *  @param path Path to use in scan server REST interface
+     *  @return {@link HttpURLConnection}
+     *  @throws Exception on error
+     */
+    private HttpURLConnection connect(final String path) throws Exception
+    {
+        return connect(path, default_timeout);
     }
 
     /** POST data to connection
@@ -129,21 +144,39 @@ public class ScanClient
     private void checkResponse(final HttpURLConnection connection) throws Exception
     {
         final int code = connection.getResponseCode();
-        if (code < 200  ||  code > 299)
-            throw new Exception("HTTP Response code " + code + " (" + connection.getResponseMessage() + ")");
+        if (code >= 200  &&  code < 300)
+            return;
+
+        // Some error. Check for detail
+        if (connection.getContentType().contains("xml"))
+        {
+            final Element root_node = parseXML(connection.getErrorStream());
+            if ("error".equals(root_node.getNodeName()))
+            {
+                final String message = XMLUtil.getSubelementString(root_node, "message", "Error");
+                final String trace = XMLUtil.getSubelementString(root_node, "trace", "- no trace -");
+                // Turning the stack trace into the message of a nested exception,
+                // because that looks like
+                // "Exception in client: ...
+                //  cause by: Stack trace on server
+                throw new Exception(message, new Exception(trace));
+            }
+        }
+
+        throw new Exception("HTTP Response code " + code + " (" + connection.getResponseMessage() + ")");
     }
 
     /** Parse XML document from connection
-     *  @param connection {@link HttpURLConnection}
+     *  @param stream {@link HttpURLConnection}'s input or error stream
      *  @return Root {@link Element} for parsed XML
      *  @throws Exception on error
      */
-    private Element parseXML(final HttpURLConnection connection)
+    private Element parseXML(final InputStream stream)
             throws Exception
     {
         final DocumentBuilder docBuilder =
                 DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        final Document doc = docBuilder.parse(connection.getInputStream());
+        final Document doc = docBuilder.parse(stream);
         doc.getDocumentElement().normalize();
         final Element root_node = doc.getDocumentElement();
         return root_node;
@@ -183,7 +216,7 @@ public class ScanClient
         try
         {
             checkResponse(connection);
-            final Element root_node = parseXML(connection);
+            final Element root_node = parseXML(connection.getInputStream());
             if (! "server".equals(root_node.getNodeName()))
                 throw new Exception("Expected <server/>");
 
@@ -223,7 +256,7 @@ public class ScanClient
         try
         {
             checkResponse(connection);
-            final Element root_node = parseXML(connection);
+            final Element root_node = parseXML(connection.getInputStream());
             if (! "scans".equals(root_node.getNodeName()))
                 throw new Exception("Expected <scans/>");
 
@@ -254,7 +287,7 @@ public class ScanClient
         try
         {
             checkResponse(connection);
-            final Element root_node = parseXML(connection);
+            final Element root_node = parseXML(connection.getInputStream());
             if (! "scan".equals(root_node.getNodeName()))
                 throw new Exception("Expected <scan/>");
             return parseScanInfo(root_node);
@@ -323,7 +356,7 @@ public class ScanClient
         try
         {
             checkResponse(connection);
-            final Element root_node = parseXML(connection);
+            final Element root_node = parseXML(connection.getInputStream());
             if (! "serial".equals(root_node.getNodeName()))
                 throw new Exception("Expected <serial/>");
             return Long.parseLong(root_node.getFirstChild().getNodeValue());
@@ -345,7 +378,7 @@ public class ScanClient
         try
         {
             checkResponse(connection);
-            final Element root_node = parseXML(connection);
+            final Element root_node = parseXML(connection.getInputStream());
             if (! "devices".equals(root_node.getNodeName()))
                 throw new Exception("Expected <devices/>");
             Element node = DOMHelper.findFirstElementNode(root_node.getFirstChild(), "device");
@@ -375,16 +408,18 @@ public class ScanClient
      */
     public long submitScan(final String name, final String xml_commands) throws Exception
     {
-        final HttpURLConnection connection = connect("/scan/" + name);
+        final HttpURLConnection connection = connect("/scan/" + name, long_timeout);
+        connection.setReadTimeout(0);
         try
         {
             post(connection, xml_commands);
             checkResponse(connection);
             // Obtain returned scan ID
-            final Element root_node = parseXML(connection);
+            final Element root_node = parseXML(connection.getInputStream());
             if (! "id".equals(root_node.getNodeName()))
                 throw new Exception("Expected <id/>");
             final long id = Long.parseLong(root_node.getFirstChild().getNodeValue());
+
             return id;
         }
         finally
@@ -400,13 +435,13 @@ public class ScanClient
      */
     public SimulationResult simulateScan(final String xml_commands) throws Exception
     {
-        final HttpURLConnection connection = connect("/simulate");
+        final HttpURLConnection connection = connect("/simulate", long_timeout);
         try
         {
             post(connection, xml_commands);
             checkResponse(connection);
             // Decode simulation result
-            final Element root_node = parseXML(connection);
+            final Element root_node = parseXML(connection.getInputStream());
             if (! "simulation".equals(root_node.getNodeName()))
                 throw new Exception("Expected <simulation/>");
             return new SimulationResult(

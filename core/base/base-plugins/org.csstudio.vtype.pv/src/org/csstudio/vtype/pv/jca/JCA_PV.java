@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,13 +49,15 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
     /** JCA Channel */
     final private Channel channel;
 
-    private volatile Object metadata;
+    private volatile Object metadata = null;
 
     final private GetListener meta_get_listener = new GetListener()
     {
         @Override
         public void getCompleted(final GetEvent ev)
         {
+            final Object old_metadata = metadata;
+            final Class<?> old_type = old_metadata == null ? Object.class : old_metadata.getClass();
             // Channels from CAS, not based on records, may fail
             // to provide meta data
             if (ev.getStatus().isSuccessful())
@@ -67,11 +70,20 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
                 metadata = null;
                 logger.log(Level.FINE, "{0} has no meta data: {1}", new Object[] { getName(), ev.getStatus() });
             }
+            // If channel changed its type, cancel potentially existing subscription
+            final Class<?> new_type = metadata == null ? Object.class : metadata.getClass();
+            if (old_type != new_type)
+                unsubscribe();
+            // Subscribe, either for the first time or because type changed requires new one.
+            // NOP if channel is already subscribed.
             subscribe();
         }
     };
 
-    private Monitor value_monitor;
+    /** Value update subscription.
+     *  Non-zero value also used to indicate access right change subscription.
+     */
+    private AtomicReference<Monitor> value_monitor = new AtomicReference<Monitor>();
 
     /** Initialize
      *  @param name Full name, may include "ca://"
@@ -106,8 +118,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
             logger.fine(getName() + " disconnected");
             notifyListenersOfDisconnect();
             // On re-connect, fetch meta data
-            // and start subscription (possibly for changed type after IOC reboot)
-            unsubscribe();
+            // and maybe re-subscribe (possibly for changed type after IOC reboot)
         }
     }
 
@@ -124,28 +135,27 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
         }
     }
 
+    /** Subscribe to updates.
+     *  NOP if already subscribed.
+     */
     private void subscribe()
     {
-        synchronized (this)
-        {   // Avoid double-subscription
-            if (this.value_monitor != null)
-                return;
-        }
+        // Avoid double-subscription
+        if (value_monitor.get() != null)
+            return;
 
         try
         {
             logger.log(Level.FINE, getName() + " subscribes");
             final int mask = Preferences.monitorMask().getMask();
-            final Monitor value_monitor = channel.addMonitor(DBRHelper.getTimeType(plain_dbr, channel.getFieldType()), channel.getElementCount(), mask, this);
+            final Monitor new_monitor = channel.addMonitor(DBRHelper.getTimeType(plain_dbr, channel.getFieldType()), channel.getElementCount(), mask, this);
 
-            synchronized (this)
-            {   // Not holding the lock; could have been another subscription while we established this one...
-                if (this.value_monitor != null)
-                {
-                    logger.log(Level.FINE, getName() + " already had a subscription");
-                    this.value_monitor.clear();
-                }
-                this.value_monitor = value_monitor;
+            final Monitor old_monitor = value_monitor.getAndSet(new_monitor);
+            // Could there have been another subscription while we established this one?
+            if (old_monitor != null)
+            {
+                logger.log(Level.FINE, getName() + " already had a subscription");
+                old_monitor.clear();
             }
             // TODO Monitor.PROPERTY subscription
 
@@ -158,21 +168,19 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
         }
     }
 
+    /** Cancel subscriptions.
+     *  NOP if not subscribed.
+     */
     private void unsubscribe()
     {
-        final Monitor value_monitor;
-        synchronized (this)
-        {
-            value_monitor = this.value_monitor;
-            this.value_monitor = null;
-        }
-        if (value_monitor == null)
+        final Monitor old_monitor = value_monitor.getAndSet(null);
+        if (old_monitor == null)
             return;
         logger.log(Level.FINE, getName() + " unsubscribes");
         try
         {
             channel.removeAccessRightsListener(this);
-            value_monitor.clear();
+            old_monitor.clear();
         }
         catch (Exception ex)
         {	// This is 'normal', log only on FINE:

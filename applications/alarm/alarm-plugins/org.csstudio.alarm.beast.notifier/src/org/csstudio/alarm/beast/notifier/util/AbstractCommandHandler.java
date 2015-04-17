@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2014 ITER Organization.
+* Copyright (c) 2010-2015 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -13,11 +13,12 @@ import java.util.regex.Pattern;
 import org.csstudio.alarm.beast.notifier.model.IActionHandler;
 
 /** Common behavior for mail commands handlers */
+@SuppressWarnings("nls")
 public abstract class AbstractCommandHandler implements IActionHandler {
 
 	protected final static String DELIMITERS = ",;";
 	final protected static Pattern NLSPattern = Pattern.compile("\\{\\ *[01]\\ *\\}");
-	
+
 	protected enum ParamType {
 		To("to", 0), Cc("cc", 1), Cci("cci", 2), Bcc("bcc", 3), Subject("subject", 4), Body("body", 5);
 
@@ -48,21 +49,22 @@ public abstract class AbstractCommandHandler implements IActionHandler {
 			return null;
 		}
 	}
-	
+
 	private final String scheme;
 	private final String details;
-	
+
 	public AbstractCommandHandler(String details, String scheme) {
 		this.details = details;
 		this.scheme = scheme;
 	}
-	
-	public void parse() throws Exception {
+
+	@Override
+    public void parse() throws Exception {
 		parseDataType(details, null);
 	}
 
 	protected abstract void handleParameter(String data, ParamType type) throws Exception;
-	
+
 	// Recursive method to retrieve pattern parameters
 	private void parseDataType(String data, ParamType type) throws Exception {
 		if (data == null || "".equals(data))
@@ -84,7 +86,7 @@ public abstract class AbstractCommandHandler implements IActionHandler {
 		// no pattern found => final data
 		if (!found) handleParameter(data, type);
 	}
-	
+
 	protected void validateNSF(String data) throws Exception {
 		String dataCopy = new String(data);
 		int beginIndex = 0, endIndex = 0;

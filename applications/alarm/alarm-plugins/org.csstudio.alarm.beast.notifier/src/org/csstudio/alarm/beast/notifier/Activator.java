@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2014 ITER Organization.
+* Copyright (c) 2010-2015 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@ package org.csstudio.alarm.beast.notifier;
 
 import java.util.logging.Logger;
 
+@SuppressWarnings("nls")
 public class Activator {
 
 	/** Plugin ID defined in MANIFEST.MF */

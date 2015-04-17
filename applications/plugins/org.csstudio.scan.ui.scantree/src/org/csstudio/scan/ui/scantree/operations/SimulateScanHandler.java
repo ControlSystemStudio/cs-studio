@@ -15,7 +15,6 @@ import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.server.SimulationResult;
 import org.csstudio.scan.ui.SimulationDisplay;
-import org.csstudio.scan.ui.scantree.Activator;
 import org.csstudio.scan.ui.scantree.Messages;
 import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.csstudio.scan.ui.scantree.gui.ScanEditorContributor;
@@ -75,10 +74,14 @@ public class SimulateScanHandler extends AbstractHandler
                 }
                 catch (Exception ex)
                 {
-                    return new Status(IStatus.ERROR,
-                            Activator.PLUGIN_ID,
+                    display.asyncExec(() ->
+                    {
+                        ExceptionDetailsErrorDialog.openError(shell,
+                            Messages.SimulateScan,
                             NLS.bind(Messages.ScanSubmitErrorFmt, ex.getMessage()),
                             ex);
+                    } );
+                    return Status.OK_STATUS;
                 }
 
                 // Open in text editor, on UI thread

@@ -297,11 +297,7 @@ public class ConnectionModel extends AbstractWidgetModel {
 		if(root == null) return null;
 
 		if(paths == null || paths.isEmpty()) {
-			for(AbstractWidgetModel w : root.getChildren()) 
-				if(w.getWUID().equals(wuid)) 
-					return w;
-
-			return null;
+			return getTerminal(root,wuid);
 		}
 
 		AbstractContainerModel widget = root;
@@ -315,6 +311,19 @@ public class ConnectionModel extends AbstractWidgetModel {
 		}
 
 		return null;
+	}
+	
+	private AbstractWidgetModel getTerminal(AbstractContainerModel model, String wuid) {
+	    for(AbstractWidgetModel w : model.getChildren()) { 
+            if(w.getWUID().equals(wuid)) { 
+                return w;
+            }
+            if (w instanceof AbstractContainerModel) {
+                AbstractWidgetModel m = getTerminal((AbstractContainerModel)w, wuid);
+                if (m != null) return m;
+            }
+	    }
+	    return null;
 	}
 
 	@Override
@@ -350,6 +359,41 @@ public class ConnectionModel extends AbstractWidgetModel {
 			target.addConnection(this);
 			isConnected = true;
 		}
+	}
+	
+	/**
+	 * Resync this connection with its source and target.
+	 */
+	public void resync() {
+	    if (source == null || target == null) {
+            return;
+        }
+	    boolean connected = isConnected;
+	    disconnect();
+	    String wuid = target.getWUID();
+        String path = getPropertyValue(PROP_TGT_PATH).toString();
+        AbstractWidgetModel w = null; 
+        if(path == null || path.equals("")){
+            w = getTerminal(displayModel, null, wuid);
+        }else {
+            List<String> paths = Arrays.asList(path.split(PATH_DELIMITER));
+            w = getTerminal(displayModel, paths, wuid);
+        }
+        setTarget(w);
+        
+        wuid = source.getWUID();
+        path = getPropertyValue(PROP_SRC_PATH).toString();
+        w = null;
+        if(path == null || path.equals("")){
+            w = getTerminal(displayModel, null, wuid);
+        }else {
+            List<String> paths = Arrays.asList(path.split(PATH_DELIMITER));
+            w = getTerminal(displayModel, paths, wuid);
+        }
+        setSource(w);
+        if (connected) {
+            reconnect();
+        }
 	}
 
 	/**
@@ -421,6 +465,14 @@ public class ConnectionModel extends AbstractWidgetModel {
 	public int getLineWidth() {
 		return (Integer) getPropertyValue(PROP_LINE_WIDTH);
 	}
+	
+	public String[] getTargetPath() {
+	    return ((String)getPropertyValue(PROP_TGT_PATH)).split(PATH_DELIMITER);
+	}
+	
+	public String[] getSourcePath() {
+        return ((String)getPropertyValue(PROP_SRC_PATH)).split(PATH_DELIMITER);
+    }
 
 	/**
 	 * @return SWT line style

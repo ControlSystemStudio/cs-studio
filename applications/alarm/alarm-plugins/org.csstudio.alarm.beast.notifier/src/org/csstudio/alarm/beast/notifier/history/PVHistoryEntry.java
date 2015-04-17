@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010-2014 ITER Organization.
+ * Copyright (c) 2010-2015 ITER Organization.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,9 @@ import org.csstudio.alarm.beast.notifier.PVSnapshot;
 
 /**
  * History entry of an alarm update identified by its {@link PVSnapshot}.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
- * 
+ *
  */
 public class PVHistoryEntry {
 
@@ -36,10 +36,11 @@ public class PVHistoryEntry {
 	}
 
 	public void update(PVSnapshot snapshot) {
-		if (this.severity != null
-				&& this.severity.name().endsWith("ACK")
-				&& this.severity.name().startsWith(snapshot.getSeverity().name())
-				&& !snapshot.getSeverity().name().endsWith("ACK"))
+	    // Does this un-acknowledge a previous acknowledgement?
+		if (severity != null                  &&
+		    snapshot.getSeverity().isActive() &&
+		    severity.isActive() == false      &&
+		    severity.name().startsWith(snapshot.getSeverity().name()) )
 			this.acknowledged = false;
 		if (!acknowledged && snapshot.isAcknowledge())
 			this.acknowledged = true;
@@ -75,11 +76,11 @@ public class PVHistoryEntry {
 		this.recovredWithinDelay = recovredWithinDelay;
 	}
 
-	@Override
+	@SuppressWarnings("nls")
+    @Override
 	public String toString() {
 		return "PVHistoryEntry [currentSeverity=" + currentSeverity
 				+ ", severity=" + severity + ", acknowledged=" + acknowledged
 				+ "]";
 	}
-
 }

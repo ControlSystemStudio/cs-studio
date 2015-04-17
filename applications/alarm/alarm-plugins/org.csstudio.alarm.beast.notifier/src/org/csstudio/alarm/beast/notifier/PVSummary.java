@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2014 ITER Organization.
+* Copyright (c) 2010-2015 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import org.eclipse.osgi.util.NLS;
  * @author Fred Arnaud (Sopra Group)
  *
  */
+@SuppressWarnings("nls")
 public class PVSummary {
 
 	private String name, description;
@@ -105,31 +106,31 @@ public class PVSummary {
 		builder.append("PV: ");
 		builder.append(name);
 		builder.append(" - ");
-		
+
 		builder.append("Description: ");
 		builder.append(getSummary());
 		builder.append(" - ");
-		
+
 		builder.append("Alarm Time: ");
 		builder.append(timestamp);
 		builder.append(" - ");
-		
+
 		builder.append("Current Severity: ");
 		builder.append(current_severity);
 		builder.append(" - ");
-		
+
 		builder.append("Current Status: ");
 		builder.append(current_message);
 		builder.append(" - ");
-		
+
 		builder.append("Alarm Severity: ");
 		builder.append(severity);
 		builder.append(" - ");
-		
+
 		builder.append("Alarm Status: ");
 		builder.append(message);
 		builder.append(" - ");
-		
+
 		builder.append("Alarm Value: ");
 		builder.append(value);
 		return builder.toString();

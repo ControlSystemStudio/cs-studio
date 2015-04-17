@@ -9,5 +9,5 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.csstudio.java;bundle-version="3.0.0",
  org.csstudio.auth;bundle-version="1.0.0"
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.platform.internal.jassauthentication.preference

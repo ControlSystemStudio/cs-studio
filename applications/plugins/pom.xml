@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.csstudio</groupId>
     <artifactId>applications</artifactId>
-    <version>BUILD-VERSION</version>
+    <version>4.1.0-SNAPSHOT</version>
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>applications-plugins</artifactId>
@@ -49,7 +49,6 @@
     <module>org.csstudio.archive.writer.rdb</module>
     <module>org.csstudio.archive.writer.test</module>
     
-    <module>org.csstudio.autocomplete.logbook</module>
     
     
     
@@ -91,6 +90,7 @@
     <module>org.csstudio.ndarray</module>
     <module>org.csstudio.numjy</module>
     <module>org.csstudio.opibuilder</module>
+    <module>org.csstudio.opibuilder.validation</module>
     <module>org.csstudio.opibuilder.adl2boy</module>
     <module>org.csstudio.opibuilder.alarm</module>
     <module>org.csstudio.opibuilder.converter</module>
@@ -145,6 +145,7 @@
     <module>org.csstudio.snl.intro</module>
     <module>org.csstudio.swt.chart</module>
     <module>org.csstudio.swt.rtplot</module>
+    <module>org.csstudio.rap.rtplot</module>
     <!-- <module>org.csstudio.swt.rtplot.test</module> -->
     <module>org.csstudio.swt.widgets</module>
     <module>org.csstudio.swt.widgets.rcp</module>
@@ -162,7 +163,6 @@
     <module>org.csstudio.trends.databrowser2.opiwidget</module>
     <module>org.csstudio.trends.databrowser2.rap</module>
     <module>org.csstudio.trends.databrowser2.rcp</module>
-    <module>org.csstudio.ui.menu.app</module>
     <module>org.csstudio.ui.menu.pvscript</module>
     <module>org.csstudio.ui.menu.web</module>
     <module>org.csstudio.unitconversion.ui</module>
@@ -192,8 +192,6 @@
     <module>org.csstudio.utility.namespace.utility</module>
     
     
-    <module>org.csstudio.utility.product</module>
-    <module>org.csstudio.utility.product.default</module>
     <!-- <module>org.csstudio.utility.pv.ui</module> -->
     <!--<module>org.csstudio.utility.quickstart</module>--><!-- depends on org.csstudio.sds.ui -->
     <module>org.csstudio.utility.screenshot</module>

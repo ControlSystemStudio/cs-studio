@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2014 ITER Organization.
+* Copyright (c) 2010-2015 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -21,37 +21,42 @@ import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
  * @author Fred Arnaud (Sopra Group)
  *
  */
+@SuppressWarnings("nls")
 public class AlarmRDBHandler implements IAlarmRDBHandler {
 
     /** Server for which we communicate */
     private AlarmNotifier notifier;
-    
+
     /** Alarm model */
     final private AlarmClientModel model;
-    
-    
+
+
 	public AlarmRDBHandler(final String root) throws Exception {
 		model = AlarmClientModel.getInstance(root);
 		model.addListener(this);
 	}
 
 	/** Initialize wrapper with AlarmNotifier */
-	public void init(final AlarmNotifier notifier) {
+	@Override
+    public void init(final AlarmNotifier notifier) {
 		this.notifier = notifier;
 	}
 
 	/** Find item by path */
-	public AlarmTreeItem findItem(String path) {
+	@Override
+    public AlarmTreeItem findItem(String path) {
 		return model.getConfigTree().getItemByPath(path);
 	}
 
 	/** @return Current alarm tree */
-	public TreeItem getAlarmTree() {
+	@Override
+    public TreeItem getAlarmTree() {
 		return model.getConfigTree();
 	}
-	
+
 	/** Must be called to release resources */
-	public void close() {
+	@Override
+    public void close() {
 		model.release();
 	}
 
@@ -77,5 +82,5 @@ public class AlarmRDBHandler implements IAlarmRDBHandler {
 			return;
 		notifier.handleAlarmUpdate(pv);
 	}
-	
+
 }

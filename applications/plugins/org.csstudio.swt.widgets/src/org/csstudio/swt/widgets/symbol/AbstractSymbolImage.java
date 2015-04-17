@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010-2014 ITER Organization.
+ * Copyright (c) 2010-2015 ITER Organization.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,6 +54,7 @@ public abstract class AbstractSymbolImage implements SymbolImage {
 	protected boolean animationDisabled = false;
 	protected boolean alignedToNearestSecond = false;
 	protected boolean visible = true;
+	protected boolean disposed = false;
 
 	public AbstractSymbolImage(SymbolImageProperties sip, boolean runMode) {
 		this.runMode = runMode;
@@ -93,6 +94,7 @@ public abstract class AbstractSymbolImage implements SymbolImage {
 	}
 
 	public void dispose() {
+		disposed = true;
 		if (image != null && !image.isDisposed()) {
 			image.dispose();
 			image = null;
@@ -104,7 +106,7 @@ public abstract class AbstractSymbolImage implements SymbolImage {
 	}
 
 	public boolean isDisposed() {
-		return image == null || image.isDisposed();
+		return disposed;
 	}
 
 	public boolean isEditMode() {
@@ -138,6 +140,7 @@ public abstract class AbstractSymbolImage implements SymbolImage {
 				|| (colorToChange != null && colorToChange.equals(newColor)))
 			return;
 		this.colorToChange = newColor;
+		resetData();
 	}
 
 	public void setBackgroundColor(Color newColor) {
@@ -187,7 +190,7 @@ public abstract class AbstractSymbolImage implements SymbolImage {
 		this.scale = newScale;
 	}
 
-	public synchronized void setAutoSize(final boolean autoSize) {
+	public void setAutoSize(final boolean autoSize) {
 		if (this.autoSize == autoSize)
 			return;
 		this.autoSize = autoSize;
@@ -195,7 +198,7 @@ public abstract class AbstractSymbolImage implements SymbolImage {
 			resizeImage();
 	}
 
-	public synchronized void setStretch(final boolean newval) {
+	public void setStretch(final boolean newval) {
 		if (stretch == newval)
 			return;
 		stretch = newval;
@@ -206,7 +209,7 @@ public abstract class AbstractSymbolImage implements SymbolImage {
 	// Image crop calculation
 	// ************************************************************
 
-	public synchronized void setLeftCrop(final int newval) {
+	public void setLeftCrop(final int newval) {
 		if (leftCrop == newval || newval < 0) {
 			return;
 		}
@@ -214,7 +217,7 @@ public abstract class AbstractSymbolImage implements SymbolImage {
 		resizeImage();
 	}
 
-	public synchronized void setRightCrop(final int newval) {
+	public void setRightCrop(final int newval) {
 		if (rightCrop == newval || newval < 0) {
 			return;
 		}
@@ -222,7 +225,7 @@ public abstract class AbstractSymbolImage implements SymbolImage {
 		resizeImage();
 	}
 
-	public synchronized void setBottomCrop(final int newval) {
+	public void setBottomCrop(final int newval) {
 		if (bottomCrop == newval || newval < 0) {
 			return;
 		}
@@ -230,7 +233,7 @@ public abstract class AbstractSymbolImage implements SymbolImage {
 		resizeImage();
 	}
 
-	public synchronized void setTopCrop(final int newval) {
+	public void setTopCrop(final int newval) {
 		if (topCrop == newval || newval < 0) {
 			return;
 		}

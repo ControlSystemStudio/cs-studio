@@ -36,13 +36,14 @@ public class Opi_activeMessageButtonClass extends OpiWidget {
 		setVersion(version);
 
 		if (r.getControlPv() != null) {
-			createOnOffColorRule(r, convertPVName(r.getControlPv()), "background_color", r.getOnColor(),
+			new OpiString(widgetContext, "pv_name", convertPVName(r.getControlPv()));
+			createOnOffColorRule(r, "$(pv_name)", "background_color", r.getOnColor(),
 					r.getOffColor(), "OnOffBackgroundRule");
 			Element pvNameNode;
 			Element valueNode;
 			if(r.getPressValue()!=null){
 				pvNameNode = widgetContext.getDocument().createElement("pv_name");
-				pvNameNode.setTextContent(convertPVName(r.getControlPv()));
+				pvNameNode.setTextContent("$(pv_name)");
 				valueNode = widgetContext.getDocument().createElement("value");
 				valueNode.setTextContent(r.getPressValue());
 				new OpiAction(widgetContext, "WRITE_PV", Arrays.asList(pvNameNode, valueNode),
@@ -50,7 +51,7 @@ public class Opi_activeMessageButtonClass extends OpiWidget {
 			}
 			if (r.getReleaseValue() != null) {
 				pvNameNode = widgetContext.getDocument().createElement("pv_name");
-				pvNameNode.setTextContent(convertPVName(r.getControlPv()));
+				pvNameNode.setTextContent("$(pv_name)");
 				valueNode = widgetContext.getDocument().createElement("value");
 				valueNode.setTextContent(r.getReleaseValue());
 				new OpiAction(widgetContext, "WRITE_PV", Arrays.asList(pvNameNode, valueNode),

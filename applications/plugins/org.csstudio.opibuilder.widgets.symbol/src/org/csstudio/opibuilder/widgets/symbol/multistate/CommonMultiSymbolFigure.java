@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010-2014 ITER Organization.
+ * Copyright (c) 2010-2015 ITER Organization.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -107,7 +107,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 	public SymbolImage getSymbolImage() {
 		if (ExecutionMode.RUN_MODE.equals(executionMode)
 				&& currentStateIndex >= 0) {
-			currentSymbolImage = images.get(currentStateIndex);
+			return images.get(currentStateIndex);
 		}
 		if (currentSymbolImage == null) { // create an empty image
 			currentSymbolImage = SymbolImageFactory
@@ -133,7 +133,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 	/**
 	 * Dispose all the resources used by this figure
 	 */
-	public synchronized void disposeAll() {
+	public void disposeAll() {
 		disposeCurrent();
 		for (SymbolImage img : getAllImages()) {
 			if (img != null && !img.isDisposed()) {
@@ -147,7 +147,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 	/**
 	 * Dispose the current resource used by this figure
 	 */
-	public synchronized void disposeCurrent() {
+	public void disposeCurrent() {
 		if (currentSymbolImage != null && !currentSymbolImage.isDisposed()) {
 			currentSymbolImage.dispose();
 			currentSymbolImage = null;
@@ -262,7 +262,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 		this.imageListener = listener;
 	}
 
-	public synchronized void fireImageResized() {
+	public void fireImageResized() {
 		imageListener.imageResized(this);
 	}
 
@@ -272,7 +272,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 	 * @param model
 	 * @param imagePath
 	 */
-	public synchronized void setSymbolImagePath(CommonMultiSymbolModel model, IPath imagePath) {
+	public void setSymbolImagePath(CommonMultiSymbolModel model, IPath imagePath) {
 		if (imagePath == null || imagePath.isEmpty())
 			return;
 		if (!SymbolUtils.isExtensionAllowed(imagePath)) {
@@ -328,7 +328,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 		return path;
 	}
 
-	private synchronized void loadImageFromFile(final IPath imagePath,
+	private void loadImageFromFile(final IPath imagePath,
 			final Integer stateIndex) {
 		if (imagePath != null && !imagePath.isEmpty()) {
 			switch (executionMode) {
@@ -341,11 +341,13 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 					if (images != null)
 						images.put(stateIndex, img);
 				} else {
+					disposeCurrent();
 					currentSymbolImage = SymbolImageFactory.asynCreateSymbolImage(
 							imagePath, true, symbolProperties, this);
 				}
 				break;
 			case EDIT_MODE:
+				disposeCurrent();
 				currentSymbolImage = SymbolImageFactory.asynCreateSymbolImage(
 						imagePath, false, symbolProperties, this);
 				break;
@@ -401,7 +403,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 	}
 
 	@Override
-	public synchronized void paintFigure(final Graphics gfx) {
+	public void paintFigure(final Graphics gfx) {
 		if (isLoadingImage())
 			return;
 		Rectangle bounds = getBounds().getCopy();
@@ -523,7 +525,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 	// Image size calculation delegation
 	// ************************************************************
 
-	public synchronized void resizeImage() {
+	public void resizeImage() {
 		Rectangle bounds = getBounds().getCopy();
 		if (!hasDisconnectedBorder())
 			ImageUtils.crop(bounds, this.getInsets());
@@ -532,7 +534,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 		repaint();
 	}
 
-	public synchronized void setAutoSize(final boolean autoSize) {
+	public void setAutoSize(final boolean autoSize) {
 		if (symbolProperties != null) {
 			symbolProperties.setAutoSize(autoSize);
 		}
@@ -541,7 +543,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 		repaint();
 	}
 
-	public synchronized Dimension getAutoSizedDimension() {
+	public Dimension getAutoSizedDimension() {
 		// Widget dimension = Symbol Image + insets
 		Dimension dim = getSymbolImage().getAutoSizedDimension();
 		if (dim == null) return null;
@@ -566,7 +568,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 	// Image crop calculation delegation
 	// ************************************************************
 
-	public synchronized void setLeftCrop(final int newval) {
+	public void setLeftCrop(final int newval) {
 		if (symbolProperties != null) {
 			symbolProperties.setLeftCrop(newval);
 		}
@@ -575,7 +577,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 		repaint();
 	}
 
-	public synchronized void setRightCrop(final int newval) {
+	public void setRightCrop(final int newval) {
 		if (symbolProperties != null) {
 			symbolProperties.setRightCrop(newval);
 		}
@@ -584,7 +586,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 		repaint();
 	}
 
-	public synchronized void setBottomCrop(final int newval) {
+	public void setBottomCrop(final int newval) {
 		if (symbolProperties != null) {
 			symbolProperties.setBottomCrop(newval);
 		}
@@ -593,7 +595,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 		repaint();
 	}
 
-	public synchronized void setTopCrop(final int newval) {
+	public void setTopCrop(final int newval) {
 		if (symbolProperties != null) {
 			symbolProperties.setTopCrop(newval);
 		}
@@ -606,7 +608,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 	// Image flip & degree & stretch calculation delegation
 	// ************************************************************
 
-	public synchronized void setStretch(final boolean newval) {
+	public void setStretch(final boolean newval) {
 		if (symbolProperties != null) {
 			symbolProperties.setStretch(newval);
 		}
@@ -675,11 +677,11 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 	/**
 	 * @return the animationDisabled
 	 */
-	public synchronized boolean isAnimationDisabled() {
+	public boolean isAnimationDisabled() {
 		return animationDisabled;
 	}
 
-	public synchronized void setAnimationDisabled(final boolean stop) {
+	public void setAnimationDisabled(final boolean stop) {
 		if (animationDisabled == stop)
 			return;
 		animationDisabled = stop;
@@ -691,7 +693,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 		repaint();
 	}
 
-	public synchronized void setAlignedToNearestSecond(final boolean aligned) {
+	public void setAlignedToNearestSecond(final boolean aligned) {
 		if (symbolProperties != null) {
 			symbolProperties.setAlignedToNearestSecond(aligned);
 		}

@@ -10,7 +10,11 @@
   <modules>
   	<module>org.csstudio.auth</module>
   	<module>org.csstudio.auth.ui</module>
+  	<module>org.csstudio.csdata</module>
+<!--   	<module>org.csstudio.csdata.test</module> -->
   	<module>org.csstudio.vtype.pv</module>
+<!--  	<module>org.csstudio.vtype.pv.test</module>  BLOCKS EXECUTION -->
+  	<module>org.csstudio.workspace</module>
   </modules>
   <groupId>org.csstudio</groupId>
   <version>0.0.1-SNAPSHOT</version>

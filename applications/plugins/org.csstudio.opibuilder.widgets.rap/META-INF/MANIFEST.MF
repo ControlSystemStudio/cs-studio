@@ -11,6 +11,4 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: org.eclipse.draw2d,
  org.eclipse.draw2d.graph,
  org.eclipse.gef,
- org.eclipse.gef.editparts,
- org.eclipse.ui.views,
- org.eclipse.ui.views.properties
+ org.eclipse.gef.editparts

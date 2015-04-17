@@ -20,6 +20,7 @@ import org.csstudio.alarm.beast.ui.SelectionHelper;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
 import org.csstudio.alarm.beast.ui.actions.AlarmPerspectiveAction;
 import org.csstudio.alarm.beast.ui.actions.ConfigureItemAction;
+import org.csstudio.alarm.beast.ui.actions.DisableComponentAction;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
 import org.csstudio.apputil.text.RegExHelper;
@@ -482,6 +483,8 @@ public class GUI implements AlarmClientModelListener
                     final AlarmTreeItem item = items.get(0);
                     manager.add(new ConfigureItemAction(shell, model, item));
                 }
+                if (items.size() >= 1 && model.isWriteAllowed())
+                    manager.add(new DisableComponentAction(shell, model, items));
                 manager.add(new Separator());
                 if(isRcp) {
                     manager.add(new AlarmPerspectiveAction());

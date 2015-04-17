@@ -8,7 +8,7 @@
 package org.csstudio.diag.epics.pvtree;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
@@ -27,10 +27,11 @@ public class FieldParserUnitTest
 	public void testFieldParser() throws Exception
 	{
 		final Map<String, List<String>> rec_fields =
-			FieldParser.parse("ai(INP,FLNK) ; ao (DOL, SIML , FLNK, SCAN )  ; calc(X, INPA-L)");
-		
-		assertThat(rec_fields.get("quirk"), is(nullValue()));
-		
+			FieldParser.parse("ai(INP,FLNK) ; ao (DOL, SIML , FLNK, SCAN )  ; calc(X, INPA-L);bigASub(INP001-128); Odd(ODD0-5);"
+			        + " scalcout(INPA-L,INAA,INBB,INCC,INDD,INEE,INFF,INGG,INHH,INII,INJJ,INKK,INLL)");
+
+		assertThat(rec_fields.get("quirk"), nullValue());
+
 		List<String> fields = rec_fields.get("ao");
 		assertThat(fields.size(), equalTo(4));
 		assertThat(fields.get(0), equalTo("DOL"));
@@ -43,5 +44,23 @@ public class FieldParserUnitTest
         assertThat(fields.get(0), equalTo("X"));
         assertThat(fields.get(1), equalTo("INPA"));
         assertThat(fields.get(12), equalTo("INPL"));
+
+        fields = rec_fields.get("bigASub");
+        assertThat(fields.size(), equalTo(128));
+        assertThat(fields.get(0), equalTo("INP001"));
+        assertThat(fields.get(1), equalTo("INP002"));
+        assertThat(fields.get(127), equalTo("INP128"));
+
+        fields = rec_fields.get("Odd");
+        assertThat(fields.size(), equalTo(6));
+        assertThat(fields.get(0), equalTo("ODD0"));
+        assertThat(fields.get(5), equalTo("ODD5"));
+
+        fields = rec_fields.get("scalcout");
+        assertThat(fields.get(0), equalTo("INPA"));
+        assertThat(fields.get(1), equalTo("INPB"));
+        assertThat(fields, hasItem("INAA"));
+        assertThat(fields, hasItem("INGG"));
+        assertThat(fields, hasItem("INLL"));
 	}
 }

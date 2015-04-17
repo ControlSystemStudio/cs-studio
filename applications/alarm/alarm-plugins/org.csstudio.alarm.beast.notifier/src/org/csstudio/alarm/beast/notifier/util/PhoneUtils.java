@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2014 ITER Organization.
+* Copyright (c) 2010-2015 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -12,10 +12,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@SuppressWarnings("nls")
 public class PhoneUtils {
-	
+
 	final public static Pattern PhonePattern = Pattern.compile("(\\+?[0-9\\(\\)\\/\\-\\.\\ ]+)");
-	
+
 	public static List<String> parse(String data) throws Exception {
 		List<String> phoneNumbers = new ArrayList<String>();
 		Matcher m = PhonePattern.matcher(data);

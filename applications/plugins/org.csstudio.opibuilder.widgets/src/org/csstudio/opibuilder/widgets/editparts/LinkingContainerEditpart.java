@@ -50,7 +50,7 @@ import org.eclipse.ui.IActionFilter;
  */
 public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 	
-	private static int linkingContainerID = 0;
+    private static int linkingContainerID = 0;
 
 	private List<ConnectionModel> connectionList;
 	private Map<ConnectionModel, PointList> originalPoints;
@@ -63,18 +63,13 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 			
 			@Override
 			public void zoomChanged(double arg0) {
-				if (getViewer() == null) {
+				if (getViewer() == null || getViewer().getControl() == null) {
 					//depending on the OPI and the current zoom value, the event
 					//can happen before the parent is set.
 					return;
 				}
-				getViewer().getControl().getDisplay().timerExec(100,new Runnable() {
+				getViewer().getControl().getDisplay().asyncExec(() -> updateConnectionList());
 					
-					@Override
-					public void run() {
-						updateConnectionList();
-					}
-				});
 			}
 		});
 		return f;
@@ -98,14 +93,10 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 	public LinkingContainerModel getWidgetModel() {
 		return (LinkingContainerModel)getModel();
 	}
-	
-
 
 	@Override
 	protected void registerPropertyChangeHandlers() {
-		
-		configureDisplayModel();
-		
+				
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
@@ -134,29 +125,24 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 
 		setPropertyChangeHandler(LinkingContainerModel.PROP_GROUP_NAME, handler);
 
-
-		handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				((LinkingContainerFigure)figure).setZoomToFitAll((Boolean)newValue);
-				((LinkingContainerFigure)figure).updateZoom();
-				return true;
-			}
-		};
-		setPropertyChangeHandler(LinkingContainerModel.PROP_ZOOMTOFITALL, handler);
-
 		handler = new IWidgetPropertyChangeHandler() {
-			
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				if((Boolean)newValue)
+				if((int)newValue == LinkingContainerModel.ResizeBehaviour.SIZE_OPI_TO_CONTAINER.ordinal()) {
+					((LinkingContainerFigure)figure).setZoomToFitAll(true);
+				} else {
+					((LinkingContainerFigure)figure).setZoomToFitAll(false);
+				}
+				((LinkingContainerFigure)figure).updateZoom();
+
+				if((int)newValue == LinkingContainerModel.ResizeBehaviour.SIZE_CONTAINER_TO_OPI.ordinal()) {
 					performAutosize();
+				}
 				return false;
 			}
 		};
-		setPropertyChangeHandler(LinkingContainerModel.PROP_AUTO_SIZE, handler);
-		
-
-
+		setPropertyChangeHandler(LinkingContainerModel.PROP_RESIZE_BEHAVIOUR, handler);
+		loadWidgets(getWidgetModel().getOPIFilePath(), true);
+        configureDisplayModel();
 	}
 
 
@@ -164,23 +150,24 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 	 * @param path the path of the OPI file
 	 */
 	private synchronized void loadWidgets(final IPath path, final boolean checkSelf) {
-		getWidgetModel().removeAllChildren();
+	    getWidgetModel().removeAllChildren();
 		if(path ==null || path.isEmpty())
 			return;
-
 		try {
 			XMLUtil.fillLinkingContainer(getWidgetModel());
 		} catch (Exception e) {
+		    //log first
+		    String message = "Failed to load: " + path.toString() + "\n"+ e.getMessage();
+            Activator.getLogger().log(Level.WARNING, message , e);
+            ConsoleService.getInstance().writeError(message);
+            //TODO because this might not work - depends on the type of exception that happened
 			LabelModel loadingErrorLabel = new LabelModel();
 			loadingErrorLabel.setLocation(0, 0);
 			loadingErrorLabel.setSize(getWidgetModel().getSize().getCopy().shrink(3, 3));
 			loadingErrorLabel.setForegroundColor(CustomMediaFactory.COLOR_RED);
-			String message = "Failed to load: " + path.toString() + "\n"+ e.getMessage();
 			loadingErrorLabel.setText(message);
 			loadingErrorLabel.setName("Label");
 			getWidgetModel().addChild(loadingErrorLabel);
-			Activator.getLogger().log(Level.WARNING, message , e);
-			ConsoleService.getInstance().writeError(message);
 		}
 	}
 
@@ -238,12 +225,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 		}			
 		if (originalPoints != null && !originalPoints.isEmpty())
 			//update connections after the figure is repainted.
-			getViewer().getControl().getDisplay().timerExec(100, new Runnable() {			
-				@Override
-				public void run() {
-					updateConnectionList();				
-				}
-			});
+			getViewer().getControl().getDisplay().asyncExec(() -> updateConnectionList());
 
 		//Add scripts on display model
 		if(getExecutionMode() == ExecutionMode.RUN_MODE)
@@ -253,21 +235,23 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 		if(getWidgetModel().isAutoSize()){
 			performAutosize();
 		}
-		UIBundlingThread.getInstance().addRunnable(new Runnable(){
-			public void run() {
-				layout();
-				if(//getExecutionMode() == ExecutionMode.RUN_MODE && 
-						!getWidgetModel().isAutoFit() && !getWidgetModel().isAutoSize()){					
-					Rectangle childrenRange = GeometryUtil.getChildrenRange(LinkingContainerEditpart.this);
-					getWidgetModel().setChildrenGeoSize(new Dimension(
-						childrenRange.width + childrenRange.x + figure.getInsets().left + figure.getInsets().right-1,
-						childrenRange.height +childrenRange.y+ figure.getInsets().top + figure.getInsets().bottom-1));
-					getWidgetModel().scaleChildren();
-				}
-				((LinkingContainerFigure)getFigure()).setZoomToFitAll(getWidgetModel().isAutoFit());
-				((LinkingContainerFigure)getFigure()).updateZoom();				
+		UIBundlingThread.getInstance().addRunnable(() -> {
+			layout();
+			if(//getExecutionMode() == ExecutionMode.RUN_MODE && 
+					!getWidgetModel().isAutoFit() && !getWidgetModel().isAutoSize()){					
+				Rectangle childrenRange = GeometryUtil.getChildrenRange(LinkingContainerEditpart.this);
+				getWidgetModel().setChildrenGeoSize(new Dimension(
+					childrenRange.width + childrenRange.x + figure.getInsets().left + figure.getInsets().right-1,
+					childrenRange.height +childrenRange.y+ figure.getInsets().top + figure.getInsets().bottom-1));
+				getWidgetModel().scaleChildren();
 			}
+			((LinkingContainerFigure)getFigure()).setShowScrollBars(getWidgetModel().isShowScrollBars());
+			((LinkingContainerFigure)getFigure()).setZoomToFitAll(getWidgetModel().isAutoFit());
+			((LinkingContainerFigure)getFigure()).updateZoom();				
 		});
+		
+		DisplayModel parentDisplay = getWidgetModel().getRootDisplayModel();
+        parentDisplay.syncConnections();
 	}
 
 
@@ -329,14 +313,8 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 	@Override
 	protected synchronized void doRefreshVisuals(IFigure refreshableFigure) {
 		super.doRefreshVisuals(refreshableFigure);
-		
 		//update connections after the figure is repainted.
-		getViewer().getControl().getDisplay().timerExec(100, new Runnable() {			
-			@Override
-			public void run() {
-				updateConnectionList();				
-			}
-		});
+		getViewer().getControl().getDisplay().asyncExec(() ->updateConnectionList());				
 		
 	}
 	

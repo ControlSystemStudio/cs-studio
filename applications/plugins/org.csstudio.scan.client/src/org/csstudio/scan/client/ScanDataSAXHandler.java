@@ -23,6 +23,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /** SAX handler for XML sent by "/scan/{id}/data"
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanDataSAXHandler extends DefaultHandler
 {
     /* Expected data format:
@@ -45,9 +46,9 @@ public class ScanDataSAXHandler extends DefaultHandler
         NeedSample,
         NeedTimeAndValue
     };
-    
+
     private State state = State.NeedDevice;
-    
+
     /** Most recently parsed XML text data */
     private String cdata;
 
@@ -59,13 +60,13 @@ public class ScanDataSAXHandler extends DefaultHandler
 
     /** Currently assembled sample's time stamp */
     private Date time = null;
-    
+
     /** Currently assembled sample's value */
     private Object value = null;
 
     /** Samples for the currently parsed device */
     private List<ScanSample> samples;
-    
+
     private Map<String, List<ScanSample>> data = new HashMap<>();
 
     /** {@inheritDoc} */
@@ -142,7 +143,7 @@ public class ScanDataSAXHandler extends DefaultHandler
                 else
                     sample = ScanSampleFactory.createSample(time, serial, (String)value);
                 samples.add(sample);
-                
+
                 state = State.NeedSample;
             }
             break;

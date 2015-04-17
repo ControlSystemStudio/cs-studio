@@ -20,8 +20,8 @@ import org.csstudio.alarm.beast.TreeItem;
 import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.PVListener;
 import org.csstudio.vtype.pv.PVPool;
-import org.epics.vtype.VType;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.VType;
 
 /** A PV with alarm state
  *  @author Kay Kasemir
@@ -43,7 +43,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
 
     /** Control system PV */
     private volatile PV pv = null;
-    
+
     /** Track connection state */
     private volatile boolean is_connected = false;
 
@@ -141,7 +141,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
             logic.setEnabled(enabled);
         }
     }
-    
+
     /** Connect to control system */
     public void start() throws Exception
     {
@@ -195,7 +195,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
     	        new Object[] { getName(), new_enable_state });
         logic.setEnabled(new_enable_state);
 	}
-    
+
     /** Invoked by <code>connection_timer</code> when PV fails to connect
      *  after <code>start()</code>
      */
@@ -210,7 +210,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
     @Override
     public void permissionsChanged(PV pv, boolean readonly)
     {
-        // NOP        
+        // NOP
     }
 
     /** @see PVListener */
@@ -221,7 +221,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
                 Messages.AlarmMessageDisconnected, "", Timestamp.now());
         logic.computeNewState(received);
     }
-    
+
     /** @see PVListener */
     @Override
     public void valueChanged(final PV pv, final VType value)
@@ -234,7 +234,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
                 VTypeHelper.getTimestamp(value));
         logic.computeNewState(received);
     }
-    
+
 	/** AlarmLogicListener: {@inheritDoc} */
     @Override
     public void alarmEnablementChanged(final boolean is_enabled)
@@ -246,8 +246,8 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
     @Override
     public void alarmStateChanged(final AlarmState current, final AlarmState alarm)
     {
-        Activator.getLogger().log(Level.FINE, "{0} changes to {1}",
-                new Object[] { getName(), super.toString() });
+        Activator.getLogger().log(Level.FINE, "{0} changes to {1}, {2}",
+                new Object[] { getName(), current, alarm });
         if (server != null)
             server.sendStateUpdate(this,
                     current.getSeverity(), current.getMessage(),

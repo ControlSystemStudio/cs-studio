@@ -1,0 +1,44 @@
+# The file lists all properties of all widgets that should obey specific rules.
+# If a certain property is listed in this file the validator will check if the 
+# OPI file follows this rule with respect to the schema OPI. Each property
+# can be either read only (RO), readable/writable (RW), or obligatory writable (WRITE).
+# Read only properties should have the same values as defined by the OPI schema, 
+# readable/writable properties can have any value, obligatory writable properties
+# must have a value, which is not null or empty. 
+# If the property is not listed here it is automatically assumed to be writable. If 
+# there is a property that is related to a specific widget it has priority 
+# over a general property.
+
+#! border_width will be read-only for all widgets, except for the polyline, for which it is writable
+#! border_width=RO
+#! polyline.border_width=RW
+#! pv_name property is obligatory writable
+#! pv_name=WRITE
+
+# You can also use regular expressions to define the properties. If you have a numbered property, 
+# such as trace_0_trace_color, trace_1_trace_color, you can specify the name of the property
+# using regular expression.  
+
+#! trace_[0-9]+_trace_color=RO
+#! Or properties that ends with name
+#! [a-zA-Z0-9_]*name=RO
+
+# A rule can also specify additional acceptable values. These are the values may or may be not
+# identical to whatever is used in the OPI schema, but they are acceptable to be used for the
+# specified property. For example: the OPI schema defined that the background color of a
+# groupingContainer should be 'IO Background', however the value 'IO Area Background' is also
+# acceptable. Acceptable values should be placed in rectangular brackets and separated by a semi-colon.
+
+#! groupingContainer.background_color=RO [IO Background; IO Area Background]
+
+# Complex properties like rules, actions, and scripts can also have a rule, which states that certain
+# sub property has to be removed if it is present. To apply such rule, append the name of that sub property
+# to the rule definition in curly braces. For example: we want to remove all rules named BorderRule and NoBorder
+
+#! rules=RW {BorderRule; NoBorder}
+
+border_color=RO
+pv_name=WRITE
+ActionButton.font=RO
+border_width=RO
+polyline.border_width=RW

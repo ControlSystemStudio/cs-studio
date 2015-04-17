@@ -96,7 +96,11 @@ public class MeterModel extends AbstractMarkedWidgetModel{
 	public boolean isRampGradient() {
 		return (Boolean) getProperty(PROP_RAMP_GRADIENT).getPropertyValue();
 	}
-	
+
+	public boolean isShowValueLabelVisible() {
+		return (Boolean) getProperty(PROP_SHOW_VALUE_LABEL).getPropertyValue();
+	}
+
 	@Override
 	public boolean isTransparent() {
 		return false;
