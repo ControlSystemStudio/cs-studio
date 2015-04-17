@@ -157,8 +157,8 @@ public class OPIView extends ViewPart implements IOPIRuntime
     @Override
     public void setOPIInput(final IEditorInput input) throws PartInitException
     {
-        IViewSite view = getViewSite();
-        System.out.println(view.getId() + ":" + view.getSecondaryId() + " for " + input.getName());
+        // IViewSite view = getViewSite();
+        // System.out.println(view.getId() + ":" + view.getSecondaryId() + " for " + input.getName());
 
         this.input = input;
         setTitleToolTip(input.getToolTipText());

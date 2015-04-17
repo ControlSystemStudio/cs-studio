@@ -116,15 +116,12 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 
 				if(hookedActions != null && hookedActions.size() == 1){
 					AbstractWidgetAction hookedAction = hookedActions.get(0);
-					if(hookedAction != null && hookedAction instanceof OpenDisplayAction){
-						menu.add(new OpenRelatedDisplayAction(
-								(OpenDisplayAction) hookedAction, OpenDisplayTarget.DEFAULT));
-						menu.add(new OpenRelatedDisplayAction(
-								(OpenDisplayAction) hookedAction, OpenDisplayTarget.NEW_TAB));
-						menu.add(new OpenRelatedDisplayAction(
-								(OpenDisplayAction) hookedAction, OpenDisplayTarget.NEW_WINDOW));
-						menu.add(new OpenRelatedDisplayAction(
-								(OpenDisplayAction) hookedAction, OpenDisplayTarget.NEW_SHELL));
+					if (hookedAction instanceof OpenDisplayAction){
+					    final OpenDisplayAction original_action = (OpenDisplayAction)hookedAction;
+						menu.add(new OpenRelatedDisplayAction(original_action, OpenDisplayTarget.DEFAULT));
+						menu.add(new OpenRelatedDisplayAction(original_action, OpenDisplayTarget.NEW_TAB));
+						menu.add(new OpenRelatedDisplayAction(original_action, OpenDisplayTarget.NEW_WINDOW));
+						menu.add(new OpenRelatedDisplayAction(original_action, OpenDisplayTarget.NEW_SHELL));
 					}
 				}
 					

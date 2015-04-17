@@ -14,9 +14,16 @@ for(var i=0; i<groups.size(); i++){
 	//create linking container
 	var linkingContainer = WidgetUtil.createWidgetModel("org.csstudio.opibuilder.widgets.linkingContainer");	
 	linkingContainer.setPropertyValue("opi_file", "SubPanel.opi");
-	linkingContainer.setPropertyValue("auto_size", true);
-	linkingContainer.setPropertyValue("zoom_to_fit", false);
-	linkingContainer.setPropertyValue("border_style", 1);
+    try
+    {  // Current API, 1 == "Size the container to fit the linked *.opi"
+       linkingContainer.setPropertyValue("resize_behaviour", 1);
+    }
+    catch (err)
+    {   // Older LinkingContainer had these two properties:
+        linkingContainer.setPropertyValue("auto_size", true);
+        linkingContainer.setPropertyValue("zoom_to_fit", false);
+    }
+    linkingContainer.setPropertyValue("border_style", 1);
 	
 	//add macros
 	linkingContainer.addMacro("index", i);
