@@ -172,6 +172,12 @@
 					<url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.1</url>
 					<layout>p2</layout>
 				</repository>
+				<!-- Adding the core to enable jenkins build until re-organization is complete -->
+				<repository>
+					<id>csstudio-core</id>
+					<url>http://download.controlsystemstudio.org/core/4.1</url>
+					<layout>p2</layout>
+				</repository>
 			</repositories>
 		</profile>
 		<profile>

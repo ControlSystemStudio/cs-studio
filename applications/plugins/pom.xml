@@ -89,23 +89,7 @@
     <module>org.csstudio.navigator.applaunch</module>
     <module>org.csstudio.ndarray</module>
     <module>org.csstudio.numjy</module>
-    <module>org.csstudio.opibuilder</module>
-    <module>org.csstudio.opibuilder.validation</module>
-    <module>org.csstudio.opibuilder.adl2boy</module>
     <module>org.csstudio.opibuilder.alarm</module>
-    <module>org.csstudio.opibuilder.converter</module>
-    <module>org.csstudio.opibuilder.editor</module>
-    <module>org.csstudio.opibuilder.examples</module>
-    <module>org.csstudio.opibuilder.imagelib</module>
-    <module>org.csstudio.opibuilder.rap</module>
-    <module>org.csstudio.opibuilder.rcp</module>
-    <module>org.csstudio.opibuilder.test</module>
-    <module>org.csstudio.opibuilder.tools</module>
-    <module>org.csstudio.opibuilder.widgets</module>
-    <module>org.csstudio.opibuilder.widgets.extra</module>
-    <module>org.csstudio.opibuilder.widgets.rap</module>
-    <module>org.csstudio.opibuilder.widgets.rcp</module>
-    <module>org.csstudio.opibuilder.widgets.symbol</module>
     <module>org.csstudio.pvmanager.formula.channelfinder</module>
     <module>org.csstudio.remote</module>
 <!--     <module>org.csstudio.remote.test</module> -->
@@ -147,9 +131,6 @@
     <module>org.csstudio.swt.rtplot</module>
     <module>org.csstudio.rap.rtplot</module>
     <!-- <module>org.csstudio.swt.rtplot.test</module> -->
-    <module>org.csstudio.swt.widgets</module>
-    <module>org.csstudio.swt.widgets.rcp</module>
-    <!--module>org.csstudio.swt.widgets.test</module--><!-- Graphic test that does not follow naming convention for tests-->
     <module>org.csstudio.swt.xygraph</module>
     <module>org.csstudio.swt.xygraph.rap</module>
     <module>org.csstudio.swt.xygraph.rcp</module>
