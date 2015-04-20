@@ -148,8 +148,9 @@
 						<Bundle-Description>Provides epics v3 connectivity to pvManager</Bundle-Description>
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
 						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+						<Require-Bundle>org.csstudio.platform.libs.epics</Require-Bundle>
 						<Export-Package>org.epics.pvmanager.jca</Export-Package>
-						<Import-Package>*;ui.workbench=!;common=!;registry=!;texteditor=!;text=!</Import-Package>
+						<Import-Package>!org.epics.pvmanager.jca,!com.cosylab.*,!gov.aps.*,*;ui.workbench=!;common=!;registry=!;texteditor=!;text=!</Import-Package>
 						<Bundle-Version>$${replace;${csstudio.version};(.*)-SNAPSHOT;$1}.${cs-studio.timestamp}</Bundle-Version>
 						<_nouses>true</_nouses>
 					</instructions>
