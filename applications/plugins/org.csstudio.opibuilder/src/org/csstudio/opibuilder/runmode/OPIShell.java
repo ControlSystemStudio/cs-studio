@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.runmode;
 
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -49,6 +50,8 @@ public class OPIShell implements IOPIRuntime {
 
     private Shell shell;
     private IPath path;
+    // macrosInput should not be null.  If there are no macros it should
+    // be an empty MacrosInput object.
     private MacrosInput macrosInput;
     private final ActionRegistry actionRegistry;
     private DisplayModel displayModel;
@@ -193,7 +196,10 @@ public class OPIShell implements IOPIRuntime {
     /*
      * This is the only way to create an OPIShell
      */
-    public static void openOPIShell(final IPath path, final MacrosInput macrosInput) {
+    public static void openOPIShell(IPath path, MacrosInput macrosInput) {
+        if (macrosInput == null) {
+            macrosInput = new MacrosInput(new LinkedHashMap<String, String>(), false);
+        }
         try {
             boolean alreadyOpen = false;
             for (OPIShell opiShell : openShells) {
