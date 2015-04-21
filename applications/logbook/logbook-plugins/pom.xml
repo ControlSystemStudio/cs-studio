@@ -15,10 +15,12 @@
 		<module>org.csstudio.logbook</module>
 		<module>org.csstudio.logbook.olog</module>
 		<module>org.csstudio.logbook.olog.properties</module>
+		<module>org.csstudio.logbook.olog.properties.test</module>
 		<module>org.csstudio.logbook.olog.property.shift</module>
 		<module>org.csstudio.logbook.test</module>
 		<module>org.csstudio.logbook.ui</module>
 		<module>org.csstudio.logbook.ui.extra</module>
+		<module>org.csstudio.logbook.ui.extra.test</module>
 		<module>org.csstudio.logbook.viewer</module>
 		<module>org.csstudio.utility.olog</module>
 		<module>org.csstudio.utility.olog.ui</module>
