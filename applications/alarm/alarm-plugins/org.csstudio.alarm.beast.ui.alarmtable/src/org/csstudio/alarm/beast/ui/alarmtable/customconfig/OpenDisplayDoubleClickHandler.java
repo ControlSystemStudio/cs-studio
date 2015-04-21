@@ -1,10 +1,9 @@
-package org.csstudio.alarm.beast.ui.alarmtable.doubleclick;
+package org.csstudio.alarm.beast.ui.alarmtable.customconfig;
 
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.AlarmTreePosition;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
 import org.csstudio.alarm.beast.ui.actions.RelatedDisplayAction;
-import org.csstudio.alarm.beast.ui.alarmtable.DoubleClickHandler;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 

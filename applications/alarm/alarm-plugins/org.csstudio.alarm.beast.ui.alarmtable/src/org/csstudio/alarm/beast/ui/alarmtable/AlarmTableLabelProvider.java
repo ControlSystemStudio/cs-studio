@@ -10,8 +10,9 @@ package org.csstudio.alarm.beast.ui.alarmtable;
 import org.csstudio.alarm.beast.AnnunciationFormatter;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
-import org.csstudio.alarm.beast.ui.Messages;
+import org.csstudio.alarm.beast.client.GDCDataStructure;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
+import org.csstudio.alarm.beast.ui.alarmtable.customconfig.TableTextProvider;
 import org.csstudio.apputil.ui.swt.CheckBoxImages;
 import org.csstudio.ui.resources.alarms.AlarmIcons;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -23,70 +24,28 @@ import org.eclipse.swt.widgets.Composite;
  *  @author Kay Kasemir
  */
 public class AlarmTableLabelProvider extends CellLabelProvider
-{
-    /** Description of one column in the alarm table */
-    enum ColumnInfo
-    {
-        ACK(Messages.AcknowledgeColumnHeader,25,10),
-        ICON("",16,0),
-        PV(Messages.AlarmPV, 80, 50),
-        DESCRIPTION(Messages.AlarmDescription, 80, 100),
-        TIME(Messages.AlarmTime, 80, 70),
-        CURRENT_SEVERITY(Messages.AlarmCurrentSeverity, 50, 30),
-        CURRENT_STATUS(Messages.AlarmCurrentMessage, 45, 30),
-        SEVERITY(Messages.AlarmSeverity, 50, 30),
-        STATUS(Messages.AlarmMessage, 45, 30),
-        VALUE(Messages.AlarmValue, 45, 30);
-
-        final private String title;
-
-        final private int width, weight;
-
-        /** Initialize Column
-         *  @param title Column title
-         */
-        ColumnInfo(final String title, final int widths, final int weight)
-        {
-            this.title = title;
-            this.width = widths;
-            this.weight = weight;
-        }
-
-        /** @return Column title */
-        public String getTitle()
-        {
-            return title;
-        }
-
-        /** @return Minimum column width */
-        public int getMinWidth()
-        {
-            return width;
-        }
-
-        /** @return Column resize weight */
-        public int getWeight()
-        {
-            return weight;
-        }
-    }
-
+{    
     /** Mapping of severities to colors */
     final private SeverityColorProvider color_provider;
 
     /** Column handled by this label provider */
     final private ColumnInfo column;
+    
+    private TableTextProvider text_provider;
 
     /** Initialize
      *  @param parent Parent widget (for dispose listener)
      *  @param color_provider Color provider for severity values
      *  @param column Column for which this label provider should give labels etc.
+     *  @param text_provider the provider which can provide an arbitrary text for the cell
      */
     public AlarmTableLabelProvider(final Composite parent,
-            final SeverityColorProvider color_provider, final ColumnInfo column)
+            final SeverityColorProvider color_provider, final ColumnInfo column,
+            final TableTextProvider text_provider)
     {
         this.color_provider = color_provider;
         this.column = column;
+        this.text_provider = text_provider;
     }
 
     /** @return Tooltip text for an alarm */
@@ -158,6 +117,25 @@ public class AlarmTableLabelProvider extends CellLabelProvider
         		return;
             cell.setText(alarm.getValue());
             break;
+        case ACTION:
+            GDCDataStructure[] guidance = alarm.getGuidance();
+            if (guidance.length != 0) {
+                cell.setText(guidance[0].getDetails());
+            }
+            break;
+        case ID:
+            GDCDataStructure[] guidances = alarm.getGuidance();
+            if (guidances.length != 0) {
+                cell.setText(guidances[0].getTitle());
+            }
+            break;
+        default:
+            break;
+        }
+        //the data provider has precedence over anything that has already been set
+        String text = text_provider.getContentForColumn(column.name(), alarm);
+        if (text != null) {
+            cell.setText(text);
         }
     }
     
@@ -189,4 +167,5 @@ public class AlarmTableLabelProvider extends CellLabelProvider
             default: return null;
         }
     }
+
 }

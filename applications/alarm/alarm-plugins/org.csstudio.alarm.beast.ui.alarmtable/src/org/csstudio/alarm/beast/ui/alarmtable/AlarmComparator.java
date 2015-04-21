@@ -10,7 +10,6 @@ package org.csstudio.alarm.beast.ui.alarmtable;
 import java.util.Comparator;
 
 import org.csstudio.alarm.beast.client.AlarmTreePV;
-import org.csstudio.alarm.beast.ui.alarmtable.AlarmTableLabelProvider.ColumnInfo;
 import org.epics.util.time.Timestamp;
 
 /** Comparator (= table sorter) that compares one column of an alarm.
@@ -78,6 +77,18 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
 	                return super.doCompare(pv1, pv2);
 				}
 			};
+        case ACK:
+            return new AlarmComparator(up) 
+            {
+                @Override
+                protected int doCompare(AlarmTreePV pv1, AlarmTreePV pv2) {
+                    boolean active1 = pv1.getSeverity().isActive();
+                    boolean active2 = pv2.getSeverity().isActive();
+                    if (active1 == active2)
+                        return super.doCompare(pv1, pv2);
+                    return active1 ? -1 : 1;
+                }
+            };
         case TIME:
         	return new AlarmComparator(up)
 			{
