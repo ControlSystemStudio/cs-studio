@@ -218,6 +218,7 @@
 		<module>alarm</module>
 		<module>channel</module>
 		<module>logbook</module>
+		<module>opibuilder</module>
 	</modules>
 
 
