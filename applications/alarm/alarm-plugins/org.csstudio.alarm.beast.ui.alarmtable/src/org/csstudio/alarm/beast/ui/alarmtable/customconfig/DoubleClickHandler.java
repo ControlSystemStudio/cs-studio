@@ -1,4 +1,4 @@
-package org.csstudio.alarm.beast.ui.alarmtable;
+package org.csstudio.alarm.beast.ui.alarmtable.customconfig;
 
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 
@@ -12,7 +12,10 @@ import org.csstudio.alarm.beast.client.AlarmTreePV;
  */
 public interface DoubleClickHandler {
     
-    public static final String EXTENSION_ID = "org.csstudio.alarm.beast.ui.alarmtable.doubleclick";
+    /** The extension id */
+    public static final String EXTENSION_ID = "org.csstudio.alarm.beast.ui.alarmtable.customconfig";
+    /** The extension config element name */
+    public static final String NAME = "doubleClickHandler";
     
     /**
      * Called when the active alarms table was double-clicked.

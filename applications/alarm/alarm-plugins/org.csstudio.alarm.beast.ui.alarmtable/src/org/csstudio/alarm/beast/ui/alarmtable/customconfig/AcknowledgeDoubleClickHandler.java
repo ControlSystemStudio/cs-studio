@@ -1,7 +1,6 @@
-package org.csstudio.alarm.beast.ui.alarmtable.doubleclick;
+package org.csstudio.alarm.beast.ui.alarmtable.customconfig;
 
 import org.csstudio.alarm.beast.client.AlarmTreePV;
-import org.csstudio.alarm.beast.ui.alarmtable.DoubleClickHandler;
 
 /**
  * 
