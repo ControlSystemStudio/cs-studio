@@ -43,8 +43,7 @@ import org.eclipse.swt.graphics.Font;
 /**
  * @author Fred Arnaud (Sopra Group)
  */
-public abstract class CommonMultiSymbolFigure extends Figure implements
-        SymbolImageListener {
+public abstract class CommonMultiSymbolFigure extends Figure implements SymbolImageListener {
 
     protected String baseImagePath;
     protected Map<Integer, String> statesMap;
@@ -74,10 +73,8 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
     private IImageListener imageListener;
     private int remainingImagesToLoad = 0;
 
-    protected Color onColor = CustomMediaFactory.getInstance().getColor(
-            CommonMultiSymbolModel.DEFAULT_ON_COLOR);
-    protected Color offColor = CustomMediaFactory.getInstance().getColor(
-            CommonMultiSymbolModel.DEFAULT_OFF_COLOR);
+    protected Color onColor = CustomMediaFactory.getInstance().getColor(CommonMultiSymbolModel.DEFAULT_ON_COLOR);
+    protected Color offColor = CustomMediaFactory.getInstance().getColor(CommonMultiSymbolModel.DEFAULT_OFF_COLOR);
 
     private Color foregroundColor;
     private boolean useForegroundColor = false;
@@ -105,13 +102,15 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
      * Return the current displayed image. If null, returns an empty image.
      */
     public SymbolImage getSymbolImage() {
-        if (ExecutionMode.RUN_MODE.equals(executionMode)
-                && currentStateIndex >= 0) {
-            return images.get(currentStateIndex);
+        if (ExecutionMode.RUN_MODE.equals(executionMode) && currentStateIndex >= 0) {
+            SymbolImage imageToReturn = images.get(currentStateIndex);
+            if (imageToReturn == null) {
+                imageToReturn = SymbolImageFactory.createEmptyImage(true);
+            }
+            return imageToReturn;
         }
         if (currentSymbolImage == null) { // create an empty image
-            currentSymbolImage = SymbolImageFactory
-                    .createEmptyImage(executionMode == ExecutionMode.RUN_MODE);
+            currentSymbolImage = SymbolImageFactory.createEmptyImage(executionMode == ExecutionMode.RUN_MODE);
         }
         return currentSymbolImage;
     }
@@ -194,7 +193,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
             index = statesDbl.indexOf(state);
             statesMap.put(index, strValue);
             IPath path = findImage(index);
-            if(path == null)
+            if (path == null)
                 path = symbolImagePath;
             remainingImagesToLoad = 1;
             loadImageFromFile(path, index);
@@ -214,7 +213,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
             index = statesStr.indexOf(state);
             statesMap.put(index, state);
             IPath path = findImage(index);
-            if(path == null)
+            if (path == null)
                 path = symbolImagePath;
             remainingImagesToLoad = 1;
             loadImageFromFile(path, index);
@@ -224,7 +223,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 
     /**
      * Set all the state string values.
-     *
+     * 
      * @param states the states
      */
     public void setStates(List<String> states) {
@@ -268,7 +267,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 
     /**
      * Set user selected image path (edit mode)
-     *
+     * 
      * @param model
      * @param imagePath
      */
@@ -276,13 +275,11 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
         if (imagePath == null || imagePath.isEmpty())
             return;
         if (!SymbolUtils.isExtensionAllowed(imagePath)) {
-            Activator.getLogger().log(Level.WARNING,
-                    "ERROR in loading image, extension not allowed " + imagePath);
+            Activator.getLogger().log(Level.WARNING, "ERROR in loading image, extension not allowed " + imagePath);
             return;
         }
         if (!imagePath.isAbsolute()) {
-            imagePath = org.csstudio.opibuilder.util.ResourceUtil
-                    .buildAbsolutePath(model, imagePath);
+            imagePath = org.csstudio.opibuilder.util.ResourceUtil.buildAbsolutePath(model, imagePath);
         }
         symbolImagePath = imagePath;
         loadAllImages();
@@ -302,8 +299,10 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
             // Retrieve & set images paths
             for (int stateIndex = 0; stateIndex < statesMap.size(); stateIndex++) {
                 IPath path = findImage(stateIndex);
-                if (path == null) loadImageFromFile(symbolImagePath, stateIndex);
-                else loadImageFromFile(path, stateIndex);
+                if (path == null)
+                    loadImageFromFile(symbolImagePath, stateIndex);
+                else
+                    loadImageFromFile(path, stateIndex);
             }
         } else { // Image do not match any state
             // TODO: alert state image missing
@@ -328,29 +327,28 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
         return path;
     }
 
-    private void loadImageFromFile(final IPath imagePath,
-            final Integer stateIndex) {
+    private void loadImageFromFile(final IPath imagePath, final Integer stateIndex) {
         if (imagePath != null && !imagePath.isEmpty()) {
             switch (executionMode) {
-            case RUN_MODE:
-                if (stateIndex != null) {
-                    SymbolImage img = SymbolImageFactory.asynCreateSymbolImage(
-                            imagePath, true, symbolProperties, this);
-                    if (stateIndex != currentStateIndex)
-                        img.setVisible(false);
-                    if (images != null)
-                        images.put(stateIndex, img);
-                } else {
+                case RUN_MODE:
+                    if (stateIndex != null) {
+                        SymbolImage img = SymbolImageFactory.asynCreateSymbolImage(imagePath, true, symbolProperties,
+                                this);
+                        if (stateIndex != currentStateIndex)
+                            img.setVisible(false);
+                        if (images != null)
+                            images.put(stateIndex, img);
+                    } else {
+                        disposeCurrent();
+                        currentSymbolImage = SymbolImageFactory.asynCreateSymbolImage(imagePath, true,
+                                symbolProperties, this);
+                    }
+                    break;
+                case EDIT_MODE:
                     disposeCurrent();
-                    currentSymbolImage = SymbolImageFactory.asynCreateSymbolImage(
-                            imagePath, true, symbolProperties, this);
-                }
-                break;
-            case EDIT_MODE:
-                disposeCurrent();
-                currentSymbolImage = SymbolImageFactory.asynCreateSymbolImage(
-                        imagePath, false, symbolProperties, this);
-                break;
+                    currentSymbolImage = SymbolImageFactory.asynCreateSymbolImage(imagePath, false, symbolProperties,
+                            this);
+                    break;
             }
         }
     }
@@ -419,15 +417,16 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
             gfx.setForegroundColor(getForegroundColor());
             gfx.fillRectangle(bounds);
             gfx.translate(bounds.getLocation());
-            TextPainter.drawText(gfx, "??", bounds.width / 2,
-                    bounds.height / 2, TextPainter.CENTER);
+            TextPainter.drawText(gfx, "??", bounds.width / 2, bounds.height / 2, TextPainter.CENTER);
             return;
         }
         symbolImage.setBounds(bounds);
         symbolImage.setAbsoluteScale(gfx.getAbsoluteScale());
         Color currentcolor = null;
-        if (useForegroundColor) currentcolor = getForegroundColor();
-        else currentcolor = currentStateIndex <= 0 ? offColor : onColor;
+        if (useForegroundColor)
+            currentcolor = getForegroundColor();
+        else
+            currentcolor = currentStateIndex <= 0 ? offColor : onColor;
         symbolImage.setCurrentColor(currentcolor);
         symbolImage.setBackgroundColor(getBackgroundColor());
         symbolImage.paintFigure(gfx);
@@ -461,40 +460,41 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
         int x = 0;
         if (textArea.width > textSize.width) {
             switch (labelPosition) {
-            case CENTER:
-            case TOP:
-            case BOTTOM:
-                x = (textArea.width - textSize.width) / 2;
-                break;
-            case RIGHT:
-            case TOP_RIGHT:
-            case BOTTOM_RIGHT:
-                x = textArea.width - textSize.width;
-                break;
-            default:
-                break;
+                case CENTER:
+                case TOP:
+                case BOTTOM:
+                    x = (textArea.width - textSize.width) / 2;
+                    break;
+                case RIGHT:
+                case TOP_RIGHT:
+                case BOTTOM_RIGHT:
+                    x = textArea.width - textSize.width;
+                    break;
+                default:
+                    break;
             }
         }
         int y = 0;
         if (textArea.height > textSize.height) {
             switch (labelPosition) {
-            case CENTER:
-            case LEFT:
-            case RIGHT:
-                y = (textArea.height - textSize.height) / 2;
-                break;
-            case BOTTOM:
-            case BOTTOM_LEFT:
-            case BOTTOM_RIGHT:
-                y = textArea.height - textSize.height;
-                break;
-            default:
-                break;
+                case CENTER:
+                case LEFT:
+                case RIGHT:
+                    y = (textArea.height - textSize.height) / 2;
+                    break;
+                case BOTTOM:
+                case BOTTOM_LEFT:
+                case BOTTOM_RIGHT:
+                    y = textArea.height - textSize.height;
+                    break;
+                default:
+                    break;
             }
         }
         if (useLocalCoordinates())
             labelLocation = new Point(x, y);
-        else labelLocation = new Point(x + textArea.x, y + textArea.y);
+        else
+            labelLocation = new Point(x + textArea.x, y + textArea.y);
     }
 
     public void setSymbolLabelPosition(SymbolLabelPosition labelPosition) {
@@ -546,16 +546,15 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
     public Dimension getAutoSizedDimension() {
         // Widget dimension = Symbol Image + insets
         Dimension dim = getSymbolImage().getAutoSizedDimension();
-        if (dim == null) return null;
-        if (hasDisconnectedBorder()) return dim;
-        return new Dimension(dim.width + getInsets().getWidth(), dim.height
-                + getInsets().getHeight());
+        if (dim == null)
+            return null;
+        if (hasDisconnectedBorder())
+            return dim;
+        return new Dimension(dim.width + getInsets().getWidth(), dim.height + getInsets().getHeight());
     }
 
     private boolean hasDisconnectedBorder() {
-        return getBorder() != null
-                && getBorder().equals(
-                        AlarmRepresentationScheme.getDisonnectedBorder());
+        return getBorder() != null && getBorder().equals(AlarmRepresentationScheme.getDisonnectedBorder());
     }
 
     @Override
@@ -636,7 +635,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 
     /**
      * We want to have local coordinates here.
-     *
+     * 
      * @return True if here should used local coordinates
      */
     @Override
@@ -662,10 +661,9 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
         Rectangle clientArea = getClientArea().getCopy();
         if (label.isVisible()) {
             Dimension labelSize = label.getPreferredSize();
-            label.setBounds(new Rectangle(getLabelLocation(clientArea.x
-                    + clientArea.width / 2 - labelSize.width / 2, clientArea.y
-                    + clientArea.height / 2 - labelSize.height / 2),
-                    new Dimension(labelSize.width, labelSize.height)));
+            label.setBounds(new Rectangle(getLabelLocation(clientArea.x + clientArea.width / 2 - labelSize.width / 2,
+                    clientArea.y + clientArea.height / 2 - labelSize.height / 2), new Dimension(labelSize.width,
+                    labelSize.height)));
         }
         super.layout();
     }
