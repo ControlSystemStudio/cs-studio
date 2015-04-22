@@ -120,6 +120,9 @@ public class OPIShell implements IOPIRuntime {
                 }
             });
             shell.pack();
+            if (!displayModel.getLocation().equals(DisplayModel.NULL_LOCATION)) {
+                shell.setLocation(displayModel.getLocation().getSWTPoint());
+            }
             /*
              * Don't open the Shell here, as it causes SWT to think the window is on top when it really isn't.
              * Wait until the window is open, then call shell.setFocus() in the activated listener.

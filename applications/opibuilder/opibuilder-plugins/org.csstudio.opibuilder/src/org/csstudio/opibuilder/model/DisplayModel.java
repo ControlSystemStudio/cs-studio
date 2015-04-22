@@ -22,6 +22,7 @@ import org.csstudio.opibuilder.properties.VersionProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.runmode.IOPIRuntime;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.GraphicalViewer;
 import org.osgi.framework.Version;
 
@@ -86,6 +87,8 @@ public class DisplayModel extends AbstractContainerModel {
 	 */
 	public static final String PROP_FRAME_RATE = "frame_rate"; //$NON-NLS-1$
 
+	public static final Point NULL_LOCATION = new Point(-1, -1);
+
 	private GraphicalViewer viewer;
 	
 	private IOPIRuntime opiRuntime;
@@ -111,7 +114,7 @@ public class DisplayModel extends AbstractContainerModel {
 	 */
 	public DisplayModel(IPath opiFilePath) {
 		super();
-		setLocation(-1, -1);
+		setLocation(NULL_LOCATION);
 		setSize(800, 600);
 		setOpiFilePath(opiFilePath);
 	}
