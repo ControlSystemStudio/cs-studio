@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.csstudio</groupId>
+    <artifactId>scan</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <groupId>org.csstudio</groupId>
+  <artifactId>scan-plugins</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <modules>
+    <module>org.csstudio.ndarray</module>
+    <module>org.csstudio.numjy</module>
+    <module>org.csstudio.scan</module>
+    <module>org.csstudio.scan.client</module>
+    <module>org.csstudio.scan.log</module>
+    <module>org.csstudio.scan.log.derby</module>
+    <module>org.csstudio.scan.server</module>
+    <module>org.csstudio.scan.ui</module>
+    <module>org.csstudio.scan.ui.plot</module>
+    <module>org.csstudio.scan.ui.scandata</module>
+    <module>org.csstudio.scan.ui.scanmonitor</module>
+    <module>org.csstudio.scan.ui.scantree</module>
+  </modules>
+</project>
