@@ -352,7 +352,7 @@ public class SchemaVerifier {
         
         numberOfAnalyzedFiles++;
         List<ValidationFailure> failures = new NonNullArrayList<>();
-        check(opi, displayModel, failures);    
+        checkWidget(opi, displayModel, failures);    
         findCoordinates(failures.toArray(new ValidationFailure[failures.size()]), opi);
         if (!failures.isEmpty()) {
             numberOfFilesFailures++;
@@ -530,6 +530,9 @@ public class SchemaVerifier {
         if (original != null) {
             Set<String> properties = model.getAllPropertyIDs() ;
             for (String p : properties) {
+                if (model instanceof DisplayModel && "background_color".equals(p)) {
+                    System.out.println("ffdfds");
+                }
                 rule = getRuleForProperty(p, widgetType);
                 modelVal = model.getPropertyValue(p);
                 orgVal = original.getPropertyValue(p);
