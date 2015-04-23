@@ -584,34 +584,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.trends.databrowser2"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.trends.databrowser2.opiwidget"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.trends.databrowser2.rap"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.trends.databrowser2.rcp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.ui.menu.app"
          download-size="0"
          install-size="0"
