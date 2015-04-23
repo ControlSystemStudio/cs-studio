@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            class="org.csstudio.utility.pvmanager.ui.toolbox.ToolboxView"
+            class="org.csstudio.utility.pvmanager.ui.toolbox.DataSourcesView"
             icon="icons/datasource-viewer-16.png"
             id="org.csstudio.utility.pvmanager.ui.toolbox.ToolboxView"
             name="Datasources">

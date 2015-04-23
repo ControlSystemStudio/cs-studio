@@ -67,7 +67,6 @@ public class ManagementServiceImpl implements IManagementCommandService {
 	 * Creates a new instance of this service implementation. 
 	 */
 	public ManagementServiceImpl() {
-		System.out.println("");
 	}
 
 	/**

@@ -72,6 +72,7 @@ public class AddTagCommandHandler extends AbstractAdaptedHandler<Channel> {
 			String tagName = dialog.getValue();
 			Tag.Builder tag = tag(tagName);
 			if (existingTagNames.contains(tagName)) {
+			    
 			} else if (tagName != null && !tagName.equals("")) {
 				CreateTagDialog createTagDialog = new CreateTagDialog(shell,
 						tagName);
@@ -90,29 +91,5 @@ public class AddTagCommandHandler extends AbstractAdaptedHandler<Channel> {
 		}
 	}
 
-	private class GetAllTags implements Callable<Collection<String>> {
-		private List<ExceptionListener> listeners = new CopyOnWriteArrayList<ExceptionListener>();
-
-		public void addExceptionListener(ExceptionListener listener) {
-			this.listeners.add(listener);
-		}
-
-		@SuppressWarnings("unused")
-		public void removeExceptionListener(ExceptionListener listener) {
-			this.listeners.remove(listener);
-		}
-
-		@Override
-		public Collection<String> call() throws Exception {
-			try {
-				return ChannelFinder.getClient().getAllTags();
-			} catch (ChannelFinderException e) {
-				for (ExceptionListener listener : this.listeners) {
-					listener.exceptionThrown(e);
-				}
-				return null;
-			}
-		}
-
-	}
+	
 }

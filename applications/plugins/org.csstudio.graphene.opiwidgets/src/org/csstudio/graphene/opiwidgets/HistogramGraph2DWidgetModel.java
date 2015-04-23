@@ -5,7 +5,6 @@ package org.csstudio.graphene.opiwidgets;
 
 import org.csstudio.graphene.HistogramGraph2DWidget;
 import org.csstudio.graphene.MouseSelectionMethod;
-import org.csstudio.graphene.NumberColorMapUtil;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.StringProperty;

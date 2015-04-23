@@ -10,7 +10,6 @@ package org.csstudio.alarm.beast.ui.alarmtable;
 import java.util.Comparator;
 
 import org.csstudio.alarm.beast.client.AlarmTreePV;
-import org.csstudio.alarm.beast.ui.alarmtable.AlarmTableLabelProvider.ColumnInfo;
 import org.epics.util.time.Timestamp;
 
 /** Comparator (= table sorter) that compares one column of an alarm.
@@ -78,21 +77,33 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
 	                return super.doCompare(pv1, pv2);
 				}
 			};
+        case ACK:
+            return new AlarmComparator(up) 
+            {
+                @Override
+                protected int doCompare(AlarmTreePV pv1, AlarmTreePV pv2) {
+                    boolean active1 = pv1.getSeverity().isActive();
+                    boolean active2 = pv2.getSeverity().isActive();
+                    if (active1 == active2)
+                        return super.doCompare(pv1, pv2);
+                    return active1 ? -1 : 1;
+                }
+            };
         case TIME:
         	return new AlarmComparator(up)
 			{
 				@Override
 				protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
 				{
-				    Timestamp time1 = pv1.getTimestamp();
-					Timestamp time2 = pv2.getTimestamp();
-					if (time1 == null)
-						time1 = Timestamp.of(0, 0);
-					if (time2 == null)
-						time2 = Timestamp.of(0, 0);
-					final int cmp = time1.compareTo(time2);
-		            if (cmp != 0)
-		            	return cmp;
+//				    Timestamp time1 = pv1.getTimestamp();
+//					Timestamp time2 = pv2.getTimestamp();
+//					if (time1 == null)
+//						time1 = Timestamp.of(0, 0);
+//					if (time2 == null)
+//						time2 = Timestamp.of(0, 0);
+//					final int cmp = time1.compareTo(time2);
+//		            if (cmp != 0)
+//		            	return cmp;
 	                return super.doCompare(pv1, pv2);
 				}
 			};
@@ -130,6 +141,15 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
      */
     protected int doCompare(AlarmTreePV pv1, AlarmTreePV pv2)
     {
+        Timestamp time1 = pv1.getTimestamp();
+        Timestamp time2 = pv2.getTimestamp();
+        if (time1 == null)
+            time1 = Timestamp.of(0, 0);
+        if (time2 == null)
+            time2 = Timestamp.of(0, 0);
+        final int cmp = time1.compareTo(time2);
+        if (cmp != 0)
+            return cmp;
     	final String prop1 = pv1.getName();
         final String prop2 = pv2.getName();
         return prop1.compareTo(prop2);

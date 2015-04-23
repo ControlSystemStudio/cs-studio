@@ -14,12 +14,14 @@
       <view
             allowMultiple="true"
             class="org.csstudio.logging.ui.LoggingConfiguration"
+            icon="icons/utilities-log-viewer-16.png"
             id="org.csstudio.logging.ui.LoggingConfiguration"
             name="Logging Configuration"
             restorable="false">
      </view>
      <view
             class="org.csstudio.logging.ui.FXLogginConfiguration"
+            icon="icons/utilities-log-viewer-16.png"
             id="org.csstudio.logging.ui.FXLoggingConfiguration"
             name="Logging Configuration"
             restorable="true">

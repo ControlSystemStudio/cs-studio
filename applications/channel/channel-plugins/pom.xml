@@ -29,9 +29,7 @@
 		<module>
   		org.csstudio.utility.channel
   	</module>
-		<module>
-  		org.csstudio.utility.channel.adapters
-  	</module>
+		
 		<module>
   		org.csstudio.utility.channel.test
   	</module>

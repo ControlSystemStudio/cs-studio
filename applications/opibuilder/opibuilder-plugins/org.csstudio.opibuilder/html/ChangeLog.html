@@ -1,0 +1,497 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
+    <link rel="stylesheet" href="default.css" type="text/css"></link>
+    <link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css" type="text/css"></link>
+    <title>BOY Changelog
+    </title>
+  </head>
+ <body>
+<h1>BOY Changelog</h1>
+<ul>
+<li><a href="#3.3.0">Version 3.3.0</a></li>
+<li><a href="#3.2.10">Version 3.2.10</a></li>
+<li><a href="#3.2.9">Version 3.2.9</a></li>
+<li><a href="#3.1.4">Version 3.1.4</a></li>
+<li><a href="#3.1.3">Version 3.1.3</a></li>
+<li><a href="#3.1.2">Version 3.1.2</a></li>
+<li><a href="#3.1.1">Version 3.1.1</a></li>
+<li><a href="#3.1.0">Version 3.1.0</a></li>
+<li><a href="#1.2.0">Version 1.2.0</a></li>
+<li><a href="#1.1.0">Version 1.1.0</a></li>
+<li><a href="#1.0.6">Version 1.0.6</a></li>
+</ul>
+
+<A NAME="3.3.0"></A>
+<h2>Version 3.3.0</h2>
+<ul>
+	<li>Graphics Image Widget now handles SVG images</li>
+	<li>Symbol widgets now handle 'ForeColor Alarm Sensitive' property</li>
+	<li>Symbol widgets have a new preference that specifies which is the color code to replace by the On/Off color</li>
+	<li><a href="../../org.csstudio.opibuilder.converter/html/Getting_Started.html">EDM2OPI converter </a>has been finished to be able to convert 95% of EDM features to BOY. 
+	(Some of the widgets conversion was contributed by <a href="http://english.ihep.cas.cn/">IHEP</a>)
+	<p>  <a href="../../org.csstudio.opibuilder.converter/html/img/EDM2BOYDemo.png"><img src ="img/edm2boy_small.png" alt="EDM2OPI converter example"> </a></p></li>
+	
+	<li>Add <code>$(opi.dir)</code> macros to "Execute Command" widget action.
+	<code>$(opi.dir)</code> points to the directory of the OPI file on the OS file system. 
+	</li>
+</ul>
+
+
+
+<A NAME="3.2.10"></A>
+<h2>Version 3.2.10</h2>
+<ul>
+	<li>Support checkbox, dropdown and customzied cell editor in table widget.
+	 <p>  <img src ="img/Table_CellEditor.png">  </p>
+	</li>
+</ul>
+
+<A NAME="3.2.9"></A>
+<h2>Version 3.2.9</h2>
+<ul>
+ <li>Add <a href="http://pvmanager.sourceforge.net/">PVManager</a> as an optional PV connection layer.
+    It can be set from <code>Preferences->CSS Applications->Display->BOY->OPI Runtime->PV Connection Layer</code>.
+    PVManager has lots of advantages such as better performance on array type of PV, update rate throttling, formula support and so on.
+    With PVManager, there are some differences with Utility PV on local and simulated PV:
+    <ul>
+    	<li>The default initial value of local pv such as <code>loc://fred</code> is null.
+    	 To give an initial value such as 0 to the local pv, the syntax is <code>loc://fred(0)</code>.
+    	<b><font color="red">Note: this difference may break your existing OPIs that used uninitialized local PV!!!</font></b>
+    	</li> 
+       <li>Constant PV such as <code>1</code> or <code>"fred"</code> must be prefixed with <code>=</code>. For example, <code>=1</code> and <code>="fred"</code>.</li>
+       <li><code>const://...</code> is not supported, please use <code>sim://const(...)</code>instead</li>
+       <li>Initial string value should be enclosed in quotes. For example: <code>loc://myPV("Hello, World!")</code> </li>
+       <li>Noise simulation pv only accepts three parameters: <code>sim://noise(minValue, maxValue, timeStep)</code>.</li>
+       <li>Arbitrary name noise simulation PV is not supported, for example: <code>sim://sfdsdf, sim://noise2</code> are not supported</li>       
+    </ul> 
+    In most cases, BOY will automatically convert existing local PV names to new syntax for old OPIs except the PV names embedded in scripts. 
+    For more syntax details, please see <code>CSS online help -> CSS Core -> Process Variables</code>.  
+   
+    </li>
+    <li>
+    	Use <code>org.epics.vtype</code> value inside BOY instead of <code>org.csstudio.data.values.IValue</code>. 
+    	<b><font color="red">Note: this change may break your customized widgets if the widgets have code handling IValue!</font></b>
+    	See <a href=https://groups.google.com/d/msg/css-boy/ntuGAtbDCbE/qfjZvQURS-AJ>here</a> for more details.
+    	
+    </li>
+    <li>Cache files from remote URL on local disk for two minutes to speed up the repeat loading of same file.</li>
+    <li>Automatically scale font size to make text size fit the size of text widgets (Label, Text Update and Text Input).
+    Note that this function doesn't work for "wrap words" Label and native Text Input.
+    </li>
+    <li>Add <code>Top Files</code> sub menu to file menu to open top OPIs and other files.</li>    
+    <li>Add <code>OPI Editor Perspective</code> context menu entry to OPI editor to open/reset OPI Editor Perspective</li>
+    <li>Add <code>OPI Runtime Perspective</code> context menu entry to OPI Runtime to open/reset OPI Runtime Perspective</li>
+    <li>Add <code>Open Navigator</code> context menu entry to OPI Runtime to open Navigator View.</li>
+       
+    <li>Shows null value border if one of the PVs on the widget has null value.
+    If the null value PV is the main PV of the widget, the value displayed in the widget is meaningless.
+     <p>  <img src ="img/nullValueBorder.png">  </p>
+     </li>
+     <li>Spinner widget: up/down and page up/page down buttons increase/decrease the value for a set step/page in the text editor.</li>
+	<li>Spinner widget: option for horizontal arrow buttons layout added.
+	<p><img src="img/SpinnerHorizontalButtons.png"></p>
+	</li>
+	<li>XY Graph widget: added getXBuffer and getYBuffer functions that can be used in scripts to retrive current axis values from the buffer.</li> 
+	<li>Allows to use script from opi search path.</li>
+    <li>Shows index of PVs in Attach Script dialog for better scripting. The shown index corresponds to the index of "pvs" array in the script.
+    <p><img src="img/InputPVs_with_Index.png"></p>
+    </li>
+    <li>Tank, Progress Bar, Thermometer supports "FillColor Alarm Sensitive" property.</li>
+    <li>Spinner gains focus when the users click its text box so that users can change the value with up/down keys.</li>
+    <li>Byte Monitor supports "Labels" property to describe the meaning of each bit.
+    <p><img src="img/ByteMonitorLabels.png"></p>
+    </li>
+    <li>Rotated text in Text Update can be properly aligned inside the box.
+    <p><img src="img/AlignedRotatedText.png"></p>
+    </li>
+	<li>Support PV Name auto-complete. By default, it only supports history inputs, but a site may implement 
+	its own PV name provider. For more details, please see <code>CSS online help->CSS Core->Auto-Complete</code>  
+	(Primarily contributed by ITER).
+	<p><img src="img/autocomplete.png"></p>
+	
+	</li>    
+    
+    <li>Add authentication support to WebOPI so that you can protect the whole site or only OPIs in a particular directory with password.
+    You can provide user name and password either from preference file, LDAP server or Kerberos. 
+    See <a href = "http://htmlpreview.github.com/?https://raw.github.com/ControlSystemStudio/cs-studio/master/applications/plugins/org.csstudio.opibuilder.rap/html/WebOPI.html">WebOPI helps</a> for more details.
+    <p><img src="img/login.png"></p>
+    </li>
+    
+ 	<li>Support searching OPI by text. Double click a search result entry will open the OPI file and 
+ 	select the widget (Only works if the default editor of the OPI file is OPI editor). (Contributed by ITER)
+ 	<p><img src="img/OPISearch.png"></p>
+ 	</li> 	
+ 	
+ 	 <li>Add a small square handle on top left of PV widget to allow editing PV Name directly on widget. Hover mouse on the 
+ 	 handle will show PV Name as tooltip. Handle color could be gray or orange, which depends on if the PV name is empty or not.
+ 	 <p><img src="img/EditPVNameHandle.png"></p>
+ 	 </li>
+ 	
+ 	<li>Add <code>Select Parent (Ctrl+R)</code> context menu to help selecting the parent container. For example, one can 
+ 	finally select the Display by hitting <code>Ctrl+R</code> multiple times. </li>
+ 	
+ 	<li>Add a feedback to Grouping Container widget to show if it is locked. Click the handle can
+ 	lock/unlock the container.
+ 	<p><img src="img/locked.png"></p> 
+ 	</li>
+ 	
+ 	<li>Add <code>Forward Colors</code> property to Grouping Container widget. If it is yes, it will
+ 	forward background and foreground color to its children. This is useful for creating
+ 	symbol from multiple graphics widgets shown as below. See Grouping Container Example in BOY Example.
+ 	<p><img src="img/ForwardColorsDemo.png"></p>
+ 	</li> 
+ 	
+ 	<li>Changed the looking of Check Box and Radio Box to have modern style and feeling.
+ 	<p><img src="img/NewCheckBox.png"></p> 
+ 	</li> 
+ 	
+ 	<li>Add <code>Dump PV List</code> context menu in Runtime to dump all PVs in the OPI including the ones for rules and scripts.
+ 	<p><img src="img/PVList.png"></p> 	
+ 	</li>
+ 	
+	<li>Support launching an OPI from command line in dedicated position using "Position" macro.
+	</li> 
+	<li>Add more <a href="script/ScriptUtil/index.html">ScriptUtil</a> functions.</li>
+	<li>Add Confirm Dialog option to Write PV Action.</li>
+	<li>Add <code>Directory</code> option to file selector on Text Input widget, so it only selects 
+	directory in file dialog</li>
+	<li>Removed Native Button widget and add <code>Style</code> property to Action Button widget to have 
+	native button</li>
+	<li>Removed Native Text widget and add <code>Style</code> property to Text Input widget to have 
+	native text style.</li>
+	<li>Automatically use native text for Text Input and Text Update (if they are not transparent)
+	in WebOPI to improve performance.
+	</li>
+	<li>Highlight button color when mouse entered.</li>
+	<li>Add a new predefined font <code>Fine Print</code>.</li> 
+</ul>
+
+<A NAME="3.1.4"></A>
+<h2>Version 3.1.4 (2012-12-20)</h2>
+<ul>
+	<li>Add <code>hidden_widgets</code> preference entry, so unwanted widgets can be hidden
+	from palette</li> 
+</ul>
+
+<A NAME="3.1.3"></A>
+
+<h2>Version 3.1.3 (2012-12-11)</h2>
+<p><b>Note</b>: This version has some new introduced bugs with macros which may result in some existing OPIs
+work improperly. These bugs has been fixed in Version 3.1.4.
+</p> 
+<ul> 
+	<li>Add more properties to tab widget: <code>Horizontal Tabs</code>, <code>Minimum Tab Height</code>, 
+	<code>Active Tab</code> and <code>Enabled</code> to each tab. (Contributed by ITER)
+	<p><img src="img/VerticalTab.png"></p>
+	</li>
+	<li>Add "Directory" option to "File Return Part" property of text input widget, which allows to 
+	select folder only.</li>
+    <li>Add Rotation Angle, Flip Horizontal/Vertical properties to Image widget. It only has effect on
+    static images. This is contributed by ITER.</li>
+	<li>Add Copy action to rules dialog</li>
+	<li>Add "Refresh OPI (F5)" context menu action for OPI Runtime so the OPI can be reloaded.</li>
+</ul>
+<A NAME="3.1.2"></A>
+<h2>Version 3.1.2 (2012-08-27)</h2>
+<ul>
+<li>Add more features to Intensity Graph widget to support areaDetector or beamline experiment:
+	<ul>
+		<li>Support areaDetector RGB1 Mode</li>
+		<li>Support adding arbitrary number of Region of Interest(ROI)</li>
+		<li>Support profiling on single line</li>
+		<li>Support giving cursor label information on each pixel from script</li>
+		<li>Make more properties runtime configurable</li>
+	</ul>
+	 <p><img src="img/IntensityGraph_RGBMode.png"> <img src="img/IntensityGraph_ROI.png"></p>
+</li>
+
+
+<li>Add <code>Confirm Message</code> property to Text Input and Text widget. 
+If the message is not empty, a confirm dialog will pop up before writing the new value to PV.
+<p><img src="img/TextInputConfirmDialog.png"></p>
+</li>
+<li>Array widget: support multiple widgets on each element by embedding grouping container.
+<p><img height=200 src="img/groupInArray.png"></p>
+
+</li>
+<li>Add <code>Next Focus</code> property to <a href="widgets/NativeText.html">Text</a> widget.</li>
+<li>XY Graph widget: Don't autoscale on invisible traces.</li>
+<li>Fix a drawing error on XYGraph widget and undersampling performance bug.(Contributed by Takashi Nakamoto from Cosylab)</li>
+<li>Enabled arrow key operations on <a href="widgets/ThumbWheel.html">ThumbWheel</a> widget.
+ Added new properties "Show Buttons" and "Focused Frame Color" to ThumbWheel widget.(Contributed by Takashi Nakamoto from Cosylab)</li>
+<li>Allow multiple selection in Input PVs table.</li>
+<li>Allow dragging text with a list of PV names to Input PVs table.</li>
+</ul>
+
+<A NAME="3.1.1"></A>
+
+<h2>Version 3.1.1 (2012-07-18)</h2>
+<ul>
+<li>Add Native <a href="widgets/NativeButton.html">Button</a>, <a href="widgets/NativeText.html">Text</a> widgets. 
+Native widgets will have significantly better performance in WebOPI. 
+They also support Tab key traversing.
+The native text widget can be used as either label, text update or text input. 
+<br><b>Tip:</b>You can use context menu <code>Replace Widgets With...</code> as described below 
+to easily replace old widgets with native widgets.
+<p><img src="img/NativeButton.png"></p><p><img src="img/NativeText.png"></p></li>
+
+<li>Add <code>Replace Widgets With...</code> in context menu to replace selected widgets with other widgets. 
+Common properties will be copied to the new widgets.</li><br>
+
+<li>Add Table widget. For more details, see <a href="widgets/Table.html">Table</a>.
+<p>Example: Use table widget to show multiple PV values<br><img src = "widgets/img/Table_PVs.gif"></p>
+</li>
+
+<li>Add <a href="widgets/Array.html">Array</a> widget, which is great for reading/writing a waveform.<p><img src="widgets/img/ArrayWidget.gif"></p>
+</li>
+
+<li>Reworked BOY Examples to have better user experience and more demonstrations.
+<p><img height=400 src="img/BetterBOYExamples.png">  <img src="img/Calculator.png"></li>
+
+<li>Included the Symbol widgets provided by ITER. Symbol widgets can display/write On/Off 
+states with On/Off color on a single image or on multiple images based on image names.
+It supports SVG, PNG and GIF format of images. SVG is vector image which can keep the same definition after it is resized.
+ITER also contributed more than 200 SVG and PNG symbol images to BOY,
+ which can be imported to workspace from menu <code>File->Import...->BOY->BOY Symbol Library</code>
+<p><img height=350 src="img/SymbolsDemo.png"></li>
+
+<li>XYGraph widget performance has been improved greatly by Takashi Nakamoto from CosyLab.
+ Undersampling and drawing polyline tactics are used for line or dash line trace.</li>
+<br>
+<li>Fixed the bug that zooming a widget with gradient (or 3D) effect resulted in ugly looking.
+<p>
+<img height=300 src="img/ZoomingGradient.png"></p></li>
+
+<li>Add alpha property to all shape widgets. <p><img src="img/AlphaEffect.png"></li>
+
+<li>Add gradient, background gradient start color, foreground gradient start color properties to Rectangle,
+Rounded Rectangle and Ellipse widgets.
+<p><img src="img/GradientEffect.png"></li>
+
+<li>Support double clicking in Font, Color and File dialog to finish resource selection</li> 
+<br>
+
+<li>Add direct editing support to button, menu button, check box widgets, so now you can
+double click these widgets to input text directly in edit mode</li>
+<br>
+<li>For macro color and font, both color/font name and value are saved in OPI file, 
+so in case of color/font file is not available, use the saved value. This will
+make OPI function normally in most cases even color/font file is not available. 
+Existing OPIs need to be re-saved to take use of this feature.</li>
+<br>
+<li>Add more predefined fonts in BOY, so even if you don't have any font file set, you still have these
+macro fonts available: <code>Default</code><code>Default Bold</code><code>Header 1</code><code>Header 2</code>
+<code>Header 3</code>. These predefined fonts will use system default font but with different styles and heights.
+These predefined fonts can be replaced from font file by defining the same font name.
+</li>
+<br>
+<li> Allow to give a different menu text rather than using file name for top opi by appending
+ a macro <code>Alias=The Menu Name</code>. It also allows to specify the top opi open position by appending 
+ a macro <code>Position</code>. 
+    The available positions are: 
+    <ul>
+    <li> <code>Left</code>: Left View</li>
+    <li> <code>Right</code>: Right View</li>
+    <li> <code>Top</code>: Top View</li>
+    <li> <code>Bottom</code>: Bottom View</li>
+    <li> <code>Default_View</code>: Default View</li>
+    <li> <code>Detached</code>: Detached View</li>
+    </ul>
+    <p>If macro <code>Position</code> is not set or is not in one of above positions, it will be opened in editor area.
+    For example:
+     
+    <pre class = "example_code">"/BOY Examples/main.opi", "macro1 = hello", "macro2 = hello2", "Alias=BOY Examples", "Position=Left" | "BOY Examples/1_2_WidgetExamples.opi"</pre>    
+  </p><br>
+<li>Add <code>Round Rectangle Background Style</code> Border.
+<p><img src="img/RoundRectBorder.png"></p></li>
+<li>For XY Graph, always show full time stamp (date and time) on the start and end of an axis which is in time format. Optimized auto time format.</li>
+
+<br><li>Stop Autoscale on XYGraph whenever one of the Zoom buttons is toggled.</li>
+
+<br><li>OPI Probe is reworked to have better user experience. 
+Add Array widget to probe OPI so Waveform PV can be probed. Probe OPI will be opened as detached view.
+<p><img src="img/OPIProbe.png"></li> 
+
+<li>WebOPI use system property <code>org.csstudio.rap.preference</code> to provide path to the preference file.</li>
+<br>
+
+<li>Add <code>Buttons on Left</code> property to spinner widget.
+<p><img src="widgets/img/Spinner_Left.gif"></p></li>
+
+<li>Support OPI Search Path, so BOY can run an OPI found on search path. See <a href="PreferencePage.html">preferences</a><br>
+<p><img src="img/OPISearchPath.gif"></p>
+</li>
+
+<li>Improve intensity graph performance significantly by accepting all basic array types and using nearest neighbor image scaling technique.</li>
+<br><li>Add <code><a href="widgets/SashContainer.html">Sash Container</a></code> widget.
+<p><img src="widgets/img/SashContainer.gif"></p>
+</li>
+
+<li>Add <code>Auto Scale Widgets</code> property to display. If it is true, all widgets on this display may be scaled
+ when display is resized. The old display property <code>Auto Zoom to Fit All</code> should be deprecated, because the advance graphics
+ effects such as gradient cannot display correctly in zoom.<br>
+<img src = "img/ScaleWidgets.gif">
+</li>
+
+
+<li>Add trace visible property to XY Graph
+<p><img src ="widgets/img/XYGraph_TraceVisible.gif"></p>
+</li>
+<li>Hide status bar in compact mode</li>
+
+</ul>
+
+<A NAME="3.1.0"></A>
+<h2>Version 3.1.0 - 1/6/2012</h2>
+<ul><li>Support view OPI in Web Browser, including mobile device! See <a class="ext-link" href="https://sourceforge.net/apps/trac/cs-studio/wiki/webopi"><span class="icon">WebOPI</span></a>
+<p><img height="300" src="img/WebOPI_Widgets.gif"> <img height="300" src="img/WebOPI_iPod.JPG"></p>
+
+</li><li>Support connections between widgets
+<p><img height="200" alt="connection" src="widgets/img/Connection.gif"></p>
+</li><li>OPI editor is separated to a plugin <tt>org.csstudio.opibuilder.editor</tt>, 
+which allows you to install BOY in your RCP without OPI editor.
+</li><li>Add a new option <tt>Detached</tt> to <tt>Open OPI in View</tt> action 
+so the OPI will be opened in a detached view directly.
+<p><img height="300" src="img/detachedView.gif"></p>
+
+</li><li>Support Unicode in OPI, such as Chinese, Japanese...
+<p><img src="img/UnicodeSupport.gif"></p>
+
+</li><li>Allow embedding script text as part of an opi file
+<p><img src="img/EmbedScript.gif"></p>
+</li><li>Add an option "Hook all actions to mouse click event" to actions dialog
+</li><li>Add a new widget <tt>Image Boolean Indicator</tt> for displaying on/off value by images
+<p><img src="widgets/img/ImageBooleanIndicator.gif"></p>
+</li><li>Change the text input behavior with TextInput and Spinner widget, please read <a href="widgets/TextInput.html">BOY manual</a> for details
+</li><li>Allow to write numeric array to PV from Text Input widget with format like <code>13 22 33 24</code> 
+</li><li>Add version check to OPI file. If it is opening an opi file created from newer version of BOY, a warning dialog will popup
+</li><li>Allow customized widget hooking its own online help with BOY help system
+</li><li>Keep border style in alarm status if the border style is one of the line styles, such as dash, dot, dash dot and so on. So now you are able to have a dash alarm border.
+<p><img src="img/DashAlarmBorder.gif"></p>
+</li><li>Use border color for text color on Group Box Style border. This may affect the looking of some old OPIs which are using Group Box Style border.
+</li><li>Solve the "floating" problem and improve the performance greatly with using native SWT widgets in BOY
+</li><li>Allow minimum value higher than maximum value on scaled widgets, such as XYGraph, bar graph, gauge
+<p><img src="img/InvertedAxis.gif"></p>
+</li><li>Add <tt>Rotation Angle</tt> property to text update and text input widget, so its text can be rotated to arbitrary angle
+<p><img src="img/RotatedText.gif"></p>
+
+</li><li>Add two system predefined macros
+<ul><li>$(DID): The unique ID of a display. It can help to create an unique local PV name dedicated to a display
+</li><li>$(DNAME): The name of a display
+</li></ul></li><li>Add GUIUtil in ScriptUtil
+</li><li>Add a methods to ScriptUtil: executeEclipseCommand(id)
+</li><li>Add a method to widget: widget.getMacroValue(macroName)
+</li><li>Add example and document about how to call custom Java code from BOY script
+<p><img src="img/CustomScriptUtil.gif"></p>
+</li><li>Support using macros in file path property
+</li><li>Add a new option <tt>Open in new Window</tt> to <tt>Open OPI</tt> action
+</li><li>An OPI view will automatically resize to the OPI size when it is detached
+</li><li>Add "Auto" time format for XYGraph Axis, so its time format will be automatically calculated from its range
+</li><li>Add "Boolean Label Position" property to boolean widgets such as boolean switch, image boolean button
+</li><li>Show disabled graphic figures such as polyline, rectangle in gray
+</li><li>Allow applying the Display properties value from schema file
+</li><li>Fix a bug that the context help link for some widgets do not work
+</li><li>Fix a bug related to the <tt>crop</tt> property of Image widget
+</li><li>Add Login Dialog example</li></ul>
+
+
+<A NAME="1.2.0"></A>
+<h2>Version 1.2.0 - 6/9/2011</h2>
+<ul><li>Support using Jython script in BOY
+<p><img height="300" src="img/JythonInBOY.gif"></p>
+</li><li>Finish BOY online help which includes the help document for every widget. 
+In OPI editor, press F1 to open context help view. Context help will automatically update to match the selected widget. 
+<p><img src="img/onlineHelp.gif"></p>
+</li><li>Allow to open an OPI in view which can be detached as a standalone window
+</li><li>Allow user to change the default properties value of widgets by using schema OPI
+</li><li>Change <tt>widgetController</tt> to <tt>widget</tt>, <tt>pvArray</tt> to <tt>pvs</tt>. Add <tt>display</tt> object to script
+</li><li>Add script method <tt>display.getWidget(name)</tt> to search a widget by name
+</li><li>Add script methods <tt>addChild()</tt>, <tt>addChildToRight()</tt>, <tt>addChildToBottom()</tt>, <tt>removeChildByName()</tt> to container widget to support dynamic loading widget
+</li><li>Add <tt>FileUtil</tt> class to help read/write XML/text file from script
+</li><li>Support <tt>widget</tt> and <tt>display</tt> objects in scripts executed from Actions
+</li><li>Add global hot key F8 to enter/exit compact mode, F11 to enter/exit full screen
+</li><li>Add <tt>Show Scrollbar</tt> property to Label and Text Update widget
+</li><li>Add <tt>Wrap Words</tt> property to Text Update widget
+</li><li>Add <tt>Multi-line Input</tt> property to Text Input widget
+</li><li>Make loading URL file as a background job so that CSS will not hangup if a URL resource is not available
+</li><li>Re-organize BOY preference to three pages.
+</li><li>Add an option to script execution: <tt>Do not execute the script if error was detected</tt>. By default, the script is allowed to execute again even error was detected
+</li><li>Fix a bug that string value cannot be written to local PV from text input widget
+</li><li>Fix a bug that some widget do not redraw itself when <tt>enabled</tt> properties changed
+</li><li>Allow embedding <tt>[\ascii-code]</tt> in macros when inputting macros from command line. For example:
+<pre class="wiki">css --launcher.openFile "&lt;path_to_opi&gt;/file1.opi macro1=A[\58]B, macro2=value2" "&lt;path_to_opi2&gt;/file2.opi"
+</pre>In above example, the value of macro1 is <tt>A:B</tt>.
+</li></ul>
+
+
+<A NAME="1.1.0"></A>
+<h2>Version 1.1.0 - 2/18/2011</h2>
+
+<ul><li>Support opening OPI files from command line. For example:
+<pre class="wiki">css --launcher.openFile "&lt;path_to_opi&gt;/file1.opi macro1=value1, macro2=value2" "&lt;path_to_opi2&gt;/file2.opi"
+</pre>If there is already a CSS instance running, it will open the OPIs in the running CSS. The option <tt>--launcher.openFile</tt> is not necessary if following lines were added to css.ini: 
+<pre class="wiki">--launcher.defaultAction 
+openFile
+</pre>Note1: For Linux GTK, ":" is not allowed in macros. Instead using <tt>[\58]</tt>.<br />
+Note2: To make this command line work for Linux machine, you may need to add follow lines to your css.ini which is under your CSS directory (this line should be added before <tt>-vmargs</tt>):
+<pre class="wiki">-vm 
+/path to/libjvm.so 
+</pre>You may able to find the path to libjvm.so by using command <tt>locate libjvm.so</tt>
+See <a class="ext-link" href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=331122"><span class="icon">https://bugs.eclipse.org/bugs/show_bug.cgi?id=331122</span></a>
+</li></ul><ul><li>Add "Tree View" to Outline, which supports reordering and changing parent operations by Drag-and-Drop. It also supports other context menu actions such as copy, paste, delete, create group and so on
+<p><img src="img/TreeView.gif"></p>
+</li><li>Add "Grid Layout" widget. If a container or display contains such a widget, it will automatically layout widgets in grids 
+</li><li>Add "OPI Probe" to CSS context menu, so the PV names will be passed to the probe OPI
+</li><li>Support orientation operation on all widgets
+<ul><li>Flip Horizontal
+</li><li>Flip Vertical
+</li><li>Rotate Right 90 degree
+</li><li>Rotate Left 90 degree
+</li></ul></li><li>Better looking Tab widget
+<ul><li>Allow icon on Tab
+</li><li>Add a new context menu entry <i>Change Tab Index</i>
+</li><li>Fix some bugs related to undo/redo
+</li></ul>
+<p><img src="widgets/img/Tab.gif"></p>
+</li><li>Add two option for executing a script: 
+<ul><li>Skip execution triggered by PVs' first connection
+</li><li>Execute anyway even if some PVs are disconnected
+</li></ul>
+<p><img src="img/ScriptOptions.gif"></p>
+</li><li>Show script input PVs' connectivity on border too
+</li><li>Show PVs' disconnected information in tooltip
+</li><li>Add a preference "Console Popup Level" to control when should the console popup
+</li><li>Add "Scale Format" property to XYGraph Axis and other widgets with scale such as meter, gauge, knob, progress bar and so on, so that the numeric format on scale can be customized
+</li><li>Add "Value Label Format" property to widgets with scale and value label, so that the numeric format of the value label can be customized.
+</li><li>Add two properties to Display: "Auto Zoom to Fit All" and "Show Close Button".        
+</li><li>Add Lock/Unlock Children context menu entry to grouping container.
+</li><li>Add Import BOY Example wizard, so user will be able to import BOY Examples from File-&gt;Import...
+</li><li>If children are locked, scale children's size correspondingly when grouping container's size changed.
+</li><li>Allow to paste widgets to a selected container
+</li><li>Fix an unexpected behavior in drawing straight polyline
+</li><li>Make "Show Macros" available to runtime
+</li><li>Add Font property to most of widgets so border's font can be configured now
+</li></ul>
+
+<A NAME="1.0.6"></A>
+<h2>Versin 1.0.6 - 11/12/2010</h2>
+<ul><li>Add three context menu entries for openning related display as in web browser: Open, Open in New Tab and Open in New Window.
+<p><img src="img/OpenOPIContextMenu.gif"></p>
+</li><li>Remove the wrapping capability from <a class="missing wiki" href="/apps/trac/cs-studio/wiki/TextUpdate" rel="nofollow">TextUpdate?</a> to improve its performance greatly.
+</li><li>Improve the performance of cloning widgets.
+</li><li>Use Display.asyncExec() in GUI Thread with flood control to get a more smooth GUI update.
+</li><li>Memory usage optimization on Intensity Graph
+</li><li>Handle NAN alarm limits
+</li><li>Add Description to every widget action
+</li><li>Add Virtual Linac Example
+</li><li>Allow changing pv_value property in Rules. This will allow rules to output a calculation result to a PV widget.
+</li><li>Remove Drag&amp;Drop capability in Runtime because it would cause unintended change on running OPI.
+</li><li>Fix a bug that scaled widgets' max property cannot be negative number.
+</li><li>Fix a bug on Polyline which will cause high CPU usage.
+</li><li>Fix a bug on Text Update format property which will cause no response on OPI.
+</li><li>Fix a bug that wav file cannot be played on linux-x64.
+</li></ul>
+
+</body>
+</html>

@@ -5,9 +5,6 @@ package org.csstudio.graphene;
 
 import java.beans.PropertyChangeEvent;
 
-import org.csstudio.utility.pvmanager.widgets.AbstractConfigurationDialog;
-import org.eclipse.swt.SWT;
-
 /**
  * @author shroffk
  * 
