@@ -22,8 +22,8 @@ import org.apache.batik.css.engine.value.Value;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * Manages the update of CSS defined colors of {@link StyleSheet}.
- * Always updates the original style.
+ * Manages the update of CSS defined colors of {@link StyleSheet}. Always updates the original style.
+ * 
  * @author Fred Arnaud (Sopra Steria Group) - ITER
  */
 public class StyleSheetCSSHandler implements ICSSHandler {
@@ -45,8 +45,7 @@ public class StyleSheetCSSHandler implements ICSSHandler {
 
     @Override
     public void updateCSSColor(Color colorToChange, Color newColor) {
-        if (colorToChange == null || newColor == null
-                || colorToChange.equals(newColor)) {
+        if (colorToChange == null || newColor == null || colorToChange.equals(newColor)) {
             return;
         }
 
@@ -64,9 +63,7 @@ public class StyleSheetCSSHandler implements ICSSHandler {
                 if (val instanceof RGBColorValue) {
                     RGBColorValue colorVal = (RGBColorValue) val;
                     if (isSameColor(colorVal, colorToChange)) {
-                        sdClone.put(sdindex, newRGBColorValue,
-                                sdClone.getIndex(sdindex),
-                                sdClone.getPriority(sdindex));
+                        sdClone.put(sdindex, newRGBColorValue, sdClone.getIndex(sdindex), sdClone.getPriority(sdindex));
                     }
                 }
             }
@@ -75,25 +72,20 @@ public class StyleSheetCSSHandler implements ICSSHandler {
     }
 
     private boolean isSameColor(RGBColorValue colorVal, Color swtColor) {
-        switch (colorVal.getCssValueType()) {
-        case 2: // %
+        if (colorVal.getCssText().contains("%")) {
             int nr = Math.round(swtColor.getRed() / 255f * 100);
             int ng = Math.round(swtColor.getGreen() / 255f * 100);
             int nb = Math.round(swtColor.getBlue() / 255f * 100);
-            if (colorVal.getRed().getFloatValue() == nr
-                    && colorVal.getGreen().getFloatValue() == ng
-                    && colorVal.getBlue().getFloatValue() == nb) {
+            int or = Math.round(colorVal.getRed().getFloatValue());
+            int og = Math.round(colorVal.getGreen().getFloatValue());
+            int ob = Math.round(colorVal.getBlue().getFloatValue());
+            if (or == nr && og == ng && ob == nb) {
                 return true;
             }
-            break;
-
-        default:
-            if (colorVal.getRed().getFloatValue() == swtColor.getRed()
-                    && colorVal.getGreen().getFloatValue() == swtColor.getGreen()
-                    && colorVal.getBlue().getFloatValue() == swtColor.getBlue()) {
-                return true;
-            }
-            break;
+        } else if (colorVal.getRed().getFloatValue() == swtColor.getRed()
+                && colorVal.getGreen().getFloatValue() == swtColor.getGreen()
+                && colorVal.getBlue().getFloatValue() == swtColor.getBlue()) {
+            return true;
         }
         return false;
     }
@@ -128,5 +120,4 @@ public class StyleSheetCSSHandler implements ICSSHandler {
         }
 
     }
-
 }
