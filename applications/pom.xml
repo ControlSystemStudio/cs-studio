@@ -220,6 +220,7 @@
 		<module>logbook</module>
 		<module>opibuilder</module>
 		<module>scan</module>
+		<module>databrowser</module>
 	</modules>
 
 
