@@ -87,22 +87,10 @@
     
     <module>org.csstudio.logging.jms2rdb</module>
     <module>org.csstudio.navigator.applaunch</module>
-    <module>org.csstudio.ndarray</module>
-    <module>org.csstudio.numjy</module>
     <module>org.csstudio.opibuilder.alarm</module>
     <module>org.csstudio.pvmanager.formula.channelfinder</module>
     <module>org.csstudio.remote</module>
 <!--     <module>org.csstudio.remote.test</module> -->
-    <module>org.csstudio.scan</module>
-    <module>org.csstudio.scan.client</module>
-    <module>org.csstudio.scan.log</module>
-    <module>org.csstudio.scan.log.derby</module>
-    <module>org.csstudio.scan.server</module>
-    <module>org.csstudio.scan.ui</module>
-    <module>org.csstudio.scan.ui.plot</module>
-    <module>org.csstudio.scan.ui.scandata</module>
-    <module>org.csstudio.scan.ui.scanmonitor</module>
-    <module>org.csstudio.scan.ui.scantree</module>
     <!--<module>org.csstudio.sds</module>-->
     <!--<module>org.csstudio.sds.components</module>
     <module>org.csstudio.sds.components.epics</module>
@@ -140,10 +128,6 @@
     <module>org.csstudio.systemopen.mac</module>
     <module>org.csstudio.systemopen.win</module>
     <module>org.csstudio.testsuite</module>
-    <module>org.csstudio.trends.databrowser2</module>
-    <module>org.csstudio.trends.databrowser2.opiwidget</module>
-    <module>org.csstudio.trends.databrowser2.rap</module>
-    <module>org.csstudio.trends.databrowser2.rcp</module>
     <module>org.csstudio.ui.menu.pvscript</module>
     <module>org.csstudio.ui.menu.web</module>
     <module>org.csstudio.unitconversion.ui</module>
@@ -196,11 +180,6 @@
     <module>org.csstudio.diag.epics.pvtree.test</module>    
     <module>org.csstudio.diag.postanalyser.test</module>
     <!--module>org.csstudio.diag.pvfields.test</module--> <!--Tests do not end.-->
-    
-    <module>org.csstudio.ndarray.test</module>
-    <module>org.csstudio.scan.test</module>
-    <!--module>org.csstudio.scan.server.test</module--> <!--Error at runtime.-->
-    <!--module>org.csstudio.trends.databrowser2.test</module--> <!--Error at runtime.-->
     
     <module>org.csstudio.display.pace.test</module>
     
