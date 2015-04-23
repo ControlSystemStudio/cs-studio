@@ -17,8 +17,8 @@
          </appInfo>
       </annotation>
       <complexType>
-         <choice minOccurs="1" maxOccurs="2">
-            <element ref="doubleClickHandler" minOccurs="1" maxOccurs="unbounded"/>
+         <choice minOccurs="0" maxOccurs="2">
+            <element ref="doubleClickHandler" minOccurs="0" maxOccurs="1"/>
             <element ref="tableTextProvider" minOccurs="0" maxOccurs="1"/>
          </choice>
          <attribute name="point" type="string" use="required">
