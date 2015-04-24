@@ -139,6 +139,28 @@ public class LinkingContainerModel extends AbstractContainerModel {
 	}
 
 	@Override
+	public void setPropertyValue(Object id, Object value) {
+		// Catch and convert deprecated properties being set from scripts here
+		if (PROP_ZOOMTOFITALL.equals(id)) {
+			Activator.getLogger().log(Level.CONFIG,
+					"Using deprecated parameter to setPropertyValue: \"" + PROP_ZOOMTOFITALL + "\"");
+			if((Boolean)value) {
+				super.setPropertyValue(PROP_RESIZE_BEHAVIOUR, 0);
+			}
+		}
+		else if (PROP_AUTO_SIZE.equals(id)) {
+			Activator.getLogger().log(Level.CONFIG,
+					"Using deprecated parameter to setPropertyValue: \"" + PROP_AUTO_SIZE + "\"");
+			if((Boolean)value) {
+				super.setPropertyValue(PROP_RESIZE_BEHAVIOUR, 1);
+			}
+		}
+		else {
+			super.setPropertyValue(id, value);
+		}
+	}
+
+	@Override
 	public String getTypeID() {
 		return ID;
 	}
