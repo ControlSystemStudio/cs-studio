@@ -152,11 +152,11 @@ public class AlarmTableLabelProvider extends CellLabelProvider
         SeverityLevel currentSeverity = pv.getCurrentSeverity();
         AlarmIcons icons = AlarmIcons.getInstance();
         switch(severity) {
-            case UNDEFINED: 
-            case INVALID: return icons.getInvalidNotAcknowledged();
             case UNDEFINED_ACK: 
-            case INVALID_ACK: return currentSeverity == SeverityLevel.OK ?
-                    icons.getInvalidClearedNotAcknowledged() : icons.getInvalidAcknowledged(); 
+            case INVALID_ACK: return icons.getInvalidAcknowledged();
+            case UNDEFINED: 
+            case INVALID: return currentSeverity == SeverityLevel.OK ?
+                    icons.getInvalidClearedNotAcknowledged() : icons.getInvalidNotAcknowledged(); 
             case MAJOR: return currentSeverity == SeverityLevel.OK ?
                     icons.getMajorClearedNotAcknowledged() : icons.getMajorNotAcknowledged();
             case MAJOR_ACK: return icons.getMajorAcknowledged();
