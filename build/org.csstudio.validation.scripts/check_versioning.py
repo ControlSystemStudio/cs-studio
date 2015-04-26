@@ -14,7 +14,7 @@ import re
 import sys
 
 
-def readFeatures(repoDir):
+def readFeatures(repoDir, includeRAP=False):
     '''
     Read the all feature.xml
     {id:
@@ -28,18 +28,28 @@ def readFeatures(repoDir):
     '''
     features = {}
     for dirpath, dirnames, filenames in os.walk(os.path.normpath(repoDir)):
-        for completefilename in [ os.path.join(dirpath, f) for f in filenames if f.endswith("feature.xml")]:
+        for completefilename in [ os.path.join(dirpath, f) for f in filenames if f.endswith("feature.xml") and 'products' not in dirpath ]:
             xmldoc = minidom.parse(completefilename)
+            id = ''
             for feature in xmldoc.getElementsByTagName('feature'):
                 id = feature._attrs[u'id'].value
                 version = feature._attrs[u'version'].value
-                plugins = []
-                for node in feature.getElementsByTagName('plugin'):
-                    plugins.append(node._attrs[u'id'].value)
-                includes = []
-                for node in feature.getElementsByTagName('includes'):
-                    includes.append(node._attrs[u'id'].value)
-            features[id] = {'id':id, 'version':version, 'file':completefilename, 'plugins':plugins, 'includes':includes}
+                if includeRAP:
+                    plugins = []
+                    for node in feature.getElementsByTagName('plugin'):
+                        plugins.append(node._attrs[u'id'].value)
+                    includes = []
+                    for node in feature.getElementsByTagName('includes'):
+                        includes.append(node._attrs[u'id'].value)
+                    features[id] = {'id':id, 'version':version, 'file':completefilename, 'plugins':plugins, 'includes':includes}
+                elif 'rap' not in id:
+                    plugins = []
+                    for node in feature.getElementsByTagName('plugin'):
+                        plugins.append(node._attrs[u'id'].value)
+                    includes = []
+                    for node in feature.getElementsByTagName('includes'):
+                        includes.append(node._attrs[u'id'].value)
+                    features[id] = {'id':id, 'version':version, 'file':completefilename, 'plugins':plugins, 'includes':includes}
     return features
 
 def readPluginManifests(repoDir):
@@ -105,8 +115,12 @@ if __name__ == '__main__':
     parser.add_option('-r', '--repoDir', \
                       action='store', type='string', dest='repoDir', \
                       help='the repoDir')
+    parser.add_option('-i', '--includeRAP', \
+                  action='store_true', dest='includeRAP', default=False, \
+                  help='include RAP features')
     opts, args = parser.parse_args()
     repoDir = ifNoneReturnDefault(opts.repoDir, repoDir)
+    includeRAP = ifNoneReturnDefault(opts.includeRAP, False)
     
     '''
     since ElementTree does not allow easy access to the name space, simply setting it as a variable
@@ -116,56 +130,18 @@ if __name__ == '__main__':
     issues = []
     
     '''all the features in the core repository'''
-    allFeatures = readFeatures(repoDir)
+    allFeatures = readFeatures(repoDir, includeRAP)
     allplugins = readPluginManifests(repoDir)
     
-    coreDir = os.path.join(repoDir, 'core')
-    appDir = os.path.join(repoDir, 'applications')
-    
-    '''
-    Core Validation:
-    read the features/pom.xml for the list of core features
-    '''
-    root = ET.parse(os.path.join(coreDir, 'features', 'pom.xml')).getroot()
-    
-    '''the features defined in the pom'''
-    coreFeatures = []
-    for module in root.iter(xmlns + 'module'):
-        featureName = module.text        
-        coreFeatures.append(module.text)
-    
-    for coreFeature in coreFeatures:
+    for feature in allFeatures:
         versionMismatch = []
-        featureVersion = allFeatures[coreFeature]['version']
-        for includedPlugin in allFeatures[coreFeature]['plugins']:
+        featureVersion = allFeatures[feature]['version']
+        for includedPlugin in allFeatures[feature]['plugins']:
             if includedPlugin not in allplugins:
                 versionMismatch.append(includedPlugin+':unknown')
             elif featureVersion != allplugins[includedPlugin]['version']:
                 versionMismatch.append(includedPlugin+':'+allplugins[includedPlugin]['version'])
-        issues.append(coreFeature+':'+featureVersion+' has included plugins with version mismatch '+';'.join(versionMismatch))
-    
-    '''
-    Applications Validation:
-    read the features/pom.xml for the list of application features
-    '''
-    root = ET.parse(os.path.join(appDir, 'features', 'pom.xml')).getroot()
-    '''all the features in the applications repository'''
-    allAppFeatures = readFeatures(os.path.join(appDir, 'features'))
-    '''the features defined in the pom'''
-    appFeatures = []
-    for module in root.iter(xmlns + 'module'):
-        featureName = module.text        
-        appFeatures.append(module.text)
-        
-    for appFeature in appFeatures:
-        versionMismatch = []
-        featureVersion = allFeatures[appFeature]['version']
-        for includedPlugin in allFeatures[appFeature]['plugins']:
-            if includedPlugin not in allplugins:
-                versionMismatch.append(includedPlugin+':unknown')
-            elif featureVersion != allplugins[includedPlugin]['version']:
-                versionMismatch.append(includedPlugin+':'+allplugins[includedPlugin]['version'])
-        issues.append(appFeature+':'+featureVersion+' has included plugins with version mismatch '+';'.join(versionMismatch))       
+        issues.append(feature+':'+featureVersion+' has included plugins with version mismatch '+';'.join(versionMismatch))
     
     for issue in issues:
         print issue           

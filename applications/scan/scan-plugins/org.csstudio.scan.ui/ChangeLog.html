@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Scan System</title>
+	<link rel="stylesheet" href="PLUGINS_ROOT/PRODUCT_PLUGIN/book.css" type="text/css"></link>
+</head>
+<body>
+<h1>Scan System Changelog</h1>
+
+<p>Version numbers in here refer to the plugin org.csstudio.scan.</p>
+
+<h2>Version 4.2.1 - 2015-04-24</h2>
+<ul>
+  <li>"Log" command performs active read of device to obtain current value.
+      Before, logged last received value, which may be too old.
+  </li>
+</ul>
+
+<h2>Version 4.2.0 - 2015-03-30</h2>
+<ul>
+  <li>New "Sequence" command.</li>
+  <li>Scan Server reports "V4.2".</li>
+</ul>
+
+<h2>Version 4.1.0 - 2015-02-20</h2>
+<ul>
+  <li>New "Parallel" command.</li>
+  <li>Scan Server reports "V4", returning XML with error message and stack trace when submitting scans.</li>
+  <li>Actions that submit scans show newly available error detail.</li>
+  <li>Fix concurrency bug when rapidly submitting many scans.</li>
+  <li>Fix scan tree not highlighting current command when there are loops or parallel commands.</li>
+</ul>
+
+<h2>Version 4.0.2 - 2015-01-05</h2>
+<ul>
+  <li>Jython uses 'Eclipse-RegisterBuddy' instead of directly modifying the Python path.</li>
+  <li>Replacing several 'synchronized' sections with AtomicReference or volatile Optional.</li>
+</ul>
+
+<h2>Version 4.0.1 - 2014-09-04</h2>
+<ul>
+  <li>'Abort' no longer displayed in red; only 'Failure' is considered an error. New 'State' PV.</li>
+  <li>'Abort' while waiting for put or get callback reported as 'Aborted', not error.</li>
+</ul>
+
+<h2>Version 4.0.0 - 2014-06-02</h2>
+<ul>
+  <li>WaitCommand supports String (similar to SetCommand).</li>
+</ul>
+
+<h2>Version 3.2.16 - 2014-04-10</h2>
+<ul>
+  <li>Scan server uses vtype.pv, supporting put-callback and get-callback.</li>
+  <li>SetCommand can write string or number to string or char[] PV.</li>
+</ul>
+
+<h2>Version 3.2.14 - 2014-01-15</h2>
+<ul>
+  <li>Scan server sends older "beam_line" from REST /server/info for older client GUIs.</li>
+  <li>Scan plot X axis name updates as soon as X data is selected.</li>
+</ul>
+
+<h2>Version 3.2.13 - 2013-12-26</h2>
+<ul>
+  <li>Scan server only requires devices actually used in scan, not all listed in beamline.xml.</li>
+  <li>Scan server V3 uses "scan_config.xml", which combines "beamline.xml" and "simulation.xml".
+      Backwards compatible with older server and client, but new format is preferred because
+      it contains only the scan information, and can be generated from for example
+      a beamline.xml that also contains details on IOCs etc.
+  </li>
+</ul>
+
+<h2>Version 3.2.13 - 2013-11-04</h2>
+<ul>
+  <li>Document format of beamline and simulation config in beamline.xsd.</li>
+  <li>Default to beamline.xml if simulation config left empty.</li>
+</ul>
+
+<h2>Version 3.2.2 - 2013-09-05</h2>
+<ul>
+  <li>Support completion (put-callback) in 'LoopCommand', 'SetCommand'.</li>
+  <li>Support arguments in 'ScriptCommand'.</li>
+</ul>
+
+<h2>Version 3.2.1 - 2013-06-19</h2>
+<ul>
+  <li>REST instead of JNI.</li>
+  <li>Removed org.csstudio.scan.custom.*, included 'CommentCommand' in o.c.scan.</li>
+</ul>
+
+<h2>Version 3.2.0 - 2013-05-22</h2>
+<ul>
+  <li>'SetCommand', Derby log can handle String values.</li>
+  <li>PVManager instead of utility.pv.</li>
+</ul>
+
+<h2>Version 1.0.0 - 2013-01-01</h2>
+<ul>
+  <li>Version first used at SNS</li>
+</ul>
+</body>
+</html>

@@ -168,6 +168,7 @@ class SecurePreferences implements Serializable {
 		// the encrypted value in bytes
 		byte[] value;
 		// the class name of the requestor
+		@SuppressWarnings("unused")
 		String className;
 		/**
 		 * Creates a new instance of the preferences item.

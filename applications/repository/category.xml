@@ -39,12 +39,6 @@
    <feature id="org.csstudio.logbook.shift.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
-   <feature id="org.csstudio.opibuilder.feature">
-      <category name="org.csstudio.category.applications"/>
-   </feature>
-   <feature id="org.csstudio.scan.ui.feature">
-      <category name="org.csstudio.category.applications"/>
-   </feature>
    <feature id="org.csstudio.trends.databrowser2.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>

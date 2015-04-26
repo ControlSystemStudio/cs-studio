@@ -3,7 +3,6 @@ package org.csstudio.utility.pvmanager.widgets;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ViewerCell;
-import org.eclipse.jface.viewers.ViewerRow;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Event;
 
