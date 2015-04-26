@@ -13,45 +13,9 @@
   <packaging>pom</packaging>
   <modules>
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     <module>org.csstudio.apputil</module>
     <module>org.csstudio.apputil.test</module>
     <module>org.csstudio.apputil.ui</module>
-    <module>org.csstudio.archive.config</module>
-    <module>org.csstudio.archive.config.rdb</module>
-    <module>org.csstudio.archive.config.test</module>
-    <module>org.csstudio.archive.engine</module>
-    <module>org.csstudio.archive.rdb</module>
-    <module>org.csstudio.archive.reader</module>
-    <module>org.csstudio.archive.reader.aapi</module>
-    <module>org.csstudio.archive.reader.appliance</module>
-    <!-- <module>org.csstudio.archive.reader.archiverecord</module> Was used by DESY. Currently doesn't provide any data -->
-    <module>org.csstudio.archive.reader.channelarchiver</module>
-    <module>org.csstudio.archive.reader.ea4</module>
-    <module>org.csstudio.archive.reader.pbraw</module>
-    <module>org.csstudio.archive.reader.rdb</module>
-    <module>org.csstudio.archive.reader.rdb.test</module>
-    <module>org.csstudio.archive.vtype</module>
-    <module>org.csstudio.archive.writer</module>
-    <module>org.csstudio.archive.writer.rdb</module>
-    <module>org.csstudio.archive.writer.test</module>
-    
-    
-    
-    
     
     <module>org.csstudio.csdata.clipboard</module>
     <!--<module>org.csstudio.dct</module>-->
@@ -168,14 +132,6 @@
     <module>org.csstudio.utility.treemodel.test</module>
     <!--module>org.csstudio.alarm.beast.test</module--><!-- Error in threading. Test failes to end. -->
     
-    
-    
-    
-    
-    <module>org.csstudio.archive.engine.test</module>
-    <module>org.csstudio.archive.reader.test</module>
-    <module>org.csstudio.archive.reader.appliance.test</module>
-    <module>org.csstudio.archive.vtype.test</module>
     <module>org.csstudio.diag.epics.pvmanager.pvtree.test</module>
     <module>org.csstudio.diag.epics.pvtree.test</module>    
     <module>org.csstudio.diag.postanalyser.test</module>
@@ -184,7 +140,6 @@
     <module>org.csstudio.display.pace.test</module>
     
     <!--module>org.csstudio.apputil.ui.test</module--> <!--UI tests - wrong naming.-->
-    <module>org.csstudio.archive.reader.aapi.test</module>
     
     <module>org.csstudio.shift</module>
     <module>org.csstudio.shift.ui</module>
