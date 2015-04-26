@@ -35,48 +35,48 @@ public class ScanSystemPreferences extends SystemSettings
     private static volatile boolean warned_about_simulation_config = false;
 
     /** @return Path to the scan configuration file */
-	public static String getScanConfigPath()
-	{
-    	final IPreferencesService service = Platform.getPreferencesService();
+    public static String getScanConfigPath()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
         // Use legacy beamline_config, if provided, but prefer scan_config
-    	final String config = service.getString(Activator.ID, "beamline_config", "", null);
-    	if (! config.isEmpty())
-    	{
-    	    if (! warned_about_beamline_config)
-    	    {
-        	    Logger.getLogger(ScanSystemPreferences.class.getName())
+        final String config = service.getString(Activator.ID, "beamline_config", "", null);
+        if (! config.isEmpty())
+        {
+            if (! warned_about_beamline_config)
+            {
+                Logger.getLogger(ScanSystemPreferences.class.getName())
                    .log(Level.WARNING, Activator.ID + "/beamline_config is deprecated, use ../scan_config");
-        	    warned_about_beamline_config = true;
-    	    }
-    	    return config;
-    	}
-    	return service.getString(Activator.ID, "scan_config", "", null);
-	}
+                warned_about_beamline_config = true;
+            }
+            return config;
+        }
+        return service.getString(Activator.ID, "scan_config", "", null);
+    }
 
-	/** Simulation info should also be in same file as scan config,
-	 *  but for backwards compatibility the legacy simulation file is still supported
-	 *  @return Path to the simulation information file
-	 *  @see #getScanConfigPath()
-	 */
-	public static String getSimulationConfigPath()
-	{
-    	final IPreferencesService service = Platform.getPreferencesService();
+    /** Simulation info should also be in same file as scan config,
+     *  but for backwards compatibility the legacy simulation file is still supported
+     *  @return Path to the simulation information file
+     *  @see #getScanConfigPath()
+     */
+    public static String getSimulationConfigPath()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
         // Use legacy simulation_config, if provided, but prefer scan_config
-    	final String config = service.getString(Activator.ID, "simulation_config", "", null);
-    	if (! config.isEmpty())
-    	{
-    	    if (! warned_about_simulation_config)
-    	    {
-        	    Logger.getLogger(ScanSystemPreferences.class.getName())
-        	        .log(Level.WARNING, Activator.ID + "/simulation_config is deprecated, use ../scan_config");
-        	    warned_about_simulation_config = true;
-    	    }
-    	    return config;
-    	}
-	    return getScanConfigPath();
-	}
+        final String config = service.getString(Activator.ID, "simulation_config", "", null);
+        if (! config.isEmpty())
+        {
+            if (! warned_about_simulation_config)
+            {
+                Logger.getLogger(ScanSystemPreferences.class.getName())
+                    .log(Level.WARNING, Activator.ID + "/simulation_config is deprecated, use ../scan_config");
+                warned_about_simulation_config = true;
+            }
+            return config;
+        }
+        return getScanConfigPath();
+    }
 
-	/** @return Paths to pre-scan commands
+    /** @return Paths to pre-scan commands
      *  @throws Exception on error in path list
      */
     public static String[] getPreScanPaths() throws Exception
@@ -115,8 +115,8 @@ public class ScanSystemPreferences extends SystemSettings
         double threshold = 50.0;
         final IPreferencesService service = Platform.getPreferencesService();
         if (service == null) // Run without pref service
-        	return threshold;
-		return service.getDouble(Activator.ID, "old_scan_removal_memory_threshold", threshold, null);
+            return threshold;
+        return service.getDouble(Activator.ID, "old_scan_removal_memory_threshold", threshold, null);
     }
 
     /** @return Memory threshold for data logger */
@@ -127,26 +127,26 @@ public class ScanSystemPreferences extends SystemSettings
     }
 
     /** @return Scan client poll period [millisecs] */
-	public static long getScanClientPollPeriod()
-	{
-		long period = 1000;
-    	final IPreferencesService service = Platform.getPreferencesService();
-    	if (service != null)
-    		period = service.getLong(Activator.ID, "scan_client_poll_period", period, null);
-    	return period;
-	}
+    public static long getScanClientPollPeriod()
+    {
+        long period = 1000;
+        final IPreferencesService service = Platform.getPreferencesService();
+        if (service != null)
+            period = service.getLong(Activator.ID, "scan_client_poll_period", period, null);
+        return period;
+    }
 
     /** @return Prefix to scan server status PVs */
-	public static String getStatusPvPrefix()
-	{
-		String prefix = "Demo:Scan:";
-    	final IPreferencesService service = Platform.getPreferencesService();
-    	if (service != null)
-    		prefix = service.getString(Activator.ID, "status_pv_prefix", prefix, null);
-    	return prefix;
-	}
+    public static String getStatusPvPrefix()
+    {
+        String prefix = "Demo:Scan:";
+        final IPreferencesService service = Platform.getPreferencesService();
+        if (service != null)
+            prefix = service.getString(Activator.ID, "status_pv_prefix", prefix, null);
+        return prefix;
+    }
 
-	/** @return Macros. Not <code>null</code> */
+    /** @return Macros. Not <code>null</code> */
     public static String getMacros()
     {
         final IPreferencesService service = Platform.getPreferencesService();
@@ -156,17 +156,17 @@ public class ScanSystemPreferences extends SystemSettings
         return macros;
     }
 
-    /** @return Minimum PV update period [seconds] */
-    public static double getMinPVUpdatePeriod()
+    /** @return Log command read timeout [seconds] */
+    public static double getLogCommandReadTimeout()
     {
-        double period = 0.01;
+        double period = 20.0;
         final IPreferencesService service = Platform.getPreferencesService();
         if (service != null)
-            period = service.getDouble(Activator.ID, "pv_min_update_period", period, null);
+            period = service.getDouble(Activator.ID, "log_command_read_timeout", period, null);
         return period;
     }
 
-	/** Set system properties (which are in the end what's actually used)
+    /** Set system properties (which are in the end what's actually used)
      *  from Eclipse preferences (which are more accessible for Eclipse tools
      *  with plugin_customization or preference GUI)
      */
