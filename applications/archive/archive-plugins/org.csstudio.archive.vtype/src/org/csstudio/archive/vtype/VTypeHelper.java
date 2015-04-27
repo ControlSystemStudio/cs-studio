@@ -44,12 +44,14 @@ public class VTypeHelper
         if (value instanceof VNumberArray)
         {
             final ListNumber data = ((VNumberArray) value).getData();
-            return data.getDouble(0);
+            if (data.size() > 0)
+                return data.getDouble(0);
         }
         if (value instanceof VEnumArray)
         {
             final ListInt data = ((VEnumArray) value).getIndexes();
-            return data.getDouble(0);
+            if (data.size() > 0)
+                return data.getDouble(0);
         }
         return Double.NaN;
     }

@@ -11,10 +11,13 @@
 
 <h2><a name=overview>Overview</a></h2> 
 <p>
-OPI Validation tool provides means to validate and fix existing OPI files and is build on the Eclipse's
-validation framework. The tool verifies if a selected OPI file matches the settings from the OPI Schema
-following certain predefined rules. For those validation failures that is possible an options is offered
-to quick fix the issue.
+OPI Validation tool built on the Eclipse's validation framework provides means to validate and quickly fix existing OPI files with regards to the OPI schema. 
+Validation can be invoked manually on an OPI file or group of OPI files by invoking the "Validate" context menu item. 
+Manually invoking validation will run validation in the background. When validation completes, a validation results dialog is displayed, and any problems found will be shown in the Problems view. 
+To open the Problems view, select Problems from the menu bar Window -> Show View -> Other... -> General -> Problems. 
+Double-clicking on an error/warning/info message in this view opens the respective editor (OPI Editor or OPI Runtime) and highlights the failing widget. 
+Finally, from the Problems view, fixes can be applied on one or many error/warning messages by invoking the "Quick fix" context menu item. 
+A confirmation is asked for making a backup before applying the fix. After the quick fix is completed, the modified OPI files are revalidated.
 </p>
 
 <h2><a name=started>Getting Started</a></h2> 
@@ -22,22 +25,9 @@ to quick fix the issue.
 The validation plugin requires two input files <i>OPI Schema</i> and <i>Validation Rules</i> definition file.
 First make sure that you have a schema file well defined and that the properties of individual widgets in
 the schema are exactly like you want them. Then you need to compose the validation rules; for each property
-of a widget there can be exactly one defining how that property is validated (read-only, write or read/write).
+of a widget there can be exactly one defining how that property is validated - 
+read-only: the user is not allowed to change this property; write: the user has to specify this property; read/write: the user can overwrite the default property value.
 After you have the definition file ready, select it in the OPI Validation preferences page.
-</p>
-<p>
-To start validation select one or more OPI files (or a folder/project containing multiple files), right click
-that resources and select <i>Validation</i> from the popup menu. The validation tool will validate all OPI files
-and upon completion show the summary result in a dialog. The details of all validation failures will be visible
-in the <i>Problems View</i> which will automatically appear when the validation completes. You can inspect
-the details of the failures in the table; double click will take you to the problematic widget in the OPI Editor,
-if possible.
-</p>
-<p>
-Some validation failures include a quick fix. These are mostly the failures of read-only rules. When a quick
-fix exist the <i>Quick Fx</i> menu item will be available in the popup menu of the validation failure in te 
-problems view. By selecting the quick fix, CSS will automatically attempt to fix the problem (you will be prompted
-to make a backup of the file). After a quick fix is completed the file is revalidated.   
 </p>
 
 <h2><a name=started>Validation Rules Definition</a></h2> 
@@ -47,9 +37,9 @@ define every rule in a single line and use '#' or '!' for line comments. There a
 definitions that each property can have:
 </p>
 <ul>
-<li>RO: The property is read only should not be changed by the user. Only the values from the schema are valid.</li>
-<li>WRITE: The property is obligatory writable, which means that it has to have a value that is not an empty string or other undefined value.</i>
-<li>RW: User can change the property anyway she likes (this is the default rule for all properties).</li>
+<li>RO: The property is read-only and should not be changed by the user. Only the values from the schema are valid.</li>
+<li>WRITE: The property has to be specified by the user, which means that it has to have a value that is not an empty string or other undefined value.</i>
+<li>RW: User can change the property value. This is the default rule for all properties.</li>
 </ul>
 <p>
 The rules should be defined for all properties of all widgets that should be validated.
@@ -76,10 +66,13 @@ Examples:
 <li><i>border_width=RO</i> - Border width of all widgets is defined by the schema.</li>
 <li><i>actionbutton.border_width=RW</i> - Border width of action button can be changed.</li>
 <li><i>trace_[0-9]+_trace_color=RO</i> - Trace color for any trace is defined by the schema.</li>
-<li><i>[a-z_0-9]*name=RO</i> - Any property anding with a 'name' is defined by schema.</li>
+<li><i>[a-z_0-9]*name=RO</i> - Any property ending with a 'name' is defined by schema.</li>
 </ul>
 <p>
-Rules can also specify additional acceptable values. These are the values may or may be not
+Fonts and colors specified by the user are checked against the BOY font and color definition files. 
+</p>
+<p>
+Rules can also specify additional acceptable values. These are the values that may or may be not
 identical to whatever is used in the OPI schema, but they are acceptable to be used for the
 specified property. For example: the OPI schema defined that the background color of a
 groupingContainer should be 'IO Background', however the value 'IO Area Background' is also
@@ -117,10 +110,10 @@ The Preferences page is available in <i>CSS Applications, Display, BOY, OPI Vali
 The following options are available:
 </p>
 <ul>
-<li>Path to the validation rules definition file</li>
+<li>Path to the validation rules definition file.</li>
 <li>Prompt user to do a backup of the file before every quick fix.</li>
-<li>If the propmpt for backup is turned off, user can select whether to make backup automatically or not</li>
-<li>Show summary dialog with statistics after the end of each validation</li>
+<li>If the prompt for backup is turned off, user can select whether to make backup automatically or not.</li>
+<li>Show summary dialog with statistics after the end of each validation.</li>
 <li>Nest validation failures in the problems view or show all failures in a flat style. Some properties (e.g. rules)
 have sub properties. If a failure in such sub property is discovered it can be nested under the parent property
 failure marker in the problems view.</li>
@@ -128,7 +121,7 @@ failure marker in the problems view.</li>
 problems view will only show marker for the resources involved in the last validation. If not checked,
 problems view will show markers until they are fixed or CSS exits.</li>
 <li>When double clicking a marker in the problems view the failure can be displayed in the default editor
-for that file (e.g. OPIEditor) or in a text editor.</li>
+for that file (e.g. OPI Editor) or in a text/XML editor.</li>
 </ul>
 </body>
 </html>
