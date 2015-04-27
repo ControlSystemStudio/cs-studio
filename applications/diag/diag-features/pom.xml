@@ -7,4 +7,7 @@
   </parent>
   <artifactId>diag-features</artifactId>
   <packaging>pom</packaging>
+  <modules>
+  	<module>org.csstudio.diag.feature</module>
+  </modules>
 </project>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.csstudio.diag.feature_1.0.0.qualifier.jar" id="org.csstudio.diag.feature" version="1.0.0.qualifier">
+   <feature id="org.csstudio.diag.feature" version="1.0.0.qualifier">
       <category name="org.csstudio.category.applications"/>
    </feature>
    <category-def name="org.csstudio.category.applications" label="CS-Studio Applications"/>
