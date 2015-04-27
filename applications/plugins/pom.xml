@@ -24,12 +24,12 @@
     <module>org.csstudio.debugging.jmsmonitor</module>
     <module>org.csstudio.debugging.rdbshell</module>
     <module>org.csstudio.desy.logging.ui</module>
-    <module>org.csstudio.diag.epics.pvmanager.pvtree</module>
-    <module>org.csstudio.diag.epics.pvtree</module>
-    <module>org.csstudio.diag.postanalyser</module>
-    <module>org.csstudio.diag.probe</module>
-    <module>org.csstudio.diag.pvfields</module>
-    <module>org.csstudio.diag.pvmanager.probe</module>
+    
+    
+    
+    
+    
+    
     <module>org.csstudio.display.pace</module>
     <module>org.csstudio.display.pvtable</module>
     <module>org.csstudio.display.pvtable.test</module>
@@ -132,9 +132,9 @@
     <module>org.csstudio.utility.treemodel.test</module>
     <!--module>org.csstudio.alarm.beast.test</module--><!-- Error in threading. Test failes to end. -->
     
-    <module>org.csstudio.diag.epics.pvmanager.pvtree.test</module>
-    <module>org.csstudio.diag.epics.pvtree.test</module>    
-    <module>org.csstudio.diag.postanalyser.test</module>
+    
+        
+    
     <!--module>org.csstudio.diag.pvfields.test</module--> <!--Tests do not end.-->
     
     <module>org.csstudio.display.pace.test</module>
