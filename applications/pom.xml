@@ -223,6 +223,7 @@
 		<module>scan</module>
 		<module>databrowser</module>
 		<module>shift</module>
+		<module>diag</module>
 	</modules>
 
 
