@@ -6,4 +6,5 @@
     <version>4.1.0-SNAPSHOT</version>
   </parent>
   <artifactId>shift-repository</artifactId>
+  <packaging>eclipse-repository</packaging>
 </project>
