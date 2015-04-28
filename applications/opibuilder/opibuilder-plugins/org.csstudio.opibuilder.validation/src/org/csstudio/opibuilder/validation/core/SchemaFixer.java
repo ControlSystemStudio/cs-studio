@@ -90,10 +90,14 @@ public class SchemaFixer {
                 if (f.getRule() == ValidationRule.RO) {
                     model.setPropertyValue(f.getProperty(), f.getExpectedValue());
                 } else if (f.getRule() == ValidationRule.WRITE) {
-                    //the only writable and fixable properties are actions, scripts and rules
+                    //the only writable and fixable properties are actions, scripts and rules, fonts and colors
                     //in this case add the missing ones to the model
-                    Object value = model.getPropertyValue(f.getProperty());
-                    addToValue(value, f.getExpectedValue());
+                    if (f.isUsingUndefinedValue()) {
+                        model.setPropertyValue(f.getProperty(), f.getExpectedValue());
+                    } else {
+                        Object value = model.getPropertyValue(f.getProperty());
+                        addToValue(value, f.getExpectedValue());
+                    }
                 } else if (f.getRule() == ValidationRule.RW) {
                     //if this is color
                     if (f.isUsingUndefinedValue()) {

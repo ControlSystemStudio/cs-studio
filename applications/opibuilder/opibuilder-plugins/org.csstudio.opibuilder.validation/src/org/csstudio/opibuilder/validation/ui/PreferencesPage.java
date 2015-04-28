@@ -108,6 +108,10 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
         useDefaultEditor.getDescriptionControl(parent).setToolTipText(
                 "If checked a validation marker will be displayed in the default editor. If unchecked, the marker will "
                 + "always be displayed in the text editor.");
-        addField(useDefaultEditor);        
+        addField(useDefaultEditor);     
+        
+        BooleanFieldEditor saveResourcesEditor = new BooleanFieldEditor(Activator.PREF_SAVE_BEFORE_VALIDATION, 
+                "Save all modified resources automatically prior to validation?", parent);
+        addField(saveResourcesEditor);  
     }    
 }

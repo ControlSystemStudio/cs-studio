@@ -46,6 +46,8 @@ public class Activator extends AbstractUIPlugin {
     public static final String PREF_CLEAR_MARKERS = "clearMarkers";
     /** Preference if markers should be displayed in the default editor or in the text editor when double clicked */
     public static final String PREF_SHOW_MARKERS_IN_DEFAULT_EDITOR = "showMarkersInDefaultEditor";
+    /** Preference if resource should be saved before validating it */
+    public static final String PREF_SAVE_BEFORE_VALIDATION = "saveResourcesBeforeValidation";
     
     private static Activator instance; 
     
@@ -146,6 +148,13 @@ public class Activator extends AbstractUIPlugin {
      */
     public boolean isShowMarkersInDefaultEditor() {
         return getPreferenceStore().getBoolean(PREF_SHOW_MARKERS_IN_DEFAULT_EDITOR);
+    }
+    
+    /**
+     * @return true if dirty resources are automatically saved before being validated
+     */
+    public boolean isSaveBeforeValidation() {
+        return getPreferenceStore().getBoolean(PREF_SAVE_BEFORE_VALIDATION);
     }
     
     private static IPath getExistFileInRepoAndSearchPath(String pathString){

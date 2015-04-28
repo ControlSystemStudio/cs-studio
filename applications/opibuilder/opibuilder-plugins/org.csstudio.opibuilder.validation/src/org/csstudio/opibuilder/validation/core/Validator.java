@@ -100,6 +100,17 @@ public class Validator extends AbstractValidator {
             return null;
         }
         
+        try {
+            if(!Utilities.shouldContinueIfFileOpen("validation",resource)) {
+                monitor.setCanceled(true);
+                return null;
+            }
+        } catch (PartInitException e) {
+            LOGGER.log(Level.SEVERE, "Could not obtain editor inputs.", e);
+            monitor.setCanceled(true);
+            return null;
+        }
+        
         boolean useDefaultEditor = Activator.getInstance().isShowMarkersInDefaultEditor();
         ValidationResult result = new ValidationResult();
         try {

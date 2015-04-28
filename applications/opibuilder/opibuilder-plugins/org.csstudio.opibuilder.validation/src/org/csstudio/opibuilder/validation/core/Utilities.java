@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.csstudio.opibuilder.editor.OPIEditor;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.ConnectionModel;
@@ -24,9 +25,22 @@ import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.opibuilder.script.RuleData;
 import org.csstudio.opibuilder.script.ScriptData;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.validation.Activator;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
+import org.csstudio.ui.util.NoResourceEditorInput;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 
 /**
  * 
@@ -41,6 +55,14 @@ public final class Utilities {
     static final String PROP_ACTION_HOOK_ALL = "hook_all";
     static final String PROP_ACTION_HOOK = "hook";
     
+    /**
+     * Get message for the rule match failure.
+     * 
+     * @see #areRulesIdentical(RuleData, RuleData)
+     * 
+     * @param value the rule comparison value
+     * @return message corresponding to the given value
+     */
     public static String ruleMatchValueToMessage(int value) {
         switch(value) {
             case 1: return "PV name or trigger value does not match";
@@ -50,6 +72,14 @@ public final class Utilities {
         }
     }
     
+    /**
+     * Get message for the action match failure.
+     * 
+     * @see #areActionsIdentical(AbstractWidgetAction, AbstractWidgetAction)
+     * 
+     * @param value the action comparison value
+     * @return message corresponding to the given value
+     */
     public static String actionMatchValueToMessage(int value) {
         if (value == 1) {
             return "Action of the same type was found, but the properties values were different";
@@ -57,6 +87,14 @@ public final class Utilities {
         return null;
     }
     
+    /**
+     * Get message for the script match failure.
+     * 
+     * @see #areScriptsIdentical(ScriptData, ScriptData)
+     * 
+     * @param value the script comparison failure
+     * @return message corresponding to the given value
+     */
     public static String scriptMatchValueToMessage(int value) {
         switch(value) {
             case 1: return "PV name or trigger value does not match";
@@ -205,5 +243,53 @@ public final class Utilities {
                 loadModelFromContainer((AbstractContainerModel) model, map);
             }
         }
+    }
+    
+    /**
+     * Check if any of the resources are currently open in any of the editors. If yes and the file is not
+     * saved, a popup message will inform the user about that and ask to continue or cancel. If the user
+     * cancels the popup at any time, the method returns false. If there are no dirty files or if the user
+     * confirms all popups, method returns true.
+     * 
+     * @param process the name of the process that is being done (validation, quick fix)
+     * @param resources the resources to check
+     * @return true if all messages have been confirmed or no resource is dirty, false if at least one popup has been
+     *          cancelled
+     * @throws PartInitException if initialisation of the editor failed
+     */
+    public static boolean shouldContinueIfFileOpen(String process, IResource... resources) 
+            throws PartInitException {
+        final boolean save = Activator.getInstance().isSaveBeforeValidation(); 
+        IWorkbenchWindow[] windows = PlatformUI.getWorkbench().getWorkbenchWindows();
+        for (IWorkbenchWindow w : windows) {
+            for (IEditorReference r : w.getActivePage().getEditorReferences()) {
+                if (OPIEditor.ID.equals(r.getId()) && r.isDirty()) {
+                    IEditorInput input = r.getEditorInput();
+                    if (input instanceof NoResourceEditorInput) {
+                        input = ((NoResourceEditorInput) input).getOriginEditorInput();
+                    }
+                    if (input instanceof FileEditorInput) {
+                        final IFile file = ((FileEditorInput) input).getFile();
+                        for (IResource m : resources) {
+                            if(m.equals(file)) {
+                                if (save) {
+                                    Display.getDefault().syncExec(()->
+                                        r.getEditor(false).doSave(new NullProgressMonitor()));
+                                } else {
+                                    final Shell shell = w.getShell();
+                                    boolean[] ret = new boolean[1];
+                                    Display.getDefault().syncExec(()->
+                                       ret[0] = MessageDialog.openConfirm(shell, "File Is Being Edited", 
+                                               "The OPI file " + file.getFullPath() + " is being edited and has unsaved " +
+                                               "changes.\nClick OK to continue " + process + " or Cancel to abort."));
+                                    if (!ret[0]) return false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 }

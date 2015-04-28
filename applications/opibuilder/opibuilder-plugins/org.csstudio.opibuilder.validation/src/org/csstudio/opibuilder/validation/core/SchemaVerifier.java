@@ -26,6 +26,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+
+
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
@@ -51,6 +53,8 @@ import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
+import org.csstudio.opibuilder.widgets.editparts.ArrayEditPart;
+import org.csstudio.opibuilder.widgets.model.ArrayModel;
 import org.csstudio.opibuilder.widgets.model.LinkingContainerModel;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -117,6 +121,7 @@ public class SchemaVerifier {
     private Method registerPropertyChangeHandlersMethod;
     private Method registerBasePropertyChangeHandlersMethod;
     private Method doCreateFigureMethod;
+    private Method hookChildMethod;
         
     private final Map<String, ValidationRule> rules;
     private final Map<Pattern, ValidationRule> patternRules;
@@ -309,6 +314,9 @@ public class SchemaVerifier {
                 doCreateFigureMethod = AbstractGraphicalEditPart.class
                         .getDeclaredMethod("createFigure");
                 doCreateFigureMethod.setAccessible(true);
+                hookChildMethod = ArrayEditPart.class.getDeclaredMethod("hookChild", 
+                        EditPart.class, int.class, boolean.class);
+                hookChildMethod.setAccessible(true);
             } catch (NoSuchMethodException | SecurityException e) {
                 LOGGER.log(Level.WARNING, "Cannot register property change handlers.", e);
             }
@@ -344,7 +352,7 @@ public class SchemaVerifier {
         
         numberOfAnalyzedFiles++;
         List<ValidationFailure> failures = new NonNullArrayList<>();
-        check(opi, displayModel, failures);    
+        checkWidget(opi, displayModel, failures);    
         findCoordinates(failures.toArray(new ValidationFailure[failures.size()]), opi);
         if (!failures.isEmpty()) {
             numberOfFilesFailures++;
@@ -522,11 +530,14 @@ public class SchemaVerifier {
         if (original != null) {
             Set<String> properties = model.getAllPropertyIDs() ;
             for (String p : properties) {
+                if (model instanceof DisplayModel && "background_color".equals(p)) {
+                    System.out.println("ffdfds");
+                }
                 rule = getRuleForProperty(p, widgetType);
                 modelVal = model.getPropertyValue(p);
                 orgVal = original.getPropertyValue(p);
                 //if the checked property is not savable (e.g. background color for action button), ignore it
-                if (!model.getProperty(p).isSavable()) {
+                if (!model.getProperty(p).isVisibleInPropSheet()) {
                     continue;
                 }
                 if (rule == ValidationRule.RW) {
@@ -634,6 +645,17 @@ public class SchemaVerifier {
                             registerPropertyChangeHandlersMethod.invoke(editPart);
                         }
                     } catch (Exception e) {}
+                }
+                if (editPart instanceof ArrayEditPart) {
+                    List<AbstractWidgetModel> children = ((ArrayModel)model).getChildren();
+                    int i = 0;
+                    for (AbstractWidgetModel m : children) {
+                        initModel(m);
+                        EditPart ep = editPartFactory.createEditPart(null, m);
+                        try {
+                            hookChildMethod.invoke(editPart, ep, i++, true);
+                        } catch (Exception e) {}
+                    }
                 }
                 
             });
