@@ -123,6 +123,10 @@ public class AlarmTableView extends ViewPart
         if (groupSet != null)
         {
             this.group = Boolean.valueOf(groupSet);
+        } 
+        else 
+        {
+            this.group = Activator.getDefault().getPreferenceStore().getBoolean(ALARM_TABLE_GROUP_SETTING);
         }
         String[] columns = Activator.getDefault().getDialogSettings().getArray(ALARM_TABLE_COLUMN_SETTING);
         if (columns == null) 
@@ -163,14 +167,7 @@ public class AlarmTableView extends ViewPart
     {
         this.columns = columns;
         Activator.getDefault().getDialogSettings().put(ALARM_TABLE_COLUMN_SETTING, ColumnWrapper.toSaveArray(columns));
-        if (gui != null) 
-        {
-            parent.getDisplay().asyncExec(() ->
-            { 
-                makeGUI();
-                parent.layout();
-            });
-        }
+        redoGUI();
     }
     
     private void makeGUI()
@@ -182,21 +179,9 @@ public class AlarmTableView extends ViewPart
         gui = new GUI(parent, model, getSite(), Activator.getDefault().getDialogSettings(), 
                 group, columns);
     }
-
-    @Override
-    public void setFocus()
-    {
-        // NOP
-    }
     
-    /**
-     * 
-     * @param group
-     */
-    public void group(boolean group)
+    private void redoGUI() 
     {
-        this.group = group;
-        Activator.getDefault().getDialogSettings().put(ALARM_TABLE_GROUP_SETTING, this.group);
         if (gui != null) 
         {
             parent.getDisplay().asyncExec(() ->
@@ -205,5 +190,24 @@ public class AlarmTableView extends ViewPart
                 parent.layout();
             });
         }
+    }
+
+    @Override
+    public void setFocus()
+    {
+        // NOP
+    }
+    
+    /**
+     * Group the alarms into two separate tables (by the acknowledge status) or display them all in one table.
+     * 
+     * @param group true if the acknowledged and unacknowledged alarms should be displayed in separate tables,
+     *          or false if they should be displayed all in one table
+     */
+    public void group(boolean group)
+    {
+        this.group = group;
+        Activator.getDefault().getDialogSettings().put(ALARM_TABLE_GROUP_SETTING, this.group);
+        redoGUI();
     }
 }

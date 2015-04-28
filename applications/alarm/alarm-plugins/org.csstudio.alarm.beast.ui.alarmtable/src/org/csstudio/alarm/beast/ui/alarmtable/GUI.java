@@ -43,12 +43,8 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.layout.TableColumnLayout;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.CheckboxCellEditor;
-import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -84,45 +80,9 @@ import org.eclipse.ui.IWorkbenchPartSite;
  * 
  * @author Kay Kasemir
  */
-public class GUI implements AlarmClientModelListener {
+public class GUI implements AlarmClientModelListener
+{
     private static final Logger LOGGER = Logger.getLogger(GUI.class.getName());
-
-    /**
-     * 
-     * <code>AcknowledgeEditingSupport</code> is the support for the acknowledge action column. On set value it triggers
-     * the acknowledge or un-acknowledge action.
-     *
-     * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
-     *
-     */
-    private static class AcknowledgeEditingSupport extends EditingSupport {
-
-        public AcknowledgeEditingSupport(ColumnViewer viewer) {
-            super(viewer);
-        }
-
-        @Override
-        protected CellEditor getCellEditor(final Object element) {
-            return new CheckboxCellEditor(((TableViewer) getViewer()).getTable());
-        }
-
-        @Override
-        protected Object getValue(final Object element) {
-            return ((AlarmTreePV) element).getSeverity().isActive();
-        }
-
-        @Override
-        protected void setValue(final Object element, final Object value) {
-            if (value instanceof Boolean) {
-                ((AlarmTreePV) element).acknowledge(!(Boolean) value);
-            }
-        }
-
-        @Override
-        protected boolean canEdit(Object element) {
-            return element instanceof AlarmTreePV;
-        }
-    }
 
     /**
      * Persistence: Tags within dialog settings, actually written to
@@ -177,12 +137,15 @@ public class GUI implements AlarmClientModelListener {
     private final ColumnWrapper[] columns;
 
     /** GUI updates are throttled to reduce flicker */
-    final private GUIUpdateThrottle gui_update = new GUIUpdateThrottle() {
+    final private GUIUpdateThrottle gui_update = new GUIUpdateThrottle()
+    {
         @Override
-        protected void fire() {
+        protected void fire()
+        {
             if (display.isDisposed())
                 return;
-            display.syncExec(() -> {
+            display.syncExec(() ->
+            {
                 // System.out.println("GUI Update");
                 if (current_alarms.isDisposed())
                     return;
@@ -218,7 +181,8 @@ public class GUI implements AlarmClientModelListener {
      *            column configuration for the tables
      */
     public GUI(final Composite parent, final AlarmClientModel model, final IWorkbenchPartSite site,
-            final IDialogSettings settings, boolean group, ColumnWrapper[] columns) {
+            final IDialogSettings settings, boolean group, ColumnWrapper[] columns)
+    {
         display = parent.getDisplay();
         this.group = group;
         this.model = model;
@@ -233,9 +197,11 @@ public class GUI implements AlarmClientModelListener {
 
         // Subscribe to model updates, arrange to un-subscribe
         model.addListener(this);
-        baseComposite.addDisposeListener(new DisposeListener() {
+        baseComposite.addDisposeListener(new DisposeListener()
+        {
             @Override
-            public void widgetDisposed(DisposeEvent e) {
+            public void widgetDisposed(DisposeEvent e)
+            {
                 saveSettings();
                 model.removeListener(GUI.this);
                 gui_update.dispose();
@@ -243,22 +209,28 @@ public class GUI implements AlarmClientModelListener {
         });
 
         connectContextMenu(active_table_viewer, site);
-        if (group) {
+        if (group)
+        {
             connectContextMenu(acknowledged_table_viewer, site);
         }
 
         // Allow 'drag' of alarm info as text
-        new ControlSystemDragSource(active_table_viewer.getTable()) {
+        new ControlSystemDragSource(active_table_viewer.getTable())
+        {
             @Override
-            public Object getSelection() {
+            public Object getSelection()
+            {
                 return SelectionHelper.getAlarmTreePVsForDragging((IStructuredSelection) active_table_viewer
                         .getSelection());
             }
         };
-        if (group) {
-            new ControlSystemDragSource(acknowledged_table_viewer.getTable()) {
+        if (group)
+        {
+            new ControlSystemDragSource(acknowledged_table_viewer.getTable())
+            {
                 @Override
-                public Object getSelection() {
+                public Object getSelection()
+                {
                     return SelectionHelper.getAlarmTreePVsForDragging((IStructuredSelection) acknowledged_table_viewer
                             .getSelection());
                 }
@@ -268,12 +240,14 @@ public class GUI implements AlarmClientModelListener {
     }
 
     /** @return Table of active alarms */
-    public TableViewer getActiveAlarmTable() {
+    public TableViewer getActiveAlarmTable()
+    {
         return active_table_viewer;
     }
 
     /** @return Table of acknowledged alarms */
-    public TableViewer getAcknowledgedAlarmTable() {
+    public TableViewer getAcknowledgedAlarmTable()
+    {
         return group ? acknowledged_table_viewer : active_table_viewer;
     }
 
@@ -283,21 +257,27 @@ public class GUI implements AlarmClientModelListener {
      * @param parent
      *            Parent widget
      */
-    private void createComponents(final Composite parent) {
+    private void createComponents(final Composite parent)
+    {
         parent.setLayout(new FillLayout());
 
         int sort_column = ColumnInfo.SEVERITY.ordinal();
         boolean sort_up = false;
-        if (settings != null) {
-            try {
+        if (settings != null)
+        {
+            try
+            {
                 sort_column = settings.getInt(ALARM_TABLE_SORT_COLUMN);
                 sort_up = settings.getBoolean(ALARM_TABLE_SORT_UP);
-            } catch (NumberFormatException ex) {
+            } 
+            catch (NumberFormatException ex)
+            {
                 // Ignore, use default
             }
         }
 
-        if (group) {
+        if (group)
+        {
             baseComposite = new SashForm(parent, SWT.VERTICAL | SWT.SMOOTH);
             baseComposite.setLayout(new FillLayout());
             color_provider = new SeverityColorProvider(baseComposite);
@@ -306,8 +286,11 @@ public class GUI implements AlarmClientModelListener {
             // probably cause both tables to sort by time.
             addActiveAlarmSashElement(baseComposite, sort_column, sort_up);
             addAcknowledgedAlarmSashElement(baseComposite, sort_column, sort_up);
-            ((SashForm) baseComposite).setWeights(new int[] { 80, 20 });
-        } else {
+            ((SashForm) baseComposite).setWeights(new int[]
+            { 80, 20 });
+        } 
+        else
+        {
             baseComposite = new Composite(parent, SWT.NONE);
             baseComposite.setLayout(new FillLayout());
             color_provider = new SeverityColorProvider(baseComposite);
@@ -319,7 +302,8 @@ public class GUI implements AlarmClientModelListener {
                 "FILTER", filter) //$NON-NLS-1$
         {
             @Override
-            public void itemSelected(final String selection) {
+            public void itemSelected(final String selection)
+            {
                 final String filter_text = filter.getText().trim();
                 // Turn glob-type filter into regex, then pattern
                 final Pattern pattern = Pattern.compile(RegExHelper.fullRegexFromGlob(filter_text),
@@ -332,9 +316,11 @@ public class GUI implements AlarmClientModelListener {
         filter_history.loadSettings();
 
         // Clear filter, un-select all items
-        unselect.addSelectionListener(new SelectionAdapter() {
+        unselect.addSelectionListener(new SelectionAdapter()
+        {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(SelectionEvent e)
+            {
                 filter.setText(""); //$NON-NLS-1$
                 active_table_viewer.setSelection(null, true);
                 if (group)
@@ -346,7 +332,8 @@ public class GUI implements AlarmClientModelListener {
     }
 
     /** Save table settings */
-    private void saveSettings() {
+    private void saveSettings()
+    {
         if (settings == null)
             return;
 
@@ -357,11 +344,14 @@ public class GUI implements AlarmClientModelListener {
 
         final int col_count = table.getColumnCount();
         for (int column = 0; column < col_count; ++column)
-            if (table.getColumn(column) == sort_column) {
+        {
+            if (table.getColumn(column) == sort_column)
+            {
                 settings.put(ALARM_TABLE_SORT_COLUMN, column);
                 settings.put(ALARM_TABLE_SORT_UP, table.getSortDirection() == SWT.UP);
                 return;
             }
+        }
     }
 
     /**
@@ -372,7 +362,8 @@ public class GUI implements AlarmClientModelListener {
      * @param sort_column
      * @param sort_up
      */
-    private void addActiveAlarmSashElement(final Composite sash, final int sort_column, final boolean sort_up) {
+    private void addActiveAlarmSashElement(final Composite sash, final int sort_column, final boolean sort_up)
+    {
         final Composite box = new Composite(sash, SWT.BORDER);
         final GridLayout layout = new GridLayout();
         layout.numColumns = group ? 5 : 6;
@@ -382,7 +373,8 @@ public class GUI implements AlarmClientModelListener {
         current_alarms.setText(NLS.bind(Messages.CurrentAlarmsFmt, ALARM_COUNT_PLACEHOLDER));
         current_alarms.setLayoutData(new GridData());
 
-        if (!group) {
+        if (!group)
+        {
             acknowledged_alarms = new Label(box, 0);
             acknowledged_alarms.setText(NLS.bind(Messages.AcknowledgedAlarmsFmt, ALARM_COUNT_PLACEHOLDER));
             acknowledged_alarms.setLayoutData(new GridData());
@@ -426,7 +418,8 @@ public class GUI implements AlarmClientModelListener {
      * @param sort_column
      * @param sort_up
      */
-    private void addAcknowledgedAlarmSashElement(final Composite sash, final int sort_column, final boolean sort_up) {
+    private void addAcknowledgedAlarmSashElement(final Composite sash, final int sort_column, final boolean sort_up)
+    {
         final Composite box = new Composite(sash, SWT.BORDER);
         box.setLayout(new GridLayout());
 
@@ -449,10 +442,12 @@ public class GUI implements AlarmClientModelListener {
      * @param table_viewer
      *            Table in which to select PVs
      */
-    private void selectFilteredPVs(final Pattern pattern, final TableViewer table_viewer) {
+    private void selectFilteredPVs(final Pattern pattern, final TableViewer table_viewer)
+    {
         final AlarmTreePV pvs[] = ((AlarmTableContentProvider) table_viewer.getContentProvider()).getAlarms();
         final ArrayList<AlarmTreePV> selected = new ArrayList<AlarmTreePV>();
-        for (AlarmTreePV pv : pvs) {
+        for (AlarmTreePV pv : pvs)
+        {
             if (pattern.matcher(pv.getName()).matches() || pattern.matcher(pv.getDescription()).matches())
                 selected.add(pv);
         }
@@ -471,7 +466,8 @@ public class GUI implements AlarmClientModelListener {
      * @return TableViewer, still needs input
      */
     private TableViewer createAlarmTable(final Composite parent, final int sort_column, final boolean sort_up,
-            final boolean is_active_alarm_table) {
+            final boolean is_active_alarm_table)
+    {
         // TableColumnLayout requires the TableViewer to be in its own Composite
         final GridLayout parent_layout = (GridLayout) parent.getLayout();
         final Composite table_parent = new Composite(parent, 0);
@@ -496,7 +492,8 @@ public class GUI implements AlarmClientModelListener {
 
         // Create the columns of the table, using a fixed initial width.
         int column_number = 0;
-        for (ColumnWrapper cw : columns) {
+        for (ColumnWrapper cw : columns)
+        {
             if (!cw.isVisible())
                 continue;
             ColumnInfo col_info = cw.getColumnInfo();
@@ -519,63 +516,85 @@ public class GUI implements AlarmClientModelListener {
                 sel_listener.setSortDirection(sort_up);
             ++column_number;
 
-            if (col_info == ColumnInfo.ACK) {
-                view_col.setEditingSupport(new AcknowledgeEditingSupport(table_viewer));
+            if (col_info == ColumnInfo.ACK)
+            {
                 table_col.setToolTipText(Messages.AcknowledgeColumnHeaderTooltip);
             }
         }
 
-        table.addMouseListener(new MouseAdapter() {
+        table.addMouseListener(new MouseAdapter()
+        {
             @Override
-            public void mouseDown(MouseEvent e) {
-                //in a normal world this would be done with the editing support, but we want
-                //to acknowledge all selected alarms, and not just the clicked one
+            public void mouseDown(MouseEvent e)
+            {
+                // in a normal world this would be done with the editing support, but we want
+                // to acknowledge all selected alarms, and not just the clicked one
                 Point pt = new Point(e.x, e.y);
                 TableItem item = table.getItem(new Point(e.x, e.y));
                 int column = -1;
-                for (int i = 0; i < table_viewer.getTable().getColumnCount(); i++) {
+                for (int i = 0; i < table_viewer.getTable().getColumnCount(); i++)
+                {
                     Rectangle rect = item.getBounds(i);
-                    if (rect.contains(pt)) {
+                    if (rect.contains(pt))
+                    {
                         column = i;
                     }
                 }
-                if (column == -1) return;
+                if (column == -1)
+                    return;
                 TableColumn col = table_viewer.getTable().getColumn(column);
-                if (!ColumnInfo.ACK.getTitle().equals(col.getText())) {
+                if (!ColumnInfo.ACK.getTitle().equals(col.getText()))
+                {
                     return;
                 }
-                //the clicked item should always be handled
+                
+                boolean acknowledge = is_active_alarm_table;
                 AlarmTreePV pv = null;
-                if (item != null && item.getData() instanceof AlarmTreePV) {
+                if (item != null && item.getData() instanceof AlarmTreePV)
+                {
+                    // the clicked item should always be handled and it should prescribe whether the 
+                    // all items are being acknowledged or unacknowledged. 
                     pv = (AlarmTreePV) item.getData();
-                    pv.acknowledge(is_active_alarm_table);
+                    acknowledge = group ? is_active_alarm_table : pv.getSeverity().isActive(); 
+                    pv.acknowledge(acknowledge);
                 }
 
                 IStructuredSelection selection = (IStructuredSelection) table_viewer.getSelection();
                 Iterator<?> it = selection.iterator();
                 Object obj;
-                while (it.hasNext()) {
+                while (it.hasNext())
+                {
                     obj = it.next();
-                    if (obj instanceof AlarmTreePV) {
-                        if (obj != pv) {
-                            ((AlarmTreePV)obj).acknowledge(is_active_alarm_table);
+                    if (obj instanceof AlarmTreePV)
+                    {
+                        // the clicked alarm has been handled above already
+                        if (obj != pv)
+                        {
+                            ((AlarmTreePV) obj).acknowledge(acknowledge);
                         }
                     }
-                }                
+                }
             }
 
             @Override
-            public void mouseDoubleClick(MouseEvent e) {
+            public void mouseDoubleClick(MouseEvent e)
+            {
                 Table table = (Table) e.getSource();
                 TableItem item = table.getItem(new Point(e.x, e.y));
-                if (item != null && item.getData() instanceof AlarmTreePV) {
+                if (item != null && item.getData() instanceof AlarmTreePV)
+                {
                     AlarmTreePV pv = (AlarmTreePV) item.getData();
-                    if (is_active_alarm_table) {
-                        for (DoubleClickHandler h : getDoubleClickHandlers()) {
+                    if (is_active_alarm_table)
+                    {
+                        for (DoubleClickHandler h : getDoubleClickHandlers())
+                        {
                             h.activeTableDoubleClicked(pv);
                         }
-                    } else {
-                        for (DoubleClickHandler h : getDoubleClickHandlers()) {
+                    } 
+                    else
+                    {
+                        for (DoubleClickHandler h : getDoubleClickHandlers())
+                        {
                             h.acknowledgedTableDoubleClicked(pv);
                         }
                     }
@@ -594,31 +613,36 @@ public class GUI implements AlarmClientModelListener {
      * @param site
      *            Workbench site or <code>null</code>
      */
-    private void connectContextMenu(final TableViewer table_viewer, final IWorkbenchPartSite site) {
+    private void connectContextMenu(final TableViewer table_viewer, final IWorkbenchPartSite site)
+    {
         final Table table = table_viewer.getTable();
         final boolean isRcp = UI.RCP.equals(SingleSourcePlugin.getUIHelper().getUI());
 
         final MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
-        manager.addMenuListener(new IMenuListener() {
+        manager.addMenuListener(new IMenuListener()
+        {
             // Dynamically build menu based on current selection
             @Override
             @SuppressWarnings("unchecked")
-            public void menuAboutToShow(IMenuManager manager) {
+            public void menuAboutToShow(IMenuManager manager)
+            {
                 final Shell shell = table.getShell();
                 final List<AlarmTreeItem> items = ((IStructuredSelection) table_viewer.getSelection()).toList();
 
                 new ContextMenuHelper(table_viewer, manager, shell, items, model.isWriteAllowed());
                 manager.add(new Separator());
                 // Add edit items
-                if (items.size() == 1 && model.isWriteAllowed()) {
+                if (items.size() == 1 && model.isWriteAllowed())
+                {
                     final AlarmTreeItem item = items.get(0);
                     manager.add(new ConfigureItemAction(shell, model, item));
                 }
                 if (items.size() >= 1 && model.isWriteAllowed())
                     manager.add(new DisableComponentAction(shell, model, items));
                 manager.add(new Separator());
-                if (isRcp) {
+                if (isRcp)
+                {
                     manager.add(new AlarmPerspectiveAction());
                     manager.add(new Separator());
                 }
@@ -641,11 +665,13 @@ public class GUI implements AlarmClientModelListener {
      * @param error
      *            Error message or <code>null</code> to clear error
      */
-    public void setErrorMessage(final String error) {
+    public void setErrorMessage(final String error)
+    {
         final Table act_table = active_table_viewer.getTable();
         if (act_table.isDisposed())
             return;
-        if (error == null) {
+        if (error == null)
+        {
             if (!have_error_message)
                 return; // msg already cleared, GUI already enabled
             error_message.setText(""); //$NON-NLS-1$
@@ -654,7 +680,10 @@ public class GUI implements AlarmClientModelListener {
             if (group)
                 acknowledged_table_viewer.getTable().setEnabled(true);
             have_error_message = false;
-        } else { // Update the message
+        }
+        else
+        {
+            // Update the message
             error_message.setText(error);
             error_message.setBackground(display.getSystemColor(SWT.COLOR_MAGENTA));
             error_message.getParent().layout();
@@ -669,25 +698,32 @@ public class GUI implements AlarmClientModelListener {
 
     // @see AlarmClientModelListener
     @Override
-    public void serverModeUpdate(AlarmClientModel model, boolean maintenanceMode) {
+    public void serverModeUpdate(AlarmClientModel model, boolean maintenanceMode)
+    {
         // Ignored
     }
 
     // @see AlarmClientModelListener
     @Override
-    public void serverTimeout(final AlarmClientModel model) {
+    public void serverTimeout(final AlarmClientModel model)
+    {
         display.asyncExec(() -> setErrorMessage(Messages.ServerTimeout));
     }
 
     // For now, the table responds to any changes with a full update
     // @see AlarmClientModelListener
     @Override
-    public void newAlarmConfiguration(final AlarmClientModel model) {
+    public void newAlarmConfiguration(final AlarmClientModel model)
+    {
         gui_update.trigger();
-        display.asyncExec(() -> {
-            if (model.isServerAlive()) {
+        display.asyncExec(() ->
+        {
+            if (model.isServerAlive())
+            {
                 setErrorMessage(null);
-            } else {
+            } 
+            else
+            {
                 setErrorMessage(Messages.WaitingForServer);
             }
         });
@@ -695,16 +731,19 @@ public class GUI implements AlarmClientModelListener {
 
     // @see AlarmClientModelListener
     @Override
-    public void newAlarmState(final AlarmClientModel model, final AlarmTreePV pv, final boolean parent_changed) {
+    public void newAlarmState(final AlarmClientModel model, final AlarmTreePV pv, final boolean parent_changed)
+    {
         gui_update.trigger();
 
-        if (model.isServerAlive() && have_error_message) { // Clear error message now that we have info from the alarm
-                                                           // server
+        if (model.isServerAlive() && have_error_message)
+        {
+            // Clear error message now that we have info from the alarm server
             display.asyncExec(() -> setErrorMessage(null));
         }
     }
 
-    private void updateGUI() {
+    private void updateGUI()
+    {
         AlarmTreePV[] alarms = model.getActiveAlarms();
         current_alarms.setText(NLS.bind(Messages.CurrentAlarmsFmt, alarms.length));
         current_alarms.pack();
@@ -712,10 +751,13 @@ public class GUI implements AlarmClientModelListener {
         AlarmTreePV[] ackalarms = model.getAcknowledgedAlarms();
         acknowledged_alarms.setText(NLS.bind(Messages.AcknowledgedAlarmsFmt, ackalarms.length));
         acknowledged_alarms.pack();
-        if (group) {
+        if (group)
+        {
             ((AlarmTableContentProvider) active_table_viewer.getContentProvider()).setAlarms(alarms);
             ((AlarmTableContentProvider) acknowledged_table_viewer.getContentProvider()).setAlarms(ackalarms);
-        } else {
+        } 
+        else
+        {
             AlarmTreePV[] items = new AlarmTreePV[alarms.length + ackalarms.length];
             System.arraycopy(alarms, 0, items, 0, alarms.length);
             System.arraycopy(ackalarms, 0, items, alarms.length, ackalarms.length);
@@ -723,20 +765,28 @@ public class GUI implements AlarmClientModelListener {
         }
     }
 
-    void dispose() {
+    void dispose()
+    {
         baseComposite.dispose();
     }
 
-    private DoubleClickHandler[] getDoubleClickHandlers() {
-        if (double_click_handlers == null) {
+    private DoubleClickHandler[] getDoubleClickHandlers()
+    {
+        if (double_click_handlers == null)
+        {
             final IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(
                     DoubleClickHandler.EXTENSION_ID);
             final List<DoubleClickHandler> list = new ArrayList<DoubleClickHandler>();
-            for (IConfigurationElement e : config) {
-                if (DoubleClickHandler.NAME.equals(e.getName())) {
-                    try {
+            for (IConfigurationElement e : config)
+            {
+                if (DoubleClickHandler.NAME.equals(e.getName()))
+                {
+                    try
+                    {
                         list.add((DoubleClickHandler) e.createExecutableExtension("class"));
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex)
+                    {
                         LOGGER.log(Level.SEVERE, "Error loading extension point " + e.getName(), ex);
                     }
                 }
@@ -746,20 +796,28 @@ public class GUI implements AlarmClientModelListener {
         return double_click_handlers;
     }
 
-    private TableTextProvider getTableTextProvider() {
-        if (text_provider == null) {
+    private TableTextProvider getTableTextProvider()
+    {
+        if (text_provider == null)
+        {
             final IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(
                     TableTextProvider.EXTENSION_ID);
-            for (IConfigurationElement e : config) {
-                if (TableTextProvider.NAME.equals(e.getName())) {
-                    try {
+            for (IConfigurationElement e : config)
+            {
+                if (TableTextProvider.NAME.equals(e.getName()))
+                {
+                    try
+                    {
                         text_provider = (TableTextProvider) e.createExecutableExtension("class");
-                    } catch (Exception ex) {
+                    } 
+                    catch (Exception ex)
+                    {
                         LOGGER.log(Level.SEVERE, "Error loading extension point " + e.getName(), ex);
                     }
                 }
             }
-            if (text_provider == null) {
+            if (text_provider == null)
+            {
                 text_provider = TableTextProvider.EMPTY_PROVIDER;
             }
         }
