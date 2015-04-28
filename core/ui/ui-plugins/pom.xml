@@ -16,6 +16,7 @@
   	<module>org.csstudio.ui.menu</module>
   	<module>org.csstudio.ui.menu.app</module>
   	<module>org.csstudio.ui.preferences</module>
+    <module>org.csstudio.ui.resources</module>
 <!--   	<module>org.csstudio.ui.menu.test</module> -->
   	<module>org.csstudio.autocomplete</module>
   	<module>org.csstudio.autocomplete.test</module>

@@ -457,7 +457,7 @@ public class AlarmClientModel
                 pv_count = config_tree.getLeafCount();
             }
             Activator.getLogger().info(String.format(
-                "Read %d alarm tree items, %d PVs in %.2f seconds: %.1f items/sec, %.1f PVs/sec\n",
+                "Read %d alarm tree items, %d PVs in %.2f seconds: %.1f items/sec, %.1f PVs/sec",
                 count, pv_count, timer.getSeconds(),
                 count / timer.getSeconds(),
                 pv_count/timer.getSeconds()));
