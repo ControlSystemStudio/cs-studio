@@ -530,6 +530,9 @@ public class SchemaVerifier {
         if (original != null) {
             Set<String> properties = model.getAllPropertyIDs() ;
             for (String p : properties) {
+                if (model instanceof DisplayModel && "background_color".equals(p)) {
+                    System.out.println("ffdfds");
+                }
                 rule = getRuleForProperty(p, widgetType);
                 modelVal = model.getPropertyValue(p);
                 orgVal = original.getPropertyValue(p);
