@@ -3,7 +3,7 @@ package org.csstudio.ui.resources;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
-public class Activator extends AbstractUIPlugin {
+public class Activator {
    
     /** Plug-in ID defined in MANIFEST.MF */
     public static final String ID = "org.csstudio.ui.resources"; //$NON-NLS-1$
