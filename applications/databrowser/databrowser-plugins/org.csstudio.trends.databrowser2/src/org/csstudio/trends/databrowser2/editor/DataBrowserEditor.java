@@ -365,6 +365,7 @@ public class DataBrowserEditor extends EditorPart
         final Shell shell = getSite().getShell();
         final UndoableActionManager op_manager = plot.getPlot().getUndoableActionManager();
         manager.add(plot.getPlot().getToolbarAction());
+        manager.add(plot.getPlot().getLegendbarAction());
         manager.add(new Separator());
         manager.add(new AddPVAction(op_manager, shell, model, false));
         manager.add(new AddPVAction(op_manager, shell, model, true));

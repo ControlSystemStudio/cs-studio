@@ -337,11 +337,12 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
      *  @param trace {@link Trace}, where axis must be a valid Y axis index
      */
     public void addTrace(final TraceImpl<XTYPE> trace)
-    {
+    {	
         traces.add(trace);
         y_axes.get(trace.getYAxis()).addTrace(trace);
         need_layout.set(true);
         requestUpdate();
+        fireTracesChange();
     }
 
     /** @param trace Trace to move from its current Y axis
@@ -360,6 +361,11 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     {
         return traces;
     }
+    
+    /** @return Count the number of traces */
+    public int getTraceCount(){
+	return traces.size();
+    }
 
     /** Remove trace from plot
      *  @param trace {@link Trace}, where axis must be a valid Y axis index
@@ -371,6 +377,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         y_axes.get(trace.getYAxis()).removeTrace(trace);
         need_layout.set(true);
         requestUpdate();
+        fireTracesChange();
     }
 
     /** @return {@link Image} of current plot. Caller must dispose */
@@ -1117,6 +1124,13 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     {
         for (PlotListener<XTYPE> listener : listeners)
             listener.changedYAxis(axis);
+    }
+    
+    /** Notify listeners */
+    public void fireTracesChange()
+    {
+        for (PlotListener<XTYPE> listener : listeners)
+            listener.changedTraces();
     }
 
     /** Notify listeners */

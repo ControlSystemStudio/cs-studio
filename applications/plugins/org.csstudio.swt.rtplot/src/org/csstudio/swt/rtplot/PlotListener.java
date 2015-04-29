@@ -26,4 +26,7 @@ public interface PlotListener<XTYPE extends Comparable<XTYPE>>
 
     /** Invoked when Cursors changed */
     public void changedCursors();
+    
+    /** Invoked when traces were changed */
+    public void changedTraces();
 }

@@ -46,6 +46,8 @@ public class Messages extends NLS
     public static String Toolbar_Close;
     public static String Toolbar_Hide;
     public static String Toolbar_Show;
+    public static String Legendbar_Hide;
+    public static String Legendbar_Show;
     public static String TraceType_Area;
     public static String TraceType_AreaDirect;
     public static String TraceType_ErrorBars;

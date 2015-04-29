@@ -42,4 +42,10 @@ public class PlotListenerAdapter<XTYPE extends Comparable<XTYPE>> implements Plo
     {
         // NOP
     }
+
+    @Override
+    public void changedTraces() {
+	// NOP
+	
+    }
 }
