@@ -2,7 +2,11 @@ package org.csstudio.alarm.beast.ui.alarmtable;
 
 import org.csstudio.alarm.beast.ui.Messages;
 
-/** Description of one column in the alarm table */
+/** Description of one column in the alarm table
+ * 
+ *  @author Kay Kasemir
+ *  @author Jaka Bobnar - Extracted inner class of AlarmTableLabelProvider
+ */
 public enum ColumnInfo
 {
     ACK(Messages.AcknowledgeColumnHeader,35,0),
