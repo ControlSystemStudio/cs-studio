@@ -23,7 +23,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class TimeParserUnitTests extends TestCase
+public class TimeParserUnitTest extends TestCase
 {
     private final DateFormat format = 
                       new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

@@ -263,7 +263,7 @@
             </separator>
             <command
                   commandId="org.eclipse.ui.help.helpContents"
-                  icon="icons/help.gif"
+                  icon="platform:/plugin/org.eclipse.ui/icons/full/etool16/help_contents.png"
                   label="%HelpContent"
                   style="push">
             </command>
