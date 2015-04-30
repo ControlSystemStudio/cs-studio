@@ -228,17 +228,11 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         if (show)
         {
             fd.top = new FormAttachment(toolbar.getControl());
-//            fd.left = new FormAttachment(0);
-//            fd.right = new FormAttachment(100);
-//            fd.bottom = new FormAttachment(legend.getControl());
             plot.setLayoutData(fd);
         }
         else
         {
             fd.top = new FormAttachment(0);
-//            fd.left = new FormAttachment(0);
-//            fd.right = new FormAttachment(100);
-//            fd.bottom = new FormAttachment(100);
             plot.setLayoutData(fd);
         }
         toggle_toolbar.updateText();

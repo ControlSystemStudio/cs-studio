@@ -342,7 +342,6 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         y_axes.get(trace.getYAxis()).addTrace(trace);
         need_layout.set(true);
         requestUpdate();
-        fireTracesChange();
     }
 
     /** @param trace Trace to move from its current Y axis
@@ -377,7 +376,6 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         y_axes.get(trace.getYAxis()).removeTrace(trace);
         need_layout.set(true);
         requestUpdate();
-        fireTracesChange();
     }
 
     /** @return {@link Image} of current plot. Caller must dispose */
@@ -405,6 +403,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     final public void requestUpdate()
     {
         update_throttle.trigger();
+        fireTracesChange();
     }
 
     /** Redraw the current image and cursors

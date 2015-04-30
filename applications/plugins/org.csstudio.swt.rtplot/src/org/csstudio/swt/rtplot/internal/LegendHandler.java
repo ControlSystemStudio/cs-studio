@@ -2,6 +2,7 @@ package org.csstudio.swt.rtplot.internal;
 
 import java.util.Arrays;
 
+import org.csstudio.swt.rtplot.Annotation;
 import org.csstudio.swt.rtplot.PlotListenerAdapter;
 import org.csstudio.swt.rtplot.RTPlot;
 import org.csstudio.swt.rtplot.SWTMediaPool;
@@ -30,7 +31,7 @@ public class LegendHandler<XTYPE extends Comparable<XTYPE>> {
     
     final private SWTMediaPool media;
 
-    private final int GAP = 0;
+    private final int GAP = 2;
     private Font font;
     private Color background;
 
@@ -112,11 +113,6 @@ public class LegendHandler<XTYPE extends Comparable<XTYPE>> {
                 gd.grabExcessHorizontalSpace = true;
                 gd.horizontalAlignment = GridData.CENTER;
                 label.setLayoutData(gd);
-//                label.addDisposeListener((event) -> {
-//                    label.getFont().dispose();
-//                    label.getForeground().dispose();
-//                    label.getBackground().dispose();
-//                });
             }
         }
 
