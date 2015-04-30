@@ -189,6 +189,7 @@ public class GUI implements AlarmClientModelListener
         @Override
         protected void setValue(final Object element, final Object value)
         {
+            if (getViewer().isBusy()) return;
             if (value instanceof Boolean)
             {
                 if (SecuritySupport.havePermission(AuthIDs.ACKNOWLEDGE)) {
