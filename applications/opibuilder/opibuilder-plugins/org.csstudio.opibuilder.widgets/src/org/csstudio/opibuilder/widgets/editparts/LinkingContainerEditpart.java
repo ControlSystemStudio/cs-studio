@@ -12,16 +12,20 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractLayoutEditpart;
 import org.csstudio.opibuilder.editparts.AbstractLinkingContainerEditpart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.model.AbstractLinkingContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
+import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.GeometryUtil;
@@ -50,7 +54,7 @@ import org.eclipse.ui.IActionFilter;
  */
 public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 	
-    private static int linkingContainerID = 0;
+    private static AtomicInteger linkingContainerID = new AtomicInteger();
 
 	private List<ConnectionModel> connectionList;
 	private Map<ConnectionModel, PointList> originalPoints;
@@ -58,7 +62,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 	@Override
 	protected IFigure doCreateFigure() {
 		LinkingContainerFigure f = new LinkingContainerFigure();
-		f.setZoomToFitAll(getWidgetModel().isAutoFit());		
+		f.setZoomToFitAll(getWidgetModel().isAutoFit());
 		f.getZoomManager().addZoomListener(new ZoomListener() {
 			
 			@Override
@@ -88,24 +92,25 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 		installEditPolicy(EditPolicy.LAYOUT_ROLE, null);
 	}
 	
-
 	@Override
-	public LinkingContainerModel getWidgetModel() {
+	public synchronized LinkingContainerModel getWidgetModel() {
 		return (LinkingContainerModel)getModel();
 	}
 
 	@Override
 	protected void registerPropertyChangeHandlers() {
-				
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
 				if(newValue != null && newValue instanceof IPath){
+					LinkingContainerModel widgetModel = getWidgetModel();
 					IPath absolutePath = (IPath)newValue;
 					if(!absolutePath.isAbsolute())
 						absolutePath = ResourceUtil.buildAbsolutePath(
 								getWidgetModel(), absolutePath);
-					loadWidgets(absolutePath, true);
+					DisplayModel displayModel = new DisplayModel(widgetModel.getDisplayModel().getOpiFilePath());
+					widgetModel.setDisplayModel(displayModel);
+					loadWidgets(getWidgetModel(),true);
 					configureDisplayModel();
 				}
 				return true;
@@ -117,7 +122,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 		//load from group
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				loadWidgets(getWidgetModel().getOPIFilePath(), true);
+				loadWidgets(getWidgetModel(),true);
 				configureDisplayModel();
 				return false;
 			}
@@ -141,23 +146,25 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 			}
 		};
 		setPropertyChangeHandler(LinkingContainerModel.PROP_RESIZE_BEHAVIOUR, handler);
-		loadWidgets(getWidgetModel().getOPIFilePath(), true);
-        configureDisplayModel();
+		loadWidgets(getWidgetModel(),true);
+		configureDisplayModel();
+	}
+	
+	private static synchronized Integer getLinkingContainerID() {
+		return linkingContainerID.incrementAndGet();
 	}
 
 
 	/**
 	 * @param path the path of the OPI file
 	 */
-	private synchronized void loadWidgets(final IPath path, final boolean checkSelf) {
-	    getWidgetModel().removeAllChildren();
-		if(path ==null || path.isEmpty())
-			return;
+	private synchronized void loadWidgets(LinkingContainerModel model, final boolean checkSelf) {
 		try {
-			XMLUtil.fillLinkingContainer(getWidgetModel());
+			model.removeAllChildren();
+			XMLUtil.fillLinkingContainer(model);	
 		} catch (Exception e) {
 		    //log first
-		    String message = "Failed to load: " + path.toString() + "\n"+ e.getMessage();
+		    String message = "Failed to load: " + model.getDisplayModel().getOpiFilePath() + "\n"+ e.getMessage();
             Activator.getLogger().log(Level.WARNING, message , e);
             ConsoleService.getInstance().writeError(message);
             //TODO because this might not work - depends on the type of exception that happened
@@ -179,39 +186,22 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 		if(getWidgetModel().getDisplayModel() == null) 
 			getWidgetModel().setDisplayModel(new DisplayModel());
 
-		getWidgetModel().getDisplayModel().setViewer((GraphicalViewer) getViewer());
-		getWidgetModel().getDisplayModel().setDisplayID(getWidgetModel().getRootDisplayModel().getDisplayID());
+		
+		LinkingContainerModel widgetModel = getWidgetModel();
+		DisplayModel displayModel = widgetModel.getDisplayModel();
+		widgetModel.setDisplayModelViewer((GraphicalViewer) getViewer());
+		widgetModel.setDisplayModelDisplayID(widgetModel.getRootDisplayModel().getDisplayID());
 
 		UIBundlingThread.getInstance().addRunnable(new Runnable() {				
 			@Override
 			public void run() {
-				getWidgetModel().getDisplayModel().setExecutionMode(getExecutionMode());
-				getWidgetModel().getDisplayModel().setOpiRuntime(getWidgetModel().getRootDisplayModel().getOpiRuntime());					
+				LinkingContainerModel widgetModel = getWidgetModel();
+				widgetModel.setDisplayModelExecutionMode(getExecutionMode());
+				widgetModel.setDisplayModelOpiRuntime(widgetModel.getRootDisplayModel().getOpiRuntime());
 			}
 		});
 
-		// Load "LCID" macro whose value is unique to this instance of Linking Container.
-		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-			linkingContainerID++;
-			getWidgetModel().getDisplayModel().getMacroMap().put("LCID", "LCID_" + linkingContainerID);
-		}
-		//Load system macro
-		if(getWidgetModel().getDisplayModel().getMacrosInput().isInclude_parent_macros()){				
-			getWidgetModel().getDisplayModel().getMacroMap().putAll(
-					(LinkedHashMap<String, String>) getWidgetModel().getDisplayModel().getParentMacroMap());
-		}
-		//Load macro from its macrosInput
-		getWidgetModel().getDisplayModel().getMacroMap().putAll(
-				getWidgetModel().getDisplayModel().getMacrosInput().getMacrosMap());
-		//It also include the macros on this linking container 
-		//which includes the macros from action and global macros if included
-		//It will replace the old one too.
-		getWidgetModel().getDisplayModel().getMacroMap().putAll(
-				getWidgetModel().getMacroMap());
-		//			if(connectionList == null)
-		//load it again to update connections, because it needs to refer current loaded widgets.				
-
-		connectionList = getWidgetModel().getDisplayModel().getConnectionList();
+		connectionList = displayModel.getConnectionList();
 		if(connectionList !=null && !connectionList.isEmpty()){
 			if(originalPoints != null)
 				originalPoints.clear();
@@ -223,18 +213,12 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 			if(conn.getPoints()!=null)
 				originalPoints.put(conn, conn.getPoints().getCopy());
 		}			
-		if (originalPoints != null && !originalPoints.isEmpty())
+		if (originalPoints != null && !originalPoints.isEmpty()) {
 			//update connections after the figure is repainted.
 			getViewer().getControl().getDisplay().asyncExec(() -> updateConnectionList());
-
-		//Add scripts on display model
-		if(getExecutionMode() == ExecutionMode.RUN_MODE)
-			getWidgetModel().getScriptsInput().getScriptList().addAll(
-					getWidgetModel().getDisplayModel().getScriptsInput().getScriptList());
-		//tempDisplayModel.removeAllChildren();
-		if(getWidgetModel().isAutoSize()){
-			performAutosize();
 		}
+
+		
 		UIBundlingThread.getInstance().addRunnable(() -> {
 			layout();
 			if(//getExecutionMode() == ExecutionMode.RUN_MODE && 
@@ -247,10 +231,50 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 			}
 			((LinkingContainerFigure)getFigure()).setShowScrollBars(getWidgetModel().isShowScrollBars());
 			((LinkingContainerFigure)getFigure()).setZoomToFitAll(getWidgetModel().isAutoFit());
-			((LinkingContainerFigure)getFigure()).updateZoom();				
+			((LinkingContainerFigure)getFigure()).updateZoom();
 		});
+			
+		getWidgetModel().setDisplayModel(displayModel);
 		
-		DisplayModel parentDisplay = getWidgetModel().getRootDisplayModel();
+		//Add scripts on display model
+		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+			widgetModel
+					.getScriptsInput()
+					.getScriptList()
+					.addAll(widgetModel.getDisplayModel().getScriptsInput()
+							.getScriptList());
+		}
+		// tempDisplayModel.removeAllChildren();
+		if (widgetModel.isAutoSize()) {
+			performAutosize();
+		}
+		LinkedHashMap<String,String> map = new LinkedHashMap<>();
+		AbstractContainerModel loadTarget = displayModel;
+		// Load "LCID" macro whose value is unique to this instance of Linking Container.
+		if (widgetModel.getExecutionMode() == ExecutionMode.RUN_MODE) {
+			map.put("LCID", "LCID_" + getLinkingContainerID());
+		}
+		//Load system macro
+		if(displayModel.getMacrosInput().isInclude_parent_macros()){				
+			map.putAll(
+					(LinkedHashMap<String, String>) displayModel.getParentMacroMap());
+		}
+		//Load macro from its macrosInput
+		map.putAll(displayModel.getMacrosInput().getMacrosMap());
+		//It also include the macros on this linking container 
+		//which includes the macros from action and global macros if included
+		//It will replace the old one too.
+		map.putAll(widgetModel.getMacroMap());
+		
+		widgetModel.setMacroMap(map);
+		
+		widgetModel.removeAllChildren();
+		for (AbstractWidgetModel w : loadTarget.getChildren()){ 
+			widgetModel.addChild(w, true);
+		}
+		widgetModel.setDisplayModel(displayModel);
+
+		DisplayModel parentDisplay = widgetModel.getRootDisplayModel();
         parentDisplay.syncConnections();
 	}
 
