@@ -150,6 +150,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     public void setBackground(final RGB color)
     {
         plot.setBackground(Objects.requireNonNull(color));
+        legendbar.setBackground(Objects.requireNonNull(color));
     }
 
     /** @param title Title text */
@@ -174,6 +175,12 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     public void setScaleFont(final FontData font)
     {
         plot.setScaleFont(Objects.requireNonNull(font));
+    }
+    
+    /** @param font  Font to use for legend */
+    public void setLegendFont(final FontData font)
+    {
+	legendbar.setFont(Objects.requireNonNull(font));
     }
 
     /** @return {@link Image} of current plot. Caller must dispose */
