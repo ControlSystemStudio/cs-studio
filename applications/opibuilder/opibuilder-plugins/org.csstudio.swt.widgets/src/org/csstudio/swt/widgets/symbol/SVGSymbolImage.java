@@ -32,6 +32,11 @@ import org.eclipse.swt.widgets.Display;
 import org.w3c.dom.Document;
 import org.w3c.dom.svg.SVGDocument;
 
+/**
+ * Manages display of {@link SVGDocument} using {@link SVGHandler}.
+ * 
+ * @author Fred Arnaud (Sopra Steria Group) - ITER
+ */
 public class SVGSymbolImage extends AbstractSymbolImage {
 
     private Dimension imgDimension = null;
@@ -42,6 +47,12 @@ public class SVGSymbolImage extends AbstractSymbolImage {
     private Document svgDocument;
 
     private boolean needRender = true;
+
+    private Image animatedImage;
+    /**
+     * If <code>true</code>, the repaint was called by animated SVG thread.
+     */
+    private boolean repaintAnimated = false;
 
     public SVGSymbolImage(SymbolImageProperties sip, boolean runMode) {
         super(sip, runMode);
@@ -82,8 +93,7 @@ public class SVGSymbolImage extends AbstractSymbolImage {
                 image.dispose();
                 image = null;
             }
-            if (svgHandler != null && svgHandler.isDynamicDocument()
-                    && !animationDisabled) {
+            if (svgHandler != null && svgHandler.isDynamicDocument() && !animationDisabled) {
                 svgHandler.startProcessing();
             }
         }
@@ -92,7 +102,7 @@ public class SVGSymbolImage extends AbstractSymbolImage {
             if (imageData == null) {
                 return;
             }
-            image = new Image(Display.getDefault(), imageData);
+            image = new Image(Display.getCurrent(), imageData);
         }
         // Calculate areas
         if (bounds == null || imgDimension == null) {
@@ -100,15 +110,21 @@ public class SVGSymbolImage extends AbstractSymbolImage {
         }
         int cropedWidth = imageData.width - (int) Math.round(scale * (leftCrop + rightCrop));
         int cropedHeight = imageData.height - (int) Math.round(scale * (bottomCrop + topCrop));
-        Rectangle srcArea = new Rectangle((int) Math.round(scale * leftCrop),
-                (int) Math.round(scale * topCrop), cropedWidth, cropedHeight);
+        Rectangle srcArea = new Rectangle((int) Math.round(scale * leftCrop), (int) Math.round(scale * topCrop),
+                cropedWidth, cropedHeight);
         Rectangle destArea = new Rectangle(bounds.x, bounds.y, imgDimension.width, imgDimension.height);
         if (backgroundColor != null) {
             gfx.setBackgroundColor(backgroundColor);
             gfx.fillRectangle(destArea);
         }
         // Draw graphic image
-        if (image != null) {
+        if (repaintAnimated && animatedImage != null && !animatedImage.isDisposed()) {
+            try {
+                gfx.drawImage(animatedImage, srcArea, destArea);
+            } catch (IllegalArgumentException e) { // Image disposed
+            }
+            repaintAnimated = false;
+        } else if (image != null) {
             gfx.drawImage(image, srcArea, destArea);
         }
     }
@@ -163,8 +179,8 @@ public class SVGSymbolImage extends AbstractSymbolImage {
         int cropedWidth = imgWidth - (int) Math.round(scale * (leftCrop + rightCrop));
         int cropedHeight = imgHeight - (int) Math.round(scale * (bottomCrop + topCrop));
 
-        Dimension newImgDimension = new Dimension((int) Math.round(cropedWidth / scale),
-                (int) Math.round(cropedHeight / scale));
+        Dimension newImgDimension = new Dimension((int) Math.round(cropedWidth / scale), (int) Math.round(cropedHeight
+                / scale));
         if (imgDimension == null || newImgDimension.width != imgDimension.width
                 || newImgDimension.height != imgDimension.height)
             fireSizeChanged();
@@ -228,8 +244,7 @@ public class SVGSymbolImage extends AbstractSymbolImage {
             final InputStream inputStream = ResourceUtil.pathToInputStream(imagePath);
             loadDocument(inputStream);
         } catch (Exception e) {
-            Activator.getLogger().log(Level.WARNING,
-                    "Error loading SVG image " + imagePath, e);
+            Activator.getLogger().log(Level.WARNING, "Error loading SVG image " + imagePath, e);
         }
     }
 
@@ -251,8 +266,7 @@ public class SVGSymbolImage extends AbstractSymbolImage {
                 }
                 loadingImage = false;
                 // fireSymbolImageLoaded();
-                Activator.getLogger().log(Level.WARNING,
-                        "ERROR in loading SVG image " + imagePath, exception);
+                Activator.getLogger().log(Level.WARNING, "ERROR in loading SVG image " + imagePath, exception);
             }
         });
     }
@@ -268,12 +282,11 @@ public class SVGSymbolImage extends AbstractSymbolImage {
                         try {
                             stream.close();
                         } catch (IOException e) {
-                            Activator.getLogger().log(Level.WARNING,
-                                    "ERROR in closing SVG image stream ", e);
+                            Activator.getLogger().log(Level.WARNING, "ERROR in closing SVG image stream ", e);
                         }
                     }
                     loadingImage = false;
-                    Display.getDefault().syncExec(new Runnable() {
+                    Display.getCurrent().syncExec(new Runnable() {
                         public void run() {
                             fireSymbolImageLoaded();
                         }
@@ -281,8 +294,7 @@ public class SVGSymbolImage extends AbstractSymbolImage {
                 }
             }
         };
-        ResourceUtil.pathToInputStreamInJob(imagePath, uiTask,
-                "Loading SVG Image...", errorHandler);
+        ResourceUtil.pathToInputStreamInJob(imagePath, uiTask, "Loading SVG Image...", errorHandler);
     }
 
     private void loadDocument(final InputStream inputStream) {
@@ -295,11 +307,10 @@ public class SVGSymbolImage extends AbstractSymbolImage {
         SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(parser);
         try {
             IPath workSpacePath = ResourceUtil.workspacePathToSysPath(new Path("/")); //$NON-NLS-1$
-            String uri = "file://"
-                    + (workSpacePath == null ? "" : workSpacePath.toOSString()) //$NON-NLS-1$
+            String uri = "file://" + (workSpacePath == null ? "" : workSpacePath.toOSString()) //$NON-NLS-1$ 
                     + imagePath.toString();
             svgDocument = factory.createDocument(uri, inputStream);
-            svgHandler = new SVGHandler((SVGDocument) svgDocument);
+            svgHandler = new SVGHandler((SVGDocument) svgDocument, Display.getCurrent());
             svgHandler.setAlignedToNearestSecond(alignedToNearestSecond);
             initRenderingHints();
             BufferedImage awtImage = svgHandler.getOffScreen();
@@ -308,27 +319,19 @@ public class SVGSymbolImage extends AbstractSymbolImage {
                 resetData();
             }
             svgHandler.setRenderListener(new SVGHandlerListener() {
-                public void newImage(final BufferedImage awtImage) {
+                public void newImage(final Image image) {
                     if (disposed) {
                         return;
                     }
-                    imageData = SVGUtils.toSWT(Display.getCurrent(), awtImage);
-                    Display.getDefault().asyncExec(new Runnable() {
-                        public void run() {
-                            if (image != null && !image.isDisposed()) {
-                                image.dispose();
-                                image = null;
-                            }
-                            repaint();
-                        }
-                    });
+                    animatedImage = image;
+                    repaintAnimated = true;
+                    repaint();
                 }
             });
             needRender = true;
             failedToLoadDocument = false;
         } catch (Exception e) {
-            Activator.getLogger().log(Level.WARNING,
-                    "Error loading SVG image " + imagePath, e);
+            Activator.getLogger().log(Level.WARNING, "Error loading SVG image " + imagePath, e);
         }
     }
 
@@ -343,16 +346,10 @@ public class SVGSymbolImage extends AbstractSymbolImage {
     }
 
     private void initRenderingHints() {
-        svgHandler.setRenderingHint(RenderingHints.KEY_RENDERING,
-                RenderingHints.VALUE_RENDER_QUALITY);
-        svgHandler.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
-        svgHandler.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-        svgHandler.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
-                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-        svgHandler.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
-                RenderingHints.VALUE_STROKE_PURE);
+        svgHandler.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        svgHandler.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+        svgHandler.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        svgHandler.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        svgHandler.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
     }
-
 }

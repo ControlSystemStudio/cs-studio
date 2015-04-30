@@ -18,7 +18,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends AbstractUIPlugin {
 
     // The plug-in ID
-    public static final String PLUGIN_ID = "org.apache.batik"; //$NON-NLS-1$
+    public static final String PLUGIN_ID = "org.csstudio.utility.batik"; //$NON-NLS-1$
 
     // The shared instance
     private static Activator plugin;
@@ -41,7 +41,7 @@ public class Activator extends AbstractUIPlugin {
 
     /**
      * Returns the shared instance
-     *
+     * 
      * @return the shared instance
      */
     public static Activator getDefault() {
@@ -50,11 +50,10 @@ public class Activator extends AbstractUIPlugin {
 
     /**
      * Get the logger for Symbol plug-in.
-     *
+     * 
      * @return the logger
      */
     public static Logger getLogger() {
         return LOGGER;
     }
-
 }
