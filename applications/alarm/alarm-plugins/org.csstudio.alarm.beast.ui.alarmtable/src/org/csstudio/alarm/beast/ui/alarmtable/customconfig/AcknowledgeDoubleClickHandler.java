@@ -1,6 +1,8 @@
 package org.csstudio.alarm.beast.ui.alarmtable.customconfig;
 
 import org.csstudio.alarm.beast.client.AlarmTreePV;
+import org.csstudio.alarm.beast.ui.AuthIDs;
+import org.csstudio.security.SecuritySupport;
 
 /**
  * 
@@ -14,11 +16,15 @@ public class AcknowledgeDoubleClickHandler implements DoubleClickHandler {
 
     @Override
     public void acknowledgedTableDoubleClicked(AlarmTreePV pv) {
-        pv.acknowledge(false);
+        if (SecuritySupport.havePermission(AuthIDs.ACKNOWLEDGE)) {
+            pv.acknowledge(false);
+        }
     }
 
     @Override
     public void activeTableDoubleClicked(AlarmTreePV pv) {
-        pv.acknowledge(true);
+        if (SecuritySupport.havePermission(AuthIDs.ACKNOWLEDGE)) {
+            pv.acknowledge(true);
+        }
     }
 }

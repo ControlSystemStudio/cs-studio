@@ -18,10 +18,30 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class Preferences
 {
+    /** Preference and dialog tag for combined vs. separate alarm tables */
+    final public static String ALARM_TABLE_GROUP_SETTING = "combined_alarm_table";
+    
+    /** Preference and dialog tag for column names */
+    final public static String ALARM_TABLE_COLUMN_SETTING = "alarm_table_columns";
+    
     /** @return Alarm table row limit */
 	public static int getAlarmTableRowLimit()
     {
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getInt(Activator.ID, "alarm_table_row_limit", 2500, null);
     }
+	
+	public static boolean isCombinedAlarmTable()
+	{
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getBoolean(Activator.ID, ALARM_TABLE_GROUP_SETTING, false, null);
+	}
+
+    public static String[] getColumns()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        final String pref = service.getString(Activator.ID, ALARM_TABLE_COLUMN_SETTING, "ICON, PV, DESCRIPTION, TIME, CURRENT_SEVERITY, CURRENT_STATUS, SEVERITY, STATUS, VALUE", null);
+        return pref.split(" *, *"); // Comma-separated, allowing for spaces
+    }
+
 }
