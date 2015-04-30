@@ -63,6 +63,7 @@ public class XMLPersistence
     final public static String TAG_TITLE_FONT = "title_font";
     final public static String TAG_LABEL_FONT = "label_font";
     final public static String TAG_SCALE_FONT = "scale_font";
+    final public static String TAG_LEGEND_FONT = "legend_font";
     final public static String TAG_AXES = "axes";
     final public static String TAG_ANNOTATIONS = "annotations";
     final public static String TAG_PVLIST = "pvlist";
@@ -227,6 +228,7 @@ public class XMLPersistence
         loadFontFromDocument(root_node, TAG_TITLE_FONT).ifPresent(model::setTitleFont);
         loadFontFromDocument(root_node, TAG_LABEL_FONT).ifPresent(model::setLabelFont);
         loadFontFromDocument(root_node, TAG_SCALE_FONT).ifPresent(model::setScaleFont);
+        loadFontFromDocument(root_node, TAG_LEGEND_FONT).ifPresent(model::setLegendFont);
 
         // Load Annotations
         list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_ANNOTATIONS);
@@ -379,6 +381,7 @@ public class XMLPersistence
         XMLWriter.XML(writer, 1, TAG_TITLE_FONT, SWTMediaPool.getFontDescription(model.getTitleFont()));
         XMLWriter.XML(writer, 1, TAG_LABEL_FONT, SWTMediaPool.getFontDescription(model.getLabelFont()));
         XMLWriter.XML(writer, 1, TAG_SCALE_FONT, SWTMediaPool.getFontDescription(model.getScaleFont()));
+        XMLWriter.XML(writer, 1, TAG_LEGEND_FONT, SWTMediaPool.getFontDescription(model.getLegendFont()));
 
         // Value axes
         XMLWriter.start(writer, 1, TAG_AXES);

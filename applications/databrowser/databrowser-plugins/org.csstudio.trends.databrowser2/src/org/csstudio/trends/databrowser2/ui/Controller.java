@@ -382,6 +382,7 @@ public class Controller
                 plot.getPlot().setTitleFont(model.getTitleFont());
                 plot.getPlot().setLabelFont(model.getLabelFont());
                 plot.getPlot().setScaleFont(model.getScaleFont());
+                plot.getPlot().setLegendFont(model.getLegendFont());
             }
 
             @Override
@@ -518,6 +519,7 @@ public class Controller
         plot.getPlot().setTitleFont(model.getTitleFont());
         plot.getPlot().setLabelFont(model.getLabelFont());
         plot.getPlot().setScaleFont(model.getScaleFont());
+        plot.getPlot().setLegendFont(model.getLegendFont());
         plot.getPlot().setTitle(model.getTitle());
         plot.getPlot().setScrollStep(model.getScrollStep());
 

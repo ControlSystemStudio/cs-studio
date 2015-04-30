@@ -122,6 +122,9 @@ public class Model
     /** Scale font */
     private volatile FontData scale_font = new FontData("", 10, 0);
 
+    /** Legend font */
+    private volatile FontData legend_font = new FontData("", 10, 0);
+
     /** Annotations */
     private volatile List<AnnotationInfo> annotations = Collections.emptyList();
 
@@ -137,6 +140,7 @@ public class Model
             title_font = new FontData(default_font.getName(), (default_font.getHeight()*3)/2, SWT.BOLD);
             label_font = new FontData(default_font.getName(), default_font.getHeight(), SWT.BOLD);
             scale_font = new FontData(default_font.getName(), default_font.getHeight()-1, SWT.NORMAL);
+            legend_font = new FontData(default_font.getName(), default_font.getHeight()-1, SWT.NORMAL);
         }
         start_spec = "-" + PeriodFormat.formatSeconds(TimeHelper.toSeconds(time_span));
         end_spec = RelativeTime.NOW;
@@ -770,6 +774,20 @@ public class Model
     public void setScaleFont(final FontData font)
     {
         scale_font = font;
+        for (ModelListener listener : listeners)
+            listener.changedColorsOrFonts();
+    }
+
+    /** @return Legend font */
+    public FontData getLegendFont()
+    {
+        return legend_font;
+    }
+
+    /** @param font Scale font */
+    public void setLegendFont(final FontData font)
+    {
+        legend_font = font;
         for (ModelListener listener : listeners)
             listener.changedColorsOrFonts();
     }
