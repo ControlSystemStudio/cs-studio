@@ -8,10 +8,7 @@
 package org.csstudio.alarm.beast.ui.alarmtable;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
@@ -24,8 +21,6 @@ import org.csstudio.alarm.beast.ui.SeverityColorProvider;
 import org.csstudio.alarm.beast.ui.actions.AlarmPerspectiveAction;
 import org.csstudio.alarm.beast.ui.actions.ConfigureItemAction;
 import org.csstudio.alarm.beast.ui.actions.DisableComponentAction;
-import org.csstudio.alarm.beast.ui.alarmtable.customconfig.DoubleClickHandler;
-import org.csstudio.alarm.beast.ui.alarmtable.customconfig.TableTextProvider;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
 import org.csstudio.apputil.text.RegExHelper;
@@ -34,8 +29,6 @@ import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.csstudio.utility.singlesource.UIHelper.UI;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -43,8 +36,12 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
+import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -54,12 +51,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -71,19 +64,16 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
-/**
- * Alarm table GUI
+/** Alarm table GUI
  * 
- * @author Kay Kasemir
+ *  @author Kay Kasemir
+ *  @author Jaka Bobnar - Combined/split alarm tables, configurable columns
  */
 public class GUI implements AlarmClientModelListener
 {
-    private static final Logger LOGGER = Logger.getLogger(GUI.class.getName());
-
     /**
      * Persistence: Tags within dialog settings, actually written to
      * WORKSPACE/.metadata/.plugins/org.csstudio.alarm.beast.ui.alarmtable/dialog_settings.xml
@@ -100,10 +90,6 @@ public class GUI implements AlarmClientModelListener
 
     /** Model with all the alarm information */
     final private AlarmClientModel model;
-
-    private DoubleClickHandler[] double_click_handlers;
-
-    private TableTextProvider text_provider;
 
     final private IDialogSettings settings;
 
@@ -146,7 +132,6 @@ public class GUI implements AlarmClientModelListener
                 return;
             display.syncExec(() ->
             {
-                // System.out.println("GUI Update");
                 if (current_alarms.isDisposed())
                     return;
 
@@ -163,6 +148,44 @@ public class GUI implements AlarmClientModelListener
             });
         }
     };
+    
+    /** Column editor for the 'ACK' column that acknowledges or un-ack's
+     *  alarm in that row
+     */
+    private static class AcknowledgeEditingSupport extends EditingSupport
+    {
+        public AcknowledgeEditingSupport(ColumnViewer viewer)
+        {
+            super(viewer);
+        }
+
+        @Override
+        protected CellEditor getCellEditor(final Object element)
+        {
+            return new CheckboxCellEditor(((TableViewer) getViewer()).getTable());
+        }
+
+        @Override
+        protected Object getValue(final Object element)
+        {
+            return ((AlarmTreePV) element).getSeverity().isActive();
+        }
+
+        @Override
+        protected void setValue(final Object element, final Object value)
+        {
+            if (value instanceof Boolean)
+            {
+                ((AlarmTreePV) element).acknowledge(!(Boolean) value);
+            }
+        }
+
+        @Override
+        protected boolean canEdit(Object element)
+        {
+            return element instanceof AlarmTreePV;
+        }
+    }
 
     /**
      * Initialize GUI
@@ -505,8 +528,7 @@ public class GUI implements AlarmClientModelListener
                 table_col.setText(col_info.getTitle());
             table_col.setMoveable(true);
             // Tell column how to display the model elements
-            view_col.setLabelProvider(new AlarmTableLabelProvider(table, color_provider, col_info,
-                    getTableTextProvider()));
+            view_col.setLabelProvider(new AlarmTableLabelProvider(table, color_provider, col_info));
             // Sort support
             final AlarmColumnSortingSelector sel_listener = new AlarmColumnSortingSelector(table_viewer, table_col,
                     col_info);
@@ -518,89 +540,11 @@ public class GUI implements AlarmClientModelListener
 
             if (col_info == ColumnInfo.ACK)
             {
+                if (model.isWriteAllowed())
+                    view_col.setEditingSupport(new AcknowledgeEditingSupport(table_viewer));
                 table_col.setToolTipText(Messages.AcknowledgeColumnHeaderTooltip);
             }
         }
-
-        table.addMouseListener(new MouseAdapter()
-        {
-            @Override
-            public void mouseDown(MouseEvent e)
-            {
-                // in a normal world this would be done with the editing support, but we want
-                // to acknowledge all selected alarms, and not just the clicked one
-                Point pt = new Point(e.x, e.y);
-                TableItem item = table.getItem(new Point(e.x, e.y));
-                int column = -1;
-                for (int i = 0; i < table_viewer.getTable().getColumnCount(); i++)
-                {
-                    Rectangle rect = item.getBounds(i);
-                    if (rect.contains(pt))
-                    {
-                        column = i;
-                    }
-                }
-                if (column == -1)
-                    return;
-                TableColumn col = table_viewer.getTable().getColumn(column);
-                if (!ColumnInfo.ACK.getTitle().equals(col.getText()))
-                {
-                    return;
-                }
-                
-                boolean acknowledge = is_active_alarm_table;
-                AlarmTreePV pv = null;
-                if (item != null && item.getData() instanceof AlarmTreePV)
-                {
-                    // the clicked item should always be handled and it should prescribe whether the 
-                    // all items are being acknowledged or unacknowledged. 
-                    pv = (AlarmTreePV) item.getData();
-                    acknowledge = group ? is_active_alarm_table : pv.getSeverity().isActive(); 
-                    pv.acknowledge(acknowledge);
-                }
-
-                IStructuredSelection selection = (IStructuredSelection) table_viewer.getSelection();
-                Iterator<?> it = selection.iterator();
-                Object obj;
-                while (it.hasNext())
-                {
-                    obj = it.next();
-                    if (obj instanceof AlarmTreePV)
-                    {
-                        // the clicked alarm has been handled above already
-                        if (obj != pv)
-                        {
-                            ((AlarmTreePV) obj).acknowledge(acknowledge);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void mouseDoubleClick(MouseEvent e)
-            {
-                Table table = (Table) e.getSource();
-                TableItem item = table.getItem(new Point(e.x, e.y));
-                if (item != null && item.getData() instanceof AlarmTreePV)
-                {
-                    AlarmTreePV pv = (AlarmTreePV) item.getData();
-                    if (is_active_alarm_table)
-                    {
-                        for (DoubleClickHandler h : getDoubleClickHandlers())
-                        {
-                            h.activeTableDoubleClicked(pv);
-                        }
-                    } 
-                    else
-                    {
-                        for (DoubleClickHandler h : getDoubleClickHandlers())
-                        {
-                            h.acknowledgedTableDoubleClicked(pv);
-                        }
-                    }
-                }
-            }
-        });
 
         return table_viewer;
     }
@@ -768,59 +712,5 @@ public class GUI implements AlarmClientModelListener
     void dispose()
     {
         baseComposite.dispose();
-    }
-
-    private DoubleClickHandler[] getDoubleClickHandlers()
-    {
-        if (double_click_handlers == null)
-        {
-            final IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(
-                    DoubleClickHandler.EXTENSION_ID);
-            final List<DoubleClickHandler> list = new ArrayList<DoubleClickHandler>();
-            for (IConfigurationElement e : config)
-            {
-                if (DoubleClickHandler.NAME.equals(e.getName()))
-                {
-                    try
-                    {
-                        list.add((DoubleClickHandler) e.createExecutableExtension("class"));
-                    }
-                    catch (Exception ex)
-                    {
-                        LOGGER.log(Level.SEVERE, "Error loading extension point " + e.getName(), ex);
-                    }
-                }
-            }
-            double_click_handlers = list.toArray(new DoubleClickHandler[list.size()]);
-        }
-        return double_click_handlers;
-    }
-
-    private TableTextProvider getTableTextProvider()
-    {
-        if (text_provider == null)
-        {
-            final IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(
-                    TableTextProvider.EXTENSION_ID);
-            for (IConfigurationElement e : config)
-            {
-                if (TableTextProvider.NAME.equals(e.getName()))
-                {
-                    try
-                    {
-                        text_provider = (TableTextProvider) e.createExecutableExtension("class");
-                    } 
-                    catch (Exception ex)
-                    {
-                        LOGGER.log(Level.SEVERE, "Error loading extension point " + e.getName(), ex);
-                    }
-                }
-            }
-            if (text_provider == null)
-            {
-                text_provider = TableTextProvider.EMPTY_PROVIDER;
-            }
-        }
-        return text_provider;
     }
 }

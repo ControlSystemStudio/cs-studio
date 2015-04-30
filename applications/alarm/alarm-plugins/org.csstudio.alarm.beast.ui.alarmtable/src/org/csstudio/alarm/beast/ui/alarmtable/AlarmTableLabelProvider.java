@@ -12,7 +12,6 @@ import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
-import org.csstudio.alarm.beast.ui.alarmtable.customconfig.TableTextProvider;
 import org.csstudio.apputil.ui.swt.CheckBoxImages;
 import org.csstudio.ui.resources.alarms.AlarmIcons;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -31,21 +30,16 @@ public class AlarmTableLabelProvider extends CellLabelProvider
     /** Column handled by this label provider */
     final private ColumnInfo column;
     
-    private TableTextProvider text_provider;
-
     /** Initialize
      *  @param parent Parent widget (for dispose listener)
      *  @param color_provider Color provider for severity values
      *  @param column Column for which this label provider should give labels etc.
-     *  @param text_provider the provider which can provide an arbitrary text for the cell
      */
     public AlarmTableLabelProvider(final Composite parent,
-            final SeverityColorProvider color_provider, final ColumnInfo column,
-            final TableTextProvider text_provider)
+            final SeverityColorProvider color_provider, final ColumnInfo column)
     {
         this.color_provider = color_provider;
         this.column = column;
-        this.text_provider = text_provider;
     }
 
     /** @return Tooltip text for an alarm */
@@ -55,7 +49,7 @@ public class AlarmTableLabelProvider extends CellLabelProvider
         final AlarmTreePV alarm = (AlarmTreePV) element;
         // Special handling of 'info' entry that has no parent
         if (alarm.getParent() == null)
-        	return alarm.getDescription();
+            return alarm.getDescription();
         return alarm.getToolTipText();
     }
 
@@ -91,30 +85,30 @@ public class AlarmTableLabelProvider extends CellLabelProvider
             cell.setText(alarm.getTimestampText());
             break;
         case CURRENT_SEVERITY:
-        	if (alarm.getParent() == null)
-        		return;
+            if (alarm.getParent() == null)
+                return;
             cell.setText(alarm.getCurrentSeverity().getDisplayName());
             cell.setBackground(color_provider.getColor(alarm.getCurrentSeverity()));
             break;
         case CURRENT_STATUS:
-        	if (alarm.getParent() == null)
-        		return;
+            if (alarm.getParent() == null)
+                return;
             cell.setText(alarm.getCurrentMessage());
             break;
         case SEVERITY:
-        	if (alarm.getParent() == null)
-        		return;
+            if (alarm.getParent() == null)
+                return;
             cell.setText(alarm.getSeverity().getDisplayName());
             cell.setBackground(color_provider.getColor(alarm.getSeverity()));
             break;
         case STATUS:
-        	if (alarm.getParent() == null)
-        		return;
+            if (alarm.getParent() == null)
+                return;
             cell.setText(alarm.getMessage());
             break;
         case VALUE:
-        	if (alarm.getParent() == null)
-        		return;
+            if (alarm.getParent() == null)
+                return;
             cell.setText(alarm.getValue());
             break;
         case ACTION:
@@ -132,40 +126,42 @@ public class AlarmTableLabelProvider extends CellLabelProvider
         default:
             break;
         }
-        //the data provider has precedence over anything that has already been set
-        String text = text_provider.getContentForColumn(column.name(), alarm);
-        if (text != null) {
-            cell.setText(text);
-        }
     }
     
-    /**
-     * Returns an icon representing the severity/state of the given alarm.
-     * There are 7 different icons: one for disconnected alarms, and two (major/minor) icons
-     * for each of the following: alarm, alarm acknowledged, alarm cleared but not acknowledged.
+    /** Returns an icon representing the severity/state of the given alarm.
+     *  There are 7 different icons: one for disconnected alarms, and two (major/minor) icons
+     *  for each of the following: alarm, alarm acknowledged, alarm cleared but not acknowledged.
      * 
-     * @param pv the alarm for which the icon should be returned
-     * @return the icon representing the alarm severity
+     *  @param pv the alarm for which the icon should be returned
+     *  @return the icon representing the alarm severity
      */
-    private static Image getIcon(AlarmTreePV pv) {
-        SeverityLevel severity = pv.getSeverity();
-        SeverityLevel currentSeverity = pv.getCurrentSeverity();
-        AlarmIcons icons = AlarmIcons.getInstance();
-        switch(severity) {
+    private static Image getIcon(final AlarmTreePV pv)
+    {
+        final SeverityLevel severity = pv.getSeverity();
+        final SeverityLevel currentSeverity = pv.getCurrentSeverity();
+        final AlarmIcons icons = AlarmIcons.getInstance();
+        switch(severity)
+        {
             case UNDEFINED_ACK: 
-            case INVALID_ACK: return icons.getInvalidAcknowledged();
+            case INVALID_ACK:
+                return icons.getInvalidAcknowledged();
             case UNDEFINED: 
-            case INVALID: return currentSeverity == SeverityLevel.OK ?
-                    icons.getInvalidClearedNotAcknowledged() : icons.getInvalidNotAcknowledged(); 
-            case MAJOR: return currentSeverity == SeverityLevel.OK ?
-                    icons.getMajorClearedNotAcknowledged() : icons.getMajorNotAcknowledged();
-            case MAJOR_ACK: return icons.getMajorAcknowledged();
-            case MINOR: return currentSeverity == SeverityLevel.OK ? 
-                    icons.getMinorClearedNotAcknowledged() : icons.getMinorNotAcknowledged();
-            case MINOR_ACK: return icons.getMinorAcknowledged(); 
+            case INVALID:
+                return currentSeverity == SeverityLevel.OK ?
+                       icons.getInvalidClearedNotAcknowledged() : icons.getInvalidNotAcknowledged(); 
+            case MAJOR:
+                return currentSeverity == SeverityLevel.OK ?
+                       icons.getMajorClearedNotAcknowledged() : icons.getMajorNotAcknowledged();
+            case MAJOR_ACK:
+                return icons.getMajorAcknowledged();
+            case MINOR:
+                return currentSeverity == SeverityLevel.OK ? 
+                       icons.getMinorClearedNotAcknowledged() : icons.getMinorNotAcknowledged();
+            case MINOR_ACK:
+                return icons.getMinorAcknowledged(); 
             case OK: 
-            default: return null;
+            default:
+                return null;
         }
     }
-
 }

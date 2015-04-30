@@ -9,6 +9,7 @@ package org.csstudio.alarm.beast.ui.alarmtable;
 
 import java.util.Comparator;
 
+import org.csstudio.alarm.beast.AnnunciationFormatter;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.epics.util.time.Timestamp;
 
@@ -28,17 +29,17 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
     	switch (col_info)
         {
     	case PV:
-    	{
-    	    return new AlarmComparator(up)
-    	    {
-    	        protected int doCompare(AlarmTreePV pv1, AlarmTreePV pv2) 
-    	        {
-    	            final String prop1 = pv1.getName();
-    	            final String prop2 = pv2.getName();
-    	            return prop1.compareTo(prop2);
-    	        }
-    	    };
-    	}
+            return new AlarmComparator(up)
+            {
+                @Override
+                protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
+                {
+                    final String prop1 = pv1.getName();
+                    final String prop2 = pv2.getName();
+                    final int cmp = prop1.compareTo(prop2);
+                    return cmp != 0  ?  cmp  :  super.doCompare(pv1, pv2);
+                }
+            };
         case CURRENT_SEVERITY:
         	return new AlarmComparator(up)
 			{
@@ -52,6 +53,7 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
 		            return level1 - level2;
 				}
 			};
+        case ICON:
         case SEVERITY:
         	return new AlarmComparator(up)
 			{
@@ -77,31 +79,20 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
 	                return super.doCompare(pv1, pv2);
 				}
 			};
-        case CURRENT_STATUS:
-            return new AlarmComparator(up)
-            {
-                @Override
-                protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
-                {
-                    final int cmp = pv1.getMessage().compareTo(pv2.getMessage());
-                    if (cmp != 0)
-                        return cmp;
-                    return super.doCompare(pv1, pv2);
-                }
-            };
         case DESCRIPTION:
         	return new AlarmComparator(up)
 			{
 				@Override
 				protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
 				{
-		            final int cmp = pv1.getDescription().compareTo(pv2.getDescription());
-		            if (cmp != 0)
-		            	return cmp;
-	                return super.doCompare(pv1, pv2);
+				    final String desc1 = AnnunciationFormatter.format(pv1.getDescription(),
+				            pv1.getSeverity().getDisplayName(), pv1.getValue());
+                    final String desc2 = AnnunciationFormatter.format(pv2.getDescription(),
+                            pv2.getSeverity().getDisplayName(), pv2.getValue());
+		            final int cmp = desc1.compareTo(desc2);
+		            return cmp != 0  ?  cmp  :  super.doCompare(pv1, pv2);
 				}
 			};
-        case ICON:
         case ACK:
             return new AlarmComparator(up) 
             {
@@ -115,26 +106,6 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
                 }
             };
         case TIME:
-        	return new AlarmComparator(up)
-			{
-				@Override
-				protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
-				{
-	                return super.doCompare(pv1, pv2);
-				}
-			};
-        case VALUE:
-            return new AlarmComparator(up)
-            {
-                @Override
-                protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
-                {
-                    final int cmp = pv1.getValue().compareTo(pv2.getValue());
-                    if (cmp != 0)
-                        return cmp;                    
-                    return super.doCompare(pv1, pv2);
-                }
-            };
         default:
         	return new AlarmComparator(up);
         }
@@ -167,7 +138,7 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
      *  @param pv2
      *  @return comparison -1, 0, 1
      */
-    protected int doCompare(AlarmTreePV pv1, AlarmTreePV pv2)
+    protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
     {
         Timestamp time1 = pv1.getTimestamp();
         Timestamp time2 = pv2.getTimestamp();
