@@ -16,13 +16,13 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+import org.apache.batik.anim.timing.TimedDocumentRoot;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.DynamicGVTBuilder;
@@ -32,7 +32,6 @@ import org.apache.batik.bridge.UpdateManagerListener;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.bridge.ViewBox;
-import org.apache.batik.bridge.svg12.SVG12BridgeContext;
 import org.apache.batik.css.engine.CSSStyleSheetNode;
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.StyleSheet;
@@ -48,11 +47,14 @@ import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.gvt.renderer.ImageRendererFactory;
 import org.apache.batik.util.SVGConstants;
 import org.apache.commons.lang.time.DateUtils;
-import org.csstudio.java.thread.ExecutionService;
 import org.csstudio.utility.batik.util.ICSSHandler;
+import org.csstudio.utility.batik.util.SVGAnimationEngine;
 import org.csstudio.utility.batik.util.SVGStylableElementCSSHandler;
 import org.csstudio.utility.batik.util.StyleSheetCSSHandler;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.widgets.Display;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -106,6 +108,12 @@ public class SVGHandler {
 	 */
 	protected UpdateManager updateManager;
 
+	protected TimedDocumentRoot timedDocumentRoot;
+
+	protected SVGAnimationEngine svgAnimationEngine;
+
+	protected AnimatedSVGCache cache;
+
 	/**
 	 * The current SVG document.
 	 */
@@ -144,7 +152,17 @@ public class SVGHandler {
 	private boolean started = false;
 	private boolean suspended = true;
 
-	public SVGHandler(final SVGDocument doc) {
+	private final Display swtDisplay;
+	private boolean useCache = false;
+	private List<Image> imageBuffer;
+	private int maxBufferSize;
+
+	public SVGHandler(final SVGDocument doc, final Display display) {
+		swtDisplay = display;
+		useCache = Preferences.getUseCache();
+		imageBuffer = Collections.synchronizedList(new ArrayList<Image>());
+		maxBufferSize = Preferences.getCacheMaxSize();
+
 		listener = new Listener();
 		userAgent = createUserAgent();
 		renderingHints = new RenderingHints(null);
@@ -173,16 +191,20 @@ public class SVGHandler {
 	public void dispose() {
 		disposed = true;
 		if (updateManager != null) {
+			updateManager.removeUpdateManagerListener(listener);
 			updateManager.interrupt();
+			updateManager = null;
+		} else if (bridgeContext != null) {
+			bridgeContext.dispose();
+			bridgeContext = null;
 		}
-		updateManager = null;
 		if (renderer != null) {
 			renderer.dispose();
 			renderer = null;
 		}
-		if (bridgeContext != null) {
-			bridgeContext.dispose();
-			bridgeContext = null;
+		if (cache != null && !cache.isDisposed()) {
+			cache.dispose();
+			cache = null;
 		}
 	}
 
@@ -202,9 +224,9 @@ public class SVGHandler {
 		}
 		BridgeContext result = null;
 		if (doc.isSVG12()) {
-			result = new SVG12BridgeContext(userAgent, loader);
+			result = new org.csstudio.utility.batik.util.SVG12BridgeContext(userAgent, loader);
 		} else {
-			result = new BridgeContext(userAgent, loader);
+			result = new org.csstudio.utility.batik.util.BridgeContext(userAgent, loader);
 		}
 		return result;
 	}
@@ -313,10 +335,11 @@ public class SVGHandler {
 			return;
 		}
 		this.alignedToNearestSecond = alignedToNearestSecond;
+		if (cache != null) {
+			cache.setAlignedToNearestSecond(alignedToNearestSecond);
+		}
 		if (alignedToNearestSecond && isDynamicDocument && started) {
 			alignTimeToNearestSecond();
-			refreshContent();
-			render();
 		}
 	}
 
@@ -326,19 +349,32 @@ public class SVGHandler {
 				if (disposed) {
 					return;
 				}
-				// reset document time
-				updateManager.getBridgeContext().getAnimationEngine()
-						.setCurrentTime(0);
+				Date now = new Date();
+				Date nearestSecond = DateUtils.round(now, Calendar.SECOND);
+				long initialDelay = nearestSecond.getTime() - now.getTime();
+				if (initialDelay < 0) {
+					initialDelay = MILLISEC_IN_SEC + initialDelay;
+				}
+				try {
+					Thread.sleep(initialDelay);
+				} catch (InterruptedException e) {
+					Activator.getLogger().log(Level.WARNING,
+									"SVG animation FAILED to align to nearest second");
+				}
+				resetDocumentTime();
+				// restart/reset cache
+				if (useCache && cache.isRunning()) {
+					cache.restartProcessing();
+				}
 			}
 		};
-		Date now = new Date();
-		Date nearestSecond = DateUtils.round(now, Calendar.SECOND);
-		long initialDelay = nearestSecond.getTime() - now.getTime();
-		if (initialDelay < 0) {
-			initialDelay = MILLISEC_IN_SEC + initialDelay;
+		new Thread(startTask).start();
+	}
+
+	private void resetDocumentTime() {
+		if (svgAnimationEngine != null) {
+			svgAnimationEngine.setCurrentTime(0);
 		}
-		ExecutionService.getInstance().getScheduledExecutorService()
-				.schedule(startTask, initialDelay, TimeUnit.MILLISECONDS);
 	}
 
 	// //////////////////////////////////////////////////////////////////////
@@ -349,9 +385,14 @@ public class SVGHandler {
 	 * Resumes the processing of the current document.
 	 */
 	public void resumeProcessing() {
-		if (updateManager != null && started) {
-			updateManager.manageUpdates(renderer);
+		if (updateManager != null && started && suspended) {
+			if (useCache && cache.isFilled() && !cache.isRunning()) {
+				cache.startProcessing();
+			} else if (svgAnimationEngine.isPaused()) {
+				svgAnimationEngine.unpause();
+			}
 			suspended = false;
+			Activator.getLogger().log(Level.FINE, "SVG animation RESUMED");
 		}
 	}
 
@@ -360,8 +401,12 @@ public class SVGHandler {
 	 */
 	public void suspendProcessing() {
 		if (updateManager != null && started) {
-			updateManager.suspend();
+			svgAnimationEngine.pause();
+			if (useCache) {
+				cache.stopProcessing();
+			}
 			suspended = true;
+			Activator.getLogger().log(Level.FINE, "SVG animation SUSPENDED");
 		}
 	}
 
@@ -385,35 +430,41 @@ public class SVGHandler {
 					if (disposed) {
 						return;
 					}
+					updateManager.manageUpdates(renderer);
+					svgAnimationEngine = (SVGAnimationEngine) bridgeContext
+							.getAnimationEngine();
+					timedDocumentRoot = svgAnimationEngine.getTimedDocumentRoot();
+					if (useCache) {
+						resetCache();
+					}
+					long initialDelay = 0;
+					if (alignedToNearestSecond) {
+						Date now = new Date();
+						Date nearestSecond = DateUtils.round(now, Calendar.SECOND);
+						initialDelay = nearestSecond.getTime() - now.getTime();
+						if (initialDelay < 0) {
+							initialDelay = MILLISEC_IN_SEC + initialDelay;
+						}
+					}
+					try {
+						Thread.sleep(initialDelay);
+					} catch (InterruptedException e) {
+						Activator.getLogger().log(Level.WARNING,
+										"SVG animation FAILED to align to nearest second");
+					}
 					// This will call SVGAnimationEngine.start(long documentStartTime) 
 					// with System.currentTimeMillis()
 					updateManager.dispatchSVGLoadEvent();
-					updateManager.manageUpdates(renderer);
 					started = true;
 					suspended = false;
+					Activator.getLogger().log(Level.FINE, "SVG animation STARTED");
 				} catch (Exception e) {
 					handleException(e);
 					return;
 				}
 			}
 		};
-		long initialDelay = 100;
-		if (alignedToNearestSecond) {
-			Date now = new Date();
-			Date nearestSecond = DateUtils.round(now, Calendar.SECOND);
-			initialDelay = nearestSecond.getTime() - now.getTime();
-			if (initialDelay < 0) {
-				initialDelay = MILLISEC_IN_SEC + initialDelay;
-			}
-		}
-		ScheduledFuture<?> handle = ExecutionService.getInstance()
-				.getScheduledExecutorService()
-				.schedule(startTask, initialDelay, TimeUnit.MILLISECONDS);
-		try {
-			handle.get();
-		} catch (Exception e) {
-			handleException(e);
-		}
+		new Thread(startTask).start();
 	}
 
 	// //////////////////////////////////////////////////////////////////////
@@ -499,7 +550,11 @@ public class SVGHandler {
 			if (isRunning) {
 				suspendProcessing();
 			}
+			if (cache != null) {
+				cache.flush();
+			}
 			doRender();
+			resetDocumentTime();
 			if (isRunning) {
 				resumeProcessing();
 			}
@@ -560,7 +615,6 @@ public class SVGHandler {
 			renderingTransform = Px;
 		}
 
-		// FIXME re-create renderer to avoid NullPointerException in repaint
 		if (renderer != null) {
 			renderer.dispose();
 			renderer = null;
@@ -578,6 +632,7 @@ public class SVGHandler {
 
 		if (isDynamicDocument) {
 			updateManager.setGVTRoot(gvtRoot);
+			updateManager.manageUpdates(renderer);
 		}
 		needRender = false;
 	}
@@ -625,12 +680,83 @@ public class SVGHandler {
 
 		@Override
 		public void updateCompleted(UpdateManagerEvent e) {
-			if (handlerListener != null && e.getImage() != null)
-				handlerListener.newImage(e.getImage());
+			if (e.getImage() == null) {
+				return;
+			}
+			if (useCache && cache != null) {
+				Image newImage = cache.addImage(e.getImage());
+				if (cache.isFilled()) {
+					Activator.getLogger().log(Level.FINE,
+							"SVG cache FILLED with " + cache.getSize() + " images");
+					svgAnimationEngine.pause();
+					if (!suspended) {
+						cache.startProcessing();
+					}
+				} else {
+					notifyNewImage(newImage);
+				}
+			} else if (!suspended) {
+				ImageData imageData = SVGUtils.toSWT(swtDisplay, e.getImage());
+				Image newImage = new Image(swtDisplay, imageData);
+				notifyNewImage(newImage);
+			}
 		}
 
 		@Override
 		public void updateFailed(UpdateManagerEvent e) {
+		}
+
+	}
+
+	protected void resetCache() {
+		final AnimatedSVGCache copy;
+		synchronized (this) {
+			copy = cache;
+			cache = new AnimatedSVGCache(swtDisplay, timedDocumentRoot,
+					new AnimatedSVGCache.AnimatedSVGCacheListener() {
+						@Override
+						public void newImage(Image newImage) {
+							notifyNewImage(newImage);
+						}
+					}, Preferences.getCacheMaxSize());
+		}
+		if (copy != null && !copy.isDisposed()) {
+			copy.dispose();
+		}
+	}
+
+	protected void addToBuffer(Image image) {
+		if (imageBuffer.size() == maxBufferSize) {
+			final List<Image> entriesCopy = new ArrayList<Image>(imageBuffer);
+			imageBuffer.clear();
+			Runnable flushTask = new Runnable() {
+				public void run() {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+					}
+					for (Image entry : entriesCopy) {
+						entry.dispose();
+					}
+					entriesCopy.clear();
+					Activator.getLogger().log(Level.FINE, "SVG image buffer FLUSHED");
+				}
+			};
+			new Thread(flushTask).start();
+		}
+		imageBuffer.add(image);
+	}
+
+	protected void notifyNewImage(final Image newImage) {
+		if (handlerListener != null && newImage != null && !suspended) {
+			swtDisplay.asyncExec(new Runnable() {
+				public void run() {
+					handlerListener.newImage(newImage);
+					if (!useCache) {
+						addToBuffer(newImage);
+					}
+				}
+			});
 		}
 	}
 
