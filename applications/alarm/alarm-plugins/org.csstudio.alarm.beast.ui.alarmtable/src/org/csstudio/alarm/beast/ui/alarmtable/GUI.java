@@ -9,11 +9,14 @@ package org.csstudio.alarm.beast.ui.alarmtable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.GUIUpdateThrottle;
+import org.csstudio.alarm.beast.ui.AuthIDs;
 import org.csstudio.alarm.beast.ui.ContextMenuHelper;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.SelectionHelper;
@@ -21,14 +24,18 @@ import org.csstudio.alarm.beast.ui.SeverityColorProvider;
 import org.csstudio.alarm.beast.ui.actions.AlarmPerspectiveAction;
 import org.csstudio.alarm.beast.ui.actions.ConfigureItemAction;
 import org.csstudio.alarm.beast.ui.actions.DisableComponentAction;
+import org.csstudio.alarm.beast.ui.alarmtable.customconfig.DoubleClickHandler;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
 import org.csstudio.apputil.text.RegExHelper;
+import org.csstudio.security.SecuritySupport;
 import org.csstudio.ui.util.MinSizeTableColumnLayout;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.csstudio.utility.singlesource.UIHelper.UI;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -51,8 +58,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -64,6 +74,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
@@ -74,6 +85,8 @@ import org.eclipse.ui.IWorkbenchPartSite;
  */
 public class GUI implements AlarmClientModelListener
 {
+    private static final Logger LOGGER = Logger.getLogger(GUI.class.getName());
+
     /**
      * Persistence: Tags within dialog settings, actually written to
      * WORKSPACE/.metadata/.plugins/org.csstudio.alarm.beast.ui.alarmtable/dialog_settings.xml
@@ -90,6 +103,8 @@ public class GUI implements AlarmClientModelListener
 
     /** Model with all the alarm information */
     final private AlarmClientModel model;
+
+    private DoubleClickHandler[] double_click_handlers;
 
     final private IDialogSettings settings;
 
@@ -176,7 +191,9 @@ public class GUI implements AlarmClientModelListener
         {
             if (value instanceof Boolean)
             {
-                ((AlarmTreePV) element).acknowledge(!(Boolean) value);
+                if (SecuritySupport.havePermission(AuthIDs.ACKNOWLEDGE)) {
+                    ((AlarmTreePV) element).acknowledge(!(Boolean) value);
+                }
             }
         }
 
@@ -546,6 +563,34 @@ public class GUI implements AlarmClientModelListener
             }
         }
 
+        table.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseDoubleClick(MouseEvent e)
+            {
+                Table table = (Table) e.getSource();
+                TableItem item = table.getItem(new Point(e.x, e.y));
+                if (item != null && item.getData() instanceof AlarmTreePV)
+                {
+                    AlarmTreePV pv = (AlarmTreePV) item.getData();
+                    if (is_active_alarm_table)
+                    {
+                        for (DoubleClickHandler h : getDoubleClickHandlers())
+                        {
+                            h.activeTableDoubleClicked(pv);
+                        }
+                    } 
+                    else
+                    {
+                        for (DoubleClickHandler h : getDoubleClickHandlers())
+                        {
+                            h.acknowledgedTableDoubleClicked(pv);
+                        }
+                    }
+                }
+            }
+        });
+
         return table_viewer;
     }
 
@@ -712,5 +757,31 @@ public class GUI implements AlarmClientModelListener
     void dispose()
     {
         baseComposite.dispose();
+    }
+
+    private DoubleClickHandler[] getDoubleClickHandlers()
+    {
+        if (double_click_handlers == null)
+        {
+            final IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(
+                    DoubleClickHandler.EXTENSION_ID);
+            final List<DoubleClickHandler> list = new ArrayList<DoubleClickHandler>();
+            for (IConfigurationElement e : config)
+            {
+                if (DoubleClickHandler.NAME.equals(e.getName()))
+                {
+                    try
+                    {
+                        list.add((DoubleClickHandler) e.createExecutableExtension("class"));
+                    }
+                    catch (Exception ex)
+                    {
+                        LOGGER.log(Level.SEVERE, "Error loading extension point " + e.getName(), ex);
+                    }
+                }
+            }
+            double_click_handlers = list.toArray(new DoubleClickHandler[list.size()]);
+        }
+        return double_click_handlers;
     }
 }

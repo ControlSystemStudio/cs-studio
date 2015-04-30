@@ -17,9 +17,8 @@
          </appInfo>
       </annotation>
       <complexType>
-         <choice minOccurs="0" maxOccurs="2">
+         <choice>
             <element ref="doubleClickHandler" minOccurs="0" maxOccurs="1"/>
-            <element ref="tableTextProvider" minOccurs="0" maxOccurs="1"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -62,26 +61,6 @@
                </documentation>
                <appInfo>
                   <meta.attribute kind="java" basedOn=":org.csstudio.alarm.beast.ui.alarmtable.customconfig.DoubleClickHandler"/>
-               </appInfo>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
-   <element name="tableTextProvider">
-      <annotation>
-         <documentation>
-            The text provider can provide an arbitrary text for any table cell, which will always take precedence over the default values.
-         </documentation>
-      </annotation>
-      <complexType>
-         <attribute name="class" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.csstudio.alarm.beast.ui.alarmtable.customconfig.TableTextProvider"/>
                </appInfo>
             </annotation>
          </attribute>
