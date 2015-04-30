@@ -27,6 +27,18 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
     {
     	switch (col_info)
         {
+    	case PV:
+    	{
+    	    return new AlarmComparator(up)
+    	    {
+    	        protected int doCompare(AlarmTreePV pv1, AlarmTreePV pv2) 
+    	        {
+    	            final String prop1 = pv1.getName();
+    	            final String prop2 = pv2.getName();
+    	            return prop1.compareTo(prop2);
+    	        }
+    	    };
+    	}
         case CURRENT_SEVERITY:
         	return new AlarmComparator(up)
 			{
@@ -65,6 +77,18 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
 	                return super.doCompare(pv1, pv2);
 				}
 			};
+        case CURRENT_STATUS:
+            return new AlarmComparator(up)
+            {
+                @Override
+                protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
+                {
+                    final int cmp = pv1.getMessage().compareTo(pv2.getMessage());
+                    if (cmp != 0)
+                        return cmp;
+                    return super.doCompare(pv1, pv2);
+                }
+            };
         case DESCRIPTION:
         	return new AlarmComparator(up)
 			{
@@ -77,6 +101,7 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
 	                return super.doCompare(pv1, pv2);
 				}
 			};
+        case ICON:
         case ACK:
             return new AlarmComparator(up) 
             {
@@ -95,18 +120,21 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
 				@Override
 				protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
 				{
-//				    Timestamp time1 = pv1.getTimestamp();
-//					Timestamp time2 = pv2.getTimestamp();
-//					if (time1 == null)
-//						time1 = Timestamp.of(0, 0);
-//					if (time2 == null)
-//						time2 = Timestamp.of(0, 0);
-//					final int cmp = time1.compareTo(time2);
-//		            if (cmp != 0)
-//		            	return cmp;
 	                return super.doCompare(pv1, pv2);
 				}
 			};
+        case VALUE:
+            return new AlarmComparator(up)
+            {
+                @Override
+                protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
+                {
+                    final int cmp = pv1.getValue().compareTo(pv2.getValue());
+                    if (cmp != 0)
+                        return cmp;                    
+                    return super.doCompare(pv1, pv2);
+                }
+            };
         default:
         	return new AlarmComparator(up);
         }
