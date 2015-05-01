@@ -51,7 +51,6 @@
     
     <module>org.csstudio.logging.jms2rdb</module>
     <module>org.csstudio.navigator.applaunch</module>
-    <module>org.csstudio.opibuilder.alarm</module>
     <module>org.csstudio.pvmanager.formula.channelfinder</module>
     <module>org.csstudio.remote</module>
 <!--     <module>org.csstudio.remote.test</module> -->
