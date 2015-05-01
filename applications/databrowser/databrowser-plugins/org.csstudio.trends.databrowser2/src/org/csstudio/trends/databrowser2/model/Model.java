@@ -131,6 +131,12 @@ public class Model
     /** How should plot rescale when archived data arrives? */
     private volatile ArchiveRescale archive_rescale = Preferences.getArchiveRescale();
 
+    /** Show toolbar*/
+    private boolean show_toolbar;
+
+    /** Show legend*/
+    private boolean show_legend;
+
     public Model()
     {
         final Display display = Display.getCurrent();
@@ -718,6 +724,38 @@ public class Model
         background = rgb;
         for (ModelListener listener : listeners)
             listener.changedColorsOrFonts();
+    }
+
+    /** @return <code>true</code> if toolbar is visible*/
+    public boolean isToolbarVisible()
+    {
+        return show_toolbar;
+    }
+
+    /** @param visible Should toolbar be visible? */
+    public void setToolbarVisible(final boolean toolbar)
+    {
+        if (show_toolbar == toolbar)
+            return;
+        show_toolbar = toolbar;
+        for (ModelListener listener : listeners)
+            listener.changedLayout();
+    }
+
+    /** @return <code>true</code> if toolbar is visible*/
+    public boolean isLegendVisible()
+    {
+        return show_legend;
+    }
+
+    /** @param visible Should toolbar be visible? */
+    public void setLegendVisible(final boolean legend)
+    {
+        if (show_legend == legend)
+            return;
+        show_legend = legend;
+        for (ModelListener listener : listeners)
+            listener.changedLayout();
     }
 
     /** @return <code>true</code> if grid lines are drawn */

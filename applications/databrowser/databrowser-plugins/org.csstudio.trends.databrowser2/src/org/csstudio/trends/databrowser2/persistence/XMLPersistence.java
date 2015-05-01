@@ -67,6 +67,9 @@ public class XMLPersistence
     final public static String TAG_AXES = "axes";
     final public static String TAG_ANNOTATIONS = "annotations";
     final public static String TAG_PVLIST = "pvlist";
+    
+    final public static String TAG_SHOW_TOOLBAR = "show_toolbar";
+    final public static String TAG_SHOW_LEGEND = "show_legend";
 
     final public static String TAG_COLOR = "color";
     final public static String TAG_RED = "red";
@@ -168,6 +171,9 @@ public class XMLPersistence
         {
             // Ignore
         }
+
+        model.setToolbarVisible(DOMHelper.getSubelementBoolean(root_node, TAG_SHOW_TOOLBAR, true));
+        model.setLegendVisible(DOMHelper.getSubelementBoolean(root_node, TAG_SHOW_LEGEND, true));
 
         // Value Axes
         Element list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_AXES);
@@ -366,6 +372,10 @@ public class XMLPersistence
 
         XMLWriter.XML(writer, 1, TAG_TITLE, model.getTitle().orElse(""));
         XMLWriter.XML(writer, 1, TAG_SAVE_CHANGES, model.shouldSaveChanges());
+
+        // Visibility of toolbar and legend
+        XMLWriter.XML(writer, 1, TAG_SHOW_LEGEND, model.isLegendVisible());
+        XMLWriter.XML(writer, 1, TAG_SHOW_TOOLBAR, model.isToolbarVisible());
 
         // Time axis
         XMLWriter.XML(writer, 1, TAG_GRID, model.isGridVisible());

@@ -212,6 +212,10 @@ public class DataBrowserEditor extends EditorPart
             {   setDirty(true);   }
 
             @Override
+            public void changedLayout() 
+            {   setDirty(true);   }
+
+            @Override
             public void changedTiming()
             {   setDirty(true);   }
 
