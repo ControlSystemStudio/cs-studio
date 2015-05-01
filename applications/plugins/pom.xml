@@ -130,7 +130,6 @@
     <!--<module>org.csstudio.utility.tine.ui</module>--><!-- depends on org.csstudio.utility.tine -->
     <module>org.csstudio.utility.treemodel</module>
     <module>org.csstudio.utility.treemodel.test</module>
-    <!--module>org.csstudio.alarm.beast.test</module--><!-- Error in threading. Test failes to end. -->
     
     <module>org.csstudio.diag.epics.pvmanager.pvtree.test</module>
     <module>org.csstudio.diag.epics.pvtree.test</module>    
