@@ -21,6 +21,7 @@ public class Messages extends NLS
     public static String OpenDataBrowser;
     public static String OpenDataBrowserErrorFmt;
     public static String ShowToolbar;
+    public static String ShowLegend;
 
     static
     {
