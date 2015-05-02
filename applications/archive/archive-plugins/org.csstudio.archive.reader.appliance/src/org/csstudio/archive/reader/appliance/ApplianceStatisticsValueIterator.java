@@ -105,20 +105,22 @@ public class ApplianceStatisticsValueIterator extends ApplianceMeanValueIterator
 	 */
 	@Override
 	public void close() {
-		super.close();
 		try {
-			if(stdStream != null) {
-				stdStream.close();
-			}
-			if (minStream != null) {
-				minStream.close();
-			}
-			if (maxStream != null) {
-				maxStream.close();
-			}
-			if (countStream != null) {
-				countStream.close();
-			}
+		    synchronized(this) {
+    			if(stdStream != null) {
+    				stdStream.close();
+    			}
+    			if (minStream != null) {
+    				minStream.close();
+    			}
+    			if (maxStream != null) {
+    				maxStream.close();
+    			}
+    			if (countStream != null) {
+    				countStream.close();
+    			}
+    			super.close();
+		    }
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
@@ -132,17 +134,20 @@ public class ApplianceStatisticsValueIterator extends ApplianceMeanValueIterator
         		type == PayloadType.SCALAR_FLOAT ||
         		type == PayloadType.SCALAR_INT ||
         		type == PayloadType.SCALAR_SHORT) {
-        	EpicsMessage meanResult = mainIterator.next();
-			return new ArchiveVStatistics(
-					TimestampHelper.fromSQLTimestamp(meanResult.getTimestamp()),
-					getSeverity(meanResult.getSeverity()), 
-					String.valueOf(meanResult.getStatus()), 
-					display, 
-					meanResult.getNumberValue().doubleValue(),
-					minIterator.next().getNumberValue().doubleValue(),
-					maxIterator.next().getNumberValue().doubleValue(),
-					stdIterator.next().getNumberValue().doubleValue(),
-					countIterator.next().getNumberValue().intValue());
+            synchronized(this) {
+                if (closed) return null;
+            	EpicsMessage meanResult = mainIterator.next();
+    			return new ArchiveVStatistics(
+    					TimestampHelper.fromSQLTimestamp(meanResult.getTimestamp()),
+    					getSeverity(meanResult.getSeverity()), 
+    					String.valueOf(meanResult.getStatus()), 
+    					display, 
+    					meanResult.getNumberValue().doubleValue(),
+    					minIterator.next().getNumberValue().doubleValue(),
+    					maxIterator.next().getNumberValue().doubleValue(),
+    					stdIterator.next().getNumberValue().doubleValue(),
+    					countIterator.next().getNumberValue().intValue());
+            }
         } 
         throw new UnsupportedOperationException("PV type " + type + " is not supported.");
 	}
