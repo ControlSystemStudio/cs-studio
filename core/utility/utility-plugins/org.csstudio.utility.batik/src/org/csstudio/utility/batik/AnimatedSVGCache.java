@@ -244,11 +244,8 @@ public class AnimatedSVGCache {
 				initialDelay += 1000; // number of milliseconds in 1 seconds
 			}
 		}
-		scheduledMain = ExecutionService
-				.getInstance()
-				.getScheduledExecutorService()
-				.scheduleAtFixedRate(animationTask, initialDelay, 10,
-						TimeUnit.MILLISECONDS);
+		scheduledMain = ExecutionService.getInstance().getScheduledExecutorService()
+				.scheduleAtFixedRate(animationTask, initialDelay, 10, TimeUnit.MILLISECONDS);
 		running = true;
 	}
 
