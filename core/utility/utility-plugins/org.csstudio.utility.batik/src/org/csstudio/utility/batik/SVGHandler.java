@@ -103,6 +103,8 @@ public class SVGHandler {
 	 */
 	protected DocumentLoader loader;
 
+	protected GraphicsNode gvtRoot;
+
 	/**
 	 * The update manager.
 	 */
@@ -175,16 +177,12 @@ public class SVGHandler {
 		bridgeContext.setDynamicState(BridgeContext.DYNAMIC);
 		builder = new DynamicGVTBuilder();
 		// Build to calculate original dimension
-		GraphicsNode gvtRoot = builder.build(bridgeContext, originalSVGDocument);
+		gvtRoot = builder.build(bridgeContext, originalSVGDocument);
 		originalDimension = bridgeContext.getDocumentSize();
 
 		svgDocument = (SVGDocument) createWrapper(originalSVGDocument);
 		builder.build(bridgeContext, svgDocument);
 		buildElementsToUpdateList(bridgeContext, svgDocument);
-		if (isDynamicDocument) {
-			updateManager = new UpdateManager(bridgeContext, gvtRoot, svgDocument);
-			updateManager.addUpdateManagerListener(listener);
-		}
 		setAnimationLimitingFPS(10);
 	}
 
@@ -430,6 +428,8 @@ public class SVGHandler {
 					if (disposed) {
 						return;
 					}
+					updateManager = new UpdateManager(bridgeContext, gvtRoot, svgDocument);
+					updateManager.addUpdateManagerListener(listener);
 					updateManager.manageUpdates(renderer);
 					svgAnimationEngine = (SVGAnimationEngine) bridgeContext
 							.getAnimationEngine();
@@ -569,7 +569,7 @@ public class SVGHandler {
 		}
 		updateMatrix();
 		changeColor(colorToChange, colorToApply);
-		GraphicsNode gvtRoot = builder.build(bridgeContext, svgDocument);
+		gvtRoot = builder.build(bridgeContext, svgDocument);
 
 		// get the 'width' and 'height' attributes of the SVG document
 		float width = 400, height = 400;
@@ -630,7 +630,7 @@ public class SVGHandler {
 		renderer.clearOffScreen();
 		renderer.repaint(curAOI);
 
-		if (isDynamicDocument) {
+		if (updateManager != null) {
 			updateManager.setGVTRoot(gvtRoot);
 			updateManager.manageUpdates(renderer);
 		}
