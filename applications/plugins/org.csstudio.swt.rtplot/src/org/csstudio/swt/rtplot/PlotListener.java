@@ -26,7 +26,10 @@ public interface PlotListener<XTYPE extends Comparable<XTYPE>>
 
     /** Invoked when Cursors changed */
     public void changedCursors();
-    
-    /** Invoked when traces were changed */
-    public void changedTraces();
+
+    /** Invoked when toolbar displayed/hidden */
+    public void changedToolbar(boolean visible);
+
+    /** Invoked when legend displayed/hidden */
+    public void changedLegend(boolean visible);    
 }

@@ -48,10 +48,18 @@ public class PlotListenerAdapter<XTYPE extends Comparable<XTYPE>> implements Plo
     {
         // NOP
     }
-
+    
+    /** {@inheritDoc} */
     @Override
-    public void changedTraces() {
-	// NOP
-	
+    public void changedToolbar(boolean visible)
+    {
+        // NOP
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void changedLegend(boolean visible)
+    {
+        // NOP
     }
 }

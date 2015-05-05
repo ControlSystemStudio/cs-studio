@@ -189,7 +189,7 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
 
                 final MenuManager mm = new MenuManager();
                 mm.add(plot_widget.getPlot().getToolbarAction());
-                mm.add(plot_widget.getPlot().getLegendbarAction());
+                mm.add(plot_widget.getPlot().getLegendAction());
                 mm.add(new OpenDataBrowserAction(this));
                 final Control control = plot_widget.getPlot().getPlotControl();
                 final Menu menu = mm.createContextMenu(control);

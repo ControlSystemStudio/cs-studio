@@ -33,7 +33,7 @@ public class DataBrowserWidgetFigure extends AbstractSWTWidgetFigure<RTTimePlot>
         super(editPart);
 
         plot.getPlot().showToolbar(toolbar);
-        plot.getPlot().showLegendbar(legend);
+        plot.getPlot().showLegend(legend);
         plot.getPlot().showCrosshair(showValueLabels);
     }
 
@@ -65,13 +65,13 @@ public class DataBrowserWidgetFigure extends AbstractSWTWidgetFigure<RTTimePlot>
     /** @return Tool bar visibility */
     public boolean isLegendVisible()
     {
-        return plot.getPlot().isLegendbarVisible();
+        return plot.getPlot().isLegendVisible();
     }
 
     /** @param visible Legend visibility */
     public void setLegendVisible(final boolean visible)
     {
-        plot.getPlot().showLegendbar(visible);
+        plot.getPlot().showLegend(visible);
     }
 
 	/** @param showValueLabels <code>true</code> if values should be visible */

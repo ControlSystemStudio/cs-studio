@@ -7,8 +7,6 @@
  ******************************************************************************/
 package org.csstudio.swt.rtplot;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
 import org.csstudio.swt.rtplot.data.PlotDataProvider;
 import org.csstudio.swt.rtplot.internal.AnnotationImpl;
-import org.csstudio.swt.rtplot.internal.LegendHandler;
 import org.csstudio.swt.rtplot.internal.MouseMode;
 import org.csstudio.swt.rtplot.internal.Plot;
 import org.csstudio.swt.rtplot.internal.SnapshotAction;
@@ -52,26 +49,8 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     final protected Plot<XTYPE> plot;
     final protected ToolbarHandler<XTYPE> toolbar;
     final private ToggleToolbarAction<XTYPE> toggle_toolbar;
-    final private ToggleLegendAction<XTYPE> toggle_legendbar;
+    final private ToggleLegendAction<XTYPE> toggle_legend;
     final private Action snapshot;
-    final private LegendHandler<XTYPE> legendbar;
-
-    /**
-     * Adding property change support so that RTPlot change events like
-     * show/hide toolbar and legend can be listened too
-     * 
-     * TODO (shroffk) PlotListener could be extended to RTPlotListener which
-     * would provide support for the toolbar and legend
-     */
-    protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
-
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        changeSupport.addPropertyChangeListener(listener);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        changeSupport.removePropertyChangeListener(listener);
-    }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected RTPlot(final Composite parent, final Class<XTYPE> type)
@@ -89,72 +68,34 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         {
             plot = (Plot) new Plot<Double>(this, Double.class);
             toolbar = (ToolbarHandler) new ToolbarHandler<Double>((RTPlot)this);
-            legendbar = (LegendHandler) new LegendHandler<Double>((RTPlot)this);
             toggle_toolbar = (ToggleToolbarAction) new ToggleToolbarAction<Double>((RTPlot)this, true);
-            toggle_legendbar = (ToggleLegendAction) new ToggleLegendAction<Double>((RTPlot)this, true);
+            toggle_legend = (ToggleLegendAction) new ToggleLegendAction<Double>((RTPlot)this, true);
             snapshot = new SnapshotAction(this);
         }
         else if (type == Instant.class)
         {
             plot = (Plot) new Plot<Instant>(this, Instant.class);
             toolbar = (ToolbarHandler) new ToolbarHandler<Instant>((RTPlot)this);
-            legendbar = (LegendHandler) new LegendHandler<Instant>((RTPlot)this);
             toggle_toolbar = (ToggleToolbarAction) new ToggleToolbarAction<Double>((RTPlot)this, true);
-            toggle_legendbar = (ToggleLegendAction) new ToggleLegendAction<Double>((RTPlot)this, true);
+            toggle_legend = (ToggleLegendAction) new ToggleLegendAction<Double>((RTPlot)this, true);
             snapshot = new SnapshotAction(this);
         }
         else
             throw new IllegalArgumentException("Cannot handle " + type.getName());
 
         toolbar.addContextMenu(toggle_toolbar);
-        legendbar.addContextMenu(toggle_legendbar);
 
         FormData fd = new FormData();
         fd.top = new FormAttachment(toolbar.getControl());
         fd.left = new FormAttachment(0);
         fd.right = new FormAttachment(100);
-        fd.bottom = new FormAttachment(legendbar.getControl());
+        fd.bottom = new FormAttachment(100);
         plot.setLayoutData(fd);
 
         fd = new FormData();
         fd.left = new FormAttachment(0);
         fd.right = new FormAttachment(100);
         toolbar.getControl().setLayoutData(fd);
-        
-        fd = new FormData();
-        fd.left = new FormAttachment(0);
-        fd.right = new FormAttachment(100);
-        fd.bottom = new FormAttachment(100);
-        legendbar.getControl().setLayoutData(fd);
-        
-        addPropertyChangeListener((event) -> {
-            boolean show = (boolean) event.getNewValue();
-            if (event.getPropertyName().equalsIgnoreCase("toggleLegend")) {
-                FormData formData = (FormData) plot.getLayoutData();
-                if (show) {
-                    formData.bottom = new FormAttachment(legendbar.getControl());
-                    plot.setLayoutData(formData);
-                } else {
-                    formData.bottom = new FormAttachment(100);
-                    plot.setLayoutData(formData);
-                }
-                toggle_legendbar.updateText();
-                layout();
-            }
-            if (event.getPropertyName().equalsIgnoreCase("toggleToolbar")) {
-                FormData formData = (FormData) plot.getLayoutData();
-                if (show) {
-                    formData.top = new FormAttachment(toolbar.getControl());
-                    plot.setLayoutData(formData);
-                } else {
-                    formData.top = new FormAttachment(0);
-                    plot.setLayoutData(formData);
-                }
-                toggle_toolbar.updateText();
-                layout();
-            }
-        });
-        
     }
 
     /** @param listener Listener to add */
@@ -175,10 +116,10 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         return plot;
     }
 
-    /** @return {@link Action} that can show/hide the toolbar */
-    public Action getLegendbarAction()
+    /** @return {@link Action} that can show/hide the legend */
+    public Action getLegendAction()
     {
-        return toggle_legendbar;
+        return toggle_legend;
     }
     
     /** @return {@link Action} that can show/hide the toolbar */
@@ -197,7 +138,6 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     public void setBackground(final RGB color)
     {
         plot.setBackground(Objects.requireNonNull(color));
-        legendbar.setBackground(Objects.requireNonNull(color));
     }
 
     /** @param title Title text */
@@ -218,16 +158,16 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         plot.setLabelFont(Objects.requireNonNull(font));
     }
 
-    /** @param font  Font to use for scale */
+    /** @param font Font to use for scale */
     public void setScaleFont(final FontData font)
     {
         plot.setScaleFont(Objects.requireNonNull(font));
     }
     
-    /** @param font  Font to use for legend */
+    /** @param font Font to use for legend */
     public void setLegendFont(final FontData font)
     {
-        legendbar.setFont(Objects.requireNonNull(font));
+        plot.setLegendFont(Objects.requireNonNull(font));
     }
 
     /** @return {@link Image} of current plot. Caller must dispose */
@@ -236,18 +176,19 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         return plot.getImage();
     }
 
-    /** @return <code>true</code> if legendbar is visible */
-    public boolean isLegendbarVisible()
+    /** @return <code>true</code> if legend is visible */
+    public boolean isLegendVisible()
     {
-        return legendbar.getControl().isVisible();
+        return plot.isLegendVisible();
     }
 
-    /** @param show <code>true</code> if legendbar should be displayed */
-    public void showLegendbar(final boolean show)
+    /** @param show <code>true</code> if legend should be displayed */
+    public void showLegend(final boolean show)
     {
-        boolean oldValue = legendbar.getControl().isVisible();
-        legendbar.getControl().setVisible(show);
-        changeSupport.firePropertyChange("toggleLegend", oldValue, show);
+        if (isLegendVisible() == show)
+            return;
+        plot.showLegend(show);
+        toggle_legend.updateText();
     }
     
     /** @return <code>true</code> if toolbar is visible */
@@ -259,9 +200,21 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     /** @param show <code>true</code> if toolbar should be displayed */
     public void showToolbar(final boolean show)
     {
-        boolean oldValue = toolbar.getControl().isVisible();
+        if (isToolbarVisible() == show)
+            return;
         toolbar.getControl().setVisible(show);
-        changeSupport.firePropertyChange("toggleToolbar", oldValue, show);
+        final FormData fd = new FormData();
+        if (show)
+            fd.top = new FormAttachment(toolbar.getControl());
+        else
+            fd.top = new FormAttachment(0);
+        fd.left = new FormAttachment(0);
+        fd.right = new FormAttachment(100);
+        fd.bottom = new FormAttachment(100);
+        plot.setLayoutData(fd);
+        toggle_toolbar.updateText();
+        layout();
+        plot.fireToolbarChange(show);
     }
 
     /** Add a custom tool bar item
