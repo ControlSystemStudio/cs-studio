@@ -27,13 +27,12 @@ public class DataBrowserWidgetFigure extends AbstractSWTWidgetFigure<RTTimePlot>
      *  @param filename Configuration file name
      *  @param toolbar
      */
-    public DataBrowserWidgetFigure(final AbstractBaseEditPart editPart, final boolean toolbar, final boolean legend,
+    public DataBrowserWidgetFigure(final AbstractBaseEditPart editPart, final boolean toolbar,
     		final String selectionValuePv, final boolean showValueLabels)
     {
         super(editPart);
 
         plot.getPlot().showToolbar(toolbar);
-        plot.getPlot().showLegend(legend);
         plot.getPlot().showCrosshair(showValueLabels);
     }
 

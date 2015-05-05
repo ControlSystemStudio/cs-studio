@@ -130,7 +130,7 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
     protected IFigure doCreateFigure()
     {
         final DataBrowserWidgedModel model = getWidgetModel();
-        gui = new DataBrowserWidgetFigure(this, model.isToolbarVisible(), model.isLegendVisible(),
+        gui = new DataBrowserWidgetFigure(this, model.isToolbarVisible(),
         		model.getSelectionValuePv(), model.isShowValueLabels());
         return gui;
     }
@@ -146,14 +146,6 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
                 getWidgetFigure().setToolbarVisible((Boolean) newValue);
                 return false;
             });
-        // Legend
-        setPropertyChangeHandler(DataBrowserWidgedModel.PROP_SHOW_LEGEND,
-                (final Object oldValue, final Object newValue, final IFigure figure) ->
-                {
-                    getWidgetFigure().setLegendVisible((Boolean) newValue);
-                    return false;
-                });
-
 
         // Show hover value labels
         setPropertyChangeHandler(DataBrowserWidgedModel.PROP_SHOW_VALUE_LABELS,
