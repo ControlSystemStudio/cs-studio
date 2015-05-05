@@ -61,18 +61,6 @@ public class DataBrowserWidgetFigure extends AbstractSWTWidgetFigure<RTTimePlot>
         plot.getPlot().showToolbar(visible);
     }
 
-    /** @return Tool bar visibility */
-    public boolean isLegendVisible()
-    {
-        return plot.getPlot().isLegendVisible();
-    }
-
-    /** @param visible Legend visibility */
-    public void setLegendVisible(final boolean visible)
-    {
-        plot.getPlot().showLegend(visible);
-    }
-
 	/** @param showValueLabels <code>true</code> if values should be visible */
 	public void setShowValueLabels(final boolean showValueLabels)
 	{

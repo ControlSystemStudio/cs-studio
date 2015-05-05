@@ -80,7 +80,10 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
         {
             new XMLPersistence().load(model, input);
         }
-        // set toolbar and legend visibility from the opi properties
+        // Set toolbar visibility from the opi property.
+        // Toolbar visibility is also in the *.plt config,
+        // but wasn't originally so opiwidget had its own
+        // property for this.
         model.setToolbarVisible(isToolbarVisible());
         return model;
     }
