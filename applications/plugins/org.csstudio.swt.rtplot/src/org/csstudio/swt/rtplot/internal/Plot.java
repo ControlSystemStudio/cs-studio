@@ -86,10 +86,10 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
 
     /** Font to use for scale */
     private volatile Font scale_font;
-    
+
     /** Font to use for legend */
     private volatile Font legend_font;
-    
+
     /** Area of this canvas */
     private volatile Rectangle area = new Rectangle(0, 0, 0, 0);
 
@@ -118,7 +118,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     final private TracePainter<XTYPE> trace_painter = new TracePainter<XTYPE>();
     final private List<AnnotationImpl<XTYPE>> annotations = new CopyOnWriteArrayList<>();
     final private LegendPart<XTYPE> legend;
-    
+
     final private PlotProcessor<XTYPE> plot_processor;
 
     final private Runnable redraw_runnable = () ->
@@ -200,7 +200,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         label_font = parent.getFont();
         scale_font = parent.getFont();
         legend_font = parent.getFont();
-        
+
         media = new SWTMediaPool(parent.getDisplay());
         display = parent.getDisplay();
 
@@ -221,7 +221,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         title_part = new TitlePart("", plot_part_listener);
         plot_area = new PlotPart("main", plot_part_listener);
         legend = new LegendPart<XTYPE>("legend", plot_part_listener);
-        
+
         setMouseMode(MouseMode.PAN);
 
         // 50Hz default throttle
@@ -321,7 +321,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         for (PlotListener<XTYPE> listener : listeners)
             listener.changedLegend(show);
     }
-    
+
     /** @param font Font to use for scale */
     public void setLegendFont(final FontData font)
     {
@@ -329,7 +329,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         need_layout.set(true);
         requestUpdate();
     }
-    
+
     /** @return X/Time axis */
     public AxisPart<XTYPE> getXAxis()
     {
@@ -367,7 +367,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
      *  @param trace {@link Trace}, where axis must be a valid Y axis index
      */
     public void addTrace(final TraceImpl<XTYPE> trace)
-    {	
+    {
         traces.add(trace);
         y_axes.get(trace.getYAxis()).addTrace(trace);
         need_layout.set(true);
@@ -390,7 +390,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     {
         return traces;
     }
-    
+
     /** @return Count the number of traces */
     public int getTraceCount(){
 	return traces.size();
@@ -563,7 +563,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         // Legend on bottom, as high as desired
         final int legend_height = legend.getDesiredHeight(gc, bounds.width, legend_font, traces);
         legend.setBounds(0,  bounds.height-legend_height, bounds.width, legend_height);
-        
+
         // X Axis as high as desired. Width will depend on Y axes.
         final int x_axis_height = x_axis.getDesiredPixelSize(bounds, gc, label_font, scale_font);
         final int y_axis_height = bounds.height - title_height - x_axis_height - legend_height;
@@ -595,7 +595,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                 axis.setBounds(axis_region);
                 plot_width -= axis_region.width;
             }
-        
+
         x_axis.setBounds(total_left_axes_width, title_height+y_axis_height, plot_width, x_axis_height);
 
         plot_area.setBounds(total_left_axes_width, title_height, plot_width, y_axis_height);
@@ -632,7 +632,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
 
         gc.setClipping(plot_bounds);
         plot_area.paint(gc, media);
-        
+
         for (YAxisImpl<XTYPE> y_axis : y_axes)
             for (Trace<XTYPE> trace : y_axis.getTraces())
                 trace_painter.paint(gc, media, plot_area.getBounds(), x_transform, y_axis, trace);
@@ -1159,7 +1159,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         for (PlotListener<XTYPE> listener : listeners)
             listener.changedYAxis(axis);
     }
-    
+
     /** Notify listeners */
     private void fireAnnotationsChanged()
     {
