@@ -102,7 +102,7 @@ public class TimePlotDemo
         final Menu menu = mm.createContextMenu(menu_holder);
         menu_holder.setMenu(menu);
 
-        plot.addListener(new PlotListener<Instant>()
+        plot.addListener(new PlotListenerAdapter<Instant>()
         {
             @Override
             public void changedXAxis(Axis<Instant> x_axis)

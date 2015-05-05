@@ -2,7 +2,6 @@ package org.csstudio.swt.rtplot.internal;
 
 import java.util.Arrays;
 
-import org.csstudio.swt.rtplot.Annotation;
 import org.csstudio.swt.rtplot.PlotListenerAdapter;
 import org.csstudio.swt.rtplot.RTPlot;
 import org.csstudio.swt.rtplot.SWTMediaPool;
@@ -45,11 +44,14 @@ public class LegendHandler<XTYPE extends Comparable<XTYPE>> {
         plot = rtPlot;
         media = new SWTMediaPool(rtPlot.getParent().getDisplay());
         legendbar = new Composite(rtPlot, SWT.BORDER | SWT.WRAP);
+        
+        final Display display = rtPlot.getDisplay();
+        
         rtPlot.addListener(new PlotListenerAdapter<XTYPE>() {
 
             @Override
             public void changedTraces() {
-                Display.getCurrent().asyncExec(() -> {
+                display.asyncExec(() -> {
                     updateLegend();
                 });
 
