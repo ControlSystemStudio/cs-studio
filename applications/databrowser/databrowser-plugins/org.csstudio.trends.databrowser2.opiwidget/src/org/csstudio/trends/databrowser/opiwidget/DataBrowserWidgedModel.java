@@ -59,7 +59,7 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
     public static final IPath EMPTY_PATH = new Path("");
 
     public static final String PROP_SELECTION_VALUE_PV = "selection_value_pv";
-	public static final String PROP_SHOW_VALUE_LABELS = "show_value_labels";
+    public static final String PROP_SHOW_VALUE_LABELS = "show_value_labels";
 
     /** Initialize */
     public DataBrowserWidgedModel()
@@ -83,7 +83,13 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
         {
             new XMLPersistence().load(model, input);
         }
-        // set toolbar and legend visibility from the opi properties
+        // Set toolbar and legend visibility from the opi properties.
+        // Toolbar visibility is also in the *.plt config,
+        // but wasn't originally so opiwidget had its own
+        // property for this.
+        // Legend visibility was in the *.plt file from the start,
+        // but having an overriding opiwidget property allows using
+        // the same *.plt file in multiple opiwidgets, with and without legend.
         model.setToolbarVisible(isToolbarVisible());
         model.setLegendVisible(isLegendVisible());
         return model;
@@ -93,21 +99,21 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
      *  of the {@link AbstractContainerModel}
      *  {@inheritDoc}
      */
-	@Override
-	public List<AbstractWidgetModel> getChildren()
-	{
-		return Collections.emptyList();
-	}
+    @Override
+    public List<AbstractWidgetModel> getChildren()
+    {
+        return Collections.emptyList();
+    }
 
     /** No editing of child widgets in the original sense
      *  of the {@link AbstractContainerModel}
      *  {@inheritDoc}}
      */
-	@Override
-	public boolean isChildrenOperationAllowable()
-	{
-		return false;
-	}
+    @Override
+    public boolean isChildrenOperationAllowable()
+    {
+        return false;
+    }
 
     /** {@inheritDoc}} */
     @Override
@@ -132,9 +138,9 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
         addProperty(new BooleanProperty(PROP_SHOW_LEGEND, Messages.ShowLegend,
                 WidgetPropertyCategory.Display, false));
         addProperty(new StringProperty(PROP_SELECTION_VALUE_PV,
-				"Selection Value PV (VTable)", WidgetPropertyCategory.Basic, ""));
+                "Selection Value PV (VTable)", WidgetPropertyCategory.Basic, ""));
         addProperty(new BooleanProperty(PROP_SHOW_VALUE_LABELS,
-        		"Show Value Labels", WidgetPropertyCategory.Display, false));
+                "Show Value Labels", WidgetPropertyCategory.Display, false));
     }
 
     /** @return Path to data browser configuration file, including macros. Never <code>null</code>. */
@@ -150,7 +156,7 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
         final Map<String, String> macros = new HashMap<String, String>();
         final MacrosInput macro_input = getMacrosInput();
         if (macro_input.isInclude_parent_macros())
-        	macros.putAll(getParentMacroMap());
+            macros.putAll(getParentMacroMap());
         macros.putAll(macro_input.getMacrosMap());
         return new MacroTable(macros);
     }
@@ -184,17 +190,16 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
         return getCastedPropertyValue(PROP_SHOW_LEGEND);
     }
 
-
     /** @return Selection PV value. */
     public String getSelectionValuePv()
     {
-    	return getCastedPropertyValue(PROP_SELECTION_VALUE_PV);
+        return getCastedPropertyValue(PROP_SELECTION_VALUE_PV);
     }
 
     /** @return are value labels displayed? */
     public boolean isShowValueLabels()
     {
-    	return getCastedPropertyValue(PROP_SHOW_VALUE_LABELS);
+        return getCastedPropertyValue(PROP_SHOW_VALUE_LABELS);
     }
 
     @Override

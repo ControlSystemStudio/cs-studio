@@ -62,7 +62,7 @@ public class DataBrowserWidgetFigure extends AbstractSWTWidgetFigure<RTTimePlot>
         plot.getPlot().showToolbar(visible);
     }
 
-    /** @return Tool bar visibility */
+    /** @return Legend visibility */
     public boolean isLegendVisible()
     {
         return plot.getPlot().isLegendVisible();

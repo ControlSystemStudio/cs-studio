@@ -149,20 +149,18 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
         // Legend
         setPropertyChangeHandler(DataBrowserWidgedModel.PROP_SHOW_LEGEND,
                 (final Object oldValue, final Object newValue, final IFigure figure) ->
-                {
-                    getWidgetFigure().setLegendVisible((Boolean) newValue);
-                    return false;
-                });
-
-
+            {
+                getWidgetFigure().setLegendVisible((Boolean) newValue);
+                return false;
+            });
         // Show hover value labels
         setPropertyChangeHandler(DataBrowserWidgedModel.PROP_SHOW_VALUE_LABELS,
             (Object oldValue, Object newValue, IFigure figure) ->
-			{
-				getWidgetFigure().setShowValueLabels((boolean) newValue);
-				return false;
-			});
-    }
+            {
+                getWidgetFigure().setShowValueLabels((boolean) newValue);
+                return false;
+            });
+}
 
     /** {@inheritDoc}} */
     @Override
