@@ -75,6 +75,7 @@ public class AnimatedSVGCache {
 	private boolean alignedToNearestSecond = false;
 	private boolean running = false;
 	private boolean initialized = false;
+	private int repeatCount = 0;
 
 	private final Display swtDisplay;
 
@@ -115,6 +116,7 @@ public class AnimatedSVGCache {
 		timeHandlers.clear();
 		entries.clear();
 		filled = false;
+		repeatCount = 0;
 		initialized = false;
 		Runnable flushTask = new Runnable() {
 			public void run() {
@@ -143,6 +145,7 @@ public class AnimatedSVGCache {
 			}
 			entries.clear();
 			filled = false;
+			repeatCount = 0;
 			initialized = true;
 		} else {
 			// Compare time of each element with previous call
@@ -156,6 +159,16 @@ public class AnimatedSVGCache {
 			}
 			// Check if all images have been cached
 			filled = hasRepeated();
+			// Avoid first repeat
+			if (filled && repeatCount == 0) {
+				repeatCount++;
+				// Reset time counters
+				timeHandlers.clear();
+				for (TimedElement te : timedDocumentRoot.getChildren()) {
+					timeHandlers.put(te, new TimedElementHandler(te));
+				}
+				filled = false;
+			}
 		}
 		if (filled) { // End of the loop, back to first image
 			entries.get(0).setWaitTime(currentWaitTime);
@@ -163,6 +176,10 @@ public class AnimatedSVGCache {
 		}
 		ImageData imageData = SVGUtils.toSWT(swtDisplay, awtImage);
 		image = new Image(swtDisplay, imageData);
+		// Avoid first repeat
+		if (repeatCount == 0) {
+			return image;
+		}
 		entries.add(new Entry(currentWaitTime, image));
 		return image;
 	}

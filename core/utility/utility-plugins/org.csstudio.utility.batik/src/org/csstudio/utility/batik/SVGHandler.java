@@ -370,7 +370,8 @@ public class SVGHandler {
 	}
 
 	private void resetDocumentTime() {
-		if (svgAnimationEngine != null) {
+		if (svgAnimationEngine != null
+				&& timedDocumentRoot.getDocumentBeginTime() != null) {
 			svgAnimationEngine.setCurrentTime(0);
 		}
 	}
