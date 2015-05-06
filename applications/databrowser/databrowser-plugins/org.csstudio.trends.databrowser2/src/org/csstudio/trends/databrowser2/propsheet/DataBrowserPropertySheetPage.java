@@ -162,6 +162,7 @@ public class DataBrowserPropertySheetPage extends Page
             title_font.setText(SWTMediaPool.getFontDescription(model.getTitleFont()));
             label_font.setText(SWTMediaPool.getFontDescription(model.getLabelFont()));
             scale_font.setText(SWTMediaPool.getFontDescription(model.getScaleFont()));
+            legend_font.setText(SWTMediaPool.getFontDescription(model.getLegendFont()));
         }
 
         /** Update the start/end time in the Time axis panel when model changes
@@ -202,6 +203,8 @@ public class DataBrowserPropertySheetPage extends Page
             changedTimerange();
         }
     };
+
+    private Button legend_font;
 
     /** Initialize
      *  @param model Model to display/edit
@@ -854,6 +857,30 @@ public class DataBrowserPropertySheetPage extends Page
                 final FontData selected = dialog.open();
                 if (selected != null)
                     new ChangeScaleFontCommand(model, operations_manager, selected);
+            }
+        });
+        
+        // Empty label to fill 2 grib boxes to alight the legend font below the rest of the fonts
+        label = new Label(parent, 0);
+        label = new Label(parent, 0);
+        
+        label = new Label(parent, 0);
+        label.setText(Messages.LegendFontLbl);
+        label.setLayoutData(new GridData());
+
+        legend_font = new Button(parent, SWT.PUSH);
+        legend_font.setToolTipText(Messages.LegendFontTT);
+        legend_font.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        legend_font.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(final SelectionEvent e)
+            {
+                final FontDialog dialog = new FontDialog(parent.getShell());
+                dialog.setFontList(new FontData[] { model.getLegendFont() });
+                final FontData selected = dialog.open();
+                if (selected != null)
+                    new ChangeLegendFontCommand(model, operations_manager, selected);
             }
         });
 

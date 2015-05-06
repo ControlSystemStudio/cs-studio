@@ -20,6 +20,9 @@ public interface ModelListener
     /** Title changed */
     void changedTitle();
 
+    /** The visbility for the toolbar and/or legend has changed */
+    void changedLayout();
+
     /** The update period or scroll step changed */
     void changedTiming();
 
@@ -62,14 +65,16 @@ public interface ModelListener
     /** @param scroll_enabled <code>true</code> when scrolling was turned 'on' */
     void scrollEnabled(boolean scroll_enabled);
 
-	/** The annotation list changed*/
-	void changedAnnotations();
+    /** The annotation list changed */
+    void changedAnnotations();
 
-	/** The item requested to refresh its history.
-	 *  @param item the item to refresh the history data for
-	 */
-	void itemRefreshRequested(PVItem item);
+    /**
+     * The item requested to refresh its history.
+     * 
+     * @param item the item to refresh the history data for
+     */
+    void itemRefreshRequested(PVItem item);
 
-	/** ModelItems have new selected sample */
-	void selectedSamplesChanged();
+    /** ModelItems have new selected sample */
+    void selectedSamplesChanged();
 }

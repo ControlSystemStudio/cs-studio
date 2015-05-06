@@ -21,6 +21,7 @@ import org.csstudio.swt.rtplot.internal.AnnotationImpl;
 import org.csstudio.swt.rtplot.internal.MouseMode;
 import org.csstudio.swt.rtplot.internal.Plot;
 import org.csstudio.swt.rtplot.internal.SnapshotAction;
+import org.csstudio.swt.rtplot.internal.ToggleLegendAction;
 import org.csstudio.swt.rtplot.internal.ToggleToolbarAction;
 import org.csstudio.swt.rtplot.internal.ToolbarHandler;
 import org.csstudio.swt.rtplot.internal.TraceImpl;
@@ -48,6 +49,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     final protected Plot<XTYPE> plot;
     final protected ToolbarHandler<XTYPE> toolbar;
     final private ToggleToolbarAction<XTYPE> toggle_toolbar;
+    final private ToggleLegendAction<XTYPE> toggle_legend;
     final private Action snapshot;
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -67,6 +69,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
             plot = (Plot) new Plot<Double>(this, Double.class);
             toolbar = (ToolbarHandler) new ToolbarHandler<Double>((RTPlot)this);
             toggle_toolbar = (ToggleToolbarAction) new ToggleToolbarAction<Double>((RTPlot)this, true);
+            toggle_legend = (ToggleLegendAction) new ToggleLegendAction<Double>((RTPlot)this, true);
             snapshot = new SnapshotAction(this);
         }
         else if (type == Instant.class)
@@ -74,6 +77,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
             plot = (Plot) new Plot<Instant>(this, Instant.class);
             toolbar = (ToolbarHandler) new ToolbarHandler<Instant>((RTPlot)this);
             toggle_toolbar = (ToggleToolbarAction) new ToggleToolbarAction<Double>((RTPlot)this, true);
+            toggle_legend = (ToggleLegendAction) new ToggleLegendAction<Double>((RTPlot)this, true);
             snapshot = new SnapshotAction(this);
         }
         else
@@ -112,6 +116,12 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         return plot;
     }
 
+    /** @return {@link Action} that can show/hide the legend */
+    public Action getLegendAction()
+    {
+        return toggle_legend;
+    }
+    
     /** @return {@link Action} that can show/hide the toolbar */
     public Action getToolbarAction()
     {
@@ -148,10 +158,16 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         plot.setLabelFont(Objects.requireNonNull(font));
     }
 
-    /** @param font  Font to use for scale */
+    /** @param font Font to use for scale */
     public void setScaleFont(final FontData font)
     {
         plot.setScaleFont(Objects.requireNonNull(font));
+    }
+    
+    /** @param font Font to use for legend */
+    public void setLegendFont(final FontData font)
+    {
+        plot.setLegendFont(Objects.requireNonNull(font));
     }
 
     /** @return {@link Image} of current plot. Caller must dispose */
@@ -160,6 +176,21 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         return plot.getImage();
     }
 
+    /** @return <code>true</code> if legend is visible */
+    public boolean isLegendVisible()
+    {
+        return plot.isLegendVisible();
+    }
+
+    /** @param show <code>true</code> if legend should be displayed */
+    public void showLegend(final boolean show)
+    {
+        if (isLegendVisible() == show)
+            return;
+        plot.showLegend(show);
+        toggle_legend.updateText();
+    }
+    
     /** @return <code>true</code> if toolbar is visible */
     public boolean isToolbarVisible()
     {
@@ -169,27 +200,21 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     /** @param show <code>true</code> if toolbar should be displayed */
     public void showToolbar(final boolean show)
     {
+        if (isToolbarVisible() == show)
+            return;
         toolbar.getControl().setVisible(show);
+        final FormData fd = new FormData();
         if (show)
-        {
-            FormData fd = new FormData();
             fd.top = new FormAttachment(toolbar.getControl());
-            fd.left = new FormAttachment(0);
-            fd.right = new FormAttachment(100);
-            fd.bottom = new FormAttachment(100);
-            plot.setLayoutData(fd);
-        }
         else
-        {
-            FormData fd = new FormData();
             fd.top = new FormAttachment(0);
-            fd.left = new FormAttachment(0);
-            fd.right = new FormAttachment(100);
-            fd.bottom = new FormAttachment(100);
-            plot.setLayoutData(fd);
-        }
+        fd.left = new FormAttachment(0);
+        fd.right = new FormAttachment(100);
+        fd.bottom = new FormAttachment(100);
+        plot.setLayoutData(fd);
         toggle_toolbar.updateText();
         layout();
+        plot.fireToolbarChange(show);
     }
 
     /** Add a custom tool bar item
@@ -281,6 +306,11 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     public Iterable<Trace<XTYPE>> getTraces()
     {
         return plot.getTraces();
+    }
+    
+    /** @return Count the number of traces */
+    public int getTraceCount(){
+	return plot.getTraceCount();
     }
 
     /** @param trace Trace to move from its current Y axis

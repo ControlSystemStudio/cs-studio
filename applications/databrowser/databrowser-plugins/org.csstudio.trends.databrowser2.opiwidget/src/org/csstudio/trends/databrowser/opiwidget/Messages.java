@@ -20,6 +20,7 @@ public class Messages extends NLS
     public static String NoFilename;
     public static String OpenDataBrowser;
     public static String OpenDataBrowserErrorFmt;
+    public static String ShowLegend;
     public static String ShowToolbar;
 
     static

@@ -27,6 +27,8 @@ public class Messages extends NLS
     public static String EditAnnotation_Text;
     public static String EditAnnotation_Trace;
     public static String EditAnnotation_Info;
+    public static String Legend_Hide;
+    public static String Legend_Show;
     public static String Pan;
     public static String Pan_TT;
     public static String Pan_X;
