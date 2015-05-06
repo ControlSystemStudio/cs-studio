@@ -364,5 +364,4 @@ public class AnimatedSVGCache {
         }
 
     }
-
 }
