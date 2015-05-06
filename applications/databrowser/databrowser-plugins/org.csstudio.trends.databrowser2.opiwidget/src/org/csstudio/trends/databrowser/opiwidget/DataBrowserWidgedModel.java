@@ -53,6 +53,9 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
     /** Property to show/hide the toolbar */
     public static final String PROP_SHOW_TOOLBAR = "show_toolbar";
 
+    /** Property to show/hide the legend */
+    public static final String PROP_SHOW_LEGEND = "show_legend";
+
     public static final IPath EMPTY_PATH = new Path("");
 
     public static final String PROP_SELECTION_VALUE_PV = "selection_value_pv";
@@ -82,6 +85,7 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
         }
         // set toolbar and legend visibility from the opi properties
         model.setToolbarVisible(isToolbarVisible());
+        model.setLegendVisible(isLegendVisible());
         return model;
     }
 
@@ -124,6 +128,8 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
                     Model.FILE_EXTENSION_OLD
                 }));
         addProperty(new BooleanProperty(PROP_SHOW_TOOLBAR, Messages.ShowToolbar,
+                WidgetPropertyCategory.Display, false));
+        addProperty(new BooleanProperty(PROP_SHOW_LEGEND, Messages.ShowLegend,
                 WidgetPropertyCategory.Display, false));
         addProperty(new StringProperty(PROP_SELECTION_VALUE_PV,
 				"Selection Value PV (VTable)", WidgetPropertyCategory.Basic, ""));
@@ -171,6 +177,13 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
     {
         return getCastedPropertyValue(PROP_SHOW_TOOLBAR);
     }
+
+    /** @return Legend visibility */
+    public boolean isLegendVisible()
+    {
+        return getCastedPropertyValue(PROP_SHOW_LEGEND);
+    }
+
 
     /** @return Selection PV value. */
     public String getSelectionValuePv()
