@@ -9,9 +9,15 @@ package org.csstudio.swt.rtplot;
 
 import org.csstudio.swt.rtplot.data.PlotDataItem;
 
-/** Listener to changes in the plot
- *  @param <XTYPE> Data type used for the {@link PlotDataItem}
- *  @author Kay Kasemir
+/**
+ * Listener to changes in the plot
+ * 
+ * @param <XTYPE>
+ *            Data type used for the {@link PlotDataItem}
+ * @author Kay Kasemir
+ * 
+ * @TODO (shroffk) Remove this Adapter by providing default implementations in
+ *       the {@link PlotListener}
  */
 public class PlotListenerAdapter<XTYPE extends Comparable<XTYPE>> implements PlotListener<XTYPE>
 {
@@ -39,6 +45,20 @@ public class PlotListenerAdapter<XTYPE extends Comparable<XTYPE>> implements Plo
     /** {@inheritDoc} */
     @Override
     public void changedCursors()
+    {
+        // NOP
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void changedToolbar(boolean visible)
+    {
+        // NOP
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void changedLegend(boolean visible)
     {
         // NOP
     }

@@ -9,11 +9,8 @@
 	<artifactId>alarm-features</artifactId>
 	<packaging>pom</packaging>
 	<modules>
-		<module>
-  		org.csstudio.alarm.beast.ui.feature
-  	</module>
-		<module>
-  		org.csstudio.alarm.beast.ui.rap.feature
-  	</module>
+		<module>org.csstudio.alarm.beast.ui.feature</module>
+		<module>org.csstudio.alarm.beast.ui.rap.feature</module>
+		<module>org.csstudio.alarm.beast.tools.feature</module>
 	</modules>
 </project>

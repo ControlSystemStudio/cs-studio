@@ -163,6 +163,8 @@ public class Messages extends NLS
     public static String KeyLbl;
     public static String LabelFontLbl;
     public static String LabelFontTT;
+    public static String LegendFontLbl;
+    public static String LegendFontTT;
     public static String LinacScale;
     public static String LinLogScaleType;
     public static String LiveBufferSizeInfoFmt;

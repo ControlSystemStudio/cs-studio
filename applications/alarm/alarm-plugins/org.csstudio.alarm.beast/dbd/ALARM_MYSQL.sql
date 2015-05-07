@@ -1,8 +1,6 @@
 # Original version, 2009-03-19: chenx1@ornl.gov
 # Updates: Kay Kasemir
 
-# Before using this file to create config tables, you must change hostname, 
-# username, password to the real name.
 # Under the directory containing this file, use this command to create the database:
 # mysql -h hostname -u root -p'the_mysql_root_password' < ALARM_MYSQL.sql
 

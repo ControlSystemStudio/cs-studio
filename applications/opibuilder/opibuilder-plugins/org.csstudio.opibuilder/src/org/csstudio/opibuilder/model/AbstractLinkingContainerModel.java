@@ -1,12 +1,15 @@
 package org.csstudio.opibuilder.model;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.runmode.IOPIRuntime;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.gef.GraphicalViewer;
 
 /**The abstract base model for LinkingContainer widgets.
  */
@@ -66,14 +69,30 @@ public abstract class AbstractLinkingContainerModel extends AbstractContainerMod
 	/**Set the display model of the loaded opi.
 	 * @param displayModel
 	 */
-	public void setDisplayModel(DisplayModel displayModel) {
+	public synchronized void setDisplayModel(DisplayModel displayModel) {
 		this.displayModel = displayModel;
 	}
 	
 	/**
 	 * @return display model of the loaded opi. null if no opi has been loaded.
 	 */
-	public DisplayModel getDisplayModel() {
+	public synchronized DisplayModel getDisplayModel() {
 		return displayModel;
+	}
+	
+	public synchronized void setDisplayModelViewer(GraphicalViewer viewer) {
+		this.displayModel.setViewer(viewer);
+	}
+	
+	public synchronized void setDisplayModelDisplayID(int displayID){
+		this.displayModel.setDisplayID(displayID);
+	}
+	
+	public synchronized void setDisplayModelExecutionMode(ExecutionMode executionMode) {
+		this.displayModel.setExecutionMode(executionMode);
+	}
+	
+	public synchronized void setDisplayModelOpiRuntime(IOPIRuntime opiRuntime) {
+		this.displayModel.setOpiRuntime(opiRuntime);
 	}
 }
