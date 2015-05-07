@@ -23,6 +23,11 @@ import org.eclipse.swt.graphics.Rectangle;
 @SuppressWarnings("nls")
 public class PlotPart
 {
+    /** Debug flag:
+     *  Enables a dummy thread for each plot part
+     *  that uses CPU and triggers bogus refreshes
+     *  of the part.
+     */
     final private static boolean debug = false;
     private long debug_runs = 0;
 

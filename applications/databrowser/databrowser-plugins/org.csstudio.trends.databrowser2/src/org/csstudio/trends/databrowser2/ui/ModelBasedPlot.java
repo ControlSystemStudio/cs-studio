@@ -129,6 +129,18 @@ public class ModelBasedPlot
                     findModelItem(trace).setSelectedSample(trace.getSelectedSample());
                 listener.ifPresent((l) -> l.selectedSamplesChanged());
             }
+            
+            @Override
+            public void changedToolbar(final boolean visible)
+            {
+                listener.ifPresent((l) -> l.changedToolbar(visible));
+            }
+
+            @Override
+            public void changedLegend(final boolean visible)
+            {
+                listener.ifPresent((l) -> l.changedLegend(visible));
+            }
         });
 
         hookDragAndDrop(plot);

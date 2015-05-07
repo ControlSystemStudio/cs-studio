@@ -99,10 +99,11 @@ public class TimePlotDemo
         final Control menu_holder = plot.getPlotControl();
         final MenuManager mm = new MenuManager();
         mm.add(plot.getToolbarAction());
+        mm.add(plot.getLegendAction());
         final Menu menu = mm.createContextMenu(menu_holder);
         menu_holder.setMenu(menu);
 
-        plot.addListener(new PlotListener<Instant>()
+        plot.addListener(new PlotListenerAdapter<Instant>()
         {
             @Override
             public void changedXAxis(Axis<Instant> x_axis)

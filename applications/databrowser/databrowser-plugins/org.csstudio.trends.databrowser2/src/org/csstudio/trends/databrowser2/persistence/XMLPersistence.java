@@ -63,9 +63,13 @@ public class XMLPersistence
     final public static String TAG_TITLE_FONT = "title_font";
     final public static String TAG_LABEL_FONT = "label_font";
     final public static String TAG_SCALE_FONT = "scale_font";
+    final public static String TAG_LEGEND_FONT = "legend_font";
     final public static String TAG_AXES = "axes";
     final public static String TAG_ANNOTATIONS = "annotations";
     final public static String TAG_PVLIST = "pvlist";
+    
+    final public static String TAG_SHOW_TOOLBAR = "show_toolbar";
+    final public static String TAG_SHOW_LEGEND = "show_legend";
 
     final public static String TAG_COLOR = "color";
     final public static String TAG_RED = "red";
@@ -168,6 +172,9 @@ public class XMLPersistence
             // Ignore
         }
 
+        model.setToolbarVisible(DOMHelper.getSubelementBoolean(root_node, TAG_SHOW_TOOLBAR, true));
+        model.setLegendVisible(DOMHelper.getSubelementBoolean(root_node, TAG_SHOW_LEGEND, true));
+
         // Value Axes
         Element list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_AXES);
         if (list != null)
@@ -227,6 +234,7 @@ public class XMLPersistence
         loadFontFromDocument(root_node, TAG_TITLE_FONT).ifPresent(model::setTitleFont);
         loadFontFromDocument(root_node, TAG_LABEL_FONT).ifPresent(model::setLabelFont);
         loadFontFromDocument(root_node, TAG_SCALE_FONT).ifPresent(model::setScaleFont);
+        loadFontFromDocument(root_node, TAG_LEGEND_FONT).ifPresent(model::setLegendFont);
 
         // Load Annotations
         list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_ANNOTATIONS);
@@ -365,6 +373,10 @@ public class XMLPersistence
         XMLWriter.XML(writer, 1, TAG_TITLE, model.getTitle().orElse(""));
         XMLWriter.XML(writer, 1, TAG_SAVE_CHANGES, model.shouldSaveChanges());
 
+        // Visibility of toolbar and legend
+        XMLWriter.XML(writer, 1, TAG_SHOW_LEGEND, model.isLegendVisible());
+        XMLWriter.XML(writer, 1, TAG_SHOW_TOOLBAR, model.isToolbarVisible());
+
         // Time axis
         XMLWriter.XML(writer, 1, TAG_GRID, model.isGridVisible());
         XMLWriter.XML(writer, 1, TAG_SCROLL, model.isScrollEnabled());
@@ -379,6 +391,7 @@ public class XMLPersistence
         XMLWriter.XML(writer, 1, TAG_TITLE_FONT, SWTMediaPool.getFontDescription(model.getTitleFont()));
         XMLWriter.XML(writer, 1, TAG_LABEL_FONT, SWTMediaPool.getFontDescription(model.getLabelFont()));
         XMLWriter.XML(writer, 1, TAG_SCALE_FONT, SWTMediaPool.getFontDescription(model.getScaleFont()));
+        XMLWriter.XML(writer, 1, TAG_LEGEND_FONT, SWTMediaPool.getFontDescription(model.getLegendFont()));
 
         // Value axes
         XMLWriter.start(writer, 1, TAG_AXES);
