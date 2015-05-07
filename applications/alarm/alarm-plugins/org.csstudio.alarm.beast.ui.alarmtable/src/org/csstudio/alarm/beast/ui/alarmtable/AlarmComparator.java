@@ -10,7 +10,9 @@ package org.csstudio.alarm.beast.ui.alarmtable;
 import java.util.Comparator;
 
 import org.csstudio.alarm.beast.AnnunciationFormatter;
+import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
+import org.csstudio.alarm.beast.client.GDCDataStructure;
 import org.epics.util.time.Timestamp;
 
 /** Comparator (= table sorter) that compares one column of an alarm.
@@ -53,7 +55,6 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
 		            return level1 - level2;
 				}
 			};
-        case ICON:
         case SEVERITY:
         	return new AlarmComparator(up)
 			{
@@ -67,6 +68,30 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
 		            return level1 - level2;
 				}
 			};
+        case ICON:
+//          1. Invalid / Disconnected alarm
+//          2. Major unacknowledged alarm
+//          3. Minor unacknowledged alarm
+//          4. Alarm cleared but unacknowledged
+//          5. Major acknowledged alarm
+//          6. Minor acknowledged alarm
+            return new AlarmComparator(up)
+            {
+                @Override
+                protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
+                {
+                    final SeverityLevel sv1 = pv1.getSeverity();
+                    final SeverityLevel sv2 = pv2.getSeverity();
+
+                    final boolean pv1ClrNotAcked = pv1.getCurrentSeverity() == SeverityLevel.OK && sv1.isActive();
+                    final boolean pv2ClrNotAcked = pv2.getCurrentSeverity() == SeverityLevel.OK && sv2.isActive();
+
+                    if (pv1ClrNotAcked ^ pv2ClrNotAcked)
+                        return pv1ClrNotAcked ? (sv2.isActive() ? -1 : 1) : (sv1.isActive() ? 1 : -1);
+                    else
+                        return (sv1 == sv2) ? super.doCompare(pv1, pv2) : sv1.ordinal() - sv2.ordinal();
+                }
+            };
         case STATUS:
         	return new AlarmComparator(up)
 			{
@@ -79,6 +104,18 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
 	                return super.doCompare(pv1, pv2);
 				}
 			};
+        case CURRENT_STATUS:
+            return new AlarmComparator(up)
+            {
+                @Override
+                protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
+                {
+                    final int cmp = pv1.getCurrentMessage().compareTo(pv2.getCurrentMessage());
+                    if (cmp != 0)
+                        return cmp;
+                    return super.doCompare(pv1, pv2);
+                }
+            };
         case DESCRIPTION:
         	return new AlarmComparator(up)
 			{
@@ -105,10 +142,68 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
                     return active1 ? -1 : 1;
                 }
             };
+        case VALUE:
+            return new AlarmComparator(up) 
+            {
+                @Override
+                protected int doCompare(AlarmTreePV pv1, AlarmTreePV pv2)
+                {
+                    final int cmp = pv1.getValue().compareTo(pv2.getValue());
+                    if (cmp != 0)
+                        return cmp;
+                    return super.doCompare(pv1, pv2);
+                }
+            };
+        case ACTION:
+            return new AlarmComparator(up) 
+            {
+                @Override
+                protected int doCompare(AlarmTreePV pv1, AlarmTreePV pv2)
+                {
+                    final int cmp = compareGuidance(pv1, pv2, false);
+                    if (cmp != 0) 
+                        return cmp;
+                    return super.doCompare(pv1, pv2);
+                }
+            };
+        case ID:
+            return new AlarmComparator(up) 
+            {
+                @Override
+                protected int doCompare(AlarmTreePV pv1, AlarmTreePV pv2)
+                {
+                    final int cmp = compareGuidance(pv1, pv2, true);
+                    if (cmp != 0) 
+                        return cmp;
+                    return super.doCompare(pv1, pv2);
+                }
+            };
         case TIME:
         default:
         	return new AlarmComparator(up);
         }
+    }
+    
+    private static int compareGuidance(AlarmTreePV pv1, AlarmTreePV pv2, boolean title) 
+    {
+        GDCDataStructure[] g1 = pv1.getGuidance();
+        GDCDataStructure[] g2 = pv2.getGuidance();
+        if (g1.length != 0 && g2.length != 0)
+        {   
+            int cmp = 0;
+            if (title) 
+                cmp = g1[0].getTitle().compareTo(g2[0].getTitle());
+            else 
+                cmp = g1[0].getDetails().compareTo(g2[0].getDetails());
+            
+            if (cmp != 0) 
+                return cmp;
+        } 
+        else if (g1.length == 0 && g2.length != 0)
+            return 1;
+        else if (g1.length != 0 && g2.length == 0)
+            return -1;
+        return 0;
     }
 
     final private boolean up;
