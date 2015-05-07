@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 public class Preferences
 {
     /** Preference and dialog tag for combined vs. separate alarm tables */
-    final public static String ALARM_TABLE_GROUP_SETTING = "combined_alarm_table";
+    final public static String ALARM_TABLE_COMBINE_TABLES_SETTING = "combined_alarm_table";
     
     /** Preference and dialog tag for column names */
     final public static String ALARM_TABLE_COLUMN_SETTING = "alarm_table_columns";
@@ -34,7 +34,7 @@ public class Preferences
 	public static boolean isCombinedAlarmTable()
 	{
         final IPreferencesService service = Platform.getPreferencesService();
-        return service.getBoolean(Activator.ID, ALARM_TABLE_GROUP_SETTING, false, null);
+        return service.getBoolean(Activator.ID, ALARM_TABLE_COMBINE_TABLES_SETTING, false, null);
 	}
 
     public static String[] getColumns()

@@ -20,7 +20,7 @@ class ColumnConfigureAction extends Action
     @Override
     public void run() 
     {
-        ColumnWrapper[] columns = ColumnWrapper.getCopy(view.columns);
+        ColumnWrapper[] columns = ColumnWrapper.getCopy(view.getColumns());
         ColumnConfigurer configurer = new ColumnConfigurer(view.getViewSite().getShell(), columns);
         if (configurer.open() == IDialogConstants.OK_ID) 
         {

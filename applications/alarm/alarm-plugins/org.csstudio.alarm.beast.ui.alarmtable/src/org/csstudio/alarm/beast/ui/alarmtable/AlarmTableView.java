@@ -42,7 +42,7 @@ public class AlarmTableView extends ViewPart
     private GUI gui;
     
     /** Combined active and acknowledge alarms, group into separate tables? */
-    private boolean group = true;  
+    private boolean combinedTables = false;  
     
     ColumnWrapper[] columns = ColumnWrapper.getNewWrappers();
     
@@ -81,11 +81,11 @@ public class AlarmTableView extends ViewPart
             }
         });
 
-        String groupSet = settings.get(Preferences.ALARM_TABLE_GROUP_SETTING);
-        if (groupSet != null)
-            this.group = Boolean.valueOf(groupSet);
+        String combineSet = settings.get(Preferences.ALARM_TABLE_COMBINE_TABLES_SETTING);
+        if (combineSet != null)
+            this.combinedTables = Boolean.valueOf(combineSet);
         else 
-            this.group = Preferences.isCombinedAlarmTable();
+            this.combinedTables = Preferences.isCombinedAlarmTable();
 
         String[] columns = settings.getArray(Preferences.ALARM_TABLE_COLUMN_SETTING);
         if (columns == null)
@@ -109,8 +109,8 @@ public class AlarmTableView extends ViewPart
         }
         
         final IMenuManager menu = getViewSite().getActionBars().getMenuManager();
-        menu.add(new GroupUngroupAction(this,true,group));
-        menu.add(new GroupUngroupAction(this,false,!group));
+        menu.add(new SeparateCombineTablesAction(this,true,combinedTables));
+        menu.add(new SeparateCombineTablesAction(this,false,!combinedTables));
         menu.add(new Separator());
         menu.add(new ColumnConfigureAction(this));
     }
@@ -122,13 +122,18 @@ public class AlarmTableView extends ViewPart
         redoGUI();
     }
     
+    ColumnWrapper[] getColumns()
+    {
+        return columns;
+    }
+    
     private void makeGUI()
     {
      // Add GUI to model
         if (parent.isDisposed()) return;
         if (gui != null) 
             gui.dispose();
-        gui = new GUI(parent, model, getSite(), settings, group, columns);
+        gui = new GUI(parent, model, getSite(), settings, !combinedTables, columns);
     }
     
     private void redoGUI() 
@@ -150,15 +155,15 @@ public class AlarmTableView extends ViewPart
     }
     
     /**
-     * Group the alarms into two separate tables (by the acknowledge status) or display them all in one table.
+     * Display acknowledged and unacknowledged alarms in two tables or combine them all in one table.
      * 
-     * @param group true if the acknowledged and unacknowledged alarms should be displayed in separate tables,
-     *          or false if they should be displayed all in one table
+     * @param combinedTables true if the acknowledged and unacknowledged alarms should be displayed in the same table,
+     *          or false if they should be displayed in two different tables
      */
-    public void group(boolean group)
+    public void setCombinedTables(boolean combinedTables)
     {
-        this.group = group;
-        settings.put(Preferences.ALARM_TABLE_GROUP_SETTING, this.group);
+        this.combinedTables = combinedTables;
+        settings.put(Preferences.ALARM_TABLE_COMBINE_TABLES_SETTING, this.combinedTables);
         redoGUI();
     }
 }
