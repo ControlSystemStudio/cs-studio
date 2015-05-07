@@ -31,7 +31,9 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.utility.singlesource;bundle-version="1.0.0",
  org.csstudio.apputil,
  org.epics.util,
- org.csstudio.security
+ org.csstudio.security,
+ org.csstudio.ui.resources,
+ org.epics.vtype
 Export-Package: org.csstudio.alarm.beast.ui,
  org.csstudio.alarm.beast.ui.actions,
  org.csstudio.alarm.beast.ui.globalclientmodel

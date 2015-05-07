@@ -6,15 +6,15 @@ import org.eclipse.jface.action.Action;
  * 
  *  @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  */
-class GroupUngroupAction extends Action 
+class SeparateCombineTablesAction extends Action 
 {
-    private final boolean group;
+    private final boolean combine;
     private final AlarmTableView view;
     
-    public GroupUngroupAction(final AlarmTableView view, final boolean group, final boolean checked)
+    public SeparateCombineTablesAction(final AlarmTableView view, final boolean combine, final boolean checked)
     {
-        super(group ? Messages.AlarmTableSeparate : Messages.AlarmTableCombined, AS_RADIO_BUTTON);
-        this.group = group;
+        super(combine ? Messages.AlarmTableCombined : Messages.AlarmTableSeparate, AS_RADIO_BUTTON);
+        this.combine = combine;
         this.view = view;
         setChecked(checked);
     }
@@ -22,6 +22,6 @@ class GroupUngroupAction extends Action
     @Override
     public void run() 
     {
-        view.group(group);
+        view.setCombinedTables(combine);
     }
 }

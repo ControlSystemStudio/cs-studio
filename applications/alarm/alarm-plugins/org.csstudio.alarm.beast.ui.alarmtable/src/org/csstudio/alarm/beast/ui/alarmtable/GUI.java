@@ -18,6 +18,7 @@ import org.csstudio.alarm.beast.ui.ContextMenuHelper;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.SelectionHelper;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
+import org.csstudio.alarm.beast.ui.SeverityIconProvider;
 import org.csstudio.alarm.beast.ui.actions.AlarmPerspectiveAction;
 import org.csstudio.alarm.beast.ui.actions.ConfigureItemAction;
 import org.csstudio.alarm.beast.ui.actions.DisableComponentAction;
@@ -109,6 +110,8 @@ public class GUI implements AlarmClientModelListener
     private Button unselect;
 
     private SeverityColorProvider color_provider;
+    
+    private SeverityIconProvider icon_provider;
 
     /** Is something displayed in <code>error_message</code>? */
     private volatile boolean have_error_message = false;
@@ -118,7 +121,7 @@ public class GUI implements AlarmClientModelListener
 
     private Composite baseComposite;
 
-    private final boolean group;
+    private final boolean separateTables;
 
     private final ColumnWrapper[] columns;
 
@@ -197,17 +200,17 @@ public class GUI implements AlarmClientModelListener
      * @param site
      *            Workbench site or <code>null</code>
      * @param settings
-     * @param group
+     * @param separateTables
      *            true if two tables should be created (one for acked and one for unacked alarms) or false if only one
      *            table should be created
      * @param columns
      *            column configuration for the tables
      */
     public GUI(final Composite parent, final AlarmClientModel model, final IWorkbenchPartSite site,
-            final IDialogSettings settings, boolean group, ColumnWrapper[] columns)
+            final IDialogSettings settings, boolean separateTables, ColumnWrapper[] columns)
     {
         display = parent.getDisplay();
-        this.group = group;
+        this.separateTables = separateTables;
         this.model = model;
         this.settings = settings;
         this.columns = columns;
@@ -232,7 +235,7 @@ public class GUI implements AlarmClientModelListener
         });
 
         connectContextMenu(active_table_viewer, site);
-        if (group)
+        if (separateTables)
         {
             connectContextMenu(acknowledged_table_viewer, site);
         }
@@ -247,7 +250,7 @@ public class GUI implements AlarmClientModelListener
                         .getSelection());
             }
         };
-        if (group)
+        if (separateTables)
         {
             new ControlSystemDragSource(acknowledged_table_viewer.getTable())
             {
@@ -271,7 +274,7 @@ public class GUI implements AlarmClientModelListener
     /** @return Table of acknowledged alarms */
     public TableViewer getAcknowledgedAlarmTable()
     {
-        return group ? acknowledged_table_viewer : active_table_viewer;
+        return separateTables ? acknowledged_table_viewer : active_table_viewer;
     }
 
     /**
@@ -299,11 +302,12 @@ public class GUI implements AlarmClientModelListener
             }
         }
 
-        if (group)
+        if (separateTables)
         {
             baseComposite = new SashForm(parent, SWT.VERTICAL | SWT.SMOOTH);
             baseComposite.setLayout(new FillLayout());
             color_provider = new SeverityColorProvider(baseComposite);
+            icon_provider = new SeverityIconProvider(baseComposite);
             // TODO Sync the table's sorting
             // Tables are currently separate. Sorting one table by 'time' should
             // probably cause both tables to sort by time.
@@ -317,6 +321,7 @@ public class GUI implements AlarmClientModelListener
             baseComposite = new Composite(parent, SWT.NONE);
             baseComposite.setLayout(new FillLayout());
             color_provider = new SeverityColorProvider(baseComposite);
+            icon_provider = new SeverityIconProvider(baseComposite);
             addActiveAlarmSashElement(baseComposite, sort_column, sort_up);
         }
         // Update selection in active & ack'ed alarm table
@@ -332,7 +337,7 @@ public class GUI implements AlarmClientModelListener
                 final Pattern pattern = Pattern.compile(RegExHelper.fullRegexFromGlob(filter_text),
                         Pattern.CASE_INSENSITIVE);
                 selectFilteredPVs(pattern, active_table_viewer);
-                if (group)
+                if (separateTables)
                     selectFilteredPVs(pattern, acknowledged_table_viewer);
             }
         };
@@ -346,7 +351,7 @@ public class GUI implements AlarmClientModelListener
             {
                 filter.setText(""); //$NON-NLS-1$
                 active_table_viewer.setSelection(null, true);
-                if (group)
+                if (separateTables)
                     acknowledged_table_viewer.setSelection(null, true);
             }
         });
@@ -389,14 +394,14 @@ public class GUI implements AlarmClientModelListener
     {
         final Composite box = new Composite(sash, SWT.BORDER);
         final GridLayout layout = new GridLayout();
-        layout.numColumns = group ? 5 : 6;
+        layout.numColumns = separateTables ? 5 : 6;
         box.setLayout(layout);
 
         current_alarms = new Label(box, 0);
         current_alarms.setText(NLS.bind(Messages.CurrentAlarmsFmt, ALARM_COUNT_PLACEHOLDER));
         current_alarms.setLayoutData(new GridData());
 
-        if (!group)
+        if (!separateTables)
         {
             acknowledged_alarms = new Label(box, 0);
             acknowledged_alarms.setText(NLS.bind(Messages.AcknowledgedAlarmsFmt, ALARM_COUNT_PLACEHOLDER));
@@ -528,7 +533,7 @@ public class GUI implements AlarmClientModelListener
                 table_col.setText(col_info.getTitle());
             table_col.setMoveable(true);
             // Tell column how to display the model elements
-            view_col.setLabelProvider(new AlarmTableLabelProvider(table, color_provider, col_info));
+            view_col.setLabelProvider(new AlarmTableLabelProvider(color_provider, icon_provider, col_info));
             // Sort support
             final AlarmColumnSortingSelector sel_listener = new AlarmColumnSortingSelector(table_viewer, table_col,
                     col_info);
@@ -621,7 +626,7 @@ public class GUI implements AlarmClientModelListener
             error_message.setText(""); //$NON-NLS-1$
             error_message.setBackground(null);
             act_table.setEnabled(true);
-            if (group)
+            if (separateTables)
                 acknowledged_table_viewer.getTable().setEnabled(true);
             have_error_message = false;
         }
@@ -634,7 +639,7 @@ public class GUI implements AlarmClientModelListener
             if (have_error_message)
                 return; // GUI already disabled
             act_table.setEnabled(false);
-            if (group)
+            if (separateTables)
                 acknowledged_table_viewer.getTable().setEnabled(false);
             have_error_message = true;
         }
@@ -695,7 +700,7 @@ public class GUI implements AlarmClientModelListener
         AlarmTreePV[] ackalarms = model.getAcknowledgedAlarms();
         acknowledged_alarms.setText(NLS.bind(Messages.AcknowledgedAlarmsFmt, ackalarms.length));
         acknowledged_alarms.pack();
-        if (group)
+        if (separateTables)
         {
             ((AlarmTableContentProvider) active_table_viewer.getContentProvider()).setAlarms(alarms);
             ((AlarmTableContentProvider) acknowledged_table_viewer.getContentProvider()).setAlarms(ackalarms);
