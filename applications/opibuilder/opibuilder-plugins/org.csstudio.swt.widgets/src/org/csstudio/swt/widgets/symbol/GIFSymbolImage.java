@@ -68,9 +68,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 	 * The index in image data array
 	 */
 	private int showIndex = 0;
-
-	private Image offScreenImage;
-	private GC offScreenImageGC;
+	private Image[] imageArray;
 
 	public GIFSymbolImage(SymbolImageProperties sip, boolean runMode) {
 		super(sip, runMode);
@@ -80,13 +78,12 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 	public void dispose() {
 		super.dispose();
 		stopAnimation();
-		if (offScreenImage != null && !offScreenImage.isDisposed()) {
-			offScreenImage.dispose();
-			offScreenImage = null;
-		}
-		if (offScreenImageGC != null && !offScreenImageGC.isDisposed()) {
-			offScreenImageGC.dispose();
-			offScreenImage = null;
+		if (imageArray != null) {
+			for (Image image : imageArray) {
+				if (image != null && !image.isDisposed()) {
+					image.dispose();
+				}
+			}
 		}
 	}
 
@@ -110,22 +107,26 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 				image.dispose();
 				image = null;
 			}
-			if(animated)
+			if (imageArray != null) {
+				for (Image image : imageArray) {
+					if (image != null && !image.isDisposed()) {
+						image.dispose();
+					}
+				}
+				imageArray = null;
+			}
+			if (animated) {
 				startAnimation();
+			}
 		}
 		// Create image
 		if (image == null) {
 			image = new Image(Display.getDefault(), imageData);
-			if (animated) {
-				if (offScreenImage != null && !offScreenImage.isDisposed())
-					offScreenImage.dispose();
-				offScreenImage = new Image(Display.getDefault(),
-						image.getBounds().width, image.getBounds().height);
-
-				if (offScreenImageGC != null && !offScreenImageGC.isDisposed())
-					offScreenImageGC.dispose();
-				offScreenImageGC = SingleSourceHelper
-						.getImageGC(offScreenImage);// new GC(offScreenImage);
+			if (animated && imageArray == null) {
+				imageArray = new Image[imageDataArray.length];
+				for (int index = 0; index < imageDataArray.length; index++) {
+					imageArray[index] = generateImage(index);
+				}
 			}
 		}
 		// Calculate areas
@@ -139,37 +140,14 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 		}
 		// Draw graphic image
 		if (animated) { // draw refreshing image
-			if (startAnimationRequested)
+			if (startAnimationRequested) {
 				realStartAnimation();
-			ImageData imageData = imageDataArray[showIndex];
-			Image refresh_image = new Image(Display.getDefault(), imageData);
-			switch (imageData.disposalMethod) {
-			case SWT.DM_FILL_BACKGROUND:
-				/* Fill with the background color before drawing. */
-				if (backgroundColor != null)
-					offScreenImageGC.setBackground(backgroundColor);
-				offScreenImageGC.fillRectangle(imageData.x, imageData.y,
-						imageData.width, imageData.height);
-				break;
-			case SWT.DM_FILL_PREVIOUS:
-				/* Restore the previous image before drawing. */
-				Image startImage = new Image(Display.getDefault(), imageDataArray[0]);
-				offScreenImageGC.drawImage(startImage, 0, 0, imageData.width,
-						imageData.height, imageData.x, imageData.y,
-						imageData.width, imageData.height);
-				startImage.dispose();
-				break;
 			}
-			offScreenImageGC.drawImage(refresh_image, 0, 0, imageData.width,
-					imageData.height, imageData.x, imageData.y,
-					imageData.width, imageData.height);
-
-			gfx.drawImage(offScreenImage, srcArea, destArea);
-			refresh_image.dispose();
+			gfx.drawImage(imageArray[showIndex], srcArea, destArea);
 		} else { // draw static image
-			if (animated && animationDisabled && offScreenImage != null
+			if (animated && animationDisabled && imageArray != null
 					&& showIndex != 0) {
-				gfx.drawImage(offScreenImage, srcArea, destArea);
+				gfx.drawImage(imageArray[showIndex], srcArea, destArea);
 			} else if (image != null) {
 				gfx.drawImage(image, srcArea, destArea);
 			}
@@ -179,6 +157,37 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 	@Override
 	public void resetData() {
 		imageData = null;
+	}
+
+	private Image generateImage(int index) {
+		Image offScreenImage = new Image(Display.getDefault(),
+				image.getBounds().width, image.getBounds().height);
+		GC offScreenImageGC = SingleSourceHelper.getImageGC(offScreenImage);
+
+		ImageData imageData = imageDataArray[index];
+		Image refresh_image = new Image(Display.getDefault(), imageData);
+		switch (imageData.disposalMethod) {
+		case SWT.DM_FILL_BACKGROUND:
+			/* Fill with the background color before drawing. */
+			if (backgroundColor != null) {
+				offScreenImageGC.setBackground(backgroundColor);
+			}
+			offScreenImageGC.fillRectangle(imageData.x, imageData.y,
+					imageData.width, imageData.height);
+			break;
+		case SWT.DM_FILL_PREVIOUS:
+			/* Restore the previous image before drawing. */
+			Image startImage = new Image(Display.getDefault(), imageDataArray[0]);
+			offScreenImageGC.drawImage(startImage, 0, 0, imageData.width, imageData.height, 
+					imageData.x, imageData.y, imageData.width, imageData.height);
+			startImage.dispose();
+			break;
+		}
+		offScreenImageGC.drawImage(refresh_image, 0, 0, imageData.width, imageData.height, 
+				imageData.x, imageData.y, imageData.width, imageData.height);
+		refresh_image.dispose();
+		offScreenImageGC.dispose();
+		return offScreenImage;
 	}
 
 	private void generateAnimatedData() {

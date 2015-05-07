@@ -107,7 +107,11 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 	public SymbolImage getSymbolImage() {
 		if (ExecutionMode.RUN_MODE.equals(executionMode)
 				&& currentStateIndex >= 0) {
-			return images.get(currentStateIndex);
+			SymbolImage imageToReturn = images.get(currentStateIndex);
+			if (imageToReturn == null) {
+				imageToReturn = SymbolImageFactory.createEmptyImage(true);
+			}
+			return imageToReturn;
 		}
 		if (currentSymbolImage == null) { // create an empty image
 			currentSymbolImage = SymbolImageFactory

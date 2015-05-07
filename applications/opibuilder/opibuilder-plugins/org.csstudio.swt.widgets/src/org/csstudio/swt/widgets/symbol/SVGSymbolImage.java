@@ -32,6 +32,11 @@ import org.eclipse.swt.widgets.Display;
 import org.w3c.dom.Document;
 import org.w3c.dom.svg.SVGDocument;
 
+/**
+ * Manages display of {@link SVGDocument} using {@link SVGHandler}.
+ * 
+ * @author Fred Arnaud (Sopra Steria Group) - ITER
+ */
 public class SVGSymbolImage extends AbstractSymbolImage {
 
 	private Dimension imgDimension = null;
@@ -42,6 +47,12 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 	private Document svgDocument;
 
 	private boolean needRender = true;
+
+	private Image animatedImage;
+	/**
+	 * If <code>true</code>, the repaint was called by animated SVG thread.
+	 */
+	private boolean repaintAnimated = false;
 
 	public SVGSymbolImage(SymbolImageProperties sip, boolean runMode) {
 		super(sip, runMode);
@@ -92,7 +103,7 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 			if (imageData == null) {
 				return;
 			}
-			image = new Image(Display.getDefault(), imageData);
+			image = new Image(Display.getCurrent(), imageData);
 		}
 		// Calculate areas
 		if (bounds == null || imgDimension == null) {
@@ -108,7 +119,14 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 			gfx.fillRectangle(destArea);
 		}
 		// Draw graphic image
-		if (image != null) {
+		if (repaintAnimated && animatedImage != null
+				&& !animatedImage.isDisposed()) {
+			try {
+				gfx.drawImage(animatedImage, srcArea, destArea);
+			} catch (IllegalArgumentException e) { // Image disposed
+			}
+			repaintAnimated = false;
+		} else if (image != null) {
 			gfx.drawImage(image, srcArea, destArea);
 		}
 	}
@@ -273,7 +291,7 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 						}
 					}
 					loadingImage = false;
-					Display.getDefault().syncExec(new Runnable() {
+					Display.getCurrent().syncExec(new Runnable() {
 						public void run() {
 							fireSymbolImageLoaded();
 						}
@@ -299,7 +317,7 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 					+ (workSpacePath == null ? "" : workSpacePath.toOSString()) //$NON-NLS-1$ 
 					+ imagePath.toString();
 			svgDocument = factory.createDocument(uri, inputStream);
-			svgHandler = new SVGHandler((SVGDocument) svgDocument);
+			svgHandler = new SVGHandler((SVGDocument) svgDocument, Display.getCurrent());
 			svgHandler.setAlignedToNearestSecond(alignedToNearestSecond);
 			initRenderingHints();
 			BufferedImage awtImage = svgHandler.getOffScreen();
@@ -308,20 +326,13 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 				resetData();
 			}
 			svgHandler.setRenderListener(new SVGHandlerListener() {
-				public void newImage(final BufferedImage awtImage) {
+				public void newImage(final Image image) {
 					if (disposed) {
 						return;
 					}
-					imageData = SVGUtils.toSWT(Display.getCurrent(), awtImage);
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-						    if (image != null && !image.isDisposed()) {
-						        image.dispose();
-						        image = null;
-						    }
-							repaint();
-						}
-					});
+					animatedImage = image;
+					repaintAnimated = true;
+					repaint();
 				}
 			});
 			needRender = true;
