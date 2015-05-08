@@ -52,6 +52,8 @@ public abstract class ApplianceValueIterator implements ValueIterator {
     
     private final IteratorListener listener; 
     
+    protected boolean closed = false;
+    
     /**
      * Constructs a new ApplianceValueIterator.
      * 
@@ -102,8 +104,8 @@ public abstract class ApplianceValueIterator implements ValueIterator {
 	 * @see org.csstudio.archive.reader.ValueIterator#hasNext()
 	 */
 	@Override
-	public boolean hasNext() {
-		return mainIterator != null && mainIterator.hasNext();
+	public synchronized boolean hasNext() {
+		return !closed && mainIterator != null && mainIterator.hasNext();
 	}
 
 	/* (non-Javadoc)
@@ -111,7 +113,11 @@ public abstract class ApplianceValueIterator implements ValueIterator {
 	 */
 	@Override
 	public VType next() throws Exception {
-        EpicsMessage result = mainIterator.next();
+        EpicsMessage result;
+        synchronized(this) {
+            if (closed) return null;
+            result = mainIterator.next();
+        }
         PayloadType type = mainStream.getPayLoadInfo().getType();
         if (type == PayloadType.SCALAR_BYTE || 
         		type == PayloadType.SCALAR_DOUBLE ||
@@ -223,9 +229,12 @@ public abstract class ApplianceValueIterator implements ValueIterator {
 	@Override
 	public void close() {
 		try {
-			if(mainStream != null) {
-				mainStream.close();
-			}
+		    synchronized(this) {
+    			if(mainStream != null) {
+    				mainStream.close();
+    			}
+    			closed = true;
+		    }
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
