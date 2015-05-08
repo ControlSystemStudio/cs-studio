@@ -27,40 +27,40 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 /**
-	 * An Action, which encapsulates a {@link AbstractWidgetAction}.
-	 * 
-	 * @author Xihui Chen, Helge Rickens, Kai Meyer(part of the code is copied from SDS).
-	 * 
-	 */
-	public final class WidgetActionMenuAction extends Action {
-		/**
-		 * The {@link AbstractWidgetActionModel}.
-		 */
-		private AbstractWidgetAction _widgetAction;
+     * An Action, which encapsulates a {@link AbstractWidgetAction}.
+     * 
+     * @author Xihui Chen, Helge Rickens, Kai Meyer(part of the code is copied from SDS).
+     * 
+     */
+    public final class WidgetActionMenuAction extends Action {
+        /**
+         * The {@link AbstractWidgetActionModel}.
+         */
+        private AbstractWidgetAction _widgetAction;
 
-		/**
-		 * Constructor.
-		 * 
-		 * @param widgetAction
-		 *            The encapsulated {@link AbstractWidgetAction}
-		 */
-		public WidgetActionMenuAction(final AbstractWidgetAction widgetAction) {
-			_widgetAction = widgetAction;
-			this.setText(_widgetAction.getDescription());
-			Object adapter = widgetAction.getAdapter(IWorkbenchAdapter.class);
-			if (adapter != null && adapter instanceof IWorkbenchAdapter) {
-				this.setImageDescriptor(((IWorkbenchAdapter)adapter)
-						.getImageDescriptor(widgetAction));
-			}
-			setEnabled(widgetAction.isEnabled());
-		}
+        /**
+         * Constructor.
+         * 
+         * @param widgetAction
+         *            The encapsulated {@link AbstractWidgetAction}
+         */
+        public WidgetActionMenuAction(final AbstractWidgetAction widgetAction) {
+            _widgetAction = widgetAction;
+            this.setText(_widgetAction.getDescription());
+            Object adapter = widgetAction.getAdapter(IWorkbenchAdapter.class);
+            if (adapter != null && adapter instanceof IWorkbenchAdapter) {
+                this.setImageDescriptor(((IWorkbenchAdapter)adapter)
+                        .getImageDescriptor(widgetAction));
+            }
+            setEnabled(widgetAction.isEnabled());
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public void run() {
-			_widgetAction.run();
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void run() {
+            _widgetAction.run();
 
-		}
-	}
+        }
+    }

@@ -34,34 +34,34 @@ import org.eclipse.jface.action.IAction;
  */
 public final class MoveLayerDownAction extends AbstractLayerAction {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void selectedLayerChanged(final Layer layer, final LayerSupport layerSupport, final IAction action) {
-		action.setEnabled(layerSupport.getLayerIndex(layer)!=
-				layerSupport.getLayers().size()-1);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void selectedLayerChanged(final Layer layer, final LayerSupport layerSupport, final IAction action) {
+        action.setEnabled(layerSupport.getLayerIndex(layer)!=
+                layerSupport.getLayers().size()-1);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Command createCommand(final Layer selectedLayer,
-			final LayerSupport layerSupport, final IAction action) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Command createCommand(final Layer selectedLayer,
+            final LayerSupport layerSupport, final IAction action) {
 
-		Command result = null;
+        Command result = null;
 
-		if (selectedLayer != null && layerSupport != null) {
-			int oldIndex = layerSupport.getLayerIndex(selectedLayer);
-			int layerCount = layerSupport.getLayers().size();
+        if (selectedLayer != null && layerSupport != null) {
+            int oldIndex = layerSupport.getLayerIndex(selectedLayer);
+            int layerCount = layerSupport.getLayers().size();
 
-			if (oldIndex <= layerCount - 2) {
-				result = new MoveLayerCommand(layerSupport, selectedLayer, oldIndex + 1);
-			}
-		}
+            if (oldIndex <= layerCount - 2) {
+                result = new MoveLayerCommand(layerSupport, selectedLayer, oldIndex + 1);
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
 }

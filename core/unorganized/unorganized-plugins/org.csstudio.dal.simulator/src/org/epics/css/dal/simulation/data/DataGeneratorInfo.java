@@ -33,128 +33,128 @@ import java.util.regex.Pattern;
  */
 public enum DataGeneratorInfo {
 
-	/**
-	 * Countdown generator pattern. The pattern reads the following variables in
-	 * the process variable name
-	 * <code> local://property COUNTDOWN:{from}:{to}:{period}:{update} </code>,
-	 * for example <code>local://abc COUNTDOWN:100:0:10000:200</code> will
-	 * count down from 100 to 0 in 10 seconds and an update event will be fired
-	 * each 200 ms.
-	 * 
-	 */
-	COUNTDOWN("^.* COUNTDOWN:([0-9]+):([0-9]+):([0-9]+):([0-9]+)$",
-			new CountdownGeneratorFactory()),
+    /**
+     * Countdown generator pattern. The pattern reads the following variables in
+     * the process variable name
+     * <code> local://property COUNTDOWN:{from}:{to}:{period}:{update} </code>,
+     * for example <code>local://abc COUNTDOWN:100:0:10000:200</code> will
+     * count down from 100 to 0 in 10 seconds and an update event will be fired
+     * each 200 ms.
+     * 
+     */
+    COUNTDOWN("^.* COUNTDOWN:([0-9]+):([0-9]+):([0-9]+):([0-9]+)$",
+            new CountdownGeneratorFactory()),
 
-	/**
-	 * Random number generator pattern. The pattern reads the following
-	 * variables in the process variable name
-	 * <code> local://property RND:{from}:{to}:{period} </code>, for example
-	 * <code>local://abc RND:1:100:10</code> which creates random numbers
-	 * between 1 and 100 every 10 milliseconds.
-	 * 
-	 */
-	RANDOM_NUMBER("^.* RND:([0-9]+):([0-9]+):([0-9]+)$",
-			new RandomDoubleGeneratorFactory()),
+    /**
+     * Random number generator pattern. The pattern reads the following
+     * variables in the process variable name
+     * <code> local://property RND:{from}:{to}:{period} </code>, for example
+     * <code>local://abc RND:1:100:10</code> which creates random numbers
+     * between 1 and 100 every 10 milliseconds.
+     * 
+     */
+    RANDOM_NUMBER("^.* RND:([0-9]+):([0-9]+):([0-9]+)$",
+            new RandomDoubleGeneratorFactory()),
 
-	MEMORIZED("^.*", new MemorizedGeneratorFactory());
-	
-//	/**
-//	 * Class method generator pattern. The pattern reads the following variables
-//	 * in the process variable name
-//	 * <code> local://property CLM:{classname}:{methodname}:{period} </code>,
-//	 * for example <code>local://abc CLM:java.lang.String:toString:10</code>
-//	 * which creates ...
-//	 * 
-//	 */
-//	CLASS_METHOD("^.* CLM:(.+):(.+):([0-9]+)$",
-//			new ClassMethodGenerator()),
+    MEMORIZED("^.*", new MemorizedGeneratorFactory());
+    
+//    /**
+//     * Class method generator pattern. The pattern reads the following variables
+//     * in the process variable name
+//     * <code> local://property CLM:{classname}:{methodname}:{period} </code>,
+//     * for example <code>local://abc CLM:java.lang.String:toString:10</code>
+//     * which creates ...
+//     * 
+//     */
+//    CLASS_METHOD("^.* CLM:(.+):(.+):([0-9]+)$",
+//            new ClassMethodGenerator()),
 //
-//	SYSTEM_INFO("^.*SINFO:([a-zA-Z0-9]+)(:([0-9]+))?$",
-//			new SystemInfoGenerator());
+//    SYSTEM_INFO("^.*SINFO:([a-zA-Z0-9]+)(:([0-9]+))?$",
+//            new SystemInfoGenerator());
 
-	private Pattern pattern;
-	private ValueProviderFactory factory;
+    private Pattern pattern;
+    private ValueProviderFactory factory;
 
-	private DataGeneratorInfo(String pattern,
-			ValueProviderFactory factory) {
-		this.pattern = Pattern.compile(pattern);
-		this.factory = factory;
-	}
+    private DataGeneratorInfo(String pattern,
+            ValueProviderFactory factory) {
+        this.pattern = Pattern.compile(pattern);
+        this.factory = factory;
+    }
 
-	/**
-	 * Returns the pattern used to match the name of the property to this
-	 * data generator info.
-	 * 
-	 * @return the pattern
-	 */
-	public Pattern getPattern() {
-		return pattern;
-	}
+    /**
+     * Returns the pattern used to match the name of the property to this
+     * data generator info.
+     * 
+     * @return the pattern
+     */
+    public Pattern getPattern() {
+        return pattern;
+    }
 
-	/**
-	 * Returns the data generator factory associated with this info.
-	 * 
-	 * @return the data generator factory
-	 */
-	public ValueProviderFactory getDataGeneratorFactory() {
-		return factory;
-	}
-	
-	/**
-	 * Returns the options as read from the property name.
-	 * 
-	 * @param name the property name
-	 * @return the options
-	 */
-	public String[] getOptions(String name) {
-		Matcher m = getPattern().matcher(name);
+    /**
+     * Returns the data generator factory associated with this info.
+     * 
+     * @return the data generator factory
+     */
+    public ValueProviderFactory getDataGeneratorFactory() {
+        return factory;
+    }
+    
+    /**
+     * Returns the options as read from the property name.
+     * 
+     * @param name the property name
+     * @return the options
+     */
+    public String[] getOptions(String name) {
+        Matcher m = getPattern().matcher(name);
 
-		if (m.find()) {
-			final String[] options = new String[m.groupCount()];
+        if (m.find()) {
+            final String[] options = new String[m.groupCount()];
 
-			for (int i = 0; i < m.groupCount(); i++) {
-				options[i] = m.group(i+1);
-			}
-			return options;
-		}
-		return null;
-	}
-	
-	/**
-	 * Reads the refresh rate from the property name.
-	 * 
-	 * @param name the property name
-	 * @return the refresh rate in millis
-	 */
-	public long getRefreshRate(String name) {
-		Matcher m = getPattern().matcher(name);
+            for (int i = 0; i < m.groupCount(); i++) {
+                options[i] = m.group(i+1);
+            }
+            return options;
+        }
+        return null;
+    }
+    
+    /**
+     * Reads the refresh rate from the property name.
+     * 
+     * @param name the property name
+     * @return the refresh rate in millis
+     */
+    public long getRefreshRate(String name) {
+        Matcher m = getPattern().matcher(name);
 
-		if (m.find()) {
-			final String[] options = new String[m.groupCount()];
+        if (m.find()) {
+            final String[] options = new String[m.groupCount()];
 
-			for (int i = 0; i < m.groupCount(); i++) {
-				options[i] = m.group(i+1);
-			}
-			if (this==COUNTDOWN) {
-				return Long.parseLong(options[3]);
-			} else if (this == RANDOM_NUMBER) {
-				return Long.parseLong(options[2]);
-			} else {
-				return 1000;
-			}
-		}
-		return 1000;
-	}
-	
-	/**
-	 * Returns the appropriate data generator info based on the name of the proeprty.
-	 *  
-	 * @param name the name of the property
-	 * @return the generator info
-	 */
-	public static DataGeneratorInfo getInfo(String name) {
-		if (COUNTDOWN.pattern.matcher(name).find()) return COUNTDOWN;
-		else if (RANDOM_NUMBER.pattern.matcher(name).find()) return RANDOM_NUMBER;
-		return MEMORIZED;
-	}
+            for (int i = 0; i < m.groupCount(); i++) {
+                options[i] = m.group(i+1);
+            }
+            if (this==COUNTDOWN) {
+                return Long.parseLong(options[3]);
+            } else if (this == RANDOM_NUMBER) {
+                return Long.parseLong(options[2]);
+            } else {
+                return 1000;
+            }
+        }
+        return 1000;
+    }
+    
+    /**
+     * Returns the appropriate data generator info based on the name of the proeprty.
+     *  
+     * @param name the name of the property
+     * @return the generator info
+     */
+    public static DataGeneratorInfo getInfo(String name) {
+        if (COUNTDOWN.pattern.matcher(name).find()) return COUNTDOWN;
+        else if (RANDOM_NUMBER.pattern.matcher(name).find()) return RANDOM_NUMBER;
+        return MEMORIZED;
+    }
 }

@@ -44,285 +44,285 @@ import org.csstudio.utility.jms.sharedconnection.ISharedConnectionHandle;
 public class MonitorableSharedConnection {
 
     private String _clientId;
-	private ActiveMQConnection _connection;
-	private final String _brokerURI;
-	private boolean _interrupted;
-	private final ConnectionMonitorSupport _monitorSupport;
-	private int _handleCount;
+    private ActiveMQConnection _connection;
+    private final String _brokerURI;
+    private boolean _interrupted;
+    private final ConnectionMonitorSupport _monitorSupport;
+    private int _handleCount;
 
-	/**
-	 * Creates a new monitorable connection to the specified broker URI. The
-	 * connection is not started by the constructor. It is started automatically
-	 * as soon as the first handle to this shared connection is requested by
-	 * calling the {@link #createHandle()} method.
-	 *
-	 * @param brokerURI
-	 *            the broker URI.
-	 */
-	public MonitorableSharedConnection(String clientId, final String brokerURI) {
-		_clientId = clientId;
-	    _brokerURI = brokerURI;
-		_interrupted = false;
-		_monitorSupport = new ConnectionMonitorSupport();
-		_handleCount = 0;
-	}
+    /**
+     * Creates a new monitorable connection to the specified broker URI. The
+     * connection is not started by the constructor. It is started automatically
+     * as soon as the first handle to this shared connection is requested by
+     * calling the {@link #createHandle()} method.
+     *
+     * @param brokerURI
+     *            the broker URI.
+     */
+    public MonitorableSharedConnection(String clientId, final String brokerURI) {
+        _clientId = clientId;
+        _brokerURI = brokerURI;
+        _interrupted = false;
+        _monitorSupport = new ConnectionMonitorSupport();
+        _handleCount = 0;
+    }
 
-	/**
-	 * Connects to the JMS broker and starts this connection.
-	 *
-	 * @throws JMSException
-	 *             if the connection could not be created or started due to an
-	 *             internal error.
-	 */
-	private void connectAndStart() throws JMSException {
-		if ((_connection == null) || _connection.isClosed()) {
-			final ActiveMQConnectionFactory connectionFactory =
-					new ActiveMQConnectionFactory(_brokerURI);
-			try {
-				_connection = (ActiveMQConnection)
-						connectionFactory.createConnection();
-				if (_clientId != null) {
-				    _connection.setClientID(_clientId);
-				}
-				_connection.addTransportListener(new ConnectionStateTracker());
-				_connection.start();
-				// The TransportListener is not notified when the connection
-				// is started explicitly, so we fire the Connected event
-				// manually:
-				_monitorSupport.fireConnectedEvent(new TransportEvent(_brokerURI, _clientId, _handleCount));
-			} catch (final JMSException e) {
-				if (_connection != null) {
-					// Something went wrong, but the connection already exists.
-					// Try to clean up by closing the connection and then set
-					// the _connection variable to null so this wrapper knows
-					// that it is not connected.
-					try {
-						_connection.close();
-					} catch (final JMSException e2) {
-						// ignore (we can't throw two exceptions -- the
-						// important thing is to set the _connection to null,
-						// which happens in the finally block)
-					} finally {
-						_connection = null;
-					}
-				}
-				throw e; // rethrow
-			}
-		}
-	}
+    /**
+     * Connects to the JMS broker and starts this connection.
+     *
+     * @throws JMSException
+     *             if the connection could not be created or started due to an
+     *             internal error.
+     */
+    private void connectAndStart() throws JMSException {
+        if ((_connection == null) || _connection.isClosed()) {
+            final ActiveMQConnectionFactory connectionFactory =
+                    new ActiveMQConnectionFactory(_brokerURI);
+            try {
+                _connection = (ActiveMQConnection)
+                        connectionFactory.createConnection();
+                if (_clientId != null) {
+                    _connection.setClientID(_clientId);
+                }
+                _connection.addTransportListener(new ConnectionStateTracker());
+                _connection.start();
+                // The TransportListener is not notified when the connection
+                // is started explicitly, so we fire the Connected event
+                // manually:
+                _monitorSupport.fireConnectedEvent(new TransportEvent(_brokerURI, _clientId, _handleCount));
+            } catch (final JMSException e) {
+                if (_connection != null) {
+                    // Something went wrong, but the connection already exists.
+                    // Try to clean up by closing the connection and then set
+                    // the _connection variable to null so this wrapper knows
+                    // that it is not connected.
+                    try {
+                        _connection.close();
+                    } catch (final JMSException e2) {
+                        // ignore (we can't throw two exceptions -- the
+                        // important thing is to set the _connection to null,
+                        // which happens in the finally block)
+                    } finally {
+                        _connection = null;
+                    }
+                }
+                throw e; // rethrow
+            }
+        }
+    }
 
-	/**
-	 * Closes this connection.
-	 *
-	 * @throws JMSException
-	 *             if the JMS provider fails to close the connection due to some
-	 *             internal error.
-	 */
-//	@SuppressWarnings("unused") // TODO: track handles and close connection when no longer needed.
-	synchronized void close() throws JMSException {
-		if (_connection != null) {
-		    if (!_connection.isClosed()) {
-		        if (_connection.isStarted()) {
-		            _connection.stop();
-		        }
-		        _connection.close();
-		        // The connection's TransportListener is not notified when the
-		        // connection is closed explicitly, so we fire the Disconnected
-		        // event manually:
-		        _monitorSupport.fireDisconnectedEvent(new TransportEvent(_brokerURI, _clientId, _handleCount));
-		    }
-		}
-	}
+    /**
+     * Closes this connection.
+     *
+     * @throws JMSException
+     *             if the JMS provider fails to close the connection due to some
+     *             internal error.
+     */
+//    @SuppressWarnings("unused") // TODO: track handles and close connection when no longer needed.
+    synchronized void close() throws JMSException {
+        if (_connection != null) {
+            if (!_connection.isClosed()) {
+                if (_connection.isStarted()) {
+                    _connection.stop();
+                }
+                _connection.close();
+                // The connection's TransportListener is not notified when the
+                // connection is closed explicitly, so we fire the Disconnected
+                // event manually:
+                _monitorSupport.fireDisconnectedEvent(new TransportEvent(_brokerURI, _clientId, _handleCount));
+            }
+        }
+    }
 
-	private boolean isConnectedAndStarted() {
-		return ((_connection != null) && _connection.isStarted());
-	}
+    private boolean isConnectedAndStarted() {
+        return ((_connection != null) && _connection.isStarted());
+    }
 
-	/**
-	 * Returns whether this connection is started and not interrupted.
-	 *
-	 * @return <code>true</code> if this connection is started and not
-	 *         interrupted, <code>false</code> otherwise.
-	 */
-	synchronized boolean isActive() {
-		return (isConnectedAndStarted() && !_interrupted);
-	}
+    /**
+     * Returns whether this connection is started and not interrupted.
+     *
+     * @return <code>true</code> if this connection is started and not
+     *         interrupted, <code>false</code> otherwise.
+     */
+    synchronized boolean isActive() {
+        return (isConnectedAndStarted() && !_interrupted);
+    }
 
-	/**
-	 * Creates a handle to access this shared connection.
-	 *
-	 * @return a handle to this connection.
-	 * @throws JMSException
-	 *             if the underlying shared connection could not be created or
-	 *             started due to an internal error.
-	 */
-	public ISharedConnectionHandle createHandle() throws JMSException {
-		synchronized (this) {
-			if (!isConnectedAndStarted()) {
-				connectAndStart();
-			}
-			_handleCount++;
-		}
-		return new ConnectionHandle();
-	}
+    /**
+     * Creates a handle to access this shared connection.
+     *
+     * @return a handle to this connection.
+     * @throws JMSException
+     *             if the underlying shared connection could not be created or
+     *             started due to an internal error.
+     */
+    public ISharedConnectionHandle createHandle() throws JMSException {
+        synchronized (this) {
+            if (!isConnectedAndStarted()) {
+                connectAndStart();
+            }
+            _handleCount++;
+        }
+        return new ConnectionHandle();
+    }
 
-	public synchronized Connection getConnection() {
-	    return _connection;
-	}
-	
-	public synchronized String getBrokerURI() {
-	    return _brokerURI;
-	}
-	
-	public synchronized ConnectionMonitorSupport getConnectionMonitorSupport() {
-	    return _monitorSupport;
-	}
-	
-	public synchronized boolean isInterrupted() {
-	    return _interrupted;
-	}
-	
-	public synchronized void setInterrupted(boolean isInterrupted) {
-	    _interrupted = isInterrupted;
-	}
-	
-	public synchronized void setClientId(String id) {
-	    synchronized (_connection) {
-    	    if (_connection != null) {
-    	        try {
+    public synchronized Connection getConnection() {
+        return _connection;
+    }
+    
+    public synchronized String getBrokerURI() {
+        return _brokerURI;
+    }
+    
+    public synchronized ConnectionMonitorSupport getConnectionMonitorSupport() {
+        return _monitorSupport;
+    }
+    
+    public synchronized boolean isInterrupted() {
+        return _interrupted;
+    }
+    
+    public synchronized void setInterrupted(boolean isInterrupted) {
+        _interrupted = isInterrupted;
+    }
+    
+    public synchronized void setClientId(String id) {
+        synchronized (_connection) {
+            if (_connection != null) {
+                try {
                     _connection.setClientID(id);
                 } catch (JMSException e) {
                     // Ignore Me!
                 }
-    	    }
-	    }
-	}
-	
-	public synchronized String getClientId() {
-	    String clientId = null;
-	    try {
+            }
+        }
+    }
+    
+    public synchronized String getClientId() {
+        String clientId = null;
+        try {
             clientId = _connection.getClientID();
         } catch (JMSException e) {
          // Ignore Me!
         }
-	    return clientId;
-	}
-	
-	public synchronized int getHandleCount() {
-	    return _handleCount;
-	}
-	
-	public synchronized void incHandleCount() {
-	    _handleCount++;
-	}
-	
-	public synchronized void decHandleCount() {
+        return clientId;
+    }
+    
+    public synchronized int getHandleCount() {
+        return _handleCount;
+    }
+    
+    public synchronized void incHandleCount() {
+        _handleCount++;
+    }
+    
+    public synchronized void decHandleCount() {
         if (--_handleCount < 0) {
             _handleCount = 0;
         }
     }
 
-	public synchronized boolean existOpenHandles() {
+    public synchronized boolean existOpenHandles() {
         return (_handleCount > 0);
     }
     
     /**
-	 * Handle which provides access to a {@link MonitorableSharedConnection}.
-	 *
-	 * @author Joerg Rathlev
-	 */
-	private class ConnectionHandle implements ISharedConnectionHandle {
+     * Handle which provides access to a {@link MonitorableSharedConnection}.
+     *
+     * @author Joerg Rathlev
+     */
+    private class ConnectionHandle implements ISharedConnectionHandle {
 
-	    protected ConnectionHandle() {
-	    }
-	    
-	    /**
-	     * {@inheritDoc}
-	     */
-		@Override
+        protected ConnectionHandle() {
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public Session createSession(final boolean transacted, final int acknowledgeMode)
-				throws JMSException {
-			return getConnection().createSession(transacted, acknowledgeMode);
-		}
+                throws JMSException {
+            return getConnection().createSession(transacted, acknowledgeMode);
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public void release() {
-		    decHandleCount();
-		    if (!existOpenHandles()) {
-    		    try {
+            decHandleCount();
+            if (!existOpenHandles()) {
+                try {
                     close();
                 } catch (JMSException e) {
                     // Ignore Me!
                 }
-		    }
-		}
+            }
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public boolean isActive() {
-			return MonitorableSharedConnection.this.isActive();
-		}
+            return MonitorableSharedConnection.this.isActive();
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public void addMonitor(final IConnectionMonitor monitor) {
-		    getConnectionMonitorSupport().addMonitor(monitor);
-		}
+            getConnectionMonitorSupport().addMonitor(monitor);
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public void removeMonitor(final IConnectionMonitor monitor) {
-		    getConnectionMonitorSupport().addMonitor(monitor);
-		}
-	}
+            getConnectionMonitorSupport().addMonitor(monitor);
+        }
+    }
 
-	/**
-	 * Transport listener which is used by a {@link MonitorableSharedConnection}
-	 * to track its own connection state.
-	 *
-	 * @author Joerg Rathlev
-	 */
-	private class ConnectionStateTracker implements TransportListener {
+    /**
+     * Transport listener which is used by a {@link MonitorableSharedConnection}
+     * to track its own connection state.
+     *
+     * @author Joerg Rathlev
+     */
+    private class ConnectionStateTracker implements TransportListener {
 
-	    protected ConnectionStateTracker() {
-	    }
-	    
-		@Override
+        protected ConnectionStateTracker() {
+        }
+        
+        @Override
         public void onCommand(final Object command) {
-			// do nothing
-		}
+            // do nothing
+        }
 
-		@Override
+        @Override
         public void onException(final IOException e) {
-		    setInterrupted(true);
-			getConnectionMonitorSupport().fireDisconnectedEvent(new TransportEvent(getBrokerURI(),
-			                                                                       getClientId(),
-			                                                                       getHandleCount()));
-		}
+            setInterrupted(true);
+            getConnectionMonitorSupport().fireDisconnectedEvent(new TransportEvent(getBrokerURI(),
+                                                                                   getClientId(),
+                                                                                   getHandleCount()));
+        }
 
-		@Override
+        @Override
         public void transportInterupted() {
-		    setInterrupted(true);
-			getConnectionMonitorSupport().fireDisconnectedEvent(new TransportEvent(getBrokerURI(),
-			                                                                       getClientId(),
-			                                                                       getHandleCount()));
-		}
+            setInterrupted(true);
+            getConnectionMonitorSupport().fireDisconnectedEvent(new TransportEvent(getBrokerURI(),
+                                                                                   getClientId(),
+                                                                                   getHandleCount()));
+        }
 
-		@Override
+        @Override
         public void transportResumed() {
-		    setInterrupted(false);
-			getConnectionMonitorSupport().fireConnectedEvent(new TransportEvent(getBrokerURI(),
-			                                                                    getClientId(),
-			                                                                    getHandleCount()));
-		}
-	}
+            setInterrupted(false);
+            getConnectionMonitorSupport().fireConnectedEvent(new TransportEvent(getBrokerURI(),
+                                                                                getClientId(),
+                                                                                getHandleCount()));
+        }
+    }
 }

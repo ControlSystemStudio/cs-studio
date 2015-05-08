@@ -49,14 +49,14 @@ public class ADLChildren extends WidgetPart {
      * @throws WrongADLFormatException 
      */
     public ADLChildren(ADLWidget adlChildren) throws WrongADLFormatException {
-    	super(adlChildren);
+        super(adlChildren);
     }
     
     /**
      * Default constructor
      */
     public ADLChildren(){
-    	super();
+        super();
     }
     /**
      * @return the ADL Grouping Container Children's.
@@ -65,24 +65,24 @@ public class ADLChildren extends WidgetPart {
         return _childrens;
     }
 
-	@Override
-	public Object[] getChildren() {
-		ArrayList<Object> ret = new ArrayList<Object>();
-		if (_childrens != null)ret.add(_childrens);
-		return ret.toArray();
-	}
+    @Override
+    public Object[] getChildren() {
+        ArrayList<Object> ret = new ArrayList<Object>();
+        if (_childrens != null)ret.add(_childrens);
+        return ret.toArray();
+    }
 
-	@Override
-	void init() {
+    @Override
+    void init() {
         name = String.valueOf("children");
         _childrens = new ArrayList<ADLWidget>();
-	}
+    }
 
-	@Override
-	void parseWidgetPart(ADLWidget adlChildren) throws WrongADLFormatException {
-    	assert adlChildren.isType("children") : Messages.ADLObject_AssertError_Begin+adlChildren.getType()+Messages.ADLObject_AssertError_End+"\r\n"+adlChildren; //$NON-NLS-1$
+    @Override
+    void parseWidgetPart(ADLWidget adlChildren) throws WrongADLFormatException {
+        assert adlChildren.isType("children") : Messages.ADLObject_AssertError_Begin+adlChildren.getType()+Messages.ADLObject_AssertError_End+"\r\n"+adlChildren; //$NON-NLS-1$
 
-    	_childrens = adlChildren.getObjects();
-		
-	}
+        _childrens = adlChildren.getObjects();
+        
+    }
 }

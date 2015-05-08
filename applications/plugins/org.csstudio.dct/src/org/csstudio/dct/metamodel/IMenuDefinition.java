@@ -9,30 +9,30 @@ import java.util.List;
  *
  */
 public interface IMenuDefinition {
-	/**
-	 * Returns the name of the menu.
-	 * 
-	 * @return the menu name
-	 */
-	String getName();
-	
-	/**
-	 * Returns all choices.
-	 * 
-	 * @return all choice
-	 */
-	List<IChoice> getChoices();
-	
-	/**
-	 * Adds a choice.
-	 * 
-	 * @param choice the choice
-	 */
-	void addChoice(IChoice choice);
-	
-	/**
-	 * Removes a choice.
-	 * @param choice the choice
-	 */
-	void removeChoice(IChoice choice);
+    /**
+     * Returns the name of the menu.
+     * 
+     * @return the menu name
+     */
+    String getName();
+    
+    /**
+     * Returns all choices.
+     * 
+     * @return all choice
+     */
+    List<IChoice> getChoices();
+    
+    /**
+     * Adds a choice.
+     * 
+     * @param choice the choice
+     */
+    void addChoice(IChoice choice);
+    
+    /**
+     * Removes a choice.
+     * @param choice the choice
+     */
+    void removeChoice(IChoice choice);
 }

@@ -38,62 +38,62 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class RunModeBoxInputTest {
-	private RunModeBoxInput _input;
+    private RunModeBoxInput _input;
 
-	private Path _path1;
-	private Path _path2;
-	
-	private Map<String, String> _aliases1;
-	private Map<String, String> _aliases2;
-	
-	@Before
-	public void setUp() throws Exception {
-		_aliases1 = new HashMap<String, String>();
-		_aliases1.put("channel", "local://myvalue1");
-		
-		_aliases2 = new HashMap<String, String>();
-		_aliases2.put("channel", "local://myvalue2");
-		
-		_path1 = new Path("/SDS/display1.css-sds");
-		_path2 = new Path("/SDS/display2.css-sds");
-		
-		_input = new RunModeBoxInput(_path1, _aliases1,
-				RunModeType.SHELL);
-	}
+    private Path _path1;
+    private Path _path2;
+    
+    private Map<String, String> _aliases1;
+    private Map<String, String> _aliases2;
+    
+    @Before
+    public void setUp() throws Exception {
+        _aliases1 = new HashMap<String, String>();
+        _aliases1.put("channel", "local://myvalue1");
+        
+        _aliases2 = new HashMap<String, String>();
+        _aliases2.put("channel", "local://myvalue2");
+        
+        _path1 = new Path("/SDS/display1.css-sds");
+        _path2 = new Path("/SDS/display2.css-sds");
+        
+        _input = new RunModeBoxInput(_path1, _aliases1,
+                RunModeType.SHELL);
+    }
 
-	@After
-	public void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
 
-		
-	}
+        
+    }
 
-	@Test
-	public void testEquality() {
-		// same path, same alias
-		assertEquals(new RunModeBoxInput(_path1, _aliases1,
-				RunModeType.SHELL), new RunModeBoxInput(_path1, _aliases1,
-				RunModeType.SHELL));
+    @Test
+    public void testEquality() {
+        // same path, same alias
+        assertEquals(new RunModeBoxInput(_path1, _aliases1,
+                RunModeType.SHELL), new RunModeBoxInput(_path1, _aliases1,
+                RunModeType.SHELL));
 
-		// same path, different alias
-		assertNotSame(new RunModeBoxInput(_path1, _aliases1,
-				RunModeType.SHELL), new RunModeBoxInput(_path1, _aliases2,
-				RunModeType.SHELL));
-		
-		// different path, same alias
-		assertNotSame(new RunModeBoxInput(_path1, _aliases1,
-				RunModeType.SHELL), new RunModeBoxInput(_path2, _aliases1,
-				RunModeType.SHELL));
-	}
-	
-	
-	@Test
-	public void testSerialization() {
-		ByteArrayOutputStream bot = new ByteArrayOutputStream();
-		try {
-			ObjectOutputStream oos = new ObjectOutputStream(bot);
-			oos.writeObject(_input);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+        // same path, different alias
+        assertNotSame(new RunModeBoxInput(_path1, _aliases1,
+                RunModeType.SHELL), new RunModeBoxInput(_path1, _aliases2,
+                RunModeType.SHELL));
+        
+        // different path, same alias
+        assertNotSame(new RunModeBoxInput(_path1, _aliases1,
+                RunModeType.SHELL), new RunModeBoxInput(_path2, _aliases1,
+                RunModeType.SHELL));
+    }
+    
+    
+    @Test
+    public void testSerialization() {
+        ByteArrayOutputStream bot = new ByteArrayOutputStream();
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(bot);
+            oos.writeObject(_input);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

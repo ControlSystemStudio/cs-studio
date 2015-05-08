@@ -34,109 +34,109 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  */
 public final class IntegerProperty extends WidgetProperty {
 
-	/**
-	 * Lower border for the property value.
-	 */
-	private int _min;
+    /**
+     * Lower border for the property value.
+     */
+    private int _min;
 
-	/**
-	 * Upper border for the property value.
-	 */
-	private int _max;
+    /**
+     * Upper border for the property value.
+     */
+    private int _max;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param shortDescription
-	 *            a short escription
-	 * @param longDescription
-	 *            a long description
-	 * @param category
-	 *            a category
-	 * @param defaultValue
-	 *            the default value
-	 */
-	public IntegerProperty(final String shortDescription, String longDescription, final WidgetPropertyCategory category, final int defaultValue, int min, int max) {
-		super(PropertyTypesEnum.INTEGER, shortDescription, longDescription, category, defaultValue, null);
-		assert min<=max;
-		_min = min;
-		_max = max;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param shortDescription
+     *            a short escription
+     * @param longDescription
+     *            a long description
+     * @param category
+     *            a category
+     * @param defaultValue
+     *            the default value
+     */
+    public IntegerProperty(final String shortDescription, String longDescription, final WidgetPropertyCategory category, final int defaultValue, int min, int max) {
+        super(PropertyTypesEnum.INTEGER, shortDescription, longDescription, category, defaultValue, null);
+        assert min<=max;
+        _min = min;
+        _max = max;
+    }
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param description
-	 *            a description
-	 * @param category
-	 *            a category
-	 * @param defaultValue
-	 *            the default value
-	 */
-	public IntegerProperty(final String description, final WidgetPropertyCategory category, final int defaultValue) {
-		this(description, null, category, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param description
+     *            a description
+     * @param category
+     *            a category
+     * @param defaultValue
+     *            the default value
+     */
+    public IntegerProperty(final String description, final WidgetPropertyCategory category, final int defaultValue) {
+        this(description, null, category, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param description
-	 *            a description
-	 * @param category
-	 *            a category
-	 * @param defaultValue
-	 *            the default value
-	 * @param minValue
-	 *            the lower border for the property value
-	 * @param maxValue
-	 *            the upper border for the property value
-	 */
-	public IntegerProperty(final String description, final WidgetPropertyCategory category, final int defaultValue, final int minValue,
-			final int maxValue) {
-		this(description, null, category, defaultValue, minValue, maxValue);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param description
+     *            a description
+     * @param category
+     *            a category
+     * @param defaultValue
+     *            the default value
+     * @param minValue
+     *            the lower border for the property value
+     * @param maxValue
+     *            the upper border for the property value
+     */
+    public IntegerProperty(final String description, final WidgetPropertyCategory category, final int defaultValue, final int minValue,
+            final int maxValue) {
+        this(description, null, category, defaultValue, minValue, maxValue);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object checkValue(final Object value) {
-		assert value != null : "value!=null"; //$NON-NLS-1$
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object checkValue(final Object value) {
+        assert value != null : "value!=null"; //$NON-NLS-1$
 
-		Integer acceptedValue = null;
+        Integer acceptedValue = null;
 
-		// check type
-		if (!(value instanceof Integer)) {
-			if (value instanceof Number) {
-				acceptedValue = ((Number) value).intValue();
-			} else {
-				try {
-					acceptedValue = Integer.parseInt(value.toString());
-				} catch (NumberFormatException e) {
-					acceptedValue = null;
-				}
-			}
-		} else {
-			acceptedValue = (Integer) value;
-		}
+        // check type
+        if (!(value instanceof Integer)) {
+            if (value instanceof Number) {
+                acceptedValue = ((Number) value).intValue();
+            } else {
+                try {
+                    acceptedValue = Integer.parseInt(value.toString());
+                } catch (NumberFormatException e) {
+                    acceptedValue = null;
+                }
+            }
+        } else {
+            acceptedValue = (Integer) value;
+        }
 
-		// check borders
-		if (acceptedValue != null) {
-			if (acceptedValue > _max) {
-				acceptedValue = _max;
-			} else if (acceptedValue < _min) {
-				acceptedValue = _min;
-			}
-		}
+        // check borders
+        if (acceptedValue != null) {
+            if (acceptedValue > _max) {
+                acceptedValue = _max;
+            } else if (acceptedValue < _min) {
+                acceptedValue = _min;
+            }
+        }
 
-		return acceptedValue;
-	}
+        return acceptedValue;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getCompatibleJavaTypes() {
-		return new Class[] { Number.class };
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getCompatibleJavaTypes() {
+        return new Class[] { Number.class };
+    }
 }

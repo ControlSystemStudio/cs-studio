@@ -45,283 +45,283 @@ import org.eclipse.swt.widgets.Text;
  */
 public class AddRemoveListFieldEditor extends FieldEditor
 {
-	private static final String DEFAULT_ADD_LABEL = "Add";
-	private static final String DEFAULT_REMOVE_LABEL = "Remove";
-	private static final String DEFAULT_SEPERATOR = ";";
+    private static final String DEFAULT_ADD_LABEL = "Add";
+    private static final String DEFAULT_REMOVE_LABEL = "Remove";
+    private static final String DEFAULT_SEPERATOR = ";";
 
-	private static final int VERTICAL_DIALOG_UNITS_PER_CHAR = 8;
-	// private static final int HORIZONTAL_DIALOG_UNITS_PER_CHAR = 4;
-	private static final int LIST_HEIGHT_IN_CHARS = 10;
-	private static final int LIST_HEIGHT_IN_DLUS = 
-		LIST_HEIGHT_IN_CHARS * VERTICAL_DIALOG_UNITS_PER_CHAR;
+    private static final int VERTICAL_DIALOG_UNITS_PER_CHAR = 8;
+    // private static final int HORIZONTAL_DIALOG_UNITS_PER_CHAR = 4;
+    private static final int LIST_HEIGHT_IN_CHARS = 10;
+    private static final int LIST_HEIGHT_IN_DLUS = 
+        LIST_HEIGHT_IN_CHARS * VERTICAL_DIALOG_UNITS_PER_CHAR;
 
-	// The top-level control for the field editor.
-	private Composite top;
+    // The top-level control for the field editor.
+    private Composite top;
     
-	// The list of tags.
-	private List list;
+    // The list of tags.
+    private List list;
     
-	// The text field for inputting new tags.
-	private Text textField;
+    // The text field for inputting new tags.
+    private Text textField;
     
-	// The button for adding the contents of
-	// the text field to the list.
-	private Button add;
+    // The button for adding the contents of
+    // the text field to the list.
+    private Button add;
     
-	// The button for removing the currently-selected list item.
-	private Button remove;
+    // The button for removing the currently-selected list item.
+    private Button remove;
     
-	// The string used to seperate list items 
-	// in a single String representation.
-	private String seperator = DEFAULT_SEPERATOR;
-	
-	public AddRemoveListFieldEditor(String name, String labelText, Composite parent)
+    // The string used to seperate list items 
+    // in a single String representation.
+    private String seperator = DEFAULT_SEPERATOR;
+    
+    public AddRemoveListFieldEditor(String name, String labelText, Composite parent)
     {
-	    super(name, labelText, parent);		
-	}
-	
-	public AddRemoveListFieldEditor(String name, String labelText, String addButtonText, String removeButtonText, Composite parent)
+        super(name, labelText, parent);        
+    }
+    
+    public AddRemoveListFieldEditor(String name, String labelText, String addButtonText, String removeButtonText, Composite parent)
     {
         super(name, labelText, parent);
         
         setAddButtonText(addButtonText);
-        setRemoveButtonText(removeButtonText);		
-	}
-	
-	/**
-	 * @see org.eclipse.jface.preference.FieldEditor#adjustForNumColumns(int)
-	 */
-	@Override
-	protected void adjustForNumColumns(int numColumns)
+        setRemoveButtonText(removeButtonText);        
+    }
+    
+    /**
+     * @see org.eclipse.jface.preference.FieldEditor#adjustForNumColumns(int)
+     */
+    @Override
+    protected void adjustForNumColumns(int numColumns)
     {
-	    ((GridData)top.getLayoutData()).horizontalSpan = numColumns;
-	}
+        ((GridData)top.getLayoutData()).horizontalSpan = numColumns;
+    }
 
-	/**
-	 * @see org.eclipse.jface.preference.FieldEditor#doFillIntoGrid
-	 * (Composite, int)
-	 */
-	@Override
-	protected void doFillIntoGrid(Composite parent, int numColumns)
+    /**
+     * @see org.eclipse.jface.preference.FieldEditor#doFillIntoGrid
+     * (Composite, int)
+     */
+    @Override
+    protected void doFillIntoGrid(Composite parent, int numColumns)
     {
-		top = parent;
-	
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = numColumns;
-		top.setLayoutData(gd);
-	
-		Label label = getLabelControl(top);
-		GridData labelData = new GridData();
-		labelData.horizontalSpan = numColumns;
-		label.setLayoutData(labelData);
-	
-		list = new List(top, SWT.BORDER | SWT.V_SCROLL);
-	
-		// Create a grid data that takes up the extra 
-		// space in the dialog and spans both columns.
-		GridData listData = new GridData(GridData.FILL_HORIZONTAL);
-		listData.heightHint = 
-			convertVerticalDLUsToPixels(list, LIST_HEIGHT_IN_DLUS);
-		listData.horizontalSpan = numColumns;
-		
-		list.setLayoutData(listData);
-		list.addSelectionListener(new SelectionAdapter()
+        top = parent;
+    
+        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+        gd.horizontalSpan = numColumns;
+        top.setLayoutData(gd);
+    
+        Label label = getLabelControl(top);
+        GridData labelData = new GridData();
+        labelData.horizontalSpan = numColumns;
+        label.setLayoutData(labelData);
+    
+        list = new List(top, SWT.BORDER | SWT.V_SCROLL);
+    
+        // Create a grid data that takes up the extra 
+        // space in the dialog and spans both columns.
+        GridData listData = new GridData(GridData.FILL_HORIZONTAL);
+        listData.heightHint = 
+            convertVerticalDLUsToPixels(list, LIST_HEIGHT_IN_DLUS);
+        listData.horizontalSpan = numColumns;
+        
+        list.setLayoutData(listData);
+        list.addSelectionListener(new SelectionAdapter()
         {
-			@Override
-			public void widgetSelected(SelectionEvent e)
+            @Override
+            public void widgetSelected(SelectionEvent e)
             {
-				selectionChanged();
-			}
-		});
-		
-		// Create a composite for the add and remove 
-		// buttons and the input text field.
-		Composite addRemoveGroup = new Composite(top, SWT.NONE);
-	
-		GridData addRemoveData = new GridData(GridData.FILL_HORIZONTAL);
-		addRemoveData.horizontalSpan = numColumns;
-		addRemoveGroup.setLayoutData(addRemoveData);
-	
-		GridLayout addRemoveLayout = new GridLayout();
-		addRemoveLayout.numColumns = numColumns;
-		addRemoveLayout.marginHeight = 0;
-		addRemoveLayout.marginWidth = 0;
-		addRemoveGroup.setLayout(addRemoveLayout);
-		
-		// Create a composite for the add and remove buttons.
-		Composite buttonGroup = new Composite(addRemoveGroup, SWT.NONE);
-		buttonGroup.setLayoutData(new GridData());
-	
-		GridLayout buttonLayout = new GridLayout();
-		buttonLayout.marginHeight = 0;
-		buttonLayout.marginWidth = 0;
-		buttonGroup.setLayout(buttonLayout);
-	
-		// Create the add button.
-		add = new Button(buttonGroup, SWT.NONE);
-		add.setText(DEFAULT_ADD_LABEL);
-		add.addSelectionListener(new SelectionAdapter()
-        {
-			@Override
-			public void widgetSelected(SelectionEvent e) {	
-				add();
-			}	
-		});
+                selectionChanged();
+            }
+        });
         
-		GridData addData = new GridData(GridData.FILL_HORIZONTAL);
-		//addData.heightHint = convertVerticalDLUsToPixels(add, IDialogConstants.BUTTON_HEIGHT);
-		addData.widthHint = convertHorizontalDLUsToPixels(add, IDialogConstants.BUTTON_WIDTH);	
-		add.setLayoutData(addData);	
-		
-		// Create the remove button.
-		remove = new Button(buttonGroup, SWT.NONE);
-		remove.setEnabled(false);
-		remove.setText(DEFAULT_REMOVE_LABEL);
-		remove.addSelectionListener(new SelectionAdapter() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent e) {	
-				list.remove(list.getSelectionIndex());
-				selectionChanged();
-			}
-		});
-		GridData removeData = new GridData(GridData.FILL_HORIZONTAL);
-		// removeData.heightHint = convertVerticalDLUsToPixels(remove, IDialogConstants.BUTTON_HEIGHT);
-		removeData.widthHint = convertHorizontalDLUsToPixels(remove, IDialogConstants.BUTTON_WIDTH);
-		remove.setLayoutData(removeData);	
-				
-		// Create the text field.
-		textField = new Text(addRemoveGroup, SWT.BORDER);
-		
-		GridData textData = new GridData(GridData.FILL_HORIZONTAL);
-		textData.horizontalSpan = numColumns - 1;	
-		textData.verticalAlignment = GridData.BEGINNING;
-		textField.setLayoutData(textData);	
-	}
-
-	/**
-	 * @see org.eclipse.jface.preference.FieldEditor#doLoad()
-	 */
-	@Override
-	protected void doLoad()
-    {
-		String items = getPreferenceStore().getString(getPreferenceName());
-		setList(items);
-	}
-	
-	/**
-	 * @see org.eclipse.jface.preference.FieldEditor#doLoadDefault()
-	 */
-	@Override
-	protected void doLoadDefault()
-    {
-		String items = getPreferenceStore().getDefaultString(getPreferenceName());
-		setList(items);
-	}
-	
-	// Parses the string into seperate list items and adds them to the list.
-	private void setList(String items)
-    {
-		String[] itemArray = parseString(items);
-		list.setItems(itemArray);
-	}
-	
-	/**
-	 * @see org.eclipse.jface.preference.FieldEditor#doStore()
-	 */
-	@Override
-	protected void doStore()
-    {
-		String s = createListString(list.getItems());
-		if (s != null)
-			getPreferenceStore().setValue(getPreferenceName(), s);
-	}
-
-	/**
-	 * @see org.eclipse.jface.preference.FieldEditor#getNumberOfControls()
-	 */
-	@Override
-	public int getNumberOfControls()
-    {
-		// The button composite and the text field.
-		return 2;
-	}
-
-	// Adds the string in the text field to the list.
-	void add()
-    {
-		String tag = textField.getText();
-		if (tag != null && tag.length() > 0)
-			list.add(tag);
-		textField.setText("");
-	}
-
-	/**
-	 *  Sets the label for the button that adds
-	 * the contents of the text field to the list.
-	 */
-	public void setAddButtonText(String text)
-    {
-		add.setText(text);
-	}
-	
-	/**
-	 *  Sets the label for the button that removes
-	 * the selected item from the list.
-	 */
-	public void setRemoveButtonText(String text)
-    {
-		remove.setText(text);
-	}
-	 
-	/**
-	 * Sets the string that seperates items in the list when the
-	 * list is stored as a single String in the preference store.
-	 */
-	public void setSeperator(String seperator)
-    {
-		this.seperator = seperator;	
-	}
-	
-	/**
-	 *  Creates the single String representation of the list
-	 * that is stored in the preference store.
-	 */
-	private String createListString(String[] items)
-    {
-		StringBuffer path = new StringBuffer("");//$NON-NLS-1$
-	
-		for (int i = 0; i < items.length; i++)
-        {
-			path.append(items[i]);
-			path.append(seperator);
-		}
+        // Create a composite for the add and remove 
+        // buttons and the input text field.
+        Composite addRemoveGroup = new Composite(top, SWT.NONE);
+    
+        GridData addRemoveData = new GridData(GridData.FILL_HORIZONTAL);
+        addRemoveData.horizontalSpan = numColumns;
+        addRemoveGroup.setLayoutData(addRemoveData);
+    
+        GridLayout addRemoveLayout = new GridLayout();
+        addRemoveLayout.numColumns = numColumns;
+        addRemoveLayout.marginHeight = 0;
+        addRemoveLayout.marginWidth = 0;
+        addRemoveGroup.setLayout(addRemoveLayout);
         
-		return path.toString();
-	}
-	
-	/**
-	 *  Parses the single String representation of the list
-	 * into an array of list items.
-	 */
-	private String[] parseString(String stringList)
+        // Create a composite for the add and remove buttons.
+        Composite buttonGroup = new Composite(addRemoveGroup, SWT.NONE);
+        buttonGroup.setLayoutData(new GridData());
+    
+        GridLayout buttonLayout = new GridLayout();
+        buttonLayout.marginHeight = 0;
+        buttonLayout.marginWidth = 0;
+        buttonGroup.setLayout(buttonLayout);
+    
+        // Create the add button.
+        add = new Button(buttonGroup, SWT.NONE);
+        add.setText(DEFAULT_ADD_LABEL);
+        add.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e) {    
+                add();
+            }    
+        });
+        
+        GridData addData = new GridData(GridData.FILL_HORIZONTAL);
+        //addData.heightHint = convertVerticalDLUsToPixels(add, IDialogConstants.BUTTON_HEIGHT);
+        addData.widthHint = convertHorizontalDLUsToPixels(add, IDialogConstants.BUTTON_WIDTH);    
+        add.setLayoutData(addData);    
+        
+        // Create the remove button.
+        remove = new Button(buttonGroup, SWT.NONE);
+        remove.setEnabled(false);
+        remove.setText(DEFAULT_REMOVE_LABEL);
+        remove.addSelectionListener(new SelectionAdapter() {
+            
+            @Override
+            public void widgetSelected(SelectionEvent e) {    
+                list.remove(list.getSelectionIndex());
+                selectionChanged();
+            }
+        });
+        GridData removeData = new GridData(GridData.FILL_HORIZONTAL);
+        // removeData.heightHint = convertVerticalDLUsToPixels(remove, IDialogConstants.BUTTON_HEIGHT);
+        removeData.widthHint = convertHorizontalDLUsToPixels(remove, IDialogConstants.BUTTON_WIDTH);
+        remove.setLayoutData(removeData);    
+                
+        // Create the text field.
+        textField = new Text(addRemoveGroup, SWT.BORDER);
+        
+        GridData textData = new GridData(GridData.FILL_HORIZONTAL);
+        textData.horizontalSpan = numColumns - 1;    
+        textData.verticalAlignment = GridData.BEGINNING;
+        textField.setLayoutData(textData);    
+    }
+
+    /**
+     * @see org.eclipse.jface.preference.FieldEditor#doLoad()
+     */
+    @Override
+    protected void doLoad()
     {
-		StringTokenizer st = new StringTokenizer(stringList, seperator); //$NON-NLS-1$
-		ArrayList<String> v = new ArrayList<String>();
-		
+        String items = getPreferenceStore().getString(getPreferenceName());
+        setList(items);
+    }
+    
+    /**
+     * @see org.eclipse.jface.preference.FieldEditor#doLoadDefault()
+     */
+    @Override
+    protected void doLoadDefault()
+    {
+        String items = getPreferenceStore().getDefaultString(getPreferenceName());
+        setList(items);
+    }
+    
+    // Parses the string into seperate list items and adds them to the list.
+    private void setList(String items)
+    {
+        String[] itemArray = parseString(items);
+        list.setItems(itemArray);
+    }
+    
+    /**
+     * @see org.eclipse.jface.preference.FieldEditor#doStore()
+     */
+    @Override
+    protected void doStore()
+    {
+        String s = createListString(list.getItems());
+        if (s != null)
+            getPreferenceStore().setValue(getPreferenceName(), s);
+    }
+
+    /**
+     * @see org.eclipse.jface.preference.FieldEditor#getNumberOfControls()
+     */
+    @Override
+    public int getNumberOfControls()
+    {
+        // The button composite and the text field.
+        return 2;
+    }
+
+    // Adds the string in the text field to the list.
+    void add()
+    {
+        String tag = textField.getText();
+        if (tag != null && tag.length() > 0)
+            list.add(tag);
+        textField.setText("");
+    }
+
+    /**
+     *  Sets the label for the button that adds
+     * the contents of the text field to the list.
+     */
+    public void setAddButtonText(String text)
+    {
+        add.setText(text);
+    }
+    
+    /**
+     *  Sets the label for the button that removes
+     * the selected item from the list.
+     */
+    public void setRemoveButtonText(String text)
+    {
+        remove.setText(text);
+    }
+     
+    /**
+     * Sets the string that seperates items in the list when the
+     * list is stored as a single String in the preference store.
+     */
+    public void setSeperator(String seperator)
+    {
+        this.seperator = seperator;    
+    }
+    
+    /**
+     *  Creates the single String representation of the list
+     * that is stored in the preference store.
+     */
+    private String createListString(String[] items)
+    {
+        StringBuffer path = new StringBuffer("");//$NON-NLS-1$
+    
+        for (int i = 0; i < items.length; i++)
+        {
+            path.append(items[i]);
+            path.append(seperator);
+        }
+        
+        return path.toString();
+    }
+    
+    /**
+     *  Parses the single String representation of the list
+     * into an array of list items.
+     */
+    private String[] parseString(String stringList)
+    {
+        StringTokenizer st = new StringTokenizer(stringList, seperator); //$NON-NLS-1$
+        ArrayList<String> v = new ArrayList<String>();
+        
         while(st.hasMoreElements())
         {
-			v.add((String)st.nextElement());
-		}
-		
+            v.add((String)st.nextElement());
+        }
+        
         return (String[])v.toArray(new String[v.size()]);
-	}
-	
-	// Sets the enablement of the remove button depending
-	// on the selection in the list.
-	void selectionChanged()
+    }
+    
+    // Sets the enablement of the remove button depending
+    // on the selection in the list.
+    void selectionChanged()
     {
-		int index = list.getSelectionIndex();
-		remove.setEnabled(index >= 0);		
-	}
+        int index = list.getSelectionIndex();
+        remove.setEnabled(index >= 0);        
+    }
 }

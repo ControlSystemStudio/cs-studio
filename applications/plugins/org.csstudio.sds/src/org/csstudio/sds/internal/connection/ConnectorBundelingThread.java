@@ -36,95 +36,95 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public final class ConnectorBundelingThread extends Thread {
-	/**
-	 * The singleton instance.
-	 */
-	private static ConnectorBundelingThread _instance;
+    /**
+     * The singleton instance.
+     */
+    private static ConnectorBundelingThread _instance;
 
-	/**
-	 * Flag that indicates if the thread should continue its execution.
-	 */
-	private boolean _running;
+    /**
+     * Flag that indicates if the thread should continue its execution.
+     */
+    private boolean _running;
 
-	/**
-	 * A queue, which contains runnables that process the events that occured
-	 * during the last SLEEP_TIME milliseconds.
-	 */
-	private Queue<Runnable> _queue;
+    /**
+     * A queue, which contains runnables that process the events that occured
+     * during the last SLEEP_TIME milliseconds.
+     */
+    private Queue<Runnable> _queue;
 
-	private static final Logger LOG = LoggerFactory.getLogger(ConnectorBundelingThread.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ConnectorBundelingThread.class);
 
-	/**
-	 * Gets the singleton instance.
-	 * 
-	 * @return the singleton instance
-	 */
-	public static ConnectorBundelingThread getInstance() {
-		if (_instance == null) {
-			_instance = new ConnectorBundelingThread();
-			_instance.start();
-		}
+    /**
+     * Gets the singleton instance.
+     * 
+     * @return the singleton instance
+     */
+    public static ConnectorBundelingThread getInstance() {
+        if (_instance == null) {
+            _instance = new ConnectorBundelingThread();
+            _instance.start();
+        }
 
-		return _instance;
-	}
+        return _instance;
+    }
 
-	/**
-	 * Standard constructor.
-	 */
-	private ConnectorBundelingThread() {
-		_running = true;
-		_queue = new ConcurrentLinkedQueue<Runnable>();
-	}
+    /**
+     * Standard constructor.
+     */
+    private ConnectorBundelingThread() {
+        _running = true;
+        _queue = new ConcurrentLinkedQueue<Runnable>();
+    }
 
-	/**
-	 * {@inheritDoc}.
-	 */
-	@Override
-	public void run() {
-		while (_running) {
-			try {
-				sleep(1000);
-			} catch (InterruptedException e) {
-				LOG.info(e.toString());
-			}
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public void run() {
+        while (_running) {
+            try {
+                sleep(1000);
+            } catch (InterruptedException e) {
+                LOG.info(e.toString());
+            }
 
-			processQueue();
-			yield();
-		}
-	}
+            processQueue();
+            yield();
+        }
+    }
 
-	/**
-	 * Stops the execution of this BundelingThread.
-	 */
-	public void stopExecution() {
-		_running = false;
-	}
+    /**
+     * Stops the execution of this BundelingThread.
+     */
+    public void stopExecution() {
+        _running = false;
+    }
 
-	/**
-	 * Process the complete queue.
-	 */
-	private void processQueue() {
-		if (_queue.size() > 0) {
-			Runnable r;
+    /**
+     * Process the complete queue.
+     */
+    private void processQueue() {
+        if (_queue.size() > 0) {
+            Runnable r;
 
-			while ((r = _queue.poll()) != null) {
-				r.run();
-				try {
-					sleep(10);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
+            while ((r = _queue.poll()) != null) {
+                r.run();
+                try {
+                    sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
-	/**
-	 * Adds the specified runnable to the queue.
-	 * 
-	 * @param runnable
-	 *            the runnable
-	 */
-	public void addConnector(final Runnable runnable) {
-		_queue.add(runnable);
-	}
+    /**
+     * Adds the specified runnable to the queue.
+     * 
+     * @param runnable
+     *            the runnable
+     */
+    public void addConnector(final Runnable runnable) {
+        _queue.add(runnable);
+    }
 }

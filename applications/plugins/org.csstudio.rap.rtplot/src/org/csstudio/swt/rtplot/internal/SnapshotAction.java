@@ -47,28 +47,28 @@ public class SnapshotAction<XTYPE extends Comparable<XTYPE>> extends Action
     @Override
     public void run()
     {
-    	final Shell shell = plot.getShell();
-    	
-    	// Use background thread because of potentially lengthy file I/O
-    	shell.getDisplay().syncExec(() ->
-    	{
-			try
-	        {
-				ByteArrayOutputStream stream = new ByteArrayOutputStream();
-	            final ImageLoader loader = new ImageLoader();
-	            final Image image = plot.getImage();
-	            loader.data = new ImageData[] { image.getImageData() };
-	            image.dispose();
-	            loader.save(stream, SWT.IMAGE_PNG);
-	            sendDownload(stream.toByteArray(), "snapshot.png");
-	        }
-	        catch (Exception ex)
-	        {	        	
-	        		MessageDialog.openError(shell, Messages.Snapshot,
-	        				NLS.bind("Cannot save snapshot.\n\nDetail:\n{0}",ex.getMessage()));
-	        }
-			
-		});
+        final Shell shell = plot.getShell();
+        
+        // Use background thread because of potentially lengthy file I/O
+        shell.getDisplay().syncExec(() ->
+        {
+            try
+            {
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                final ImageLoader loader = new ImageLoader();
+                final Image image = plot.getImage();
+                loader.data = new ImageData[] { image.getImageData() };
+                image.dispose();
+                loader.save(stream, SWT.IMAGE_PNG);
+                sendDownload(stream.toByteArray(), "snapshot.png");
+            }
+            catch (Exception ex)
+            {                
+                    MessageDialog.openError(shell, Messages.Snapshot,
+                            NLS.bind("Cannot save snapshot.\n\nDetail:\n{0}",ex.getMessage()));
+            }
+            
+        });
     }
     
     public static void sendDownload(byte[] data, String filename) {
@@ -131,7 +131,7 @@ public class SnapshotAction<XTYPE extends Comparable<XTYPE>> extends Action
                         + "\"");
                 response.getOutputStream().write(data);
             } catch (Exception e) {
-            	e.printStackTrace(new PrintStream(response.getOutputStream()));
+                e.printStackTrace(new PrintStream(response.getOutputStream()));
             } finally {
                 unregister();
             }

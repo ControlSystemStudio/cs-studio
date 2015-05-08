@@ -42,8 +42,8 @@ public class ValueRequestIterator implements ValueIterator
      * @throws Exception on error
      */
     public ValueRequestIterator(final ChannelArchiverReader reader,
-    		final int key, final String name, final Timestamp start, final Timestamp end, final boolean optimized,
-    		final int count) throws Exception
+            final int key, final String name, final Timestamp start, final Timestamp end, final boolean optimized,
+            final int count) throws Exception
     {
         this.reader = reader;
         this.key = key;

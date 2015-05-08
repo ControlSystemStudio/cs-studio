@@ -17,52 +17,52 @@ import org.csstudio.ui.util.thread.UIBundlingThread;
  *
  */
 public class PVWidgetConnectionHandler extends ConnectionHandler{
-	
-	
-	/**
-	 * @param editpart the editpart must implemented {@link IPVWidgetEditpart}
-	 */
-	public PVWidgetConnectionHandler(AbstractBaseEditPart editpart) {
-		super(editpart);
-	}
+    
+    
+    /**
+     * @param editpart the editpart must implemented {@link IPVWidgetEditpart}
+     */
+    public PVWidgetConnectionHandler(AbstractBaseEditPart editpart) {
+        super(editpart);
+    }
 
-	@Override
-	protected void markWidgetAsDisconnected(IPV pv) {
-		super.markWidgetAsDisconnected(pv);
-		final IPV controlPV = ((IPVWidgetEditpart)editPart).getControlPV();
-		if(controlPV != null && controlPV == pv){
-		UIBundlingThread.getInstance().addRunnable(
-				editPart.getRoot().getViewer().getControl().getDisplay(), 
-				new Runnable() {
-			
-			public void run() {
-				editPart.getFigure().setEnabled(false);
-			}
-		});
-		}
-	}
-	
-//	@Override
-//	protected void widgetConnectionRecovered(PV pv) {
-//		if(isConnected())
-//			return;
-//		super.widgetConnectionRecovered(pv);
-//		final PV controlPV = ((IPVWidgetEditpart)editPart).getControlPV();
-//		if(controlPV != null && controlPV == pv){
-//		UIBundlingThread.getInstance().addRunnable(
-//				editPart.getRoot().getViewer().getControl().getDisplay(), 
-//				new Runnable() {			
-//			public void run() {
-//				editPart.getFigure().setEnabled(
-//						editPart.getWidgetModel().isEnabled() 
-//						&& controlPV.isWriteAllowed());
-//			}
-//		});
-//		}
-//		
-//	}
+    @Override
+    protected void markWidgetAsDisconnected(IPV pv) {
+        super.markWidgetAsDisconnected(pv);
+        final IPV controlPV = ((IPVWidgetEditpart)editPart).getControlPV();
+        if(controlPV != null && controlPV == pv){
+        UIBundlingThread.getInstance().addRunnable(
+                editPart.getRoot().getViewer().getControl().getDisplay(), 
+                new Runnable() {
+            
+            public void run() {
+                editPart.getFigure().setEnabled(false);
+            }
+        });
+        }
+    }
+    
+//    @Override
+//    protected void widgetConnectionRecovered(PV pv) {
+//        if(isConnected())
+//            return;
+//        super.widgetConnectionRecovered(pv);
+//        final PV controlPV = ((IPVWidgetEditpart)editPart).getControlPV();
+//        if(controlPV != null && controlPV == pv){
+//        UIBundlingThread.getInstance().addRunnable(
+//                editPart.getRoot().getViewer().getControl().getDisplay(), 
+//                new Runnable() {            
+//            public void run() {
+//                editPart.getFigure().setEnabled(
+//                        editPart.getWidgetModel().isEnabled() 
+//                        && controlPV.isWriteAllowed());
+//            }
+//        });
+//        }
+//        
+//    }
 
-	
-	
-	
+    
+    
+    
 }

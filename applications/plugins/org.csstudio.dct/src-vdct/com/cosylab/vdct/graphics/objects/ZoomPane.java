@@ -102,64 +102,64 @@ public final class ZoomPane implements ImageObserver {
     
     private Image initialize(boolean clearImage) {
         if (zoomImage != null) {
-	        zoomImage.flush();
-	    }
+            zoomImage.flush();
+        }
 
-	    double scale = ViewState.getInstance().getScale();
-	    ViewState.getInstance().setScale(1.0);
-	    object.setZoomRepaint(true);
-	    object.forceValidation();
-	    
-	    width = object.getWidth();
-	    height = object.getHeight();
-	    leftOffset = object.getLeftOffset();
-	    rightOffset = object.getRightOffset();
-	    topOffset = object.getTopOffset();
-	    if (object instanceof Record) {
-	        int tempWidth = 0;
-	        int tempLO = 0;
-	        int tempRO = 0;
-	        Vector objects = ((ContainerObject)object).getSubObjectsV();
-	        for (int i = 0; i < objects.size(); i++) {
-	            VisibleObject obj = (VisibleObject) objects.get(i);
-	            tempWidth = obj.getWidth();
-	            tempLO = obj.getLeftOffset();
-	            tempRO = obj.getRightOffset();
-	            if (tempWidth/2 + tempLO > width/2) {
-	                leftOffset = Math.max(leftOffset, tempWidth/2 + tempLO - width/2);
-	            }
-	            if (tempWidth/2 + tempRO > width/2) {
-	                rightOffset = Math.max(rightOffset, tempWidth/2 + tempRO - width/2);
-	            }
-	            
-	            height += obj.getHeight();
-	        }
-	    } else if (object instanceof Template) {
-	        Vector objects = ((ContainerObject)object).getSubObjectsV();
-	        for (int i = 0; i < objects.size(); i++) {
-	            VisibleObject obj = (VisibleObject) objects.get(i);
-	            leftOffset = Math.max(leftOffset, obj.getLeftOffset());
-		        rightOffset = Math.max(rightOffset, obj.getRightOffset());
-	        }
-	    }	    	 
-	    
-	    
-	    width += leftOffset + rightOffset + 2*HORIZONTAL_MARGIN + 2;
-	    height += topOffset + 2*VERTICAL_MARGIN;
-	    
-	    if (clearImage || zoomImage == null || imgGr == null) {
-	        zoomImage = VisualDCT.getInstance().getContentPane().createImage(width,height);
-        	imgGr = zoomImage.getGraphics();
-        	imgGr.setColor(Constants.BACKGROUND_COLOR);
+        double scale = ViewState.getInstance().getScale();
+        ViewState.getInstance().setScale(1.0);
+        object.setZoomRepaint(true);
+        object.forceValidation();
+        
+        width = object.getWidth();
+        height = object.getHeight();
+        leftOffset = object.getLeftOffset();
+        rightOffset = object.getRightOffset();
+        topOffset = object.getTopOffset();
+        if (object instanceof Record) {
+            int tempWidth = 0;
+            int tempLO = 0;
+            int tempRO = 0;
+            Vector objects = ((ContainerObject)object).getSubObjectsV();
+            for (int i = 0; i < objects.size(); i++) {
+                VisibleObject obj = (VisibleObject) objects.get(i);
+                tempWidth = obj.getWidth();
+                tempLO = obj.getLeftOffset();
+                tempRO = obj.getRightOffset();
+                if (tempWidth/2 + tempLO > width/2) {
+                    leftOffset = Math.max(leftOffset, tempWidth/2 + tempLO - width/2);
+                }
+                if (tempWidth/2 + tempRO > width/2) {
+                    rightOffset = Math.max(rightOffset, tempWidth/2 + tempRO - width/2);
+                }
+                
+                height += obj.getHeight();
+            }
+        } else if (object instanceof Template) {
+            Vector objects = ((ContainerObject)object).getSubObjectsV();
+            for (int i = 0; i < objects.size(); i++) {
+                VisibleObject obj = (VisibleObject) objects.get(i);
+                leftOffset = Math.max(leftOffset, obj.getLeftOffset());
+                rightOffset = Math.max(rightOffset, obj.getRightOffset());
+            }
+        }             
+        
+        
+        width += leftOffset + rightOffset + 2*HORIZONTAL_MARGIN + 2;
+        height += topOffset + 2*VERTICAL_MARGIN;
+        
+        if (clearImage || zoomImage == null || imgGr == null) {
+            zoomImage = VisualDCT.getInstance().getContentPane().createImage(width,height);
+            imgGr = zoomImage.getGraphics();
+            imgGr.setColor(Constants.BACKGROUND_COLOR);
             imgGr.fillRect(0,0,width-1, height-1);
             imgGr.setColor(borderColor);
             imgGr.drawRect(0,0,width-1, height-1);  
-    	}
+        }
                
-	    object.draw(imgGr, false);
-	    object.setZoomRepaint(false);
-	    ViewState.getInstance().setScale(scale);
-	    object.forceValidation();       
+        object.draw(imgGr, false);
+        object.setZoomRepaint(false);
+        ViewState.getInstance().setScale(scale);
+        object.forceValidation();       
         return zoomImage;
         
     }

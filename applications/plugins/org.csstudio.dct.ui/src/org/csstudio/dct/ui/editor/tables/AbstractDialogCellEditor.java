@@ -35,60 +35,60 @@ import org.eclipse.swt.widgets.Shell;
  */
 public abstract class AbstractDialogCellEditor extends CellEditor {
 
-	private Shell _shell;
-	private final String _title;
-	private boolean _dialogIsOpen = false;
+    private Shell _shell;
+    private final String _title;
+    private boolean _dialogIsOpen = false;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param parent
-	 *            the parent composite
-	 * @param title
-	 *            the dialog title
-	 */
-	public AbstractDialogCellEditor(final Composite parent, final String title) {
-		super(parent, SWT.NONE);
-		_shell = parent.getShell();
-		_title = title;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param parent
+     *            the parent composite
+     * @param title
+     *            the dialog title
+     */
+    public AbstractDialogCellEditor(final Composite parent, final String title) {
+        super(parent, SWT.NONE);
+        _shell = parent.getShell();
+        _title = title;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void activate() {
-		if (!_dialogIsOpen) {
-			_dialogIsOpen = true;
-			this.openDialog(_shell, _title);
-			_dialogIsOpen = false;
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void activate() {
+        if (!_dialogIsOpen) {
+            _dialogIsOpen = true;
+            this.openDialog(_shell, _title);
+            _dialogIsOpen = false;
+        }
+    }
 
-	/**
-	 * Template method. Subclasses should open a dialog within this method.
-	 * 
-	 * @param shell
-	 *            a shell
-	 * @param dialogTitle
-	 *            the dialog title
-	 */
-	protected abstract void openDialog(final Shell shell, final String dialogTitle);
+    /**
+     * Template method. Subclasses should open a dialog within this method.
+     * 
+     * @param shell
+     *            a shell
+     * @param dialogTitle
+     *            the dialog title
+     */
+    protected abstract void openDialog(final Shell shell, final String dialogTitle);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected final Control createControl(final Composite parent) {
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected final Control createControl(final Composite parent) {
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doSetFocus() {
-		// Ignore
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doSetFocus() {
+        // Ignore
+    }
 
 }

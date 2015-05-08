@@ -36,15 +36,15 @@ class FreeTTSHacks
         // If too long, it can miss a short break in the output of
         // another program where the audio line would have become available
         System.setProperty("com.sun.speech.freetts.audio.AudioPlayer.openFailDelayMs",
-			"100");
+            "100");
         // .. and keep trying for a total of 30 seconds
         System.setProperty("com.sun.speech.freetts.audio.AudioPlayer.totalOpenFailDelayMs",
-        	"30000");
+            "30000");
 
         // In extreme cases, debug info may help
         // This shows that we use the 'JavaStreamingAudioPlayer'
         //        System.setProperty("com.sun.speech.freetts.audio.AudioPlayer.debug",
-        //    		"true");
+        //            "true");
 
         // Setting this property eliminates the need for voices.txt
         System.setProperty("freetts.voices",

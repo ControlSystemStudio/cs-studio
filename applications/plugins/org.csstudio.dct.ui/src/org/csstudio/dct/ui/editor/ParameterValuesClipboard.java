@@ -9,17 +9,17 @@ import java.util.Map;
  * @author Sven Wende
  */
 public class ParameterValuesClipboard {
-	private Map<String, String> content;
+    private Map<String, String> content;
 
-	public void setContent(Map<String, String> parameters) {
-		content=new LinkedHashMap<String, String>(parameters);
-	}
+    public void setContent(Map<String, String> parameters) {
+        content=new LinkedHashMap<String, String>(parameters);
+    }
 
-	public Map<String, String> getContent() {
-		return content!=null?new LinkedHashMap<String, String>(content):null;
-	}
-	
-	public boolean isEmpty() {
-		return content==null;
-	}
+    public Map<String, String> getContent() {
+        return content!=null?new LinkedHashMap<String, String>(content):null;
+    }
+    
+    public boolean isEmpty() {
+        return content==null;
+    }
 }

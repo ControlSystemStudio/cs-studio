@@ -7,30 +7,30 @@ import de.desy.language.editor.core.parser.RootNode;
 
 public class NodeAdapterFactory implements IAdapterFactory {
 
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(Object adaptableObject, Class adapterType) {
-		assert adaptableObject != null;
-		assert adapterType != null;
-		assert adaptableObject instanceof RootNode : "adaptableObject instanceof RootNode"; //$NON-NLS-1$
-		
-		final RootNode adaptedNode = (RootNode) adaptableObject;
-		return new WorkbenchAdapter() {
-			@Override
-			public String getLabel(final Object object) {
-				return adaptedNode.humanReadableRepresentation().replace("\n",
-						" ").replace("\r", " ").replace("\t", " ");
-			}
+    @SuppressWarnings("unchecked")
+    public Object getAdapter(Object adaptableObject, Class adapterType) {
+        assert adaptableObject != null;
+        assert adapterType != null;
+        assert adaptableObject instanceof RootNode : "adaptableObject instanceof RootNode"; //$NON-NLS-1$
+        
+        final RootNode adaptedNode = (RootNode) adaptableObject;
+        return new WorkbenchAdapter() {
+            @Override
+            public String getLabel(final Object object) {
+                return adaptedNode.humanReadableRepresentation().replace("\n",
+                        " ").replace("\r", " ").replace("\t", " ");
+            }
 
-			@Override
-			public Object[] getChildren(final Object object) {
-				return adaptedNode.getChildrenNodes().toArray();
-			}
-		};
-	}
+            @Override
+            public Object[] getChildren(final Object object) {
+                return adaptedNode.getChildrenNodes().toArray();
+            }
+        };
+    }
 
-	@SuppressWarnings("unchecked")
-	public Class[] getAdapterList() {
-		return new Class[] {RootNode.class};
-	}
+    @SuppressWarnings("unchecked")
+    public Class[] getAdapterList() {
+        return new Class[] {RootNode.class};
+    }
 
 }

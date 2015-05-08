@@ -27,31 +27,31 @@ import org.eclipse.ui.handlers.HandlerUtil;
  */
 public class SelectParentHandler extends AbstractHandler {
 
-	public Object execute(ExecutionEvent event) throws ExecutionException {
+    public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		Object viewer = HandlerUtil.getActivePart(event).getAdapter(
-				GraphicalViewer.class);
-		if (viewer == null)
-			return null;
+        Object viewer = HandlerUtil.getActivePart(event).getAdapter(
+                GraphicalViewer.class);
+        if (viewer == null)
+            return null;
 
-		ISelection currentSelection = ((GraphicalViewer) viewer).getSelection();
+        ISelection currentSelection = ((GraphicalViewer) viewer).getSelection();
 
-		if (currentSelection instanceof IStructuredSelection) {
-			Object element = ((IStructuredSelection) currentSelection)
-					.getFirstElement();
-			if (element instanceof AbstractBaseEditPart
-					&& !(element instanceof DisplayEditpart)) {
-				if (((AbstractBaseEditPart) element).getParent().isSelectable())
-					((AbstractBaseEditPart) element).getViewer().select(
-							((AbstractBaseEditPart) element).getParent());
-				else
-					ConsoleUtil
-							.writeWarning("Parent of the selected widget is unselectable. Its grandparent may be locked.");
+        if (currentSelection instanceof IStructuredSelection) {
+            Object element = ((IStructuredSelection) currentSelection)
+                    .getFirstElement();
+            if (element instanceof AbstractBaseEditPart
+                    && !(element instanceof DisplayEditpart)) {
+                if (((AbstractBaseEditPart) element).getParent().isSelectable())
+                    ((AbstractBaseEditPart) element).getViewer().select(
+                            ((AbstractBaseEditPart) element).getParent());
+                else
+                    ConsoleUtil
+                            .writeWarning("Parent of the selected widget is unselectable. Its grandparent may be locked.");
 
-			}
-		}
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
 }

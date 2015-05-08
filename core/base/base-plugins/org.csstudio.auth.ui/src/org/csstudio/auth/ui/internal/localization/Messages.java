@@ -34,35 +34,35 @@ import org.eclipse.osgi.util.NLS;
  * @author Kay Kasemir
  */
 public final class Messages extends NLS {
-	/**
-	 * The bundle name of the localization messages ressources.
-	 */
-	private static final String BUNDLE_NAME = "org.csstudio.auth.ui.internal.localization.messages"; //$NON-NLS-1$
+    /**
+     * The bundle name of the localization messages ressources.
+     */
+    private static final String BUNDLE_NAME = "org.csstudio.auth.ui.internal.localization.messages"; //$NON-NLS-1$
 
-	public static String AuthenticationPreferencePage_LOGIN_ON_STARTUP_OFFSITE;
-	public static String AuthenticationPreferencePage_PAGE_TITLE;
-	public static String AuthenticationPreferencePage_LOGIN_ON_STARTUP;
+    public static String AuthenticationPreferencePage_LOGIN_ON_STARTUP_OFFSITE;
+    public static String AuthenticationPreferencePage_PAGE_TITLE;
+    public static String AuthenticationPreferencePage_LOGIN_ON_STARTUP;
 
-	public static String LoginInformationToolbar_ButtonText;
-	public static String LoginInformationToolbar_CSS;
-	public static String LoginInformationToolbar_System;
-	public static String LoginInformationToolbar_Teaser;
-	public static String LoginInformationToolbar_Title;
-	public static String LoginInformationToolbar_Xmpp;
+    public static String LoginInformationToolbar_ButtonText;
+    public static String LoginInformationToolbar_CSS;
+    public static String LoginInformationToolbar_System;
+    public static String LoginInformationToolbar_Teaser;
+    public static String LoginInformationToolbar_Title;
+    public static String LoginInformationToolbar_Xmpp;
 
-	public static String SystemPropertiesPreferencePage_ABOUT_TEXT;
-	public static String SystemPropertiesPreferencePage_ADD_BUTTON;
-	public static String SystemPropertiesPreferencePage_KEY_COLUMN_LABEL;
-	public static String SystemPropertiesPreferencePage_REMOVE_BUTTON;
-	public static String SystemPropertiesPreferencePage_VALUE_COLUMN_LABEL;
+    public static String SystemPropertiesPreferencePage_ABOUT_TEXT;
+    public static String SystemPropertiesPreferencePage_ADD_BUTTON;
+    public static String SystemPropertiesPreferencePage_KEY_COLUMN_LABEL;
+    public static String SystemPropertiesPreferencePage_REMOVE_BUTTON;
+    public static String SystemPropertiesPreferencePage_VALUE_COLUMN_LABEL;
 
-	public static String SystemPropertyDialog_KEY_LABEL;
-	public static String SystemPropertyDialog_TITLE;
-	public static String SystemPropertyDialog_VALUE_LABEL;
+    public static String SystemPropertyDialog_KEY_LABEL;
+    public static String SystemPropertyDialog_TITLE;
+    public static String SystemPropertyDialog_VALUE_LABEL;
 
-	public static String LoginDialog_LoginAnonymous;
-	public static String LoginDialog_Password;
-	public static String LoginDialog_UserName;
+    public static String LoginDialog_LoginAnonymous;
+    public static String LoginDialog_Password;
+    public static String LoginDialog_UserName;
 
     public static String NotLoggedIn;
 

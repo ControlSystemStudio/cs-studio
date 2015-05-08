@@ -31,17 +31,17 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
  * 
  */
 public final class AdvancedSliderInitializer extends
-		AbstractEpicsWidgetInitializer {
+        AbstractEpicsWidgetInitializer {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void initialize(final AbstractControlSystemSchema schema) {
-		initializeCommonAlarmBehaviour();
-		initializeCommonConnectionStates();
-		initializeDynamicProperty(AdvancedSliderModel.PROP_MAX, "$channel$[graphMax]");
-		initializeDynamicProperty(AdvancedSliderModel.PROP_MIN, "$channel$[graphMin]");
-		initializeDynamicProperty(AdvancedSliderModel.PROP_VALUE, "$channel$",
-				"$channel$", null);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void initialize(final AbstractControlSystemSchema schema) {
+        initializeCommonAlarmBehaviour();
+        initializeCommonConnectionStates();
+        initializeDynamicProperty(AdvancedSliderModel.PROP_MAX, "$channel$[graphMax]");
+        initializeDynamicProperty(AdvancedSliderModel.PROP_MIN, "$channel$[graphMin]");
+        initializeDynamicProperty(AdvancedSliderModel.PROP_VALUE, "$channel$",
+                "$channel$", null);
+    }
 }

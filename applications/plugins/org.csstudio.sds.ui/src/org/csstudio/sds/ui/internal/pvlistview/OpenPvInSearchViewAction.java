@@ -12,31 +12,31 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 public class OpenPvInSearchViewAction extends AbstractHandler {
 
-	@Override
+    @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
-		String pvName = "";
+        String pvName = "";
 
         final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
         final ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
         for (ProcessVariable pv : pvs) {
-        	if (!(pv.getName().isEmpty())) {
-				pvName = pv.getName();
-				break;
-			}
-		}
+            if (!(pv.getName().isEmpty())) {
+                pvName = pv.getName();
+                break;
+            }
+        }
 
-		if (!pvName.isEmpty()) {
-			try {
-				if (!pvName.isEmpty()) {
-					PvSearchView pvSearchView = (PvSearchView) PlatformUI
-							.getWorkbench().getActiveWorkbenchWindow()
-							.getActivePage().showView(PvSearchView.VIEW_ID);
-					pvSearchView.searchFor(pvName);
-				}
-			} catch (PartInitException e) {
-				e.printStackTrace();
-			}
-		}
-		return null;
-	}
+        if (!pvName.isEmpty()) {
+            try {
+                if (!pvName.isEmpty()) {
+                    PvSearchView pvSearchView = (PvSearchView) PlatformUI
+                            .getWorkbench().getActiveWorkbenchWindow()
+                            .getActivePage().showView(PvSearchView.VIEW_ID);
+                    pvSearchView.searchFor(pvName);
+                }
+            } catch (PartInitException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 }

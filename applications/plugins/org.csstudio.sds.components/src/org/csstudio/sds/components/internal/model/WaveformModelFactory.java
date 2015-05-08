@@ -34,17 +34,17 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  */
 public final class WaveformModelFactory implements IWidgetModelFactory {
 
-	/**
-	 * {@inheritDoc}.
-	 */
-	public AbstractWidgetModel createWidgetModel() {
-		return new WaveformModel();
-	}
+    /**
+     * {@inheritDoc}.
+     */
+    public AbstractWidgetModel createWidgetModel() {
+        return new WaveformModel();
+    }
 
-	/**
-	 * {@inheritDoc}.
-	 */
-	public Class<?> getWidgetModelType() {
-		return WaveformModel.class;
-	}
+    /**
+     * {@inheritDoc}.
+     */
+    public Class<?> getWidgetModelType() {
+        return WaveformModel.class;
+    }
 }

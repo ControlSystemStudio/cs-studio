@@ -399,7 +399,7 @@ public class AlarmRDB
                     Activator.getLogger().log(Level.SEVERE, s, ex);
                 }
                 if (count == batchSize)
-                {	// Periodically submit as batch
+                {    // Periodically submit as batch
                     updateStateStatement.executeBatch();
                     actual_connection.commit();
                     count = 0;

@@ -83,7 +83,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
      *  @param root_name 
      */
     public ServerCommunicator(final AlarmServer server, final WorkQueue work_queue,
-    		final String root_name) throws Exception
+            final String root_name) throws Exception
     {
         super(Preferences.getJMS_URL());
         this.server = server;
@@ -159,8 +159,8 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
     @Override
     public void start()
     {
-    	super.start();
-    	idle_timer.start();
+        super.start();
+        idle_timer.start();
     }
 
     /** Stop the communicator */
@@ -279,7 +279,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
             @Override
             public void run()
             {
-            	try
+                try
                 {
                     final MapMessage map = createAlarmMessage(
                             AlarmLogic.getMaintenanceMode()
@@ -321,7 +321,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
             @Override
             public void run()
             {
-            	try
+                try
                 {
                     final MapMessage map = createAlarmMessage(JMSAlarmMessage.TEXT_STATE);
                     map.setString(JMSLogMessage.NAME, pv.getPathName());
@@ -366,7 +366,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
             }
         });
         idle_timer.reset();
-	}
+    }
 
     /** Send message to annunciator
      *  @param message Message text
@@ -402,7 +402,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
         });
     }
 
-	/** Handle messages received from alarm clients.
+    /** Handle messages received from alarm clients.
      *  <p>
      *  This is invoked from a JMS thread.
      *  There have been deadlocks when trying to reconfigure the

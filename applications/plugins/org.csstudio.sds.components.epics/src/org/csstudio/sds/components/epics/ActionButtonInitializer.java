@@ -38,30 +38,30 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
  * 
  */
 public final class ActionButtonInitializer extends
-		AbstractEpicsWidgetInitializer {
+        AbstractEpicsWidgetInitializer {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void initialize(final AbstractControlSystemSchema schema) {
-//		initializeCommonAlarmBehaviour();
-		initializeCommonConnectionStates();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void initialize(final AbstractControlSystemSchema schema) {
+//        initializeCommonAlarmBehaviour();
+        initializeCommonConnectionStates();
 
-		initializeDynamicProperty(ActionButtonModel.PROP_ACTIONDATA,
-				"$channel$", "$channel$", DirectConnectionRule.TYPE_ID);
+        initializeDynamicProperty(ActionButtonModel.PROP_ACTIONDATA,
+                "$channel$", "$channel$", DirectConnectionRule.TYPE_ID);
 
-		// To set dynamisation and condition state for the same property the
-		// condition states has to be set at last. Otherwise the dynamicProperty
-		// deletes the condition states.
-		initializeDynamicProperty(ActionButtonModel.PROP_LABEL, "$channel$",
-				null, DirectConnectionRule.TYPE_ID);
-		Map<ConnectionState, Object> stringsByConnectionState = new HashMap<ConnectionState, Object>();
-		stringsByConnectionState.put(ConnectionState.CONNECTION_LOST,
-				"Connection lost");
-		stringsByConnectionState.put(ConnectionState.INITIAL, "Initialisation");
-		initializeDynamicPropertyForConnectionState(
-				ActionButtonModel.PROP_LABEL, "$channel$",
-				stringsByConnectionState, DirectConnectionRule.TYPE_ID);
-	}
+        // To set dynamisation and condition state for the same property the
+        // condition states has to be set at last. Otherwise the dynamicProperty
+        // deletes the condition states.
+        initializeDynamicProperty(ActionButtonModel.PROP_LABEL, "$channel$",
+                null, DirectConnectionRule.TYPE_ID);
+        Map<ConnectionState, Object> stringsByConnectionState = new HashMap<ConnectionState, Object>();
+        stringsByConnectionState.put(ConnectionState.CONNECTION_LOST,
+                "Connection lost");
+        stringsByConnectionState.put(ConnectionState.INITIAL, "Initialisation");
+        initializeDynamicPropertyForConnectionState(
+                ActionButtonModel.PROP_LABEL, "$channel$",
+                stringsByConnectionState, DirectConnectionRule.TYPE_ID);
+    }
 }

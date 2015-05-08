@@ -34,29 +34,29 @@ import java.util.Collection;
  * 
  */
 class DoubleSequenceConverter implements IValueTypeConverter<double[]> {
-	private DoubleConverter simpleConverter = new DoubleConverter();
+    private DoubleConverter simpleConverter = new DoubleConverter();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public double[] convert(Object value) throws NumberFormatException {
-		double[] result = new double[0];
-		if (value != null) {
-			if (value instanceof double[]) {
-				result = (double[]) value;
-			} else if (value instanceof Collection) {
-				Object[] values = ((Collection) value).toArray();
-				result = new double[values.length];
+    /**
+     * {@inheritDoc}
+     */
+    public double[] convert(Object value) throws NumberFormatException {
+        double[] result = new double[0];
+        if (value != null) {
+            if (value instanceof double[]) {
+                result = (double[]) value;
+            } else if (value instanceof Collection) {
+                Object[] values = ((Collection) value).toArray();
+                result = new double[values.length];
 
-				for (int i = 0; i < values.length; i++) {
-					result[i] = simpleConverter.convert(values[i]);
-				}
-			} else {
-				result = new double[1];
-				result[0] = simpleConverter.convert(value);
-			}
-		}
-		assert result != null;
-		return result;
-	}
+                for (int i = 0; i < values.length; i++) {
+                    result[i] = simpleConverter.convert(values[i]);
+                }
+            } else {
+                result = new double[1];
+                result[0] = simpleConverter.convert(value);
+            }
+        }
+        assert result != null;
+        return result;
+    }
 }

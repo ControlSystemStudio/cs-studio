@@ -44,9 +44,9 @@ public class SecuritySupport implements BundleActivator
     @Override
     public void start(final BundleContext context) throws Exception
     {
-    	final Logger logger = Logger.getLogger(getClass().getName());
+        final Logger logger = Logger.getLogger(getClass().getName());
 
-    	// Fetch (i.e. create) the SecurityContext
+        // Fetch (i.e. create) the SecurityContext
         security = SecurityContext.getInstance();
 
         // Obtain AuthorizationProvider from OSGi service.
@@ -57,18 +57,18 @@ public class SecuritySupport implements BundleActivator
         final String filter = "(component.name=" + authorization_name + ")";
         // Expect exactly one with that name
         final Collection<ServiceReference<AuthorizationProvider>> authorization_services =
-    		context.getServiceReferences(AuthorizationProvider.class, filter);
-    	if (authorization_services.size() == 1)
-    	{
-    		final ServiceReference<AuthorizationProvider> service =
-    				authorization_services.iterator().next();
-    		security.setAuthorizationProvider(context.getService(service));
-    	}
-    	else
-        	logger.warning(
-    			"Expected 1 authorization provider, found " + authorization_services.size() +
-    			"\nList available providers on OSGi console via" +
-    			"services (objectClass=org.csstudio.security.authorization.AuthorizationProvider)");
+            context.getServiceReferences(AuthorizationProvider.class, filter);
+        if (authorization_services.size() == 1)
+        {
+            final ServiceReference<AuthorizationProvider> service =
+                    authorization_services.iterator().next();
+            security.setAuthorizationProvider(context.getService(service));
+        }
+        else
+            logger.warning(
+                "Expected 1 authorization provider, found " + authorization_services.size() +
+                "\nList available providers on OSGi console via" +
+                "services (objectClass=org.csstudio.security.authorization.AuthorizationProvider)");
     }
 
     /** {@inheritDoc} */

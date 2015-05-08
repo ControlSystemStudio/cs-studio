@@ -11,22 +11,22 @@ package org.csstudio.autocomplete.parser.engine.expr;
 
 public class ExprExpression extends Expr {
 
-	private Expr child;
+    private Expr child;
 
-	public ExprExpression(Expr child) {
-		super(ExprType.Expression);
-		this.child = child;
-	}
+    public ExprExpression(Expr child) {
+        super(ExprType.Expression);
+        this.child = child;
+    }
 
-	public Expr getChild() {
-		return child;
-	}
+    public Expr getChild() {
+        return child;
+    }
 
-	public String toString() {
-		return "(" + child + ")";
-	}
+    public String toString() {
+        return "(" + child + ")";
+    }
 
-	public void validate() throws ExprException {
-		child.validate();
-	}
+    public void validate() throws ExprException {
+        child.validate();
+    }
 }

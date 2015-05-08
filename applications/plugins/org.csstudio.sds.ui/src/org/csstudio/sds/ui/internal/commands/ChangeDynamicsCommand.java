@@ -15,25 +15,25 @@ import org.eclipse.gef.commands.Command;
  * 
  */
 public class ChangeDynamicsCommand extends Command {
-	private WidgetProperty property;
-	private DynamicsDescriptor oldValue;
-	private DynamicsDescriptor newValue;
+    private WidgetProperty property;
+    private DynamicsDescriptor oldValue;
+    private DynamicsDescriptor newValue;
 
-	public ChangeDynamicsCommand(WidgetProperty property, DynamicsDescriptor newValue) {
-		assert property != null;
-		this.property = property;
-		this.newValue = newValue;
-	}
+    public ChangeDynamicsCommand(WidgetProperty property, DynamicsDescriptor newValue) {
+        assert property != null;
+        this.property = property;
+        this.newValue = newValue;
+    }
 
-	@Override
-	public void execute() {
-		oldValue = property.getDynamicsDescriptor();
-		property.setDynamicsDescriptor(newValue);
-	}
+    @Override
+    public void execute() {
+        oldValue = property.getDynamicsDescriptor();
+        property.setDynamicsDescriptor(newValue);
+    }
 
-	@Override
-	public void undo() {
-		property.setDynamicsDescriptor(oldValue);
-	}
+    @Override
+    public void undo() {
+        property.setDynamicsDescriptor(oldValue);
+    }
 
 }

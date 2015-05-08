@@ -46,77 +46,77 @@ import org.eclipse.swt.widgets.Shell;
  * @author Kay Kasemir
  */
 public final class RGBCellEditor extends CellEditor {
-	/**
-	 * A shell.
-	 */
-	private Shell _shell;
+    /**
+     * A shell.
+     */
+    private Shell _shell;
 
-	/**
-	 * The current RGB value.
-	 */
-	private RGB _value;
+    /**
+     * The current RGB value.
+     */
+    private RGB _value;
 
-	/**
-	 * Creates a new color cell editor parented under the given control. The
-	 * cell editor value is an SWT RGB value.
-	 * 
-	 * @param parent
-	 *            The parent table.
-	 */
-	public RGBCellEditor(final Composite parent) {
-		super(parent, SWT.NONE);
-		_shell = parent.getShell();
-	}
+    /**
+     * Creates a new color cell editor parented under the given control. The
+     * cell editor value is an SWT RGB value.
+     * 
+     * @param parent
+     *            The parent table.
+     */
+    public RGBCellEditor(final Composite parent) {
+        super(parent, SWT.NONE);
+        _shell = parent.getShell();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void activate() {
-		ColorDialog dialog = new ColorDialog(_shell);
-		if (_value != null) {
-			dialog.setRGB(_value);
-		}
-		_value = dialog.open();
-		if (_value != null) {
-			fireApplyEditorValue();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void activate() {
+        ColorDialog dialog = new ColorDialog(_shell);
+        if (_value != null) {
+            dialog.setRGB(_value);
+        }
+        _value = dialog.open();
+        if (_value != null) {
+            fireApplyEditorValue();
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Control createControl(final Composite parent) {
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Control createControl(final Composite parent) {
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Object doGetValue() {
-		return _value;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Object doGetValue() {
+        return _value;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doSetFocus() {
-		// Ignore
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doSetFocus() {
+        // Ignore
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doSetValue(final Object value) {
-		//Assert.isTrue(value instanceof RGB);
-		if (value == null || !(value instanceof RGB)) {
-			_value = new RGB(0,0,0);
-		} else {
-			_value = (RGB) value;
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doSetValue(final Object value) {
+        //Assert.isTrue(value instanceof RGB);
+        if (value == null || !(value instanceof RGB)) {
+            _value = new RGB(0,0,0);
+        } else {
+            _value = (RGB) value;
+        }
+    }
 }

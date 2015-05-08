@@ -18,26 +18,26 @@ import org.eclipse.draw2d.Label;
  */
 public class AlphaLabel extends Label {
 
-	private int alpha = 100;	
+    private int alpha = 100;    
 
-	@Override
-	public boolean isOpaque() {		
-		return false;
-	}
-	
-	@Override
-	protected void paintFigure(Graphics graphics) {
-		graphics.pushState();
-		graphics.setAlpha(alpha);
-		graphics.fillRectangle(bounds);
-		graphics.popState();
-		super.paintFigure(graphics);
-	}
-	
-	/**
-	 * @param alpha the alpha to set
-	 */
-	public void setAlpha(int alpha) {
-		this.alpha = alpha;
-	}
+    @Override
+    public boolean isOpaque() {        
+        return false;
+    }
+    
+    @Override
+    protected void paintFigure(Graphics graphics) {
+        graphics.pushState();
+        graphics.setAlpha(alpha);
+        graphics.fillRectangle(bounds);
+        graphics.popState();
+        super.paintFigure(graphics);
+    }
+    
+    /**
+     * @param alpha the alpha to set
+     */
+    public void setAlpha(int alpha) {
+        this.alpha = alpha;
+    }
 }

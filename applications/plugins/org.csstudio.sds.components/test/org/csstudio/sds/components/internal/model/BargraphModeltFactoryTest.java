@@ -38,35 +38,35 @@ import org.junit.Test;
  */
 public final class BargraphModeltFactoryTest {
 
-	/**
-	 * A factory instance for testing issues.
-	 */
-	private BargraphModelFactory _factory;
-	
-	/**
-	 * Test setup.
-	 */
-	@Before
-	public void setUp()  {
-		_factory= new BargraphModelFactory();
-	}
+    /**
+     * A factory instance for testing issues.
+     */
+    private BargraphModelFactory _factory;
+    
+    /**
+     * Test setup.
+     */
+    @Before
+    public void setUp()  {
+        _factory= new BargraphModelFactory();
+    }
 
-	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.BargraphModelFactory#createWidgetModel()}.
-	 */
-	@Test
-	public void testCreateModelElement() {
-		AbstractWidgetModel model = _factory.createWidgetModel();
-		assertNotNull(model);
-		assertTrue(model instanceof BargraphModel);
-	}
+    /**
+     * Test method for {@link org.csstudio.sds.components.internal.model.BargraphModelFactory#createWidgetModel()}.
+     */
+    @Test
+    public void testCreateModelElement() {
+        AbstractWidgetModel model = _factory.createWidgetModel();
+        assertNotNull(model);
+        assertTrue(model instanceof BargraphModel);
+    }
 
-	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.BargraphModelFactory#getWidgetModelType()}.
-	 */
-	@Test
-	public void testGetModelElementType() {
-		assertEquals(BargraphModel.class, _factory.getWidgetModelType());
-	}
+    /**
+     * Test method for {@link org.csstudio.sds.components.internal.model.BargraphModelFactory#getWidgetModelType()}.
+     */
+    @Test
+    public void testGetModelElementType() {
+        assertEquals(BargraphModel.class, _factory.getWidgetModelType());
+    }
 
 }

@@ -47,49 +47,49 @@ public final class OpenShellActionHandler implements IWidgetActionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(OpenShellActionHandler.class);
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @required action instanceof OpenDisplayWidgetAction
-	 */
-	public void executeAction(final AbstractWidgetModel widget, final AbstractWidgetActionModel action) {
-		assert action instanceof OpenDisplayActionModel : "Precondition violated: action instanceof OpenDisplayWidgetAction";
-		OpenDisplayActionModel displayAction = (OpenDisplayActionModel) action;
-		IPath path = displayAction.getResource();
+    /**
+     * {@inheritDoc}
+     * 
+     * @required action instanceof OpenDisplayWidgetAction
+     */
+    public void executeAction(final AbstractWidgetModel widget, final AbstractWidgetActionModel action) {
+        assert action instanceof OpenDisplayActionModel : "Precondition violated: action instanceof OpenDisplayWidgetAction";
+        OpenDisplayActionModel displayAction = (OpenDisplayActionModel) action;
+        IPath path = displayAction.getResource();
 
-		Map<String, String> allAliases = widget.getAllInheritedAliases();
+        Map<String, String> allAliases = widget.getAllInheritedAliases();
 
-		Map<String, String> forwardedAliases = displayAction.getAliases();
+        Map<String, String> forwardedAliases = displayAction.getAliases();
 
-		for (String key : forwardedAliases.keySet()) {
-			String raw = forwardedAliases.get(key);
+        for (String key : forwardedAliases.keySet()) {
+            String raw = forwardedAliases.get(key);
 
-			String resolved;
-			try {
-				resolved = ChannelReferenceValidationUtil.createCanonicalName(
-						raw, allAliases);
+            String resolved;
+            try {
+                resolved = ChannelReferenceValidationUtil.createCanonicalName(
+                        raw, allAliases);
 
-				forwardedAliases.put(key, resolved);
-			} catch (ChannelReferenceValidationException e) {
-				// ignore
-				LOG.info("Cannot resolve alias [" + raw + "]");
-			}
+                forwardedAliases.put(key, resolved);
+            } catch (ChannelReferenceValidationException e) {
+                // ignore
+                LOG.info("Cannot resolve alias [" + raw + "]");
+            }
 
-		}
+        }
 
-		RunModeService.getInstance().openDisplayShellInRunMode(
-				path,
-				forwardedAliases,
-				(RunModeBoxInput) widget.getRoot().getRuntimeContext()
-						.getRunModeBoxInput());
+        RunModeService.getInstance().openDisplayShellInRunMode(
+                path,
+                forwardedAliases,
+                (RunModeBoxInput) widget.getRoot().getRuntimeContext()
+                        .getRunModeBoxInput());
 
-		boolean shouldClose = SdsUiPlugin.getCorePreferenceStore().getBoolean(
-				PreferenceConstants.PROP_CLOSE_PARENT_DISPLAY);
-		if (shouldClose) {
-			RunModeBoxInput runModeBoxInput = (RunModeBoxInput) widget.getRoot()
-					.getRuntimeContext().getRunModeBoxInput();
-			RunModeService.getInstance().closeRunModeBox(runModeBoxInput);
-		}
-	}
+        boolean shouldClose = SdsUiPlugin.getCorePreferenceStore().getBoolean(
+                PreferenceConstants.PROP_CLOSE_PARENT_DISPLAY);
+        if (shouldClose) {
+            RunModeBoxInput runModeBoxInput = (RunModeBoxInput) widget.getRoot()
+                    .getRuntimeContext().getRunModeBoxInput();
+            RunModeService.getInstance().closeRunModeBox(runModeBoxInput);
+        }
+    }
 
 }

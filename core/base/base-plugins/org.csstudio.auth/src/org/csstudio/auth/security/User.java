@@ -32,40 +32,40 @@ import java.util.Map;
 public class User
 {
     final private String _username;
-	final private Map<String, Object> _attributes = new HashMap<String, Object>();
-	
-	public User(String username) {
-		_username = username;
-	}
-	/**
-	 * Delivers the username of the user.
-	 * 
-	 * @return the username
-	 */
-	public String getUsername() {
-		return _username;
-	}
-	
-	/**
-	 * Sets a property with the specified key.
-	 * If the key already exists the old value is replaced by this value
-	 * @param key with which the specified value is to be associated 
-	 * @param value to be associated with the specified key
-	 */
-	public void setProperty(String key, Object value) {
-		_attributes.put(key, value);
-	}
-	
-	/**
-	 * Returns the value associated to the specified key.
-	 * @param key key whose associated value is to be returned
-	 * @return the value associated to the specified key or null if there is no match for the key
-	 */
-	public Object getProperty(String key) {
-		return _attributes.get(key);
-	}
-	
-	/** @return String representation for debugging */
+    final private Map<String, Object> _attributes = new HashMap<String, Object>();
+    
+    public User(String username) {
+        _username = username;
+    }
+    /**
+     * Delivers the username of the user.
+     * 
+     * @return the username
+     */
+    public String getUsername() {
+        return _username;
+    }
+    
+    /**
+     * Sets a property with the specified key.
+     * If the key already exists the old value is replaced by this value
+     * @param key with which the specified value is to be associated 
+     * @param value to be associated with the specified key
+     */
+    public void setProperty(String key, Object value) {
+        _attributes.put(key, value);
+    }
+    
+    /**
+     * Returns the value associated to the specified key.
+     * @param key key whose associated value is to be returned
+     * @return the value associated to the specified key or null if there is no match for the key
+     */
+    public Object getProperty(String key) {
+        return _attributes.get(key);
+    }
+    
+    /** @return String representation for debugging */
     @SuppressWarnings("nls")
     @Override
     public String toString()

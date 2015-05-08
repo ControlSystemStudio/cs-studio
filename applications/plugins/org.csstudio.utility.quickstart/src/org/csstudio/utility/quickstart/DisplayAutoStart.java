@@ -4,32 +4,32 @@
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
  * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT
-		NOT LIMITED
+        NOT LIMITED
  * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE
-		AND
+        AND
  * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-		BE LIABLE
+        BE LIABLE
  * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
-		CONTRACT,
+        CONTRACT,
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-		SOFTWARE OR
+        SOFTWARE OR
  * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE
-		DEFECTIVE
+        DEFECTIVE
  * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING,
-		REPAIR OR
+        REPAIR OR
  * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART
-		OF THIS LICENSE.
+        OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS
-		DISCLAIMER.
+        DISCLAIMER.
  * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES,
-		ENHANCEMENTS,
+        ENHANCEMENTS,
  * OR MODIFICATIONS.
  * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION,
-		MODIFICATION,
+        MODIFICATION,
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE
-		DISTRIBUTION OF THIS
+        DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU
-		MAY FIND A COPY
+        MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.utility.quickstart;
@@ -59,88 +59,88 @@ public class DisplayAutoStart implements Runnable {
 
     private static final Logger LOG = LoggerFactory.getLogger(DisplayAutoStart.class);
     
-	private static final String PLT_FILE_EXTENSION = "plt";
-	private static final String SDS_FILE_EXTENSION = "sds";
+    private static final String PLT_FILE_EXTENSION = "plt";
+    private static final String SDS_FILE_EXTENSION = "sds";
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void run() {
-		final IPreferenceStore preferenceStore = Activator.getDefault()
-				.getPreferenceStore();
-		final PreferenceValidator preferenceValidator = new PreferenceValidator();
-		final String quickstartFiles = preferenceStore
-				.getString(PreferenceConstants.SDS_FILES);
-		final String[] array = quickstartFiles.split(";");
-		try {
-			waitForWorkbench();
-		} catch (final InterruptedException e) {
-			LOG.error("Quickstart startup error, ", e);
-		}
-		for (final String element : array) {
-			final String[] ItemFromPreferences = element.split("\\?");
-			final String[] checkedPrefItem = preferenceValidator
-					.checkPreferenceValidity(ItemFromPreferences);
-			if (checkedPrefItem[2].equals("true")) {
-				if (checkedPrefItem[0].endsWith(SDS_FILE_EXTENSION
-						.toLowerCase())) {
-					startSdsDidplay(checkedPrefItem);
-				}
-				if (checkedPrefItem[0].endsWith(PLT_FILE_EXTENSION
-						.toLowerCase())) {
-					startDbTrend(checkedPrefItem);
-				}
-			}
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void run() {
+        final IPreferenceStore preferenceStore = Activator.getDefault()
+                .getPreferenceStore();
+        final PreferenceValidator preferenceValidator = new PreferenceValidator();
+        final String quickstartFiles = preferenceStore
+                .getString(PreferenceConstants.SDS_FILES);
+        final String[] array = quickstartFiles.split(";");
+        try {
+            waitForWorkbench();
+        } catch (final InterruptedException e) {
+            LOG.error("Quickstart startup error, ", e);
+        }
+        for (final String element : array) {
+            final String[] ItemFromPreferences = element.split("\\?");
+            final String[] checkedPrefItem = preferenceValidator
+                    .checkPreferenceValidity(ItemFromPreferences);
+            if (checkedPrefItem[2].equals("true")) {
+                if (checkedPrefItem[0].endsWith(SDS_FILE_EXTENSION
+                        .toLowerCase())) {
+                    startSdsDidplay(checkedPrefItem);
+                }
+                if (checkedPrefItem[0].endsWith(PLT_FILE_EXTENSION
+                        .toLowerCase())) {
+                    startDbTrend(checkedPrefItem);
+                }
+            }
+        }
+    }
 
-	private void startDbTrend(String[] checkedPrefItem) {
-		final IPath sdsFilePath = Path.fromOSString(checkedPrefItem[0]);
-		final IFile file = ResourcesPlugin.getWorkspace().getRoot()
-				.getFile(sdsFilePath);
+    private void startDbTrend(String[] checkedPrefItem) {
+        final IPath sdsFilePath = Path.fromOSString(checkedPrefItem[0]);
+        final IFile file = ResourcesPlugin.getWorkspace().getRoot()
+                .getFile(sdsFilePath);
 // TODO (jhatje): enable when Databrwoser2 is integrates in CSS
-//		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+//        PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 //
-//			@Override
-//			public void run() {
+//            @Override
+//            public void run() {
 //
-//				DB2Shell dbShell = new DB2Shell(file);
-//				dbShell.openShell();
-//			}
-//		});
-	}
+//                DB2Shell dbShell = new DB2Shell(file);
+//                dbShell.openShell();
+//            }
+//        });
+    }
 
-	private void startSdsDidplay(final String[] checkedPrefItem) {
-		final IPath sdsFilePath = Path.fromOSString(checkedPrefItem[0]);
-		LOG.debug("open: {}", sdsFilePath);
-		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-			@Override
+    private void startSdsDidplay(final String[] checkedPrefItem) {
+        final IPath sdsFilePath = Path.fromOSString(checkedPrefItem[0]);
+        LOG.debug("open: {}", sdsFilePath);
+        PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+            @Override
             public void run() {
-				RunModeService.getInstance().openDisplayShellInRunMode(
-						sdsFilePath);
-			}
-		});
-	}
+                RunModeService.getInstance().openDisplayShellInRunMode(
+                        sdsFilePath);
+            }
+        });
+    }
 
-	/**
-	 * Wait until the workbench is available to start SDS displays.
-	 * 
-	 * @throws InterruptedException
-	 */
-	private void waitForWorkbench() throws InterruptedException {
-		boolean workbenchNotAvailable = true;
-		while (workbenchNotAvailable) {
-			try {
-				final IWorkbench workbench = PlatformUI.getWorkbench();
-				if (workbench != null) {
-					workbenchNotAvailable = false;
-				}
-			} catch (final IllegalStateException e) {
-				// TODO (jhatje) : what shall happen here?
-			}
-			Thread.sleep(1000);
-		}
-	}
+    /**
+     * Wait until the workbench is available to start SDS displays.
+     * 
+     * @throws InterruptedException
+     */
+    private void waitForWorkbench() throws InterruptedException {
+        boolean workbenchNotAvailable = true;
+        while (workbenchNotAvailable) {
+            try {
+                final IWorkbench workbench = PlatformUI.getWorkbench();
+                if (workbench != null) {
+                    workbenchNotAvailable = false;
+                }
+            } catch (final IllegalStateException e) {
+                // TODO (jhatje) : what shall happen here?
+            }
+            Thread.sleep(1000);
+        }
+    }
 
 }

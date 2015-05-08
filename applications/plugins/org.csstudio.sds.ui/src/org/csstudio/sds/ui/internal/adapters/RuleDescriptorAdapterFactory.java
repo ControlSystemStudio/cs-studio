@@ -37,62 +37,62 @@ import org.eclipse.ui.model.WorkbenchAdapter;
  */
 public final class RuleDescriptorAdapterFactory implements IAdapterFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object getAdapter(final Object adaptableObject,
-			final Class adapterType) {
-		assert adaptableObject != null;
-		assert adapterType != null;
-		assert adaptableObject instanceof RuleDescriptor : "adaptableObject instanceof RuleDescriptor"; //$NON-NLS-1$
+    /**
+     * {@inheritDoc}
+     */
+    public Object getAdapter(final Object adaptableObject,
+            final Class adapterType) {
+        assert adaptableObject != null;
+        assert adapterType != null;
+        assert adaptableObject instanceof RuleDescriptor : "adaptableObject instanceof RuleDescriptor"; //$NON-NLS-1$
 
-		final RuleDescriptor rule = (RuleDescriptor) adaptableObject;
+        final RuleDescriptor rule = (RuleDescriptor) adaptableObject;
 
-		if (adapterType == IWorkbenchAdapter.class) {
-			return new WorkbenchAdapter() {
-				@Override
-				public String getLabel(final Object o) {
-					String result = rule.getDescription();
+        if (adapterType == IWorkbenchAdapter.class) {
+            return new WorkbenchAdapter() {
+                @Override
+                public String getLabel(final Object o) {
+                    String result = rule.getDescription();
 
-					if (rule.isScriptedRule()) {
-						result += " (ECMA Script)"; //$NON-NLS-1$
-					} else {
-						result += " (Java)"; //$NON-NLS-1$
-					}
+                    if (rule.isScriptedRule()) {
+                        result += " (ECMA Script)"; //$NON-NLS-1$
+                    } else {
+                        result += " (Java)"; //$NON-NLS-1$
+                    }
 
-					return result;
-				}
+                    return result;
+                }
 
-				@Override
-				public ImageDescriptor getImageDescriptor(final Object object) {
-					// fallback
-					ImageDescriptor result = null;
+                @Override
+                public ImageDescriptor getImageDescriptor(final Object object) {
+                    // fallback
+                    ImageDescriptor result = null;
 
-					if (rule.isScriptedRule()) {
-						result = CustomMediaFactory.getInstance()
-								.getImageDescriptorFromPlugin(
-										SdsUiPlugin.PLUGIN_ID,
-										"icons/rule_script.gif"); //$NON-NLS-1$
-					} else {
-						result = CustomMediaFactory.getInstance()
-								.getImageDescriptorFromPlugin(
-										SdsUiPlugin.PLUGIN_ID,
-										"icons/rule_java.gif"); //$NON-NLS-1$
+                    if (rule.isScriptedRule()) {
+                        result = CustomMediaFactory.getInstance()
+                                .getImageDescriptorFromPlugin(
+                                        SdsUiPlugin.PLUGIN_ID,
+                                        "icons/rule_script.gif"); //$NON-NLS-1$
+                    } else {
+                        result = CustomMediaFactory.getInstance()
+                                .getImageDescriptorFromPlugin(
+                                        SdsUiPlugin.PLUGIN_ID,
+                                        "icons/rule_java.gif"); //$NON-NLS-1$
 
-					}
+                    }
 
-					return result;
-				}
-			};
-		}
-		return null;
-	}
+                    return result;
+                }
+            };
+        }
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Class[] getAdapterList() {
-		return new Class[] { IWorkbenchAdapter.class };
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Class[] getAdapterList() {
+        return new Class[] { IWorkbenchAdapter.class };
+    }
 
 }

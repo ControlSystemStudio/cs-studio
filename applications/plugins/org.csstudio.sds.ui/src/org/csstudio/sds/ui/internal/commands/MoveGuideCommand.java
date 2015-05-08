@@ -33,63 +33,63 @@ import org.eclipse.gef.commands.Command;
  * @author Kai Meyer
  */
 public final class MoveGuideCommand extends Command {
-	/**
-	 * The distance.
-	 */
-	private int _pDelta;
-	/**
-	 * The guide, which position has changed.
-	 */
-	private GuideModel _guide;
-	
-	/**
-	 * Constructor.
-	 * @param guide
-	 * 			the guide, which position has changed
-	 * @param pDelta
-	 * 			the distance
-	 */
-	public MoveGuideCommand(final GuideModel guide, final int pDelta) {
-		_pDelta = pDelta;
-		_guide = guide;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void execute() {
-		_guide.setPosition(_guide.getPosition() + _pDelta);
-		Iterator<AbstractWidgetModel> iter = _guide.getAttachedModels().iterator();
-		while (iter.hasNext()) {
-			AbstractWidgetModel model = iter.next();
-			Point location = new Point(model.getX(), model.getY()); 
-			if (_guide.isHorizontal()) {
-				location.y += _pDelta;
-			} else {
-				location.x += _pDelta;
-			}
-			model.setLocation(location.x, location.y);
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void undo() {
-		_guide.setPosition(_guide.getPosition() - _pDelta);
-		Iterator<AbstractWidgetModel> iter = _guide.getAttachedModels().iterator();
-		while (iter.hasNext()) {
-			AbstractWidgetModel model = iter.next();
-			Point location = new Point(model.getX(), model.getY()); 
-			if (_guide.isHorizontal()) {
-				location.y -= _pDelta;
-			} else {
-				location.x -= _pDelta;
-			}
-			model.setLocation(location.x, location.y);
-		}
-	}
+    /**
+     * The distance.
+     */
+    private int _pDelta;
+    /**
+     * The guide, which position has changed.
+     */
+    private GuideModel _guide;
+    
+    /**
+     * Constructor.
+     * @param guide
+     *             the guide, which position has changed
+     * @param pDelta
+     *             the distance
+     */
+    public MoveGuideCommand(final GuideModel guide, final int pDelta) {
+        _pDelta = pDelta;
+        _guide = guide;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void execute() {
+        _guide.setPosition(_guide.getPosition() + _pDelta);
+        Iterator<AbstractWidgetModel> iter = _guide.getAttachedModels().iterator();
+        while (iter.hasNext()) {
+            AbstractWidgetModel model = iter.next();
+            Point location = new Point(model.getX(), model.getY()); 
+            if (_guide.isHorizontal()) {
+                location.y += _pDelta;
+            } else {
+                location.x += _pDelta;
+            }
+            model.setLocation(location.x, location.y);
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void undo() {
+        _guide.setPosition(_guide.getPosition() - _pDelta);
+        Iterator<AbstractWidgetModel> iter = _guide.getAttachedModels().iterator();
+        while (iter.hasNext()) {
+            AbstractWidgetModel model = iter.next();
+            Point location = new Point(model.getX(), model.getY()); 
+            if (_guide.isHorizontal()) {
+                location.y -= _pDelta;
+            } else {
+                location.x -= _pDelta;
+            }
+            model.setLocation(location.x, location.y);
+        }
+    }
 
 }

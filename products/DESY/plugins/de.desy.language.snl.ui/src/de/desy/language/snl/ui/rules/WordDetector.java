@@ -31,17 +31,17 @@ import org.eclipse.jface.text.rules.IWordDetector;
  */
 public class WordDetector implements IWordDetector {
 
-	/**
-	 * @see IWordDetector#isWordStart.
-	 */
-	public boolean isWordStart(final char c) {
-		return Character.isJavaIdentifierStart(c);
-	}
+    /**
+     * @see IWordDetector#isWordStart.
+     */
+    public boolean isWordStart(final char c) {
+        return Character.isJavaIdentifierStart(c);
+    }
 
-	/**
-	 * @see IWordDetector#isWordPart.
-	 */
-	public boolean isWordPart(final char c) {
-		return Character.isJavaIdentifierPart(c);
-	}
+    /**
+     * @see IWordDetector#isWordPart.
+     */
+    public boolean isWordPart(final char c) {
+        return Character.isJavaIdentifierPart(c);
+    }
 }

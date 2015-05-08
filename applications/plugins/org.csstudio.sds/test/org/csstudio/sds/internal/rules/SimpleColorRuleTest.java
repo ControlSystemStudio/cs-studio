@@ -33,26 +33,26 @@ import org.junit.Test;
  * 
  */
 public final class SimpleColorRuleTest {
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.internal.rules.SimpleColorRule#evaluate(java.lang.Object[])}.
-	 */
-	@Test
-	public void testEvaluate() {
-		SimpleColorRule rule = new SimpleColorRule();
+    /**
+     * Test method for
+     * {@link org.csstudio.sds.internal.rules.SimpleColorRule#evaluate(java.lang.Object[])}.
+     */
+    @Test
+    public void testEvaluate() {
+        SimpleColorRule rule = new SimpleColorRule();
 
-		// > 66: red, > 33: yellow, else green
-		assertEquals(SimpleColorRule.COLOR_GREEN, rule
-				.evaluate(new Object[] { 33.0 }));
-		assertEquals(SimpleColorRule.COLOR_YELLOW, rule
-				.evaluate(new Object[] { 34.0 }));
-		assertEquals(SimpleColorRule.COLOR_RED, rule
-				.evaluate(new Object[] { 67.0 }));
+        // > 66: red, > 33: yellow, else green
+        assertEquals(SimpleColorRule.COLOR_GREEN, rule
+                .evaluate(new Object[] { 33.0 }));
+        assertEquals(SimpleColorRule.COLOR_YELLOW, rule
+                .evaluate(new Object[] { 34.0 }));
+        assertEquals(SimpleColorRule.COLOR_RED, rule
+                .evaluate(new Object[] { 67.0 }));
 
-		// fallback: not a double or no arguments = green
-		assertEquals(SimpleColorRule.COLOR_RED, rule
-				.evaluate(new Object[] { 99 }));
-		assertEquals(SimpleColorRule.COLOR_BLACK, rule.evaluate(null));
-	}
+        // fallback: not a double or no arguments = green
+        assertEquals(SimpleColorRule.COLOR_RED, rule
+                .evaluate(new Object[] { 99 }));
+        assertEquals(SimpleColorRule.COLOR_BLACK, rule.evaluate(null));
+    }
 
 }

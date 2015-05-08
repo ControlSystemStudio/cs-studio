@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public final class ActionButtonEditPart extends AbstractTextTypeWidgetEditPart {
-	
+    
     private static final Logger LOG = LoggerFactory.getLogger(ActionButtonEditPart.class);
 
     /**

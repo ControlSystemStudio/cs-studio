@@ -34,7 +34,7 @@ public class DeSelectAllAction extends PVTableAction
         {
             final PVTableItem item = model.getItem(i);
             if (! item.isSelected())
-            	continue;
+                continue;
             item.setSelected(false);
             viewer.update(item, null);
         }

@@ -13,36 +13,36 @@ import de.desy.language.snl.parser.nodes.ProgramNode;
  */
 class ProgramNodeAdapterFactory implements IAdapterFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(final Object adaptableObject,
-			final Class adapterType) {
-		assert adaptableObject != null;
-		assert adapterType != null;
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Object getAdapter(final Object adaptableObject,
+            final Class adapterType) {
+        assert adaptableObject != null;
+        assert adapterType != null;
 
-		if (adaptableObject instanceof ProgramNode) {
-			final ProgramNode node = (ProgramNode) adaptableObject;
+        if (adaptableObject instanceof ProgramNode) {
+            final ProgramNode node = (ProgramNode) adaptableObject;
 
-			if (adapterType == IWorkbenchAdapter.class) {
-				return new AbstractSNLWorkbenchAdapter<ProgramNode>(node) {
-					@Override
-					public String getImageName(final ProgramNode nodeToRender) {
-						return "program.gif";
-					}
-				};
-			}
-		}
-		return null;
-	}
+            if (adapterType == IWorkbenchAdapter.class) {
+                return new AbstractSNLWorkbenchAdapter<ProgramNode>(node) {
+                    @Override
+                    public String getImageName(final ProgramNode nodeToRender) {
+                        return "program.gif";
+                    }
+                };
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getAdapterList() {
-		return new Class[] { ProgramNode.class };
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getAdapterList() {
+        return new Class[] { ProgramNode.class };
+    }
 
 }

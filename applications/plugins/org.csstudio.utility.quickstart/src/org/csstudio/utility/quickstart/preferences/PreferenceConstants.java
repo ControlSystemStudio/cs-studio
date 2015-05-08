@@ -25,17 +25,17 @@
  * Constant definitions for plug-in preferences.
  */
 public final class PreferenceConstants {
-	
-	/**
-	 * Private constructor.
-	 */
-	private PreferenceConstants() {
-	}
-	
-	/**
-	 * SDS files to put in quickstart menu. List separated with
-	 * ';'. The optional name for the menu is separated with
-	 * '?'.
-	 */
-	public static final String SDS_FILES = "sdsFiles";
+    
+    /**
+     * Private constructor.
+     */
+    private PreferenceConstants() {
+    }
+    
+    /**
+     * SDS files to put in quickstart menu. List separated with
+     * ';'. The optional name for the menu is separated with
+     * '?'.
+     */
+    public static final String SDS_FILES = "sdsFiles";
 }

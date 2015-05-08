@@ -32,77 +32,77 @@ package org.teneighty.lm;
  * @version $Revision$ $Date$
  */
 final class DefaultMatrixFactory
-	extends MatrixFactory
+    extends MatrixFactory
 {
-	
-	
-	/**
-	 * Constructor.
-	 * <p>
-	 * Does nothing.
-	 */
-	DefaultMatrixFactory()
-	{
-		super();
-	}
-	
-	
-	/**
-	 * Create and return a new <code>Matrix</code> instance, of the specified
-	 * size.
-	 * 
-	 * @param rows the number of rows.
-	 * @param cols the number of columns.
-	 * @return Matrix a new Matrix instance of the specified size.
-	 * @throws IllegalArgumentException If <code>rows</code> or
-	 *         <code>cols</code> is illegal.
-	 */
-	@Override
-	public Matrix newMatrix( int rows, int cols )
-		throws IllegalArgumentException
-	{
-		if( rows < 1 || cols < 1 )
-		{
-			throw new IllegalArgumentException();
-		}
-		
-		return( new DefaultMatrix( rows, cols ) );
-	}
-	
-	
-	/**
-	 * Simple equals implementation. Two instances of this class are always considered equal.
-	 * 
-	 * @param other the other object.
-	 * @return boolean <code>true</code> if equal.
-	 */
-	@Override
-	public boolean equals( final Object other )
-	{
-		if( other == null )
-		{
-			return( false );
-		}
-		
-		if( other == this )
-		{
-			return( true );
-		}
-		
-		return( other.getClass().equals( this.getClass() ) == true );		
-	}
-	
-	
-	/**
-	 * Get a hashcode inline with equals.
-	 * 
-	 * @return int 1 always.
-	 */
-	@Override
-	public int hashCode()
-	{
-		return( 1 );
-	}
-	
+    
+    
+    /**
+     * Constructor.
+     * <p>
+     * Does nothing.
+     */
+    DefaultMatrixFactory()
+    {
+        super();
+    }
+    
+    
+    /**
+     * Create and return a new <code>Matrix</code> instance, of the specified
+     * size.
+     * 
+     * @param rows the number of rows.
+     * @param cols the number of columns.
+     * @return Matrix a new Matrix instance of the specified size.
+     * @throws IllegalArgumentException If <code>rows</code> or
+     *         <code>cols</code> is illegal.
+     */
+    @Override
+    public Matrix newMatrix( int rows, int cols )
+        throws IllegalArgumentException
+    {
+        if( rows < 1 || cols < 1 )
+        {
+            throw new IllegalArgumentException();
+        }
+        
+        return( new DefaultMatrix( rows, cols ) );
+    }
+    
+    
+    /**
+     * Simple equals implementation. Two instances of this class are always considered equal.
+     * 
+     * @param other the other object.
+     * @return boolean <code>true</code> if equal.
+     */
+    @Override
+    public boolean equals( final Object other )
+    {
+        if( other == null )
+        {
+            return( false );
+        }
+        
+        if( other == this )
+        {
+            return( true );
+        }
+        
+        return( other.getClass().equals( this.getClass() ) == true );        
+    }
+    
+    
+    /**
+     * Get a hashcode inline with equals.
+     * 
+     * @return int 1 always.
+     */
+    @Override
+    public int hashCode()
+    {
+        return( 1 );
+    }
+    
 
 }

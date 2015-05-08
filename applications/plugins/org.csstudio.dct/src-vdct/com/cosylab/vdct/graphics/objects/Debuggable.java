@@ -36,30 +36,30 @@ import java.util.Date;
  */
 public interface Debuggable {
 
-	/**
-	 * Return fully qualified name of this object.
-	 * @return fully qualified name of this object.
-	 */
-	String getFullName();
-	
-	/**
-	 * Set debug value.
-	 * @param value	debug value
-	 * @param timeStamp timestamp of the value
-	 * @param severity alarm severity
-	 */
-	void setDebugValue(String value, Date timeStamp, short severity);
-	
-	/**
-	 * Initialize debug value to initial state.
-	 */
-	void initialize();
-	
-	/**
-	 * Set connection status.
-	 * @param connected	<code>true</code> if instance is connected, <code>false</code> otherwise
-	 */
-	void setConnected(boolean connected);
-	
+    /**
+     * Return fully qualified name of this object.
+     * @return fully qualified name of this object.
+     */
+    String getFullName();
+    
+    /**
+     * Set debug value.
+     * @param value    debug value
+     * @param timeStamp timestamp of the value
+     * @param severity alarm severity
+     */
+    void setDebugValue(String value, Date timeStamp, short severity);
+    
+    /**
+     * Initialize debug value to initial state.
+     */
+    void initialize();
+    
+    /**
+     * Set connection status.
+     * @param connected    <code>true</code> if instance is connected, <code>false</code> otherwise
+     */
+    void setConnected(boolean connected);
+    
 
 }

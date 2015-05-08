@@ -156,7 +156,7 @@ import org.slf4j.LoggerFactory;
 public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implements
         ITabbedPropertySheetPageContributor {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DisplayEditor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DisplayEditor.class);
 
     /**
      * The default value for the grid spacing property.
@@ -175,7 +175,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
     private boolean isModelLoaded;
     private final List<IDisplayModelLoadListener> modelLoadedListeners;
     
-	/**
+    /**
      * A DisplayListener.
      */
     private Map<String, IPropertyChangeListener> _propertyChangeListeners;
@@ -362,15 +362,15 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
      * The Listener is called once and automatically removed afterwards
      */
     public void addModelLoadedListener(IDisplayModelLoadListener displayModelLoadListener) {
-		assert displayModelLoadListener != null : "Precondition failed: displayModelLoadListener != null";
-		
-		if(isModelLoaded) {
-			// Fire listener directly if model is already loaded
-			displayModelLoadListener.onDisplayModelLoaded();
-		}
-		else {
-			modelLoadedListeners.add(displayModelLoadListener);
-		}
+        assert displayModelLoadListener != null : "Precondition failed: displayModelLoadListener != null";
+        
+        if(isModelLoaded) {
+            // Fire listener directly if model is already loaded
+            displayModelLoadListener.onDisplayModelLoaded();
+        }
+        else {
+            modelLoadedListeners.add(displayModelLoadListener);
+        }
     }
     
     /**
@@ -612,8 +612,8 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
                         
                         isModelLoaded = true;
                         for (IDisplayModelLoadListener modelLoadListener : modelLoadedListeners) {
-							modelLoadListener.onDisplayModelLoaded();
-						}
+                            modelLoadListener.onDisplayModelLoaded();
+                        }
                         modelLoadedListeners.clear();
                     }
                 };

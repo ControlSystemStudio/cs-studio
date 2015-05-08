@@ -13,35 +13,35 @@ import org.eclipse.gef.commands.Command;
  * @author Sven Wende
  */
 public final class RemoveParameterCommand extends Command {
-	private IPrototype prototype;
-	private Parameter parameter;
+    private IPrototype prototype;
+    private Parameter parameter;
 
-	/**
-	 * Constructor.
-	 * @param prototype the prototype
-	 * @param parameter the parameter
-	 */
-	public RemoveParameterCommand(IPrototype prototype, Parameter parameter) {
-		assert prototype != null;
-		assert parameter != null;
-		this.prototype = prototype;
-		this.parameter = parameter;
-	}
+    /**
+     * Constructor.
+     * @param prototype the prototype
+     * @param parameter the parameter
+     */
+    public RemoveParameterCommand(IPrototype prototype, Parameter parameter) {
+        assert prototype != null;
+        assert parameter != null;
+        this.prototype = prototype;
+        this.parameter = parameter;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	public void execute() {
-		prototype.removeParameter(parameter);
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public void execute() {
+        prototype.removeParameter(parameter);
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	public void undo() {
-		prototype.addParameter(parameter);
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public void undo() {
+        prototype.addParameter(parameter);
+    }
 
 }

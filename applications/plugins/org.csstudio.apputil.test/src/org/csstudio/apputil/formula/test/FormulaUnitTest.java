@@ -155,12 +155,12 @@ public class FormulaUnitTest extends TestCase
         f = new Formula("rnd(10.0)");
         for (int i=0; i<50; ++i)
         {
-	        double rnd = f.eval();
-	        assertTrue(rnd >= 0.0);
-	        assertTrue(rnd < 10.0);
-	        double rnd2 = f.eval();
-	        // usually, should NOT get the same number twice...
-	        assertTrue(rnd != rnd2);
+            double rnd = f.eval();
+            assertTrue(rnd >= 0.0);
+            assertTrue(rnd < 10.0);
+            double rnd2 = f.eval();
+            // usually, should NOT get the same number twice...
+            assertTrue(rnd != rnd2);
         }
     }
     
@@ -239,16 +239,16 @@ public class FormulaUnitTest extends TestCase
     @Test
     public void testVariableDetermination() throws Exception
     {
-    	Formula f = new Formula("RFQ_Vac:Pump2:Pressure < 10", true);
-    	VariableNode vars[] = f.getVariables();
-    	assertEquals(1, vars.length);
-    	assertEquals("RFQ_Vac:Pump2:Pressure", vars[0].getName());
-    	vars[0].setValue(5);
-    	assertEquals(1.0, f.eval(), epsilon);
-    	vars[0].setValue(10);
-    	assertEquals(0.0, f.eval(), epsilon);
+        Formula f = new Formula("RFQ_Vac:Pump2:Pressure < 10", true);
+        VariableNode vars[] = f.getVariables();
+        assertEquals(1, vars.length);
+        assertEquals("RFQ_Vac:Pump2:Pressure", vars[0].getName());
+        vars[0].setValue(5);
+        assertEquals(1.0, f.eval(), epsilon);
+        vars[0].setValue(10);
+        assertEquals(0.0, f.eval(), epsilon);
 
-    	// PV with special characters
+        // PV with special characters
         f = new Formula("'IOC2049-102:BMIT:enabled' >= 10", true);
         vars = f.getVariables();
         assertEquals(1, vars.length);

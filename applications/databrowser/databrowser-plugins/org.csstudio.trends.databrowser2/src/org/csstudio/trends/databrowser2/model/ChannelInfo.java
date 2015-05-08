@@ -58,10 +58,10 @@ public class ChannelInfo implements Serializable
     @Override
     public int hashCode()
     {
-	    final int prime = 31;
-	    int result = prime + name.hashCode();
-	    result = prime * result + archive.hashCode();
-	    return result;
+        final int prime = 31;
+        int result = prime + name.hashCode();
+        result = prime * result + archive.hashCode();
+        return result;
     }
 
     /** @return String representation for debugging */

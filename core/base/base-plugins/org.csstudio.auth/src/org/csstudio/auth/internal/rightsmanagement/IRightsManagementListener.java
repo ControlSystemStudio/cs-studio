@@ -29,11 +29,11 @@ package org.csstudio.auth.internal.rightsmanagement;
  */
 public interface IRightsManagementListener {
 
-	/**
-	 * Process the incoming event.
-	 * 
-	 * @param event
-	 *            The event.
-	 */
-	void handleRightsManagementEvent(RightsManagementEvent event);
+    /**
+     * Process the incoming event.
+     * 
+     * @param event
+     *            The event.
+     */
+    void handleRightsManagementEvent(RightsManagementEvent event);
 }

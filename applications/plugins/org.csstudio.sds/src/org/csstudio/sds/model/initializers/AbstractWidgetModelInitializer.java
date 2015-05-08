@@ -31,31 +31,31 @@
  * 
  */
 public abstract class AbstractWidgetModelInitializer extends AbstractInitializer {
-	/**
-	 * Subclasses should implement the proper widget initialization in this
-	 * method. Some Control System wide settings might have been stored in a
-	 * global schema, which is shared by all initializers for that schema. A
-	 * reference to this schema is assigned.
-	 * 
-	 * Subclasses can use the following methods for initialization of a widget:
-	 * 
-	 * {@link #initializeDynamicProperty(String, String)}
-	 * {@link #initializeDynamicProperty(String, String[])}
-	 * {@link #initializeDynamicProperty(String, String, String, String)}
-	 * {@link #initializeAlias(String, String)}
-	 * {@link #initializeStaticProperty(String, Object)}
-	 * 
-	 * A typical implementation might look like this:
-	 * 
-	 * <code>
-	 * 	protected void initialize(final AbstractControlSystemSchema schema) {
-	 * 		initializeStaticProperty(RectangleModel.PROP_FILL, 50.0);
-	 * 		initializeDynamicProperty(RectangleModel.PROP_FILL, "$channel$.VAL");
-	 *  }
-	 * </code>
-	 * 
-	 * @param schema
-	 *            the control system schema
-	 */
-	protected abstract void initialize(final AbstractControlSystemSchema schema);
+    /**
+     * Subclasses should implement the proper widget initialization in this
+     * method. Some Control System wide settings might have been stored in a
+     * global schema, which is shared by all initializers for that schema. A
+     * reference to this schema is assigned.
+     * 
+     * Subclasses can use the following methods for initialization of a widget:
+     * 
+     * {@link #initializeDynamicProperty(String, String)}
+     * {@link #initializeDynamicProperty(String, String[])}
+     * {@link #initializeDynamicProperty(String, String, String, String)}
+     * {@link #initializeAlias(String, String)}
+     * {@link #initializeStaticProperty(String, Object)}
+     * 
+     * A typical implementation might look like this:
+     * 
+     * <code>
+     *     protected void initialize(final AbstractControlSystemSchema schema) {
+     *         initializeStaticProperty(RectangleModel.PROP_FILL, 50.0);
+     *         initializeDynamicProperty(RectangleModel.PROP_FILL, "$channel$.VAL");
+     *  }
+     * </code>
+     * 
+     * @param schema
+     *            the control system schema
+     */
+    protected abstract void initialize(final AbstractControlSystemSchema schema);
 }

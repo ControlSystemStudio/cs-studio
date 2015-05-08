@@ -35,12 +35,12 @@ import org.junit.Test;
  */
 public final class SdsPluginTest {
 
-	/**
-	 * Test method for {@link org.csstudio.sds.SdsPlugin#getDefault()}.
-	 */
-	@Test
-	public void testGetDefault() {
-		assertNotNull(SdsPlugin.getDefault());
-	}
+    /**
+     * Test method for {@link org.csstudio.sds.SdsPlugin#getDefault()}.
+     */
+    @Test
+    public void testGetDefault() {
+        assertNotNull(SdsPlugin.getDefault());
+    }
 
 }

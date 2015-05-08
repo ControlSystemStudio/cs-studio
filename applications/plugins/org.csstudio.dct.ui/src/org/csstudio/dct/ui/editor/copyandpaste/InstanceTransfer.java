@@ -23,55 +23,55 @@ package org.csstudio.dct.ui.editor.copyandpaste;
 
 public final class InstanceTransfer extends AbstractElementTransfer {
 
-	/**
-	 * Type name for this transfer type.
-	 */
-	private static final String TYPENAME = "dct_instance_list"; //$NON-NLS-1$
+    /**
+     * Type name for this transfer type.
+     */
+    private static final String TYPENAME = "dct_instance_list"; //$NON-NLS-1$
 
-	/**
-	 * Type ID for this transfer type.
-	 */
-	private static final int TYPEID = registerType(TYPENAME);
+    /**
+     * Type ID for this transfer type.
+     */
+    private static final int TYPEID = registerType(TYPENAME);
 
-	/**
-	 * The singleton instance.
-	 */
-	private static InstanceTransfer _instance;
+    /**
+     * The singleton instance.
+     */
+    private static InstanceTransfer _instance;
 
-	/**
-	 * Private constructor (singleton pattern).
-	 * 
-	 */
-	private InstanceTransfer() {
-		super(new InstanceCopyAndPasteStrategy());
-	}
+    /**
+     * Private constructor (singleton pattern).
+     * 
+     */
+    private InstanceTransfer() {
+        super(new InstanceCopyAndPasteStrategy());
+    }
 
-	/**
-	 * Returns the singleton instance.
-	 * 
-	 * @return the singleton instance
-	 */
-	public static InstanceTransfer getInstance() {
-		if (_instance == null) {
-			_instance = new InstanceTransfer();
-		}
-		return _instance;
-	}
+    /**
+     * Returns the singleton instance.
+     * 
+     * @return the singleton instance
+     */
+    public static InstanceTransfer getInstance() {
+        if (_instance == null) {
+            _instance = new InstanceTransfer();
+        }
+        return _instance;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String[] getTypeNames() {
-		return new String[] { TYPENAME };
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String[] getTypeNames() {
+        return new String[] { TYPENAME };
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected int[] getTypeIds() {
-		return new int[] { TYPEID };
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected int[] getTypeIds() {
+        return new int[] { TYPEID };
+    }
 
 }

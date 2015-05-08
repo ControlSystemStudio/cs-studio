@@ -32,99 +32,99 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  */
 public final class TriangleModel extends AbstractWidgetModel {
 
-	/**
-	 * The ID of the fill grade property.
-	 */
-	public static final String PROP_FILL = "fill"; //$NON-NLS-1$
+    /**
+     * The ID of the fill grade property.
+     */
+    public static final String PROP_FILL = "fill"; //$NON-NLS-1$
 
-	/**
-	 * The ID of the transparent property.
-	 */
-	public static final String PROP_TRANSPARENT = "transparency"; //$NON-NLS-1$
+    /**
+     * The ID of the transparent property.
+     */
+    public static final String PROP_TRANSPARENT = "transparency"; //$NON-NLS-1$
 
-	/**
-	 * The ID of the transparent property.
-	 */
-	public static final String PROP_ROTATION = "rotation"; //$NON-NLS-1$
+    /**
+     * The ID of the transparent property.
+     */
+    public static final String PROP_ROTATION = "rotation"; //$NON-NLS-1$
 
-	/**
-	 * The default value of the height property.
-	 */
+    /**
+     * The default value of the height property.
+     */
 
-	private static final int DEFAULT_HEIGHT = 10;
+    private static final int DEFAULT_HEIGHT = 10;
 
-	/**
-	 * The default value of the width property.
-	 */
-	private static final int DEFAULT_WIDTH = 20;
+    /**
+     * The default value of the width property.
+     */
+    private static final int DEFAULT_WIDTH = 20;
 
-	/**
-	 * The ID of this widget model.
-	 */
-	public static final String ID = "org.csstudio.sds.components.Triangle"; //$NON-NLS-1$
+    /**
+     * The ID of this widget model.
+     */
+    public static final String ID = "org.csstudio.sds.components.Triangle"; //$NON-NLS-1$
 
-	/**
-	 * Constructor.
-	 */
-	public TriangleModel() {
-		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-	}
+    /**
+     * Constructor.
+     */
+    public TriangleModel() {
+        setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void configureProperties() {
-		addDoubleProperty(PROP_FILL, "Value", WidgetPropertyCategory.BEHAVIOR, 50, 0.0, 100.0, false);
-		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.DISPLAY, false, false);
-		addDoubleProperty(PROP_ROTATION, "Rotation Angle", WidgetPropertyCategory.DISPLAY, 0, 0, 360, false);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configureProperties() {
+        addDoubleProperty(PROP_FILL, "Value", WidgetPropertyCategory.BEHAVIOR, 50, 0.0, 100.0, false);
+        addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.DISPLAY, false, false);
+        addDoubleProperty(PROP_ROTATION, "Rotation Angle", WidgetPropertyCategory.DISPLAY, 0, 0, 360, false);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTypeID() {
-		return ID;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTypeID() {
+        return ID;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String getDefaultToolTip() {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
-		buffer.append("Value:\t");
-		buffer.append(createTooltipParameter(PROP_FILL) + "\n");
-		return buffer.toString();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getDefaultToolTip() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
+        buffer.append("Value:\t");
+        buffer.append(createTooltipParameter(PROP_FILL) + "\n");
+        return buffer.toString();
+    }
 
-	/**
-	 * Gets the fill level.
-	 * 
-	 * @return the fill level
-	 */
-	public double getFillLevel() {
-		return getDoubleProperty(PROP_FILL);
-	}
+    /**
+     * Gets the fill level.
+     * 
+     * @return the fill level
+     */
+    public double getFillLevel() {
+        return getDoubleProperty(PROP_FILL);
+    }
 
-	/**
-	 * Returns if the background is transparent.
-	 * 
-	 * @return The state of the background.
-	 */
-	public boolean getTransparent() {
-		return getBooleanProperty(PROP_TRANSPARENT);
-	}
+    /**
+     * Returns if the background is transparent.
+     * 
+     * @return The state of the background.
+     */
+    public boolean getTransparent() {
+        return getBooleanProperty(PROP_TRANSPARENT);
+    }
 
-	// /**
-	// * Gets the rotation angle.
-	// *
-	// * @return the rotation angle
-	// */
-	// public double getRotationAngle() {
-	// return getDoubleProperty(PROP_ROTATION);
-	// }
+    // /**
+    // * Gets the rotation angle.
+    // *
+    // * @return the rotation angle
+    // */
+    // public double getRotationAngle() {
+    // return getDoubleProperty(PROP_ROTATION);
+    // }
 
 }

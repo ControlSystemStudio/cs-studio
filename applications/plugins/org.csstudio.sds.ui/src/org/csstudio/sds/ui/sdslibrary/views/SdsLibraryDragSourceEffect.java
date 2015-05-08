@@ -20,56 +20,56 @@ import org.eclipse.ui.IWorkbenchPage;
 
 public class SdsLibraryDragSourceEffect extends DragSourceEffect {
 
-	private final SdsThumbnailPanel sdsThumbnailPanel;
-	private final IWorkbenchPage workbenchPage;
+    private final SdsThumbnailPanel sdsThumbnailPanel;
+    private final IWorkbenchPage workbenchPage;
 
-	public SdsLibraryDragSourceEffect(SdsThumbnailPanel panel,
-			IWorkbenchPage workbenchPage) {
-		super(panel);
-		this.sdsThumbnailPanel = panel;
-		this.workbenchPage = workbenchPage;
-	}
+    public SdsLibraryDragSourceEffect(SdsThumbnailPanel panel,
+            IWorkbenchPage workbenchPage) {
+        super(panel);
+        this.sdsThumbnailPanel = panel;
+        this.workbenchPage = workbenchPage;
+    }
 
-	@Override
-	public void dragStart(DragSourceEvent event) {
-		File selectedFile = sdsThumbnailPanel.getSelectedFile();
-		if (selectedFile != null) {
-			Image img = createDragImage(selectedFile);
-			if (img != null) {
-				event.image = img;
-			}
-		}
-	}
+    @Override
+    public void dragStart(DragSourceEvent event) {
+        File selectedFile = sdsThumbnailPanel.getSelectedFile();
+        if (selectedFile != null) {
+            Image img = createDragImage(selectedFile);
+            if (img != null) {
+                event.image = img;
+            }
+        }
+    }
 
-	private Image createDragImage(File file) {
-		// Get DisplayModel for file
-		DisplayModel model = new DisplayModel();
-		FileInputStream fip = null;
-		try {
-			fip = new FileInputStream(file);
-			PersistenceUtil.syncFillModel(model, fip);
+    private Image createDragImage(File file) {
+        // Get DisplayModel for file
+        DisplayModel model = new DisplayModel();
+        FileInputStream fip = null;
+        try {
+            fip = new FileInputStream(file);
+            PersistenceUtil.syncFillModel(model, fip);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				fip.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fip.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
-		int maxSize = Math.max(model.getWidth(), model.getHeight());
-		double zoom = 1.0;
-		IEditorPart activeEditor = workbenchPage.getActiveEditor();
-		if (activeEditor instanceof DisplayEditor) {
-			ScalableFreeformRootEditPart rootEditPart = (ScalableFreeformRootEditPart) ((DisplayEditor) activeEditor)
-					.getGraphicalViewer().getRootEditPart();
-			zoom = rootEditPart.getZoomManager().getZoom();
-		}
-		SdsThumbnailCreator thumbnailCreator = new SdsThumbnailCreator();
-		ImageData imageData = thumbnailCreator.createImageWithZoomingIn(model,
-				(int) (maxSize * zoom), Display.getDefault());
-		return new Image(Display.getDefault(), imageData);
-	}
+        int maxSize = Math.max(model.getWidth(), model.getHeight());
+        double zoom = 1.0;
+        IEditorPart activeEditor = workbenchPage.getActiveEditor();
+        if (activeEditor instanceof DisplayEditor) {
+            ScalableFreeformRootEditPart rootEditPart = (ScalableFreeformRootEditPart) ((DisplayEditor) activeEditor)
+                    .getGraphicalViewer().getRootEditPart();
+            zoom = rootEditPart.getZoomManager().getZoom();
+        }
+        SdsThumbnailCreator thumbnailCreator = new SdsThumbnailCreator();
+        ImageData imageData = thumbnailCreator.createImageWithZoomingIn(model,
+                (int) (maxSize * zoom), Display.getDefault());
+        return new Image(Display.getDefault(), imageData);
+    }
 }

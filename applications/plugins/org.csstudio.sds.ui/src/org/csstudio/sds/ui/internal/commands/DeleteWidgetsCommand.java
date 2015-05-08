@@ -36,69 +36,69 @@ import org.eclipse.gef.commands.Command;
  * 
  */
 public final class DeleteWidgetsCommand extends Command {
-	/**
-	 * The display model.
-	 */
-	private ContainerModel _container;
+    /**
+     * The display model.
+     */
+    private ContainerModel _container;
 
-	/**
-	 * The element that gets deleted.
-	 */
-	private List<AbstractWidgetModel> _deletedWidgets;
+    /**
+     * The element that gets deleted.
+     */
+    private List<AbstractWidgetModel> _deletedWidgets;
 
-	/**
-	 * The original indices of the deleted widgets within the container.
-	 */
-	private List<Integer> _indices;
+    /**
+     * The original indices of the deleted widgets within the container.
+     */
+    private List<Integer> _indices;
 
-	/**
-	 * The graphical viewer.
-	 */
-	private EditPartViewer _viewer;
+    /**
+     * The graphical viewer.
+     */
+    private EditPartViewer _viewer;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param container
-	 *            the display model
-	 * @param widgets
-	 *            the widgets, that should be deleted
-	 */
-	public DeleteWidgetsCommand(final EditPartViewer viewer, final ContainerModel container, final List<AbstractWidgetModel> widgets) {
-		assert container != null;
-		assert widgets != null;
-		_viewer = viewer;
-		_container = container;
-		_deletedWidgets = widgets;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param container
+     *            the display model
+     * @param widgets
+     *            the widgets, that should be deleted
+     */
+    public DeleteWidgetsCommand(final EditPartViewer viewer, final ContainerModel container, final List<AbstractWidgetModel> widgets) {
+        assert container != null;
+        assert widgets != null;
+        _viewer = viewer;
+        _container = container;
+        _deletedWidgets = widgets;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void execute() {
-		// very important for performance (deselecting all widgets before a
-		// delete operation reduces unnecessary refresh calls on the property
-		// view)
-		if (_viewer != null) {
-			_viewer.deselectAll();
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void execute() {
+        // very important for performance (deselecting all widgets before a
+        // delete operation reduces unnecessary refresh calls on the property
+        // view)
+        if (_viewer != null) {
+            _viewer.deselectAll();
+        }
 
-		_indices = new ArrayList<Integer>(_deletedWidgets.size());
-		for (AbstractWidgetModel w : _deletedWidgets) {
-			_indices.add(_container.getIndexOf(w));
-		}
+        _indices = new ArrayList<Integer>(_deletedWidgets.size());
+        for (AbstractWidgetModel w : _deletedWidgets) {
+            _indices.add(_container.getIndexOf(w));
+        }
 
-		_container.removeWidgets(_deletedWidgets);
-	}
+        _container.removeWidgets(_deletedWidgets);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void undo() {
-		_container.addWidgets(_indices, _deletedWidgets);
-		// _container.selectWidgets(_deletedWidgets);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void undo() {
+        _container.addWidgets(_indices, _deletedWidgets);
+        // _container.selectWidgets(_deletedWidgets);
+    }
 
 }

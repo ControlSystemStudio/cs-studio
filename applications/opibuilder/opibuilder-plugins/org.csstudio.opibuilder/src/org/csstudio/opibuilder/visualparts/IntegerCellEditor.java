@@ -33,25 +33,25 @@ import org.eclipse.swt.widgets.Composite;
  * 
  */
 public final class IntegerCellEditor extends TextCellEditor {
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param parent
-	 *            The parent control.
-	 */
-	public IntegerCellEditor(final Composite parent) {
-		super(parent);
-	}
+    /**
+     * Standard constructor.
+     * 
+     * @param parent
+     *            The parent control.
+     */
+    public IntegerCellEditor(final Composite parent) {
+        super(parent);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doSetValue(final Object value) {
-		if (value==null) {
-			super.doSetValue(String.valueOf(Integer.valueOf(0)));
-		} else {
-			super.doSetValue(String.valueOf(value.toString()));
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doSetValue(final Object value) {
+        if (value==null) {
+            super.doSetValue(String.valueOf(Integer.valueOf(0)));
+        } else {
+            super.doSetValue(String.valueOf(value.toString()));
+        }
+    }
 }

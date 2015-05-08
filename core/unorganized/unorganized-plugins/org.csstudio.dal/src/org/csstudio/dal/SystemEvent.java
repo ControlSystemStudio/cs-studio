@@ -33,101 +33,101 @@ import java.util.EventObject;
  */
 public class SystemEvent<T, S> extends EventObject
 {
-	private static final long serialVersionUID = 1L;
-	
-	protected Timestamp timestamp;
-	protected String message = null;
-	protected T value;
-	protected Exception error;
-	protected Object eventID;
-	protected S source;
+    private static final long serialVersionUID = 1L;
+    
+    protected Timestamp timestamp;
+    protected String message = null;
+    protected T value;
+    protected Exception error;
+    protected Object eventID;
+    protected S source;
 
-	/**
-	 * Creates new event object.
-	 * @param source the source that generated the event
-	 * @param value the event value
-	 * @param timestamp the timestamp of the event
-	 * @param message event message
-	 * @param error event exception
-	 * @param type the event identification tag
-	 */
-	public SystemEvent(S source, T value, Timestamp timestamp, String message,
-	    Exception error, Object type)
-	{
-		super(source);
-		this.source = source;
+    /**
+     * Creates new event object.
+     * @param source the source that generated the event
+     * @param value the event value
+     * @param timestamp the timestamp of the event
+     * @param message event message
+     * @param error event exception
+     * @param type the event identification tag
+     */
+    public SystemEvent(S source, T value, Timestamp timestamp, String message,
+        Exception error, Object type)
+    {
+        super(source);
+        this.source = source;
 
-		if (timestamp == null) {
-			this.timestamp = new Timestamp();
-		} else {
-			this.timestamp = timestamp;
-		}
+        if (timestamp == null) {
+            this.timestamp = new Timestamp();
+        } else {
+            this.timestamp = timestamp;
+        }
 
-		this.message = message;
-		this.eventID = type;
-		this.error = error;
-		this.value = value;
-	}
+        this.message = message;
+        this.eventID = type;
+        this.error = error;
+        this.value = value;
+    }
 
-	/**
-	 * Returns event message.
-	 *
-	 * @return Event message string
-	 */
-	public String getMessage()
-	{
-		return message;
-	}
+    /**
+     * Returns event message.
+     *
+     * @return Event message string
+     */
+    public String getMessage()
+    {
+        return message;
+    }
 
-	/**
-	 * Returns event timestamp.
-	 *
-	 * @return Event timestamp
-	 */
-	public Timestamp getTimestamp()
-	{
-		return timestamp;
-	}
+    /**
+     * Returns event timestamp.
+     *
+     * @return Event timestamp
+     */
+    public Timestamp getTimestamp()
+    {
+        return timestamp;
+    }
 
-	/**
-	 * Returns the event value
-	 *
-	 * @return Event value
-	 */
-	public T getValue()
-	{
-		return value;
-	}
+    /**
+     * Returns the event value
+     *
+     * @return Event value
+     */
+    public T getValue()
+    {
+        return value;
+    }
 
-	/**
-	 * Returns event exception.
-	 *
-	 * @return Event exception
-	 */
-	public Exception getError()
-	{
-		return error;
-	}
+    /**
+     * Returns event exception.
+     *
+     * @return Event exception
+     */
+    public Exception getError()
+    {
+        return error;
+    }
 
-	/**
-	 *
-	 *    Returns the eventType.
-	 *
-	 * @return Returns the eventType.
-	 */
-	public Object getEventID()
-	{
-		return eventID;
-	}
+    /**
+     *
+     *    Returns the eventType.
+     *
+     * @return Returns the eventType.
+     */
+    public Object getEventID()
+    {
+        return eventID;
+    }
 
-	/* (non-Javadoc)
-	 * @see java.util.EventObject#getSource()
-	 */
-	@Override
-	public S getSource()
-	{
-		return source;
-	}
+    /* (non-Javadoc)
+     * @see java.util.EventObject#getSource()
+     */
+    @Override
+    public S getSource()
+    {
+        return source;
+    }
 }
 
 /* __oOo__ */

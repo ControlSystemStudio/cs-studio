@@ -30,12 +30,12 @@ package org.csstudio.auth.security;
  */
 public interface ISecurityListener {
 
-	/**
-	 * Handles the incoming event.
-	 * 
-	 * @param event
-	 *            The event to handle.
-	 */
-	void handleSecurityEvent(SecurityEvent event);
+    /**
+     * Handles the incoming event.
+     * 
+     * @param event
+     *            The event to handle.
+     */
+    void handleSecurityEvent(SecurityEvent event);
 
 }

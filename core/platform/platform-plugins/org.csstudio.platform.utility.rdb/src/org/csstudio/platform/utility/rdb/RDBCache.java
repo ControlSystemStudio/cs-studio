@@ -42,14 +42,14 @@ public class RDBCache
     final private RDBImpl impl;
     
     /** Database URL */
-	final private String url;
+    final private String url;
 
     /** Database User */
-	final private String user;
+    final private String user;
 
-	/** Database Password */
-	final private String password;
-	
+    /** Database Password */
+    final private String password;
+    
     /** Duration for keeping the connection cached */
     final private long milli_duration;
 
@@ -60,7 +60,7 @@ public class RDBCache
     private TimerTask expire = null;
 
     /** Connection to the SQL server */
-	private Connection connection;
+    private Connection connection;
 
     /** Initialize
      * 
@@ -100,7 +100,7 @@ public class RDBCache
     /** @return Dialect info. */
     public Dialect getDialect()
     {
-    	return impl.getDialect();
+        return impl.getDialect();
     }
     
     /** Obtain database connection.

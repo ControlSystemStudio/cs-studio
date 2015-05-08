@@ -32,26 +32,26 @@ import org.eclipse.ui.IPerspectiveFactory;
  *
  */
 public final class DisplayDevelopmentPerspective implements
-		IPerspectiveFactory {
-	/**
-	 * The perspective's ID.
-	 */
-	public static final String ID = "org.csstudio.sds.ui.internal.workbench.DisplayDevelopmentPerspective"; //$NON-NLS-1$
+        IPerspectiveFactory {
+    /**
+     * The perspective's ID.
+     */
+    public static final String ID = "org.csstudio.sds.ui.internal.workbench.DisplayDevelopmentPerspective"; //$NON-NLS-1$
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void createInitialLayout(final IPageLayout layout) {
-		layout.setEditorAreaVisible(true);
+        layout.setEditorAreaVisible(true);
 
-		layout.addView("org.eclipse.ui.views.ResourceNavigator", IPageLayout.LEFT, 0.2f, //$NON-NLS-1$
-				IPageLayout.ID_EDITOR_AREA);
+        layout.addView("org.eclipse.ui.views.ResourceNavigator", IPageLayout.LEFT, 0.2f, //$NON-NLS-1$
+                IPageLayout.ID_EDITOR_AREA);
 
         layout.addView("org.eclipse.ui.views.PropertySheet", IPageLayout.BOTTOM, 0.7f,
                        IPageLayout.ID_EDITOR_AREA);
 
         layout.addView(IPageLayout.ID_OUTLINE, IPageLayout.RIGHT, 0.7f,
-		               "org.eclipse.ui.views.PropertySheet");
-	}
+                       "org.eclipse.ui.views.PropertySheet");
+    }
 }

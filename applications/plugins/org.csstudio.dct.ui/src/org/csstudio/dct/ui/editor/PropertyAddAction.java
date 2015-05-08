@@ -11,33 +11,33 @@ import org.eclipse.jface.action.Action;
  * @author Sven Wende
  */
 public class PropertyAddAction extends Action {
-	@SuppressWarnings("unchecked")
-	private AbstractPropertyContainerForm form;
+    @SuppressWarnings("unchecked")
+    private AbstractPropertyContainerForm form;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param form
-	 *            a component that provides access to a property container
-	 */
-	@SuppressWarnings("unchecked")
-	public PropertyAddAction(AbstractPropertyContainerForm form) {
-		assert form != null;
-		this.form = form;
+    /**
+     * Constructor.
+     * 
+     * @param form
+     *            a component that provides access to a property container
+     */
+    @SuppressWarnings("unchecked")
+    public PropertyAddAction(AbstractPropertyContainerForm form) {
+        assert form != null;
+        this.form = form;
 
-		setText("Add Property");
-		setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/parameter_add.png"));
-	}
+        setText("Add Property");
+        setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/parameter_add.png"));
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void run() {
-		IPropertyContainer c = (IPropertyContainer)form.getInput();
-		if (c != null) {
-			c.addProperty("new property", "");
-			form.refresh();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void run() {
+        IPropertyContainer c = (IPropertyContainer)form.getInput();
+        if (c != null) {
+            c.addProperty("new property", "");
+            form.refresh();
+        }
+    }
 }

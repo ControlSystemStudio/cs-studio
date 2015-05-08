@@ -21,11 +21,11 @@ package org.csstudio.scan.server;
 @SuppressWarnings("nls")
 public enum ScanState
 {
-	// Note:
-	// The states used in here need to match the "State"
-	// record of the scan.db in case that's used with the
-	// scan server to indicate the state of the most recently
-	// executed scan
+    // Note:
+    // The states used in here need to match the "State"
+    // record of the scan.db in case that's used with the
+    // scan server to indicate the state of the most recently
+    // executed scan
     /** Scan is waiting to be executed */
     Idle("Idle", false, false),
 

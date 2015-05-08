@@ -34,67 +34,67 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  */
 public final class DoubleArrayProperty extends WidgetProperty {
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param description
-	 *            a description
-	 * @param category
-	 *            a category
-	 * @param defaultValue
-	 *            the default value
-	 */
-	public DoubleArrayProperty(final String description,
-			final WidgetPropertyCategory category, final double[] defaultValue) {
-		super(PropertyTypesEnum.DOUBLEARRAY, description, category, defaultValue,
-				null);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param description
+     *            a description
+     * @param category
+     *            a category
+     * @param defaultValue
+     *            the default value
+     */
+    public DoubleArrayProperty(final String description,
+            final WidgetPropertyCategory category, final double[] defaultValue) {
+        super(PropertyTypesEnum.DOUBLEARRAY, description, category, defaultValue,
+                null);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object checkValue(final Object value) {
-		assert value != null : "value!=null"; //$NON-NLS-1$
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object checkValue(final Object value) {
+        assert value != null : "value!=null"; //$NON-NLS-1$
 
-		double[] acceptedValue = null;
+        double[] acceptedValue = null;
 
-		// check type
-		if (!(value instanceof double[])) {
-			if (value instanceof Number) {
-				acceptedValue = new double[]{((Number) value).intValue()};
-			} else {
-				try {
-					double v = Double.parseDouble(value.toString());
-					acceptedValue = new double[]{v};
-				} catch (NumberFormatException e) {
-					acceptedValue = null;
-				}
-			}
-		} else {
-			acceptedValue = (double[]) value;
-			for (Double d : acceptedValue) {
-				if (d.isNaN()) {
-					d = new Double(0);
-				}
-				if (d.isInfinite()) {
-					if (d==Double.NEGATIVE_INFINITY) {
-						d=-Double.MAX_VALUE;
-					} else {
-						d=Double.MAX_VALUE;
-					}
-				}
-			}
-		}
+        // check type
+        if (!(value instanceof double[])) {
+            if (value instanceof Number) {
+                acceptedValue = new double[]{((Number) value).intValue()};
+            } else {
+                try {
+                    double v = Double.parseDouble(value.toString());
+                    acceptedValue = new double[]{v};
+                } catch (NumberFormatException e) {
+                    acceptedValue = null;
+                }
+            }
+        } else {
+            acceptedValue = (double[]) value;
+            for (Double d : acceptedValue) {
+                if (d.isNaN()) {
+                    d = new Double(0);
+                }
+                if (d.isInfinite()) {
+                    if (d==Double.NEGATIVE_INFINITY) {
+                        d=-Double.MAX_VALUE;
+                    } else {
+                        d=Double.MAX_VALUE;
+                    }
+                }
+            }
+        }
 
-		return acceptedValue;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getCompatibleJavaTypes() {
-		return new Class[]{Number.class};
-	}
+        return acceptedValue;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getCompatibleJavaTypes() {
+        return new Class[]{Number.class};
+    }
 }

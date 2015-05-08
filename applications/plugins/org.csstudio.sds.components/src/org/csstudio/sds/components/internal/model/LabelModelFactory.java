@@ -33,18 +33,18 @@ import org.csstudio.sds.model.LabelModel;
  * @version $Revision: 1.3 $
  */
 public final class LabelModelFactory implements IWidgetModelFactory {
-	
-	/**
-	 * {@inheritDoc}.
-	 */
-	public AbstractWidgetModel createWidgetModel() {
-		return new LabelModel();
-	}
+    
+    /**
+     * {@inheritDoc}.
+     */
+    public AbstractWidgetModel createWidgetModel() {
+        return new LabelModel();
+    }
 
-	/**
-	 * {@inheritDoc}.
-	 */
-	public Class getWidgetModelType() {
-		return LabelModel.class;
-	}
+    /**
+     * {@inheritDoc}.
+     */
+    public Class getWidgetModelType() {
+        return LabelModel.class;
+    }
 }

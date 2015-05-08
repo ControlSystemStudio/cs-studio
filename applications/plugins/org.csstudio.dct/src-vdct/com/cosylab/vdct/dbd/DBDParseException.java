@@ -40,7 +40,7 @@ public class DBDParseException extends Exception {
  * @param s java.lang.String
  */
 public DBDParseException(String s, EnhancedStreamTokenizer t, String fileName) {
-	super(s);
-	Console.getInstance().print("\nError found in file '"+fileName+"', line "+t.lineno()+": ");
+    super(s);
+    Console.getInstance().print("\nError found in file '"+fileName+"', line "+t.lineno()+": ");
 }
 }

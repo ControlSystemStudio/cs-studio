@@ -33,90 +33,90 @@ import org.csstudio.sds.util.ExecutionService;
  * 
  */
 public class PersistenceUtil {
-	/**
-	 * Load the given display model from the given input stream synchronously.
-	 * 
-	 * @param displayModel
-	 *            The diplay model to load.
-	 * @param inputStream
-	 *            The input stream to load the display model from.
-	 */
-	public static void syncFillModel(final DisplayModel displayModel,
-			final InputStream inputStream) {
-		DisplayModelReader reader = new DisplayModelReader();
-		reader.readModelFromXml(inputStream, displayModel, null);
-	}
+    /**
+     * Load the given display model from the given input stream synchronously.
+     * 
+     * @param displayModel
+     *            The diplay model to load.
+     * @param inputStream
+     *            The input stream to load the display model from.
+     */
+    public static void syncFillModel(final DisplayModel displayModel,
+            final InputStream inputStream) {
+        DisplayModelReader reader = new DisplayModelReader();
+        reader.readModelFromXml(inputStream, displayModel, null);
+    }
 
-	/**
-	 * Load the given display model from the given input stream asynchronously.
-	 * 
-	 * @param displayModel
-	 *            The diplay model to load.
-	 * @param inputStream
-	 *            The input stream to load the display model from.
-	 * @param loadListener
-	 *            Optional listener that will be notified of model loading
-	 *            events (can be null).
-	 */
-	public static void asyncFillModel(final DisplayModel displayModel,
-			final InputStream inputStream,
-			final IDisplayModelLoadListener loadListener) {
-		
-		Runnable r = new Runnable() {
-			public void run() {
-				displayModel.setLoading(true);
+    /**
+     * Load the given display model from the given input stream asynchronously.
+     * 
+     * @param displayModel
+     *            The diplay model to load.
+     * @param inputStream
+     *            The input stream to load the display model from.
+     * @param loadListener
+     *            Optional listener that will be notified of model loading
+     *            events (can be null).
+     */
+    public static void asyncFillModel(final DisplayModel displayModel,
+            final InputStream inputStream,
+            final IDisplayModelLoadListener loadListener) {
+        
+        Runnable r = new Runnable() {
+            public void run() {
+                displayModel.setLoading(true);
 
-				DisplayModelReader reader = new DisplayModelReader();
-				reader
-						.readModelFromXml(inputStream, displayModel,
-								loadListener);
+                DisplayModelReader reader = new DisplayModelReader();
+                reader
+                        .readModelFromXml(inputStream, displayModel,
+                                loadListener);
 
-				if (reader.isErrorOccurred()) {
-					if (loadListener != null) {
-						loadListener.onErrorsOccured(reader.getErrorMessages());
-					}
-				}
+                if (reader.isErrorOccurred()) {
+                    if (loadListener != null) {
+                        loadListener.onErrorsOccured(reader.getErrorMessages());
+                    }
+                }
 
-				// in case of an empty display, the sax parser is not able to 
-				// invoke the onDisplayPropertiesLoaded() callback on the listener
-				if(displayModel.getWidgets().isEmpty()) {
-					loadListener.onDisplayPropertiesLoaded();
-				}
+                // in case of an empty display, the sax parser is not able to 
+                // invoke the onDisplayPropertiesLoaded() callback on the listener
+                if(displayModel.getWidgets().isEmpty()) {
+                    loadListener.onDisplayPropertiesLoaded();
+                }
 
-				// invoke the onDisplayModelLoaded() callback on the load listener
-				if (loadListener != null) {
-					loadListener.onDisplayModelLoaded();
-				}
+                // invoke the onDisplayModelLoaded() callback on the load listener
+                if (loadListener != null) {
+                    loadListener.onDisplayModelLoaded();
+                }
 
-				displayModel.setLoading(false);
-			}
-		};
+                displayModel.setLoading(false);
+            }
+        };
 
-		ExecutionService.getInstance().executeWithHighPriority(r);
-		
-	}
+        ExecutionService.getInstance().executeWithHighPriority(r);
+        
+    }
 
-	/**
-	 * Create an input stream from the given display model.
-	 * 
-	 * @param model
-	 *            The display model to create an input stream from.
-	 * @return An input stream that was created from the given display model.
-	 */
-	public static InputStream createStream(final DisplayModel model) {
-	    DisplayModelInputStream.setXMLHeader("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
-		return new DisplayModelInputStream(model);
-	}
+    /**
+     * Create an input stream from the given display model.
+     * 
+     * @param model
+     *            The display model to create an input stream from.
+     * @return An input stream that was created from the given display model.
+     */
+    public static InputStream createStream(final DisplayModel model) {
+        DisplayModelInputStream.setXMLHeader("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
+        return new DisplayModelInputStream(model);
+    }
 
-	/**
-	 * Create a String from the given display model.
-	 * 
-	 * @param model
-	 *            The display model to create an input stream from.
-	 * @return A String that was created from the given display model.
-	 */
-	public static String createString(final DisplayModel model) {
-	    DisplayModelInputStream.setXMLHeader("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
-		return new DisplayModelInputStream(model).getAsString();
-	}
+    /**
+     * Create a String from the given display model.
+     * 
+     * @param model
+     *            The display model to create an input stream from.
+     * @return A String that was created from the given display model.
+     */
+    public static String createString(final DisplayModel model) {
+        DisplayModelInputStream.setXMLHeader("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
+        return new DisplayModelInputStream(model).getAsString();
+    }
 }

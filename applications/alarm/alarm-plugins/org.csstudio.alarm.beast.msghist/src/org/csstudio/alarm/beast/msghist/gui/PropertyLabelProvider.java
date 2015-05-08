@@ -30,16 +30,16 @@ public class PropertyLabelProvider extends CellLabelProvider
 
     /** Show "Property: Value" as tool-tip */
     @Override
-	public String getToolTipText(final Object element)
+    public String getToolTipText(final Object element)
     {
         final Message message = (Message) element;
-        return NLS.bind(Messages.PropertyValue_TTFmt,	property, message.getProperty(property));
-	}
+        return NLS.bind(Messages.PropertyValue_TTFmt,    property, message.getProperty(property));
+    }
 
     /** Fill table cell
      *  @see CellLabelProvider
      */
-	@Override
+    @Override
     public void update(ViewerCell cell)
     {
         final Message message = (Message) cell.getElement();

@@ -27,44 +27,44 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class AlarmConfigurationUnitTest
 {
-	final private String url, user, password, root;
+    final private String url, user, password, root;
     final private File filename;
 
     /** Initialize from TestProperties */
     public AlarmConfigurationUnitTest() throws Exception
     {
-    	final TestProperties settings = new TestProperties();
-    	url = settings.getString("alarm_rdb_url");
-		user = settings.getString("alarm_rdb_user", "");
-		password = settings.getString("alarm_rdb_password", "");
-    	root = settings.getString("alarm_root");
-    	filename = new File(settings.getString("temp_path", "/tmp"), root + ".xml");
+        final TestProperties settings = new TestProperties();
+        url = settings.getString("alarm_rdb_url");
+        user = settings.getString("alarm_rdb_user", "");
+        password = settings.getString("alarm_rdb_password", "");
+        root = settings.getString("alarm_root");
+        filename = new File(settings.getString("temp_path", "/tmp"), root + ".xml");
     }
 
     /** @return AlarmConfiguration or <code>null</code> if lacking settings */
     private AlarmConfiguration getConfiguration(final boolean writable) throws Exception
     {
-    	if (url == null  ||  root == null)
-    	{
-    		System.out.println("Skipping test: no alarm_rdb_* settings found.");
-    		return null;
-    	}
-    	final AlarmConfiguration config = new AlarmConfiguration(url, user, password, "ALARM");
-    	config.readConfiguration(root, writable, new NullProgressMonitor());
-    	return config;
+        if (url == null  ||  root == null)
+        {
+            System.out.println("Skipping test: no alarm_rdb_* settings found.");
+            return null;
+        }
+        final AlarmConfiguration config = new AlarmConfiguration(url, user, password, "ALARM");
+        config.readConfiguration(root, writable, new NullProgressMonitor());
+        return config;
     }
 
     @Test
     public void listConfigurations() throws Exception
     {
-    	System.out.println("-------------------listConfigurations-----------------------");
+        System.out.println("-------------------listConfigurations-----------------------");
         final AlarmConfiguration config = getConfiguration(false);
         if (config == null)
-        	return;
-    	final String names[] = config.listConfigurations();
-    	System.out.println("Configurations:");
-    	for (String name : names)
-    		System.out.println(" '" + name + "'");
+            return;
+        final String names[] = config.listConfigurations();
+        System.out.println("Configurations:");
+        for (String name : names)
+            System.out.println(" '" + name + "'");
     }
 
 
@@ -78,11 +78,11 @@ public class AlarmConfigurationUnitTest
     @Test
     public void testRDBRead() throws Exception
     {
-    	System.out.println("-------------------testRDBRead-----------------------");
-    	final BenchmarkTimer timer = new BenchmarkTimer();
+        System.out.println("-------------------testRDBRead-----------------------");
+        final BenchmarkTimer timer = new BenchmarkTimer();
         final AlarmConfiguration config = getConfiguration(false);
         if (config == null)
-        	return;
+            return;
         // Quirk: Without 'flush', you don't see anything.
         // With 'close', System.out is actually closed ...
 
@@ -102,11 +102,11 @@ public class AlarmConfigurationUnitTest
     @Ignore
     public void testRDBWrite() throws Exception
     {
-    	System.out.println("-------------------testRDBWrite-----------------------");
+        System.out.println("-------------------testRDBWrite-----------------------");
         //read TEST_ROOT AlarmTree from RDB
-    	final AlarmConfiguration config = getConfiguration(true);
-    	if (config == null)
-    		return;
+        final AlarmConfiguration config = getConfiguration(true);
+        if (config == null)
+            return;
         final AlarmTreeRoot root = config.getAlarmTree();
         //print TEST_ROOT AlarmTree to console
         root.dump(System.out);
@@ -119,12 +119,12 @@ public class AlarmConfigurationUnitTest
         final AlarmTreeItem sys2 = config.addComponent(fac, "Sys2");
         AlarmTreePV pv1 = config.addPV(sys1, "XihuiTest.TestFac.Sys1.PV1");
         config.configurePV(pv1, "XihuiTestPV1", true, true, true, 0, 0, "",
-        		new GDCDataStructure[]
+                new GDCDataStructure[]
                 {
                     new GDCDataStructure("call xihui", "Xihui's phone is 123456"),
                     new GDCDataStructure("call fred","Fred's Email is fred@ornl.gov \n !@#$%^&*()_+-=~`:\"|\\?/</details>,.;'")
                 },
-        		null, null, null);
+                null, null, null);
         config.addPV(sys1, "XihuiTest.TestFac.Sys1.PV2");
         config.addPV(sys2, "XihuiTest.TestFac.Sys2.PV1");
         config.addPV(sys2, "XihuiTest.TestFac.Sys2.PV2");
@@ -141,8 +141,8 @@ public class AlarmConfigurationUnitTest
     {
         System.out.println("-------------------testXMLWriteToFile-----------------------");
         final AlarmConfiguration config = getConfiguration(false);
-    	if (config == null)
-    		return;
+        if (config == null)
+            return;
         final FileWriter file = new FileWriter(filename);
         config.getAlarmTree().writeXML(new PrintWriter(file));
         file.close();
@@ -163,10 +163,10 @@ public class AlarmConfigurationUnitTest
     @Ignore
     public void testXMLFileReadback() throws Exception
     {
-    	System.out.println("-------------------testXMLFileReadback-----------------------");
+        System.out.println("-------------------testXMLFileReadback-----------------------");
         final AlarmConfiguration config = getConfiguration(true);
-    	if (config == null)
-    		return;
+        if (config == null)
+            return;
         System.out.println("******* Configuration read from RDB: ******");
         config.getAlarmTree().dump(System.out);
         config.removeAllItems();

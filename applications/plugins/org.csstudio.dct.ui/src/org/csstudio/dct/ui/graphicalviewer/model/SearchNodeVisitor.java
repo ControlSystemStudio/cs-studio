@@ -12,35 +12,35 @@ import org.csstudio.dct.model.IElement;
  * 
  */
 public class SearchNodeVisitor implements INodeVisitor {
-	private UUID id;
-	private AbstractNode result;
+    private UUID id;
+    private AbstractNode result;
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void visit(AbstractNode node) {
-		if (id.equals(node.getElement().getId())) {
-			result = node;
-		}
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public void visit(AbstractNode node) {
+        if (id.equals(node.getElement().getId())) {
+            result = node;
+        }
+    }
 
-	/**
-	 * Traverses the {@link DctGraphicalModel} to find a node that represents an
-	 * {@link IElement} from the original DCT model.
-	 * 
-	 * @param id
-	 *            the id of the element in the original dct model
-	 * @param model
-	 *            the graphical model
-	 * 
-	 * @return null or the representing node
-	 */
-	public AbstractNode find(UUID id, DctGraphicalModel model) {
-		this.id = id;
-		this.result = null;
-		model.accept(this);
+    /**
+     * Traverses the {@link DctGraphicalModel} to find a node that represents an
+     * {@link IElement} from the original DCT model.
+     * 
+     * @param id
+     *            the id of the element in the original dct model
+     * @param model
+     *            the graphical model
+     * 
+     * @return null or the representing node
+     */
+    public AbstractNode find(UUID id, DctGraphicalModel model) {
+        this.id = id;
+        this.result = null;
+        model.accept(this);
 
-		return result;
-	}
+        return result;
+    }
 
 }

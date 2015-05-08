@@ -183,18 +183,18 @@ public class SNLEditor extends LanguageEditor {
             }
             // XXX Proposals without parsing
 //            for (Node currentNode : getRootNode().getChildrenNodes()) {
-//            	if (currentNode instanceof StateNode) {
-//            		StateNode stateNode = (StateNode) currentNode;
-//					if (stateNode.getSourceIdentifier().startsWith(selectedText)) {
+//                if (currentNode instanceof StateNode) {
+//                    StateNode stateNode = (StateNode) currentNode;
+//                    if (stateNode.getSourceIdentifier().startsWith(selectedText)) {
 //                        int cursor = stateNode.getSourceIdentifier().length();
 //                        CompletionProposal proposal = new CompletionProposal(stateNode.getSourceIdentifier(),
 //                                documentOffset - selectedText.length(), selectedText.length(),
 //                                cursor, stateImage, stateNode.getSourceIdentifier(), null, null);
 //                        propList.add(proposal);
 //                    }
-//            	} else {
-//            		//start recursion
-//            	}
+//                } else {
+//                    //start recursion
+//                }
 //            }
             return propList;
         }
@@ -622,14 +622,14 @@ public class SNLEditor extends LanguageEditor {
 //    }
 
     private String getBaseName(IPath filePath) {
-    	String basename = filePath.lastSegment();
-    	if (basename == null) return "";
-    	String ext; int idx;
-    	if ((ext = filePath.getFileExtension()) != null && (idx = basename.lastIndexOf("." + ext)) >= 0) {
-    		basename = basename.substring(0, idx);
-    	}
-		return basename;
-	}
+        String basename = filePath.lastSegment();
+        if (basename == null) return "";
+        String ext; int idx;
+        if ((ext = filePath.getFileExtension()) != null && (idx = basename.lastIndexOf("." + ext)) >= 0) {
+            basename = basename.substring(0, idx);
+        }
+        return basename;
+    }
 
     private void invokeCompilers(String targetPlatform, IFile sourceRessource, String basePath,
             IPath sourceFilePath, GenericCompilationHelper compiler) {
@@ -640,15 +640,15 @@ public class SNLEditor extends LanguageEditor {
 
         ErrorUnit errorUnit;
         for (AbstractCompilerConfiguration configuration : configurations) {
-        	String baseName = getBaseName(sourceFilePath);
-        	String sourceFile, targetFile;
-        	if (configuration.getSourceFolder() != null && configuration.getSourceFileExtension() != null) {
-            	sourceFile = createFullFileName(basePath, configuration.getSourceFolder(),
-            		baseName, configuration.getSourceFileExtension());
-        	} else {
+            String baseName = getBaseName(sourceFilePath);
+            String sourceFile, targetFile;
+            if (configuration.getSourceFolder() != null && configuration.getSourceFileExtension() != null) {
+                sourceFile = createFullFileName(basePath, configuration.getSourceFolder(),
+                    baseName, configuration.getSourceFileExtension());
+            } else {
                 sourceFile = sourceFilePath.toOSString();
-        	}
-        	targetFile = createFullFileName(basePath, configuration.getTargetFolder(),
+            }
+            targetFile = createFullFileName(basePath, configuration.getTargetFolder(),
                     getBaseName(sourceFilePath), configuration.getTargetFileExtension());
 
             errorUnit = compiler
@@ -668,7 +668,7 @@ public class SNLEditor extends LanguageEditor {
         }
     }
 
-	private void deleteFilesInGeneratedFolder(IProject project, IProgressMonitor progressMonitor) {
+    private void deleteFilesInGeneratedFolder(IProject project, IProgressMonitor progressMonitor) {
         IFolder folder = project.getFolder(SNLConstants.GENERATED_FOLDER.getValue());
         if (folder.exists()) {
             try {
@@ -682,20 +682,20 @@ public class SNLEditor extends LanguageEditor {
             }
         }
     }
-	
-	private void createDirs(IContainer parent, IProgressMonitor monitor) throws CoreException {
-		if (parent != null && !parent.exists()) {
-			createDirs(parent.getParent(), monitor);
-			((IFolder)parent).create(true, true, monitor);
-		}
-	}
+    
+    private void createDirs(IContainer parent, IProgressMonitor monitor) throws CoreException {
+        if (parent != null && !parent.exists()) {
+            createDirs(parent.getParent(), monitor);
+            ((IFolder)parent).create(true, true, monitor);
+        }
+    }
 
     private List<String> checkDirectories(IProject baseDirectory, IProgressMonitor monitor) {
         List<String> result = new ArrayList<String>();
         IFolder folder = baseDirectory.getFolder(SNLConstants.GENERATED_FOLDER.getValue());
         if (!folder.exists()) {
             try {
-            	createDirs(folder, monitor);
+                createDirs(folder, monitor);
                 folder.setDerived(true);
             } catch (CoreException e) {
                 result.add("Not able to create " + SNLConstants.GENERATED_FOLDER.getValue()
@@ -706,7 +706,7 @@ public class SNLEditor extends LanguageEditor {
         folder = baseDirectory.getFolder(SNLConstants.BIN_FOLDER.getValue());
         if (!folder.exists()) {
             try {
-            	createDirs(folder, monitor);
+                createDirs(folder, monitor);
                 folder.setDerived(true);
             } catch (CoreException e) {
                 result.add("Not able to create " + SNLConstants.BIN_FOLDER.getValue()

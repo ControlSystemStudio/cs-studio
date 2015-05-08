@@ -37,33 +37,33 @@ import java.net.InetSocketAddress;
  */
 public class SnooperServer {
 
-	/**
-	 * Implementation of the server.
-	 * @author msekoranja
-	 */
-	class SnopperServerImpl implements Server
-	{
+    /**
+     * Implementation of the server.
+     * @author msekoranja
+     */
+    class SnopperServerImpl implements Server
+    {
 
-		/* (non-Javadoc)
-		 * @see gov.aps.jca.cas.Server#processVariableAttach(java.lang.String, gov.aps.jca.cas.ProcessVariableEventCallback, gov.aps.jca.cas.ProcessVariableAttachCallback)
-		 */
-		public ProcessVariable processVariableAttach(String aliasName, ProcessVariableEventCallback eventCallback, ProcessVariableAttachCallback asyncCompletionCallback) throws CAStatusException, IllegalArgumentException, IllegalStateException {
-			// since we do not host any PV, this will never be called
-			throw new IllegalStateException("we do not host any PVs");
-		}
+        /* (non-Javadoc)
+         * @see gov.aps.jca.cas.Server#processVariableAttach(java.lang.String, gov.aps.jca.cas.ProcessVariableEventCallback, gov.aps.jca.cas.ProcessVariableAttachCallback)
+         */
+        public ProcessVariable processVariableAttach(String aliasName, ProcessVariableEventCallback eventCallback, ProcessVariableAttachCallback asyncCompletionCallback) throws CAStatusException, IllegalArgumentException, IllegalStateException {
+            // since we do not host any PV, this will never be called
+            throw new IllegalStateException("we do not host any PVs");
+        }
 
-		/* (non-Javadoc)
-		 * @see gov.aps.jca.cas.Server#processVariableExistanceTest(java.lang.String, java.net.InetSocketAddress, gov.aps.jca.cas.ProcessVariableExistanceCallback)
-		 */
-		public ProcessVariableExistanceCompletion processVariableExistanceTest(String aliasName, InetSocketAddress clientAddress, ProcessVariableExistanceCallback asyncCompletionCallback) throws CAException, IllegalArgumentException, IllegalStateException {
-			if(client!=null)
-				client.addBMessage(aliasName, clientAddress);
-			return ProcessVariableExistanceCompletion.DOES_NOT_EXIST_HERE;
-		}
-		
-	}
+        /* (non-Javadoc)
+         * @see gov.aps.jca.cas.Server#processVariableExistanceTest(java.lang.String, java.net.InetSocketAddress, gov.aps.jca.cas.ProcessVariableExistanceCallback)
+         */
+        public ProcessVariableExistanceCompletion processVariableExistanceTest(String aliasName, InetSocketAddress clientAddress, ProcessVariableExistanceCallback asyncCompletionCallback) throws CAException, IllegalArgumentException, IllegalStateException {
+            if(client!=null)
+                client.addBMessage(aliasName, clientAddress);
+            return ProcessVariableExistanceCompletion.DOES_NOT_EXIST_HERE;
+        }
+        
+    }
 
-	/**
+    /**
      * JCA server context.
      */
     private ServerContext context = null;
@@ -75,20 +75,20 @@ public class SnooperServer {
     
     /**
      * Initialize JCA context.
-     * @throws CAException	throws on any failure.
+     * @throws CAException    throws on any failure.
      */
     private void initialize() throws CAException {
         
-		// Get the JCALibrary instance.
-		JCALibrary jca = JCALibrary.getInstance();
+        // Get the JCALibrary instance.
+        JCALibrary jca = JCALibrary.getInstance();
 
-		// Create server implementation
-		SnopperServerImpl server = new SnopperServerImpl();
-		
-		// Create a context with default configuration values.
-		context = jca.createServerContext(JCALibrary.CHANNEL_ACCESS_SERVER_JAVA, server);
+        // Create server implementation
+        SnopperServerImpl server = new SnopperServerImpl();
+        
+        // Create a context with default configuration values.
+        context = jca.createServerContext(JCALibrary.CHANNEL_ACCESS_SERVER_JAVA, server);
 
-		// Display basic information about the context.
+        // Display basic information about the context.
         //System.out.println(context.getVersion().getVersionString());
         //context.printInfo();
     }
@@ -109,42 +109,42 @@ public class SnooperServer {
         }
     }
     
-	/**
-	 * @param channelName
-	 */
-	public void execute() {
+    /**
+     * @param channelName
+     */
+    public void execute() {
 
-		try {
-			
-			// initialize context
-			initialize();
-		    
-			// run server 
-			context.run(0);
+        try {
+            
+            // initialize context
+            initialize();
+            
+            // run server 
+            context.run(0);
 
-		} catch (Throwable th) {
-			th.printStackTrace();
-		}
-		finally {
-		    // always finalize
-		    destroy();
-		}
+        } catch (Throwable th) {
+            th.printStackTrace();
+        }
+        finally {
+            // always finalize
+            destroy();
+        }
 
-	}
-	
-	/**
-	 * Registration of client instance to the server 
-	 * @param listener as MessageCollector
-	 */
-	public void addListener(ChannelCollector listener){
-		this.client = listener;
-	}
-	
-	/**
-	 * Removal of client instance
-	 */
-	public void resetListener(){
-		this.client = null;
-	}	
+    }
+    
+    /**
+     * Registration of client instance to the server 
+     * @param listener as MessageCollector
+     */
+    public void addListener(ChannelCollector listener){
+        this.client = listener;
+    }
+    
+    /**
+     * Removal of client instance
+     */
+    public void resetListener(){
+        this.client = null;
+    }    
 }
 

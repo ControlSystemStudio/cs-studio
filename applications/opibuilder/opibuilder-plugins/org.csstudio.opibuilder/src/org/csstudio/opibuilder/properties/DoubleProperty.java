@@ -37,104 +37,104 @@ import org.jdom.Element;
 public final class DoubleProperty extends AbstractWidgetProperty {
 
 
-	/**
-	 * Lower border for the property value.
-	 */
-	private double min;
+    /**
+     * Lower border for the property value.
+     */
+    private double min;
 
-	/**
-	 * Upper border for the property value.
-	 */
-	private double max;
-	
-	/**Double Property Constructor. The property value type is double.
-	 * @param prop_id the property id which should be unique in a widget model.
-	 * @param description the description of the property,
-	 * which will be shown as the property name in property sheet.
-	 * @param category the category of the widget.
-	 * @param defaultValue the default value when the widget is first created.
-	 */
-	public DoubleProperty(String propId, String description,
-			WidgetPropertyCategory category, double defaultValue) {
-		super(propId, description, category, Double.valueOf(defaultValue));
-		min = -Double.MAX_VALUE;
-		max = Double.MAX_VALUE;
-	}
-	
-	
-	/**Color Property Constructor. The property value type is {@link OPIColor}.
-	 * @param prop_id the property id which should be unique in a widget model.
-	 * @param description the description of the property,
-	 * which will be shown as the property name in property sheet.
-	 * @param category the category of the widget.
-	 * @param defaultValue the default value when the widget is first created.
-	 * @param min the minimum allowed double value.
-	 * @param max the maximum allowed double value.
-	 */
-	public DoubleProperty(String propId, String description,
-			WidgetPropertyCategory category, double defaultValue,
-			double min, double max) {
-		super(propId, description, category, Double.valueOf(defaultValue));
-		this.min = min;
-		this.max = max;
-	}
+    /**
+     * Upper border for the property value.
+     */
+    private double max;
+    
+    /**Double Property Constructor. The property value type is double.
+     * @param prop_id the property id which should be unique in a widget model.
+     * @param description the description of the property,
+     * which will be shown as the property name in property sheet.
+     * @param category the category of the widget.
+     * @param defaultValue the default value when the widget is first created.
+     */
+    public DoubleProperty(String propId, String description,
+            WidgetPropertyCategory category, double defaultValue) {
+        super(propId, description, category, Double.valueOf(defaultValue));
+        min = -Double.MAX_VALUE;
+        max = Double.MAX_VALUE;
+    }
+    
+    
+    /**Color Property Constructor. The property value type is {@link OPIColor}.
+     * @param prop_id the property id which should be unique in a widget model.
+     * @param description the description of the property,
+     * which will be shown as the property name in property sheet.
+     * @param category the category of the widget.
+     * @param defaultValue the default value when the widget is first created.
+     * @param min the minimum allowed double value.
+     * @param max the maximum allowed double value.
+     */
+    public DoubleProperty(String propId, String description,
+            WidgetPropertyCategory category, double defaultValue,
+            double min, double max) {
+        super(propId, description, category, Double.valueOf(defaultValue));
+        this.min = min;
+        this.max = max;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object checkValue(final Object value) {
-		if(value == null)
-			return null;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object checkValue(final Object value) {
+        if(value == null)
+            return null;
 
-		Double acceptedValue = null;
+        Double acceptedValue = null;
 
-		// check type
-		if (!(value instanceof Double)) {
-			if (value instanceof Number) {
-				acceptedValue = ((Number) value).doubleValue();
-			} else {
-				try {
-					acceptedValue = Double.parseDouble(value.toString());
-				} catch (NumberFormatException e) {
-					acceptedValue = null;
-				}
-			}
-		} else {
-			acceptedValue = (Double) value;
-		}
+        // check type
+        if (!(value instanceof Double)) {
+            if (value instanceof Number) {
+                acceptedValue = ((Number) value).doubleValue();
+            } else {
+                try {
+                    acceptedValue = Double.parseDouble(value.toString());
+                } catch (NumberFormatException e) {
+                    acceptedValue = null;
+                }
+            }
+        } else {
+            acceptedValue = (Double) value;
+        }
 
-		// check borders
-		if (acceptedValue != null) {
-			if (acceptedValue > max) {
-				acceptedValue = max;
-			} else if (acceptedValue < min) {
-				acceptedValue = min;
-			}
-		}
+        // check borders
+        if (acceptedValue != null) {
+            if (acceptedValue > max) {
+                acceptedValue = max;
+            } else if (acceptedValue < min) {
+                acceptedValue = min;
+            }
+        }
 
-		return acceptedValue;
-	}
+        return acceptedValue;
+    }
 
-	@Override
-	protected PropertyDescriptor createPropertyDescriptor() {
-		if(PropertySSHelper.getIMPL() == null)
-			return null;
-		return PropertySSHelper.getIMPL().getDoublePropertyDescriptor(prop_id, description);
-	}
+    @Override
+    protected PropertyDescriptor createPropertyDescriptor() {
+        if(PropertySSHelper.getIMPL() == null)
+            return null;
+        return PropertySSHelper.getIMPL().getDoublePropertyDescriptor(prop_id, description);
+    }
 
-	@Override
-	public void writeToXML(Element propElement) {
-		propElement.setText(getPropertyValue().toString());
-	}
-	
-	@Override
-	public Object readValueFromXML(Element propElement) {
-		return Double.parseDouble(propElement.getValue());
-	}
-	
-	@Override
-	public boolean configurableByRule() {
-		return true;
-	}
+    @Override
+    public void writeToXML(Element propElement) {
+        propElement.setText(getPropertyValue().toString());
+    }
+    
+    @Override
+    public Object readValueFromXML(Element propElement) {
+        return Double.parseDouble(propElement.getValue());
+    }
+    
+    @Override
+    public boolean configurableByRule() {
+        return true;
+    }
 }

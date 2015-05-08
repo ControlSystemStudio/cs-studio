@@ -47,11 +47,11 @@ public class Application implements IApplication
     @Override
     public Object start(final IApplicationContext context) throws Exception
     {
-    	// Display configuration info
+        // Display configuration info
         final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
         final String app_info = context.getBrandingName() + " " + version;
-    	
-    	// Create parser for arguments and run it.
+        
+        // Create parser for arguments and run it.
         final String args[] =
             (String []) context.getArguments().get("application.args");
 
@@ -59,18 +59,18 @@ public class Application implements IApplication
         final BooleanOption help_opt = new BooleanOption(parser, "-help", "Display help");
         final BooleanOption version_opt = new BooleanOption(parser, "-version", "Display version info");
         final StringOption config_name = new StringOption(parser,
-    		"-root", "Alarm Configuration root", Preferences.getAlarmTreeRoot());
+            "-root", "Alarm Configuration root", Preferences.getAlarmTreeRoot());
         final StringOption set_password = new StringOption(parser,
             "-set_password", "plugin/key=value", "Set secure preferences", null);
-    	parser.addEclipseParameters();
+        parser.addEclipseParameters();
         try
         {
             parser.parse(args);
         }
         catch (final Exception ex)
         {
-        	System.out.println(ex.getMessage() + "\n" + parser.getHelp());
-        	return Integer.valueOf(-2);
+            System.out.println(ex.getMessage() + "\n" + parser.getHelp());
+            return Integer.valueOf(-2);
         }
         if (help_opt.get())
         {
@@ -79,9 +79,9 @@ public class Application implements IApplication
         }
         if (version_opt.get()) 
         {
-			System.out.println(app_info);
-			return IApplication.EXIT_OK;
-		}
+            System.out.println(app_info);
+            return IApplication.EXIT_OK;
+        }
 
         final String option = set_password.get();
         if (option != null)
@@ -140,7 +140,7 @@ public class Application implements IApplication
         catch (Throwable ex)
         {
             ex.printStackTrace();
-        	return Integer.valueOf(-1);
+            return Integer.valueOf(-1);
         }
         return IApplication.EXIT_OK;
     }

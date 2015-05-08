@@ -21,9 +21,9 @@ import org.csstudio.autocomplete.proposals.ProposalStyle;
  */
 public class TooltipData {
 
-	/** Value that will be concatenated. Represents a single line. */
-	public String value;
-	/** SWT StyleRange that will be applied to value. */
-	public ProposalStyle[] styles;
+    /** Value that will be concatenated. Represents a single line. */
+    public String value;
+    /** SWT StyleRange that will be applied to value. */
+    public ProposalStyle[] styles;
 
 }

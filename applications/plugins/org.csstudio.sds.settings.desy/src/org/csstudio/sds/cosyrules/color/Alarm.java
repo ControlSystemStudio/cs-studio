@@ -31,58 +31,58 @@ import org.csstudio.dal.DynamicValueState;
  *
  */
 public final class Alarm extends AbstractAlarmRule  {
-	/**
-	 * The ID for this rule.
-	 */
-	public static final String TYPE_ID = "cosyrules.color.alarm";
+    /**
+     * The ID for this rule.
+     */
+    public static final String TYPE_ID = "cosyrules.color.alarm";
 
-	/**
-	 * The rule can not calculate the State color!<br>
-	 * Purple
-	 */
-	public static final String UNKNOWN = "#8000FF";
-	/**
-	 *  Red.
-	 */
-	public static final String ALARM = ColorAndFontUtil.toHex(253, 0, 0);
-	/**
-	 * Green.
-	 */
-	public static final String NORMAL = ColorAndFontUtil.toHex(0, 216, 0);
-	/**
-	 * Yellow.
-	 */
-	public static final String WARNING = ColorAndFontUtil.toHex(251, 243, 74);
-	/**
-	 * Black.
-	 */
-	public static final String ERROR = ColorAndFontUtil.toHex(255, 255, 255);
+    /**
+     * The rule can not calculate the State color!<br>
+     * Purple
+     */
+    public static final String UNKNOWN = "#8000FF";
+    /**
+     *  Red.
+     */
+    public static final String ALARM = ColorAndFontUtil.toHex(253, 0, 0);
+    /**
+     * Green.
+     */
+    public static final String NORMAL = ColorAndFontUtil.toHex(0, 216, 0);
+    /**
+     * Yellow.
+     */
+    public static final String WARNING = ColorAndFontUtil.toHex(251, 243, 74);
+    /**
+     * Black.
+     */
+    public static final String ERROR = ColorAndFontUtil.toHex(255, 255, 255);
 
-	/**
-	 * Standard constructor.
-	 */
-	public Alarm() {
-		// Nothing to do.
-	}
+    /**
+     * Standard constructor.
+     */
+    public Alarm() {
+        // Nothing to do.
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getDescription() {
-		final String msg = "Kann für ein oder mehrere Channels die Severity als Farbe zurückgeben. Ist mehr als ein Channel angegeben wird die höchste Severity zurückgegeben.";
-		return msg;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getDescription() {
+        final String msg = "Kann für ein oder mehrere Channels die Severity als Farbe zurückgeben. Ist mehr als ein Channel angegeben wird die höchste Severity zurückgegeben.";
+        return msg;
+    }
 
-	/**
-	 * Map the severity of a pv value to a color. For DAL severities
-	 * (pv_name[severity]) the parameter 'arguments' is of type
-	 * DynamicValueState.ID. Using the EPICS field (record.SEVR) the severity is
-	 * a number.
-	 *
-	 * {@inheritDoc}
-	 */
+    /**
+     * Map the severity of a pv value to a color. For DAL severities
+     * (pv_name[severity]) the parameter 'arguments' is of type
+     * DynamicValueState.ID. Using the EPICS field (record.SEVR) the severity is
+     * a number.
+     *
+     * {@inheritDoc}
+     */
     @Override
     protected Object evaluateWorker(final DynamicValueState dvc) {
         String result = UNKNOWN;

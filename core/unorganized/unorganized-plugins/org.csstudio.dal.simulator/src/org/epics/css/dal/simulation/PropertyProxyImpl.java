@@ -58,239 +58,239 @@ import org.epics.css.dal.simulation.data.DataGeneratorInfo;
  *
  */
 public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,SimulatorPlug,MonitorProxyImpl<T>>
-	implements PropertyProxy<T,SimulatorPlug>, SyncPropertyProxy<T,SimulatorPlug>, DirectoryProxy<SimulatorPlug>
+    implements PropertyProxy<T,SimulatorPlug>, SyncPropertyProxy<T,SimulatorPlug>, DirectoryProxy<SimulatorPlug>
 {
-	
-	public static void main(String[] args) throws Exception, InstantiationException {
-		PropertyFactoryImpl factory = new PropertyFactoryImpl();
-		factory.initialize(new DefaultApplicationContext("test"), LinkPolicy.SYNC_LINK_POLICY);
-		DoubleProperty dp = factory.getProperty("sim://abc COUNTDOWN:100:0:10000:200",DoubleProperty.class,null);
-		dp.addDynamicValueListener(new DynamicValueAdapter<Double,DoubleProperty>(){
-			@Override
-			public void valueChanged(DynamicValueEvent event) {
-				System.out.println(event.getValue());
-			}
-			
-			@Override
-			public void valueUpdated(DynamicValueEvent event) {
-				System.out.println(event.getValue());
-			}
-		});
-		
-		Thread.sleep(20000);
-	}
-	
-	protected ValueProvider<T> valueProvider = new MemoryValueProvider<T>();
-	protected boolean isSettable = true;
-	private long refreshRate = 1000;
-	/**
-	 * Creates new instance.
-	 * @param name
-	 */
-	public PropertyProxyImpl(String name, SimulatorPlug plug, Class<T> type)
-	{
-		this(name, plug, (Long)SimulatorUtilities.getConfiguration(SimulatorUtilities.CONNECTION_DELAY),type);
-	}
-	
-	/**
-	 * Creates new instance.
-	 * @param name
-	 * @param connectDelay
-	 */
-	public PropertyProxyImpl(String name, SimulatorPlug plug, long connectDelay, Class<T> type)
-	{
-		super(name,plug);
-		setConnectionState(ConnectionState.READY);
-		DataGeneratorInfo info = DataGeneratorInfo.getInfo(name);
-		refreshRate = info.getRefreshRate(name);
-		setValueProvider(info.getDataGeneratorFactory().createGenerator(type, info.getOptions(name)));
-		delayedConnect(connectDelay);
-		updateConditionWith("", DynamicValueState.HAS_METADATA);
-	}
+    
+    public static void main(String[] args) throws Exception, InstantiationException {
+        PropertyFactoryImpl factory = new PropertyFactoryImpl();
+        factory.initialize(new DefaultApplicationContext("test"), LinkPolicy.SYNC_LINK_POLICY);
+        DoubleProperty dp = factory.getProperty("sim://abc COUNTDOWN:100:0:10000:200",DoubleProperty.class,null);
+        dp.addDynamicValueListener(new DynamicValueAdapter<Double,DoubleProperty>(){
+            @Override
+            public void valueChanged(DynamicValueEvent event) {
+                System.out.println(event.getValue());
+            }
+            
+            @Override
+            public void valueUpdated(DynamicValueEvent event) {
+                System.out.println(event.getValue());
+            }
+        });
+        
+        Thread.sleep(20000);
+    }
+    
+    protected ValueProvider<T> valueProvider = new MemoryValueProvider<T>();
+    protected boolean isSettable = true;
+    private long refreshRate = 1000;
+    /**
+     * Creates new instance.
+     * @param name
+     */
+    public PropertyProxyImpl(String name, SimulatorPlug plug, Class<T> type)
+    {
+        this(name, plug, (Long)SimulatorUtilities.getConfiguration(SimulatorUtilities.CONNECTION_DELAY),type);
+    }
+    
+    /**
+     * Creates new instance.
+     * @param name
+     * @param connectDelay
+     */
+    public PropertyProxyImpl(String name, SimulatorPlug plug, long connectDelay, Class<T> type)
+    {
+        super(name,plug);
+        setConnectionState(ConnectionState.READY);
+        DataGeneratorInfo info = DataGeneratorInfo.getInfo(name);
+        refreshRate = info.getRefreshRate(name);
+        setValueProvider(info.getDataGeneratorFactory().createGenerator(type, info.getOptions(name)));
+        delayedConnect(connectDelay);
+        updateConditionWith("", DynamicValueState.HAS_METADATA);
+    }
 
-	public void delayedConnect(long timeout)
-	{
-		setConnectionState(ConnectionState.CONNECTING);
-		if (timeout > 0) {
-			Timer t = new Timer();
-			t.schedule(new TimerTask() {
-					@Override
-					public void run()
-					{
-						if (getConnectionState()==ConnectionState.CONNECTING) {
-							setConnectionState(ConnectionState.CONNECTED);
-						}
-					}
-				}, timeout);
-		} else {
-			setConnectionState(ConnectionState.CONNECTED);
-		}
-	}
+    public void delayedConnect(long timeout)
+    {
+        setConnectionState(ConnectionState.CONNECTING);
+        if (timeout > 0) {
+            Timer t = new Timer();
+            t.schedule(new TimerTask() {
+                    @Override
+                    public void run()
+                    {
+                        if (getConnectionState()==ConnectionState.CONNECTING) {
+                            setConnectionState(ConnectionState.CONNECTED);
+                        }
+                    }
+                }, timeout);
+        } else {
+            setConnectionState(ConnectionState.CONNECTED);
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.PropertyProxy#getValueAsync(org.epics.css.dal.ResponseListener)
-	 */
-	public Request<T> getValueAsync(ResponseListener<T> callback)
-		throws DataExchangeException
-	{
-		if (getConnectionState() != ConnectionState.CONNECTED) {
-			throw new DataExchangeException(this, "Proxy not connected");
-		}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.proxy.PropertyProxy#getValueAsync(org.epics.css.dal.ResponseListener)
+     */
+    public Request<T> getValueAsync(ResponseListener<T> callback)
+        throws DataExchangeException
+    {
+        if (getConnectionState() != ConnectionState.CONNECTED) {
+            throw new DataExchangeException(this, "Proxy not connected");
+        }
 
-		RequestImpl<T> r = new RequestImpl<T>(this, callback);
-		r.addResponse(new ResponseImpl<T>(this, r, valueProvider.get(), "value",
-		        true, null, getCondition(), null, true));
+        RequestImpl<T> r = new RequestImpl<T>(this, callback);
+        r.addResponse(new ResponseImpl<T>(this, r, valueProvider.get(), "value",
+                true, null, getCondition(), null, true));
 
-		return r;
-	}
+        return r;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.PropertyProxy#setValueAsync(T, org.epics.css.dal.ResponseListener)
-	 */
-	public Request<T> setValueAsync(T value, ResponseListener<T> callback)
-		throws DataExchangeException
-	{
-		if (getConnectionState() != ConnectionState.CONNECTED) {
-			throw new DataExchangeException(this, "Proxy not connected");
-		}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.proxy.PropertyProxy#setValueAsync(T, org.epics.css.dal.ResponseListener)
+     */
+    public Request<T> setValueAsync(T value, ResponseListener<T> callback)
+        throws DataExchangeException
+    {
+        if (getConnectionState() != ConnectionState.CONNECTED) {
+            throw new DataExchangeException(this, "Proxy not connected");
+        }
 
-		setValueSync(value);
+        setValueSync(value);
 
-		RequestImpl<T> r = new RequestImpl<T>(this, callback);
-		r.addResponse(new ResponseImpl<T>(this, r, value, "", true, null,
-		        getCondition(), null, true));
+        RequestImpl<T> r = new RequestImpl<T>(this, callback);
+        r.addResponse(new ResponseImpl<T>(this, r, value, "", true, null,
+                getCondition(), null, true));
 
-		return r;
-	}
+        return r;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.PropertyProxy#isSettable()
-	 */
-	public boolean isSettable()
-	{
-		return isSettable;
-	}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.proxy.PropertyProxy#isSettable()
+     */
+    public boolean isSettable()
+    {
+        return isSettable;
+    }
 
-	public void setSettable(boolean settable)
-	{
-		this.isSettable = settable;
-	}
+    public void setSettable(boolean settable)
+    {
+        this.isSettable = settable;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.PropertyProxy#createMonitor(org.epics.css.dal.ResponseListener)
-	 */
-	public MonitorProxy createMonitor(ResponseListener<T> callback, Map<String,Object> param)
-		throws RemoteException
-	{
-		MonitorProxyImpl<T> m = new MonitorProxyImpl<T>(this, callback);
-		m.setTimerTrigger(refreshRate);
-		return m;
-	}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.proxy.PropertyProxy#createMonitor(org.epics.css.dal.ResponseListener)
+     */
+    public MonitorProxy createMonitor(ResponseListener<T> callback, Map<String,Object> param)
+        throws RemoteException
+    {
+        MonitorProxyImpl<T> m = new MonitorProxyImpl<T>(this, callback);
+        m.setTimerTrigger(refreshRate);
+        return m;
+    }
 
-	public void destroy()
-	{
-		super.destroy();
+    public void destroy()
+    {
+        super.destroy();
 
-		if (connectionStateMachine.isConnected()) {
-			setConnectionState(ConnectionState.DISCONNECTING);
-		}
-		if (connectionStateMachine.getConnectionState()==ConnectionState.DISCONNECTING) {
-			setConnectionState(ConnectionState.DISCONNECTED);
-		}
-		setConnectionState(ConnectionState.DESTROYED);
-	}
+        if (connectionStateMachine.isConnected()) {
+            setConnectionState(ConnectionState.DISCONNECTING);
+        }
+        if (connectionStateMachine.getConnectionState()==ConnectionState.DISCONNECTING) {
+            setConnectionState(ConnectionState.DISCONNECTED);
+        }
+        setConnectionState(ConnectionState.DESTROYED);
+    }
 
-	
-	/**
-	 * @see DirectoryProxy#getCharacteristicNames()
-	 */
-	public String[] getCharacteristicNames() throws DataExchangeException
-	{
-		return SimulatorUtilities.getCharacteristicNames(this);
-	}
+    
+    /**
+     * @see DirectoryProxy#getCharacteristicNames()
+     */
+    public String[] getCharacteristicNames() throws DataExchangeException
+    {
+        return SimulatorUtilities.getCharacteristicNames(this);
+    }
 
-	@Override
-	protected Object processCharacteristicBeforeCache(Object value,
-			String characteristicName) {
-		return SimulatorUtilities.getCharacteristic(characteristicName, this);
-	}
-	
-	@Override
-	protected Object processCharacteristicAfterCache(Object value,
-			String characteristicName) {
-		return value;
-	}
-	
-	public T getValueSync() throws DataExchangeException
-	{
-		if (getConnectionState() != ConnectionState.CONNECTED) {
-			throw new DataExchangeException(this, "Proxy not connected");
-		}
+    @Override
+    protected Object processCharacteristicBeforeCache(Object value,
+            String characteristicName) {
+        return SimulatorUtilities.getCharacteristic(characteristicName, this);
+    }
+    
+    @Override
+    protected Object processCharacteristicAfterCache(Object value,
+            String characteristicName) {
+        return value;
+    }
+    
+    public T getValueSync() throws DataExchangeException
+    {
+        if (getConnectionState() != ConnectionState.CONNECTED) {
+            throw new DataExchangeException(this, "Proxy not connected");
+        }
 
-		return valueProvider.get();
-	}
+        return valueProvider.get();
+    }
 
-	public void setValueSync(T value) throws DataExchangeException
-	{
-		if (getConnectionState() != ConnectionState.CONNECTED) {
-			throw new DataExchangeException(this, "Proxy not connected");
-		}
+    public void setValueSync(T value) throws DataExchangeException
+    {
+        if (getConnectionState() != ConnectionState.CONNECTED) {
+            throw new DataExchangeException(this, "Proxy not connected");
+        }
 
-		valueProvider.set(value);
+        valueProvider.set(value);
 
-		@SuppressWarnings("unchecked")
-		MonitorProxyImpl<T>[] m = getMonitors().toArray(new MonitorProxyImpl[getMonitors().size()]);
+        @SuppressWarnings("unchecked")
+        MonitorProxyImpl<T>[] m = getMonitors().toArray(new MonitorProxyImpl[getMonitors().size()]);
 
-		for (int i = 0; i < m.length; i++) {
-			m[i].fireValueChange();
-		}
-	}
+        for (int i = 0; i < m.length; i++) {
+            m[i].fireValueChange();
+        }
+    }
 
-	/**
-	 * @return Returns the valueProvder.
-	 */
-	public ValueProvider<T> getValueProvider()
-	{
-		return valueProvider;
-	}
+    /**
+     * @return Returns the valueProvder.
+     */
+    public ValueProvider<T> getValueProvider()
+    {
+        return valueProvider;
+    }
 
-	/**
-	 * @param valueProvder The valueProvder to set.
-	 */
-	public void setValueProvider(ValueProvider<T> valueProvder)
-	{
-		try {
-			valueProvder.set(this.valueProvider.get());
-		} catch (Exception e) {
-			// noop
-		}
+    /**
+     * @param valueProvder The valueProvder to set.
+     */
+    public void setValueProvider(ValueProvider<T> valueProvder)
+    {
+        try {
+            valueProvder.set(this.valueProvider.get());
+        } catch (Exception e) {
+            // noop
+        }
 
-		this.valueProvider = valueProvder;
-	}
+        this.valueProvider = valueProvder;
+    }
 
-	public void refresh()
-	{
-		// Override in order to clean up cached values.
-	}
+    public void refresh()
+    {
+        // Override in order to clean up cached values.
+    }
 
-	/**
-	 * Simulate changes of connection state
-	 * @param state Connection State
-	 */
-	public void simulateConnectionState(ConnectionState state)
-	{
-		setConnectionState(state);
-	}
-	
-	public void simulateCharacteristicChange(String characteristicName, Object value) {
-		Object old= SimulatorUtilities.putCharacteristic(characteristicName, getUniqueName(), value);
-		fireCharacteristicsChanged(new PropertyChangeEvent(this,characteristicName,old,value));
-	}
-	
-	@Override
-	protected String getRemoteHostInfo() {
-		return "local";
-	}
+    /**
+     * Simulate changes of connection state
+     * @param state Connection State
+     */
+    public void simulateConnectionState(ConnectionState state)
+    {
+        setConnectionState(state);
+    }
+    
+    public void simulateCharacteristicChange(String characteristicName, Object value) {
+        Object old= SimulatorUtilities.putCharacteristic(characteristicName, getUniqueName(), value);
+        fireCharacteristicsChanged(new PropertyChangeEvent(this,characteristicName,old,value));
+    }
+    
+    @Override
+    protected String getRemoteHostInfo() {
+        return "local";
+    }
 }
 
 /* __oOo__ */

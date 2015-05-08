@@ -14,64 +14,64 @@ import de.desy.language.snl.configurationservice.ICompilerOptionsService;
  */
 public class PreCompilerConfiguration extends AbstractCompilerConfiguration {
 
-	public PreCompilerConfiguration(ICompilerOptionsService service) {
-		super(service);
-	}
+    public PreCompilerConfiguration(ICompilerOptionsService service) {
+        super(service);
+    }
 
-	@Override
-	public List<String> getCompilerParameters(String sourceFile,
-			String targetFile) {
-		boolean arch64 = "amd64".equals(System.getProperty("os.arch"));
-		List<String> result = new ArrayList<String>();
-		result.add(getCompilerPath());
-		result.add("-x");
-		result.add("c");
-		result.add("-o");
-		result.add(targetFile);
-		result.add("-E");
-		result.add("-D_POSTFIX_C_SOURCE=199506L");
-		result.add("-D_POSTFIX_THREADS");
-		result.add("-D_XOPEN_SOURCE=500");
-		result.add(arch64 ? "-D_X86_64_" : "-D_X86_");
-		result.add("-DUNIX");
-		result.add("-D_BSD_SOURCE");
-		result.add("-Dlinux");
-		result.add("-D_REENTRANT");
-		result.add("-I" + getCompilerOptionService().getSeqFolder() + "/include");
-		result.add("-I" + getCompilerOptionService().getEpicsFolder() + "/include/os/Linux");
-		result.add("-I" + getCompilerOptionService().getEpicsFolder() + "/include");
-		result.add(sourceFile);
-		return result;
-	}
+    @Override
+    public List<String> getCompilerParameters(String sourceFile,
+            String targetFile) {
+        boolean arch64 = "amd64".equals(System.getProperty("os.arch"));
+        List<String> result = new ArrayList<String>();
+        result.add(getCompilerPath());
+        result.add("-x");
+        result.add("c");
+        result.add("-o");
+        result.add(targetFile);
+        result.add("-E");
+        result.add("-D_POSTFIX_C_SOURCE=199506L");
+        result.add("-D_POSTFIX_THREADS");
+        result.add("-D_XOPEN_SOURCE=500");
+        result.add(arch64 ? "-D_X86_64_" : "-D_X86_");
+        result.add("-DUNIX");
+        result.add("-D_BSD_SOURCE");
+        result.add("-Dlinux");
+        result.add("-D_REENTRANT");
+        result.add("-I" + getCompilerOptionService().getSeqFolder() + "/include");
+        result.add("-I" + getCompilerOptionService().getEpicsFolder() + "/include/os/Linux");
+        result.add("-I" + getCompilerOptionService().getEpicsFolder() + "/include");
+        result.add(sourceFile);
+        return result;
+    }
 
-	@Override
-	protected String getCompilerPath() {
-		return getCompilerOptionService().getPreCompilerPath();
-	}
+    @Override
+    protected String getCompilerPath() {
+        return getCompilerOptionService().getPreCompilerPath();
+    }
 
-	@Override
-	public Pattern getErrorPattern() {
-		return null;
-	}
+    @Override
+    public Pattern getErrorPattern() {
+        return null;
+    }
 
-	@Override
-	public String getSourceFileExtension() {
-		return SNLConstants.ST_FILE_EXTENSION.getValue();
-	}
+    @Override
+    public String getSourceFileExtension() {
+        return SNLConstants.ST_FILE_EXTENSION.getValue();
+    }
 
-	@Override
-	public String getSourceFolder() {
-		return SNLConstants.SOURCE_FOLDER.getValue();
-	}
+    @Override
+    public String getSourceFolder() {
+        return SNLConstants.SOURCE_FOLDER.getValue();
+    }
 
-	@Override
-	public String getTargetFileExtension() {
-		return SNLConstants.I_FILE_EXTENSION.getValue();
-	}
+    @Override
+    public String getTargetFileExtension() {
+        return SNLConstants.I_FILE_EXTENSION.getValue();
+    }
 
-	@Override
-	public String getTargetFolder() {
-		return SNLConstants.GENERATED_FOLDER.getValue();
-	}
+    @Override
+    public String getTargetFolder() {
+        return SNLConstants.GENERATED_FOLDER.getValue();
+    }
 
 }

@@ -24,7 +24,7 @@ import de.desy.language.snl.diagram.model.SNLModel;
  * target endpoint of the connection and return this command instance.</li>
  * </ol>
  * @see de.desy.language.snl.diagram.ui.parts.ShapeEditPart#createEditPolicies() for an
- * 			 example of the above procedure.
+ *              example of the above procedure.
  * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy
  */
 public class ConnectionCreateCommand extends Command {
@@ -37,18 +37,18 @@ private final SNLModel source;
 private SNLModel target;
 
 /**
- *	Instantiate a command that can create a connection between two shapes.
+ *    Instantiate a command that can create a connection between two shapes.
  * @param source the source endpoint (a non-null Shape instance)
  * @param lineStyle the desired line style. See Connection#setLineStyle(int) for details
  * @throws IllegalArgumentException if source is null
  * @see WhenConnection#setLineStyle(int)
  */
 public ConnectionCreateCommand(final SNLModel source) {
-	if (source == null) {
-		throw new IllegalArgumentException();
-	}
-	setLabel("connection creation");
-	this.source = source;
+    if (source == null) {
+        throw new IllegalArgumentException();
+    }
+    setLabel("connection creation");
+    this.source = source;
 }
 
 /* (non-Javadoc)
@@ -56,18 +56,18 @@ public ConnectionCreateCommand(final SNLModel source) {
  */
 @Override
 public boolean canExecute() {
-	// disallow source -> source connections
-	if (source.equals(target)) {
-		return false;
-	}
-	// return false, if the source -> target connection exists already
-	for (final Iterator iter = source.getSourceConnections().iterator(); iter.hasNext();) {
-		final WhenConnection conn = (WhenConnection) iter.next();
-		if (conn.getTarget().equals(target)) {
-			return false;
-		}
-	}
-	return true;
+    // disallow source -> source connections
+    if (source.equals(target)) {
+        return false;
+    }
+    // return false, if the source -> target connection exists already
+    for (final Iterator iter = source.getSourceConnections().iterator(); iter.hasNext();) {
+        final WhenConnection conn = (WhenConnection) iter.next();
+        if (conn.getTarget().equals(target)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 /* (non-Javadoc)
@@ -75,8 +75,8 @@ public boolean canExecute() {
  */
 @Override
 public void execute() {
-	// create a new connection between source and target
-	connection = new WhenConnection(source, target);
+    // create a new connection between source and target
+    connection = new WhenConnection(source, target);
 }
 
 /* (non-Javadoc)
@@ -84,7 +84,7 @@ public void execute() {
  */
 @Override
 public void redo() {
-	connection.reconnect();
+    connection.reconnect();
 }
 
 /**
@@ -93,10 +93,10 @@ public void redo() {
  * @throws IllegalArgumentException if target is null
  */
 public void setTarget(final SNLModel target) {
-	if (target == null) {
-		throw new IllegalArgumentException();
-	}
-	this.target = target;
+    if (target == null) {
+        throw new IllegalArgumentException();
+    }
+    this.target = target;
 }
 
 /* (non-Javadoc)
@@ -104,6 +104,6 @@ public void setTarget(final SNLModel target) {
  */
 @Override
 public void undo() {
-	connection.disconnect();
+    connection.disconnect();
 }
 }

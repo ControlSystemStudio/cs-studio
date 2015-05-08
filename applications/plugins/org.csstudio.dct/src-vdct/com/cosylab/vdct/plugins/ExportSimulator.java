@@ -49,7 +49,7 @@ public void destroy() {}
  * @param mainGroup com.cosylab.vdct.graphics.objects.Group
  */
 public void export(com.cosylab.vdct.graphics.objects.Group mainGroup) {
-	com.cosylab.vdct.Console.getInstance().println(getName()+ " should now export, but since it is only a simulator of a plugin... ");
+    com.cosylab.vdct.Console.getInstance().println(getName()+ " should now export, but since it is only a simulator of a plugin... ");
 }
 /**
  * Insert the method's description here.
@@ -57,7 +57,7 @@ public void export(com.cosylab.vdct.graphics.objects.Group mainGroup) {
  * @return java.lang.String
  */
 public String getAuthor() {
-	return "matej.sekoranja@cosylab.com";
+    return "matej.sekoranja@cosylab.com";
 }
 /**
  * Insert the method's description here.
@@ -65,7 +65,7 @@ public String getAuthor() {
  * @return java.lang.String
  */
 public String getDescription() {
-	return "Simple export plugin simulator";
+    return "Simple export plugin simulator";
 }
 /**
  * Insert the method's description here.
@@ -74,7 +74,7 @@ public String getDescription() {
  * @return
  */
 public String getName() {
-	return "Export Simulator";
+    return "Export Simulator";
 }
 /**
  * Insert the method's description here.
@@ -82,7 +82,7 @@ public String getName() {
  * @return java.lang.String
  */
 public String getVersion() {
-	return "0.1";
+    return "0.1";
 }
 /**
  * Insert the method's description here.

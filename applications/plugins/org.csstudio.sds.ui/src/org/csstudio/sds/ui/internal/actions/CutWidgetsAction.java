@@ -38,60 +38,60 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public final class CutWidgetsAction extends AbstractCutCopyWidgetsAction {
 
-	/**
-	 * Action ID of this action.
-	 */
-	public static final String ID = "org.csstudio.sds.ui.internal.actions.CutWidgetsAction";
+    /**
+     * Action ID of this action.
+     */
+    public static final String ID = "org.csstudio.sds.ui.internal.actions.CutWidgetsAction";
 
-	/**
-	 * Creates a new cut action.
-	 * 
-	 * @param workbenchPart
-	 *            the workbench part.
-	 */
-	public CutWidgetsAction(final IWorkbenchPart workbenchPart) {
-		super(workbenchPart);
-		setId(ID);
-		setText("Cut");
-		setActionDefinitionId("org.eclipse.ui.edit.cut");
-	}
+    /**
+     * Creates a new cut action.
+     * 
+     * @param workbenchPart
+     *            the workbench part.
+     */
+    public CutWidgetsAction(final IWorkbenchPart workbenchPart) {
+        super(workbenchPart);
+        setId(ID);
+        setText("Cut");
+        setActionDefinitionId("org.eclipse.ui.edit.cut");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void run() {
-		List<AbstractWidgetModel> widgets = getSelectedWidgetModels();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void run() {
+        List<AbstractWidgetModel> widgets = getSelectedWidgetModels();
 
-		if (widgets.size() > 0) {
-			copyToClipboard(widgets);
-			deleteWidgets(widgets);
-		}
-	}
+        if (widgets.size() > 0) {
+            copyToClipboard(widgets);
+            deleteWidgets(widgets);
+        }
+    }
 
-	/**
-	 * Deletes the widgets from the editor. The modification is labeled as a cut
-	 * operation and can be undone by the user.
-	 * 
-	 * @param widgets
-	 *            the widgets.
-	 */
-	private void deleteWidgets(final List<AbstractWidgetModel> widgets) {
-		ContainerModel container = getDisplayEditor().getDisplayModel();
-		CompoundCommand cmd = new CompoundCommand("Cut " + widgets.size() + " Widget" + ((widgets.size() > 1) ? "s" : ""));
-		cmd.add(new DeleteWidgetsCommand(getDisplayEditor().getGraphicalViewer(), container, widgets));
-		execute(cmd);
-	}
+    /**
+     * Deletes the widgets from the editor. The modification is labeled as a cut
+     * operation and can be undone by the user.
+     * 
+     * @param widgets
+     *            the widgets.
+     */
+    private void deleteWidgets(final List<AbstractWidgetModel> widgets) {
+        ContainerModel container = getDisplayEditor().getDisplayModel();
+        CompoundCommand cmd = new CompoundCommand("Cut " + widgets.size() + " Widget" + ((widgets.size() > 1) ? "s" : ""));
+        cmd.add(new DeleteWidgetsCommand(getDisplayEditor().getGraphicalViewer(), container, widgets));
+        execute(cmd);
+    }
 
-	/**
-	 * Returns the currently open display editor.
-	 * 
-	 * @return the currently open display editor
-	 */
-	private DisplayEditor getDisplayEditor() {
-		if (getWorkbenchPart() instanceof DisplayEditor) {
-			return (DisplayEditor) getWorkbenchPart();
-		}
-		return null;
-	}
+    /**
+     * Returns the currently open display editor.
+     * 
+     * @return the currently open display editor
+     */
+    private DisplayEditor getDisplayEditor() {
+        if (getWorkbenchPart() instanceof DisplayEditor) {
+            return (DisplayEditor) getWorkbenchPart();
+        }
+        return null;
+    }
 }

@@ -42,55 +42,55 @@ import org.csstudio.platform.model.pvs.ValueType;
  */
 public class DalNameParser extends AbstractProcessVariableNameParser {
 
-	/**
-	 * The control system.
-	 */
-	private ControlSystemEnum _controlSystem;
+    /**
+     * The control system.
+     */
+    private ControlSystemEnum _controlSystem;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param controlSystem
-	 *            the control system
-	 */
-	public DalNameParser(final ControlSystemEnum controlSystem) {
-		_controlSystem = controlSystem;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param controlSystem
+     *            the control system
+     */
+    public DalNameParser(final ControlSystemEnum controlSystem) {
+        _controlSystem = controlSystem;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IProcessVariableAddress doParse(final String nameWithoutPrefix,
-			final String rawName) {
-		ProcessVariableAdress result = null;
-		// compile a regex pattern and parse the String
-		// the used regular expression checks for the following uri components:
-		// 1) line start
-		// 2) 1-n arbitrary chars, except [ and ] (mandatory)
-		// 3) [ followed by 1-n arbitrary chars, except [ and ], followed by ]
-		// (optional)
-		// 4) line end
-		Pattern p = Pattern.compile("^([^,\\[\\]]+)(\\[([^\\[\\]]+)\\])?(, ([a-z;A-Z]+))?$");
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IProcessVariableAddress doParse(final String nameWithoutPrefix,
+            final String rawName) {
+        ProcessVariableAdress result = null;
+        // compile a regex pattern and parse the String
+        // the used regular expression checks for the following uri components:
+        // 1) line start
+        // 2) 1-n arbitrary chars, except [ and ] (mandatory)
+        // 3) [ followed by 1-n arbitrary chars, except [ and ], followed by ]
+        // (optional)
+        // 4) line end
+        Pattern p = Pattern.compile("^([^,\\[\\]]+)(\\[([^\\[\\]]+)\\])?(, ([a-z;A-Z]+))?$");
 
-		Matcher m = p.matcher(nameWithoutPrefix);
+        Matcher m = p.matcher(nameWithoutPrefix);
 
-		if (m.find()) {
-			String property = m.group(1);
-			String characteristic = m.group(3);
-			String typeHint = m.group(5);
+        if (m.find()) {
+            String property = m.group(1);
+            String characteristic = m.group(3);
+            String typeHint = m.group(5);
 
-			result = new ProcessVariableAdress(rawName, _controlSystem, null,
-					property, characteristic);
-			
-			if(typeHint!=null) {
-				ValueType valueType = ValueType.createFromPortable(typeHint);
-				result.setValueTypeHint(valueType);
-			}
+            result = new ProcessVariableAdress(rawName, _controlSystem, null,
+                    property, characteristic);
+            
+            if(typeHint!=null) {
+                ValueType valueType = ValueType.createFromPortable(typeHint);
+                result.setValueTypeHint(valueType);
+            }
 
-		}
+        }
 
-		return result;
-	}
+        return result;
+    }
 
 }

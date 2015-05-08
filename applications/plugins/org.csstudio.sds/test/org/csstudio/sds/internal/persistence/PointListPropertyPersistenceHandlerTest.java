@@ -41,92 +41,92 @@ import org.junit.Test;
  * 
  */
 public final class PointListPropertyPersistenceHandlerTest {
-	/**
-	 * Test for the writing behaviour.
-	 */
-	@Test
-	public void testWriteProperty() {
-		PointListPropertyPersistenceHandler handler = new PointListPropertyPersistenceHandler();
-		WidgetProperty property = new PointlistProperty(
-				"description", WidgetPropertyCategory.POSITION, new PointList());//$NON-NLS-1$
-		property.setDynamicsDescriptor(new DynamicsDescriptor());
-		property.setPropertyValue(new PointList(new int[] { 1, 2, 3, 4 }));
+    /**
+     * Test for the writing behaviour.
+     */
+    @Test
+    public void testWriteProperty() {
+        PointListPropertyPersistenceHandler handler = new PointListPropertyPersistenceHandler();
+        WidgetProperty property = new PointlistProperty(
+                "description", WidgetPropertyCategory.POSITION, new PointList());//$NON-NLS-1$
+        property.setDynamicsDescriptor(new DynamicsDescriptor());
+        property.setPropertyValue(new PointList(new int[] { 1, 2, 3, 4 }));
 
-		Element valueTag = new Element("value"); //$NON-NLS-1$
+        Element valueTag = new Element("value"); //$NON-NLS-1$
 
-		handler.writeProperty(valueTag, property.getPropertyValue());
+        handler.writeProperty(valueTag, property.getPropertyValue());
 
-		assertEquals(1, valueTag.getChildren().size());
+        assertEquals(1, valueTag.getChildren().size());
 
-		Element pointListElement = (Element) valueTag.getChildren().get(0);
-		assertEquals("pointList", pointListElement.getName()); //$NON-NLS-1$
+        Element pointListElement = (Element) valueTag.getChildren().get(0);
+        assertEquals("pointList", pointListElement.getName()); //$NON-NLS-1$
 
-		assertEquals(2, pointListElement.getChildren().size());
+        assertEquals(2, pointListElement.getChildren().size());
 
-		Element pointTag = (Element) pointListElement.getChildren().get(0);
-		assertEquals("point", pointTag.getName()); //$NON-NLS-1$
+        Element pointTag = (Element) pointListElement.getChildren().get(0);
+        assertEquals("point", pointTag.getName()); //$NON-NLS-1$
 
-		assertNotNull(pointTag);
+        assertNotNull(pointTag);
 
-		assertEquals(2, pointTag.getAttributes().size());
+        assertEquals(2, pointTag.getAttributes().size());
 
-		String xString = pointTag.getAttributeValue("x"); //$NON-NLS-1$
-		String yString = pointTag.getAttributeValue("y"); //$NON-NLS-1$
+        String xString = pointTag.getAttributeValue("x"); //$NON-NLS-1$
+        String yString = pointTag.getAttributeValue("y"); //$NON-NLS-1$
 
-		assertEquals("1", xString); //$NON-NLS-1$
-		assertEquals("2", yString); //$NON-NLS-1$
+        assertEquals("1", xString); //$NON-NLS-1$
+        assertEquals("2", yString); //$NON-NLS-1$
 
-		pointTag = (Element) pointListElement.getChildren().get(1);
-		assertEquals("point", pointTag.getName()); //$NON-NLS-1$
+        pointTag = (Element) pointListElement.getChildren().get(1);
+        assertEquals("point", pointTag.getName()); //$NON-NLS-1$
 
-		assertNotNull(pointTag);
+        assertNotNull(pointTag);
 
-		assertEquals(2, pointTag.getAttributes().size());
+        assertEquals(2, pointTag.getAttributes().size());
 
-		xString = pointTag.getAttributeValue("x"); //$NON-NLS-1$
-		yString = pointTag.getAttributeValue("y"); //$NON-NLS-1$
+        xString = pointTag.getAttributeValue("x"); //$NON-NLS-1$
+        yString = pointTag.getAttributeValue("y"); //$NON-NLS-1$
 
-		assertEquals("3", xString); //$NON-NLS-1$
-		assertEquals("4", yString); //$NON-NLS-1$		
-	}
+        assertEquals("3", xString); //$NON-NLS-1$
+        assertEquals("4", yString); //$NON-NLS-1$        
+    }
 
-	/**
-	 * Test for the reading behaviour.
-	 */
-	@Test
-	public void testReadProperty() {
-		PointListPropertyPersistenceHandler handler = new PointListPropertyPersistenceHandler();
+    /**
+     * Test for the reading behaviour.
+     */
+    @Test
+    public void testReadProperty() {
+        PointListPropertyPersistenceHandler handler = new PointListPropertyPersistenceHandler();
 
-		Element propertyTag = new Element("anyTag"); //$NON-NLS-1$
-		Element pointListTag = new Element(
-				PointListPropertyPersistenceHandler.XML_ELEMENT_POINT_LIST);
-		propertyTag.addContent(pointListTag);
+        Element propertyTag = new Element("anyTag"); //$NON-NLS-1$
+        Element pointListTag = new Element(
+                PointListPropertyPersistenceHandler.XML_ELEMENT_POINT_LIST);
+        propertyTag.addContent(pointListTag);
 
-		Element point1 = new Element(
-				PointListPropertyPersistenceHandler.XML_ELEMENT_POINT);
-		point1.setAttribute(
-				PointListPropertyPersistenceHandler.XML_ATTRIBUTE_X, "10"); //$NON-NLS-1$
-		point1.setAttribute(
-				PointListPropertyPersistenceHandler.XML_ATTRIBUTE_Y, "20"); //$NON-NLS-1$
-		pointListTag.addContent(point1);
+        Element point1 = new Element(
+                PointListPropertyPersistenceHandler.XML_ELEMENT_POINT);
+        point1.setAttribute(
+                PointListPropertyPersistenceHandler.XML_ATTRIBUTE_X, "10"); //$NON-NLS-1$
+        point1.setAttribute(
+                PointListPropertyPersistenceHandler.XML_ATTRIBUTE_Y, "20"); //$NON-NLS-1$
+        pointListTag.addContent(point1);
 
-		Element point2 = new Element(
-				PointListPropertyPersistenceHandler.XML_ELEMENT_POINT);
-		point2.setAttribute(
-				PointListPropertyPersistenceHandler.XML_ATTRIBUTE_X, "100"); //$NON-NLS-1$
-		point2.setAttribute(
-				PointListPropertyPersistenceHandler.XML_ATTRIBUTE_Y, "200"); //$NON-NLS-1$
-		pointListTag.addContent(point2);
+        Element point2 = new Element(
+                PointListPropertyPersistenceHandler.XML_ELEMENT_POINT);
+        point2.setAttribute(
+                PointListPropertyPersistenceHandler.XML_ATTRIBUTE_X, "100"); //$NON-NLS-1$
+        point2.setAttribute(
+                PointListPropertyPersistenceHandler.XML_ATTRIBUTE_Y, "200"); //$NON-NLS-1$
+        pointListTag.addContent(point2);
 
-		Object propertyValue = handler.readProperty(propertyTag);
-		assertTrue(propertyValue instanceof PointList);
+        Object propertyValue = handler.readProperty(propertyTag);
+        assertTrue(propertyValue instanceof PointList);
 
-		PointList pointList = (PointList) propertyValue;
-		assertEquals(2, pointList.size());
-		assertEquals(10, pointList.getPoint(0).x);
-		assertEquals(20, pointList.getPoint(0).y);
-		assertEquals(100, pointList.getPoint(1).x);
-		assertEquals(200, pointList.getPoint(1).y);
-	}
+        PointList pointList = (PointList) propertyValue;
+        assertEquals(2, pointList.size());
+        assertEquals(10, pointList.getPoint(0).x);
+        assertEquals(20, pointList.getPoint(0).y);
+        assertEquals(100, pointList.getPoint(1).x);
+        assertEquals(200, pointList.getPoint(1).y);
+    }
 
 }

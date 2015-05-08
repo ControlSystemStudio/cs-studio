@@ -38,35 +38,35 @@ import org.junit.Test;
  */
 public final class RectangleModeltFactoryTest {
 
-	/**
-	 * A factory instance for testing issues.
-	 */
-	private RectangleModelFactory _factory;
-	
-	/**
-	 * Test setup.
-	 */
-	@Before
-	public void setUp()  {
-		_factory= new RectangleModelFactory();
-	}
+    /**
+     * A factory instance for testing issues.
+     */
+    private RectangleModelFactory _factory;
+    
+    /**
+     * Test setup.
+     */
+    @Before
+    public void setUp()  {
+        _factory= new RectangleModelFactory();
+    }
 
-	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.RectangleModelFactory#createWidgetModel()}.
-	 */
-	@Test
-	public void testCreateModelElement() {
-		AbstractWidgetModel model = _factory.createWidgetModel();
-		assertNotNull(model);
-		assertTrue(model instanceof RectangleModel);
-	}
+    /**
+     * Test method for {@link org.csstudio.sds.components.internal.model.RectangleModelFactory#createWidgetModel()}.
+     */
+    @Test
+    public void testCreateModelElement() {
+        AbstractWidgetModel model = _factory.createWidgetModel();
+        assertNotNull(model);
+        assertTrue(model instanceof RectangleModel);
+    }
 
-	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.RectangleModelFactory#getWidgetModelType()}.
-	 */
-	@Test
-	public void testGetModelElementType() {
-		assertEquals(RectangleModel.class, _factory.getWidgetModelType());
-	}
+    /**
+     * Test method for {@link org.csstudio.sds.components.internal.model.RectangleModelFactory#getWidgetModelType()}.
+     */
+    @Test
+    public void testGetModelElementType() {
+        assertEquals(RectangleModel.class, _factory.getWidgetModelType());
+    }
 
 }

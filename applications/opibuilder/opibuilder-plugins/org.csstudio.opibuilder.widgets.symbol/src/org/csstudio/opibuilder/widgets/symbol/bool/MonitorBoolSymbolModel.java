@@ -15,21 +15,21 @@ package org.csstudio.opibuilder.widgets.symbol.bool;
  */
 public class MonitorBoolSymbolModel extends CommonBoolSymbolModel {
 
-	/**
-	 * Type ID for Boolean Symbol Image Monitor widget
-	 */
-	private static final String ID = "org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget";
+    /**
+     * Type ID for Boolean Symbol Image Monitor widget
+     */
+    private static final String ID = "org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget";
 
-	/**
-	 * Initialize the properties when the widget is first created.
-	 */
-	public MonitorBoolSymbolModel() {
-	}
+    /**
+     * Initialize the properties when the widget is first created.
+     */
+    public MonitorBoolSymbolModel() {
+    }
 
-	@Override
-	public String getTypeID() {
-		return ID;
-	}
+    @Override
+    public String getTypeID() {
+        return ID;
+    }
 
 
 }

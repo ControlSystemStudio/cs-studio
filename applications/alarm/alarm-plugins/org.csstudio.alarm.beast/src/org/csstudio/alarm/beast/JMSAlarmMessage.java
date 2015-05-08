@@ -70,7 +70,7 @@ public class JMSAlarmMessage
      */
     final public static String TEXT_DISABLE = "DISABLE";
 
-	/** Value for TEXT that performs acknowledgment.
+    /** Value for TEXT that performs acknowledgment.
      *  NAME will contain PV name
      */
     final public static String TEXT_ACKNOWLEDGE = "ACK";

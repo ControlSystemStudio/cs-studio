@@ -43,103 +43,103 @@ import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
  * 
  */
 public final class NewDctFileWizard extends Wizard implements INewWizard {
-	private NewDisplayWizardPage _sdsFilePage;
+    private NewDisplayWizardPage _sdsFilePage;
 
-	/**
-	 * The current selection.
-	 */
-	private IStructuredSelection _selection;
+    /**
+     * The current selection.
+     */
+    private IStructuredSelection _selection;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void addPages() {
-		_sdsFilePage = new NewDisplayWizardPage("sdsFilePage", //$NON-NLS-1$
-				_selection);
-		addPage(_sdsFilePage);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addPages() {
+        _sdsFilePage = new NewDisplayWizardPage("sdsFilePage", //$NON-NLS-1$
+                _selection);
+        addPage(_sdsFilePage);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean performFinish() {
-		boolean result = true;
-		IFile file = _sdsFilePage.createNewFile();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean performFinish() {
+        boolean result = true;
+        IFile file = _sdsFilePage.createNewFile();
 
-		if (file == null) {
-			result = false;
-		}
+        if (file == null) {
+            result = false;
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void init(final IWorkbench workbench, final IStructuredSelection selection) {
-		_selection = selection;
+    /**
+     * {@inheritDoc}
+     */
+    public void init(final IWorkbench workbench, final IStructuredSelection selection) {
+        _selection = selection;
 
-		setDefaultSelection();
-	}
+        setDefaultSelection();
+    }
 
-	/**
-	 * Set the active workspace project selection to the default SDS project.
-	 */
-	private void setDefaultSelection() {
-		if ((_selection == null) || (_selection.isEmpty())) {
-			IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject("DCT");
-			if (p.exists()) {
-				_selection = new StructuredSelection(p);
-			}
-		}
-	}
+    /**
+     * Set the active workspace project selection to the default SDS project.
+     */
+    private void setDefaultSelection() {
+        if ((_selection == null) || (_selection.isEmpty())) {
+            IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject("DCT");
+            if (p.exists()) {
+                _selection = new StructuredSelection(p);
+            }
+        }
+    }
 
-	final class NewDisplayWizardPage extends WizardNewFileCreationPage {
-		/**
-		 * Creates a new SDS file creation wizard page.
-		 * 
-		 * @param pageName
-		 *            the name of the page
-		 * @param selection
-		 *            the current resource selection
-		 */
-		public NewDisplayWizardPage(final String pageName,
-				final IStructuredSelection selection) {
-			super(pageName, selection);
-			setTitle("Create a new display");
-			setDescription("Create a new display in the selected project or folder.");
-		}
+    final class NewDisplayWizardPage extends WizardNewFileCreationPage {
+        /**
+         * Creates a new SDS file creation wizard page.
+         * 
+         * @param pageName
+         *            the name of the page
+         * @param selection
+         *            the current resource selection
+         */
+        public NewDisplayWizardPage(final String pageName,
+                final IStructuredSelection selection) {
+            super(pageName, selection);
+            setTitle("Create a new display");
+            setDescription("Create a new display in the selected project or folder.");
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		protected InputStream getInitialContents() {
-			Project project = ProjectFactory.createNewDCTProjectFile(getFileName());
-			try {
-				return DctActivator.getDefault().getPersistenceService().getAsStream(project);
-			} catch (Exception e) {
-				return null;
-			}
-		}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected InputStream getInitialContents() {
+            Project project = ProjectFactory.createNewDCTProjectFile(getFileName());
+            try {
+                return DctActivator.getDefault().getPersistenceService().getAsStream(project);
+            } catch (Exception e) {
+                return null;
+            }
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		protected String getNewFileLabel() {
-			return "DCT File Name:";
-		}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected String getNewFileLabel() {
+            return "DCT File Name:";
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public String getFileExtension() {
-			return ProjectFactory.getDctFileExtension();
-		}
-	}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String getFileExtension() {
+            return ProjectFactory.getDctFileExtension();
+        }
+    }
 
 }

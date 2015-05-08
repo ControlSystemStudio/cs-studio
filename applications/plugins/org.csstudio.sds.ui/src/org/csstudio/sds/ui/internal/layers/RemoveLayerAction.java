@@ -37,33 +37,33 @@ import org.eclipse.jface.action.IAction;
  */
 public final class RemoveLayerAction extends AbstractLayerAction {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void selectedLayerChanged(final Layer layer, final LayerSupport layerSupport, final IAction action) {
-		action.setEnabled(layer != null && !layer.getId().equals(LayerSupport.DEFAULT_NAME));
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void selectedLayerChanged(final Layer layer, final LayerSupport layerSupport, final IAction action) {
+        action.setEnabled(layer != null && !layer.getId().equals(LayerSupport.DEFAULT_NAME));
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Command createCommand(final Layer selectedLayer,
-			final LayerSupport layerSupport, final IAction action) {
-		CompoundCommand result = null;
-		if (layerSupport != null && selectedLayer != null) {
-			result = new CompoundCommand();
-			result.setLabel("Remove Layer '"+selectedLayer.getDescription()+"'");
-			for (AbstractWidgetModel model : layerSupport.getParent().getWidgets()) {
-				if (model.getLayer().equals(selectedLayer.getId())) {
-					result.add(new SetPropertyCommand(model, AbstractWidgetModel.PROP_LAYER, LayerSupport.DEFAULT_NAME)); 
-				}
-			}
-			result.add(new RemoveLayerCommand(layerSupport, selectedLayer)); 
-		}
-		
-		return result ;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Command createCommand(final Layer selectedLayer,
+            final LayerSupport layerSupport, final IAction action) {
+        CompoundCommand result = null;
+        if (layerSupport != null && selectedLayer != null) {
+            result = new CompoundCommand();
+            result.setLabel("Remove Layer '"+selectedLayer.getDescription()+"'");
+            for (AbstractWidgetModel model : layerSupport.getParent().getWidgets()) {
+                if (model.getLayer().equals(selectedLayer.getId())) {
+                    result.add(new SetPropertyCommand(model, AbstractWidgetModel.PROP_LAYER, LayerSupport.DEFAULT_NAME)); 
+                }
+            }
+            result.add(new RemoveLayerCommand(layerSupport, selectedLayer)); 
+        }
+        
+        return result ;
+    }
 
 }

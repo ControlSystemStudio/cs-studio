@@ -37,35 +37,35 @@ import org.junit.Test;
  */
 public final class WidgetModelFactoryDescriptorTest {
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.internal.model.WidgetModelFactoryDescriptor}.
-	 */
-	@Test
-	public void testGetDescription() {
-		IWidgetModelFactory factory = new IWidgetModelFactory() {
-			public AbstractWidgetModel createWidgetModel() {
-				return null;
-			}
-			
-			@SuppressWarnings("unchecked")
-			public Class getWidgetModelType() {
-				return AbstractWidgetModel.class;
-			}
-		};
+    /**
+     * Test method for
+     * {@link org.csstudio.sds.internal.model.WidgetModelFactoryDescriptor}.
+     */
+    @Test
+    public void testGetDescription() {
+        IWidgetModelFactory factory = new IWidgetModelFactory() {
+            public AbstractWidgetModel createWidgetModel() {
+                return null;
+            }
+            
+            @SuppressWarnings("unchecked")
+            public Class getWidgetModelType() {
+                return AbstractWidgetModel.class;
+            }
+        };
 
-		WidgetModelFactoryDescriptor descriptor = new WidgetModelFactoryDescriptor(
-				"description", "name", "icon", factory, "pluginId"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        WidgetModelFactoryDescriptor descriptor = new WidgetModelFactoryDescriptor(
+                "description", "name", "icon", factory, "pluginId"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-		assertEquals("description", descriptor.getDescription()); //$NON-NLS-1$
-		assertEquals("name", descriptor.getName()); //$NON-NLS-1$
-		assertEquals("icon", descriptor.getIcon()); //$NON-NLS-1$
-		assertEquals("pluginId", descriptor.getPluginId()); //$NON-NLS-1$
+        assertEquals("description", descriptor.getDescription()); //$NON-NLS-1$
+        assertEquals("name", descriptor.getName()); //$NON-NLS-1$
+        assertEquals("icon", descriptor.getIcon()); //$NON-NLS-1$
+        assertEquals("pluginId", descriptor.getPluginId()); //$NON-NLS-1$
 
-		assertEquals(factory, descriptor.getFactory());
-		assertNull(descriptor.getFactory().createWidgetModel());
-		assertEquals(AbstractWidgetModel.class, descriptor.getFactory()
-				.getWidgetModelType());
-	}
+        assertEquals(factory, descriptor.getFactory());
+        assertNull(descriptor.getFactory().createWidgetModel());
+        assertEquals(AbstractWidgetModel.class, descriptor.getFactory()
+                .getWidgetModelType());
+    }
 
 }

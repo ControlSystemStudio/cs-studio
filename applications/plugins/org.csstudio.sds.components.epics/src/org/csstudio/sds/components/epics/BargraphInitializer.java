@@ -38,46 +38,46 @@ import org.csstudio.sds.util.ColorAndFontUtil;
  */
 public final class BargraphInitializer extends AbstractEpicsWidgetInitializer {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void initialize(final AbstractControlSystemSchema schema) {
-		
-		initializeCommonConnectionStates();
-		initializeCommonAlarmBehaviour();
-		
-		initializeDynamicProperty(BargraphModel.PROP_MIN, "$channel$[graphMin], double");
-		initializeDynamicProperty(BargraphModel.PROP_MAX, "$channel$[graphMax], double");
-		initializeDynamicProperty(BargraphModel.PROP_HIHI_LEVEL,
-				"$channel$[alarmMax], double");
-		initializeDynamicProperty(BargraphModel.PROP_HI_LEVEL, "$channel$[warningMax], double");
-		initializeDynamicProperty(BargraphModel.PROP_LOLO_LEVEL,
-				"$channel$[alarmMin], double");
-		initializeDynamicProperty(BargraphModel.PROP_LO_LEVEL, "$channel$[warningMin], double");
-		initializeDynamicProperty(BargraphModel.PROP_FILL, "$channel$");
-		
-		initializeDynamicProperty(BargraphModel.PROP_DEFAULT_FILL_COLOR, "$channel$[severity]", null, Alarm.TYPE_ID);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void initialize(final AbstractControlSystemSchema schema) {
+        
+        initializeCommonConnectionStates();
+        initializeCommonAlarmBehaviour();
+        
+        initializeDynamicProperty(BargraphModel.PROP_MIN, "$channel$[graphMin], double");
+        initializeDynamicProperty(BargraphModel.PROP_MAX, "$channel$[graphMax], double");
+        initializeDynamicProperty(BargraphModel.PROP_HIHI_LEVEL,
+                "$channel$[alarmMax], double");
+        initializeDynamicProperty(BargraphModel.PROP_HI_LEVEL, "$channel$[warningMax], double");
+        initializeDynamicProperty(BargraphModel.PROP_LOLO_LEVEL,
+                "$channel$[alarmMin], double");
+        initializeDynamicProperty(BargraphModel.PROP_LO_LEVEL, "$channel$[warningMin], double");
+        initializeDynamicProperty(BargraphModel.PROP_FILL, "$channel$");
+        
+        initializeDynamicProperty(BargraphModel.PROP_DEFAULT_FILL_COLOR, "$channel$[severity]", null, Alarm.TYPE_ID);
 
-		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
-		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, ColorAndFontUtil.toHex(255,
-				9, 163));
-		colorsByConnectionState.put(ConnectionState.INITIAL, ColorAndFontUtil.toHex(255, 168,
-				222));
-		colorsByConnectionState.put(ConnectionState.CONNECTED, ColorAndFontUtil.toHex(120, 120,
-				120));
-		initializeDynamicPropertyForConnectionState(
-				BargraphModel.PROP_FILLBACKGROUND_COLOR, "$channel$",
-				colorsByConnectionState);
+        Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
+        colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, ColorAndFontUtil.toHex(255,
+                9, 163));
+        colorsByConnectionState.put(ConnectionState.INITIAL, ColorAndFontUtil.toHex(255, 168,
+                222));
+        colorsByConnectionState.put(ConnectionState.CONNECTED, ColorAndFontUtil.toHex(120, 120,
+                120));
+        initializeDynamicPropertyForConnectionState(
+                BargraphModel.PROP_FILLBACKGROUND_COLOR, "$channel$",
+                colorsByConnectionState);
 
-		Map<ConnectionState, Object> visibilityByConnectionState = new HashMap<ConnectionState, Object>();
-		visibilityByConnectionState.put(ConnectionState.CONNECTED, true);
-		visibilityByConnectionState.put(ConnectionState.CONNECTION_LOST, false);
-		visibilityByConnectionState.put(ConnectionState.INITIAL, false);
-		initializeDynamicPropertyForConnectionState(
-				BargraphModel.PROP_TRANSPARENT, "$channel$",
-				visibilityByConnectionState);
-		
-		// initializeDynamicProperty(BargraphModel.PROP_FILL, "$channel$.VAL");
-	}
+        Map<ConnectionState, Object> visibilityByConnectionState = new HashMap<ConnectionState, Object>();
+        visibilityByConnectionState.put(ConnectionState.CONNECTED, true);
+        visibilityByConnectionState.put(ConnectionState.CONNECTION_LOST, false);
+        visibilityByConnectionState.put(ConnectionState.INITIAL, false);
+        initializeDynamicPropertyForConnectionState(
+                BargraphModel.PROP_TRANSPARENT, "$channel$",
+                visibilityByConnectionState);
+        
+        // initializeDynamicProperty(BargraphModel.PROP_FILL, "$channel$.VAL");
+    }
 }

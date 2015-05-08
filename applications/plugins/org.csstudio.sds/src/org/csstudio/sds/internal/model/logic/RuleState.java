@@ -33,60 +33,60 @@ import org.csstudio.sds.internal.rules.ParameterDescriptor;
  * 
  */
 final class RuleState {
-	/**
-	 * References to all input channels.
-	 */
-	private ParameterDescriptor[] _parameters;
+    /**
+     * References to all input channels.
+     */
+    private ParameterDescriptor[] _parameters;
 
-	/**
-	 * Contains the latest values for the input channels.
-	 */
-	private HashMap<ParameterDescriptor, Object> _cachedValues;
+    /**
+     * Contains the latest values for the input channels.
+     */
+    private HashMap<ParameterDescriptor, Object> _cachedValues;
 
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param parameters
-	 *            Parameter descriptions for the inialisation of this state
-	 *            object.
-	 */
-	public RuleState(final ParameterDescriptor[] parameters) {
-		_parameters = parameters;
+    /**
+     * Standard constructor.
+     * 
+     * @param parameters
+     *            Parameter descriptions for the inialisation of this state
+     *            object.
+     */
+    public RuleState(final ParameterDescriptor[] parameters) {
+        _parameters = parameters;
 
-		// prepare cache
-		_cachedValues = new HashMap<ParameterDescriptor, Object>();
+        // prepare cache
+        _cachedValues = new HashMap<ParameterDescriptor, Object>();
 
-		for(ParameterDescriptor p : parameters) {
-			_cachedValues.put(p, p.getValue());
-		}
-	}
+        for(ParameterDescriptor p : parameters) {
+            _cachedValues.put(p, p.getValue());
+        }
+    }
 
-	/**
-	 * Cache the latest value for a given channel name in this state.
-	 * 
-	 * @param parameter
-	 *            A channel name.
-	 * @param value
-	 *            The latest value from the given channel.
-	 */
-	public synchronized void cacheParameterValue(final ParameterDescriptor parameter,
-			final Object value) {
-		if (_cachedValues.containsKey(parameter)) {
-			_cachedValues.put(parameter, value);
-		}
-	}
+    /**
+     * Cache the latest value for a given channel name in this state.
+     * 
+     * @param parameter
+     *            A channel name.
+     * @param value
+     *            The latest value from the given channel.
+     */
+    public synchronized void cacheParameterValue(final ParameterDescriptor parameter,
+            final Object value) {
+        if (_cachedValues.containsKey(parameter)) {
+            _cachedValues.put(parameter, value);
+        }
+    }
 
-	/**
-	 * Return the most recent parameter values of this state.
-	 * 
-	 * @return The most recent parameter values of this state.
-	 */
-	public Object[] getRecentParameterValues() {
-		Object[] result = new Object[_parameters.length];
-		for (int i = 0; i < _parameters.length; i++) {
-			result[i] = _cachedValues.get(_parameters[i]);
-		}
+    /**
+     * Return the most recent parameter values of this state.
+     * 
+     * @return The most recent parameter values of this state.
+     */
+    public Object[] getRecentParameterValues() {
+        Object[] result = new Object[_parameters.length];
+        for (int i = 0; i < _parameters.length; i++) {
+            result[i] = _cachedValues.get(_parameters[i]);
+        }
 
-		return result;
-	}
+        return result;
+    }
 }

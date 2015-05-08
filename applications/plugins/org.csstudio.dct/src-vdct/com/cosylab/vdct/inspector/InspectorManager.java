@@ -39,15 +39,15 @@ import java.util.*;
  */
 public class InspectorManager {
 
-	private static InspectorManager instance = null;
-	private static Frame parent = null;
-	
-	private Vector inspectors;
+    private static InspectorManager instance = null;
+    private static Frame parent = null;
+    
+    private Vector inspectors;
 /**
  * InspectorManager constructor comment.
  */
 protected InspectorManager() {
-	inspectors = new Vector();
+    inspectors = new Vector();
 }
 /**
  * Insert the method's description here.
@@ -55,23 +55,23 @@ protected InspectorManager() {
  * @return com.cosylab.vdct.inspector.InspectorInterface
  */
 private InspectorInterface createInspector() {
-	Inspector inspector = new Inspector(parent);
-	com.cosylab.vdct.DataProvider.getInstance().addInspectableListener(inspector);
-	return inspector;
+    Inspector inspector = new Inspector(parent);
+    com.cosylab.vdct.DataProvider.getInstance().addInspectableListener(inspector);
+    return inspector;
 }
 /**
  * Insert the method's description here.
  * Creation date: (8.1.2001 21:39:00)
  */
 public void disposeAllInspectors() {
-	Object obj;
-	Enumeration e = inspectors.elements();
-	while (e.hasMoreElements()) {
-		obj = e.nextElement();
-		((InspectorInterface)obj).dispose();
-		com.cosylab.vdct.DataProvider.getInstance().removeInspectableListener((InspectableObjectsListener)obj);
-	}
-	inspectors.removeAllElements();
+    Object obj;
+    Enumeration e = inspectors.elements();
+    while (e.hasMoreElements()) {
+        obj = e.nextElement();
+        ((InspectorInterface)obj).dispose();
+        com.cosylab.vdct.DataProvider.getInstance().removeInspectableListener((InspectableObjectsListener)obj);
+    }
+    inspectors.removeAllElements();
 }
 /**
  * Insert the method's description here.
@@ -79,11 +79,11 @@ public void disposeAllInspectors() {
  * @param inspector com.cosylab.vdct.inspector.InspectorInterface
  */
 public void fucusGained(InspectorInterface inspector) {
-	if (inspectors.contains(inspector) &&
-		(inspectors.firstElement()!=inspector)) {
-		inspectors.removeElement(inspector);
-		inspectors.insertElementAt(inspector, 0);
-	}
+    if (inspectors.contains(inspector) &&
+        (inspectors.firstElement()!=inspector)) {
+        inspectors.removeElement(inspector);
+        inspectors.insertElementAt(inspector, 0);
+    }
 }
 /**
  * Insert the method's description here.
@@ -91,7 +91,7 @@ public void fucusGained(InspectorInterface inspector) {
  * @return com.cosylab.vdct.inspector.InspectorInterface
  */
 public InspectorInterface getActiveInspector() {
-	return (InspectorInterface)inspectors.firstElement();
+    return (InspectorInterface)inspectors.firstElement();
 }
 /**
  * Insert the method's description here.
@@ -99,8 +99,8 @@ public InspectorInterface getActiveInspector() {
  * @return com.cosylab.vdct.inspector.InspectorManager
  */
 public static InspectorManager getInstance() {
-	if (instance==null) instance = new InspectorManager();
-	return instance;
+    if (instance==null) instance = new InspectorManager();
+    return instance;
 }
 /**
  * Insert the method's description here.
@@ -108,7 +108,7 @@ public static InspectorManager getInstance() {
  * @return java.awt.Frame
  */
 public static java.awt.Frame getParent() {
-	return parent;
+    return parent;
 }
 /**
  * Insert the method's description here.
@@ -117,16 +117,16 @@ public static java.awt.Frame getParent() {
  * @param object com.cosylab.vdct.inspector.Inspectable
  */
 public boolean isInspected(Inspectable object) {
-	
-	InspectorInterface inspector = null;
-	Enumeration e = inspectors.elements();
-	while (e.hasMoreElements()) {
-		inspector = (InspectorInterface)e.nextElement();
-		if (inspector.getInspectedObject()==object)
-			return true;
-	}
+    
+    InspectorInterface inspector = null;
+    Enumeration e = inspectors.elements();
+    while (e.hasMoreElements()) {
+        inspector = (InspectorInterface)e.nextElement();
+        if (inspector.getInspectedObject()==object)
+            return true;
+    }
 
-	return false;
+    return false;
 }
 /**
  * Insert the method's description here.
@@ -135,32 +135,32 @@ public boolean isInspected(Inspectable object) {
  */
 public void requestInspectorFor(Inspectable object) {
 
-	// search for it
-	InspectorInterface inspector = null;
-	Enumeration e = inspectors.elements();
-	while (e.hasMoreElements()) {
-		inspector = (InspectorInterface)e.nextElement();
-		if (inspector.getInspectedObject()==object) {
-			inspector.setVisible(true);
-			return;
-		}
-	}
-	
-	// search for first unfrozen 
-	e = inspectors.elements();
-	while (e.hasMoreElements()) {
-		inspector = (InspectorInterface)e.nextElement();
-		if (!inspector.isFrozen()) {
-			inspector.inspectObject(object);
-			return;
-		}
-	}
+    // search for it
+    InspectorInterface inspector = null;
+    Enumeration e = inspectors.elements();
+    while (e.hasMoreElements()) {
+        inspector = (InspectorInterface)e.nextElement();
+        if (inspector.getInspectedObject()==object) {
+            inspector.setVisible(true);
+            return;
+        }
+    }
+    
+    // search for first unfrozen 
+    e = inspectors.elements();
+    while (e.hasMoreElements()) {
+        inspector = (InspectorInterface)e.nextElement();
+        if (!inspector.isFrozen()) {
+            inspector.inspectObject(object);
+            return;
+        }
+    }
 
-	// otherwise create a new instance	
-	inspector = createInspector();
-	inspectors.addElement(inspector);
-	inspector.inspectObject(object);
-	inspector.setVisible(true);			// bug fix
+    // otherwise create a new instance    
+    inspector = createInspector();
+    inspectors.addElement(inspector);
+    inspector.inspectObject(object);
+    inspector.setVisible(true);            // bug fix
 }
 
 /**
@@ -170,16 +170,16 @@ public void requestInspectorFor(Inspectable object) {
  */
 public void updateObject(Inspectable object) {
 
-	// search for it
-	InspectorInterface inspector = null;
-	Enumeration e = inspectors.elements();
-	while (e.hasMoreElements()) {
-		inspector = (InspectorInterface)e.nextElement();
-		if (inspector.getInspectedObject()==object) {
-			inspector.updateObject();
-			return;
-		}
-	}
+    // search for it
+    InspectorInterface inspector = null;
+    Enumeration e = inspectors.elements();
+    while (e.hasMoreElements()) {
+        inspector = (InspectorInterface)e.nextElement();
+        if (inspector.getInspectedObject()==object) {
+            inspector.updateObject();
+            return;
+        }
+    }
 }
 
 /**
@@ -188,7 +188,7 @@ public void updateObject(Inspectable object) {
  * @param newParent java.awt.Frame
  */
 public static void setParent(java.awt.Frame newParent) {
-	parent = newParent;
+    parent = newParent;
 }
 /**
  * Insert the method's description here.
@@ -197,14 +197,14 @@ public static void setParent(java.awt.Frame newParent) {
  * @param object com.cosylab.vdct.inspector.Inspectable
  */
 public void updateCommentProperty(Inspectable object) {
-	
-	InspectorInterface inspector = null;
-	Enumeration e = inspectors.elements();
-	while (e.hasMoreElements()) {
-		inspector = (InspectorInterface)e.nextElement();
-		if (inspector.getInspectedObject()==object)
-			inspector.updateComment();
-	}
+    
+    InspectorInterface inspector = null;
+    Enumeration e = inspectors.elements();
+    while (e.hasMoreElements()) {
+        inspector = (InspectorInterface)e.nextElement();
+        if (inspector.getInspectedObject()==object)
+            inspector.updateComment();
+    }
 
 }
 /**
@@ -212,9 +212,9 @@ public void updateCommentProperty(Inspectable object) {
  * Creation date: (17.4.2001 15:46:11)
  */
 public void updateObjectLists() {
-	Enumeration e = inspectors.elements();
-	while (e.hasMoreElements())
-		((InspectorInterface)e.nextElement()).updateObjectList();
+    Enumeration e = inspectors.elements();
+    while (e.hasMoreElements())
+        ((InspectorInterface)e.nextElement()).updateObjectList();
 }
 /**
  * Insert the method's description here.
@@ -223,14 +223,14 @@ public void updateObjectLists() {
  * @param object com.cosylab.vdct.inspector.Inspectable
  */
 public void updateProperty(Inspectable object, InspectableProperty property) {
-	
-	InspectorInterface inspector = null;
-	Enumeration e = inspectors.elements();
-	while (e.hasMoreElements()) {
-		inspector = (InspectorInterface)e.nextElement();
-		if (inspector.getInspectedObject()==object)
-			inspector.updateProperty(property);
-	}
+    
+    InspectorInterface inspector = null;
+    Enumeration e = inspectors.elements();
+    while (e.hasMoreElements()) {
+        inspector = (InspectorInterface)e.nextElement();
+        if (inspector.getInspectedObject()==object)
+            inspector.updateProperty(property);
+    }
 
 }
 }

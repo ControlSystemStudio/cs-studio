@@ -353,11 +353,11 @@ public class CSSView extends Composite implements Observer {
             final String stringWithoutPrefix[] = stringWithoutBrackets.split("\\s+");
             final ControlSystemItem csi;
             if (stringWithoutPrefix.length>1) {
-            	final String stringWithoutColon = stringWithoutPrefix[1].substring(1, stringWithoutPrefix[1].length() - 1);
-            	System.out.println(stringWithoutColon);
-            	csi = _itemList.get(stringWithoutColon);
+                final String stringWithoutColon = stringWithoutPrefix[1].substring(1, stringWithoutPrefix[1].length() - 1);
+                System.out.println(stringWithoutColon);
+                csi = _itemList.get(stringWithoutColon);
             } else {
-            	csi = new ControlSystemItem("","");
+                csi = new ControlSystemItem("","");
             }
             _child = new CSSView(_parent,
                                  _automat,
@@ -638,18 +638,18 @@ public class CSSView extends Composite implements Observer {
         _parent.pack();
 
         new ControlSystemDragSource(_tableViewer.getControl()) {
-			
-			@Override
-			public Object getSelection() {
+            
+            @Override
+            public Object getSelection() {
                 final Object[] obj = ((IStructuredSelection)_tableViewer.getSelection()).toArray();
                 final ProcessVariable[] pvs = new ProcessVariable[obj.length];
                 for (int i=0; i<pvs.length; ++i)
                     pvs[i] = new ProcessVariable(((ProcessVariableItem)obj[i]).getName());
                 return pvs;
-			}
-		};
+            }
+        };
         
-		
+        
         // Make List Drageble
         //        new ProcessVariableDragSource(listViewer.getControl(), listViewer);
         //        new ProcessVariableDragSource(listViewer.getList(), listViewer);

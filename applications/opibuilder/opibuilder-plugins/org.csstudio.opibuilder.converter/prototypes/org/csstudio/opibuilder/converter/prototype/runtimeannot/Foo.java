@@ -34,11 +34,11 @@ package org.csstudio.opibuilder.converter.prototype.runtimeannot;
  */
 public class Foo {
 
-	@Test public String field1;
-	@Test public String field2;
-	@Test public String field3;
-	
-	@Test public void m1() { }
+    @Test public String field1;
+    @Test public String field2;
+    @Test public String field3;
+    
+    @Test public void m1() { }
     public void m2() { }
     @Test public void m3() {
         throw new RuntimeException("Boom");

@@ -38,29 +38,29 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * @author Joerg Rathlev
  */
 public class SharedSenderConnectionService {
-	
-	private final MonitorableSharedConnection _connection;
-	
-	/**
-	 * Creates the service.
-	 */
-	public SharedSenderConnectionService() {
-		IPreferencesService prefs = Platform.getPreferencesService();
-		String jmsUrl = prefs.getString(Activator.PLUGIN_ID,
-				PreferenceConstants.SENDER_BROKER_URL,
-				"", null);
-		_connection = new MonitorableSharedConnection(jmsUrl);
-	}
+    
+    private final MonitorableSharedConnection _connection;
+    
+    /**
+     * Creates the service.
+     */
+    public SharedSenderConnectionService() {
+        IPreferencesService prefs = Platform.getPreferencesService();
+        String jmsUrl = prefs.getString(Activator.PLUGIN_ID,
+                PreferenceConstants.SENDER_BROKER_URL,
+                "", null);
+        _connection = new MonitorableSharedConnection(jmsUrl);
+    }
 
-	/**
-	 * Returns a handle to the shared connection.
-	 * 
-	 * @return a handle to the shared connection.
-	 * @throws JMSException
-	 *             if the underlying shared connection could not be created or
-	 *             started due to an internal error.
-	 */
-	public ISharedConnectionHandle sharedConnection() throws JMSException {
-		return _connection.createHandle();
-	}
+    /**
+     * Returns a handle to the shared connection.
+     * 
+     * @return a handle to the shared connection.
+     * @throws JMSException
+     *             if the underlying shared connection could not be created or
+     *             started due to an internal error.
+     */
+    public ISharedConnectionHandle sharedConnection() throws JMSException {
+        return _connection.createHandle();
+    }
 }

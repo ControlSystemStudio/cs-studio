@@ -24,32 +24,32 @@ public class OpenLogViewer extends AbstractHandler {
     public final static String ID = "org.csstudio.logbook.viewer.OpenLogViewer";
 
     public OpenLogViewer() {
-	super();
+    super();
     }
 
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
-	final IWorkbench workbench = PlatformUI.getWorkbench();
-	final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-	ISelection selection = HandlerUtil.getCurrentSelection(event);
-	if (selection instanceof IStructuredSelection) {
-	    IStructuredSelection strucSelection = (IStructuredSelection) selection;
-	    if (strucSelection.getFirstElement() instanceof LogEntry) {
-		LogViewer.createInstance(new LogViewerModel(
-			(LogEntry) strucSelection.getFirstElement()));
-	    } else {
-		LogViewer.createInstance();
-	    }
-	} else {
-	    LogViewer.createInstance();
-	}
-	try {
-	    workbench.showPerspective(LogViewerPerspective.ID, window);
-	} catch (Exception ex) {
-	    ExceptionDetailsErrorDialog.openError(
-		    HandlerUtil.getActiveShell(event),
-		    "Error executing command...", ex);
-	}
-	return null;
+    final IWorkbench workbench = PlatformUI.getWorkbench();
+    final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+    ISelection selection = HandlerUtil.getCurrentSelection(event);
+    if (selection instanceof IStructuredSelection) {
+        IStructuredSelection strucSelection = (IStructuredSelection) selection;
+        if (strucSelection.getFirstElement() instanceof LogEntry) {
+        LogViewer.createInstance(new LogViewerModel(
+            (LogEntry) strucSelection.getFirstElement()));
+        } else {
+        LogViewer.createInstance();
+        }
+    } else {
+        LogViewer.createInstance();
+    }
+    try {
+        workbench.showPerspective(LogViewerPerspective.ID, window);
+    } catch (Exception ex) {
+        ExceptionDetailsErrorDialog.openError(
+            HandlerUtil.getActiveShell(event),
+            "Error executing command...", ex);
+    }
+    return null;
     }
 }

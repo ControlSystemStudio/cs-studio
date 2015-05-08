@@ -38,8 +38,8 @@ import org.eclipse.draw2d.geometry.PointList;
  * @since 07.09.2007
  */
 public class ADLPoints extends WidgetPart{
-	//TODO Strip out old code lines that refer to SDS implementations
-	//TODO Add LineParser routines to get commonly used entries 
+    //TODO Strip out old code lines that refer to SDS implementations
+    //TODO Add LineParser routines to get commonly used entries 
     /**
      * List with all coordinate points.
      */
@@ -60,7 +60,7 @@ public class ADLPoints extends WidgetPart{
      * Default constructor
      */
     public ADLPoints(){
-    	super();
+        super();
     }
     
     /**
@@ -117,13 +117,13 @@ public class ADLPoints extends WidgetPart{
   //**        _widgetModel.setPropertyValue("points", _pointsList); //$NON-NLS-1$
   //**    }
 
-	@Override
-	public Object[] getChildren() {
-		Object[] ret = new Object[_pointsList.size()];
-		for (int ii=0; ii<_pointsList.size(); ii++){
-			ret[ii] = _pointsList.getPoint(ii);
-		}
-		return ret;
-	}
+    @Override
+    public Object[] getChildren() {
+        Object[] ret = new Object[_pointsList.size()];
+        for (int ii=0; ii<_pointsList.size(); ii++){
+            ret[ii] = _pointsList.getPoint(ii);
+        }
+        return ret;
+    }
 
 }

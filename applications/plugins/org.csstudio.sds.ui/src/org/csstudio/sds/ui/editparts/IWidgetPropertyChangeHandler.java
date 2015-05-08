@@ -32,19 +32,19 @@ import org.eclipse.draw2d.IFigure;
  * 
  */
 public interface IWidgetPropertyChangeHandler {
-	/**
-	 * Handle the change of an widget property by applying graphical operations
-	 * to the given refreshable figure.
-	 * 
-	 * @param oldValue
-	 *            The old property value.
-	 * @param newValue
-	 *            The new property value.
-	 * @param refreshableFigure
-	 *            The refreshable figure to apply graphical operations to.
-	 * @return true, if the refreshable figure needs to be repainted after the
-	 *         property change handling.
-	 */
-	boolean handleChange(Object oldValue, Object newValue,
-			IFigure refreshableFigure);
+    /**
+     * Handle the change of an widget property by applying graphical operations
+     * to the given refreshable figure.
+     * 
+     * @param oldValue
+     *            The old property value.
+     * @param newValue
+     *            The new property value.
+     * @param refreshableFigure
+     *            The refreshable figure to apply graphical operations to.
+     * @return true, if the refreshable figure needs to be repainted after the
+     *         property change handling.
+     */
+    boolean handleChange(Object oldValue, Object newValue,
+            IFigure refreshableFigure);
 }

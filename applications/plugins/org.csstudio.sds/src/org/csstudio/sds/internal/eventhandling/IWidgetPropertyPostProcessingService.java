@@ -16,39 +16,39 @@ import org.eclipse.gef.commands.CompoundCommand;
  */
 public interface IWidgetPropertyPostProcessingService {
 
-	/**
-	 * Applies contributed post-processors for all properties of the widget.
-	 * Usually this method should be called during model creation or loading.
-	 * 
-	 * Important: Changes are executed within this method. No further action is
-	 * necessary.
-	 * 
-	 * @param widget
-	 *            the widget that should get initialized
-	 * @param eventType
-	 *            the type of event (used to distinguish between loading
-	 *            operation or manual changes in the display editor)
-	 */
-	void applyForAllProperties(AbstractWidgetModel widget, EventType eventType);
+    /**
+     * Applies contributed post-processors for all properties of the widget.
+     * Usually this method should be called during model creation or loading.
+     * 
+     * Important: Changes are executed within this method. No further action is
+     * necessary.
+     * 
+     * @param widget
+     *            the widget that should get initialized
+     * @param eventType
+     *            the type of event (used to distinguish between loading
+     *            operation or manual changes in the display editor)
+     */
+    void applyForAllProperties(AbstractWidgetModel widget, EventType eventType);
 
-	/**
-	 * Applies contributed post-processors for a single widget property. Usually
-	 * this method should be called when a single property of a widget is
-	 * changed using the property view.
-	 * 
-	 * Important: Changes are NOT directly executed within this method. Instead
-	 * a given command chain is equipped with the necessary commands. So - the
-	 * command chain has to be executed afterwards to cause any effects.
-	 * 
-	 * @param widget
-	 *            the widget
-	 * @param widgetProperty
-	 *            the widget
-	 * @param chain
-	 * @param eventType
-	 *            the type of event (used to distinguish between loading
-	 *            operation or manual changes in the display editor)
-	 */
-	void applyForSingleProperty(AbstractWidgetModel widget, WidgetProperty widgetProperty, CompoundCommand chain, EventType eventType);
+    /**
+     * Applies contributed post-processors for a single widget property. Usually
+     * this method should be called when a single property of a widget is
+     * changed using the property view.
+     * 
+     * Important: Changes are NOT directly executed within this method. Instead
+     * a given command chain is equipped with the necessary commands. So - the
+     * command chain has to be executed afterwards to cause any effects.
+     * 
+     * @param widget
+     *            the widget
+     * @param widgetProperty
+     *            the widget
+     * @param chain
+     * @param eventType
+     *            the type of event (used to distinguish between loading
+     *            operation or manual changes in the display editor)
+     */
+    void applyForSingleProperty(AbstractWidgetModel widget, WidgetProperty widgetProperty, CompoundCommand chain, EventType eventType);
 
 }

@@ -33,24 +33,24 @@ import org.csstudio.sds.model.IRule;
  *
  */
 public final class DirectConnectionRule implements IRule {
-	/**
-	 * The ID for the standard rule that simply routes the control
-	 * system events to the target widget model.
-	 */
-	public static final String TYPE_ID = "directConnection"; //$NON-NLS-1$
+    /**
+     * The ID for the standard rule that simply routes the control
+     * system events to the target widget model.
+     */
+    public static final String TYPE_ID = "directConnection"; //$NON-NLS-1$
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object evaluate(final Object[] arguments) {
-		Object result = 0;
+    /**
+     * {@inheritDoc}
+     */
+    public Object evaluate(final Object[] arguments) {
+        Object result = 0;
 
-		if ((arguments != null) && (arguments.length > 0)) {
-			result = arguments[0];
-		}
+        if ((arguments != null) && (arguments.length > 0)) {
+            result = arguments[0];
+        }
 
-		return result;
-	}
+        return result;
+    }
 
     /**
      * {@inheritDoc}

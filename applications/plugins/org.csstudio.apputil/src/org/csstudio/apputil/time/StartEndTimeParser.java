@@ -64,7 +64,7 @@ public class StartEndTimeParser
      *  @throws Exception On parse error.
      */
     public StartEndTimeParser(final String start_specification,
-    		                  final String end_specification)
+                              final String end_specification)
         throws Exception
     {
         this.start_specification = start_specification.replace(',', ' ').trim();
@@ -85,11 +85,11 @@ public class StartEndTimeParser
         }
         else if (rel_start.isAbsolute() && !rel_end.isAbsolute())
         {
-        	// Is it fixed date ... now?
-        	if (rel_end.getRelativeTime().isNow())
-        		end = Calendar.getInstance();
-        	else // Fixed date ... something relative to that date
-        		end = adjust(start, this.end_specification, rel_end);
+            // Is it fixed date ... now?
+            if (rel_end.getRelativeTime().isNow())
+                end = Calendar.getInstance();
+            else // Fixed date ... something relative to that date
+                end = adjust(start, this.end_specification, rel_end);
             return;
         }
         // else !rel_start.isAbsolute() && !rel_end.isAbsolute()

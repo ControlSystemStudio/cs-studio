@@ -39,14 +39,14 @@ import com.cosylab.vdct.inspector.*;
  * @author Matej Sekoranja
  */
 public class NameValueInfoProperty implements InspectableProperty {
-	private String name;
-	private String value;
+    private String name;
+    private String value;
 /**
  * DTYPInfoProperty constructor comment.
  */
 public NameValueInfoProperty(String name, String value) {
-	this.name=name;
-	this.value=value;
+    this.name=name;
+    this.value=value;
 }
 /**
  * Insert the method's description here.
@@ -54,7 +54,7 @@ public NameValueInfoProperty(String name, String value) {
  * @return boolean
  */
 public boolean allowsOtherValues() {
-	return false;
+    return false;
 }
 /**
  * Insert the method's description here.
@@ -62,7 +62,7 @@ public boolean allowsOtherValues() {
  * @return java.lang.String
  */
 public String getHelp() {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -70,7 +70,7 @@ public String getHelp() {
  * @return java.lang.String
  */
 public String getName() {
-	return name;
+    return name;
 }
 /**
  * Insert the method's description here.
@@ -78,7 +78,7 @@ public String getName() {
  * @return java.lang.String[]
  */
 public java.lang.String[] getSelectableValues() {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -86,7 +86,7 @@ public java.lang.String[] getSelectableValues() {
  * @return java.lang.String
  */
 public String getValue() {
-	return value;
+    return value;
 }
 /**
  * Insert the method's description here.
@@ -95,7 +95,7 @@ public String getValue() {
  */
 public String getInitValue()
 {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -103,7 +103,7 @@ public String getInitValue()
  * @return boolean
  */
 public boolean isEditable() {
-	return false;
+    return false;
 }
 /**
  * Insert the method's description here.
@@ -111,7 +111,7 @@ public boolean isEditable() {
  * @return boolean
  */
 public boolean isSepatator() {
-	return false;
+    return false;
 }
 /**
  * Insert the method's description here.
@@ -126,7 +126,7 @@ public void setValue(String value) {}
  */
 public Pattern getEditPattern()
 {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -135,7 +135,7 @@ public Pattern getEditPattern()
  */
 public String getToolTipText()
 {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -144,7 +144,7 @@ public String getToolTipText()
  */
 public boolean isValid()
 {
-	return true;
+    return true;
 }
 /**
  * Insert the method's description here.
@@ -153,7 +153,7 @@ public boolean isValid()
  */
 public int getVisibility()
 {
-	return InspectableProperty.UNDEFINED_VISIBILITY;
+    return InspectableProperty.UNDEFINED_VISIBILITY;
 }
 /**
  * Insert the method's description here.

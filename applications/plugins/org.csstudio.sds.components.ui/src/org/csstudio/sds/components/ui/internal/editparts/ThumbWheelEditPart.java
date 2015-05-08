@@ -42,150 +42,150 @@ import org.eclipse.swt.graphics.Font;
  */
 public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 
-	private ThumbWheelLogic _logic;
-	private ThumbWheelModel _model;
-	private RefreshableThumbWheelFigure _figure;
+    private ThumbWheelLogic _logic;
+    private ThumbWheelModel _model;
+    private RefreshableThumbWheelFigure _figure;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected final IFigure doCreateFigure() {
-		_model = (ThumbWheelModel) getWidgetModel();
+        _model = (ThumbWheelModel) getWidgetModel();
 
-		_logic = new ThumbWheelLogic(_model.getValue(), _model
-				.getWholePartDigits(), _model.getDecimalPartDigits());
+        _logic = new ThumbWheelLogic(_model.getValue(), _model
+                .getWholePartDigits(), _model.getDecimalPartDigits());
 
-		_logic.setMax(_model.getMax());
-		_logic.setMin(_model.getMin());
+        _logic.setMax(_model.getMax());
+        _logic.setMin(_model.getMin());
 
-		_figure = new RefreshableThumbWheelFigure(_logic.getIntegerWheels(),
-				_logic.getDecimalWheels());
-		_model.setWholePartDigits(_logic.getIntegerWheels());
-		_model.setDecimalPartDigits(_logic.getDecimalWheels());
-		_figure.setWheelFonts(getModelFont(ThumbWheelModel.PROP_FONT));
-		_figure.setInternalBorderColor(getModelColor(ThumbWheelModel.PROP_INTERNAL_FRAME_COLOR));
-		_figure.setInternalBorderThickness(_model.getInternalBorderWidth());
+        _figure = new RefreshableThumbWheelFigure(_logic.getIntegerWheels(),
+                _logic.getDecimalWheels());
+        _model.setWholePartDigits(_logic.getIntegerWheels());
+        _model.setDecimalPartDigits(_logic.getDecimalWheels());
+        _figure.setWheelFonts(getModelFont(ThumbWheelModel.PROP_FONT));
+        _figure.setInternalBorderColor(getModelColor(ThumbWheelModel.PROP_INTERNAL_FRAME_COLOR));
+        _figure.setInternalBorderThickness(_model.getInternalBorderWidth());
 
-		_figure.addWheelListener(new WheelListener() {
+        _figure.addWheelListener(new WheelListener() {
 
-			public void decrementDecimalPart(int index) {
-				if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-					_logic.decrementDecimalDigitAt(index);
-					updateWheelValues();
-					_model.setManualValue(_logic.getValue());
-				}
-			}
+            public void decrementDecimalPart(int index) {
+                if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+                    _logic.decrementDecimalDigitAt(index);
+                    updateWheelValues();
+                    _model.setManualValue(_logic.getValue());
+                }
+            }
 
-			public void incrementDecimalPart(int index) {
-				if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-					_logic.incrementDecimalDigitAt(index);
-					updateWheelValues();
-					_model.setManualValue(_logic.getValue());
-				}
-			}
+            public void incrementDecimalPart(int index) {
+                if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+                    _logic.incrementDecimalDigitAt(index);
+                    updateWheelValues();
+                    _model.setManualValue(_logic.getValue());
+                }
+            }
 
-			public void decrementIntegerPart(int index) {
-				if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-					_logic.decrementIntigerDigitAt(index);
-					updateWheelValues();
-					_model.setManualValue(_logic.getValue());
-				}
-			}
+            public void decrementIntegerPart(int index) {
+                if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+                    _logic.decrementIntigerDigitAt(index);
+                    updateWheelValues();
+                    _model.setManualValue(_logic.getValue());
+                }
+            }
 
-			public void incrementIntegerPart(int index) {
-				if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-					_logic.incrementIntigerWheel(index);
-					updateWheelValues();
-					_model.setManualValue(_logic.getValue());
-				}
-			}
-		});
+            public void incrementIntegerPart(int index) {
+                if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+                    _logic.incrementIntigerWheel(index);
+                    updateWheelValues();
+                    _model.setManualValue(_logic.getValue());
+                }
+            }
+        });
 
-		updateWheelValues();
-		return _figure;
-	}
+        updateWheelValues();
+        return _figure;
+    }
 
-	private void updateWheelValues() {
+    private void updateWheelValues() {
 
-		// update all wheels
-		int limit = _model.getWholePartDigits();
+        // update all wheels
+        int limit = _model.getWholePartDigits();
 
-		for (int i = 0; i < limit; i++) {
-			_figure.setIntegerWheel(i, _logic.getIntegerDigitAt(i));
-		}
+        for (int i = 0; i < limit; i++) {
+            _figure.setIntegerWheel(i, _logic.getIntegerDigitAt(i));
+        }
 
-		limit = _model.getDecimalPartDigits();
+        limit = _model.getDecimalPartDigits();
 
-		for (int i = 0; i < limit; i++) {
-			_figure.setDecimalWheel(i, _logic.getDecimalDigitAt(i));
-		}
+        for (int i = 0; i < limit; i++) {
+            _figure.setDecimalWheel(i, _logic.getDecimalDigitAt(i));
+        }
 
-		// update minus sign
-		if (_logic.getValue() < 0) {
-			_figure.showMinus(true);
-		} else {
-			_figure.showMinus(false);
-		}
+        // update minus sign
+        if (_logic.getValue() < 0) {
+            _figure.showMinus(true);
+        } else {
+            _figure.showMinus(false);
+        }
 
-		_figure.revalidate();
-	}
+        _figure.revalidate();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected final void registerPropertyChangeHandlers() {
-		// decimal wheels
-		setPropertyChangeHandler(ThumbWheelModel.PROP_DECIMAL_DIGITS_PART,
-		                         getPropDecimalDigitdPart());
-		// integer wheels
-		setPropertyChangeHandler(ThumbWheelModel.PROP_WHOLE_DIGITS_PART,
-		                         getPropWholeDigitsPart());
-		// min
-		setPropertyChangeHandler(ThumbWheelModel.PROP_MIN, getPropMax());
-		// max
-		setPropertyChangeHandler(ThumbWheelModel.PROP_MAX, getPropMin());
-		// value
-		setPropertyChangeHandler(ThumbWheelModel.PROP_VALUE, getPropValue());
+        // decimal wheels
+        setPropertyChangeHandler(ThumbWheelModel.PROP_DECIMAL_DIGITS_PART,
+                                 getPropDecimalDigitdPart());
+        // integer wheels
+        setPropertyChangeHandler(ThumbWheelModel.PROP_WHOLE_DIGITS_PART,
+                                 getPropWholeDigitsPart());
+        // min
+        setPropertyChangeHandler(ThumbWheelModel.PROP_MIN, getPropMax());
+        // max
+        setPropertyChangeHandler(ThumbWheelModel.PROP_MAX, getPropMin());
+        // value
+        setPropertyChangeHandler(ThumbWheelModel.PROP_VALUE, getPropValue());
 
-		// font
-		setPropertyChangeHandler(ThumbWheelModel.PROP_FONT, new FontChangeHandler<RefreshableThumbWheelFigure>(){
+        // font
+        setPropertyChangeHandler(ThumbWheelModel.PROP_FONT, new FontChangeHandler<RefreshableThumbWheelFigure>(){
 
-			@Override
-			protected void doHandle(RefreshableThumbWheelFigure figure, Font font) {
-				figure.setWheelFonts(font);
-			}
-			
-		});
+            @Override
+            protected void doHandle(RefreshableThumbWheelFigure figure, Font font) {
+                figure.setWheelFonts(font);
+            }
+            
+        });
 
-		// border color
-		setPropertyChangeHandler(ThumbWheelModel.PROP_INTERNAL_FRAME_COLOR,
-				new ColorChangeHandler<RefreshableThumbWheelFigure>(){
-					@Override
-					protected void doHandle(RefreshableThumbWheelFigure figure, Color color) {
-						figure.setInternalBorderColor(color);
-					}
-		});
+        // border color
+        setPropertyChangeHandler(ThumbWheelModel.PROP_INTERNAL_FRAME_COLOR,
+                new ColorChangeHandler<RefreshableThumbWheelFigure>(){
+                    @Override
+                    protected void doHandle(RefreshableThumbWheelFigure figure, Color color) {
+                        figure.setInternalBorderColor(color);
+                    }
+        });
 
-		// border width
-		setPropertyChangeHandler(ThumbWheelModel.PROP_INTERNAL_FRAME_THICKNESS,
-		                         getPropBorderWidth());
+        // border width
+        setPropertyChangeHandler(ThumbWheelModel.PROP_INTERNAL_FRAME_THICKNESS,
+                                 getPropBorderWidth());
 
-	}
+    }
 
     /**
      * @return
      */
     private IWidgetPropertyChangeHandler getPropBorderWidth() {
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableThumbWheelFigure figure = (RefreshableThumbWheelFigure) refreshableFigure;
-				figure.setInternalBorderThickness((Integer) newValue);
-				return true;
-			}
-		};
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                RefreshableThumbWheelFigure figure = (RefreshableThumbWheelFigure) refreshableFigure;
+                figure.setInternalBorderThickness((Integer) newValue);
+                return true;
+            }
+        };
         return handler;
     }
 
@@ -194,13 +194,13 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
      */
     private IWidgetPropertyChangeHandler getPropValue() {
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				_logic.setValue((Double) newValue);
-				updateWheelValues();
-				return true;
-			}
-		};
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                _logic.setValue((Double) newValue);
+                updateWheelValues();
+                return true;
+            }
+        };
         return handler;
     }
 
@@ -209,14 +209,14 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
      */
     private IWidgetPropertyChangeHandler getPropMin() {
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				_logic.setMax((Double) newValue);
-				updateWheelValues();
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                _logic.setMax((Double) newValue);
+                updateWheelValues();
 
-				return true;
-			}
-		};
+                return true;
+            }
+        };
         return handler;
     }
 
@@ -225,13 +225,13 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
      */
     private IWidgetPropertyChangeHandler getPropMax() {
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				_logic.setMin((Double) newValue);
-				updateWheelValues();
-				return true;
-			}
-		};
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                _logic.setMin((Double) newValue);
+                updateWheelValues();
+                return true;
+            }
+        };
         return handler;
     }
 
@@ -240,17 +240,17 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
      */
     private IWidgetPropertyChangeHandler getPropWholeDigitsPart() {
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableThumbWheelFigure figure = (RefreshableThumbWheelFigure) refreshableFigure;
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                RefreshableThumbWheelFigure figure = (RefreshableThumbWheelFigure) refreshableFigure;
 
-				_logic.setIntegerWheels((Integer) newValue);
-				figure.setWholeDigitsPart(_logic.getIntegerWheels());
-				_model.setWholePartDigits(_logic.getIntegerWheels());
-				updateWheelValues();
-				return true;
-			}
-		};
+                _logic.setIntegerWheels((Integer) newValue);
+                figure.setWholeDigitsPart(_logic.getIntegerWheels());
+                _model.setWholePartDigits(_logic.getIntegerWheels());
+                updateWheelValues();
+                return true;
+            }
+        };
         return handler;
     }
 
@@ -259,363 +259,363 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
      */
     private IWidgetPropertyChangeHandler getPropDecimalDigitdPart() {
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableThumbWheelFigure figure = (RefreshableThumbWheelFigure) refreshableFigure;
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                RefreshableThumbWheelFigure figure = (RefreshableThumbWheelFigure) refreshableFigure;
 
-				_logic.setDecimalWheels((Integer) newValue);
-				figure.setDecimalDigitsPart(_logic.getDecimalWheels());
-				_model.setDecimalPartDigits(_logic.getDecimalWheels());
-				updateWheelValues();
-				return true;
-			}
-		};
+                _logic.setDecimalWheels((Integer) newValue);
+                figure.setDecimalDigitsPart(_logic.getDecimalWheels());
+                _model.setDecimalPartDigits(_logic.getDecimalWheels());
+                updateWheelValues();
+                return true;
+            }
+        };
         return handler;
     }
-	
-	/**
-	 * Thumb wheel widgets are always disabled in edit mode.
-	 * @return true as always disabled.
-	 */
-	@Override
+    
+    /**
+     * Thumb wheel widgets are always disabled in edit mode.
+     * @return true as always disabled.
+     */
+    @Override
     protected final boolean forceDisabledInEditMode() {
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Represents the "brain" behind the ThumbWheel. It represents the wheel and
-	 * its values. Integer wheels are indexed from right to left. Decimal wheels
-	 * are indexed left to right from the decimal point.
-	 * 
-	 * <p>
-	 * Note the inherent precision of value double is 15 decimal places
-	 * therefore you cannot have more than 15 wheels.
-	 * <p>
-	 * 
-	 * @author Alen Vrecko
-	 * 
-	 */
-	private static class ThumbWheelLogic {
+    /**
+     * Represents the "brain" behind the ThumbWheel. It represents the wheel and
+     * its values. Integer wheels are indexed from right to left. Decimal wheels
+     * are indexed left to right from the decimal point.
+     * 
+     * <p>
+     * Note the inherent precision of value double is 15 decimal places
+     * therefore you cannot have more than 15 wheels.
+     * <p>
+     * 
+     * @author Alen Vrecko
+     * 
+     */
+    private static class ThumbWheelLogic {
 
-		private static final char BEYOND_LIMIT_CHAR = 'X';
+        private static final char BEYOND_LIMIT_CHAR = 'X';
 
-		private BigDecimal value;
+        private BigDecimal value;
 
-		private int integerWheels;
-		private int decimalWheels;
-		private BigDecimal _max = null;
-		private BigDecimal _min = null;
-		private BigDecimal wheelMax;
-		private BigDecimal wheelMin;
+        private int integerWheels;
+        private int decimalWheels;
+        private BigDecimal _max = null;
+        private BigDecimal _min = null;
+        private BigDecimal wheelMax;
+        private BigDecimal wheelMin;
 
-		public static final int WHEEL_LIMIT = 15;
+        public static final int WHEEL_LIMIT = 15;
 
-		public ThumbWheelLogic(double value, int integerWheels,
-				int decimalWheels) {
-			setValue(value);
-			setIntegerWheels(integerWheels);
-			setDecimalWheels(decimalWheels);
-		}
-
-		/**
-		 * Increments the integer digit on a specific index. E.g. on 567.12
-		 * calling increment for - 0 will set the value to 568.12, with index -
-		 * 2 will result in 667.12. Will not set beyond max value.
-		 * 
-		 * @param index
-		 * @param val
-		 */
-		public void incrementIntigerWheel(int index) {
-			increment(index, "1E");
-		}
-
-		/**
-		 * Increments the decimal digit on a specific index. E.g. on 567.12
-		 * calling increment for - 0 will set the value to 567.22, with index -
-		 * 1 will result in 567.11. Will not go bellow max value.
-		 * 
-		 * @param index
-		 * @param val
-		 */
-		public void incrementDecimalDigitAt(int index) {
-			increment(index, "0.1E-");
-		}
-
-		private boolean isZero(BigDecimal num) {
-			return num.signum() == 0;
-		}
-
-		private boolean equalSign(BigDecimal a, BigDecimal b) {
-			return a.signum() == b.signum();
-		}
-
-		private boolean greater(BigDecimal a, BigDecimal b) {
-			if (b == null) {
-				return false;
-			}
-			return a.compareTo(b) > 0;
-		}
-
-		private boolean less(BigDecimal a, BigDecimal b) {
-			if (b == null) {
-				return false;
-			}
-			return a.compareTo(b) < 0;
-		}
-
-		private void increment(int index, String numberGenerator) {
-			// generate new number using the string ("1E" or "1E-" or similar)
-			BigDecimal decrementor = new BigDecimal(numberGenerator + index,
-					MathContext.UNLIMITED);
-			BigDecimal newValue = value.add(decrementor);
-
-			// handle over the zero handling
-			if (!isZero(newValue) && !equalSign(value, newValue)) {
-				newValue = value.negate().add(decrementor);
-			}
-
-			// if value is already beyond the upper limit or upper wheel limit
-			// just ignore the request
-			if ((_max != null && greater(value, _max))
-					|| greater(value, wheelMax)) {
-				return;
-			}
-
-			// if we are below lower limit just drop to lower limit
-			if (less(value, _min)) {
-				value = _min;
-			} else if (less(value, wheelMin)) {
-				value = wheelMin;
-			}
-
-			// if we are incrementing above the wheel upper limit just set to
-			// wheel upper limit
-			else if (greater(newValue, wheelMax)) {
-				value = wheelMax;
-			}
-			// if we are incrementing beyond the upper limit just set to upper
-			// limit
-			else if (_max != null && greater(newValue, _max)) {
-				value = _max;
-			} else {
-				value = newValue;
-			}
-		}
+        public ThumbWheelLogic(double value, int integerWheels,
+                int decimalWheels) {
+            setValue(value);
+            setIntegerWheels(integerWheels);
+            setDecimalWheels(decimalWheels);
+        }
 
         /**
-		 * Decrements the integer digit on a specific index. E.g. on 567.12
-		 * calling increment for - 0 will set the value to 468.12, with index -
-		 * 2 will result in 467.12. Will not go below min value.
-		 * 
-		 * @param index
-		 * @param val
-		 */
-		public void decrementIntigerDigitAt(int index) {
-			decrement(index, "-1E");
-		}
+         * Increments the integer digit on a specific index. E.g. on 567.12
+         * calling increment for - 0 will set the value to 568.12, with index -
+         * 2 will result in 667.12. Will not set beyond max value.
+         * 
+         * @param index
+         * @param val
+         */
+        public void incrementIntigerWheel(int index) {
+            increment(index, "1E");
+        }
 
-		/**
-		 * Decrements the decimal digit on a specific index. E.g. on 567.12
-		 * calling increment for - 0 will set the value to 568.02, with index -
-		 * 1 will result in 567.11. Will not go bellow min value.
-		 * 
-		 * @param index
-		 * @param val
-		 */
-		public void decrementDecimalDigitAt(int index) {
-			decrement(index, "-0.1E-");
-		}
+        /**
+         * Increments the decimal digit on a specific index. E.g. on 567.12
+         * calling increment for - 0 will set the value to 567.22, with index -
+         * 1 will result in 567.11. Will not go bellow max value.
+         * 
+         * @param index
+         * @param val
+         */
+        public void incrementDecimalDigitAt(int index) {
+            increment(index, "0.1E-");
+        }
 
-		private void decrement(int index, String numberGenerator) {
-			// generate new number using the string ("1E" or "1E-" or similar)
-			BigDecimal decrementor = new BigDecimal(numberGenerator + index,
-					MathContext.UNLIMITED);
-			BigDecimal newValue = value.add(decrementor);
+        private boolean isZero(BigDecimal num) {
+            return num.signum() == 0;
+        }
 
-			// handle over the zero handling
-			if (!isZero(newValue) && !equalSign(value, newValue)) {
-				newValue = value.negate().add(decrementor);
-			}
+        private boolean equalSign(BigDecimal a, BigDecimal b) {
+            return a.signum() == b.signum();
+        }
 
-			// if value is already beyond the lower limit or lower wheel limit
-			// just ignore the request
-			if ((_min != null && less(value, _min)) || less(value, wheelMin)) {
-				return;
-			}
+        private boolean greater(BigDecimal a, BigDecimal b) {
+            if (b == null) {
+                return false;
+            }
+            return a.compareTo(b) > 0;
+        }
 
-			// if we are beyond upper limit just drop to upper limit
-			if (greater(value, _max)) {
-				value = _max;
+        private boolean less(BigDecimal a, BigDecimal b) {
+            if (b == null) {
+                return false;
+            }
+            return a.compareTo(b) < 0;
+        }
 
-			} else if (greater(value, wheelMax)) {
-				value = wheelMax;
-			}
+        private void increment(int index, String numberGenerator) {
+            // generate new number using the string ("1E" or "1E-" or similar)
+            BigDecimal decrementor = new BigDecimal(numberGenerator + index,
+                    MathContext.UNLIMITED);
+            BigDecimal newValue = value.add(decrementor);
 
-			// if we are decrementing below the lower limit just set to lower
-			// limit
-			else if (_min != null && less(newValue, _min)) {
-				value = _min;
-			}
+            // handle over the zero handling
+            if (!isZero(newValue) && !equalSign(value, newValue)) {
+                newValue = value.negate().add(decrementor);
+            }
 
-			// if we are decrementing below the wheel lower limit just set to
-			// wheel lower limit
-			else if (less(newValue, wheelMin)) {
-				value = wheelMin;
-			}
+            // if value is already beyond the upper limit or upper wheel limit
+            // just ignore the request
+            if ((_max != null && greater(value, _max))
+                    || greater(value, wheelMax)) {
+                return;
+            }
 
-			else {
-				value = newValue;
-			}
-		}
+            // if we are below lower limit just drop to lower limit
+            if (less(value, _min)) {
+                value = _min;
+            } else if (less(value, wheelMin)) {
+                value = wheelMin;
+            }
 
-		/**
-		 * Returns a digit in the specified index. E.g. for 324.23 getting index
-		 * 0,1,2 would return 4,2,3. If the number is beyond max in will return
-		 * proper digit of max. Same goes for min.
-		 * 
-		 * @param index
-		 * @return
-		 */
-		public char getIntegerDigitAt(int index) {
-			// check if number is beyond inherent wheel limit
-			if (beyondDisplayLimit()) {
-				return BEYOND_LIMIT_CHAR;
-			}
-			String plainString = value.toPlainString();
-			// get rid of decimal part
-			int dot = plainString.indexOf('.');
-			if (dot >= 0) {
-				plainString = plainString.substring(0, dot);
-			}
-			// get rid of leading minus
-			if (plainString.startsWith("-")) {
-				plainString = plainString.substring(1);
-			}
+            // if we are incrementing above the wheel upper limit just set to
+            // wheel upper limit
+            else if (greater(newValue, wheelMax)) {
+                value = wheelMax;
+            }
+            // if we are incrementing beyond the upper limit just set to upper
+            // limit
+            else if (_max != null && greater(newValue, _max)) {
+                value = _max;
+            } else {
+                value = newValue;
+            }
+        }
 
-			if (index >= plainString.length()) {
-				return '0';
-			}
+        /**
+         * Decrements the integer digit on a specific index. E.g. on 567.12
+         * calling increment for - 0 will set the value to 468.12, with index -
+         * 2 will result in 467.12. Will not go below min value.
+         * 
+         * @param index
+         * @param val
+         */
+        public void decrementIntigerDigitAt(int index) {
+            decrement(index, "-1E");
+        }
 
-			return plainString.charAt(plainString.length() - 1 - index);
+        /**
+         * Decrements the decimal digit on a specific index. E.g. on 567.12
+         * calling increment for - 0 will set the value to 568.02, with index -
+         * 1 will result in 567.11. Will not go bellow min value.
+         * 
+         * @param index
+         * @param val
+         */
+        public void decrementDecimalDigitAt(int index) {
+            decrement(index, "-0.1E-");
+        }
 
-		}
+        private void decrement(int index, String numberGenerator) {
+            // generate new number using the string ("1E" or "1E-" or similar)
+            BigDecimal decrementor = new BigDecimal(numberGenerator + index,
+                    MathContext.UNLIMITED);
+            BigDecimal newValue = value.add(decrementor);
 
-		/**
-		 * Returns a digit in the specified index. E.g. for 324.23 getting index
-		 * 0,1 would return 2,3.
-		 * 
-		 * @param index
-		 * @return
-		 */
-		public char getDecimalDigitAt(int index) {
-			// check if number is beyond inherent wheel limit
-			if (beyondDisplayLimit()) {
-				return BEYOND_LIMIT_CHAR;
-			}
+            // handle over the zero handling
+            if (!isZero(newValue) && !equalSign(value, newValue)) {
+                newValue = value.negate().add(decrementor);
+            }
 
-			String plainString = value.toPlainString();
+            // if value is already beyond the lower limit or lower wheel limit
+            // just ignore the request
+            if ((_min != null && less(value, _min)) || less(value, wheelMin)) {
+                return;
+            }
 
-			if (plainString.indexOf('.') < 0) {
-				return '0';
-			}
+            // if we are beyond upper limit just drop to upper limit
+            if (greater(value, _max)) {
+                value = _max;
 
-			plainString = plainString.substring(plainString.indexOf('.') + 1);
-			if (index >= plainString.length()) {
-				return '0';
-			}
-			return plainString.charAt(index);
+            } else if (greater(value, wheelMax)) {
+                value = wheelMax;
+            }
 
-		}
+            // if we are decrementing below the lower limit just set to lower
+            // limit
+            else if (_min != null && less(newValue, _min)) {
+                value = _min;
+            }
 
-		/**
-		 * Returns true if the value is bigger than the wheels can represent.
-		 * 
-		 * @return
-		 */
-		public boolean beyondDisplayLimit() {
-			return greater(value, wheelMax) || less(value, wheelMin);
+            // if we are decrementing below the wheel lower limit just set to
+            // wheel lower limit
+            else if (less(newValue, wheelMin)) {
+                value = wheelMin;
+            }
 
-		}
+            else {
+                value = newValue;
+            }
+        }
 
-		public void setMax(Double max) {
-			this._max = Double.isNaN(max) ? null : new BigDecimal(Double
-					.toString(max), MathContext.UNLIMITED);
-		}
+        /**
+         * Returns a digit in the specified index. E.g. for 324.23 getting index
+         * 0,1,2 would return 4,2,3. If the number is beyond max in will return
+         * proper digit of max. Same goes for min.
+         * 
+         * @param index
+         * @return
+         */
+        public char getIntegerDigitAt(int index) {
+            // check if number is beyond inherent wheel limit
+            if (beyondDisplayLimit()) {
+                return BEYOND_LIMIT_CHAR;
+            }
+            String plainString = value.toPlainString();
+            // get rid of decimal part
+            int dot = plainString.indexOf('.');
+            if (dot >= 0) {
+                plainString = plainString.substring(0, dot);
+            }
+            // get rid of leading minus
+            if (plainString.startsWith("-")) {
+                plainString = plainString.substring(1);
+            }
 
-		public void setMin(Double min) {
-			this._min = Double.isNaN(min) ? null : new BigDecimal(Double
-					.toString(min), MathContext.UNLIMITED);
-		}
+            if (index >= plainString.length()) {
+                return '0';
+            }
 
-		public int getIntegerWheels() {
-			return integerWheels;
-		}
+            return plainString.charAt(plainString.length() - 1 - index);
 
-		public void setIntegerWheels(int integerWheels) {
-			if (integerWheels + decimalWheels > WHEEL_LIMIT) {
-				this.integerWheels = WHEEL_LIMIT - decimalWheels;
-				return;
-			}
+        }
 
-			this.integerWheels = integerWheels;
+        /**
+         * Returns a digit in the specified index. E.g. for 324.23 getting index
+         * 0,1 would return 2,3.
+         * 
+         * @param index
+         * @return
+         */
+        public char getDecimalDigitAt(int index) {
+            // check if number is beyond inherent wheel limit
+            if (beyondDisplayLimit()) {
+                return BEYOND_LIMIT_CHAR;
+            }
 
-			String nines = "";
-			for (int i = 0; i < integerWheels; i++) {
-				nines += "9";
-			}
+            String plainString = value.toPlainString();
 
-			if (decimalWheels > 0) {
-				nines += ".";
-				for (int i = 0; i < decimalWheels; i++) {
-					nines += "9";
-				}
-			}
+            if (plainString.indexOf('.') < 0) {
+                return '0';
+            }
 
-			wheelMax = new BigDecimal(nines, MathContext.UNLIMITED);
-			wheelMin = new BigDecimal("-" + nines, MathContext.UNLIMITED);
-		}
+            plainString = plainString.substring(plainString.indexOf('.') + 1);
+            if (index >= plainString.length()) {
+                return '0';
+            }
+            return plainString.charAt(index);
 
-		public int getDecimalWheels() {
-			return decimalWheels;
+        }
 
-		}
+        /**
+         * Returns true if the value is bigger than the wheels can represent.
+         * 
+         * @return
+         */
+        public boolean beyondDisplayLimit() {
+            return greater(value, wheelMax) || less(value, wheelMin);
 
-		public void setDecimalWheels(int decimalWheels) {
-			if (integerWheels + decimalWheels > WHEEL_LIMIT) {
-				this.decimalWheels = WHEEL_LIMIT - integerWheels;
-				return;
-			}
-			this.decimalWheels = decimalWheels;
-			String nines = "";
-			if (integerWheels > 0) {
-				for (int i = 0; i < integerWheels; i++) {
-					nines += "9";
-				}
-			} else {
-				nines += "0";
-			}
+        }
 
-			nines += ".";
-			for (int i = 0; i < decimalWheels; i++) {
-				nines += "9";
-			}
+        public void setMax(Double max) {
+            this._max = Double.isNaN(max) ? null : new BigDecimal(Double
+                    .toString(max), MathContext.UNLIMITED);
+        }
 
-			wheelMax = new BigDecimal(nines, MathContext.UNLIMITED);
-			wheelMin = new BigDecimal("-" + nines, MathContext.UNLIMITED);
-		}
+        public void setMin(Double min) {
+            this._min = Double.isNaN(min) ? null : new BigDecimal(Double
+                    .toString(min), MathContext.UNLIMITED);
+        }
 
-		public double getValue() {
-			return value.doubleValue();
-		}
+        public int getIntegerWheels() {
+            return integerWheels;
+        }
 
-		public void setValue(double value) {
-			setValue(Double.toString(value));
-		}
+        public void setIntegerWheels(int integerWheels) {
+            if (integerWheels + decimalWheels > WHEEL_LIMIT) {
+                this.integerWheels = WHEEL_LIMIT - decimalWheels;
+                return;
+            }
 
-		public void setValue(String value) {
-			this.value = new BigDecimal(value, MathContext.UNLIMITED);
-		}
+            this.integerWheels = integerWheels;
 
-	}
+            String nines = "";
+            for (int i = 0; i < integerWheels; i++) {
+                nines += "9";
+            }
+
+            if (decimalWheels > 0) {
+                nines += ".";
+                for (int i = 0; i < decimalWheels; i++) {
+                    nines += "9";
+                }
+            }
+
+            wheelMax = new BigDecimal(nines, MathContext.UNLIMITED);
+            wheelMin = new BigDecimal("-" + nines, MathContext.UNLIMITED);
+        }
+
+        public int getDecimalWheels() {
+            return decimalWheels;
+
+        }
+
+        public void setDecimalWheels(int decimalWheels) {
+            if (integerWheels + decimalWheels > WHEEL_LIMIT) {
+                this.decimalWheels = WHEEL_LIMIT - integerWheels;
+                return;
+            }
+            this.decimalWheels = decimalWheels;
+            String nines = "";
+            if (integerWheels > 0) {
+                for (int i = 0; i < integerWheels; i++) {
+                    nines += "9";
+                }
+            } else {
+                nines += "0";
+            }
+
+            nines += ".";
+            for (int i = 0; i < decimalWheels; i++) {
+                nines += "9";
+            }
+
+            wheelMax = new BigDecimal(nines, MathContext.UNLIMITED);
+            wheelMin = new BigDecimal("-" + nines, MathContext.UNLIMITED);
+        }
+
+        public double getValue() {
+            return value.doubleValue();
+        }
+
+        public void setValue(double value) {
+            setValue(Double.toString(value));
+        }
+
+        public void setValue(String value) {
+            this.value = new BigDecimal(value, MathContext.UNLIMITED);
+        }
+
+    }
 
 }

@@ -35,41 +35,41 @@ import org.csstudio.dal.context.AbstractApplicationContext;
  */
 public interface PropertyFactoryService
 {
-	String DEFAULT_FACTORY_IMPL = "PropertyFactoryService.default_factory_impl";
+    String DEFAULT_FACTORY_IMPL = "PropertyFactoryService.default_factory_impl";
 
-	/**
-	 * Returns property factory implementation.
-	 * Service my decide to reuse factory if factory with same
-	 * parameters has already been created.
-	 *
-	 * @param ctx
-	 *          ApplicationContext, which will provide configuration basis,
-	 *          non-null
-	 * @param linkPolicy
-	 *          a link policy code, valid values are <code>NO_LINK_POLICY</code>,
-	 *          <code>SYNC_LINK_POLICY</code> and <code>ASYNC_LINK_POLICY</code>. If null <code>SYNC_LINK_POLICY</code> is used.
-	 * @return instance of <code>PropertyFactory</code>
-	 */
-	public PropertyFactory getPropertyFactory(AbstractApplicationContext ctx,
-	    LinkPolicy linkPolicy);
+    /**
+     * Returns property factory implementation.
+     * Service my decide to reuse factory if factory with same
+     * parameters has already been created.
+     *
+     * @param ctx
+     *          ApplicationContext, which will provide configuration basis,
+     *          non-null
+     * @param linkPolicy
+     *          a link policy code, valid values are <code>NO_LINK_POLICY</code>,
+     *          <code>SYNC_LINK_POLICY</code> and <code>ASYNC_LINK_POLICY</code>. If null <code>SYNC_LINK_POLICY</code> is used.
+     * @return instance of <code>PropertyFactory</code>
+     */
+    public PropertyFactory getPropertyFactory(AbstractApplicationContext ctx,
+        LinkPolicy linkPolicy);
 
-	/**
-	 * Returns property factory implementation for particular plug name.
-	 * Service my decide to reuse factory if factory with same
-	 * parameters has already been created.
-	 *
-	 * @param ctx
-	 *          ApplicationContext, which will provide configuration basis,
-	 *          non-null
-	 * @param linkPolicy
-	 *          a link policy code, valid values are <code>NO_LINK_POLICY</code>,
-	 *          <code>SYNC_LINK_POLICY</code> and <code>ASYNC_LINK_POLICY</code>. If null <code>SYNC_LINK_POLICY</code> is used.
-	 * @param plugName name of plug used by factory, if <code>null</code> then default is used
-	 *
-	 * @return instance of <code>PropertyFactory</code>
-	 */
-	public PropertyFactory getPropertyFactory(AbstractApplicationContext ctx,
-	    LinkPolicy linkPolicy, String plugName);
+    /**
+     * Returns property factory implementation for particular plug name.
+     * Service my decide to reuse factory if factory with same
+     * parameters has already been created.
+     *
+     * @param ctx
+     *          ApplicationContext, which will provide configuration basis,
+     *          non-null
+     * @param linkPolicy
+     *          a link policy code, valid values are <code>NO_LINK_POLICY</code>,
+     *          <code>SYNC_LINK_POLICY</code> and <code>ASYNC_LINK_POLICY</code>. If null <code>SYNC_LINK_POLICY</code> is used.
+     * @param plugName name of plug used by factory, if <code>null</code> then default is used
+     *
+     * @return instance of <code>PropertyFactory</code>
+     */
+    public PropertyFactory getPropertyFactory(AbstractApplicationContext ctx,
+        LinkPolicy linkPolicy, String plugName);
 }
 
 /* __oOo__ */

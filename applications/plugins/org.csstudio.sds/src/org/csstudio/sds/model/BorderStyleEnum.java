@@ -27,34 +27,34 @@ package org.csstudio.sds.model;
  *
  */
 public enum BorderStyleEnum {
-	/**
-	 * No border.
-	 */
-	NONE(0, "None"),
-	/**
-	 * A line border.
-	 */
-	LINE(1, "Line Style"),
-	/**
-	 * A labeled border.
-	 */
-	LABELED(2, "Labeled Style"),
-	/**
-	 * A raised border.
-	 */
-	RAISED(3, "Raised Style"),
-	/**
-	 * A lowered border.
-	 */
-	LOWERED(4, "Lowered Style"),
-	/**
-	 * A dotted border.
-	 */
-	DOTTED(5, "Dot Style"),
-	/**
-	 * A shape border.
-	 */
-	SHAPE(6, "Shape Style"),
+    /**
+     * No border.
+     */
+    NONE(0, "None"),
+    /**
+     * A line border.
+     */
+    LINE(1, "Line Style"),
+    /**
+     * A labeled border.
+     */
+    LABELED(2, "Labeled Style"),
+    /**
+     * A raised border.
+     */
+    RAISED(3, "Raised Style"),
+    /**
+     * A lowered border.
+     */
+    LOWERED(4, "Lowered Style"),
+    /**
+     * A dotted border.
+     */
+    DOTTED(5, "Dot Style"),
+    /**
+     * A shape border.
+     */
+    SHAPE(6, "Shape Style"),
     /**
      * A dashed border.
      */
@@ -68,67 +68,67 @@ public enum BorderStyleEnum {
      * A dashed dotted dotted border.
      */
     DASH_DOT_DOT(9, "Dash Dot Dot Style");
-	
-	/**
-	 * The index of his enum.
-	 */
-	private int _index;
-	/**
-	 * The display name of this enum.
-	 */
-	private String _displayName;
+    
+    /**
+     * The index of his enum.
+     */
+    private int _index;
+    /**
+     * The display name of this enum.
+     */
+    private String _displayName;
 
-	/**
-	 * Constructor.
-	 * @param index The index of this value
-	 * @param displayName The name of this value
-	 */
-	private BorderStyleEnum(final int index, final String displayName) {
-		_index = index;
-		_displayName = displayName;
-	}
-	
-	/**
-	 * Returns the index of this {@link BorderStyleEnum}.
-	 * @return The index
-	 */
-	public int getIndex() {
-		return _index;
-	}
-	
-	/**
-	 * Returns the display name of this {@link BorderStyleEnum}.
-	 * @return The display name
-	 */
-	public String getDisplayName() {
-		return _displayName;
-	}
-	
-	/**
-	 * Returns the display names of the all borders.
-	 * @return The display names
-	 */
-	public static String[] getDisplayNames() {
-		BorderStyleEnum[] enums = BorderStyleEnum.values();
-		String[] result = new String[enums.length];
-		for (int i=0;i<enums.length;i++) {
-			result[i] = enums[i].getDisplayName();
-		}
-		return result;
-	}
-	
-	/**
-	 * Returns the corresponding {@link BorderStyleEnum} to the given index or <code>null</code> if the index is unknown.
-	 * @param index The index of the enum
-	 * @return The corresponding {@link BorderStyleEnum} or <code>null</code> if the index is unknown
-	 */
-	public static BorderStyleEnum getEnumForIndex(final int index) {
-		for (BorderStyleEnum ttenum : BorderStyleEnum.values()) {
-			if (ttenum.getIndex()==index) {
-				return ttenum;
-			}
-		}
-		return null;
-	}
+    /**
+     * Constructor.
+     * @param index The index of this value
+     * @param displayName The name of this value
+     */
+    private BorderStyleEnum(final int index, final String displayName) {
+        _index = index;
+        _displayName = displayName;
+    }
+    
+    /**
+     * Returns the index of this {@link BorderStyleEnum}.
+     * @return The index
+     */
+    public int getIndex() {
+        return _index;
+    }
+    
+    /**
+     * Returns the display name of this {@link BorderStyleEnum}.
+     * @return The display name
+     */
+    public String getDisplayName() {
+        return _displayName;
+    }
+    
+    /**
+     * Returns the display names of the all borders.
+     * @return The display names
+     */
+    public static String[] getDisplayNames() {
+        BorderStyleEnum[] enums = BorderStyleEnum.values();
+        String[] result = new String[enums.length];
+        for (int i=0;i<enums.length;i++) {
+            result[i] = enums[i].getDisplayName();
+        }
+        return result;
+    }
+    
+    /**
+     * Returns the corresponding {@link BorderStyleEnum} to the given index or <code>null</code> if the index is unknown.
+     * @param index The index of the enum
+     * @return The corresponding {@link BorderStyleEnum} or <code>null</code> if the index is unknown
+     */
+    public static BorderStyleEnum getEnumForIndex(final int index) {
+        for (BorderStyleEnum ttenum : BorderStyleEnum.values()) {
+            if (ttenum.getIndex()==index) {
+                return ttenum;
+            }
+        }
+        return null;
+    }
 
 }

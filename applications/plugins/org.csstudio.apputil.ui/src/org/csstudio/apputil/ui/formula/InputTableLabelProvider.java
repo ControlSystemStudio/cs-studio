@@ -15,22 +15,22 @@ import org.eclipse.swt.graphics.Image;
  *  @author Kay Kasemir
  */
 public class InputTableLabelProvider extends LabelProvider implements
-		ITableLabelProvider
+        ITableLabelProvider
 {
     /** Get text for all but the 'select' column,
      *  where some placeholder is returned.
      */
-	@Override
+    @Override
     public String getColumnText(Object obj, int index)
-	{
+    {
         InputItem input = (InputItem) obj;
         return InputTableHelper.getText(input, index);
-	}
+    }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public Image getColumnImage(Object obj, int index)
-	{
+    {
         return null;
-	}
+    }
 }

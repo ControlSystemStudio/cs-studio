@@ -30,21 +30,21 @@ import org.eclipse.core.runtime.Plugin;
  */
 public class Activator extends Plugin
 {
-	/** The plug-in ID as defined in MANIFEST.MF */
-	public static final String PLUGIN_ID = "org.csstudio.platform.jaasAuthentication"; //$NON-NLS-1$
+    /** The plug-in ID as defined in MANIFEST.MF */
+    public static final String PLUGIN_ID = "org.csstudio.platform.jaasAuthentication"; //$NON-NLS-1$
 
-	// The shared instance
-	private static Activator plugin;
+    // The shared instance
+    private static Activator plugin;
 
-	/**
-	 * The constructor
-	 */
-	public Activator() {
-		plugin = this;
-	}
+    /**
+     * The constructor
+     */
+    public Activator() {
+        plugin = this;
+    }
 
-	/** @return the shared instance */
-	public static Activator getDefault() {
-		return plugin;
-	}
+    /** @return the shared instance */
+    public static Activator getDefault() {
+        return plugin;
+    }
 }

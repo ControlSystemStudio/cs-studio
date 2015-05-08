@@ -63,13 +63,13 @@ public class MLChar extends MLArray implements GenericArrayCreator<Character>
      */
     public MLChar(String name, String[] values, int maxlen)
     {
-    	this( name, new int[] { values.length, maxlen }, MLArray.mxCHAR_CLASS, 0 );
-    	int idx = 0;
-    	for (String v : values)
-    	{
-    		set(v, idx);
-    		idx++;
-    	}
+        this( name, new int[] { values.length, maxlen }, MLArray.mxCHAR_CLASS, 0 );
+        int idx = 0;
+        for (String v : values)
+        {
+            set(v, idx);
+            idx++;
+        }
     }
 
     public MLChar(String name, int[] dims, int type, int attributes)
@@ -112,14 +112,14 @@ public class MLChar extends MLArray implements GenericArrayCreator<Character>
         int rowOffset = getM();
         for ( int i = 0; i < getN(); i++ )
         {
-        	if ( i < value.length())
-        	{
-        		setChar(cha[i], idx + (rowOffset * i));
-        	}
-        	else
-        	{
-        		setChar(' ',  idx + (rowOffset * i));
-        	}
+            if ( i < value.length())
+            {
+                setChar(cha[i], idx + (rowOffset * i));
+            }
+            else
+            {
+                setChar(' ',  idx + (rowOffset * i));
+            }
         }
     }
 

@@ -39,270 +39,270 @@ import org.csstudio.dal.DynamicValueState;
  * 
  */
 public final class DynamicsDescriptor implements Cloneable {
-	/**
-	 * The ID of the associated rule.
-	 */
-	private String _ruleId;
+    /**
+     * The ID of the associated rule.
+     */
+    private String _ruleId;
 
-	/**
-	 * The registered input channels.
-	 */
-	private List<ParameterDescriptor> _inputChannels;
+    /**
+     * The registered input channels.
+     */
+    private List<ParameterDescriptor> _inputChannels;
 
-	/**
-	 * The output channel. Might be null.
-	 */
-	private ParameterDescriptor _outputChannel;
+    /**
+     * The output channel. Might be null.
+     */
+    private ParameterDescriptor _outputChannel;
 
-	/**
-	 * Standard constructor.
-	 */
-	public DynamicsDescriptor() {
-		this(DirectConnectionRule.TYPE_ID);
-	}
+    /**
+     * Standard constructor.
+     */
+    public DynamicsDescriptor() {
+        this(DirectConnectionRule.TYPE_ID);
+    }
 
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param ruleId
-	 *            The ID of the associated rule.
-	 */
-	public DynamicsDescriptor(final String ruleId) {
-		assert ruleId != null;
-		_inputChannels = new ArrayList<ParameterDescriptor>();
-		_ruleId = ruleId;
-		_outputChannel = null;
-	}
+    /**
+     * Standard constructor.
+     * 
+     * @param ruleId
+     *            The ID of the associated rule.
+     */
+    public DynamicsDescriptor(final String ruleId) {
+        assert ruleId != null;
+        _inputChannels = new ArrayList<ParameterDescriptor>();
+        _ruleId = ruleId;
+        _outputChannel = null;
+    }
 
-	/**
-	 * Return the output channel.
-	 * 
-	 * @return The output channel.
-	 */
-	public ParameterDescriptor getOutputChannel() {
-		return _outputChannel;
-	}
+    /**
+     * Return the output channel.
+     * 
+     * @return The output channel.
+     */
+    public ParameterDescriptor getOutputChannel() {
+        return _outputChannel;
+    }
 
-	/**
-	 * Set the output channel.
-	 * 
-	 * @param outputChannel
-	 *            The output channel
-	 */
-	public void setOutputChannel(final ParameterDescriptor outputChannel) {
-		_outputChannel = outputChannel;
-	}
+    /**
+     * Set the output channel.
+     * 
+     * @param outputChannel
+     *            The output channel
+     */
+    public void setOutputChannel(final ParameterDescriptor outputChannel) {
+        _outputChannel = outputChannel;
+    }
 
-	/**
-	 * Add an input channel.
-	 * 
-	 * @param inputChannel
-	 *            An input channel.
-	 */
-	public void addInputChannel(final ParameterDescriptor inputChannel) {
-		assert inputChannel != null;
-		_inputChannels.add(inputChannel);
-	}
+    /**
+     * Add an input channel.
+     * 
+     * @param inputChannel
+     *            An input channel.
+     */
+    public void addInputChannel(final ParameterDescriptor inputChannel) {
+        assert inputChannel != null;
+        _inputChannels.add(inputChannel);
+    }
 
-	/**
-	 * Removes the specified input channel.
-	 * 
-	 * @param inputChannel
-	 *            The input channel to remove.
-	 */
-	public void removeInputChannel(final ParameterDescriptor inputChannel) {
-		assert inputChannel != null;
-		if (hasInputChannel(inputChannel)) {
-			_inputChannels.remove(inputChannel);
-		}
-	}
+    /**
+     * Removes the specified input channel.
+     * 
+     * @param inputChannel
+     *            The input channel to remove.
+     */
+    public void removeInputChannel(final ParameterDescriptor inputChannel) {
+        assert inputChannel != null;
+        if (hasInputChannel(inputChannel)) {
+            _inputChannels.remove(inputChannel);
+        }
+    }
 
-	/**
-	 * Check whether the given input channel does already belong to this
-	 * dynamics descriptor.
-	 * 
-	 * @param inputChannel
-	 *            An input channel.
-	 * @return True, if the given input channel does already belong to this
-	 *         dynamics descriptor.
-	 */
-	public boolean hasInputChannel(final ParameterDescriptor inputChannel) {
-		assert inputChannel != null;
-		return _inputChannels.contains(inputChannel);
-	}
+    /**
+     * Check whether the given input channel does already belong to this
+     * dynamics descriptor.
+     * 
+     * @param inputChannel
+     *            An input channel.
+     * @return True, if the given input channel does already belong to this
+     *         dynamics descriptor.
+     */
+    public boolean hasInputChannel(final ParameterDescriptor inputChannel) {
+        assert inputChannel != null;
+        return _inputChannels.contains(inputChannel);
+    }
 
-	/**
-	 * Return the input channels.
-	 * 
-	 * @return The input channels.
-	 */
-	public ParameterDescriptor[] getInputChannels() {
-		return _inputChannels.toArray(new ParameterDescriptor[_inputChannels
-				.size()]);
-	}
+    /**
+     * Return the input channels.
+     * 
+     * @return The input channels.
+     */
+    public ParameterDescriptor[] getInputChannels() {
+        return _inputChannels.toArray(new ParameterDescriptor[_inputChannels
+                .size()]);
+    }
 
-	/**
-	 * Return the ID of the associated rule.
-	 * 
-	 * @return The ID of the associated rule.
-	 */
-	public String getRuleId() {
-		return _ruleId;
-	}
+    /**
+     * Return the ID of the associated rule.
+     * 
+     * @return The ID of the associated rule.
+     */
+    public String getRuleId() {
+        return _ruleId;
+    }
 
-	/**
-	 * Contains the property values, which should be applied for certain
-	 * connection states.
-	 */
-	private Map<ConnectionState, Object> _connectionStateDependentPropertyValues;
+    /**
+     * Contains the property values, which should be applied for certain
+     * connection states.
+     */
+    private Map<ConnectionState, Object> _connectionStateDependentPropertyValues;
 
-	/**
-	 * Contains the property values, which should be applied for certain
-	 * condition states.
-	 */
-	private Map<DynamicValueState, Object> _conditionStateDependentPropertyValues;
+    /**
+     * Contains the property values, which should be applied for certain
+     * condition states.
+     */
+    private Map<DynamicValueState, Object> _conditionStateDependentPropertyValues;
 
-	/**
-	 * Indicates whether this {@link DynamicsDescriptor} should only use the
-	 * connection states.
-	 */
-	private boolean _useOnlyConnectionStates;
+    /**
+     * Indicates whether this {@link DynamicsDescriptor} should only use the
+     * connection states.
+     */
+    private boolean _useOnlyConnectionStates;
 
-	/**
-	 * Returns the property values, which should be applied for certain
-	 * connection states.
-	 * 
-	 * @return the property values, which should be applied for certain
-	 *         connection states
-	 */
-	public Map<ConnectionState, Object> getConnectionStateDependentPropertyValues() {
-		return _connectionStateDependentPropertyValues;
-	}
+    /**
+     * Returns the property values, which should be applied for certain
+     * connection states.
+     * 
+     * @return the property values, which should be applied for certain
+     *         connection states
+     */
+    public Map<ConnectionState, Object> getConnectionStateDependentPropertyValues() {
+        return _connectionStateDependentPropertyValues;
+    }
 
-	/**
-	 * Sets the property values, which should be applied for certain connection
-	 * states.
-	 * 
-	 * @param values
-	 *            the property values, which should be applied for certain
-	 *            connection states
-	 */
-	public void setConnectionStateDependentPropertyValues(
-			final Map<ConnectionState, Object> values) {
-		assert values != null;
-		for (ConnectionState state : values.keySet()) {
-			assert state != null : "state != null";
-			assert values.get(state) != null : "values.get("+ state +") != null";
-		}
-		
-		_connectionStateDependentPropertyValues = values;
-	}
+    /**
+     * Sets the property values, which should be applied for certain connection
+     * states.
+     * 
+     * @param values
+     *            the property values, which should be applied for certain
+     *            connection states
+     */
+    public void setConnectionStateDependentPropertyValues(
+            final Map<ConnectionState, Object> values) {
+        assert values != null;
+        for (ConnectionState state : values.keySet()) {
+            assert state != null : "state != null";
+            assert values.get(state) != null : "values.get("+ state +") != null";
+        }
+        
+        _connectionStateDependentPropertyValues = values;
+    }
 
-	/**
-	 * Returns the property values, which should be applied for certain
-	 * condition states.
-	 * 
-	 * @return the property values, which should be applied for certain
-	 *         condition states
-	 */
-	public Map<DynamicValueState, Object> getConditionStateDependentPropertyValues() {
-		return _conditionStateDependentPropertyValues;
-	}
+    /**
+     * Returns the property values, which should be applied for certain
+     * condition states.
+     * 
+     * @return the property values, which should be applied for certain
+     *         condition states
+     */
+    public Map<DynamicValueState, Object> getConditionStateDependentPropertyValues() {
+        return _conditionStateDependentPropertyValues;
+    }
 
-	/**
-	 * Sets the property values, which should be applied for certain condition
-	 * states.
-	 * 
-	 * @param values
-	 *            the property values, which should be applied for certain
-	 *            condition states
-	 */
-	public void setConditionStateDependentPropertyValues(
-			final Map<DynamicValueState, Object> values) {
-		assert values != null;
-		_conditionStateDependentPropertyValues = values;
-	}
+    /**
+     * Sets the property values, which should be applied for certain condition
+     * states.
+     * 
+     * @param values
+     *            the property values, which should be applied for certain
+     *            condition states
+     */
+    public void setConditionStateDependentPropertyValues(
+            final Map<DynamicValueState, Object> values) {
+        assert values != null;
+        _conditionStateDependentPropertyValues = values;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public DynamicsDescriptor clone() {
-		DynamicsDescriptor clone = new DynamicsDescriptor(new String(_ruleId));
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public DynamicsDescriptor clone() {
+        DynamicsDescriptor clone = new DynamicsDescriptor(new String(_ruleId));
 
-		// clone input channels
-		List<ParameterDescriptor> clonedParameters = new ArrayList<ParameterDescriptor>();
+        // clone input channels
+        List<ParameterDescriptor> clonedParameters = new ArrayList<ParameterDescriptor>();
 
-		for (ParameterDescriptor parameter : _inputChannels) {
-			clonedParameters.add(parameter.clone());
-		}
-		
-		clone._useOnlyConnectionStates = this._useOnlyConnectionStates;
+        for (ParameterDescriptor parameter : _inputChannels) {
+            clonedParameters.add(parameter.clone());
+        }
+        
+        clone._useOnlyConnectionStates = this._useOnlyConnectionStates;
 
-		clone._inputChannels = clonedParameters;
+        clone._inputChannels = clonedParameters;
 
-		// clone output channels
-		if (_outputChannel != null) {
-			clone._outputChannel = _outputChannel.clone();
-		} else {
-			clone._outputChannel = null;
-		}
+        // clone output channels
+        if (_outputChannel != null) {
+            clone._outputChannel = _outputChannel.clone();
+        } else {
+            clone._outputChannel = null;
+        }
 
-		// clone connection state values
-		if (_connectionStateDependentPropertyValues != null) {
-			HashMap<ConnectionState, Object> clonedConnectionValues = new HashMap<ConnectionState, Object>();
-			for (ConnectionState key : _connectionStateDependentPropertyValues
-					.keySet()) {
-				// FIXME: Sven Wende: Clonen der Werte!
-				clonedConnectionValues.put(key,
-						_connectionStateDependentPropertyValues.get(key));
-			}
-			clone._connectionStateDependentPropertyValues = clonedConnectionValues;
-		}
+        // clone connection state values
+        if (_connectionStateDependentPropertyValues != null) {
+            HashMap<ConnectionState, Object> clonedConnectionValues = new HashMap<ConnectionState, Object>();
+            for (ConnectionState key : _connectionStateDependentPropertyValues
+                    .keySet()) {
+                // FIXME: Sven Wende: Clonen der Werte!
+                clonedConnectionValues.put(key,
+                        _connectionStateDependentPropertyValues.get(key));
+            }
+            clone._connectionStateDependentPropertyValues = clonedConnectionValues;
+        }
 
-		// clone condition state values
-		if (_conditionStateDependentPropertyValues != null) {
-			HashMap<DynamicValueState, Object> clonedConditionValues = new HashMap<DynamicValueState, Object>();
-			for (DynamicValueState key : _conditionStateDependentPropertyValues
-					.keySet()) {
-				// FIXME: Sven Wende: Clonen der Werte!
-				clonedConditionValues.put(key,
-						_conditionStateDependentPropertyValues.get(key));
-			}
-			clone._conditionStateDependentPropertyValues = clonedConditionValues;
-		}
-		return clone;
-	}
+        // clone condition state values
+        if (_conditionStateDependentPropertyValues != null) {
+            HashMap<DynamicValueState, Object> clonedConditionValues = new HashMap<DynamicValueState, Object>();
+            for (DynamicValueState key : _conditionStateDependentPropertyValues
+                    .keySet()) {
+                // FIXME: Sven Wende: Clonen der Werte!
+                clonedConditionValues.put(key,
+                        _conditionStateDependentPropertyValues.get(key));
+            }
+            clone._conditionStateDependentPropertyValues = clonedConditionValues;
+        }
+        return clone;
+    }
 
-	/**
-	 * Set the ID of the associated rule.
-	 * 
-	 * @param ruleId
-	 *            The rule ID to set.
-	 */
-	public void setRuleId(final String ruleId) {
-		_ruleId = ruleId;
-	}
+    /**
+     * Set the ID of the associated rule.
+     * 
+     * @param ruleId
+     *            The rule ID to set.
+     */
+    public void setRuleId(final String ruleId) {
+        _ruleId = ruleId;
+    }
 
-	/**
-	 * Sets whether this {@link DynamicsDescriptor} should only use the
-	 * connection states.
-	 * 
-	 * @param choice
-	 *            The choice
-	 */
-	public void setUsingOnlyConnectionStates(final boolean choice) {
-		_useOnlyConnectionStates = choice;
-	}
+    /**
+     * Sets whether this {@link DynamicsDescriptor} should only use the
+     * connection states.
+     * 
+     * @param choice
+     *            The choice
+     */
+    public void setUsingOnlyConnectionStates(final boolean choice) {
+        _useOnlyConnectionStates = choice;
+    }
 
-	/**
-	 * Return if this {@link DynamicsDescriptor} uses only the connection
-	 * states.
-	 * 
-	 * @return <code>true</code> if this {@link DynamicsDescriptor} uses only
-	 *         the connection states, <code>false</code> otherwise
-	 */
-	public boolean isUsingOnlyConnectionStates() {
-		return _useOnlyConnectionStates;
-	}
+    /**
+     * Return if this {@link DynamicsDescriptor} uses only the connection
+     * states.
+     * 
+     * @return <code>true</code> if this {@link DynamicsDescriptor} uses only
+     *         the connection states, <code>false</code> otherwise
+     */
+    public boolean isUsingOnlyConnectionStates() {
+        return _useOnlyConnectionStates;
+    }
 }

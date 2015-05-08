@@ -18,73 +18,73 @@ import org.junit.Test;
  */
 public class SysContentTests {
 
-	@Test
-	public void testParse() {
-		SysContentParser parser = new SysContentParser();
-		ContentDescriptor inDesc = new ContentDescriptor();
-		inDesc.setAutoCompleteType(AutoCompleteType.PV);
-		SysContentDescriptor outDesc = null;
+    @Test
+    public void testParse() {
+        SysContentParser parser = new SysContentParser();
+        ContentDescriptor inDesc = new ContentDescriptor();
+        inDesc.setAutoCompleteType(AutoCompleteType.PV);
+        SysContentDescriptor outDesc = null;
 
-		inDesc.setDefaultDataSource("epics://");
+        inDesc.setDefaultDataSource("epics://");
 
-		inDesc.setValue("sys://");
-		outDesc = (SysContentDescriptor) parser.parse(inDesc);
-		Assert.assertTrue(outDesc.getContentType() == SysContentType.SysFunction);
-		Assert.assertTrue(outDesc.getValue().isEmpty());
+        inDesc.setValue("sys://");
+        outDesc = (SysContentDescriptor) parser.parse(inDesc);
+        Assert.assertTrue(outDesc.getContentType() == SysContentType.SysFunction);
+        Assert.assertTrue(outDesc.getValue().isEmpty());
 
-		inDesc.setValue("sys://s*");
-		outDesc = (SysContentDescriptor) parser.parse(inDesc);
-		Assert.assertTrue(outDesc.getContentType() == SysContentType.SysFunction);
-		Assert.assertTrue(outDesc.getValue().equals("s*"));
+        inDesc.setValue("sys://s*");
+        outDesc = (SysContentDescriptor) parser.parse(inDesc);
+        Assert.assertTrue(outDesc.getContentType() == SysContentType.SysFunction);
+        Assert.assertTrue(outDesc.getValue().equals("s*"));
 
-		inDesc.setValue("sys://system.*");
-		outDesc = (SysContentDescriptor) parser.parse(inDesc);
-		Assert.assertTrue(outDesc.getContentType() == SysContentType.SysFunction);
-		Assert.assertTrue(outDesc.getValue().equals("system.*"));
-	}
+        inDesc.setValue("sys://system.*");
+        outDesc = (SysContentDescriptor) parser.parse(inDesc);
+        Assert.assertTrue(outDesc.getContentType() == SysContentType.SysFunction);
+        Assert.assertTrue(outDesc.getValue().equals("system.*"));
+    }
 
-	@Test
-	public void testProvider() {
-		SysContentProvider provider = new SysContentProvider();
-		SysContentDescriptor sysDesc = new SysContentDescriptor();
-		sysDesc.setAutoCompleteType(AutoCompleteType.Formula);
-		sysDesc.setContentType(SysContentType.SysFunction);
-		AutoCompleteResult result = null;
+    @Test
+    public void testProvider() {
+        SysContentProvider provider = new SysContentProvider();
+        SysContentDescriptor sysDesc = new SysContentDescriptor();
+        sysDesc.setAutoCompleteType(AutoCompleteType.Formula);
+        sysDesc.setContentType(SysContentType.SysFunction);
+        AutoCompleteResult result = null;
 
-		sysDesc.setValue("");
-		result = provider.listResult(sysDesc, 10);
-		Assert.assertTrue(result.getProposals().size() == SysContentDescriptor.listFunctions().size());
+        sysDesc.setValue("");
+        result = provider.listResult(sysDesc, 10);
+        Assert.assertTrue(result.getProposals().size() == SysContentDescriptor.listFunctions().size());
 
-		sysDesc.setValue("*");
-		result = provider.listResult(sysDesc, 10);
-		Assert.assertTrue(result.getProposals().size() == SysContentDescriptor.listFunctions().size());
+        sysDesc.setValue("*");
+        result = provider.listResult(sysDesc, 10);
+        Assert.assertTrue(result.getProposals().size() == SysContentDescriptor.listFunctions().size());
 
-		sysDesc.setValue("s");
-		result = provider.listResult(sysDesc, 10);
-		Assert.assertTrue(result.getProposals().size() == 1);
-		Assert.assertTrue(result.getProposals().get(0).getValue().equals("sys://system."));
-		Assert.assertTrue(result.getTopProposals().size() == 1);
-		Assert.assertTrue(result.getTopProposals().get(0).getValue().equals("sys://system."));
+        sysDesc.setValue("s");
+        result = provider.listResult(sysDesc, 10);
+        Assert.assertTrue(result.getProposals().size() == 1);
+        Assert.assertTrue(result.getProposals().get(0).getValue().equals("sys://system."));
+        Assert.assertTrue(result.getTopProposals().size() == 1);
+        Assert.assertTrue(result.getTopProposals().get(0).getValue().equals("sys://system."));
 
-		sysDesc.setValue("system.us");
-		result = provider.listResult(sysDesc, 10);
-		Assert.assertTrue(result.getTopProposals().size() == 1);
-		Assert.assertTrue(result.getTopProposals().get(0).getValue().equals("sys://system.user."));
+        sysDesc.setValue("system.us");
+        result = provider.listResult(sysDesc, 10);
+        Assert.assertTrue(result.getTopProposals().size() == 1);
+        Assert.assertTrue(result.getTopProposals().get(0).getValue().equals("sys://system.user."));
 
-		sysDesc.setValue("system.us*");
-		result = provider.listResult(sysDesc, 10);
-		Assert.assertTrue(result.getTopProposals().size() == 1);
-		Assert.assertTrue(result.getTopProposals().get(0).getValue().equals("sys://system.user."));
+        sysDesc.setValue("system.us*");
+        result = provider.listResult(sysDesc, 10);
+        Assert.assertTrue(result.getTopProposals().size() == 1);
+        Assert.assertTrue(result.getTopProposals().get(0).getValue().equals("sys://system.user."));
 
-		sysDesc.setValue("system.user.*ome");
-		result = provider.listResult(sysDesc, 10);
-		Assert.assertTrue(result.getProposals().size() == 1);
-		Assert.assertTrue(result.getProposals().get(0).getValue().equals("sys://system.user.home"));
-		Assert.assertTrue(result.getTopProposals().size() == 1);
-		Assert.assertTrue(result.getTopProposals().get(0).getValue().equals("sys://system.user.home"));
+        sysDesc.setValue("system.user.*ome");
+        result = provider.listResult(sysDesc, 10);
+        Assert.assertTrue(result.getProposals().size() == 1);
+        Assert.assertTrue(result.getProposals().get(0).getValue().equals("sys://system.user.home"));
+        Assert.assertTrue(result.getTopProposals().size() == 1);
+        Assert.assertTrue(result.getTopProposals().get(0).getValue().equals("sys://system.user.home"));
 
-		sysDesc.setValue("system.user..*ome");
-		result = provider.listResult(sysDesc, 10);
-		Assert.assertTrue(result.getProposals().size() == 0);
-	}
+        sysDesc.setValue("system.user..*ome");
+        result = provider.listResult(sysDesc, 10);
+        Assert.assertTrue(result.getProposals().size() == 0);
+    }
 }

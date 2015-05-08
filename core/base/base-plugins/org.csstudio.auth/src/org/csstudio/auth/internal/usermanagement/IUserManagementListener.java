@@ -30,12 +30,12 @@ package org.csstudio.auth.internal.usermanagement;
  */
 public interface IUserManagementListener {
 
-	/**
-	 * Process the incoming event.
-	 * 
-	 * @param event
-	 *            The event
-	 */
-	void handleUserManagementEvent(UserManagementEvent event);
+    /**
+     * Process the incoming event.
+     * 
+     * @param event
+     *            The event
+     */
+    void handleUserManagementEvent(UserManagementEvent event);
 
 }

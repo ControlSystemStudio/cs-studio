@@ -29,13 +29,13 @@ import org.eclipse.swt.widgets.Composite;
  *  @author Kay Kasemir
  */
 public class MeterWidget extends Canvas implements DisposeListener,
-		PaintListener
+        PaintListener
 {
     /** Line width for scale outline (rest uses width 1) */
-	final private static int LINE_WIDTH = 5;
+    final private static int LINE_WIDTH = 5;
 
-	/** Number of labels (and ticks) */
-	final private static int LABEL_COUNT = 5;
+    /** Number of labels (and ticks) */
+    final private static int LABEL_COUNT = 5;
 
     final private static int start_angle = 140;
     final private static int end_angle = 40;
@@ -90,23 +90,23 @@ public class MeterWidget extends Canvas implements DisposeListener,
     /** Y-Radius of scale */
     private int y_radius;
 
-	/** Constructor */
-	public MeterWidget(final Composite parent, final int style)
-	{
-	    // To reduce flicker, don't clear the background.
-	    // On Linux, however, that seems to corrupt the overall
-	    // widget layout, so we don't use that option.
-	    // super(parent, style | SWT.NO_BACKGROUND);
+    /** Constructor */
+    public MeterWidget(final Composite parent, final int style)
+    {
+        // To reduce flicker, don't clear the background.
+        // On Linux, however, that seems to corrupt the overall
+        // widget layout, so we don't use that option.
+        // super(parent, style | SWT.NO_BACKGROUND);
         super(parent, style);
-		background_color = new Color(null, 255, 255, 255);
-		face_color = new Color(null, 20, 10, 10);
-		needle_color = new Color(null, 20, 0, 200);
+        background_color = new Color(null, 255, 255, 255);
+        face_color = new Color(null, 20, 10, 10);
+        needle_color = new Color(null, 20, 0, 200);
         ok_color = new Color(null, 0, 200, 0);
         warning_color = new Color(null, 200, 200, 0);
         alarm_color = new Color(null, 250, 0, 0);
-		addDisposeListener(this);
-		addPaintListener(this);
-	}
+        addDisposeListener(this);
+        addPaintListener(this);
+    }
 
     /** Configure the meter.
      *  @param min Minimum value.
@@ -144,13 +144,13 @@ public class MeterWidget extends Canvas implements DisposeListener,
         // Check for limits that are outside the value range
         // or NaN (since EPICS R3.14.11)
         if (low_alarm > this.min  &&  low_alarm < this.max)
-        	this.low_alarm = low_alarm;
+            this.low_alarm = low_alarm;
         else
-        	this.low_alarm = this.min;
+            this.low_alarm = this.min;
 
         if (low_warning > this.min  &&  low_warning < this.max)
-        	this.low_warning = low_warning;
-    	else
+            this.low_warning = low_warning;
+        else
             this.low_warning = this.low_alarm;
 
 
@@ -160,7 +160,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
             this.high_alarm = this.max;
 
         if (high_warning > this.min  &&  high_warning < this.max)
-        	this.high_warning = high_warning;
+            this.high_warning = high_warning;
         else
             this.high_warning = this.high_alarm;
 
@@ -204,21 +204,21 @@ public class MeterWidget extends Canvas implements DisposeListener,
         background_color.dispose();
     }
 
-	/** @see org.eclipse.swt.widgets.Composite#computeSize(int, int, boolean) */
-	@Override
-	public Point computeSize(final int wHint, final int hHint, final boolean changed)
-	{
-		int width, height;
-		height = 100;
-		width = 100;
-		if (wHint != SWT.DEFAULT) {
+    /** @see org.eclipse.swt.widgets.Composite#computeSize(int, int, boolean) */
+    @Override
+    public Point computeSize(final int wHint, final int hHint, final boolean changed)
+    {
+        int width, height;
+        height = 100;
+        width = 100;
+        if (wHint != SWT.DEFAULT) {
             width = wHint;
         }
-		if (hHint != SWT.DEFAULT) {
+        if (hHint != SWT.DEFAULT) {
             height = hHint;
         }
-		return new Point(width, height);
-	}
+        return new Point(width, height);
+    }
 
     /** @return Angle in degrees for given value on scale. */
     private double getAngle(final double value)
@@ -232,7 +232,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
         return end_angle + (start_angle - end_angle) * (max-value) / (max-min);
     }
 
-	/** @see org.eclipse.swt.events.PaintListener */
+    /** @see org.eclipse.swt.events.PaintListener */
     @Override
     public void paintControl(final PaintEvent e)
     {
@@ -330,8 +330,8 @@ public class MeterWidget extends Canvas implements DisposeListener,
         final int tick_x_radius = real_client_rect.width/2 - text_width_idea;
         int tick_y_radius = real_client_rect.height - 2*text_height_idea;
         if(tick_y_radius==0) {
-        	// Avoid / by zero.
-        	tick_y_radius = 1;
+            // Avoid / by zero.
+            tick_y_radius = 1;
         }
         y_radius = tick_y_radius - text_height_idea;
         x_radius = tick_x_radius * y_radius/tick_y_radius;

@@ -40,20 +40,20 @@ public class ToleranceAction extends PVTableAction
         final List<PVTableItem> items = new ArrayList<>();
         final IStructuredSelection sel = (IStructuredSelection)viewer.getSelection();
         if (sel != null  &&  sel.size() > 0)
-        {	// Use selected model items
-        	final Iterator<?> iterator = sel.iterator();
-        	while (iterator.hasNext())
-        		items.add((PVTableItem) iterator.next());
+        {    // Use selected model items
+            final Iterator<?> iterator = sel.iterator();
+            while (iterator.hasNext())
+                items.add((PVTableItem) iterator.next());
         }
         else
-        {	// Use all model items
-        	final int N = model.getItemCount();
-        	for (int i=0; i<N; ++i)
-        		items.add(model.getItem(i));
+        {    // Use all model items
+            final int N = model.getItemCount();
+            for (int i=0; i<N; ++i)
+                items.add(model.getItem(i));
         }
         
         if (items.isEmpty())
-        	return;
+            return;
         
         double tolerance = items.get(0).getTolerance();
         

@@ -37,32 +37,32 @@ import org.junit.Test;
  */
 public final class BargraphEditPartTest {
 
-	/**
-	 * The instance to test.
-	 */
-	private BargraphEditPart _editPart;
+    /**
+     * The instance to test.
+     */
+    private BargraphEditPart _editPart;
 
-	/**
-	 * Test set up.
-	 */
-	@Before
-	public void setUp() {
-		_editPart = new BargraphEditPart();
-		_editPart.setModel(new BargraphModel());
-		((RefreshableBargraphFigure)_editPart.getFigure()).setDefaultFillColor(CustomMediaFactory.getInstance().getColor(new RGB(100,100,100)));
-		((BargraphModel)_editPart.getModel()).setPropertyValue(BargraphModel.PROP_FILL, 50);
-	}
+    /**
+     * Test set up.
+     */
+    @Before
+    public void setUp() {
+        _editPart = new BargraphEditPart();
+        _editPart.setModel(new BargraphModel());
+        ((RefreshableBargraphFigure)_editPart.getFigure()).setDefaultFillColor(CustomMediaFactory.getInstance().getColor(new RGB(100,100,100)));
+        ((BargraphModel)_editPart.getModel()).setPropertyValue(BargraphModel.PROP_FILL, 50);
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.components.ui.internal.editparts.BargraphEditPart#doCreateFigure()}.
-	 */
-	@Test
-	public void testCreateFigure() {
-		IFigure figure = _editPart.doCreateFigure();
-		assertTrue(figure instanceof RefreshableBargraphFigure);
-	}
-	
-	
+    /**
+     * Test method for
+     * {@link org.csstudio.sds.components.ui.internal.editparts.BargraphEditPart#doCreateFigure()}.
+     */
+    @Test
+    public void testCreateFigure() {
+        IFigure figure = _editPart.doCreateFigure();
+        assertTrue(figure instanceof RefreshableBargraphFigure);
+    }
+    
+    
 
 }

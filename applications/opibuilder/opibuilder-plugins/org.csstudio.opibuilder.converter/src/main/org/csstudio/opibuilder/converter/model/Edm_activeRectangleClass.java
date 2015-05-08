@@ -15,66 +15,66 @@ package org.csstudio.opibuilder.converter.model;
  */
 public class Edm_activeRectangleClass extends EdmWidget {
 
-	
-	@EdmAttributeAn private EdmColor lineColor;
-	
-	@EdmAttributeAn @EdmOptionalAn private int lineWidth;
-	@EdmAttributeAn @EdmOptionalAn private EdmLineStyle lineStyle;	
-	@EdmAttributeAn @EdmOptionalAn private EdmColor fillColor;
-	@EdmAttributeAn @EdmOptionalAn private boolean fill;
-	@EdmAttributeAn @EdmOptionalAn private boolean invisible;
-	@EdmAttributeAn @EdmOptionalAn private boolean lineAlarm;
-	@EdmAttributeAn @EdmOptionalAn private boolean fillAlarm;
+    
+    @EdmAttributeAn private EdmColor lineColor;
+    
+    @EdmAttributeAn @EdmOptionalAn private int lineWidth;
+    @EdmAttributeAn @EdmOptionalAn private EdmLineStyle lineStyle;    
+    @EdmAttributeAn @EdmOptionalAn private EdmColor fillColor;
+    @EdmAttributeAn @EdmOptionalAn private boolean fill;
+    @EdmAttributeAn @EdmOptionalAn private boolean invisible;
+    @EdmAttributeAn @EdmOptionalAn private boolean lineAlarm;
+    @EdmAttributeAn @EdmOptionalAn private boolean fillAlarm;
 
-	public Edm_activeRectangleClass(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
+    public Edm_activeRectangleClass(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
 
-	
+    
 
-	
+    
 
-	/**
-	 * @return the lineAlarm
-	 */
-	public final boolean isLineAlarm() {
-		return lineAlarm;
-	}
-
-
+    /**
+     * @return the lineAlarm
+     */
+    public final boolean isLineAlarm() {
+        return lineAlarm;
+    }
 
 
 
-	/**
-	 * @return the fillAlarm
-	 */
-	public final boolean isFillAlarm() {
-		return fillAlarm;
-	}
+
+
+    /**
+     * @return the fillAlarm
+     */
+    public final boolean isFillAlarm() {
+        return fillAlarm;
+    }
 
 
 
-	public EdmColor getLineColor() {
-		return lineColor;
-	}
+    public EdmColor getLineColor() {
+        return lineColor;
+    }
 
-	public int getLineWidth() {
-		return lineWidth;
-	}
+    public int getLineWidth() {
+        return lineWidth;
+    }
 
-	public EdmLineStyle getLineStyle() {
-		return lineStyle;
-	}
+    public EdmLineStyle getLineStyle() {
+        return lineStyle;
+    }
 
-	public EdmColor getFillColor() {
-		return fillColor;
-	}
+    public EdmColor getFillColor() {
+        return fillColor;
+    }
 
-	public boolean isInvisible() {
-		return invisible;
-	}
+    public boolean isInvisible() {
+        return invisible;
+    }
 
-	public boolean isFill(){
-		return fill;
-	}
+    public boolean isFill(){
+        return fill;
+    }
 }

@@ -38,28 +38,28 @@ import org.csstudio.dal.group.PropertyCollection;
  * @author <a href="mailto:igor.kriznar@cosylab.com">Igor Kriznar</a>
  */
 public interface PropertyFamily
-	extends PropertyCollection<DynamicValueProperty<?>>, GroupDataAccessProvider, PropertyContext
+    extends PropertyCollection<DynamicValueProperty<?>>, GroupDataAccessProvider, PropertyContext
 {
-	/**
-	 * Destroys and releases all properties.
-	 */
-	public void destroyAll();
+    /**
+     * Destroys and releases all properties.
+     */
+    public void destroyAll();
 
-	/**
-	 * If this family is owner of property, then destroys the property
-	 * and releases all properties and remote respurces and removes it from
-	 * itself.
-	 *
-	 * @param prop property to be destroyed
-	 */
-	public void destroy(DynamicValueProperty<?> prop);
+    /**
+     * If this family is owner of property, then destroys the property
+     * and releases all properties and remote respurces and removes it from
+     * itself.
+     *
+     * @param prop property to be destroyed
+     */
+    public void destroy(DynamicValueProperty<?> prop);
 
-	/**
-	 * Returns parent application context.
-	 *
-	 * @return parent application context
-	 */
-	public AbstractApplicationContext getApplicationContext();
+    /**
+     * Returns parent application context.
+     *
+     * @return parent application context
+     */
+    public AbstractApplicationContext getApplicationContext();
 } /* __oOo__ */
 
 

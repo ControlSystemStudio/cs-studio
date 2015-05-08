@@ -34,7 +34,7 @@ import java.util.List;
  *
  */
 public interface CommandGroup extends List<Command>, AsynchronousCommand,
-	AsynchronousCommandContext
+    AsynchronousCommandContext
 {
 }
 

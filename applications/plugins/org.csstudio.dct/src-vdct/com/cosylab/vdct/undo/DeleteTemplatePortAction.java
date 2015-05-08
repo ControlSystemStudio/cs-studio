@@ -43,7 +43,7 @@ public class DeleteTemplatePortAction extends CreateTemplatePortAction {
  * @param object com.cosylab.vdct.graphics.objects.VisibleObject
  */
 public DeleteTemplatePortAction(VDBTemplate object, VDBPort port) {
-	super(object, port);
+    super(object, port);
 }
 /**
  * Insert the method's description here.
@@ -51,18 +51,18 @@ public DeleteTemplatePortAction(VDBTemplate object, VDBPort port) {
  * @return java.lang.String
  */
 public String getDescription() {
-	return "Delete Template Port ["+object+"]("+port.getFullName()+")";
+    return "Delete Template Port ["+object+"]("+port.getFullName()+")";
 }
 /**
  * This method was created in VisualAge.
  */
 protected void redoAction() {
-	super.undoAction();
+    super.undoAction();
 }
 /**
  * This method was created in VisualAge.
  */
 protected void undoAction() {
-	super.redoAction();
+    super.redoAction();
 }
 }

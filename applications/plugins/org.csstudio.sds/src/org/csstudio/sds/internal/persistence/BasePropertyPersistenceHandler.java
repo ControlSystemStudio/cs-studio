@@ -37,14 +37,14 @@ import org.jdom.Element;
  * 
  */
 public abstract class BasePropertyPersistenceHandler extends
-		AbstractPropertyPersistenceHandler {
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void writeProperty(final Element domElement,
-			final Object propertyValue) {
-		domElement.setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, propertyValue
-				.toString());
-	}
+        AbstractPropertyPersistenceHandler {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void writeProperty(final Element domElement,
+            final Object propertyValue) {
+        domElement.setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, propertyValue
+                .toString());
+    }
 }

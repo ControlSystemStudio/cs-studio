@@ -14,11 +14,11 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({ 
-		ApplianceArchiveReaderOptimizedTest.class,
-		ApplianceArchiveReaderOptimizedStatisticsTest.class,
-		ApplianceArchiveReaderRawTest.class,
-		ApplianceArchiveReaderRawWaveformTest.class,
-		ApplianceArchiveReaderOptimizedWaveformTest.class})
+        ApplianceArchiveReaderOptimizedTest.class,
+        ApplianceArchiveReaderOptimizedStatisticsTest.class,
+        ApplianceArchiveReaderRawTest.class,
+        ApplianceArchiveReaderRawWaveformTest.class,
+        ApplianceArchiveReaderOptimizedWaveformTest.class})
 public class ApplianceArchiveReaderTestSuite {
 
 }

@@ -38,64 +38,64 @@ import com.cosylab.vdct.VisualDCT;
  */
  
 public class ShowMorphingDialog extends Command {
-	private VisualDCT visualDCT;
-	private String name;
-	private String oldType;
-	private Object[] targets;
+    private VisualDCT visualDCT;
+    private String name;
+    private String oldType;
+    private Object[] targets;
 /**
  * Insert the method's description here.
  * Creation date: (29.12.2000 12:37:58)
  */
 
 public ShowMorphingDialog(VisualDCT visualDCT) {
-	this.visualDCT=visualDCT;
+    this.visualDCT=visualDCT;
 }
 /**
  * Insert the method's description here.
  * Creation date: (29.12.2000 12:37:43)
  */
 public void execute() {
-	visualDCT.showMorphingDialog(name, oldType, targets);
+    visualDCT.showMorphingDialog(name, oldType, targets);
 }
 
-	/**
-	 * @return
-	 */
-	public String getOldType() {
-		return oldType;
-	}
+    /**
+     * @return
+     */
+    public String getOldType() {
+        return oldType;
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setOldType(String string) {
-		oldType = string;
-	}
+    /**
+     * @param string
+     */
+    public void setOldType(String string) {
+        oldType = string;
+    }
 
-	/**
-	 * @return
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * @return
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setName(String string) {
-		name = string;
-	}
+    /**
+     * @param string
+     */
+    public void setName(String string) {
+        name = string;
+    }
 
-	/**
-	 * @return Returns the targets.
-	 */
-	public Object[] getTargets() {
-		return targets;
-	}
-	/**
-	 * @param targets The targets to set.
-	 */
-	public void setTargets(Object[] targets) {
-		this.targets = targets;
-	}
+    /**
+     * @return Returns the targets.
+     */
+    public Object[] getTargets() {
+        return targets;
+    }
+    /**
+     * @param targets The targets to set.
+     */
+    public void setTargets(Object[] targets) {
+        this.targets = targets;
+    }
 }

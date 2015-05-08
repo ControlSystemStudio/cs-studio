@@ -40,136 +40,136 @@ import org.eclipse.core.runtime.Path;
  * @author Kai Meyer
  */
 public final class OpenDisplayActionModel extends AbstractWidgetActionModel {
-	/**
-	 * The ID for the <i>resource</i> property.
-	 */
-	public static final String PROP_RESOURCE = "resource";
-	
-	/**
-	 * The ID for the <i>aliases</i> property.
-	 */
-	public static final String PROP_ALIASES = "aliases";
-	
-	/**
-	 * The ID for the <i>description</i> property.
-	 */
-	public static final String PROP_DESCRIPTION = "description";
+    /**
+     * The ID for the <i>resource</i> property.
+     */
+    public static final String PROP_RESOURCE = "resource";
+    
+    /**
+     * The ID for the <i>aliases</i> property.
+     */
+    public static final String PROP_ALIASES = "aliases";
+    
+    /**
+     * The ID for the <i>description</i> property.
+     */
+    public static final String PROP_DESCRIPTION = "description";
 
-	/**
-	 * The ID for the <i>target</i> property.
-	 */
-	public static final String PROP_TARGET = "target";
+    /**
+     * The ID for the <i>target</i> property.
+     */
+    public static final String PROP_TARGET = "target";
 
-	/**
-	 * The ID for the <i>close</i> property.
-	 */
-	public static final String PROP_CLOSE = "close";
+    /**
+     * The ID for the <i>close</i> property.
+     */
+    public static final String PROP_CLOSE = "close";
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param type
-	 *            The type for the {@link AbstractWidgetActionModel}
-	 */
-	public OpenDisplayActionModel() {
-		super(ActionType.OPEN_DISPLAY.getTitle(), ActionType.OPEN_DISPLAY);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param type
+     *            The type for the {@link AbstractWidgetActionModel}
+     */
+    public OpenDisplayActionModel() {
+        super(ActionType.OPEN_DISPLAY.getTitle(), ActionType.OPEN_DISPLAY);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void createProperties() {
-		ResourceProperty resource = new ResourceProperty("Display",
-				WidgetPropertyCategory.BEHAVIOR, new Path(""),
-				new String[] { "css-sds" });
-		addProperty(PROP_RESOURCE, resource);
-		StringMapProperty aliases = new StringMapProperty("Aliases",
-				WidgetPropertyCategory.BEHAVIOR, new HashMap<String, String>());
-		addProperty(PROP_ALIASES, aliases);
-		StringProperty description = new StringProperty("Description",
-				WidgetPropertyCategory.BEHAVIOR, "");
-		addProperty(PROP_DESCRIPTION, description);
-		OptionProperty target = new OptionProperty("Target",
-				WidgetPropertyCategory.BEHAVIOR, OpenDisplayActionTarget.values(), OpenDisplayActionTarget.SHELL
-						.getIdentifier());
-		addProperty(PROP_TARGET, target);
-		BooleanProperty close = new BooleanProperty("Close",
-				WidgetPropertyCategory.BEHAVIOR, false);
-		addProperty(PROP_CLOSE, close);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void createProperties() {
+        ResourceProperty resource = new ResourceProperty("Display",
+                WidgetPropertyCategory.BEHAVIOR, new Path(""),
+                new String[] { "css-sds" });
+        addProperty(PROP_RESOURCE, resource);
+        StringMapProperty aliases = new StringMapProperty("Aliases",
+                WidgetPropertyCategory.BEHAVIOR, new HashMap<String, String>());
+        addProperty(PROP_ALIASES, aliases);
+        StringProperty description = new StringProperty("Description",
+                WidgetPropertyCategory.BEHAVIOR, "");
+        addProperty(PROP_DESCRIPTION, description);
+        OptionProperty target = new OptionProperty("Target",
+                WidgetPropertyCategory.BEHAVIOR, OpenDisplayActionTarget.values(), OpenDisplayActionTarget.SHELL
+                        .getIdentifier());
+        addProperty(PROP_TARGET, target);
+        BooleanProperty close = new BooleanProperty("Close",
+                WidgetPropertyCategory.BEHAVIOR, false);
+        addProperty(PROP_CLOSE, close);
+    }
 
-	/**
-	 * Returns the {@link IPath} to the display.
-	 * 
-	 * @return The {@link IPath} to the display
-	 */
-	public IPath getResource() {
-		return getProperty(PROP_RESOURCE).getPropertyValue();
-	}
+    /**
+     * Returns the {@link IPath} to the display.
+     * 
+     * @return The {@link IPath} to the display
+     */
+    public IPath getResource() {
+        return getProperty(PROP_RESOURCE).getPropertyValue();
+    }
 
-	/**
-	 * Returns the new aliases for the display.
-	 * 
-	 * @return The new aliases for the display
-	 */
-	public Map<String, String> getAliases() {
-		return getProperty(PROP_ALIASES).getPropertyValue();
-	}
+    /**
+     * Returns the new aliases for the display.
+     * 
+     * @return The new aliases for the display
+     */
+    public Map<String, String> getAliases() {
+        return getProperty(PROP_ALIASES).getPropertyValue();
+    }
 
-	/**
-	 * Returns the description.
-	 * 
-	 * @return The description
-	 */
-	public String getDescription() {
-		return getProperty(PROP_DESCRIPTION).getPropertyValue();
-	}
+    /**
+     * Returns the description.
+     * 
+     * @return The description
+     */
+    public String getDescription() {
+        return getProperty(PROP_DESCRIPTION).getPropertyValue();
+    }
 
-	/**
-	 * Returns the description.
-	 * 
-	 * @return The description
-	 */
-	public OpenDisplayActionTarget getTarget() {
-		OpenDisplayActionTarget result = OpenDisplayActionTarget.SHELL;
+    /**
+     * Returns the description.
+     * 
+     * @return The description
+     */
+    public OpenDisplayActionTarget getTarget() {
+        OpenDisplayActionTarget result = OpenDisplayActionTarget.SHELL;
 
-		String id = getProperty(PROP_TARGET).getPropertyValue();
-		id = id.toUpperCase();
-		try {
-			result = OpenDisplayActionTarget.valueOf(id);
-		} catch (Exception e) {
-			// ignore
-		}
+        String id = getProperty(PROP_TARGET).getPropertyValue();
+        id = id.toUpperCase();
+        try {
+            result = OpenDisplayActionTarget.valueOf(id);
+        } catch (Exception e) {
+            // ignore
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * Returns the description.
-	 * 
-	 * @return The description
-	 */
-	public Boolean getClose() {
-		return getProperty(PROP_CLOSE).getPropertyValue();
-	}
+    /**
+     * Returns the description.
+     * 
+     * @return The description
+     */
+    public Boolean getClose() {
+        return getProperty(PROP_CLOSE).getPropertyValue();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getActionLabel() {
-		if (getDescription() == null || getDescription().trim().length() == 0) {
-			StringBuffer buffer = new StringBuffer(this.getType().getTitle());
-			buffer.append(" ");
-			if (this.getResource().lastSegment() == null) {
-				buffer.append("unspecified");
-			} else {
-				buffer.append(this.getResource().lastSegment());
-			}
-			return buffer.toString();
-		}
-		return getDescription();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getActionLabel() {
+        if (getDescription() == null || getDescription().trim().length() == 0) {
+            StringBuffer buffer = new StringBuffer(this.getType().getTitle());
+            buffer.append(" ");
+            if (this.getResource().lastSegment() == null) {
+                buffer.append("unspecified");
+            } else {
+                buffer.append(this.getResource().lastSegment());
+            }
+            return buffer.toString();
+        }
+        return getDescription();
+    }
 
 }

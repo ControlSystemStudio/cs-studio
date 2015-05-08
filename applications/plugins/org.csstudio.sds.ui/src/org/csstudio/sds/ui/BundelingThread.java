@@ -43,81 +43,81 @@ import org.eclipse.ui.PlatformUI;
  * 
  */
 public final class BundelingThread implements Runnable {
-	/**
-	 * The singleton instance.
-	 */
-	private static BundelingThread _instance;
+    /**
+     * The singleton instance.
+     */
+    private static BundelingThread _instance;
 
-	/**
-	 * A queue, which contains runnables that process the events that occured
-	 * during the last SLEEP_TIME milliseconds.
-	 */
-	private Queue<Runnable> _queue;
+    /**
+     * A queue, which contains runnables that process the events that occured
+     * during the last SLEEP_TIME milliseconds.
+     */
+    private Queue<Runnable> _queue;
 
-	/**
-	 * Standard constructor.
-	 */
-	private BundelingThread() {
-		_queue = new ConcurrentLinkedQueue<Runnable>();
+    /**
+     * Standard constructor.
+     */
+    private BundelingThread() {
+        _queue = new ConcurrentLinkedQueue<Runnable>();
 
-		ExecutionService.getInstance().getScheduledExecutorService()
-				.scheduleAtFixedRate(this, 1000, 10, TimeUnit.MILLISECONDS);
-	}
+        ExecutionService.getInstance().getScheduledExecutorService()
+                .scheduleAtFixedRate(this, 1000, 10, TimeUnit.MILLISECONDS);
+    }
 
-	/**
-	 * Gets the singleton instance.
-	 * 
-	 * @return the singleton instance
-	 */
-	public static synchronized BundelingThread getInstance() {
-		if (_instance == null) {
-			_instance = new BundelingThread();
-		}
+    /**
+     * Gets the singleton instance.
+     * 
+     * @return the singleton instance
+     */
+    public static synchronized BundelingThread getInstance() {
+        if (_instance == null) {
+            _instance = new BundelingThread();
+        }
 
-		return _instance;
-	}
+        return _instance;
+    }
 
-	/**
-	 * {@inheritDoc}.
-	 */
-	public void run() {
-		processQueue();
-	}
+    /**
+     * {@inheritDoc}.
+     */
+    public void run() {
+        processQueue();
+    }
 
-	/**
-	 * Process the complete queue.
-	 */
-	private void processQueue() {
-		Display display = Display.getCurrent();
+    /**
+     * Process the complete queue.
+     */
+    private void processQueue() {
+        Display display = Display.getCurrent();
 
-		if (display == null) {
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					Runnable r;
+        if (display == null) {
+            PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+                public void run() {
+                    Runnable r;
 
-					while ((r = _queue.poll()) != null) {
-						r.run();
-					}
-				}
-			});
-		} else {
-			Runnable r;
+                    while ((r = _queue.poll()) != null) {
+                        r.run();
+                    }
+                }
+            });
+        } else {
+            Runnable r;
 
-			while ((r = _queue.poll()) != null) {
-				r.run();
-			}
-		}
-	}
+            while ((r = _queue.poll()) != null) {
+                r.run();
+            }
+        }
+    }
 
-	/**
-	 * Adds the specified runnable to the queue.
-	 * 
-	 * @param runnable
-	 *            the runnable
-	 */
-	public void addRunnable(final Runnable runnable) {
-		_queue.add(runnable);
+    /**
+     * Adds the specified runnable to the queue.
+     * 
+     * @param runnable
+     *            the runnable
+     */
+    public void addRunnable(final Runnable runnable) {
+        _queue.add(runnable);
 
-	}
+    }
 
 }

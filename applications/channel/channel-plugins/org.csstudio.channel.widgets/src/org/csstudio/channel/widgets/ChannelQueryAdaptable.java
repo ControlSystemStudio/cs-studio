@@ -10,5 +10,5 @@ import java.util.Collection;
  * 
  */
 public interface ChannelQueryAdaptable extends ChannelAdaptable {
-	public Collection<ChannelQuery> toChannelQueries();
+    public Collection<ChannelQuery> toChannelQueries();
 }

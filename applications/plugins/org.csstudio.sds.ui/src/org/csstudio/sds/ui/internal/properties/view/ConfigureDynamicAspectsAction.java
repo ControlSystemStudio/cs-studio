@@ -30,58 +30,58 @@ import org.eclipse.ui.PlatformUI;
  * Configures dynamic aspects of a property.
  */
 final class ConfigureDynamicAspectsAction extends PropertySheetAction {
-	/**
-	 * Creates the action.
-	 * 
-	 * @param viewer
-	 *            the viewer
-	 * @param name
-	 *            the name
-	 */
-	public ConfigureDynamicAspectsAction(final PropertySheetViewer viewer,
-			final String name) {
-		super(viewer, name);
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
-				IPropertiesHelpContextIds.COPY_PROPERTY_ACTION);
-	}
+    /**
+     * Creates the action.
+     * 
+     * @param viewer
+     *            the viewer
+     * @param name
+     *            the name
+     */
+    public ConfigureDynamicAspectsAction(final PropertySheetViewer viewer,
+            final String name) {
+        super(viewer, name);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+                IPropertiesHelpContextIds.COPY_PROPERTY_ACTION);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void run() {
-		// Get the selected property
-		IStructuredSelection selection = (IStructuredSelection) getPropertySheet()
-				.getSelection();
-		if (selection.isEmpty()) {
-			return;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void run() {
+        // Get the selected property
+        IStructuredSelection selection = (IStructuredSelection) getPropertySheet()
+                .getSelection();
+        if (selection.isEmpty()) {
+            return;
+        }
 
-		// Assume single selection
-		IPropertySheetEntry entry = (IPropertySheetEntry) selection
-				.getFirstElement();
+        // Assume single selection
+        IPropertySheetEntry entry = (IPropertySheetEntry) selection
+                .getFirstElement();
 
-		// Open Wizard
-		if (entry != null) {
-			DynamicAspectsWizard wizard = entry.getDynamicsDescriptionConfigurationWizard();
+        // Open Wizard
+        if (entry != null) {
+            DynamicAspectsWizard wizard = entry.getDynamicsDescriptionConfigurationWizard();
 
-			if (wizard != null) {
-				if(Window.OK ==ModalWizardDialog.open(Display.getCurrent()
-						.getActiveShell(), wizard)) {
-					entry.applyDynamicsDescriptor(wizard.getDynamicsDescriptor());
-				}
-			}
-		}
-	}
+            if (wizard != null) {
+                if(Window.OK ==ModalWizardDialog.open(Display.getCurrent()
+                        .getActiveShell(), wizard)) {
+                    entry.applyDynamicsDescriptor(wizard.getDynamicsDescriptor());
+                }
+            }
+        }
+    }
 
-	/**
-	 * Updates enablement based on the current selection.
-	 * 
-	 * @param sel
-	 *            the selection
-	 */
-	public void selectionChanged(final IStructuredSelection sel) {
-		setEnabled(!sel.isEmpty());
-	}
+    /**
+     * Updates enablement based on the current selection.
+     * 
+     * @param sel
+     *            the selection
+     */
+    public void selectionChanged(final IStructuredSelection sel) {
+        setEnabled(!sel.isEmpty());
+    }
 
 }

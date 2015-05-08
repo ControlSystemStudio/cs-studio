@@ -32,104 +32,104 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  * 
  */
 public class WidgetModelFactoryDescriptor {
-	/**
-	 * The description of the widget model factory.
-	 */
-	private String _description;
+    /**
+     * The description of the widget model factory.
+     */
+    private String _description;
 
-	/**
-	 * The name of the widget model factory.
-	 */
-	private String _name;
+    /**
+     * The name of the widget model factory.
+     */
+    private String _name;
 
-	/**
-	 * The path of the icon ressource of the widget model factory.
-	 */
-	private String _icon;
+    /**
+     * The path of the icon ressource of the widget model factory.
+     */
+    private String _icon;
 
-	/**
-	 * The widget model factory.
-	 */
-	private IWidgetModelFactory _factory;
+    /**
+     * The widget model factory.
+     */
+    private IWidgetModelFactory _factory;
 
-	/**
-	 * The ID of the plugin that contributes the widget model factory.
-	 */
-	private String _pluginId;
+    /**
+     * The ID of the plugin that contributes the widget model factory.
+     */
+    private String _pluginId;
 
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param description
-	 *            The description of the widget model factory.
-	 * @param name
-	 *            The name of the widget model factory.
-	 * @param icon
-	 *            The path of the icon ressource of the widget model factory.
-	 * @param factory
-	 *            The widget model factory.
-	 * @param pluginId
-	 *            The ID of the plugin that contributes the widget model
-	 *            factory.
-	 * @param inUse
-	 *            Determines if the corresponding widget should be used within
-	 *            the editor
-	 */
-	public WidgetModelFactoryDescriptor(final String description,
-			final String name, final String icon,
-			final IWidgetModelFactory factory, final String pluginId) {
-		super();
-		_description = description;
-		_name = name;
-		_icon = icon;
-		_factory = factory;
-		_pluginId = pluginId;
-	}
+    /**
+     * Standard constructor.
+     * 
+     * @param description
+     *            The description of the widget model factory.
+     * @param name
+     *            The name of the widget model factory.
+     * @param icon
+     *            The path of the icon ressource of the widget model factory.
+     * @param factory
+     *            The widget model factory.
+     * @param pluginId
+     *            The ID of the plugin that contributes the widget model
+     *            factory.
+     * @param inUse
+     *            Determines if the corresponding widget should be used within
+     *            the editor
+     */
+    public WidgetModelFactoryDescriptor(final String description,
+            final String name, final String icon,
+            final IWidgetModelFactory factory, final String pluginId) {
+        super();
+        _description = description;
+        _name = name;
+        _icon = icon;
+        _factory = factory;
+        _pluginId = pluginId;
+    }
 
-	/**
-	 * Return the description of the widget model factory.
-	 * 
-	 * @return The description of the widget model factory.
-	 */
-	public final String getDescription() {
-		return _description;
-	}
+    /**
+     * Return the description of the widget model factory.
+     * 
+     * @return The description of the widget model factory.
+     */
+    public final String getDescription() {
+        return _description;
+    }
 
-	/**
-	 * Return the path of the icon ressource of the widget model factory.
-	 * 
-	 * @return The path of the icon ressource of the widget model factory.
-	 */
-	public final String getIcon() {
-		return _icon;
-	}
+    /**
+     * Return the path of the icon ressource of the widget model factory.
+     * 
+     * @return The path of the icon ressource of the widget model factory.
+     */
+    public final String getIcon() {
+        return _icon;
+    }
 
-	/**
-	 * Return the name of the widget model factory.
-	 * 
-	 * @return The name of the widget model factory.
-	 */
-	public final String getName() {
-		return _name;
-	}
+    /**
+     * Return the name of the widget model factory.
+     * 
+     * @return The name of the widget model factory.
+     */
+    public final String getName() {
+        return _name;
+    }
 
-	/**
-	 * Return the widget model factory.
-	 * 
-	 * @return The widget model factory.
-	 */
-	public final IWidgetModelFactory getFactory() {
-		return _factory;
-	}
+    /**
+     * Return the widget model factory.
+     * 
+     * @return The widget model factory.
+     */
+    public final IWidgetModelFactory getFactory() {
+        return _factory;
+    }
 
-	/**
-	 * Return the ID of the plugin that contributes the widget model factory.
-	 * 
-	 * @return The ID of the plugin that contributes the widget model factory.
-	 */
-	public final String getPluginId() {
-		return _pluginId;
-	}
+    /**
+     * Return the ID of the plugin that contributes the widget model factory.
+     * 
+     * @return The ID of the plugin that contributes the widget model factory.
+     */
+    public final String getPluginId() {
+        return _pluginId;
+    }
 
-	
+    
 }

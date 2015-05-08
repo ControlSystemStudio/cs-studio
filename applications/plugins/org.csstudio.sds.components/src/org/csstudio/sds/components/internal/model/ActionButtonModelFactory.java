@@ -33,17 +33,17 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  * 
  */
 public final class ActionButtonModelFactory implements IWidgetModelFactory {
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractWidgetModel createWidgetModel() {
-		return new ActionButtonModel();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractWidgetModel createWidgetModel() {
+        return new ActionButtonModel();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Class getWidgetModelType() {
-		return ActionButtonModel.class;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Class getWidgetModelType() {
+        return ActionButtonModel.class;
+    }
 }

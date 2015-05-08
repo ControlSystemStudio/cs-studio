@@ -18,43 +18,43 @@ import org.csstudio.simplepv.IPV;
  */
 public class JavaScriptStore extends AbstractScriptStore {
 
-	private ScriptEngine engine;
-	private Bindings bindings;
-	private CompiledScript script;
+    private ScriptEngine engine;
+    private Bindings bindings;
+    private CompiledScript script;
 
-	public JavaScriptStore(final ScriptData scriptData, final AbstractBaseEditPart editpart,
-			final IPV[] pvArray) throws Exception {		
-		super(scriptData, editpart, pvArray);		
-		
-	}
-	
-	@Override
-	protected void initScriptEngine() throws Exception {
-		engine = ScriptStoreFactory.getJavaScriptEngine();
-		bindings = engine.createBindings();
-		bindings.put(ScriptService.WIDGET, getEditPart());
-		bindings.put(ScriptService.PVS, getPvArray());
-		bindings.put(ScriptService.DISPLAY, getDisplayEditPart());
-		bindings.put(ScriptService.WIDGET_CONTROLLER_DEPRECIATED, getEditPart());
-		bindings.put(ScriptService.PV_ARRAY_DEPRECIATED, getPvArray());
-	}
+    public JavaScriptStore(final ScriptData scriptData, final AbstractBaseEditPart editpart,
+            final IPV[] pvArray) throws Exception {        
+        super(scriptData, editpart, pvArray);        
+        
+    }
+    
+    @Override
+    protected void initScriptEngine() throws Exception {
+        engine = ScriptStoreFactory.getJavaScriptEngine();
+        bindings = engine.createBindings();
+        bindings.put(ScriptService.WIDGET, getEditPart());
+        bindings.put(ScriptService.PVS, getPvArray());
+        bindings.put(ScriptService.DISPLAY, getDisplayEditPart());
+        bindings.put(ScriptService.WIDGET_CONTROLLER_DEPRECIATED, getEditPart());
+        bindings.put(ScriptService.PV_ARRAY_DEPRECIATED, getPvArray());
+    }
 
-	@Override
-	protected void compileString(String string) throws Exception {
-		script = ((Compilable) engine).compile(string);
-	}
+    @Override
+    protected void compileString(String string) throws Exception {
+        script = ((Compilable) engine).compile(string);
+    }
 
-	@Override
-	protected void compileInputStream(InputStream s) throws Exception {
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(s))) {
-			script = ((Compilable) engine).compile(reader);
-		}
-		
-	}
+    @Override
+    protected void compileInputStream(InputStream s) throws Exception {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(s))) {
+            script = ((Compilable) engine).compile(reader);
+        }
+        
+    }
 
-	@Override
-	protected void execScript(IPV triggerPV) throws Exception {
-		bindings.put(ScriptService.TRIGGER_PV, triggerPV);
-		script.eval(bindings);
-	}
+    @Override
+    protected void execScript(IPV triggerPV) throws Exception {
+        bindings.put(ScriptService.TRIGGER_PV, triggerPV);
+        script.eval(bindings);
+    }
 }

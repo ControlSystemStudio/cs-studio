@@ -34,7 +34,7 @@ public class SelectAllAction extends PVTableAction
         {
             final PVTableItem item = model.getItem(i);
             if (item.isSelected())
-            	continue;
+                continue;
             item.setSelected(true);
             viewer.update(item, null);
         }

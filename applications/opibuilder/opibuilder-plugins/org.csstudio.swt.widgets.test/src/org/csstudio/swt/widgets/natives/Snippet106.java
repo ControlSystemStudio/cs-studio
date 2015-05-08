@@ -23,10 +23,10 @@ import org.eclipse.swt.widgets.TableItem;
 public class Snippet106 {
 
 public static void main (String [] args) throws IOException {
-	 Display display = new Display ();
-	InputStream stream = Snippet106.class.getResourceAsStream("checked.gif");
-	final Image onImage = new Image(display, stream);
-	stream.close();
+     Display display = new Display ();
+    InputStream stream = Snippet106.class.getResourceAsStream("checked.gif");
+    final Image onImage = new Image(display, stream);
+    stream.close();
  
   Shell shell = new Shell (display);
   shell.setLayout (new RowLayout (SWT.VERTICAL));

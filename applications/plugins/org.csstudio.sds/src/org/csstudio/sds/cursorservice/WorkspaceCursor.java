@@ -30,33 +30,33 @@ package org.csstudio.sds.cursorservice;
  */
 public final class WorkspaceCursor extends AbstractCursor {
 
-	/**
-	 * The workspace path to the graphics file for this cursor.
-	 */
-	private final String _path;
+    /**
+     * The workspace path to the graphics file for this cursor.
+     */
+    private final String _path;
 
-	/**
-	 * Creates a new workspace cursor.
-	 * 
-	 * @param id
-	 *            the id of this cursor.
-	 * @param title
-	 *            the name of this cursor.
-	 * @param path
-	 *            the path to the graphics file for this cursor.
-	 */
-	WorkspaceCursor(final String id, final String title, final String path) {
-		super(id, title);
-		assert path != null;
-		_path = path;
-	}
-	
-	/**
-	 * Returns the name of the graphics file for this cursor.
-	 * 
-	 * @return the name of the graphics file for this cursor.
-	 */
-	public String getGraphicsFile() {
-		return _path;
-	}
+    /**
+     * Creates a new workspace cursor.
+     * 
+     * @param id
+     *            the id of this cursor.
+     * @param title
+     *            the name of this cursor.
+     * @param path
+     *            the path to the graphics file for this cursor.
+     */
+    WorkspaceCursor(final String id, final String title, final String path) {
+        super(id, title);
+        assert path != null;
+        _path = path;
+    }
+    
+    /**
+     * Returns the name of the graphics file for this cursor.
+     * 
+     * @return the name of the graphics file for this cursor.
+     */
+    public String getGraphicsFile() {
+        return _path;
+    }
 }

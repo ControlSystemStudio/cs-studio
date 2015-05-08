@@ -47,8 +47,8 @@ public class SecurePreferencesHeadlessTest
     @Test
     public void testSecurePreferences() throws Exception
     {
-    	final Type type = SecurePreferences.Type.Instance;
-		ISecurePreferences prefs = SecurePreferences.getSecurePreferences(type);
+        final Type type = SecurePreferences.Type.Instance;
+        ISecurePreferences prefs = SecurePreferences.getSecurePreferences(type);
         ISecurePreferences node = prefs.node(SecuritySupport.ID);
         
         // See if there's a value written by previous run
@@ -71,7 +71,7 @@ public class SecurePreferencesHeadlessTest
         assertThat(found, equalTo(true));
         
         // Start over, read
-		prefs = SecurePreferences.getSecurePreferences(type);
+        prefs = SecurePreferences.getSecurePreferences(type);
         node = prefs.node(SecuritySupport.ID);
         String value = node.get("test_setting", null);
         assertThat(value, equalTo("secret_value"));

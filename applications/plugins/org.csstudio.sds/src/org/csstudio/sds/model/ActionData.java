@@ -111,24 +111,24 @@ public final class ActionData {
     }
 
     public void replaceActionModels(AbstractWidgetActionModel oldModel,
-			AbstractWidgetActionModel newModel) {
-		int index = _actions.indexOf(oldModel);
-		if (index < 0) {
-			index = _actions.size();
-		}
-		_actions.remove(oldModel);
-		_actions.add(index, newModel);
-	}
+            AbstractWidgetActionModel newModel) {
+        int index = _actions.indexOf(oldModel);
+        if (index < 0) {
+            index = _actions.size();
+        }
+        _actions.remove(oldModel);
+        _actions.add(index, newModel);
+    }
     
     public ActionData clone() {
-    	ActionData result = new ActionData();
-    	for (AbstractWidgetActionModel model : _actions) {
-    		result.addAction(model.makeCopy());
-    	}
-    	return result;
+        ActionData result = new ActionData();
+        for (AbstractWidgetActionModel model : _actions) {
+            result.addAction(model.makeCopy());
+        }
+        return result;
     }
 
-	/**
+    /**
      * {@inheritDoc}
      */
     @Override

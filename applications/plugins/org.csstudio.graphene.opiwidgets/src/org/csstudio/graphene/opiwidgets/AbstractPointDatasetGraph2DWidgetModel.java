@@ -14,32 +14,32 @@ import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescrip
  * 
  */
 public abstract class AbstractPointDatasetGraph2DWidgetModel extends AbstractGraph2DWidgetModel {
-	
-	public AbstractPointDatasetGraph2DWidgetModel(AbstractSelectionWidgetModelDescription model) {
-		super(model);
-	}
+    
+    public AbstractPointDatasetGraph2DWidgetModel(AbstractSelectionWidgetModelDescription model) {
+        super(model);
+    }
 
 
-	@Override
-	protected void configureProperties() {
-		super.configureProperties();
-		addProperty(new StringProperty(PROP_X_FORMULA,
-				"X Column Expression (VString)", WidgetPropertyCategory.Basic, ""));
-		addProperty(new StringProperty(PROP_Y_FORMULA,
-				"Y Column Expression (VString)", WidgetPropertyCategory.Basic, ""));
+    @Override
+    protected void configureProperties() {
+        super.configureProperties();
+        addProperty(new StringProperty(PROP_X_FORMULA,
+                "X Column Expression (VString)", WidgetPropertyCategory.Basic, ""));
+        addProperty(new StringProperty(PROP_Y_FORMULA,
+                "Y Column Expression (VString)", WidgetPropertyCategory.Basic, ""));
 
-	}
-	
-	protected String getDataType() {
-		return "VTable";
-	}
+    }
+    
+    protected String getDataType() {
+        return "VTable";
+    }
 
-	public String getXColumnFormula() {
-		return (String) getCastedPropertyValue(PROP_X_FORMULA);
-	}
+    public String getXColumnFormula() {
+        return (String) getCastedPropertyValue(PROP_X_FORMULA);
+    }
 
-	public String getYColumnFormula() {
-		return (String) getCastedPropertyValue(PROP_Y_FORMULA);
-	}
+    public String getYColumnFormula() {
+        return (String) getCastedPropertyValue(PROP_Y_FORMULA);
+    }
 
 }

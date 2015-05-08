@@ -6,9 +6,9 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 
 public interface IColorAndFontService {
-	Color getColor(String hexOrVariable);
-	Font getFont(String fontOrVariable);
-	List<NamedColor> listAvailableColors();
-	List<NamedFont> listAvailableFonts();
-	List<NamedStyle> getStyles();
+    Color getColor(String hexOrVariable);
+    Font getFont(String fontOrVariable);
+    List<NamedColor> listAvailableColors();
+    List<NamedFont> listAvailableFonts();
+    List<NamedStyle> getStyles();
 }

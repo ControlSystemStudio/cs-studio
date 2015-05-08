@@ -31,137 +31,137 @@ import java.util.List;
  * @author Joerg Rathlev
  */
 final class LogarithmicAxis implements IAxis {
-	
-	/**
-	 * The lower bound of the data range of this axis.
-	 */
-	private double _dataLower;
-	
-	/**
-	 * The upper bound of the data range of this axis. 
-	 */
-	private double _dataUpper;
-	
-	/**
-	 * The size of this axis in display units. 
-	 */
-	private int _displaySize;
+    
+    /**
+     * The lower bound of the data range of this axis.
+     */
+    private double _dataLower;
+    
+    /**
+     * The upper bound of the data range of this axis. 
+     */
+    private double _dataUpper;
+    
+    /**
+     * The size of this axis in display units. 
+     */
+    private int _displaySize;
 
-	/**
-	 * Creates a new logarithmic axis.
-	 * 
-	 * @param dataLower
-	 *            the lower bound of the data range.
-	 * @param dataUpper
-	 *            the uppper bound of the data range.
-	 * @param displaySize
-	 *            the display size.
-	 */
-	LogarithmicAxis(final double dataLower, final double dataUpper,
-			final int displaySize) {
-		if (displaySize < 0) {
-			throw new IllegalArgumentException("Invalid display size");
-		}
+    /**
+     * Creates a new logarithmic axis.
+     * 
+     * @param dataLower
+     *            the lower bound of the data range.
+     * @param dataUpper
+     *            the uppper bound of the data range.
+     * @param displaySize
+     *            the display size.
+     */
+    LogarithmicAxis(final double dataLower, final double dataUpper,
+            final int displaySize) {
+        if (displaySize < 0) {
+            throw new IllegalArgumentException("Invalid display size");
+        }
 
-		_dataLower = dataLower;
-		_dataUpper = dataUpper;
-		_displaySize = displaySize;
-	}
+        _dataLower = dataLower;
+        _dataUpper = dataUpper;
+        _displaySize = displaySize;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setDataRange(final double lower, final double upper) {
-		_dataLower = lower;
-		_dataUpper = upper;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void setDataRange(final double lower, final double upper) {
+        _dataLower = lower;
+        _dataUpper = upper;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setDisplaySize(final int size) {
-		if (size < 0) {
-			throw new IllegalArgumentException("Invalid display size");
-		}
-		
-		_displaySize = size;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void setDisplaySize(final int size) {
+        if (size < 0) {
+            throw new IllegalArgumentException("Invalid display size");
+        }
+        
+        _displaySize = size;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public int valueToCoordinate(final double value) {
-		double dataRange = Math.log10(_dataUpper) - Math.log10(_dataLower);
-		double scaling = (_displaySize - 1) / dataRange;
+    /**
+     * {@inheritDoc}
+     */
+    public int valueToCoordinate(final double value) {
+        double dataRange = Math.log10(_dataUpper) - Math.log10(_dataLower);
+        double scaling = (_displaySize - 1) / dataRange;
 
-		long intermediate = Math.round((Math.log10(value) - Math.log10(_dataLower)) * scaling);
-		// constrain the value to an integer value
-		return intermediate > Integer.MAX_VALUE ? Integer.MAX_VALUE
-				: (intermediate < Integer.MIN_VALUE ? Integer.MIN_VALUE
-						: (int) intermediate);
-	}
-	
-	/**
-	 * Checks whether the specified value is a legal value for this axis. For
-	 * a logarithmic axis, all values &gt; 0 are legal.
-	 * 
-	 * @param value
-	 *            the data value to check.
-	 * @return <code>true</code> if the value is legal, <code>false</code>
-	 *         otherwise.
-	 */
-	public boolean isLegalValue(final double value) {
-		return value > 0.0;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public List<Tick> calculateTicks(final int minMajorDistance, final int minMinorDistance) {
-		double lower = Math.log10(_dataLower);
-		double upper = Math.log10(_dataUpper);
-		
-		// convert the minimum distance into log data units
-		double dataRange = upper - lower;
-		double scaling = (_displaySize - 1) / dataRange;
-		double exactDistance = minMajorDistance / scaling;
-		
-		// now use basically the same algorithm as in TickCalculator,
-		// except we already are calculating in log scale
-//		double magnitude = Math.floor(exactDistance);
-//		_tickDistance = Math.ceil(exactDist / Math.pow(10, o - 1)) * Math.pow(10, o - 1);
-		double distance = Math.ceil(exactDistance);
-		double lowestTick = Math.ceil(lower / distance) * distance;
-		
-		List<Tick> result = new ArrayList<Tick>();
-		if (distance > 0) {
-			double value = lowestTick;
-			while (value <= upper) {
-				Tick tick = new Tick(TickType.MAJOR, Math.pow(10, value));
-				result.add(tick);
-				
-				// TODO: calculate minor tickmarks. The minor tickmarks would
-				// have to be added here, in between the major tickmarks.
-				
-				value += distance;
-			}
-		}
-		return result;
-		
-//		TickCalculator calc = new TickCalculator();
-//		calc.setMinimumValue(_dataLower);
-//		calc.setMaximumValue(_dataUpper);
-//		calc.setMaximumTickCount(_displaySize / minMajorDistance);
-//		return calc.calculateTicks();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public List<Tick> calculateIntegerTicks(final int minMajorDistance,
-			final int minMinorDistance) {
-		// TODO filter to only integer ticks.
-		return calculateTicks(minMajorDistance, minMinorDistance);
-	}
+        long intermediate = Math.round((Math.log10(value) - Math.log10(_dataLower)) * scaling);
+        // constrain the value to an integer value
+        return intermediate > Integer.MAX_VALUE ? Integer.MAX_VALUE
+                : (intermediate < Integer.MIN_VALUE ? Integer.MIN_VALUE
+                        : (int) intermediate);
+    }
+    
+    /**
+     * Checks whether the specified value is a legal value for this axis. For
+     * a logarithmic axis, all values &gt; 0 are legal.
+     * 
+     * @param value
+     *            the data value to check.
+     * @return <code>true</code> if the value is legal, <code>false</code>
+     *         otherwise.
+     */
+    public boolean isLegalValue(final double value) {
+        return value > 0.0;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public List<Tick> calculateTicks(final int minMajorDistance, final int minMinorDistance) {
+        double lower = Math.log10(_dataLower);
+        double upper = Math.log10(_dataUpper);
+        
+        // convert the minimum distance into log data units
+        double dataRange = upper - lower;
+        double scaling = (_displaySize - 1) / dataRange;
+        double exactDistance = minMajorDistance / scaling;
+        
+        // now use basically the same algorithm as in TickCalculator,
+        // except we already are calculating in log scale
+//        double magnitude = Math.floor(exactDistance);
+//        _tickDistance = Math.ceil(exactDist / Math.pow(10, o - 1)) * Math.pow(10, o - 1);
+        double distance = Math.ceil(exactDistance);
+        double lowestTick = Math.ceil(lower / distance) * distance;
+        
+        List<Tick> result = new ArrayList<Tick>();
+        if (distance > 0) {
+            double value = lowestTick;
+            while (value <= upper) {
+                Tick tick = new Tick(TickType.MAJOR, Math.pow(10, value));
+                result.add(tick);
+                
+                // TODO: calculate minor tickmarks. The minor tickmarks would
+                // have to be added here, in between the major tickmarks.
+                
+                value += distance;
+            }
+        }
+        return result;
+        
+//        TickCalculator calc = new TickCalculator();
+//        calc.setMinimumValue(_dataLower);
+//        calc.setMaximumValue(_dataUpper);
+//        calc.setMaximumTickCount(_displaySize / minMajorDistance);
+//        return calc.calculateTicks();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public List<Tick> calculateIntegerTicks(final int minMajorDistance,
+            final int minMinorDistance) {
+        // TODO filter to only integer ticks.
+        return calculateTicks(minMajorDistance, minMinorDistance);
+    }
 
 }

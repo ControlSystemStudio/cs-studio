@@ -31,41 +31,41 @@
  * 
  */
 public enum MeasureCategoriesEnum {
-	/**
-	 * Category for sync executions.
-	 */
-	SYNC_EXEC_CATEGORY("Synchronous Executions"),
+    /**
+     * Category for sync executions.
+     */
+    SYNC_EXEC_CATEGORY("Synchronous Executions"),
 
-	/**
-	 * Category for property events.
-	 */
-	PROPERTY_EVENT_CATEGORY("Property Events"),
-	
-	/**
-	 * Category for the execution of rules.
-	 */
-	RULE_EXEC_CATEGORY("Rule Executions");
+    /**
+     * Category for property events.
+     */
+    PROPERTY_EVENT_CATEGORY("Property Events"),
+    
+    /**
+     * Category for the execution of rules.
+     */
+    RULE_EXEC_CATEGORY("Rule Executions");
 
-	/**
-	 * The description of the category type.
-	 */
-	private String _description;
+    /**
+     * The description of the category type.
+     */
+    private String _description;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param description
-	 *            the description
-	 */
-	private MeasureCategoriesEnum(final String description) {
-		_description = description;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param description
+     *            the description
+     */
+    private MeasureCategoriesEnum(final String description) {
+        _description = description;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		return _description;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return _description;
+    }
 }

@@ -35,20 +35,20 @@ import org.csstudio.sds.ui.properties.PropertyTypeCellEditorValidator;
  * @author Stefan Hofer & Sven Wende
  */
 public final class DoublePropertyDescriptorFactory implements
-		IPropertyDescriptorFactory {
+        IPropertyDescriptorFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IPropertyDescriptor createPropertyDescriptor(final Object id,
-			final WidgetProperty property) {
-		PropertyDescriptor descriptor = new DoublePropertyDescriptor(id,
-				property.getDescription(), PropertyTypesEnum.DOUBLE, property.getCategory().toString());
-		
-		// validator
-		descriptor.setValidator(new PropertyTypeCellEditorValidator(property));
-		
-		
-		return descriptor;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public IPropertyDescriptor createPropertyDescriptor(final Object id,
+            final WidgetProperty property) {
+        PropertyDescriptor descriptor = new DoublePropertyDescriptor(id,
+                property.getDescription(), PropertyTypesEnum.DOUBLE, property.getCategory().toString());
+        
+        // validator
+        descriptor.setValidator(new PropertyTypeCellEditorValidator(property));
+        
+        
+        return descriptor;
+    }
 }

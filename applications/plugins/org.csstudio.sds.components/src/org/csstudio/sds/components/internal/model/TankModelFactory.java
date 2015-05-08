@@ -12,19 +12,19 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  */
 public final class TankModelFactory implements IWidgetModelFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractWidgetModel createWidgetModel() {
-		return new TankModel();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractWidgetModel createWidgetModel() {
+        return new TankModel();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class getWidgetModelType() {
-		return TankModel.class;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class getWidgetModelType() {
+        return TankModel.class;
+    }
 
 }

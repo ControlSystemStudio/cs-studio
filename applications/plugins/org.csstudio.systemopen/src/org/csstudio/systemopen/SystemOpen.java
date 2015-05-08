@@ -13,24 +13,24 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 public class SystemOpen extends AbstractHandler implements IHandler {
 
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		StructuredSelection selection = (StructuredSelection) HandlerUtil
-				.getActiveMenuSelection(event);
-		if (selection != null) {
-			for (Object item : selection.toArray()) {
-				try {
-					IResource resource = (IResource) item;
-					System.out.println(resource.getLocationURI().toString());
-					Desktop desktop = Desktop.getDesktop();
-					desktop.open(new File(resource.getLocationURI()));
-				} catch (Exception e) {
-					System.out.println(e);
-					// Skip to next
-				}
-			}
-		}
-		return null;
-	}
+    @Override
+    public Object execute(ExecutionEvent event) throws ExecutionException {
+        StructuredSelection selection = (StructuredSelection) HandlerUtil
+                .getActiveMenuSelection(event);
+        if (selection != null) {
+            for (Object item : selection.toArray()) {
+                try {
+                    IResource resource = (IResource) item;
+                    System.out.println(resource.getLocationURI().toString());
+                    Desktop desktop = Desktop.getDesktop();
+                    desktop.open(new File(resource.getLocationURI()));
+                } catch (Exception e) {
+                    System.out.println(e);
+                    // Skip to next
+                }
+            }
+        }
+        return null;
+    }
 
 }

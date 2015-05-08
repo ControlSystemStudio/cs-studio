@@ -23,105 +23,105 @@ import de.desy.language.snl.diagram.model.SNLDiagram;
  * 
  */
 class DiagramTreeEditPart extends AbstractTreeEditPart implements
-		PropertyChangeListener {
+        PropertyChangeListener {
 
-	/**
-	 * Create a new instance of this edit part using the given model element.
-	 * 
-	 * @param model
-	 *            a non-null ShapesDiagram instance
-	 */
-	DiagramTreeEditPart(final SNLDiagram model) {
-		super(model);
-	}
+    /**
+     * Create a new instance of this edit part using the given model element.
+     * 
+     * @param model
+     *            a non-null ShapesDiagram instance
+     */
+    DiagramTreeEditPart(final SNLDiagram model) {
+        super(model);
+    }
 
-	/**
-	 * Upon activation, attach to the model element as a property change
-	 * listener.
-	 */
-	@Override
-	public void activate() {
-		if (!isActive()) {
-			super.activate();
-			((ModelElement) getModel()).addPropertyChangeListener(this);
-		}
-	}
+    /**
+     * Upon activation, attach to the model element as a property change
+     * listener.
+     */
+    @Override
+    public void activate() {
+        if (!isActive()) {
+            super.activate();
+            ((ModelElement) getModel()).addPropertyChangeListener(this);
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.gef.examples.shapes.parts.ShapeTreeEditPart#createEditPolicies
-	 * ()
-	 */
-	@Override
-	protected void createEditPolicies() {
-		// If this editpart is the root content of the viewer, then disallow
-		// removal
-		if (getParent() instanceof RootEditPart) {
-			installEditPolicy(EditPolicy.COMPONENT_ROLE,
-					new RootComponentEditPolicy());
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.gef.examples.shapes.parts.ShapeTreeEditPart#createEditPolicies
+     * ()
+     */
+    @Override
+    protected void createEditPolicies() {
+        // If this editpart is the root content of the viewer, then disallow
+        // removal
+        if (getParent() instanceof RootEditPart) {
+            installEditPolicy(EditPolicy.COMPONENT_ROLE,
+                    new RootComponentEditPolicy());
+        }
+    }
 
-	/**
-	 * Upon deactivation, detach from the model element as a property change
-	 * listener.
-	 */
-	@Override
-	public void deactivate() {
-		if (isActive()) {
-			super.deactivate();
-			((ModelElement) getModel()).removePropertyChangeListener(this);
-		}
-	}
+    /**
+     * Upon deactivation, detach from the model element as a property change
+     * listener.
+     */
+    @Override
+    public void deactivate() {
+        if (isActive()) {
+            super.deactivate();
+            ((ModelElement) getModel()).removePropertyChangeListener(this);
+        }
+    }
 
-	private SNLDiagram getCastedModel() {
-		return (SNLDiagram) getModel();
-	}
+    private SNLDiagram getCastedModel() {
+        return (SNLDiagram) getModel();
+    }
 
-	/**
-	 * Convenience method that returns the EditPart corresponding to a given
-	 * child.
-	 * 
-	 * @param child
-	 *            a model element instance
-	 * @return the corresponding EditPart or null
-	 */
-	private EditPart getEditPartForChild(final Object child) {
-		return (EditPart) getViewer().getEditPartRegistry().get(child);
-	}
+    /**
+     * Convenience method that returns the EditPart corresponding to a given
+     * child.
+     * 
+     * @param child
+     *            a model element instance
+     * @return the corresponding EditPart or null
+     */
+    private EditPart getEditPartForChild(final Object child) {
+        return (EditPart) getViewer().getEditPartRegistry().get(child);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
-	 */
-	@Override
-	protected List getModelChildren() {
-		return getCastedModel().getChildren(); // a list of shapes
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
+     */
+    @Override
+    protected List getModelChildren() {
+        return getCastedModel().getChildren(); // a list of shapes
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seejava.beans.PropertyChangeListener#propertyChange(java.beans.
-	 * PropertyChangeEvent)
-	 */
-	public void propertyChange(final PropertyChangeEvent evt) {
-		final String prop = evt.getPropertyName();
-		if (SNLDiagram.CHILD_ADDED_PROP.equals(prop)) {
-			// add a child to this edit part
-			// causes an additional entry to appear in the tree of the outline
-			// view
-			addChild(createChild(evt.getNewValue()), -1);
-		} else if (SNLDiagram.CHILD_REMOVED_PROP.equals(prop)) {
-			// remove a child from this edit part
-			// causes the corresponding edit part to disappear from the tree in
-			// the outline view
-			removeChild(getEditPartForChild(evt.getNewValue()));
-		} else {
-			refreshVisuals();
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @seejava.beans.PropertyChangeListener#propertyChange(java.beans.
+     * PropertyChangeEvent)
+     */
+    public void propertyChange(final PropertyChangeEvent evt) {
+        final String prop = evt.getPropertyName();
+        if (SNLDiagram.CHILD_ADDED_PROP.equals(prop)) {
+            // add a child to this edit part
+            // causes an additional entry to appear in the tree of the outline
+            // view
+            addChild(createChild(evt.getNewValue()), -1);
+        } else if (SNLDiagram.CHILD_REMOVED_PROP.equals(prop)) {
+            // remove a child from this edit part
+            // causes the corresponding edit part to disappear from the tree in
+            // the outline view
+            removeChild(getEditPartForChild(evt.getNewValue()));
+        } else {
+            refreshVisuals();
+        }
+    }
 }

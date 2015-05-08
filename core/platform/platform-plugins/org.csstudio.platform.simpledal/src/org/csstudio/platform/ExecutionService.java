@@ -43,139 +43,139 @@ public class ExecutionService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ExecutionService.class);
 
-	private static ExecutionService _instance;
+    private static ExecutionService _instance;
 
-	private static final int HIGH_PRIORITY_THREADS = 20;
-	private static final int NORMAL_PRIORITY_THREADS = 20;
-	private static final int LOW_PRIORITY_THREADS = 20;
-	private static final int SCHEDULED_THREADS = 3;
+    private static final int HIGH_PRIORITY_THREADS = 20;
+    private static final int NORMAL_PRIORITY_THREADS = 20;
+    private static final int LOW_PRIORITY_THREADS = 20;
+    private static final int SCHEDULED_THREADS = 3;
 
-	private static LinkedBlockingQueue<Runnable> _lowPriorityQueue;
-	private static LinkedBlockingQueue<Runnable> _normalPriorityQueue;
-	private static LinkedBlockingQueue<Runnable> _highPriorityQueue;
+    private static LinkedBlockingQueue<Runnable> _lowPriorityQueue;
+    private static LinkedBlockingQueue<Runnable> _normalPriorityQueue;
+    private static LinkedBlockingQueue<Runnable> _highPriorityQueue;
 
-	private ScheduledExecutorService _scheduledExecutorService;
-	private ExecutorService _lowPriorityExectorService;
-	private ExecutorService _normalPriorityExectorService;
-	private ExecutorService _highPriorityExecutorService;
+    private ScheduledExecutorService _scheduledExecutorService;
+    private ExecutorService _lowPriorityExectorService;
+    private ExecutorService _normalPriorityExectorService;
+    private ExecutorService _highPriorityExecutorService;
 
-	private ExecutionService() {
-		_lowPriorityQueue = new LinkedBlockingQueue<Runnable>();
-		_normalPriorityQueue = new LinkedBlockingQueue<Runnable>();
-		_highPriorityQueue = new LinkedBlockingQueue<Runnable>();
+    private ExecutionService() {
+        _lowPriorityQueue = new LinkedBlockingQueue<Runnable>();
+        _normalPriorityQueue = new LinkedBlockingQueue<Runnable>();
+        _highPriorityQueue = new LinkedBlockingQueue<Runnable>();
 
-		_lowPriorityExectorService = new ThreadPoolExecutor(LOW_PRIORITY_THREADS, LOW_PRIORITY_THREADS, 0L, TimeUnit.MILLISECONDS,
-				_lowPriorityQueue, new CssThreadFactory(Thread.MIN_PRIORITY));
+        _lowPriorityExectorService = new ThreadPoolExecutor(LOW_PRIORITY_THREADS, LOW_PRIORITY_THREADS, 0L, TimeUnit.MILLISECONDS,
+                _lowPriorityQueue, new CssThreadFactory(Thread.MIN_PRIORITY));
 
-		_normalPriorityExectorService = new ThreadPoolExecutor(NORMAL_PRIORITY_THREADS, NORMAL_PRIORITY_THREADS, 0L, TimeUnit.MILLISECONDS,
-				_normalPriorityQueue, new CssThreadFactory(Thread.NORM_PRIORITY));
+        _normalPriorityExectorService = new ThreadPoolExecutor(NORMAL_PRIORITY_THREADS, NORMAL_PRIORITY_THREADS, 0L, TimeUnit.MILLISECONDS,
+                _normalPriorityQueue, new CssThreadFactory(Thread.NORM_PRIORITY));
 
-		_highPriorityExecutorService = new ThreadPoolExecutor(HIGH_PRIORITY_THREADS, HIGH_PRIORITY_THREADS, 0L, TimeUnit.MILLISECONDS,
-				_highPriorityQueue, new CssThreadFactory(Thread.MAX_PRIORITY));
+        _highPriorityExecutorService = new ThreadPoolExecutor(HIGH_PRIORITY_THREADS, HIGH_PRIORITY_THREADS, 0L, TimeUnit.MILLISECONDS,
+                _highPriorityQueue, new CssThreadFactory(Thread.MAX_PRIORITY));
 
-		_scheduledExecutorService = Executors.newScheduledThreadPool(SCHEDULED_THREADS);
-	}
+        _scheduledExecutorService = Executors.newScheduledThreadPool(SCHEDULED_THREADS);
+    }
 
-	/**
-	 * Returns the singleton instance.
-	 * 
-	 * @return the singleton instance
-	 */
-	public static synchronized ExecutionService getInstance() {
-		if (_instance == null) {
-			_instance = new ExecutionService();
-		}
+    /**
+     * Returns the singleton instance.
+     * 
+     * @return the singleton instance
+     */
+    public static synchronized ExecutionService getInstance() {
+        if (_instance == null) {
+            _instance = new ExecutionService();
+        }
 
-		return _instance;
-	}
+        return _instance;
+    }
 
-	/**
-	 * Executes the specified runnable with high priority.
-	 * 
-	 * @param runnable
-	 *            the runnable
-	 */
-	public void executeWithHighPriority(final Runnable runnable) {
-		doRun(_highPriorityExecutorService, runnable);
-	}
+    /**
+     * Executes the specified runnable with high priority.
+     * 
+     * @param runnable
+     *            the runnable
+     */
+    public void executeWithHighPriority(final Runnable runnable) {
+        doRun(_highPriorityExecutorService, runnable);
+    }
 
-	/**
-	 * Executes the specified runnable with normal priority.
-	 * 
-	 * @param runnable
-	 *            the runnable
-	 */
-	public void executeWithNormalPriority(final Runnable runnable) {
-		doRun(_normalPriorityExectorService, runnable);
-	}
-	
-	/**
-	 * Returns the number of runnables waiting for execution with high priority.
-	 */
-	public int getHighPriorityQueueSize() {
-		return _highPriorityQueue.size();
-	}
+    /**
+     * Executes the specified runnable with normal priority.
+     * 
+     * @param runnable
+     *            the runnable
+     */
+    public void executeWithNormalPriority(final Runnable runnable) {
+        doRun(_normalPriorityExectorService, runnable);
+    }
+    
+    /**
+     * Returns the number of runnables waiting for execution with high priority.
+     */
+    public int getHighPriorityQueueSize() {
+        return _highPriorityQueue.size();
+    }
 
-	/**
-	 * Returns the number of runnables waiting for execution with normal priority.
-	 */
-	public int getNormalPriorityQueueSize() {
-		return _normalPriorityQueue.size();
-	}
-	
-	/**
-	 * Returns the number of runnables waiting for execution with low priority.
-	 */
-	public int getLowPriorityQueueSize() {
-		return _lowPriorityQueue.size();
-	}
-	
-	/**
-	 * Executes the specified runnable with normal priority.
-	 * 
-	 * @param runnable
-	 *            the runnable
-	 */
-	public void executeWithLowPriority(final Runnable runnable) {
-		doRun(_lowPriorityExectorService, runnable);
-	}
+    /**
+     * Returns the number of runnables waiting for execution with normal priority.
+     */
+    public int getNormalPriorityQueueSize() {
+        return _normalPriorityQueue.size();
+    }
+    
+    /**
+     * Returns the number of runnables waiting for execution with low priority.
+     */
+    public int getLowPriorityQueueSize() {
+        return _lowPriorityQueue.size();
+    }
+    
+    /**
+     * Executes the specified runnable with normal priority.
+     * 
+     * @param runnable
+     *            the runnable
+     */
+    public void executeWithLowPriority(final Runnable runnable) {
+        doRun(_lowPriorityExectorService, runnable);
+    }
 
-	private void doRun(ExecutorService service, final Runnable runnable) {
-		service.execute(new Runnable() {
-			public void run() {
-				try {
-					runnable.run();
-				} catch (Throwable t) {
-					LOG.error(t.toString());
-				}
-			}
-		});
-	}
+    private void doRun(ExecutorService service, final Runnable runnable) {
+        service.execute(new Runnable() {
+            public void run() {
+                try {
+                    runnable.run();
+                } catch (Throwable t) {
+                    LOG.error(t.toString());
+                }
+            }
+        });
+    }
 
-	public ScheduledExecutorService getScheduledExecutorService() {
-		return _scheduledExecutorService;
-	}
+    public ScheduledExecutorService getScheduledExecutorService() {
+        return _scheduledExecutorService;
+    }
 
-	private static class CssThreadFactory implements ThreadFactory {
-		static final AtomicInteger poolNumber = new AtomicInteger(1);
-		final ThreadGroup group;
-		final AtomicInteger threadNumber = new AtomicInteger(1);
-		final String namePrefix;
-		private int priority = Thread.NORM_PRIORITY;
+    private static class CssThreadFactory implements ThreadFactory {
+        static final AtomicInteger poolNumber = new AtomicInteger(1);
+        final ThreadGroup group;
+        final AtomicInteger threadNumber = new AtomicInteger(1);
+        final String namePrefix;
+        private int priority = Thread.NORM_PRIORITY;
 
-		CssThreadFactory(int priority) {
-			this.priority = priority;
+        CssThreadFactory(int priority) {
+            this.priority = priority;
 
-			SecurityManager s = System.getSecurityManager();
-			group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
-			namePrefix = "css-threadpool-" + poolNumber.getAndIncrement() + "-thread-";
-		}
+            SecurityManager s = System.getSecurityManager();
+            group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+            namePrefix = "css-threadpool-" + poolNumber.getAndIncrement() + "-thread-";
+        }
 
-		public Thread newThread(Runnable r) {
-			Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
-			t.setDaemon(false);
-			t.setPriority(priority);
-			return t;
-		}
-	}
+        public Thread newThread(Runnable r) {
+            Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
+            t.setDaemon(false);
+            t.setPriority(priority);
+            return t;
+        }
+    }
 }

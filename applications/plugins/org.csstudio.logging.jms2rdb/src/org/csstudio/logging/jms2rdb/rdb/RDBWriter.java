@@ -33,12 +33,12 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 @SuppressWarnings("nls")
 public class RDBWriter
 {
-	private static final int MAX_VALUE_LENGTH = 100;
+    private static final int MAX_VALUE_LENGTH = 100;
 
     private static final int MAX_NAME_LENGTH = 80;
 
     /** Enable Oracle statistics? */
-	private static final boolean enable_trace = false;
+    private static final boolean enable_trace = false;
 
     /** RDB Utility */
     final private RDBUtil rdb_util;
@@ -48,7 +48,7 @@ public class RDBWriter
 
     /** Map of Property IDs, mapping property name to numeric ID */
     final private HashMap<String, Integer> properties =
-    	new HashMap<String, Integer>();
+        new HashMap<String, Integer>();
 
     /** Lazily initialized statement */
     private PreparedStatement next_message_id_statement;
@@ -93,12 +93,12 @@ public class RDBWriter
                 connection.prepareStatement(sql.select_next_message_id);
 
         if (rdb_util.getDialect() == Dialect.PostgreSQL)
-			insert_message_statement =
-        				connection.prepareStatement(sql.insert_message_id_datum_type_name_severity);
+            insert_message_statement =
+                        connection.prepareStatement(sql.insert_message_id_datum_type_name_severity);
         else // MySQL, other RDB that supports RETURN_GENERATED_KEYS
-        	insert_message_statement =
-        			connection.prepareStatement(sql.insert_message_id_datum_type_name_severity,
-        					Statement.RETURN_GENERATED_KEYS);
+            insert_message_statement =
+                    connection.prepareStatement(sql.insert_message_id_datum_type_name_severity,
+                            Statement.RETURN_GENERATED_KEYS);
         insert_property_statement =
             connection.prepareStatement(sql.insert_message_property_value);
     }
@@ -111,11 +111,11 @@ public class RDBWriter
      */
     private int getPropertyType(final String property_name) throws Exception
     {
-    	// First try cache
-    	final Integer int_id = properties.get(property_name);
-    	if (int_id != null)
-    		return int_id.intValue();
-    	// Perform RDB query
+        // First try cache
+        final Integer int_id = properties.get(property_name);
+        if (int_id != null)
+            return int_id.intValue();
+        // Perform RDB query
         final Connection connection = rdb_util.getConnection();
         PreparedStatement statement =
             connection.prepareStatement(sql.select_property_id_by_name);
@@ -124,10 +124,10 @@ public class RDBWriter
         {
             final ResultSet result = statement.executeQuery();
             if (result.next())
-            {	// Add to cache
-            	final int id = result.getInt(1);
+            {    // Add to cache
+                final int id = result.getInt(1);
                 properties.put(property_name, Integer.valueOf(id));
-				return id;
+                return id;
             }
         }
         finally
@@ -148,12 +148,12 @@ public class RDBWriter
             final ResultSet result = statement.executeQuery();
             if (result.next())
             {
-            	next_id = result.getInt(1);
-            	if (next_id <= 0) // No IDs defined at all?
-            	    next_id = 1;  // Start at 1
+                next_id = result.getInt(1);
+                if (next_id <= 0) // No IDs defined at all?
+                    next_id = 1;  // Start at 1
             }
             else
-            	throw new Exception("Cannot get new ID for " + property_name);
+                throw new Exception("Cannot get new ID for " + property_name);
         }
         finally
         {
@@ -168,13 +168,13 @@ public class RDBWriter
         statement.setString(2, property_name);
         try
         {
-        	statement.executeUpdate();
-        	connection.commit();
+            statement.executeUpdate();
+            connection.commit();
         }
         catch(Exception e)
         {
-        	connection.rollback();
-        	throw e;
+            connection.rollback();
+            throw e;
         }
         finally
         {
@@ -182,12 +182,12 @@ public class RDBWriter
             connection.setAutoCommit(auto_commit);
         }
         Activator.getLogger().log(Level.WARNING,
-    		"Inserted previously unused Message Property {0} as ID {1}",
-    		new Object[] { property_name, next_id } );
+            "Inserted previously unused Message Property {0} as ID {1}",
+            new Object[] { property_name, next_id } );
         // Add to cache
-    	properties.put(property_name, Integer.valueOf(next_id));
-		return next_id;
-	}
+        properties.put(property_name, Integer.valueOf(next_id));
+        return next_id;
+    }
 
     /** Close the RDB connection */
     public void close()
@@ -258,7 +258,7 @@ public class RDBWriter
         }
         finally
         {
-        	connection.setAutoCommit(true);
+            connection.setAutoCommit(true);
         }
     }
 
@@ -267,28 +267,28 @@ public class RDBWriter
      *  @throws Exception on error
      */
     @SuppressWarnings("unchecked")
-	public void write(final MapMessage map) throws Exception
+    public void write(final MapMessage map) throws Exception
     {
-		final String type = map.getString(JMSLogMessage.TYPE);
-		final String name = map.getString(JMSLogMessage.NAME);
-		final String severity = map.getString(JMSLogMessage.SEVERITY);
+        final String type = map.getString(JMSLogMessage.TYPE);
+        final String name = map.getString(JMSLogMessage.NAME);
+        final String severity = map.getString(JMSLogMessage.SEVERITY);
 
         final Connection connection = rdb_util.getConnection();
         connection.setAutoCommit(false);
         try
         {
-    		final long message_id = insertMessage(type, name, severity);
+            final long message_id = insertMessage(type, name, severity);
 
             final Enumeration<String> props = map.getMapNames();
             while (props.hasMoreElements())
             {
-            	final String prop = props.nextElement();
-            	// Skip properties which are already in message table columns
-            	if (JMSLogMessage.TYPE.equals(prop) ||
-            	    JMSLogMessage.NAME.equals(prop) ||
-            	    JMSLogMessage.SEVERITY.equals(prop))
-            		continue;
-            	batchProperty(message_id, prop, map.getString(prop));
+                final String prop = props.nextElement();
+                // Skip properties which are already in message table columns
+                if (JMSLogMessage.TYPE.equals(prop) ||
+                    JMSLogMessage.NAME.equals(prop) ||
+                    JMSLogMessage.SEVERITY.equals(prop))
+                    continue;
+                batchProperty(message_id, prop, map.getString(prop));
             }
             insert_property_statement.executeBatch();
             connection.commit();
@@ -300,7 +300,7 @@ public class RDBWriter
         }
         finally
         {
-        	connection.setAutoCommit(true);
+            connection.setAutoCommit(true);
         }
     }
 
@@ -312,8 +312,8 @@ public class RDBWriter
      *  @throws Exception on error
      */
     private long insertMessage(
-    		final String type, String name,
-    		final String severity) throws Exception
+            final String type, String name,
+            final String severity) throws Exception
     {
         long message_id = -1;
         if (rdb_util.getDialect() == Dialect.Oracle)
@@ -324,7 +324,7 @@ public class RDBWriter
                 message_id = result.getInt(1);
             else
             {
-            	result.close();
+                result.close();
                 throw new Exception("Cannot obtain next message ID");
             }
             result.close();
@@ -353,16 +353,16 @@ public class RDBWriter
         if (rdb_util.getDialect() == Dialect.PostgreSQL)
         {
             final ResultSet result = insert_message_statement.executeQuery();
-    	    if (result.next())
-        	{
-        	      message_id = result.getInt(1);
-        	      result.close();
-        	}
-        	else
-        	{
-        		 result.close();
+            if (result.next())
+            {
+                  message_id = result.getInt(1);
+                  result.close();
+            }
+            else
+            {
+                 result.close();
                 throw new Exception("Cannot obtain next message ID");
-        	}
+            }
         }
         else if (rdb_util.getDialect() == Dialect.MySQL)
         {

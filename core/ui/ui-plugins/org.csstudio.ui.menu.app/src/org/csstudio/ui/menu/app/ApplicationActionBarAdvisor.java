@@ -47,14 +47,14 @@ import org.eclipse.ui.part.CoolItemGroupMarker;
 @SuppressWarnings("restriction")  // For removing internal actions
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 {
-	/** Toolbar ID of switch user and logout toolbar */
+    /** Toolbar ID of switch user and logout toolbar */
     private static final String TOOLBAR_USER = "user"; //$NON-NLS-1$
 
     final private IWorkbenchWindow window;
 
-	private IWorkbenchAction lock_toolbar, edit_actionsets, save;
+    private IWorkbenchAction lock_toolbar, edit_actionsets, save;
 
-	/** Initialize */
+    /** Initialize */
     @SuppressWarnings("nls")
     public ApplicationActionBarAdvisor(final IActionBarConfigurer configurer)
     {
@@ -79,7 +79,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
      *
      *  {@inheritDoc}
      */
-	@Override
+    @Override
     protected void makeActions(final IWorkbenchWindow window)
     {
         lock_toolbar = ActionFactory.LOCK_TOOL_BAR.create(window);

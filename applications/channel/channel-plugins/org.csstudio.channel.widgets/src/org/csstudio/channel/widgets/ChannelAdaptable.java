@@ -13,5 +13,5 @@ import org.csstudio.utility.pvmanager.widgets.ProcessVariableAdaptable;
  * 
  */
 public interface ChannelAdaptable extends ProcessVariableAdaptable {
-	public Collection<Channel> toChannels();
+    public Collection<Channel> toChannels();
 }

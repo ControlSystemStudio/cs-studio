@@ -49,17 +49,17 @@ import org.eclipse.swt.widgets.Display;
  * @author Xihui Chen
  */
 public abstract class AbstractUserDependentAction extends Action implements
-		IUserManagementListener {
+        IUserManagementListener {
 
-	/**
-	 * ID of the right necessary to execute this action.
-	 */
-	private String _rightId;
-	
-	/**
-	 * Whether the action should be permitted by default.
-	 */
-	private boolean _defaultPermission;
+    /**
+     * ID of the right necessary to execute this action.
+     */
+    private String _rightId;
+    
+    /**
+     * Whether the action should be permitted by default.
+     */
+    private boolean _defaultPermission;
 
     /**
      *  The enabled state of the action regardless the authorization
@@ -67,172 +67,172 @@ public abstract class AbstractUserDependentAction extends Action implements
     private boolean enabledWithoutAuthorization = false;
     
     /**
-	 * The enable flag.
-	 */
-	private boolean _enable = true;
+     * The enable flag.
+     */
+    private boolean _enable = true;
 
-	/**
-	 * Registers this action as UserManagementListener and
-	 * RightsManagementListener.
-	 * 
-	 * @param rightId
-	 *            ID of the right necessary to execute this action.
-	 * @param defaultPermission
-	 *            whether this action should be permitted if no rights are
-	 *            configured for the action.
-	 */
-	protected void init(final String rightId,
-			final boolean defaultPermission) {
-		assert rightId != null;
-		_rightId = rightId;
-		_defaultPermission = defaultPermission;
-		
-		SecurityFacade.getInstance().addUserManagementListener(this);
-		ActivationService.getInstance().registerWidget(_rightId, null, this, new EnableActionAdapter());
-		updateState();
-	}
-	
-	/**
-	 * Constructor. Registers this action as UserManagementListener and
-	 * RightsManagementListener.
-	 * 
-	 * @param rightId
-	 *            ID of the right necessary to execute this action.
-	 * @see Action#Action() 
-	 */
-	public AbstractUserDependentAction(final String rightId) {
-		super();
-		init(rightId, true);
-	}
-	
-	
-	/**
-	 * Constructor. Registers this action as UserManagementListener and
-	 * RightsManagementListener. 
-	 * @param rightID
-	 *            ID of the right necessary to execute this action.
-	 * @param defaultPermission
-	 *            whether this action should be permitted if no rights are
-	 *            configured for the action.
-	 * @see Action#Action() 
-	 */
-	public AbstractUserDependentAction(final String rightID,
-			final boolean defaultPermission) {
-		super();
-		init(rightID,defaultPermission);		
-	}
-	
-	/**
-	 * Constructor. Registers this action as UserManagementListener and
-	 * RightsManagementListener. 
-	 * @param text
-	 * 			  the string used as the text for the action, or null if there is no text
-	 * @param rightID
-	 *            ID of the right necessary to execute this action.
-	 * @param defaultPermission
-	 *            whether this action should be permitted if no rights are
-	 *            configured for the action.
-	 * @see Action#Action(String) 
-	 */
-	public AbstractUserDependentAction(String text, final String rightID,
-			final boolean defaultPermission) {
-		super(text);
-		init(rightID,defaultPermission);		
-	}
-	
-	/**
-	 * Constructor. Registers this action as UserManagementListener and
-	 * RightsManagementListener. 
-	 * @param text
-	 *            the action's text, or <code>null</code> if there is no text
-	 * @param image
-	 *            the action's image, or <code>null</code> if there is no
-	 *            image	 * 			  
-	 * @param rightID
-	 *            ID of the right necessary to execute this action.
-	 * @param defaultPermission
-	 *            whether this action should be permitted if no rights are
-	 *            configured for the action.
-	 * @see Action#Action(String, ImageDescriptor) 
-	 */
-	public AbstractUserDependentAction(String text, ImageDescriptor image, final String rightID,
-			final boolean defaultPermission) {
-		super(text,image);
-		init(rightID,defaultPermission);		
-	}
+    /**
+     * Registers this action as UserManagementListener and
+     * RightsManagementListener.
+     * 
+     * @param rightId
+     *            ID of the right necessary to execute this action.
+     * @param defaultPermission
+     *            whether this action should be permitted if no rights are
+     *            configured for the action.
+     */
+    protected void init(final String rightId,
+            final boolean defaultPermission) {
+        assert rightId != null;
+        _rightId = rightId;
+        _defaultPermission = defaultPermission;
+        
+        SecurityFacade.getInstance().addUserManagementListener(this);
+        ActivationService.getInstance().registerWidget(_rightId, null, this, new EnableActionAdapter());
+        updateState();
+    }
+    
+    /**
+     * Constructor. Registers this action as UserManagementListener and
+     * RightsManagementListener.
+     * 
+     * @param rightId
+     *            ID of the right necessary to execute this action.
+     * @see Action#Action() 
+     */
+    public AbstractUserDependentAction(final String rightId) {
+        super();
+        init(rightId, true);
+    }
+    
+    
+    /**
+     * Constructor. Registers this action as UserManagementListener and
+     * RightsManagementListener. 
+     * @param rightID
+     *            ID of the right necessary to execute this action.
+     * @param defaultPermission
+     *            whether this action should be permitted if no rights are
+     *            configured for the action.
+     * @see Action#Action() 
+     */
+    public AbstractUserDependentAction(final String rightID,
+            final boolean defaultPermission) {
+        super();
+        init(rightID,defaultPermission);        
+    }
+    
+    /**
+     * Constructor. Registers this action as UserManagementListener and
+     * RightsManagementListener. 
+     * @param text
+     *               the string used as the text for the action, or null if there is no text
+     * @param rightID
+     *            ID of the right necessary to execute this action.
+     * @param defaultPermission
+     *            whether this action should be permitted if no rights are
+     *            configured for the action.
+     * @see Action#Action(String) 
+     */
+    public AbstractUserDependentAction(String text, final String rightID,
+            final boolean defaultPermission) {
+        super(text);
+        init(rightID,defaultPermission);        
+    }
+    
+    /**
+     * Constructor. Registers this action as UserManagementListener and
+     * RightsManagementListener. 
+     * @param text
+     *            the action's text, or <code>null</code> if there is no text
+     * @param image
+     *            the action's image, or <code>null</code> if there is no
+     *            image     *               
+     * @param rightID
+     *            ID of the right necessary to execute this action.
+     * @param defaultPermission
+     *            whether this action should be permitted if no rights are
+     *            configured for the action.
+     * @see Action#Action(String, ImageDescriptor) 
+     */
+    public AbstractUserDependentAction(String text, ImageDescriptor image, final String rightID,
+            final boolean defaultPermission) {
+        super(text,image);
+        init(rightID,defaultPermission);        
+    }
 
-	/**
-	 * Constructor. Registers this action as UserManagementListener and
-	 * RightsManagementListener. 
-	 * @param text
-	 *            the action's text, or <code>null</code> if there is no text
-	 * @param style
-	 *            one of <code>AS_PUSH_BUTTON</code>,
-	 *            <code>AS_CHECK_BOX</code>, <code>AS_DROP_DOWN_MENU</code>,
-	 *            <code>AS_RADIO_BUTTON</code>, and
-	 *            <code>AS_UNSPECIFIED</code>. 			  
-	 * @param rightID
-	 *            ID of the right necessary to execute this action.
-	 * @param defaultPermission
-	 *            whether this action should be permitted if no rights are
-	 *            configured for the action.
-	 * @see Action#Action(String, int) 
-	 */
-	public AbstractUserDependentAction(String text, int style, final String rightID,
-			final boolean defaultPermission) {
-		super(text,style);
-		init(rightID,defaultPermission);		
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void setEnabled(final boolean enabled) {
-		_enable = enabled;
-		updateState();
-	}
-	
-	/**
-	 * Set the enabled state of the action regardless the authorization. 
-	 * This function must be called whenever the enabled state of 
-	 * the action regardless authorization changed.
-	 *   
-	 * @param enabledWithoutAuthorization
-	 * 				 The enabled state of the action regardless the authorization
-	 */
-	protected void setEnabledWithoutAuthorization(
-			boolean enabledWithoutAuthorization) {
-		this.enabledWithoutAuthorization = enabledWithoutAuthorization;
-	}
-	
-	/**
-	 * @return ID of the right necessary to execute this action.
-	 */
-	protected final String getRightId() {
-		return _rightId;
-	}
+    /**
+     * Constructor. Registers this action as UserManagementListener and
+     * RightsManagementListener. 
+     * @param text
+     *            the action's text, or <code>null</code> if there is no text
+     * @param style
+     *            one of <code>AS_PUSH_BUTTON</code>,
+     *            <code>AS_CHECK_BOX</code>, <code>AS_DROP_DOWN_MENU</code>,
+     *            <code>AS_RADIO_BUTTON</code>, and
+     *            <code>AS_UNSPECIFIED</code>.               
+     * @param rightID
+     *            ID of the right necessary to execute this action.
+     * @param defaultPermission
+     *            whether this action should be permitted if no rights are
+     *            configured for the action.
+     * @see Action#Action(String, int) 
+     */
+    public AbstractUserDependentAction(String text, int style, final String rightID,
+            final boolean defaultPermission) {
+        super(text,style);
+        init(rightID,defaultPermission);        
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void setEnabled(final boolean enabled) {
+        _enable = enabled;
+        updateState();
+    }
+    
+    /**
+     * Set the enabled state of the action regardless the authorization. 
+     * This function must be called whenever the enabled state of 
+     * the action regardless authorization changed.
+     *   
+     * @param enabledWithoutAuthorization
+     *                  The enabled state of the action regardless the authorization
+     */
+    protected void setEnabledWithoutAuthorization(
+            boolean enabledWithoutAuthorization) {
+        this.enabledWithoutAuthorization = enabledWithoutAuthorization;
+    }
+    
+    /**
+     * @return ID of the right necessary to execute this action.
+     */
+    protected final String getRightId() {
+        return _rightId;
+    }
 
-	/**
-	 * Updates the enabled state depending on user permission.
-	 */
-	protected void updateState() {
-		boolean enableState = _enable && (enabledWithoutAuthorization || hasPermission());
-		super.setEnabled(enableState);
-	}
+    /**
+     * Updates the enabled state depending on user permission.
+     */
+    protected void updateState() {
+        boolean enableState = _enable && (enabledWithoutAuthorization || hasPermission());
+        super.setEnabled(enableState);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void run() {
-		if (hasPermission()) {
-			doWork();
-		}else {
-			MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Failed",
-					"You are not authorized to perform this action!");
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void run() {
+        if (hasPermission()) {
+            doWork();
+        }else {
+            MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Failed",
+                    "You are not authorized to perform this action!");
+        }
+    }
 
     /**
      * @return <code>true</code> if the user has the permission;
@@ -242,38 +242,38 @@ public abstract class AbstractUserDependentAction extends Action implements
         return SecurityFacade.getInstance().canExecute(getRightId(), _defaultPermission);
     }
 
-	/**
-	 * This method holds the protected code. It's called by <code>run()</code>.
-	 */
-	protected abstract void doWork();
+    /**
+     * This method holds the protected code. It's called by <code>run()</code>.
+     */
+    protected abstract void doWork();
 
-	/**
-	 * @see org.csstudio.auth.internal.usermanagement.IUserManagementListener#handleUserManagementEvent(org.csstudio.auth.internal.usermanagement.UserManagementEvent)
-	 * @param event
-	 *            the UserManagementEvent to handle
-	 */
-	public final void handleUserManagementEvent(final UserManagementEvent event) {
-		updateState();
-	}
+    /**
+     * @see org.csstudio.auth.internal.usermanagement.IUserManagementListener#handleUserManagementEvent(org.csstudio.auth.internal.usermanagement.UserManagementEvent)
+     * @param event
+     *            the UserManagementEvent to handle
+     */
+    public final void handleUserManagementEvent(final UserManagementEvent event) {
+        updateState();
+    }
 
-	/**
-	 * @see org.csstudio.auth.internal.rightsmanagement.IRightsManagementListener#handleRightsManagementEvent(org.csstudio.auth.internal.rightsmanagement.RightsManagementEvent)
-	 * @param event
-	 *            the RightsManagementEvent to handle
-	 */
-	public final void handleRightsManagementEvent(
-			final RightsManagementEvent event) {
-		updateState();
-	}
+    /**
+     * @see org.csstudio.auth.internal.rightsmanagement.IRightsManagementListener#handleRightsManagementEvent(org.csstudio.auth.internal.rightsmanagement.RightsManagementEvent)
+     * @param event
+     *            the RightsManagementEvent to handle
+     */
+    public final void handleRightsManagementEvent(
+            final RightsManagementEvent event) {
+        updateState();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected final void finalize() throws Throwable {
-		super.finalize();
-		ActivationService.getInstance().unregisterObject(getRightId(), this);
-		SecurityFacade.getInstance().removeUserManagementListener(this);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected final void finalize() throws Throwable {
+        super.finalize();
+        ActivationService.getInstance().unregisterObject(getRightId(), this);
+        SecurityFacade.getInstance().removeUserManagementListener(this);
+    }
 
 }

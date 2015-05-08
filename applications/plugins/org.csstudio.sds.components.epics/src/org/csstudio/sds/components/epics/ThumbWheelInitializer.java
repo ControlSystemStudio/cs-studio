@@ -37,29 +37,29 @@ import org.csstudio.sds.util.ColorAndFontUtil;
  */
 public final class ThumbWheelInitializer extends AbstractEpicsWidgetInitializer {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void initialize(final AbstractControlSystemSchema schema) {
-		initializeCommonAlarmBehaviour();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void initialize(final AbstractControlSystemSchema schema) {
+        initializeCommonAlarmBehaviour();
 
-		initializeStaticProperty(ThumbWheelModel.PROP_INTERNAL_FRAME_THICKNESS,
-				1);
+        initializeStaticProperty(ThumbWheelModel.PROP_INTERNAL_FRAME_THICKNESS,
+                1);
 
-		initializeDynamicProperty(ThumbWheelModel.PROP_VALUE, "$channel$",
-				"$channel$", null);
+        initializeDynamicProperty(ThumbWheelModel.PROP_VALUE, "$channel$",
+                "$channel$", null);
 
-		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
-		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, ColorAndFontUtil.toHex(
-				255, 9, 163));
-		colorsByConnectionState.put(ConnectionState.INITIAL, ColorAndFontUtil.toHex(255, 168,
-				222));
-		colorsByConnectionState
-				.put(ConnectionState.CONNECTED, ColorAndFontUtil.toHex(0, 0, 0));
-		initializeDynamicPropertyForConnectionState(
-				ThumbWheelModel.PROP_INTERNAL_FRAME_COLOR, "$channel$",
-				colorsByConnectionState);
+        Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
+        colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, ColorAndFontUtil.toHex(
+                255, 9, 163));
+        colorsByConnectionState.put(ConnectionState.INITIAL, ColorAndFontUtil.toHex(255, 168,
+                222));
+        colorsByConnectionState
+                .put(ConnectionState.CONNECTED, ColorAndFontUtil.toHex(0, 0, 0));
+        initializeDynamicPropertyForConnectionState(
+                ThumbWheelModel.PROP_INTERNAL_FRAME_COLOR, "$channel$",
+                colorsByConnectionState);
 
-	}
+    }
 }

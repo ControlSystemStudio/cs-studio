@@ -42,87 +42,87 @@ import org.eclipse.swt.widgets.Text;
  * 
  */
 public final class ImportSourceSelectionWizardPage extends WizardPage {
-	/**
-	 * Text element that holds the selcted file's full path.
-	 */
-	private Text _filePath;
+    /**
+     * Text element that holds the selcted file's full path.
+     */
+    private Text _filePath;
 
-	/**
-	 * Creates a new import source selection wizard page.
-	 * 
-	 * @param pageName
-	 *            the name of the page
-	 */
-	public ImportSourceSelectionWizardPage(final String pageName) {
-		super(pageName);
+    /**
+     * Creates a new import source selection wizard page.
+     * 
+     * @param pageName
+     *            the name of the page
+     */
+    public ImportSourceSelectionWizardPage(final String pageName) {
+        super(pageName);
 
-		setTitle("Choose the file to import");
-		setDescription("Select the file that should be imported.");
-	}
+        setTitle("Choose the file to import");
+        setDescription("Select the file that should be imported.");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void createControl(final Composite parent) {
-		Composite control = new Composite(parent, SWT.NONE);
-		control.setLayout(LayoutUtil.createGridLayout(1, 0, 5, 0));
-		control.setLayoutData(LayoutUtil.createGridDataForFillingCell());
+    /**
+     * {@inheritDoc}
+     */
+    public void createControl(final Composite parent) {
+        Composite control = new Composite(parent, SWT.NONE);
+        control.setLayout(LayoutUtil.createGridLayout(1, 0, 5, 0));
+        control.setLayoutData(LayoutUtil.createGridDataForFillingCell());
 
-		Label label = new Label(control, SWT.NONE);
-		label.setText("Choose file to import:");
+        Label label = new Label(control, SWT.NONE);
+        label.setText("Choose file to import:");
 
-		Composite fileSelectionComposite = new Composite(control, SWT.NONE);
-		fileSelectionComposite.setLayout(LayoutUtil
-				.createGridLayout(2, 0, 0, 5));
-		fileSelectionComposite.setLayoutData(LayoutUtil
-				.createGridDataForFillingCell());
+        Composite fileSelectionComposite = new Composite(control, SWT.NONE);
+        fileSelectionComposite.setLayout(LayoutUtil
+                .createGridLayout(2, 0, 0, 5));
+        fileSelectionComposite.setLayoutData(LayoutUtil
+                .createGridDataForFillingCell());
 
-		_filePath = new Text(fileSelectionComposite, SWT.BORDER);
-		_filePath.setBackground(FieldAssistColors
-				.getRequiredFieldBackgroundColor(_filePath));
-		_filePath.setEditable(false);
-		_filePath.setLayoutData(LayoutUtil
-				.createGridDataForHorizontalFillingCell());
-		_filePath.addModifyListener(new ModifyListener() {
-			public void modifyText(final ModifyEvent e) {
-				setPageComplete(_filePath.getText() != null
-						&& _filePath.getText().length() > 0);
-			}
-		});
+        _filePath = new Text(fileSelectionComposite, SWT.BORDER);
+        _filePath.setBackground(FieldAssistColors
+                .getRequiredFieldBackgroundColor(_filePath));
+        _filePath.setEditable(false);
+        _filePath.setLayoutData(LayoutUtil
+                .createGridDataForHorizontalFillingCell());
+        _filePath.addModifyListener(new ModifyListener() {
+            public void modifyText(final ModifyEvent e) {
+                setPageComplete(_filePath.getText() != null
+                        && _filePath.getText().length() > 0);
+            }
+        });
 
-		Button openFileButton = new Button(fileSelectionComposite, SWT.NONE);
-		openFileButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(final MouseEvent e) {
-				FileDialog fd = new FileDialog(parent.getShell());
-				String fileName = fd.open();
+        Button openFileButton = new Button(fileSelectionComposite, SWT.NONE);
+        openFileButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseUp(final MouseEvent e) {
+                FileDialog fd = new FileDialog(parent.getShell());
+                String fileName = fd.open();
 
-				if (fileName != null) {
-					_filePath.setText(fileName);
-				}
-			}
-		});
-		openFileButton.setText("...");
-		openFileButton.setLayoutData(LayoutUtil.createGridData(30));
+                if (fileName != null) {
+                    _filePath.setText(fileName);
+                }
+            }
+        });
+        openFileButton.setText("...");
+        openFileButton.setLayoutData(LayoutUtil.createGridData(30));
 
-		setPageComplete(false);
-		setErrorMessage(null);
-		setMessage(null);
-		setControl(control);
-	}
+        setPageComplete(false);
+        setErrorMessage(null);
+        setMessage(null);
+        setControl(control);
+    }
 
-	/**
-	 * Return the path and the name of the selected file.
-	 * 
-	 * @return The path and the name of the selected file.
-	 */
-	public String getSelectedFilePath() {
-		String result = null;
+    /**
+     * Return the path and the name of the selected file.
+     * 
+     * @return The path and the name of the selected file.
+     */
+    public String getSelectedFilePath() {
+        String result = null;
 
-		if (_filePath != null) {
-			result = _filePath.getText();
-		}
+        if (_filePath != null) {
+            result = _filePath.getText();
+        }
 
-		return result;
-	}
+        return result;
+    }
 }

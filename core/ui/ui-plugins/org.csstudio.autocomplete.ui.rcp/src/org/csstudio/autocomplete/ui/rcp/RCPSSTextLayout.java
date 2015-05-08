@@ -19,53 +19,53 @@ import org.eclipse.swt.widgets.Event;
 
 public class RCPSSTextLayout extends SSTextLayout {
 
-	private TextLayout textLayout;
+    private TextLayout textLayout;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void init(Display display, String text) {
-		textLayout = new TextLayout(display);
-		textLayout.setAlignment(SWT.CENTER);
-		textLayout.setText(text);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void init(Display display, String text) {
+        textLayout = new TextLayout(display);
+        textLayout.setAlignment(SWT.CENTER);
+        textLayout.setText(text);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void addStyle(Font font, Color color, int x, int y) {
-		TextStyle textStyle = new TextStyle(font, color, null);
-		textLayout.setStyle(textStyle, x, y);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addStyle(Font font, Color color, int x, int y) {
+        TextStyle textStyle = new TextStyle(font, color, null);
+        textLayout.setStyle(textStyle, x, y);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void handlePaintItemEvent(Event event, int offsetX, int offsetY) {
-		textLayout.draw(event.gc, event.x + offsetX, event.y + offsetY);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void handlePaintItemEvent(Event event, int offsetX, int offsetY) {
+        textLayout.draw(event.gc, event.x + offsetX, event.y + offsetY);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void handleMeasureItemEvent(Event event) {
-		Rectangle textLayoutBounds = textLayout.getBounds();
-		event.width = textLayoutBounds.width;
-		event.height = textLayoutBounds.height;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void handleMeasureItemEvent(Event event) {
+        Rectangle textLayoutBounds = textLayout.getBounds();
+        event.width = textLayoutBounds.width;
+        event.height = textLayoutBounds.height;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Rectangle getBounds() {
-		if (textLayout != null)
-			return textLayout.getBounds();
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Rectangle getBounds() {
+        if (textLayout != null)
+            return textLayout.getBounds();
+        return null;
+    }
 
 }

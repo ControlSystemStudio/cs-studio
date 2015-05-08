@@ -38,10 +38,10 @@ public class ShiftBuilderDialog extends Dialog {
     private ErrorBar errorBar;
 
     public ShiftBuilderDialog(Shell parentShell, ShiftBuilder shiftBuilder) {
-		super(parentShell);
-		setBlockOnOpen(false);
-		setShellStyle(SWT.RESIZE | SWT.DIALOG_TRIM);
-		this.shiftBuilder = shiftBuilder;
+        super(parentShell);
+        setBlockOnOpen(false);
+        setShellStyle(SWT.RESIZE | SWT.DIALOG_TRIM);
+        this.shiftBuilder = shiftBuilder;
     }
 
     @Override
@@ -72,10 +72,10 @@ public class ShiftBuilderDialog extends Dialog {
         shiftWidget.setLayoutData(gd_shiftWidget);
         if (shiftBuilder != null) {
             try {
-            	//If using another shift that already exist as template remove the end date, close user and start date
-            	shiftBuilder.setEndDate(null);
-            	shiftBuilder.setStartDate(null);
-            	shiftBuilder.setCloseShiftUser(null);
+                //If using another shift that already exist as template remove the end date, close user and start date
+                shiftBuilder.setEndDate(null);
+                shiftBuilder.setStartDate(null);
+                shiftBuilder.setCloseShiftUser(null);
                 shiftWidget.setShift(shiftBuilder.build());
             } catch (IOException e) {
             errorBar.setException(e);
@@ -87,7 +87,7 @@ public class ShiftBuilderDialog extends Dialog {
 
     @Override
     protected void createButtonsForButtonBar(final Composite parent) {
-	// create OK and Cancel buttons by default
+    // create OK and Cancel buttons by default
         createButton(parent, IDialogConstants.OK_ID, "Submit", true);
         createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
     }
@@ -102,7 +102,7 @@ public class ShiftBuilderDialog extends Dialog {
             final ShiftClient shiftClient;
             if (authenticate) {
                 shiftClient = ShiftClientManager.getShiftClientFactory()
-                		.getClient(userCredentialWidget.getUsername(), userCredentialWidget.getPassword());
+                        .getClient(userCredentialWidget.getUsername(), userCredentialWidget.getPassword());
             } else {
                 shiftClient = ShiftClientManager.getShiftClientFactory().getClient();
             }            
@@ -110,52 +110,52 @@ public class ShiftBuilderDialog extends Dialog {
             getShell().setCursor(Display.getDefault().getSystemCursor(SWT.CURSOR_WAIT));            
             shiftBuilder = shift(shiftWidget.getShift());
             if (shiftWidget.getShift().getOwner().isEmpty()) {
-            	shiftBuilder = shiftBuilder.setOwner(userCredentialWidget.getUsername());
+                shiftBuilder = shiftBuilder.setOwner(userCredentialWidget.getUsername());
             }
 
-			Job job = new Job("Create new Entry") {
+            Job job = new Job("Create new Entry") {
 
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					try {
-						shiftClient.start(shiftBuilder.build());
-						return Status.OK_STATUS;
-					} catch (final Exception e) {
-						getShell().getDisplay().asyncExec(new Runnable() {
+                @Override
+                protected IStatus run(IProgressMonitor monitor) {
+                    try {
+                        shiftClient.start(shiftBuilder.build());
+                        return Status.OK_STATUS;
+                    } catch (final Exception e) {
+                        getShell().getDisplay().asyncExec(new Runnable() {
 
-							@Override
-							public void run() {
-								getShell().setCursor(originalCursor);
-								getButton(IDialogConstants.OK_ID).setEnabled(true);
-								errorBar.setException(e);
-							}
-						});
-						return Status.CANCEL_STATUS;
-					}
-				}
-			};
-			job.addJobChangeListener(new JobChangeAdapter() {
-				public void done(IJobChangeEvent event) {
-					if (event.getResult().isOK()) {
-						getShell().getDisplay().asyncExec(new Runnable() {
+                            @Override
+                            public void run() {
+                                getShell().setCursor(originalCursor);
+                                getButton(IDialogConstants.OK_ID).setEnabled(true);
+                                errorBar.setException(e);
+                            }
+                        });
+                        return Status.CANCEL_STATUS;
+                    }
+                }
+            };
+            job.addJobChangeListener(new JobChangeAdapter() {
+                public void done(IJobChangeEvent event) {
+                    if (event.getResult().isOK()) {
+                        getShell().getDisplay().asyncExec(new Runnable() {
 
-							@Override
-							public void run() {
-								getShell().setCursor(originalCursor);
-								getButton(IDialogConstants.OK_ID).setEnabled(true);
-								setReturnCode(OK);
-									close();
-							}
-						});
+                            @Override
+                            public void run() {
+                                getShell().setCursor(originalCursor);
+                                getButton(IDialogConstants.OK_ID).setEnabled(true);
+                                setReturnCode(OK);
+                                    close();
+                            }
+                        });
 
-					}
-				}
-			});
-			job.schedule();			
-		} catch (Exception ex) {
-			getShell().setCursor(originalCursor);
-			getButton(IDialogConstants.OK_ID).setEnabled(true);
-			errorBar.setException(ex);
-		}            
+                    }
+                }
+            });
+            job.schedule();            
+        } catch (Exception ex) {
+            getShell().setCursor(originalCursor);
+            getButton(IDialogConstants.OK_ID).setEnabled(true);
+            errorBar.setException(ex);
+        }            
     }
 }

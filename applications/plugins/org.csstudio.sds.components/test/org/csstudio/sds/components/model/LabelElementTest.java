@@ -35,34 +35,34 @@ import org.junit.Test;
  */
 public final class LabelElementTest {
 
-	/**
-	 * A test instance.
-	 */
-	private LabelModel _labelElement;
-	
-	/**
-	 * Test setup.
-	 */
-	@Before
-	public void setUp() {
-		_labelElement = new LabelModel();
-	}
+    /**
+     * A test instance.
+     */
+    private LabelModel _labelElement;
+    
+    /**
+     * Test setup.
+     */
+    @Before
+    public void setUp() {
+        _labelElement = new LabelModel();
+    }
 
-	/**
-	 * Test method for {@link org.csstudio.sds.model.LabelModel#getTypeID()}.
-	 */
-	@Test
-	public void testGetTypeID() {
-		_labelElement.getTypeID().equals(LabelModel.ID);
-	}
+    /**
+     * Test method for {@link org.csstudio.sds.model.LabelModel#getTypeID()}.
+     */
+    @Test
+    public void testGetTypeID() {
+        _labelElement.getTypeID().equals(LabelModel.ID);
+    }
 
-	/**
-	 * Tests, if all properties where properly installed.
-	 */
-	@Test
-	public void testProperties () {
-		assertTrue(_labelElement.hasProperty(LabelModel.PROP_TEXTVALUE));
-		// Add further properties here
-	}
+    /**
+     * Tests, if all properties where properly installed.
+     */
+    @Test
+    public void testProperties () {
+        assertTrue(_labelElement.hasProperty(LabelModel.PROP_TEXTVALUE));
+        // Add further properties here
+    }
 
 }

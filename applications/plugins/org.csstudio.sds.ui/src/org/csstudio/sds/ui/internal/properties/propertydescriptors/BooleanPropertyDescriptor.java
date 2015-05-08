@@ -50,69 +50,69 @@ import org.eclipse.swt.widgets.Composite;
  */
 public final class BooleanPropertyDescriptor extends PropertyDescriptor {
 
-	/**
-	 * Creates an property descriptor with the given id and display name.
-	 * 
-	 * @param id
-	 *            the id of the property
-	 * @param displayName
-	 *            the name to display for the property
-	 */
-	public BooleanPropertyDescriptor(final Object id, final String displayName, PropertyTypesEnum type) {
-		super(id, displayName, type);
+    /**
+     * Creates an property descriptor with the given id and display name.
+     * 
+     * @param id
+     *            the id of the property
+     * @param displayName
+     *            the name to display for the property
+     */
+    public BooleanPropertyDescriptor(final Object id, final String displayName, PropertyTypesEnum type) {
+        super(id, displayName, type);
 
-		setLabelProvider(new BooleanLabelProvider());
-	}
+        setLabelProvider(new BooleanLabelProvider());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CellEditor createPropertyEditor(final Composite parent) {
-		CellEditor editor = new CheckboxCellEditor(parent);
-		if (getValidator() != null) {
-			editor.setValidator(getValidator());
-		}
-		return editor;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CellEditor createPropertyEditor(final Composite parent) {
+        CellEditor editor = new CheckboxCellEditor(parent);
+        if (getValidator() != null) {
+            editor.setValidator(getValidator());
+        }
+        return editor;
+    }
 
-	/**
-	 * A label provider for boolean value, which displays a checked or unchecked box image.
-	 * 
-	 * @author Kai Meyer
-	 * 
-	 */
-	private final class BooleanLabelProvider extends LabelProvider {
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public Image getImage(final Object element) {
-			if (element instanceof Boolean) {
-				if (((Boolean)element).booleanValue()) {
-					return CustomMediaFactory.getInstance().getImageFromPlugin(SdsUiPlugin.PLUGIN_ID, "icons/checked.gif");
-				} else {
-					return CustomMediaFactory.getInstance().getImageFromPlugin(SdsUiPlugin.PLUGIN_ID, "icons/unchecked.gif");
-				}
-			} else {
-				return null;
-			}
-		}
+    /**
+     * A label provider for boolean value, which displays a checked or unchecked box image.
+     * 
+     * @author Kai Meyer
+     * 
+     */
+    private final class BooleanLabelProvider extends LabelProvider {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Image getImage(final Object element) {
+            if (element instanceof Boolean) {
+                if (((Boolean)element).booleanValue()) {
+                    return CustomMediaFactory.getInstance().getImageFromPlugin(SdsUiPlugin.PLUGIN_ID, "icons/checked.gif");
+                } else {
+                    return CustomMediaFactory.getInstance().getImageFromPlugin(SdsUiPlugin.PLUGIN_ID, "icons/unchecked.gif");
+                }
+            } else {
+                return null;
+            }
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public String getText(final Object element) {
-			if (element instanceof Boolean) {
-				if (((Boolean)element).booleanValue()) {
-					return "yes";
-				} else {
-					return "no";
-				}
-			} else {
-				return element.toString();
-			}
-		}
-	}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String getText(final Object element) {
+            if (element instanceof Boolean) {
+                if (((Boolean)element).booleanValue()) {
+                    return "yes";
+                } else {
+                    return "no";
+                }
+            } else {
+                return element.toString();
+            }
+        }
+    }
 }

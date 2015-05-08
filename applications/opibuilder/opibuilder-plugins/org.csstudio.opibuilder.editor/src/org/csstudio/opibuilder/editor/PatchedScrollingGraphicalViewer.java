@@ -36,57 +36,57 @@ import org.eclipse.swt.widgets.Control;
  * 
  */
 public class PatchedScrollingGraphicalViewer extends ScrollingGraphicalViewer {
-	private MenuManager contextMenu;
+    private MenuManager contextMenu;
 
-	/**
-	 * The original implementation in
-	 * {@link GraphicalViewerImpl#setContextMenu(MenuManager)} registers a menu
-	 * listener on the context menu. This causes a memory leak, because that
-	 * listener is never removed.
-	 */
-	@Override
-	public void setContextMenu(MenuManager manager) {
-		// code from AbstractEditPartViewer base class (=super.super)
-		if (contextMenu != null) {
-			contextMenu.dispose();
-		}
+    /**
+     * The original implementation in
+     * {@link GraphicalViewerImpl#setContextMenu(MenuManager)} registers a menu
+     * listener on the context menu. This causes a memory leak, because that
+     * listener is never removed.
+     */
+    @Override
+    public void setContextMenu(MenuManager manager) {
+        // code from AbstractEditPartViewer base class (=super.super)
+        if (contextMenu != null) {
+            contextMenu.dispose();
+        }
 
-		contextMenu = manager;
+        contextMenu = manager;
 
-		if (getControl() != null && !getControl().isDisposed()) {
-			getControl().setMenu(contextMenu.createContextMenu(getControl()));
-		}
-		
-		// code from GraphicalViewerImpl (=super)
-		
-		// ... is left out
-		
-		// ... and rewritten here
-		if (contextMenu != null) {
-			final IMenuListener menuListener = new IMenuListener() {
-				public void menuAboutToShow(IMenuManager manager) {
-					flush();
-				}
-			};
+        if (getControl() != null && !getControl().isDisposed()) {
+            getControl().setMenu(contextMenu.createContextMenu(getControl()));
+        }
+        
+        // code from GraphicalViewerImpl (=super)
+        
+        // ... is left out
+        
+        // ... and rewritten here
+        if (contextMenu != null) {
+            final IMenuListener menuListener = new IMenuListener() {
+                public void menuAboutToShow(IMenuManager manager) {
+                    flush();
+                }
+            };
 
-			contextMenu.addMenuListener(menuListener);
+            contextMenu.addMenuListener(menuListener);
 
-			final Control control = getControl();
+            final Control control = getControl();
 
-			if (control != null) {
-				control.addDisposeListener(new DisposeListener() {
-					public void widgetDisposed(DisposeEvent e) {
-						contextMenu.removeMenuListener(menuListener);
-						control.removeDisposeListener(this);
-					}
-				});
-			}
-		}
-	}
-	
-	@Override
-	public MenuManager getContextMenu() {
-		return contextMenu;
-	}
+            if (control != null) {
+                control.addDisposeListener(new DisposeListener() {
+                    public void widgetDisposed(DisposeEvent e) {
+                        contextMenu.removeMenuListener(menuListener);
+                        control.removeDisposeListener(this);
+                    }
+                });
+            }
+        }
+    }
+    
+    @Override
+    public MenuManager getContextMenu() {
+        return contextMenu;
+    }
 
 }

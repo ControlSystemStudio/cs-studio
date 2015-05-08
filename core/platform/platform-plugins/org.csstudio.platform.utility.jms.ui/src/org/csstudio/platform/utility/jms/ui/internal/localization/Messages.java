@@ -29,25 +29,25 @@ import org.eclipse.osgi.util.NLS;
  * @author Alexander Will
  */
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.csstudio.platform.utility.jms.ui.internal.localization.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.csstudio.platform.utility.jms.ui.internal.localization.messages"; //$NON-NLS-1$
 
-	public static String SharedJmsConnectionPreferencePage_Description;
+    public static String SharedJmsConnectionPreferencePage_Description;
 
-	public static String SharedJmsConnectionPreferencePage_ReceiverUrl1Label;
+    public static String SharedJmsConnectionPreferencePage_ReceiverUrl1Label;
 
-	public static String SharedJmsConnectionPreferencePage_ReceiverUrl2Label;
+    public static String SharedJmsConnectionPreferencePage_ReceiverUrl2Label;
 
-	public static String SharedJmsConnectionPreferencePage_SenderUrlLabel;
-	
-	static {
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
+    public static String SharedJmsConnectionPreferencePage_SenderUrlLabel;
+    
+    static {
+        // initialize resource bundle
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
 
-	/**
-	 * This constructor is private since this class only provides static
-	 * methods.
-	 */
-	private Messages() {
-	}
+    /**
+     * This constructor is private since this class only provides static
+     * methods.
+     */
+    private Messages() {
+    }
 }

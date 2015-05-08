@@ -21,13 +21,13 @@ abstract public class Value implements IValue
     private static final long serialVersionUID = 1L;
 
     /** Time stamp of this value. */
-	private final ITimestamp time;
+    private final ITimestamp time;
 
     /** Severity code of this value. */
     private final ISeverity severity;
 
     /** Status text for this value's severity. */
-	private final String status;
+    private final String status;
 
     /** Meta data (may be null). */
     private final IMetaData meta_data;
@@ -35,11 +35,11 @@ abstract public class Value implements IValue
     /** The data quality. */
     private final Quality quality;
 
-	/**
-	 * The max count of values to be formatted into string.
-	 * The value beyond this count will be omitted.
-	 */
-	public final static int MAX_FORMAT_VALUE_COUNT = 20;
+    /**
+     * The max count of values to be formatted into string.
+     * The value beyond this count will be omitted.
+     */
+    public final static int MAX_FORMAT_VALUE_COUNT = 20;
 
     /** Construct a new value from pieces. */
     public Value(final ITimestamp time, final ISeverity severity,
@@ -61,12 +61,12 @@ abstract public class Value implements IValue
     /** {@inheritDoc} */
     @Override
     final public ISeverity getSeverity()
-	{	return severity;	}
+    {    return severity;    }
 
     /** {@inheritDoc} */
     @Override
     final public String getStatus()
-	{	return status; 	 }
+    {    return status;      }
 
     /** {@inheritDoc} */
     @Override
@@ -107,48 +107,48 @@ abstract public class Value implements IValue
         return buffer.toString();
     }
 
-	/** Convert char into printable character for Format.String
-	 *  @param c Char, 0 for end-of-string
-	 *  @return Printable version
-	 */
-	protected char getDisplayChar(final char c)
-	{
-		if (c == 0) {
+    /** Convert char into printable character for Format.String
+     *  @param c Char, 0 for end-of-string
+     *  @return Printable version
+     */
+    protected char getDisplayChar(final char c)
+    {
+        if (c == 0) {
             return 0;
         }
-		if (Character.getType(c) != Character.CONTROL) {
+        if (Character.getType(c) != Character.CONTROL) {
             return c;
         }
-		return '?';
-	}
+        return '?';
+    }
 
     /** {@inheritDoc} */
-	@Override
-	public boolean equals(final Object obj)
-	{
-		if (! (obj instanceof Value)) {
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if (! (obj instanceof Value)) {
             return false;
         }
-		final Value rhs = (Value) obj;
-		if (! (rhs.time.equals(time) &&
-		       rhs.quality == quality &&
-			   rhs.status.equals(status) &&
-			   rhs.severity.toString().equals(severity.toString()))) {
+        final Value rhs = (Value) obj;
+        if (! (rhs.time.equals(time) &&
+               rhs.quality == quality &&
+               rhs.status.equals(status) &&
+               rhs.severity.toString().equals(severity.toString()))) {
             return false;
         }
         // Meta_data might be null
         final IMetaData rhs_meta = rhs.getMetaData();
-		if (meta_data == null)
-		{   // OK if both are null
-		    return rhs_meta == null;
-		}
-		return rhs.meta_data.equals(meta_data);
-	}
+        if (meta_data == null)
+        {   // OK if both are null
+            return rhs_meta == null;
+        }
+        return rhs.meta_data.equals(meta_data);
+    }
 
     /** {@inheritDoc} */
-	@Override
-	public int hashCode()
-	{
-		return time.hashCode() + status.hashCode() + severity.hashCode();
-	}
+    @Override
+    public int hashCode()
+    {
+        return time.hashCode() + status.hashCode() + severity.hashCode();
+    }
 }

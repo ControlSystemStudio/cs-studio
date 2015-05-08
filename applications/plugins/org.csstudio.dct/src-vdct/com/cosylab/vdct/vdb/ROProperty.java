@@ -38,23 +38,23 @@ import com.cosylab.vdct.inspector.*;
  * @author 
  */
 public class ROProperty implements InspectableProperty, ChangableVisibility {
-	
-	protected boolean allowVisibilityChange = false;
-	protected InspectableProperty property = null;
+    
+    protected boolean allowVisibilityChange = false;
+    protected InspectableProperty property = null;
 
 /**
  * GUISeparator constructor comment.
  */
 public ROProperty(InspectableProperty property) {
-	this(property, false);
+    this(property, false);
 }
 
 /**
  * GUISeparator constructor comment.
  */
 public ROProperty(InspectableProperty property, boolean allowVisibilityChange) {
-	this.property = property;
-	this.allowVisibilityChange = allowVisibilityChange;
+    this.property = property;
+    this.allowVisibilityChange = allowVisibilityChange;
 }
 
 /**
@@ -63,7 +63,7 @@ public ROProperty(InspectableProperty property, boolean allowVisibilityChange) {
  * @return boolean
  */
 public boolean allowsOtherValues() {
-	return property.allowsOtherValues();
+    return property.allowsOtherValues();
 }
 /**
  * Insert the method's description here.
@@ -71,7 +71,7 @@ public boolean allowsOtherValues() {
  * @return java.lang.String
  */
 public java.lang.String getHelp() {
-	return property.getHelp();
+    return property.getHelp();
 }
 /**
  * Insert the method's description here.
@@ -79,7 +79,7 @@ public java.lang.String getHelp() {
  * @return java.lang.String
  */
 public String getName() {
-	return property.getName();
+    return property.getName();
 }
 /**
  * Insert the method's description here.
@@ -87,7 +87,7 @@ public String getName() {
  * @return java.lang.String[]
  */
 public java.lang.String[] getSelectableValues() {
-	return property.getSelectableValues();
+    return property.getSelectableValues();
 }
 /**
  * Insert the method's description here.
@@ -95,7 +95,7 @@ public java.lang.String[] getSelectableValues() {
  * @return java.lang.String
  */
 public String getValue() {
-	return property.getValue();
+    return property.getValue();
 }
 /**
  * Insert the method's description here.
@@ -104,7 +104,7 @@ public String getValue() {
  */
 public String getInitValue()
 {
-	return property.getInitValue();
+    return property.getInitValue();
 }
 /**
  * Insert the method's description here.
@@ -112,7 +112,7 @@ public String getInitValue()
  * @return boolean
  */
 public boolean isEditable() {
-	return false;
+    return false;
 }
 /**
  * Insert the method's description here.
@@ -120,7 +120,7 @@ public boolean isEditable() {
  * @return boolean
  */
 public boolean isSepatator() {
-	return property.isSepatator();
+    return property.isSepatator();
 }
 /**
  * Insert the method's description here.
@@ -135,7 +135,7 @@ public void setValue(String value) {}
  */
 public Pattern getEditPattern()
 {
-	return property.getEditPattern();
+    return property.getEditPattern();
 }
 /**
  * Insert the method's description here.
@@ -144,7 +144,7 @@ public Pattern getEditPattern()
  */
 public String getToolTipText()
 {
-	return property.getToolTipText();
+    return property.getToolTipText();
 }
 /**
  * Insert the method's description here.
@@ -153,7 +153,7 @@ public String getToolTipText()
  */
 public boolean isValid()
 {
-	return property.isValid();
+    return property.isValid();
 }
 /**
  * Insert the method's description here.
@@ -162,7 +162,7 @@ public boolean isValid()
  */
 public int getVisibility()
 {
-	return property.getVisibility();
+    return property.getVisibility();
 }
 /**
  * Insert the method's description here.
@@ -173,7 +173,7 @@ public int getVisibility()
  */
 public void popupEvent(Component component, int x, int y)
 {
-	// this is only RO
+    // this is only RO
 }
 
 /**
@@ -181,8 +181,8 @@ public void popupEvent(Component component, int x, int y)
  */
 public void setVisibility(int visibility)
 {
-	if (allowVisibilityChange && property instanceof ChangableVisibility)
-		((ChangableVisibility)property).setVisibility(visibility);
+    if (allowVisibilityChange && property instanceof ChangableVisibility)
+        ((ChangableVisibility)property).setVisibility(visibility);
 }
 
 }

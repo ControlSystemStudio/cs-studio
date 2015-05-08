@@ -35,17 +35,17 @@ import org.csstudio.sds.ui.properties.PropertyTypeCellEditorValidator;
  * @author Kai Meyer
  */
 public final class ParamStringPropertyDescriptorFactory implements
-		IPropertyDescriptorFactory {
+        IPropertyDescriptorFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IPropertyDescriptor createPropertyDescriptor(final Object id,
-			final WidgetProperty property) {
-		PropertyDescriptor descriptor = new ParamStringPropertyDescriptor(id, property
-				.getDescription(), PropertyTypesEnum.PARAMSTRING, property.getCategory().toString());
-		// validator
-		descriptor.setValidator(new PropertyTypeCellEditorValidator(property));
-		return descriptor;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public IPropertyDescriptor createPropertyDescriptor(final Object id,
+            final WidgetProperty property) {
+        PropertyDescriptor descriptor = new ParamStringPropertyDescriptor(id, property
+                .getDescription(), PropertyTypesEnum.PARAMSTRING, property.getCategory().toString());
+        // validator
+        descriptor.setValidator(new PropertyTypeCellEditorValidator(property));
+        return descriptor;
+    }
 }

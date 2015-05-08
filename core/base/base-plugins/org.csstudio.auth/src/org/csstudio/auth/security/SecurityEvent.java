@@ -30,70 +30,70 @@ import java.util.GregorianCalendar;
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  */
 public abstract class SecurityEvent {
-	
-	/**
-	 * 
-	 */
-	public static final int EVENT_1 = 1;
+    
+    /**
+     * 
+     */
+    public static final int EVENT_1 = 1;
 
-	/**
-	 * The timestamp in milliseconds.
-	 */
-	private final long _timeStamp;
-	
-	/**
-	 * The default-dateformat.
-	 */
-	private static final String DATE_FORMAT = "dd.MM.yyyy' - 'HH:mm:ss"; //$NON-NLS-1$
-	
-	/**
-	 * Constructor.
-	 * Generates a timestamp.
-	 */
-	public SecurityEvent() {
-		_timeStamp = System.currentTimeMillis();
-	}
-	
-	/**
-	 * Delivers a description about this event. 
-	 * @return A message
-	 */
-	public abstract String getMessage();
-	
-	/**
-	 * Delivers the timestamp of this event.
-	 * @return The timestamp of this event
-	 */
-	public final long getTimeStamp() {
-		return _timeStamp;
-	}
-	
-	/**
-	 * Delivers a calendar with the time of this event.
-	 * @return A calendar with the time of this event
-	 */
-	public final Calendar getTimeStampAsCalendar() {
-		Calendar calendar = new GregorianCalendar();
-		calendar.setTimeInMillis(_timeStamp);
-		return calendar;
-	}
-	
-	/**
-	 * Delivers a representation as a String of the timestamp.
-	 * @param dateFormat  The format for the representation
-	 * @return A representation as a String of the timestamp
-	 */
-	public final String getTimeStampAsString(final String dateFormat) {
-		SimpleDateFormat format = new SimpleDateFormat(dateFormat);
-		return format.format(getTimeStampAsCalendar().getTime());
-	}
-	
-	/**
-	 * Delivers a representation as a String of the timestamp.
-	 * @return A representation as a String of the timestamp
-	 */
-	public final String getTimeStampAsString() {
-		return getTimeStampAsString(DATE_FORMAT);
-	}
+    /**
+     * The timestamp in milliseconds.
+     */
+    private final long _timeStamp;
+    
+    /**
+     * The default-dateformat.
+     */
+    private static final String DATE_FORMAT = "dd.MM.yyyy' - 'HH:mm:ss"; //$NON-NLS-1$
+    
+    /**
+     * Constructor.
+     * Generates a timestamp.
+     */
+    public SecurityEvent() {
+        _timeStamp = System.currentTimeMillis();
+    }
+    
+    /**
+     * Delivers a description about this event. 
+     * @return A message
+     */
+    public abstract String getMessage();
+    
+    /**
+     * Delivers the timestamp of this event.
+     * @return The timestamp of this event
+     */
+    public final long getTimeStamp() {
+        return _timeStamp;
+    }
+    
+    /**
+     * Delivers a calendar with the time of this event.
+     * @return A calendar with the time of this event
+     */
+    public final Calendar getTimeStampAsCalendar() {
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTimeInMillis(_timeStamp);
+        return calendar;
+    }
+    
+    /**
+     * Delivers a representation as a String of the timestamp.
+     * @param dateFormat  The format for the representation
+     * @return A representation as a String of the timestamp
+     */
+    public final String getTimeStampAsString(final String dateFormat) {
+        SimpleDateFormat format = new SimpleDateFormat(dateFormat);
+        return format.format(getTimeStampAsCalendar().getTime());
+    }
+    
+    /**
+     * Delivers a representation as a String of the timestamp.
+     * @return A representation as a String of the timestamp
+     */
+    public final String getTimeStampAsString() {
+        return getTimeStampAsString(DATE_FORMAT);
+    }
 
 }

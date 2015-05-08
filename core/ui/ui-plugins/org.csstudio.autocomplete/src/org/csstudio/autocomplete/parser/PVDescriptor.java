@@ -20,42 +20,42 @@ import org.csstudio.autocomplete.IAutoCompleteProvider;
  */
 public class PVDescriptor extends ContentDescriptor {
 
-	private String name;
-	private String field;
-	private Map<String, String> params;
+    private String name;
+    private String field;
+    private Map<String, String> params;
 
-	public PVDescriptor() {
-		params = new HashMap<String, String>();
-	}
+    public PVDescriptor() {
+        params = new HashMap<String, String>();
+    }
 
-	public void addParam(String name, String value) {
-		params.put(name, value);
-	}
+    public void addParam(String name, String value) {
+        params.put(name, value);
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getField() {
-		return field;
-	}
+    public String getField() {
+        return field;
+    }
 
-	public void setField(String field) {
-		this.field = field;
-	}
+    public void setField(String field) {
+        this.field = field;
+    }
 
-	public Map<String, String> getParams() {
-		return params;
-	}
+    public Map<String, String> getParams() {
+        return params;
+    }
 
-	@Override
-	public String toString() {
-		return "PVDescriptor [name=" + name + ", field=" + field + ", params="
-				+ params + ", toString()=" + super.toString() + "]";
-	}
+    @Override
+    public String toString() {
+        return "PVDescriptor [name=" + name + ", field=" + field + ", params="
+                + params + ", toString()=" + super.toString() + "]";
+    }
 
 }

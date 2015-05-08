@@ -30,7 +30,7 @@ public class SystemSettings
     /** System property for overriding the scan server port */
     final public static String PORT_PROPERTY = "ScanServerPort";
 
-	/** @return Scan server host name */
+    /** @return Scan server host name */
     public static String getServerHost()
     {
         String host = System.getProperty(HOST_PROPERTY);

@@ -42,52 +42,52 @@ import org.slf4j.LoggerFactory;
 public final class DisplayModelReader extends ErrorMessagesTracker {
     private static final Logger LOG = LoggerFactory.getLogger(DisplayModelReader.class);
 
-	/**
-	 * This class is not intended to be instantiated by clients.
-	 */
-	public DisplayModelReader() {
-	}
+    /**
+     * This class is not intended to be instantiated by clients.
+     */
+    public DisplayModelReader() {
+    }
 
-	/**
-	 * Parse the given <code>InputStream</code> into the given
-	 * <code>DisplayModel</code>.
-	 * 
-	 * @param inputStream
-	 *            An <code>InputStream</code> that contains the XML
-	 *            representation of a <code>DisplayModel</code>.
-	 * @param displayModel
-	 *            The <code>DisplayModel</code> that the read model data will
-	 *            be appended to.
-	 * @param display
-	 *            SWT <code>Display</code> that will be used for asynchronous
-	 *            loading.
-	 */
-	public void readModelFromXml(final InputStream inputStream,
-			final DisplayModel displayModel,
-			final IDisplayModelLoadListener loadListener) {
-		resetErrorMessages();
+    /**
+     * Parse the given <code>InputStream</code> into the given
+     * <code>DisplayModel</code>.
+     * 
+     * @param inputStream
+     *            An <code>InputStream</code> that contains the XML
+     *            representation of a <code>DisplayModel</code>.
+     * @param displayModel
+     *            The <code>DisplayModel</code> that the read model data will
+     *            be appended to.
+     * @param display
+     *            SWT <code>Display</code> that will be used for asynchronous
+     *            loading.
+     */
+    public void readModelFromXml(final InputStream inputStream,
+            final DisplayModel displayModel,
+            final IDisplayModelLoadListener loadListener) {
+        resetErrorMessages();
 
-		try {
-			SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-			
-			SaxDisplayModelHandler saxDisplayModelHandler = new SaxDisplayModelHandler(
-					displayModel, loadListener);
-			parser.parse(inputStream, saxDisplayModelHandler);
+        try {
+            SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+            
+            SaxDisplayModelHandler saxDisplayModelHandler = new SaxDisplayModelHandler(
+                    displayModel, loadListener);
+            parser.parse(inputStream, saxDisplayModelHandler);
 
-		} catch (Exception e) {
-			trackErrorMessage("Exception: " + e.getMessage()); //$NON-NLS-1$
-			LOG.debug(e.toString());
-		} finally {
-			// Important - close the stream
-			closeStream(inputStream);
-		}
-	}
+        } catch (Exception e) {
+            trackErrorMessage("Exception: " + e.getMessage()); //$NON-NLS-1$
+            LOG.debug(e.toString());
+        } finally {
+            // Important - close the stream
+            closeStream(inputStream);
+        }
+    }
 
-	private void closeStream(InputStream stream) {
-		try {
-			stream.close();
-		} catch (IOException e) {
-			LOG.debug(e.toString());
-		}
-	}
+    private void closeStream(InputStream stream) {
+        try {
+            stream.close();
+        } catch (IOException e) {
+            LOG.debug(e.toString());
+        }
+    }
 }

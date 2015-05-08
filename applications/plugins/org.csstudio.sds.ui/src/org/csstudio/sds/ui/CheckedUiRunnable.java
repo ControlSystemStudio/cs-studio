@@ -23,13 +23,13 @@
 
 
 public abstract class CheckedUiRunnable implements Runnable {
-	public CheckedUiRunnable() {
-		BundelingThread.getInstance().addRunnable(this);
-	}
+    public CheckedUiRunnable() {
+        BundelingThread.getInstance().addRunnable(this);
+    }
 
-	public void run() {
-		doRunInUi();
-	}
+    public void run() {
+        doRunInUi();
+    }
 
-	protected abstract void doRunInUi();
+    protected abstract void doRunInUi();
 }

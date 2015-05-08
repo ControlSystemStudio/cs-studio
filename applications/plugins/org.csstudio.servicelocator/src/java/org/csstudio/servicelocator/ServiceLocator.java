@@ -145,7 +145,7 @@ public final class ServiceLocator {
         // guard: only when not closed
         if (IS_CLOSED) {
             throw new IllegalStateException("Trying to get s service of type " + typeOfService +
-            		" but service locator has already been closed.");
+                    " but service locator has already been closed.");
         }
         
         IServiceProvider<?> serviceProvider = TYPE2IMPL.get(typeOfService);

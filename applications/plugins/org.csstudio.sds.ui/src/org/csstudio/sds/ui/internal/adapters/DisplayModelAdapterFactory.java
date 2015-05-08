@@ -33,26 +33,26 @@ import org.eclipse.core.runtime.IAdapterFactory;
  */
 public final class DisplayModelAdapterFactory implements IAdapterFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object getAdapter(final Object adaptableObject, final Class adapterType) {
-		assert adaptableObject != null;
-		assert adapterType != null;
-		assert adaptableObject instanceof DisplayModel : "adaptableObject instanceof DisplayModel"; //$NON-NLS-1$
+    /**
+     * {@inheritDoc}
+     */
+    public Object getAdapter(final Object adaptableObject, final Class adapterType) {
+        assert adaptableObject != null;
+        assert adapterType != null;
+        assert adaptableObject instanceof DisplayModel : "adaptableObject instanceof DisplayModel"; //$NON-NLS-1$
 
-		DisplayModel model = (DisplayModel) adaptableObject;
-		if (adapterType == IPropertySource.class) {
-			return new WidgetPropertySourceAdapter(model);
-		}
-		return null;
-	}
+        DisplayModel model = (DisplayModel) adaptableObject;
+        if (adapterType == IPropertySource.class) {
+            return new WidgetPropertySourceAdapter(model);
+        }
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Class[] getAdapterList() {
-		return new Class[] { IPropertySource.class };
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Class[] getAdapterList() {
+        return new Class[] { IPropertySource.class };
+    }
 
 }

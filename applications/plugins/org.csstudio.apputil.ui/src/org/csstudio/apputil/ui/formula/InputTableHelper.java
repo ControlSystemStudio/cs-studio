@@ -23,7 +23,7 @@ public class InputTableHelper
         INPUT(Messages.InputName, 200, 100),
 
         /** Column Identifier. */
-    	VARIABLE(Messages.VariableName, 80, 100);
+        VARIABLE(Messages.VariableName, 80, 100);
 
         private final String title;
         private final int min_size;
@@ -58,33 +58,33 @@ public class InputTableHelper
         }
     }
 
-	/** Get ID for a property.
-	 *
-	 * @param title One of the column titles.
-	 * @return Returns the requested Column.
-	 * @throws Exception on error.
-	 */
-	@SuppressWarnings("nls")
+    /** Get ID for a property.
+     *
+     * @param title One of the column titles.
+     * @return Returns the requested Column.
+     * @throws Exception on error.
+     */
+    @SuppressWarnings("nls")
     static public Column findColumn(String title) throws Exception
-	{
-		for (Column col : Column.values())
-			if (col.getTitle().equals(title))
+    {
+        for (Column col : Column.values())
+            if (col.getTitle().equals(title))
                 return col;
-		throw new Exception("Unknown column '" + title + "'");
-	}
+        throw new Exception("Unknown column '" + title + "'");
+    }
 
-	/** Get e.g. the "NAME" from a ChartItem.
-	 *
-	 * @param qso
-	 * @param col_title One of the properties[] strings.
-	 * @return Returns the requested property.
-	 * @throws Exception on error.
-	 */
-	static public Object getProperty(InputItem input, String col_title) throws Exception
-	{
+    /** Get e.g. the "NAME" from a ChartItem.
+     *
+     * @param qso
+     * @param col_title One of the properties[] strings.
+     * @return Returns the requested property.
+     * @throws Exception on error.
+     */
+    static public Object getProperty(InputItem input, String col_title) throws Exception
+    {
         Column id = findColumn(col_title);
-	    return getText(input, id);
-	}
+        return getText(input, id);
+    }
 
     /** Get a data piece of the entry.
      * @param input The ChartItem.
@@ -96,14 +96,14 @@ public class InputTableHelper
         return getText(input, Column.fromOrdinal(col_index));
     }
 
-	/** Get a data piece of the entry.
-	 * @param input The ChartItem.
-	 * @param item The Column of interest.
-	 * @return Returns the String for the entry
-	 */
-	static public String getText(final InputItem input, final Column item)
-	{
-		try
+    /** Get a data piece of the entry.
+     * @param input The ChartItem.
+     * @param item The Column of interest.
+     * @return Returns the String for the entry
+     */
+    static public String getText(final InputItem input, final Column item)
+    {
+        try
         {
             switch (item)
             {
@@ -112,11 +112,11 @@ public class InputTableHelper
             case VARIABLE:
                 return input.getVariableName();
             }
-		}
-		catch (Exception ex)
-		{
+        }
+        catch (Exception ex)
+        {
             Logger.getLogger(Activator.ID).log(Level.WARNING, "Formula Input Error", ex); //$NON-NLS-1$
-		}
-		return null;
-	}
+        }
+        return null;
+    }
 }

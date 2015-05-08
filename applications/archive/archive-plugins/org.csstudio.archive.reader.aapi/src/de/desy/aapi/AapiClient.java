@@ -42,23 +42,23 @@ import org.apache.log4j.varia.NullAppender;
  */
 public class AapiClient {
     
-	/** 
-	 * Keyword used in System properties to configure AAPI logging. 
-	 * Valie values are:
-	 * <ul>
-	 * <li>true - AAPI will call basic log4j configuration, which enables logging to console.</li>
-	 * <li>false - AAPI will not configure logging to console.</li>
-	 * </ul>
-	 * 
-	 * By default true is assumed and logging will be configured.
-	 * 
-	 * <p>
-	 * Regardless of this setting an application can configure own appenders for AAPI logging.
-	 * See {@link #getLogger()} for details.
-	 * </p>  
-	 *  
-	 * @see #getLogger()
-	 */
+    /** 
+     * Keyword used in System properties to configure AAPI logging. 
+     * Valie values are:
+     * <ul>
+     * <li>true - AAPI will call basic log4j configuration, which enables logging to console.</li>
+     * <li>false - AAPI will not configure logging to console.</li>
+     * </ul>
+     * 
+     * By default true is assumed and logging will be configured.
+     * 
+     * <p>
+     * Regardless of this setting an application can configure own appenders for AAPI logging.
+     * See {@link #getLogger()} for details.
+     * </p>  
+     *  
+     * @see #getLogger()
+     */
     private static final String LIB_LOGGING = "aapi.logging";
     
     /** Keyword used in System properties to set the AAPI logging configuration file. */
@@ -74,61 +74,61 @@ public class AapiClient {
      * 
      */
     public AapiClient(String host, int port) {
-    	this.commandHandler = new AapiCommandHandler(host, port);
+        this.commandHandler = new AapiCommandHandler(host, port);
     }
 
-	/**
-	 * Return logger, which is parent for all AAPI plug loggers.
-	 * 
-	 * <p>
-	 * AAPI loggers collect and distribute messages, which are intended for general plublic.
-	 * E.g. application which is not interested in internal structure, but wants to display progress when some channel 
-	 * was connected or some user initiated action failed.
-	 * </p>
-	 * 
-	 * <p>
-	 * Parent AAPI logger name is 'AAPI'.
-	 * </p>
-	 * 
-	 * <p>
-	 * Default configuration of appenders is controlled with System parameter {@link AapiClient#LIB_LOGGING}.
-	 * </p>
-	 *    
-	 * @return parent logger for all AAPI plug loggers.
-	 * 
-	 * @see #LIB_LOGGING
-	 */
-	public static final Logger getLogger() {
-		
-		if (logger == null) {
-			logger = Logger.getLogger("AAPI");
-			
-			boolean log = Boolean.parseBoolean(System.getProperty(LIB_LOGGING, Boolean.TRUE.toString()));
-			
-			if(log) {
-				
-				String fileName = System.getProperty(LOG_PROPERTY_FILE, null);
-				if(fileName != null) {
-					
-					File file = new File(fileName);
-					if(file.exists()) {
-						PropertyConfigurator.configure(fileName);
-					} else {
-						BasicConfigurator.configure();
-					}
-				} else {
-					// No file name is given.
-					BasicConfigurator.configure();
-				}
-			} else {
-				// supresses log4j warning about nonconfigured logging  
-				logger.addAppender(new NullAppender());
-			}			
-		}
-		
-		return logger;
-	}
-	
+    /**
+     * Return logger, which is parent for all AAPI plug loggers.
+     * 
+     * <p>
+     * AAPI loggers collect and distribute messages, which are intended for general plublic.
+     * E.g. application which is not interested in internal structure, but wants to display progress when some channel 
+     * was connected or some user initiated action failed.
+     * </p>
+     * 
+     * <p>
+     * Parent AAPI logger name is 'AAPI'.
+     * </p>
+     * 
+     * <p>
+     * Default configuration of appenders is controlled with System parameter {@link AapiClient#LIB_LOGGING}.
+     * </p>
+     *    
+     * @return parent logger for all AAPI plug loggers.
+     * 
+     * @see #LIB_LOGGING
+     */
+    public static final Logger getLogger() {
+        
+        if (logger == null) {
+            logger = Logger.getLogger("AAPI");
+            
+            boolean log = Boolean.parseBoolean(System.getProperty(LIB_LOGGING, Boolean.TRUE.toString()));
+            
+            if(log) {
+                
+                String fileName = System.getProperty(LOG_PROPERTY_FILE, null);
+                if(fileName != null) {
+                    
+                    File file = new File(fileName);
+                    if(file.exists()) {
+                        PropertyConfigurator.configure(fileName);
+                    } else {
+                        BasicConfigurator.configure();
+                    }
+                } else {
+                    // No file name is given.
+                    BasicConfigurator.configure();
+                }
+            } else {
+                // supresses log4j warning about nonconfigured logging  
+                logger.addAppender(new NullAppender());
+            }            
+        }
+        
+        return logger;
+    }
+    
     /**
      * 
      * @return
@@ -206,13 +206,13 @@ public class AapiClient {
     public void setPort(String port) {
         
         if(port != null) {
-        	
-        	try {
-        		int p = Integer.parseInt(port);
-        		setPort(p);
-        	} catch(NumberFormatException nfe) {
-        		logger.warn("setPort(String): [*** NumberFormatException ***]: " + nfe.getMessage());
-        	}
+            
+            try {
+                int p = Integer.parseInt(port);
+                setPort(p);
+            } catch(NumberFormatException nfe) {
+                logger.warn("setPort(String): [*** NumberFormatException ***]: " + nfe.getMessage());
+            }
         }
     }
 
@@ -256,7 +256,7 @@ public class AapiClient {
      * @return
      */
     public int getVersion() {
-    	return commandHandler.getVersion();
+        return commandHandler.getVersion();
     }
     
     /**
@@ -265,7 +265,7 @@ public class AapiClient {
      * @return
      */
     public AnswerData getData(RequestData in) {
-    	return commandHandler.getData(in);
+        return commandHandler.getData(in);
     }
     
     /**
@@ -274,7 +274,7 @@ public class AapiClient {
      * @return
      */
     public AnswerChannelInfo getChannelInfo(String chName) {
-    	return commandHandler.getChannelInfo(chName);
+        return commandHandler.getChannelInfo(chName);
     }
     
     /**
@@ -282,7 +282,7 @@ public class AapiClient {
      * @return
      */
     public String[] getChannelList() {
-    	return commandHandler.getChannelList();
+        return commandHandler.getChannelList();
     }
     
     /**
@@ -291,7 +291,7 @@ public class AapiClient {
      * @return
      */
     public String[] getChannelListHierarchy(String node) {
-    	return commandHandler.getChannelListHierarchy(node);
+        return commandHandler.getChannelListHierarchy(node);
     }
     
     /**
@@ -299,7 +299,7 @@ public class AapiClient {
      * @return
      */
     public String[] getAlgoritmsList() {
-    	return commandHandler.getAlgoritmsList();
+        return commandHandler.getAlgoritmsList();
     }
     
     /**
@@ -308,7 +308,7 @@ public class AapiClient {
      * @return
      */
     public String[] getRegExpChannelList(String regExp) {
-    	return commandHandler.getRegExpChannelList(regExp);
+        return commandHandler.getRegExpChannelList(regExp);
     }
     
     /**
@@ -316,6 +316,6 @@ public class AapiClient {
      * @return
      */
     public AnswerHierarchySkeleton getHierarchySkeleton() {
-    	return commandHandler.getHierarchySkeleton();
+        return commandHandler.getHierarchySkeleton();
     }
 }

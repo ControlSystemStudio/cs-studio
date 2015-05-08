@@ -8,10 +8,10 @@ package org.csstudio.dct.ui.graphicalviewer.model;
  * 
  */
 public interface INodeVisitor {
-	/**
-	 * Callback method which is called for every node in the model.
-	 * 
-	 * @param node the current node
-	 */
-	void visit(AbstractNode node);
+    /**
+     * Callback method which is called for every node in the model.
+     * 
+     * @param node the current node
+     */
+    void visit(AbstractNode node);
 }

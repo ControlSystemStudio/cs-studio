@@ -35,28 +35,28 @@ import org.junit.Test;
  */
 public final class AdvancedSliderEditPartTest {
 
-	/**
-	 * The instance to test.
-	 */
-	private AdvancedSliderEditPart _editPart;
+    /**
+     * The instance to test.
+     */
+    private AdvancedSliderEditPart _editPart;
 
-	/**
-	 * Test set up.
-	 */
-	@Before
-	public void setUp() {
-		_editPart = new AdvancedSliderEditPart();
-		_editPart.setModel(new AdvancedSliderModel());
-	}
+    /**
+     * Test set up.
+     */
+    @Before
+    public void setUp() {
+        _editPart = new AdvancedSliderEditPart();
+        _editPart.setModel(new AdvancedSliderModel());
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.components.ui.internal.editparts.AdvancedSliderEditPart#doCreateFigure()}.
-	 */
-	@Test
-	public void testCreateFigure() {
-		IFigure figure = _editPart.doCreateFigure();
-		assertTrue(figure instanceof AdvancedSliderFigure);
-	}
+    /**
+     * Test method for
+     * {@link org.csstudio.sds.components.ui.internal.editparts.AdvancedSliderEditPart#doCreateFigure()}.
+     */
+    @Test
+    public void testCreateFigure() {
+        IFigure figure = _editPart.doCreateFigure();
+        assertTrue(figure instanceof AdvancedSliderFigure);
+    }
 
 }

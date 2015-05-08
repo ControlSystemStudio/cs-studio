@@ -41,207 +41,207 @@ import org.csstudio.dal.context.Identifiable;
  */
 public class RequestImpl<T> implements Request<T>
 {
-	protected LinkedList<Response<T>> responses;
-	protected Identifiable source;
-	protected ResponseListener<T> listener = null;
-	private int capacity = 1;
-	public boolean isDone = false;
-	public T lastValue;
+    protected LinkedList<Response<T>> responses;
+    protected Identifiable source;
+    protected ResponseListener<T> listener = null;
+    private int capacity = 1;
+    public boolean isDone = false;
+    public T lastValue;
 
-	/**
-	     * Creates new instance. Default response capacity is 1.
-	     * @param source the source of responses
-	     * @param l response listener
-	     *
-	     * @see #getCapacity()
-	     */
-	public RequestImpl(final Identifiable source, final ResponseListener<T> l)
-	{
-		this(source, l, 1);
-	}
+    /**
+         * Creates new instance. Default response capacity is 1.
+         * @param source the source of responses
+         * @param l response listener
+         *
+         * @see #getCapacity()
+         */
+    public RequestImpl(final Identifiable source, final ResponseListener<T> l)
+    {
+        this(source, l, 1);
+    }
 
-	/**
-	     * Creates new instance with defined capacity for responses.
-	     *
-	     * @param source the source of reponses
-	     * @param l listener
-	     * @param capacity number of last responses stored, if 0 all responses are stored.
-	     *
-	     * @see #getCapacity()
-	     */
-	public RequestImpl(final Identifiable source, final ResponseListener<T> l, final int capacity)
-	{
-		if (source == null) {
-			throw new NullPointerException("source");
-		}
+    /**
+         * Creates new instance with defined capacity for responses.
+         *
+         * @param source the source of reponses
+         * @param l listener
+         * @param capacity number of last responses stored, if 0 all responses are stored.
+         *
+         * @see #getCapacity()
+         */
+    public RequestImpl(final Identifiable source, final ResponseListener<T> l, final int capacity)
+    {
+        if (source == null) {
+            throw new NullPointerException("source");
+        }
 
-		if (l == null) {
-			throw new NullPointerException("l");
-		}
+        if (l == null) {
+            throw new NullPointerException("l");
+        }
 
-		if (capacity < 0) {
-			throw new IllegalArgumentException(
-			    "Capacity must be larger than 0, not " + capacity + ".");
-		}
+        if (capacity < 0) {
+            throw new IllegalArgumentException(
+                "Capacity must be larger than 0, not " + capacity + ".");
+        }
 
-		responses = new LinkedList<Response<T>>();
-		this.source = source;
-		listener = l;
-		this.capacity = capacity;
-	}
+        responses = new LinkedList<Response<T>>();
+        this.source = source;
+        listener = l;
+        this.capacity = capacity;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.Request#getSource()
-	 */
-	@Override
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.Request#getSource()
+     */
+    @Override
     public Identifiable getSource()
-	{
-		return source;
-	}
+    {
+        return source;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.Request#hasResponse()
-	 */
-	@Override
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.Request#hasResponse()
+     */
+    @Override
     public synchronized boolean hasResponse()
-	{
-		return responses.size() > 0;
-	}
+    {
+        return responses.size() > 0;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.Request#responses()
-	 */
-	@Override
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.Request#responses()
+     */
+    @Override
     public Iterator<Response<T>> responses()
-	{
-		return responses.iterator();
-	}
+    {
+        return responses.iterator();
+    }
 
-	/**
-	 * Adds new response to this request object and dispatches it to
-	 * listener.
-	 *
-	 * @param r new response to be dispatched
-	 *
-	 * @throws NullPointerException if response is null
-	 * @throws IllegalArgumentException if source of response and source of this request is not equal
-	 */
-	public void addResponse(final Response<T> r)
-	{
-		if (r == null) {
-			throw new NullPointerException("r");
-		}
+    /**
+     * Adds new response to this request object and dispatches it to
+     * listener.
+     *
+     * @param r new response to be dispatched
+     *
+     * @throws NullPointerException if response is null
+     * @throws IllegalArgumentException if source of response and source of this request is not equal
+     */
+    public void addResponse(final Response<T> r)
+    {
+        if (r == null) {
+            throw new NullPointerException("r");
+        }
 
-		if (r.getSource() != source) {
-			throw new IllegalArgumentException(
-			    "Can not dispatch response which has different source identifiable.");
-		}
+        if (r.getSource() != source) {
+            throw new IllegalArgumentException(
+                "Can not dispatch response which has different source identifiable.");
+        }
 
-		synchronized (this) {
-			responses.add(r);
-			while (capacity > 0 && responses.size() > capacity) {
-				responses.removeFirst();
-			}
-		}
+        synchronized (this) {
+            responses.add(r);
+            while (capacity > 0 && responses.size() > capacity) {
+                responses.removeFirst();
+            }
+        }
 
-		if (listener != null) {
-			final ResponseEvent<T> e = new ResponseEvent<T>(source, this, r);
+        if (listener != null) {
+            final ResponseEvent<T> e = new ResponseEvent<T>(source, this, r);
 
-			if (r.success()) {
-				listener.responseReceived(e);
-			} else {
-				listener.responseError(e);
-			}
-		}
+            if (r.success()) {
+                listener.responseReceived(e);
+            } else {
+                listener.responseError(e);
+            }
+        }
 
 
-		if (r.isLast()) {
-			isDone = true;
-			lastValue = r.getValue();
-			synchronized (this) {
-				this.notifyAll();
-			}
+        if (r.isLast()) {
+            isDone = true;
+            lastValue = r.getValue();
+            synchronized (this) {
+                this.notifyAll();
+            }
 
-			// prevent memory leak by releasing listener reference once it is not needed any more.
-			listener=null;
-		}
-	}
+            // prevent memory leak by releasing listener reference once it is not needed any more.
+            listener=null;
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.Request#isCompleted()
-	 */
-	@Override
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.Request#isCompleted()
+     */
+    @Override
     public synchronized boolean isCompleted()
-	{
-		if (responses.size() > 0) {
-			return responses.getLast().isLast();
-		}
+    {
+        if (responses.size() > 0) {
+            return responses.getLast().isLast();
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * Capacity number defines how many of last responses is stored in
-	 * this request.  0 means that all are stored.
-	 *
-	 * @return Returns the capacity.
-	 */
-	public int getCapacity()
-	{
-		return capacity;
-	}
+    /**
+     * Capacity number defines how many of last responses is stored in
+     * this request.  0 means that all are stored.
+     *
+     * @return Returns the capacity.
+     */
+    public int getCapacity()
+    {
+        return capacity;
+    }
 
-	public ResponseListener<T> getResponseListener()
-	{
-		return listener;
-	}
+    public ResponseListener<T> getResponseListener()
+    {
+        return listener;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.Request#getFirstResponse()
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.Request#getFirstResponse()
+     */
+    @Override
     public synchronized Response<T> getFirstResponse() {
-		return responses.getFirst();
-	}
+        return responses.getFirst();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.Request#getLastResponse()
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.Request#getLastResponse()
+     */
+    @Override
     public synchronized Response<T> getLastResponse() {
-		return responses.getLast();
-	}
+        return responses.getLast();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Iterable#iterator()
+     */
+    @Override
     public Iterator<Response<T>> iterator() {
-		return responses();
-	}
+        return responses();
+    }
 
-	/**
-	 * Blocks call until last response is received. <br><b>NOTE: </b> call from this method is returned after events
-	 * are dispatched on ResponseListeners.
-	 *
-	 * @return final value received with done event.
-	 */
-	@Override
+    /**
+     * Blocks call until last response is received. <br><b>NOTE: </b> call from this method is returned after events
+     * are dispatched on ResponseListeners.
+     *
+     * @return final value received with done event.
+     */
+    @Override
     public T waitUntilDone(){
-		while (isDone == false){
-			synchronized(this)
-			{
-				try {
-					this.wait();
-				} catch (final InterruptedException e) {
-				}
-			}
-		}
-		return lastValue;
-	}
+        while (isDone == false){
+            synchronized(this)
+            {
+                try {
+                    this.wait();
+                } catch (final InterruptedException e) {
+                }
+            }
+        }
+        return lastValue;
+    }
 }
 
 /* __oOo__ */

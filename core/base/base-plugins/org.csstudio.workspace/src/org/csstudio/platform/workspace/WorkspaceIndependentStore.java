@@ -8,7 +8,7 @@ import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
 /** To store preferences which are independent from workspace. 
- * 	These preferences are stored at <code>Install_Location/configuration/.settings</code>
+ *     These preferences are stored at <code>Install_Location/configuration/.settings</code>
  *  You can add your own preference by inheriting this class
  *  @author Xihui Chen
  */
@@ -33,7 +33,7 @@ public class WorkspaceIndependentStore
      * @param lastLoginUserName
      */
     public static void writeLastLoginUser(String lastLoginUserName) {
-    	writeString(LAST_LOGIN_USER, lastLoginUserName);
+        writeString(LAST_LOGIN_USER, lastLoginUserName);
     }
     
     /**Get the value of the input preference ID.
@@ -41,9 +41,9 @@ public class WorkspaceIndependentStore
      * @return value associated with preferenceID. return "" if no value got.
      */
     protected static String getString(final String preferenceID) {
-    	Preferences configurationNode = ConfigurationScope.INSTANCE.getNode(PREF_QUALIFIER);
-    	String value = configurationNode.get(preferenceID, "");
-    	return value;    
+        Preferences configurationNode = ConfigurationScope.INSTANCE.getNode(PREF_QUALIFIER);
+        String value = configurationNode.get(preferenceID, "");
+        return value;    
     }
     
     /**Write the value of the input preference ID into ConfigurationScope preference store
@@ -51,17 +51,17 @@ public class WorkspaceIndependentStore
      * @param value value associated with preferenceID
      */
     protected static void writeString(final String preferenceID, final String value) {
-    	 final Preferences node =
+         final Preferences node =
             ConfigurationScope.INSTANCE.getNode(PREF_QUALIFIER);
-    	 node.put(preferenceID, value);    
-    	 try {
-			node.flush();
-		} catch (BackingStoreException e) {
-		    Activator.getInstance().getLog().log(
+         node.put(preferenceID, value);    
+         try {
+            node.flush();
+        } catch (BackingStoreException e) {
+            Activator.getInstance().getLog().log(
                     new Status(IStatus.ERROR, Activator.ID,
                             "Cannot persist " + preferenceID + ": "
                             + e.getMessage()));
-		}
+        }
     }
 
 }

@@ -10,20 +10,20 @@ import org.eclipse.gef.commands.CommandStack;
  */
 public final class UndoAction extends AbstractCommandStackAction {
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected void doRun(CommandStack commandStack) {
-		commandStack.undo();
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected void doRun(CommandStack commandStack) {
+        commandStack.undo();
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected boolean isActionEnabled(CommandStack commandStack) {
-		return commandStack.canUndo();
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected boolean isActionEnabled(CommandStack commandStack) {
+        return commandStack.canUndo();
+    }
 
 }

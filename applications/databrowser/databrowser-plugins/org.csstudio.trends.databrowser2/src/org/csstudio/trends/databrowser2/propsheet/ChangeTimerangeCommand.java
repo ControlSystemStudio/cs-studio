@@ -68,15 +68,15 @@ public class ChangeTimerangeCommand extends UndoableAction
      */
     private void apply(final boolean scroll, final String start, final String end)
     {
-    	model.enableScrolling(scroll);
-    	try
-    	{
-    		model.setTimerange(start, end);
-    	}
-    	catch (Exception ex)
-    	{
-    		Logger.getLogger(getClass().getName()).log(Level.WARNING,
-				"Cannot update time range to " + start + " .. " + end, ex);
-    	}
+        model.enableScrolling(scroll);
+        try
+        {
+            model.setTimerange(start, end);
+        }
+        catch (Exception ex)
+        {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING,
+                "Cannot update time range to " + start + " .. " + end, ex);
+        }
     }
 }

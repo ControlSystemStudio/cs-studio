@@ -37,81 +37,81 @@ import org.csstudio.sds.model.AbstractWidgetModel;
  */
 public abstract class AbstractControlSystemSchema extends AbstractInitializer {
 
-	/**
-	 * Constructor.
-	 */
-	public AbstractControlSystemSchema() {
-	    // Constructor.
-	}
+    /**
+     * Constructor.
+     */
+    public AbstractControlSystemSchema() {
+        // Constructor.
+    }
 
-	/**
-	 * Returns the connection states that should be supported, when this schema
-	 * is active. This will effect the dynamics wizard which will offer only
-	 * supported states for selection. By default all known connection states
-	 * are supported. Inheriting class may override this method and return a
-	 * reduced set of connection states.
-	 * 
-	 * @return the supported connection states
-	 */
-	protected Set<ConnectionState> getSupportedConnectionStates() {
-		// by default, all states are supported
-		Set<ConnectionState> result = new HashSet<ConnectionState>();
+    /**
+     * Returns the connection states that should be supported, when this schema
+     * is active. This will effect the dynamics wizard which will offer only
+     * supported states for selection. By default all known connection states
+     * are supported. Inheriting class may override this method and return a
+     * reduced set of connection states.
+     * 
+     * @return the supported connection states
+     */
+    protected Set<ConnectionState> getSupportedConnectionStates() {
+        // by default, all states are supported
+        Set<ConnectionState> result = new HashSet<ConnectionState>();
 
-		for (ConnectionState state : ConnectionState.values()) {
-			result.add(state);
-		}
+        for (ConnectionState state : ConnectionState.values()) {
+            result.add(state);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	public void initialize() {
-		initializeWidgetDefaults();
-		initializeWidget();
-	}
+    public void initialize() {
+        initializeWidgetDefaults();
+        initializeWidget();
+    }
 
-	private void initializeWidgetDefaults() {
-		// background color
-		initializeStaticProperty(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
-				getDefaultBackgroundColor());
+    private void initializeWidgetDefaults() {
+        // background color
+        initializeStaticProperty(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
+                getDefaultBackgroundColor());
 
-		// foreground color
-		initializeStaticProperty(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
-				getDefaultForegroundColor());
+        // foreground color
+        initializeStaticProperty(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
+                getDefaultForegroundColor());
 
-		if (getDefaultRecordAlias() != null) {
-			// primary pv
-			initializeStaticProperty(AbstractWidgetModel.PROP_PRIMARY_PV,
-					getDefaultRecordAliasAsVariable());
+        if (getDefaultRecordAlias() != null) {
+            // primary pv
+            initializeStaticProperty(AbstractWidgetModel.PROP_PRIMARY_PV,
+                    getDefaultRecordAliasAsVariable());
 
-			// alias
-			initializeAlias(getDefaultRecordAlias(), "");
-		}
-	}
+            // alias
+            initializeAlias(getDefaultRecordAlias(), "");
+        }
+    }
 
-	/**
-	 * Called for every widget that is initialized. Subclasses may apply
-	 * settings which are valid in general for all widgets.
-	 * 
-	 */
-	protected abstract void initializeWidget();
+    /**
+     * Called for every widget that is initialized. Subclasses may apply
+     * settings which are valid in general for all widgets.
+     * 
+     */
+    protected abstract void initializeWidget();
 
-	protected abstract String getDefaultBackgroundColor();
+    protected abstract String getDefaultBackgroundColor();
 
-	protected abstract String getDefaultForegroundColor();
+    protected abstract String getDefaultForegroundColor();
 
-	protected abstract String getDefaultErrorColor();
+    protected abstract String getDefaultErrorColor();
 
-	protected abstract String getDefaultRecordAlias();
+    protected abstract String getDefaultRecordAlias();
 
-	protected String getDefaultRecordAliasAsVariable() {
-		String result = null;
+    protected String getDefaultRecordAliasAsVariable() {
+        String result = null;
 
-		String alias = getDefaultRecordAlias();
+        String alias = getDefaultRecordAlias();
 
-		if (alias != null) {
-			result = "$" + alias + "$";
-		}
+        if (alias != null) {
+            result = "$" + alias + "$";
+        }
 
-		return result;
-	}
+        return result;
+    }
 }

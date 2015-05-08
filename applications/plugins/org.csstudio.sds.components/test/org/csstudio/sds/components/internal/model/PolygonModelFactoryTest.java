@@ -38,35 +38,35 @@ import org.junit.Test;
  */
 public final class PolygonModelFactoryTest {
 
-	/**
-	 * A factory instance for testing issues.
-	 */
-	private PolygonModelFactory _factory;
-	
-	/**
-	 * Test setup.
-	 */
-	@Before
-	public void setUp()  {
-		_factory= new PolygonModelFactory();
-	}
+    /**
+     * A factory instance for testing issues.
+     */
+    private PolygonModelFactory _factory;
+    
+    /**
+     * Test setup.
+     */
+    @Before
+    public void setUp()  {
+        _factory= new PolygonModelFactory();
+    }
 
-	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.PolygonModelFactory#createWidgetModel()}.
-	 */
-	@Test
-	public void testCreateModelElement() {
-		AbstractWidgetModel model = _factory.createWidgetModel();
-		assertNotNull(model);
-		assertTrue(model instanceof PolygonModel);
-	}
+    /**
+     * Test method for {@link org.csstudio.sds.components.internal.model.PolygonModelFactory#createWidgetModel()}.
+     */
+    @Test
+    public void testCreateModelElement() {
+        AbstractWidgetModel model = _factory.createWidgetModel();
+        assertNotNull(model);
+        assertTrue(model instanceof PolygonModel);
+    }
 
-	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.PolygonModelFactory#getWidgetModelType()}.
-	 */
-	@Test
-	public void testGetModelElementType() {
-		assertEquals(PolygonModel.class, _factory.getWidgetModelType());
-	}
+    /**
+     * Test method for {@link org.csstudio.sds.components.internal.model.PolygonModelFactory#getWidgetModelType()}.
+     */
+    @Test
+    public void testGetModelElementType() {
+        assertEquals(PolygonModel.class, _factory.getWidgetModelType());
+    }
 
 }

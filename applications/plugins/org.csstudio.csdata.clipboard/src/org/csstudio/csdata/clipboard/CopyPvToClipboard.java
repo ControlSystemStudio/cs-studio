@@ -44,8 +44,8 @@ public class CopyPvToClipboard extends AbstractHandler
         }
         
         if(pvs.length() ==0){
-        	MessageDialog.openError(null, "Empty PV Name", "PV name is empty! Nothing will be copied.");
-        	return null;
+            MessageDialog.openError(null, "Empty PV Name", "PV name is empty! Nothing will be copied.");
+            return null;
         }
 
         // Copy as text to clipboard

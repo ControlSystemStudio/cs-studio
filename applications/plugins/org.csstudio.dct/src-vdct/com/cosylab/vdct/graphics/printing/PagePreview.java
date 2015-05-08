@@ -37,10 +37,10 @@ import java.awt.*;
  */
 
 public class PagePreview extends javax.swing.JPanel {
-	protected int width;
-	protected int height;
-	protected Image source;
-	protected Image image;
+    protected int width;
+    protected int height;
+    protected Image source;
+    protected Image image;
 /**
  * Insert the method's description here.
  * Creation date: (12.5.2001 16:53:36)
@@ -49,13 +49,13 @@ public class PagePreview extends javax.swing.JPanel {
  * @param source java.awt.Image
  */
 public PagePreview(int w, int h, Image source) {
-	width = w;
-	height = h;
-	this.source = source;
-	image = source.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-	image.flush();
-	setBackground(Color.white);
-	setBorder(new javax.swing.border.MatteBorder(1, 1, 2, 2, Color.black));
+    width = w;
+    height = h;
+    this.source = source;
+    image = source.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    image.flush();
+    setBackground(Color.white);
+    setBorder(new javax.swing.border.MatteBorder(1, 1, 2, 2, Color.black));
 }
 /**
  * Insert the method's description here.
@@ -63,7 +63,7 @@ public PagePreview(int w, int h, Image source) {
  */
 public Dimension getMainimumSize()
 {
-	return getPreferredSize();
+    return getPreferredSize();
 }
 /**
  * Insert the method's description here.
@@ -71,7 +71,7 @@ public Dimension getMainimumSize()
  */
 public Dimension getMaximumSize()
 {
-	return getPreferredSize();
+    return getPreferredSize();
 }
 /**
  * Insert the method's description here.
@@ -79,9 +79,9 @@ public Dimension getMaximumSize()
  */
 public Dimension getPreferredSize()
 {
-	Insets ins = getInsets();
-	return new Dimension(width+ins.left+ins.right,
-						 height+ins.top+ins.bottom);
+    Insets ins = getInsets();
+    return new Dimension(width+ins.left+ins.right,
+                         height+ins.top+ins.bottom);
 }
 /**
  * Insert the method's description here.
@@ -89,10 +89,10 @@ public Dimension getPreferredSize()
  * @param g java.awt.Graphics
  */
 public void paint(Graphics g) {
-	g.setColor(getBackground());
-	g.fillRect(0, 0, getWidth(), getHeight());
-	g.drawImage(image, 0, 0, this);
-	paintBorder(g);
+    g.setColor(getBackground());
+    g.fillRect(0, 0, getWidth(), getHeight());
+    g.drawImage(image, 0, 0, this);
+    paintBorder(g);
 }
 /**
  * Insert the method's description here.
@@ -101,9 +101,9 @@ public void paint(Graphics g) {
  * @param h int
  */
 public void setScaledSize(int w, int h) {
-	width = w;
-	height = h;
-	image = source.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-	repaint();
+    width = w;
+    height = h;
+    image = source.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    repaint();
 }
 }

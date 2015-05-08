@@ -39,95 +39,95 @@ import org.eclipse.draw2d.IFigure;
  */
 public final class PolygonEditPart extends AbstractPolyEditPart {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		PolygonFigure polygon = new PolygonFigure();
-		PolygonModel model = getWidgetModel();
-		polygon.setPoints(model.getPoints());
-		polygon.setFill(model.getFillLevel());
-		polygon.setHorizontalFill(model.isHorizontalFill());
-		polygon.setTransparent(model.isTransparent());
-		polygon.setLineColor(model.getLineColor());
-		return polygon;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        PolygonFigure polygon = new PolygonFigure();
+        PolygonModel model = getWidgetModel();
+        polygon.setPoints(model.getPoints());
+        polygon.setFill(model.getFillLevel());
+        polygon.setHorizontalFill(model.isHorizontalFill());
+        polygon.setTransparent(model.isTransparent());
+        polygon.setLineColor(model.getLineColor());
+        return polygon;
+    }
 
-	@Override
-	public PolygonModel getWidgetModel() {
-		return (PolygonModel)getModel();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		super.registerPropertyChangeHandlers();
-		
-		// fill
-		IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				PolygonFigure polygon = (PolygonFigure) refreshableFigure;
-				polygon.setFill((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractPolyModel.PROP_FILL_LEVEL, fillHandler);		
-		
-		// fill orientaion
-		IWidgetPropertyChangeHandler fillOrientHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				PolygonFigure figure = (PolygonFigure) refreshableFigure;
-				figure.setHorizontalFill((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractShapeModel.PROP_HORIZONTAL_FILL, fillOrientHandler);
-		
-		// transparent
-		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				PolygonFigure figure = (PolygonFigure) refreshableFigure;
-				figure.setTransparent((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractShapeModel.PROP_TRANSPARENT, transparentHandler);	
-		
-		// line color
-		IWidgetPropertyChangeHandler lineColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				((PolygonFigure)refreshableFigure).setLineColor(
-						((OPIColor)newValue).getSWTColor());
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractShapeModel.PROP_LINE_COLOR,
-				lineColorHandler);
-		
-		
-	}
-	
-	@Override
-	public void setValue(Object value) {
-		if(value instanceof Number){
-			((PolygonFigure)getFigure()).setFill(((Number)value).doubleValue());
-		}else
-			super.setValue(value);
-	}
-	
-	@Override
-	public Object getValue() {
-		return ((PolygonFigure)getFigure()).getFill();
-	}
+    @Override
+    public PolygonModel getWidgetModel() {
+        return (PolygonModel)getModel();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        super.registerPropertyChangeHandlers();
+        
+        // fill
+        IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                PolygonFigure polygon = (PolygonFigure) refreshableFigure;
+                polygon.setFill((Double) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(AbstractPolyModel.PROP_FILL_LEVEL, fillHandler);        
+        
+        // fill orientaion
+        IWidgetPropertyChangeHandler fillOrientHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                PolygonFigure figure = (PolygonFigure) refreshableFigure;
+                figure.setHorizontalFill((Boolean) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(AbstractShapeModel.PROP_HORIZONTAL_FILL, fillOrientHandler);
+        
+        // transparent
+        IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                PolygonFigure figure = (PolygonFigure) refreshableFigure;
+                figure.setTransparent((Boolean) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(AbstractShapeModel.PROP_TRANSPARENT, transparentHandler);    
+        
+        // line color
+        IWidgetPropertyChangeHandler lineColorHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                ((PolygonFigure)refreshableFigure).setLineColor(
+                        ((OPIColor)newValue).getSWTColor());
+                return true;
+            }
+        };
+        setPropertyChangeHandler(AbstractShapeModel.PROP_LINE_COLOR,
+                lineColorHandler);
+        
+        
+    }
+    
+    @Override
+    public void setValue(Object value) {
+        if(value instanceof Number){
+            ((PolygonFigure)getFigure()).setFill(((Number)value).doubleValue());
+        }else
+            super.setValue(value);
+    }
+    
+    @Override
+    public Object getValue() {
+        return ((PolygonFigure)getFigure()).getFill();
+    }
 }

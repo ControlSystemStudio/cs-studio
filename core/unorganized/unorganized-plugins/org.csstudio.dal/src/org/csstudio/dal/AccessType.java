@@ -9,19 +9,19 @@ package org.csstudio.dal;
  *
  */
 public enum AccessType {
-	READ,READ_WRITE,WRITE,NONE;
-	
-	/**
-	 * Returns the access type for the given read and write access.
-	 * 
-	 * @param read true if read access is allowed
-	 * @param write true if write access is allowed
-	 * @return one of the four access type depending on the conditions met
-	 */
-	public static AccessType getAccess(boolean read, boolean write) {
-		if (write && read) return READ_WRITE;
-		else if (write) return WRITE;
-		else if (read) return READ;
-		else return NONE;
-	}
+    READ,READ_WRITE,WRITE,NONE;
+    
+    /**
+     * Returns the access type for the given read and write access.
+     * 
+     * @param read true if read access is allowed
+     * @param write true if write access is allowed
+     * @return one of the four access type depending on the conditions met
+     */
+    public static AccessType getAccess(boolean read, boolean write) {
+        if (write && read) return READ_WRITE;
+        else if (write) return WRITE;
+        else if (read) return READ;
+        else return NONE;
+    }
 }

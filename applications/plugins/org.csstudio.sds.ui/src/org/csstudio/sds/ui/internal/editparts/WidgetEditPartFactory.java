@@ -41,76 +41,76 @@ import org.slf4j.LoggerFactory;
 public class WidgetEditPartFactory implements EditPartFactory {
     private static final Logger LOG = LoggerFactory.getLogger(WidgetEditPartFactory.class);
 
-	/**
-	 * The execution mode.
-	 */
-	private ExecutionMode _executionMode;
+    /**
+     * The execution mode.
+     */
+    private ExecutionMode _executionMode;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param executionMode
-	 *            the execution mode
-	 */
-	public WidgetEditPartFactory(ExecutionMode executionMode) {
-		assert executionMode != null;
-		_executionMode = executionMode;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param executionMode
+     *            the execution mode
+     */
+    public WidgetEditPartFactory(ExecutionMode executionMode) {
+        assert executionMode != null;
+        _executionMode = executionMode;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public EditPart createEditPart(final EditPart context,
-			final Object modelElement) {
-		EditPart part = getPartForModel(modelElement);
-		// store widget model in EditPart
-		if (part != null) {
-			part.setModel(modelElement);
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public EditPart createEditPart(final EditPart context,
+            final Object modelElement) {
+        EditPart part = getPartForModel(modelElement);
+        // store widget model in EditPart
+        if (part != null) {
+            part.setModel(modelElement);
+        }
 
-		return part;
-	}
+        return part;
+    }
 
-	/**
-	 * Gets the right EditPart for the specified model. If the model is unknown,
-	 * a default edit part is returned ("null object pattern").
-	 * 
-	 * @param model
-	 *            the model
-	 * @return the according EditPart
-	 */
-	private EditPart getPartForModel(final Object model) {
-		assert model != null;
+    /**
+     * Gets the right EditPart for the specified model. If the model is unknown,
+     * a default edit part is returned ("null object pattern").
+     * 
+     * @param model
+     *            the model
+     * @return the according EditPart
+     */
+    private EditPart getPartForModel(final Object model) {
+        assert model != null;
 
-		EditPart result = null;
+        EditPart result = null;
 
-		if (model instanceof DisplayModel) {
-			result = new DisplayEditPart();
-		} else if (model instanceof AbstractWidgetModel) {
-			AbstractWidgetModel widgetModel = (AbstractWidgetModel) model;
-			String typeID = widgetModel.getTypeID();
-			EditPartService editPartService = EditPartService.getInstance();
+        if (model instanceof DisplayModel) {
+            result = new DisplayEditPart();
+        } else if (model instanceof AbstractWidgetModel) {
+            AbstractWidgetModel widgetModel = (AbstractWidgetModel) model;
+            String typeID = widgetModel.getTypeID();
+            EditPartService editPartService = EditPartService.getInstance();
 
-			if (editPartService.canCreateEditPart(typeID)) {
-				result = editPartService.createEditPart(typeID);
-			} else {
-				LOG.info("No controller registered for widgets of type: "
-										+ typeID
-										+ "! We are using a fallback controller instead.");
-				result = new FallbackEditpart();
-			}
-		}
+            if (editPartService.canCreateEditPart(typeID)) {
+                result = editPartService.createEditPart(typeID);
+            } else {
+                LOG.info("No controller registered for widgets of type: "
+                                        + typeID
+                                        + "! We are using a fallback controller instead.");
+                result = new FallbackEditpart();
+            }
+        }
 
-		if (result == null) {
-			LOG.info("Could not create controller for model object: " + model);
-		} else {
-			// setup the mode on SDS controllers
-			if (result instanceof AbstractBaseEditPart) {
-				((AbstractBaseEditPart) result)
-						.setExecutionMode(_executionMode);
-			}
-		}
+        if (result == null) {
+            LOG.info("Could not create controller for model object: " + model);
+        } else {
+            // setup the mode on SDS controllers
+            if (result instanceof AbstractBaseEditPart) {
+                ((AbstractBaseEditPart) result)
+                        .setExecutionMode(_executionMode);
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 }

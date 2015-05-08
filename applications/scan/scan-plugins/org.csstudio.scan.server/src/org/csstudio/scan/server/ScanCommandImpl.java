@@ -121,7 +121,7 @@ abstract public class ScanCommandImpl<C extends ScanCommand>
         return new String[0];
     }
 
-	/** Simulate the command
+    /** Simulate the command
      *
      *  <p>Should log the execution steps in the {@link SimulationContext}
      *
@@ -132,18 +132,18 @@ abstract public class ScanCommandImpl<C extends ScanCommand>
      */
     public void simulate(final SimulationContext context) throws Exception
     {
-    	context.logExecutionStep(context.getMacros().resolveMacros(command.toString()), 0.1);
+        context.logExecutionStep(context.getMacros().resolveMacros(command.toString()), 0.1);
     }
 
-	/** Execute the command
-	 *
-	 *  <p>Should update the performed work units on the {@link ScanContext}
-	 *
-	 *  @param context {@link ScanContext}
-	 *  @throws Exception on error
-	 *
-	 *  @see ScanContext#workPerformed(int)
-	 */
+    /** Execute the command
+     *
+     *  <p>Should update the performed work units on the {@link ScanContext}
+     *
+     *  @param context {@link ScanContext}
+     *  @throws Exception on error
+     *
+     *  @see ScanContext#workPerformed(int)
+     */
     abstract public void execute(ScanContext context) throws Exception;
     
     /** Invoke the command's error handler
@@ -174,7 +174,7 @@ abstract public class ScanCommandImpl<C extends ScanCommand>
         }
     }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     public String toString()
     {

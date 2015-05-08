@@ -49,116 +49,116 @@ import org.csstudio.platform.model.pvs.ValueType;
  */
 public interface IProcessVariableConnectionService {
 
-	/**
-	 * Asynchronously writes the specified value to the channel addressed by the
-	 * the given process variable address.
-	 * 
-	 * @param processVariableAddress
-	 *            the address
-	 * @param value
-	 *            the value
-	 * @param listener TODO
-	 * 
-	 * @return true, if the value was set successful, false otherwise
-	 */
-	void writeValueAsynchronously(IProcessVariableAddress processVariableAddress, Object value,
-			ValueType expectedValueType, IProcessVariableWriteListener listener);
+    /**
+     * Asynchronously writes the specified value to the channel addressed by the
+     * the given process variable address.
+     * 
+     * @param processVariableAddress
+     *            the address
+     * @param value
+     *            the value
+     * @param listener TODO
+     * 
+     * @return true, if the value was set successful, false otherwise
+     */
+    void writeValueAsynchronously(IProcessVariableAddress processVariableAddress, Object value,
+            ValueType expectedValueType, IProcessVariableWriteListener listener);
 
-	/**
-	 * Synchronously writes the specified value to the channel addressed by the
-	 * the given process variable address.
-	 * 
-	 * @param processVariableAddress
-	 *            the address
-	 * 
-	 * @param value
-	 *            the value
-	 * 
-	 * @return true, if the value was set successful, false otherwise
-	 */
-	boolean writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value,
-			ValueType expectedValueType) throws ConnectionException;
-	
-	/**
-	 * Asynchronously reads a value from the channel addressed by the the given
-	 * process variable address. When the value was received, the
-	 * {@link IProcessVariableValueListener#valueChanged(Object)} method will be
-	 * called on the given listener.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable address
-	 * @param valueType
-	 *            the expected value type
-	 * @param listener
-	 *            the call-back listener
-	 */
-	void readValueAsynchronously(IProcessVariableAddress processVariableAddress,
-			ValueType valueType, IProcessVariableValueListener listener);
+    /**
+     * Synchronously writes the specified value to the channel addressed by the
+     * the given process variable address.
+     * 
+     * @param processVariableAddress
+     *            the address
+     * 
+     * @param value
+     *            the value
+     * 
+     * @return true, if the value was set successful, false otherwise
+     */
+    boolean writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value,
+            ValueType expectedValueType) throws ConnectionException;
+    
+    /**
+     * Asynchronously reads a value from the channel addressed by the the given
+     * process variable address. When the value was received, the
+     * {@link IProcessVariableValueListener#valueChanged(Object)} method will be
+     * called on the given listener.
+     * 
+     * @param processVariableAddress
+     *            the process variable address
+     * @param valueType
+     *            the expected value type
+     * @param listener
+     *            the call-back listener
+     */
+    void readValueAsynchronously(IProcessVariableAddress processVariableAddress,
+            ValueType valueType, IProcessVariableValueListener listener);
 
-	/**
-	 * Synchronously reads a value from the channel addressed by the given
-	 * process variable address.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable address
-	 * 
-	 * @return the current value
-	 */
-	<E> E readValueSynchronously(
-			IProcessVariableAddress processVariableAddress, ValueType valueType)
-			throws ConnectionException;
+    /**
+     * Synchronously reads a value from the channel addressed by the given
+     * process variable address.
+     * 
+     * @param processVariableAddress
+     *            the process variable address
+     * 
+     * @return the current value
+     */
+    <E> E readValueSynchronously(
+            IProcessVariableAddress processVariableAddress, ValueType valueType)
+            throws ConnectionException;
 
-	/**
-	 * Starts listening permanently on the channel addressed by the specified
-	 * process variable address. The corresponding channel will be open as long
-	 * as any permanent listener is alive. For convenience this service
-	 * references the specified listener only weakly which means that it will be
-	 * garbage collected when its no longer referenced outside this service. If
-	 * you want to stop listening explicitly please use the
-	 * {@link #unregister(IProcessVariableValueListener)} method.
-	 * 
-	 * To stop listening just
-	 * 
-	 * Use the {@link #unregister(IProcessVariableValueListener)}
-	 * 
-	 * @param listener
-	 *            the listener that will receive the value change notifications
-	 * @param pv
-	 *            the process variable address
-	 * 
-	 * @param valueType
-	 *            the expected value type
-	 */
-	@SuppressWarnings("unchecked")
-	void register(IProcessVariableValueListener listener,
-			IProcessVariableAddress pv, ValueType valueType);
+    /**
+     * Starts listening permanently on the channel addressed by the specified
+     * process variable address. The corresponding channel will be open as long
+     * as any permanent listener is alive. For convenience this service
+     * references the specified listener only weakly which means that it will be
+     * garbage collected when its no longer referenced outside this service. If
+     * you want to stop listening explicitly please use the
+     * {@link #unregister(IProcessVariableValueListener)} method.
+     * 
+     * To stop listening just
+     * 
+     * Use the {@link #unregister(IProcessVariableValueListener)}
+     * 
+     * @param listener
+     *            the listener that will receive the value change notifications
+     * @param pv
+     *            the process variable address
+     * 
+     * @param valueType
+     *            the expected value type
+     */
+    @SuppressWarnings("unchecked")
+    void register(IProcessVariableValueListener listener,
+            IProcessVariableAddress pv, ValueType valueType);
 
-	/**
-	 * Stops the specified permanent listener.
-	 * 
-	 * @param listener
-	 *            the listener
-	 */
-	@SuppressWarnings("unchecked")
-	void unregister(IProcessVariableValueListener listener);
+    /**
+     * Stops the specified permanent listener.
+     * 
+     * @param listener
+     *            the listener
+     */
+    @SuppressWarnings("unchecked")
+    void unregister(IProcessVariableValueListener listener);
 
-	/**
-	 * Checks whether the current user is allowed to write values to
-	 * the specified channel.
-	 * 
-	 * @param pv
-	 *            the process variable address
-	 * 
-	 * @return one of {@link SettableState#values()}
-	 */
-	SettableState checkWriteAccessSynchronously(IProcessVariableAddress pv);
+    /**
+     * Checks whether the current user is allowed to write values to
+     * the specified channel.
+     * 
+     * @param pv
+     *            the process variable address
+     * 
+     * @return one of {@link SettableState#values()}
+     */
+    SettableState checkWriteAccessSynchronously(IProcessVariableAddress pv);
 
-	/**
-	 * Returns all living connector.
-	 * 
-	 * @return all living connectors
-	 */
-	List<IConnector> getConnectors();
-	
-	int getNumberOfActiveConnectors();
+    /**
+     * Returns all living connector.
+     * 
+     * @return all living connectors
+     */
+    List<IConnector> getConnectors();
+    
+    int getNumberOfActiveConnectors();
 }

@@ -34,44 +34,44 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  */
 public final class BooleanProperty extends WidgetProperty {
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param description
-	 *            a description
-	 * @param category
-	 *            a category
-	 * @param defaultValue
-	 *            the default value
-	 */
-	public BooleanProperty(final String description,
-			final WidgetPropertyCategory category, final boolean defaultValue) {
-		super(PropertyTypesEnum.BOOLEAN, description, category, defaultValue,
-				null);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param description
+     *            a description
+     * @param category
+     *            a category
+     * @param defaultValue
+     *            the default value
+     */
+    public BooleanProperty(final String description,
+            final WidgetPropertyCategory category, final boolean defaultValue) {
+        super(PropertyTypesEnum.BOOLEAN, description, category, defaultValue,
+                null);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object checkValue(final Object value) {
-		assert value != null : "value!=null"; //$NON-NLS-1$
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object checkValue(final Object value) {
+        assert value != null : "value!=null"; //$NON-NLS-1$
 
-		Object acceptedValue = value;
+        Object acceptedValue = value;
 
-		if (!(value instanceof Boolean)) {
-			acceptedValue = Boolean.parseBoolean(value.toString());
-		}
+        if (!(value instanceof Boolean)) {
+            acceptedValue = Boolean.parseBoolean(value.toString());
+        }
 
-		return acceptedValue;
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getCompatibleJavaTypes() {
-		return new Class[]{Boolean.class};
-	}
+        return acceptedValue;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getCompatibleJavaTypes() {
+        return new Class[]{Boolean.class};
+    }
 }

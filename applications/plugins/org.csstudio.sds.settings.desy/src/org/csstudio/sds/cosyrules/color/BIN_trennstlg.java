@@ -31,44 +31,44 @@ import org.csstudio.sds.util.ColorAndFontUtil;
  *
  */
 public final class BIN_trennstlg implements IRule {
-	/**
-	 * The ID for this rule.
-	 */
-	public static final String TYPE_ID = "cosyrules.color.bin_trennstlg";
+    /**
+     * The ID for this rule.
+     */
+    public static final String TYPE_ID = "cosyrules.color.bin_trennstlg";
 
-	/**
-	 * Standard constructor.
-	 */
-	public BIN_trennstlg() {
-	}
+    /**
+     * Standard constructor.
+     */
+    public BIN_trennstlg() {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object evaluate(final Object[] arguments) {
-		if ((arguments != null) && (arguments.length > 0)) {
-		    double d = 0.0;
+    /**
+     * {@inheritDoc}
+     */
+    public Object evaluate(final Object[] arguments) {
+        if ((arguments != null) && (arguments.length > 0)) {
+            double d = 0.0;
             if (arguments[0] instanceof Double) {
                  d = (Double) arguments[0];
             }else if (arguments[0] instanceof Long) {
                 d = ((Long)  arguments[0]).doubleValue();
             }
-			if (Math.abs(d-1.00)<0.00001) {
-				return ColorAndFontUtil.toHex(222,19,9);
-			}
-			if (Math.abs(d-2.00)<0.00001) {
-				return ColorAndFontUtil.toHex(187,187,187);
-			}
-			if ((d>=1.01) && (d<=1.99)) {
-				return ColorAndFontUtil.toHex(253,0,0);
-			}
-			if ((d>=2.01) && (d<=65535.0)) {
-				return ColorAndFontUtil.toHex(253,0,0);
-			}
-		}
+            if (Math.abs(d-1.00)<0.00001) {
+                return ColorAndFontUtil.toHex(222,19,9);
+            }
+            if (Math.abs(d-2.00)<0.00001) {
+                return ColorAndFontUtil.toHex(187,187,187);
+            }
+            if ((d>=1.01) && (d<=1.99)) {
+                return ColorAndFontUtil.toHex(253,0,0);
+            }
+            if ((d>=2.01) && (d<=65535.0)) {
+                return ColorAndFontUtil.toHex(253,0,0);
+            }
+        }
 
-		return ColorAndFontUtil.toHex(0,0,0);
-	}
+        return ColorAndFontUtil.toHex(0,0,0);
+    }
 
     /**
      * {@inheritDoc}

@@ -42,126 +42,126 @@ import org.jdom.Element;
  */
 public class FilePathProperty extends AbstractWidgetProperty {
 
-	/**
-	 * The file extension, which should be accepted.
-	 */
-	private String[] fileExtensions;
-	
-	private boolean buildAbsolutePath;
-	
-	
-	/**File Path Property Constructor. The property value type is {@link IPath}.
-	 * It will automatically build the absolute path if it is relative path.
-	 * @param prop_id the property id which should be unique in a widget model.
-	 * @param description the description of the property,
-	 * which will be shown as the property name in property sheet.
-	 * @param category the category of the widget.
-	 * @param defaultValue the default value when the widget is first created.
-	 * @param fileExtensions the allowed file extensions in the file open dialog.
-	 */
-	public FilePathProperty(String prop_id, String description,
-			WidgetPropertyCategory category, IPath defaultValue,
-			String[] fileExtensions) {		
-		this(prop_id, description, category, defaultValue, fileExtensions, true);
-		
-	}
-	
-	/**File Path Property Constructor. The property value type is {@link IPath}.
-	 * @param prop_id the property id which should be unique in a widget model.
-	 * @param description the description of the property,
-	 * which will be shown as the property name in property sheet.
-	 * @param category the category of the widget.
-	 * @param defaultValue the default value when the widget is first created.
-	 * @param fileExtensions the allowed file extensions in the file open dialog.
-	 * @param buildAbsolutePath true if it should automatically build the absolute path from widget model.
-	 */
-	public FilePathProperty(String prop_id, String description,
-			WidgetPropertyCategory category, IPath defaultValue,
-			String[] fileExtensions, boolean buildAbsolutePath) {		
-		super(prop_id, description, category,
-				defaultValue == null? new Path("") : defaultValue); //$NON-NLS-1$
-		this.fileExtensions = fileExtensions;
-		this.buildAbsolutePath = buildAbsolutePath;
-	}
+    /**
+     * The file extension, which should be accepted.
+     */
+    private String[] fileExtensions;
+    
+    private boolean buildAbsolutePath;
+    
+    
+    /**File Path Property Constructor. The property value type is {@link IPath}.
+     * It will automatically build the absolute path if it is relative path.
+     * @param prop_id the property id which should be unique in a widget model.
+     * @param description the description of the property,
+     * which will be shown as the property name in property sheet.
+     * @param category the category of the widget.
+     * @param defaultValue the default value when the widget is first created.
+     * @param fileExtensions the allowed file extensions in the file open dialog.
+     */
+    public FilePathProperty(String prop_id, String description,
+            WidgetPropertyCategory category, IPath defaultValue,
+            String[] fileExtensions) {        
+        this(prop_id, description, category, defaultValue, fileExtensions, true);
+        
+    }
+    
+    /**File Path Property Constructor. The property value type is {@link IPath}.
+     * @param prop_id the property id which should be unique in a widget model.
+     * @param description the description of the property,
+     * which will be shown as the property name in property sheet.
+     * @param category the category of the widget.
+     * @param defaultValue the default value when the widget is first created.
+     * @param fileExtensions the allowed file extensions in the file open dialog.
+     * @param buildAbsolutePath true if it should automatically build the absolute path from widget model.
+     */
+    public FilePathProperty(String prop_id, String description,
+            WidgetPropertyCategory category, IPath defaultValue,
+            String[] fileExtensions, boolean buildAbsolutePath) {        
+        super(prop_id, description, category,
+                defaultValue == null? new Path("") : defaultValue); //$NON-NLS-1$
+        this.fileExtensions = fileExtensions;
+        this.buildAbsolutePath = buildAbsolutePath;
+    }
 
-	@Override
-	public Object checkValue(Object value) {
-		if(value == null)
-			return null;
-		Object acceptedValue = null;
-		
-		if (value instanceof IPath || value instanceof String) {
-			IPath path;
-			if(value instanceof String)
-				path = ResourceUtil.getPathFromString((String) value);
-			else 
-				path = (IPath) value;
-			if (fileExtensions!=null && fileExtensions.length>0) {
-				for (String extension : fileExtensions) {
-					if (extension.equalsIgnoreCase(path.getFileExtension())) {
-						acceptedValue = path; 
-					}
-					if(extension.equals("*"))
-						acceptedValue = path; 
-				}
-			} else {
-				acceptedValue = path;
-			}
-			if (path.isEmpty()) {
-				acceptedValue = path;
-			}
-		}
-		
-		return acceptedValue;
-	}
+    @Override
+    public Object checkValue(Object value) {
+        if(value == null)
+            return null;
+        Object acceptedValue = null;
+        
+        if (value instanceof IPath || value instanceof String) {
+            IPath path;
+            if(value instanceof String)
+                path = ResourceUtil.getPathFromString((String) value);
+            else 
+                path = (IPath) value;
+            if (fileExtensions!=null && fileExtensions.length>0) {
+                for (String extension : fileExtensions) {
+                    if (extension.equalsIgnoreCase(path.getFileExtension())) {
+                        acceptedValue = path; 
+                    }
+                    if(extension.equals("*"))
+                        acceptedValue = path; 
+                }
+            } else {
+                acceptedValue = path;
+            }
+            if (path.isEmpty()) {
+                acceptedValue = path;
+            }
+        }
+        
+        return acceptedValue;
+    }
 
-	@Override
-	protected PropertyDescriptor createPropertyDescriptor() {
-		if(PropertySSHelper.getIMPL() == null)
-			return null;
-		return PropertySSHelper.getIMPL().getFilePathPropertyDescriptor(prop_id, 
-				description,
-				widgetModel, 
-				fileExtensions);
-	}
-	
-	@Override
-	public Object getPropertyValue() {
-		if(widgetModel !=null && widgetModel.getExecutionMode() == ExecutionMode.RUN_MODE
-				&& propertyValue != null &&
-				!((IPath)propertyValue).isEmpty()){
-			String s = OPIBuilderMacroUtil.replaceMacros(
-					widgetModel, propertyValue.toString());
-			IPath path = ResourceUtil.getPathFromString(s);
-			if(buildAbsolutePath && !path.isAbsolute())
-				return ResourceUtil.buildAbsolutePath(widgetModel, path);
-			else
-				return path;
-		}			
-		return super.getPropertyValue();
-	}
-	
+    @Override
+    protected PropertyDescriptor createPropertyDescriptor() {
+        if(PropertySSHelper.getIMPL() == null)
+            return null;
+        return PropertySSHelper.getIMPL().getFilePathPropertyDescriptor(prop_id, 
+                description,
+                widgetModel, 
+                fileExtensions);
+    }
+    
+    @Override
+    public Object getPropertyValue() {
+        if(widgetModel !=null && widgetModel.getExecutionMode() == ExecutionMode.RUN_MODE
+                && propertyValue != null &&
+                !((IPath)propertyValue).isEmpty()){
+            String s = OPIBuilderMacroUtil.replaceMacros(
+                    widgetModel, propertyValue.toString());
+            IPath path = ResourceUtil.getPathFromString(s);
+            if(buildAbsolutePath && !path.isAbsolute())
+                return ResourceUtil.buildAbsolutePath(widgetModel, path);
+            else
+                return path;
+        }            
+        return super.getPropertyValue();
+    }
+    
 
-	@Override
-	public Object readValueFromXML(Element propElement) {
-		if(ResourceUtil.isURL(propElement.getText()))
-			return new URLPath(propElement.getText());
-		return Path.fromPortableString(propElement.getText());
-	}
+    @Override
+    public Object readValueFromXML(Element propElement) {
+        if(ResourceUtil.isURL(propElement.getText()))
+            return new URLPath(propElement.getText());
+        return Path.fromPortableString(propElement.getText());
+    }
 
-	@Override
-	public void writeToXML(Element propElement) {
-		propElement.setText(((IPath)getPropertyValue()).toPortableString());
-	}
+    @Override
+    public void writeToXML(Element propElement) {
+        propElement.setText(((IPath)getPropertyValue()).toPortableString());
+    }
 
-	@Override
-	public boolean configurableByRule() {
-		return true;
-	}
-	
-	@Override
-	public String toStringInRuleScript(Object propValue) {
-		return RuleData.QUOTE + super.toStringInRuleScript(propValue) + RuleData.QUOTE;
-	}
-	
+    @Override
+    public boolean configurableByRule() {
+        return true;
+    }
+    
+    @Override
+    public String toStringInRuleScript(Object propValue) {
+        return RuleData.QUOTE + super.toStringInRuleScript(propValue) + RuleData.QUOTE;
+    }
+    
 }

@@ -16,7 +16,7 @@ public class ConversionViewer extends ViewPart {
      * 
      */
     public ConversionViewer() {
-	// TODO Auto-generated constructor stub
+    // TODO Auto-generated constructor stub
     }
 
     /*
@@ -28,7 +28,7 @@ public class ConversionViewer extends ViewPart {
      */
     @Override
     public void createPartControl(Composite parent) {
-	
+    
     }
 
     /*

@@ -25,77 +25,77 @@ import org.csstudio.opibuilder.converter.model.EdmException;
  */
 public class EdmParser {
 
-	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.parser.EdmParser");
+    private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.parser.EdmParser");
 
-	private String fileName;
-	private EdmEntity root;
-	
-	protected StringBuilder edmData;
-	protected boolean robust;
+    private String fileName;
+    private EdmEntity root;
+    
+    protected StringBuilder edmData;
+    protected boolean robust;
 
-	/**
-	 * Constructs an EdmParser instance. 
-	 * Reads data from file and stores it in object.
-	 *
-	 * @param fileName EDL file to parse.
-	 * @throws EdmException if error occurs when reading file.
-	 */
-	public EdmParser(String fileName) throws EdmException {
-		this.fileName = fileName;
+    /**
+     * Constructs an EdmParser instance. 
+     * Reads data from file and stores it in object.
+     *
+     * @param fileName EDL file to parse.
+     * @throws EdmException if error occurs when reading file.
+     */
+    public EdmParser(String fileName) throws EdmException {
+        this.fileName = fileName;
 
-		this.edmData = readFile();
-		root = new EdmEntity(fileName);
+        this.edmData = readFile();
+        root = new EdmEntity(fileName);
 
-		robust = Boolean.parseBoolean(System.getProperty("edm2xml.robustParsing"));
-	}
+        robust = Boolean.parseBoolean(System.getProperty("edm2xml.robustParsing"));
+    }
 
-	public EdmEntity getRoot() {
-		return root;
-	}
+    public EdmEntity getRoot() {
+        return root;
+    }
 
-	/**
-	 * Reads input EDL file into one String. Omits data after # comment mark.
-	 *
-	 * @return Contents of file in a string.
-	 * @throws EdmException if error occurs when reading file.
-	 */
-	private StringBuilder readFile() throws EdmException {
+    /**
+     * Reads input EDL file into one String. Omits data after # comment mark.
+     *
+     * @return Contents of file in a string.
+     * @throws EdmException if error occurs when reading file.
+     */
+    private StringBuilder readFile() throws EdmException {
 
-		log.debug("Parsing file: " + fileName);
+        log.debug("Parsing file: " + fileName);
 
-		StringBuilder sb = new StringBuilder();
-		try {
-			FileInputStream fstream = new FileInputStream(fileName);
-			DataInputStream in = new DataInputStream(fstream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        StringBuilder sb = new StringBuilder();
+        try {
+            FileInputStream fstream = new FileInputStream(fileName);
+            DataInputStream in = new DataInputStream(fstream);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
-			String line;
-			while ( (line = br.readLine()) != null ) {
+            String line;
+            while ( (line = br.readLine()) != null ) {
 
-				if (!line.contains("#"))
-					sb.append(line + "\r");
-				else {
-					if (!line.trim().startsWith("#")) {
-						String[] pieces = StringSplitter.splitIgnoreInQuotes(line, '#', false);
-						if (pieces.length > 0)
-							sb.append(pieces[0].trim() + "\r");
-					}
-					
-//					String appStr = line.substring(0, line.indexOf("#"));
-//					if (appStr.trim().length() != 0)
-//						sb.append(appStr + "\r");
-				}
-			}
+                if (!line.contains("#"))
+                    sb.append(line + "\r");
+                else {
+                    if (!line.trim().startsWith("#")) {
+                        String[] pieces = StringSplitter.splitIgnoreInQuotes(line, '#', false);
+                        if (pieces.length > 0)
+                            sb.append(pieces[0].trim() + "\r");
+                    }
+                    
+//                    String appStr = line.substring(0, line.indexOf("#"));
+//                    if (appStr.trim().length() != 0)
+//                        sb.append(appStr + "\r");
+                }
+            }
 
-			in.close();
-		}
-		catch (Exception e) {
-			if (e instanceof FileNotFoundException)
-				throw new EdmException(EdmException.FILE_NOT_FOUND, fileName, e);
-			else
-				e.printStackTrace();
-		}
+            in.close();
+        }
+        catch (Exception e) {
+            if (e instanceof FileNotFoundException)
+                throw new EdmException(EdmException.FILE_NOT_FOUND, fileName, e);
+            else
+                e.printStackTrace();
+        }
 
-		return sb;
-	}
+        return sb;
+    }
 }

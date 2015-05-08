@@ -44,44 +44,44 @@ import com.cosylab.vdct.graphics.objects.VisibleObject;
 
 public class ViewState {
 
-	protected static ViewState instance = null;
-	
-	protected static int x0 = 0;				// origin
-	protected static int y0 = 0;
+    protected static ViewState instance = null;
+    
+    protected static int x0 = 0;                // origin
+    protected static int y0 = 0;
 
-	protected double drx = 0.0;				// precise translation (from origin)
-	protected double dry = 0.0;
+    protected double drx = 0.0;                // precise translation (from origin)
+    protected double dry = 0.0;
 
-	protected int rx = 0;				// translation (from origin)
-	protected int ry = 0;
+    protected int rx = 0;                // translation (from origin)
+    protected int ry = 0;
 
-	protected double scale = 1.0;		// scale
-	
- 	// viewport size 
- 	protected static int viewWidth = com.cosylab.vdct.Constants.VDCT_WIDTH;
-	protected static int viewHeight = com.cosylab.vdct.Constants.VDCT_HEIGHT;
+    protected double scale = 1.0;        // scale
+    
+     // viewport size 
+     protected static int viewWidth = com.cosylab.vdct.Constants.VDCT_WIDTH;
+    protected static int viewHeight = com.cosylab.vdct.Constants.VDCT_HEIGHT;
 
-	protected static boolean flat = false;
-	
-	protected VisibleObject hilitedObject = null;
-	protected LinkedHashSet hilitedObjects = new LinkedHashSet(); 
-	protected Vector selectedObjects = null;
+    protected static boolean flat = false;
+    
+    protected VisibleObject hilitedObject = null;
+    protected LinkedHashSet hilitedObjects = new LinkedHashSet(); 
+    protected Vector selectedObjects = null;
 
-	protected Vector blinkingObjects = null;
-	protected boolean blinkState = false;
-	
-	private boolean zoomOnHilited = false;
+    protected Vector blinkingObjects = null;
+    protected boolean blinkState = false;
+    
+    private boolean zoomOnHilited = false;
 
-	private int gridSize = (int)(com.cosylab.vdct.Constants.GRID_SIZE*scale);
-	private int dotSize = (int)(com.cosylab.vdct.Constants.DOT_SIZE*scale);
-	
+    private int gridSize = (int)(com.cosylab.vdct.Constants.GRID_SIZE*scale);
+    private int dotSize = (int)(com.cosylab.vdct.Constants.DOT_SIZE*scale);
+    
 /**
  * Insert the method's description here.
  * Creation date: (21.12.2000 21:00:31)
  */
 public ViewState() {
-	selectedObjects = new Vector();
-	blinkingObjects = new Vector();
+    selectedObjects = new Vector();
+    blinkingObjects = new Vector();
 }
 /**
  * Insert the method's description here.
@@ -89,20 +89,20 @@ public ViewState() {
  * @param original com.cosylab.vdct.graphics.ViewState
  */
 public ViewState(ViewState original) {
-	this();
-	
-	//this.x0 = original.x0;
-	//this.y0 = original.y0;
+    this();
+    
+    //this.x0 = original.x0;
+    //this.y0 = original.y0;
 
-	this.rx = original.rx;
-	this.ry = original.ry;
+    this.rx = original.rx;
+    this.ry = original.ry;
 
-	this.scale = original.scale;
-	//this.width = original.width;
-	//this.height = original.height;
+    this.scale = original.scale;
+    //this.width = original.width;
+    //this.height = original.height;
 
-	this.gridSize = (int)(com.cosylab.vdct.Constants.GRID_SIZE*scale);
-	this.dotSize = (int)(com.cosylab.vdct.Constants.DOT_SIZE*scale);
+    this.gridSize = (int)(com.cosylab.vdct.Constants.GRID_SIZE*scale);
+    this.dotSize = (int)(com.cosylab.vdct.Constants.DOT_SIZE*scale);
 
 }
 /**
@@ -110,7 +110,7 @@ public ViewState(ViewState original) {
  * Creation date: (3.2.2001 15:54:30)
  */
 public void deblinkAll() {
-	blinkingObjects.removeAllElements();
+    blinkingObjects.removeAllElements();
 }
 /**
  * Insert the method's description here.
@@ -118,7 +118,7 @@ public void deblinkAll() {
  * @param object com.cosylab.vdct.graphics.objects.VisibleObject
  */
 public void deblinkObject(VisibleObject object) {
-	blinkingObjects.removeElement(object);
+    blinkingObjects.removeElement(object);
 }
 /**
  * Insert the method's description here.
@@ -126,16 +126,16 @@ public void deblinkObject(VisibleObject object) {
  * @return boolean
  */
 public boolean deselectAll() {
-	int count = selectedObjects.size();
-	selectedObjects.clear();
-	return (count!=0);
+    int count = selectedObjects.size();
+    selectedObjects.clear();
+    return (count!=0);
 }
 /**
  * Insert the method's description here.
  * Creation date: (27.12.2000 11:54:42)
  */
 public void deselectObject(VisibleObject object) {
-	selectedObjects.remove(object);
+    selectedObjects.remove(object);
 }
 /**
  * Insert the method's description here.
@@ -143,7 +143,7 @@ public void deselectObject(VisibleObject object) {
  * @return java.util.Vector
  */
 public java.util.Vector getBlinkingObjects() {
-	return blinkingObjects;
+    return blinkingObjects;
 }
 /**
  * Insert the method's description here.
@@ -152,7 +152,7 @@ public java.util.Vector getBlinkingObjects() {
  */
 
 public int getGridSize() {
-	return gridSize;
+    return gridSize;
 }
 /**
  * Insert the method's description here.
@@ -160,7 +160,7 @@ public int getGridSize() {
  * @return int
  */
 public int getHeight() {
-	return Settings.getInstance().getCanvasHeight();
+    return Settings.getInstance().getCanvasHeight();
 }
 /**
  * Insert the method's description here.
@@ -168,15 +168,15 @@ public int getHeight() {
  * @return com.cosylab.vdct.graphics.objects.VisibleObject
  */
 public VisibleObject getHilitedObject() {
-	return hilitedObject;
+    return hilitedObject;
 }
 
 public LinkedHashSet getHilitedObjects() {
-	return hilitedObjects;
+    return hilitedObjects;
 }
 
 public boolean isHilitedObject(VisibleObject object) {
-	return hilitedObjects.contains(object);
+    return hilitedObjects.contains(object);
 }
 
 /**
@@ -185,8 +185,8 @@ public boolean isHilitedObject(VisibleObject object) {
  * @return com.cosylab.vdct.graphics.ViewState
  */
 public static ViewState getInstance() {
-	if (instance==null) instance = new ViewState();
-	return instance;
+    if (instance==null) instance = new ViewState();
+    return instance;
 }
 /**
  * Insert the method's description here.
@@ -194,7 +194,7 @@ public static ViewState getInstance() {
  * @return int
  */
 public int getRx() {
-	return rx;
+    return rx;
 }
 /**
  * Insert the method's description here.
@@ -202,7 +202,7 @@ public int getRx() {
  * @return int
  */
 public int getRy() {
-	return ry;
+    return ry;
 }
 /**
  * Insert the method's description here.
@@ -210,7 +210,7 @@ public int getRy() {
  * @return double
  */
 public double getScale() {
-	return scale;
+    return scale;
 }
 /**
  * Insert the method's description here.
@@ -218,7 +218,7 @@ public double getScale() {
  * @return java.util.Vector
  */
 public Vector getSelectedObjects() {
-	return selectedObjects;
+    return selectedObjects;
 }
 /**
  * Insert the method's description here.
@@ -226,7 +226,7 @@ public Vector getSelectedObjects() {
  * @return int
  */
 public int getViewHeight() {
-	return viewHeight;
+    return viewHeight;
 }
 /**
  * Insert the method's description here.
@@ -234,7 +234,7 @@ public int getViewHeight() {
  * @return int
  */
 public int getViewWidth() {
-	return viewWidth;
+    return viewWidth;
 }
 /**
  * Insert the method's description here.
@@ -242,7 +242,7 @@ public int getViewWidth() {
  * @return int
  */
 public int getWidth() {
-	return Settings.getInstance().getCanvasWidth();
+    return Settings.getInstance().getCanvasWidth();
 }
 /**
  * Insert the method's description here.
@@ -250,7 +250,7 @@ public int getWidth() {
  * @return int
  */
 public int getX0() {
-	return x0;
+    return x0;
 }
 /**
  * Insert the method's description here.
@@ -258,7 +258,7 @@ public int getX0() {
  * @return int
  */
 public int getY0() {
-	return y0;
+    return y0;
 }
 /**
  * Insert the method's description here.
@@ -267,7 +267,7 @@ public int getY0() {
  * @param object com.cosylab.vdct.graphics.objects.VisibleObject
  */
 public boolean isBlinking(VisibleObject object) {
-	return blinkState && blinkingObjects.contains(object);
+    return blinkState && blinkingObjects.contains(object);
 }
 /**
  * Insert the method's description here.
@@ -275,7 +275,7 @@ public boolean isBlinking(VisibleObject object) {
  * @return boolean
  */
 public boolean isBlinkState() {
-	return blinkState;
+    return blinkState;
 }
 /**
  * Insert the method's description here.
@@ -283,7 +283,7 @@ public boolean isBlinkState() {
  * @return boolean
  */
 public boolean isFlat() {
-	return flat;
+    return flat;
 }
 /**
  * Insert the method's description here.
@@ -292,7 +292,7 @@ public boolean isFlat() {
  * @param object com.cosylab.vdct.graphics.objects.VisibleObject
  */
 public boolean isPicked(VisibleObject object) {
-	return false;
+    return false;
 }
 /**
  * Insert the method's description here.
@@ -301,7 +301,7 @@ public boolean isPicked(VisibleObject object) {
  * @param object java.lang.Object
  */
 public boolean isSelected(Object object) {
-	return selectedObjects.contains(object);
+    return selectedObjects.contains(object);
 }
 /**
  * Insert the method's description here.
@@ -311,45 +311,45 @@ public boolean isSelected(Object object) {
  * @param dy int
  */
 public boolean moveOrigin(int dx, int dy) {
-	int nrx = rx+dx;
-	int nry = ry+dy;
+    int nrx = rx+dx;
+    int nry = ry+dy;
 
-	if (nrx<0) nrx=0;
-	else nrx=Math.min(nrx, (int)(getWidth()*scale-viewWidth));
-	if (nry<0) nry=0;
-	else nry=Math.min(nry, (int)(getHeight()*scale-viewHeight));
+    if (nrx<0) nrx=0;
+    else nrx=Math.min(nrx, (int)(getWidth()*scale-viewWidth));
+    if (nry<0) nry=0;
+    else nry=Math.min(nry, (int)(getHeight()*scale-viewHeight));
 
-	boolean change = (nrx!=rx) || (nry!=ry);
-	rx=nrx; ry=nry;
+    boolean change = (nrx!=rx) || (nry!=ry);
+    rx=nrx; ry=nry;
 
-	drx = rx;
-	dry = ry;
+    drx = rx;
+    dry = ry;
 
-	return change;
+    return change;
 }
 /**
  * Insert the method's description here.
  * Creation date: (28.1.2001 18:38:39)
  */
 public void reset() {
-	hilitedObject = null;
-	zoomOnHilited = false;
-	selectedObjects.removeAllElements();
-	blinkingObjects.removeAllElements();
+    hilitedObject = null;
+    zoomOnHilited = false;
+    selectedObjects.removeAllElements();
+    blinkingObjects.removeAllElements();
 }
 /**
  * Insert the method's description here.
  * Creation date: (3.5.2001 13:35:59)
  */
 public void set(com.cosylab.vdct.graphics.objects.Group group) {
-	if (group.getLocalView()!=null)
-		setInstance(group.getLocalView());
-	else
-	{
-		ViewState copy = new ViewState(this);
-		group.setLocalView(copy);
-		setInstance(copy);
-	}
+    if (group.getLocalView()!=null)
+        setInstance(group.getLocalView());
+    else
+    {
+        ViewState copy = new ViewState(this);
+        group.setLocalView(copy);
+        setInstance(copy);
+    }
 }
 /**
  * Insert the method's description here.
@@ -357,8 +357,8 @@ public void set(com.cosylab.vdct.graphics.objects.Group group) {
  * @param object com.cosylab.vdct.graphics.objects.VisibleObject
  */
 public void setAsBlinking(VisibleObject object) {
-	if (!blinkingObjects.contains(object))
-		blinkingObjects.addElement(object);
+    if (!blinkingObjects.contains(object))
+        blinkingObjects.addElement(object);
 }
 
 public boolean isZoomOnHilited() {
@@ -393,45 +393,45 @@ public boolean setAsHilited(VisibleObject object, boolean zoomOnHilited) {
     }
     
     if (object!=hilitedObject || hilitedObjects.size() == 1) {
-	    
+        
         hilitedObject=object;
-		
-		//initialization
-		hilitedObjects.clear();
-		hilitedObjects.add(hilitedObject);
-		Object obj = hilitedObject;
-		
-		// inlinks
-		Vector outlinks = null;  
-		if (obj instanceof MultiInLink) {
-			 outlinks = ((MultiInLink)obj).getOutlinks();
-		} else if (obj instanceof InLink){
-			outlinks = new Vector();
-			outlinks.add(((InLink)obj).getOutput());
-		}
-		
-		if (!zoomOnHilited) {
-			if (outlinks != null)
-				for (int i=0; i<outlinks.size(); i++) {
-					obj = outlinks.elementAt(i);
-					hilitedObjects.add(obj);
-					while (obj instanceof InLink) {
-						obj = ((InLink)obj).getOutput();
-						hilitedObjects.add(obj);
-					}
-				}
-				
-			// outLinks
-			obj = hilitedObject;
-			while (obj instanceof OutLink) {
-				obj = ((OutLink)obj).getInput();
-				hilitedObjects.add(obj);
-			}
-		}
-		return true;
-	}
-	else
-		return false;
+        
+        //initialization
+        hilitedObjects.clear();
+        hilitedObjects.add(hilitedObject);
+        Object obj = hilitedObject;
+        
+        // inlinks
+        Vector outlinks = null;  
+        if (obj instanceof MultiInLink) {
+             outlinks = ((MultiInLink)obj).getOutlinks();
+        } else if (obj instanceof InLink){
+            outlinks = new Vector();
+            outlinks.add(((InLink)obj).getOutput());
+        }
+        
+        if (!zoomOnHilited) {
+            if (outlinks != null)
+                for (int i=0; i<outlinks.size(); i++) {
+                    obj = outlinks.elementAt(i);
+                    hilitedObjects.add(obj);
+                    while (obj instanceof InLink) {
+                        obj = ((InLink)obj).getOutput();
+                        hilitedObjects.add(obj);
+                    }
+                }
+                
+            // outLinks
+            obj = hilitedObject;
+            while (obj instanceof OutLink) {
+                obj = ((OutLink)obj).getInput();
+                hilitedObjects.add(obj);
+            }
+        }
+        return true;
+    }
+    else
+        return false;
 }
 /**
  * Insert the method's description here.
@@ -440,12 +440,12 @@ public boolean setAsHilited(VisibleObject object, boolean zoomOnHilited) {
  * @param object com.cosylab.vdct.graphics.objects.VisibleObject
  */
 public boolean setAsSelected(VisibleObject object) {
-	if (!selectedObjects.contains(object)) {
-		selectedObjects.addElement(object);
-		return true;
-	}
-	else
-		return false;
+    if (!selectedObjects.contains(object)) {
+        selectedObjects.addElement(object);
+        return true;
+    }
+    else
+        return false;
 }
 /**
  * Insert the method's description here.
@@ -453,7 +453,7 @@ public boolean setAsSelected(VisibleObject object) {
  * @param newBlinkState boolean
  */
 public void setBlinkState(boolean newBlinkState) {
-	blinkState = newBlinkState;
+    blinkState = newBlinkState;
 }
 /**
  * Insert the method's description here.
@@ -461,7 +461,7 @@ public void setBlinkState(boolean newBlinkState) {
  * @param newFlat boolean
  */
 public void setFlat(boolean newFlat) {
-	flat = newFlat;
+    flat = newFlat;
 }
 /**
  * Insert the method's description here.
@@ -469,7 +469,7 @@ public void setFlat(boolean newFlat) {
  * @param newInstance com.cosylab.vdct.graphics.ViewState
  */
 public static void setInstance(ViewState newInstance) {
-	instance = newInstance;
+    instance = newInstance;
 }
 /**
  * Insert the method's description here.
@@ -477,8 +477,8 @@ public static void setInstance(ViewState newInstance) {
  * @param newRx int
  */
 public void setRx(int newRx) {
-	rx = newRx;
-	drx = newRx;
+    rx = newRx;
+    drx = newRx;
 }
 /**
  * Insert the method's description here.
@@ -486,8 +486,8 @@ public void setRx(int newRx) {
  * @param newRy int
  */
 public void setRy(int newRy) {
-	ry = newRy;
-	dry = newRy;
+    ry = newRy;
+    dry = newRy;
 }
 /**
  * Insert the method's description here.
@@ -495,9 +495,9 @@ public void setRy(int newRy) {
  * @param newScale double
  */
 public void setScale(double newScale) {
-	scale = newScale;
-	gridSize = Math.max(1, (int)(com.cosylab.vdct.Constants.GRID_SIZE*scale));
-	dotSize = (int)(com.cosylab.vdct.Constants.DOT_SIZE*scale);
+    scale = newScale;
+    gridSize = Math.max(1, (int)(com.cosylab.vdct.Constants.GRID_SIZE*scale));
+    dotSize = (int)(com.cosylab.vdct.Constants.DOT_SIZE*scale);
 }
 /**
  * Insert the method's description here.
@@ -505,7 +505,7 @@ public void setScale(double newScale) {
  * @param newViewHeight int
  */
 public void setViewHeight(int newViewHeight) {
-	viewHeight = newViewHeight;
+    viewHeight = newViewHeight;
 }
 /**
  * Insert the method's description here.
@@ -513,7 +513,7 @@ public void setViewHeight(int newViewHeight) {
  * @param newViewWidth int
  */
 public void setViewWidth(int newViewWidth) {
-	viewWidth = newViewWidth;
+    viewWidth = newViewWidth;
 }
 /**
  * Insert the method's description here.
@@ -521,7 +521,7 @@ public void setViewWidth(int newViewWidth) {
  * @param newX0 int
  */
 public void setX0(int newX0) {
-	x0 = newX0;
+    x0 = newX0;
 }
 /**
  * Insert the method's description here.
@@ -529,50 +529,50 @@ public void setX0(int newX0) {
  * @param newY0 int
  */
 public void setY0(int newY0) {
-	y0 = newY0;
+    y0 = newY0;
 }
-	/**
-	 * Returns the drx.
-	 * @return double
-	 */
-	public double getDrx()
-	{
-		return drx;
-	}
+    /**
+     * Returns the drx.
+     * @return double
+     */
+    public double getDrx()
+    {
+        return drx;
+    }
 
-	/**
-	 * Returns the dry.
-	 * @return double
-	 */
-	public double getDry()
-	{
-		return dry;
-	}
+    /**
+     * Returns the dry.
+     * @return double
+     */
+    public double getDry()
+    {
+        return dry;
+    }
 
-	/**
-	 * Sets the drx.
-	 * @param drx The drx to set
-	 */
-	public void setDrx(double drx)
-	{
-		this.drx = drx;
-		this.rx = (int)drx;
-	}
+    /**
+     * Sets the drx.
+     * @param drx The drx to set
+     */
+    public void setDrx(double drx)
+    {
+        this.drx = drx;
+        this.rx = (int)drx;
+    }
 
-	/**
-	 * Sets the dry.
-	 * @param dry The dry to set
-	 */
-	public void setDry(double dry)
-	{
-		this.dry = dry;
-		this.ry = (int)dry;
-	}
+    /**
+     * Sets the dry.
+     * @param dry The dry to set
+     */
+    public void setDry(double dry)
+    {
+        this.dry = dry;
+        this.ry = (int)dry;
+    }
 
-	/**
-	 * @return Returns the dotSize.
-	 */
-	public int getDotSize() {
-		return dotSize;
-	}
+    /**
+     * @return Returns the dotSize.
+     */
+    public int getDotSize() {
+        return dotSize;
+    }
 }

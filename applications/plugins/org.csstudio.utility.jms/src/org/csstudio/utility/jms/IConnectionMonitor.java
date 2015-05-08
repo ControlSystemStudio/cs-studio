@@ -30,14 +30,14 @@ package org.csstudio.utility.jms;
  */
 public interface IConnectionMonitor {
 
-	/**
-	 * Called when the connection to the messaging system is established.
-	 */
-	void onConnected(TransportEvent event);
-	
-	/**
-	 * Called when the connection to the messaging system is closed or
-	 * interrupted.
-	 */
-	void onDisconnected(TransportEvent event);
+    /**
+     * Called when the connection to the messaging system is established.
+     */
+    void onConnected(TransportEvent event);
+    
+    /**
+     * Called when the connection to the messaging system is closed or
+     * interrupted.
+     */
+    void onDisconnected(TransportEvent event);
 }

@@ -26,28 +26,28 @@ import org.junit.Test;
 public class DataLogFactoryHeadlessTest
 {
     @Test
-	public void testDataLogFactory() throws Exception
-	{
-    	final Scan scan = DataLogFactory.createDataLog("test");
-		assertTrue(scan.getId() > 0);
-		assertEquals("test", scan.getName());
-		final DataLog log = DataLogFactory.getDataLog(scan);
-		assertNotNull(log);
-		System.out.println("Got DataLog " + log.getClass().getName());
+    public void testDataLogFactory() throws Exception
+    {
+        final Scan scan = DataLogFactory.createDataLog("test");
+        assertTrue(scan.getId() > 0);
+        assertEquals("test", scan.getName());
+        final DataLog log = DataLogFactory.getDataLog(scan);
+        assertNotNull(log);
+        System.out.println("Got DataLog " + log.getClass().getName());
 
-		boolean found = false;
-		final Scan[] scans = DataLogFactory.getScans();
-		for (Scan s : scans)
-		{
-		    if (scan.equals(s))
-		        found = true;
-		    System.out.println(s);
-		}
-		assertTrue(scans.length > 0);
+        boolean found = false;
+        final Scan[] scans = DataLogFactory.getScans();
+        for (Scan s : scans)
+        {
+            if (scan.equals(s))
+                found = true;
+            System.out.println(s);
+        }
+        assertTrue(scans.length > 0);
         assertTrue(found);
 
         DataLogFactory.deleteDataLog(scan);
         final DataLog log2 = DataLogFactory.getDataLog(scan);
         assertNull(log2);
-	}
+    }
 }

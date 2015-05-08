@@ -6,10 +6,10 @@ import org.eclipse.ui.WorkbenchException;
 
 public interface IWorkbenchWindowAdvisorExtPoint
 {
-	public static final String ID = "org.csstudio.utility.product.module";
-	/** The name of this extension point element */
-	public static final String NAME = "class";
-	
+    public static final String ID = "org.csstudio.utility.product.module";
+    /** The name of this extension point element */
+    public static final String NAME = "class";
+    
     /**
      * Performs arbitrary actions before the window is opened.
      * <p>
@@ -107,13 +107,13 @@ public interface IWorkbenchWindowAdvisorExtPoint
      * @param memento
      * @return a status object indicating whether the save was successful
      */
-	public IStatus saveState(IMemento memento);
+    public IStatus saveState(IMemento memento);
 
-	/**
-	* Restores arbitrary application specific state information.
-	* 
-	* @param memento
-	* @return a status object indicating whether the restore was successful
-	*/
-	public IStatus restoreState(IMemento memento);
+    /**
+    * Restores arbitrary application specific state information.
+    * 
+    * @param memento
+    * @return a status object indicating whether the restore was successful
+    */
+    public IStatus restoreState(IMemento memento);
 }

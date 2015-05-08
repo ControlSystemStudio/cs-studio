@@ -14,24 +14,24 @@ import org.epics.util.time.Timestamp;
  *
  */
 public class ApplianceRawValueIterator extends ApplianceValueIterator {
-	
-	/**
-	 * Constructor for the raw value iterator. This iterator fetches data using the raw
-	 * format and does not apply any statistics calculation to it.
-	 * 
-	 * @param reader instance of appliance archive reader
-	 * @param name name of the PV
-	 * @param start start of the time period
-	 * @param end end of the time period
-	 * @param listener the listener which is notified when the iterator is closed
-	 * 
-	 * @throws IOException if there was an error during the data fetch process
-	 * @throws ArchiverApplianceException if the data cannot be loaded with this algorithm
-	 */
-	public ApplianceRawValueIterator(ApplianceArchiveReader reader,
-			String name, Timestamp start, Timestamp end, IteratorListener listener) 
-			        throws ArchiverApplianceException, IOException {
-		super(reader,name,start,end,listener);
-		fetchData();
-	}
+    
+    /**
+     * Constructor for the raw value iterator. This iterator fetches data using the raw
+     * format and does not apply any statistics calculation to it.
+     * 
+     * @param reader instance of appliance archive reader
+     * @param name name of the PV
+     * @param start start of the time period
+     * @param end end of the time period
+     * @param listener the listener which is notified when the iterator is closed
+     * 
+     * @throws IOException if there was an error during the data fetch process
+     * @throws ArchiverApplianceException if the data cannot be loaded with this algorithm
+     */
+    public ApplianceRawValueIterator(ApplianceArchiveReader reader,
+            String name, Timestamp start, Timestamp end, IteratorListener listener) 
+                    throws ArchiverApplianceException, IOException {
+        super(reader,name,start,end,listener);
+        fetchData();
+    }
 }

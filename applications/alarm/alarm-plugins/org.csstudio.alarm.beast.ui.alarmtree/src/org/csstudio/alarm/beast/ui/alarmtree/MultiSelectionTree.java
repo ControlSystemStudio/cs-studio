@@ -36,83 +36,83 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class MultiSelectionTree extends Tree
 {
-	final Set<TreeItem> cachedSelection = new HashSet<TreeItem>();
+    final Set<TreeItem> cachedSelection = new HashSet<TreeItem>();
 
-	/** Initialize
-	 *  @param parent
-	 *  @param style
-	 */
-	public MultiSelectionTree(final Composite parent, final int style)
+    /** Initialize
+     *  @param parent
+     *  @param style
+     */
+    public MultiSelectionTree(final Composite parent, final int style)
     {
-		super(parent, style);
-		addSelectionListener(new SelectionAdapter()
-		{
-			@Override
+        super(parent, style);
+        addSelectionListener(new SelectionAdapter()
+        {
+            @Override
             public void widgetSelected(final SelectionEvent e)
-			{
-				if (! (e.item instanceof TreeItem))
-					return;
-				final TreeItem treeItem = (TreeItem) e.item;
-				// Ctrl+Click : add or remove from selection
-				if ((e.stateMask & SWT.CONTROL) != 0
-						|| (e.stateMask & SWT.COMMAND) != 0)
-				{
-					if (cachedSelection.contains(treeItem))
-						cachedSelection.remove(treeItem);
-					else
-						cachedSelection.add(treeItem);
-				}
-				// Shift+Click : select a range of items
-				else if ((e.stateMask & SWT.SHIFT) != 0)
-				{
-					final TreeItem[] selection = getSystemSelection();
-					cachedSelection.clear();
-					for (TreeItem selected : selection)
-						cachedSelection.add(selected);
-				}
-				// simple click with no modifiers : selection of a
-				// single item
-				else
-				{
-					cachedSelection.clear();
-					cachedSelection.add(treeItem);
-				}
-				// System.out.println("widgetSelected: " + e);
-			}
-		});
+            {
+                if (! (e.item instanceof TreeItem))
+                    return;
+                final TreeItem treeItem = (TreeItem) e.item;
+                // Ctrl+Click : add or remove from selection
+                if ((e.stateMask & SWT.CONTROL) != 0
+                        || (e.stateMask & SWT.COMMAND) != 0)
+                {
+                    if (cachedSelection.contains(treeItem))
+                        cachedSelection.remove(treeItem);
+                    else
+                        cachedSelection.add(treeItem);
+                }
+                // Shift+Click : select a range of items
+                else if ((e.stateMask & SWT.SHIFT) != 0)
+                {
+                    final TreeItem[] selection = getSystemSelection();
+                    cachedSelection.clear();
+                    for (TreeItem selected : selection)
+                        cachedSelection.add(selected);
+                }
+                // simple click with no modifiers : selection of a
+                // single item
+                else
+                {
+                    cachedSelection.clear();
+                    cachedSelection.add(treeItem);
+                }
+                // System.out.println("widgetSelected: " + e);
+            }
+        });
     }
 
-	@Override
+    @Override
     protected void checkSubclass()
     {
-    	// allow sub-classing, which in principle is not allowed for SWT.Tree
+        // allow sub-classing, which in principle is not allowed for SWT.Tree
     }
 
-	private TreeItem[] getSystemSelection()
-	{
-		return super.getSelection();
-	}
+    private TreeItem[] getSystemSelection()
+    {
+        return super.getSelection();
+    }
 
-	@Override
-	public TreeItem[] getSelection()
-	{
-		return cachedSelection.toArray(new TreeItem[cachedSelection.size()]);
-	}
+    @Override
+    public TreeItem[] getSelection()
+    {
+        return cachedSelection.toArray(new TreeItem[cachedSelection.size()]);
+    }
 
-	@Override
-	public void setSelection(final TreeItem item)
-	{
-		cachedSelection.clear();
-		cachedSelection.add(item);
-		super.setSelection(item);
-	}
+    @Override
+    public void setSelection(final TreeItem item)
+    {
+        cachedSelection.clear();
+        cachedSelection.add(item);
+        super.setSelection(item);
+    }
 
-	@Override
-	public void setSelection(final TreeItem[] items)
-	{
-		cachedSelection.clear();
-		for (TreeItem treeItem : items)
-			cachedSelection.add(treeItem);
-		super.setSelection(items);
-	}
+    @Override
+    public void setSelection(final TreeItem[] items)
+    {
+        cachedSelection.clear();
+        for (TreeItem treeItem : items)
+            cachedSelection.add(treeItem);
+        super.setSelection(items);
+    }
 }

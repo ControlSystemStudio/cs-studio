@@ -33,45 +33,45 @@ import org.eclipse.gef.commands.Command;
  * 
  */
 public class OrphanChildCommand extends Command {
-	/**
-	 * The model.
-	 */
-	private ContainerModel _container;
+    /**
+     * The model.
+     */
+    private ContainerModel _container;
 
-	/**
-	 * The widget model.
-	 */
-	private AbstractWidgetModel _widget;
+    /**
+     * The widget model.
+     */
+    private AbstractWidgetModel _widget;
 
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param container
-	 *            The model.
-	 * @param widget
-	 *            The widget model.
-	 */
-	public OrphanChildCommand(final ContainerModel container,
-			final AbstractWidgetModel widget) {
-		super("Orphan Child");
-		_container = container;
-		_widget = widget;
-	}
+    /**
+     * Standard constructor.
+     * 
+     * @param container
+     *            The model.
+     * @param widget
+     *            The widget model.
+     */
+    public OrphanChildCommand(final ContainerModel container,
+            final AbstractWidgetModel widget) {
+        super("Orphan Child");
+        _container = container;
+        _widget = widget;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void execute() {
-		_container.removeWidget(_widget);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void undo() {
-		_container.addWidget(_widget);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void execute() {
+        _container.removeWidget(_widget);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void undo() {
+        _container.addWidget(_widget);
+    }
 
 }

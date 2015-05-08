@@ -53,164 +53,164 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {
 
     private static final Logger LOG = LoggerFactory.getLogger(AdvancedSliderEditPart.class);
 
-	/**
-	 * A UI job, which is used to reset the manual value of the slider figure
-	 * after a certain amount of time.
-	 */
-	private UIJob _resetManualValueDisplayJob;
+    /**
+     * A UI job, which is used to reset the manual value of the slider figure
+     * after a certain amount of time.
+     */
+    private UIJob _resetManualValueDisplayJob;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		final AdvancedSliderModel model = (AdvancedSliderModel) getWidgetModel();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        final AdvancedSliderModel model = (AdvancedSliderModel) getWidgetModel();
 
-		final AdvancedSliderFigure slider = new AdvancedSliderFigure();
-		slider.addSliderListener(new AdvancedSliderFigure.ISliderListener() {
-			public void sliderValueChanged(final double newValue) {
-				if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
-					model.setPropertyManualValue(AdvancedSliderModel.PROP_VALUE, newValue);
+        final AdvancedSliderFigure slider = new AdvancedSliderFigure();
+        slider.addSliderListener(new AdvancedSliderFigure.ISliderListener() {
+            public void sliderValueChanged(final double newValue) {
+                if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
+                    model.setPropertyManualValue(AdvancedSliderModel.PROP_VALUE, newValue);
 
-					slider.setManualValue(newValue);
+                    slider.setManualValue(newValue);
 
-					if (_resetManualValueDisplayJob == null) {
-						_resetManualValueDisplayJob = new UIJob("reset") {
-							@Override
-							public IStatus runInUIThread(
-									final IProgressMonitor monitor) {
-								slider.setManualValue(model.getValue());
-								return Status.OK_STATUS;
-							}
-						};
+                    if (_resetManualValueDisplayJob == null) {
+                        _resetManualValueDisplayJob = new UIJob("reset") {
+                            @Override
+                            public IStatus runInUIThread(
+                                    final IProgressMonitor monitor) {
+                                slider.setManualValue(model.getValue());
+                                return Status.OK_STATUS;
+                            }
+                        };
 
-					}
-					_resetManualValueDisplayJob.schedule(5000);	
-				} else {
-					LOG.info("Slider value changed");
-				}
-			}
-		});
+                    }
+                    _resetManualValueDisplayJob.schedule(5000);    
+                } else {
+                    LOG.info("Slider value changed");
+                }
+            }
+        });
 
-		slider.setMax(model.getMax());
-		slider.setMin(model.getMin());
-		slider.setIncrement(model.getIncrement());
-		slider.setValue(model.getValue());
-		slider.setManualValue(model.getValue());
-		slider.setOrientation(model.isHorizontal());
-		slider.setEnabled(getExecutionMode().equals(ExecutionMode.RUN_MODE) && model.isAccesible());
-		return slider;
-	}
+        slider.setMax(model.getMax());
+        slider.setMin(model.getMin());
+        slider.setIncrement(model.getIncrement());
+        slider.setValue(model.getValue());
+        slider.setManualValue(model.getValue());
+        slider.setOrientation(model.isHorizontal());
+        slider.setEnabled(getExecutionMode().equals(ExecutionMode.RUN_MODE) && model.isAccesible());
+        return slider;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		// value
-		IWidgetPropertyChangeHandler valHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AdvancedSliderFigure slider = (AdvancedSliderFigure) refreshableFigure;
-				slider.setValue((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AdvancedSliderModel.PROP_VALUE, valHandler);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        // value
+        IWidgetPropertyChangeHandler valHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                AdvancedSliderFigure slider = (AdvancedSliderFigure) refreshableFigure;
+                slider.setValue((Double) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(AdvancedSliderModel.PROP_VALUE, valHandler);
 
-		// min
-		IWidgetPropertyChangeHandler minHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AdvancedSliderFigure slider = (AdvancedSliderFigure) refreshableFigure;
-				slider.setMin((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AdvancedSliderModel.PROP_MIN, minHandler);
+        // min
+        IWidgetPropertyChangeHandler minHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                AdvancedSliderFigure slider = (AdvancedSliderFigure) refreshableFigure;
+                slider.setMin((Double) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(AdvancedSliderModel.PROP_MIN, minHandler);
 
-		// max
-		IWidgetPropertyChangeHandler maxHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AdvancedSliderFigure slider = (AdvancedSliderFigure) refreshableFigure;
-				slider.setMax((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AdvancedSliderModel.PROP_MAX, maxHandler);
+        // max
+        IWidgetPropertyChangeHandler maxHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                AdvancedSliderFigure slider = (AdvancedSliderFigure) refreshableFigure;
+                slider.setMax((Double) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(AdvancedSliderModel.PROP_MAX, maxHandler);
 
-		// increment
-		IWidgetPropertyChangeHandler incrementHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AdvancedSliderFigure slider = (AdvancedSliderFigure) refreshableFigure;
-				slider.setIncrement((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AdvancedSliderModel.PROP_INCREMENT, incrementHandler);
+        // increment
+        IWidgetPropertyChangeHandler incrementHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                AdvancedSliderFigure slider = (AdvancedSliderFigure) refreshableFigure;
+                slider.setIncrement((Double) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(AdvancedSliderModel.PROP_INCREMENT, incrementHandler);
 
-		// orientation
-		IWidgetPropertyChangeHandler orientationHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AdvancedSliderFigure slider = (AdvancedSliderFigure) refreshableFigure;
+        // orientation
+        IWidgetPropertyChangeHandler orientationHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                AdvancedSliderFigure slider = (AdvancedSliderFigure) refreshableFigure;
 
-				int orientation = (Integer) newValue;
-				slider.setOrientation(orientation == 0);
+                int orientation = (Integer) newValue;
+                slider.setOrientation(orientation == 0);
 
-				AdvancedSliderModel model = (AdvancedSliderModel) getModel();
+                AdvancedSliderModel model = (AdvancedSliderModel) getModel();
 
-				// invert the size of the element
-				model.setSize(model.getHeight(), model.getWidth());
+                // invert the size of the element
+                model.setSize(model.getHeight(), model.getWidth());
 
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AdvancedSliderModel.PROP_ORIENTATION,
-				orientationHandler);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(AdvancedSliderModel.PROP_ORIENTATION,
+                orientationHandler);
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IValue getSample(final int index) {
-		if (index != 0) {
-			throw new IndexOutOfBoundsException(index + " is not a valid sample index");
-		}
-		
-		AdvancedSliderModel model = (AdvancedSliderModel) getWidgetModel();
-		double value = model.getValue();
-		ITimestamp timestamp = TimestampFactory.now();
-		
-		// Note: the IValue implementations require a Severity, otherwise the
-		// format() method will throw a NullPointerException. We don't really
-		// have a severity here, so we fake one. This may cause problems for
-		// clients who rely on getting a meaningful severity from the IValue.
-		ISeverity severity = ValueFactory.createOKSeverity();
-		
-		// Fake some metadata because it is required for an IValue.
-		INumericMetaData md = ValueFactory.createNumericMetaData(0, 0, 0, 0, 0,
-				0, 0, "");
-		
-		IDoubleValue result = ValueFactory.createDoubleValue(timestamp,
-				severity, null, md, Quality.Original, new double[] { value });
-		
-		return result;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public IValue getSample(final int index) {
+        if (index != 0) {
+            throw new IndexOutOfBoundsException(index + " is not a valid sample index");
+        }
+        
+        AdvancedSliderModel model = (AdvancedSliderModel) getWidgetModel();
+        double value = model.getValue();
+        ITimestamp timestamp = TimestampFactory.now();
+        
+        // Note: the IValue implementations require a Severity, otherwise the
+        // format() method will throw a NullPointerException. We don't really
+        // have a severity here, so we fake one. This may cause problems for
+        // clients who rely on getting a meaningful severity from the IValue.
+        ISeverity severity = ValueFactory.createOKSeverity();
+        
+        // Fake some metadata because it is required for an IValue.
+        INumericMetaData md = ValueFactory.createNumericMetaData(0, 0, 0, 0, 0,
+                0, 0, "");
+        
+        IDoubleValue result = ValueFactory.createDoubleValue(timestamp,
+                severity, null, md, Quality.Original, new double[] { value });
+        
+        return result;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public int size() {
-		// always one sample
-		return 1;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public int size() {
+        // always one sample
+        return 1;
+    }
 }

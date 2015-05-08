@@ -48,53 +48,53 @@ import org.eclipse.ui.PlatformUI;
  */
 public final class ParamStringPropertyDescriptor extends TextPropertyDescriptor {
 
-	/**
-	 * Creates an property descriptor with the given id and display name.
-	 * 
-	 * @param id
-	 *            the id of the property
-	 * @param displayName
-	 *            the name to display for the property
-	 * @param category
-	 *            the category
-	 */
-	public ParamStringPropertyDescriptor(final Object id, final String displayName, PropertyTypesEnum type,
-			final String category) {
-		super(id, displayName, type, category);
-	}
+    /**
+     * Creates an property descriptor with the given id and display name.
+     * 
+     * @param id
+     *            the id of the property
+     * @param displayName
+     *            the name to display for the property
+     * @param category
+     *            the category
+     */
+    public ParamStringPropertyDescriptor(final Object id, final String displayName, PropertyTypesEnum type,
+            final String category) {
+        super(id, displayName, type, category);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CellEditor createPropertyEditor(final Composite parent) {
-		
-		// swende: Der Zugriff auf die Model-Properties ist in TooltipSection besser gelöst. Mit der Entsorgung der alten Property-View wird dieser Schmerz hier sich von alleine erledigen!  
-		Map<String, WidgetProperty> properties = new HashMap<String, WidgetProperty>();
-		IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-		if (activeEditor instanceof DisplayEditor) {
-			List<AbstractBaseEditPart> editParts = ((DisplayEditor)activeEditor).getSelectedEditParts();
-			if (editParts.size()!=0) {
-				List<String> propertyNames = new LinkedList<String>();
-				 propertyNames.addAll(editParts.get(0).getWidgetModel().getVisiblePropertyIds());
-				 for (int i=1;i<editParts.size();i++) {
-					 propertyNames.retainAll(editParts.get(i).getWidgetModel().getVisiblePropertyIds());
-				 }
-				 for (String name : propertyNames) {
-					 if (!name.equals(this.getId())) {
-						 properties.put(name, editParts.get(0).getWidgetModel().getPropertyInternal(name));
-					 }
-				 }
-			}
-		}
-		// At least move all above the factory 
-		
-		
-		CellEditor editor = new ParamStringCellEditor(parent, properties);
-		if (getValidator() != null) {
-			editor.setValidator(getValidator());
-		}
-		return editor;
-	}
-	
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CellEditor createPropertyEditor(final Composite parent) {
+        
+        // swende: Der Zugriff auf die Model-Properties ist in TooltipSection besser gelöst. Mit der Entsorgung der alten Property-View wird dieser Schmerz hier sich von alleine erledigen!  
+        Map<String, WidgetProperty> properties = new HashMap<String, WidgetProperty>();
+        IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        if (activeEditor instanceof DisplayEditor) {
+            List<AbstractBaseEditPart> editParts = ((DisplayEditor)activeEditor).getSelectedEditParts();
+            if (editParts.size()!=0) {
+                List<String> propertyNames = new LinkedList<String>();
+                 propertyNames.addAll(editParts.get(0).getWidgetModel().getVisiblePropertyIds());
+                 for (int i=1;i<editParts.size();i++) {
+                     propertyNames.retainAll(editParts.get(i).getWidgetModel().getVisiblePropertyIds());
+                 }
+                 for (String name : propertyNames) {
+                     if (!name.equals(this.getId())) {
+                         properties.put(name, editParts.get(0).getWidgetModel().getPropertyInternal(name));
+                     }
+                 }
+            }
+        }
+        // At least move all above the factory 
+        
+        
+        CellEditor editor = new ParamStringCellEditor(parent, properties);
+        if (getValidator() != null) {
+            editor.setValidator(getValidator());
+        }
+        return editor;
+    }
+    
 }

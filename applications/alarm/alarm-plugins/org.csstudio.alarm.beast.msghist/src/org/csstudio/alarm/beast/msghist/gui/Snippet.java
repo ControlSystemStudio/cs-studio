@@ -64,7 +64,7 @@ public static void main(String[] args) {
     Listener sortListener = new Listener() {
         @Override
         @SuppressWarnings({ "unchecked", "rawtypes" })
-		public void handleEvent(Event e) {
+        public void handleEvent(Event e) {
             // determine new sort column and direction
             TableColumn sortColumn = table.getSortColumn();
             TableColumn currentColumn = (TableColumn) e.widget;

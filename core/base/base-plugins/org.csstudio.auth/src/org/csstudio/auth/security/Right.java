@@ -34,74 +34,74 @@ package org.csstudio.auth.security;
  */
 public class Right implements IRight {
 
-	/**
-	 * The user role.
-	 */
-	private String _role;
+    /**
+     * The user role.
+     */
+    private String _role;
 
-	/**
-	 * The user group.
-	 */
-	private String _group;
+    /**
+     * The user group.
+     */
+    private String _group;
 
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param role
-	 *            The role.
-	 * @param group
-	 *            The group.
-	 */
-	public Right(final String role, final String group) {
-		_role = role;
-		_group = group;
-	}
+    /**
+     * Standard constructor.
+     * 
+     * @param role
+     *            The role.
+     * @param group
+     *            The group.
+     */
+    public Right(final String role, final String group) {
+        _role = role;
+        _group = group;
+    }
 
-	/**
-	 * Returns the group.
-	 * 
-	 * @return The group
-	 */
-	public final String getGroup() {
-		return _group;
-	}
+    /**
+     * Returns the group.
+     * 
+     * @return The group
+     */
+    public final String getGroup() {
+        return _group;
+    }
 
-	/**
-	 * Returns the role.
-	 * 
-	 * @return The role
-	 */
-	public final String getRole() {
-		return _role;
-	}
+    /**
+     * Returns the role.
+     * 
+     * @return The role
+     */
+    public final String getRole() {
+        return _role;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final boolean equals(final Object o) {
-		if (o instanceof Right) {
-			Right right = (Right) o;
-			return _role.equalsIgnoreCase(right.getRole())
-					&& _group.equalsIgnoreCase(right.getGroup());
-		}
-		return super.equals(o);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final boolean equals(final Object o) {
+        if (o instanceof Right) {
+            Right right = (Right) o;
+            return _role.equalsIgnoreCase(right.getRole())
+                    && _group.equalsIgnoreCase(right.getGroup());
+        }
+        return super.equals(o);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final int hashCode() {
-		return super.hashCode();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final int hashCode() {
+        return super.hashCode();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final String toString() {
-		return "(" + _role + "," + _group + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final String toString() {
+        return "(" + _role + "," + _group + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
 
 }

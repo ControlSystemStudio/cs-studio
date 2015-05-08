@@ -37,16 +37,16 @@ import com.cosylab.vdct.vdb.VDBTemplate;
  * @author 
  */
 public class CreateTemplateMacroAction extends ActionObject {
-	protected VDBTemplate object;
-	protected VDBMacro macro;
+    protected VDBTemplate object;
+    protected VDBMacro macro;
 
 /**
  * Insert the method's description here.
  * Creation date: (3.5.2001 16:27:58)
  */
 public CreateTemplateMacroAction(VDBTemplate object, VDBMacro macro) {
-	this.object=object;
-	this.macro=macro;
+    this.object=object;
+    this.macro=macro;
 }
 /**
  * Insert the method's description here.
@@ -54,18 +54,18 @@ public CreateTemplateMacroAction(VDBTemplate object, VDBMacro macro) {
  * @return java.lang.String
  */
 public String getDescription() {
-	return "Create Template Macro ["+object+"]("+macro.getFullName()+")";
+    return "Create Template Macro ["+object+"]("+macro.getFullName()+")";
 }
 /**
  * This method was created in VisualAge.
  */
 protected void redoAction() {
-	object.addMacro(macro);
+    object.addMacro(macro);
 }
 /**
  * This method was created in VisualAge.
  */
 protected void undoAction() {
-	object.removeMacro(macro);
+    object.removeMacro(macro);
 }
 }

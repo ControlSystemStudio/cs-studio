@@ -19,7 +19,7 @@ import org.csstudio.dal.RemoteException;
  *  @author Kay Kasemir, Igor Kriznar
  */
 public interface AnyDataChannel
-{	
+{    
     /** 
      * @return Returns the name.
      */

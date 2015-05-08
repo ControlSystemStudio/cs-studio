@@ -30,125 +30,125 @@ import org.eclipse.ui.PlatformUI;
  */
 public class InstanceNodeEditPart extends AbstractGraphicalEditPart implements NodeEditPart, PropertyChangeListener {
 
-	private ChopboxAnchor anchorCenter;
+    private ChopboxAnchor anchorCenter;
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected void createEditPolicies() {
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected void createEditPolicies() {
+    }
 
-	/**
-	 * @see org.eclipse.gef.EditPart#activate()
-	 */
-	@Override
-	public void activate() {
-		super.activate();
-		List l = getTargetConnections();
-		for (int i = 0; i < l.size(); i++) {
-			((EditPart) l.get(i)).activate();
-		}
-		getCastedModel().addPropertyChangeListener(this);
+    /**
+     * @see org.eclipse.gef.EditPart#activate()
+     */
+    @Override
+    public void activate() {
+        super.activate();
+        List l = getTargetConnections();
+        for (int i = 0; i < l.size(); i++) {
+            ((EditPart) l.get(i)).activate();
+        }
+        getCastedModel().addPropertyChangeListener(this);
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void deactivate() {
-		getCastedModel().removePropertyChangeListener(this);
-		// deactivate target connections (check super call for source
-		// connections)
-		List l = getTargetConnections();
-		for (int i = 0; i < l.size(); i++) {
-			((EditPart) l.get(i)).deactivate();
-		}
-		super.deactivate();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deactivate() {
+        getCastedModel().removePropertyChangeListener(this);
+        // deactivate target connections (check super call for source
+        // connections)
+        List l = getTargetConnections();
+        for (int i = 0; i < l.size(); i++) {
+            ((EditPart) l.get(i)).deactivate();
+        }
+        super.deactivate();
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure createFigure() {
-		InstanceBoxFigure figure = new InstanceBoxFigure(getCastedModel().getCaption());
-		anchorCenter = new ChopboxAnchor(figure);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure createFigure() {
+        InstanceBoxFigure figure = new InstanceBoxFigure(getCastedModel().getCaption());
+        anchorCenter = new ChopboxAnchor(figure);
 
-		figure.getButton().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				final IPrototype prototype = getCastedModel().getElement().getPrototype();
+        figure.getButton().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                final IPrototype prototype = getCastedModel().getElement().getPrototype();
 
-				String secondaryId = "" + System.currentTimeMillis();
-				final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-				try {
-					GraphicalDctView view = (GraphicalDctView) page.showView(GraphicalDctView.PRIMARY_ID, secondaryId,
-							IWorkbenchPage.VIEW_ACTIVATE);
+                String secondaryId = "" + System.currentTimeMillis();
+                final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+                try {
+                    GraphicalDctView view = (GraphicalDctView) page.showView(GraphicalDctView.PRIMARY_ID, secondaryId,
+                            IWorkbenchPage.VIEW_ACTIVATE);
 
-					view.setPrototype(prototype.getProject(), prototype);
-				} catch (final PartInitException e) {
-					e.printStackTrace();
-				}
-			}
-		});
+                    view.setPrototype(prototype.getProject(), prototype);
+                } catch (final PartInitException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
-		return figure;
-	}
+        return figure;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connectionEditpart) {
-		return anchorCenter;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connectionEditpart) {
+        return anchorCenter;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractConnectionAnchor getSourceConnectionAnchor(Request request) {
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractConnectionAnchor getSourceConnectionAnchor(Request request) {
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connectionEditpart) {
-		return anchorCenter;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connectionEditpart) {
+        return anchorCenter;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractConnectionAnchor getTargetConnectionAnchor(Request request) {
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractConnectionAnchor getTargetConnectionAnchor(Request request) {
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void propertyChange(PropertyChangeEvent evt) {
+    /**
+     * {@inheritDoc}
+     */
+    public void propertyChange(PropertyChangeEvent evt) {
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected List getModelSourceConnections() {
-		return getCastedModel().getSourceConnections();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected List getModelSourceConnections() {
+        return getCastedModel().getSourceConnections();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected List getModelTargetConnections() {
-		return getCastedModel().getTargetConnections();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected List getModelTargetConnections() {
+        return getCastedModel().getTargetConnections();
+    }
 
-	private InstanceNode getCastedModel() {
-		return (InstanceNode) getModel();
-	}
+    private InstanceNode getCastedModel() {
+        return (InstanceNode) getModel();
+    }
 }

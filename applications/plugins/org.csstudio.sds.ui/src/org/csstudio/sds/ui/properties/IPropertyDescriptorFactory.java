@@ -29,11 +29,11 @@ import org.csstudio.sds.model.WidgetProperty;
  * @author Stefan Hofer & Sven Wende
  */
 public interface IPropertyDescriptorFactory {
-	
-	/**
-	 * @param id the id of the property.
-	 * @param property the property
-	 * @return A property descriptor.
-	 */
-	IPropertyDescriptor createPropertyDescriptor(Object id, WidgetProperty property);
+    
+    /**
+     * @param id the id of the property.
+     * @param property the property
+     * @return A property descriptor.
+     */
+    IPropertyDescriptor createPropertyDescriptor(Object id, WidgetProperty property);
 }

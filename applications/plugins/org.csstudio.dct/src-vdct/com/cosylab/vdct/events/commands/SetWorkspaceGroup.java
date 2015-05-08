@@ -37,22 +37,22 @@ import com.cosylab.vdct.VisualDCT;
  * @author 
  */
 public class SetWorkspaceGroup extends Command {
-	private VisualDCT visualDCT;
-	private String group = null;
+    private VisualDCT visualDCT;
+    private String group = null;
 /**
  * Insert the method's description here.
  * Creation date: (29.12.2000 12:37:58)
  */
 
 public SetWorkspaceGroup(VisualDCT visualDCT) {
-	this.visualDCT=visualDCT;
+    this.visualDCT=visualDCT;
 }
 /**
  * Insert the method's description here.
  * Creation date: (29.12.2000 12:37:43)
  */
 public void execute() {
-	visualDCT.setCurrentGroup(group);
+    visualDCT.setCurrentGroup(group);
 }
 /**
  * Insert the method's description here.
@@ -60,6 +60,6 @@ public void execute() {
  * @param group java.lang.String
  */
 public void setGroup(String group) {
-	this.group=group;
+    this.group=group;
 }
 }

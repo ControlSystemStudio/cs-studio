@@ -8,13 +8,13 @@ package org.csstudio.logbook;
  */
 public interface Tag {
 
-	/**
-	 * @return String - tag name
-	 */
-	public String getName();
-	
-	/**
-	 * @return String - tag state
-	 */
-	public String getState();
+    /**
+     * @return String - tag name
+     */
+    public String getName();
+    
+    /**
+     * @return String - tag state
+     */
+    public String getState();
 }

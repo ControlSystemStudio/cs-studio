@@ -33,25 +33,25 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  */
 public final class LayerAdapterFactory implements IAdapterFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(final Object adaptableObject, final Class adapterType) {
-		assert adaptableObject instanceof Layer : "adaptableObject instanceof Layer";
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Object getAdapter(final Object adaptableObject, final Class adapterType) {
+        assert adaptableObject instanceof Layer : "adaptableObject instanceof Layer";
 
-		if (adapterType == IWorkbenchAdapter.class) {
-			return new LayerWorkbenchAdapter();
-		}
-		return null;
-	}
+        if (adapterType == IWorkbenchAdapter.class) {
+            return new LayerWorkbenchAdapter();
+        }
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getAdapterList() {
-		return new Class[] { IWorkbenchAdapter.class };
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getAdapterList() {
+        return new Class[] { IWorkbenchAdapter.class };
+    }
 
 }

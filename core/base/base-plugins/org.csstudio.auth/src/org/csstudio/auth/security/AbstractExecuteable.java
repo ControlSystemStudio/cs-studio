@@ -34,68 +34,68 @@ import org.csstudio.auth.internal.usermanagement.LoginContext;
  */
 public abstract class AbstractExecuteable {
 
-	/**
-	 * The abstract right ID of this executable.
-	 */
-	private String _rightId;
+    /**
+     * The abstract right ID of this executable.
+     */
+    private String _rightId;
 
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param rightId
-	 *            The abstract right ID of this executable.
-	 */
-	public AbstractExecuteable(final String rightId) {
-		assert rightId != null;
-		_rightId = rightId;
-	}
+    /**
+     * Standard constructor.
+     * 
+     * @param rightId
+     *            The abstract right ID of this executable.
+     */
+    public AbstractExecuteable(final String rightId) {
+        assert rightId != null;
+        _rightId = rightId;
+    }
 
-	/**
-	 * Return the abstract right ID of this executable.
-	 * 
-	 * @return The abstract right ID of this executable.
-	 */
-	public final String getRightId() {
-		return _rightId;
-	}
+    /**
+     * Return the abstract right ID of this executable.
+     * 
+     * @return The abstract right ID of this executable.
+     */
+    public final String getRightId() {
+        return _rightId;
+    }
 
-	/**
-	 * Method to execute this AbstractExecutable. This method only performs an
-	 * action, if the currently logged in user is allowed to do so.
-	 */
-	public final void execute() {
-		if (SecurityFacade.getInstance().canExecute(getRightId())) {
-			doWork();
-		}
-	}
-	
-	/**
-	 * Method to execute this AbstractExecutable. This method only performs an
-	 * action, if the currently logged in user is allowed to do so.
-	 * @param LoginContext
-	 * 			The LoginContext, which contains the User
-	 */
-	public final void executeAs(final LoginContext lc) {
-		if (SecurityFacade.getInstance().canExecute(getRightId(), lc, true)) {
-			doWork();
-		}
-	}
+    /**
+     * Method to execute this AbstractExecutable. This method only performs an
+     * action, if the currently logged in user is allowed to do so.
+     */
+    public final void execute() {
+        if (SecurityFacade.getInstance().canExecute(getRightId())) {
+            doWork();
+        }
+    }
+    
+    /**
+     * Method to execute this AbstractExecutable. This method only performs an
+     * action, if the currently logged in user is allowed to do so.
+     * @param LoginContext
+     *             The LoginContext, which contains the User
+     */
+    public final void executeAs(final LoginContext lc) {
+        if (SecurityFacade.getInstance().canExecute(getRightId(), lc, true)) {
+            doWork();
+        }
+    }
 
-	/**
-	 * Checks if this AbstractExecutable can be run by the currently logged in
-	 * user.
-	 * 
-	 * @return True, if this AbstractExecutable can be run by the currently
-	 *         logged in user.
-	 */
-	public final boolean canExecute() {
-		return SecurityFacade.getInstance().canExecute(getRightId());
-	}
+    /**
+     * Checks if this AbstractExecutable can be run by the currently logged in
+     * user.
+     * 
+     * @return True, if this AbstractExecutable can be run by the currently
+     *         logged in user.
+     */
+    public final boolean canExecute() {
+        return SecurityFacade.getInstance().canExecute(getRightId());
+    }
 
-	/**
-	 * This method holds the protected code. It's called by
-	 * <code>execute()</code>.
-	 */
-	protected abstract void doWork();
+    /**
+     * This method holds the protected code. It's called by
+     * <code>execute()</code>.
+     */
+    protected abstract void doWork();
 
 }

@@ -23,8 +23,8 @@ public class ContextPropertyWidgetFactory implements PropertyWidgetFactory {
 
     @Override
     public AbstractPropertyWidget create(Composite parent, int SWT,
-	    LogEntryChangeset logEntryChangeset, boolean editable) {
-	return new ContextPropertyWidget(parent, SWT, logEntryChangeset, editable);
+        LogEntryChangeset logEntryChangeset, boolean editable) {
+    return new ContextPropertyWidget(parent, SWT, logEntryChangeset, editable);
     }
 
 }

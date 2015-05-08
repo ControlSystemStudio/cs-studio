@@ -31,24 +31,24 @@ import org.jdom.Element;
  * 
  */
 public abstract class AbstractPropertyPersistenceHandler {
-	/**
-	 * Create the XML representation of the given property value object and
-	 * append it to the given root <code>value</code> tag.
-	 * 
-	 * @param domElement
-	 *            The root <code>value</code> tag.
-	 * @param propertyValue
-	 *            The given property value object.
-	 */
-	public abstract void writeProperty(Element domElement, Object propertyValue);
+    /**
+     * Create the XML representation of the given property value object and
+     * append it to the given root <code>value</code> tag.
+     * 
+     * @param domElement
+     *            The root <code>value</code> tag.
+     * @param propertyValue
+     *            The given property value object.
+     */
+    public abstract void writeProperty(Element domElement, Object propertyValue);
 
-	/**
-	 * Parse the given JDOM element and return an appropriate value object.
-	 * 
-	 * @param domElement
-	 *            The JDOM element that contains the property that is to be
-	 *            parsed.
-	 * @return The parsed value object.
-	 */
-	public abstract Object readProperty(Element domElement);
+    /**
+     * Parse the given JDOM element and return an appropriate value object.
+     * 
+     * @param domElement
+     *            The JDOM element that contains the property that is to be
+     *            parsed.
+     * @return The parsed value object.
+     */
+    public abstract Object readProperty(Element domElement);
 }

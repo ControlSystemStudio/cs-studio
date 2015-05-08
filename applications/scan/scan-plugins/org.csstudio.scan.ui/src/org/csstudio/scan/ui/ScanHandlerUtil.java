@@ -18,48 +18,48 @@ import org.eclipse.ui.handlers.HandlerUtil;
  */
 public class ScanHandlerUtil
 {
-	/** @param selection {@link ISelection}
-	 *  @return Scan info from selection <code>null</code>
-	 */
-	private static ScanInfo checkScanInfo(final ISelection selection)
-	{
-		if (! (selection instanceof IStructuredSelection))
-			return null;
-		final IStructuredSelection ssel = (IStructuredSelection) selection;
-		final Object object = ssel.getFirstElement();
-		if (! (object instanceof ScanInfo))
-			return null;
-		return (ScanInfo) object;
-	}
+    /** @param selection {@link ISelection}
+     *  @return Scan info from selection <code>null</code>
+     */
+    private static ScanInfo checkScanInfo(final ISelection selection)
+    {
+        if (! (selection instanceof IStructuredSelection))
+            return null;
+        final IStructuredSelection ssel = (IStructuredSelection) selection;
+        final Object object = ssel.getFirstElement();
+        if (! (object instanceof ScanInfo))
+            return null;
+        return (ScanInfo) object;
+    }
 
-	/** @param event {@link ExecutionEvent}
-	 *  @return Scan info from current context menu or <code>null</code>
-	 */
-	public static ScanInfo getMenuScanInfo(final ExecutionEvent event)
-	{
-		return checkScanInfo(HandlerUtil.getActiveMenuSelection(event));
-	}
+    /** @param event {@link ExecutionEvent}
+     *  @return Scan info from current context menu or <code>null</code>
+     */
+    public static ScanInfo getMenuScanInfo(final ExecutionEvent event)
+    {
+        return checkScanInfo(HandlerUtil.getActiveMenuSelection(event));
+    }
 
-	/** @param event {@link ExecutionEvent}
-	 *  @return Currently selected scan or <code>null</code>
-	 */
-	public static ScanInfo getSelectedScanInfo(final ExecutionEvent event)
-	{
-		return checkScanInfo(HandlerUtil.getCurrentSelection(event));
-	}
+    /** @param event {@link ExecutionEvent}
+     *  @return Currently selected scan or <code>null</code>
+     */
+    public static ScanInfo getSelectedScanInfo(final ExecutionEvent event)
+    {
+        return checkScanInfo(HandlerUtil.getCurrentSelection(event));
+    }
 
-	/** @param event {@link ExecutionEvent}
-	 *  @return Scan info from context menu or current selection, or <code>null</code>
-	 */
-	public static ScanInfo getScanInfo(final ExecutionEvent event)
-	{
-		// Try the menu selection
-		// When a context menu was opened, this will be "it".
-		// The current selection can actually change while
-		// the menu is open and is thus less useful.
-		ScanInfo scan = getMenuScanInfo(event);
-		if (scan != null)
-			return scan;
-		return getSelectedScanInfo(event);
-	}
+    /** @param event {@link ExecutionEvent}
+     *  @return Scan info from context menu or current selection, or <code>null</code>
+     */
+    public static ScanInfo getScanInfo(final ExecutionEvent event)
+    {
+        // Try the menu selection
+        // When a context menu was opened, this will be "it".
+        // The current selection can actually change while
+        // the menu is open and is thus less useful.
+        ScanInfo scan = getMenuScanInfo(event);
+        if (scan != null)
+            return scan;
+        return getSelectedScanInfo(event);
+    }
 }

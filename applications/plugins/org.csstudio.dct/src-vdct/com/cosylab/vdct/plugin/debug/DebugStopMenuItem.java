@@ -46,13 +46,13 @@ public class DebugStopMenuItem extends JMenuItem implements ActionListener//impl
  */
 public DebugStopMenuItem()
 {
-	addActionListener(this);
+    addActionListener(this);
 }
 /**
  * Invoked when an action occurs.
  */
 public void actionPerformed(java.awt.event.ActionEvent e)
 {
-	PluginDebugManager.stopDebugging();
+    PluginDebugManager.stopDebugging();
 }
 }

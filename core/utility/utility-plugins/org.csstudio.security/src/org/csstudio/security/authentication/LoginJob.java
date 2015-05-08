@@ -104,14 +104,14 @@ public class LoginJob extends Job
         final Logger logger = Logger.getLogger(getClass().getName());
         try
         {
-        	final String jaas_config = SecurityPreferences.getJaasConfig();
-        	if (jaas_config != null  &&  !jaas_config.isEmpty())
-        	{	// Use complete configuration from preferences
-        		Configuration.setConfiguration(new PreferenceBasedJAASConfiguration(jaas_config));
-        	}
-        	// Get JAAS file and config name in any case.
-        	// Will actually be ignored if we set a complete preference-based config
-        	final URL jaas_file = new URL(SecurityPreferences.getJaasConfigFile());
+            final String jaas_config = SecurityPreferences.getJaasConfig();
+            if (jaas_config != null  &&  !jaas_config.isEmpty())
+            {    // Use complete configuration from preferences
+                Configuration.setConfiguration(new PreferenceBasedJAASConfiguration(jaas_config));
+            }
+            // Get JAAS file and config name in any case.
+            // Will actually be ignored if we set a complete preference-based config
+            final URL jaas_file = new URL(SecurityPreferences.getJaasConfigFile());
             final ILoginContext login = LoginContextFactory.createContext(jaas_name, jaas_file, callback);
             login.login();
                         

@@ -44,33 +44,33 @@ import com.cosylab.vdct.xml.*;
 public class PluginObject
 {
 
-	public static final int PLUGIN_NOT_LOADED = 0;
-	public static final int PLUGIN_LOADED = 1;
-	public static final int PLUGIN_INVALID = 2;
-	public static final int PLUGIN_INITIALIZED = 3;
-	public static final int PLUGIN_STARTED = 4;
-	public static final int PLUGIN_STOPPED = 5;
+    public static final int PLUGIN_NOT_LOADED = 0;
+    public static final int PLUGIN_LOADED = 1;
+    public static final int PLUGIN_INVALID = 2;
+    public static final int PLUGIN_INITIALIZED = 3;
+    public static final int PLUGIN_STARTED = 4;
+    public static final int PLUGIN_STOPPED = 5;
 
-	private final static String NOT_LOADED_PLUGIN = "Not loaded.";
-	private final static String LOADED_PLUGIN = "Loaded.";
-	private final static String INVALID_PLUGIN = "Invalid.";
-	private final static String INITIALIZED_PLUGIN = "Initialized.";
-	private final static String STARTED_PLUGIN = "Started.";
-	private final static String STOPPED_PLUGIN = "Stopped.";
-	
-	private final static String AUTOSTART_PLUGIN = "Auto.";
-	private final static String NO_AUTOSTART_PLUGIN = "Manual.";
+    private final static String NOT_LOADED_PLUGIN = "Not loaded.";
+    private final static String LOADED_PLUGIN = "Loaded.";
+    private final static String INVALID_PLUGIN = "Invalid.";
+    private final static String INITIALIZED_PLUGIN = "Initialized.";
+    private final static String STARTED_PLUGIN = "Started.";
+    private final static String STOPPED_PLUGIN = "Stopped.";
+    
+    private final static String AUTOSTART_PLUGIN = "Auto.";
+    private final static String NO_AUTOSTART_PLUGIN = "Manual.";
 
-	private int status = PLUGIN_NOT_LOADED;
+    private int status = PLUGIN_NOT_LOADED;
 
-	private Plugin plugin = null;
+    private Plugin plugin = null;
 
-	private String className = null;
-	private boolean autoStart = false;
-	private Properties properties = null;
-	
-	private PropertyChangeSupport propChangeSupport = null;
-	
+    private String className = null;
+    private boolean autoStart = false;
+    private Properties properties = null;
+    
+    private PropertyChangeSupport propChangeSupport = null;
+    
 /**
  * Insert the method's description here.
  * Creation date: (6.12.2001 22:46:06)
@@ -78,9 +78,9 @@ public class PluginObject
  */
 public PluginObject(Element pluginNode)
 {
-	propChangeSupport = new PropertyChangeSupport(this);
+    propChangeSupport = new PropertyChangeSupport(this);
 
-	loadConfig(pluginNode);
+    loadConfig(pluginNode);
 
 }
 /**
@@ -91,7 +91,7 @@ public PluginObject(Element pluginNode)
  */
 public void addPropertyChangeListener(PropertyChangeListener listener)
 {
-	propChangeSupport.addPropertyChangeListener(listener);
+    propChangeSupport.addPropertyChangeListener(listener);
 }
 /**
  * Insert the method's description here.
@@ -101,10 +101,10 @@ public void addPropertyChangeListener(PropertyChangeListener listener)
  */
 public void destroy()
 {
-	if (plugin==null)
-		return;
+    if (plugin==null)
+        return;
 
-	plugin.destroy();
+    plugin.destroy();
 }
 /**
  * Insert the method's description here.
@@ -115,7 +115,7 @@ public void destroy()
  */
 public void firePropertyChange(String property, Object oldValue, Object newValue)
 {
-	propChangeSupport.firePropertyChange(property, oldValue, newValue);
+    propChangeSupport.firePropertyChange(property, oldValue, newValue);
 }
 /**
  * Insert the method's description here.
@@ -125,19 +125,19 @@ public void firePropertyChange(String property, Object oldValue, Object newValue
  */
 public String getAuthor()
 {
-	if (plugin==null)
-		return "";
+    if (plugin==null)
+        return "";
 
-	try
-	{
-		return plugin.getAuthor();
-	}
-	catch (Exception e)
-	{
-		com.cosylab.vdct.Console.getInstance().println("An error occurred while obtaining author of plugin instance of "+ className);
-		com.cosylab.vdct.Console.getInstance().println(e);
-		return "";
-	}
+    try
+    {
+        return plugin.getAuthor();
+    }
+    catch (Exception e)
+    {
+        com.cosylab.vdct.Console.getInstance().println("An error occurred while obtaining author of plugin instance of "+ className);
+        com.cosylab.vdct.Console.getInstance().println(e);
+        return "";
+    }
 }
 /**
  * Insert the method's description here.
@@ -147,10 +147,10 @@ public String getAuthor()
  */
 public String getAutoStartString()
 {
-	if (autoStart)
-		return AUTOSTART_PLUGIN;
-	else
-		return NO_AUTOSTART_PLUGIN;
+    if (autoStart)
+        return AUTOSTART_PLUGIN;
+    else
+        return NO_AUTOSTART_PLUGIN;
 }
 /**
  * Insert the method's description here.
@@ -160,19 +160,19 @@ public String getAutoStartString()
  */
 public String getDescription()
 {
-	if (plugin==null)
-		return "";
+    if (plugin==null)
+        return "";
 
-	try
-	{
-		return plugin.getDescription();
-	}
-	catch (Exception e)
-	{
-		com.cosylab.vdct.Console.getInstance().println("An error occurred while obtaining description of plugin instance of "+ className);
-		com.cosylab.vdct.Console.getInstance().println(e);
-		return "";
-	}
+    try
+    {
+        return plugin.getDescription();
+    }
+    catch (Exception e)
+    {
+        com.cosylab.vdct.Console.getInstance().println("An error occurred while obtaining description of plugin instance of "+ className);
+        com.cosylab.vdct.Console.getInstance().println(e);
+        return "";
+    }
 }
 /**
  * Insert the method's description here.
@@ -182,19 +182,19 @@ public String getDescription()
  */
 public String getName()
 {
-	if (plugin==null)
-		return "";
+    if (plugin==null)
+        return "";
 
-	try
-	{
-		return plugin.getName();
-	}
-	catch (Exception e)
-	{
-		com.cosylab.vdct.Console.getInstance().println("An error occurred while obtaining name of plugin instance of "+ className);
-		com.cosylab.vdct.Console.getInstance().println(e);
-		return "";
-	}
+    try
+    {
+        return plugin.getName();
+    }
+    catch (Exception e)
+    {
+        com.cosylab.vdct.Console.getInstance().println("An error occurred while obtaining name of plugin instance of "+ className);
+        com.cosylab.vdct.Console.getInstance().println(e);
+        return "";
+    }
 }
 /**
  * Insert the method's description here.
@@ -204,7 +204,7 @@ public String getName()
  */
 public Plugin getPlugin()
 {
-	return plugin;
+    return plugin;
 }
 /**
  * Insert the method's description here.
@@ -214,7 +214,7 @@ public Plugin getPlugin()
  */
 public int getStatus()
 {
-	return status;
+    return status;
 }
 /**
  * Insert the method's description here.
@@ -224,20 +224,20 @@ public int getStatus()
  */
 public String getStatusString()
 {
-	if (status==PLUGIN_NOT_LOADED)
-		return NOT_LOADED_PLUGIN;
-	else if (status==PLUGIN_LOADED)
-		return LOADED_PLUGIN;
-	else if (status==PLUGIN_INVALID)
-		return INVALID_PLUGIN;
-	else if (status==PLUGIN_INITIALIZED)
-		return INITIALIZED_PLUGIN;
-	else if (status==PLUGIN_STARTED)
-		return STARTED_PLUGIN;
-	else if (status==PLUGIN_STOPPED)
-		return STOPPED_PLUGIN;
-	else
-		return "";
+    if (status==PLUGIN_NOT_LOADED)
+        return NOT_LOADED_PLUGIN;
+    else if (status==PLUGIN_LOADED)
+        return LOADED_PLUGIN;
+    else if (status==PLUGIN_INVALID)
+        return INVALID_PLUGIN;
+    else if (status==PLUGIN_INITIALIZED)
+        return INITIALIZED_PLUGIN;
+    else if (status==PLUGIN_STARTED)
+        return STARTED_PLUGIN;
+    else if (status==PLUGIN_STOPPED)
+        return STOPPED_PLUGIN;
+    else
+        return "";
 }
 /**
  * Insert the method's description here.
@@ -247,10 +247,10 @@ public String getStatusString()
  */
 public String getVersion()
 {
-	if (plugin!=null)
-		return plugin.getVersion();
-	else
-		return "";
+    if (plugin!=null)
+        return plugin.getVersion();
+    else
+        return "";
 }
 /**
  * Insert the method's description here.
@@ -260,25 +260,25 @@ public String getVersion()
  */
 public void init()
 {
-	if (plugin!=null)
-		return;
+    if (plugin!=null)
+        return;
 
-	try
-	{
-		plugin = loadPlugin(className);
-		setStatus(PLUGIN_LOADED);
-	}
-	catch (Throwable t)	{
-		com.cosylab.vdct.Console.getInstance().println("An error occurred while loading plugin instance of "+ className);
-		com.cosylab.vdct.Console.getInstance().println(t);
+    try
+    {
+        plugin = loadPlugin(className);
+        setStatus(PLUGIN_LOADED);
+    }
+    catch (Throwable t)    {
+        com.cosylab.vdct.Console.getInstance().println("An error occurred while loading plugin instance of "+ className);
+        com.cosylab.vdct.Console.getInstance().println(t);
 
-		plugin = null;
-		setStatus(PLUGIN_INVALID);
-		return;
-	}
+        plugin = null;
+        setStatus(PLUGIN_INVALID);
+        return;
+    }
 
-	plugin.init(properties, new PluginContext());
-	setStatus(PLUGIN_INITIALIZED);
+    plugin.init(properties, new PluginContext());
+    setStatus(PLUGIN_INITIALIZED);
 }
 /**
  * Insert the method's description here.
@@ -288,7 +288,7 @@ public void init()
  */
 public boolean isAutoStart()
 {
-	return autoStart;
+    return autoStart;
 }
 /**
  * Insert the method's description here.
@@ -297,22 +297,22 @@ public boolean isAutoStart()
  */
 private void loadConfig(Element pluginNode)
 {
-	className = XMLManager.getNodeAttribute(pluginNode, "class");
-	autoStart = XMLManager.getNodeAttribute(pluginNode, "autostart").equals("true");
-	
-	properties = new Properties();
+    className = XMLManager.getNodeAttribute(pluginNode, "class");
+    autoStart = XMLManager.getNodeAttribute(pluginNode, "autostart").equals("true");
+    
+    properties = new Properties();
 
-	System.out.println("Loading plugin: "+className);
-	
-	Node node = pluginNode.getFirstChild();
-	while (node!=null)
-	{
-		if (node instanceof Element)
-			properties.put(XMLManager.getNodeAttribute(node, "name"),
-						   XMLManager.getNodeAttribute(node, "value"));
+    System.out.println("Loading plugin: "+className);
+    
+    Node node = pluginNode.getFirstChild();
+    while (node!=null)
+    {
+        if (node instanceof Element)
+            properties.put(XMLManager.getNodeAttribute(node, "name"),
+                           XMLManager.getNodeAttribute(node, "value"));
 
-		node = node.getNextSibling();
-	}
+        node = node.getNextSibling();
+    }
 }
 /**
  * Insert the method's description here.
@@ -322,22 +322,22 @@ private void loadConfig(Element pluginNode)
  */
 public static Plugin loadPlugin(String className) throws Throwable
 {
-	if (className==null)
-		return null;
-	
-	try
-	{
-		Class classObj = Class.forName(className);
-		Object obj = classObj.newInstance();
-		
-		return (Plugin)obj;
-	}
-	catch (Throwable t)
-	{
-		//com.cosylab.vdct.Console.getInstance().println("An error occurred while loading the class: " + className);
-		//com.cosylab.vdct.Console.getInstance().println(e);
-		throw t;
-	}
+    if (className==null)
+        return null;
+    
+    try
+    {
+        Class classObj = Class.forName(className);
+        Object obj = classObj.newInstance();
+        
+        return (Plugin)obj;
+    }
+    catch (Throwable t)
+    {
+        //com.cosylab.vdct.Console.getInstance().println("An error occurred while loading the class: " + className);
+        //com.cosylab.vdct.Console.getInstance().println(e);
+        throw t;
+    }
 }
 /**
  * Insert the method's description here.
@@ -347,7 +347,7 @@ public static Plugin loadPlugin(String className) throws Throwable
  */
 public void removePropertyChangeListener(PropertyChangeListener listener)
 {
-	propChangeSupport.removePropertyChangeListener(listener);
+    propChangeSupport.removePropertyChangeListener(listener);
 }
 /**
  * Insert the method's description here.
@@ -357,17 +357,17 @@ public void removePropertyChangeListener(PropertyChangeListener listener)
 public void saveConfig(Document doc, Element pluginNode)
 {
     pluginNode.setAttribute("class", className);
-	pluginNode.setAttribute("autostart", autoStart ? "true" : "false");
+    pluginNode.setAttribute("autostart", autoStart ? "true" : "false");
 
-	Enumeration enumer = properties.keys();
-	while (enumer.hasMoreElements())
-	{
-		Element element = (Element)doc.createElement("param");
-		String key = enumer.nextElement().toString();
-		element.setAttribute("name", key);
-		element.setAttribute("value", properties.get(key).toString());
-		pluginNode.appendChild(element);
-	}
+    Enumeration enumer = properties.keys();
+    while (enumer.hasMoreElements())
+    {
+        Element element = (Element)doc.createElement("param");
+        String key = enumer.nextElement().toString();
+        element.setAttribute("name", key);
+        element.setAttribute("value", properties.get(key).toString());
+        pluginNode.appendChild(element);
+    }
 }
 /**
  * Insert the method's description here.
@@ -377,10 +377,10 @@ public void saveConfig(Document doc, Element pluginNode)
  */
 public void setAutoStart(boolean autoStart)
 {
-	boolean oldAutoStart = autoStart;
+    boolean oldAutoStart = autoStart;
 
-	this.autoStart = autoStart;
-	propChangeSupport.firePropertyChange("AutoStart", autoStart, oldAutoStart);
+    this.autoStart = autoStart;
+    propChangeSupport.firePropertyChange("AutoStart", autoStart, oldAutoStart);
 }
 /**
  * Insert the method's description here.
@@ -390,9 +390,9 @@ public void setAutoStart(boolean autoStart)
  */
 private void setStatus(int newStatus)
 {
-	int oldStatus = status;
-	status = newStatus;
-	propChangeSupport.firePropertyChange("Status", status, oldStatus);
+    int oldStatus = status;
+    status = newStatus;
+    propChangeSupport.firePropertyChange("Status", status, oldStatus);
 }
 /**
  * Insert the method's description here.
@@ -402,19 +402,19 @@ private void setStatus(int newStatus)
  */
 public void start()
 {
-	if (plugin==null)
-		return;
+    if (plugin==null)
+        return;
 
-	try
-	{
-		plugin.start();
-		setStatus(PLUGIN_STARTED);
-	}
-	catch (Exception e)
-	{
-		com.cosylab.vdct.Console.getInstance().println("An error occurred while starting plugin instance of "+ className);
-		com.cosylab.vdct.Console.getInstance().println(e);
-	}
+    try
+    {
+        plugin.start();
+        setStatus(PLUGIN_STARTED);
+    }
+    catch (Exception e)
+    {
+        com.cosylab.vdct.Console.getInstance().println("An error occurred while starting plugin instance of "+ className);
+        com.cosylab.vdct.Console.getInstance().println(e);
+    }
 }
 /**
  * Insert the method's description here.
@@ -424,18 +424,18 @@ public void start()
  */
 public void stop()
 {
-	if (plugin==null)
-		return;
+    if (plugin==null)
+        return;
 
-	try
-	{
-		plugin.stop();
-		setStatus(PLUGIN_STOPPED);
-	}
-	catch (Exception e)
-	{
-		com.cosylab.vdct.Console.getInstance().println("An error occurred while stopping plugin instance of "+ className);
-		com.cosylab.vdct.Console.getInstance().println(e);
-	}
+    try
+    {
+        plugin.stop();
+        setStatus(PLUGIN_STOPPED);
+    }
+    catch (Exception e)
+    {
+        com.cosylab.vdct.Console.getInstance().println("An error occurred while stopping plugin instance of "+ className);
+        com.cosylab.vdct.Console.getInstance().println(e);
+    }
 }
 }

@@ -10,20 +10,20 @@ import org.eclipse.gef.commands.CommandStack;
  */
 public final class RedoAction extends AbstractCommandStackAction {
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected void doRun(CommandStack commandStack) {
-		commandStack.redo();
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected void doRun(CommandStack commandStack) {
+        commandStack.redo();
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected boolean isActionEnabled(CommandStack commandStack) {
-		return commandStack.canRedo();
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected boolean isActionEnabled(CommandStack commandStack) {
+        return commandStack.canRedo();
+    }
 
 }

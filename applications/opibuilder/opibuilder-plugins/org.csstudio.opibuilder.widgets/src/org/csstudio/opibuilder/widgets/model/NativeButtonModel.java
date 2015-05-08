@@ -16,34 +16,34 @@ package org.csstudio.opibuilder.widgets.model;
  * 
  */
 public final class NativeButtonModel extends ActionButtonModel{
-	
-	
-	/**
-	 * The ID of this widget model.
-	 */
-	public static final String ID = "org.csstudio.opibuilder.widgets.NativeButton"; //$NON-NLS-1$
+    
+    
+    /**
+     * The ID of this widget model.
+     */
+    public static final String ID = "org.csstudio.opibuilder.widgets.NativeButton"; //$NON-NLS-1$
 
 
-	@Override
-	protected void configureProperties() {
-		super.configureProperties();
-		removeProperty(PROP_BACKCOLOR_ALARMSENSITIVE);
-		removeProperty(PROP_COLOR_BACKGROUND);
-		removeProperty(PROP_ALARM_PULSING);
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTypeID() {
-		return ID;
-	}
+    @Override
+    protected void configureProperties() {
+        super.configureProperties();
+        removeProperty(PROP_BACKCOLOR_ALARMSENSITIVE);
+        removeProperty(PROP_COLOR_BACKGROUND);
+        removeProperty(PROP_ALARM_PULSING);
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTypeID() {
+        return ID;
+    }
 
 
-	
-	
-	
+    
+    
+    
 
 }

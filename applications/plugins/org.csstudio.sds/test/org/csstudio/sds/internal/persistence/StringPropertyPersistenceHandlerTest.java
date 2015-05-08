@@ -41,45 +41,45 @@ import org.junit.Test;
  * 
  */
 public final class StringPropertyPersistenceHandlerTest {
-	/**
-	 * Test for the writing behaviour.
-	 */
-	@Test
-	public void testWriteProperty() {
-		StringPropertyPersistenceHandler handler = new StringPropertyPersistenceHandler();
-		WidgetProperty property = new StringProperty(
-				"description", WidgetPropertyCategory.BEHAVIOR, ""); //$NON-NLS-1$ //$NON-NLS-2$
-		property.setDynamicsDescriptor(new DynamicsDescriptor());
-		property.setPropertyValue("String"); //$NON-NLS-1$
+    /**
+     * Test for the writing behaviour.
+     */
+    @Test
+    public void testWriteProperty() {
+        StringPropertyPersistenceHandler handler = new StringPropertyPersistenceHandler();
+        WidgetProperty property = new StringProperty(
+                "description", WidgetPropertyCategory.BEHAVIOR, ""); //$NON-NLS-1$ //$NON-NLS-2$
+        property.setDynamicsDescriptor(new DynamicsDescriptor());
+        property.setPropertyValue("String"); //$NON-NLS-1$
 
-		Element valueTag = new Element("anyTag"); //$NON-NLS-1$
+        Element valueTag = new Element("anyTag"); //$NON-NLS-1$
 
-		handler.writeProperty(valueTag, property.getPropertyValue());
+        handler.writeProperty(valueTag, property.getPropertyValue());
 
-		assertEquals(0, valueTag.getChildren().size());
+        assertEquals(0, valueTag.getChildren().size());
 
-		Attribute attrib = valueTag.getAttribute("value"); //$NON-NLS-1$
+        Attribute attrib = valueTag.getAttribute("value"); //$NON-NLS-1$
 
-		assertNotNull(attrib);
-		assertEquals("String", attrib.getValue()); //$NON-NLS-1$
-	}
+        assertNotNull(attrib);
+        assertEquals("String", attrib.getValue()); //$NON-NLS-1$
+    }
 
-	/**
-	 * Test for the reading behaviour.
-	 */
-	@Test
-	public void testReadProperty() {
-		StringPropertyPersistenceHandler handler = new StringPropertyPersistenceHandler();
+    /**
+     * Test for the reading behaviour.
+     */
+    @Test
+    public void testReadProperty() {
+        StringPropertyPersistenceHandler handler = new StringPropertyPersistenceHandler();
 
-		Element propertyTag = new Element("anyTag"); //$NON-NLS-1$
-		propertyTag.setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE,
-				"Arbitrary String"); //$NON-NLS-1$
+        Element propertyTag = new Element("anyTag"); //$NON-NLS-1$
+        propertyTag.setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE,
+                "Arbitrary String"); //$NON-NLS-1$
 
-		Object propertyValue = handler.readProperty(propertyTag);
+        Object propertyValue = handler.readProperty(propertyTag);
 
-		assertTrue(propertyValue instanceof String);
+        assertTrue(propertyValue instanceof String);
 
-		assertEquals("Arbitrary String", propertyValue); //$NON-NLS-1$
-	}
+        assertEquals("Arbitrary String", propertyValue); //$NON-NLS-1$
+    }
 
 }

@@ -33,28 +33,28 @@ import org.junit.Test;
  *
  */
 public class CommandParameterEnumValueTest {
-	
-	@Test
-	public void testValueAndLabel() throws Exception {
-		CommandParameterEnumValue ev = new CommandParameterEnumValue("value", "label");
-		assertEquals("value", ev.getValue());
-		assertEquals("label", ev.getLabel());
-	}
-	
-	@Test
-	public void testToStringReturnsAString() throws Exception {
-		CommandParameterEnumValue ev = new CommandParameterEnumValue("value", "label");
-		assertNotNull(ev.toString());
-	}
-	
-	@Test(expected = NullPointerException.class)
-	public void testValueMustNotBeNull() throws Exception {
-		new CommandParameterEnumValue(null, "label");
-	}
-	
-	@Test(expected = NullPointerException.class)
-	public void testLabelMustNotBeNull() throws Exception {
-		new CommandParameterEnumValue("value", null);
-	}
+    
+    @Test
+    public void testValueAndLabel() throws Exception {
+        CommandParameterEnumValue ev = new CommandParameterEnumValue("value", "label");
+        assertEquals("value", ev.getValue());
+        assertEquals("label", ev.getLabel());
+    }
+    
+    @Test
+    public void testToStringReturnsAString() throws Exception {
+        CommandParameterEnumValue ev = new CommandParameterEnumValue("value", "label");
+        assertNotNull(ev.toString());
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void testValueMustNotBeNull() throws Exception {
+        new CommandParameterEnumValue(null, "label");
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void testLabelMustNotBeNull() throws Exception {
+        new CommandParameterEnumValue("value", null);
+    }
 
 }

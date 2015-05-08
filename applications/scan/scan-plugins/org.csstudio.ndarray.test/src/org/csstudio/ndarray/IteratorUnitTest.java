@@ -18,31 +18,31 @@ import org.junit.Test;
  */
 public class IteratorUnitTest
 {
-	@Test
+    @Test
     public void testIterator()
     {
-    	final NDArray a = NDMatrix.reshape(NDMatrix.arange(0, 6, 1), 2, 3);
-    	final NDArray b = NDMatrix.transpose(a);
+        final NDArray a = NDMatrix.reshape(NDMatrix.arange(0, 6, 1), 2, 3);
+        final NDArray b = NDMatrix.transpose(a);
 
-    	System.out.println(a);
-    	IteratorNumber iterator = a.getIterator();
-    	for (int i=0; i<6; ++i)
-    	{
-    		assertTrue(iterator.hasNext());
-    		final double value = iterator.nextDouble();
-			System.out.println(value);
-    		if (i==1)
-    			assertEquals(1, value, 0.001);
-    	}
-    	System.out.println(b);
-    	iterator = b.getIterator();
-    	for (int i=0; i<6; ++i)
-    	{
-    		assertTrue(iterator.hasNext());
-    		final double value = iterator.nextDouble();
-    		System.out.println(value);
-    		if (i==1)
-    			assertEquals(3, value, 0.001);
-    	}
+        System.out.println(a);
+        IteratorNumber iterator = a.getIterator();
+        for (int i=0; i<6; ++i)
+        {
+            assertTrue(iterator.hasNext());
+            final double value = iterator.nextDouble();
+            System.out.println(value);
+            if (i==1)
+                assertEquals(1, value, 0.001);
+        }
+        System.out.println(b);
+        iterator = b.getIterator();
+        for (int i=0; i<6; ++i)
+        {
+            assertTrue(iterator.hasNext());
+            final double value = iterator.nextDouble();
+            System.out.println(value);
+            if (i==1)
+                assertEquals(3, value, 0.001);
+        }
  }
 }

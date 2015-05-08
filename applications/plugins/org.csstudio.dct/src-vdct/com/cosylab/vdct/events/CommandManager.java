@@ -36,14 +36,14 @@ import java.util.*;
  * @author Matej Sekoranja
  */
 public class CommandManager {
-	protected Hashtable commands;
+    protected Hashtable commands;
 
-	protected static CommandManager instance = null;
+    protected static CommandManager instance = null;
 /**
  * CommandManager constructor comment.
  */
 protected CommandManager() {
-	commands = new Hashtable();
+    commands = new Hashtable();
 }
 /**
  * Insert the method's description here.
@@ -52,16 +52,16 @@ protected CommandManager() {
  * @param command com.cosylab.vdct.events.Command
  */
 public void addCommand(String id, Command command) {
-	if (commands.containsKey(id))
-		throw new IllegalArgumentException("Error: command with id '"+id+"' already exists...");
-	else commands.put(id, command);
+    if (commands.containsKey(id))
+        throw new IllegalArgumentException("Error: command with id '"+id+"' already exists...");
+    else commands.put(id, command);
 }
 /**
  * Insert the method's description here.
  * Creation date: (18.12.2000 15:32:53)
  */
 public void clear() {
-	commands.clear();
+    commands.clear();
 }
 /**
  * Insert the method's description here.
@@ -69,8 +69,8 @@ public void clear() {
  * @param id java.lang.String
  */
 public void execute(String id) {
-	Command command = (Command)commands.get(id);
-	if (command!=null) command.execute();
+    Command command = (Command)commands.get(id);
+    if (command!=null) command.execute();
 }
 /**
  * Insert the method's description here.
@@ -79,8 +79,8 @@ public void execute(String id) {
  * @param id java.lang.String
  */
 public Command getCommand(String id) {
-	Command command = (Command)commands.get(id);
-	return command;
+    Command command = (Command)commands.get(id);
+    return command;
 }
 /**
  * Insert the method's description here.
@@ -88,9 +88,9 @@ public Command getCommand(String id) {
  * @return com.cosylab.vdct.events.CommandManager
  */
 public static CommandManager getInstance() {
-	if (instance==null)
-		instance = new CommandManager();
-	return instance;
+    if (instance==null)
+        instance = new CommandManager();
+    return instance;
 }
 /**
  * Insert the method's description here.
@@ -98,6 +98,6 @@ public static CommandManager getInstance() {
  * @param id java.lang.String
  */
 public void removeCommand(String id) {
-	commands.remove(id);
+    commands.remove(id);
 }
 }

@@ -25,14 +25,14 @@ import org.junit.Test;
  */
 public class MemoryInfoUnitTest
 {
-	@Test
-	public void testGetMemoryInfo()
-	{
-		final MemoryInfo mem = new MemoryInfo();
-		System.out.println(mem);
+    @Test
+    public void testGetMemoryInfo()
+    {
+        final MemoryInfo mem = new MemoryInfo();
+        System.out.println(mem);
 
-		final double perc = mem.getMemoryPercentage();
-		assertTrue(perc > 0);
-		assertTrue(perc < 100);
-	}
+        final double perc = mem.getMemoryPercentage();
+        assertTrue(perc > 0);
+        assertTrue(perc < 100);
+    }
 }

@@ -21,14 +21,14 @@ import org.epics.vtype.VType;
 @SuppressWarnings("nls")
 abstract public class StringListener extends PVListenerAdapter
 {
-	/** @param error Error to handle */
+    /** @param error Error to handle */
     public void handleError(final String error)
-	{
-		handleText("Error: " + error);
-	}
+    {
+        handleText("Error: " + error);
+    }
 
-	/** @param text Text to handle */
-	abstract public void handleText(final String text);
+    /** @param text Text to handle */
+    abstract public void handleText(final String text);
 
     /** {@inheritDoc} */
     @Override
@@ -51,6 +51,6 @@ abstract public class StringListener extends PVListenerAdapter
     {
         handleError(pv.getName() + " disconnected");
     }
-	
+    
 };
         

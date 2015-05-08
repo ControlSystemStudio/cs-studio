@@ -31,130 +31,130 @@ import java.util.List;
  */
 final class LinearAxis implements IAxis {
 
-	/**
-	 * The lower bound of the data range of this axis.
-	 */
-	private double _dataLower;
-	
-	/**
-	 * The upper bound of the data range of this axis.
-	 */
-	private double _dataUpper;
-	
-	/**
-	 * The size of this axis in display units. 
-	 */
-	private int _displaySize;
+    /**
+     * The lower bound of the data range of this axis.
+     */
+    private double _dataLower;
+    
+    /**
+     * The upper bound of the data range of this axis.
+     */
+    private double _dataUpper;
+    
+    /**
+     * The size of this axis in display units. 
+     */
+    private int _displaySize;
 
-	/**
-	 * Creates a new axis.
-	 * 
-	 * @param dataLower
-	 *            the lower bound of the data range.
-	 * @param dataUpper
-	 *            the upper bound of the data range.
-	 * @param displaySize
-	 *            the size of the display.
-	 */
-	LinearAxis(final double dataLower, final double dataUpper,
-			final int displaySize) {
-		if (displaySize < 0) {
-			throw new IllegalArgumentException("Invalid display size");
-		}
+    /**
+     * Creates a new axis.
+     * 
+     * @param dataLower
+     *            the lower bound of the data range.
+     * @param dataUpper
+     *            the upper bound of the data range.
+     * @param displaySize
+     *            the size of the display.
+     */
+    LinearAxis(final double dataLower, final double dataUpper,
+            final int displaySize) {
+        if (displaySize < 0) {
+            throw new IllegalArgumentException("Invalid display size");
+        }
 
-		_dataLower = dataLower;
-		_dataUpper = dataUpper;
-		_displaySize = displaySize;
-	}
+        _dataLower = dataLower;
+        _dataUpper = dataUpper;
+        _displaySize = displaySize;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public int valueToCoordinate(final double value) {
-		double dataRange = _dataUpper - _dataLower;
-		double scaling = (_displaySize - 1) / dataRange;
+    /**
+     * {@inheritDoc}
+     */
+    public int valueToCoordinate(final double value) {
+        double dataRange = _dataUpper - _dataLower;
+        double scaling = (_displaySize - 1) / dataRange;
 
-		long intermediate = Math.round((value - _dataLower) * scaling);
-		// constrain the value to an integer value
-		return intermediate > Integer.MAX_VALUE ? Integer.MAX_VALUE
-				: (intermediate < Integer.MIN_VALUE ? Integer.MIN_VALUE
-						: (int) intermediate);
-	}
-	
-	/**
-	 * Checks whether the specified value is a legal value for this axis. For
-	 * a linear axis, all values except NaN are legal.
-	 * 
-	 * @param value
-	 *            the data value to check.
-	 * @return <code>true</code> if the value is legal, <code>false</code>
-	 *         otherwise.
-	 */
-	public boolean isLegalValue(final double value) {
-		// Note: cannot use == or != operator here because NaN != NaN.
-		return !Double.isNaN(value);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public List<Tick> calculateTicks(final int minMajorDistance,
-			final int minMinorDistance) {
-		
-		// TODO: calculate minor tickmarks. TickCalculator calculates only
-		// major tickmarks.
-		
-		TickCalculator calc = new TickCalculator();
-		if (_dataLower < _dataUpper) {
-			calc.setMinimumValue(_dataLower);
-			calc.setMaximumValue(_dataUpper);
-		} else {
-			calc.setMinimumValue(_dataUpper);
-			calc.setMaximumValue(_dataLower);
-		}
-		calc.setMaximumTickCount(_displaySize / minMajorDistance);
-		return calc.calculateTicks();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public List<Tick> calculateIntegerTicks(final int minMajorDistance,
-			final int minMinorDistance) {
-		
-		// TODO: calculate minor tickmarks. TickCalculator calculates only
-		// major tickmarks.
-		
-		TickCalculator calc = new TickCalculator();
-		if (_dataLower < _dataUpper) {
-			calc.setMinimumValue(_dataLower);
-			calc.setMaximumValue(_dataUpper);
-		} else {
-			calc.setMinimumValue(_dataUpper);
-			calc.setMaximumValue(_dataLower);
-		}
-		calc.setMaximumTickCount(_displaySize / minMajorDistance);
-		calc.setIntegerOnly(true);
-		return calc.calculateTicks();
-	}
+        long intermediate = Math.round((value - _dataLower) * scaling);
+        // constrain the value to an integer value
+        return intermediate > Integer.MAX_VALUE ? Integer.MAX_VALUE
+                : (intermediate < Integer.MIN_VALUE ? Integer.MIN_VALUE
+                        : (int) intermediate);
+    }
+    
+    /**
+     * Checks whether the specified value is a legal value for this axis. For
+     * a linear axis, all values except NaN are legal.
+     * 
+     * @param value
+     *            the data value to check.
+     * @return <code>true</code> if the value is legal, <code>false</code>
+     *         otherwise.
+     */
+    public boolean isLegalValue(final double value) {
+        // Note: cannot use == or != operator here because NaN != NaN.
+        return !Double.isNaN(value);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public List<Tick> calculateTicks(final int minMajorDistance,
+            final int minMinorDistance) {
+        
+        // TODO: calculate minor tickmarks. TickCalculator calculates only
+        // major tickmarks.
+        
+        TickCalculator calc = new TickCalculator();
+        if (_dataLower < _dataUpper) {
+            calc.setMinimumValue(_dataLower);
+            calc.setMaximumValue(_dataUpper);
+        } else {
+            calc.setMinimumValue(_dataUpper);
+            calc.setMaximumValue(_dataLower);
+        }
+        calc.setMaximumTickCount(_displaySize / minMajorDistance);
+        return calc.calculateTicks();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public List<Tick> calculateIntegerTicks(final int minMajorDistance,
+            final int minMinorDistance) {
+        
+        // TODO: calculate minor tickmarks. TickCalculator calculates only
+        // major tickmarks.
+        
+        TickCalculator calc = new TickCalculator();
+        if (_dataLower < _dataUpper) {
+            calc.setMinimumValue(_dataLower);
+            calc.setMaximumValue(_dataUpper);
+        } else {
+            calc.setMinimumValue(_dataUpper);
+            calc.setMaximumValue(_dataLower);
+        }
+        calc.setMaximumTickCount(_displaySize / minMajorDistance);
+        calc.setIntegerOnly(true);
+        return calc.calculateTicks();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setDataRange(final double lower, final double upper) {
-		_dataLower = lower;
-		_dataUpper = upper;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void setDataRange(final double lower, final double upper) {
+        _dataLower = lower;
+        _dataUpper = upper;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setDisplaySize(final int size) {
-		if (size < 0) {
-			throw new IllegalArgumentException("Invalid display size");
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public void setDisplaySize(final int size) {
+        if (size < 0) {
+            throw new IllegalArgumentException("Invalid display size");
+        }
 
-		_displaySize = size;
-	}
+        _displaySize = size;
+    }
 
 }

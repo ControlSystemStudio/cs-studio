@@ -63,177 +63,177 @@ import org.eclipse.ui.part.ViewPart;
  * @author Sven Wende
  */
 public final class GraphicalDctView extends ViewPart {
-	public static final String PRIMARY_ID = "org.csstudio.dct.ui.graphicalviewer.GraphicalDctView";
+    public static final String PRIMARY_ID = "org.csstudio.dct.ui.graphicalviewer.GraphicalDctView";
 
-	/**
-	 * The graphical viewer.
-	 */
-	private GraphicalViewer _graphicalViewer;
+    /**
+     * The graphical viewer.
+     */
+    private GraphicalViewer _graphicalViewer;
 
-	private DctGraphicalModel model;
+    private DctGraphicalModel model;
 
-	public GraphicalDctView() {
-		model = new DctGraphicalModel(ProjectFactory.createNewDCTProject());
-	}
+    public GraphicalDctView() {
+        model = new DctGraphicalModel(ProjectFactory.createNewDCTProject());
+    }
 
-	public void setInstance(IProject project,IInstance instance) {
-		model = new DctGraphicalModel(project);
+    public void setInstance(IProject project,IInstance instance) {
+        model = new DctGraphicalModel(project);
 
-		AbstractContainerNode box = new InstanceNode(instance);
-		model.addNode(box);
+        AbstractContainerNode box = new InstanceNode(instance);
+        model.addNode(box);
 
-		for (IInstance in : instance.getInstances()) {
-			box.addNode(createBox(in));
-		}
+        for (IInstance in : instance.getInstances()) {
+            box.addNode(createBox(in));
+        }
 
-		for (IRecord record : instance.getRecords()) {
-			RecordNode r = new RecordNode(record);
-			box.addNode(r);
-		}
+        for (IRecord record : instance.getRecords()) {
+            RecordNode r = new RecordNode(record);
+            box.addNode(r);
+        }
 
-		// .. connections
-		SearchConnectionsVisitor visitor = new SearchConnectionsVisitor();
-		Set<ConnectionDescriptor> connectionDescriptors = visitor.search(project);
+        // .. connections
+        SearchConnectionsVisitor visitor = new SearchConnectionsVisitor();
+        Set<ConnectionDescriptor> connectionDescriptors = visitor.search(project);
 
-		if(!connectionDescriptors.isEmpty()) {
-			SearchNodeVisitor nodeVisitor = new SearchNodeVisitor();
-			
-			for(ConnectionDescriptor cd : connectionDescriptors) {
-				AbstractNode srcNode = nodeVisitor.find(cd.getSource().getId(), model);
-				AbstractNode tgtNode = nodeVisitor.find(cd.getTarget().getId(), model);
-				
-				if(srcNode!=null && tgtNode!=null) {
-					Connection connection = new Connection(srcNode, tgtNode);
-					connection.setCaption(cd.getDetails());
-				}
-			}
-		}
-		
+        if(!connectionDescriptors.isEmpty()) {
+            SearchNodeVisitor nodeVisitor = new SearchNodeVisitor();
+            
+            for(ConnectionDescriptor cd : connectionDescriptors) {
+                AbstractNode srcNode = nodeVisitor.find(cd.getSource().getId(), model);
+                AbstractNode tgtNode = nodeVisitor.find(cd.getTarget().getId(), model);
+                
+                if(srcNode!=null && tgtNode!=null) {
+                    Connection connection = new Connection(srcNode, tgtNode);
+                    connection.setCaption(cd.getDetails());
+                }
+            }
+        }
+        
 
-		_graphicalViewer.setContents(model);
-	}
-	
-	public void setPrototype(IProject project, IPrototype prototype) {
-		model = new DctGraphicalModel(project);
+        _graphicalViewer.setContents(model);
+    }
+    
+    public void setPrototype(IProject project, IPrototype prototype) {
+        model = new DctGraphicalModel(project);
 
-		AbstractContainerNode box = new PrototypeNode(prototype);
-		model.addNode(box);
+        AbstractContainerNode box = new PrototypeNode(prototype);
+        model.addNode(box);
 
-		for (IInstance instance : prototype.getInstances()) {
-			box.addNode(createBox(instance));
-		}
+        for (IInstance instance : prototype.getInstances()) {
+            box.addNode(createBox(instance));
+        }
 
-		for (IRecord record : prototype.getRecords()) {
-			RecordNode r = new RecordNode(record);
-			box.addNode(r);
-		}
+        for (IRecord record : prototype.getRecords()) {
+            RecordNode r = new RecordNode(record);
+            box.addNode(r);
+        }
 
-		// .. connections
-		SearchConnectionsVisitor visitor = new SearchConnectionsVisitor();
-		Set<ConnectionDescriptor> connectionDescriptors = visitor.search(project);
+        // .. connections
+        SearchConnectionsVisitor visitor = new SearchConnectionsVisitor();
+        Set<ConnectionDescriptor> connectionDescriptors = visitor.search(project);
 
-		if(!connectionDescriptors.isEmpty()) {
-			SearchNodeVisitor nodeVisitor = new SearchNodeVisitor();
-			
-			for(ConnectionDescriptor cd : connectionDescriptors) {
-				AbstractNode srcNode = nodeVisitor.find(cd.getSource().getId(), model);
-				AbstractNode tgtNode = nodeVisitor.find(cd.getTarget().getId(), model);
-				
-				if(srcNode!=null && tgtNode!=null) {
-					Connection connection = new Connection(srcNode, tgtNode);
-					connection.setCaption(cd.getDetails());
-				}
-			}
-		}
-		
+        if(!connectionDescriptors.isEmpty()) {
+            SearchNodeVisitor nodeVisitor = new SearchNodeVisitor();
+            
+            for(ConnectionDescriptor cd : connectionDescriptors) {
+                AbstractNode srcNode = nodeVisitor.find(cd.getSource().getId(), model);
+                AbstractNode tgtNode = nodeVisitor.find(cd.getTarget().getId(), model);
+                
+                if(srcNode!=null && tgtNode!=null) {
+                    Connection connection = new Connection(srcNode, tgtNode);
+                    connection.setCaption(cd.getDetails());
+                }
+            }
+        }
+        
 
-		_graphicalViewer.setContents(model);
-	}
+        _graphicalViewer.setContents(model);
+    }
 
-	private AbstractContainerNode createBox(IInstance instance) {
-		AbstractContainerNode box = new InstanceNode(instance);
+    private AbstractContainerNode createBox(IInstance instance) {
+        AbstractContainerNode box = new InstanceNode(instance);
 
-		for (IInstance instanceLevel2 : instance.getInstances()) {
-			box.addNode(createBox(instanceLevel2));
-		}
+        for (IInstance instanceLevel2 : instance.getInstances()) {
+            box.addNode(createBox(instanceLevel2));
+        }
 
-		for (IRecord record : instance.getRecords()) {
-			RecordNode r = new RecordNode(record);
-			box.addNode(r);
-		}
+        for (IRecord record : instance.getRecords()) {
+            RecordNode r = new RecordNode(record);
+            box.addNode(r);
+        }
 
-		return box;
-	}
+        return box;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void createPartControl(final Composite parent) {
-		_graphicalViewer = createGraphicalViewer(parent);
-		configureGraphicalViewer(_graphicalViewer);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void createPartControl(final Composite parent) {
+        _graphicalViewer = createGraphicalViewer(parent);
+        configureGraphicalViewer(_graphicalViewer);
 
-		_graphicalViewer.setContents(model);
-	}
+        _graphicalViewer.setContents(model);
+    }
 
-	private GraphicalViewer createGraphicalViewer(final Composite parent) {
+    private GraphicalViewer createGraphicalViewer(final Composite parent) {
 
-		final ScrollingGraphicalViewer viewer = new ScrollingGraphicalViewer();
-		viewer.createControl(parent);
+        final ScrollingGraphicalViewer viewer = new ScrollingGraphicalViewer();
+        viewer.createControl(parent);
 
-		viewer.setEditPartFactory(new DctEditPartFactory());
+        viewer.setEditPartFactory(new DctEditPartFactory());
 
-		final ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart();
-		viewer.setRootEditPart(root);
+        final ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart();
+        viewer.setRootEditPart(root);
 
-		EditDomain editDomain = new EditDomain();
+        EditDomain editDomain = new EditDomain();
 
-		final SelectionTool tool = new SelectionTool();
-		tool.setUnloadWhenFinished(false);
-		editDomain.setDefaultTool(tool);
-		editDomain.addViewer(viewer);
+        final SelectionTool tool = new SelectionTool();
+        tool.setUnloadWhenFinished(false);
+        editDomain.setDefaultTool(tool);
+        editDomain.addViewer(viewer);
 
-		return viewer;
-	}
+        return viewer;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setFocus() {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setFocus() {
+    }
 
-	/**
-	 * Configures the specified graphical viewer.
-	 * 
-	 * @param viewer
-	 *            the graphical viewer
-	 */
-	private void configureGraphicalViewer(final GraphicalViewer viewer) {
-		assert viewer != null;
+    /**
+     * Configures the specified graphical viewer.
+     * 
+     * @param viewer
+     *            the graphical viewer
+     */
+    private void configureGraphicalViewer(final GraphicalViewer viewer) {
+        assert viewer != null;
 
-		final ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart();
-		viewer.setRootEditPart(root);
+        final ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart();
+        viewer.setRootEditPart(root);
 
-		final ZoomManager zm = root.getZoomManager();
+        final ZoomManager zm = root.getZoomManager();
 
-		final List<String> zoomLevels = new ArrayList<String>(3);
-		zoomLevels.add(ZoomManager.FIT_ALL);
-		zoomLevels.add(ZoomManager.FIT_WIDTH);
-		zoomLevels.add(ZoomManager.FIT_HEIGHT);
-		zm.setZoomLevelContributions(zoomLevels);
+        final List<String> zoomLevels = new ArrayList<String>(3);
+        zoomLevels.add(ZoomManager.FIT_ALL);
+        zoomLevels.add(ZoomManager.FIT_WIDTH);
+        zoomLevels.add(ZoomManager.FIT_HEIGHT);
+        zm.setZoomLevelContributions(zoomLevels);
 
-		/* scroll-wheel zoom */
-		viewer.setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1), MouseWheelZoomHandler.SINGLETON);
+        /* scroll-wheel zoom */
+        viewer.setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1), MouseWheelZoomHandler.SINGLETON);
 
-		viewer.setProperty(SnapToGrid.PROPERTY_GRID_VISIBLE, false);
-		viewer.setProperty(SnapToGrid.PROPERTY_GRID_ENABLED, false);
-		viewer.setProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED, false);
+        viewer.setProperty(SnapToGrid.PROPERTY_GRID_VISIBLE, false);
+        viewer.setProperty(SnapToGrid.PROPERTY_GRID_ENABLED, false);
+        viewer.setProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED, false);
 
-	}
+    }
 
-	public GraphicalViewer getGraphicalViewer() {
-		return _graphicalViewer;
-	}
+    public GraphicalViewer getGraphicalViewer() {
+        return _graphicalViewer;
+    }
 
 }

@@ -37,67 +37,67 @@ import org.junit.Test;
  * 
  */
 public final class ParameterDescriptorTest {
-	/**
-	 * Test the <code>ParameterDescriptor</code> class.
-	 */
-	@Test
-	public void testParameterDescriptor() {
-		ParameterDescriptor pd = new ParameterDescriptor(
-				"channel"); //$NON-NLS-1$
+    /**
+     * Test the <code>ParameterDescriptor</code> class.
+     */
+    @Test
+    public void testParameterDescriptor() {
+        ParameterDescriptor pd = new ParameterDescriptor(
+                "channel"); //$NON-NLS-1$
 
-		assertEquals("channel", pd.getChannel()); //$NON-NLS-1$
+        assertEquals("channel", pd.getChannel()); //$NON-NLS-1$
 
-		pd.setChannel("channel2"); //$NON-NLS-1$
+        pd.setChannel("channel2"); //$NON-NLS-1$
 
-		assertEquals("channel2", pd.getChannel()); //$NON-NLS-1$
+        assertEquals("channel2", pd.getChannel()); //$NON-NLS-1$
 
-		pd = new ParameterDescriptor();
+        pd = new ParameterDescriptor();
 
-		// test the defaults as well
-		assertEquals("", pd.getChannel()); //$NON-NLS-1$
-	}
+        // test the defaults as well
+        assertEquals("", pd.getChannel()); //$NON-NLS-1$
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.internal.rules.ParameterDescriptor#clone()}.
-	 */
-	@Test
-	public void testClone() {
-		ParameterDescriptor pd = new ParameterDescriptor(
-				"channel"); //$NON-NLS-1$
-		ParameterDescriptor pd2 = pd.clone();
+    /**
+     * Test method for
+     * {@link org.csstudio.sds.internal.rules.ParameterDescriptor#clone()}.
+     */
+    @Test
+    public void testClone() {
+        ParameterDescriptor pd = new ParameterDescriptor(
+                "channel"); //$NON-NLS-1$
+        ParameterDescriptor pd2 = pd.clone();
 
-		assertEquals("channel", pd.getChannel()); //$NON-NLS-1$
+        assertEquals("channel", pd.getChannel()); //$NON-NLS-1$
 
-		assertEquals("channel", pd2.getChannel()); //$NON-NLS-1$
+        assertEquals("channel", pd2.getChannel()); //$NON-NLS-1$
 
-		assertEquals(pd, pd2);
-	}
+        assertEquals(pd, pd2);
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.internal.rules.ParameterDescriptor#equals(Object)}.
-	 */
-	@Test
-	public void testEquals() {
-		ParameterDescriptor pd1 = new ParameterDescriptor(
-				"channel", "#FFFFFF"); //$NON-NLS-1$
-		ParameterDescriptor pd2 = new ParameterDescriptor(
-				"channel", "#FFFFFF"); //$NON-NLS-1$
-		ParameterDescriptor pd3 = new ParameterDescriptor(
-				"channel", "${Alarm1}"); //$NON-NLS-1$
-		ParameterDescriptor pd4 = new ParameterDescriptor(
-				"channel", "Arial, 10, bold"); //$NON-NLS-1$
+    /**
+     * Test method for
+     * {@link org.csstudio.sds.internal.rules.ParameterDescriptor#equals(Object)}.
+     */
+    @Test
+    public void testEquals() {
+        ParameterDescriptor pd1 = new ParameterDescriptor(
+                "channel", "#FFFFFF"); //$NON-NLS-1$
+        ParameterDescriptor pd2 = new ParameterDescriptor(
+                "channel", "#FFFFFF"); //$NON-NLS-1$
+        ParameterDescriptor pd3 = new ParameterDescriptor(
+                "channel", "${Alarm1}"); //$NON-NLS-1$
+        ParameterDescriptor pd4 = new ParameterDescriptor(
+                "channel", "Arial, 10, bold"); //$NON-NLS-1$
 
-		assertTrue(pd1.equals(pd2));
-		assertFalse(pd1.equals(pd3));
-		assertFalse(pd1.equals(pd4));
-		assertFalse(pd3.equals(pd4));
+        assertTrue(pd1.equals(pd2));
+        assertFalse(pd1.equals(pd3));
+        assertFalse(pd1.equals(pd4));
+        assertFalse(pd3.equals(pd4));
 
-		assertTrue(pd1.hashCode() == pd2.hashCode());
-		assertFalse(pd1.hashCode() == pd3.hashCode());
-		assertFalse(pd1.hashCode() == pd4.hashCode());
-		assertFalse(pd3.hashCode() == pd4.hashCode());
-	}
+        assertTrue(pd1.hashCode() == pd2.hashCode());
+        assertFalse(pd1.hashCode() == pd3.hashCode());
+        assertFalse(pd1.hashCode() == pd4.hashCode());
+        assertFalse(pd3.hashCode() == pd4.hashCode());
+    }
 
 }

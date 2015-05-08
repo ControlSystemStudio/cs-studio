@@ -33,64 +33,64 @@ import java.util.Collection;
  */
 
 public final class CSSPlatformInfo {
-	/** Holds the only one instance of this class. */
-	private static CSSPlatformInfo _instance = null;
-	
-	/**
-	 * Stores whether CSS is running onsite.
-	 */
-	private boolean onsite = false;
-	
-	private CSSPlatformInfo() {
-		init();
-	}
+    /** Holds the only one instance of this class. */
+    private static CSSPlatformInfo _instance = null;
+    
+    /**
+     * Stores whether CSS is running onsite.
+     */
+    private boolean onsite = false;
+    
+    private CSSPlatformInfo() {
+        init();
+    }
 
-	private void init() {
-		try {
-			InetAddress localhost = InetAddress.getLocalHost();
+    private void init() {
+        try {
+            InetAddress localhost = InetAddress.getLocalHost();
 
-			onsite = isOnsite(localhost);
-		} catch (UnknownHostException uhe) {
-			onsite = false;
-		}
-	}
-	
-	/**
-	 * Detects whether the given address is an onsite address.
-	 * @param address the address to check.
-	 * @return <code>true</code> if the address is onsite, <code>false</code>
-	 * otherwise.
-	 */
-	private boolean isOnsite(InetAddress address) {
-		Collection<Subnet> onsiteSubnets =
-			OnsiteSubnetPreferences.getOnsiteSubnets();
-		for (Subnet subnet : onsiteSubnets) {
-			if (subnet.contains(address)) {
-				return true;
-			}
-		}
-		return false;
-	}
+            onsite = isOnsite(localhost);
+        } catch (UnknownHostException uhe) {
+            onsite = false;
+        }
+    }
+    
+    /**
+     * Detects whether the given address is an onsite address.
+     * @param address the address to check.
+     * @return <code>true</code> if the address is onsite, <code>false</code>
+     * otherwise.
+     */
+    private boolean isOnsite(InetAddress address) {
+        Collection<Subnet> onsiteSubnets =
+            OnsiteSubnetPreferences.getOnsiteSubnets();
+        for (Subnet subnet : onsiteSubnets) {
+            if (subnet.contains(address)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Return the only one instance of this class.
-	 * 
-	 * @return The only one instance of this class.
-	 */
-	public static synchronized CSSPlatformInfo getInstance() {
-		if (_instance == null) {
-			_instance = new CSSPlatformInfo();
-		}
+    /**
+     * Return the only one instance of this class.
+     * 
+     * @return The only one instance of this class.
+     */
+    public static synchronized CSSPlatformInfo getInstance() {
+        if (_instance == null) {
+            _instance = new CSSPlatformInfo();
+        }
 
-		return _instance;
-	}
-	
-	/**
-	 * Returns whether CSS is running onsite.
-	 * @return <code>true</code> if CSS is running onsite, <code>false</code>
-	 *         otherwise.
-	 */
-	public boolean isOnsite() {
-		return onsite;
-	}
+        return _instance;
+    }
+    
+    /**
+     * Returns whether CSS is running onsite.
+     * @return <code>true</code> if CSS is running onsite, <code>false</code>
+     *         otherwise.
+     */
+    public boolean isOnsite() {
+        return onsite;
+    }
 }

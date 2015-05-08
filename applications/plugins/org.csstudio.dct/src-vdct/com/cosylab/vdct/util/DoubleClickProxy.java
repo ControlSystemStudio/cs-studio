@@ -149,27 +149,27 @@ public class DoubleClickProxy implements MouseInputListener {
                 e.getWhen(), e.getModifiers(), e.getX(), e.getY(), clickCount,
                 e.isPopupTrigger(), e.getButton()));
     }
-	
-	public static void setAwt_multiclick_smudge(int i) {
-		awt_multiclick_smudge = i;
-	}
+    
+    public static void setAwt_multiclick_smudge(int i) {
+        awt_multiclick_smudge = i;
+    }
 
-	public static void setAwt_multiclick_time(int i) {
-		awt_multiclick_time = i;
-	}
+    public static void setAwt_multiclick_time(int i) {
+        awt_multiclick_time = i;
+    }
 
-	/**
-	 * @return
-	 */
-	public static int getAwt_multiclick_smudge() {
-		return awt_multiclick_smudge;
-	}
+    /**
+     * @return
+     */
+    public static int getAwt_multiclick_smudge() {
+        return awt_multiclick_smudge;
+    }
 
-	/**
-	 * @return
-	 */
-	public static int getAwt_multiclick_time() {
-		return awt_multiclick_time;
-	}
+    /**
+     * @return
+     */
+    public static int getAwt_multiclick_time() {
+        return awt_multiclick_time;
+    }
 
 }

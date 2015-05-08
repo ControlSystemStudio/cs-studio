@@ -48,7 +48,7 @@ public class ModelUnitTest
     @Before
     public void setup()
     {
-    	TestSettings.setup();
+        TestSettings.setup();
     }
 
     /** ModelListener that counts received updates.
@@ -181,33 +181,33 @@ public class ModelUnitTest
     @Test //(timeout=20000)
     public void testSaveRestore() throws Exception
     {
-    	final AtomicReference<String> pv_value = new AtomicReference<>("");
-    	
+        final AtomicReference<String> pv_value = new AtomicReference<>("");
+        
         // Get PV that we'll change via the Cell
-    	final PV<VType, Object> pv = PVManager.readAndWrite(vType("loc://limit1(3.14)"))
-    			.readListener(new PVReaderListener<VType>()
-				{
-					@Override
-					public void pvChanged(final PVReaderEvent<VType> event)
-					{
-				    	final PVReader<VType> pv = event.getPvReader();
-				    	final Exception error = pv.lastException();
-				    	if (error != null)
-				    		error.printStackTrace();
-				    	final String value = VTypeHelper.getString(pv.getValue());
-						pv_value.set(value);
-						System.out.println("PV update: " + value);
-				    	synchronized (pv_value)
-				    	{
-				    		pv_value.notifyAll();
-						}
-					}
-				}).synchWriteAndMaxReadRate(TimeDuration.ofSeconds(0.1));
+        final PV<VType, Object> pv = PVManager.readAndWrite(vType("loc://limit1(3.14)"))
+                .readListener(new PVReaderListener<VType>()
+                {
+                    @Override
+                    public void pvChanged(final PVReaderEvent<VType> event)
+                    {
+                        final PVReader<VType> pv = event.getPvReader();
+                        final Exception error = pv.lastException();
+                        if (error != null)
+                            error.printStackTrace();
+                        final String value = VTypeHelper.getString(pv.getValue());
+                        pv_value.set(value);
+                        System.out.println("PV update: " + value);
+                        synchronized (pv_value)
+                        {
+                            pv_value.notifyAll();
+                        }
+                    }
+                }).synchWriteAndMaxReadRate(TimeDuration.ofSeconds(0.1));
 
-    	while (!pv.isConnected())
-    		Thread.sleep(100);
-    	System.out.println("PV is " + pv_value.get());
-    	assertThat(pv_value.get(), equalTo("3.14"));
+        while (!pv.isConnected())
+            Thread.sleep(100);
+        System.out.println("PV is " + pv_value.get());
+        assertThat(pv_value.get(), equalTo("3.14"));
 
         // Start model for that PV
         final Model model =
@@ -233,15 +233,15 @@ public class ModelUnitTest
         assertThat(pv_value.get(), equalTo("3.14"));
         // .. until values get saved
         model.saveUserValues("test");
-    	synchronized (pv_value) { pv_value.wait(1000); }
-    	System.out.println("PV is " + pv_value.get());
+        synchronized (pv_value) { pv_value.wait(1000); }
+        System.out.println("PV is " + pv_value.get());
         assertThat(pv_value.get(), equalTo("6.28"));
         // Model is still 'edited' because we didn't revert nor clear
         assertTrue(model.isEdited());
 
         // Revert
         model.revertOriginalValues();
-    	synchronized (pv_value) { pv_value.wait(1000); }
+        synchronized (pv_value) { pv_value.wait(1000); }
         assertThat(pv_value.get(), equalTo("3.14"));
 
         // We're back to having user-entered values, they're not written
@@ -259,7 +259,7 @@ public class ModelUnitTest
         model.saveUserValues("test");
         model.clearUserValues();
         assertFalse(model.isEdited());
-    	synchronized (pv_value) { pv_value.wait(1000); }
+        synchronized (pv_value) { pv_value.wait(1000); }
         assertThat(pv_value.get(), equalTo("10.0"));
 
         model.stop();

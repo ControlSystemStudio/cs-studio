@@ -232,7 +232,7 @@ public class EngineModel
         // Is this an existing channel?
         ArchiveChannel channel = getChannel(name);
         if (channel != null)
-        	throw new Exception(String.format(
+            throw new Exception(String.format(
                     "Group '%s': Channel '%s' already in group '%s'",
                      group.getName(), name, channel.getGroup(0).getName()));
 
@@ -247,7 +247,7 @@ public class EngineModel
         ? new ArchiveVString(Timestamp.now(),  AlarmSeverity.NONE, "", "Engine start time")
         : new ArchiveVString(last_sample_time, AlarmSeverity.NONE, "", "Last timestamp in archive");
 
-    	// Determine buffer capacity
+        // Determine buffer capacity
         int buffer_capacity = (int) (write_period / sample_mode.getPeriod() * buffer_reserve);
         // When scan or update period exceeds write period,
         // simply use the reserve for the capacity
@@ -413,11 +413,11 @@ public class EngineModel
             {
                 Enablement enablement = Enablement.Passive;
                 if (channel_config.getName().equals(group_config.getEnablingChannel()))
-                	enablement = Enablement.Enabling;
+                    enablement = Enablement.Enabling;
                 final SampleMode mode = channel_config.getSampleMode();
 
                 addChannel(channel_config.getName(), group, enablement, mode,
-                		channel_config.getLastSampleTime());
+                        channel_config.getLastSampleTime());
             }
         }
     }

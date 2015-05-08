@@ -33,38 +33,38 @@ import org.eclipse.osgi.util.NLS;
  *
  */
 public class Messages extends NLS {
-	/**
-	 * The referred bundle name.
-	 */
-	private static final String BUNDLE_NAME = "org.csstudio.sds.internal.localization.messages";//$NON-NLS-1$
+    /**
+     * The referred bundle name.
+     */
+    private static final String BUNDLE_NAME = "org.csstudio.sds.internal.localization.messages";//$NON-NLS-1$
 
-	/**
-	 * The resource bundle.
-	 */
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
-			.getBundle(BUNDLE_NAME);
-	
-	/**
-	 * Gets the String for the specified key in its localized version according
-	 * to the current locale.
-	 * 
-	 * @param key
-	 *            the key
-	 * @return the localized String
-	 */
-	public static String getString(final String key) {
-		try {
-			return RESOURCE_BUNDLE.getString(key);
-		} catch (MissingResourceException e) {
-			return '!' + key + '!';
-		}
-	}
-	
-	/**
-	 * Static constructor.
-	 */
-	static {
-		// load message values from bundle file
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
+    /**
+     * The resource bundle.
+     */
+    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
+            .getBundle(BUNDLE_NAME);
+    
+    /**
+     * Gets the String for the specified key in its localized version according
+     * to the current locale.
+     * 
+     * @param key
+     *            the key
+     * @return the localized String
+     */
+    public static String getString(final String key) {
+        try {
+            return RESOURCE_BUNDLE.getString(key);
+        } catch (MissingResourceException e) {
+            return '!' + key + '!';
+        }
+    }
+    
+    /**
+     * Static constructor.
+     */
+    static {
+        // load message values from bundle file
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
 }

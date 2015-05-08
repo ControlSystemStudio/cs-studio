@@ -32,11 +32,11 @@ import org.osgi.service.prefs.Preferences;
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public final void initializeDefaultPreferences() {
-		Preferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
-		prefs.put(PreferenceConstants.SDS_FILES, "");
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public final void initializeDefaultPreferences() {
+        Preferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
+        prefs.put(PreferenceConstants.SDS_FILES, "");
+    }
 }

@@ -7,22 +7,22 @@ package de.desy.language.snl.parser.nodes;
  */
 public class AllDefineStatementsNode extends AbstractSNLNode {
 
-	public AllDefineStatementsNode() {
-	}
+    public AllDefineStatementsNode() {
+    }
 
-	@Override
-	public String humanReadableRepresentation() {
-		return "Defines";
-	}
+    @Override
+    public String humanReadableRepresentation() {
+        return "Defines";
+    }
 
-	@Override
-	public String getNodeTypeName() {
-		return "Defines";
-	}
+    @Override
+    public String getNodeTypeName() {
+        return "Defines";
+    }
 
-	@Override
-	protected String doGetSourceIdentifier() {
-		return "Defines";
-	}
+    @Override
+    protected String doGetSourceIdentifier() {
+        return "Defines";
+    }
 
 }

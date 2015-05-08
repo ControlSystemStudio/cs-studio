@@ -12,15 +12,15 @@ import org.eclipse.swt.widgets.Composite;
  * 
  */
 public class MultiAxisLineGraph2DWidgetFigure extends
-		AbstractPointDatasetGraph2DWidgetFigure<MultiAxisLineGraph2DWidget> {
+        AbstractPointDatasetGraph2DWidgetFigure<MultiAxisLineGraph2DWidget> {
 
-	public MultiAxisLineGraph2DWidgetFigure(AbstractBaseEditPart editpart) {
-		super(editpart);
-	}
+    public MultiAxisLineGraph2DWidgetFigure(AbstractBaseEditPart editpart) {
+        super(editpart);
+    }
 
-	@Override
-	protected MultiAxisLineGraph2DWidget createSWTWidget(Composite parent, int style) {
-		return new MultiAxisLineGraph2DWidget(parent, style);
-	}
+    @Override
+    protected MultiAxisLineGraph2DWidget createSWTWidget(Composite parent, int style) {
+        return new MultiAxisLineGraph2DWidget(parent, style);
+    }
 
 }

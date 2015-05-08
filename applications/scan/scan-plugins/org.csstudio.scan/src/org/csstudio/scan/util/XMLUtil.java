@@ -16,7 +16,7 @@ import org.w3c.dom.Node;
 @SuppressWarnings("nls")
 public class XMLUtil
 {
-	/** Look for Element node if given name.
+    /** Look for Element node if given name.
      *  <p>
      *  Checks the node and its siblings.
      *  Does not descent down the 'child' links.
@@ -74,7 +74,7 @@ public class XMLUtil
     final public static double getSubelementDouble(
             final Element element, final String name) throws Exception
     {
-    	return getSubelementDouble(element, name, Double.NaN);
+        return getSubelementDouble(element, name, Double.NaN);
     }
 
     /** Locate a sub-element tagged 'name', return its value.
@@ -89,16 +89,16 @@ public class XMLUtil
     final public static double getSubelementDouble(
            final Element element, final String name, final double default_value) throws Exception
     {
-    	final String text = getSubelementString(element, name, "").trim();
-    	if (text.isEmpty())
-    		return default_value;
-    	try
-    	{
-    		return Double.parseDouble(text);
-    	}
-    	catch (NumberFormatException ex)
-    	{
-    		throw new Exception("Invalid number for <" + name + ">", ex);
-    	}
+        final String text = getSubelementString(element, name, "").trim();
+        if (text.isEmpty())
+            return default_value;
+        try
+        {
+            return Double.parseDouble(text);
+        }
+        catch (NumberFormatException ex)
+        {
+            throw new Exception("Invalid number for <" + name + ">", ex);
+        }
     }
 }

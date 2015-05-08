@@ -16,109 +16,109 @@ import org.eclipse.swt.graphics.RGB;
  * 
  */
 public final class HierarchicalBeanPropertyTableRowAdapter extends AbstractTableRowAdapter<IElement> {
-	private String key;
-	private String property;
-	private boolean readOnly;
+    private String key;
+    private String property;
+    private boolean readOnly;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param key
-	 *            the key for the key column
-	 * @param delegate
-	 *            the element
-	 * @param beanProperty
-	 *            the name of a bean property that should be used in the value
-	 *            column
-	 * @param readOnly
-	 *            true, if the table row should be read only
-	 */
-	public HierarchicalBeanPropertyTableRowAdapter(String key, IElement delegate, String beanProperty, boolean readOnly) {
-		super(delegate);
-		this.key = key;
-		this.property = beanProperty;
-		this.readOnly = readOnly;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param key
+     *            the key for the key column
+     * @param delegate
+     *            the element
+     * @param beanProperty
+     *            the name of a bean property that should be used in the value
+     *            column
+     * @param readOnly
+     *            true, if the table row should be read only
+     */
+    public HierarchicalBeanPropertyTableRowAdapter(String key, IElement delegate, String beanProperty, boolean readOnly) {
+        super(delegate);
+        this.key = key;
+        this.property = beanProperty;
+        this.readOnly = readOnly;
+    }
 
-	/**
-	 * @Override {@inheritDoc}
-	 */
-	protected String doGetKey(IElement delegate) {
-		return key;
-	}
+    /**
+     * @Override {@inheritDoc}
+     */
+    protected String doGetKey(IElement delegate) {
+        return key;
+    }
 
-	/**
-	 * @Override {@inheritDoc}
-	 */
-	@Override
-	protected String doGetValue(IElement delegate) {
-		Object result = AliasResolutionUtil.getPropertyViaHierarchy(delegate, property);
-		return result!=null?result.toString():"";
-	}
+    /**
+     * @Override {@inheritDoc}
+     */
+    @Override
+    protected String doGetValue(IElement delegate) {
+        Object result = AliasResolutionUtil.getPropertyViaHierarchy(delegate, property);
+        return result!=null?result.toString():"";
+    }
 
-	/**
-	 * @Override {@inheritDoc}
-	 */
-	@Override
-	protected String doGetValueForDisplay(IElement delegate) {
-		return doGetValue(delegate);
-	}
+    /**
+     * @Override {@inheritDoc}
+     */
+    @Override
+    protected String doGetValueForDisplay(IElement delegate) {
+        return doGetValue(delegate);
+    }
 
-	/**
-	 * @Override {@inheritDoc}
-	 */
-	@Override
-	protected Command doSetValue(IElement delegate, Object value) {
-		Command result = null;
+    /**
+     * @Override {@inheritDoc}
+     */
+    @Override
+    protected Command doSetValue(IElement delegate, Object value) {
+        Command result = null;
 
-		Object value2set = null;
+        Object value2set = null;
 
-		if (value != null && StringUtil.hasLength(value.toString())) {
-			PropertyUtilsBean util = new PropertyUtilsBean();
-			Class clazz;
+        if (value != null && StringUtil.hasLength(value.toString())) {
+            PropertyUtilsBean util = new PropertyUtilsBean();
+            Class clazz;
 
-			Object tmp = null;
-			try {
-				clazz = util.getPropertyDescriptor(delegate, property).getPropertyType();
-			} catch (Exception e) {
-				throw new IllegalArgumentException(e);
-			}
+            Object tmp = null;
+            try {
+                clazz = util.getPropertyDescriptor(delegate, property).getPropertyType();
+            } catch (Exception e) {
+                throw new IllegalArgumentException(e);
+            }
 
-			if (clazz == Boolean.class || "boolean".equalsIgnoreCase(clazz.getName())) {
-				tmp = Boolean.parseBoolean(value.toString());
-			} else if (clazz == Integer.class || "int".equalsIgnoreCase(clazz.getName())) {
-				tmp = Integer.parseInt(value.toString());
-			} else if (clazz == Double.class || "double".equalsIgnoreCase(clazz.getName())) {
-				tmp = Double.parseDouble(value.toString());
-			} else {
-				tmp = value.toString();
-			}
+            if (clazz == Boolean.class || "boolean".equalsIgnoreCase(clazz.getName())) {
+                tmp = Boolean.parseBoolean(value.toString());
+            } else if (clazz == Integer.class || "int".equalsIgnoreCase(clazz.getName())) {
+                tmp = Integer.parseInt(value.toString());
+            } else if (clazz == Double.class || "double".equalsIgnoreCase(clazz.getName())) {
+                tmp = Double.parseDouble(value.toString());
+            } else {
+                tmp = value.toString();
+            }
 
-			value2set = tmp;
-		}
+            value2set = tmp;
+        }
 
-		return new ChangeBeanPropertyCommand(delegate, property, value2set);
-	}
+        return new ChangeBeanPropertyCommand(delegate, property, value2set);
+    }
 
-	/**
-	 * @Override {@inheritDoc}
-	 */
-	@Override
-	protected boolean doCanModifyValue(IElement delegate) {
-		return !readOnly;
-	}
+    /**
+     * @Override {@inheritDoc}
+     */
+    @Override
+    protected boolean doCanModifyValue(IElement delegate) {
+        return !readOnly;
+    }
 
-	@Override
-	protected RGB doGetForegroundColorForValue(IElement delegate) {
-		PropertyUtilsBean util = new PropertyUtilsBean();
-		Object currentValue = null;
+    @Override
+    protected RGB doGetForegroundColorForValue(IElement delegate) {
+        PropertyUtilsBean util = new PropertyUtilsBean();
+        Object currentValue = null;
 
-		try {
-			currentValue = util.getProperty(delegate, property);
-		} catch (Exception e) {
-			throw new IllegalArgumentException(e);
-		}
+        try {
+            currentValue = util.getProperty(delegate, property);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
 
-		return (currentValue != null) ? ColorSettings.OVERRIDDEN_VALUE : ColorSettings.INHERITED_VALUE;
-	}
+        return (currentValue != null) ? ColorSettings.OVERRIDDEN_VALUE : ColorSettings.INHERITED_VALUE;
+    }
 }

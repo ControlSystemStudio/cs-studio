@@ -34,63 +34,63 @@ import org.csstudio.dal.spi.PropertyFactory;
  */
 public class SimpleDALAccess {
 
-	private static PropertyFactory factory;
+    private static PropertyFactory factory;
 
-	public static DynamicValueProperty<?> getProperty(String name)
-			throws RemoteException, InstantiationException {
-		IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance()
-				.createProcessVariableAdress(name);
-		factory = DALPropertyFactoriesProvider.getInstance()
-				.getPropertyFactory(pv.getControlSystem());
+    public static DynamicValueProperty<?> getProperty(String name)
+            throws RemoteException, InstantiationException {
+        IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance()
+                .createProcessVariableAdress(name);
+        factory = DALPropertyFactoriesProvider.getInstance()
+                .getPropertyFactory(pv.getControlSystem());
 
-		DynamicValueProperty<?> property = factory.getProperty(name);
+        DynamicValueProperty<?> property = factory.getProperty(name);
 
-		return property;
-	}
+        return property;
+    }
 
-	/**
-	 * Return a {@link DynamicValueProperty} via DAL-channel of given type.
-	 * 
-	 * @param <T>
-	 *            The suggested type.
-	 * @param channel
-	 *            The name of the channel/property.
-	 * @param suggestedDataType
-	 *            The class of suggested data type of the property (see
-	 *            {@link DataAccess#getDataType()}).
-	 * @return The {@link DynamicValueProperty} of suggested type.
-	 * @throws RemoteException ?
-	 * @throws InstantiationException ?
-	 * @throws ClassCastException
-	 *             If suggested property type is not assignable from type of
-	 *             channel property.
-	 */
-	public static <T> DynamicValueProperty<T> getProperty(String channel,
-			Class<T> suggestedDataType) throws RemoteException,
-			InstantiationException, ClassCastException {
-		IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance()
-				.createProcessVariableAdress(channel);
-		factory = DALPropertyFactoriesProvider.getInstance()
-				.getPropertyFactory(pv.getControlSystem());
+    /**
+     * Return a {@link DynamicValueProperty} via DAL-channel of given type.
+     * 
+     * @param <T>
+     *            The suggested type.
+     * @param channel
+     *            The name of the channel/property.
+     * @param suggestedDataType
+     *            The class of suggested data type of the property (see
+     *            {@link DataAccess#getDataType()}).
+     * @return The {@link DynamicValueProperty} of suggested type.
+     * @throws RemoteException ?
+     * @throws InstantiationException ?
+     * @throws ClassCastException
+     *             If suggested property type is not assignable from type of
+     *             channel property.
+     */
+    public static <T> DynamicValueProperty<T> getProperty(String channel,
+            Class<T> suggestedDataType) throws RemoteException,
+            InstantiationException, ClassCastException {
+        IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance()
+                .createProcessVariableAdress(channel);
+        factory = DALPropertyFactoriesProvider.getInstance()
+                .getPropertyFactory(pv.getControlSystem());
 
-		DynamicValueProperty<?> property = factory.getProperty(channel);
-		if (suggestedDataType.isAssignableFrom(property.getDataType())) {
-			return convertWildcardPropertyToTypedProperty(property);
-		}
+        DynamicValueProperty<?> property = factory.getProperty(channel);
+        if (suggestedDataType.isAssignableFrom(property.getDataType())) {
+            return convertWildcardPropertyToTypedProperty(property);
+        }
 
-		throw new ClassCastException(
-				"Suggested property type is not assignable from type of channel property!");
-	}
+        throw new ClassCastException(
+                "Suggested property type is not assignable from type of channel property!");
+    }
 
-	@SuppressWarnings("unchecked")
-	private static <T> DynamicValueProperty<T> convertWildcardPropertyToTypedProperty(
-			DynamicValueProperty<?> property) {
-		return (DynamicValueProperty<T>) property;
-	}
+    @SuppressWarnings("unchecked")
+    private static <T> DynamicValueProperty<T> convertWildcardPropertyToTypedProperty(
+            DynamicValueProperty<?> property) {
+        return (DynamicValueProperty<T>) property;
+    }
 
-	public static void dispose(DynamicValueProperty<?> property) {
-		if (property == null)
-			return;
-		factory.getPropertyFamily().destroy(property);
-	}
+    public static void dispose(DynamicValueProperty<?> property) {
+        if (property == null)
+            return;
+        factory.getPropertyFamily().destroy(property);
+    }
 }

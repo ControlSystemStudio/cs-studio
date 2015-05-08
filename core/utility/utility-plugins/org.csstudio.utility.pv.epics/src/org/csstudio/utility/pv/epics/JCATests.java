@@ -78,7 +78,7 @@ public class JCATests
             @Override
             public void monitorChanged(MonitorEvent event)
             {
-            	++values;
+                ++values;
 //                final DBR_TIME_Double value = (DBR_TIME_Double) event.getDBR();
 //                final Channel source = (Channel)event.getSource();
 //                System.out.format("%s: %s %f\n",
@@ -134,17 +134,17 @@ public class JCATests
 
         try
         {
-	        for (int i=0; i<TESTRUNS; ++i)
-	        {
-	        	values = 0;
-	            JCATests.run(PV_NAME);
-	            dumpMeminfo(i);
-	            Runtime.getRuntime().gc();
-	        }
+            for (int i=0; i<TESTRUNS; ++i)
+            {
+                values = 0;
+                JCATests.run(PV_NAME);
+                dumpMeminfo(i);
+                Runtime.getRuntime().gc();
+            }
         }
         catch (Throwable ex)
         {
-        	ex.printStackTrace();
+            ex.printStackTrace();
         }
     }
 }

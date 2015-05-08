@@ -43,8 +43,8 @@ public class OpenWebBrowserAction extends Action
         {
             final IWebBrowser browser =
                 workbench.getBrowserSupport().createBrowser(
-                		IWorkbenchBrowserSupport.NAVIGATION_BAR | IWorkbenchBrowserSupport.LOCATION_BAR,
-                		Messages.BrowserID, null, null);
+                        IWorkbenchBrowserSupport.NAVIGATION_BAR | IWorkbenchBrowserSupport.LOCATION_BAR,
+                        Messages.BrowserID, null, null);
             browser.openURL(new URL(url));
         }
         catch (Exception ex)

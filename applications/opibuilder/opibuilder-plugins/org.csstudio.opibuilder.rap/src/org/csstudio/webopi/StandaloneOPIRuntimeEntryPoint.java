@@ -9,12 +9,12 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
 
 public class StandaloneOPIRuntimeEntryPoint implements EntryPoint {
 
-	public int createUI() {
-		Display display = PlatformUI.createDisplay();
-		RequestUtil.login(display);
-		DisplayManager.getInstance().registerDisplay(display, true);
-		WorkbenchAdvisor advisor = new StandaloneApplicationWorkbenchAdvisor();
-		return PlatformUI.createAndRunWorkbench( display, advisor );
-	}
+    public int createUI() {
+        Display display = PlatformUI.createDisplay();
+        RequestUtil.login(display);
+        DisplayManager.getInstance().registerDisplay(display, true);
+        WorkbenchAdvisor advisor = new StandaloneApplicationWorkbenchAdvisor();
+        return PlatformUI.createAndRunWorkbench( display, advisor );
+    }
 
 }

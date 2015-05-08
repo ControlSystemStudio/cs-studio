@@ -21,23 +21,23 @@ import org.junit.Test;
 public class TextTableUnitTest
 {
     @Test
-	public void testTextTable()
-	{
-    	final ByteArrayOutputStream out = new ByteArrayOutputStream();
-		final TextTable table = new TextTable(out);
+    public void testTextTable()
+    {
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final TextTable table = new TextTable(out);
 
-		table.addColumn("Time");
-		table.addColumn("Value");
+        table.addColumn("Time");
+        table.addColumn("Value");
 
-		table.addCell("2012/01/17");
-		table.addCell("41");
-		table.addRow("2012/01/19", "42");
+        table.addCell("2012/01/17");
+        table.addCell("41");
+        table.addRow("2012/01/19", "42");
 
-		table.flush();
+        table.flush();
 
-		final String result = out.toString();
-		System.out.println(out);
+        final String result = out.toString();
+        System.out.println(out);
 
-		assertEquals("Time       Value\n========== =====\n2012/01/17 41   \n2012/01/19 42   \n", result);
-	}
+        assertEquals("Time       Value\n========== =====\n2012/01/17 41   \n2012/01/19 42   \n", result);
+    }
 }

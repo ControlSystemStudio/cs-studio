@@ -41,134 +41,134 @@ import org.csstudio.dal.StringSeqProperty;
  * @deprecated Use {@link ValueType} instead!
  */
 public enum DalPropertyTypes {
-	/**
-	 * An array of double values.
-	 */
-	ENUM("enum", "Enumeration", EnumProperty.class), //$NON-NLS-1$
-	
-	/**
-	 * An array of double values.
-	 */
-	DOUBLE_SEQUENCE("doubleSeq", "Sequence of Doubles", DoubleSeqProperty.class), //$NON-NLS-1$
+    /**
+     * An array of double values.
+     */
+    ENUM("enum", "Enumeration", EnumProperty.class), //$NON-NLS-1$
+    
+    /**
+     * An array of double values.
+     */
+    DOUBLE_SEQUENCE("doubleSeq", "Sequence of Doubles", DoubleSeqProperty.class), //$NON-NLS-1$
 
-	/**
-	 * An array of string values.
-	 */
-	STRING_SEQUENCE("stringSeq", "Sequence of Strings", StringSeqProperty.class), //$NON-NLS-1$
+    /**
+     * An array of string values.
+     */
+    STRING_SEQUENCE("stringSeq", "Sequence of Strings", StringSeqProperty.class), //$NON-NLS-1$
 
-	/**
-	 * An array of long values.
-	 */
-	LONG_SEQUENCE("longSeq", "Sequence of Longs", LongSeqProperty.class), //$NON-NLS-1$
+    /**
+     * An array of long values.
+     */
+    LONG_SEQUENCE("longSeq", "Sequence of Longs", LongSeqProperty.class), //$NON-NLS-1$
 
-	/**
-	 * An array of object values.
-	 */
-	OBJECT_SEQUENCE("objectSeq", "Sequence of Objects", ObjectSeqProperty.class), //$NON-NLS-1$
+    /**
+     * An array of object values.
+     */
+    OBJECT_SEQUENCE("objectSeq", "Sequence of Objects", ObjectSeqProperty.class), //$NON-NLS-1$
 
-	/**
-	 * An option.
-	 */
-	LONG("long", "Long", LongProperty.class), //$NON-NLS-1$
+    /**
+     * An option.
+     */
+    LONG("long", "Long", LongProperty.class), //$NON-NLS-1$
 
-	/**
-	 * A double value.
-	 */
-	DOUBLE("double", "Double", DoubleProperty.class), //$NON-NLS-1$
+    /**
+     * A double value.
+     */
+    DOUBLE("double", "Double", DoubleProperty.class), //$NON-NLS-1$
 
-	/**
-	 * A string.
-	 */
-	STRING("string", "String", StringProperty.class); //$NON-NLS-1$
+    /**
+     * A string.
+     */
+    STRING("string", "String", StringProperty.class); //$NON-NLS-1$
 
-	/**
-	 * The ID of the property type. Will be used as portable representation of
-	 * the created instance.
-	 */
-	private String _id;
+    /**
+     * The ID of the property type. Will be used as portable representation of
+     * the created instance.
+     */
+    private String _id;
 
-	private String _description;
-	
-	/**
-	 * A hint for the necessary DAL property type.
-	 */
-	@SuppressWarnings("unchecked")
-	private Class<? extends DynamicValueProperty> _dalType;
+    private String _description;
+    
+    /**
+     * A hint for the necessary DAL property type.
+     */
+    @SuppressWarnings("unchecked")
+    private Class<? extends DynamicValueProperty> _dalType;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param id
-	 *            The ID. Will be used as portable representation of the created
-	 *            instance.
-	 * @param javaType
-	 *            the Java type, which is expected for property values
-	 * @param dalType
-	 *            a hint for the necessary DAL property type
-	 */
-	@SuppressWarnings("unchecked")
-	private DalPropertyTypes(final String id, String description,
-			final Class<? extends DynamicValueProperty> dalType) {
-		assert id != null;
-		assert description !=null;
-		assert dalType != null;
-		_id = id;
-		_description = description;
-		_dalType = dalType;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param id
+     *            The ID. Will be used as portable representation of the created
+     *            instance.
+     * @param javaType
+     *            the Java type, which is expected for property values
+     * @param dalType
+     *            a hint for the necessary DAL property type
+     */
+    @SuppressWarnings("unchecked")
+    private DalPropertyTypes(final String id, String description,
+            final Class<? extends DynamicValueProperty> dalType) {
+        assert id != null;
+        assert description !=null;
+        assert dalType != null;
+        _id = id;
+        _description = description;
+        _dalType = dalType;
+    }
 
-	/**
-	 * @return An ID that allows for persisting and recreating instances of this
-	 *         class.
-	 */
-	public String toPortableString() {
-		return _id;
-	}
+    /**
+     * @return An ID that allows for persisting and recreating instances of this
+     *         class.
+     */
+    public String toPortableString() {
+        return _id;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		return _description;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return _description;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Class<? extends DynamicValueProperty> getDalType() {
-		return _dalType;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Class<? extends DynamicValueProperty> getDalType() {
+        return _dalType;
+    }
 
-	/**
-	 * A map that contains all instances of this class.
-	 */
-	private static Map<String, DalPropertyTypes> _mapping;
+    /**
+     * A map that contains all instances of this class.
+     */
+    private static Map<String, DalPropertyTypes> _mapping;
 
-	static {
-		_mapping = new HashMap<String, DalPropertyTypes>();
+    static {
+        _mapping = new HashMap<String, DalPropertyTypes>();
 
-		for (DalPropertyTypes type : DalPropertyTypes.values()) {
-			_mapping.put(type.toPortableString(), type);
-		}
-	}
+        for (DalPropertyTypes type : DalPropertyTypes.values()) {
+            _mapping.put(type.toPortableString(), type);
+        }
+    }
 
-	/**
-	 * Creates an instance of this class from a string representation.
-	 * 
-	 * @param portableString
-	 *            Required.
-	 * @return The instance that is represented by the string or null
-	 */
-	public static DalPropertyTypes createFromPortable(
-			final String portableString) {
-		assert portableString != null;
-		DalPropertyTypes result = null;
-		if (_mapping.containsKey(portableString)) {
-			result = _mapping.get(portableString);
-		}
+    /**
+     * Creates an instance of this class from a string representation.
+     * 
+     * @param portableString
+     *            Required.
+     * @return The instance that is represented by the string or null
+     */
+    public static DalPropertyTypes createFromPortable(
+            final String portableString) {
+        assert portableString != null;
+        DalPropertyTypes result = null;
+        if (_mapping.containsKey(portableString)) {
+            result = _mapping.get(portableString);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
 }

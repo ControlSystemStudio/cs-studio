@@ -39,7 +39,7 @@ import com.cosylab.vdct.Constants;
  */
 public final class PluginManager
 {
-	private static PluginManager instance = null;
+    private static PluginManager instance = null;
     private LinkedList pluginListeners = null;
     private LinkedList plugins = null;
 
@@ -55,8 +55,8 @@ protected PluginManager()
 
     pluginSerializer = new PluginXMLSerializer();
 
-	// load
-	load();
+    // load
+    load();
 }
 
 /**
@@ -64,7 +64,7 @@ protected PluginManager()
  */
 public PluginSerializer getPluginSerializer()
 {
-	return pluginSerializer;
+    return pluginSerializer;
 }
 
 /**
@@ -75,16 +75,16 @@ public PluginSerializer getPluginSerializer()
  */
 public void addPlugin(PluginObject plugin)
 {
-	if(plugins.contains(plugin))
-		return;
+    if(plugins.contains(plugin))
+        return;
 
-	// moved to here to have plugin serialized
-	plugins.add(plugin);
-	plugin.init();
-	//plugins.add(plugin);
+    // moved to here to have plugin serialized
+    plugins.add(plugin);
+    plugin.init();
+    //plugins.add(plugin);
 
-	for(int i=0; i<pluginListeners.size(); i++)
-		((PluginListener)pluginListeners.get(i)).pluginAdded(plugin);
+    for(int i=0; i<pluginListeners.size(); i++)
+        ((PluginListener)pluginListeners.get(i)).pluginAdded(plugin);
 }
 /**
  * Insert the method's description here.
@@ -94,11 +94,11 @@ public void addPlugin(PluginObject plugin)
  */
 public void addPluginListener(PluginListener listener)
 {
-	if(!pluginListeners.contains(listener))
-	{
-		pluginListeners.add(listener);
-		updateListener(listener);
-	}
+    if(!pluginListeners.contains(listener))
+    {
+        pluginListeners.add(listener);
+        updateListener(listener);
+    }
 }
 /**
  * Insert the method's description here.
@@ -108,15 +108,15 @@ public void addPluginListener(PluginListener listener)
  */
 public void checkAutoStartPlugins()
 {
-	Iterator it = plugins.iterator();
-	PluginObject plugin;
+    Iterator it = plugins.iterator();
+    PluginObject plugin;
 
-	while(it.hasNext())
-	{
-		plugin = (PluginObject)it.next();
-		if(plugin.isAutoStart())
-			plugin.start();
-	}
+    while(it.hasNext())
+    {
+        plugin = (PluginObject)it.next();
+        if(plugin.isAutoStart())
+            plugin.start();
+    }
 }
 /**
  * Insert the method's description here.
@@ -126,15 +126,15 @@ public void checkAutoStartPlugins()
  */
 public void destroyAllPlugins()
 {
-	Iterator it = plugins.iterator();
-	PluginObject plugin;
+    Iterator it = plugins.iterator();
+    PluginObject plugin;
 
-	while(it.hasNext())
-	{
-		plugin = (PluginObject)it.next();
-		plugin.stop();
-		plugin.destroy();
-	}
+    while(it.hasNext())
+    {
+        plugin = (PluginObject)it.next();
+        plugin.stop();
+        plugin.destroy();
+    }
 }
 /**
  * Insert the method's description here.
@@ -142,21 +142,21 @@ public void destroyAllPlugins()
  * @return com.cosylab.vdct.plugin.PluginManager
  */
 public static PluginManager getInstance() {
-	if (instance==null)
-	{
-		instance = new PluginManager();
+    if (instance==null)
+    {
+        instance = new PluginManager();
 
-		// !!! find a better place
-		// create plugin managers
-		PluginUIManager.getInstance();
-		com.cosylab.vdct.plugin.config.PluginLinkTypeConfigManager.getInstance();
-		com.cosylab.vdct.plugin.debug.PluginDebugManager.getInstance();
-		com.cosylab.vdct.plugin.export.PluginExportManager.getInstance();
-		com.cosylab.vdct.plugin.popup.PluginPopupManager.getInstance();
-		com.cosylab.vdct.plugin.menu.PluginMenuManager.getInstance();
-	}
-		
-	return instance;
+        // !!! find a better place
+        // create plugin managers
+        PluginUIManager.getInstance();
+        com.cosylab.vdct.plugin.config.PluginLinkTypeConfigManager.getInstance();
+        com.cosylab.vdct.plugin.debug.PluginDebugManager.getInstance();
+        com.cosylab.vdct.plugin.export.PluginExportManager.getInstance();
+        com.cosylab.vdct.plugin.popup.PluginPopupManager.getInstance();
+        com.cosylab.vdct.plugin.menu.PluginMenuManager.getInstance();
+    }
+        
+    return instance;
 }
 /**
  * Insert the method's description here.
@@ -166,7 +166,7 @@ public static PluginManager getInstance() {
  */
 public Iterator getPlugins()
 {
-	return plugins.iterator();
+    return plugins.iterator();
 }
 /**
  * Insert the method's description here.
@@ -176,25 +176,25 @@ public Iterator getPlugins()
  */
 private void load()
 {
-	try
-	{
-	    String fileName = Constants.getConfigFile(Constants.PLUGINS_FILE_NAME, Constants.VDCT_PLUGINS_FILE);
-	
-		// is file does not exists, load default file
-		if (!(new java.io.File(fileName).exists()))
-		{
-			com.cosylab.vdct.Console.getInstance().println("o) No plugins configuration file found. Using defaults...");
-			fileName = getClass().getResource("/" + Constants.CONFIG_DIR + Constants.PLUGINS_FILE_NAME).getFile();
-		}
-		pluginSerializer.importPlugins(fileName, this);
-	}
-	catch (Exception e)
-	{
-		com.cosylab.vdct.Console.getInstance().println("An error occurred while loading the plugins list!");
-		com.cosylab.vdct.Console.getInstance().println(e);
+    try
+    {
+        String fileName = Constants.getConfigFile(Constants.PLUGINS_FILE_NAME, Constants.VDCT_PLUGINS_FILE);
+    
+        // is file does not exists, load default file
+        if (!(new java.io.File(fileName).exists()))
+        {
+            com.cosylab.vdct.Console.getInstance().println("o) No plugins configuration file found. Using defaults...");
+            fileName = getClass().getResource("/" + Constants.CONFIG_DIR + Constants.PLUGINS_FILE_NAME).getFile();
+        }
+        pluginSerializer.importPlugins(fileName, this);
+    }
+    catch (Exception e)
+    {
+        com.cosylab.vdct.Console.getInstance().println("An error occurred while loading the plugins list!");
+        com.cosylab.vdct.Console.getInstance().println(e);
 
-		plugins.clear();
-	}
+        plugins.clear();
+    }
 }
 /**
  * Insert the method's description here.
@@ -204,15 +204,15 @@ private void load()
  */
 public void removePlugin(PluginObject plugin)
 {
-	if(!plugins.contains(plugin))
-		return;
+    if(!plugins.contains(plugin))
+        return;
 
-	plugins.remove(plugin);
-	plugin.stop();
-	plugin.destroy();
+    plugins.remove(plugin);
+    plugin.stop();
+    plugin.destroy();
 
-	for( int i=0; i<pluginListeners.size(); i++ )
-		((PluginListener)pluginListeners.get(i)).pluginRemoved(plugin);
+    for( int i=0; i<pluginListeners.size(); i++ )
+        ((PluginListener)pluginListeners.get(i)).pluginRemoved(plugin);
 }
 /**
  * Insert the method's description here.
@@ -222,7 +222,7 @@ public void removePlugin(PluginObject plugin)
  */
 public void removePluginListener(PluginListener listener)
 {
-	pluginListeners.remove(listener);
+    pluginListeners.remove(listener);
 }
 /**
  * Insert the method's description here.
@@ -232,19 +232,19 @@ public void removePluginListener(PluginListener listener)
  */
 public void save()
 {
-	try
-	{
-		//String fileName = com.cosylab.vdct.Settings.getInstance().getDefaultDir()+com.cosylab.vdct.Constants.CONFIG_DIR+PLUGINS_FILE;
-		String fileName = System.getProperty(Constants.VDCT_PLUGINS_FILE);
-		if (fileName == null)
-			fileName = System.getProperty("user.home") + "/" + Constants.PLUGINS_FILE_NAME;
-		pluginSerializer.exportPlugins(fileName, this);
-	}
-	catch (Exception e)
-	{
-		com.cosylab.vdct.Console.getInstance().println("An error occurred while saving the plugins list!");
-		com.cosylab.vdct.Console.getInstance().println(e);
-	}
+    try
+    {
+        //String fileName = com.cosylab.vdct.Settings.getInstance().getDefaultDir()+com.cosylab.vdct.Constants.CONFIG_DIR+PLUGINS_FILE;
+        String fileName = System.getProperty(Constants.VDCT_PLUGINS_FILE);
+        if (fileName == null)
+            fileName = System.getProperty("user.home") + "/" + Constants.PLUGINS_FILE_NAME;
+        pluginSerializer.exportPlugins(fileName, this);
+    }
+    catch (Exception e)
+    {
+        com.cosylab.vdct.Console.getInstance().println("An error occurred while saving the plugins list!");
+        com.cosylab.vdct.Console.getInstance().println(e);
+    }
 }
 /**
  * Insert the method's description here.
@@ -254,8 +254,8 @@ public void save()
  */
 private void updateListener(PluginListener listener)
 {
-	Iterator it = plugins.iterator();
-	while( it.hasNext() )
-		listener.pluginAdded( (PluginObject)it.next() );
+    Iterator it = plugins.iterator();
+    while( it.hasNext() )
+        listener.pluginAdded( (PluginObject)it.next() );
 }
 }

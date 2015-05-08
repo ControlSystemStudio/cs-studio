@@ -39,62 +39,62 @@ import org.eclipse.ui.IWorkbench;
  * 
  */
 public final class NewScriptRuleWizard extends Wizard implements INewWizard {
-	/**
-	 * This wizard page is used to enter the file name and the target
-	 * project/folder for the new script rule.
-	 */
-	private NewScriptRuleWizardPage _sdsScriptRulePage;
+    /**
+     * This wizard page is used to enter the file name and the target
+     * project/folder for the new script rule.
+     */
+    private NewScriptRuleWizardPage _sdsScriptRulePage;
 
-	/**
-	 * The current selection.
-	 */
-	private IStructuredSelection _selection;
+    /**
+     * The current selection.
+     */
+    private IStructuredSelection _selection;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void addPages() {
-		_sdsScriptRulePage = new NewScriptRuleWizardPage("sdsScriptRule", //$NON-NLS-1$
-				_selection);
-		addPage(_sdsScriptRulePage);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addPages() {
+        _sdsScriptRulePage = new NewScriptRuleWizardPage("sdsScriptRule", //$NON-NLS-1$
+                _selection);
+        addPage(_sdsScriptRulePage);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean performFinish() {
-		boolean result = true;
-		IFile file = _sdsScriptRulePage.createNewFile();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean performFinish() {
+        boolean result = true;
+        IFile file = _sdsScriptRulePage.createNewFile();
 
-		if (file == null) {
-			result = false;
-		}
+        if (file == null) {
+            result = false;
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void init(final IWorkbench workbench,
-			final IStructuredSelection selection) {
-		_selection = selection;
+    /**
+     * {@inheritDoc}
+     */
+    public void init(final IWorkbench workbench,
+            final IStructuredSelection selection) {
+        _selection = selection;
 
-		setDefaultSelection();
-	}
+        setDefaultSelection();
+    }
 
-	/**
-	 * Set the active workspace project selection to the default SDS script rule
-	 * project.
-	 */
-	private void setDefaultSelection() {
-		IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject(
-				RuleService.SCRIPT_PROJECT_NAME);
-		if (p.exists()) {
-			_selection = new StructuredSelection(p);
-		}
-	}
+    /**
+     * Set the active workspace project selection to the default SDS script rule
+     * project.
+     */
+    private void setDefaultSelection() {
+        IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject(
+                RuleService.SCRIPT_PROJECT_NAME);
+        if (p.exists()) {
+            _selection = new StructuredSelection(p);
+        }
+    }
 
 }

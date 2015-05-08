@@ -32,12 +32,12 @@ package org.csstudio.platform.internal.simpledal.converters;
  * 
  */
 class ObjectConverter implements IValueTypeConverter<Object> {
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object convert(Object value) {
-		Object result = value!=null?value:new Object();
-		assert result != null;
-		return result;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Object convert(Object value) {
+        Object result = value!=null?value:new Object();
+        assert result != null;
+        return result;
+    }
 }

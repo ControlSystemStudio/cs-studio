@@ -36,17 +36,17 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class DataLogUnitTest
 {
-	private void logData(final DataLog logger) throws Exception
+    private void logData(final DataLog logger) throws Exception
     {
-		for (int x=0; x<5; ++x)
-		{
-		    final Date now = new Date();
-		    final long serial = logger.getNextScanDataSerial();
-			logger.log("x", ScanSampleFactory.createSample(now, serial, Double.valueOf(x)));
-			for (int y=0; y<5; ++y)
-				logger.log("y", ScanSampleFactory.createSample(now, serial, Double.valueOf(y)));
-		}
-		logger.flush();
+        for (int x=0; x<5; ++x)
+        {
+            final Date now = new Date();
+            final long serial = logger.getNextScanDataSerial();
+            logger.log("x", ScanSampleFactory.createSample(now, serial, Double.valueOf(x)));
+            for (int y=0; y<5; ++y)
+                logger.log("y", ScanSampleFactory.createSample(now, serial, Double.valueOf(y)));
+        }
+        logger.flush();
     }
 
     @Test
@@ -88,14 +88,14 @@ public class DataLogUnitTest
         assertThat(events.get(), equalTo(1));
     }
 
-	@Test
-	public void testSpreadsheet() throws Exception
-	{
+    @Test
+    public void testSpreadsheet() throws Exception
+    {
         System.out.println("MemoryDataLogger as Spreadsheet:");
-		final DataLog logger = new MemoryDataLog();
-		logData(logger);
-		ScanDataIterator sheet =
-	        new ScanDataIterator(logger.getScanData());
+        final DataLog logger = new MemoryDataLog();
+        logData(logger);
+        ScanDataIterator sheet =
+            new ScanDataIterator(logger.getScanData());
         sheet.printTable(System.out);
-	}
+    }
 }

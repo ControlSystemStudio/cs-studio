@@ -32,27 +32,27 @@ import org.csstudio.dal.Timestamp;
  * @param <E>
  */
 public class ProcessVariableValueAdapter<E> implements
-		IProcessVariableValueListener<E> {
+        IProcessVariableValueListener<E> {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void connectionStateChanged(ConnectionState connectionState) {
+    /**
+     * {@inheritDoc}
+     */
+    public void connectionStateChanged(ConnectionState connectionState) {
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void errorOccured(String error) {
+    /**
+     * {@inheritDoc}
+     */
+    public void errorOccured(String error) {
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void valueChanged(E value, Timestamp timestamp) {
+    /**
+     * {@inheritDoc}
+     */
+    public void valueChanged(E value, Timestamp timestamp) {
 
-	}
+    }
 
 }

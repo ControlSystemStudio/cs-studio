@@ -37,56 +37,56 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  */
 public final class NewScriptRuleWizardPage extends WizardNewFileCreationPage {
 
-	/**
-	 * The initial script file contents.
-	 */
-	private static final String INITIAL_CONTENTS = "var compatibleProperties = \"sds.double\";\n"
-			+ "var description = \"Rule name\";\n"
-			+ "var parameters = new Array(\"Description of argument 1\", \"Description of argument 2\", \"Description of argument 3\");\n"
-			+ "var parameterTypes = new Array(\"java.lang.Double\", \"java.lang.Double\", \"java.lang.Double\");\n\n"
-			+ "function execute(args) {\n"
-			+ "\tvar argument1 = args[0];\n"
-			+ "\tvar argument2 = args[1];\n"
-			+ "\tvar argument3 = args[2];\n\n"
-			+ "\treturn argument1;\n"
-			+"}";
+    /**
+     * The initial script file contents.
+     */
+    private static final String INITIAL_CONTENTS = "var compatibleProperties = \"sds.double\";\n"
+            + "var description = \"Rule name\";\n"
+            + "var parameters = new Array(\"Description of argument 1\", \"Description of argument 2\", \"Description of argument 3\");\n"
+            + "var parameterTypes = new Array(\"java.lang.Double\", \"java.lang.Double\", \"java.lang.Double\");\n\n"
+            + "function execute(args) {\n"
+            + "\tvar argument1 = args[0];\n"
+            + "\tvar argument2 = args[1];\n"
+            + "\tvar argument3 = args[2];\n\n"
+            + "\treturn argument1;\n"
+            +"}";
 
-	/**
-	 * Creates a new SDS script rule creation wizard page.
-	 * 
-	 * @param pageName
-	 *            the name of the page
-	 * @param selection
-	 *            the current resource selection
-	 */
-	public NewScriptRuleWizardPage(final String pageName,
-			final IStructuredSelection selection) {
-		super(pageName, selection, true);
-		setTitle("Create a new scripted rule");
-		setDescription("Create a new scripted rule.");
-	}
+    /**
+     * Creates a new SDS script rule creation wizard page.
+     * 
+     * @param pageName
+     *            the name of the page
+     * @param selection
+     *            the current resource selection
+     */
+    public NewScriptRuleWizardPage(final String pageName,
+            final IStructuredSelection selection) {
+        super(pageName, selection, true);
+        setTitle("Create a new scripted rule");
+        setDescription("Create a new scripted rule.");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected InputStream getInitialContents() {
-		return new ByteArrayInputStream(INITIAL_CONTENTS.getBytes());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected InputStream getInitialContents() {
+        return new ByteArrayInputStream(INITIAL_CONTENTS.getBytes());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String getNewFileLabel() {
-		return "Rule name:";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getNewFileLabel() {
+        return "Rule name:";
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getFileExtension() {
-		return RuleService.SCRIPT_FILE_EXTENSION;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getFileExtension() {
+        return RuleService.SCRIPT_FILE_EXTENSION;
+    }
 }

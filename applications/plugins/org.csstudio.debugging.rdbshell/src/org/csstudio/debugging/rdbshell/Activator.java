@@ -15,6 +15,6 @@ package org.csstudio.debugging.rdbshell;
 @SuppressWarnings("nls")
 public class Activator
 {
-	/** Plugin ID registered in MANIFEST.MF */
+    /** Plugin ID registered in MANIFEST.MF */
     final public static String ID = "org.csstudio.debugging.rdbshell";
 }

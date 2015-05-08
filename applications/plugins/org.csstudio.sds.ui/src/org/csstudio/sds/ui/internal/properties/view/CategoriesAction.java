@@ -45,7 +45,7 @@ final class CategoriesAction extends PropertySheetAction {
      * Toggles the display of categories for the properties.
      */
     @Override
-	public void run() {
+    public void run() {
         PropertySheetViewer ps = getPropertySheet();
         ps.deactivateCellEditor();
         if (isChecked()) {

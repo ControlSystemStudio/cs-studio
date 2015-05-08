@@ -38,35 +38,35 @@ import org.junit.Test;
  */
 public final class LabelModelFactoryTest {
 
-	/**
-	 * A factory instance for testing issues.
-	 */
-	private LabelModelFactory _factory;
-	
-	/**
-	 * Test setup.
-	 */
-	@Before
-	public void setUp()  {
-		_factory= new LabelModelFactory();
-	}
+    /**
+     * A factory instance for testing issues.
+     */
+    private LabelModelFactory _factory;
+    
+    /**
+     * Test setup.
+     */
+    @Before
+    public void setUp()  {
+        _factory= new LabelModelFactory();
+    }
 
-	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.LabelModelFactory#createWidgetModel()}.
-	 */
-	@Test
-	public void testCreateModelElement() {
-		AbstractWidgetModel model = _factory.createWidgetModel();
-		assertNotNull(model);
-		assertTrue(model instanceof LabelModel);
-	}
+    /**
+     * Test method for {@link org.csstudio.sds.components.internal.model.LabelModelFactory#createWidgetModel()}.
+     */
+    @Test
+    public void testCreateModelElement() {
+        AbstractWidgetModel model = _factory.createWidgetModel();
+        assertNotNull(model);
+        assertTrue(model instanceof LabelModel);
+    }
 
-	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.LabelModelFactory#getWidgetModelType()}.
-	 */
-	@Test
-	public void testGetModelElementType() {
-		assertEquals(LabelModel.class, _factory.getWidgetModelType());
-	}
+    /**
+     * Test method for {@link org.csstudio.sds.components.internal.model.LabelModelFactory#getWidgetModelType()}.
+     */
+    @Test
+    public void testGetModelElementType() {
+        assertEquals(LabelModel.class, _factory.getWidgetModelType());
+    }
 
 }

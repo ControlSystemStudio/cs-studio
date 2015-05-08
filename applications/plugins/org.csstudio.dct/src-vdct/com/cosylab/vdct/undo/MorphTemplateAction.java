@@ -37,9 +37,9 @@ import com.cosylab.vdct.vdb.VDBTemplateInstance;
  * @author 
  */
 public class MorphTemplateAction extends ActionObject {
-	private VDBTemplateInstance oldTemplateData;
-	private VDBTemplateInstance newTemplateData;
-	private Template object;
+    private VDBTemplateInstance oldTemplateData;
+    private VDBTemplateInstance newTemplateData;
+    private Template object;
 
 /**
  * Insert the method's description here.
@@ -49,9 +49,9 @@ public class MorphTemplateAction extends ActionObject {
  * @param newName java.lang.String
  */
 public MorphTemplateAction(Template object, VDBTemplateInstance oldTemplateData, VDBTemplateInstance newTemplateData) {
-	this.object=object;
-	this.oldTemplateData=oldTemplateData;
-	this.newTemplateData=newTemplateData;
+    this.object=object;
+    this.oldTemplateData=oldTemplateData;
+    this.newTemplateData=newTemplateData;
 }
 /**
  * Insert the method's description here.
@@ -59,18 +59,18 @@ public MorphTemplateAction(Template object, VDBTemplateInstance oldTemplateData,
  * @return java.lang.String
  */
 public String getDescription() {
-	return "Morph template ["+object.getName()+"]()";
+    return "Morph template ["+object.getName()+"]()";
 }
 /**
  * This method was created in VisualAge.
  */
 protected void redoAction() {
-	object.setTemplateInstance(newTemplateData);
+    object.setTemplateInstance(newTemplateData);
 }
 /**
  * This method was created in VisualAge.
  */
 protected void undoAction() {
-	object.setTemplateInstance(oldTemplateData);
+    object.setTemplateInstance(oldTemplateData);
 }
 }

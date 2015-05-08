@@ -35,22 +35,22 @@ import org.csstudio.dal.device.AbstractDevice;
  */
 public interface DeviceGroupListener<T extends AbstractDevice> extends EventListener
 {
-	/**
-	 * Notifies listeners that a device has been added to the source
-	 * group.
-	 *
-	 * @param event The event which holds the group and the added property.
-	 */
-	public void membersAdded(DeviceGroupEvent<T> event);
+    /**
+     * Notifies listeners that a device has been added to the source
+     * group.
+     *
+     * @param event The event which holds the group and the added property.
+     */
+    public void membersAdded(DeviceGroupEvent<T> event);
 
-	/**
-	 * Notifies listeners that a device has been removed from the
-	 * source group.
-	 *
-	 * @param event The event which holds the source group and the removed
-	 *        property.
-	 */
-	public void membersRemoved(DeviceGroupEvent<T> event);
+    /**
+     * Notifies listeners that a device has been removed from the
+     * source group.
+     *
+     * @param event The event which holds the source group and the removed
+     *        property.
+     */
+    public void membersRemoved(DeviceGroupEvent<T> event);
 }
 
 /* __oOo__ */

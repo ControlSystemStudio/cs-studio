@@ -37,10 +37,10 @@ public class FilterUnitTest implements FilterListener
  
     @Before
     public void setup()
-    {	// Running as plain unit tests, so PVPool is not
-    	// initialized from extension point registry
-    	PVPool.addPVFactory(new LocalPVFactory());
-    	PVPool.addPVFactory(new JCA_PVFactory());
+    {    // Running as plain unit tests, so PVPool is not
+        // initialized from extension point registry
+        PVPool.addPVFactory(new LocalPVFactory());
+        PVPool.addPVFactory(new JCA_PVFactory());
         PVPool.setDefaultType(LocalPVFactory.TYPE);
         
         // Configure logging to show 'all'
@@ -144,8 +144,8 @@ public class FilterUnitTest implements FilterListener
     {
         synchronized (this)
         {
-        	last_value = Double.NaN;
-		}
+            last_value = Double.NaN;
+        }
         
         final Filter filter = new Filter("'ca://bogus_pv_name' * 2", this);
         filter.start();
@@ -158,8 +158,8 @@ public class FilterUnitTest implements FilterListener
         assertThat(updates.get(), equalTo(0));
 
         synchronized (this)
-        {	// Last value should remain unchanged
-        	assertThat(last_value, notANumber());
+        {    // Last value should remain unchanged
+            assertThat(last_value, notANumber());
         }
         
         filter.stop();

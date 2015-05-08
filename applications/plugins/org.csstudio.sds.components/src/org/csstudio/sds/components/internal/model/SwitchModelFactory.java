@@ -32,17 +32,17 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  */
 public final class SwitchModelFactory implements IWidgetModelFactory {
 
-	/**
-	 * {@inheritDoc}.
-	 */
-	public AbstractWidgetModel createWidgetModel() {
-		return new SwitchModel();
-	}
+    /**
+     * {@inheritDoc}.
+     */
+    public AbstractWidgetModel createWidgetModel() {
+        return new SwitchModel();
+    }
 
-	/**
-	 * {@inheritDoc}.
-	 */
-	public Class getWidgetModelType() {
-		return SwitchModel.class;
-	}
+    /**
+     * {@inheritDoc}.
+     */
+    public Class getWidgetModelType() {
+        return SwitchModel.class;
+    }
 }

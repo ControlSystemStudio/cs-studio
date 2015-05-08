@@ -29,11 +29,11 @@
  */
 public final class CommitValueActionModelFactory implements IActionModelFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractWidgetActionModel createWidgetActionModel() {
-		return new CommitValueActionModel();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractWidgetActionModel createWidgetActionModel() {
+        return new CommitValueActionModel();
+    }
 
 }

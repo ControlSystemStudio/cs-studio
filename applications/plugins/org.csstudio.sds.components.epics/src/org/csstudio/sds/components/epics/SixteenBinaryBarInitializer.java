@@ -37,26 +37,26 @@ import org.csstudio.sds.util.ColorAndFontUtil;
  */
 public final class SixteenBinaryBarInitializer extends AbstractEpicsWidgetInitializer {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void initialize(final AbstractControlSystemSchema schema) {
-		
-		initializeCommonAlarmBehaviour();
-		
-		initializeDynamicProperty(SixteenBinaryBarModel.PROP_VALUE, "$channel$");
-		
-		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
-		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, ColorAndFontUtil.toHex(255,
-				9, 163));
-		colorsByConnectionState.put(ConnectionState.INITIAL, ColorAndFontUtil.toHex(255, 168,
-				222));
-		colorsByConnectionState.put(ConnectionState.CONNECTED, ColorAndFontUtil.toHex(0, 0,
-				0));
-		
-		initializeDynamicPropertyForConnectionState(
-				SixteenBinaryBarModel.PROP_INTERNAL_FRAME_COLOR, "$channel$",
-				colorsByConnectionState);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void initialize(final AbstractControlSystemSchema schema) {
+        
+        initializeCommonAlarmBehaviour();
+        
+        initializeDynamicProperty(SixteenBinaryBarModel.PROP_VALUE, "$channel$");
+        
+        Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
+        colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, ColorAndFontUtil.toHex(255,
+                9, 163));
+        colorsByConnectionState.put(ConnectionState.INITIAL, ColorAndFontUtil.toHex(255, 168,
+                222));
+        colorsByConnectionState.put(ConnectionState.CONNECTED, ColorAndFontUtil.toHex(0, 0,
+                0));
+        
+        initializeDynamicPropertyForConnectionState(
+                SixteenBinaryBarModel.PROP_INTERNAL_FRAME_COLOR, "$channel$",
+                colorsByConnectionState);
+    }
 }

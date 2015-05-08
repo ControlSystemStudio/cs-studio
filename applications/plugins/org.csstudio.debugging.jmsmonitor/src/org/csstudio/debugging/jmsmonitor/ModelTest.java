@@ -28,7 +28,7 @@ public class ModelTest implements ModelListener
         model.addListener(this);
 
         System.out.println("Listening to messages, " +
-        		"so start something that produces them...");
+                "so start something that produces them...");
         Thread.sleep(20 * 1000);
 
         model.close();

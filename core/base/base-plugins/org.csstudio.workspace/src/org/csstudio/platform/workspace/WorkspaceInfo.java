@@ -67,10 +67,10 @@ public class WorkspaceInfo
         
         // No previous info, or we're asked to use initial_default in any case:
         if(initial_default != null)
-        	setSelectedWorkspace(initial_default.getFile());
+            setSelectedWorkspace(initial_default.getFile());
         else
-        	//if no default workspace provided, use "@usr.home/CSS-Workspaces/Default"
-        	setSelectedWorkspace(System.getProperty("user.home") //$NON-NLS-1$
+            //if no default workspace provided, use "@usr.home/CSS-Workspaces/Default"
+            setSelectedWorkspace(System.getProperty("user.home") //$NON-NLS-1$
                     + File.separator + "CSS-Workspaces" + File.separator + "Default");
     }
 
@@ -78,7 +78,7 @@ public class WorkspaceInfo
     @SuppressWarnings("nls")
     private void readPersistedData()
     {
-    	final Preferences node = ConfigurationScope.INSTANCE.getNode(PREF_QUALIFIER);
+        final Preferences node = ConfigurationScope.INSTANCE.getNode(PREF_QUALIFIER);
     //    final IPreferenceStore store = new ScopedPreferenceStore(
     //            new ConfigurationScope(), PREF_QUALIFIER);
         

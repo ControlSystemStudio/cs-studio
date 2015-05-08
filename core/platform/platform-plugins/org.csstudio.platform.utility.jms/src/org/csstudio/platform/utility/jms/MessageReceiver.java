@@ -74,11 +74,11 @@ public class MessageReceiver {
     /**
      * A JMS Topic.
      */
-    private Topic		                _destination = null;  // if ! topic: Destination
+    private Topic                        _destination = null;  // if ! topic: Destination
     /**
      * ???.
      */
-	private String[] _queues;
+    private String[] _queues;
     /**
      * The listener of the Messages.
      */
@@ -86,11 +86,11 @@ public class MessageReceiver {
     /**
      * The Connection Job.
      */
-	private ConnectionJob _connectionJob;
-	/**
-	 * the Job Change Listener.
-	 */
-	private IJobChangeListener _jobChangeListener;
+    private ConnectionJob _connectionJob;
+    /**
+     * the Job Change Listener.
+     */
+    private IJobChangeListener _jobChangeListener;
     
     
 
@@ -185,7 +185,7 @@ public class MessageReceiver {
     public MessageReceiver() throws NamingException{
         _properties = new Hashtable<String, String>();
         _properties.put(Context.INITIAL_CONTEXT_FACTORY,
-        		Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.INITIAL_CONTEXT_FACTORY));
+                Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.INITIAL_CONTEXT_FACTORY));
         String url = Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.URL);
         ActiveMQURL uri = new ActiveMQURL(url);
         
@@ -230,8 +230,8 @@ public class MessageReceiver {
      * @param listener of Message.
      * 
      */
-	public final void startListener(final MessageListener listener) {
-	    _listener = listener;
+    public final void startListener(final MessageListener listener) {
+        _listener = listener;
         _connectionJob = new ConnectionJob("JMS Connection");
         _jobChangeListener = new IJobChangeListener(){
             public void done(final IJobChangeEvent event) {
@@ -242,17 +242,17 @@ public class MessageReceiver {
                     ActiveMQURL aURL = new ActiveMQURL(_properties.get(Context.PROVIDER_URL));
                     aURL.setMaxReconnectAttempts("maxReconnectAttempts=0");
                     if(aURL.getInitialReconnectDelay()==null){
-                    	aURL.setInitialReconnectDelay("InitialReconnectDelay=10000");
+                        aURL.setInitialReconnectDelay("InitialReconnectDelay=10000");
                     }
                     _properties.put(Context.PROVIDER_URL,aURL.getURL());
                     System.out.println(" Retry with "+_properties.get(Context.PROVIDER_URL));
                     try {
-						_context = new InitialContext(_properties);
-					} catch (NamingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						System.out.println(e.getMessage());
-					}
+                        _context = new InitialContext(_properties);
+                    } catch (NamingException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                        System.out.println(e.getMessage());
+                    }
                     startListener(listener);
                 }
             }
@@ -271,20 +271,20 @@ public class MessageReceiver {
         _connectionJob.setSystem(true);
         _connectionJob.schedule();
         
-	}
+    }
 
-	/**
-	 * Cleans up resources.
+    /**
+     * Cleans up resources.
      * @throws Exception ___. 
      * 
-	 */
-	public final void stopListening() throws Exception{
-		_connectionJob.removeJobChangeListener(_jobChangeListener);
-		_connectionJob.cancel();
-		for (MessageConsumer r: _receiver) {
-			r.close();
-			r=null;
-		}
+     */
+    public final void stopListening() throws Exception{
+        _connectionJob.removeJobChangeListener(_jobChangeListener);
+        _connectionJob.cancel();
+        for (MessageConsumer r: _receiver) {
+            r.close();
+            r=null;
+        }
         _session.close();
         _connection.stop();
         _connection.close();
@@ -296,7 +296,7 @@ public class MessageReceiver {
         _receiver    = null;
         _destination = null;
         
-	}
+    }
 
 
 

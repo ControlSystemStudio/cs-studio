@@ -11,95 +11,95 @@ import junit.framework.TestCase;
 
 public class EdmColorTest extends TestCase {
 
-	private EdmAttribute initStaticAttribute() {
+    private EdmAttribute initStaticAttribute() {
 
-		EdmAttribute a = new EdmAttribute("\"blinking purple\"");
-		a.appendValue("49344 0 49344");
+        EdmAttribute a = new EdmAttribute("\"blinking purple\"");
+        a.appendValue("49344 0 49344");
 
-		return a;
-	}
+        return a;
+    }
 
-	private EdmAttribute initStaticBlinkAttribute() {
+    private EdmAttribute initStaticBlinkAttribute() {
 
-		EdmAttribute a = new EdmAttribute("\"blinking purple\"");
-		a.appendValue("49344 0 49344");
-		a.appendValue("0 0 0");
+        EdmAttribute a = new EdmAttribute("\"blinking purple\"");
+        a.appendValue("49344 0 49344");
+        a.appendValue("0 0 0");
 
-		return a;
-	}
+        return a;
+    }
 
-	public void testStaticEdmColor() throws EdmException {
+    public void testStaticEdmColor() throws EdmException {
 
-		EdmColor c = new EdmColor(initStaticBlinkAttribute(), true);
+        EdmColor c = new EdmColor(initStaticBlinkAttribute(), true);
 
-		assertEquals("blinking purple", c.getName());
-		assertEquals(49344, c.getRed());
-		assertEquals(0, c.getGreen());
-		assertEquals(49344, c.getBlue());
+        assertEquals("blinking purple", c.getName());
+        assertEquals(49344, c.getRed());
+        assertEquals(0, c.getGreen());
+        assertEquals(49344, c.getBlue());
 
-		assertEquals(true, c.isBlinking());
+        assertEquals(true, c.isBlinking());
 
-		assertEquals(0, c.getBlinkRed());
-		assertEquals(0, c.getBlinkGreen());
-		assertEquals(0, c.getBlinkBlue());
+        assertEquals(0, c.getBlinkRed());
+        assertEquals(0, c.getBlinkGreen());
+        assertEquals(0, c.getBlinkBlue());
 
-		c = new EdmColor(initStaticAttribute(), true);
+        c = new EdmColor(initStaticAttribute(), true);
 
-		assertEquals("blinking purple", c.getName());
-		assertEquals(49344, c.getRed());
-		assertEquals(0, c.getGreen());
-		assertEquals(49344, c.getBlue());
+        assertEquals("blinking purple", c.getName());
+        assertEquals(49344, c.getRed());
+        assertEquals(0, c.getGreen());
+        assertEquals(49344, c.getBlue());
 
-		assertEquals(false, c.isBlinking());
-	}
+        assertEquals(false, c.isBlinking());
+    }
 
-	public void testIndexEdmColor() throws EdmException {
+    public void testIndexEdmColor() throws EdmException {
 
-		System.setProperty("edm2xml.robustParsing", "false");
-		System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
+        System.setProperty("edm2xml.robustParsing", "false");
+        System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
 
-		// generate EdmColor from index & list
-		EdmModel.getInstance();
-		EdmColor testC = new EdmColor(new EdmAttribute("index 142"), true);
-		assertEquals("index 142", testC.getValue(0));
+        // generate EdmColor from index & list
+        EdmModel.getInstance();
+        EdmColor testC = new EdmColor(new EdmAttribute("index 142"), true);
+        assertEquals("index 142", testC.getValue(0));
 
-		assertEquals("blinking purple", testC.getName());
-		assertEquals(49344, testC.getRed());
-		assertEquals(0, testC.getGreen());
-		assertEquals(49344, testC.getBlue());
+        assertEquals("blinking purple", testC.getName());
+        assertEquals(49344, testC.getRed());
+        assertEquals(0, testC.getGreen());
+        assertEquals(49344, testC.getBlue());
 
-		assertEquals(true, testC.isBlinking());
+        assertEquals(true, testC.isBlinking());
 
-		assertEquals(0, testC.getBlinkRed());
-		assertEquals(0, testC.getBlinkGreen());
-		assertEquals(0, testC.getBlinkBlue());
-	}
+        assertEquals(0, testC.getBlinkRed());
+        assertEquals(0, testC.getBlinkGreen());
+        assertEquals(0, testC.getBlinkBlue());
+    }
 
-	public void testRgbEdmColor() throws EdmException {
-		//topShadowColor rgb 0 0 0
+    public void testRgbEdmColor() throws EdmException {
+        //topShadowColor rgb 0 0 0
 
-		EdmColor c = new EdmColor(new EdmAttribute("rgb 1 2 3"), true);
+        EdmColor c = new EdmColor(new EdmAttribute("rgb 1 2 3"), true);
 
-		assertEquals(null, c.getName());
-		assertEquals(1, c.getRed());
-		assertEquals(2, c.getGreen());
-		assertEquals(3, c.getBlue());
+        assertEquals(null, c.getName());
+        assertEquals(1, c.getRed());
+        assertEquals(2, c.getGreen());
+        assertEquals(3, c.getBlue());
 
-		assertEquals(false, c.isBlinking());
-	}
+        assertEquals(false, c.isBlinking());
+    }
 
-	public void testOptionality() throws EdmException {
+    public void testOptionality() throws EdmException {
 
-		System.setProperty("edm2xml.robustParsing", "false");
-		System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
+        System.setProperty("edm2xml.robustParsing", "false");
+        System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
 
-		EdmModel.getInstance();
-		EdmColor testC = new EdmColor(new EdmAttribute("index 142"), false);
-		assertEquals(false, testC.isRequired());
-		assertEquals(true, testC.isInitialized());
+        EdmModel.getInstance();
+        EdmColor testC = new EdmColor(new EdmAttribute("index 142"), false);
+        assertEquals(false, testC.isRequired());
+        assertEquals(true, testC.isInitialized());
 
-		EdmColor testC2 = new EdmColor(null, false);
-		assertEquals(false, testC2.isRequired());
-		assertEquals(false, testC2.isInitialized());
-	}
+        EdmColor testC2 = new EdmColor(null, false);
+        assertEquals(false, testC2.isRequired());
+        assertEquals(false, testC2.isInitialized());
+    }
 }

@@ -33,10 +33,10 @@ import org.junit.Test;
  */
 public class TickTest {
 
-	@Test
-	public void testTick() throws Exception {
-		Tick tick = new Tick(TickType.MAJOR, 1.0);
-		assertEquals(TickType.MAJOR, tick.type());
-		assertEquals(1.0, tick.value(), 0.001);
-	}
+    @Test
+    public void testTick() throws Exception {
+        Tick tick = new Tick(TickType.MAJOR, 1.0);
+        assertEquals(TickType.MAJOR, tick.type());
+        assertEquals(1.0, tick.value(), 0.001);
+    }
 }

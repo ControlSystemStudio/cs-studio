@@ -45,105 +45,105 @@ import org.eclipse.core.runtime.Platform;
  * 
  */
 public enum ControlSystemEnum implements IAdaptable {
-	SDS_SIMULATOR("local", null, false, "icons/cs-local.png"),
+    SDS_SIMULATOR("local", null, false, "icons/cs-local.png"),
 
-	DAL_SIMULATOR("simulator", "Simulator", true, "icons/controlsystem-local"),
-	/**
-	 * @Deprecated replaced by EPICS.
-	 */
-	@Deprecated
-	DAL_EPICS("dal-epics", "EPICS", true, "icons/controlsystem-epics"),
-	/**
+    DAL_SIMULATOR("simulator", "Simulator", true, "icons/controlsystem-local"),
+    /**
+     * @Deprecated replaced by EPICS.
+     */
+    @Deprecated
+    DAL_EPICS("dal-epics", "EPICS", true, "icons/controlsystem-epics"),
+    /**
      * @Deprecated replaced by TINE.
      */
-	@Deprecated
-	DAL_TINE("dal-tine", "TINE", true, "icons/controlsystem-tine"),
-	/**
+    @Deprecated
+    DAL_TINE("dal-tine", "TINE", true, "icons/controlsystem-tine"),
+    /**
      * @Deprecated replaced by TANGO.
      */
-	@Deprecated
-	DAL_TANGO("dal-tango", null, false, "icons/controlsystem-tango"),
+    @Deprecated
+    DAL_TANGO("dal-tango", null, false, "icons/controlsystem-tango"),
 
-	TINE("tine", "TINE", true, "icons/controlsystem-epics"),
+    TINE("tine", "TINE", true, "icons/controlsystem-epics"),
 
-	EPICS("epics", "EPICS", true, "icons/controlsystem-epics"),
+    EPICS("epics", "EPICS", true, "icons/controlsystem-epics"),
 
-	TANGO("tango", "Tango", true, "icons/controlsystem-epics"),
+    TANGO("tango", "Tango", true, "icons/controlsystem-epics"),
 
-	LOCAL("local", null, false, "icons/controlsystem-local"),
-	
-	UNKNOWN("", null, false, "icons/controlsystem-unknown");
+    LOCAL("local", null, false, "icons/controlsystem-local"),
+    
+    UNKNOWN("", null, false, "icons/controlsystem-unknown");
 
-	private String _prefix;
+    private String _prefix;
 
-	private String _dalName;
+    private String _dalName;
 
-	private boolean _supportedByDAL;
-	
-	private String _icon;
+    private boolean _supportedByDAL;
+    
+    private String _icon;
 
-	ControlSystemEnum(String prefix, String dalName, boolean supportedByDAL, String icon) {
-		assert prefix != null;
-		assert icon != null;
-		_prefix = prefix;
-		_dalName = dalName;
-		_supportedByDAL = supportedByDAL;
-		_icon = icon;
-	}
+    ControlSystemEnum(String prefix, String dalName, boolean supportedByDAL, String icon) {
+        assert prefix != null;
+        assert icon != null;
+        _prefix = prefix;
+        _dalName = dalName;
+        _supportedByDAL = supportedByDAL;
+        _icon = icon;
+    }
 
-	public String getIconPrefix() {
-		return _icon;
-	}
-	
-	public String getPrefix() {
-		return _prefix;
-	}
+    public String getIconPrefix() {
+        return _icon;
+    }
+    
+    public String getPrefix() {
+        return _prefix;
+    }
 
-	public String getResponsibleDalPlugId() {
-		return _dalName;
-	}
+    public String getResponsibleDalPlugId() {
+        return _dalName;
+    }
 
-	public boolean isSupportedByDAL() {
-		return _supportedByDAL;
-	}
+    public boolean isSupportedByDAL() {
+        return _supportedByDAL;
+    }
 
-	/**
-	 * Get only the ControlSystem that are shown or selectable. 
-	 * @return the visible ControlSystem. 
-	 */
-	public static ControlSystemEnum[] valuesShown() {
-	    ArrayList<ControlSystemEnum> list = new ArrayList<ControlSystemEnum>();
-	    for (ControlSystemEnum cs : values()) {
-	        switch(cs) {
-	            case DAL_EPICS:
-	            case DAL_TANGO:
-	            case DAL_TINE:
-	                break;
-	            default:
-	                list.add(cs);
-	        }
+    /**
+     * Get only the ControlSystem that are shown or selectable. 
+     * @return the visible ControlSystem. 
+     */
+    public static ControlSystemEnum[] valuesShown() {
+        ArrayList<ControlSystemEnum> list = new ArrayList<ControlSystemEnum>();
+        for (ControlSystemEnum cs : values()) {
+            switch(cs) {
+                case DAL_EPICS:
+                case DAL_TANGO:
+                case DAL_TINE:
+                    break;
+                default:
+                    list.add(cs);
+            }
         }
-	    return list.toArray(new ControlSystemEnum[0]);
-	}
-	
-	@Override
-	public String toString() {
-		return name();
-	}
+        return list.toArray(new ControlSystemEnum[0]);
+    }
+    
+    @Override
+    public String toString() {
+        return name();
+    }
 
-	public static ControlSystemEnum findByPrefix(String prefix) {
-		ControlSystemEnum result = UNKNOWN;
-		for (ControlSystemEnum e : values()) {
-			if (e.getPrefix().equalsIgnoreCase(prefix)) {
-				result = e;
-			}
-		}
+    public static ControlSystemEnum findByPrefix(String prefix) {
+        ControlSystemEnum result = UNKNOWN;
+        for (ControlSystemEnum e : values()) {
+            if (e.getPrefix().equalsIgnoreCase(prefix)) {
+                result = e;
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	@Override
+    @Override
     public Object getAdapter(Class adapter) {
-		return Platform.getAdapterManager().getAdapter(this, adapter);
-	}
+        return Platform.getAdapterManager().getAdapter(this, adapter);
+    }
 }

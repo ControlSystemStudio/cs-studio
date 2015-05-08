@@ -37,28 +37,28 @@ import org.junit.Test;
  */
 public final class PolylineEditPartTest {
 
-	/**
-	 * The instance to test.
-	 */
-	private PolylineEditPart _editPart;
+    /**
+     * The instance to test.
+     */
+    private PolylineEditPart _editPart;
 
-	/**
-	 * Test set up.
-	 */
-	@Before
-	public void setUp() {
-		_editPart = new PolylineEditPart();
-		_editPart.setModel(new PolylineModel());
-	}
+    /**
+     * Test set up.
+     */
+    @Before
+    public void setUp() {
+        _editPart = new PolylineEditPart();
+        _editPart.setModel(new PolylineModel());
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.components.ui.internal.editparts.PolylineEditPart#doCreateFigure()}.
-	 */
-	@Test
-	public void testCreateFigure() {
-		IFigure figure = _editPart.doCreateFigure();
-		assertTrue(figure instanceof RefreshablePolylineFigure);
-	}
+    /**
+     * Test method for
+     * {@link org.csstudio.sds.components.ui.internal.editparts.PolylineEditPart#doCreateFigure()}.
+     */
+    @Test
+    public void testCreateFigure() {
+        IFigure figure = _editPart.doCreateFigure();
+        assertTrue(figure instanceof RefreshablePolylineFigure);
+    }
 
 }

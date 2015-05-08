@@ -29,46 +29,46 @@ import org.osgi.framework.BundleContext;
  */
 public class ImporterPlugin extends Plugin {
 
-	/**
-	 * The plug-in ID.
-	 */
-	public static final String PLUGIN_ID = "org.csstudio.sds.importer"; //$NON-NLS-1$
+    /**
+     * The plug-in ID.
+     */
+    public static final String PLUGIN_ID = "org.csstudio.sds.importer"; //$NON-NLS-1$
 
-	/**
-	 * The shared instance.
-	 */
-	private static ImporterPlugin _plugin;
+    /**
+     * The shared instance.
+     */
+    private static ImporterPlugin _plugin;
 
-	/**
-	 * The constructor
-	 */
-	public ImporterPlugin() {
-		_plugin = this;
-	}
+    /**
+     * The constructor
+     */
+    public ImporterPlugin() {
+        _plugin = this;
+    }
 
-	/**
-	 * Returns the shared instance
-	 * 
-	 * @return the shared instance
-	 */
-	public static ImporterPlugin getDefault() {
-		return _plugin;
-	}
+    /**
+     * Returns the shared instance
+     * 
+     * @return the shared instance
+     */
+    public static ImporterPlugin getDefault() {
+        return _plugin;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void start(BundleContext context) throws Exception {
+        super.start(context);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		super.stop(context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        super.stop(context);
+    }
 
 }

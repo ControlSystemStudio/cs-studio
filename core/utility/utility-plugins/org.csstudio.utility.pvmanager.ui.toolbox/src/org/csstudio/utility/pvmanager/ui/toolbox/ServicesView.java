@@ -37,17 +37,17 @@ public class ServicesView extends ViewPart {
      */
     @Override
     public void createPartControl(Composite parent) {
-    	
-    	serviceTreeWidget = new ServiceTreeWidget(parent, SWT.NONE);
+        
+        serviceTreeWidget = new ServiceTreeWidget(parent, SWT.NONE);
 
-	List<String> serviceNames = new ArrayList<String>(ServiceRegistry
-		.getDefault().listServices());
-	Collections.sort(serviceNames);
-	List<Service> services = new ArrayList<Service>();
-	for (String serviceName : serviceNames) {
-	    services.add(ServiceRegistry.getDefault().findService(serviceName));
-	}	
-	serviceTreeWidget.setServiceNames(services);
+    List<String> serviceNames = new ArrayList<String>(ServiceRegistry
+        .getDefault().listServices());
+    Collections.sort(serviceNames);
+    List<Service> services = new ArrayList<Service>();
+    for (String serviceName : serviceNames) {
+        services.add(ServiceRegistry.getDefault().findService(serviceName));
+    }    
+    serviceTreeWidget.setServiceNames(services);
     }
 
     /*
@@ -57,7 +57,7 @@ public class ServicesView extends ViewPart {
      */
     @Override
     public void setFocus() {
-	serviceTreeWidget.setFocus();
+    serviceTreeWidget.setFocus();
     }
 
 }

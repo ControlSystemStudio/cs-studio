@@ -33,27 +33,27 @@ import org.epics.vtype.ValueUtil;
  */
 public class ScriptCommandContextImpl extends ScanScriptContext
 {
-	final private ScanContext context;
+    final private ScanContext context;
 
-	/** Initialize
-	 *  @param context {@link ScanContext} of the command executing the script
-	 */
-	public ScriptCommandContextImpl(final ScanContext context)
-	{
-		this.context = context;
-	}
+    /** Initialize
+     *  @param context {@link ScanContext} of the command executing the script
+     */
+    public ScriptCommandContextImpl(final ScanContext context)
+    {
+        this.context = context;
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public ScanData getScanData() throws Exception
-	{
-		return context.getDataLog().get().getScanData();
-	}
+    /** {@inheritDoc} */
+    @Override
+    public ScanData getScanData() throws Exception
+    {
+        return context.getDataLog().get().getScanData();
+    }
 
     /** {@inheritDoc} */
     @SuppressWarnings("nls")
     @Override
-	public void logData(final String device, final Object obj) throws Exception
+    public void logData(final String device, final Object obj) throws Exception
     {
         // Check received data
         final NDArray data;
@@ -80,7 +80,7 @@ public class ScriptCommandContextImpl extends ScanScriptContext
                 ScanSampleFactory.createSample(timestamp , serial++, iter.nextDouble());
             context.getDataLog().get().log(device, sample);
         }
-	}
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -91,15 +91,15 @@ public class ScriptCommandContextImpl extends ScanScriptContext
         if (value instanceof VNumber)
             return ValueUtil.numericValueOf(value);
         if (value instanceof VNumberArray)
-        	return VTypeHelper.toDoubles(value);
+            return VTypeHelper.toDoubles(value);
         return VTypeHelper.toString(value);
     }
 
     /** {@inheritDoc} */
-	@Override
-	public void write(final String device_name, final Object value, final String readback,
-	        final boolean wait, final double tolerance, final TimeDuration timeout) throws Exception
-	{
-	    ScanCommandUtil.write(context, device_name, value, false, wait, readback, tolerance, timeout);
-	}
+    @Override
+    public void write(final String device_name, final Object value, final String readback,
+            final boolean wait, final double tolerance, final TimeDuration timeout) throws Exception
+    {
+        ScanCommandUtil.write(context, device_name, value, false, wait, readback, tolerance, timeout);
+    }
 }

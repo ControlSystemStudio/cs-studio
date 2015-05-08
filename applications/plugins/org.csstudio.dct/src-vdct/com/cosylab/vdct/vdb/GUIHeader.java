@@ -38,25 +38,25 @@ import com.cosylab.vdct.inspector.*;
  * @author 
  */
 public class GUIHeader implements InspectableProperty {
-	protected String title;
-	protected String name;
-	protected int visibility;
-	
-	protected static GUIHeader defaultHeader = new GUIHeader("Name", "Value", InspectableProperty.ALWAYS_VISIBLE);
+    protected String title;
+    protected String name;
+    protected int visibility;
+    
+    protected static GUIHeader defaultHeader = new GUIHeader("Name", "Value", InspectableProperty.ALWAYS_VISIBLE);
 
 /**
  * GUISeparator constructor comment.
  */
 public GUIHeader(String title, String name) {
-	this(title, name, InspectableProperty.UNDEFINED_VISIBILITY);
+    this(title, name, InspectableProperty.UNDEFINED_VISIBILITY);
 }
 /**
  * GUISeparator constructor comment.
  */
 public GUIHeader(String title, String name, int visibility) {
-	this.title=title;
-	this.name=name;
-	this.visibility=visibility;
+    this.title=title;
+    this.name=name;
+    this.visibility=visibility;
 }
 /**
  * Insert the method's description here.
@@ -64,7 +64,7 @@ public GUIHeader(String title, String name, int visibility) {
  * @return boolean
  */
 public boolean allowsOtherValues() {
-	return false;
+    return false;
 }
 /**
  * Insert the method's description here.
@@ -72,7 +72,7 @@ public boolean allowsOtherValues() {
  * @return java.lang.String
  */
 public java.lang.String getHelp() {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -80,7 +80,7 @@ public java.lang.String getHelp() {
  * @return java.lang.String
  */
 public String getName() {
-	return name;
+    return name;
 }
 /**
  * Insert the method's description here.
@@ -88,7 +88,7 @@ public String getName() {
  * @return java.lang.String[]
  */
 public java.lang.String[] getSelectableValues() {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -96,7 +96,7 @@ public java.lang.String[] getSelectableValues() {
  * @return java.lang.String
  */
 public String getValue() {
-	return title;
+    return title;
 }
 /**
  * Insert the method's description here.
@@ -105,7 +105,7 @@ public String getValue() {
  */
 public String getInitValue()
 {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -113,7 +113,7 @@ public String getInitValue()
  * @return boolean
  */
 public boolean isEditable() {
-	return false;
+    return false;
 }
 /**
  * Insert the method's description here.
@@ -121,7 +121,7 @@ public boolean isEditable() {
  * @return boolean
  */
 public boolean isSepatator() {
-	return true;
+    return true;
 }
 /**
  * Insert the method's description here.
@@ -136,7 +136,7 @@ public void setValue(String value) {}
  */
 public Pattern getEditPattern()
 {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -145,7 +145,7 @@ public Pattern getEditPattern()
  */
 public String getToolTipText()
 {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -154,7 +154,7 @@ public String getToolTipText()
  */
 public boolean isValid()
 {
-	return true;
+    return true;
 }
 /**
  * Insert the method's description here.
@@ -163,7 +163,7 @@ public boolean isValid()
  */
 public int getVisibility()
 {
-	return visibility;
+    return visibility;
 }
 /**
  * Insert the method's description here.
@@ -182,7 +182,7 @@ public void popupEvent(Component component, int x, int y)
  */
 public static GUIHeader getDefaultHeader()
 {
-	return defaultHeader;
+    return defaultHeader;
 }
 
 }

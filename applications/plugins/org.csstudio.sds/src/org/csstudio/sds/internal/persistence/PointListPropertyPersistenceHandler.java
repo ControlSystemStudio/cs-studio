@@ -33,70 +33,70 @@ import org.jdom.Element;
  * 
  */
 public final class PointListPropertyPersistenceHandler extends
-		AbstractPropertyPersistenceHandler {
+        AbstractPropertyPersistenceHandler {
 
-	/**
-	 * XML tag name <code>pointList</code>.
-	 */
-	public static final String XML_ELEMENT_POINT_LIST = "pointList"; //$NON-NLS-1$
+    /**
+     * XML tag name <code>pointList</code>.
+     */
+    public static final String XML_ELEMENT_POINT_LIST = "pointList"; //$NON-NLS-1$
 
-	/**
-	 * XML tag name <code>point</code>.
-	 */
-	public static final String XML_ELEMENT_POINT = "point"; //$NON-NLS-1$
+    /**
+     * XML tag name <code>point</code>.
+     */
+    public static final String XML_ELEMENT_POINT = "point"; //$NON-NLS-1$
 
-	/**
-	 * XML attribute name <code>y</code>.
-	 */
-	public static final String XML_ATTRIBUTE_Y = "y"; //$NON-NLS-1$
+    /**
+     * XML attribute name <code>y</code>.
+     */
+    public static final String XML_ATTRIBUTE_Y = "y"; //$NON-NLS-1$
 
-	/**
-	 * XML attribute name <code>x</code>.
-	 */
-	public static final String XML_ATTRIBUTE_X = "x"; //$NON-NLS-1$	
+    /**
+     * XML attribute name <code>x</code>.
+     */
+    public static final String XML_ATTRIBUTE_X = "x"; //$NON-NLS-1$    
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void writeProperty(final Element domElement,
-			final Object propertyValue) {
-		PointList pointList = (PointList) propertyValue;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeProperty(final Element domElement,
+            final Object propertyValue) {
+        PointList pointList = (PointList) propertyValue;
 
-		Element pointListElement = new Element(XML_ELEMENT_POINT_LIST);
+        Element pointListElement = new Element(XML_ELEMENT_POINT_LIST);
 
-		for (int i = 0; i < pointList.size(); i++) {
-			Point point = pointList.getPoint(i);
+        for (int i = 0; i < pointList.size(); i++) {
+            Point point = pointList.getPoint(i);
 
-			Element pointElement = new Element(XML_ELEMENT_POINT);
-			pointElement.setAttribute(XML_ATTRIBUTE_X, "" + point.x); //$NON-NLS-1$
-			pointElement.setAttribute(XML_ATTRIBUTE_Y, "" + point.y); //$NON-NLS-1$
-			pointListElement.addContent(pointElement);
-		}
+            Element pointElement = new Element(XML_ELEMENT_POINT);
+            pointElement.setAttribute(XML_ATTRIBUTE_X, "" + point.x); //$NON-NLS-1$
+            pointElement.setAttribute(XML_ATTRIBUTE_Y, "" + point.y); //$NON-NLS-1$
+            pointListElement.addContent(pointElement);
+        }
 
-		domElement.addContent(pointListElement);
-	}
+        domElement.addContent(pointListElement);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object readProperty(final Element domElement) {
-		Element pointListElement = domElement.getChild(XML_ELEMENT_POINT_LIST);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object readProperty(final Element domElement) {
+        Element pointListElement = domElement.getChild(XML_ELEMENT_POINT_LIST);
 
-		PointList result = new PointList();
+        PointList result = new PointList();
 
-		for (Object o : pointListElement.getChildren(XML_ELEMENT_POINT)) {
-			Element pointElement = (Element) o;
+        for (Object o : pointListElement.getChildren(XML_ELEMENT_POINT)) {
+            Element pointElement = (Element) o;
 
-			String x = pointElement.getAttributeValue(XML_ATTRIBUTE_X);
-			String y = pointElement.getAttributeValue(XML_ATTRIBUTE_Y);
+            String x = pointElement.getAttributeValue(XML_ATTRIBUTE_X);
+            String y = pointElement.getAttributeValue(XML_ATTRIBUTE_Y);
 
-			result
-					.addPoint(new Point(Integer.parseInt(x), Integer
-							.parseInt(y)));
-		}
+            result
+                    .addPoint(new Point(Integer.parseInt(x), Integer
+                            .parseInt(y)));
+        }
 
-		return result;
-	}
+        return result;
+    }
 }

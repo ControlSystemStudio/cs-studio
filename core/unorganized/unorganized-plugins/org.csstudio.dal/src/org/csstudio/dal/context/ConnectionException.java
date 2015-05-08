@@ -33,31 +33,31 @@ import org.csstudio.dal.RemoteException;
 public class ConnectionException extends RemoteException
 {
 
-	private static final long serialVersionUID = 329479437879646554L;
+    private static final long serialVersionUID = 329479437879646554L;
 
-	/**
-	     * @see RemoteException#RemoteException()
-	     */
-	public ConnectionException()
-	{
-		super();
-	}
+    /**
+         * @see RemoteException#RemoteException()
+         */
+    public ConnectionException()
+    {
+        super();
+    }
 
-	/**
-	     * @see RemoteException#RemoteException(Object, String)
-	     */
-	public ConnectionException(Object instance, String s)
-	{
-		super(instance, s);
-	}
+    /**
+         * @see RemoteException#RemoteException(Object, String)
+         */
+    public ConnectionException(Object instance, String s)
+    {
+        super(instance, s);
+    }
 
-	/**
-	     * @see RemoteException#RemoteException(Object, String, Throwable)
-	     */
-	public ConnectionException(Object instance, String message, Throwable t)
-	{
-		super(instance, message, t);
-	}
+    /**
+         * @see RemoteException#RemoteException(Object, String, Throwable)
+         */
+    public ConnectionException(Object instance, String message, Throwable t)
+    {
+        super(instance, message, t);
+    }
 }
 
 /* __oOo__ */

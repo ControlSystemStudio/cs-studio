@@ -36,16 +36,16 @@ import org.eclipse.draw2d.ToolbarLayout;
 public final class ToolTipFigure extends Panel {
 
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param widgetModel
-	 *            The {@link AbstractWidgetModel} for the tooltip
-	 */
-	public ToolTipFigure(String text) {
-		this.setLayoutManager(new ToolbarLayout(false));
-		this.setBackgroundColor(ColorConstants.tooltipBackground);
-		Label label = new Label(text!=null?text:"-");
-		this.add(label);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param widgetModel
+     *            The {@link AbstractWidgetModel} for the tooltip
+     */
+    public ToolTipFigure(String text) {
+        this.setLayoutManager(new ToolbarLayout(false));
+        this.setBackgroundColor(ColorConstants.tooltipBackground);
+        Label label = new Label(text!=null?text:"-");
+        this.add(label);
+    }
 }

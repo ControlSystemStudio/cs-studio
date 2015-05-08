@@ -12,20 +12,20 @@ import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescrip
  * 
  */
 public class ChannelViewerModel extends AbstractChannelWidgetModel {
-	
-	public ChannelViewerModel() {
-		super(AbstractSelectionWidgetModelDescription.newModelFrom(ChannelViewerWidget.class));
-	}
+    
+    public ChannelViewerModel() {
+        super(AbstractSelectionWidgetModelDescription.newModelFrom(ChannelViewerWidget.class));
+    }
 
-	public final String ID = "org.csstudio.channel.opiwidgets.ChannelViewer"; //$NON-NLS-1$
+    public final String ID = "org.csstudio.channel.opiwidgets.ChannelViewer"; //$NON-NLS-1$
 
-	@Override
-	protected void configureProperties() {
-	}
+    @Override
+    protected void configureProperties() {
+    }
 
-	@Override
-	public String getTypeID() {
-		return ID;
-	}
+    @Override
+    public String getTypeID() {
+        return ID;
+    }
 
 }

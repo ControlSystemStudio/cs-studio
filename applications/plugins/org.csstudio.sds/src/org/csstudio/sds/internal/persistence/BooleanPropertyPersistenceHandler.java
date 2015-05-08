@@ -31,13 +31,13 @@ import org.jdom.Element;
  * 
  */
 public final class BooleanPropertyPersistenceHandler extends
-		BasePropertyPersistenceHandler {
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object readProperty(final Element domElement) {
-		return Boolean.parseBoolean(domElement
-				.getAttributeValue(XmlConstants.XML_ATTRIBUTE_VALUE));
-	}
+        BasePropertyPersistenceHandler {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object readProperty(final Element domElement) {
+        return Boolean.parseBoolean(domElement
+                .getAttributeValue(XmlConstants.XML_ATTRIBUTE_VALUE));
+    }
 }

@@ -26,10 +26,10 @@ package org.csstudio.sds.model;
  * @author Kai Meyer
  */
 public interface IScript {
-	
-	/**
-	 * Executes the script.
-	 */
-	void execute();
+    
+    /**
+     * Executes the script.
+     */
+    void execute();
 
 }

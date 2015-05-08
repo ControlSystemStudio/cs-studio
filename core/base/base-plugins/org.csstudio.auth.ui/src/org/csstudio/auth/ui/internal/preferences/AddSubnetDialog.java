@@ -44,85 +44,85 @@ import org.eclipse.swt.widgets.Text;
  * @author Joerg Rathlev
  */
 class AddSubnetDialog extends TitleAreaDialog {
-	
-	/**
-	 * The network address input field.
-	 */
-	private Text _networkAddress;
-	
-	/**
-	 * The netmask input field.
-	 */
-	private Text _netmask;
-	
-	/**
-	 * The subnet that was entered by the user. This gets set when the user
-	 * presses the Ok button.
-	 */
-	private Subnet _result;
-	
-	/**
-	 * Regular expression that matches IPv4 addresses. (Note: this expression
-	 * allows numbers up to 299, so it is not guaranteed that a string is a
-	 * valid IP address if it matches the expression.)
-	 */
-	private static final String IPV4_ADDRESS_REGEX =
-		"([12]?[0-9]?[0-9]\\.){3}([12]?[0-9]?[0-9])";
-	
-	/**
-	 * Creates a new Add Subnet Dialog.
-	 * @param parentShell the parent shell.
-	 */
-	AddSubnetDialog(Shell parentShell) {
-		super(parentShell);
-	}
-	
-	/**
-	 * Returns the subnet the user entered in this dialog.
-	 * @return the subnet the user entered in this dialog, or <code>null</code>
-	 *         if the user did not enter a valid subnet.
-	 */
-	public Subnet getSubnet() {
-		return _result;
-	}
-	
-	/**
-	 * Sets the result of this dialog (the subnet that was entered by the user).
-	 */
-	@Override
-	protected void okPressed() {
-		try {
-			InetAddress address = InetAddress.getByName(_networkAddress.getText());
-			InetAddress netmask = InetAddress.getByName(_netmask.getText());
-			_result = new Subnet(address, netmask);
-		} catch (UnknownHostException e) {
-			_result = null;
-		} catch (IllegalArgumentException e) {
-			_result = null;
-		}
-		super.okPressed();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void configureShell(Shell newShell) {
-		super.configureShell(newShell);
-		newShell.setText("Add Subnet");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Control createDialogArea(Composite parent) {
-		Composite parentComposite = (Composite) super.createDialogArea(parent);
-		
-		setTitle("Add Subnet");
-		setMessage("Please enter the subnet address and netmask.");
-		
-		Composite contents = new Composite(parentComposite, SWT.NULL);
+    
+    /**
+     * The network address input field.
+     */
+    private Text _networkAddress;
+    
+    /**
+     * The netmask input field.
+     */
+    private Text _netmask;
+    
+    /**
+     * The subnet that was entered by the user. This gets set when the user
+     * presses the Ok button.
+     */
+    private Subnet _result;
+    
+    /**
+     * Regular expression that matches IPv4 addresses. (Note: this expression
+     * allows numbers up to 299, so it is not guaranteed that a string is a
+     * valid IP address if it matches the expression.)
+     */
+    private static final String IPV4_ADDRESS_REGEX =
+        "([12]?[0-9]?[0-9]\\.){3}([12]?[0-9]?[0-9])";
+    
+    /**
+     * Creates a new Add Subnet Dialog.
+     * @param parentShell the parent shell.
+     */
+    AddSubnetDialog(Shell parentShell) {
+        super(parentShell);
+    }
+    
+    /**
+     * Returns the subnet the user entered in this dialog.
+     * @return the subnet the user entered in this dialog, or <code>null</code>
+     *         if the user did not enter a valid subnet.
+     */
+    public Subnet getSubnet() {
+        return _result;
+    }
+    
+    /**
+     * Sets the result of this dialog (the subnet that was entered by the user).
+     */
+    @Override
+    protected void okPressed() {
+        try {
+            InetAddress address = InetAddress.getByName(_networkAddress.getText());
+            InetAddress netmask = InetAddress.getByName(_netmask.getText());
+            _result = new Subnet(address, netmask);
+        } catch (UnknownHostException e) {
+            _result = null;
+        } catch (IllegalArgumentException e) {
+            _result = null;
+        }
+        super.okPressed();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configureShell(Shell newShell) {
+        super.configureShell(newShell);
+        newShell.setText("Add Subnet");
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Control createDialogArea(Composite parent) {
+        Composite parentComposite = (Composite) super.createDialogArea(parent);
+        
+        setTitle("Add Subnet");
+        setMessage("Please enter the subnet address and netmask.");
+        
+        Composite contents = new Composite(parentComposite, SWT.NULL);
         GridLayout layout = new GridLayout();
         layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
         layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
@@ -138,12 +138,12 @@ class AddSubnetDialog extends TitleAreaDialog {
         _networkAddress = new Text(contents, SWT.SINGLE | SWT.BORDER);
         _networkAddress.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
         _networkAddress.addModifyListener(new ModifyListener() {
-        	public void modifyText(ModifyEvent e) {
-        		if (e.widget == _networkAddress) {
-        			autocompleteNetmask();
-        			checkValid();
-        		}
-        	}
+            public void modifyText(ModifyEvent e) {
+                if (e.widget == _networkAddress) {
+                    autocompleteNetmask();
+                    checkValid();
+                }
+            }
         });
         
         Label netmaskLabel = new Label(contents, SWT.NULL);
@@ -151,88 +151,88 @@ class AddSubnetDialog extends TitleAreaDialog {
         _netmask = new Text(contents, SWT.SINGLE | SWT.BORDER);
         _netmask.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
         _netmask.addModifyListener(new ModifyListener() {
-        	public void modifyText(ModifyEvent e) {
-        		if (e.widget == _netmask) {
-        			checkValid();
-        		}
-        	}
+            public void modifyText(ModifyEvent e) {
+                if (e.widget == _netmask) {
+                    checkValid();
+                }
+            }
         });
-		
-		return contents;
-	}
-	
-	/**
-	 * Checks if a valid network address and netmask were entered. Enables
-	 * or disables the Ok button based on the validity, and displays error
-	 * messages in this dialog's message area as appropriate.
-	 */
-	private void checkValid() {
-		boolean addressValid = _networkAddress.getText().matches(IPV4_ADDRESS_REGEX);
-		
-		boolean netmaskValid;
-		if (_netmask.getText().matches(IPV4_ADDRESS_REGEX)) {
-			try {
-				InetAddress netmask = InetAddress.getByName(_netmask.getText());
-				netmaskValid = Subnet.isValidNetmask(netmask);
-			} catch (UnknownHostException e) {
-				netmaskValid = false;
-			}
-		} else {
-			netmaskValid = false;
-		}
-		
-		if (!addressValid) {
-			setErrorMessage("Invalid subnet address.");
-		} else if (!netmaskValid) {
-			setErrorMessage("Invalid netmask.");
-		} else {
-			setErrorMessage(null);
-		}
-		
-		getButton(IDialogConstants.OK_ID).setEnabled(
-				addressValid && netmaskValid);
-	}
-	
-	/**
-	 * Automatically enters a netmask based on the network address. The netmask
-	 * is only entered automatically if no netmask was entered yet.
-	 */
-	private void autocompleteNetmask() {
-		// no autocompletion unless netmask is still empty
-		if (!_netmask.getText().equals(""))
-			return;
-		
-		// no automcomletion if the subnet address does not look like a standard
-		// IPv4 address
-		if (!(_networkAddress.getText().matches(IPV4_ADDRESS_REGEX)))
-			return;
-		
-		try {
-			InetAddress address = InetAddress.getByName(_networkAddress.getText());
-			byte[] addrBytes = address.getAddress();
-			// only autocomplete if length == 4 (IPv4 address)
-			if (addrBytes.length == 4) {
-				StringBuilder netmask = new StringBuilder();
-				for (int i = 0; i < 4; i++) {
-					netmask.append(addrBytes[i] == 0 ? "0" : "255");
-					if (i < 3)
-						netmask.append(".");
-				}
-				_netmask.setText(netmask.toString());
-			}
-		} catch (UnknownHostException e) {
-			// do nothing
-		}
-	}
-	
+        
+        return contents;
+    }
+    
+    /**
+     * Checks if a valid network address and netmask were entered. Enables
+     * or disables the Ok button based on the validity, and displays error
+     * messages in this dialog's message area as appropriate.
+     */
+    private void checkValid() {
+        boolean addressValid = _networkAddress.getText().matches(IPV4_ADDRESS_REGEX);
+        
+        boolean netmaskValid;
+        if (_netmask.getText().matches(IPV4_ADDRESS_REGEX)) {
+            try {
+                InetAddress netmask = InetAddress.getByName(_netmask.getText());
+                netmaskValid = Subnet.isValidNetmask(netmask);
+            } catch (UnknownHostException e) {
+                netmaskValid = false;
+            }
+        } else {
+            netmaskValid = false;
+        }
+        
+        if (!addressValid) {
+            setErrorMessage("Invalid subnet address.");
+        } else if (!netmaskValid) {
+            setErrorMessage("Invalid netmask.");
+        } else {
+            setErrorMessage(null);
+        }
+        
+        getButton(IDialogConstants.OK_ID).setEnabled(
+                addressValid && netmaskValid);
+    }
+    
+    /**
+     * Automatically enters a netmask based on the network address. The netmask
+     * is only entered automatically if no netmask was entered yet.
+     */
+    private void autocompleteNetmask() {
+        // no autocompletion unless netmask is still empty
+        if (!_netmask.getText().equals(""))
+            return;
+        
+        // no automcomletion if the subnet address does not look like a standard
+        // IPv4 address
+        if (!(_networkAddress.getText().matches(IPV4_ADDRESS_REGEX)))
+            return;
+        
+        try {
+            InetAddress address = InetAddress.getByName(_networkAddress.getText());
+            byte[] addrBytes = address.getAddress();
+            // only autocomplete if length == 4 (IPv4 address)
+            if (addrBytes.length == 4) {
+                StringBuilder netmask = new StringBuilder();
+                for (int i = 0; i < 4; i++) {
+                    netmask.append(addrBytes[i] == 0 ? "0" : "255");
+                    if (i < 3)
+                        netmask.append(".");
+                }
+                _netmask.setText(netmask.toString());
+            }
+        } catch (UnknownHostException e) {
+            // do nothing
+        }
+    }
+    
     /**
      * Creates the standard dialog buttons OK and Cancel and disables the OK
      * button.
      * @param parent the button bar composite.
      */
-	@Override
-	protected void createButtonsForButtonBar(Composite parent) {
-		super.createButtonsForButtonBar(parent);
-    	getButton(IDialogConstants.OK_ID).setEnabled(false);
-	}
+    @Override
+    protected void createButtonsForButtonBar(Composite parent) {
+        super.createButtonsForButtonBar(parent);
+        getButton(IDialogConstants.OK_ID).setEnabled(false);
+    }
 }

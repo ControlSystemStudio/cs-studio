@@ -28,18 +28,18 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
-	public void initializeDefaultPreferences() {
-		IEclipsePreferences prefs = DefaultScope.INSTANCE.getNode(Activator.PLUGIN_ID);
+    public void initializeDefaultPreferences() {
+        IEclipsePreferences prefs = DefaultScope.INSTANCE.getNode(Activator.PLUGIN_ID);
 
-		prefs.put(PreferenceConstants.INITIAL_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
-		prefs.put(PreferenceConstants.URL, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000"); //$NON-NLS-1$
-		prefs.put(PreferenceConstants.QUEUE, "LOG"); //$NON-NLS-1$
-		prefs.put(PreferenceConstants.JMS_URL_PRIMARY, "LOG"); //$NON-NLS-1$
-		prefs.put(PreferenceConstants.JMS_URL_SECONDARY, "LOG"); //$NON-NLS-1$
-		
-		prefs.put(PreferenceConstants.SENDER_BROKER_URL, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000"); //$NON-NLS-1$
-		prefs.put(PreferenceConstants.RECEIVER_BROKER_URL_1, "failover:(tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=5000"); //$NON-NLS-1$
-		prefs.put(PreferenceConstants.RECEIVER_BROKER_URL_2, "failover:(tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000"); //$NON-NLS-1$
-	}
+        prefs.put(PreferenceConstants.INITIAL_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
+        prefs.put(PreferenceConstants.URL, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000"); //$NON-NLS-1$
+        prefs.put(PreferenceConstants.QUEUE, "LOG"); //$NON-NLS-1$
+        prefs.put(PreferenceConstants.JMS_URL_PRIMARY, "LOG"); //$NON-NLS-1$
+        prefs.put(PreferenceConstants.JMS_URL_SECONDARY, "LOG"); //$NON-NLS-1$
+        
+        prefs.put(PreferenceConstants.SENDER_BROKER_URL, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000"); //$NON-NLS-1$
+        prefs.put(PreferenceConstants.RECEIVER_BROKER_URL_1, "failover:(tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=5000"); //$NON-NLS-1$
+        prefs.put(PreferenceConstants.RECEIVER_BROKER_URL_2, "failover:(tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000"); //$NON-NLS-1$
+    }
 
 }

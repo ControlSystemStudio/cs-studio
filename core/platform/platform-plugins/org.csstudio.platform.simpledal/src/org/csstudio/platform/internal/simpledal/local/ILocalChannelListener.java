@@ -24,5 +24,5 @@
 import org.csstudio.platform.model.pvs.ValueType;
 
 public interface ILocalChannelListener {
-	void valueChanged(Object value);
+    void valueChanged(Object value);
 }

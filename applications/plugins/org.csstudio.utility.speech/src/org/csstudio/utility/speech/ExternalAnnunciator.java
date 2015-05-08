@@ -63,7 +63,7 @@ class ExternalAnnunciator extends BaseAnnunciator
     {
         final IPreferencesService prefs = Platform.getPreferencesService();
         if (prefs != null)
-        	say_command = prefs.getString(Plugin.ID, "command", "say", null);
+            say_command = prefs.getString(Plugin.ID, "command", "say", null);
     }
 
     /** {@inheritDoc} */

@@ -45,18 +45,18 @@ abstract class AbstractAlarmRule implements IRule {
      * @return
      */
     protected DynamicValueState getDynamicValueCondition(final DynamicValueCondition dynamicValueCondition) {
-    	if (dynamicValueCondition.containsAllStates(DynamicValueState.ALARM)) {
-    		return DynamicValueState.ALARM;
-    	} else if (dynamicValueCondition
-    			.containsAllStates(DynamicValueState.WARNING)) {
-    		return DynamicValueState.WARNING;
-    	} else if (dynamicValueCondition
-    			.containsAllStates(DynamicValueState.NORMAL)) {
-    		return DynamicValueState.NORMAL;
-    	} else if(dynamicValueCondition.containsAllStates(DynamicValueState.ERROR)) {
-    	    return DynamicValueState.ERROR;
-    	}
-    	return DynamicValueState.NO_VALUE;
+        if (dynamicValueCondition.containsAllStates(DynamicValueState.ALARM)) {
+            return DynamicValueState.ALARM;
+        } else if (dynamicValueCondition
+                .containsAllStates(DynamicValueState.WARNING)) {
+            return DynamicValueState.WARNING;
+        } else if (dynamicValueCondition
+                .containsAllStates(DynamicValueState.NORMAL)) {
+            return DynamicValueState.NORMAL;
+        } else if(dynamicValueCondition.containsAllStates(DynamicValueState.ERROR)) {
+            return DynamicValueState.ERROR;
+        }
+        return DynamicValueState.NO_VALUE;
     }
 
     /**
@@ -85,7 +85,7 @@ abstract class AbstractAlarmRule implements IRule {
      * @return
      */
     protected DynamicValueState getDynamicValueCondition(final Long alarmState) {
-    	return getDynamicValueCondition(alarmState.doubleValue());
+        return getDynamicValueCondition(alarmState.doubleValue());
     }
 
     /**
@@ -104,7 +104,7 @@ abstract class AbstractAlarmRule implements IRule {
                 return DynamicValueState.ERROR;
             }
         }
-    	return DynamicValueState.NO_VALUE;
+        return DynamicValueState.NO_VALUE;
     }
 
     /**

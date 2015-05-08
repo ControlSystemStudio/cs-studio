@@ -36,68 +36,68 @@ import org.jdom.Element;
  * 
  */
 public final class StringMapPropertyPersistenceHandler extends
-		AbstractPropertyPersistenceHandler {
+        AbstractPropertyPersistenceHandler {
 
-	/**
-	 * XML tag name <code>map</code>.
-	 */
-	public static final String XML_ELEMENT_MAP = "map"; //$NON-NLS-1$
+    /**
+     * XML tag name <code>map</code>.
+     */
+    public static final String XML_ELEMENT_MAP = "map"; //$NON-NLS-1$
 
-	/**
-	 * XML tag name <code>mapEntry</code>.
-	 */
-	public static final String XML_ELEMENT_MAP_ENTRY = "mapEntry"; //$NON-NLS-1$
+    /**
+     * XML tag name <code>mapEntry</code>.
+     */
+    public static final String XML_ELEMENT_MAP_ENTRY = "mapEntry"; //$NON-NLS-1$
 
-	/**
-	 * XML attribute name <code>name</code>.
-	 */
-	public static final String XML_ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
+    /**
+     * XML attribute name <code>name</code>.
+     */
+    public static final String XML_ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
 
-	/**
-	 * XML attribute name <code>value</code>.
-	 */
-	public static final String XML_ATTRIBUTE_VALUE = "value"; //$NON-NLS-1$
+    /**
+     * XML attribute name <code>value</code>.
+     */
+    public static final String XML_ATTRIBUTE_VALUE = "value"; //$NON-NLS-1$
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public void writeProperty(final Element domElement,
-			final Object propertyValue) {
-		Map<String, String> aliases = (Map<String, String>) propertyValue;
-		List<String> aliasKeys = new ArrayList<String>(aliases.keySet());
-		Collections.sort(aliasKeys);
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public void writeProperty(final Element domElement,
+            final Object propertyValue) {
+        Map<String, String> aliases = (Map<String, String>) propertyValue;
+        List<String> aliasKeys = new ArrayList<String>(aliases.keySet());
+        Collections.sort(aliasKeys);
 
-		Element mapElement = new Element(XML_ELEMENT_MAP);
-		for (String key : aliasKeys) {
-			Element mapEntryElement = new Element(XML_ELEMENT_MAP_ENTRY);
-			mapEntryElement.setAttribute(XML_ATTRIBUTE_NAME, key); //$NON-NLS-1$
-			mapEntryElement.setAttribute(XML_ATTRIBUTE_VALUE, aliases.get(key)); //$NON-NLS-1$
-			mapElement.addContent(mapEntryElement);
-		}
+        Element mapElement = new Element(XML_ELEMENT_MAP);
+        for (String key : aliasKeys) {
+            Element mapEntryElement = new Element(XML_ELEMENT_MAP_ENTRY);
+            mapEntryElement.setAttribute(XML_ATTRIBUTE_NAME, key); //$NON-NLS-1$
+            mapEntryElement.setAttribute(XML_ATTRIBUTE_VALUE, aliases.get(key)); //$NON-NLS-1$
+            mapElement.addContent(mapEntryElement);
+        }
 
-		domElement.addContent(mapElement);
-	}
+        domElement.addContent(mapElement);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object readProperty(final Element domElement) {
-		Element mapElement = domElement.getChild(XML_ELEMENT_MAP);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object readProperty(final Element domElement) {
+        Element mapElement = domElement.getChild(XML_ELEMENT_MAP);
 
-		Map<String, String> result = new HashMap<String, String>();
+        Map<String, String> result = new HashMap<String, String>();
 
-		for (Object o : mapElement.getChildren(XML_ELEMENT_MAP_ENTRY)) {
-			Element mapEntryElement = (Element) o;
+        for (Object o : mapElement.getChildren(XML_ELEMENT_MAP_ENTRY)) {
+            Element mapEntryElement = (Element) o;
 
-			String name = mapEntryElement.getAttributeValue(XML_ATTRIBUTE_NAME);
-			String value = mapEntryElement.getAttributeValue(XML_ATTRIBUTE_VALUE);
+            String name = mapEntryElement.getAttributeValue(XML_ATTRIBUTE_NAME);
+            String value = mapEntryElement.getAttributeValue(XML_ATTRIBUTE_VALUE);
 
-			result.put(name, value);
-		}
+            result.put(name, value);
+        }
 
-		return result;
-	}
+        return result;
+    }
 }

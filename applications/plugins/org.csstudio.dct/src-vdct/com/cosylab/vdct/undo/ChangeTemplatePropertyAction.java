@@ -37,21 +37,21 @@ import com.cosylab.vdct.inspector.InspectorManager;
  * @author 
  */
 public class ChangeTemplatePropertyAction extends ActionObject {
-	protected Template object;
-	protected String name;
-	protected String oldValue;
-	protected String newValue;
+    protected Template object;
+    protected String name;
+    protected String oldValue;
+    protected String newValue;
 
-	//private static final String nullString = "";	
+    //private static final String nullString = "";    
 /**
  * Insert the method's description here.
  * Creation date: (3.5.2001 16:27:58)
  */
 public ChangeTemplatePropertyAction(Template object, String name, String oldValue, String newValue) {
-	this.object=object;
-	this.name=name;
-	this.oldValue=oldValue;
-	this.newValue=newValue;
+    this.object=object;
+    this.name=name;
+    this.oldValue=oldValue;
+    this.newValue=newValue;
 }
 /**
  * Insert the method's description here.
@@ -59,28 +59,28 @@ public ChangeTemplatePropertyAction(Template object, String name, String oldValu
  * @return java.lang.String
  */
 public String getDescription() {
-	return "Change Template Property ["+object+"]("+name+")";
+    return "Change Template Property ["+object+"]("+name+")";
 }
 /**
  * This method was created in VisualAge.
  */
 protected void redoAction() {
-	// just override value
-	object.getTemplateData().getProperties().put(name, oldValue);
+    // just override value
+    object.getTemplateData().getProperties().put(name, oldValue);
 
-	object.updateTemplateFields();
-	InspectorManager.getInstance().updateObject(object);
-	object.unconditionalValidation();
+    object.updateTemplateFields();
+    InspectorManager.getInstance().updateObject(object);
+    object.unconditionalValidation();
 }
 /**
  * This method was created in VisualAge.
  */
 protected void undoAction() {
-	// just override value
-	object.getTemplateData().getProperties().put(name, newValue);
+    // just override value
+    object.getTemplateData().getProperties().put(name, newValue);
 
-	object.updateTemplateFields();
-	InspectorManager.getInstance().updateObject(object);
-	object.unconditionalValidation();
+    object.updateTemplateFields();
+    InspectorManager.getInstance().updateObject(object);
+    object.unconditionalValidation();
 }
 }

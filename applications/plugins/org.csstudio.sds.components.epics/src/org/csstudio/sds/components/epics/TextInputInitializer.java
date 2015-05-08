@@ -34,19 +34,19 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
  */
 public final class TextInputInitializer extends AbstractEpicsWidgetInitializer {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void initialize(final AbstractControlSystemSchema schema) {
-		initializeCommonAlarmBehaviour();
-		initializeCommonConnectionStates();
-		initializeStaticProperty(TextInputModel.PROP_TRANSPARENT, false);
-		initializeStaticProperty(TextInputModel.PROP_INPUT_TEXT, "Enter Text!");
-		initializeDynamicProperty(TextInputModel.PROP_INPUT_TEXT, "$channel$",
-				"$channel$", null);
-		initializeStaticProperty(TextInputModel.PROP_CURSOR,
-				CursorStyleEnum.IBEAM.name());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void initialize(final AbstractControlSystemSchema schema) {
+        initializeCommonAlarmBehaviour();
+        initializeCommonConnectionStates();
+        initializeStaticProperty(TextInputModel.PROP_TRANSPARENT, false);
+        initializeStaticProperty(TextInputModel.PROP_INPUT_TEXT, "Enter Text!");
+        initializeDynamicProperty(TextInputModel.PROP_INPUT_TEXT, "$channel$",
+                "$channel$", null);
+        initializeStaticProperty(TextInputModel.PROP_CURSOR,
+                CursorStyleEnum.IBEAM.name());
+    }
 
 }

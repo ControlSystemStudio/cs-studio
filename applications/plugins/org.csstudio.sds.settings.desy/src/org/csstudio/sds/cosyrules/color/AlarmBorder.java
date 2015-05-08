@@ -11,17 +11,17 @@ import org.csstudio.dal.DynamicValueState;
  */
 public class AlarmBorder extends AbstractAlarmRule {
 
-	/**
-	 * The ID for this rule.
-	 */
-	public static final String TYPE_ID = "cosyrules.color.alarmBorder";
+    /**
+     * The ID for this rule.
+     */
+    public static final String TYPE_ID = "cosyrules.color.alarmBorder";
 
-	/**
-	 * Standard constructor.
-	 */
-	public AlarmBorder() {
-	    // Standard constructor.
-	}
+    /**
+     * Standard constructor.
+     */
+    public AlarmBorder() {
+        // Standard constructor.
+    }
 
 
     /**

@@ -17,58 +17,58 @@ import org.eclipse.gef.commands.Command;
  * 
  */
 public final class ChangeDbdFileCommand extends Command {
-	private IProject project;
-	private String currentPath;
-	private String oldPath;
+    private IProject project;
+    private String currentPath;
+    private String oldPath;
 
-	/**
-	 * Constructor.
-	 * @param project the project
-	 * @param path the path to the dbd file
-	 */
-	public ChangeDbdFileCommand(IProject project, String path) {
-		this.project = project;
-		this.currentPath = path;
-		this.oldPath = project.getDbdPath();
-	}
+    /**
+     * Constructor.
+     * @param project the project
+     * @param path the path to the dbd file
+     */
+    public ChangeDbdFileCommand(IProject project, String path) {
+        this.project = project;
+        this.currentPath = path;
+        this.oldPath = project.getDbdPath();
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	public void execute() {
-		setPath(currentPath);
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public void execute() {
+        setPath(currentPath);
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	public void undo() {
-		setPath(oldPath);
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public void undo() {
+        setPath(oldPath);
+    }
 
-	private void setPath(String path) {
-		// .. store the path
-		project.setDbdPath(path);
+    private void setPath(String path) {
+        // .. store the path
+        project.setDbdPath(path);
 
-		// .. try to read the definition from file
-		IDatabaseDefinition databaseDefinition = path != null ? new PersistenceService().loadDatabaseDefinition(path) : null;
+        // .. try to read the definition from file
+        IDatabaseDefinition databaseDefinition = path != null ? new PersistenceService().loadDatabaseDefinition(path) : null;
 
-		// .. set the definition
-		project.setDatabaseDefinition(databaseDefinition);
+        // .. set the definition
+        project.setDatabaseDefinition(databaseDefinition);
 
-		// .. invalidate the old base records
-		for (String name : project.getBaseRecords().keySet()) {
-			project.getBaseRecord(name).setRecordDefinition(null);
-		}
+        // .. invalidate the old base records
+        for (String name : project.getBaseRecords().keySet()) {
+            project.getBaseRecord(name).setRecordDefinition(null);
+        }
 
-		// .. refresh the base records
-		if (databaseDefinition != null) {
-			for (IRecordDefinition rd : databaseDefinition.getRecordDefinitions()) {
-				project.getBaseRecord(rd.getType()).setRecordDefinition(rd);
-			}
-		}
-	}
+        // .. refresh the base records
+        if (databaseDefinition != null) {
+            for (IRecordDefinition rd : databaseDefinition.getRecordDefinitions()) {
+                project.getBaseRecord(rd.getType()).setRecordDefinition(rd);
+            }
+        }
+    }
 
 }

@@ -60,134 +60,134 @@ import java.awt.event.*;
  */
 public class Port extends VisibleObject implements Descriptable, Movable, OutLink, Popupable, Selectable, Inspectable, Flexible
 {
-	class PopupMenuHandler implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			String action = e.getActionCommand();
-			if (action.equals(colorString))
-			{			
-				Color newColor = ColorChooser.getColor(selectTitle, getColor());
-				if (newColor!=null)
-					setColor(newColor);
-				com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
-			}
-			else if (action.equals(addConnectorString))
-			{
-				addConnector();
-				com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
-			}
-			else if (action.equals(removeLinkString))
-			{
-				removeLink();
-				com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
-			}
-			else if (action.equals(removePortString))
-			{
-				destroy();
-				ViewState.getInstance().deselectObject(Port.this);
-				com.cosylab.vdct.undo.UndoManager.getInstance().addAction(new com.cosylab.vdct.undo.DeleteAction(Port.this));
-				com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
-			}
-			else if (action.equals(removePortDefString))
-			{
-				data.getTemplate().removePort(getName());
-				ViewState.getInstance().deselectObject(Port.this);
-				com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
-			}
-			else if (action.equals(constantString)) {
-				setMode(OutLink.CONSTANT_PORT_MODE);
-				com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
-			}
-			else if (action.equals(inputString)) {
-				setMode(OutLink.INPUT_PORT_MODE);
-				com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
-			}
-			else if (action.equals(outputString)) {
-				setMode(OutLink.OUTPUT_PORT_MODE);
-				com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
-			}
-			else if (action.equals(startLinkingString))
-			{
-			    LinkCommand cmd = (LinkCommand)CommandManager.getInstance().getCommand("LinkCommand");
-			    cmd.setData(Port.this, data);
-		 		cmd.execute();
-			}
-			else if (action.equals(textNorth)) {
-			    setTextPositionNorth(true);
-			}
-			else if (action.equals(textSide)) {
-			    setTextPositionNorth(false);
-			}
-			
-		}
-	}
-	
-	protected InLink inlink = null;
-	protected boolean disconnected = true;
-	protected LinkProperties properties = null;
-	private boolean hasEndpoint = false;
+    class PopupMenuHandler implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            String action = e.getActionCommand();
+            if (action.equals(colorString))
+            {            
+                Color newColor = ColorChooser.getColor(selectTitle, getColor());
+                if (newColor!=null)
+                    setColor(newColor);
+                com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
+            }
+            else if (action.equals(addConnectorString))
+            {
+                addConnector();
+                com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
+            }
+            else if (action.equals(removeLinkString))
+            {
+                removeLink();
+                com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
+            }
+            else if (action.equals(removePortString))
+            {
+                destroy();
+                ViewState.getInstance().deselectObject(Port.this);
+                com.cosylab.vdct.undo.UndoManager.getInstance().addAction(new com.cosylab.vdct.undo.DeleteAction(Port.this));
+                com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
+            }
+            else if (action.equals(removePortDefString))
+            {
+                data.getTemplate().removePort(getName());
+                ViewState.getInstance().deselectObject(Port.this);
+                com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
+            }
+            else if (action.equals(constantString)) {
+                setMode(OutLink.CONSTANT_PORT_MODE);
+                com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
+            }
+            else if (action.equals(inputString)) {
+                setMode(OutLink.INPUT_PORT_MODE);
+                com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
+            }
+            else if (action.equals(outputString)) {
+                setMode(OutLink.OUTPUT_PORT_MODE);
+                com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
+            }
+            else if (action.equals(startLinkingString))
+            {
+                LinkCommand cmd = (LinkCommand)CommandManager.getInstance().getCommand("LinkCommand");
+                cmd.setData(Port.this, data);
+                 cmd.execute();
+            }
+            else if (action.equals(textNorth)) {
+                setTextPositionNorth(true);
+            }
+            else if (action.equals(textSide)) {
+                setTextPositionNorth(false);
+            }
+            
+        }
+    }
+    
+    protected InLink inlink = null;
+    protected boolean disconnected = true;
+    protected LinkProperties properties = null;
+    private boolean hasEndpoint = false;
 
-	//private static final String descriptionString = "Description";
-	private static final String selectTitle = "Select link color...";
-	private static final String addConnectorString = "Add connector";
-	private static final String colorString = "Color...";
-	private static final String removeLinkString = "Remove Link";
-	private static final String startLinkingString = "Start linking...";
-	private static final String removePortString = "Hide Port";
-	private static final String removePortDefString = "Remove Port";
+    //private static final String descriptionString = "Description";
+    private static final String selectTitle = "Select link color...";
+    private static final String addConnectorString = "Add connector";
+    private static final String colorString = "Color...";
+    private static final String removeLinkString = "Remove Link";
+    private static final String startLinkingString = "Start linking...";
+    private static final String removePortString = "Hide Port";
+    private static final String removePortDefString = "Remove Port";
 
-	private static final String modeString = "Port Mode";
-	private static final String constantString = "CONSTANT";
-	private static final String inputString = "INPUT";
-	private static final String outputString = "OUTPUT";
-	
-	private static final String CONNECTOR_ID_START = "PORT/";
-	private static final String textPosition = "Text Position";
-	private static final String textNorth = "TOP";
-	private static final String textSide = "SIDE";
+    private static final String modeString = "Port Mode";
+    private static final String constantString = "CONSTANT";
+    private static final String inputString = "INPUT";
+    private static final String outputString = "OUTPUT";
+    
+    private static final String CONNECTOR_ID_START = "PORT/";
+    private static final String textPosition = "Text Position";
+    private static final String textNorth = "TOP";
+    private static final String textSide = "SIDE";
 
-	private static final String nullString = "";
+    private static final String nullString = "";
 
-	private int mode = OutLink.CONSTANT_PORT_MODE;
+    private int mode = OutLink.CONSTANT_PORT_MODE;
 
-	private static javax.swing.ImageIcon icon = null;
-	private static GUISeparator portSeparator = null;
-	protected VDBPort data = null;
-	
-	protected int rightXtranslation = 0;
-	protected int rightYtranslation = 0;
-	protected int leftXtranslation = 0;
-	protected int leftYtranslation = 0;
-	protected Polygon leftPoly;
-	protected Polygon rightPoly;
+    private static javax.swing.ImageIcon icon = null;
+    private static GUISeparator portSeparator = null;
+    protected VDBPort data = null;
+    
+    protected int rightXtranslation = 0;
+    protected int rightYtranslation = 0;
+    protected int leftXtranslation = 0;
+    protected int leftYtranslation = 0;
+    protected Polygon leftPoly;
+    protected Polygon rightPoly;
 
-	/** if textPositionNorth=true text is positioned on the top of 
- 	 * the macro, if false it is on the side */
- 	private boolean textPositionNorth = true;
+    /** if textPositionNorth=true text is positioned on the top of 
+      * the macro, if false it is on the side */
+     private boolean textPositionNorth = true;
 /**
  * Insert the method's description here.
  * Creation date: (1.2.2001 17:22:29)
  */
 public Port(VDBPort data, ContainerObject parent, int x, int y) {
-	super(parent);
-	this.data = data;
+    super(parent);
+    this.data = data;
 
-	setColor(Constants.FRAME_COLOR);
-	
-	setWidth(Constants.LINK_STUB_SIZE);
-	setHeight(Constants.LINK_STUB_SIZE);
+    setColor(Constants.FRAME_COLOR);
+    
+    setWidth(Constants.LINK_STUB_SIZE);
+    setHeight(Constants.LINK_STUB_SIZE);
 
-	setX(x); setY(y);
-	
-	properties = new LinkProperties(data);
-		
-	data.setVisibleObject(this);
-	
-	// initialize polygon so that it contains 5 points
-	int[] pts = new int[5];
-	leftPoly = new Polygon(pts, pts, 5);
-	rightPoly = new Polygon(pts, pts, 5);
-	
-	valueChanged();
+    setX(x); setY(y);
+    
+    properties = new LinkProperties(data);
+        
+    data.setVisibleObject(this);
+    
+    // initialize polygon so that it contains 5 points
+    int[] pts = new int[5];
+    leftPoly = new Polygon(pts, pts, 5);
+    rightPoly = new Polygon(pts, pts, 5);
+    
+    valueChanged();
 }
 /**
  * Insert the method's description here.
@@ -204,13 +204,13 @@ public void accept(Visitor visitor) {}
  * @param dy int
  */
 public boolean checkMove(int dx, int dy) {
-	ViewState view = ViewState.getInstance();
+    ViewState view = ViewState.getInstance();
 
-	if ((getX()<-dx) || (getY()<-dy) || 
-		(getX()>(view.getWidth()-getWidth()-dx)) || (getY()>(view.getHeight()-getHeight()-dy)))
-		return false;
-	else
-		return true;
+    if ((getX()<-dx) || (getY()<-dy) || 
+        (getX()>(view.getWidth()-getWidth()-dx)) || (getY()>(view.getHeight()-getHeight()-dy)))
+        return false;
+    else
+        return true;
 }
 /**
  * Insert the method's description here.
@@ -218,22 +218,22 @@ public boolean checkMove(int dx, int dy) {
  * @return com.cosylab.vdct.graphics.objects.Connector.PopupMenuHandler
  */
 private com.cosylab.vdct.graphics.objects.Port.PopupMenuHandler createPopupmenuHandler() {
-	return new PopupMenuHandler();
+    return new PopupMenuHandler();
 }
 /**
  * Insert the method's description here.
  * Creation date: (1.2.2001 16:40:51)
  */
 public void destroy() {
-	if (!isDestroyed()) {
-		// keep the value
-		String currentValue = data.getValue();
-		removeLink();
-		super.destroy();
-		data.setVisibleObject(null);
-		getParent().removeObject(getName());
-		data.setValueSilently(currentValue);
-	}
+    if (!isDestroyed()) {
+        // keep the value
+        String currentValue = data.getValue();
+        removeLink();
+        super.destroy();
+        data.setVisibleObject(null);
+        getParent().removeObject(getName());
+        data.setValueSilently(currentValue);
+    }
 }
 
 /**
@@ -241,13 +241,13 @@ public void destroy() {
  * Creation date: (1.2.2001 16:40:51)
  */
 public void removeLink() {
-	if (!isDestroyed()) {
-		disconnected = true;
-		EPICSLinkOut.destroyChain(inlink, this);
-		setInput(null);
-		data.setValue(nullString);
-		properties = new LinkProperties(data);
-	}
+    if (!isDestroyed()) {
+        disconnected = true;
+        EPICSLinkOut.destroyChain(inlink, this);
+        setInput(null);
+        data.setValue(nullString);
+        properties = new LinkProperties(data);
+    }
 }
 
 
@@ -256,10 +256,10 @@ public void removeLink() {
  * Creation date: (29.1.2001 20:05:51)
  */
 public void disconnect(Linkable disconnector) {
-	if (!disconnected && (inlink==disconnector) ) {
-		disconnected = true;
-		data.setValue(nullString);
-	}
+    if (!disconnected && (inlink==disconnector) ) {
+        disconnected = true;
+        data.setValue(nullString);
+    }
 }
 /**
  * Insert the method's description here.
@@ -269,108 +269,108 @@ public void disconnect(Linkable disconnector) {
  */
 protected void draw(java.awt.Graphics g, boolean hilited) {
 
-	ViewState view = ViewState.getInstance();
-	
-	double Rscale = view.getScale();
-	boolean zoom = (Rscale < 1.0) && view.isZoomOnHilited() && view.isHilitedObject(this);
-	
-	if (zoom) {
-	    zoomImage = ZoomPane.getInstance().startZooming(this,!isZoomRepaint());
-	}	
-	
-	int rrx = getRx() - view.getRx();
-	int rry = getRy() - view.getRy();
+    ViewState view = ViewState.getInstance();
+    
+    double Rscale = view.getScale();
+    boolean zoom = (Rscale < 1.0) && view.isZoomOnHilited() && view.isHilitedObject(this);
+    
+    if (zoom) {
+        zoomImage = ZoomPane.getInstance().startZooming(this,!isZoomRepaint());
+    }    
+    
+    int rrx = getRx() - view.getRx();
+    int rry = getRy() - view.getRy();
 
-	int rwidth = getRwidth();
-	int rheight = getRheight();
+    int rwidth = getRwidth();
+    int rheight = getRheight();
 
-	boolean rightSide = isRight();
-	
-	if (inlink!=null)
-	{
-		// draw link
-		g.setColor(hilited && view.isHilitedObject(this) && !zoom ? Constants.HILITE_COLOR : getVisibleColor());
-	    LinkDrawer.drawLink(g, this, inlink, getQueueCount(), rightSide);
-	}
-	
-	// clipping
-	if (!((rrx > view.getViewWidth())
-		|| (rry > view.getViewHeight())
-		|| ((rrx + rwidth) < 0)
-		|| ((rry + rheight) < 0)) || isZoomRepaint()) {
+    boolean rightSide = isRight();
+    
+    if (inlink!=null)
+    {
+        // draw link
+        g.setColor(hilited && view.isHilitedObject(this) && !zoom ? Constants.HILITE_COLOR : getVisibleColor());
+        LinkDrawer.drawLink(g, this, inlink, getQueueCount(), rightSide);
+    }
+    
+    // clipping
+    if (!((rrx > view.getViewWidth())
+        || (rry > view.getViewHeight())
+        || ((rrx + rwidth) < 0)
+        || ((rry + rheight) < 0)) || isZoomRepaint()) {
 
-	    if (isZoomRepaint()) {
-	        rrx = ZoomPane.getInstance().getLeftOffset();
-	        rry = ZoomPane.getInstance().getTopOffset();
-	    }
-	    
-	    Polygon poly = null;
-		if (rightSide)
-		{
-			poly = rightPoly;
-			poly.translate(rrx-rightXtranslation, rry-rightYtranslation);
-			rightXtranslation = rrx; rightYtranslation = rry;
-		}
-		else
-		{
-			poly = leftPoly;
-			poly.translate(rrx-leftXtranslation, rry-leftYtranslation);
-			leftXtranslation = rrx; leftYtranslation = rry;
-		}
-		
-	
-		if (!hilited)
-			g.setColor(Constants.RECORD_COLOR);
-		else
-			if (view.isPicked(this))
-				g.setColor(Constants.PICK_COLOR);
-			else
-				if (view.isSelected(this) || view.isBlinking(this))
-					g.setColor(Constants.SELECTION_COLOR);
-				else
-					g.setColor(Constants.RECORD_COLOR);
-	
-		g.fillPolygon(poly);
+        if (isZoomRepaint()) {
+            rrx = ZoomPane.getInstance().getLeftOffset();
+            rry = ZoomPane.getInstance().getTopOffset();
+        }
+        
+        Polygon poly = null;
+        if (rightSide)
+        {
+            poly = rightPoly;
+            poly.translate(rrx-rightXtranslation, rry-rightYtranslation);
+            rightXtranslation = rrx; rightYtranslation = rry;
+        }
+        else
+        {
+            poly = leftPoly;
+            poly.translate(rrx-leftXtranslation, rry-leftYtranslation);
+            leftXtranslation = rrx; leftYtranslation = rry;
+        }
+        
+    
+        if (!hilited)
+            g.setColor(Constants.RECORD_COLOR);
+        else
+            if (view.isPicked(this))
+                g.setColor(Constants.PICK_COLOR);
+            else
+                if (view.isSelected(this) || view.isBlinking(this))
+                    g.setColor(Constants.SELECTION_COLOR);
+                else
+                    g.setColor(Constants.RECORD_COLOR);
+    
+        g.fillPolygon(poly);
 
-		Color drawColor;
-		if (!hilited)
-			drawColor = Constants.FRAME_COLOR;
-		else
-			drawColor =
-				(view.isHilitedObject(this))
-					? Constants.HILITE_COLOR
-					: Constants.FRAME_COLOR;
+        Color drawColor;
+        if (!hilited)
+            drawColor = Constants.FRAME_COLOR;
+        else
+            drawColor =
+                (view.isHilitedObject(this))
+                    ? Constants.HILITE_COLOR
+                    : Constants.FRAME_COLOR;
 
-		g.setColor(drawColor);
-		g.drawPolygon(poly);
-		
-		if (getFont()!=null)	{
-		    FontMetrics fm = FontMetricsBuffer.getInstance().getFontMetrics(getFont());
-		    if (textPositionNorth) {
-		        setRlabelX(rwidth/2-fm.stringWidth(getLabel())/2);
-		        setRlabelY(-fm.getHeight()+fm.getAscent());
-		    } else {
-		        int s = (int)(getScale()*Constants.LINK_STUB_SIZE/4.0 + 2);
-		        setRlabelY((rheight + fm.getAscent() - fm.getDescent())/2);
-		        if (!isRight()) {
-		            setRlabelX(rwidth + s);
-		        } else {
-		            setRlabelX(-fm.stringWidth(getLabel())- s);
-		        }
-		    }
-		    g.setFont(getFont());
-			g.drawString(getLabel(), rrx+getRlabelX(), rry+getRlabelY());
-		}		
-		
-		
-		
-		
-		
-		
-		
-	}
-	
-	if (zoom) {
+        g.setColor(drawColor);
+        g.drawPolygon(poly);
+        
+        if (getFont()!=null)    {
+            FontMetrics fm = FontMetricsBuffer.getInstance().getFontMetrics(getFont());
+            if (textPositionNorth) {
+                setRlabelX(rwidth/2-fm.stringWidth(getLabel())/2);
+                setRlabelY(-fm.getHeight()+fm.getAscent());
+            } else {
+                int s = (int)(getScale()*Constants.LINK_STUB_SIZE/4.0 + 2);
+                setRlabelY((rheight + fm.getAscent() - fm.getDescent())/2);
+                if (!isRight()) {
+                    setRlabelX(rwidth + s);
+                } else {
+                    setRlabelX(-fm.stringWidth(getLabel())- s);
+                }
+            }
+            g.setFont(getFont());
+            g.drawString(getLabel(), rrx+getRlabelX(), rry+getRlabelY());
+        }        
+        
+        
+        
+        
+        
+        
+        
+    }
+    
+    if (zoom) {
         rwidth /= Rscale;
         rheight /= Rscale;
         rrx -= ((rwidth - getRwidth())/2 + ZoomPane.getInstance().getLeftOffset());
@@ -381,7 +381,7 @@ protected void draw(java.awt.Graphics g, boolean hilited) {
             rry = rry <= 0 ? 2 : rry;
         g.drawImage(zoomImage, rrx,rry, ZoomPane.getInstance());
     }
-	
+    
 }
 /**
  * Insert the method's description here.
@@ -389,7 +389,7 @@ protected void draw(java.awt.Graphics g, boolean hilited) {
  * @return java.lang.String
  */
 public java.lang.String getDescription() {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -397,7 +397,7 @@ public java.lang.String getDescription() {
  * @return java.lang.String
  */
 public java.lang.String getHashID() {
-	return getID();
+    return getID();
 }
 /**
  * Insert the method's description here.
@@ -405,7 +405,7 @@ public java.lang.String getHashID() {
  * @return java.lang.String
  */
 public java.lang.String getID() {
-	return data.getName();
+    return data.getName();
 }
 /**
  * Insert the method's description here.
@@ -413,7 +413,7 @@ public java.lang.String getID() {
  * @return com.cosylab.vdct.graphics.objects.InLink
  */
 public InLink getInput() {
-	return inlink;
+    return inlink;
 }
 /**
  * Insert the method's description here.
@@ -421,90 +421,90 @@ public InLink getInput() {
  * @return java.util.Vector
  */
 public java.util.Vector getItems() {
-	Vector items = new Vector();
+    Vector items = new Vector();
 
-	ActionListener al = createPopupmenuHandler();
+    ActionListener al = createPopupmenuHandler();
 
-	JMenuItem colorItem = new JMenuItem(colorString);
-	colorItem.addActionListener(al);
-	items.addElement(colorItem);
+    JMenuItem colorItem = new JMenuItem(colorString);
+    colorItem.addActionListener(al);
+    items.addElement(colorItem);
 
-	// no connectors for ports yet
-	
-	JMenuItem addItem = new JMenuItem(addConnectorString);
-	addItem.setEnabled(!isDisconnected());
-	addItem.addActionListener(al);
-	items.addElement(addItem);
-	
-	
-	// modes
-	items.addElement(new JSeparator());
-	
-	JMenu modeMenu = new JMenu(modeString);
-	items.addElement(modeMenu);
+    // no connectors for ports yet
+    
+    JMenuItem addItem = new JMenuItem(addConnectorString);
+    addItem.setEnabled(!isDisconnected());
+    addItem.addActionListener(al);
+    items.addElement(addItem);
+    
+    
+    // modes
+    items.addElement(new JSeparator());
+    
+    JMenu modeMenu = new JMenu(modeString);
+    items.addElement(modeMenu);
 
-	JRadioButtonMenuItem constantModeItem = new JRadioButtonMenuItem(constantString, getMode()==OutLink.CONSTANT_PORT_MODE);
-	constantModeItem.setEnabled(getMode()!=OutLink.CONSTANT_PORT_MODE);
-	constantModeItem.addActionListener(al);
-	modeMenu.add(constantModeItem);
+    JRadioButtonMenuItem constantModeItem = new JRadioButtonMenuItem(constantString, getMode()==OutLink.CONSTANT_PORT_MODE);
+    constantModeItem.setEnabled(getMode()!=OutLink.CONSTANT_PORT_MODE);
+    constantModeItem.addActionListener(al);
+    modeMenu.add(constantModeItem);
 
-	JRadioButtonMenuItem inputModeItem = new JRadioButtonMenuItem(inputString, getMode()==OutLink.INPUT_PORT_MODE);
-	inputModeItem.setEnabled(getMode()!=OutLink.INPUT_PORT_MODE);
-	inputModeItem.addActionListener(al);
-	modeMenu.add(inputModeItem);
+    JRadioButtonMenuItem inputModeItem = new JRadioButtonMenuItem(inputString, getMode()==OutLink.INPUT_PORT_MODE);
+    inputModeItem.setEnabled(getMode()!=OutLink.INPUT_PORT_MODE);
+    inputModeItem.addActionListener(al);
+    modeMenu.add(inputModeItem);
 
-	JRadioButtonMenuItem outputModeItem = new JRadioButtonMenuItem(outputString, getMode()==OutLink.OUTPUT_PORT_MODE);
-	outputModeItem.setEnabled(getMode()!=OutLink.OUTPUT_PORT_MODE);
-	outputModeItem.addActionListener(al);
-	modeMenu.add(outputModeItem);
+    JRadioButtonMenuItem outputModeItem = new JRadioButtonMenuItem(outputString, getMode()==OutLink.OUTPUT_PORT_MODE);
+    outputModeItem.setEnabled(getMode()!=OutLink.OUTPUT_PORT_MODE);
+    outputModeItem.addActionListener(al);
+    modeMenu.add(outputModeItem);
 
 
-	JMenu textMenu = new JMenu(textPosition);
-	items.addElement(textMenu);
+    JMenu textMenu = new JMenu(textPosition);
+    items.addElement(textMenu);
 
-	JRadioButtonMenuItem textNorthItem = new JRadioButtonMenuItem(textNorth, textPositionNorth);
-	textNorthItem.setEnabled(!textPositionNorth);
-	textNorthItem.addActionListener(al);
-	textMenu.add(textNorthItem);
+    JRadioButtonMenuItem textNorthItem = new JRadioButtonMenuItem(textNorth, textPositionNorth);
+    textNorthItem.setEnabled(!textPositionNorth);
+    textNorthItem.addActionListener(al);
+    textMenu.add(textNorthItem);
 
-	JRadioButtonMenuItem textSideItem = new JRadioButtonMenuItem(textSide, !textPositionNorth);
-	textSideItem.setEnabled(textPositionNorth);
-	textSideItem.addActionListener(al);
-	textMenu.add(textSideItem);
-	
-	/*
-	items.add(new JSeparator());
+    JRadioButtonMenuItem textSideItem = new JRadioButtonMenuItem(textSide, !textPositionNorth);
+    textSideItem.setEnabled(textPositionNorth);
+    textSideItem.addActionListener(al);
+    textMenu.add(textSideItem);
+    
+    /*
+    items.add(new JSeparator());
 
-	JMenuItem descItem = new JMenuItem(descriptionString);
-	descItem.setEnabled(false); 
-	descItem.addActionListener(al);
-	items.addElement(descItem);
-	*/
-	
-	items.add(new JSeparator());
+    JMenuItem descItem = new JMenuItem(descriptionString);
+    descItem.setEnabled(false); 
+    descItem.addActionListener(al);
+    items.addElement(descItem);
+    */
+    
+    items.add(new JSeparator());
 
-	if (isDisconnected())
-	{
-		JMenuItem linkItem = new JMenuItem(startLinkingString);
-		linkItem.addActionListener(al);
-		items.addElement(linkItem);
-	}
-	else
-	{
-		JMenuItem removeLinkItem = new JMenuItem(removeLinkString);
-		removeLinkItem.addActionListener(al);
-		items.addElement(removeLinkItem);
-	}
-	
-	JMenuItem removePortItem = new JMenuItem(removePortString);
-	removePortItem.addActionListener(al);
-	items.addElement(removePortItem);
+    if (isDisconnected())
+    {
+        JMenuItem linkItem = new JMenuItem(startLinkingString);
+        linkItem.addActionListener(al);
+        items.addElement(linkItem);
+    }
+    else
+    {
+        JMenuItem removeLinkItem = new JMenuItem(removeLinkString);
+        removeLinkItem.addActionListener(al);
+        items.addElement(removeLinkItem);
+    }
+    
+    JMenuItem removePortItem = new JMenuItem(removePortString);
+    removePortItem.addActionListener(al);
+    items.addElement(removePortItem);
 
-	JMenuItem removePortDefItem = new JMenuItem(removePortDefString);
-	removePortDefItem.addActionListener(al);
-	items.addElement(removePortDefItem);
+    JMenuItem removePortDefItem = new JMenuItem(removePortDefString);
+    removePortDefItem.addActionListener(al);
+    items.addElement(removePortDefItem);
 
-	return items;
+    return items;
 }
 /**
  * Insert the method's description here.
@@ -512,7 +512,7 @@ public java.util.Vector getItems() {
  * @return java.lang.String
  */
 public String getLayerID() {
-	return getParent().toString();
+    return getParent().toString();
 }
 
 /**
@@ -521,22 +521,22 @@ public String getLayerID() {
  * @return boolean
  */
 public boolean isRight() {
-	if (disconnected || inlink==null ||
-		!inlink.getLayerID().equals(getLayerID())) 
-		return true;
-	else {
-		return getRightX()<=inlink.getLeftX() ||
-			(getLeftX()<inlink.getLeftX() && inlink.getLeftX()<getRightX() && getRightX()<inlink.getRightX());
-		/*if (inlink instanceof Connector) {	
-			return (inlink.getInX()>(getX()+getWidth()/2));
-		}
-		else if (inlink instanceof VisibleObject) {			// do not cycle !!!
-			VisibleObject obj = (VisibleObject)inlink;
-			return ((obj.getX()+obj.getWidth()/2)>(getX()+getWidth()/2));
-		}
-		else 
-			return true;*/
-	}
+    if (disconnected || inlink==null ||
+        !inlink.getLayerID().equals(getLayerID())) 
+        return true;
+    else {
+        return getRightX()<=inlink.getLeftX() ||
+            (getLeftX()<inlink.getLeftX() && inlink.getLeftX()<getRightX() && getRightX()<inlink.getRightX());
+        /*if (inlink instanceof Connector) {    
+            return (inlink.getInX()>(getX()+getWidth()/2));
+        }
+        else if (inlink instanceof VisibleObject) {            // do not cycle !!!
+            VisibleObject obj = (VisibleObject)inlink;
+            return ((obj.getX()+obj.getWidth()/2)>(getX()+getWidth()/2));
+        }
+        else 
+            return true;*/
+    }
 }
 
 /**
@@ -545,16 +545,16 @@ public boolean isRight() {
  * @return int
  */
 public int getOutX() {
-	// ??? what is nicer
-	//boolean right = !isRight();
-	
-	boolean right = isRight();
-	if (getMode()==OutLink.CONSTANT_PORT_MODE) right=!right;
-	 
-	if (right)
-		return getX();
-	else 
-		return getX()+getWidth();
+    // ??? what is nicer
+    //boolean right = !isRight();
+    
+    boolean right = isRight();
+    if (getMode()==OutLink.CONSTANT_PORT_MODE) right=!right;
+     
+    if (right)
+        return getX();
+    else 
+        return getX()+getWidth();
 }
 /**
  * Insert the method's description here.
@@ -562,7 +562,7 @@ public int getOutX() {
  * @return int
  */
 public int getOutY() {
-	return getY()+getHeight()/2;
+    return getY()+getHeight()/2;
 }
 /**
  * Insert the method's description here.
@@ -570,7 +570,7 @@ public int getOutY() {
  * @return int
  */
 public int getQueueCount() {
-		return 0;
+        return 0;
 }
 /**
  * Insert the method's description here.
@@ -578,7 +578,7 @@ public int getQueueCount() {
  * @return boolean
  */
 public boolean isConnectable() {
-	return !disconnected;
+    return !disconnected;
 }
 /**
  * Insert the method's description here.
@@ -586,7 +586,7 @@ public boolean isConnectable() {
  * @return boolean
  */
 public boolean isDisconnected() {
-	return disconnected;
+    return disconnected;
 }
 /**
  * Insert the method's description here.
@@ -596,14 +596,14 @@ public boolean isDisconnected() {
  * @param dy int
  */
 public boolean move(int dx, int dy) {
-	if (checkMove(dx, dy)) {
-		x+=dx;
-		y+=dy;			
-		revalidatePosition();
-		return true;
-	}
-	else 
-		return false;
+    if (checkMove(dx, dy)) {
+        x+=dx;
+        y+=dy;            
+        revalidatePosition();
+        return true;
+    }
+    else 
+        return false;
 }
 /**
  * Insert the method's description here.
@@ -625,11 +625,11 @@ public void setDescription(java.lang.String description) {}
  * Creation date: (29.1.2001 20:05:52)
  */
 public void setInput(InLink input) {
-	if (inlink==input) return;
-	if (inlink!=null)
-		inlink.disconnect(this);
-	inlink=input;
-	if (inlink!=null) disconnected=false;
+    if (inlink==input) return;
+    if (inlink!=null)
+        inlink.disconnect(this);
+    inlink=input;
+    if (inlink!=null) disconnected=false;
 }
 /**
  * Insert the method's description here.
@@ -637,7 +637,7 @@ public void setInput(InLink input) {
  * @param id java.lang.String
  */
 public void setLayerID(String id) {
-	// not needed, dynamicaly retrieved via parent
+    // not needed, dynamicaly retrieved via parent
 }
 
 private void validateFontAndPolygon(double Rscale, int rwidth, int rheight) {
@@ -647,119 +647,119 @@ private void validateFontAndPolygon(double Rscale, int rwidth, int rheight) {
     if (getMode() == OutLink.OUTPUT_PORT_MODE)
     {
       setWidth(Constants.GRID_SIZE);
-  	  setHeight(Constants.GRID_SIZE);
-  	  
-  	  // left poly
-  	  leftPoly.xpoints[0]=0;
-  	  leftPoly.xpoints[1]=rwidth/2;
-  	  leftPoly.xpoints[2]=rwidth;
-  	  leftPoly.xpoints[3]=leftPoly.xpoints[2];
-  	  leftPoly.xpoints[4]=leftPoly.xpoints[1];
-  	
-  	  leftPoly.ypoints[0]=rheight/2;
-  	  leftPoly.ypoints[1]=rheight;
-  	  leftPoly.ypoints[2]=leftPoly.ypoints[1];
-  	  leftPoly.ypoints[3]=0;
-  	  leftPoly.ypoints[4]=leftPoly.ypoints[3];
+        setHeight(Constants.GRID_SIZE);
+        
+        // left poly
+        leftPoly.xpoints[0]=0;
+        leftPoly.xpoints[1]=rwidth/2;
+        leftPoly.xpoints[2]=rwidth;
+        leftPoly.xpoints[3]=leftPoly.xpoints[2];
+        leftPoly.xpoints[4]=leftPoly.xpoints[1];
+      
+        leftPoly.ypoints[0]=rheight/2;
+        leftPoly.ypoints[1]=rheight;
+        leftPoly.ypoints[2]=leftPoly.ypoints[1];
+        leftPoly.ypoints[3]=0;
+        leftPoly.ypoints[4]=leftPoly.ypoints[3];
 
-  	
-  	  // right poly
-  	  rightPoly.xpoints[0]=0;
-  	  rightPoly.xpoints[1]=rightPoly.xpoints[0];
-  	  rightPoly.xpoints[2]=rwidth/2;
-  	  rightPoly.xpoints[3]=rwidth;
-  	  rightPoly.xpoints[4]=rightPoly.xpoints[2];
-  	
-  	  rightPoly.ypoints[0]=0;
-  	  rightPoly.ypoints[1]=rheight;
-  	  rightPoly.ypoints[2]=rightPoly.ypoints[1];
-  	  rightPoly.ypoints[3]=rheight/2;
-  	  rightPoly.ypoints[4]=rightPoly.ypoints[0];
+      
+        // right poly
+        rightPoly.xpoints[0]=0;
+        rightPoly.xpoints[1]=rightPoly.xpoints[0];
+        rightPoly.xpoints[2]=rwidth/2;
+        rightPoly.xpoints[3]=rwidth;
+        rightPoly.xpoints[4]=rightPoly.xpoints[2];
+      
+        rightPoly.ypoints[0]=0;
+        rightPoly.ypoints[1]=rheight;
+        rightPoly.ypoints[2]=rightPoly.ypoints[1];
+        rightPoly.ypoints[3]=rheight/2;
+        rightPoly.ypoints[4]=rightPoly.ypoints[0];
     }
     else if (getMode() == OutLink.INPUT_PORT_MODE)
     {
-  	  setWidth(Constants.GRID_SIZE);
-  	  setHeight(Constants.GRID_SIZE);
+        setWidth(Constants.GRID_SIZE);
+        setHeight(Constants.GRID_SIZE);
 
-  	  // left poly
-  	  leftPoly.xpoints[0]=rwidth/2;
-  	  leftPoly.xpoints[1]=0;
-  	  leftPoly.xpoints[2]=rwidth;
-  	  leftPoly.xpoints[3]=leftPoly.xpoints[2];
-  	  leftPoly.xpoints[4]=leftPoly.xpoints[1];
-  	
-  	  leftPoly.ypoints[0]=rheight/2;
-  	  leftPoly.ypoints[1]=rheight;
-  	  leftPoly.ypoints[2]=leftPoly.ypoints[1];
-  	  leftPoly.ypoints[3]=0;
-  	  leftPoly.ypoints[4]=leftPoly.ypoints[3];
+        // left poly
+        leftPoly.xpoints[0]=rwidth/2;
+        leftPoly.xpoints[1]=0;
+        leftPoly.xpoints[2]=rwidth;
+        leftPoly.xpoints[3]=leftPoly.xpoints[2];
+        leftPoly.xpoints[4]=leftPoly.xpoints[1];
+      
+        leftPoly.ypoints[0]=rheight/2;
+        leftPoly.ypoints[1]=rheight;
+        leftPoly.ypoints[2]=leftPoly.ypoints[1];
+        leftPoly.ypoints[3]=0;
+        leftPoly.ypoints[4]=leftPoly.ypoints[3];
 
-  	
-  	  // right poly
-  	  rightPoly.xpoints[0]=0;
-  	  rightPoly.xpoints[1]=rightPoly.xpoints[0];
-  	  rightPoly.xpoints[2]=rwidth;
-  	  rightPoly.xpoints[3]=rwidth/2;
-  	  rightPoly.xpoints[4]=rightPoly.xpoints[2];
-  	
-  	  rightPoly.ypoints[0]=0;
-  	  rightPoly.ypoints[1]=rheight;
-  	  rightPoly.ypoints[2]=rightPoly.ypoints[1];
-  	  rightPoly.ypoints[3]=rheight/2;
-  	  rightPoly.ypoints[4]=rightPoly.ypoints[0];
+      
+        // right poly
+        rightPoly.xpoints[0]=0;
+        rightPoly.xpoints[1]=rightPoly.xpoints[0];
+        rightPoly.xpoints[2]=rwidth;
+        rightPoly.xpoints[3]=rwidth/2;
+        rightPoly.xpoints[4]=rightPoly.xpoints[2];
+      
+        rightPoly.ypoints[0]=0;
+        rightPoly.ypoints[1]=rheight;
+        rightPoly.ypoints[2]=rightPoly.ypoints[1];
+        rightPoly.ypoints[3]=rheight/2;
+        rightPoly.ypoints[4]=rightPoly.ypoints[0];
     }
     else if (getMode() == OutLink.CONSTANT_PORT_MODE)
     {
       int factor = 4;
 
-  	  setWidth(Constants.GRID_SIZE*factor);
-  	  setHeight(Constants.GRID_SIZE);
+        setWidth(Constants.GRID_SIZE*factor);
+        setHeight(Constants.GRID_SIZE);
 
-  	  rwidth /= factor;
-  	  
-  	  // left poly
-  	  leftPoly.xpoints[0]=0;
-  	  leftPoly.xpoints[1]=rwidth/2;
-  	  leftPoly.xpoints[2]=rwidth*factor;
-  	  leftPoly.xpoints[3]=leftPoly.xpoints[2];
-  	  leftPoly.xpoints[4]=leftPoly.xpoints[1];
-  	
-  	  leftPoly.ypoints[0]=rheight/2;
-  	  leftPoly.ypoints[1]=rheight;
-  	  leftPoly.ypoints[2]=leftPoly.ypoints[1];
-  	  leftPoly.ypoints[3]=0;
-  	  leftPoly.ypoints[4]=leftPoly.ypoints[3];
+        rwidth /= factor;
+        
+        // left poly
+        leftPoly.xpoints[0]=0;
+        leftPoly.xpoints[1]=rwidth/2;
+        leftPoly.xpoints[2]=rwidth*factor;
+        leftPoly.xpoints[3]=leftPoly.xpoints[2];
+        leftPoly.xpoints[4]=leftPoly.xpoints[1];
+      
+        leftPoly.ypoints[0]=rheight/2;
+        leftPoly.ypoints[1]=rheight;
+        leftPoly.ypoints[2]=leftPoly.ypoints[1];
+        leftPoly.ypoints[3]=0;
+        leftPoly.ypoints[4]=leftPoly.ypoints[3];
 
-  	
-  	  // right poly
-  	  rightPoly.xpoints[0]=0;
-  	  rightPoly.xpoints[1]=rightPoly.xpoints[0];
-  	  rightPoly.xpoints[2]=factor*rwidth-rwidth/2;
-  	  rightPoly.xpoints[3]=rwidth*factor;
-  	  rightPoly.xpoints[4]=rightPoly.xpoints[2];
-  	
-  	  rightPoly.ypoints[0]=0;
-  	  rightPoly.ypoints[1]=rheight;
-  	  rightPoly.ypoints[2]=rightPoly.ypoints[1];
-  	  rightPoly.ypoints[3]=rheight/2;
-  	  rightPoly.ypoints[4]=rightPoly.ypoints[0];
-  	  
-  	  rwidth *= 4;
+      
+        // right poly
+        rightPoly.xpoints[0]=0;
+        rightPoly.xpoints[1]=rightPoly.xpoints[0];
+        rightPoly.xpoints[2]=factor*rwidth-rwidth/2;
+        rightPoly.xpoints[3]=rwidth*factor;
+        rightPoly.xpoints[4]=rightPoly.xpoints[2];
+      
+        rightPoly.ypoints[0]=0;
+        rightPoly.ypoints[1]=rheight;
+        rightPoly.ypoints[2]=rightPoly.ypoints[1];
+        rightPoly.ypoints[3]=rheight/2;
+        rightPoly.ypoints[4]=rightPoly.ypoints[0];
+        
+        rwidth *= 4;
     }
 
     setLabel(getName());
 
-  	///!!! optimize static
+      ///!!! optimize static
 
     Font font = FontMetricsBuffer.getInstance().getAppropriateFont(
-  	  			Constants.DEFAULT_FONT, Font.PLAIN, 
-  	  			getLabel(), rwidth*4, rheight);
+                    Constants.DEFAULT_FONT, Font.PLAIN, 
+                    getLabel(), rwidth*4, rheight);
 
     if (font!=null)
     {
-  	  FontMetrics fm = FontMetricsBuffer.getInstance().getFontMetrics(font);
-  	  setRlabelX(rwidth/2-fm.stringWidth(getLabel())/2);
-   	  setRlabelY(-fm.getHeight()+fm.getAscent());
+        FontMetrics fm = FontMetricsBuffer.getInstance().getFontMetrics(font);
+        setRlabelX(rwidth/2-fm.stringWidth(getLabel())/2);
+         setRlabelY(-fm.getHeight()+fm.getAscent());
     }
     
     setFont(font);
@@ -791,15 +791,15 @@ protected void validate() {
  * @param newColor java.awt.Color
  */
 public void setColor(Color newColor) {
-		super.setColor(newColor);
-		Linkable link = this;
-		while ((link instanceof OutLink) && !(link instanceof EPICSLinkOut) && !(link instanceof EPICSVarOutLink)) {
-			link = ((OutLink)link).getInput();
-			if (link instanceof VisibleObject && !(link instanceof EPICSLinkOut)) 
-				((VisibleObject)link).setColor(newColor);
-		}
-		if (link instanceof VisibleObject && !(link instanceof EPICSLinkOut)) 
-			((VisibleObject)link).setColor(newColor);
+        super.setColor(newColor);
+        Linkable link = this;
+        while ((link instanceof OutLink) && !(link instanceof EPICSLinkOut) && !(link instanceof EPICSVarOutLink)) {
+            link = ((OutLink)link).getInput();
+            if (link instanceof VisibleObject && !(link instanceof EPICSLinkOut)) 
+                ((VisibleObject)link).setColor(newColor);
+        }
+        if (link instanceof VisibleObject && !(link instanceof EPICSLinkOut)) 
+            ((VisibleObject)link).setColor(newColor);
 }
 
 /**
@@ -807,17 +807,17 @@ public void setColor(Color newColor) {
  */
 public int getMode()
 {
-	return mode;
+    return mode;
 }
 
 /**
  */
 public void setMode(int mode)
 {
-	this.mode = mode;
-	
-	// reload symbol
-	forceValidation();
+    this.mode = mode;
+    
+    // reload symbol
+    forceValidation();
 }
 
 /**
@@ -825,7 +825,7 @@ public void setMode(int mode)
  */
 public InspectableProperty getCommentProperty()
 {
-	return null;
+    return null;
 }
 
 /**
@@ -833,9 +833,9 @@ public InspectableProperty getCommentProperty()
  */
 public Icon getIcon()
 {
-	if (icon==null)
-		icon = new javax.swing.ImageIcon(getClass().getResource("/images/port.gif"));
-	return icon;
+    if (icon==null)
+        icon = new javax.swing.ImageIcon(getClass().getResource("/images/port.gif"));
+    return icon;
 }
 
 /**
@@ -843,7 +843,7 @@ public Icon getIcon()
  */
 public ArrayList getModeNames()
 {
-	return null;
+    return null;
 }
 
 /**
@@ -851,7 +851,7 @@ public ArrayList getModeNames()
  */
 public String getName()
 {
-	return getID();
+    return getID();
 }
 
 /**
@@ -859,7 +859,7 @@ public String getName()
  */
 public String toString()
 {
-	return getID();
+    return getID();
 }
 
 /**
@@ -868,8 +868,8 @@ public String toString()
  * @return com.cosylab.vdct.vdb.GUISeparator
  */
 public static com.cosylab.vdct.vdb.GUISeparator getPortSeparator() {
-	if (portSeparator==null) portSeparator = new GUISeparator("Port");
-	return portSeparator;
+    if (portSeparator==null) portSeparator = new GUISeparator("Port");
+    return portSeparator;
 }
 
 /**
@@ -877,14 +877,14 @@ public static com.cosylab.vdct.vdb.GUISeparator getPortSeparator() {
  */
 public InspectableProperty[] getProperties(int mode)
 {
-	InspectableProperty[] properties = new InspectableProperty[4];
+    InspectableProperty[] properties = new InspectableProperty[4];
 
-	properties[0]=GUIHeader.getDefaultHeader();
-	properties[1]=getPortSeparator();
-	properties[2]=data;
-	properties[3]=new PortDescriptionProperty(data);
+    properties[0]=GUIHeader.getDefaultHeader();
+    properties[1]=getPortSeparator();
+    properties[2]=data;
+    properties[3]=new PortDescriptionProperty(data);
 
-	return properties;
+    return properties;
 }
 
 
@@ -894,35 +894,35 @@ public InspectableProperty[] getProperties(int mode)
  * Creation date: (30.1.2001 12:25:44)
  */
 private void updateLink() {
-	LinkProperties newProperties = new LinkProperties(data);
+    LinkProperties newProperties = new LinkProperties(data);
 
-	if (newProperties.getRecord()==null) {			// empty field
-		removeLink();
-		return;
-	}
-	else if (!newProperties.getRecord().equals(properties.getRecord()) ||
-			 !newProperties.getVarName().equals(properties.getVarName()) ||
-			 !hasEndpoint) {
-		// find endpoint
-		Linkable preendpoint = this;
-		Linkable endpoint = getInput();
-		while (!(endpoint instanceof EPICSLinkOutIn) && !(endpoint instanceof EPICSVarOutLink) && (endpoint instanceof InLink) && (endpoint instanceof OutLink) && !(endpoint instanceof EPICSVarOutLink)) {
-			preendpoint = endpoint;
-			endpoint = ((OutLink)endpoint).getInput();
-		}
-		if ((endpoint!=null) && hasEndpoint) ((InLink)endpoint).disconnect(preendpoint);
-		//OutLink lol = getTarget(properties).getOutput();
-		InLink il = EPICSLinkOut.getTarget(newProperties, true);
-		OutLink ol = (OutLink)preendpoint;
-		ol.setInput(il);
-		if (il!=null) { 
-			il.setOutput(ol, null);
-			hasEndpoint = true;
-		}
-		else hasEndpoint = false;
-	}
+    if (newProperties.getRecord()==null) {            // empty field
+        removeLink();
+        return;
+    }
+    else if (!newProperties.getRecord().equals(properties.getRecord()) ||
+             !newProperties.getVarName().equals(properties.getVarName()) ||
+             !hasEndpoint) {
+        // find endpoint
+        Linkable preendpoint = this;
+        Linkable endpoint = getInput();
+        while (!(endpoint instanceof EPICSLinkOutIn) && !(endpoint instanceof EPICSVarOutLink) && (endpoint instanceof InLink) && (endpoint instanceof OutLink) && !(endpoint instanceof EPICSVarOutLink)) {
+            preendpoint = endpoint;
+            endpoint = ((OutLink)endpoint).getInput();
+        }
+        if ((endpoint!=null) && hasEndpoint) ((InLink)endpoint).disconnect(preendpoint);
+        //OutLink lol = getTarget(properties).getOutput();
+        InLink il = EPICSLinkOut.getTarget(newProperties, true);
+        OutLink ol = (OutLink)preendpoint;
+        ol.setInput(il);
+        if (il!=null) { 
+            il.setOutput(ol, null);
+            hasEndpoint = true;
+        }
+        else hasEndpoint = false;
+    }
 
-	properties = newProperties;
+    properties = newProperties;
 
 }
 
@@ -932,10 +932,10 @@ private void updateLink() {
  */
 public void valueChanged()
 {
-	updateLink();
+    updateLink();
 
-	unconditionalValidation();
-	com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
+    unconditionalValidation();
+    com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
 }
 
 /**
@@ -943,27 +943,27 @@ public void valueChanged()
  */
 public void setDestroyed(boolean newDestroyed)
 {
-	super.setDestroyed(newDestroyed);
-	
-	if (!newDestroyed)
-	{
-		// set data appropriate visibleObject
-		data.setVisibleObject(this);
-		
-		// revalidate link
-		valueChanged();
-	}
+    super.setDestroyed(newDestroyed);
+    
+    if (!newDestroyed)
+    {
+        // set data appropriate visibleObject
+        data.setVisibleObject(this);
+        
+        // revalidate link
+        valueChanged();
+    }
 }
 
 /**
  */
 public void rename(String oldName, String newName)
 {
-	getParent().removeObject(oldName);
-	getParent().addSubObject(newName, this);
+    getParent().removeObject(oldName);
+    getParent().addSubObject(newName, this);
 
-	unconditionalValidation();
-	com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
+    unconditionalValidation();
+    com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
 }
 
 /**
@@ -971,18 +971,18 @@ public void rename(String oldName, String newName)
  */
 public void fixLinkProperties()
 {
-	LinkProperties newProperties = new LinkProperties(data);
-	properties = newProperties;
+    LinkProperties newProperties = new LinkProperties(data);
+    properties = newProperties;
 }
 
-	/**
-	 * Returns the data.
-	 * @return VDBPort
-	 */
-	public VDBPort getData()
-	{
-		return data;
-	}
+    /**
+     * Returns the data.
+     * @return VDBPort
+     */
+    public VDBPort getData()
+    {
+        return data;
+    }
 
 /**
  * @see com.cosylab.vdct.graphics.objects.OutLink#validateLink()
@@ -994,13 +994,13 @@ public void validateLink()
  * @see com.cosylab.vdct.graphics.objects.OutLink#getMinX()
  */
 public int getLeftX() {
-	return getX();
+    return getX();
 }
 /* (non-Javadoc)
  * @see com.cosylab.vdct.graphics.objects.OutLink#getMaxX()
  */
 public int getRightX() {
-	return getX()+getWidth();
+    return getX()+getWidth();
 }
 
 public int getTopOffset() {
@@ -1010,27 +1010,27 @@ public int getTopOffset() {
 
 public Connector addConnector() {
     if (inlink instanceof Connector)
-	{
+    {
         return ((Connector)inlink).addConnector();
-	}
-	else
-	{	
-	    ContainerObject inlinkParent = null;
-	    String id = CONNECTOR_ID_START + this.getID();
-	    if (inlink instanceof EPICSLink) {
-	        inlinkParent = ((EPICSLink)inlink).getParent();
-	    } else {
-	        return null;
-	    }
-		String inlinkStr = "";
-		String outlinkStr = getID();
-		if (inlink!=null) inlinkStr = inlink.getID();
+    }
+    else
+    {    
+        ContainerObject inlinkParent = null;
+        String id = CONNECTOR_ID_START + this.getID();
+        if (inlink instanceof EPICSLink) {
+            inlinkParent = ((EPICSLink)inlink).getParent();
+        } else {
+            return null;
+        }
+        String inlinkStr = "";
+        String outlinkStr = getID();
+        if (inlink!=null) inlinkStr = inlink.getID();
 
-		Connector connector = new Connector(id, (LinkManagerObject)((EPICSLink)inlink).getParent(), this, getInput());
-		inlinkParent.addSubObject(id, connector);
-		UndoManager.getInstance().addAction(new CreateConnectorAction(connector, inlinkStr, outlinkStr));
-		return connector;
-	}
+        Connector connector = new Connector(id, (LinkManagerObject)((EPICSLink)inlink).getParent(), this, getInput());
+        inlinkParent.addSubObject(id, connector);
+        UndoManager.getInstance().addAction(new CreateConnectorAction(connector, inlinkStr, outlinkStr));
+        return connector;
+    }
 }
 
 public void setTextPositionNorth(boolean isTextPositionNorth) {
@@ -1047,27 +1047,27 @@ public boolean isTextPositionNorth() {
  */
 public Flexible copyToGroup(String group) {
     String newName;
-	if (group.equals(Record.nullString))
-		newName = Group.substractObjectName(data.getName());
-	else
-		newName = group+Constants.GROUP_SEPARATOR+
-				  Group.substractObjectName(data.getName());
-	
-	// object with new name already exists, add suffix ///!!!
-	while (Group.getRoot().findObject(newName, true)!=null){
-			newName = StringUtils.incrementName(newName, Constants.COPY_SUFFIX);
-	}
+    if (group.equals(Record.nullString))
+        newName = Group.substractObjectName(data.getName());
+    else
+        newName = group+Constants.GROUP_SEPARATOR+
+                  Group.substractObjectName(data.getName());
+    
+    // object with new name already exists, add suffix ///!!!
+    while (Group.getRoot().findObject(newName, true)!=null){
+            newName = StringUtils.incrementName(newName, Constants.COPY_SUFFIX);
+    }
 
-	VDBPort theDataCopy = VDBData.copyVDBPort(data);
-	theDataCopy.setName(newName);
+    VDBPort theDataCopy = VDBData.copyVDBPort(data);
+    theDataCopy.setName(newName);
 
-	Port thePortCopy = new Port(theDataCopy, null, getX(), getY());
-	((Group)Group.getRoot().getSubObject(group)).addSubObject(newName, thePortCopy, true);
+    Port thePortCopy = new Port(theDataCopy, null, getX(), getY());
+    ((Group)Group.getRoot().getSubObject(group)).addSubObject(newName, thePortCopy, true);
 
-	Group.getRoot().manageLinks(true);
-	unconditionalValidation();
-	
-	return thePortCopy;
+    Group.getRoot().manageLinks(true);
+    unconditionalValidation();
+    
+    return thePortCopy;
 }
 
 /* (non-Javadoc)
@@ -1081,86 +1081,86 @@ public String getFlexibleName() {
  * @see com.cosylab.vdct.graphics.objects.Flexible#moveToGroup(java.lang.String)
  */
 public boolean moveToGroup(String group) {
-	
-	if (Group.getEditingTemplateData()==null)
-		return false;
+    
+    if (Group.getEditingTemplateData()==null)
+        return false;
 
-	Group.getEditingTemplateData().removePort(data);
-	//String oldName = getName();
-	String newName;
-	if (group.equals(Record.nullString)){
-		newName = Group.substractObjectName(data.getName());
-	}
-	else
-		newName = group+Constants.GROUP_SEPARATOR+
-				  Group.substractObjectName(data.getName());;
+    Group.getEditingTemplateData().removePort(data);
+    //String oldName = getName();
+    String newName;
+    if (group.equals(Record.nullString)){
+        newName = Group.substractObjectName(data.getName());
+    }
+    else
+        newName = group+Constants.GROUP_SEPARATOR+
+                  Group.substractObjectName(data.getName());;
 
-	// object with new name already exists, add suffix // !!!
-	Object obj;
-	boolean renameNeeded = false;
+    // object with new name already exists, add suffix // !!!
+    Object obj;
+    boolean renameNeeded = false;
 
-	while ((obj=Group.getRoot().findObject(newName, true))!=null)
-	{
-		if (obj==this)
-		{
-		   	data.setName(newName);
-			return true;
-		}
-		else
-		{
-			renameNeeded = true;
-			newName = StringUtils.incrementName(newName, Constants.MOVE_SUFFIX);
-		}
-	}
+    while ((obj=Group.getRoot().findObject(newName, true))!=null)
+    {
+        if (obj==this)
+        {
+               data.setName(newName);
+            return true;
+        }
+        else
+        {
+            renameNeeded = true;
+            newName = StringUtils.incrementName(newName, Constants.MOVE_SUFFIX);
+        }
+    }
 
-	if (renameNeeded){
-	    rename(newName);
-	}
+    if (renameNeeded){
+        rename(newName);
+    }
 
-	getParent().removeObject(Group.substractObjectName(newName));
-	setParent(null);
-	((Group)Group.getRoot().getSubObject(group)).addSubObject(newName, this, true);
-	data.setName(newName);
+    getParent().removeObject(Group.substractObjectName(newName));
+    setParent(null);
+    ((Group)Group.getRoot().getSubObject(group)).addSubObject(newName, this, true);
+    data.setName(newName);
 
-	Group.getEditingTemplateData().addPort(data);
-	unconditionalValidation();
+    Group.getEditingTemplateData().addPort(data);
+    unconditionalValidation();
 
-	return true;
+    return true;
 }
 /* (non-Javadoc)
  * @see com.cosylab.vdct.graphics.objects.Flexible#rename(java.lang.String)
  */
 public boolean rename(String newName) {
-	if (Group.getEditingTemplateData()==null)
-		return false;
+    if (Group.getEditingTemplateData()==null)
+        return false;
 
-	Group.getEditingTemplateData().renamePort(data, newName);
+    Group.getEditingTemplateData().renamePort(data, newName);
     String newObjName = Group.substractObjectName(newName);
-	String oldObjName = Group.substractObjectName(getName());
+    String oldObjName = Group.substractObjectName(getName());
 
-	if (!oldObjName.equals(newObjName))
-	{
-	    
-		String fullName = com.cosylab.vdct.util.StringUtils.replaceEnding(getName(), oldObjName, newObjName);
-		data.setName(fullName);
-		getParent().addSubObject(newObjName, this);
-				
-		// fix connectors IDs
-		Enumeration e = getParent().getSubObjectsV().elements();
-		Object obj; Connector connector;
-		while (e.hasMoreElements()) {
-			obj = e.nextElement();
-			if (obj instanceof Connector)
-			{
-				connector = (Connector)obj;
-				String id = connector.getID();
-				id = com.cosylab.vdct.util.StringUtils.replaceEnding(id, oldObjName, newObjName);
-				connector.setID(id);
-			}
-		}
-	}
-	
-	return true;
+    if (!oldObjName.equals(newObjName))
+    {
+        
+        String fullName = com.cosylab.vdct.util.StringUtils.replaceEnding(getName(), oldObjName, newObjName);
+        data.setName(fullName);
+        getParent().addSubObject(newObjName, this);
+                
+        // fix connectors IDs
+        Enumeration e = getParent().getSubObjectsV().elements();
+        Object obj; Connector connector;
+        while (e.hasMoreElements()) {
+            obj = e.nextElement();
+            if (obj instanceof Connector)
+            {
+                connector = (Connector)obj;
+                String id = connector.getID();
+                id = com.cosylab.vdct.util.StringUtils.replaceEnding(id, oldObjName, newObjName);
+                connector.setID(id);
+            }
+        }
+    }
+    
+    return true;
 }
 
 }

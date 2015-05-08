@@ -29,15 +29,15 @@
  * 
  */
 public interface ILayerModelListener {
-	/**
-	 * Callback method, which informs the listener that a certain layer has
-	 * changed.
-	 * 
-	 * @param layer
-	 *            the layer that changed
-	 * @param property
-	 *            the event identifier (one of the constants defined in
-	 *            {@link LayerSupport}
-	 */
-	void layerChanged(Layer layer, String property);
+    /**
+     * Callback method, which informs the listener that a certain layer has
+     * changed.
+     * 
+     * @param layer
+     *            the layer that changed
+     * @param property
+     *            the event identifier (one of the constants defined in
+     *            {@link LayerSupport}
+     */
+    void layerChanged(Layer layer, String property);
 }

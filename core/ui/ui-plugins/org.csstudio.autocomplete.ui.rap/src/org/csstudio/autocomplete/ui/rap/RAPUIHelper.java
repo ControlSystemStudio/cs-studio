@@ -18,16 +18,16 @@ import org.csstudio.autocomplete.ui.util.UIHelper;
  */
 public class RAPUIHelper extends UIHelper {
 
-	/** {@inheritDoc} */
-	@Override
-	public SSTextLayout newTextLayout() {
-		return new RAPSSTextLayout();
-	}
+    /** {@inheritDoc} */
+    @Override
+    public SSTextLayout newTextLayout() {
+        return new RAPSSTextLayout();
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public SSStyledText newStyledText() {
-		return new RAPSSStyledText();
-	}
+    /** {@inheritDoc} */
+    @Override
+    public SSStyledText newStyledText() {
+        return new RAPSSStyledText();
+    }
 
 }

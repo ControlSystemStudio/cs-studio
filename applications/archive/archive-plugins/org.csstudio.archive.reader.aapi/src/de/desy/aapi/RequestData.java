@@ -71,13 +71,13 @@ public class RequestData implements Serializable {
      * Standard constructor
      */
     public RequestData() {
-    	fromTime = 0;
-    	uFromTime = 0;
-    	toTime = 0;
-    	uToTime = 0;
-    	numberOfSamples = 0;
-    	conversParam = AAPI.DEADBAND_PARAM;
-    	pvList = new ArrayList<String>();
+        fromTime = 0;
+        uFromTime = 0;
+        toTime = 0;
+        uToTime = 0;
+        numberOfSamples = 0;
+        conversParam = AAPI.DEADBAND_PARAM;
+        pvList = new ArrayList<String>();
     }
     
     /**
@@ -190,24 +190,24 @@ public class RequestData implements Serializable {
      */
     public int getPvCount() {
         
-    	if(pvList != null) {
-    		return pvList.size();
-    	} else return 0;
+        if(pvList != null) {
+            return pvList.size();
+        } else return 0;
     }
 
     /**
      * @return the pV
      */
     public String[] getPvList() {
-    	
-    	String[] result = null;
-    	
-    	if(pvList != null) {
-    		result = new String[pvList.size()];
-    	} else
-    		result = new String[0];
-    	
-    	return result;
+        
+        String[] result = null;
+        
+        if(pvList != null) {
+            result = new String[pvList.size()];
+        } else
+            result = new String[0];
+        
+        return result;
     }
 
     /**
@@ -216,7 +216,7 @@ public class RequestData implements Serializable {
      * @param pv
      */
     public void addPv(String pv) {
-    	pvList.add(pv);
+        pvList.add(pv);
     }
     
     /**
@@ -226,15 +226,15 @@ public class RequestData implements Serializable {
      */
     public void setPvList(String[] pv) {
         
-    	if(pv == null) {
-    		return;
-    	}
-    	
-    	pvList.clear();
-    	
-    	for(String s : pv) {
-    		pvList.add(s);
-    	}
+        if(pv == null) {
+            return;
+        }
+        
+        pvList.clear();
+        
+        for(String s : pv) {
+            pvList.add(s);
+        }
     }
     
     /**
@@ -242,10 +242,10 @@ public class RequestData implements Serializable {
      */
     public byte[] buildPacketFromData(int cmd) throws AapiException {
         
-    	byte[] packet = null;
-    	
+        byte[] packet = null;
+        
         try {
-        	
+            
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
             DataOutputStream dout = new DataOutputStream(bout);
             dout.writeInt(fromTime);

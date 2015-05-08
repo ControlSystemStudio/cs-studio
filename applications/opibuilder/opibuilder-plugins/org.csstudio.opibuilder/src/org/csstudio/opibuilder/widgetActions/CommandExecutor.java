@@ -85,8 +85,8 @@ public final class CommandExecutor
      *  @param stderr Standard error output of program
      */
      public void error(final int exit_code, final String stderr){
-    	 ConsoleService.getInstance().writeError(stderr);
-    	 	
+         ConsoleService.getInstance().writeError(stderr);
+             
     }
 
     private void runAndCheckCommand()
@@ -96,66 +96,66 @@ public final class CommandExecutor
         final Process process;
         try
         {
-   	     	final String[] cmd = StringSplitter.splitIgnoreInQuotes(command, ' ', true);
+                final String[] cmd = StringSplitter.splitIgnoreInQuotes(command, ' ', true);
             process = Runtime.getRuntime().exec(cmd, null, dir);
         }
         catch (Throwable ex)
         {
-        	error(-1, ex.getMessage());
-        	ConsoleService.getInstance().writeInfo(NLS.bind(
-        			"Command \"{0}\" executing finished with exit code: FAILED", command));
+            error(-1, ex.getMessage());
+            ConsoleService.getInstance().writeInfo(NLS.bind(
+                    "Command \"{0}\" executing finished with exit code: FAILED", command));
             
             return;
         }
         
         //create a thread for listening on error output 
         Thread errorThread = new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				// .. with error; check error output
-		        BufferedReader br = null;
-		        try
-		        {
-		            final InputStream is = process.getErrorStream();
-		            final InputStreamReader isr = new InputStreamReader(is);
-		            br = new BufferedReader(isr);
-		            String line;
-		            while ((line = br.readLine()) != null){
-						ConsoleService.getInstance().writeString(
-								command + " error: ",
-								CustomMediaFactory.COLOR_PURPLE);
-						ConsoleService.getInstance()
-								.writeString(line + "\n", CustomMediaFactory.COLOR_RED);
-		            }
-		        }
-		        catch (IOException e)
-		        {
-		        	ErrorHandlerUtil.handleError("Command Executing error" , e);
-		            return;
-		        }finally{
-		        	if(br != null)
-						try {
-							br.close();
-						} catch (IOException e) {
-							ErrorHandlerUtil.handleError("Command Executing error" , e);				
-						}
-		        }
-			}
-		});
+            
+            @Override
+            public void run() {
+                // .. with error; check error output
+                BufferedReader br = null;
+                try
+                {
+                    final InputStream is = process.getErrorStream();
+                    final InputStreamReader isr = new InputStreamReader(is);
+                    br = new BufferedReader(isr);
+                    String line;
+                    while ((line = br.readLine()) != null){
+                        ConsoleService.getInstance().writeString(
+                                command + " error: ",
+                                CustomMediaFactory.COLOR_PURPLE);
+                        ConsoleService.getInstance()
+                                .writeString(line + "\n", CustomMediaFactory.COLOR_RED);
+                    }
+                }
+                catch (IOException e)
+                {
+                    ErrorHandlerUtil.handleError("Command Executing error" , e);
+                    return;
+                }finally{
+                    if(br != null)
+                        try {
+                            br.close();
+                        } catch (IOException e) {
+                            ErrorHandlerUtil.handleError("Command Executing error" , e);                
+                        }
+                }
+            }
+        });
         errorThread.start();
         
         //write output to console
         try {
-			int c = 0;
-			while(c != -1){
-				c = process.getInputStream().read();			
-				if(c!=-1)
-					ConsoleService.getInstance().writeString(""+(char)c);
-			}
-		} catch (IOException e1) {
-			ErrorHandlerUtil.handleError("Command Executing error" , e1);
-		}
+            int c = 0;
+            while(c != -1){
+                c = process.getInputStream().read();            
+                if(c!=-1)
+                    ConsoleService.getInstance().writeString(""+(char)c);
+            }
+        } catch (IOException e1) {
+            ErrorHandlerUtil.handleError("Command Executing error" , e1);
+        }
         
         
         // Poll exit code during 'wait' time
@@ -170,7 +170,7 @@ public final class CommandExecutor
             }
             catch (IllegalThreadStateException ex)
             {  //still running...
-            	try
+                try
                 {
                     Thread.sleep(1000);
                 }
@@ -181,8 +181,8 @@ public final class CommandExecutor
         }
         
         ConsoleService.getInstance().writeInfo(NLS.bind(
-    			"Command \"{0}\" executing finished with exit code: ", command) 
-        		+ (exit_code == null ? "NULL" : (exit_code ==0 ? "OK" : "FAILED")));
+                "Command \"{0}\" executing finished with exit code: ", command) 
+                + (exit_code == null ? "NULL" : (exit_code ==0 ? "OK" : "FAILED")));
         // Process runs so long that we no longer care
         if (exit_code == null)
             return;

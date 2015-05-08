@@ -38,185 +38,185 @@ import org.csstudio.sds.model.DynamicsDescriptor;
  * 
  */
 abstract class AbstractInitializer {
-	/**
-	 * The current model that is being initialized. This reference will be
-	 * injected at runtime.
-	 */
-	private AbstractWidgetModel _widgetModel;
+    /**
+     * The current model that is being initialized. This reference will be
+     * injected at runtime.
+     */
+    private AbstractWidgetModel _widgetModel;
 
-	/**
-	 * Setter, which injects the widget model at runtime. Should only be called
-	 * within this package.
-	 * 
-	 * @param widgetModel
-	 *            the widget model
-	 */
-	final void setWidgetModel(final AbstractWidgetModel widgetModel) {
-		_widgetModel = widgetModel;
-	}
+    /**
+     * Setter, which injects the widget model at runtime. Should only be called
+     * within this package.
+     * 
+     * @param widgetModel
+     *            the widget model
+     */
+    final void setWidgetModel(final AbstractWidgetModel widgetModel) {
+        _widgetModel = widgetModel;
+    }
 
-	/**
-	 * Initializes a alias, which has widget scope.
-	 * 
-	 * @param alias
-	 *            the alias name, e.g. "channel"
-	 * @param description
-	 *            a alias description
-	 * 
-	 */
-	public final void initializeAlias(final String alias,
-			final String description) {
-		_widgetModel.addAlias(alias, "");
-	}
+    /**
+     * Initializes a alias, which has widget scope.
+     * 
+     * @param alias
+     *            the alias name, e.g. "channel"
+     * @param description
+     *            a alias description
+     * 
+     */
+    public final void initializeAlias(final String alias,
+            final String description) {
+        _widgetModel.addAlias(alias, "");
+    }
 
-	/**
-	 * Initializes a property with a static value.
-	 * 
-	 * @param propertyId
-	 *            the property id
-	 * @param value
-	 *            the value
-	 */
-	public final void initializeStaticProperty(final String propertyId,
-			final Object value) {
-		_widgetModel.setPropertyValue(propertyId, value);
-	}
+    /**
+     * Initializes a property with a static value.
+     * 
+     * @param propertyId
+     *            the property id
+     * @param value
+     *            the value
+     */
+    public final void initializeStaticProperty(final String propertyId,
+            final Object value) {
+        _widgetModel.setPropertyValue(propertyId, value);
+    }
 
-	/**
-	 * Initializes a property with a single input and a single output channel.
-	 * 
-	 * @param propertyId
-	 *            the property id
-	 * @param channelName
-	 *            the input channel name
-	 * @param outputChannelName
-	 *            the output channel name
-	 */
-	public final void initializeDynamicProperty(final String propertyId,
-			final String channelName, final String outputChannelName,
-			final String ruleID) {
-		final DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
-		dynamicsDescriptor.addInputChannel(new ParameterDescriptor(channelName));
-		if (outputChannelName != null) {
-			dynamicsDescriptor.setOutputChannel(new ParameterDescriptor(
-					outputChannelName));
-		}
-		if (ruleID != null) {
-			dynamicsDescriptor.setRuleId(ruleID);
-		}
-		_widgetModel.setDynamicsDescriptor(propertyId, dynamicsDescriptor);
-	}
+    /**
+     * Initializes a property with a single input and a single output channel.
+     * 
+     * @param propertyId
+     *            the property id
+     * @param channelName
+     *            the input channel name
+     * @param outputChannelName
+     *            the output channel name
+     */
+    public final void initializeDynamicProperty(final String propertyId,
+            final String channelName, final String outputChannelName,
+            final String ruleID) {
+        final DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor(channelName));
+        if (outputChannelName != null) {
+            dynamicsDescriptor.setOutputChannel(new ParameterDescriptor(
+                    outputChannelName));
+        }
+        if (ruleID != null) {
+            dynamicsDescriptor.setRuleId(ruleID);
+        }
+        _widgetModel.setDynamicsDescriptor(propertyId, dynamicsDescriptor);
+    }
 
-	/**
-	 * Initializes a property with a single input channel.
-	 * 
-	 * @param propertyId
-	 *            the property id
-	 * @param channelName
-	 *            the input channel name
-	 */
-	public final void initializeDynamicProperty(final String propertyId,
-			final String channelName) {
-		initializeDynamicProperty(propertyId, channelName, null, null);
+    /**
+     * Initializes a property with a single input channel.
+     * 
+     * @param propertyId
+     *            the property id
+     * @param channelName
+     *            the input channel name
+     */
+    public final void initializeDynamicProperty(final String propertyId,
+            final String channelName) {
+        initializeDynamicProperty(propertyId, channelName, null, null);
 
-	}
+    }
 
-	/**
-	 * Initializes a property with a several input channels.
-	 * 
-	 * @param propertyId
-	 *            the property id
-	 * @param channelNames
-	 *            the input channel names
-	 */
-	public final void initializeDynamicProperty(final String propertyId,
-			final String[] channelNames) {
-		initializeDynamicProperty(propertyId, channelNames, null, null);
-	}
+    /**
+     * Initializes a property with a several input channels.
+     * 
+     * @param propertyId
+     *            the property id
+     * @param channelNames
+     *            the input channel names
+     */
+    public final void initializeDynamicProperty(final String propertyId,
+            final String[] channelNames) {
+        initializeDynamicProperty(propertyId, channelNames, null, null);
+    }
 
-	/**
-	 * Initializes a property with several input channels and a single output
-	 * channel.
-	 * 
-	 * @param propertyId
-	 *            the property id
-	 * @param channelNames
-	 *            the input channel names
-	 * @param outputChannelName
-	 *            the output channel name
-	 */
-	public final void initializeDynamicProperty(final String propertyId,
-			final String[] channelNames, final String outputChannelName,
-			final String ruleID) {
-		final DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
+    /**
+     * Initializes a property with several input channels and a single output
+     * channel.
+     * 
+     * @param propertyId
+     *            the property id
+     * @param channelNames
+     *            the input channel names
+     * @param outputChannelName
+     *            the output channel name
+     */
+    public final void initializeDynamicProperty(final String propertyId,
+            final String[] channelNames, final String outputChannelName,
+            final String ruleID) {
+        final DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
 
-		for (String channelName : channelNames) {
-			dynamicsDescriptor.addInputChannel(new ParameterDescriptor(
-					channelName));
-		}
+        for (String channelName : channelNames) {
+            dynamicsDescriptor.addInputChannel(new ParameterDescriptor(
+                    channelName));
+        }
 
-		if (outputChannelName != null) {
-			dynamicsDescriptor.setOutputChannel(new ParameterDescriptor(
-					outputChannelName));
-		}
-		if (ruleID != null) {
-			dynamicsDescriptor.setRuleId(ruleID);
-		}
-		_widgetModel.setDynamicsDescriptor(propertyId, dynamicsDescriptor);
-	}
+        if (outputChannelName != null) {
+            dynamicsDescriptor.setOutputChannel(new ParameterDescriptor(
+                    outputChannelName));
+        }
+        if (ruleID != null) {
+            dynamicsDescriptor.setRuleId(ruleID);
+        }
+        _widgetModel.setDynamicsDescriptor(propertyId, dynamicsDescriptor);
+    }
 
-	public final void initializeDynamicPropertyForConnectionState(
-			String propertyId, String channelName,
-			Map<ConnectionState, Object> connectionStateDependentValues) {
-		initializeDynamicPropertyForConnectionState(propertyId, channelName,
-				connectionStateDependentValues, null);
+    public final void initializeDynamicPropertyForConnectionState(
+            String propertyId, String channelName,
+            Map<ConnectionState, Object> connectionStateDependentValues) {
+        initializeDynamicPropertyForConnectionState(propertyId, channelName,
+                connectionStateDependentValues, null);
 
-	}
+    }
 
-	public final void initializeDynamicPropertyForConnectionState(
-			String propertyId, String channelName,
-			Map<ConnectionState, Object> connectionStateDependentValues,
-			String ruleID) {
-		// create a new dynamic configuration for the specified property
-		DynamicsDescriptor descriptor = new DynamicsDescriptor();
+    public final void initializeDynamicPropertyForConnectionState(
+            String propertyId, String channelName,
+            Map<ConnectionState, Object> connectionStateDependentValues,
+            String ruleID) {
+        // create a new dynamic configuration for the specified property
+        DynamicsDescriptor descriptor = new DynamicsDescriptor();
 
-		// configure channels
-		descriptor.addInputChannel(new ParameterDescriptor(channelName));
+        // configure channels
+        descriptor.addInputChannel(new ParameterDescriptor(channelName));
 
-		// configure connection state dependent values
-		descriptor
-				.setConnectionStateDependentPropertyValues(connectionStateDependentValues);
+        // configure connection state dependent values
+        descriptor
+                .setConnectionStateDependentPropertyValues(connectionStateDependentValues);
 
-		// configure the rule (the Null-Rule is needed so that connection states
-		// dominate value changes)
-		if (ruleID == null) {
-			descriptor.setRuleId(NullRule.ID);
-		} else {
-			descriptor.setRuleId(ruleID);
-		}
+        // configure the rule (the Null-Rule is needed so that connection states
+        // dominate value changes)
+        if (ruleID == null) {
+            descriptor.setRuleId(NullRule.ID);
+        } else {
+            descriptor.setRuleId(ruleID);
+        }
 
-		_widgetModel.setDynamicsDescriptor(propertyId, descriptor);
-	}
+        _widgetModel.setDynamicsDescriptor(propertyId, descriptor);
+    }
 
-	// public final void initializeDynamicProperty(String propertyId, String
-	// channelName, ConnectionState connectionState, Object value) {
-	// // create a new dynamic configuration for the specified property
-	// DynamicsDescriptor descriptor = new DynamicsDescriptor();
-	//		
-	// // configure channels
-	// descriptor.addInputChannel(new ParameterDescriptor(channelName));
-	//		
-	// // configure connection state dependent values
-	// Map<ConnectionState, Object> values = new HashMap<ConnectionState,
-	// Object>();
-	// values.put(connectionState, value);
-	// descriptor.setConnectionStateDependentPropertyValues(values);
-	//		
-	// // configure the rule (the Null-Rule is needed so that connection states
-	// dominate value changes)
-	// descriptor.setRuleId(NullRule.ID);
-	//		
-	// _widgetModel.setDynamicsDescriptor(propertyId,descriptor);
-	//		
-	// }
+    // public final void initializeDynamicProperty(String propertyId, String
+    // channelName, ConnectionState connectionState, Object value) {
+    // // create a new dynamic configuration for the specified property
+    // DynamicsDescriptor descriptor = new DynamicsDescriptor();
+    //        
+    // // configure channels
+    // descriptor.addInputChannel(new ParameterDescriptor(channelName));
+    //        
+    // // configure connection state dependent values
+    // Map<ConnectionState, Object> values = new HashMap<ConnectionState,
+    // Object>();
+    // values.put(connectionState, value);
+    // descriptor.setConnectionStateDependentPropertyValues(values);
+    //        
+    // // configure the rule (the Null-Rule is needed so that connection states
+    // dominate value changes)
+    // descriptor.setRuleId(NullRule.ID);
+    //        
+    // _widgetModel.setDynamicsDescriptor(propertyId,descriptor);
+    //        
+    // }
 }

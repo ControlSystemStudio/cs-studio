@@ -13,24 +13,24 @@ import org.csstudio.autocomplete.parser.engine.ExprLexer;
 
 public class ExprString extends Expr {
 
-	public static final String EMPTY = "";
+    public static final String EMPTY = "";
 
-	public final String str;
+    public final String str;
 
-	public ExprString(String str) {
-		super(ExprType.String);
-		this.str = str;
-	}
+    public ExprString(String str) {
+        super(ExprType.String);
+        this.str = str;
+    }
 
-	public String toString() {
-		return ExprLexer.escapeString(str);
-	}
+    public String toString() {
+        return ExprLexer.escapeString(str);
+    }
 
-	public int hashCode() {
-		return str.hashCode();
-	}
+    public int hashCode() {
+        return str.hashCode();
+    }
 
-	public boolean equals(Object obj) {
-		return obj instanceof ExprString && str.equals(((ExprString) obj).str);
-	}
+    public boolean equals(Object obj) {
+        return obj instanceof ExprString && str.equals(((ExprString) obj).str);
+    }
 }

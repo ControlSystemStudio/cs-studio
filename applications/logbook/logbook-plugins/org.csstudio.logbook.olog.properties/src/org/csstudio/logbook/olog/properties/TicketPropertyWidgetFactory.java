@@ -21,7 +21,7 @@ public class TicketPropertyWidgetFactory implements PropertyWidgetFactory {
 
     @Override
     public AbstractPropertyWidget create(Composite parent, int SWT,
-	    LogEntryChangeset logEntryChangeset, boolean editable) {
-	return new TicketPropertyWidget(parent, SWT, logEntryChangeset, editable);
+        LogEntryChangeset logEntryChangeset, boolean editable) {
+    return new TicketPropertyWidget(parent, SWT, logEntryChangeset, editable);
     }
 }

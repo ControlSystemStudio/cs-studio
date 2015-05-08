@@ -31,23 +31,23 @@ import org.csstudio.sds.util.ColorAndFontUtil;
  *
  */
 public final class AEND_dlog implements IRule {
-	/**
-	 * The ID for this rule.
-	 */
-	public static final String TYPE_ID = "cosyrules.color.aend_dlog";
+    /**
+     * The ID for this rule.
+     */
+    public static final String TYPE_ID = "cosyrules.color.aend_dlog";
 
-	/**
-	 * Standard constructor.
-	 */
-	public AEND_dlog() {
-	}
+    /**
+     * Standard constructor.
+     */
+    public AEND_dlog() {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Object evaluate(final Object[] arguments) {
-		if (arguments != null && arguments.length > 0) {
+        if (arguments != null && arguments.length > 0) {
             double d = -10.0;
             if (arguments[0] instanceof Double) {
                  d = (Double) arguments[0];
@@ -59,28 +59,28 @@ public final class AEND_dlog implements IRule {
                 //illegal state
                 return "${Illegal}";
             }
-			if (Math.abs(d-0.00)<0.00001) {
-//			    old Valve closed color Red
-//			    return ColorAndFontUtil.toHex(253,0,0);
-			    // new Valve closed color dark gray
-				return "#707070";
-			}
-			if (Math.abs(d-1.00)<0.00001) {
-				return ColorAndFontUtil.toHex(42,99,228);
-			}
-			if (Math.abs(d-2.00)<0.00001) {
-				return ColorAndFontUtil.toHex(30,187,0);
-			}
-			if (d>=3.00 && d<=15.00) {
-				return ColorAndFontUtil.toHex(249,218,60);
-			}
-			if (Math.abs(d-16.00)<0.00001) {
-				return ColorAndFontUtil.toHex(255,255,255);
-			}
-		}
+            if (Math.abs(d-0.00)<0.00001) {
+//                old Valve closed color Red
+//                return ColorAndFontUtil.toHex(253,0,0);
+                // new Valve closed color dark gray
+                return "#707070";
+            }
+            if (Math.abs(d-1.00)<0.00001) {
+                return ColorAndFontUtil.toHex(42,99,228);
+            }
+            if (Math.abs(d-2.00)<0.00001) {
+                return ColorAndFontUtil.toHex(30,187,0);
+            }
+            if (d>=3.00 && d<=15.00) {
+                return ColorAndFontUtil.toHex(249,218,60);
+            }
+            if (Math.abs(d-16.00)<0.00001) {
+                return ColorAndFontUtil.toHex(255,255,255);
+            }
+        }
 
-		return "${Illegal}";
-	}
+        return "${Illegal}";
+    }
 
     /**
      * {@inheritDoc}

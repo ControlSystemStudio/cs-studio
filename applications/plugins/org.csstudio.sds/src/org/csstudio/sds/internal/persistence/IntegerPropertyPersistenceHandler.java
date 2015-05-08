@@ -31,13 +31,13 @@ import org.jdom.Element;
  * 
  */
 public final class IntegerPropertyPersistenceHandler extends
-		BasePropertyPersistenceHandler {
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object readProperty(final Element domElement) {
-		return Integer.parseInt(domElement
-				.getAttributeValue(XmlConstants.XML_ATTRIBUTE_VALUE));
-	}
+        BasePropertyPersistenceHandler {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object readProperty(final Element domElement) {
+        return Integer.parseInt(domElement
+                .getAttributeValue(XmlConstants.XML_ATTRIBUTE_VALUE));
+    }
 }

@@ -36,29 +36,29 @@ import org.eclipse.draw2d.geometry.PointList;
  */
 public final class PolygonModelFactory implements IWidgetModelFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractWidgetModel createWidgetModel() {
-		PolygonModel polygonElement = new PolygonModel();
-		PointList points = new PointList();
-		points.addPoint(15, 1);
-		points.addPoint(30, 15);
-		points.addPoint(30, 30);
-		points.addPoint(15, 45);
-		points.addPoint(1, 30);
-		points.addPoint(1, 15);
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractWidgetModel createWidgetModel() {
+        PolygonModel polygonElement = new PolygonModel();
+        PointList points = new PointList();
+        points.addPoint(15, 1);
+        points.addPoint(30, 15);
+        points.addPoint(30, 30);
+        points.addPoint(15, 45);
+        points.addPoint(1, 30);
+        points.addPoint(1, 15);
 
-		polygonElement.setPoints(points, true);
+        polygonElement.setPoints(points, true);
 
-		return polygonElement;
-	}
+        return polygonElement;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Class getWidgetModelType() {
-		return PolygonModel.class;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Class getWidgetModelType() {
+        return PolygonModel.class;
+    }
 
 }

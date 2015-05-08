@@ -11,35 +11,35 @@ import org.csstudio.dct.model.IRecord;
  */
 public final class RemoveRecordCommand extends AbstractRecordCommand {
 
-	private IContainer container;
-	private IRecord record;
-	private int index;
+    private IContainer container;
+    private IRecord record;
+    private int index;
 
-	/**
-	 * Constructor.
-	 * @param record the record
-	 */
-	public RemoveRecordCommand(IRecord record) {
-		assert record != null;
-		assert record.getContainer() != null;
-		this.container = record.getContainer();
-		this.record = record;
-		assert container==record.getContainer();
-	}
-	
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	public void execute() {
-		index = removeRecord(container, record);
-	}
+    /**
+     * Constructor.
+     * @param record the record
+     */
+    public RemoveRecordCommand(IRecord record) {
+        assert record != null;
+        assert record.getContainer() != null;
+        this.container = record.getContainer();
+        this.record = record;
+        assert container==record.getContainer();
+    }
+    
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public void execute() {
+        index = removeRecord(container, record);
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	public void undo() {
-		addRecord(container, record, index);
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public void undo() {
+        addRecord(container, record, index);
+    }
 }

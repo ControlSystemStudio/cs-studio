@@ -57,46 +57,46 @@ import java.util.EventListener;
  */
 public interface LifecycleListener extends EventListener
 {
-	/**
-	 * Notification that the object is dying. "Dying" means that the
-	 * object has begun its destruction process. At the begining of the
-	 * process, the <code>isDestroying()</code> invoked on the
-	 * <code>LifecycleReporter</code> instance will return <code>true</code>.
-	 *
-	 * @param event event object, non-<code>null</code>
-	 */
-	void destroying(LifecycleEvent event);
+    /**
+     * Notification that the object is dying. "Dying" means that the
+     * object has begun its destruction process. At the begining of the
+     * process, the <code>isDestroying()</code> invoked on the
+     * <code>LifecycleReporter</code> instance will return <code>true</code>.
+     *
+     * @param event event object, non-<code>null</code>
+     */
+    void destroying(LifecycleEvent event);
 
-	/**
-	 * Notification that the object completed its destruction process.
-	 * The <code>isDestroyed()</code> invoked on the
-	 * <code>LifecycleReporter</code> instance will return <code>true</code>.
-	 *
-	 * @param event event object, non-<code>null</code>
-	 */
-	void destroyed(LifecycleEvent event);
+    /**
+     * Notification that the object completed its destruction process.
+     * The <code>isDestroyed()</code> invoked on the
+     * <code>LifecycleReporter</code> instance will return <code>true</code>.
+     *
+     * @param event event object, non-<code>null</code>
+     */
+    void destroyed(LifecycleEvent event);
 
-	/**
-	 * Notifies that the initialization has been completed. The object
-	 * has deterined that it is in the initialized state and is ready to
-	 * process requests. Notice that that may happen sometime after the
-	 * constructor has already completed, especially if the object listened to
-	 * depends on the completion of some asynchronous operation. Before
-	 * distributing such events, <code>LifecycleReporter</code> will return
-	 * <code>true</code> on a call to <code>isInitialized()</code>.
-	 *
-	 * @param event event object, non-<code>null</code>.
-	 */
-	void initialized(LifecycleEvent event);
+    /**
+     * Notifies that the initialization has been completed. The object
+     * has deterined that it is in the initialized state and is ready to
+     * process requests. Notice that that may happen sometime after the
+     * constructor has already completed, especially if the object listened to
+     * depends on the completion of some asynchronous operation. Before
+     * distributing such events, <code>LifecycleReporter</code> will return
+     * <code>true</code> on a call to <code>isInitialized()</code>.
+     *
+     * @param event event object, non-<code>null</code>.
+     */
+    void initialized(LifecycleEvent event);
 
-	/**
-	 * Notifies that the initialization process has begun.  Before
-	 * distributing such events, <code>LifecycleReporter</code> will return
-	 * <code>true</code> on a call to <code>isInitializing()</code>.
-	 *
-	 * @param event event object, non-<code>null</code>.
-	 */
-	void initializing(LifecycleEvent event);
+    /**
+     * Notifies that the initialization process has begun.  Before
+     * distributing such events, <code>LifecycleReporter</code> will return
+     * <code>true</code> on a call to <code>isInitializing()</code>.
+     *
+     * @param event event object, non-<code>null</code>.
+     */
+    void initializing(LifecycleEvent event);
 }
 
 /* __oOo__ */

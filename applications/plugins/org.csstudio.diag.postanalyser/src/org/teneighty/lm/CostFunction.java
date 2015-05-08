@@ -36,35 +36,35 @@ public interface CostFunction
 {
 
 
-	/**
-	 * Evaluate the cost function at the specified tuple.
-	 * 
-	 * @param values the vector of data to evaluate.
-	 * @param params vector containing the current parameters of variation.
-	 * @return double the value of this function.
-	 */
-	public double evaluate( double[] values, double[] params );
+    /**
+     * Evaluate the cost function at the specified tuple.
+     * 
+     * @param values the vector of data to evaluate.
+     * @param params vector containing the current parameters of variation.
+     * @return double the value of this function.
+     */
+    public double evaluate( double[] values, double[] params );
 
 
-	/**
-	 * Returns the derivative of this function, with respect to the <code>ith</code>
-	 * <b>parameter</b>, evaluated at the specified tuple.
-	 * 
-	 * @param values the vector of data to evaluate.
-	 * @param params vector containing the current parameters of variation.
-	 * @param ith the parameter (number) with respect to which the derivative is
-	 *        taken.
-	 * @return double the value of this function.
-	 */
-	public double derive( double[] values, double[] params, int ith );
-	
-	
-	/**
-	 * Get the parameter count.
-	 * 
-	 * @return int the param count.
-	 */
-	public int getParameterCount();
-	
-	
+    /**
+     * Returns the derivative of this function, with respect to the <code>ith</code>
+     * <b>parameter</b>, evaluated at the specified tuple.
+     * 
+     * @param values the vector of data to evaluate.
+     * @param params vector containing the current parameters of variation.
+     * @param ith the parameter (number) with respect to which the derivative is
+     *        taken.
+     * @return double the value of this function.
+     */
+    public double derive( double[] values, double[] params, int ith );
+    
+    
+    /**
+     * Get the parameter count.
+     * 
+     * @return int the param count.
+     */
+    public int getParameterCount();
+    
+    
 }

@@ -27,20 +27,20 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 
 public class ControlSystemEnumWorkbenchAdapter implements IWorkbenchAdapter{
 
-	public Object[] getChildren(Object o) {
-		return new Object[0];
-	}
+    public Object[] getChildren(Object o) {
+        return new Object[0];
+    }
 
-	public ImageDescriptor getImageDescriptor(Object object) {
-		return null;
-	}
+    public ImageDescriptor getImageDescriptor(Object object) {
+        return null;
+    }
 
-	public String getLabel(Object o) {
-		return ((ControlSystemEnum)o).toString();
-	}
+    public String getLabel(Object o) {
+        return ((ControlSystemEnum)o).toString();
+    }
 
-	public Object getParent(Object o) {
-		return null;
-	}
+    public Object getParent(Object o) {
+        return null;
+    }
 
 }

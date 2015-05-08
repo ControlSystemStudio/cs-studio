@@ -30,13 +30,13 @@
  * 
  */
 public interface IShowControlSystemDialogStrategy {
-	/**
-	 * Return true, if the control system dialog should pop up.
-	 * 
-	 * @param rawName
-	 *            the raw name, which is about to be dropped
-	 * 
-	 * @return true, if the dialog should pop up, false otherwise
-	 */
-	boolean showControlSystem(String rawName);
+    /**
+     * Return true, if the control system dialog should pop up.
+     * 
+     * @param rawName
+     *            the raw name, which is about to be dropped
+     * 
+     * @return true, if the dialog should pop up, false otherwise
+     */
+    boolean showControlSystem(String rawName);
 }

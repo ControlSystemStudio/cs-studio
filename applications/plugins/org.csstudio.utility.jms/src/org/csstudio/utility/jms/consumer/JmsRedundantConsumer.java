@@ -133,8 +133,8 @@ public class JmsRedundantConsumer implements IJmsRedundantConsumer {
     }
 
     /* (non-Javadoc)
-	 * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#createRedundantSubscriber(java.lang.String, java.lang.String)
-	 */
+     * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#createRedundantSubscriber(java.lang.String, java.lang.String)
+     */
     
     @Override
     public boolean createRedundantSubscriber(String name, String destination) {
@@ -142,16 +142,16 @@ public class JmsRedundantConsumer implements IJmsRedundantConsumer {
     }
     
     /* (non-Javadoc)
-	 * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#receive(java.lang.String)
-	 */
+     * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#receive(java.lang.String)
+     */
     @Override
     public Message receive(String name) {
         return receive(name, 0);
     }
     
     /* (non-Javadoc)
-	 * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#receive(java.lang.String, long)
-	 */   
+     * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#receive(java.lang.String, long)
+     */   
     @Override
     public Message receive(String name, long waitTime) {
         
@@ -212,8 +212,8 @@ public class JmsRedundantConsumer implements IJmsRedundantConsumer {
     }
     
     /* (non-Javadoc)
-	 * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#isConnected()
-	 */
+     * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#isConnected()
+     */
     
     @Override
     public boolean isConnected() {
@@ -237,8 +237,8 @@ public class JmsRedundantConsumer implements IJmsRedundantConsumer {
     }
 
     /* (non-Javadoc)
-	 * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#closeAll()
-	 */
+     * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#closeAll()
+     */
     @Override
     public void closeAll() {
         

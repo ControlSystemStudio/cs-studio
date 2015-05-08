@@ -32,21 +32,21 @@ import org.apache.log4j.Logger;
  */
 public class StringPropertyProxyImpl extends PropertyProxyImpl<String>
 {
-	/**
-	 * Creates a new StringPropertyProxyImpl object.
-	 *
-	 * @param name Proxy name
-	 */
-	public StringPropertyProxyImpl(String name, SimulatorPlug plug)
-	{
-		super(name, plug, String.class);
+    /**
+     * Creates a new StringPropertyProxyImpl object.
+     *
+     * @param name Proxy name
+     */
+    public StringPropertyProxyImpl(String name, SimulatorPlug plug)
+    {
+        super(name, plug, String.class);
 
-		try {
-			valueProvider.set("");
-		} catch (Exception e) {
-			Logger.getLogger(this.getClass()).warn("Simulator error.", e);
-		}
-	}
+        try {
+            valueProvider.set("");
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass()).warn("Simulator error.", e);
+        }
+    }
 }
 
 /* __oOo__ */

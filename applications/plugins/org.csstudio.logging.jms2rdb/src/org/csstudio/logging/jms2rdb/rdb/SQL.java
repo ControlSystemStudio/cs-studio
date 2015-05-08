@@ -38,14 +38,14 @@ public class SQL
     {
         final String prefix = (schema != null  &&  schema.length() > 0) ? schema + "."  :  "";
 
-		select_property_id_by_name =
+        select_property_id_by_name =
             "SELECT id FROM " + prefix + "msg_property_type WHERE name=?";
 
         select_next_property_id =
             "SELECT MAX(id)+1 FROM " + prefix + "msg_property_type";
 
         insert_property_id = "INSERT INTO " + prefix + "msg_property_type " +
-        		"(id, name) VALUES (?,?)";
+                "(id, name) VALUES (?,?)";
 
         if (rdb_util.getDialect() == Dialect.Oracle)
         {   // Oracle uses sequence to get message.id.
@@ -54,17 +54,17 @@ public class SQL
                 "INSERT INTO " + prefix + "message (datum, type, name, severity, id) VALUES (?,?,?,?,?)";
         }
         else if (rdb_util.getDialect() == Dialect.PostgreSQL)
-    	{	// PostgreSQL 'returns' the auto-generated ID
-    	    select_next_message_id = null;
-    	    insert_message_id_datum_type_name_severity =
-    	        "INSERT INTO " + prefix + "message (datum, type, name, severity) VALUES (?,?,?,?) returning id";
-    	}
-    	else
-    	{   // Other dialects (MySQL) use auto-increment ID column.
-    		select_next_message_id = null;
-    		insert_message_id_datum_type_name_severity =
-    			"INSERT INTO " + prefix + "message (datum, type, name, severity) VALUES (?,?,?,?)";
-    	}
+        {    // PostgreSQL 'returns' the auto-generated ID
+            select_next_message_id = null;
+            insert_message_id_datum_type_name_severity =
+                "INSERT INTO " + prefix + "message (datum, type, name, severity) VALUES (?,?,?,?) returning id";
+        }
+        else
+        {   // Other dialects (MySQL) use auto-increment ID column.
+            select_next_message_id = null;
+            insert_message_id_datum_type_name_severity =
+                "INSERT INTO " + prefix + "message (datum, type, name, severity) VALUES (?,?,?,?)";
+        }
 
         insert_message_property_value =
             "INSERT INTO " + prefix + "message_content" +

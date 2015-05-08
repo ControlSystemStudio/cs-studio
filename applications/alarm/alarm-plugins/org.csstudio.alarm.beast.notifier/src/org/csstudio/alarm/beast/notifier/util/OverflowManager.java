@@ -16,36 +16,36 @@ package org.csstudio.alarm.beast.notifier.util;
  */
 public class OverflowManager {
 
-	private final Double rate;
-	private final Integer per;
-	private Double allowance;
-	private Long last_check;
+    private final Double rate;
+    private final Integer per;
+    private Double allowance;
+    private Long last_check;
 
-	private boolean overflowed = false;
+    private boolean overflowed = false;
 
-	public OverflowManager(final Integer rate, final Integer per) {
-		this.rate = Double.valueOf(rate);
-		this.per = per;
-		this.allowance = Double.valueOf(rate);
-		this.last_check = System.currentTimeMillis();
-	}
+    public OverflowManager(final Integer rate, final Integer per) {
+        this.rate = Double.valueOf(rate);
+        this.per = per;
+        this.allowance = Double.valueOf(rate);
+        this.last_check = System.currentTimeMillis();
+    }
 
-	public synchronized void refreshOverflow() {
-		final Long current = System.currentTimeMillis();
-		final Long time_passed = current - last_check;
-		this.last_check = current;
-		this.allowance += time_passed * (rate / per);
-		if (allowance > rate)
-			allowance = rate; // throttle
-		if (allowance < 1.0) {
-			overflowed = true;
-		} else {
-			overflowed = false;
-			allowance -= 1.0;
-		}
-	}
+    public synchronized void refreshOverflow() {
+        final Long current = System.currentTimeMillis();
+        final Long time_passed = current - last_check;
+        this.last_check = current;
+        this.allowance += time_passed * (rate / per);
+        if (allowance > rate)
+            allowance = rate; // throttle
+        if (allowance < 1.0) {
+            overflowed = true;
+        } else {
+            overflowed = false;
+            allowance -= 1.0;
+        }
+    }
 
-	public synchronized boolean isOverflowed() {
-		return overflowed;
-	}
+    public synchronized boolean isOverflowed() {
+        return overflowed;
+    }
 }

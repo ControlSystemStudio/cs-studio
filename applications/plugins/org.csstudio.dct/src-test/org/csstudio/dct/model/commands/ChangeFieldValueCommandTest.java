@@ -19,40 +19,40 @@ import org.junit.Test;
  * 
  */
 public final class ChangeFieldValueCommandTest extends AbstractTestCommand{
-	private IRecord record;
+    private IRecord record;
 
-	/**	
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void doSetUp() throws Exception {
-		record = RecordFactory.createRecord(getProject(), "ai", "test", UUID.randomUUID());
-	}
+    /**    
+     * @throws java.lang.Exception
+     */
+    @Before
+    public void doSetUp() throws Exception {
+        record = RecordFactory.createRecord(getProject(), "ai", "test", UUID.randomUUID());
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.dct.model.commands.ChangeFieldValueCommand#execute()}
-	 * .
-	 */
-	@Test
-	public void testExecute() {
-		String id = "test";
-		String value = "a";
-		String newValue = "b";
+    /**
+     * Test method for
+     * {@link org.csstudio.dct.model.commands.ChangeFieldValueCommand#execute()}
+     * .
+     */
+    @Test
+    public void testExecute() {
+        String id = "test";
+        String value = "a";
+        String newValue = "b";
 
-		// .. before
-		record.addField(id, value);
-		assertEquals(value, record.getField(id));
+        // .. before
+        record.addField(id, value);
+        assertEquals(value, record.getField(id));
 
-		// .. execute
-		ChangeFieldValueCommand cmd = new ChangeFieldValueCommand(record, id, newValue);
-		cmd.execute();
-		assertEquals(newValue, record.getField(id));
+        // .. execute
+        ChangeFieldValueCommand cmd = new ChangeFieldValueCommand(record, id, newValue);
+        cmd.execute();
+        assertEquals(newValue, record.getField(id));
 
-		// .. undo
-		cmd.undo();
-		assertEquals(value, record.getField(id));
+        // .. undo
+        cmd.undo();
+        assertEquals(value, record.getField(id));
 
-	}
+    }
 
 }

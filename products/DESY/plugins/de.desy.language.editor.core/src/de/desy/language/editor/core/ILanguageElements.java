@@ -33,6 +33,6 @@ package de.desy.language.editor.core;
  */
 public interface ILanguageElements {
 
-	String getElementName();
+    String getElementName();
 
 }

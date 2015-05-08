@@ -97,7 +97,7 @@ public class GraphicsUtils
     public static void drawVerticalText(String string, int x, int y, GC gc,
             int style)
     {
-    	drawVerticalText(string, x, y, gc, style, false);
+        drawVerticalText(string, x, y, gc, style, false);
     }
     
     /**

@@ -36,141 +36,141 @@ import com.cosylab.vdct.inspector.InspectableProperty;
  * @author Matej Sekoranja
  */
 public class MacroDescriptionProperty implements InspectableProperty {
-		private static final String defaultDescription = "";
-		private static final String name = "Description";
-		private static final String helpString = "Port description";
-	
-		private VDBMacro macro = null;
-		
-		/**
-		 * Constructor
-		 */
-		public MacroDescriptionProperty(VDBMacro macro)
-		{
-			this.macro=macro;
-		}
-		
-		/**
-		 * @see com.cosylab.vdct.inspector.InspectableProperty#allowsOtherValues()
-		 */
-		public boolean allowsOtherValues()
-		{
-			return false;
-		}
+        private static final String defaultDescription = "";
+        private static final String name = "Description";
+        private static final String helpString = "Port description";
+    
+        private VDBMacro macro = null;
+        
+        /**
+         * Constructor
+         */
+        public MacroDescriptionProperty(VDBMacro macro)
+        {
+            this.macro=macro;
+        }
+        
+        /**
+         * @see com.cosylab.vdct.inspector.InspectableProperty#allowsOtherValues()
+         */
+        public boolean allowsOtherValues()
+        {
+            return false;
+        }
 
-		/**
-		 * @see com.cosylab.vdct.inspector.InspectableProperty#getEditPattern()
-		 */
-		public Pattern getEditPattern()
-		{
-			return null;
-		}
+        /**
+         * @see com.cosylab.vdct.inspector.InspectableProperty#getEditPattern()
+         */
+        public Pattern getEditPattern()
+        {
+            return null;
+        }
 
-		/**
-		 * @see com.cosylab.vdct.inspector.InspectableProperty#getHelp()
-		 */
-		public String getHelp()
-		{
-			return helpString;
-		}
+        /**
+         * @see com.cosylab.vdct.inspector.InspectableProperty#getHelp()
+         */
+        public String getHelp()
+        {
+            return helpString;
+        }
 
-		/**
-		 * @see com.cosylab.vdct.inspector.InspectableProperty#getInitValue()
-		 */
-		public String getInitValue()
-		{
-			return null;
-		}
+        /**
+         * @see com.cosylab.vdct.inspector.InspectableProperty#getInitValue()
+         */
+        public String getInitValue()
+        {
+            return null;
+        }
 
-		/**
-		 * @see com.cosylab.vdct.inspector.InspectableProperty#getName()
-		 */
-		public String getName()
-		{
-			return name;
-		}
+        /**
+         * @see com.cosylab.vdct.inspector.InspectableProperty#getName()
+         */
+        public String getName()
+        {
+            return name;
+        }
 
-		/**
-		 * @see com.cosylab.vdct.inspector.InspectableProperty#getSelectableValues()
-		 */
-		public String[] getSelectableValues()
-		{
-			return null;
-		}
+        /**
+         * @see com.cosylab.vdct.inspector.InspectableProperty#getSelectableValues()
+         */
+        public String[] getSelectableValues()
+        {
+            return null;
+        }
 
-		/**
-		 * @see com.cosylab.vdct.inspector.InspectableProperty#getToolTipText()
-		 */
-		public String getToolTipText()
-		{
-			return null;
-		}
+        /**
+         * @see com.cosylab.vdct.inspector.InspectableProperty#getToolTipText()
+         */
+        public String getToolTipText()
+        {
+            return null;
+        }
 
-		/**
-		 * @see com.cosylab.vdct.inspector.InspectableProperty#getValue()
-		 */
-		public String getValue()
-		{
-			String val = macro.getDescription();
-			if (val==null)
-				return defaultDescription;
-			else
-				return val;
-		}
+        /**
+         * @see com.cosylab.vdct.inspector.InspectableProperty#getValue()
+         */
+        public String getValue()
+        {
+            String val = macro.getDescription();
+            if (val==null)
+                return defaultDescription;
+            else
+                return val;
+        }
 
-		/**
-		 * @see com.cosylab.vdct.inspector.InspectableProperty#getVisibility()
-		 */
-		public int getVisibility()
-		{
-			return InspectableProperty.UNDEFINED_VISIBILITY;
-		}
+        /**
+         * @see com.cosylab.vdct.inspector.InspectableProperty#getVisibility()
+         */
+        public int getVisibility()
+        {
+            return InspectableProperty.UNDEFINED_VISIBILITY;
+        }
 
-		/**
-		 * @see com.cosylab.vdct.inspector.InspectableProperty#isEditable()
-		 */
-		public boolean isEditable()
-		{
-			return true;
-		}
+        /**
+         * @see com.cosylab.vdct.inspector.InspectableProperty#isEditable()
+         */
+        public boolean isEditable()
+        {
+            return true;
+        }
 
-		/**
-		 * @see com.cosylab.vdct.inspector.InspectableProperty#isSepatator()
-		 */
-		public boolean isSepatator()
-		{
-			return false;
-		}
+        /**
+         * @see com.cosylab.vdct.inspector.InspectableProperty#isSepatator()
+         */
+        public boolean isSepatator()
+        {
+            return false;
+        }
 
-		/**
-		 * @see com.cosylab.vdct.inspector.InspectableProperty#isValid()
-		 */
-		public boolean isValid()
-		{
-			return true;
-		}
+        /**
+         * @see com.cosylab.vdct.inspector.InspectableProperty#isValid()
+         */
+        public boolean isValid()
+        {
+            return true;
+        }
 
-		/**
-		 * @see com.cosylab.vdct.inspector.InspectableProperty#popupEvent(Component, int, int)
-		 */
-		public void popupEvent(java.awt.Component component, int x, int y)
-		{
-			macro.popupEvent(component, x, y);
-		}
+        /**
+         * @see com.cosylab.vdct.inspector.InspectableProperty#popupEvent(Component, int, int)
+         */
+        public void popupEvent(java.awt.Component component, int x, int y)
+        {
+            macro.popupEvent(component, x, y);
+        }
 
-		/**
-		 * @see com.cosylab.vdct.inspector.InspectableProperty#setValue(String)
-		 */
-		public void setValue(String value)
-		{
-			macro.setDescription(value);
-		}
+        /**
+         * @see com.cosylab.vdct.inspector.InspectableProperty#setValue(String)
+         */
+        public void setValue(String value)
+        {
+            macro.setDescription(value);
+        }
 
-		/**
-		 * @see com.cosylab.vdct.inspector.InspectableProperty#toString(String)
-		 */
-		public String toString()
-		{
-			return name;
-		}
+        /**
+         * @see com.cosylab.vdct.inspector.InspectableProperty#toString(String)
+         */
+        public String toString()
+        {
+            return name;
+        }
 }

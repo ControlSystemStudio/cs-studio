@@ -21,17 +21,17 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class WorkspaceFileFieldEditor extends StringButtonFieldEditor {
 
-	
-	
-	
-	private String[] extensions = null;
+    
+    
+    
+    private String[] extensions = null;
 
-	
-	/**
+    
+    /**
      * Creates a new file field editor 
      */
     protected WorkspaceFileFieldEditor() {
-	}
+    }
 
     /**
      * Creates a file field editor.
@@ -62,30 +62,30 @@ public class WorkspaceFileFieldEditor extends StringButtonFieldEditor {
     
    
     
-	@Override
-	protected String changePressed() {
-		IPath startPath = new Path(getTextControl().getText());
-		IPath path = getPath(startPath);
-		if(path != null)
-			return path.toPortableString();
-		else
-			return null; 
+    @Override
+    protected String changePressed() {
+        IPath startPath = new Path(getTextControl().getText());
+        IPath path = getPath(startPath);
+        if(path != null)
+            return path.toPortableString();
+        else
+            return null; 
 
-	}
-	
-	private IPath getPath(IPath startPath){
-		if(!OPIBuilderPlugin.isRAP())
-			return SingleSourceHelper.rcpGetPathFromWorkspaceFileDialog(startPath, extensions);
-		return null;
-	}
-	
-	@Override
-	protected boolean checkState() {
-		return true;
-			
-	}
+    }
+    
+    private IPath getPath(IPath startPath){
+        if(!OPIBuilderPlugin.isRAP())
+            return SingleSourceHelper.rcpGetPathFromWorkspaceFileDialog(startPath, extensions);
+        return null;
+    }
+    
+    @Override
+    protected boolean checkState() {
+        return true;
+            
+    }
 
-	/**
+    /**
      * Sets this file field editor's file extension filter.
      *
      * @param extensions a list of file extension, or <code>null</code> 
@@ -96,8 +96,8 @@ public class WorkspaceFileFieldEditor extends StringButtonFieldEditor {
     }
     
     public void setTooltip(String tooltip){
-    	getLabelControl().setToolTipText(tooltip);
-    	getTextControl().setToolTipText(tooltip);
-    	getChangeControl(getTextControl().getParent()).setToolTipText(tooltip);
+        getLabelControl().setToolTipText(tooltip);
+        getTextControl().setToolTipText(tooltip);
+        getChangeControl(getTextControl().getParent()).setToolTipText(tooltip);
     }
 }

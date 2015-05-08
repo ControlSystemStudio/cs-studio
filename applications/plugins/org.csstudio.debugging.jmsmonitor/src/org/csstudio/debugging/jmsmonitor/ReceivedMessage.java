@@ -112,64 +112,64 @@ public class ReceivedMessage implements IPropertySource
     @Override
     public Object getEditableValue()
     {
-		return this;
-	}
+        return this;
+    }
 
     /** IPropertySource */
-	@Override
+    @Override
     public IPropertyDescriptor[] getPropertyDescriptors()
-	{
-		final int msg_props = content.size();
+    {
+        final int msg_props = content.size();
         // Create read-only properties in the property view.
-		// (Would use TextPropertyDescriptor for edit-able)
-		final IPropertyDescriptor props[] =
-			new IPropertyDescriptor[2 + msg_props];
-		props[0] = new PropertyDescriptor(Messages.DateColumn, Messages.DateColumn);
+        // (Would use TextPropertyDescriptor for edit-able)
+        final IPropertyDescriptor props[] =
+            new IPropertyDescriptor[2 + msg_props];
+        props[0] = new PropertyDescriptor(Messages.DateColumn, Messages.DateColumn);
         props[1] = new PropertyDescriptor(Messages.TypeColumn, Messages.TypeColumn);
-		for (int i=0; i<msg_props; ++i)
-		{
-			final String name = content.get(i).getName();
-			props[2+i] = new PropertyDescriptor(name, name);
-		}
-		return props;
-	}
+        for (int i=0; i<msg_props; ++i)
+        {
+            final String name = content.get(i).getName();
+            props[2+i] = new PropertyDescriptor(name, name);
+        }
+        return props;
+    }
 
     /** IPropertySource */
-	@Override
+    @Override
     public Object getPropertyValue(final Object id)
-	{
-	    if (Messages.DateColumn.equals(id))
-	        return getDateString();
-	    if (Messages.TypeColumn.equals(id))
-	        return type;
-		for (MessageProperty prop : content)
-			if (prop.getName().equals(id))
-				return prop.getValue();
-		return null;
-	}
+    {
+        if (Messages.DateColumn.equals(id))
+            return getDateString();
+        if (Messages.TypeColumn.equals(id))
+            return type;
+        for (MessageProperty prop : content)
+            if (prop.getName().equals(id))
+                return prop.getValue();
+        return null;
+    }
 
     /** IPropertySource */
-	@Override
+    @Override
     public boolean isPropertySet(final Object id)
-	{
-		return getPropertyValue(id) != null;
-	}
+    {
+        return getPropertyValue(id) != null;
+    }
 
     /** IPropertySource */
-	@Override
+    @Override
     public void resetPropertyValue(final Object id)
-	{
-		// NOP; read-only
-	}
+    {
+        // NOP; read-only
+    }
 
     /** IPropertySource */
-	@Override
+    @Override
     public void setPropertyValue(final Object id, final Object value)
-	{
-		// NOP; read-only
-	}
+    {
+        // NOP; read-only
+    }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     public String toString()
     {

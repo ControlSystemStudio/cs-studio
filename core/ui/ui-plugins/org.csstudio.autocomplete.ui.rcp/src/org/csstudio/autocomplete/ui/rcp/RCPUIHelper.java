@@ -18,16 +18,16 @@ import org.csstudio.autocomplete.ui.util.UIHelper;
  */
 public class RCPUIHelper extends UIHelper {
 
-	/** {@inheritDoc} */
-	@Override
-	public SSTextLayout newTextLayout() {
-		return new RCPSSTextLayout();
-	}
+    /** {@inheritDoc} */
+    @Override
+    public SSTextLayout newTextLayout() {
+        return new RCPSSTextLayout();
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public SSStyledText newStyledText() {
-		return new RCPSSStyledText();
-	}
+    /** {@inheritDoc} */
+    @Override
+    public SSStyledText newStyledText() {
+        return new RCPSSStyledText();
+    }
 
 }

@@ -42,49 +42,49 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public abstract class AbstractWidgetSelectionAction extends SelectionAction {
 
-	private final GraphicalViewer _viewer;
+    private final GraphicalViewer _viewer;
 
-	public AbstractWidgetSelectionAction(IWorkbenchPart part, GraphicalViewer viewer) {
-		super(part);
-		this._viewer = viewer;
-	}
+    public AbstractWidgetSelectionAction(IWorkbenchPart part, GraphicalViewer viewer) {
+        super(part);
+        this._viewer = viewer;
+    }
 
-	protected abstract Command doCreateCommand(List<AbstractWidgetModel> selectedWidgets);
+    protected abstract Command doCreateCommand(List<AbstractWidgetModel> selectedWidgets);
 
-	protected abstract boolean doCalculateEnabled(List<AbstractWidgetModel> selectedWidgets);
+    protected abstract boolean doCalculateEnabled(List<AbstractWidgetModel> selectedWidgets);
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	public final void run() {
-		Command cmd = doCreateCommand(getSelectedWidgetModels());
-		if (cmd != null) {
-			execute(cmd);
-		}
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public final void run() {
+        Command cmd = doCreateCommand(getSelectedWidgetModels());
+        if (cmd != null) {
+            execute(cmd);
+        }
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected final boolean calculateEnabled() {
-		return doCalculateEnabled(getSelectedWidgetModels());
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected final boolean calculateEnabled() {
+        return doCalculateEnabled(getSelectedWidgetModels());
+    }
 
-	protected EditPartViewer getGraphicalViewer() {
-		return ((DisplayEditor) getWorkbenchPart()).getGraphicalViewer();
-	}
-	
-	private final List<AbstractWidgetModel> getSelectedWidgetModels() {
-		List<AbstractWidgetModel> selectedWidgetModels = new ArrayList<AbstractWidgetModel>();
-		for (Object o : getSelectedObjects()) {
-			if (o instanceof AbstractBaseEditPart) {
-				selectedWidgetModels.add(((AbstractBaseEditPart) o).getWidgetModel());
-			}
-		}
-		
-		return selectedWidgetModels;
-	}
+    protected EditPartViewer getGraphicalViewer() {
+        return ((DisplayEditor) getWorkbenchPart()).getGraphicalViewer();
+    }
+    
+    private final List<AbstractWidgetModel> getSelectedWidgetModels() {
+        List<AbstractWidgetModel> selectedWidgetModels = new ArrayList<AbstractWidgetModel>();
+        for (Object o : getSelectedObjects()) {
+            if (o instanceof AbstractBaseEditPart) {
+                selectedWidgetModels.add(((AbstractBaseEditPart) o).getWidgetModel());
+            }
+        }
+        
+        return selectedWidgetModels;
+    }
 
 }

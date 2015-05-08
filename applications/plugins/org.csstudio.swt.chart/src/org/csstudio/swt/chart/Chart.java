@@ -50,7 +50,7 @@ import org.eclipse.swt.widgets.Tracker;
  */
 public class Chart extends Canvas
 {
-	/** Change the drawing routines to leave some extra space
+    /** Change the drawing routines to leave some extra space
      *  and add extra lines around stuff to visually check
      *  if the 'plot area' doesn't mess up the 'x axis' area etc.
      *  <p>
@@ -110,7 +110,7 @@ public class Chart extends Canvas
     /** Foreground color. */
     private Color foreground;
 
-	/** MouseEvent button code for the 'left' button */
+    /** MouseEvent button code for the 'left' button */
     final private static int LEFT_MOUSE_BUTTON = 1;
 
     /** Is mouse currently 'down'? */
@@ -152,10 +152,10 @@ public class Chart extends Canvas
                 if (plot_region != null)
                 {
                     // Compute redraw region for X axis and plot, not y axes
-                	final Rectangle xreg = xaxis.getRegion();
-                	redraw(plot_region.x+1, plot_region.y,
-                	       plot_region.width-1,
-                		   plot_region.height + xreg.height, true);
+                    final Rectangle xreg = xaxis.getRegion();
+                    redraw(plot_region.x+1, plot_region.y,
+                           plot_region.width-1,
+                           plot_region.height + xreg.height, true);
                 }
                 // Forward to ChartListeners
                 for (ChartListener listener : listeners)
@@ -295,11 +295,11 @@ public class Chart extends Canvas
             // in a 'tool tip trail' of garbage on the screen.
             addListener(SWT.MouseHover, new Listener()
             {
-    			@Override
+                @Override
                 public void handleEvent(final Event event)
-    			{
+                {
                     updateTooltip(event.x, event.y);
-    			}
+                }
             });
         }
 
@@ -367,14 +367,14 @@ public class Chart extends Canvas
      */
     public void setPlotBackground(final RGB color)
     {
-    	background.dispose();
-    	background = new Color(getDisplay(), color);
+        background.dispose();
+        background = new Color(getDisplay(), color);
     }
 
     /** @return Background color */
     public RGB getPlotBackground()
     {
-    	return background.getRGB();
+        return background.getRGB();
     }
 
     /** Set foreground color of plot.
@@ -382,14 +382,14 @@ public class Chart extends Canvas
      */
     public void setPlotForeground(final RGB color)
     {
-    	foreground.dispose();
-    	foreground = new Color(getDisplay(), color);
+        foreground.dispose();
+        foreground = new Color(getDisplay(), color);
     }
 
     /** @return Foreground color */
     public RGB getPlotForeground()
     {
-    	return foreground.getRGB();
+        return foreground.getRGB();
     }
 
     /** Set grid color of plot.
@@ -397,14 +397,14 @@ public class Chart extends Canvas
      */
     public void setPlotGrid(final RGB color)
     {
-    	grid_color.dispose();
-    	grid_color = new Color(getDisplay(), color);
+        grid_color.dispose();
+        grid_color = new Color(getDisplay(), color);
     }
 
     /** @return Grid color */
     public RGB getPlotGrid()
     {
-    	return grid_color.getRGB();
+        return grid_color.getRGB();
     }
 
     /** Modify the type of X Axis.
@@ -586,7 +586,7 @@ public class Chart extends Canvas
             yaxis.autozoom(xaxis);
         else
         {
-        	// Defer redraw until all axes are adjusted...
+            // Defer redraw until all axes are adjusted...
             setRedraw(false);
             for (YAxis y : yaxes)
                 y.autozoom(xaxis);

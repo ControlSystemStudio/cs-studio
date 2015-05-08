@@ -10,17 +10,17 @@ import org.eclipse.ui.PartInitException;
 
 public class OpenChannelOrchestrator extends AbstractAdaptedHandler<ChannelQuery> {
 
-	public OpenChannelOrchestrator() {
-		super(ChannelQuery.class);
-	}
+    public OpenChannelOrchestrator() {
+        super(ChannelQuery.class);
+    }
 
-	@Override
-	protected void execute(List<ChannelQuery> queries, ExecutionEvent event)
-			throws PartInitException {
-		if (!queries.isEmpty()) {
-			findView(ChannelOrchestratorView.class, ChannelOrchestratorView.ID).setChannelQuery(
-					queries.get(0));
-		}
-	}
+    @Override
+    protected void execute(List<ChannelQuery> queries, ExecutionEvent event)
+            throws PartInitException {
+        if (!queries.isEmpty()) {
+            findView(ChannelOrchestratorView.class, ChannelOrchestratorView.ID).setChannelQuery(
+                    queries.get(0));
+        }
+    }
 
 }

@@ -37,10 +37,10 @@ public class TineNameSpaceBrowser extends NameSpaceBrowser {
     public TineNameSpaceBrowser(Component calledFrom, TineDataSource tds) {
         super(calledFrom, TITLE, COLS);
         this.tds = tds;
-		this.calledFrom = calledFrom;
-	    //init the first column
-	    setColumn(0);
-	}
+        this.calledFrom = calledFrom;
+        //init the first column
+        setColumn(0);
+    }
     public void setColumn(int i) {
         String[] s = null;
         switch(i) {

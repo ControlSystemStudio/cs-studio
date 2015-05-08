@@ -20,46 +20,46 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DSFunctionRegistry {
 
-	private final static DSFunctionRegistry registry = new DSFunctionRegistry();
+    private final static DSFunctionRegistry registry = new DSFunctionRegistry();
 
-	/**
-	 * Returns the default data source function registry.
-	 * 
-	 * @return the default registry
-	 */
-	public static DSFunctionRegistry getDefault() {
-		return registry;
-	}
+    /**
+     * Returns the default data source function registry.
+     * 
+     * @return the default registry
+     */
+    public static DSFunctionRegistry getDefault() {
+        return registry;
+    }
 
-	private Map<String, DSFunctionSet> functionSets = new ConcurrentHashMap<>();
+    private Map<String, DSFunctionSet> functionSets = new ConcurrentHashMap<>();
 
-	/**
-	 * Registers a formula set.
-	 * 
-	 * @param functionSet a formula set
-	 */
-	public void registerDSFunctionSet(DSFunctionSet functionSet) {
-		functionSets.put(functionSet.getName(), functionSet);
-	}
+    /**
+     * Registers a formula set.
+     * 
+     * @param functionSet a formula set
+     */
+    public void registerDSFunctionSet(DSFunctionSet functionSet) {
+        functionSets.put(functionSet.getName(), functionSet);
+    }
 
-	/**
-	 * Returns the names of all the registered function sets.
-	 * 
-	 * @return the names of the registered function sets
-	 */
-	public Set<String> listFunctionSets() {
-		return Collections
-				.unmodifiableSet(new HashSet<>(functionSets.keySet()));
-	}
+    /**
+     * Returns the names of all the registered function sets.
+     * 
+     * @return the names of the registered function sets
+     */
+    public Set<String> listFunctionSets() {
+        return Collections
+                .unmodifiableSet(new HashSet<>(functionSets.keySet()));
+    }
 
-	/**
-	 * Returns the registered function set with the given name.
-	 * 
-	 * @param name the function set name
-	 * @return the set or null
-	 */
-	public DSFunctionSet findFunctionSet(String name) {
-		return functionSets.get(name);
-	}
+    /**
+     * Returns the registered function set with the given name.
+     * 
+     * @param name the function set name
+     * @return the set or null
+     */
+    public DSFunctionSet findFunctionSet(String name) {
+        return functionSets.get(name);
+    }
 
 }

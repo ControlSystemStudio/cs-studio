@@ -18,33 +18,33 @@ public class OpenShiftViewer extends AbstractHandler {
     public final static String ID = "org.csstudio.shift.viewer.OpenShiftViewer";
 
     public OpenShiftViewer() {
-	super();
+    super();
     }
 
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
-		final IWorkbench workbench = PlatformUI.getWorkbench();
-		final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-		ISelection selection;
-		if (HandlerUtil.getActiveMenuSelection(event) != null) {
-		    selection = HandlerUtil.getActiveMenuSelection(event);
-		} else {
-		    selection = window.getActivePage().getSelection(ShiftTableView.ID);
-		}
-		if (selection instanceof IStructuredSelection) {
+        final IWorkbench workbench = PlatformUI.getWorkbench();
+        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        ISelection selection;
+        if (HandlerUtil.getActiveMenuSelection(event) != null) {
+            selection = HandlerUtil.getActiveMenuSelection(event);
+        } else {
+            selection = window.getActivePage().getSelection(ShiftTableView.ID);
+        }
+        if (selection instanceof IStructuredSelection) {
             final IStructuredSelection strucSelection = (IStructuredSelection) selection;
-		    if (strucSelection.getFirstElement() instanceof Shift) {
-		    	ShiftViewer.createInstance(new ShiftViewerModel((Shift) strucSelection.getFirstElement()));
-		    }
-		} else {
-			ShiftViewer.createInstance();
-		}
-		try {
-		    workbench.showPerspective(ShiftViewerPerspective.ID, window);
-		    window.getActivePage().showView(ShiftTableView.ID);
-		} catch (Exception ex) {
-		    ExceptionDetailsErrorDialog.openError(HandlerUtil.getActiveShell(event), "Error executing command...", ex);
-		}
-		return null;
+            if (strucSelection.getFirstElement() instanceof Shift) {
+                ShiftViewer.createInstance(new ShiftViewerModel((Shift) strucSelection.getFirstElement()));
+            }
+        } else {
+            ShiftViewer.createInstance();
+        }
+        try {
+            workbench.showPerspective(ShiftViewerPerspective.ID, window);
+            window.getActivePage().showView(ShiftTableView.ID);
+        } catch (Exception ex) {
+            ExceptionDetailsErrorDialog.openError(HandlerUtil.getActiveShell(event), "Error executing command...", ex);
+        }
+        return null;
     }
 }

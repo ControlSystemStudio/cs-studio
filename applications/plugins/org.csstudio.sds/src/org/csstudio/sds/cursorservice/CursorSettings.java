@@ -35,83 +35,83 @@ import java.util.Map;
  */
 public final class CursorSettings {
 
-	/**
-	 * Internal map which stores the settings.
-	 */
-	private Map<RuleDescriptor, Map<CursorState, AbstractCursor>> _settings;
-	
-	/**
-	 * Creates new cursor settings from the given collection of rules.
-	 * 
-	 * @param rules
-	 *            the descriptors of the available cursor selection rules.
-	 */
-	CursorSettings(final Collection<RuleDescriptor> rules) {
-		assert rules != null;
-		_settings = new HashMap<RuleDescriptor, Map<CursorState,AbstractCursor>>();
-		for (RuleDescriptor rule : rules) {
-			_settings.put(rule, new HashMap<CursorState, AbstractCursor>());
-		}
-	}
-	
-	/**
-	 * Creates a new cursor settings object with the same settings as the
-	 * specified settings.
-	 * 
-	 * @param s
-	 *            the settings object whose settings are to be copied to these
-	 *            settings.
-	 */
-	CursorSettings(final CursorSettings s) {
-		assert s != null;
-		_settings = new HashMap<RuleDescriptor, Map<CursorState, AbstractCursor>>(
-				s._settings.size());
-		for (RuleDescriptor rule : s._settings.keySet()) {
-			_settings.put(rule, new HashMap<CursorState, AbstractCursor>(
-					s._settings.get(rule)));
-		}
-	}
-	
-	/**
-	 * Returns the cursor for the cursor state declared by the given cursor
-	 * selection rule.
-	 * 
-	 * @param rule
-	 *            the cursor selection rule.
-	 * @param state
-	 *            the cursor state.
-	 * @return the cursor.
-	 */
-	public AbstractCursor getCursor(final RuleDescriptor rule,
-			final CursorState state) {
-		AbstractCursor result = null;
-		Map<CursorState, AbstractCursor> cursors = _settings.get(rule);
-		if (cursors != null) {
-			result = cursors.get(state);
-		}
-		return result;
-	}
-	
-	/**
-	 * Sets the cursor for the given cursor state declared by the given cursor
-	 * selection rule.
-	 * 
-	 * @param rule
-	 *            the cursor selection rule.
-	 * @param state
-	 *            the cursor state.
-	 * @param cursor
-	 *            the cursor for the state.
-	 */
-	public void setCursor(final RuleDescriptor rule, final CursorState state,
-			final AbstractCursor cursor) {
-		Map<CursorState, AbstractCursor> cursors = _settings.get(rule);
-		if (cursors == null) {
-			// handle setting cursors for unknown rules gracefully
-			cursors = new HashMap<CursorState, AbstractCursor>();
-			_settings.put(rule, cursors);
-		}
-		cursors.put(state, cursor);
-	}
+    /**
+     * Internal map which stores the settings.
+     */
+    private Map<RuleDescriptor, Map<CursorState, AbstractCursor>> _settings;
+    
+    /**
+     * Creates new cursor settings from the given collection of rules.
+     * 
+     * @param rules
+     *            the descriptors of the available cursor selection rules.
+     */
+    CursorSettings(final Collection<RuleDescriptor> rules) {
+        assert rules != null;
+        _settings = new HashMap<RuleDescriptor, Map<CursorState,AbstractCursor>>();
+        for (RuleDescriptor rule : rules) {
+            _settings.put(rule, new HashMap<CursorState, AbstractCursor>());
+        }
+    }
+    
+    /**
+     * Creates a new cursor settings object with the same settings as the
+     * specified settings.
+     * 
+     * @param s
+     *            the settings object whose settings are to be copied to these
+     *            settings.
+     */
+    CursorSettings(final CursorSettings s) {
+        assert s != null;
+        _settings = new HashMap<RuleDescriptor, Map<CursorState, AbstractCursor>>(
+                s._settings.size());
+        for (RuleDescriptor rule : s._settings.keySet()) {
+            _settings.put(rule, new HashMap<CursorState, AbstractCursor>(
+                    s._settings.get(rule)));
+        }
+    }
+    
+    /**
+     * Returns the cursor for the cursor state declared by the given cursor
+     * selection rule.
+     * 
+     * @param rule
+     *            the cursor selection rule.
+     * @param state
+     *            the cursor state.
+     * @return the cursor.
+     */
+    public AbstractCursor getCursor(final RuleDescriptor rule,
+            final CursorState state) {
+        AbstractCursor result = null;
+        Map<CursorState, AbstractCursor> cursors = _settings.get(rule);
+        if (cursors != null) {
+            result = cursors.get(state);
+        }
+        return result;
+    }
+    
+    /**
+     * Sets the cursor for the given cursor state declared by the given cursor
+     * selection rule.
+     * 
+     * @param rule
+     *            the cursor selection rule.
+     * @param state
+     *            the cursor state.
+     * @param cursor
+     *            the cursor for the state.
+     */
+    public void setCursor(final RuleDescriptor rule, final CursorState state,
+            final AbstractCursor cursor) {
+        Map<CursorState, AbstractCursor> cursors = _settings.get(rule);
+        if (cursors == null) {
+            // handle setting cursors for unknown rules gracefully
+            cursors = new HashMap<CursorState, AbstractCursor>();
+            _settings.put(rule, cursors);
+        }
+        cursors.put(state, cursor);
+    }
 
 }

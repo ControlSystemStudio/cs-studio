@@ -34,7 +34,7 @@ package org.csstudio.dal;
  * @see org.csstudio.dal.SimpleProperty
  */
 public interface DoubleSeqSimpleProperty extends DoubleSeqAccess,
-	NumericSimpleProperty<double[],Double>, SequencePropertyCharacteristics
+    NumericSimpleProperty<double[],Double>, SequencePropertyCharacteristics
 {
 }
 

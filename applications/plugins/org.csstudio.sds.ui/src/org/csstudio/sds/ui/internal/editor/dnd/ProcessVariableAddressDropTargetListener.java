@@ -37,21 +37,21 @@ import org.eclipse.swt.dnd.TransferData;
  */
 public final class ProcessVariableAddressDropTargetListener extends AbstractDropTargetListener<ProcessVariableAddressTransfer> {
 
-	public ProcessVariableAddressDropTargetListener(final EditPartViewer viewer) {
-		super(viewer, ProcessVariableAddressTransfer.getInstance());
-	}
+    public ProcessVariableAddressDropTargetListener(final EditPartViewer viewer) {
+        super(viewer, ProcessVariableAddressTransfer.getInstance());
+    }
 
-	@Override
-	protected String[] translate(ProcessVariableAddressTransfer transfer, TransferData transferData) {
-		final IProcessVariableAddress[] pvs = (IProcessVariableAddress[]) ProcessVariableAddressTransfer.getInstance().nativeToJava(transferData);
+    @Override
+    protected String[] translate(ProcessVariableAddressTransfer transfer, TransferData transferData) {
+        final IProcessVariableAddress[] pvs = (IProcessVariableAddress[]) ProcessVariableAddressTransfer.getInstance().nativeToJava(transferData);
 
-		List<String> pvNames = new ArrayList<String>();
-		if (pvs != null) {
-			for (IProcessVariableAddress pv : pvs) {
-				pvNames.add(pv.getFullName());
-			}
-		}
+        List<String> pvNames = new ArrayList<String>();
+        if (pvs != null) {
+            for (IProcessVariableAddress pv : pvs) {
+                pvNames.add(pv.getFullName());
+            }
+        }
 
-		return pvNames.toArray(new String[pvNames.size()]);
-	}
+        return pvNames.toArray(new String[pvNames.size()]);
+    }
 }

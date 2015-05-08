@@ -56,9 +56,9 @@ public class StringAreaEditor extends FieldEditor {
      * Constructor of StringAreaEditor,
      * initializes <code>width</code> with <code>UNLIMITED</code>
      * 
-     * @param name			String
-     * @param labelText		String
-     * @param parent		Composite
+     * @param name            String
+     * @param labelText        String
+     * @param parent        Composite
      */
     public StringAreaEditor(String name, String labelText, Composite parent, String filePath, String defaultText) {
         init(name, labelText);

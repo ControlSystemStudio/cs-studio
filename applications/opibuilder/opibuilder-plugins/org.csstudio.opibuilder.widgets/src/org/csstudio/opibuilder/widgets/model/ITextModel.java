@@ -17,9 +17,9 @@ import org.csstudio.opibuilder.widgets.editparts.TextDirectEditPolicy;
  */
 public interface ITextModel {
 
-	public void setText(String text);
-	
-	public String getText();
-	
-	
+    public void setText(String text);
+    
+    public String getText();
+    
+    
 }

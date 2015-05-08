@@ -41,60 +41,60 @@ import org.eclipse.draw2d.IFigure;
  */
 public final class WidgetPropertyChangeListener extends PropertyChangeAdapter {
 
-	/**
-	 * Backlink to an EditPart.
-	 */
-	private AbstractBaseEditPart _editPart;
+    /**
+     * Backlink to an EditPart.
+     */
+    private AbstractBaseEditPart _editPart;
 
-	/**
-	 * The handlers, which really does the action in case of a property change
-	 * event. Is empty by default.
-	 */
-	private List<IWidgetPropertyChangeHandler> _handlers;
+    /**
+     * The handlers, which really does the action in case of a property change
+     * event. Is empty by default.
+     */
+    private List<IWidgetPropertyChangeHandler> _handlers;
 
-	/**
-	 * Constructs a listener.
-	 * 
-	 * @param editPart
-	 *            backlink to the EditPart, which uses this listener
-	 */
-	public WidgetPropertyChangeListener(final AbstractBaseEditPart editPart) {
-		assert editPart != null;
-		_editPart = editPart;
-		_handlers = new ArrayList<IWidgetPropertyChangeHandler>();
-	}
+    /**
+     * Constructs a listener.
+     * 
+     * @param editPart
+     *            backlink to the EditPart, which uses this listener
+     */
+    public WidgetPropertyChangeListener(final AbstractBaseEditPart editPart) {
+        assert editPart != null;
+        _editPart = editPart;
+        _handlers = new ArrayList<IWidgetPropertyChangeHandler>();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void propertyValueChanged(final Object oldValue,
-			final Object newValue) {
-		new CheckedUiRunnable() {
-			@Override
-			protected void doRunInUi() {
-				for (IWidgetPropertyChangeHandler h : _handlers) {
-					IFigure figure = _editPart.getFigure();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void propertyValueChanged(final Object oldValue,
+            final Object newValue) {
+        new CheckedUiRunnable() {
+            @Override
+            protected void doRunInUi() {
+                for (IWidgetPropertyChangeHandler h : _handlers) {
+                    IFigure figure = _editPart.getFigure();
 
-					boolean repaint = h
-							.handleChange(oldValue, newValue, figure);
-					
-					if (repaint) {
-						figure.repaint();
-					}
-				}
-			}
-		};
-	}
+                    boolean repaint = h
+                            .handleChange(oldValue, newValue, figure);
+                    
+                    if (repaint) {
+                        figure.repaint();
+                    }
+                }
+            }
+        };
+    }
 
-	/**
-	 * Sets a handler, which is informed, when a property change occurs.
-	 * 
-	 * @param handler
-	 *            the handler
-	 */
-	public void addHandler(final IWidgetPropertyChangeHandler handler) {
-		assert handler != null;
-		_handlers.add(handler);
-	}
+    /**
+     * Sets a handler, which is informed, when a property change occurs.
+     * 
+     * @param handler
+     *            the handler
+     */
+    public void addHandler(final IWidgetPropertyChangeHandler handler) {
+        assert handler != null;
+        _handlers.add(handler);
+    }
 }

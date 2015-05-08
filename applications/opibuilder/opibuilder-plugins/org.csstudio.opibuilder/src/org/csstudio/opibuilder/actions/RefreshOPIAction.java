@@ -24,28 +24,28 @@ import org.eclipse.ui.actions.ActionFactory;
  * 
  */
 public class RefreshOPIAction extends Action {
-	
-	final private IOPIRuntime opiRuntime;
+    
+    final private IOPIRuntime opiRuntime;
 
     public RefreshOPIAction(IOPIRuntime opiRuntime) {
-    	this.opiRuntime = opiRuntime;
-    	setActionDefinitionId(IWorkbenchCommandConstants.FILE_REFRESH); //$NON-NLS-1$
-		setId(ActionFactory.REFRESH.getId());
-    	setText("Refresh OPI");
-    	setImageDescriptor(
-    			CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-    					OPIBuilderPlugin.PLUGIN_ID, "icons/refresh.gif")); //$NON-NLS-1$
+        this.opiRuntime = opiRuntime;
+        setActionDefinitionId(IWorkbenchCommandConstants.FILE_REFRESH); //$NON-NLS-1$
+        setId(ActionFactory.REFRESH.getId());
+        setText("Refresh OPI");
+        setImageDescriptor(
+                CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
+                        OPIBuilderPlugin.PLUGIN_ID, "icons/refresh.gif")); //$NON-NLS-1$
     }  
     
     @Override
     public void run() {
-    	try {
-    	    OPIView.ignoreMemento();
-			opiRuntime.setOPIInput(opiRuntime.getOPIInput());
-		} catch (PartInitException e) {
-			ErrorHandlerUtil.handleError("Failed to refresh OPI", e);
-		}
+        try {
+            OPIView.ignoreMemento();
+            opiRuntime.setOPIInput(opiRuntime.getOPIInput());
+        } catch (PartInitException e) {
+            ErrorHandlerUtil.handleError("Failed to refresh OPI", e);
+        }
     }   
 
-	
+    
 }

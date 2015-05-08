@@ -21,44 +21,44 @@ import org.epics.vtype.VType;
 @SuppressWarnings("nls")
 abstract public class StringListener implements PVReaderListener<VType>
 {
-	@Override
-	public void pvChanged(PVReaderEvent<VType> event) {
-		if (event.isExceptionChanged()) {
-			Exception exception = event.getPvReader().lastException();
-	        Plugin.getLogger().log(Level.WARNING,
-	                "PV Listener error for '" + event.getPvReader().getName() + "': " + exception.getMessage(),
-	                exception);
-	        handleError(exception);
-		}
-		
+    @Override
+    public void pvChanged(PVReaderEvent<VType> event) {
+        if (event.isExceptionChanged()) {
+            Exception exception = event.getPvReader().lastException();
+            Plugin.getLogger().log(Level.WARNING,
+                    "PV Listener error for '" + event.getPvReader().getName() + "': " + exception.getMessage(),
+                    exception);
+            handleError(exception);
+        }
+        
 
-		if (event.isValueChanged()) {
-	        try
-	        {
-	            final VType value = event.getPvReader().getValue();
-	            // Ignore possible initial null
-	            if (value != null)
-		            handleText(VTypeHelper.format(value));
-	        }
-	        catch (Exception e)
-	        {
-	            Plugin.getLogger().log(Level.SEVERE,
-	            		"PV Listener error for '" + event.getPvReader().getName() + "': " + e.getMessage(),
-	            		e);
-	        }
-		}
-		// TODO Auto-generated method stub
-		
-	}
-	
-	/** @param error Error to handle */
+        if (event.isValueChanged()) {
+            try
+            {
+                final VType value = event.getPvReader().getValue();
+                // Ignore possible initial null
+                if (value != null)
+                    handleText(VTypeHelper.format(value));
+            }
+            catch (Exception e)
+            {
+                Plugin.getLogger().log(Level.SEVERE,
+                        "PV Listener error for '" + event.getPvReader().getName() + "': " + e.getMessage(),
+                        e);
+            }
+        }
+        // TODO Auto-generated method stub
+        
+    }
+    
+    /** @param error Error to handle */
     public void handleError(final Exception error)
-	{
-		handleText("Error: " + error.getMessage());
-	}
+    {
+        handleText("Error: " + error.getMessage());
+    }
 
-	/** @param text Text to handle */
-	abstract public void handleText(final String text);
+    /** @param text Text to handle */
+    abstract public void handleText(final String text);
 
 };
         

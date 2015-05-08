@@ -43,7 +43,7 @@ public class DeleteTemplatePropertyAction extends CreateTemplatePropertyAction {
  * @param object com.cosylab.vdct.graphics.objects.VisibleObject
  */
 public DeleteTemplatePropertyAction(Template object, String name) {
-	super(object, name);
+    super(object, name);
 }
 /**
  * Insert the method's description here.
@@ -51,18 +51,18 @@ public DeleteTemplatePropertyAction(Template object, String name) {
  * @return java.lang.String
  */
 public String getDescription() {
-	return "Delete Template Property ["+object+"]("+name+")";
+    return "Delete Template Property ["+object+"]("+name+")";
 }
 /**
  * This method was created in VisualAge.
  */
 protected void redoAction() {
-	super.undoAction();
+    super.undoAction();
 }
 /**
  * This method was created in VisualAge.
  */
 protected void undoAction() {
-	super.redoAction();
+    super.redoAction();
 }
 }

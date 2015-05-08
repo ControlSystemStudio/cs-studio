@@ -32,94 +32,94 @@ import org.csstudio.dal.spi.PropertyFactory;
 
 public class TinePropertyTester {
 
-	AbstractApplicationContext ctx;
-	PropertyFactory f;
+    AbstractApplicationContext ctx;
+    PropertyFactory f;
 
 
-	public TinePropertyTester() {
+    public TinePropertyTester() {
 
-		this.ctx= new TINEApplicationContext("TinePropertyTester");
-		this.f = DefaultPropertyFactoryService.getPropertyFactoryService().getPropertyFactory(this.ctx, null);
+        this.ctx= new TINEApplicationContext("TinePropertyTester");
+        this.f = DefaultPropertyFactoryService.getPropertyFactoryService().getPropertyFactory(this.ctx, null);
 
-	}
+    }
 
-	public void shutdown() {
-		this.ctx.destroy();
-	}
-
-
-	public void testProperty(final String name) throws RemoteException, InstantiationException {
-		final DynamicValueProperty<?> p = this.f.getProperty(name);
-
-		//System.out.print(p.getUniqueName());
-		//System.out.print("; ");
-		//System.out.print(p.getDataType().getSimpleName());
-		//System.out.print("; ");
-		//System.out.print(((TFormat)p.getCharacteristic("dataFormat")).toString());
-		//System.out.print("; ");
-		//System.out.print(((TArrayType)p.getCharacteristic("arrayType")).toString());
-		//System.out.print("; \'");
-		final Object o= p.getValue();
-		if (o.getClass().isArray()) {
-			if (o.getClass().getComponentType().isPrimitive()){
-				if (o.getClass().getComponentType().equals(double.class)) {
-					//System.out.print(Arrays.toString((double[])o));
-				} else if (o.getClass().getComponentType().equals(long.class)) {
-					//System.out.print(Arrays.toString((long[])o));
-				}
-			} else {
-				//System.out.print(Arrays.toString((Object[])o));
-			}
-		} else {
-			//System.out.print(o);
-		}
-		//System.out.print("'");
-		//System.out.println();
-		//System.out.flush();
-
-		this.f.getPropertyFamily().destroy(p);
-	}
-
-	/**
-	 * @param args
-	 */
-	public static void main(final String[] args) {
-
-		/*String[] names = {
-				"TINE/DORIS/DORISDATA/V2 Rlf/DoArcTemp",
-				"TINE/PETRA/PETRASTATE/undefined/DECLSTATE",
-				"TINE/PETRA/PETRASTATE/undefined/DECLLSTATE",
-				"TINE/PETRA/PETRASTATE/Ppramp/EVENTCOUNTER",
-				"TINE/PETRA/PETRASTATE/Peamp/TIMECOUNTER",
-				"TINE/PETRA/PETRASTATE/#32/DEVICES",
-				"TINE/PETRA/PeBeam/#0/PeMagSoll.NAM",
-				"TINE/DORIS/DORISDATA/V2 Rlf/DoArcTemp",
-				"TINE/DESY2/CTStrahlung/Platz-281/CTPlatzDesc",
-				"TINE/PETRA/ELWISCavitysvr/Cavity/Report",
-				"TINE/HERA/APC/#0/ANNOTATE",
-				"TINE/PETRA/PETRASTATE/ppstandby/ARCHSTATE",
+    public void shutdown() {
+        this.ctx.destroy();
+    }
 
 
-		};*/
+    public void testProperty(final String name) throws RemoteException, InstantiationException {
+        final DynamicValueProperty<?> p = this.f.getProperty(name);
 
-		final String[] names = {
-				"TINE/TEST/SineQMExp/SineGen0/Amplitude"
-		};
+        //System.out.print(p.getUniqueName());
+        //System.out.print("; ");
+        //System.out.print(p.getDataType().getSimpleName());
+        //System.out.print("; ");
+        //System.out.print(((TFormat)p.getCharacteristic("dataFormat")).toString());
+        //System.out.print("; ");
+        //System.out.print(((TArrayType)p.getCharacteristic("arrayType")).toString());
+        //System.out.print("; \'");
+        final Object o= p.getValue();
+        if (o.getClass().isArray()) {
+            if (o.getClass().getComponentType().isPrimitive()){
+                if (o.getClass().getComponentType().equals(double.class)) {
+                    //System.out.print(Arrays.toString((double[])o));
+                } else if (o.getClass().getComponentType().equals(long.class)) {
+                    //System.out.print(Arrays.toString((long[])o));
+                }
+            } else {
+                //System.out.print(Arrays.toString((Object[])o));
+            }
+        } else {
+            //System.out.print(o);
+        }
+        //System.out.print("'");
+        //System.out.println();
+        //System.out.flush();
 
-		final TinePropertyTester t= new TinePropertyTester();
+        this.f.getPropertyFamily().destroy(p);
+    }
 
-		for (final String name : names) {
-			try {
-				t.testProperty(name);
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
-		}
+    /**
+     * @param args
+     */
+    public static void main(final String[] args) {
 
-		//System.out.println("DONE");
-		t.shutdown();
-		System.exit(0);
+        /*String[] names = {
+                "TINE/DORIS/DORISDATA/V2 Rlf/DoArcTemp",
+                "TINE/PETRA/PETRASTATE/undefined/DECLSTATE",
+                "TINE/PETRA/PETRASTATE/undefined/DECLLSTATE",
+                "TINE/PETRA/PETRASTATE/Ppramp/EVENTCOUNTER",
+                "TINE/PETRA/PETRASTATE/Peamp/TIMECOUNTER",
+                "TINE/PETRA/PETRASTATE/#32/DEVICES",
+                "TINE/PETRA/PeBeam/#0/PeMagSoll.NAM",
+                "TINE/DORIS/DORISDATA/V2 Rlf/DoArcTemp",
+                "TINE/DESY2/CTStrahlung/Platz-281/CTPlatzDesc",
+                "TINE/PETRA/ELWISCavitysvr/Cavity/Report",
+                "TINE/HERA/APC/#0/ANNOTATE",
+                "TINE/PETRA/PETRASTATE/ppstandby/ARCHSTATE",
 
-	}
+
+        };*/
+
+        final String[] names = {
+                "TINE/TEST/SineQMExp/SineGen0/Amplitude"
+        };
+
+        final TinePropertyTester t= new TinePropertyTester();
+
+        for (final String name : names) {
+            try {
+                t.testProperty(name);
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        //System.out.println("DONE");
+        t.shutdown();
+        System.exit(0);
+
+    }
 
 }

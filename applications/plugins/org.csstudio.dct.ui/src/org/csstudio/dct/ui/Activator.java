@@ -13,48 +13,48 @@ import org.osgi.framework.BundleContext;
  */
 public final class Activator extends AbstractUIPlugin {
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "org.csstudio.dct.ui";
+    // The plug-in ID
+    public static final String PLUGIN_ID = "org.csstudio.dct.ui";
 
-	// The shared instance
-	private static Activator plugin;
+    // The shared instance
+    private static Activator plugin;
 
-	/**
-	 * The preference store to access the sds core preferences.
-	 */
-	private static IPreferenceStore _preferenceStore;
+    /**
+     * The preference store to access the sds core preferences.
+     */
+    private static IPreferenceStore _preferenceStore;
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		plugin = this;
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public void start(BundleContext context) throws Exception {
+        super.start(context);
+        plugin = this;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public void stop(BundleContext context) throws Exception {
+        plugin = null;
+        super.stop(context);
+    }
 
-	/**
-	 * Returns the shared instance
-	 * 
-	 * @return the shared instance
-	 */
-	public static Activator getDefault() {
-		return plugin;
-	}
+    /**
+     * Returns the shared instance
+     * 
+     * @return the shared instance
+     */
+    public static Activator getDefault() {
+        return plugin;
+    }
 
-	public static IPreferenceStore getCorePreferenceStore() {
-		if (_preferenceStore == null) {
-			String qualifier = DctActivator.getDefault().getBundle().getSymbolicName();
-			_preferenceStore = new ScopedPreferenceStore(new InstanceScope(), qualifier);
-		}
-		return _preferenceStore;
+    public static IPreferenceStore getCorePreferenceStore() {
+        if (_preferenceStore == null) {
+            String qualifier = DctActivator.getDefault().getBundle().getSymbolicName();
+            _preferenceStore = new ScopedPreferenceStore(new InstanceScope(), qualifier);
+        }
+        return _preferenceStore;
 
-	}
+    }
 }

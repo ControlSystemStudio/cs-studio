@@ -33,11 +33,11 @@ public class EA4ArchiveReader implements ArchiveReader
      * @throws Exception
      */
     EA4ArchiveReader(final String url) throws Exception {
-    	
-    	this.url = url;
+        
+        this.url = url;
         
         // Start the pvAccess client side.
-    	ClientFactorySingleton.getInstance();
+        ClientFactorySingleton.getInstance();
  
         try {
             
@@ -55,7 +55,7 @@ public class EA4ArchiveReader implements ArchiveReader
             
         } catch (RPCRequestException ex) {
             destroy();
-	    throw new Exception("Archiver Request was not successful, " +
+        throw new Exception("Archiver Request was not successful, " +
                 "service responded with an error: " + ex.getMessage());
         } catch (IllegalStateException ex) {
             destroy();
@@ -79,7 +79,7 @@ public class EA4ArchiveReader implements ArchiveReader
     /** {@inheritDoc}*/
     @Override
     public String getDescription() {
-    	
+        
         final StringBuilder buf = new StringBuilder();
 
         buf.append(server_info_request.getDescription());
@@ -131,7 +131,7 @@ public class EA4ArchiveReader implements ArchiveReader
     /** {@inheritDoc}*/
     @Override
     public String[] getNamesByPattern(final int key, final String glob_pattern)
-            throws Exception {   	
+            throws Exception {       
         return getNamesByRegExp(key, RegExHelper.fullRegexFromGlob(glob_pattern));
     }
 
@@ -188,10 +188,10 @@ public class EA4ArchiveReader implements ArchiveReader
     public VType[] getSamples(final int key, final String name,
             final Timestamp start, final Timestamp end,
             final boolean optimized, final int count) throws Exception {
-    	    	
-    	final ValueRequest request;
+                
+        final ValueRequest request;
         synchronized (this) {
-        	
+            
             current_request =
                 new ValueRequest(this, key, name, start, end, optimized, count);
             request = current_request;
@@ -228,7 +228,7 @@ public class EA4ArchiveReader implements ArchiveReader
                                             final Timestamp start, 
                                             final Timestamp end, 
                                             final int count) throws Exception {
-      	// return new ValueRequestIterator(this, key, name, start, end, false, 10);
+          // return new ValueRequestIterator(this, key, name, start, end, false, 10);
         return new ValueRequestIterator(this, key, name, start, end, true, count);
     }
 
@@ -250,7 +250,7 @@ public class EA4ArchiveReader implements ArchiveReader
     }
     
     private void destroy(){
-    	System.out.println("EA4ArchiverReader::destroy");
+        System.out.println("EA4ArchiverReader::destroy");
         cancel();
         if(client != null) client.destroy();
         // org.epics.pvaccess.ClientFactory.stop();

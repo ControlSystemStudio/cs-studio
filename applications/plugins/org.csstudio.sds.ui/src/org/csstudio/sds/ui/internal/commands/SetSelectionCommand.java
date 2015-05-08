@@ -42,54 +42,54 @@ import org.eclipse.gef.commands.Command;
  */
 public final class SetSelectionCommand extends Command {
 
-	private List<AbstractWidgetModel> _oldSelection;
-	
-	private EditPartViewer _viewer;
+    private List<AbstractWidgetModel> _oldSelection;
+    
+    private EditPartViewer _viewer;
 
-	private DisplayModel _displayModel;
-	
-	private List<AbstractWidgetModel> _newSelection;
+    private DisplayModel _displayModel;
+    
+    private List<AbstractWidgetModel> _newSelection;
 
-	/**
-	 * Constructor.
-	 * @param viewer the graphical viewer 
-	 */
-	public SetSelectionCommand(EditPartViewer viewer, List<AbstractWidgetModel> selectedWidgets) {
-		assert viewer != null;
-		assert selectedWidgets!=null;
-		_viewer = viewer;
-		_displayModel = (DisplayModel)((DisplayEditPart) _viewer.getRootEditPart().getChildren().get(0)).getModel();
-		_newSelection = selectedWidgets;
-	}
+    /**
+     * Constructor.
+     * @param viewer the graphical viewer 
+     */
+    public SetSelectionCommand(EditPartViewer viewer, List<AbstractWidgetModel> selectedWidgets) {
+        assert viewer != null;
+        assert selectedWidgets!=null;
+        _viewer = viewer;
+        _displayModel = (DisplayModel)((DisplayEditPart) _viewer.getRootEditPart().getChildren().get(0)).getModel();
+        _newSelection = selectedWidgets;
+    }
 
-	public SetSelectionCommand(EditPartViewer viewer, AbstractWidgetModel widget) {
-		this(viewer, Arrays.asList(widget));
-	}
+    public SetSelectionCommand(EditPartViewer viewer, AbstractWidgetModel widget) {
+        this(viewer, Arrays.asList(widget));
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void execute() {
-		// memorize old selection
-		_oldSelection = new ArrayList<AbstractWidgetModel>();
-		
-		for(EditPart ep : (List<EditPart>)_viewer.getSelectedEditParts()) {
-			if(ep instanceof AbstractBaseEditPart) {
-				_oldSelection.add(((AbstractBaseEditPart)ep).getWidgetModel());
-			}
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void execute() {
+        // memorize old selection
+        _oldSelection = new ArrayList<AbstractWidgetModel>();
+        
+        for(EditPart ep : (List<EditPart>)_viewer.getSelectedEditParts()) {
+            if(ep instanceof AbstractBaseEditPart) {
+                _oldSelection.add(((AbstractBaseEditPart)ep).getWidgetModel());
+            }
+        }
 
-		// select new widgets
-		_displayModel.selectWidgets(_newSelection);
-	}
+        // select new widgets
+        _displayModel.selectWidgets(_newSelection);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void undo() {
-		_displayModel.selectWidgets(_oldSelection);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void undo() {
+        _displayModel.selectWidgets(_oldSelection);
+    }
 
 }

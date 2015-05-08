@@ -37,20 +37,20 @@ import com.cosylab.vdct.vdb.VDBTemplate;
  * @author 
  */
 public class RenameTemplateMacroAction extends ActionObject {
-	protected VDBTemplate object;
-	protected VDBMacro macro;
-	protected String oldName;
-	protected String newName;
+    protected VDBTemplate object;
+    protected VDBMacro macro;
+    protected String oldName;
+    protected String newName;
 
 /**
  * Insert the method's description here.
  * Creation date: (3.5.2001 16:27:58)
  */
 public RenameTemplateMacroAction(VDBTemplate object, VDBMacro macro, String oldName, String newName) {
-	this.object=object;
-	this.macro=macro;
-	this.oldName=oldName;
-	this.newName=newName;
+    this.object=object;
+    this.macro=macro;
+    this.oldName=oldName;
+    this.newName=newName;
 }
 /**
  * Insert the method's description here.
@@ -58,18 +58,18 @@ public RenameTemplateMacroAction(VDBTemplate object, VDBMacro macro, String oldN
  * @return java.lang.String
  */
 public String getDescription() {
-	return "Rename Template Macro ["+object+"]("+macro.getFullName()+": "+oldName+" -> "+newName+")";
+    return "Rename Template Macro ["+object+"]("+macro.getFullName()+": "+oldName+" -> "+newName+")";
 }
 /**
  * This method was created in VisualAge.
  */
 protected void redoAction() {
-	object.renameMacro(macro, newName);
+    object.renameMacro(macro, newName);
 }
 /**
  * This method was created in VisualAge.
  */
 protected void undoAction() {
-	object.renameMacro(macro, oldName);
+    object.renameMacro(macro, oldName);
 }
 }

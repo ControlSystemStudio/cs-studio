@@ -41,56 +41,56 @@ import org.junit.Test;
  * 
  */
 public final class BooleanPropertyPersistenceHandlerTest {
-	/**
-	 * Test for the writing behaviour.
-	 */
-	@Test
-	public void testWriteProperty() {
-		BooleanPropertyPersistenceHandler handler = new BooleanPropertyPersistenceHandler();
-		WidgetProperty property = new BooleanProperty(
-				"description", WidgetPropertyCategory.BEHAVIOR, false);//$NON-NLS-1$)
-		property.setDynamicsDescriptor(new DynamicsDescriptor());
+    /**
+     * Test for the writing behaviour.
+     */
+    @Test
+    public void testWriteProperty() {
+        BooleanPropertyPersistenceHandler handler = new BooleanPropertyPersistenceHandler();
+        WidgetProperty property = new BooleanProperty(
+                "description", WidgetPropertyCategory.BEHAVIOR, false);//$NON-NLS-1$)
+        property.setDynamicsDescriptor(new DynamicsDescriptor());
 
-		property.setPropertyValue(Boolean.valueOf(true));
+        property.setPropertyValue(Boolean.valueOf(true));
 
-		Element valueTag = new Element("anyTag"); //$NON-NLS-1$
+        Element valueTag = new Element("anyTag"); //$NON-NLS-1$
 
-		handler.writeProperty(valueTag, property.getPropertyValue());
+        handler.writeProperty(valueTag, property.getPropertyValue());
 
-		assertEquals(0, valueTag.getChildren().size());
+        assertEquals(0, valueTag.getChildren().size());
 
-		Attribute attrib = valueTag.getAttribute("value"); //$NON-NLS-1$
+        Attribute attrib = valueTag.getAttribute("value"); //$NON-NLS-1$
 
-		assertNotNull(attrib);
-		assertEquals("true", attrib.getValue()); //$NON-NLS-1$
-	}
+        assertNotNull(attrib);
+        assertEquals("true", attrib.getValue()); //$NON-NLS-1$
+    }
 
-	/**
-	 * Test for the reading behaviour.
-	 */
-	@Test
-	public void testReadProperty() {
-		BooleanPropertyPersistenceHandler handler = new BooleanPropertyPersistenceHandler();
+    /**
+     * Test for the reading behaviour.
+     */
+    @Test
+    public void testReadProperty() {
+        BooleanPropertyPersistenceHandler handler = new BooleanPropertyPersistenceHandler();
 
-		Element propertyTag1 = new Element("anyTag"); //$NON-NLS-1$
-		propertyTag1.setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, "true"); //$NON-NLS-1$
+        Element propertyTag1 = new Element("anyTag"); //$NON-NLS-1$
+        propertyTag1.setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, "true"); //$NON-NLS-1$
 
-		Element propertyTag2 = new Element("anotherTag"); //$NON-NLS-1$
-		propertyTag2.setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, "false"); //$NON-NLS-1$
+        Element propertyTag2 = new Element("anotherTag"); //$NON-NLS-1$
+        propertyTag2.setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, "false"); //$NON-NLS-1$
 
-		Element propertyTag3 = new Element("oneMoreTag"); //$NON-NLS-1$
-		propertyTag3.setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, "nonsense"); //$NON-NLS-1$
+        Element propertyTag3 = new Element("oneMoreTag"); //$NON-NLS-1$
+        propertyTag3.setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, "nonsense"); //$NON-NLS-1$
 
-		Object propertyValue1 = handler.readProperty(propertyTag1);
-		Object propertyValue2 = handler.readProperty(propertyTag2);
-		Object propertyValue3 = handler.readProperty(propertyTag3);
+        Object propertyValue1 = handler.readProperty(propertyTag1);
+        Object propertyValue2 = handler.readProperty(propertyTag2);
+        Object propertyValue3 = handler.readProperty(propertyTag3);
 
-		assertTrue(propertyValue1 instanceof Boolean);
-		assertTrue(propertyValue2 instanceof Boolean);
-		assertTrue(propertyValue3 instanceof Boolean);
+        assertTrue(propertyValue1 instanceof Boolean);
+        assertTrue(propertyValue2 instanceof Boolean);
+        assertTrue(propertyValue3 instanceof Boolean);
 
-		assertEquals(true, propertyValue1);
-		assertEquals(false, propertyValue2);
-		assertEquals(false, propertyValue3);
-	}
+        assertEquals(true, propertyValue1);
+        assertEquals(false, propertyValue2);
+        assertEquals(false, propertyValue3);
+    }
 }

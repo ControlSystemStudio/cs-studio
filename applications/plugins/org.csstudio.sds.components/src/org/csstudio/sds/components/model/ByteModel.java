@@ -34,69 +34,69 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  * @since 05.10.2007
  */
 public class ByteModel extends AbstractWidgetModel {
-	/**
-	 * The ID of this widget model.
-	 */
-	public static final String ID = "org.csstudio.sds.components.Byte"; //$NON-NLS-1$
-	/**
-	 * The ID of the orientation property.
-	 */
-	public static final String PROP_ORIENTATION = "orientation"; //$NON-NLS-1$
+    /**
+     * The ID of this widget model.
+     */
+    public static final String ID = "org.csstudio.sds.components.Byte"; //$NON-NLS-1$
+    /**
+     * The ID of the orientation property.
+     */
+    public static final String PROP_ORIENTATION = "orientation"; //$NON-NLS-1$
 
-	/**
-	 * The ID of the figure property.
-	 */
-	public static final String PROP_FIGURE = "figure"; //$NON-NLS-1$
+    /**
+     * The ID of the figure property.
+     */
+    public static final String PROP_FIGURE = "figure"; //$NON-NLS-1$
 
-	/**
-	 * The default value of the height property.
-	 */
-	private static final int DEFAULT_HEIGHT = 10;
-	/**
-	 * The default value of the width property.
-	 */
-	private static final int DEFAULT_WIDTH = 20;
-	/**
-	 * The default value of the orientation property.
-	 */
-	private static final boolean DEFAULT_ORIENTATION_HORIZONTAL = true;
+    /**
+     * The default value of the height property.
+     */
+    private static final int DEFAULT_HEIGHT = 10;
+    /**
+     * The default value of the width property.
+     */
+    private static final int DEFAULT_WIDTH = 20;
+    /**
+     * The default value of the orientation property.
+     */
+    private static final boolean DEFAULT_ORIENTATION_HORIZONTAL = true;
 
-	/**
-	 * The default value of the orientation property.
-	 */
-	private static final int DEFAULT_BIT_SIZE = 16;
+    /**
+     * The default value of the orientation property.
+     */
+    private static final int DEFAULT_BIT_SIZE = 16;
 
-	/**
-	 * Standard constructor.
-	 */
-	public ByteModel() {
-		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-	}
+    /**
+     * Standard constructor.
+     */
+    public ByteModel() {
+        setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTypeID() {
-		return ID;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTypeID() {
+        return ID;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void configureProperties() {
-		addBooleanProperty(PROP_ORIENTATION, "Horizontal Orientation", WidgetPropertyCategory.BEHAVIOR,
-				DEFAULT_ORIENTATION_HORIZONTAL, false);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configureProperties() {
+        addBooleanProperty(PROP_ORIENTATION, "Horizontal Orientation", WidgetPropertyCategory.BEHAVIOR,
+                DEFAULT_ORIENTATION_HORIZONTAL, false);
+    }
 
-	/**
-	 * Gets the orientation.
-	 * 
-	 * @return the orientation.
-	 */
-	public boolean getOrientation() {
-		return getBooleanProperty(PROP_ORIENTATION);
-	}
+    /**
+     * Gets the orientation.
+     * 
+     * @return the orientation.
+     */
+    public boolean getOrientation() {
+        return getBooleanProperty(PROP_ORIENTATION);
+    }
 
 }

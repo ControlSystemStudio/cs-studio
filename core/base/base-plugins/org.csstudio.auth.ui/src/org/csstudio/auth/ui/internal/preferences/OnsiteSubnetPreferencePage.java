@@ -40,66 +40,66 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
  * @author Jan Hatje
  */
 public class OnsiteSubnetPreferencePage extends FieldEditorPreferencePage
-		implements IWorkbenchPreferencePage {
+        implements IWorkbenchPreferencePage {
 
-	/**
-	 * Default constructor.
-	 */
-	public OnsiteSubnetPreferencePage() {
-		super(SWT.NULL);
-		setMessage("Onsite Subnets");
-	}
+    /**
+     * Default constructor.
+     */
+    public OnsiteSubnetPreferencePage() {
+        super(SWT.NULL);
+        setMessage("Onsite Subnets");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected final void createFieldEditors() {
-		addField(new ListEditor(OnsiteSubnetPreferences.PREFERENCE_KEY,
-				"Subnets: ", getFieldEditorParent()){
-			
-			public String[] parseString(String stringList){
-				return stringList.split(",");
-			}
-			
-			public String getNewInputObject(){
-				AddSubnetDialog dialog = new AddSubnetDialog(getShell());
-				if (dialog.open() == Window.OK) {
-					Subnet s = dialog.getSubnet();
-					return s != null ? s.toString() : null;
-				}
-				return null;
-			}
-			
-			public String createList(String[] items){
-				StringBuilder temp = new StringBuilder();
-				for(int i = 0; i < items.length; i++) {
-					temp.append(items[i]);
-					temp.append(",");
-				}
-				return temp.toString();
-			}
-			
-			
-		});
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected final void createFieldEditors() {
+        addField(new ListEditor(OnsiteSubnetPreferences.PREFERENCE_KEY,
+                "Subnets: ", getFieldEditorParent()){
+            
+            public String[] parseString(String stringList){
+                return stringList.split(",");
+            }
+            
+            public String getNewInputObject(){
+                AddSubnetDialog dialog = new AddSubnetDialog(getShell());
+                if (dialog.open() == Window.OK) {
+                    Subnet s = dialog.getSubnet();
+                    return s != null ? s.toString() : null;
+                }
+                return null;
+            }
+            
+            public String createList(String[] items){
+                StringBuilder temp = new StringBuilder();
+                for(int i = 0; i < items.length; i++) {
+                    temp.append(items[i]);
+                    temp.append(",");
+                }
+                return temp.toString();
+            }
+            
+            
+        });
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected final IPreferenceStore doGetPreferenceStore() {
-		IPreferenceStore preferenceStore = new ScopedPreferenceStore(
-				new InstanceScope(), AuthActivator.ID);
-		return preferenceStore;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected final IPreferenceStore doGetPreferenceStore() {
+        IPreferenceStore preferenceStore = new ScopedPreferenceStore(
+                new InstanceScope(), AuthActivator.ID);
+        return preferenceStore;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void init(final IWorkbench workbench)
+    /**
+     * {@inheritDoc}
+     */
+    public void init(final IWorkbench workbench)
     {
         // nothing to do
-	}
+    }
 
 }

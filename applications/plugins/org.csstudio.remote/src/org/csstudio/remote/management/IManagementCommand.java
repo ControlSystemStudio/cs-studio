@@ -30,12 +30,12 @@ package org.csstudio.remote.management;
  */
 public interface IManagementCommand {
 
-	/**
-	 * Executes this command.
-	 * 
-	 * @param parameters
-	 *            the parameters for the command. May be null if the command is
-	 *            called without parameters.
-	 */
-	public CommandResult execute(CommandParameters parameters);
+    /**
+     * Executes this command.
+     * 
+     * @param parameters
+     *            the parameters for the command. May be null if the command is
+     *            called without parameters.
+     */
+    public CommandResult execute(CommandParameters parameters);
 }

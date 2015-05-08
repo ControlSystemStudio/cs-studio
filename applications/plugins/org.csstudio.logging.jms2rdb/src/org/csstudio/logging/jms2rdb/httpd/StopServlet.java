@@ -15,7 +15,7 @@ import org.csstudio.logging.jms2rdb.Application;
 @SuppressWarnings("nls")
 public class StopServlet extends AbstractServlet
 {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private transient Application application;
 

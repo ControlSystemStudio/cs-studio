@@ -52,11 +52,11 @@ import org.eclipse.swt.widgets.Composite;
  * @author Sven Wende
  */
 public final class OptionComboBoxPropertyDescriptor extends PropertyDescriptor {
-	/**
-	 * Maps option identifiers to options.
-	 */
-	private Map<String, IOption> _identifierToOptionMapping;
-	
+    /**
+     * Maps option identifiers to options.
+     */
+    private Map<String, IOption> _identifierToOptionMapping;
+    
     /**
      * The labels to display in the combo box.
      */
@@ -81,7 +81,7 @@ public final class OptionComboBoxPropertyDescriptor extends PropertyDescriptor {
         // init set
         _identifierToOptionMapping = new HashMap<String, IOption>();
         for(IOption o : _options) {
-        	_identifierToOptionMapping.put(o.getIdentifier(), o);
+            _identifierToOptionMapping.put(o.getIdentifier(), o);
         }
     }
 
@@ -89,12 +89,12 @@ public final class OptionComboBoxPropertyDescriptor extends PropertyDescriptor {
     * {@inheritDoc}
      */
     @Override
-	public CellEditor createPropertyEditor(final Composite parent) {
+    public CellEditor createPropertyEditor(final Composite parent) {
         CellEditor editor = new OptionComboBoxCellEditor(parent, _options, SWT.READ_ONLY);
 
         if (getValidator() != null) {
-			editor.setValidator(getValidator());
-		}
+            editor.setValidator(getValidator());
+        }
         return editor;
     }
 
@@ -108,26 +108,26 @@ public final class OptionComboBoxPropertyDescriptor extends PropertyDescriptor {
      * @see #setLabelProvider(ILabelProvider)
      */
     @Override
-	public ILabelProvider getLabelProvider() {
+    public ILabelProvider getLabelProvider() {
         if (isLabelProviderSet()) {
-			return super.getLabelProvider();
-		}
-		return new OptionLabelProvider();
+            return super.getLabelProvider();
+        }
+        return new OptionLabelProvider();
     }
     
     private class OptionLabelProvider extends LabelProvider {
 
-		@Override
-		public String getText(Object element) {
-			IOption option = _identifierToOptionMapping.get(element.toString());
-			return option!=null ? option.toString() : "invalid";
-		}
-    	
-		@Override
-		public Image getImage(Object element) {
-			IOption option = _identifierToOptionMapping.get(element.toString());
-			return option!=null ? ImageUtil.getInstance().getImage("org.csstudio.sds", "icons/Action_Enabled_Cursor.gif") : null;
-		}
+        @Override
+        public String getText(Object element) {
+            IOption option = _identifierToOptionMapping.get(element.toString());
+            return option!=null ? option.toString() : "invalid";
+        }
+        
+        @Override
+        public Image getImage(Object element) {
+            IOption option = _identifierToOptionMapping.get(element.toString());
+            return option!=null ? ImageUtil.getInstance().getImage("org.csstudio.sds", "icons/Action_Enabled_Cursor.gif") : null;
+        }
     }
 }
 

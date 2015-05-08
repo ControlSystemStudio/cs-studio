@@ -32,46 +32,46 @@ import org.eclipse.swt.widgets.Display;
  */
 public class WorkspacePrompt implements WorkspaceExtPoint {
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.startup.extensions.WorkspacePromptExtPoint#promptForWorkspace(org.eclipse.swt.widgets.Display, org.eclipse.equinox.app.IApplicationContext, java.util.Map)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.startup.extensions.WorkspacePromptExtPoint#promptForWorkspace(org.eclipse.swt.widgets.Display, org.eclipse.equinox.app.IApplicationContext, java.util.Map)
+     */
+    @Override
     public Object promptForWorkspace(Display display,
-			IApplicationContext context, Map<String, Object> parameters)
-	{
-	    
-		Object o = parameters.get(StartupParameters.LOGIN_PROMPT_PARAM);
+            IApplicationContext context, Map<String, Object> parameters)
+    {
+        
+        Object o = parameters.get(StartupParameters.LOGIN_PROMPT_PARAM);
         final boolean login = o != null ? (Boolean)o : false;
-		
+        
         o = parameters.get(LoginExtPoint.USERNAME);
-		final String username = o != null ? (String)o : null;
-		
-		o = parameters.get(LoginExtPoint.PASSWORD);
-		final String password = o != null ? (String)o : null;
-		
-		o = parameters.get(StartupParameters.FORCE_WORKSPACE_PROMPT_PARAM);
-		final boolean force_workspace_prompt = o != null ? (Boolean)o : false;
-		
-		o = parameters.get(WorkspaceExtPoint.WORKSPACE);
-		final URL default_workspace = o != null ? (URL)o : null;
-		
-		if (! checkInstanceLocation(login, force_workspace_prompt,
-				default_workspace, username, password, parameters)) {
-			// The <code>stop()</code> routine of many UI plugins writes
-			// the current settings to the workspace.
-			// Even though we have not yet opened any workspace, that would
-			// open, even create the default workspace.
-			// So exit right away:
-			System.exit(0);
-			// .. instead of:
-			//Platform.endSplash();
-			return IApplication.EXIT_OK;
-		}
-		return null;
-	}
-	
-	 /** Check or select the workspace.
+        final String username = o != null ? (String)o : null;
+        
+        o = parameters.get(LoginExtPoint.PASSWORD);
+        final String password = o != null ? (String)o : null;
+        
+        o = parameters.get(StartupParameters.FORCE_WORKSPACE_PROMPT_PARAM);
+        final boolean force_workspace_prompt = o != null ? (Boolean)o : false;
+        
+        o = parameters.get(WorkspaceExtPoint.WORKSPACE);
+        final URL default_workspace = o != null ? (URL)o : null;
+        
+        if (! checkInstanceLocation(login, force_workspace_prompt,
+                default_workspace, username, password, parameters)) {
+            // The <code>stop()</code> routine of many UI plugins writes
+            // the current settings to the workspace.
+            // Even though we have not yet opened any workspace, that would
+            // open, even create the default workspace.
+            // So exit right away:
+            System.exit(0);
+            // .. instead of:
+            //Platform.endSplash();
+            return IApplication.EXIT_OK;
+        }
+        return null;
+    }
+    
+     /** Check or select the workspace.
      *  <p>
      *  See IDEApplication code from org.eclipse.ui.internal.ide.application
      *  in version 3.3.
@@ -97,8 +97,8 @@ public class WorkspacePrompt implements WorkspaceExtPoint {
      */
     private boolean checkInstanceLocation(boolean show_login,
             final boolean force_prompt,
-    		URL default_workspace, String username, String password, 
-    		Map<String, Object> parameters)
+            URL default_workspace, String username, String password, 
+            Map<String, Object> parameters)
     {
         // Was "-data @none" specified on command line?
         final Location instanceLoc = Platform.getInstanceLocation();
@@ -154,17 +154,17 @@ public class WorkspacePrompt implements WorkspaceExtPoint {
         
         //if no user name provided, display last login user.
         if(username == null) 
-        	username = WorkspaceIndependentStore.readLastLoginUser();
+            username = WorkspaceIndependentStore.readLastLoginUser();
         
         //initialize startupHelper
         StartupHelper startupHelper = new StartupHelper(null, force_prompt, 
-        		workspace_info, username, password, show_login, show_Workspace);
+                workspace_info, username, password, show_login, show_Workspace);
         
         while (true)
         {
-        	startupHelper.setShow_Login(show_login);
-        	startupHelper.setShow_Workspace(show_Workspace);
-        	
+            startupHelper.setShow_Login(show_login);
+            startupHelper.setShow_Workspace(show_Workspace);
+            
             if (show_Workspace || show_login)
             {                
                 if (! startupHelper.openStartupDialog())
@@ -172,8 +172,8 @@ public class WorkspacePrompt implements WorkspaceExtPoint {
 
                 //get user name and password from startup dialog
                 if(show_login) {
-                	username = startupHelper.getUserName();
-                	password = startupHelper.getPassword();
+                    username = startupHelper.getUserName();
+                    password = startupHelper.getPassword();
                 }
             }
             // In case of errors, we will have to ask the workspace,

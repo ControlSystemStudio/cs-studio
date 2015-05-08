@@ -23,86 +23,86 @@ import com.cosylab.util.StringComparator;
 
 public class PaletteEntryCreator {
 
-	private final WidgetModelFactoryService _widgetService;
-	private final KeyListenerAdapter _keyAdapter;
+    private final WidgetModelFactoryService _widgetService;
+    private final KeyListenerAdapter _keyAdapter;
 
-	public PaletteEntryCreator(final WidgetModelFactoryService widgetService,
-			final KeyListenerAdapter keyAdapter) {
-		_widgetService = widgetService;
-		_keyAdapter = keyAdapter;
-	}
+    public PaletteEntryCreator(final WidgetModelFactoryService widgetService,
+            final KeyListenerAdapter keyAdapter) {
+        _widgetService = widgetService;
+        _keyAdapter = keyAdapter;
+    }
 
-	@SuppressWarnings("unchecked")
-	public void createEntries(PaletteRoot root, CategorizationType categorization) {
-		if (CategorizationType.NONE.equals(categorization)) {
-			List<ToolEntry> toolentries = createToolEntries(root, _widgetService
-					.getUsedWidgetTypes());
-			for (ToolEntry entry : toolentries) {
-				PaletteGroup controlGroup = new PaletteGroup("controlGroup");
-				controlGroup.add(entry);
-				root.add(controlGroup);
-			}
-		} else {
-			PaletteContainer widgetCategory = null;
+    @SuppressWarnings("unchecked")
+    public void createEntries(PaletteRoot root, CategorizationType categorization) {
+        if (CategorizationType.NONE.equals(categorization)) {
+            List<ToolEntry> toolentries = createToolEntries(root, _widgetService
+                    .getUsedWidgetTypes());
+            for (ToolEntry entry : toolentries) {
+                PaletteGroup controlGroup = new PaletteGroup("controlGroup");
+                controlGroup.add(entry);
+                root.add(controlGroup);
+            }
+        } else {
+            PaletteContainer widgetCategory = null;
 
-			List<String> allCategories = new ArrayList<String>();
-			allCategories.addAll(_widgetService.getAllCategories());
-			
-			Collections.sort(allCategories, new StringComparator());
-			
-			for (String category : allCategories) {
-				List<ToolEntry> toolEntries = createToolEntries(root, _widgetService.getWidgetForCategory(category));
-				
-				widgetCategory = new PaletteDrawer(category);
-				if (CategorizationType.STACK.equals(categorization)) {
-					widgetCategory = new PaletteStack(category, category, null);
-					widgetCategory.addAll(toolEntries);
-					PaletteGroup controlGroup = new PaletteGroup("controlGroup");
-					controlGroup.add(widgetCategory);
-					root.add(controlGroup);
-				} else {
-					widgetCategory.addAll(toolEntries);
-					root.add(widgetCategory);
-				}
-				
-			}
-		}
-	}
+            List<String> allCategories = new ArrayList<String>();
+            allCategories.addAll(_widgetService.getAllCategories());
+            
+            Collections.sort(allCategories, new StringComparator());
+            
+            for (String category : allCategories) {
+                List<ToolEntry> toolEntries = createToolEntries(root, _widgetService.getWidgetForCategory(category));
+                
+                widgetCategory = new PaletteDrawer(category);
+                if (CategorizationType.STACK.equals(categorization)) {
+                    widgetCategory = new PaletteStack(category, category, null);
+                    widgetCategory.addAll(toolEntries);
+                    PaletteGroup controlGroup = new PaletteGroup("controlGroup");
+                    controlGroup.add(widgetCategory);
+                    root.add(controlGroup);
+                } else {
+                    widgetCategory.addAll(toolEntries);
+                    root.add(widgetCategory);
+                }
+                
+            }
+        }
+    }
 
-	@SuppressWarnings("unchecked")
-	private List<ToolEntry> createToolEntries(final PaletteRoot root, Set<String> usedWidgetTypes) {
-		List<ToolEntry> result = new ArrayList<ToolEntry>();
+    @SuppressWarnings("unchecked")
+    private List<ToolEntry> createToolEntries(final PaletteRoot root, Set<String> usedWidgetTypes) {
+        List<ToolEntry> result = new ArrayList<ToolEntry>();
 
-		CombinedTemplateCreationEntry toolEntry;
+        CombinedTemplateCreationEntry toolEntry;
 
-		for (String typeId : usedWidgetTypes) {
-			String contributingPluginId = _widgetService
-					.getContributingPluginId(typeId);
+        for (String typeId : usedWidgetTypes) {
+            String contributingPluginId = _widgetService
+                    .getContributingPluginId(typeId);
 
-			String iconPath = _widgetService.getIcon(typeId);
+            String iconPath = _widgetService.getIcon(typeId);
 
-			ImageDescriptor icon = CustomMediaFactory.getInstance()
-					.getImageDescriptorFromPlugin(contributingPluginId,
-							iconPath);
-			toolEntry = new CombinedTemplateCreationEntry(_widgetService.getName(typeId),
-					_widgetService.getDescription(typeId),
-					new WidgetCreationFactory(typeId, _keyAdapter), icon, icon);
+            ImageDescriptor icon = CustomMediaFactory.getInstance()
+                    .getImageDescriptorFromPlugin(contributingPluginId,
+                            iconPath);
+            toolEntry = new CombinedTemplateCreationEntry(_widgetService.getName(typeId),
+                    _widgetService.getDescription(typeId),
+                    new WidgetCreationFactory(typeId, _keyAdapter), icon, icon);
 
-			Class toolClass = GraphicalFeedbackContributionsService
-					.getInstance().getGraphicalFeedbackFactory(typeId)
-					.getCreationTool();
+            Class toolClass = GraphicalFeedbackContributionsService
+                    .getInstance().getGraphicalFeedbackFactory(typeId)
+                    .getCreationTool();
 
-			if (toolClass != null) {
-				toolEntry.setToolClass(toolClass);
-			}
-			result.add(toolEntry);
-		}
-		Collections.sort(result, new Comparator<ToolEntry>() {
-			public int compare(final ToolEntry entry1, final ToolEntry entry2) {
-				return entry1.getLabel().compareTo(entry2.getLabel());
-			}
-		});
-		return result;
-	}
+            if (toolClass != null) {
+                toolEntry.setToolClass(toolClass);
+            }
+            result.add(toolEntry);
+        }
+        Collections.sort(result, new Comparator<ToolEntry>() {
+            public int compare(final ToolEntry entry1, final ToolEntry entry2) {
+                return entry1.getLabel().compareTo(entry2.getLabel());
+            }
+        });
+        return result;
+    }
 
 }

@@ -12,23 +12,23 @@ import org.eclipse.jface.text.rules.IToken;
  */
 public class BraceRule extends SingleCharRule {
 
-	/**
-	 * Creates new rule.
-	 * 
-	 * @param token
-	 *            Style token.
-	 */
-	public BraceRule(final IToken token) {
-		super(token);
-	}
+    /**
+     * Creates new rule.
+     * 
+     * @param token
+     *            Style token.
+     */
+    public BraceRule(final IToken token) {
+        super(token);
+    }
 
-	/**
-	 * @see SingleCharRule#isRuleChar(int)
-	 */
-	@Override
-	protected boolean isRuleChar(final int ch) {
-		return (ch == '{') || (ch == '}') || (ch == '[') || (ch == ']')
-				|| (ch == '(') || (ch == ')');
-	}
+    /**
+     * @see SingleCharRule#isRuleChar(int)
+     */
+    @Override
+    protected boolean isRuleChar(final int ch) {
+        return (ch == '{') || (ch == '}') || (ch == '[') || (ch == ']')
+                || (ch == '(') || (ch == ')');
+    }
 
 }

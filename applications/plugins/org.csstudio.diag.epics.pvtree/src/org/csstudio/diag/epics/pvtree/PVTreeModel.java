@@ -63,7 +63,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
         return field_info;
     }
 
-	/** @return Is model configured to freeze on alarm? */
+    /** @return Is model configured to freeze on alarm? */
     public boolean isFreezingOnAlarm()
     {
         return freeze_on_alarm;
@@ -236,8 +236,8 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
 
         tree.getDisplay().asyncExec(() ->
         {
-           	if (tree.isDisposed())
-           	    return;
+               if (tree.isDisposed())
+                   return;
 
             viewer.update(item, null);
             if (frozen && !was_frozen)
@@ -253,8 +253,8 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
             return;
         tree.getDisplay().asyncExec(() ->
         {
-        	if (tree.isDisposed())
-        	    return;
+            if (tree.isDisposed())
+                return;
             if (item == root)
                 viewer.refresh();
             else

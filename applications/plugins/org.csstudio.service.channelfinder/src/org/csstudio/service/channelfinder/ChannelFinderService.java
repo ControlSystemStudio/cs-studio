@@ -16,8 +16,8 @@ public class ChannelFinderService extends Service {
      * @param serviceDescription
      */
     public ChannelFinderService() {
-	super(new ServiceDescription("cf", "ChannelFinder service")
-	.addServiceMethod(new QueryServiceMethod()));	
+    super(new ServiceDescription("cf", "ChannelFinder service")
+    .addServiceMethod(new QueryServiceMethod()));    
     }
 
 }

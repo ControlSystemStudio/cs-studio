@@ -37,9 +37,9 @@ import com.cosylab.vdct.vdb.VDBRecordData;
  * @author 
  */
 public class MorphAction extends ActionObject {
-	private VDBRecordData oldRecordData;
-	private VDBRecordData newRecordData;
-	private Record object;
+    private VDBRecordData oldRecordData;
+    private VDBRecordData newRecordData;
+    private Record object;
 
 /**
  * Insert the method's description here.
@@ -49,9 +49,9 @@ public class MorphAction extends ActionObject {
  * @param newName java.lang.String
  */
 public MorphAction(Record object, VDBRecordData oldRecordData, VDBRecordData newRecordData) {
-	this.object=object;
-	this.oldRecordData=oldRecordData;
-	this.newRecordData=newRecordData;
+    this.object=object;
+    this.oldRecordData=oldRecordData;
+    this.newRecordData=newRecordData;
 }
 /**
  * Insert the method's description here.
@@ -59,18 +59,18 @@ public MorphAction(Record object, VDBRecordData oldRecordData, VDBRecordData new
  * @return java.lang.String
  */
 public String getDescription() {
-	return "Morph ["+object.getName()+"]()";
+    return "Morph ["+object.getName()+"]()";
 }
 /**
  * This method was created in VisualAge.
  */
 protected void redoAction() {
-	object.setRecordData(newRecordData);
+    object.setRecordData(newRecordData);
 }
 /**
  * This method was created in VisualAge.
  */
 protected void undoAction() {
-	object.setRecordData(oldRecordData);
+    object.setRecordData(oldRecordData);
 }
 }

@@ -45,32 +45,32 @@ import org.slf4j.LoggerFactory;
  */
 public class OpenPvInDefaultDisplayAction extends AbstractHandler {
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(OpenPvInDefaultDisplayAction.class);
+    private static final Logger LOG = LoggerFactory
+            .getLogger(OpenPvInDefaultDisplayAction.class);
 
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IPath displayPath = DefaultDisplayPreference.DEFAULT_DISPLAY_PATH
-				.getValue();
-		boolean openAsShell = DefaultDisplayPreference.OPEN_AS_SHELL.getValue();
-		String alias = DefaultDisplayPreference.DEFAULT_DISPLAY_ALIAS
-				.getValue();
-		RunModeService runner = RunModeService.getInstance();
+    public Object execute(ExecutionEvent event) throws ExecutionException {
+        IPath displayPath = DefaultDisplayPreference.DEFAULT_DISPLAY_PATH
+                .getValue();
+        boolean openAsShell = DefaultDisplayPreference.OPEN_AS_SHELL.getValue();
+        String alias = DefaultDisplayPreference.DEFAULT_DISPLAY_ALIAS
+                .getValue();
+        RunModeService runner = RunModeService.getInstance();
 
-		final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
-		final ProcessVariable[] pvs = AdapterUtil.convert(selection,
-				ProcessVariable.class);
-		for (ProcessVariable pv : pvs) {
-			Map<String, String> aliases = new HashMap<String, String>();
-			String pvname = pv.getName();
-			aliases.put(alias, pvname);
-			LOG.debug("Opening display " + displayPath + " with alias " + alias
-					+ "=" + pvname);
-			if (openAsShell) {
-				runner.openDisplayShellInRunMode(displayPath, aliases);
-			} else {
-				runner.openDisplayViewInRunMode(displayPath, aliases);
-			}
-		}
-		return null;
-	}
+        final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
+        final ProcessVariable[] pvs = AdapterUtil.convert(selection,
+                ProcessVariable.class);
+        for (ProcessVariable pv : pvs) {
+            Map<String, String> aliases = new HashMap<String, String>();
+            String pvname = pv.getName();
+            aliases.put(alias, pvname);
+            LOG.debug("Opening display " + displayPath + " with alias " + alias
+                    + "=" + pvname);
+            if (openAsShell) {
+                runner.openDisplayShellInRunMode(displayPath, aliases);
+            } else {
+                runner.openDisplayViewInRunMode(displayPath, aliases);
+            }
+        }
+        return null;
+    }
 }

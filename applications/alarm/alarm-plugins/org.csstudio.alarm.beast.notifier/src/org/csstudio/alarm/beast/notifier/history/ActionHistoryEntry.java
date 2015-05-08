@@ -18,20 +18,20 @@ import org.csstudio.alarm.beast.notifier.EActionStatus;
  */
 public class ActionHistoryEntry {
 
-	private final ActionID actionId;
-	private final EActionStatus status;
+    private final ActionID actionId;
+    private final EActionStatus status;
 
-	public ActionHistoryEntry(ActionID actionId, EActionStatus status) {
-		this.actionId = actionId;
-		this.status = status;
-	}
+    public ActionHistoryEntry(ActionID actionId, EActionStatus status) {
+        this.actionId = actionId;
+        this.status = status;
+    }
 
-	public ActionID getActionId() {
-		return actionId;
-	}
+    public ActionID getActionId() {
+        return actionId;
+    }
 
-	public EActionStatus getStatus() {
-		return status;
-	}
+    public EActionStatus getStatus() {
+        return status;
+    }
 
 }

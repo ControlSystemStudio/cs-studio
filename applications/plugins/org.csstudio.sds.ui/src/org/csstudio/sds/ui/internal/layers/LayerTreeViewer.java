@@ -59,283 +59,283 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
  */
 public final class LayerTreeViewer implements ILayerModelListener {
 
-	/**
-	 * The id of the parent view. 
-	 */
-	private final String _viewID;
+    /**
+     * The id of the parent view. 
+     */
+    private final String _viewID;
 
-	/**
-	 * The {@link IWorkbenchPartSite} where the popup-menu is registered.
-	 */
-	private IWorkbenchPartSite _site;
+    /**
+     * The {@link IWorkbenchPartSite} where the popup-menu is registered.
+     */
+    private IWorkbenchPartSite _site;
 
-	/**
-	 * The treeviewer which displays the layers.
-	 */
-	private TreeViewer _treeViewer;
+    /**
+     * The treeviewer which displays the layers.
+     */
+    private TreeViewer _treeViewer;
 
-	/**
-	 * The current {@link LayerSupport}.
-	 */
-	private LayerSupport _layerSupport;
+    /**
+     * The current {@link LayerSupport}.
+     */
+    private LayerSupport _layerSupport;
 
-	/**
-	 * The {@link CommandStack}, where several commands are executed.
-	 * If t is not <code>null</code> the commands can be undone. 
-	 */
-	private CommandStack _commandStack = null;
+    /**
+     * The {@link CommandStack}, where several commands are executed.
+     * If t is not <code>null</code> the commands can be undone. 
+     */
+    private CommandStack _commandStack = null;
 
-	/**
-	 * Constructor.
-	 * @param site The {@link IWorkbenchPartSite} for the popup-menu (can be null)
-	 * @param parent The parent {@link Composite} for the {@link TreeViewer}
-	 * @param viewID The ID of the parent view
-	 */
-	public LayerTreeViewer(final IWorkbenchPartSite site,
-			final Composite parent, final String viewID) {
-		_site = site;
-		_viewID = viewID;
-		// configure viewer
-		_treeViewer = new TreeViewer(parent, SWT.H_SCROLL | SWT.V_SCROLL
-				| SWT.BORDER);
+    /**
+     * Constructor.
+     * @param site The {@link IWorkbenchPartSite} for the popup-menu (can be null)
+     * @param parent The parent {@link Composite} for the {@link TreeViewer}
+     * @param viewID The ID of the parent view
+     */
+    public LayerTreeViewer(final IWorkbenchPartSite site,
+            final Composite parent, final String viewID) {
+        _site = site;
+        _viewID = viewID;
+        // configure viewer
+        _treeViewer = new TreeViewer(parent, SWT.H_SCROLL | SWT.V_SCROLL
+                | SWT.BORDER);
 
-		_treeViewer.setLabelProvider(new WorkbenchLabelProvider());
-		_treeViewer.setContentProvider(new BaseWorkbenchContentProvider() {
+        _treeViewer.setLabelProvider(new WorkbenchLabelProvider());
+        _treeViewer.setContentProvider(new BaseWorkbenchContentProvider() {
 
-			@Override
-			public Object[] getElements(final Object element) {
-				return ((LayerSupport) element).getLayers().toArray();
-			}
+            @Override
+            public Object[] getElements(final Object element) {
+                return ((LayerSupport) element).getLayers().toArray();
+            }
 
-		});
+        });
 
-		// handle selections (sets active layer)
-		_treeViewer
-				.addSelectionChangedListener(new ISelectionChangedListener() {
+        // handle selections (sets active layer)
+        _treeViewer
+                .addSelectionChangedListener(new ISelectionChangedListener() {
 
-					public void selectionChanged(
-							final SelectionChangedEvent event) {
-						IStructuredSelection sel = (IStructuredSelection) event
-								.getSelection();
+                    public void selectionChanged(
+                            final SelectionChangedEvent event) {
+                        IStructuredSelection sel = (IStructuredSelection) event
+                                .getSelection();
 
-						Layer layer = (Layer) sel.getFirstElement();
+                        Layer layer = (Layer) sel.getFirstElement();
 
-						if (layer != null && _layerSupport != null) {
-							_layerSupport.setActiveLayer(layer);
-						}
-					}
-				});
-		// handle doubleclicks (toggles layer visibility)
-		_treeViewer.addDoubleClickListener(new IDoubleClickListener() {
+                        if (layer != null && _layerSupport != null) {
+                            _layerSupport.setActiveLayer(layer);
+                        }
+                    }
+                });
+        // handle doubleclicks (toggles layer visibility)
+        _treeViewer.addDoubleClickListener(new IDoubleClickListener() {
 
-			public void doubleClick(final DoubleClickEvent event) {
-				IStructuredSelection sel = (IStructuredSelection) event
-						.getSelection();
-				Layer layer = (Layer) sel.getFirstElement();
+            public void doubleClick(final DoubleClickEvent event) {
+                IStructuredSelection sel = (IStructuredSelection) event
+                        .getSelection();
+                Layer layer = (Layer) sel.getFirstElement();
 
-				if (layer != null) {
-					if (_commandStack == null) {
-						layer.setVisible(!layer.isVisible());
-					} else {
-						_commandStack
-								.execute(new ToggleVisibilityCommand(layer));
-					}
-				}
-			}
+                if (layer != null) {
+                    if (_commandStack == null) {
+                        layer.setVisible(!layer.isVisible());
+                    } else {
+                        _commandStack
+                                .execute(new ToggleVisibilityCommand(layer));
+                    }
+                }
+            }
 
-		});
+        });
 
-		// DnD
-		addDragSupport(_treeViewer);
-		addDropSupport(_treeViewer);
+        // DnD
+        addDragSupport(_treeViewer);
+        addDropSupport(_treeViewer);
 
-		// context menu
-		hookPopupMenu(_treeViewer);
-	}
+        // context menu
+        hookPopupMenu(_treeViewer);
+    }
 
-	/**
-	 * Hooks the PopupMenu to the given TreeViewer.
-	 * 
-	 * @param viewer
-	 *            The TreeViewer
-	 */
-	private void hookPopupMenu(final TreeViewer viewer) {
-		MenuManager popupMenu = new MenuManager(_viewID);
-		popupMenu.add(new Separator("additions"));
-		Menu menu = popupMenu.createContextMenu(viewer.getTree());
+    /**
+     * Hooks the PopupMenu to the given TreeViewer.
+     * 
+     * @param viewer
+     *            The TreeViewer
+     */
+    private void hookPopupMenu(final TreeViewer viewer) {
+        MenuManager popupMenu = new MenuManager(_viewID);
+        popupMenu.add(new Separator("additions"));
+        Menu menu = popupMenu.createContextMenu(viewer.getTree());
 
-		viewer.getTree().setMenu(menu);
-		if (_site != null) {
-			_site.registerContextMenu(popupMenu, viewer);
-		}
-	}
+        viewer.getTree().setMenu(menu);
+        if (_site != null) {
+            _site.registerContextMenu(popupMenu, viewer);
+        }
+    }
 
-	/**
-	 * Adds drag support for layers to the specified viewer.
-	 * 
-	 * @param treeViewer
-	 *            the viewer that should support dragging of layers
-	 */
-	private void addDragSupport(final TreeViewer treeViewer) {
-		// Allow data to be copied or moved from the drag source
-		treeViewer.addDragSupport(DND.DROP_MOVE | DND.DROP_COPY
-				| DND.DROP_DEFAULT, new Transfer[] { LayerTransfer
-				.getInstance() }, new DragSourceAdapter() {
-			@Override
-			public void dragStart(final DragSourceEvent event) {
-				if (_treeViewer.getSelection() == null) {
-					event.doit = false;
-				}
-			}
+    /**
+     * Adds drag support for layers to the specified viewer.
+     * 
+     * @param treeViewer
+     *            the viewer that should support dragging of layers
+     */
+    private void addDragSupport(final TreeViewer treeViewer) {
+        // Allow data to be copied or moved from the drag source
+        treeViewer.addDragSupport(DND.DROP_MOVE | DND.DROP_COPY
+                | DND.DROP_DEFAULT, new Transfer[] { LayerTransfer
+                .getInstance() }, new DragSourceAdapter() {
+            @Override
+            public void dragStart(final DragSourceEvent event) {
+                if (_treeViewer.getSelection() == null) {
+                    event.doit = false;
+                }
+            }
 
-			@Override
-			public void dragSetData(final DragSourceEvent event) {
-				if (LayerTransfer.getInstance().isSupportedType(event.dataType)) {
+            @Override
+            public void dragSetData(final DragSourceEvent event) {
+                if (LayerTransfer.getInstance().isSupportedType(event.dataType)) {
 
-					IStructuredSelection sel = (IStructuredSelection) _treeViewer
-							.getSelection();
-					Layer layer = (Layer) sel.getFirstElement();
+                    IStructuredSelection sel = (IStructuredSelection) _treeViewer
+                            .getSelection();
+                    Layer layer = (Layer) sel.getFirstElement();
 
-					if (layer != null) {
-						LayerTransfer.getInstance().setSelectedLayer(layer);
-						event.data = layer;
-					}
-				}
-			}
+                    if (layer != null) {
+                        LayerTransfer.getInstance().setSelectedLayer(layer);
+                        event.data = layer;
+                    }
+                }
+            }
 
-			@Override
-			public void dragFinished(final DragSourceEvent event) {
-				LayerTransfer.getInstance().setSelectedLayer(null);
-			}
+            @Override
+            public void dragFinished(final DragSourceEvent event) {
+                LayerTransfer.getInstance().setSelectedLayer(null);
+            }
 
-		});
-	}
+        });
+    }
 
-	/**
-	 * Adds drop support for layers to the specified viewer.
-	 * 
-	 * @param treeViewer
-	 *            the viewer that should support dropping of layers
-	 */
-	private void addDropSupport(final TreeViewer treeViewer) {
-		// drop
-		treeViewer.addDropSupport(DND.DROP_MOVE | DND.DROP_COPY
-				| DND.DROP_DEFAULT, new Transfer[] { LayerTransfer
-				.getInstance() }, new DropTargetAdapter() {
-			@Override
-			public void drop(final DropTargetEvent event) {
-				if (LayerTransfer.getInstance().isSupportedType(
-						event.currentDataType)) {
-					// get the layer that was moved
-					Layer movedLayer = (Layer) LayerTransfer.getInstance()
-							.nativeToJava(event.currentDataType);
+    /**
+     * Adds drop support for layers to the specified viewer.
+     * 
+     * @param treeViewer
+     *            the viewer that should support dropping of layers
+     */
+    private void addDropSupport(final TreeViewer treeViewer) {
+        // drop
+        treeViewer.addDropSupport(DND.DROP_MOVE | DND.DROP_COPY
+                | DND.DROP_DEFAULT, new Transfer[] { LayerTransfer
+                .getInstance() }, new DropTargetAdapter() {
+            @Override
+            public void drop(final DropTargetEvent event) {
+                if (LayerTransfer.getInstance().isSupportedType(
+                        event.currentDataType)) {
+                    // get the layer that was moved
+                    Layer movedLayer = (Layer) LayerTransfer.getInstance()
+                            .nativeToJava(event.currentDataType);
 
-					// get the layer, on which the moved layer was dropped
-					Layer dropLayer = (Layer) (event.item != null ? event.item
-							.getData() : null);
+                    // get the layer, on which the moved layer was dropped
+                    Layer dropLayer = (Layer) (event.item != null ? event.item
+                            .getData() : null);
 
-					if (movedLayer != null && dropLayer != null
-							&& _layerSupport != null) {
-						int index = _layerSupport.getLayerIndex(dropLayer);
-						if (_commandStack == null) {
-							_layerSupport
-									.changeLayerPosition(movedLayer, index);
-						} else {
-							_commandStack.execute(new MoveLayerCommand(
-									_layerSupport, movedLayer, index));
-						}
-					}
-				}
-			}
+                    if (movedLayer != null && dropLayer != null
+                            && _layerSupport != null) {
+                        int index = _layerSupport.getLayerIndex(dropLayer);
+                        if (_commandStack == null) {
+                            _layerSupport
+                                    .changeLayerPosition(movedLayer, index);
+                        } else {
+                            _commandStack.execute(new MoveLayerCommand(
+                                    _layerSupport, movedLayer, index));
+                        }
+                    }
+                }
+            }
 
-			@Override
-			public void dropAccept(final DropTargetEvent event) {
-				if (!LayerTransfer.getInstance().isSupportedType(
-						event.currentDataType)
-						|| event.item == null) {
-					event.detail = DND.DROP_NONE;
-				} else {
-					event.detail = DND.DROP_MOVE;
-				}
-			}
+            @Override
+            public void dropAccept(final DropTargetEvent event) {
+                if (!LayerTransfer.getInstance().isSupportedType(
+                        event.currentDataType)
+                        || event.item == null) {
+                    event.detail = DND.DROP_NONE;
+                } else {
+                    event.detail = DND.DROP_MOVE;
+                }
+            }
 
-			@Override
-			public void dragEnter(final DropTargetEvent event) {
-				if (!LayerTransfer.getInstance().isSupportedType(
-						event.currentDataType)
-						|| event.item == null) {
-					event.detail = DND.DROP_NONE;
-				} else {
-					event.detail = DND.DROP_MOVE;
-				}
-			}
+            @Override
+            public void dragEnter(final DropTargetEvent event) {
+                if (!LayerTransfer.getInstance().isSupportedType(
+                        event.currentDataType)
+                        || event.item == null) {
+                    event.detail = DND.DROP_NONE;
+                } else {
+                    event.detail = DND.DROP_MOVE;
+                }
+            }
 
-			@Override
-			public void dragOver(final DropTargetEvent event) {
-				if (!LayerTransfer.getInstance().isSupportedType(
-						event.currentDataType)
-						|| event.item == null) {
-					event.detail = DND.DROP_NONE;
-				} else {
-					event.detail = DND.DROP_MOVE;
-				}
-			}
+            @Override
+            public void dragOver(final DropTargetEvent event) {
+                if (!LayerTransfer.getInstance().isSupportedType(
+                        event.currentDataType)
+                        || event.item == null) {
+                    event.detail = DND.DROP_NONE;
+                } else {
+                    event.detail = DND.DROP_MOVE;
+                }
+            }
 
-		});
-	}
+        });
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void layerChanged(final Layer layer, final String property) {
-		// just refresh the viewer completely if anything changes
-		_treeViewer.refresh();
-		_treeViewer.setSelection(new StructuredSelection(_layerSupport
-				.getActiveLayer()));
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void layerChanged(final Layer layer, final String property) {
+        // just refresh the viewer completely if anything changes
+        _treeViewer.refresh();
+        _treeViewer.setSelection(new StructuredSelection(_layerSupport
+                .getActiveLayer()));
+    }
 
-	/**
-	 * Sets the selection of the internal {@link TreeViewer}.
-	 * @param selection The new selection
-	 */
-	public void setSelection(final ISelection selection) {
-		_treeViewer.setSelection(selection);
-	}
+    /**
+     * Sets the selection of the internal {@link TreeViewer}.
+     * @param selection The new selection
+     */
+    public void setSelection(final ISelection selection) {
+        _treeViewer.setSelection(selection);
+    }
 
-	/**
-	 * Set the layout data for the internal {@link TreeViewer}.
-	 * @param layoutData The layout Data
-	 */
-	public void setLayoutData(final Object layoutData) {
-		_treeViewer.getTree().setLayoutData(layoutData);
-	}
+    /**
+     * Set the layout data for the internal {@link TreeViewer}.
+     * @param layoutData The layout Data
+     */
+    public void setLayoutData(final Object layoutData) {
+        _treeViewer.getTree().setLayoutData(layoutData);
+    }
 
-	/**
-	 * Sets the currently used {@link LayerSupport}. 
-	 * @param layerSupport The {@link LayerSupport}
-	 */
-	public void setLayerSupport(final LayerSupport layerSupport) {
-		_layerSupport = layerSupport;
-		_layerSupport.addLayerModelListener(this);
-		_treeViewer.setInput(_layerSupport);
-	}
+    /**
+     * Sets the currently used {@link LayerSupport}. 
+     * @param layerSupport The {@link LayerSupport}
+     */
+    public void setLayerSupport(final LayerSupport layerSupport) {
+        _layerSupport = layerSupport;
+        _layerSupport.addLayerModelListener(this);
+        _treeViewer.setInput(_layerSupport);
+    }
 
-	/**
-	 * Sets the currently used {@link CommandStack}.
-	 * Set the {@link CommandStack} to enable Undo/Redo functionality.
-	 * @param commandStack The {@link CommandStack} (can be null)
-	 */
-	public void setCommandStack(final CommandStack commandStack) {
-		_commandStack = commandStack;
-	}
+    /**
+     * Sets the currently used {@link CommandStack}.
+     * Set the {@link CommandStack} to enable Undo/Redo functionality.
+     * @param commandStack The {@link CommandStack} (can be null)
+     */
+    public void setCommandStack(final CommandStack commandStack) {
+        _commandStack = commandStack;
+    }
 
-	/**
-	 * Disposes the {@link TreeViewer}.
-	 */
-	public void dispose() {
-		_layerSupport.removeLayerModelListener(this);
-		_layerSupport = null;
-		_treeViewer.getTree().dispose();
-	}
+    /**
+     * Disposes the {@link TreeViewer}.
+     */
+    public void dispose() {
+        _layerSupport.removeLayerModelListener(this);
+        _layerSupport = null;
+        _treeViewer.getTree().dispose();
+    }
 
 }

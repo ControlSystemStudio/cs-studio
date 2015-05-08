@@ -64,15 +64,15 @@ public class LoopCommand extends ScanCommandWithBody
         this("device", 0, 10, 1, new ScanCommand[0]);
     }
 
-	/** Initialize with single command
-	 *
-	 *  <p>This constructor simplifies invocation from Matlab.
-	 *  In principle, the "ScanCommand... body" constructor
-	 *  handles loops with zero, one, many commands, i.e. all cases.
-	 *  Matlab, however, turns a single-element array into a scalar
-	 *  in a way incompatible with the var-length argument
-	 *  constructor.
-	 *
+    /** Initialize with single command
+     *
+     *  <p>This constructor simplifies invocation from Matlab.
+     *  In principle, the "ScanCommand... body" constructor
+     *  handles loops with zero, one, many commands, i.e. all cases.
+     *  Matlab, however, turns a single-element array into a scalar
+     *  in a way incompatible with the var-length argument
+     *  constructor.
+     *
      *  @param device_name Device to update with the loop variable
      *  @param start Initial loop value
      *  @param end Final loop value
@@ -86,7 +86,7 @@ public class LoopCommand extends ScanCommandWithBody
         this(device_name, start, end, stepsize, new ScanCommand[] { command });
     }
 
-	/** Initialize
+    /** Initialize
      *  @param device_name Device to update with the loop variable
      *  @param start Initial loop value
      *  @param end Final loop value
@@ -134,7 +134,7 @@ public class LoopCommand extends ScanCommandWithBody
         super.configureProperties(properties);
     }
 
-	/** @return Device name (may be "" but not <code>null</code>) */
+    /** @return Device name (may be "" but not <code>null</code>) */
     public String getDeviceName()
     {
         return device_name;
@@ -336,29 +336,29 @@ public class LoopCommand extends ScanCommandWithBody
             if (timeout > 0)
                 buf.append(" in ").append(timeout).append(" sec");
         }
-    	if (wait)
-    	{
-    		buf.append(" (wait for '");
-    		if (readback.isEmpty())
-    			buf.append(device_name);
-    		else
-    			buf.append(readback);
-    		if (tolerance > 0)
-    			buf.append("' +-").append(tolerance);
-    		if (timeout > 0)
-    			buf.append(", ").append(timeout).append(" sec timeout");
-    		buf.append(")");
-    	}
+        if (wait)
+        {
+            buf.append(" (wait for '");
+            if (readback.isEmpty())
+                buf.append(device_name);
+            else
+                buf.append(readback);
+            if (tolerance > 0)
+                buf.append("' +-").append(tolerance);
+            if (timeout > 0)
+                buf.append(", ").append(timeout).append(" sec timeout");
+            buf.append(")");
+        }
     }
 
     /** {@inheritDoc} */
-	@Override
-	public String toString()
-	{
+    @Override
+    public String toString()
+    {
         final StringBuilder buf = new StringBuilder();
         buf.append("Loop '").append(device_name).append("' = ")
             .append(start).append(" ... ").append(end).append(", step ").append(stepsize);
-	    appendConditionDetail(buf);
+        appendConditionDetail(buf);
         return buf.toString();
-	}
+    }
 }

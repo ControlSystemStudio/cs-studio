@@ -160,10 +160,10 @@ public class ApplicationRunnerPlugin implements MenuPlugin {
             if (exec == null)
                 continue;
             
-	        JMenuItem item = new JMenuItem(name);
-	        item.addActionListener(handler);
-	        item.setActionCommand(exec);
-	        menu.add(item);
+            JMenuItem item = new JMenuItem(name);
+            item.addActionListener(handler);
+            item.setActionCommand(exec);
+            menu.add(item);
         }
     }
 

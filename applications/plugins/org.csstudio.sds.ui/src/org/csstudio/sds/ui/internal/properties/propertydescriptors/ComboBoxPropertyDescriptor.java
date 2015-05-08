@@ -80,12 +80,12 @@ public final class ComboBoxPropertyDescriptor extends PropertyDescriptor {
     * {@inheritDoc}
      */
     @Override
-	public CellEditor createPropertyEditor(final Composite parent) {
+    public CellEditor createPropertyEditor(final Composite parent) {
         CellEditor editor = new ComboBoxCellEditor(parent, _labels,
                 SWT.READ_ONLY);
         if (getValidator() != null) {
-			editor.setValidator(getValidator());
-		}
+            editor.setValidator(getValidator());
+        }
         return editor;
     }
 
@@ -99,11 +99,11 @@ public final class ComboBoxPropertyDescriptor extends PropertyDescriptor {
      * @see #setLabelProvider(ILabelProvider)
      */
     @Override
-	public ILabelProvider getLabelProvider() {
+    public ILabelProvider getLabelProvider() {
         if (isLabelProviderSet()) {
-			return super.getLabelProvider();
-		}
-		return new ComboBoxLabelProvider(_labels);
+            return super.getLabelProvider();
+        }
+        return new ComboBoxLabelProvider(_labels);
     }
 }
 

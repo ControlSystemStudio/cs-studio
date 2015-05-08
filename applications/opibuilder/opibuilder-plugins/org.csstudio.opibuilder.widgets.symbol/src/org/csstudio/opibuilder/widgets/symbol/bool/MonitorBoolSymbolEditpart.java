@@ -18,27 +18,27 @@ import org.eclipse.draw2d.IFigure;
  */
 public class MonitorBoolSymbolEditpart extends CommonBoolSymbolEditpart {
 
-	@Override
-	protected IFigure doCreateFigure() {
-		MonitorBoolSymbolFigure figure = new MonitorBoolSymbolFigure();
-		initializeCommonFigureProperties(figure, getWidgetModel());
-		return (IFigure) figure;
-	}
+    @Override
+    protected IFigure doCreateFigure() {
+        MonitorBoolSymbolFigure figure = new MonitorBoolSymbolFigure();
+        initializeCommonFigureProperties(figure, getWidgetModel());
+        return (IFigure) figure;
+    }
 
-	/**
-	 * Get the monitor widget model.
-	 * 
-	 * @return the monitor widget model.
-	 */
-	@Override
-	public MonitorBoolSymbolModel getWidgetModel() {
-		return (MonitorBoolSymbolModel) super.getWidgetModel();
-	}
+    /**
+     * Get the monitor widget model.
+     * 
+     * @return the monitor widget model.
+     */
+    @Override
+    public MonitorBoolSymbolModel getWidgetModel() {
+        return (MonitorBoolSymbolModel) super.getWidgetModel();
+    }
 
-	@Override
-	public void deactivate() {
-		super.deactivate();
-		((MonitorBoolSymbolFigure) getFigure()).dispose();
-	}
+    @Override
+    public void deactivate() {
+        super.deactivate();
+        ((MonitorBoolSymbolFigure) getFigure()).dispose();
+    }
 
 }

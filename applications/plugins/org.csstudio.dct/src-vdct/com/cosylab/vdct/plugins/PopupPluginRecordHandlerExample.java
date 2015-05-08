@@ -43,7 +43,7 @@ import com.cosylab.vdct.plugin.popup.*;
  * Example of simple context sensitive popup menu handling record objects.
  * Add the following line to the ${user.home}/.vdctplugins.xml file:
  * <pre>
- * 		&lt;plugin class="com.cosylab.vdct.plugins.PopupPluginRecordHandlerExample" autostart="true" /&gt;
+ *         &lt;plugin class="com.cosylab.vdct.plugins.PopupPluginRecordHandlerExample" autostart="true" /&gt;
  * </pre>
  * Creation date: (8.12.2001 13:29:26)
  * @author Matej Sekoranja
@@ -51,14 +51,14 @@ import com.cosylab.vdct.plugin.popup.*;
 public class PopupPluginRecordHandlerExample implements ContextPopupPlugin {
 
 
-	class PopupMenuHandler implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			String action = e.getActionCommand();
-			Console.getInstance().println("PopupPluginRecordHandlerExample action: "+action);
-		}
-	}
+    class PopupMenuHandler implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            String action = e.getActionCommand();
+            Console.getInstance().println("PopupPluginRecordHandlerExample action: "+action);
+        }
+    }
 
-	protected PopupPluginRecordHandlerExample.PopupMenuHandler popupMenuHandler = null;
+    protected PopupPluginRecordHandlerExample.PopupMenuHandler popupMenuHandler = null;
 
 /**
  * Insert the method's description here.
@@ -66,9 +66,9 @@ public class PopupPluginRecordHandlerExample implements ContextPopupPlugin {
  * @return com.cosylab.vdct.graphics.objects.Connector.PopupMenuHandler
  */
 private PopupPluginRecordHandlerExample.PopupMenuHandler getPopupmenuHandler() {
-	if (popupMenuHandler==null)
-		popupMenuHandler = new PopupMenuHandler();
-	return popupMenuHandler;
+    if (popupMenuHandler==null)
+        popupMenuHandler = new PopupMenuHandler();
+    return popupMenuHandler;
 }
 
 /**
@@ -85,7 +85,7 @@ public void destroy() {}
  * @return java.lang.String
  */
 public String getAuthor() {
-	return "matej.sekoranja@cosylab.com";
+    return "matej.sekoranja@cosylab.com";
 }
 /**
  * Insert the method's description here.
@@ -93,7 +93,7 @@ public String getAuthor() {
  * @return java.lang.String
  */
 public String getDescription() {
-	return "Example of simple context sensitive popup menu handling record objects.";
+    return "Example of simple context sensitive popup menu handling record objects.";
 }
 /**
  * Insert the method's description here.
@@ -102,7 +102,7 @@ public String getDescription() {
  * @return
  */
 public String getName() {
-	return "Popup Record Handler";
+    return "Popup Record Handler";
 }
 /**
  * Insert the method's description here.
@@ -110,7 +110,7 @@ public String getName() {
  * @return java.lang.String
  */
 public String getVersion() {
-	return "0.1";
+    return "0.1";
 }
 /**
  * Insert the method's description here.
@@ -139,36 +139,36 @@ public void stop() {}
  */
 public Vector getItems(Vector selectedObjects)
 {
-	Vector items = new Vector();
+    Vector items = new Vector();
 
-	// workspace popup
-	if (selectedObjects == null)
-	{
-		JMenuItem item = new JMenuItem("Workspace");
-		item.addActionListener(getPopupmenuHandler());
-		
-		items.addElement(item);	
-	}
-	// we have some selected objects
-	else
-	{
-		Enumeration e = selectedObjects.elements();
-		while (e.hasMoreElements())
-		{
-			Object obj = e.nextElement();
-			if (obj instanceof Record)
-			{
-				Record rec = (Record)obj;
-				
-				JMenuItem item = new JMenuItem(rec.getName());
-				item.addActionListener(getPopupmenuHandler());
-				
-				items.addElement(item);	
-			}
-		}
-	}
-		
-	return items;
+    // workspace popup
+    if (selectedObjects == null)
+    {
+        JMenuItem item = new JMenuItem("Workspace");
+        item.addActionListener(getPopupmenuHandler());
+        
+        items.addElement(item);    
+    }
+    // we have some selected objects
+    else
+    {
+        Enumeration e = selectedObjects.elements();
+        while (e.hasMoreElements())
+        {
+            Object obj = e.nextElement();
+            if (obj instanceof Record)
+            {
+                Record rec = (Record)obj;
+                
+                JMenuItem item = new JMenuItem(rec.getName());
+                item.addActionListener(getPopupmenuHandler());
+                
+                items.addElement(item);    
+            }
+        }
+    }
+        
+    return items;
 }
 
 }

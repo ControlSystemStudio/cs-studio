@@ -70,8 +70,8 @@ public class LDAPGroupAuthorizationProvider implements AuthorizationProvider
     /** Initialize based on Eclipse preferences */
     public LDAPGroupAuthorizationProvider()
     {
-    	this(SecurityPreferences.getLDAPGroupURL(),
-    	     SecurityPreferences.getLDAPGroupBase());
+        this(SecurityPreferences.getLDAPGroupURL(),
+             SecurityPreferences.getLDAPGroupBase());
     }
 
     /** Initialize

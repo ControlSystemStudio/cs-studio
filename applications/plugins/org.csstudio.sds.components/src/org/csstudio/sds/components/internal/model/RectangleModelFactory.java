@@ -33,17 +33,17 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  * 
  */
 public final class RectangleModelFactory implements IWidgetModelFactory {
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractWidgetModel createWidgetModel() {
-		return new RectangleModel();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractWidgetModel createWidgetModel() {
+        return new RectangleModel();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Class getWidgetModelType() {
-		return RectangleModel.class;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Class getWidgetModelType() {
+        return RectangleModel.class;
+    }
 }

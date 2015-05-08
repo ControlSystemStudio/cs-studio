@@ -35,174 +35,174 @@ import org.eclipse.swt.widgets.Control;
  * 
  */
 public final class MenuCellEditor extends CellEditor {
-	private AbstractListViewer _viewer;
-	private CCombo _combobox;
-	private IChoice _selection;
-	private IMenuDefinition _menuDefinition;
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param parent
-	 *            the parent composite
-	 * @param menuDefinition
-	 *            menu definition
-	 */
-	public MenuCellEditor(Composite parent, IMenuDefinition menuDefinition) {
-		super(parent, SWT.READ_ONLY);
-		assert menuDefinition != null;
-		_menuDefinition = menuDefinition;
-		_viewer.setInput(_menuDefinition.getChoices());
-	}
+    private AbstractListViewer _viewer;
+    private CCombo _combobox;
+    private IChoice _selection;
+    private IMenuDefinition _menuDefinition;
+    
+    /**
+     * Constructor.
+     * 
+     * @param parent
+     *            the parent composite
+     * @param menuDefinition
+     *            menu definition
+     */
+    public MenuCellEditor(Composite parent, IMenuDefinition menuDefinition) {
+        super(parent, SWT.READ_ONLY);
+        assert menuDefinition != null;
+        _menuDefinition = menuDefinition;
+        _viewer.setInput(_menuDefinition.getChoices());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void activate() {
-		super.activate();
-		getControl().getDisplay().asyncExec(new Runnable() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void activate() {
+        super.activate();
+        getControl().getDisplay().asyncExec(new Runnable() {
 
-			public void run() {
-				((CCombo) getControl()).setListVisible(true);
-			}
+            public void run() {
+                ((CCombo) getControl()).setListVisible(true);
+            }
 
-		});
-	}
+        });
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Control createControl(Composite parent) {
-		_combobox = new CCombo(parent, getStyle());
-		_combobox.setEditable(false);
-		_combobox.setVisibleItemCount(20);
-		_viewer = new ComboViewer(_combobox);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Control createControl(Composite parent) {
+        _combobox = new CCombo(parent, getStyle());
+        _combobox.setEditable(false);
+        _combobox.setVisibleItemCount(20);
+        _viewer = new ComboViewer(_combobox);
 
-		_viewer.setLabelProvider(new LabelProvider() {
-			@Override
-			public String getText(Object element) {
-				return ((IChoice) element).getDescription();
-			}
-		});
-		_viewer.setContentProvider(new ArrayContentProvider());
-		_combobox.setFont(parent.getFont());
+        _viewer.setLabelProvider(new LabelProvider() {
+            @Override
+            public String getText(Object element) {
+                return ((IChoice) element).getDescription();
+            }
+        });
+        _viewer.setContentProvider(new ArrayContentProvider());
+        _combobox.setFont(parent.getFont());
 
-		_combobox.addKeyListener(new KeyAdapter() {
-			// hook key pressed - see PR 14201
-			public void keyPressed(KeyEvent e) {
-				keyReleaseOccured(e);
-			}
-		});
+        _combobox.addKeyListener(new KeyAdapter() {
+            // hook key pressed - see PR 14201
+            public void keyPressed(KeyEvent e) {
+                keyReleaseOccured(e);
+            }
+        });
 
-		_combobox.addSelectionListener(new SelectionAdapter() {
-			public void widgetDefaultSelected(SelectionEvent event) {
-				applyEditorValueAndDeactivate();
-			}
+        _combobox.addSelectionListener(new SelectionAdapter() {
+            public void widgetDefaultSelected(SelectionEvent event) {
+                applyEditorValueAndDeactivate();
+            }
 
-			public void widgetSelected(SelectionEvent event) {
-				Object sel = _viewer.getSelection();
+            public void widgetSelected(SelectionEvent event) {
+                Object sel = _viewer.getSelection();
 
-				if (sel instanceof IStructuredSelection) {
-					_selection = (IChoice) ((IStructuredSelection) sel).getFirstElement();
-				}
+                if (sel instanceof IStructuredSelection) {
+                    _selection = (IChoice) ((IStructuredSelection) sel).getFirstElement();
+                }
 
-			}
-		});
+            }
+        });
 
-		_combobox.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDoubleClick(MouseEvent e) {
-				applyEditorValueAndDeactivate();
-			}
-		});
+        _combobox.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseDoubleClick(MouseEvent e) {
+                applyEditorValueAndDeactivate();
+            }
+        });
 
-		_combobox.addTraverseListener(new TraverseListener() {
-			public void keyTraversed(TraverseEvent e) {
-				if (e.detail == SWT.TRAVERSE_ESCAPE || e.detail == SWT.TRAVERSE_RETURN) {
-					e.doit = false;
-				}
-			}
-		});
+        _combobox.addTraverseListener(new TraverseListener() {
+            public void keyTraversed(TraverseEvent e) {
+                if (e.detail == SWT.TRAVERSE_ESCAPE || e.detail == SWT.TRAVERSE_RETURN) {
+                    e.doit = false;
+                }
+            }
+        });
 
-		_combobox.addFocusListener(new FocusAdapter() {
-			public void focusLost(FocusEvent e) {
-				MenuCellEditor.this.focusLost();
-			}
-		});
+        _combobox.addFocusListener(new FocusAdapter() {
+            public void focusLost(FocusEvent e) {
+                MenuCellEditor.this.focusLost();
+            }
+        });
 
-		_viewer.getControl().forceFocus();
+        _viewer.getControl().forceFocus();
 
-		return _combobox;
+        return _combobox;
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Object doGetValue() {
-		String result = "";
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Object doGetValue() {
+        String result = "";
 
-		if (_selection != null) {
-			result = _selection.getDescription();
-		}
+        if (_selection != null) {
+            result = _selection.getDescription();
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doSetFocus() {
-		_viewer.getControl().setFocus();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doSetFocus() {
+        _viewer.getControl().setFocus();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doSetValue(Object value) {
-		for(IChoice choice : _menuDefinition.getChoices()) {
-			if(choice.getDescription().equals(value)) {
-				_selection = choice;
-				_viewer.setSelection(new StructuredSelection(_selection));
-			}
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doSetValue(Object value) {
+        for(IChoice choice : _menuDefinition.getChoices()) {
+            if(choice.getDescription().equals(value)) {
+                _selection = choice;
+                _viewer.setSelection(new StructuredSelection(_selection));
+            }
+        }
+    }
 
-	/**
-	 * Applies the currently selected value and deactivates the cell editor.
-	 */
-	void applyEditorValueAndDeactivate() {
-		Object newValue = doGetValue();
-		markDirty();
-		boolean isValid = isCorrect(newValue);
-		setValueValid(isValid);
+    /**
+     * Applies the currently selected value and deactivates the cell editor.
+     */
+    void applyEditorValueAndDeactivate() {
+        Object newValue = doGetValue();
+        markDirty();
+        boolean isValid = isCorrect(newValue);
+        setValueValid(isValid);
 
-		fireApplyEditorValue();
-		deactivate();
-	}
+        fireApplyEditorValue();
+        deactivate();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void focusLost() {
-		if (isActivated()) {
-			applyEditorValueAndDeactivate();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected void focusLost() {
+        if (isActivated()) {
+            applyEditorValueAndDeactivate();
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void keyReleaseOccured(KeyEvent keyEvent) {
-		if (keyEvent.character == '\u001b') { // Escape character
-			fireCancelEditor();
-		} else if (keyEvent.character == '\t') { // tab key
-			applyEditorValueAndDeactivate();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected void keyReleaseOccured(KeyEvent keyEvent) {
+        if (keyEvent.character == '\u001b') { // Escape character
+            fireCancelEditor();
+        } else if (keyEvent.character == '\t') { // tab key
+            applyEditorValueAndDeactivate();
+        }
+    }
 }

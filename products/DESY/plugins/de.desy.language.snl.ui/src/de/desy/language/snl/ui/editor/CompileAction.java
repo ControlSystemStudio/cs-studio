@@ -19,51 +19,51 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
  */
 public class CompileAction implements IEditorActionDelegate, IWorkbenchWindowActionDelegate {
 
-	private SNLEditor _editor;
+    private SNLEditor _editor;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
-		if (targetEditor != null) {
-			if (targetEditor instanceof SNLEditor) {
-				_editor = (SNLEditor) targetEditor;
-			}
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void setActiveEditor(IAction action, IEditorPart targetEditor) {
+        if (targetEditor != null) {
+            if (targetEditor instanceof SNLEditor) {
+                _editor = (SNLEditor) targetEditor;
+            }
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void run(IAction action) {
-		if (_editor != null) {
-			if (_editor.isDirty()) {
-				MessageBox box = new MessageBox(_editor.getSite().getShell(),
-						SWT.ICON_INFORMATION);
-				box.setText("Unsaved changes");
-				box
-						.setMessage("There are unsaved changes.\nPlease save before compilation.");
-				box.open();
-			} else {
-				_editor
-						.compileFile(new NullProgressMonitor());
-			}
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void run(IAction action) {
+        if (_editor != null) {
+            if (_editor.isDirty()) {
+                MessageBox box = new MessageBox(_editor.getSite().getShell(),
+                        SWT.ICON_INFORMATION);
+                box.setText("Unsaved changes");
+                box
+                        .setMessage("There are unsaved changes.\nPlease save before compilation.");
+                box.open();
+            } else {
+                _editor
+                        .compileFile(new NullProgressMonitor());
+            }
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-		// nothing to do
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void selectionChanged(IAction action, ISelection selection) {
+        // nothing to do
+    }
 
-	public void dispose() {
-		
-	}
+    public void dispose() {
+        
+    }
 
-	public void init(IWorkbenchWindow window) {
-		
-	}
+    public void init(IWorkbenchWindow window) {
+        
+    }
 
 }

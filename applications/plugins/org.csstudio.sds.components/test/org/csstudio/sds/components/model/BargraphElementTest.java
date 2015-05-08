@@ -34,38 +34,38 @@ import org.junit.Test;
  */
 public final class BargraphElementTest {
 
-	/**
-	 * A test instance.
-	 */
-	private BargraphModel _bargraphElement;
+    /**
+     * A test instance.
+     */
+    private BargraphModel _bargraphElement;
 
-	/**
-	 * Test setup.
-	 */
-	@Before
-	public void setUp() {
-		_bargraphElement = new BargraphModel();
-	}
+    /**
+     * Test setup.
+     */
+    @Before
+    public void setUp() {
+        _bargraphElement = new BargraphModel();
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.components.model.BargraphModel#getTypeID()}.
-	 */
-	@Test
-	public void testGetTypeID() {
-		_bargraphElement.getTypeID().equals(BargraphModel.ID);
-	}
+    /**
+     * Test method for
+     * {@link org.csstudio.sds.components.model.BargraphModel#getTypeID()}.
+     */
+    @Test
+    public void testGetTypeID() {
+        _bargraphElement.getTypeID().equals(BargraphModel.ID);
+    }
 
-	/**
-	 * Tests, if all properties where properly installed.
-	 */
-	@Test
-	public void testProperties() {
-		assertTrue(_bargraphElement
-				.hasProperty(BargraphModel.PROP_FILL));
-		assertTrue(_bargraphElement
-				.hasProperty(BargraphModel.PROP_ORIENTATION));
-		// Add further properties here
-	}
+    /**
+     * Tests, if all properties where properly installed.
+     */
+    @Test
+    public void testProperties() {
+        assertTrue(_bargraphElement
+                .hasProperty(BargraphModel.PROP_FILL));
+        assertTrue(_bargraphElement
+                .hasProperty(BargraphModel.PROP_ORIENTATION));
+        // Add further properties here
+    }
 
 }

@@ -23,11 +23,11 @@ public class NoiseWaveformValue extends DynamicValue
     /** {@inheritDoc} */
     @Override
     protected void update()
-    {	int arraySize = (int) step;
-    	double[] doubleArray = new double[arraySize];
-    	for(int i=0; i<arraySize; i++){
-    		doubleArray[i] = min + (Math.random() * (max - min));
-    	}
+    {    int arraySize = (int) step;
+        double[] doubleArray = new double[arraySize];
+        for(int i=0; i<arraySize; i++){
+            doubleArray[i] = min + (Math.random() * (max - min));
+        }
         setValue(doubleArray);
     }
 }

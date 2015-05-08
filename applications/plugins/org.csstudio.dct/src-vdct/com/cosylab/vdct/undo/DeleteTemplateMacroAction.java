@@ -43,7 +43,7 @@ public class DeleteTemplateMacroAction extends CreateTemplateMacroAction {
  * @param object com.cosylab.vdct.graphics.objects.VisibleObject
  */
 public DeleteTemplateMacroAction(VDBTemplate object, VDBMacro macro) {
-	super(object, macro);
+    super(object, macro);
 }
 /**
  * Insert the method's description here.
@@ -51,18 +51,18 @@ public DeleteTemplateMacroAction(VDBTemplate object, VDBMacro macro) {
  * @return java.lang.String
  */
 public String getDescription() {
-	return "Delete Template Macro ["+object+"]("+macro.getFullName()+")";
+    return "Delete Template Macro ["+object+"]("+macro.getFullName()+")";
 }
 /**
  * This method was created in VisualAge.
  */
 protected void redoAction() {
-	super.undoAction();
+    super.undoAction();
 }
 /**
  * This method was created in VisualAge.
  */
 protected void undoAction() {
-	super.redoAction();
+    super.redoAction();
 }
 }

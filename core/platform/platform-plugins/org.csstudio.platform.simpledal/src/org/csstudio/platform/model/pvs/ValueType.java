@@ -47,154 +47,154 @@ import org.csstudio.dal.StringSeqProperty;
  */
 public enum ValueType {
 
-	/**
-	 * An object value.
-	 */
-	OBJECT("object", "Object", ObjectProperty.class, Object.class),
+    /**
+     * An object value.
+     */
+    OBJECT("object", "Object", ObjectProperty.class, Object.class),
 
-	/**
-	 * An array of double values.
-	 */
-	ENUM("enum", "Enumeration", EnumProperty.class, Object.class), //$NON-NLS-1$
+    /**
+     * An array of double values.
+     */
+    ENUM("enum", "Enumeration", EnumProperty.class, Object.class), //$NON-NLS-1$
 
-	/**
-	 * An array of double values.
-	 */
-	DOUBLE_SEQUENCE(
-			"doubleSeq", "Sequence of Doubles", DoubleSeqProperty.class, double[].class), //$NON-NLS-1$
+    /**
+     * An array of double values.
+     */
+    DOUBLE_SEQUENCE(
+            "doubleSeq", "Sequence of Doubles", DoubleSeqProperty.class, double[].class), //$NON-NLS-1$
 
-	/**
-	 * An array of string values.
-	 */
-	STRING_SEQUENCE(
-			"stringSeq", "Sequence of Strings", StringSeqProperty.class, String[].class), //$NON-NLS-1$
+    /**
+     * An array of string values.
+     */
+    STRING_SEQUENCE(
+            "stringSeq", "Sequence of Strings", StringSeqProperty.class, String[].class), //$NON-NLS-1$
 
-	/**
-	 * An array of long values.
-	 */
-	LONG_SEQUENCE(
-			"longSeq", "Sequence of Longs", LongSeqProperty.class, long[].class), //$NON-NLS-1$
+    /**
+     * An array of long values.
+     */
+    LONG_SEQUENCE(
+            "longSeq", "Sequence of Longs", LongSeqProperty.class, long[].class), //$NON-NLS-1$
 
-	/**
-	 * An array of object values.
-	 */
-	OBJECT_SEQUENCE(
-			"objectSeq", "Sequence of Objects", ObjectSeqProperty.class, Object[].class), //$NON-NLS-1$
+    /**
+     * An array of object values.
+     */
+    OBJECT_SEQUENCE(
+            "objectSeq", "Sequence of Objects", ObjectSeqProperty.class, Object[].class), //$NON-NLS-1$
 
-	/**
-	 * A long value.
-	 */
-	LONG("long", "Long", LongProperty.class, Long.class), //$NON-NLS-1$
+    /**
+     * A long value.
+     */
+    LONG("long", "Long", LongProperty.class, Long.class), //$NON-NLS-1$
 
-	/**
-	 * A double value.
-	 */
-	DOUBLE("double", "Double", DoubleProperty.class, Double.class), //$NON-NLS-1$
+    /**
+     * A double value.
+     */
+    DOUBLE("double", "Double", DoubleProperty.class, Double.class), //$NON-NLS-1$
 
-	/**
-	 * A string.
-	 */
-	STRING("string", "String", StringProperty.class, String.class); //$NON-NLS-1$
+    /**
+     * A string.
+     */
+    STRING("string", "String", StringProperty.class, String.class); //$NON-NLS-1$
 
-	/**
-	 * The ID of the property type. Will be used as portable representation of
-	 * the created instance.
-	 */
-	private String _id;
+    /**
+     * The ID of the property type. Will be used as portable representation of
+     * the created instance.
+     */
+    private String _id;
 
-	private String _description;
+    private String _description;
 
-	private Class<?> _javaType;
+    private Class<?> _javaType;
 
-	/**
-	 * A hint for the necessary DAL property type.
-	 */
-	private Class<? extends DynamicValueProperty<?>> _dalType;
+    /**
+     * A hint for the necessary DAL property type.
+     */
+    private Class<? extends DynamicValueProperty<?>> _dalType;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param id
-	 *            The ID. Will be used as portable representation of the created
-	 *            instance.
-	 * @param javaType
-	 *            the Java type, which is expected for property values
-	 * @param dalType
-	 *            a hint for the necessary DAL property type
-	 */
-	private ValueType(final String id, final String description,
-			final Class<? extends DynamicValueProperty<?>> dalType, final Class<?> javaType) {
-		assert id != null;
-		assert description != null;
-		assert dalType != null;
-		assert javaType != null;
-		_id = id;
-		_description = description;
-		_dalType = dalType;
-		_javaType = javaType;
-	}
+    /**
+     * Constructor.
+     *
+     * @param id
+     *            The ID. Will be used as portable representation of the created
+     *            instance.
+     * @param javaType
+     *            the Java type, which is expected for property values
+     * @param dalType
+     *            a hint for the necessary DAL property type
+     */
+    private ValueType(final String id, final String description,
+            final Class<? extends DynamicValueProperty<?>> dalType, final Class<?> javaType) {
+        assert id != null;
+        assert description != null;
+        assert dalType != null;
+        assert javaType != null;
+        _id = id;
+        _description = description;
+        _dalType = dalType;
+        _javaType = javaType;
+    }
 
-	/**
-	 * @return An ID that allows for persisting and recreating instances of this
-	 *         class.
-	 */
-	public String toPortableString() {
-		return _id;
-	}
+    /**
+     * @return An ID that allows for persisting and recreating instances of this
+     *         class.
+     */
+    public String toPortableString() {
+        return _id;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		return _description;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return _description;
+    }
 
-	/**
-	 * Returns the corresponding DAL property type. Note: This is package
-	 * private because we want to abstract from DAL totally.
-	 */
-	public Class<? extends DynamicValueProperty<?>> getDalType() {
-		return _dalType;
-	}
+    /**
+     * Returns the corresponding DAL property type. Note: This is package
+     * private because we want to abstract from DAL totally.
+     */
+    public Class<? extends DynamicValueProperty<?>> getDalType() {
+        return _dalType;
+    }
 
-	/**
-	 * Returns the expected Java type for values of this type.
-	 *
-	 * @return the expected Java type for values of this type
-	 */
-	public Class<?> getJavaType() {
-		return _javaType;
-	}
+    /**
+     * Returns the expected Java type for values of this type.
+     *
+     * @return the expected Java type for values of this type
+     */
+    public Class<?> getJavaType() {
+        return _javaType;
+    }
 
-	/**
-	 * A map that contains all instances of this class.
-	 */
-	private static Map<String, ValueType> _mapping;
+    /**
+     * A map that contains all instances of this class.
+     */
+    private static Map<String, ValueType> _mapping;
 
-	static {
-		_mapping = new HashMap<String, ValueType>();
+    static {
+        _mapping = new HashMap<String, ValueType>();
 
-		for (final ValueType type : ValueType.values()) {
-			_mapping.put(type.toPortableString(), type);
-		}
-	}
+        for (final ValueType type : ValueType.values()) {
+            _mapping.put(type.toPortableString(), type);
+        }
+    }
 
-	/**
-	 * Creates an instance of this class from a string representation.
-	 *
-	 * @param portableString
-	 *            Required.
-	 * @return The instance that is represented by the string or null
-	 */
-	public static ValueType createFromPortable(final String portableString) {
-		assert portableString != null;
-		ValueType result = null;
-		if (_mapping.containsKey(portableString)) {
-			result = _mapping.get(portableString);
-		}
+    /**
+     * Creates an instance of this class from a string representation.
+     *
+     * @param portableString
+     *            Required.
+     * @return The instance that is represented by the string or null
+     */
+    public static ValueType createFromPortable(final String portableString) {
+        assert portableString != null;
+        ValueType result = null;
+        if (_mapping.containsKey(portableString)) {
+            result = _mapping.get(portableString);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
 }

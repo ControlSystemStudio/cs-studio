@@ -36,9 +36,9 @@ import java.util.*;
  * @author Matej Sekoranja
  */
 public abstract class ContainerObject extends VisibleObject {
-	protected boolean useHashtable = true;
-	protected Hashtable subObjects = null;
-	protected Vector subObjectsV = null;
+    protected boolean useHashtable = true;
+    protected Hashtable subObjects = null;
+    protected Vector subObjectsV = null;
 //    private boolean isZoomRepaint;
 /**
  * Insert the method's description here.
@@ -46,9 +46,9 @@ public abstract class ContainerObject extends VisibleObject {
  * @param parent com.cosylab.vdct.graphics.objects.ContainerObject
  */
 public ContainerObject(ContainerObject parent) {
-	super(parent);
-	subObjects = new Hashtable();			// key in not cass senstive
-	subObjectsV = new Vector();				// to keep order
+    super(parent);
+    subObjects = new Hashtable();            // key in not cass senstive
+    subObjectsV = new Vector();                // to keep order
 }
 /**
  * Insert the method's description here.
@@ -57,11 +57,11 @@ public ContainerObject(ContainerObject parent) {
  * @param useHashtable boolean
  */
 public ContainerObject(ContainerObject parent, boolean useHashtable) {
-	super(parent);
-	subObjectsV = new Vector();				// to keep order
-	this.useHashtable=useHashtable;
-	if (useHashtable)
-		subObjects = new Hashtable();			// key in not cass senstive
+    super(parent);
+    subObjectsV = new Vector();                // to keep order
+    this.useHashtable=useHashtable;
+    if (useHashtable)
+        subObjects = new Hashtable();            // key in not cass senstive
 }
 /**
  * Insert the method's description here.
@@ -72,31 +72,31 @@ public ContainerObject(ContainerObject parent, boolean useHashtable) {
 public void addSubObject(String id, VisibleObject object) {
     addSubObject(id, object, subObjectsV.size());
 
-	/*
-	if (this instanceof Group)
-		System.out.println("Added to group "+((Group)this).getAbsoluteName()+" object with id: "+id);
-	*/	
-	
+    /*
+    if (this instanceof Group)
+        System.out.println("Added to group "+((Group)this).getAbsoluteName()+" object with id: "+id);
+    */    
+    
 }
 
 public void addSubObject(String id, VisibleObject object, int position) {
     if (useHashtable)
-	{
-		if (subObjects.containsKey(id))
-		{
-			com.cosylab.vdct.Console.getInstance().println("Object with name "+id+" already in this group -> will not be added.");
-			return;
-		}
-		subObjects.put(id, object);
-	}
+    {
+        if (subObjects.containsKey(id))
+        {
+            com.cosylab.vdct.Console.getInstance().println("Object with name "+id+" already in this group -> will not be added.");
+            return;
+        }
+        subObjects.put(id, object);
+    }
     try {
-    	subObjectsV.add(position, object);
+        subObjectsV.add(position, object);
     } catch (ArrayIndexOutOfBoundsException e) {
-    	subObjectsV.addElement(object);
+        subObjectsV.addElement(object);
     }
 
 
-	if (object.getParent()==null) object.setParent(this);
+    if (object.getParent()==null) object.setParent(this);
 }
 
 /**
@@ -106,15 +106,15 @@ public void addSubObject(String id, VisibleObject object, int position) {
  * @param create
  */
 public void addSubObject(String id, VisibleObject object, boolean create) {
-	addSubObject(id, object);
+    addSubObject(id, object);
 }
 /**
  * Insert the method's description here.
  * Creation date: (28.1.2001 12:04:45)
  */
 public void clear() {
-	if (useHashtable) subObjects.clear();
-	subObjectsV.removeAllElements();
+    if (useHashtable) subObjects.clear();
+    subObjectsV.removeAllElements();
 }
 /**
  * Insert the method's description here.
@@ -123,10 +123,10 @@ public void clear() {
  * @return boolean
  */
 public boolean containsObject(String id) {
-	if (useHashtable)
-		return subObjects.containsKey(id);
-	else
-		return false;
+    if (useHashtable)
+        return subObjects.containsKey(id);
+    else
+        return false;
 }
 /**
  * Insert the method's description here.
@@ -135,10 +135,10 @@ public boolean containsObject(String id) {
  * @param id java.lang.String
  */
 public Object getSubObject(String id) {
-	if (useHashtable)
-		return subObjects.get(id);
-	else
-		return null;
+    if (useHashtable)
+        return subObjects.get(id);
+    else
+        return null;
 }
 /**
  * Insert the method's description here.
@@ -146,7 +146,7 @@ public Object getSubObject(String id) {
  * @return java.util.Hashtable
  */
 public java.util.Hashtable getSubObjects() {
-	return subObjects;
+    return subObjects;
 }
 /**
  * Insert the method's description here.
@@ -154,7 +154,7 @@ public java.util.Hashtable getSubObjects() {
  * @return java.util.Vector
  */
 public java.util.Vector getSubObjectsV() {
-	return subObjectsV;
+    return subObjectsV;
 }
 
 /**
@@ -164,30 +164,30 @@ public java.util.Vector getSubObjectsV() {
  * @return java.lang.Object
  */
 public Object removeObject(String id) {
-	if (useHashtable) {
-		Object object = subObjects.remove(id);
-		if (object!=null) subObjectsV.removeElement(object);
+    if (useHashtable) {
+        Object object = subObjects.remove(id);
+        if (object!=null) subObjectsV.removeElement(object);
 
-		/*
-		if (object!=null)
-			System.out.println("Removed: "+id+"["+object.toString()+"]");
-		else
-			System.out.println("Failed to remove: "+id);
-		*/
-			
-		return object;
-	}
-	else 
-		return null;
+        /*
+        if (object!=null)
+            System.out.println("Removed: "+id+"["+object.toString()+"]");
+        else
+            System.out.println("Failed to remove: "+id);
+        */
+            
+        return object;
+    }
+    else 
+        return null;
 }
 
 public void updateFields() {
-	Enumeration e = getSubObjectsV().elements();
-	while (e.hasMoreElements()) {
-		Object o = e.nextElement();
-		if (o instanceof ContainerObject)
-			((ContainerObject)o).updateFields();	
-	}
+    Enumeration e = getSubObjectsV().elements();
+    while (e.hasMoreElements()) {
+        Object o = e.nextElement();
+        if (o instanceof ContainerObject)
+            ((ContainerObject)o).updateFields();    
+    }
 }
 
 //public void setZoomRepaint(boolean zoomRepaint) {

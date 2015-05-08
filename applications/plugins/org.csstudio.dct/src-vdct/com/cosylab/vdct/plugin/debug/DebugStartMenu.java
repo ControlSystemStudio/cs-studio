@@ -53,8 +53,8 @@ import com.cosylab.vdct.vdb.VDBRecordData;
  */
 public class DebugStartMenu extends JMenu implements PluginListener
 {
-	private class DebugPluginMenuItem extends JMenuItem implements PropertyChangeListener, ActionListener, Runnable
-	{
+    private class DebugPluginMenuItem extends JMenuItem implements PropertyChangeListener, ActionListener, Runnable
+    {
 /**
  * Insert the method's description here.
  * Creation date: (7.12.2001 17:06:52)
@@ -62,33 +62,33 @@ public class DebugStartMenu extends JMenu implements PluginListener
  */
 public DebugPluginMenuItem(PluginObject plugin)
 {
-	addActionListener(this);
+    addActionListener(this);
     setPlugin(plugin);
 }
 
 public void actionPerformed(ActionEvent event)
 {
-	if (plugin!=null)
-	{
+    if (plugin!=null)
+    {
 
-		if (PluginDebugManager.getDebugPlugin()!=null)
-		{
-			Console.getInstance().println("Debug plugin '" + PluginDebugManager.getDebugPlugin().getName()+ "' is already running, stop it first...");
-			Toolkit.getDefaultToolkit().beep();
-			return;
-		}
-		
-		DebugPlugin debugPlugin = (DebugPlugin)plugin.getPlugin();
+        if (PluginDebugManager.getDebugPlugin()!=null)
+        {
+            Console.getInstance().println("Debug plugin '" + PluginDebugManager.getDebugPlugin().getName()+ "' is already running, stop it first...");
+            Toolkit.getDefaultToolkit().beep();
+            return;
+        }
+        
+        DebugPlugin debugPlugin = (DebugPlugin)plugin.getPlugin();
 
-		Console.getInstance().println("Starting debugging with '" + debugPlugin.getName()+ "'...");
+        Console.getInstance().println("Starting debugging with '" + debugPlugin.getName()+ "'...");
 
-		PluginDebugManager.setDebugPlugin(debugPlugin);
-		PluginDebugManager.setDebugState(true);
-		debugPlugin.startDebugging();
+        PluginDebugManager.setDebugPlugin(debugPlugin);
+        PluginDebugManager.setDebugState(true);
+        debugPlugin.startDebugging();
 
-	
-		new Thread(this).start();
-	}
+    
+        new Thread(this).start();
+    }
 }
 
 /**
@@ -98,104 +98,104 @@ public void actionPerformed(ActionEvent event)
 public void run()
 {
 
-	DebugPlugin debugPlugin = PluginDebugManager.getDebugPlugin();
-	
+    DebugPlugin debugPlugin = PluginDebugManager.getDebugPlugin();
+    
 
-	// all new (or deleted) filed are not updated
-	// if field has InspectableProperty.ALWAYS_VISIBLE visibility then is is monitored
-	// VAL fields is always registered
-	final String valFieldName = "VAL";
-	
-	// count loop
-	int recordCount = 0;
-	Stack groupStack = new Stack();
-	groupStack.push(Group.getRoot());
+    // all new (or deleted) filed are not updated
+    // if field has InspectableProperty.ALWAYS_VISIBLE visibility then is is monitored
+    // VAL fields is always registered
+    final String valFieldName = "VAL";
+    
+    // count loop
+    int recordCount = 0;
+    Stack groupStack = new Stack();
+    groupStack.push(Group.getRoot());
 
-	while (!groupStack.isEmpty())
-	{
-		Group group = (Group)groupStack.pop();
-		Enumeration e = group.getSubObjectsV().elements();
-		while (e.hasMoreElements())
-		{
-			Object obj = e.nextElement();
-			if (obj instanceof Record)
-				recordCount++;
-			else if (obj instanceof Group)
-				groupStack.push(obj);
-		}
-	}
+    while (!groupStack.isEmpty())
+    {
+        Group group = (Group)groupStack.pop();
+        Enumeration e = group.getSubObjectsV().elements();
+        while (e.hasMoreElements())
+        {
+            Object obj = e.nextElement();
+            if (obj instanceof Record)
+                recordCount++;
+            else if (obj instanceof Group)
+                groupStack.push(obj);
+        }
+    }
 
 
-	// connect loop
-	groupStack.push(Group.getRoot());
+    // connect loop
+    groupStack.push(Group.getRoot());
 
-	int progress = 0;
-	ProgressMonitor progressMonitor = new ProgressMonitor(VisualDCT.getInstance(),
-								"Connecting to PVs",
-								"Initializing...", 0, recordCount);
-	progressMonitor.setProgress(0);
+    int progress = 0;
+    ProgressMonitor progressMonitor = new ProgressMonitor(VisualDCT.getInstance(),
+                                "Connecting to PVs",
+                                "Initializing...", 0, recordCount);
+    progressMonitor.setProgress(0);
 
-	while (!groupStack.isEmpty())
-	{
+    while (!groupStack.isEmpty())
+    {
 
-		Group group = (Group)groupStack.pop();
-		Enumeration e = group.getSubObjectsV().elements();
-		while (e.hasMoreElements() && !progressMonitor.isCanceled())
-		{
-			Object obj = e.nextElement();
-			if (obj instanceof Record)
-			{
-				VDBRecordData rec = ((Record)obj).getRecordData();
-				Enumeration e2 = rec.getFieldsV().elements();
-				while (e2.hasMoreElements() && !progressMonitor.isCanceled() && PluginDebugManager.isDebugState())
-				{
-					VDBFieldData field = (VDBFieldData)e2.nextElement();
-						
-					if (field.getVisibility() == InspectableProperty.ALWAYS_VISIBLE && !field.equals(valFieldName))
-					{
-						progressMonitor.setNote("Connecting to "+field.getFullName()+"...");
-						debugPlugin.registerMonitor(field);
-					}
-				}
-	
-				if (progressMonitor.isCanceled() || !PluginDebugManager.isDebugState())
-					break;
-	
-				// always register VAL field
-				Debuggable valField = (Debuggable)rec.getField(valFieldName);
-				if (valField != null)
-				{
-					progressMonitor.setNote("Connecting to "+valField.getFullName()+"...");
-					debugPlugin.registerMonitor(valField);
-				}
-						
-			}
-			else if (obj instanceof Group)
-				groupStack.push(obj);
-				
-			progress++;
-			progressMonitor.setProgress(progress);
-				
-		}
-	}
-	
-			
-	if (progressMonitor.isCanceled() /*|| !PluginDebugManager.isDebugState()*/)
-	{
-		Console.getInstance().println("Debugging canceled.");
-		debugPlugin.deregisterAll();
-		debugPlugin.stopDebugging();
-		PluginDebugManager.setDebugState(false);
-		PluginDebugManager.setDebugPlugin(null);
-	}
+        Group group = (Group)groupStack.pop();
+        Enumeration e = group.getSubObjectsV().elements();
+        while (e.hasMoreElements() && !progressMonitor.isCanceled())
+        {
+            Object obj = e.nextElement();
+            if (obj instanceof Record)
+            {
+                VDBRecordData rec = ((Record)obj).getRecordData();
+                Enumeration e2 = rec.getFieldsV().elements();
+                while (e2.hasMoreElements() && !progressMonitor.isCanceled() && PluginDebugManager.isDebugState())
+                {
+                    VDBFieldData field = (VDBFieldData)e2.nextElement();
+                        
+                    if (field.getVisibility() == InspectableProperty.ALWAYS_VISIBLE && !field.equals(valFieldName))
+                    {
+                        progressMonitor.setNote("Connecting to "+field.getFullName()+"...");
+                        debugPlugin.registerMonitor(field);
+                    }
+                }
+    
+                if (progressMonitor.isCanceled() || !PluginDebugManager.isDebugState())
+                    break;
+    
+                // always register VAL field
+                Debuggable valField = (Debuggable)rec.getField(valFieldName);
+                if (valField != null)
+                {
+                    progressMonitor.setNote("Connecting to "+valField.getFullName()+"...");
+                    debugPlugin.registerMonitor(valField);
+                }
+                        
+            }
+            else if (obj instanceof Group)
+                groupStack.push(obj);
+                
+            progress++;
+            progressMonitor.setProgress(progress);
+                
+        }
+    }
+    
+            
+    if (progressMonitor.isCanceled() /*|| !PluginDebugManager.isDebugState()*/)
+    {
+        Console.getInstance().println("Debugging canceled.");
+        debugPlugin.deregisterAll();
+        debugPlugin.stopDebugging();
+        PluginDebugManager.setDebugState(false);
+        PluginDebugManager.setDebugPlugin(null);
+    }
 
-	progressMonitor.close();
+    progressMonitor.close();
 
-	Group.getRoot().unconditionalValidateSubObjects(false);
-	DrawingSurface.getInstance().repaint();
+    Group.getRoot().unconditionalValidateSubObjects(false);
+    DrawingSurface.getInstance().repaint();
 
 }
-	
+    
 
 /**
  * Insert the method's description here.
@@ -205,16 +205,16 @@ public void run()
  */
 public void setPlugin(PluginObject newPlugin)
 {
-	if (plugin!=null)
-		plugin.removePropertyChangeListener(this);
+    if (plugin!=null)
+        plugin.removePropertyChangeListener(this);
 
-	plugin = newPlugin;
+    plugin = newPlugin;
 
-	if (plugin!=null)
-	{
-		plugin.addPropertyChangeListener(this);
-		updateStatus();
-	}
+    if (plugin!=null)
+    {
+        plugin.addPropertyChangeListener(this);
+        updateStatus();
+    }
 }
 
 /**
@@ -224,8 +224,8 @@ public void setPlugin(PluginObject newPlugin)
  */
 public void propertyChange(PropertyChangeEvent evt)
 {
-	if (evt.getPropertyName().equals("Status"))
-		updateStatus();
+    if (evt.getPropertyName().equals("Status"))
+        updateStatus();
 }
 
 /**
@@ -236,10 +236,10 @@ public void propertyChange(PropertyChangeEvent evt)
  */
 private void updateStatus()
 {
-	if (plugin!=null)
-	{
-		this.setEnabled(plugin.getStatus()==PluginObject.PLUGIN_STARTED);
-	}
+    if (plugin!=null)
+    {
+        this.setEnabled(plugin.getStatus()==PluginObject.PLUGIN_STARTED);
+    }
 }
 
 /**
@@ -247,13 +247,13 @@ private void updateStatus()
  * Creation date: (7.12.2001 17:06:11)
  * @param
  * @return
- */	
+ */    
 public String getText()
 {
-	if( plugin!=null )
-		return plugin.getName();
-	else
-		return "";
+    if( plugin!=null )
+        return plugin.getName();
+    else
+        return "";
 }
 
 /**
@@ -264,18 +264,18 @@ public String getText()
  */
 public Icon getIcon()
 {
-	/*if( plugin!=null )
-		return plugin.getIcon();
-	else*/
-		return null;
+    /*if( plugin!=null )
+        return plugin.getIcon();
+    else*/
+        return null;
 }
 
 
 
-		private PluginObject plugin = null;
-	}
+        private PluginObject plugin = null;
+    }
 
-	private Map exportMenuItems = new HashMap();
+    private Map exportMenuItems = new HashMap();
 /**
  * Insert the method's description here.
  * Creation date: (7.12.2001 17:08:53)
@@ -291,9 +291,9 @@ public DebugStartMenu()
  */
 public void init()
 {
-	PluginManager.getInstance().addPluginListener(this);
-	if (getItemCount()==0)
-		setEnabled(false);
+    PluginManager.getInstance().addPluginListener(this);
+    if (getItemCount()==0)
+        setEnabled(false);
 
 }
 /**
@@ -303,20 +303,20 @@ public void init()
  */
 public void pluginAdded(PluginObject plugin)
 {
-	if (plugin.getPlugin() instanceof DebugPlugin)
-	{
-		if( plugin.getStatus()==PluginObject.PLUGIN_NOT_LOADED ||
-		    plugin.getStatus()==PluginObject.PLUGIN_INVALID )
-			    return;
+    if (plugin.getPlugin() instanceof DebugPlugin)
+    {
+        if( plugin.getStatus()==PluginObject.PLUGIN_NOT_LOADED ||
+            plugin.getStatus()==PluginObject.PLUGIN_INVALID )
+                return;
 
-		DebugPluginMenuItem menu = new DebugPluginMenuItem(plugin);
+        DebugPluginMenuItem menu = new DebugPluginMenuItem(plugin);
 
-		add(menu);
-		exportMenuItems.put(plugin, menu);
+        add(menu);
+        exportMenuItems.put(plugin, menu);
 
-		if (getItemCount()>0)
-			setEnabled(true);
-	}
+        if (getItemCount()>0)
+            setEnabled(true);
+    }
 
 }
 /**
@@ -326,18 +326,18 @@ public void pluginAdded(PluginObject plugin)
  */
 public void pluginRemoved(PluginObject plugin)
 {
-	if (plugin.getPlugin() instanceof DebugPlugin)
-	{
-		DebugPluginMenuItem menuItem = (DebugPluginMenuItem)exportMenuItems.remove(plugin);
+    if (plugin.getPlugin() instanceof DebugPlugin)
+    {
+        DebugPluginMenuItem menuItem = (DebugPluginMenuItem)exportMenuItems.remove(plugin);
 
-		if (menuItem!=null)
-		{
-			remove(menuItem);
-			menuItem.setPlugin(null);
+        if (menuItem!=null)
+        {
+            remove(menuItem);
+            menuItem.setPlugin(null);
 
-			if (getItemCount()==0)
-				setEnabled(false);
-		}
-	}
+            if (getItemCount()==0)
+                setEnabled(false);
+        }
+    }
 }
 }

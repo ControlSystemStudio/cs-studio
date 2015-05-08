@@ -39,15 +39,15 @@ import com.cosylab.vdct.inspector.*;
  * @author Matej Sekoranja
  */
 public class MonitoredActionProperty implements InspectableProperty {
-	private String value;
-	private MonitoredPropertyListener listener = null;
-	private static final String nullString = "";
+    private String value;
+    private MonitoredPropertyListener listener = null;
+    private static final String nullString = "";
 /**
  * DTYPInfoProperty constructor comment.
  */
 public MonitoredActionProperty(String value, MonitoredPropertyListener listener) {
-	this.value=value;
-	this.listener=listener;
+    this.value=value;
+    this.listener=listener;
 }
 /**
  * Insert the method's description here.
@@ -55,7 +55,7 @@ public MonitoredActionProperty(String value, MonitoredPropertyListener listener)
  * @return boolean
  */
 public boolean allowsOtherValues() {
-	return false;
+    return false;
 }
 /**
  * Insert the method's description here.
@@ -63,7 +63,7 @@ public boolean allowsOtherValues() {
  * @return java.lang.String
  */
 public String getHelp() {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -71,7 +71,7 @@ public String getHelp() {
  * @return java.lang.String
  */
 public String getName() {
-	return nullString;
+    return nullString;
 }
 /**
  * Insert the method's description here.
@@ -79,7 +79,7 @@ public String getName() {
  * @return java.lang.String[]
  */
 public java.lang.String[] getSelectableValues() {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -87,7 +87,7 @@ public java.lang.String[] getSelectableValues() {
  * @return java.lang.String
  */
 public String getValue() {
-	return value;
+    return value;
 }
 /**
  * Insert the method's description here.
@@ -96,7 +96,7 @@ public String getValue() {
  */
 public String getInitValue()
 {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -104,7 +104,7 @@ public String getInitValue()
  * @return boolean
  */
 public boolean isEditable() {
-	return false;
+    return false;
 }
 /**
  * Insert the method's description here.
@@ -112,7 +112,7 @@ public boolean isEditable() {
  * @return boolean
  */
 public boolean isSepatator() {
-	return true;
+    return true;
 }
 /**
  * Insert the method's description here.
@@ -120,7 +120,7 @@ public boolean isSepatator() {
  * @param value java.lang.String
  */
 public void setValue(String value) {
-	this.value=value;
+    this.value=value;
 }
 /**
  * Insert the method's description here.
@@ -129,7 +129,7 @@ public void setValue(String value) {
  */
 public Pattern getEditPattern()
 {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -138,7 +138,7 @@ public Pattern getEditPattern()
  */
 public String getToolTipText()
 {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -147,7 +147,7 @@ public String getToolTipText()
  */
 public boolean isValid()
 {
-	return true;
+    return true;
 }
 /**
  * Insert the method's description here.
@@ -156,7 +156,7 @@ public boolean isValid()
  */
 public int getVisibility()
 {
-	return InspectableProperty.UNDEFINED_VISIBILITY;
+    return InspectableProperty.UNDEFINED_VISIBILITY;
 }
 /**
  * Insert the method's description here.
@@ -167,7 +167,7 @@ public int getVisibility()
  */
 public void popupEvent(Component component, int x, int y)
 {
-	listener.addProperty();
+    listener.addProperty();
 }
 
 }

@@ -37,14 +37,14 @@ import javax.swing.JComponent;
  * @author Matej Sekoranja
  */
 public class NullCommand extends Command {
-	private JComponent component;
+    private JComponent component;
 /**
  * Insert the method's description here.
  * Creation date: (21.12.2000 22:43:26)
  * @param component javax.swing.JComponent
  */
 public NullCommand(JComponent component) {
-	this.component=component;
+    this.component=component;
 }
 /**
  * Insert the method's description here.
@@ -58,6 +58,6 @@ public void execute() {
  * @return javax.swing.JComponent
  */
 public JComponent getComponent() {
-	return component;
+    return component;
 }
 }

@@ -21,20 +21,20 @@ import org.junit.Test;
  */
 public class DelayCheckUnitTest
 {
-	@Test
-	public void testDelay() throws Exception
-	{
-		final DelayCheck delay = new DelayCheck(1, TimeUnit.SECONDS);
-		// Fresh check has not expired
-		assertFalse(delay.expired());
-		
-		// After 1.5 times the configured delay, it should have expired
-		Thread.sleep(1500);
-		assertTrue(delay.expired());
-		
-		// Then again not until another 1.5 times of the delay
-		assertFalse(delay.expired());
-		Thread.sleep(1500);
-		assertTrue(delay.expired());
-	}
+    @Test
+    public void testDelay() throws Exception
+    {
+        final DelayCheck delay = new DelayCheck(1, TimeUnit.SECONDS);
+        // Fresh check has not expired
+        assertFalse(delay.expired());
+        
+        // After 1.5 times the configured delay, it should have expired
+        Thread.sleep(1500);
+        assertTrue(delay.expired());
+        
+        // Then again not until another 1.5 times of the delay
+        assertFalse(delay.expired());
+        Thread.sleep(1500);
+        assertTrue(delay.expired());
+    }
 }

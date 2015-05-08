@@ -37,67 +37,67 @@ import org.junit.Test;
  */
 public final class RuleStateTest {
 
-	/**
-	 * A test channel reference.
-	 */
-	private ParameterDescriptor _channelReference1;
+    /**
+     * A test channel reference.
+     */
+    private ParameterDescriptor _channelReference1;
 
-	/**
-	 * A test channel reference.
-	 */
-	private ParameterDescriptor _channelReference2;
+    /**
+     * A test channel reference.
+     */
+    private ParameterDescriptor _channelReference2;
 
-	/**
-	 * A test rule state.
-	 */
-	private RuleState _state;
+    /**
+     * A test rule state.
+     */
+    private RuleState _state;
 
-	/**
-	 */
-	@Before
-	public void setUp() {
-		_channelReference1 = new ParameterDescriptor("channel1", "1.0"); //$NON-NLS-1$
-		_channelReference2 = new ParameterDescriptor("channel2", "aa"); //$NON-NLS-1$
+    /**
+     */
+    @Before
+    public void setUp() {
+        _channelReference1 = new ParameterDescriptor("channel1", "1.0"); //$NON-NLS-1$
+        _channelReference2 = new ParameterDescriptor("channel2", "aa"); //$NON-NLS-1$
 
-		_state = new RuleState(new ParameterDescriptor[] { _channelReference1,
-				_channelReference2 });
-	}
+        _state = new RuleState(new ParameterDescriptor[] { _channelReference1,
+                _channelReference2 });
+    }
 
-	/**
-	 * Test method for class
-	 * {@link org.csstudio.sds.internal.model.logic.RuleState}.
-	 */
-	@Test
-	public void testState() {
-		Object[] recentValues = _state.getRecentParameterValues();
+    /**
+     * Test method for class
+     * {@link org.csstudio.sds.internal.model.logic.RuleState}.
+     */
+    @Test
+    public void testState() {
+        Object[] recentValues = _state.getRecentParameterValues();
 
-		assertEquals(2, recentValues.length);
-		assertEquals("1.0", recentValues[0]);
-		assertEquals("aa", recentValues[1]);
-//		assertNull(recentValues[0]);
-//		assertNull(recentValues[1]);
+        assertEquals(2, recentValues.length);
+        assertEquals("1.0", recentValues[0]);
+        assertEquals("aa", recentValues[1]);
+//        assertNull(recentValues[0]);
+//        assertNull(recentValues[1]);
 
-		// update value 1
-		Object value1 = new Object();
-		_state.cacheParameterValue(_channelReference1, value1);
+        // update value 1
+        Object value1 = new Object();
+        _state.cacheParameterValue(_channelReference1, value1);
 
-		// check
-		recentValues = _state.getRecentParameterValues();
+        // check
+        recentValues = _state.getRecentParameterValues();
 
-		assertEquals(2, recentValues.length);
-		assertEquals(value1, recentValues[0]);
-		assertEquals("aa", recentValues[1]);
-//		assertNull(recentValues[1]);
+        assertEquals(2, recentValues.length);
+        assertEquals(value1, recentValues[0]);
+        assertEquals("aa", recentValues[1]);
+//        assertNull(recentValues[1]);
 
-		// update value 2
-		Object value2 = new Object();
-		_state.cacheParameterValue(_channelReference2, value2);
+        // update value 2
+        Object value2 = new Object();
+        _state.cacheParameterValue(_channelReference2, value2);
 
-		// check
-		recentValues = _state.getRecentParameterValues();
+        // check
+        recentValues = _state.getRecentParameterValues();
 
-		assertEquals(2, recentValues.length);
-		assertEquals(value1, recentValues[0]);
-		assertEquals(value2, recentValues[1]);
-	}
+        assertEquals(2, recentValues.length);
+        assertEquals(value1, recentValues[0]);
+        assertEquals(value2, recentValues[1]);
+    }
 }

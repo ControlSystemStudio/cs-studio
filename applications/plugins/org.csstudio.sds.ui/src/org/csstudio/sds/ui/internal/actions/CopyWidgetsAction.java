@@ -33,33 +33,33 @@ import org.eclipse.ui.IWorkbenchPart;
  * 
  */
 public final class CopyWidgetsAction extends AbstractCutCopyWidgetsAction {
-	/**
-	 * Action ID of this action.
-	 */
-	public static final String ID = "org.csstudio.sds.ui.internal.actions.CopyWidgetsAction";
+    /**
+     * Action ID of this action.
+     */
+    public static final String ID = "org.csstudio.sds.ui.internal.actions.CopyWidgetsAction";
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param workbenchPart
-	 *            a workbench part
-	 */
-	public CopyWidgetsAction(final IWorkbenchPart workbenchPart) {
-		super(workbenchPart);
-		setId(ID);
-		setText("Copy");
-		setActionDefinitionId("org.eclipse.ui.edit.copy");
-	}
+    /**
+     * Constructor.
+     * 
+     * @param workbenchPart
+     *            a workbench part
+     */
+    public CopyWidgetsAction(final IWorkbenchPart workbenchPart) {
+        super(workbenchPart);
+        setId(ID);
+        setText("Copy");
+        setActionDefinitionId("org.eclipse.ui.edit.copy");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void run() {
-		List<AbstractWidgetModel> widgets = getSelectedWidgetModels();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void run() {
+        List<AbstractWidgetModel> widgets = getSelectedWidgetModels();
 
-		if (widgets.size() > 0) {
-			copyToClipboard(widgets);
-		}
-	}
+        if (widgets.size() > 0) {
+            copyToClipboard(widgets);
+        }
+    }
 }

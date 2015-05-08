@@ -23,14 +23,14 @@ import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModel;
 public abstract class AbstractChannelWidgetEditPart<F extends AbstractChannelWidgetFigure<?>,
     M extends AbstractSelectionWidgetModel> extends AbstractSelectionWidgetEditpart<F, M>
     implements ChannelQueryAdaptable {
-	
-	@Override
-	public Collection<ChannelQuery> toChannelQueries() {
-		return selectionToTypeCollection(ChannelQuery.class);
-	}
-	
-	@Override
-	public Collection<Channel> toChannels() {
-		return selectionToTypeCollection(Channel.class);
-	}
+    
+    @Override
+    public Collection<ChannelQuery> toChannelQueries() {
+        return selectionToTypeCollection(ChannelQuery.class);
+    }
+    
+    @Override
+    public Collection<Channel> toChannels() {
+        return selectionToTypeCollection(Channel.class);
+    }
 }

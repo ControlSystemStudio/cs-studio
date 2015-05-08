@@ -36,29 +36,29 @@ import org.csstudio.platform.internal.ldapauthorization.Activator;
  * @author Joerg Rathlev
  */
 public class PreferencePage extends FieldEditorPreferencePage implements
-		IWorkbenchPreferencePage {
+        IWorkbenchPreferencePage {
 
-	public PreferencePage() {
-		super(GRID);
-		setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(),
-				Activator.getDefault().getBundle().getSymbolicName()));
-	}
-	
-	@Override
-	protected void createFieldEditors() {
-		addField(new StringFieldEditor(PreferenceConstants.LDAP_URL,
-				"URL:",
-				getFieldEditorParent()));
-		addField(new StringFieldEditor(PreferenceConstants.LDAP_USER,
-				"User:",
-				getFieldEditorParent()));
-		addField(new StringFieldEditor(PreferenceConstants.LDAP_PASSWORD,
-				"Password:",
-				getFieldEditorParent()));
-	}
+    public PreferencePage() {
+        super(GRID);
+        setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(),
+                Activator.getDefault().getBundle().getSymbolicName()));
+    }
+    
+    @Override
+    protected void createFieldEditors() {
+        addField(new StringFieldEditor(PreferenceConstants.LDAP_URL,
+                "URL:",
+                getFieldEditorParent()));
+        addField(new StringFieldEditor(PreferenceConstants.LDAP_USER,
+                "User:",
+                getFieldEditorParent()));
+        addField(new StringFieldEditor(PreferenceConstants.LDAP_PASSWORD,
+                "Password:",
+                getFieldEditorParent()));
+    }
 
-	public void init(IWorkbench workbench) {
-		// nothing to do
-	}
+    public void init(IWorkbench workbench) {
+        // nothing to do
+    }
 
 }

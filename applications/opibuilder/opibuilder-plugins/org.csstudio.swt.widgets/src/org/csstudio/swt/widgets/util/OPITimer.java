@@ -25,21 +25,21 @@ import org.csstudio.java.thread.ExecutionService;
  */
 public class OPITimer {
 
-	private Runnable task;
-	
-	private long delay;
-	
-	private boolean due = true;
-	
-	private ScheduledFuture<?> dueTaskFuture, scheduledTaskFuture;
-	
-	private final Runnable dueTask = new Runnable() {
-		
-			public void run() {
-				due = true;						
-			}
-		};
-	/**
+    private Runnable task;
+    
+    private long delay;
+    
+    private boolean due = true;
+    
+    private ScheduledFuture<?> dueTaskFuture, scheduledTaskFuture;
+    
+    private final Runnable dueTask = new Runnable() {
+        
+            public void run() {
+                due = true;                        
+            }
+        };
+    /**
      * Schedules the specified task for execution after the specified delay.
      *
      * @param task  task to be scheduled.
@@ -49,49 +49,49 @@ public class OPITimer {
      * @throws IllegalStateException if task was already scheduled or
      *         canceled, or timer was canceled.
      */
-    public synchronized void start(final Runnable task, long delay) {    	
-    	this.delay = delay;
-    	this.task = task;
-    	if(!due)
-    		stop();
-    	
-    	//mark it as due before task started
-    	dueTaskFuture = ExecutionService.getInstance().getScheduledExecutorService().schedule(
-    			dueTask, delay-1, TimeUnit.MILLISECONDS);
-    	
-    	//start task
-    	scheduledTaskFuture = ExecutionService.getInstance().getScheduledExecutorService().schedule(
-    			task, delay, TimeUnit.MILLISECONDS);    	
-    	
+    public synchronized void start(final Runnable task, long delay) {        
+        this.delay = delay;
+        this.task = task;
+        if(!due)
+            stop();
+        
+        //mark it as due before task started
+        dueTaskFuture = ExecutionService.getInstance().getScheduledExecutorService().schedule(
+                dueTask, delay-1, TimeUnit.MILLISECONDS);
+        
+        //start task
+        scheduledTaskFuture = ExecutionService.getInstance().getScheduledExecutorService().schedule(
+                task, delay, TimeUnit.MILLISECONDS);        
+        
 
-    	due = false;
+        due = false;
     }
-	
+    
     /**
      * Reset the timer to start from zero again.
      */
     public synchronized void reset(){
-    	if(!due)
-    		start(task, delay);
+        if(!due)
+            start(task, delay);
     }
     
     /**
      * @return true if timer is due
      */
     public synchronized boolean isDue(){
-    	return due;
+        return due;
     }
     
-	/**
-	 * Stop the timer. Cancel the scheduled task.
-	 */
-	public synchronized void stop(){		
-		if(dueTaskFuture != null){
-			dueTaskFuture.cancel(false);
-		}
-		if(scheduledTaskFuture != null)
-			scheduledTaskFuture.cancel(false);
-		due =true;
-	}
-	
+    /**
+     * Stop the timer. Cancel the scheduled task.
+     */
+    public synchronized void stop(){        
+        if(dueTaskFuture != null){
+            dueTaskFuture.cancel(false);
+        }
+        if(scheduledTaskFuture != null)
+            scheduledTaskFuture.cancel(false);
+        due =true;
+    }
+    
 }

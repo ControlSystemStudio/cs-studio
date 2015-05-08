@@ -26,49 +26,49 @@ import org.csstudio.dal.simple.SimpleDALBroker;
  * 
  */
 public final class DataAccessLayerTest4 extends TestCase {
-	private static final ConnectionParameters TYPED_PARAMETERS = new ConnectionParameters(
-			new RemoteInfo("DAL-EPICS", "Random:111", null, null), Double.class);
+    private static final ConnectionParameters TYPED_PARAMETERS = new ConnectionParameters(
+            new RemoteInfo("DAL-EPICS", "Random:111", null, null), Double.class);
 
-	private SimpleDALBroker broker;
+    private SimpleDALBroker broker;
 
-	@Override
-	protected void setUp() throws Exception {
-		broker = SimpleDALBroker.newInstance(DalPlugin.getDefault()
-				.getApplicationContext());
-	}
+    @Override
+    protected void setUp() throws Exception {
+        broker = SimpleDALBroker.newInstance(DalPlugin.getDefault()
+                .getApplicationContext());
+    }
 
-	@Override
-	protected void tearDown() throws Exception {
-	}
+    @Override
+    protected void tearDown() throws Exception {
+    }
 
-	public void test() throws Exception {
-		ChannelListener listener = new ChannelListener() {
+    public void test() throws Exception {
+        ChannelListener listener = new ChannelListener() {
 
-			public void channelDataUpdate(AnyDataChannel channel) {
-				AnyData data = channel.getData();
-				MetaData meta = data != null ? data.getMetaData() : null;
-				System.out.println("Channel Data Update Received ("
-						+ (data != null ? data : "no value") + "; "
-						+ (meta != null ? meta : "no metadata") + ")");
-			}
+            public void channelDataUpdate(AnyDataChannel channel) {
+                AnyData data = channel.getData();
+                MetaData meta = data != null ? data.getMetaData() : null;
+                System.out.println("Channel Data Update Received ("
+                        + (data != null ? data : "no value") + "; "
+                        + (meta != null ? meta : "no metadata") + ")");
+            }
 
-			public void channelStateUpdate(AnyDataChannel channel) {
-				AnyData data = channel.getData();
-				MetaData meta = data != null ? data.getMetaData() : null;
-				System.out.println("Channel State Update Received ("
-						+ (data != null ? data : "no value") + "; "
-						+ (meta != null ? meta : "no metadata") + ")");
-			}
+            public void channelStateUpdate(AnyDataChannel channel) {
+                AnyData data = channel.getData();
+                MetaData meta = data != null ? data.getMetaData() : null;
+                System.out.println("Channel State Update Received ("
+                        + (data != null ? data : "no value") + "; "
+                        + (meta != null ? meta : "no metadata") + ")");
+            }
 
-		};
+        };
 
-		broker.registerListener(TYPED_PARAMETERS, listener);
+        broker.registerListener(TYPED_PARAMETERS, listener);
 
-		Thread.sleep(2000);
+        Thread.sleep(2000);
 
-		System.out
-				.println("Start SOFT-IOC now!! (Do you receive any updates??)");
+        System.out
+                .println("Start SOFT-IOC now!! (Do you receive any updates??)");
 
-		Thread.sleep(60000);
-	}
+        Thread.sleep(60000);
+    }
 }

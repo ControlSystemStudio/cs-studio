@@ -33,64 +33,64 @@ import org.eclipse.gef.requests.DropRequest;
  * @author Sven Wende, Kai Meyer
  */
 public final class DropPvRequest extends org.eclipse.gef.Request implements DropRequest {
-	/**
-	 * The identifier of the type.
-	 */
-	public static final String REQ_DROP_PV = "REQ_DROP_PV";
+    /**
+     * The identifier of the type.
+     */
+    public static final String REQ_DROP_PV = "REQ_DROP_PV";
 
-	/**
-	 * The drop location.
-	 */
-	private Point _location;
+    /**
+     * The drop location.
+     */
+    private Point _location;
 
-	/**
-	 * The dropped process variables..
-	 */
-	private List<IProcessVariableAddress> _droppedProcessVariables;
+    /**
+     * The dropped process variables..
+     */
+    private List<IProcessVariableAddress> _droppedProcessVariables;
 
-	/**
-	 * Constructor.
-	 */
-	public DropPvRequest() {
-		setType(REQ_DROP_PV);
-	}
+    /**
+     * Constructor.
+     */
+    public DropPvRequest() {
+        setType(REQ_DROP_PV);
+    }
 
-	/**
-	 * Sets the location of the drop.
-	 * 
-	 * @param location
-	 *            the location of the drop
-	 */
-	public void setLocation(final Point location) {
-		_location = location;
-	}
+    /**
+     * Sets the location of the drop.
+     * 
+     * @param location
+     *            the location of the drop
+     */
+    public void setLocation(final Point location) {
+        _location = location;
+    }
 
-	/**
-	 * Returns the location of the drop.
-	 * 
-	 * @return Point The location of the drop.
-	 */
-	public Point getLocation() {
-		return _location;
-	}
+    /**
+     * Returns the location of the drop.
+     * 
+     * @return Point The location of the drop.
+     */
+    public Point getLocation() {
+        return _location;
+    }
 
-	/**
-	 * Sets the dropped process variables.
-	 * 
-	 * @param droppedProcessVariables
-	 *            the dropped process variables.
-	 */
-	public void setDroppedProcessVariables(final List<IProcessVariableAddress> droppedProcessVariables) {
-		_droppedProcessVariables = droppedProcessVariables;
-	}
+    /**
+     * Sets the dropped process variables.
+     * 
+     * @param droppedProcessVariables
+     *            the dropped process variables.
+     */
+    public void setDroppedProcessVariables(final List<IProcessVariableAddress> droppedProcessVariables) {
+        _droppedProcessVariables = droppedProcessVariables;
+    }
 
-	/**
-	 * Returns the dropped process variables
-	 * 
-	 * @return String The name of the PV.
-	 */
-	public List<IProcessVariableAddress> getDroppedProcessVariables() {
-		return _droppedProcessVariables;
-	}
+    /**
+     * Returns the dropped process variables
+     * 
+     * @return String The name of the PV.
+     */
+    public List<IProcessVariableAddress> getDroppedProcessVariables() {
+        return _droppedProcessVariables;
+    }
 
 }

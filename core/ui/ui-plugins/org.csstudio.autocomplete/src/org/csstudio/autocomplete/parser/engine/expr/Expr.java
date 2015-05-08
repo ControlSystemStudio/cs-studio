@@ -11,13 +11,13 @@ package org.csstudio.autocomplete.parser.engine.expr;
 
 public abstract class Expr {
 
-	public final ExprType type;
+    public final ExprType type;
 
-	Expr(ExprType type) {
-		this.type = type;
-	}
+    Expr(ExprType type) {
+        this.type = type;
+    }
 
-	public void validate() throws ExprException {
-	}
+    public void validate() throws ExprException {
+    }
 
 }

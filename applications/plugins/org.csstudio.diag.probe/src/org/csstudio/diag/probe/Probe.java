@@ -95,23 +95,23 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
     /** Memento tag */
     private static final String METER_TAG = "meter"; //$NON-NLS-1$
 
-	/**
-	 * Id of the save value command.
-	 */
-	private static final String SAVE_VALUE_COMMAND_ID =
-		"org.csstudio.platform.ui.commands.saveValue"; //$NON-NLS-1$
-	/**
-	 * Id of the PV parameter to the save value command.
-	 */
-	private static final String PV_PARAMETER_ID =
-		"org.csstudio.platform.ui.commands.saveValue.pv"; //$NON-NLS-1$
-	/**
-	 * Id of the value parameter to the save value command.
-	 */
-	private static final String VALUE_PARAMETER_ID =
-		"org.csstudio.platform.ui.commands.saveValue.value"; //$NON-NLS-1$
+    /**
+     * Id of the save value command.
+     */
+    private static final String SAVE_VALUE_COMMAND_ID =
+        "org.csstudio.platform.ui.commands.saveValue"; //$NON-NLS-1$
+    /**
+     * Id of the PV parameter to the save value command.
+     */
+    private static final String PV_PARAMETER_ID =
+        "org.csstudio.platform.ui.commands.saveValue.pv"; //$NON-NLS-1$
+    /**
+     * Id of the value parameter to the save value command.
+     */
+    private static final String VALUE_PARAMETER_ID =
+        "org.csstudio.platform.ui.commands.saveValue.value"; //$NON-NLS-1$
 
-	/** Instance number, used to create a unique ID
+    /** Instance number, used to create a unique ID
      *  @see #createNewInstance()
      */
     private static int instance = 0;
@@ -120,9 +120,9 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
     private IMemento memento = null;
 
     // GUI
-	private Text cbo_name;
-	// private ComboHistoryHelper name_helper;
-	private Label lbl_value;
+    private Text cbo_name;
+    // private ComboHistoryHelper name_helper;
+    private Label lbl_value;
     private Label lbl_time;
     private Label lbl_status;
     private MeterWidget meter;
@@ -312,8 +312,8 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
         top_box.setLayout(grid);
 
         Label label = new Label(top_box, SWT.READ_ONLY);
-		label.setText(Messages.S_PVName);
-		label.setLayoutData(new GridData());
+        label.setText(Messages.S_PVName);
+        label.setLayoutData(new GridData());
 
         cbo_name = new Text(top_box, SWT.SINGLE | SWT.BORDER);
         cbo_name.setToolTipText(Messages.S_EnterPVName);
@@ -321,13 +321,13 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         cbo_name.setLayoutData(gd);
-		cbo_name.addListener(SWT.DefaultSelection, new Listener() {
-			@Override
+        cbo_name.addListener(SWT.DefaultSelection, new Listener() {
+            @Override
             public void handleEvent(Event e) {
-				setPVName(cbo_name.getText());
-			}
-		});
-		new AutoCompleteWidget(cbo_name, AutoCompleteTypes.PV);
+                setPVName(cbo_name.getText());
+            }
+        });
+        new AutoCompleteWidget(cbo_name, AutoCompleteTypes.PV);
 
         final Button btn_info = new Button(top_box, SWT.PUSH);
         btn_info.setText(Messages.S_Info);
@@ -435,25 +435,25 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
         fd.bottom = new FormAttachment(100, 0);
         bottom_box.setLayoutData(fd);
 
-		// Connect actions
-		// name_helper = new ComboHistoryHelper(
-		// Activator.getDefault().getDialogSettings(),
-		// PV_LIST_TAG, cbo_name)
-		// {
-		// @Override
-		// public void newSelection(final String pv_name)
-		// {
-		// setPVName(pv_name);
-		// }
-		// };
+        // Connect actions
+        // name_helper = new ComboHistoryHelper(
+        // Activator.getDefault().getDialogSettings(),
+        // PV_LIST_TAG, cbo_name)
+        // {
+        // @Override
+        // public void newSelection(final String pv_name)
+        // {
+        // setPVName(pv_name);
+        // }
+        // };
 
         cbo_name.addDisposeListener(new DisposeListener()
         {
             @Override
             public void widgetDisposed(final DisposeEvent e)
             {
-				setPV(null);
-				// name_helper.saveSettings();
+                setPV(null);
+                // name_helper.saveSettings();
             }
         });
 
@@ -488,25 +488,25 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
 
         btn_save_to_ioc.addSelectionListener(new SelectionAdapter()
         {
-        	@Override
-        	public void widgetSelected(final SelectionEvent e)
-        	{
-        		saveToIoc();
-        	}
+            @Override
+            public void widgetSelected(final SelectionEvent e)
+            {
+                saveToIoc();
+            }
         });
         // Create a listener to enable/disable the Save to IOC button based on
         // the availability of a command handler.
         saveToIocCmdListener = new ICommandListener()
         {
-			@Override
+            @Override
             public void commandChanged(final CommandEvent commandEvent)
-			{
-				if (commandEvent.isEnabledChanged())
-				{
-					btn_save_to_ioc.setVisible(
-							commandEvent.getCommand().isEnabled());
-				}
-			}
+            {
+                if (commandEvent.isEnabledChanged())
+                {
+                    btn_save_to_ioc.setVisible(
+                            commandEvent.getCommand().isEnabled());
+                }
+            }
         };
         // Set the initial vilibility of the button
         updateSaveToIocButtonVisibility();
@@ -522,15 +522,15 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
 
         if (memento != null)
         {
-        	setPVName(memento.getString(PV_TAG));
-        	// Per default, the meter is shown.
-        	// Hide according to memento.
-        	final String show = memento.getString(METER_TAG);
-        	if ((show != null)  &&  show.equals("false")) //$NON-NLS-1$
-        	{
-        	    show_meter.setSelection(false);
-        	    showMeter(false);
-        	}
+            setPVName(memento.getString(PV_TAG));
+            // Per default, the meter is shown.
+            // Hide according to memento.
+            final String show = memento.getString(METER_TAG);
+            if ((show != null)  &&  show.equals("false")) //$NON-NLS-1$
+            {
+                show_meter.setSelection(false);
+                showMeter(false);
+            }
         }
     }
 
@@ -539,10 +539,10 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
      */
     @Override
     public void dispose() {
-	   	if (saveToIocCmdListener != null) {
-    		final Command svc = getSaveValueCommand();
-    		svc.removeCommandListener(saveToIocCmdListener);
-    	}
+           if (saveToIocCmdListener != null) {
+            final Command svc = getSaveValueCommand();
+            svc.removeCommandListener(saveToIocCmdListener);
+        }
     }
 
     /**
@@ -550,85 +550,85 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
      */
     private void saveToIoc()
     {
-		final IHandlerService handlerService =
-			(IHandlerService) getSite().getService(IHandlerService.class);
-		try {
-			final ParameterizedCommand cmd = createParameterizedSaveValueCommand();
-			handlerService.executeCommand(cmd, null);
-		} catch (final ExecutionException e) {
-			// Execution of the command handler failed.
-		    logger.log(Level.SEVERE, "Error executing save value command.", e); //$NON-NLS-1$
-			MessageDialog.openError(getSite().getShell(),
-					Messages.S_ErrorDialogTitle,
-					Messages.S_SaveToIocExecutionError);
-		} catch (final NotDefinedException e) {
-			// Thrown if the command or one of the parameters is undefined.
-			// This should never happen (the command id is defined in the
-			// platform). Log an error, disable the button, and return.
+        final IHandlerService handlerService =
+            (IHandlerService) getSite().getService(IHandlerService.class);
+        try {
+            final ParameterizedCommand cmd = createParameterizedSaveValueCommand();
+            handlerService.executeCommand(cmd, null);
+        } catch (final ExecutionException e) {
+            // Execution of the command handler failed.
+            logger.log(Level.SEVERE, "Error executing save value command.", e); //$NON-NLS-1$
+            MessageDialog.openError(getSite().getShell(),
+                    Messages.S_ErrorDialogTitle,
+                    Messages.S_SaveToIocExecutionError);
+        } catch (final NotDefinedException e) {
+            // Thrown if the command or one of the parameters is undefined.
+            // This should never happen (the command id is defined in the
+            // platform). Log an error, disable the button, and return.
             logger.log(Level.SEVERE, "Save value command is not defined.", e); //$NON-NLS-1$
-			MessageDialog.openError(getSite().getShell(),
-					Messages.S_ErrorDialogTitle,
-					Messages.S_SaveToIocNotDefinedError);
-			btn_save_to_ioc.setEnabled(false);
-		} catch (final NotEnabledException e) {
-			MessageDialog.openWarning(getSite().getShell(),
-					Messages.S_ErrorDialogTitle,
-					Messages.S_SaveToIocNotEnabled);
-			updateSaveToIocButtonVisibility();
-		} catch (final NotHandledException e) {
-			MessageDialog.openWarning(getSite().getShell(),
-					Messages.S_ErrorDialogTitle,
-					Messages.S_SaveToIocNotEnabled);
-			updateSaveToIocButtonVisibility();
-		}
-	}
+            MessageDialog.openError(getSite().getShell(),
+                    Messages.S_ErrorDialogTitle,
+                    Messages.S_SaveToIocNotDefinedError);
+            btn_save_to_ioc.setEnabled(false);
+        } catch (final NotEnabledException e) {
+            MessageDialog.openWarning(getSite().getShell(),
+                    Messages.S_ErrorDialogTitle,
+                    Messages.S_SaveToIocNotEnabled);
+            updateSaveToIocButtonVisibility();
+        } catch (final NotHandledException e) {
+            MessageDialog.openWarning(getSite().getShell(),
+                    Messages.S_ErrorDialogTitle,
+                    Messages.S_SaveToIocNotEnabled);
+            updateSaveToIocButtonVisibility();
+        }
+    }
 
-	/**
-	 * Updates the visibility state of the Save to IOC button.
-	 */
-	private void updateSaveToIocButtonVisibility()
-	{
-		btn_save_to_ioc.setVisible(getSaveValueCommand().isEnabled());
-	}
+    /**
+     * Updates the visibility state of the Save to IOC button.
+     */
+    private void updateSaveToIocButtonVisibility()
+    {
+        btn_save_to_ioc.setVisible(getSaveValueCommand().isEnabled());
+    }
 
-	/**
-	 * Creates a save value command parameterized for saving the currently
-	 * displayed value.
-	 *
-	 * @return the parameterized command.
-	 * @throws NotDefinedException
-	 *             if one of the parameter ids is undefined (this should never
-	 *             happen).
-	 */
-	private ParameterizedCommand createParameterizedSaveValueCommand()
-			throws NotDefinedException
-	{
-		final Command saveValueCommand = getSaveValueCommand();
-		final IParameter pvParameter = saveValueCommand.getParameter(PV_PARAMETER_ID);
-		final Parameterization pvParameterization = new Parameterization(
-				pvParameter, pv.getName());
-		final IParameter valueParameter = saveValueCommand.getParameter(VALUE_PARAMETER_ID);
-		final Parameterization valueParameterization = new Parameterization(
-				valueParameter, value.getValueString());
-		final ParameterizedCommand cmd =
-			new ParameterizedCommand(saveValueCommand,
-					new Parameterization[] { pvParameterization, valueParameterization });
-		return cmd;
-	}
+    /**
+     * Creates a save value command parameterized for saving the currently
+     * displayed value.
+     *
+     * @return the parameterized command.
+     * @throws NotDefinedException
+     *             if one of the parameter ids is undefined (this should never
+     *             happen).
+     */
+    private ParameterizedCommand createParameterizedSaveValueCommand()
+            throws NotDefinedException
+    {
+        final Command saveValueCommand = getSaveValueCommand();
+        final IParameter pvParameter = saveValueCommand.getParameter(PV_PARAMETER_ID);
+        final Parameterization pvParameterization = new Parameterization(
+                pvParameter, pv.getName());
+        final IParameter valueParameter = saveValueCommand.getParameter(VALUE_PARAMETER_ID);
+        final Parameterization valueParameterization = new Parameterization(
+                valueParameter, value.getValueString());
+        final ParameterizedCommand cmd =
+            new ParameterizedCommand(saveValueCommand,
+                    new Parameterization[] { pvParameterization, valueParameterization });
+        return cmd;
+    }
 
-	/**
-	 * Returns the save value command.
-	 *
-	 * @return the save value command.
-	 */
-	private Command getSaveValueCommand()
-	{
-		final ICommandService commandService =
-			(ICommandService) getSite().getService(ICommandService.class);
-		return commandService.getCommand(SAVE_VALUE_COMMAND_ID);
-	}
+    /**
+     * Returns the save value command.
+     *
+     * @return the save value command.
+     */
+    private Command getSaveValueCommand()
+    {
+        final ICommandService commandService =
+            (ICommandService) getSite().getService(ICommandService.class);
+        return commandService.getCommand(SAVE_VALUE_COMMAND_ID);
+    }
 
-	/** Show or hide the meter */
+    /** Show or hide the meter */
     protected void showMeter(final boolean show)
     {
         if (show)
@@ -770,13 +770,13 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
      */
     private synchronized void setPV(final PV new_pv)
     {
-    	if (pv != null)
-    	{
+        if (pv != null)
+        {
             logger.log(Level.FINE, "Probe: disposeChannel {0}", pv.getName()); //$NON-NLS-1$
             pv.removeListener(this);
             PVPool.releasePV(pv);
-    	}
-    	pv = new_pv;
+        }
+        pv = new_pv;
     }
 
     /** Updates the status bar with given string.
@@ -851,33 +851,33 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
     }
 
     /** Minimal ISelectionProvider */
-	@Override
+    @Override
     public void addSelectionChangedListener(ISelectionChangedListener listener)
     {
-	    // Not implemented
+        // Not implemented
     }
 
     /** Minimal ISelectionProvider */
-	@Override
+    @Override
     public void removeSelectionChangedListener(
             ISelectionChangedListener listener)
     {
-	    // Not implemented
+        // Not implemented
     }
 
     /** Provide PV name for context menu object contributions
      *  ISelectionProvider
      */
-	@Override
+    @Override
     public ISelection getSelection()
     {
-		return new StructuredSelection(new ProcessVariable(cbo_name.getText()));
+        return new StructuredSelection(new ProcessVariable(cbo_name.getText()));
     }
 
     /** ISelectionProvider */
-	@Override
+    @Override
     public void setSelection(ISelection selection)
     {
-	    // Not implemented
+        // Not implemented
     }
 }

@@ -35,41 +35,41 @@ import org.eclipse.ui.IWorkbenchPart;
  * @author Sven Wende
  */
 public final class OpenAsShellAction implements IObjectActionDelegate {
-	/**
-	 * The current selection.
-	 */
-	private IStructuredSelection _selection;
+    /**
+     * The current selection.
+     */
+    private IStructuredSelection _selection;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void run(final IAction action) {
-		if (_selection != null) {
-			Object element = _selection.getFirstElement();
+    /**
+     * {@inheritDoc}
+     */
+    public void run(final IAction action) {
+        if (_selection != null) {
+            Object element = _selection.getFirstElement();
 
-			if (element instanceof IFile) {
-				IFile file = (IFile) element;
-				RunModeService.getInstance().openDisplayShellInRunMode(file.getFullPath());
-			}
-		}
-	}
+            if (element instanceof IFile) {
+                IFile file = (IFile) element;
+                RunModeService.getInstance().openDisplayShellInRunMode(file.getFullPath());
+            }
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void selectionChanged(final IAction action,
-			final ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			_selection = (IStructuredSelection) selection;
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void selectionChanged(final IAction action,
+            final ISelection selection) {
+        if (selection instanceof IStructuredSelection) {
+            _selection = (IStructuredSelection) selection;
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setActivePart(final IAction action,
-			final IWorkbenchPart targetPart) {
+    /**
+     * {@inheritDoc}
+     */
+    public void setActivePart(final IAction action,
+            final IWorkbenchPart targetPart) {
 
-	}
+    }
 
 }

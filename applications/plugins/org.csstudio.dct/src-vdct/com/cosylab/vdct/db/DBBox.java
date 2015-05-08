@@ -32,168 +32,168 @@ import java.awt.Color;
 
 public class DBBox {
 
-	protected String name;
-	protected int x;
-	protected int y;
-	protected int x2;
-	protected int y2;
-	protected boolean dashed;
-	protected Color color;
-	protected String parentBorderID;
-	
+    protected String name;
+    protected int x;
+    protected int y;
+    protected int x2;
+    protected int y2;
+    protected boolean dashed;
+    protected Color color;
+    protected String parentBorderID;
+    
 /**
  * Insert the method's description here.
  * Creation date: (23.4.2001 21:12:09)
  */
 public DBBox(String name, int x, int y, int x2, int y2, boolean dashed, Color color, String parentBorderID)
 {
-	this.name = name;
-	this.x=x;
-	this.y=y;
-	this.x2=x2;
-	this.y2=y2;
-	this.dashed=dashed;
-	this.color=color;
-	this.parentBorderID = parentBorderID;
+    this.name = name;
+    this.x=x;
+    this.y=y;
+    this.x2=x2;
+    this.y2=y2;
+    this.dashed=dashed;
+    this.color=color;
+    this.parentBorderID = parentBorderID;
 }
 
-	/**
-	 * Returns the color.
-	 * @return Color
-	 */
-	public Color getColor()
-	{
-		return color;
-	}
+    /**
+     * Returns the color.
+     * @return Color
+     */
+    public Color getColor()
+    {
+        return color;
+    }
 
 
-	/**
-	 * Returns the dashed.
-	 * @return boolean
-	 */
-	public boolean isDashed()
-	{
-		return dashed;
-	}
+    /**
+     * Returns the dashed.
+     * @return boolean
+     */
+    public boolean isDashed()
+    {
+        return dashed;
+    }
 
-	/**
-	 * Returns the name.
-	 * @return String
-	 */
-	public String getName()
-	{
-		return name;
-	}
+    /**
+     * Returns the name.
+     * @return String
+     */
+    public String getName()
+    {
+        return name;
+    }
 
-	/**
-	 * Returns the x.
-	 * @return int
-	 */
-	public int getX()
-	{
-		return x;
-	}
+    /**
+     * Returns the x.
+     * @return int
+     */
+    public int getX()
+    {
+        return x;
+    }
 
-	/**
-	 * Returns the x2.
-	 * @return int
-	 */
-	public int getX2()
-	{
-		return x2;
-	}
+    /**
+     * Returns the x2.
+     * @return int
+     */
+    public int getX2()
+    {
+        return x2;
+    }
 
-	/**
-	 * Returns the y.
-	 * @return int
-	 */
-	public int getY()
-	{
-		return y;
-	}
+    /**
+     * Returns the y.
+     * @return int
+     */
+    public int getY()
+    {
+        return y;
+    }
 
-	/**
-	 * Returns the y2.
-	 * @return int
-	 */
-	public int getY2()
-	{
-		return y2;
-	}
+    /**
+     * Returns the y2.
+     * @return int
+     */
+    public int getY2()
+    {
+        return y2;
+    }
 
-	/**
-	 * Sets the color.
-	 * @param color The color to set
-	 */
-	public void setColor(Color color)
-	{
-		this.color = color;
-	}
+    /**
+     * Sets the color.
+     * @param color The color to set
+     */
+    public void setColor(Color color)
+    {
+        this.color = color;
+    }
 
-	/**
-	 * Sets the dashed.
-	 * @param dashed The dashed to set
-	 */
-	public void setDashed(boolean dashed)
-	{
-		this.dashed = dashed;
-	}
+    /**
+     * Sets the dashed.
+     * @param dashed The dashed to set
+     */
+    public void setDashed(boolean dashed)
+    {
+        this.dashed = dashed;
+    }
 
-	/**
-	 * Sets the name.
-	 * @param name The name to set
-	 */
-	public void setName(String name)
-	{
-		this.name = name;
-	}
+    /**
+     * Sets the name.
+     * @param name The name to set
+     */
+    public void setName(String name)
+    {
+        this.name = name;
+    }
 
-	/**
-	 * Sets the x.
-	 * @param x The x to set
-	 */
-	public void setX(int x)
-	{
-		this.x = x;
-	}
+    /**
+     * Sets the x.
+     * @param x The x to set
+     */
+    public void setX(int x)
+    {
+        this.x = x;
+    }
 
-	/**
-	 * Sets the x2.
-	 * @param x2 The x2 to set
-	 */
-	public void setX2(int x2)
-	{
-		this.x2 = x2;
-	}
+    /**
+     * Sets the x2.
+     * @param x2 The x2 to set
+     */
+    public void setX2(int x2)
+    {
+        this.x2 = x2;
+    }
 
-	/**
-	 * Sets the y.
-	 * @param y The y to set
-	 */
-	public void setY(int y)
-	{
-		this.y = y;
-	}
+    /**
+     * Sets the y.
+     * @param y The y to set
+     */
+    public void setY(int y)
+    {
+        this.y = y;
+    }
 
-	/**
-	 * Sets the y2.
-	 * @param y2 The y2 to set
-	 */
-	public void setY2(int y2)
-	{
-		this.y2 = y2;
-	}
+    /**
+     * Sets the y2.
+     * @param y2 The y2 to set
+     */
+    public void setY2(int y2)
+    {
+        this.y2 = y2;
+    }
 
-	/**
-	 * @return Returns the parentBorderID.
-	 */
-	public String getParentBorderID() {
-		return parentBorderID;
-	}
-	/**
-	 * @param parentBorderID The parentBorderID to set.
-	 */
-	public void setParentBorderID(String parentBorderID) {
-		this.parentBorderID = parentBorderID;
-	}
+    /**
+     * @return Returns the parentBorderID.
+     */
+    public String getParentBorderID() {
+        return parentBorderID;
+    }
+    /**
+     * @param parentBorderID The parentBorderID to set.
+     */
+    public void setParentBorderID(String parentBorderID) {
+        this.parentBorderID = parentBorderID;
+    }
 }

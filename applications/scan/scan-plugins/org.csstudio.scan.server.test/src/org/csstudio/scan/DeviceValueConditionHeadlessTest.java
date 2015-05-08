@@ -41,22 +41,22 @@ public class DeviceValueConditionHeadlessTest
     
     private PVDevice getDemoDevice() throws Exception
     {
-    	final PVDevice device = new PVDevice(new DeviceInfo("loc://my_pv(0)", "demo"));
+        final PVDevice device = new PVDevice(new DeviceInfo("loc://my_pv(0)", "demo"));
         
         // Register listener that notifies device so test code can wait for a device update
         device.addListener(new DeviceListener()
         {
-			@Override
-			public void deviceChanged(final Device device) 
-			{
-				synchronized (device)
-				{
-				    // Update something to avoid FindBugs "Naked Notify" warning
-				    ++updates;
-					device.notifyAll();
-				}
-			}
-		});
+            @Override
+            public void deviceChanged(final Device device) 
+            {
+                synchronized (device)
+                {
+                    // Update something to avoid FindBugs "Naked Notify" warning
+                    ++updates;
+                    device.notifyAll();
+                }
+            }
+        });
 
         return device;
     }
@@ -269,7 +269,7 @@ public class DeviceValueConditionHeadlessTest
         device.write(1.0);
         do
         {
-        	synchronized (device) { device.wait(100); }
+            synchronized (device) { device.wait(100); }
         }
         while (VTypeHelper.toDouble(device.read()) != 1.0);
 

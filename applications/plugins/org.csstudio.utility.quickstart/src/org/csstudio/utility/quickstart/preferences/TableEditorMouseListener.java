@@ -19,32 +19,32 @@ public class TableEditorMouseListener extends MouseAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(TableEditorMouseListener.class);
 
-	private final TableEditor _editor;
-	private final Table _table;
+    private final TableEditor _editor;
+    private final Table _table;
 
 
-	public TableEditorMouseListener(TableEditor editor, Table table) {
-		_editor = editor;
-		_table = table;
-	}
-		
-	/**
-	 * Dispose the editor before selecting a new row
-	 * otherwise the cell and not the row will be selected
-	 * and it is not possible to move the row up and down.
-	 */
-	@Override
-	public void mouseDown(MouseEvent event) {
+    public TableEditorMouseListener(TableEditor editor, Table table) {
+        _editor = editor;
+        _table = table;
+    }
+        
+    /**
+     * Dispose the editor before selecting a new row
+     * otherwise the cell and not the row will be selected
+     * and it is not possible to move the row up and down.
+     */
+    @Override
+    public void mouseDown(MouseEvent event) {
         // Dispose any existing editor
         Control old = _editor.getEditor();
         if (old != null) old.dispose();
-	}
-	
-	/**
-	 * Make the selected cell editable with a
-	 * double click. (Copied from an internet example)
-	 */
-	@Override
+    }
+    
+    /**
+     * Make the selected cell editable with a
+     * double click. (Copied from an internet example)
+     */
+    @Override
     public void mouseDoubleClick(MouseEvent event) {
         // Dispose any existing editor
         Control old = _editor.getEditor();
@@ -67,18 +67,18 @@ public class TableEditorMouseListener extends MouseAdapter {
             }
           }
           
-		// The third column is not editable (switch from true to false by
-		// mouse)
-		if (column == 2) {
-			String text = item.getText(2);
-			if (text.equals("false")) {
-				item.setText(2, "true");
-			} else {
-				item.setText(2, "false");
-			}
-			LOG.debug("text of column 2: {}", text);
-			return;
-		}
+        // The third column is not editable (switch from true to false by
+        // mouse)
+        if (column == 2) {
+            String text = item.getText(2);
+            if (text.equals("false")) {
+                item.setText(2, "true");
+            } else {
+                item.setText(2, "false");
+            }
+            LOG.debug("text of column 2: {}", text);
+            return;
+        }
 
           
           // Create the Text object for our editor
@@ -113,5 +113,5 @@ public class TableEditorMouseListener extends MouseAdapter {
       }
     }
 
-	
+    
 

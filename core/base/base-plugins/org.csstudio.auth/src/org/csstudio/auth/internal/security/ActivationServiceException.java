@@ -26,38 +26,38 @@ package org.csstudio.auth.internal.security;
  * @author Kai Meyer and Torsten Witte
  */
 public abstract class ActivationServiceException extends RuntimeException {
-	
-	/**
-	 * Generated serial version unifed ID.
-	 */
-	private static final long serialVersionUID = -3612185726964894035L;
-	/**
-	 * The class for this Exception.
-	 */
-	private final Class<?> _clazz;
+    
+    /**
+     * Generated serial version unifed ID.
+     */
+    private static final long serialVersionUID = -3612185726964894035L;
+    /**
+     * The class for this Exception.
+     */
+    private final Class<?> _clazz;
 
 
-	/**
-	 * Constructor.
-	 * @param clazz The class for this Exception
-	 */
-	public ActivationServiceException(final Class<?> clazz) {
-		_clazz = clazz;
-	}
-	
-	/**
-	 * @see java.lang.Throwable#getMessage()
-	 * @return The Message
-	 */
-	public final String getMessage() {
-		return this.getMessage(_clazz);
-	}
-	
-	/**
-	 * Returns the message depended by the class.
-	 * @param clazz The class
-	 * @return The message depended by the class
-	 */
-	protected abstract String getMessage(final Class<?> clazz);
+    /**
+     * Constructor.
+     * @param clazz The class for this Exception
+     */
+    public ActivationServiceException(final Class<?> clazz) {
+        _clazz = clazz;
+    }
+    
+    /**
+     * @see java.lang.Throwable#getMessage()
+     * @return The Message
+     */
+    public final String getMessage() {
+        return this.getMessage(_clazz);
+    }
+    
+    /**
+     * Returns the message depended by the class.
+     * @param clazz The class
+     * @return The message depended by the class
+     */
+    protected abstract String getMessage(final Class<?> clazz);
 
 }

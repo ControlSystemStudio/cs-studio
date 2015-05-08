@@ -37,41 +37,41 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public final class OpenAsViewAction extends Action implements IObjectActionDelegate {
 
-	/**
-	 * The current selection.
-	 */
-	private IStructuredSelection _selection;
+    /**
+     * The current selection.
+     */
+    private IStructuredSelection _selection;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void run(final IAction action) {
-		if (_selection != null) {
-			Object element = _selection.getFirstElement();
+    /**
+     * {@inheritDoc}
+     */
+    public void run(final IAction action) {
+        if (_selection != null) {
+            Object element = _selection.getFirstElement();
 
-			if (element instanceof IFile) {
-				RunModeService.getInstance().openDisplayViewInRunMode(((IFile) element).getLocation());
-			}
-		}
-	}
+            if (element instanceof IFile) {
+                RunModeService.getInstance().openDisplayViewInRunMode(((IFile) element).getLocation());
+            }
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
+    /**
+     * {@inheritDoc}
+     */
 
-	public void selectionChanged(final IAction action,
-			final ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			_selection = (IStructuredSelection) selection;
-		}
-	}
+    public void selectionChanged(final IAction action,
+            final ISelection selection) {
+        if (selection instanceof IStructuredSelection) {
+            _selection = (IStructuredSelection) selection;
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setActivePart(final IAction action,
-			final IWorkbenchPart targetPart) {
+    /**
+     * {@inheritDoc}
+     */
+    public void setActivePart(final IAction action,
+            final IWorkbenchPart targetPart) {
 
-	}
+    }
 
 }

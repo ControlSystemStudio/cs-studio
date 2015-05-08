@@ -51,30 +51,30 @@ import com.cosylab.vdct.vdb.VDBTemplatePort;
  */
 public class TemplateEPICSPort extends EPICSVarLink implements TemplateEPICSLink, Movable {
 
- 	private String lastUpdatedFullName = null;
-	private static GUISeparator portSeparator = null;
-	private static javax.swing.ImageIcon icon = null;
-	private static final String hiddenString = "<hidden>";
+     private String lastUpdatedFullName = null;
+    private static GUISeparator portSeparator = null;
+    private static javax.swing.ImageIcon icon = null;
+    private static final String hiddenString = "<hidden>";
 /**
  * EPICSVarLink constructor comment.
  * @param parent com.cosylab.vdct.graphics.objects.ContainerObject
  * @param fieldData com.cosylab.vdct.vdb.VDBFieldData
  */
 public TemplateEPICSPort(ContainerObject parent, VDBFieldData fieldData) {
-	super(parent, fieldData);
-	setWidth(Constants.TEMPLATE_WIDTH/2);
+    super(parent, fieldData);
+    setWidth(Constants.TEMPLATE_WIDTH/2);
 
-	updateTemplateLink();
+    updateTemplateLink();
 
-	// set default side (left)
-	int mode = OutLink.INPUT_PORT_MODE;
-	Port visiblePort = ((VDBTemplatePort)fieldData).getPort().getVisibleObject();
-	if (visiblePort!=null)
-		mode = visiblePort.getMode();
+    // set default side (left)
+    int mode = OutLink.INPUT_PORT_MODE;
+    Port visiblePort = ((VDBTemplatePort)fieldData).getPort().getVisibleObject();
+    if (visiblePort!=null)
+        mode = visiblePort.getMode();
 
-	super.setRight(mode==OutLink.OUTPUT_PORT_MODE);
-	
-	drawOnlyOneSided = true;
+    super.setRight(mode==OutLink.OUTPUT_PORT_MODE);
+    
+    drawOnlyOneSided = true;
 }
 
 /**
@@ -84,27 +84,27 @@ public TemplateEPICSPort(ContainerObject parent, VDBFieldData fieldData) {
  */
 public void updateTemplateLink()
 {
-	if (lastUpdatedFullName!=null && getFieldData().getFullName().equals(lastUpdatedFullName))
-		return;
-		
-	// remove old one		
-	if (lastUpdatedFullName!=null)
-		Group.getRoot().getLookupTable().remove(lastUpdatedFullName);
-	
-	// ups, we already got this registered
-	if (Group.getRoot().getLookupTable().containsKey(getFieldData().getFullName()))
-	{
-		lastUpdatedFullName = null;
-		((LinkManagerObject)getParent()).addInvalidLink(this);
-	}
-	// everything is OK
-	else
-	{
-		lastUpdatedFullName = getFieldData().getFullName();
-		Group.getRoot().getLookupTable().put(lastUpdatedFullName, this);
-		LinkManagerObject.fixLink(this);
-		((LinkManagerObject)getParent()).removeInvalidLink(this);
-	}
+    if (lastUpdatedFullName!=null && getFieldData().getFullName().equals(lastUpdatedFullName))
+        return;
+        
+    // remove old one        
+    if (lastUpdatedFullName!=null)
+        Group.getRoot().getLookupTable().remove(lastUpdatedFullName);
+    
+    // ups, we already got this registered
+    if (Group.getRoot().getLookupTable().containsKey(getFieldData().getFullName()))
+    {
+        lastUpdatedFullName = null;
+        ((LinkManagerObject)getParent()).addInvalidLink(this);
+    }
+    // everything is OK
+    else
+    {
+        lastUpdatedFullName = getFieldData().getFullName();
+        Group.getRoot().getLookupTable().put(lastUpdatedFullName, this);
+        LinkManagerObject.fixLink(this);
+        ((LinkManagerObject)getParent()).removeInvalidLink(this);
+    }
 }
 
 /**
@@ -113,8 +113,8 @@ public void updateTemplateLink()
  */
 public void fixTemplateLink()
 {
-	updateTemplateLink();
-	LinkManagerObject.fixLink(this);
+    updateTemplateLink();
+    LinkManagerObject.fixLink(this);
 }
 
 /**
@@ -123,7 +123,7 @@ public void fixTemplateLink()
  * @return String
  */
 public String getLabel() {
-	return getFieldData().getName();
+    return getFieldData().getName();
 }
 
 /**
@@ -133,8 +133,8 @@ public String getLabel() {
  */
 public boolean isRight()
 {
-	// super.super.isRigth() is the right solution, but ...
-	return isStaticRight();
+    // super.super.isRigth() is the right solution, but ...
+    return isStaticRight();
 }
 
 /**
@@ -145,117 +145,117 @@ public boolean isRight()
  */
 protected void draw(Graphics g, boolean hilited) {
 
-	// can happen, hiliting invisible link of the source
-	if (!isVisible())
-		return;
+    // can happen, hiliting invisible link of the source
+    if (!isVisible())
+        return;
 
-	com.cosylab.vdct.graphics.ViewState view = com.cosylab.vdct.graphics.ViewState.getInstance();
-	
-	double Rscale = view.getScale();
-	boolean zoom = (Rscale < 1.0) && view.isZoomOnHilited() && view.isHilitedObject(this);
-	
-	if (zoom) {
-	    zoomImage = ZoomPane.getInstance().startZooming(this,!isZoomRepaint());
-	}
-	
-	boolean isRightSide = isRight();
+    com.cosylab.vdct.graphics.ViewState view = com.cosylab.vdct.graphics.ViewState.getInstance();
+    
+    double Rscale = view.getScale();
+    boolean zoom = (Rscale < 1.0) && view.isZoomOnHilited() && view.isHilitedObject(this);
+    
+    if (zoom) {
+        zoomImage = ZoomPane.getInstance().startZooming(this,!isZoomRepaint());
+    }
+    
+    boolean isRightSide = isRight();
 
-	int rrx;			// rrx, rry is center
-	if (isRightSide)
-		rrx = getRx()+getRwidth()-view.getRx();
-	else
-		rrx = getRx()-view.getRx();
-	
-	int rry = (int)(getRscale()*getInY()- view.getRy());
-	
-	ZoomPane pane = ZoomPane.getInstance();
-	if (getParent().isZoomRepaint()) {
-		if (isRightSide) {
-	        rrx = getX() - getParent().getX() + getWidth() + pane.getLeftOffset();
-	    } else {
-	        rrx = getX() - getParent().getX() + pane.getLeftOffset();
-	    }
-		rry = getY() - getParent().getY() + pane.getTopOffset() + getHeight()/2;
-	}
-	else if (isZoomRepaint()) {
-	    if (isRightSide) {
-	        rrx = pane.getLeftOffset() + getWidth();
-	    } else {
-	        rrx = pane.getLeftOffset();
-	    }
-	    rry = pane.getTopOffset() + getHeight()/2; 
-	}	
-	
-	if (!hilited) g.setColor(Constants.FRAME_COLOR);
-	else g.setColor((view.isHilitedObject(this)) ? 
-					Constants.HILITE_COLOR : Constants.FRAME_COLOR);
-
-
-	int mode = OutLink.CONSTANT_PORT_MODE;
-	Port visiblePort = ((VDBTemplatePort)getFieldData()).getPort().getVisibleObject();
-	if (visiblePort!=null)
-		mode = visiblePort.getMode();
-	
-	if (mode == OutLink.INPUT_PORT_MODE)
-	{
-		// input link
-		int arrowLength = 2*r;
-
-		if (!isRightSide)
-			rrx -= arrowLength;
-
-		// draw arrow
-		g.drawLine(rrx, rry-r, rrx+arrowLength, rry-r);
-		g.drawLine(rrx, rry+r, rrx+arrowLength, rry+r);
-		
-		int dr=-r; 
-		if (isRightSide) {
-			dr=-dr;
-			rrx+=arrowLength;
-		}
-		g.drawLine(rrx, rry-r, rrx+dr, rry);
-		g.drawLine(rrx, rry+r, rrx+dr, rry);
-	}
-	else if (mode == OutLink.OUTPUT_PORT_MODE)
-	{
-		// output link	
-		int arrowLength = 3*r;
-
-		if (!isRightSide)
-			rrx -= arrowLength;
-
-		// draw arrow
-		g.drawLine(rrx, rry-r, rrx+arrowLength, rry-r);
-		g.drawLine(rrx, rry+r, rrx+arrowLength, rry+r);
-		
-		int dr=r; 
-		if (isRightSide) {
-			dr=-dr;
-			rrx+=arrowLength;
-		}
-		g.drawLine(rrx, rry-r, rrx+dr, rry);
-		g.drawLine(rrx, rry+r, rrx+dr, rry);
-	}
-	//else 	
-		// constant (none)
+    int rrx;            // rrx, rry is center
+    if (isRightSide)
+        rrx = getRx()+getRwidth()-view.getRx();
+    else
+        rrx = getRx()-view.getRx();
+    
+    int rry = (int)(getRscale()*getInY()- view.getRy());
+    
+    ZoomPane pane = ZoomPane.getInstance();
+    if (getParent().isZoomRepaint()) {
+        if (isRightSide) {
+            rrx = getX() - getParent().getX() + getWidth() + pane.getLeftOffset();
+        } else {
+            rrx = getX() - getParent().getX() + pane.getLeftOffset();
+        }
+        rry = getY() - getParent().getY() + pane.getTopOffset() + getHeight()/2;
+    }
+    else if (isZoomRepaint()) {
+        if (isRightSide) {
+            rrx = pane.getLeftOffset() + getWidth();
+        } else {
+            rrx = pane.getLeftOffset();
+        }
+        rry = pane.getTopOffset() + getHeight()/2; 
+    }    
+    
+    if (!hilited) g.setColor(Constants.FRAME_COLOR);
+    else g.setColor((view.isHilitedObject(this)) ? 
+                    Constants.HILITE_COLOR : Constants.FRAME_COLOR);
 
 
-	// invalid
-	if (lastUpdatedFullName==null)
-	{
-		rrx = getRx()-view.getRx();
-		rry = getRy()-view.getRy();
-		int rwidth = getRwidth();
-		int rheight = getRheight();
-			
-		g.setColor(Color.red);
+    int mode = OutLink.CONSTANT_PORT_MODE;
+    Port visiblePort = ((VDBTemplatePort)getFieldData()).getPort().getVisibleObject();
+    if (visiblePort!=null)
+        mode = visiblePort.getMode();
+    
+    if (mode == OutLink.INPUT_PORT_MODE)
+    {
+        // input link
+        int arrowLength = 2*r;
 
-		g.drawLine(rrx, rry, rrx+rwidth, rry+rheight);
-		g.drawLine(rrx+rwidth, rry, rrx, rry+rheight);
-	}
-	super.draw(g, hilited);
-	
-//	if (zoom) {
+        if (!isRightSide)
+            rrx -= arrowLength;
+
+        // draw arrow
+        g.drawLine(rrx, rry-r, rrx+arrowLength, rry-r);
+        g.drawLine(rrx, rry+r, rrx+arrowLength, rry+r);
+        
+        int dr=-r; 
+        if (isRightSide) {
+            dr=-dr;
+            rrx+=arrowLength;
+        }
+        g.drawLine(rrx, rry-r, rrx+dr, rry);
+        g.drawLine(rrx, rry+r, rrx+dr, rry);
+    }
+    else if (mode == OutLink.OUTPUT_PORT_MODE)
+    {
+        // output link    
+        int arrowLength = 3*r;
+
+        if (!isRightSide)
+            rrx -= arrowLength;
+
+        // draw arrow
+        g.drawLine(rrx, rry-r, rrx+arrowLength, rry-r);
+        g.drawLine(rrx, rry+r, rrx+arrowLength, rry+r);
+        
+        int dr=r; 
+        if (isRightSide) {
+            dr=-dr;
+            rrx+=arrowLength;
+        }
+        g.drawLine(rrx, rry-r, rrx+dr, rry);
+        g.drawLine(rrx, rry+r, rrx+dr, rry);
+    }
+    //else     
+        // constant (none)
+
+
+    // invalid
+    if (lastUpdatedFullName==null)
+    {
+        rrx = getRx()-view.getRx();
+        rry = getRy()-view.getRy();
+        int rwidth = getRwidth();
+        int rheight = getRheight();
+            
+        g.setColor(Color.red);
+
+        g.drawLine(rrx, rry, rrx+rwidth, rry+rheight);
+        g.drawLine(rrx+rwidth, rry, rrx, rry+rheight);
+    }
+    super.draw(g, hilited);
+    
+//    if (zoom) {
 //        int rwidth = getRwidth();
 //        int rheight = getRheight();
 //        rrx -= (rwidth/Rscale - rwidth)/2;
@@ -266,9 +266,9 @@ protected void draw(Graphics g, boolean hilited) {
 //            rry = rry <= 0 ? 2 : rry;
 //        Rscale = 1.0;
 //        r = (int)(Constants.LINK_RADIOUS);
-//    	rtailLen = (int)(Constants.TAIL_LENGTH);
+//        rtailLen = (int)(Constants.TAIL_LENGTH);
 //    }
-	
+    
 }
 
 /**
@@ -276,20 +276,20 @@ protected void draw(Graphics g, boolean hilited) {
  * Creation date: (30.1.2001 11:59:21)
  */
 public void destroyAndRemove() {
-	super.destroy();
+    super.destroy();
 
-	if (lastUpdatedFullName!=null)
-		Group.getRoot().getLookupTable().remove(getFieldData().getFullName());
-	else
-		((LinkManagerObject)getParent()).removeInvalidLink(this);
+    if (lastUpdatedFullName!=null)
+        Group.getRoot().getLookupTable().remove(getFieldData().getFullName());
+    else
+        ((LinkManagerObject)getParent()).removeInvalidLink(this);
 
-	lastUpdatedFullName = null;
+    lastUpdatedFullName = null;
 }
 
 public void destroy()
 {
-	if (!isDestroyed())
-		destroyAndRemove();
+    if (!isDestroyed())
+        destroyAndRemove();
 }
 
 /**
@@ -297,25 +297,25 @@ public void destroy()
  * Creation date: (29.1.2001 21:23:04)
  */
 public void disconnect(Linkable disconnector) {
-	if (!disconnected && outlinks.contains(disconnector)) {
-		outlinks.removeElement(disconnector);
-		/*if (outlinks.size()==0) {
-			// do not destory port
-			//destroy();
-		}
-		else */if (outlinks.size()==1)
-			if (outlinks.firstElement() instanceof VisibleObject)
-				setColor(((VisibleObject)outlinks.firstElement()).getColor());
-	}
+    if (!disconnected && outlinks.contains(disconnector)) {
+        outlinks.removeElement(disconnector);
+        /*if (outlinks.size()==0) {
+            // do not destory port
+            //destroy();
+        }
+        else */if (outlinks.size()==1)
+            if (outlinks.firstElement() instanceof VisibleObject)
+                setColor(((VisibleObject)outlinks.firstElement()).getColor());
+    }
 }
 
 /**
  * @see com.cosylab.vdct.graphics.objects.VisibleObject#setDestroyed(boolean)
  */
 public void setDestroyed(boolean newDestroyed) {
-	super.setDestroyed(newDestroyed);
-	if (!newDestroyed)
-		updateTemplateLink();
+    super.setDestroyed(newDestroyed);
+    if (!newDestroyed)
+        updateTemplateLink();
 }
 
 /**
@@ -324,8 +324,8 @@ public void setDestroyed(boolean newDestroyed) {
  * @return com.cosylab.vdct.vdb.GUISeparator
  */
 public static com.cosylab.vdct.vdb.GUISeparator getPortSeparator() {
-	if (portSeparator==null) portSeparator = new GUISeparator("Port");
-	return portSeparator;
+    if (portSeparator==null) portSeparator = new GUISeparator("Port");
+    return portSeparator;
 }
 
 /**
@@ -335,32 +335,32 @@ public static com.cosylab.vdct.vdb.GUISeparator getPortSeparator() {
  */
 public com.cosylab.vdct.inspector.InspectableProperty[] getProperties(int mode) {
 
-	OutLink out;
-	Vector starts = new Vector();
-	Enumeration e = outlinks.elements();
-	while (e.hasMoreElements()) {
-		out = EPICSLinkOut.getStartPoint((Linkable)e.nextElement());
-		if (out instanceof EPICSLinkOut) starts.addElement(out);
-	}
+    OutLink out;
+    Vector starts = new Vector();
+    Enumeration e = outlinks.elements();
+    while (e.hasMoreElements()) {
+        out = EPICSLinkOut.getStartPoint((Linkable)e.nextElement());
+        if (out instanceof EPICSLinkOut) starts.addElement(out);
+    }
 
-	InspectableProperty[] properties = new InspectableProperty[1+3+2*starts.size()];
+    InspectableProperty[] properties = new InspectableProperty[1+3+2*starts.size()];
 
-	properties[0]=GUIHeader.getDefaultHeader();
-	properties[1]=getPortSeparator();
-	//properties[2]=new NameValueInfoProperty("Value", getFieldData().getValue());
-	properties[2]=new ROProperty(getFieldData(), true);
-	properties[3]=new NameValueInfoProperty("Description", getFieldData().getHelp());
+    properties[0]=GUIHeader.getDefaultHeader();
+    properties[1]=getPortSeparator();
+    //properties[2]=new NameValueInfoProperty("Value", getFieldData().getValue());
+    properties[2]=new ROProperty(getFieldData(), true);
+    properties[3]=new NameValueInfoProperty("Description", getFieldData().getHelp());
 
-	int i = 4;
-	VDBFieldData fieldData;
-	e = starts.elements();
-	while (e.hasMoreElements())
-	{
-		fieldData = ((EPICSLinkOut)e.nextElement()).getFieldData();
-		properties[i++]=new GUISeparator(fieldData.getFullName());
-		properties[i++]=fieldData;
-	}
-	return properties;
+    int i = 4;
+    VDBFieldData fieldData;
+    e = starts.elements();
+    while (e.hasMoreElements())
+    {
+        fieldData = ((EPICSLinkOut)e.nextElement()).getFieldData();
+        properties[i++]=new GUISeparator(fieldData.getFullName());
+        properties[i++]=fieldData;
+    }
+    return properties;
 }
 
 /**
@@ -369,7 +369,7 @@ public com.cosylab.vdct.inspector.InspectableProperty[] getProperties(int mode) 
  * @return java.lang.String
  */
 public String toString() {
-	return "Port: "+getName();
+    return "Port: "+getName();
 }
 
 /**
@@ -378,9 +378,9 @@ public String toString() {
  * @return javax.swing.Icon
  */
 public javax.swing.Icon getIcon() {
-	if (icon==null)
-		icon = new javax.swing.ImageIcon(getClass().getResource("/images/link.gif"));
-	return icon;
+    if (icon==null)
+        icon = new javax.swing.ImageIcon(getClass().getResource("/images/link.gif"));
+    return icon;
 }
 
 /**
@@ -389,7 +389,7 @@ public javax.swing.Icon getIcon() {
  * @return java.lang.String
  */
 public String getDescription() {
-	return ((VDBTemplatePort)fieldData).getDescription();
+    return ((VDBTemplatePort)fieldData).getDescription();
 }
 
 /**
@@ -397,15 +397,15 @@ public String getDescription() {
  */
 public void visilibityChanged(boolean visible)
 {
-	// superb solution using getLayerID()
+    // superb solution using getLayerID()
 }
 
 /**
  * @see com.cosylab.vdct.graphics.objects.TemplateEPICSLink#isVisible()
  */
 public boolean isVisible() {
-	return (fieldData.getVisibility() == InspectableProperty.ALWAYS_VISIBLE ||
-			(fieldData.getVisibility() == InspectableProperty.NON_DEFAULT_VISIBLE && !fieldData.hasDefaultValue()));
+    return (fieldData.getVisibility() == InspectableProperty.ALWAYS_VISIBLE ||
+            (fieldData.getVisibility() == InspectableProperty.NON_DEFAULT_VISIBLE && !fieldData.hasDefaultValue()));
 }
 
 /**
@@ -413,21 +413,21 @@ public boolean isVisible() {
  */
 public void setRight(boolean isRight)
 {
-	boolean oldValue = isRight();
-	if (oldValue != isRight)
-	{
-		super.setRight(isRight);
-		((Template)getParent()).fieldSideChange(this, isRight);
-	}
+    boolean oldValue = isRight();
+    if (oldValue != isRight)
+    {
+        super.setRight(isRight);
+        ((Template)getParent()).fieldSideChange(this, isRight);
+    }
 }
 
 /**
  * @see com.cosylab.vdct.graphics.objects.Movable#checkMove(int, int)
  */
 public boolean checkMove(int dx, int dy) {
-	// this method is called only on selection move
-	// and this object is not selectable
-	return false; 
+    // this method is called only on selection move
+    // and this object is not selectable
+    return false; 
 }
 
 /**
@@ -435,66 +435,66 @@ public boolean checkMove(int dx, int dy) {
  */
 public boolean move(int dx, int dy) {
 
-	boolean moved = false;
+    boolean moved = false;
 
-	ViewState view = ViewState.getInstance();
-	dx = (int)(dx*view.getScale());
-	dy = (int)(dy*view.getScale());
-	int x = DrawingSurface.getInstance().getPressedX() + view.getRx();
-	int y = DrawingSurface.getInstance().getPressedY() + view.getRy();
+    ViewState view = ViewState.getInstance();
+    dx = (int)(dx*view.getScale());
+    dy = (int)(dy*view.getScale());
+    int x = DrawingSurface.getInstance().getPressedX() + view.getRx();
+    int y = DrawingSurface.getInstance().getPressedY() + view.getRy();
 
-	if (dx > 0 && !isRight())
-	{
-		if ((x+dx) > (getRx()+getRwidth()))
-		{
-			rotate();
-			moved = true;
-		}
-	}
-	else if (dx < 0 && isRight())
-	{
-		if ((x+dx) < getRx())
-		{
-			rotate();
-			moved = true;
-		}
-	}
+    if (dx > 0 && !isRight())
+    {
+        if ((x+dx) > (getRx()+getRwidth()))
+        {
+            rotate();
+            moved = true;
+        }
+    }
+    else if (dx < 0 && isRight())
+    {
+        if ((x+dx) < getRx())
+        {
+            rotate();
+            moved = true;
+        }
+    }
 
-	LinkManagerObject lmo = (LinkManagerObject)getParent(); 
-	if (dy > 0 && !lmo.isLastField(this))
-	{
-		if ((y+dy) > (getRy()+getRheight()))
-		{
-			lmo.moveFieldDown(this);
-			moved = true;
-		}
-	}
-	else if (dy < 0 && !lmo.isFirstField(this))
-	{
-		if ((y+dy) < getRy())
-		{
-			lmo.moveFieldUp(this);
-			moved = true;
-		}
-	}
+    LinkManagerObject lmo = (LinkManagerObject)getParent(); 
+    if (dy > 0 && !lmo.isLastField(this))
+    {
+        if ((y+dy) > (getRy()+getRheight()))
+        {
+            lmo.moveFieldDown(this);
+            moved = true;
+        }
+    }
+    else if (dy < 0 && !lmo.isFirstField(this))
+    {
+        if ((y+dy) < getRy())
+        {
+            lmo.moveFieldUp(this);
+            moved = true;
+        }
+    }
 
-	// should be done for discrete move
-	if (moved)
-		DrawingSurface.getInstance().resetDraggedPosition();
+    // should be done for discrete move
+    if (moved)
+        DrawingSurface.getInstance().resetDraggedPosition();
 
-	return moved;
-		
+    return moved;
+        
 }
 
-	/* (non-Javadoc)
-	 * @see com.cosylab.vdct.graphics.objects.Linkable#getLayerID()
-	 */
-	public String getLayerID()
-	{
-		if (!isVisible())
-			return hiddenString;
-		else
-			return super.getLayerID();
-	}
+    /* (non-Javadoc)
+     * @see com.cosylab.vdct.graphics.objects.Linkable#getLayerID()
+     */
+    public String getLayerID()
+    {
+        if (!isVisible())
+            return hiddenString;
+        else
+            return super.getLayerID();
+    }
 
 }

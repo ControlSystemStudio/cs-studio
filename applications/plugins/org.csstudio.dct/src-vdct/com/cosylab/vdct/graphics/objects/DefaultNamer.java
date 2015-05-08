@@ -41,76 +41,76 @@ import com.cosylab.vdct.vdb.VDBTemplateInstance;
  */
 public class DefaultNamer implements NameManipulator {
 
-	protected File file;
-	protected String removedPrefix;
-	protected String addedPrefix;
-	protected Map properties;
-	protected Map ports;
+    protected File file;
+    protected String removedPrefix;
+    protected String addedPrefix;
+    protected Map properties;
+    protected Map ports;
 
-	/**
-	 *
-	 */
-	public DefaultNamer(File file, String removedPrefix, String addedPrefix, Map properties, Map ports)
-	{
-		this.file=file;
-		this.removedPrefix=removedPrefix;
-		this.addedPrefix=addedPrefix;
-		this.properties=properties;
-		this.ports=ports;
-	} 
+    /**
+     *
+     */
+    public DefaultNamer(File file, String removedPrefix, String addedPrefix, Map properties, Map ports)
+    {
+        this.file=file;
+        this.removedPrefix=removedPrefix;
+        this.addedPrefix=addedPrefix;
+        this.properties=properties;
+        this.ports=ports;
+    } 
 
-	/**
-	 * @see com.cosylab.vdct.graphics.objects.NameManipulator#getAddedPrefix()
-	 */
-	public String getAddedPrefix()
-	{
-		return addedPrefix;
-	}
+    /**
+     * @see com.cosylab.vdct.graphics.objects.NameManipulator#getAddedPrefix()
+     */
+    public String getAddedPrefix()
+    {
+        return addedPrefix;
+    }
 
-	/**
-	 * @see com.cosylab.vdct.graphics.objects.NameManipulator#getRemovedPrefix()
-	 */
-	public String getRemovedPrefix()
-	{
-		return removedPrefix;
-	}
+    /**
+     * @see com.cosylab.vdct.graphics.objects.NameManipulator#getRemovedPrefix()
+     */
+    public String getRemovedPrefix()
+    {
+        return removedPrefix;
+    }
 
-	/**
-	 * @see com.cosylab.vdct.graphics.objects.NameManipulator#getResolvedName(String)
-	 */
-	public String getResolvedName(String name)
-	{
-		if (removedPrefix!=null)
-			name = StringUtils.removeBegining(name, removedPrefix); 
-		if (addedPrefix!=null)
-			name = addedPrefix + name;
-		if (properties!=null)
-			name = VDBTemplateInstance.applyProperties(name, properties);
-		return name;
-	}
+    /**
+     * @see com.cosylab.vdct.graphics.objects.NameManipulator#getResolvedName(String)
+     */
+    public String getResolvedName(String name)
+    {
+        if (removedPrefix!=null)
+            name = StringUtils.removeBegining(name, removedPrefix); 
+        if (addedPrefix!=null)
+            name = addedPrefix + name;
+        if (properties!=null)
+            name = VDBTemplateInstance.applyProperties(name, properties);
+        return name;
+    }
 
-	/**
-	 * @see com.cosylab.vdct.graphics.objects.NameManipulator#getSubstitutions()
-	 */
-	public Map getSubstitutions()
-	{
-		return properties;
-	}
+    /**
+     * @see com.cosylab.vdct.graphics.objects.NameManipulator#getSubstitutions()
+     */
+    public Map getSubstitutions()
+    {
+        return properties;
+    }
 
-	/**
-	 * @see com.cosylab.vdct.graphics.objects.NameManipulator#getFile()
-	 */
-	public File getFile()
-	{
-		return file;
-	}
+    /**
+     * @see com.cosylab.vdct.graphics.objects.NameManipulator#getFile()
+     */
+    public File getFile()
+    {
+        return file;
+    }
 
-	/**
-	 * @see com.cosylab.vdct.graphics.objects.NameManipulator#getPorts()
-	 */
-	public Map getPorts()
-	{
-		return ports;
-	}
+    /**
+     * @see com.cosylab.vdct.graphics.objects.NameManipulator#getPorts()
+     */
+    public Map getPorts()
+    {
+        return ports;
+    }
 
 }

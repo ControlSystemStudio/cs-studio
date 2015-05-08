@@ -32,33 +32,33 @@ import org.jdom.Element;
  * 
  */
 public final class ResourcePropertyPersistenceHandler extends
-		AbstractPropertyPersistenceHandler {
+        AbstractPropertyPersistenceHandler {
 
-	/**
-	 * XML tag name <code>map</code>.
-	 */
-	public static final String XML_ELEMENT_PATH = "path"; //$NON-NLS-1$
+    /**
+     * XML tag name <code>map</code>.
+     */
+    public static final String XML_ELEMENT_PATH = "path"; //$NON-NLS-1$
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void writeProperty(final Element domElement,
-			final Object propertyValue) {
-		IPath path = (IPath) propertyValue;
-		Element pathElement = new Element(XML_ELEMENT_PATH);
-		pathElement.setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, path.toString()); //$NON-NLS-1$
-		domElement.addContent(pathElement);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeProperty(final Element domElement,
+            final Object propertyValue) {
+        IPath path = (IPath) propertyValue;
+        Element pathElement = new Element(XML_ELEMENT_PATH);
+        pathElement.setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, path.toString()); //$NON-NLS-1$
+        domElement.addContent(pathElement);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object readProperty(final Element domElement) {
-		Element resourceElement = domElement.getChild(XML_ELEMENT_PATH);
-		String value = resourceElement.getAttributeValue(XmlConstants.XML_ATTRIBUTE_VALUE);
-		IPath result = new Path(value);
-		return result;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object readProperty(final Element domElement) {
+        Element resourceElement = domElement.getChild(XML_ELEMENT_PATH);
+        String value = resourceElement.getAttributeValue(XmlConstants.XML_ATTRIBUTE_VALUE);
+        IPath result = new Path(value);
+        return result;
+    }
 }

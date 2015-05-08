@@ -34,33 +34,33 @@ package org.csstudio.opibuilder.converter.prototype.reflectconstr;
  */
 public class Edm_activeRectangleClass extends EdmWidget {
 
-	@ EdmAttributeAn private int x;
-	@ EdmAttributeAn private int y;
-	@ EdmAttributeAn private int width;
-	@ EdmAttributeAn private int height;
-	@ EdmAttributeAn EdmColor fgColor;
-	
-	public Edm_activeRectangleClass(String type) {
-		super(type);
-	}
+    @ EdmAttributeAn private int x;
+    @ EdmAttributeAn private int y;
+    @ EdmAttributeAn private int width;
+    @ EdmAttributeAn private int height;
+    @ EdmAttributeAn EdmColor fgColor;
+    
+    public Edm_activeRectangleClass(String type) {
+        super(type);
+    }
 
-	public int getX() {
-		return x;
-	}
+    public int getX() {
+        return x;
+    }
 
-	public int getY() {
-		return y;
-	}
+    public int getY() {
+        return y;
+    }
 
-	public int getWidth() {
-		return width;
-	}
+    public int getWidth() {
+        return width;
+    }
 
-	public int getHeight() {
-		return height;
-	}
+    public int getHeight() {
+        return height;
+    }
 
-	public EdmColor getFgColor() {
-		return fgColor;
-	}
+    public EdmColor getFgColor() {
+        return fgColor;
+    }
 }

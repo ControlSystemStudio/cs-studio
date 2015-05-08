@@ -38,59 +38,59 @@ import org.eclipse.swt.widgets.Shell;
  */
 public final class WorkspaceResourceCellEditor extends AbstractDialogCellEditor {
 
-	private IPath _path;
-	private String[] _fileExtensions;
+    private IPath _path;
+    private String[] _fileExtensions;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param parent a parent composite
-	 * @param fileExtensions accepted file extensions
-	 * @param title the dialog title 
-	 */
-	public WorkspaceResourceCellEditor(final Composite parent, final String[] fileExtensions, String title) {
-		super(parent, title);
-		_fileExtensions = fileExtensions;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param parent a parent composite
+     * @param fileExtensions accepted file extensions
+     * @param title the dialog title 
+     */
+    public WorkspaceResourceCellEditor(final Composite parent, final String[] fileExtensions, String title) {
+        super(parent, title);
+        _fileExtensions = fileExtensions;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Object doGetValue() {
-		return _path;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Object doGetValue() {
+        return _path;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doSetValue(final Object value) {
-		if (value == null || !(value instanceof IPath)) {
-			_path = new Path("");
-		} else {
-			_path = (IPath) value;
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doSetValue(final Object value) {
+        if (value == null || !(value instanceof IPath)) {
+            _path = new Path("");
+        } else {
+            _path = (IPath) value;
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void openDialog(final Shell parentShell, final String dialogTitle) {
-		ResourceSelectionDialog rsd = new ResourceSelectionDialog(parentShell, dialogTitle, _fileExtensions);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void openDialog(final Shell parentShell, final String dialogTitle) {
+        ResourceSelectionDialog rsd = new ResourceSelectionDialog(parentShell, dialogTitle, _fileExtensions);
 
-		if (_path != null) {
-			rsd.setSelectedResource(_path);
-		}
+        if (_path != null) {
+            rsd.setSelectedResource(_path);
+        }
 
-		if (rsd.open() == Window.OK) {
-			if (rsd.getSelectedResource() != null) {
-				_path = rsd.getSelectedResource();
-			}
-			fireApplyEditorValue();
-		} else {
-			fireCancelEditor();
-		}
-	}
+        if (rsd.open() == Window.OK) {
+            if (rsd.getSelectedResource() != null) {
+                _path = rsd.getSelectedResource();
+            }
+            fireApplyEditorValue();
+        } else {
+            fireCancelEditor();
+        }
+    }
 }

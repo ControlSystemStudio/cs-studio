@@ -18,11 +18,11 @@ import org.eclipse.gef.tools.SelectionTool;
  */
 public class RuntimePatchedSelectionTool extends SelectionTool{
 
-	@Override
-	protected boolean handleViewerExited() {
-		getCurrentInput().setMouseButton(3, false);
-		handleButtonUp(3);
-		return super.handleViewerExited();
-	}
-	
+    @Override
+    protected boolean handleViewerExited() {
+        getCurrentInput().setMouseButton(3, false);
+        handleButtonUp(3);
+        return super.handleViewerExited();
+    }
+    
 }

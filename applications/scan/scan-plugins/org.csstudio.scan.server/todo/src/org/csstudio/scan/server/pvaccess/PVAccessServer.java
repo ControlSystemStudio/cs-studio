@@ -18,18 +18,18 @@ public class PVAccessServer {
     
 
     public PVAccessServer(ScanServerImpl scan_server) {
-		super();
-		this.scan_server = scan_server;
-	}
+        super();
+        this.scan_server = scan_server;
+    }
 
-	public synchronized void initializeServerContext()
+    public synchronized void initializeServerContext()
     {
         // already initialized
         if (serverContext != null)
             return;
 
         // Create a context with default configuration values.
-         		/*final ServerContextImpl*/ serverContext = new ServerContextImpl();
+                 /*final ServerContextImpl*/ serverContext = new ServerContextImpl();
         serverContext.setBeaconServerStatusProvider(new DefaultBeaconServerDataProvider(serverContext));
 
         try {

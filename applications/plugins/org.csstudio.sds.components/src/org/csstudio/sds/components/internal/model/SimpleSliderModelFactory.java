@@ -33,17 +33,17 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  * 
  */
 public final class SimpleSliderModelFactory implements IWidgetModelFactory {
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractWidgetModel createWidgetModel() {
-		return new SimpleSliderModel();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractWidgetModel createWidgetModel() {
+        return new SimpleSliderModel();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Class getWidgetModelType() {
-		return SimpleSliderModel.class;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Class getWidgetModelType() {
+        return SimpleSliderModel.class;
+    }
 }

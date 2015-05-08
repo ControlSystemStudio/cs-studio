@@ -14,79 +14,79 @@ import org.csstudio.platform.simpledal.IProcessVariableAddressValidationService;
 import org.csstudio.platform.simpledal.IValidationProcess;
 
 public class ProcessVariableAddressValidationMock implements
-		IProcessVariableAddressValidationService {
+        IProcessVariableAddressValidationService {
 
-	private static ExecutorService executor = Executors.newSingleThreadExecutor();
-//	private static ExecutorService executor = Executors.newFixedThreadPool(4);
-	private final String serviceName;
+    private static ExecutorService executor = Executors.newSingleThreadExecutor();
+//    private static ExecutorService executor = Executors.newFixedThreadPool(4);
+    private final String serviceName;
 
-	public ProcessVariableAddressValidationMock(String serviceName) {
-		this.serviceName = serviceName;
-		assert serviceName != null : "Precondition failed: serviceName != null";
-		
-		
-	}
+    public ProcessVariableAddressValidationMock(String serviceName) {
+        this.serviceName = serviceName;
+        assert serviceName != null : "Precondition failed: serviceName != null";
+        
+        
+    }
 
-	@Override
-	public String getServiceName() {
-		return serviceName;
-	}
+    @Override
+    public String getServiceName() {
+        return serviceName;
+    }
 
-	@Override
-	public String getServiceDescription() {
-		return "This is a mocked service implementation";
-	}
+    @Override
+    public String getServiceDescription() {
+        return "This is a mocked service implementation";
+    }
 
-	@Override
-	public IValidationProcess validateProcessVariableAddresses(
-			List<IProcessVariableAddress> pvAddresses,
-			IProcessVariableAddressValidationCallback callback) {
+    @Override
+    public IValidationProcess validateProcessVariableAddresses(
+            List<IProcessVariableAddress> pvAddresses,
+            IProcessVariableAddressValidationCallback callback) {
 
-		final List<Future<?>> submittedValidations = new ArrayList<Future<?>>(
-				pvAddresses.size());
+        final List<Future<?>> submittedValidations = new ArrayList<Future<?>>(
+                pvAddresses.size());
 
-		for (IProcessVariableAddress iProcessVariableAddress : pvAddresses) {
-			final Future<?> submittedValidation = executor.submit(new ValidationRunnable(
-					iProcessVariableAddress, callback));
-			submittedValidations.add(submittedValidation);
-		}
-		return new IValidationProcess() {
+        for (IProcessVariableAddress iProcessVariableAddress : pvAddresses) {
+            final Future<?> submittedValidation = executor.submit(new ValidationRunnable(
+                    iProcessVariableAddress, callback));
+            submittedValidations.add(submittedValidation);
+        }
+        return new IValidationProcess() {
 
-			@Override
-			public void cancel() {
-				for (Future<?> iValidationProcess : submittedValidations) {
-					iValidationProcess.cancel(true);
-				}
-			}
-		};
-	}
+            @Override
+            public void cancel() {
+                for (Future<?> iValidationProcess : submittedValidations) {
+                    iValidationProcess.cancel(true);
+                }
+            }
+        };
+    }
 
-	private class ValidationRunnable implements Runnable {
+    private class ValidationRunnable implements Runnable {
 
-		private final IProcessVariableAddress pvAddress;
-		private final IProcessVariableAddressValidationCallback callback;
+        private final IProcessVariableAddress pvAddress;
+        private final IProcessVariableAddressValidationCallback callback;
 
-		public ValidationRunnable(IProcessVariableAddress pvAddress,
-				IProcessVariableAddressValidationCallback callback) {
-			this.pvAddress = pvAddress;
-			this.callback = callback;
-		}
+        public ValidationRunnable(IProcessVariableAddress pvAddress,
+                IProcessVariableAddressValidationCallback callback) {
+            this.pvAddress = pvAddress;
+            this.callback = callback;
+        }
 
-		@Override
-		public void run() {
-			long waitTime = (long) (Math.random() * 400);
+        @Override
+        public void run() {
+            long waitTime = (long) (Math.random() * 400);
 
-			ValidationResult validationResult = ValidationResult.values()[new Random()
-					.nextInt(3)];
-			try {
-				Thread.sleep(waitTime);
-				this.callback.onValidate(pvAddress, validationResult,
-						validationResult.name());
-			} catch (InterruptedException e) {
-				this.callback.onValidate(pvAddress, ValidationResult.VALIDATION_ERROR,
-						e.getMessage());
-			}
-		}
-	}
+            ValidationResult validationResult = ValidationResult.values()[new Random()
+                    .nextInt(3)];
+            try {
+                Thread.sleep(waitTime);
+                this.callback.onValidate(pvAddress, validationResult,
+                        validationResult.name());
+            } catch (InterruptedException e) {
+                this.callback.onValidate(pvAddress, ValidationResult.VALIDATION_ERROR,
+                        e.getMessage());
+            }
+        }
+    }
 
 }

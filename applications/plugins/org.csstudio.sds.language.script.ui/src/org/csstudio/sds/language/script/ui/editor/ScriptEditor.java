@@ -25,87 +25,87 @@ import de.desy.language.editor.ui.editor.highlighting.AbstractRuleProvider;
 
 public class ScriptEditor extends LanguageEditor {
 
-	private DefaultDamagerRepairer _defaultDamagerRepairer;
+    private DefaultDamagerRepairer _defaultDamagerRepairer;
 
-	public ScriptEditor() {
-	}
+    public ScriptEditor() {
+    }
 
-	@Override
-	protected AbstractLanguageParser doGetLanguageParser() {
-		return new ScriptParser();
-	}
+    @Override
+    protected AbstractLanguageParser doGetLanguageParser() {
+        return new ScriptParser();
+    }
 
-	@Override
-	protected IPresentationDamager doGetPresentationDamager(
-			ITokenScanner codeScannerUsedForHighligthing) {
-		return new ScriptPresentationDamager();
-	}
+    @Override
+    protected IPresentationDamager doGetPresentationDamager(
+            ITokenScanner codeScannerUsedForHighligthing) {
+        return new ScriptPresentationDamager();
+    }
 
-	@Override
-	protected IPresentationRepairer doGetPresentationRepairer(
-			ITokenScanner codeScannerUsedForHighligthing) {
-		return this.getDefaultDamagerRepairer(codeScannerUsedForHighligthing);
-	}
+    @Override
+    protected IPresentationRepairer doGetPresentationRepairer(
+            ITokenScanner codeScannerUsedForHighligthing) {
+        return this.getDefaultDamagerRepairer(codeScannerUsedForHighligthing);
+    }
 
-	@Override
-	protected AbstractRuleProvider doGetRuleProviderForHighlighting() {
-		return new RuleProvider();
-	}
+    @Override
+    protected AbstractRuleProvider doGetRuleProviderForHighlighting() {
+        return new RuleProvider();
+    }
 
-	private DefaultDamagerRepairer getDefaultDamagerRepairer(
-			ITokenScanner codeScannerUsedForHighligthing) {
-		if (_defaultDamagerRepairer == null) {
-			_defaultDamagerRepairer = new DefaultDamagerRepairer(
-					codeScannerUsedForHighligthing);
-		}
-		return _defaultDamagerRepairer;
-	}
-	
-	@Override
-	protected void determineAdditionalErrors() {
-		doHandleSourceModifiedAndSaved(null);
-	}
+    private DefaultDamagerRepairer getDefaultDamagerRepairer(
+            ITokenScanner codeScannerUsedForHighligthing) {
+        if (_defaultDamagerRepairer == null) {
+            _defaultDamagerRepairer = new DefaultDamagerRepairer(
+                    codeScannerUsedForHighligthing);
+        }
+        return _defaultDamagerRepairer;
+    }
+    
+    @Override
+    protected void determineAdditionalErrors() {
+        doHandleSourceModifiedAndSaved(null);
+    }
 
-	@Override
-	protected void doHandleSourceModifiedAndSaved(
-			IProgressMonitor progressMonitor) {
-		IFile sourceRessource = ((FileEditorInput) getEditorInput()).getFile();
-		try {
-			InputStream contents = sourceRessource.getContents();
+    @Override
+    protected void doHandleSourceModifiedAndSaved(
+            IProgressMonitor progressMonitor) {
+        IFile sourceRessource = ((FileEditorInput) getEditorInput()).getFile();
+        try {
+            InputStream contents = sourceRessource.getContents();
 
-			String scriptString = ""; //$NON-NLS-1$
+            String scriptString = ""; //$NON-NLS-1$
 
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					contents));
-			while (reader.ready()) {
-				scriptString = scriptString + reader.readLine() + System.getProperty("line.separator");
-			}
-			reader.close();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    contents));
+            while (reader.ready()) {
+                scriptString = scriptString + reader.readLine() + System.getProperty("line.separator");
+            }
+            reader.close();
 
-			Context scriptContext = Context.enter();
-			ImporterTopLevel scriptScope = new ImporterTopLevel(scriptContext);
+            Context scriptContext = Context.enter();
+            ImporterTopLevel scriptScope = new ImporterTopLevel(scriptContext);
 
-			try {
-				scriptContext.evaluateString(scriptScope, scriptString,
-						sourceRessource.getName(), 1, null); //$NON-NLS-1$
-			} catch (RhinoException re) {
-				IMarker errorMarker = sourceRessource
-						.createMarker(IMarker.PROBLEM);
-				errorMarker.setAttribute(IMarker.SEVERITY,
-						IMarker.SEVERITY_ERROR);
-				errorMarker.setAttribute(IMarker.LINE_NUMBER, re.lineNumber());
-				errorMarker.setAttribute(IMarker.MESSAGE, re.getMessage());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			Context.exit();
-		}
-	}
+            try {
+                scriptContext.evaluateString(scriptScope, scriptString,
+                        sourceRessource.getName(), 1, null); //$NON-NLS-1$
+            } catch (RhinoException re) {
+                IMarker errorMarker = sourceRessource
+                        .createMarker(IMarker.PROBLEM);
+                errorMarker.setAttribute(IMarker.SEVERITY,
+                        IMarker.SEVERITY_ERROR);
+                errorMarker.setAttribute(IMarker.LINE_NUMBER, re.lineNumber());
+                errorMarker.setAttribute(IMarker.MESSAGE, re.getMessage());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            Context.exit();
+        }
+    }
 
-	@Override
-	protected IContentAssistProcessor getContentAssistProcessor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    protected IContentAssistProcessor getContentAssistProcessor() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

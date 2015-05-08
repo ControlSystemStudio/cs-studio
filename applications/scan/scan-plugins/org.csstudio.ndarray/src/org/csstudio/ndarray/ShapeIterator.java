@@ -15,47 +15,47 @@ import java.util.Arrays;
  */
 public class ShapeIterator
 {
-	/** Shape to iterate */
-	final private NDShape shape;
+    /** Shape to iterate */
+    final private NDShape shape;
 
-	/** Current position within shape */
-	final private int[] pos;
+    /** Current position within shape */
+    final private int[] pos;
 
-	/** Initialize
-	 *  @param shape Shape over which to iterate
-	 */
-	ShapeIterator(final NDShape shape)
-	{
-		this.shape = shape;
-		// Start at position [ 0, 0, 0, ... ]
-		pos = new int[shape.getDimensions()];
-		Arrays.fill(pos, 0);
-		// Prepare for first iteration step
-		pos[pos.length-1] = -1;
-	}
-
-	/** Position on the next element.
-	 *  @return <code>true</code> if there was a next element,
-	 *          <code>false</code> if the iterator wrapped around
-	 *          to the start of the iteration.
-	 */
-    public boolean hasNext()
+    /** Initialize
+     *  @param shape Shape over which to iterate
+     */
+    ShapeIterator(final NDShape shape)
     {
-    	// Increment position elements starting at the last dimension
-    	for (int i = pos.length-1; i>=0; --i)
-    	{
-    		++pos[i];
-    		if (pos[i] < shape.getSize(i))
-    			return true;
-    		// Carry over into previous dimension
-			pos[i] = 0;
-    	}
-    	return false;
+        this.shape = shape;
+        // Start at position [ 0, 0, 0, ... ]
+        pos = new int[shape.getDimensions()];
+        Arrays.fill(pos, 0);
+        // Prepare for first iteration step
+        pos[pos.length-1] = -1;
     }
 
-	/** @return Current position */
+    /** Position on the next element.
+     *  @return <code>true</code> if there was a next element,
+     *          <code>false</code> if the iterator wrapped around
+     *          to the start of the iteration.
+     */
+    public boolean hasNext()
+    {
+        // Increment position elements starting at the last dimension
+        for (int i = pos.length-1; i>=0; --i)
+        {
+            ++pos[i];
+            if (pos[i] < shape.getSize(i))
+                return true;
+            // Carry over into previous dimension
+            pos[i] = 0;
+        }
+        return false;
+    }
+
+    /** @return Current position */
     public int[] getPosition()
     {
-	    return pos;
+        return pos;
     }
 }

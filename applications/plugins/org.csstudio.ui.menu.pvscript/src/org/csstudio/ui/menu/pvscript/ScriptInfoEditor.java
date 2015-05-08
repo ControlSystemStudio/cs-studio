@@ -27,11 +27,11 @@ public class ScriptInfoEditor extends RowEditDialog
     /** Initialize
      *  @param shell Parent shell
      */
-	public ScriptInfoEditor(final Shell shell)
+    public ScriptInfoEditor(final Shell shell)
     {
-		super(shell);
+        super(shell);
     }
-	
+    
     /** {@inheritDoc} */
     @Override
     protected void configureShell(final Shell newShell)

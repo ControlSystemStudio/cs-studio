@@ -25,7 +25,7 @@ public class TitlePart extends PlotPart
      */
     public TitlePart(final String name, final PlotPartListener listener)
     {
-    	super(name, listener);
+        super(name, listener);
     }
     
     /** @param gc
@@ -34,27 +34,27 @@ public class TitlePart extends PlotPart
      */
     public int getDesiredHeight(final GC gc, final Font font)
     {
-    	final String text = getName();
-    	if (text.isEmpty())
-    		return 0;
-    	final Font orig_font = gc.getFont();
-    	gc.setFont(font);
+        final String text = getName();
+        if (text.isEmpty())
+            return 0;
+        final Font orig_font = gc.getFont();
+        gc.setFont(font);
         final Point size = gc.textExtent(text);
-    	gc.setFont(orig_font);
-    	return size.y;
+        gc.setFont(orig_font);
+        return size.y;
     }
     
     /** {@inheritDoc} */
     public void paint(final GC gc, final SWTMediaPool media, final Font font)
     {
-    	super.paint(gc, media);
-    	
-    	final String text = getName();
-    	if (text.isEmpty())
-    		return;
-    	
-    	final Font orig_font = gc.getFont();
-    	gc.setFont(font);
+        super.paint(gc, media);
+        
+        final String text = getName();
+        if (text.isEmpty())
+            return;
+        
+        final Font orig_font = gc.getFont();
+        gc.setFont(font);
         final Color old_fg = gc.getForeground();
         gc.setForeground(media.get(getColor()));
 
@@ -65,6 +65,6 @@ public class TitlePart extends PlotPart
         final int ty = bounds.y + (bounds.height - size.y) / 2;
         gc.drawText(text, tx, ty, true);
         gc.setForeground(old_fg);
-    	gc.setFont(orig_font);
+        gc.setFont(orig_font);
     }
 }

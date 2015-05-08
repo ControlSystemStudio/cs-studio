@@ -7,31 +7,31 @@ import org.osgi.framework.ServiceRegistration;
 
 public class Activator implements BundleActivator {
 
-	private static BundleContext context;
+    private static BundleContext context;
 
-	static BundleContext getContext() {
-		return context;
-	}
+    static BundleContext getContext() {
+        return context;
+    }
 
-	private ServiceRegistration<IProcessVariableAddressValidationService> _mkkPvServiceRegistration;
+    private ServiceRegistration<IProcessVariableAddressValidationService> _mkkPvServiceRegistration;
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
-	public void start(BundleContext bundleContext) throws Exception {
-		Activator.context = bundleContext;
-		MkkPvValidationService mkkPvService = new MkkPvValidationService();
-		_mkkPvServiceRegistration = bundleContext.registerService(IProcessVariableAddressValidationService.class, mkkPvService, null);
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+     */
+    public void start(BundleContext bundleContext) throws Exception {
+        Activator.context = bundleContext;
+        MkkPvValidationService mkkPvService = new MkkPvValidationService();
+        _mkkPvServiceRegistration = bundleContext.registerService(IProcessVariableAddressValidationService.class, mkkPvService, null);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext bundleContext) throws Exception {
-		_mkkPvServiceRegistration.unregister();
-		Activator.context = null;
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+     */
+    public void stop(BundleContext bundleContext) throws Exception {
+        _mkkPvServiceRegistration.unregister();
+        Activator.context = null;
+    }
 
 }

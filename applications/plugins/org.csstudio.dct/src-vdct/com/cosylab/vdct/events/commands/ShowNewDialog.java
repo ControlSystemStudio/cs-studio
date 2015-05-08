@@ -38,20 +38,20 @@ import com.cosylab.vdct.VisualDCT;
  */
  
 public class ShowNewDialog extends Command {
-	private VisualDCT visualDCT;
+    private VisualDCT visualDCT;
 /**
  * Insert the method's description here.
  * Creation date: (29.12.2000 12:37:58)
  */
 
 public ShowNewDialog(VisualDCT visualDCT) {
-	this.visualDCT=visualDCT;
+    this.visualDCT=visualDCT;
 }
 /**
  * Insert the method's description here.
  * Creation date: (29.12.2000 12:37:43)
  */
 public void execute() {
-	visualDCT.showNewDialog();
+    visualDCT.showNewDialog();
 }
 }

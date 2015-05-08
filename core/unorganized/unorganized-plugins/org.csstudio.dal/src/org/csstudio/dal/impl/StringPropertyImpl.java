@@ -31,18 +31,18 @@ import org.csstudio.dal.context.PropertyContext;
  *
   */
 public class StringPropertyImpl extends DynamicValuePropertyImpl<String>
-	implements StringProperty
+    implements StringProperty
 {
-	/**
-	 * Creates a new StringPropertyImpl object.
-	 *
-	 * @param name property name
-	 * @param propertyContext property context
-	 */
-	public StringPropertyImpl(String name, PropertyContext propertyContext)
-	{
-		super(String.class, name, propertyContext);
-	}
+    /**
+     * Creates a new StringPropertyImpl object.
+     *
+     * @param name property name
+     * @param propertyContext property context
+     */
+    public StringPropertyImpl(String name, PropertyContext propertyContext)
+    {
+        super(String.class, name, propertyContext);
+    }
 }
 
 /* __oOo__ */

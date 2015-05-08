@@ -14,6 +14,6 @@ import org.csstudio.diag.pvfields.PVField;
  */
 public interface PVFieldListener
 {
-	/** @param field {@link PVField} that has new value */
+    /** @param field {@link PVField} that has new value */
     public void updateField(PVField field);
 }

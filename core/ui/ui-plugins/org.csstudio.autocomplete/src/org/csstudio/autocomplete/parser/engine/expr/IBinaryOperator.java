@@ -11,11 +11,11 @@ package org.csstudio.autocomplete.parser.engine.expr;
 
 public interface IBinaryOperator {
 
-	public Expr getLHS();
+    public Expr getLHS();
 
-	public void setLHS(Expr lhs);
+    public void setLHS(Expr lhs);
 
-	public Expr getRHS();
+    public Expr getRHS();
 
-	public void setRHS(Expr rhs);
+    public void setRHS(Expr rhs);
 }

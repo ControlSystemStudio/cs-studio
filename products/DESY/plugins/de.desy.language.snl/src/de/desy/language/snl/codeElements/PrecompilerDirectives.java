@@ -36,27 +36,27 @@ import de.desy.language.editor.core.ILanguageElements;
  */
 public enum PrecompilerDirectives implements ILanguageElements {
 
-	POUND_DEFINE("#define"); //$NON-NLS-1$
+    POUND_DEFINE("#define"); //$NON-NLS-1$
 
-	/**
-	 * The name in the source.
-	 */
-	private String _inCodeName;
+    /**
+     * The name in the source.
+     */
+    private String _inCodeName;
 
-	/**
-	 * Initializer of the enum-values.
-	 * 
-	 * @param inCodeName
-	 *            The name in the source.
-	 */
-	PrecompilerDirectives(final String inCodeName) {
-		this._inCodeName = inCodeName;
-	}
+    /**
+     * Initializer of the enum-values.
+     * 
+     * @param inCodeName
+     *            The name in the source.
+     */
+    PrecompilerDirectives(final String inCodeName) {
+        this._inCodeName = inCodeName;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getElementName() {
-		return this._inCodeName;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getElementName() {
+        return this._inCodeName;
+    }
 }

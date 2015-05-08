@@ -41,150 +41,150 @@ import org.eclipse.swt.widgets.Shell;
  */
 public final class ResourceCellEditor extends AbstractDialogCellEditor {
 
-	/**
-	 * The current IPath.
-	 */
-	private IPath _path;
+    /**
+     * The current IPath.
+     */
+    private IPath _path;
 
-	/**
-	 * The filter path for the dialog.
-	 */
-	private String _filterPath = System.getProperty("user.home"); //$NON-NLS-1$
+    /**
+     * The filter path for the dialog.
+     */
+    private String _filterPath = System.getProperty("user.home"); //$NON-NLS-1$
 
-	/**
-	 * The accepted file extensions.
-	 */
-	private String[] _fileExtensions;
-	/**
-	 * The original file extensions.
-	 */
-	private String[] _orgFileExtensions;
+    /**
+     * The accepted file extensions.
+     */
+    private String[] _fileExtensions;
+    /**
+     * The original file extensions.
+     */
+    private String[] _orgFileExtensions;
 
-	private boolean _onlyWorkSpace = true;
+    private boolean _onlyWorkSpace = true;
 
-	/**
-	 * The {@link IPropertyChangeListener} for the workspace settings.
-	 */
-	private IPropertyChangeListener _useWorkspaceListener;
+    /**
+     * The {@link IPropertyChangeListener} for the workspace settings.
+     */
+    private IPropertyChangeListener _useWorkspaceListener;
 
-	/**
-	 * Creates a new string cell editor parented under the given control. The
-	 * cell editor value is a PointList.
-	 * 
-	 * @param parent
-	 *            The parent table.
-	 * @param fileExtensions
-	 *            The accepted file extensions
-	 */
-	public ResourceCellEditor(final Composite parent,
-			final String[] fileExtensions) {
-		super(parent, "Open File");
-		_orgFileExtensions = fileExtensions;
-		_useWorkspaceListener = new UseWorkspaceListener();
-		SdsUiPlugin.getCorePreferenceStore().addPropertyChangeListener(
-				_useWorkspaceListener);
-		convertFileExtensions();
-	}
+    /**
+     * Creates a new string cell editor parented under the given control. The
+     * cell editor value is a PointList.
+     * 
+     * @param parent
+     *            The parent table.
+     * @param fileExtensions
+     *            The accepted file extensions
+     */
+    public ResourceCellEditor(final Composite parent,
+            final String[] fileExtensions) {
+        super(parent, "Open File");
+        _orgFileExtensions = fileExtensions;
+        _useWorkspaceListener = new UseWorkspaceListener();
+        SdsUiPlugin.getCorePreferenceStore().addPropertyChangeListener(
+                _useWorkspaceListener);
+        convertFileExtensions();
+    }
 
-	/**
-	 * Converts the file extensions. Adds '*.' to every extension if it doesn't
-	 * start with it
-	 */
-	private void convertFileExtensions() {
-		if (_onlyWorkSpace) {
-			_fileExtensions = _orgFileExtensions;
-		} else {
-			if (_orgFileExtensions.length > 0) {
-				_fileExtensions = new String[_orgFileExtensions.length];
-				for (int i = 0; i < _fileExtensions.length; i++) {
-					if (_orgFileExtensions[i].startsWith("*.")) {
-						_fileExtensions[i] = _orgFileExtensions[i];
-					} else {
-						_fileExtensions[i] = "*." + _orgFileExtensions[i];
-					}
-				}
-			}
-		}
-	}
+    /**
+     * Converts the file extensions. Adds '*.' to every extension if it doesn't
+     * start with it
+     */
+    private void convertFileExtensions() {
+        if (_onlyWorkSpace) {
+            _fileExtensions = _orgFileExtensions;
+        } else {
+            if (_orgFileExtensions.length > 0) {
+                _fileExtensions = new String[_orgFileExtensions.length];
+                for (int i = 0; i < _fileExtensions.length; i++) {
+                    if (_orgFileExtensions[i].startsWith("*.")) {
+                        _fileExtensions[i] = _orgFileExtensions[i];
+                    } else {
+                        _fileExtensions[i] = "*." + _orgFileExtensions[i];
+                    }
+                }
+            }
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Object doGetValue() {
-		return _path;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Object doGetValue() {
+        return _path;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doSetValue(final Object value) {
-		if (value == null || !(value instanceof IPath)) {
-			_path = new Path("");
-		} else {
-			_path = (IPath) value;
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doSetValue(final Object value) {
+        if (value == null || !(value instanceof IPath)) {
+            _path = new Path("");
+        } else {
+            _path = (IPath) value;
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void openDialog(final Shell parentShell, final String dialogTitle) {
-		if (_onlyWorkSpace) {
-			SdsResourceSelectionDialog rsd = new SdsResourceSelectionDialog(
-					parentShell);
-//			rsd.setSelectedResource(_path);
-			if (rsd.open() == Window.OK) {
-				if (rsd.getSelectedPath() != null) {
-					_path = rsd.getSelectedPath();
-				}
-			}
-		} else {
-			FileDialog dialog = new FileDialog(parentShell, SWT.OPEN
-					| SWT.MULTI);
-			dialog.setText(dialogTitle);
-			if (_path != null) {
-				_filterPath = _path.toString();
-			}
-			dialog.setFilterPath(_filterPath);
-			dialog.setFilterExtensions(_fileExtensions);
-			dialog.open();
-			String name = dialog.getFileName();
-			_filterPath = dialog.getFilterPath();
-			_path = new Path(_filterPath + Path.SEPARATOR + name);
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void openDialog(final Shell parentShell, final String dialogTitle) {
+        if (_onlyWorkSpace) {
+            SdsResourceSelectionDialog rsd = new SdsResourceSelectionDialog(
+                    parentShell);
+//            rsd.setSelectedResource(_path);
+            if (rsd.open() == Window.OK) {
+                if (rsd.getSelectedPath() != null) {
+                    _path = rsd.getSelectedPath();
+                }
+            }
+        } else {
+            FileDialog dialog = new FileDialog(parentShell, SWT.OPEN
+                    | SWT.MULTI);
+            dialog.setText(dialogTitle);
+            if (_path != null) {
+                _filterPath = _path.toString();
+            }
+            dialog.setFilterPath(_filterPath);
+            dialog.setFilterExtensions(_fileExtensions);
+            dialog.open();
+            String name = dialog.getFileName();
+            _filterPath = dialog.getFilterPath();
+            _path = new Path(_filterPath + Path.SEPARATOR + name);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected boolean shouldFireChanges() {
-		return _path != null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean shouldFireChanges() {
+        return _path != null;
+    }
 
-	/**
-	 * A listener for the preference page.
-	 * 
-	 * @author Kai Meyer
-	 * 
-	 */
-	private final class UseWorkspaceListener implements
-			org.eclipse.jface.util.IPropertyChangeListener {
+    /**
+     * A listener for the preference page.
+     * 
+     * @author Kai Meyer
+     * 
+     */
+    private final class UseWorkspaceListener implements
+            org.eclipse.jface.util.IPropertyChangeListener {
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public void propertyChange(final PropertyChangeEvent event) {
-			if (event.getProperty().equals("useWorkspaceAsRoot")) {
-				if (event.getNewValue() instanceof Boolean) {
-					_onlyWorkSpace = (Boolean) event.getNewValue();
-					convertFileExtensions();
-				}
-			}
-		}
-	}
+        /**
+         * {@inheritDoc}
+         */
+        public void propertyChange(final PropertyChangeEvent event) {
+            if (event.getProperty().equals("useWorkspaceAsRoot")) {
+                if (event.getNewValue() instanceof Boolean) {
+                    _onlyWorkSpace = (Boolean) event.getNewValue();
+                    convertFileExtensions();
+                }
+            }
+        }
+    }
 
 }

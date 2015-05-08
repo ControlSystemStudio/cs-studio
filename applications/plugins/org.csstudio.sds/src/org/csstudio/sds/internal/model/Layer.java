@@ -46,164 +46,164 @@ import org.eclipse.core.runtime.Platform;
  * 
  */
 public final class Layer implements IAdaptable {
-	/**
-	 * ID for <i>visibility changed</i> events.
-	 */
-	public static final String PROP_VISIBLE = "visible";
+    /**
+     * ID for <i>visibility changed</i> events.
+     */
+    public static final String PROP_VISIBLE = "visible";
 
-	/**
-	 * ID for <i>id changed</i> events.
-	 */
-	public static final String PROP_ID = "id";
+    /**
+     * ID for <i>id changed</i> events.
+     */
+    public static final String PROP_ID = "id";
 
-	/**
-	 * ID for <i>description changed</i> events.
-	 */
-	public static final String PROP_DESCRIPTION = "description";
+    /**
+     * ID for <i>description changed</i> events.
+     */
+    public static final String PROP_DESCRIPTION = "description";
 
-	/**
-	 * Property change support delegate.
-	 */
-	private PropertyChangeSupport _propertyChangeSupport;
+    /**
+     * Property change support delegate.
+     */
+    private PropertyChangeSupport _propertyChangeSupport;
 
-	/**
-	 * The visibility state.
-	 */
-	private boolean _visible;
+    /**
+     * The visibility state.
+     */
+    private boolean _visible;
 
-	/**
-	 * The layer id.
-	 */
-	private String _id;
+    /**
+     * The layer id.
+     */
+    private String _id;
 
-	/**
-	 * A layer description.
-	 */
-	private String _description;
+    /**
+     * A layer description.
+     */
+    private String _description;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param id
-	 *            the layer ID
-	 * @param description
-	 *            a description for the layer
-	 */
-	public Layer(final String id, final String description) {
-	    if (id != null && id.trim().length() > 0) {
-	        _id = id;
-	    } else {
-	        _id = UUID.randomUUID().toString();
-	    }
-		_description = description;
-		_visible = true;
-		_propertyChangeSupport = new PropertyChangeSupport(this);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param id
+     *            the layer ID
+     * @param description
+     *            a description for the layer
+     */
+    public Layer(final String id, final String description) {
+        if (id != null && id.trim().length() > 0) {
+            _id = id;
+        } else {
+            _id = UUID.randomUUID().toString();
+        }
+        _description = description;
+        _visible = true;
+        _propertyChangeSupport = new PropertyChangeSupport(this);
+    }
 
-	/**
-	 * Returns the layer description.
-	 * 
-	 * @return the layer description
-	 */
-	public String getDescription() {
-		return _description;
-	}
+    /**
+     * Returns the layer description.
+     * 
+     * @return the layer description
+     */
+    public String getDescription() {
+        return _description;
+    }
 
-	/**
-	 * Sets the layer description.
-	 * 
-	 * @param newDescription
-	 *            the layer description
-	 */
-	public void setDescription(final String newDescription) {
-		assert newDescription != null;
+    /**
+     * Sets the layer description.
+     * 
+     * @param newDescription
+     *            the layer description
+     */
+    public void setDescription(final String newDescription) {
+        assert newDescription != null;
 
-		if (!newDescription.equals(_description)) {
-			String oldDescription = _description;
-			_description = newDescription;
-			_propertyChangeSupport.firePropertyChange(PROP_DESCRIPTION,
-					oldDescription, newDescription);
-		}
-	}
+        if (!newDescription.equals(_description)) {
+            String oldDescription = _description;
+            _description = newDescription;
+            _propertyChangeSupport.firePropertyChange(PROP_DESCRIPTION,
+                    oldDescription, newDescription);
+        }
+    }
 
-	/**
-	 * Returns the layer ID.
-	 * 
-	 * @return the layer ID
-	 */
-	public String getId() {
-		return _id;
-	}
+    /**
+     * Returns the layer ID.
+     * 
+     * @return the layer ID
+     */
+    public String getId() {
+        return _id;
+    }
 
-	/**
-	 * Sets the layer ID.
-	 * 
-	 * @param newId
-	 *            the layer ID
-	 */
-	public void setId(final String newId) {
-		assert newId != null;
+    /**
+     * Sets the layer ID.
+     * 
+     * @param newId
+     *            the layer ID
+     */
+    public void setId(final String newId) {
+        assert newId != null;
 
-		if (!newId.equals(_id)) {
-			String oldId = _id;
-			_id = newId;
-			_propertyChangeSupport.firePropertyChange(PROP_ID, oldId, newId);
-		}
-	}
+        if (!newId.equals(_id)) {
+            String oldId = _id;
+            _id = newId;
+            _propertyChangeSupport.firePropertyChange(PROP_ID, oldId, newId);
+        }
+    }
 
-	/**
-	 * Returns the visibility state.
-	 * 
-	 * @return the visibility state
-	 */
-	public boolean isVisible() {
-		return _visible;
-	}
+    /**
+     * Returns the visibility state.
+     * 
+     * @return the visibility state
+     */
+    public boolean isVisible() {
+        return _visible;
+    }
 
-	/**
-	 * Sets the visibility state.
-	 * 
-	 * @param visible
-	 *            the visibility state
-	 */
-	public void setVisible(final boolean visible) {
-		if (_visible != visible) {
-			_visible = visible;
-			_propertyChangeSupport.firePropertyChange(PROP_VISIBLE, !visible,
-					visible);
-		}
-	}
+    /**
+     * Sets the visibility state.
+     * 
+     * @param visible
+     *            the visibility state
+     */
+    public void setVisible(final boolean visible) {
+        if (_visible != visible) {
+            _visible = visible;
+            _propertyChangeSupport.firePropertyChange(PROP_VISIBLE, !visible,
+                    visible);
+        }
+    }
 
-	/**
-	 * Adds the specified property change listener.
-	 * 
-	 * @param listener
-	 *            a property change listener
-	 */
-	public void addPropertyChangeListener(final PropertyChangeListener listener) {
-		_propertyChangeSupport.addPropertyChangeListener(listener);
-	}
+    /**
+     * Adds the specified property change listener.
+     * 
+     * @param listener
+     *            a property change listener
+     */
+    public void addPropertyChangeListener(final PropertyChangeListener listener) {
+        _propertyChangeSupport.addPropertyChangeListener(listener);
+    }
 
-	/**
-	 * Removes the specified property change listener.
-	 * 
-	 * @param listener
-	 *            a property change listener
-	 */
-	public void removePropertyChangeListener(
-			final PropertyChangeListener listener) {
-		_propertyChangeSupport.removePropertyChangeListener(listener);
-	}
+    /**
+     * Removes the specified property change listener.
+     * 
+     * @param listener
+     *            a property change listener
+     */
+    public void removePropertyChangeListener(
+            final PropertyChangeListener listener) {
+        _propertyChangeSupport.removePropertyChangeListener(listener);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(final Class adapter) {
-		return Platform.getAdapterManager().getAdapter(this, adapter);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("rawtypes")
+    public Object getAdapter(final Class adapter) {
+        return Platform.getAdapterManager().getAdapter(this, adapter);
+    }
 
-	@Override
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -235,11 +235,11 @@ public final class Layer implements IAdaptable {
     }
 
     /**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		return _description + " [" + _id + "]";
-	}
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return _description + " [" + _id + "]";
+    }
 
 }

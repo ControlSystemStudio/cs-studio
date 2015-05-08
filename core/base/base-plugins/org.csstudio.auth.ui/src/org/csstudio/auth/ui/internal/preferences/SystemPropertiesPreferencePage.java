@@ -66,19 +66,19 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public final class SystemPropertiesPreferencePage extends PreferencePage
         implements IWorkbenchPreferencePage {
     
-	/**
-	 * Column property name for the key column.
-	 */
-	private static final String KEY = "key"; //$NON-NLS-1$
-	
-	/**
-	 * Column property name for the value column.
-	 */
-	private static final String VALUE = "value"; //$NON-NLS-1$
-	
-	/**
-	 * Model representing the preference entries.
-	 */
+    /**
+     * Column property name for the key column.
+     */
+    private static final String KEY = "key"; //$NON-NLS-1$
+    
+    /**
+     * Column property name for the value column.
+     */
+    private static final String VALUE = "value"; //$NON-NLS-1$
+    
+    /**
+     * Model representing the preference entries.
+     */
     private PropertiesModel _properties;
 
     /**
@@ -151,9 +151,9 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         // Add a selection listener to the viewer that will enable the
         // "Remove" button when at least one item is selected in the table.
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(final SelectionChangedEvent event) {
-				removeButton.setEnabled(!event.getSelection().isEmpty());
-			}
+            public void selectionChanged(final SelectionChangedEvent event) {
+                removeButton.setEnabled(!event.getSelection().isEmpty());
+            }
         });
         
         _properties = new PropertiesModel();
@@ -249,9 +249,9 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
      * content provider when the entries in the model are changed.
      */
     private static class PropertiesModel {
-    	/**
-    	 * The entries.
-    	 */
+        /**
+         * The entries.
+         */
         private Collection<SystemPropertyPreferenceEntry> _entries =
             new ArrayList<SystemPropertyPreferenceEntry>();
         
@@ -280,7 +280,7 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
          * Stores the entries in the preferences.
          */
         private void storeToPreferences() {
-        	SystemPropertyPreferenceEntry.storeToPreferences(_entries);
+            SystemPropertyPreferenceEntry.storeToPreferences(_entries);
         }
 
         /**
@@ -314,12 +314,12 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         /**
          * The table viewer to which this provider provides content.
          */
-    	private TableViewer _viewer;
+        private TableViewer _viewer;
         
         /**
          * {@inheritDoc}
          */
-    	public Object[] getElements(final Object inputElement) {
+        public Object[] getElements(final Object inputElement) {
             if (inputElement instanceof PropertiesModel) {
                 return ((PropertiesModel) inputElement)._entries.toArray();
             } else {
@@ -332,17 +332,17 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
          * underlying model.
          * @param entry the entry that was removed.
          */
-    	private void remove(final SystemPropertyPreferenceEntry entry) {
+        private void remove(final SystemPropertyPreferenceEntry entry) {
             if (_viewer != null) {
                 _viewer.remove(entry);
             }
         }
 
-    	/**
-    	 * Notifies this content provider that an entry was added to the
-    	 * underlying model.
-    	 * @param entry the entry that was added.
-    	 */
+        /**
+         * Notifies this content provider that an entry was added to the
+         * underlying model.
+         * @param entry the entry that was added.
+         */
         private void add(final SystemPropertyPreferenceEntry entry) {
             if (_viewer != null) {
                 _viewer.add(entry);
@@ -360,7 +360,7 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
          * {@inheritDoc}
          */
         public void inputChanged(final Viewer viewer, final Object oldInput,
-        		final Object newInput) {
+                final Object newInput) {
             if (viewer instanceof TableViewer) {
                 _viewer = (TableViewer) viewer;
             }
@@ -382,14 +382,14 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         /**
          * {@inheritDoc}
          */
-    	public Image getColumnImage(final Object element, final int columnIndex) {
+        public Image getColumnImage(final Object element, final int columnIndex) {
             return null;  // no images
         }
 
         /**
          * {@inheritDoc}
          */
-    	public String getColumnText(final Object element, final int columnIndex) {
+        public String getColumnText(final Object element, final int columnIndex) {
             if (element instanceof SystemPropertyPreferenceEntry) {
                 SystemPropertyPreferenceEntry entry =
                     (SystemPropertyPreferenceEntry) element;

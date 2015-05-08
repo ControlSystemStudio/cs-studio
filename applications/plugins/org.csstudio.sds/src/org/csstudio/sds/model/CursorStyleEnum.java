@@ -30,109 +30,109 @@ import org.eclipse.swt.graphics.Cursor;
  *
  */
 public enum CursorStyleEnum {
-	/**
-	 * Arrow Cursor.
-	 */
-	ARROW(0, "Arrow", Cursors.ARROW),
-	/**
-	 * Hand Cursor.
-	 */
-	HAND(1, "Hand", Cursors.HAND),
-	/**
-	 * No Cursor.
-	 */
-	NO(2, "No", Cursors.NO),
-	/**
-	 * Hand Cursor.
-	 */
-	CROSS(3, "Cross", Cursors.CROSS),
-	/**
-	 * Hand Cursor.
-	 */
-	STARTING(4, "Starting", Cursors.APPSTARTING),
-	/**
-	 * Hand Cursor.
-	 */
-	IBEAM(5, "IBeam", Cursors.IBEAM),
-	/**
-	 * Hand Cursor.
-	 */
-	HELP(6, "Help", Cursors.HELP);
-	
-	/**
-	 * The index of his enum.
-	 */
-	private int _index;
-	/**
-	 * The display name of this enum.
-	 */
-	private String _displayName;
-	/**
-	 * The cursor of this enum.
-	 */
-	private Cursor _cursor;
+    /**
+     * Arrow Cursor.
+     */
+    ARROW(0, "Arrow", Cursors.ARROW),
+    /**
+     * Hand Cursor.
+     */
+    HAND(1, "Hand", Cursors.HAND),
+    /**
+     * No Cursor.
+     */
+    NO(2, "No", Cursors.NO),
+    /**
+     * Hand Cursor.
+     */
+    CROSS(3, "Cross", Cursors.CROSS),
+    /**
+     * Hand Cursor.
+     */
+    STARTING(4, "Starting", Cursors.APPSTARTING),
+    /**
+     * Hand Cursor.
+     */
+    IBEAM(5, "IBeam", Cursors.IBEAM),
+    /**
+     * Hand Cursor.
+     */
+    HELP(6, "Help", Cursors.HELP);
+    
+    /**
+     * The index of his enum.
+     */
+    private int _index;
+    /**
+     * The display name of this enum.
+     */
+    private String _displayName;
+    /**
+     * The cursor of this enum.
+     */
+    private Cursor _cursor;
 
-	/**
-	 * Constructor.
-	 * @param index The index of this value
-	 * @param displayName The name of this value
-	 * @param cursor The cursor
-	 */
-	private CursorStyleEnum(final int index, final String displayName, final Cursor cursor) {
-		_index = index;
-		_displayName = displayName;
-		_cursor = cursor;
-	}
-	
-	/**
-	 * Returns the index of this {@link CursorStyleEnum}.
-	 * @return The index
-	 */
-	public int getIndex() {
-		return _index;
-	}
-	
-	/**
-	 * Returns the display name of this {@link CursorStyleEnum}.
-	 * @return The display name
-	 */
-	public String getDisplayName() {
-		return _displayName;
-	}
-	
-	/**
-	 * Returns the cursor.
-	 * @return The cursor
-	 */
-	public Cursor getCursor() {
-		return _cursor;
-	}
-	
-	/**
-	 * Returns the display names of the all borders.
-	 * @return The display names
-	 */
-	public static String[] getDisplayNames() {
-		CursorStyleEnum[] enums = CursorStyleEnum.values();
-		String[] result = new String[enums.length];
-		for (int i=0;i<enums.length;i++) {
-			result[i] = enums[i].getDisplayName();
-		}
-		return result;
-	}
-	
-	/**
-	 * Returns the corresponding {@link CursorStyleEnum} to the given index or <code>null</code> if the index is unknown.
-	 * @param index The index of the enum
-	 * @return The corresponding {@link CursorStyleEnum} or <code>null</code> if the index is unknown
-	 */
-	public static CursorStyleEnum getEnumForIndex(final int index) {
-		for (CursorStyleEnum csenum : CursorStyleEnum.values()) {
-			if (csenum.getIndex()==index) {
-				return csenum;
-			}
-		}
-		return CursorStyleEnum.ARROW;
-	}
+    /**
+     * Constructor.
+     * @param index The index of this value
+     * @param displayName The name of this value
+     * @param cursor The cursor
+     */
+    private CursorStyleEnum(final int index, final String displayName, final Cursor cursor) {
+        _index = index;
+        _displayName = displayName;
+        _cursor = cursor;
+    }
+    
+    /**
+     * Returns the index of this {@link CursorStyleEnum}.
+     * @return The index
+     */
+    public int getIndex() {
+        return _index;
+    }
+    
+    /**
+     * Returns the display name of this {@link CursorStyleEnum}.
+     * @return The display name
+     */
+    public String getDisplayName() {
+        return _displayName;
+    }
+    
+    /**
+     * Returns the cursor.
+     * @return The cursor
+     */
+    public Cursor getCursor() {
+        return _cursor;
+    }
+    
+    /**
+     * Returns the display names of the all borders.
+     * @return The display names
+     */
+    public static String[] getDisplayNames() {
+        CursorStyleEnum[] enums = CursorStyleEnum.values();
+        String[] result = new String[enums.length];
+        for (int i=0;i<enums.length;i++) {
+            result[i] = enums[i].getDisplayName();
+        }
+        return result;
+    }
+    
+    /**
+     * Returns the corresponding {@link CursorStyleEnum} to the given index or <code>null</code> if the index is unknown.
+     * @param index The index of the enum
+     * @return The corresponding {@link CursorStyleEnum} or <code>null</code> if the index is unknown
+     */
+    public static CursorStyleEnum getEnumForIndex(final int index) {
+        for (CursorStyleEnum csenum : CursorStyleEnum.values()) {
+            if (csenum.getIndex()==index) {
+                return csenum;
+            }
+        }
+        return CursorStyleEnum.ARROW;
+    }
 
 }

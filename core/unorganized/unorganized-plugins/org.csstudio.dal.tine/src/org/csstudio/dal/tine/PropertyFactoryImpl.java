@@ -32,20 +32,20 @@ import org.csstudio.dal.spi.AbstractPropertyFactory;
  */
 public class PropertyFactoryImpl extends AbstractPropertyFactory
 {
-	/**
-	 * Creates a new PropertyFactoryImpl object.
-	 */
-	public PropertyFactoryImpl() {
-		super();
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.spi.AbstractFactorySupport#getPlugClass()
-	 */
-	@Override
-	protected Class<? extends AbstractPlug> getPlugClass() {
-		return TINEPlug.class;
-	}
+    /**
+     * Creates a new PropertyFactoryImpl object.
+     */
+    public PropertyFactoryImpl() {
+        super();
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.spi.AbstractFactorySupport#getPlugClass()
+     */
+    @Override
+    protected Class<? extends AbstractPlug> getPlugClass() {
+        return TINEPlug.class;
+    }
 
 }

@@ -28,10 +28,10 @@ import org.junit.Test;
 public class ChannelArchiverReaderTest
 {
     private static final double HOURS = 24.0;
-	private static final String END = "2005/11/09";
-	private static final String CHANNEL = "TGT_HE:Tnk_PT1166:P";
-	private static final int KEY = 4805;
-	final private static String URL =
+    private static final String END = "2005/11/09";
+    private static final String CHANNEL = "TGT_HE:Tnk_PT1166:P";
+    private static final int KEY = 4805;
+    final private static String URL =
         "xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi";
     
     /** Connect, dump basic info */
@@ -54,7 +54,7 @@ public class ChannelArchiverReaderTest
         final ChannelArchiverReader reader = new ChannelArchiverReader(URL);
         final String pattern = "*" + CHANNEL.substring(3);
         System.out.println("Channels with pattern '" + pattern + "':");
-		final String names[] = reader.getNamesByPattern(KEY, pattern);
+        final String names[] = reader.getNamesByPattern(KEY, pattern);
         for (final String name : names)
             System.out.println(name);
         reader.close();
@@ -94,7 +94,7 @@ public class ChannelArchiverReaderTest
         final Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         
         final VType[] samples =
-    		reader.getSamples(4805, CHANNEL, start, end, false, 10);
+            reader.getSamples(4805, CHANNEL, start, end, false, 10);
         int count = 0;
         for (final VType sample : samples)
         {

@@ -134,7 +134,7 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
     /**
      * Handles changes of widget property manual values.
      * @param widgetModel
-     * 			  the model of the current widget
+     *               the model of the current widget
      * @param propertyId
      *            the property id
      * @param value
@@ -184,7 +184,7 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
      * changes. Subclasses should apply type conversion if necessary. By default
      * the current value is returned without any conversion.
      * @param widgetModel
-     * 			  the model of the current widget
+     *               the model of the current widget
      * @param propertyId
      *            the property id
      * @param value

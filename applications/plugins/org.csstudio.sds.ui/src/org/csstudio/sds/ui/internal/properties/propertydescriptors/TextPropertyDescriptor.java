@@ -46,68 +46,68 @@ import org.eclipse.swt.widgets.Composite;
  * @author Sven Wende
  */
 public class TextPropertyDescriptor extends PropertyDescriptor {
-	/**
-	 * Creates an property descriptor with the given id and display name.
-	 * 
-	 * @param id
-	 *            the id of the property
-	 * @param displayName
-	 *            the name to display for the property
-	 * @param category
-	 *            the category
-	 */
-	public TextPropertyDescriptor(final Object id, final String displayName, PropertyTypesEnum type,
-			final String category) {
-		super(id, displayName, type);
-		assert category != null;
-		setCategory(category);
-		
-		this.setLabelProvider(new MultipleLineTextLabelProvider());
-	}
+    /**
+     * Creates an property descriptor with the given id and display name.
+     * 
+     * @param id
+     *            the id of the property
+     * @param displayName
+     *            the name to display for the property
+     * @param category
+     *            the category
+     */
+    public TextPropertyDescriptor(final Object id, final String displayName, PropertyTypesEnum type,
+            final String category) {
+        super(id, displayName, type);
+        assert category != null;
+        setCategory(category);
+        
+        this.setLabelProvider(new MultipleLineTextLabelProvider());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CellEditor createPropertyEditor(final Composite parent) {
-		CellEditor editor = new MultipleLineTextCellEditor(parent);
-		if (getValidator() != null) {
-			editor.setValidator(getValidator());
-		}
-		return editor;
-	}
-	
-	/**
-	 * A label provider for multiple line Strings.
-	 * 
-	 * @author Kai Meyer
-	 */
-	private final class MultipleLineTextLabelProvider extends LabelProvider {
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public String getText(final Object element) {
-			if (element instanceof String) {
-				String text = (String) element;
-				if (text.contains("\n")) {
-					String[] lines = text.split("\n");
-					StringBuffer buffer = new StringBuffer();
-					if (lines.length>0) {
-						buffer.append(lines[0].trim());
-						for (int i=1;i<lines.length;i++) {
-							if (lines[i].trim().length()>0) {
-								buffer.append(" / ");
-								buffer.append(lines[i].trim());	
-							}
-						}
-					}
-					text = buffer.toString();
-				}
-				return text;
-			} else {
-				return element.toString();
-			}
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CellEditor createPropertyEditor(final Composite parent) {
+        CellEditor editor = new MultipleLineTextCellEditor(parent);
+        if (getValidator() != null) {
+            editor.setValidator(getValidator());
+        }
+        return editor;
+    }
+    
+    /**
+     * A label provider for multiple line Strings.
+     * 
+     * @author Kai Meyer
+     */
+    private final class MultipleLineTextLabelProvider extends LabelProvider {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String getText(final Object element) {
+            if (element instanceof String) {
+                String text = (String) element;
+                if (text.contains("\n")) {
+                    String[] lines = text.split("\n");
+                    StringBuffer buffer = new StringBuffer();
+                    if (lines.length>0) {
+                        buffer.append(lines[0].trim());
+                        for (int i=1;i<lines.length;i++) {
+                            if (lines[i].trim().length()>0) {
+                                buffer.append(" / ");
+                                buffer.append(lines[i].trim());    
+                            }
+                        }
+                    }
+                    text = buffer.toString();
+                }
+                return text;
+            } else {
+                return element.toString();
+            }
+        }
+    }
 }

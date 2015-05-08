@@ -35,80 +35,80 @@ import org.eclipse.gef.commands.CompoundCommand;
  * 
  */
 public final class SetBoundsCommand extends Command {
-	/**
-	 * Stores the new size and location of the widget.
-	 */
-	private final Rectangle _newBounds;
+    /**
+     * Stores the new size and location of the widget.
+     */
+    private final Rectangle _newBounds;
 
-	/**
-	 * Stores the old size and location.
-	 */
-	private Rectangle _oldBounds;
+    /**
+     * Stores the old size and location.
+     */
+    private Rectangle _oldBounds;
 
-	/**
-	 * The element, whose constraints are to be changed.
-	 */
-	private final AbstractWidgetModel _widgetModel;
-	
-	private CompoundCommand chain;
+    /**
+     * The element, whose constraints are to be changed.
+     */
+    private final AbstractWidgetModel _widgetModel;
+    
+    private CompoundCommand chain;
 
-	/**
-	 * Create a command that can resize and/or move a widget model.
-	 * 
-	 * @param widgetModel
-	 *            the widget model to manipulate
-	 * @param newBounds
-	 *            the new size and location
-	 */
-	public SetBoundsCommand(final AbstractWidgetModel widgetModel,
-			final Rectangle newBounds) {
-		assert widgetModel != null;
-		assert newBounds != null;
-		_widgetModel = widgetModel;
-		_newBounds = newBounds.getCopy();
-		setLabel("Position und Grš§e Šndern");
-	}
+    /**
+     * Create a command that can resize and/or move a widget model.
+     * 
+     * @param widgetModel
+     *            the widget model to manipulate
+     * @param newBounds
+     *            the new size and location
+     */
+    public SetBoundsCommand(final AbstractWidgetModel widgetModel,
+            final Rectangle newBounds) {
+        assert widgetModel != null;
+        assert newBounds != null;
+        _widgetModel = widgetModel;
+        _newBounds = newBounds.getCopy();
+        setLabel("Position und Grš§e Šndern");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void execute() {
-		if(chain==null) {
-			chain = new CompoundCommand();
-			chain.add(new SetPropertyCommand(_widgetModel, AbstractWidgetModel.PROP_POS_X, _newBounds.x));
-			chain.add(new SetPropertyCommand(_widgetModel, AbstractWidgetModel.PROP_POS_Y, _newBounds.y));
-			chain.add(new SetPropertyCommand(_widgetModel, AbstractWidgetModel.PROP_WIDTH, _newBounds.width));
-			chain.add(new SetPropertyCommand(_widgetModel, AbstractWidgetModel.PROP_HEIGHT, _newBounds.height));
-		}
-		chain.execute();
-		
-//		// remember old bounds
-//		_oldBounds = new Rectangle(new Point(_widgetModel.getX(),
-//				_widgetModel.getY()), new Dimension(_widgetModel.getWidth(),
-//				_widgetModel.getHeight()));
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void execute() {
+        if(chain==null) {
+            chain = new CompoundCommand();
+            chain.add(new SetPropertyCommand(_widgetModel, AbstractWidgetModel.PROP_POS_X, _newBounds.x));
+            chain.add(new SetPropertyCommand(_widgetModel, AbstractWidgetModel.PROP_POS_Y, _newBounds.y));
+            chain.add(new SetPropertyCommand(_widgetModel, AbstractWidgetModel.PROP_WIDTH, _newBounds.width));
+            chain.add(new SetPropertyCommand(_widgetModel, AbstractWidgetModel.PROP_HEIGHT, _newBounds.height));
+        }
+        chain.execute();
+        
+//        // remember old bounds
+//        _oldBounds = new Rectangle(new Point(_widgetModel.getX(),
+//                _widgetModel.getY()), new Dimension(_widgetModel.getWidth(),
+//                _widgetModel.getHeight()));
 //
-//		doApplyBounds(_newBounds);
-	}
+//        doApplyBounds(_newBounds);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void undo() {
-//		doApplyBounds(_oldBounds);
-		chain.undo();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void undo() {
+//        doApplyBounds(_oldBounds);
+        chain.undo();
+    }
 
-	/**
-	 * Applies the specified bounds to the widget model.
-	 * @param bounds the bounds
-	 */
-	private void doApplyBounds(final Rectangle bounds) {
-		// change element size
-		_widgetModel.setSize(bounds.width, bounds.height);
+    /**
+     * Applies the specified bounds to the widget model.
+     * @param bounds the bounds
+     */
+    private void doApplyBounds(final Rectangle bounds) {
+        // change element size
+        _widgetModel.setSize(bounds.width, bounds.height);
 
-		// change location
-		_widgetModel.setLocation(bounds.x, bounds.y);
-	}
+        // change location
+        _widgetModel.setLocation(bounds.x, bounds.y);
+    }
 }

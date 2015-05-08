@@ -59,79 +59,79 @@ public class PVTableModel implements PVTableItemListener
     /** @param listener Listener to add */
     public void addListener(final PVTableModelListener listener)
     {
-    	listeners.add(listener);
+        listeners.add(listener);
     }
 
     /** @param listener Listener to remove */
     public void removeListener(final PVTableModelListener listener)
     {
-    	listeners.remove(listener);
+        listeners.remove(listener);
     }
 
     /** @return Returns number of items (rows) in model. */
     public int getItemCount()
     {
-    	return items.size();
+        return items.size();
     }
 
     /** @return Returns item (row). */
-	public PVTableItem getItem(final int row)
-	{
+    public PVTableItem getItem(final int row)
+    {
         if (row >= 0  &&  row < items.size())
             return items.get(row);
         return null;
-	}
+    }
 
-	/** Add table item
-	 *  @param pv_name PV Name
-	 *  @return Added item
-	 */
-	public PVTableItem addItem(final String pv_name)
-	{
-		return addItem(pv_name, Preferences.getTolerance(), null);
-	}
+    /** Add table item
+     *  @param pv_name PV Name
+     *  @return Added item
+     */
+    public PVTableItem addItem(final String pv_name)
+    {
+        return addItem(pv_name, Preferences.getTolerance(), null);
+    }
 
-	/** Add table item
-	 *  @param pv_name PV Name
-	 *  @param tolerance Tolerance
-	 *  @return Added item
-	 */
-	public PVTableItem addItem(final String pv_name, final double tolerance)
-	{
-		return addItem(pv_name, tolerance, null);
-	}
+    /** Add table item
+     *  @param pv_name PV Name
+     *  @param tolerance Tolerance
+     *  @return Added item
+     */
+    public PVTableItem addItem(final String pv_name, final double tolerance)
+    {
+        return addItem(pv_name, tolerance, null);
+    }
 
-	/** Add table item
-	 *  @param pv_name PV Name
-	 *  @param tolerance Tolerance
-	 *  @param saved Saved value, may be <code>null</code>
-	 *  @return Added item
-	 */
-	public PVTableItem addItem(final String pv_name, final double tolerance, final SavedValue saved)
-	{
-		final PVTableItem item = new PVTableItem(pv_name, tolerance, saved, this);
-		items.add(item);
+    /** Add table item
+     *  @param pv_name PV Name
+     *  @param tolerance Tolerance
+     *  @param saved Saved value, may be <code>null</code>
+     *  @return Added item
+     */
+    public PVTableItem addItem(final String pv_name, final double tolerance, final SavedValue saved)
+    {
+        final PVTableItem item = new PVTableItem(pv_name, tolerance, saved, this);
+        items.add(item);
         for (PVTableModelListener listener : listeners)
             listener.modelChanged();
-		return item;
-	}
+        return item;
+    }
 
-	/** Remove table item (also disposes it)
-	 *  @param item Item to remove from model
-	 */
-	public void removeItem(final PVTableItem item)
-	{
-	    item.dispose();
-	    items.remove(item);
+    /** Remove table item (also disposes it)
+     *  @param item Item to remove from model
+     */
+    public void removeItem(final PVTableItem item)
+    {
+        item.dispose();
+        items.remove(item);
         for (PVTableModelListener listener : listeners)
             listener.modelChanged();
-	}
+    }
 
-	/** Invoked by timer to perform accumulated updates.
-	 *
-	 *  <p>If only one item changed, update that item.
-	 *  If multiple items changed, refresh the whole table.
-	 */
+    /** Invoked by timer to perform accumulated updates.
+     *
+     *  <p>If only one item changed, update that item.
+     *  If multiple items changed, refresh the whole table.
+     */
     private void performUpdates()
     {
         final List<PVTableItem> to_update = new ArrayList<>();
@@ -162,26 +162,26 @@ public class PVTableModel implements PVTableItemListener
     }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public void tableItemSelectionChanged(final PVTableItem item)
-	{   // Model receives this from item. Forward to listeners of model
+    {   // Model receives this from item. Forward to listeners of model
         for (PVTableModelListener listener : listeners)
             listener.tableItemSelectionChanged(item);
     }
 
     /** {@inheritDoc} */
-	@Override
-	public void tableItemChanged(final PVTableItem item)
-	{
-	    synchronized (changed_items)
-	    {
-	        changed_items.add(item);
-	    }
-	}
+    @Override
+    public void tableItemChanged(final PVTableItem item)
+    {
+        synchronized (changed_items)
+        {
+            changed_items.add(item);
+        }
+    }
 
-	/** Save snapshot value of all checked items */
-	public void save()
-	{
+    /** Save snapshot value of all checked items */
+    public void save()
+    {
         for (PVTableItem item : items)
         {
             if (item.isSelected())
@@ -192,7 +192,7 @@ public class PVTableModel implements PVTableItemListener
             listener.tableItemsChanged();
             listener.modelChanged();
         }
-	}
+    }
 
    /** Save snapshot value of each item
     *  @param items Items to save
@@ -208,17 +208,17 @@ public class PVTableModel implements PVTableItemListener
         }
     }
 
-	/** Restore saved values for all checked items */
-	public void restore()
-	{
-		for (PVTableItem item : items)
-		    if (item.isSelected())
-		        item.restore();
-	}
+    /** Restore saved values for all checked items */
+    public void restore()
+    {
+        for (PVTableItem item : items)
+            if (item.isSelected())
+                item.restore();
+    }
 
-	/** Restore saved values
+    /** Restore saved values
     *  @param items Items to restore
-	 */
+     */
     public void restore(final List<PVTableItem> items)
     {
         for (PVTableItem item : items)
@@ -226,18 +226,18 @@ public class PVTableModel implements PVTableItemListener
     }
 
 
-	/** Must be invoked when 'done' by the creator of the model. */
-	public void dispose()
-	{
-		for (PVTableItem item : items)
-			item.dispose();
-		items.clear();
-	}
+    /** Must be invoked when 'done' by the creator of the model. */
+    public void dispose()
+    {
+        for (PVTableItem item : items)
+            item.dispose();
+        items.clear();
+    }
 
-	/** Inform listeners that model changed */
-	public void fireModelChange()
-	{
-	    for (PVTableModelListener listener : listeners)
-	        listener.modelChanged();
-	}
+    /** Inform listeners that model changed */
+    public void fireModelChange()
+    {
+        for (PVTableModelListener listener : listeners)
+            listener.modelChanged();
+    }
 }

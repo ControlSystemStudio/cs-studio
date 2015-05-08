@@ -34,79 +34,79 @@ import org.csstudio.auth.security.IActivationAdapter;
  * @author Kay Kasemir Weak Reference handling
  */
 public class ObjectAdapterTupel {
-	
-	/**
-	 * Weak reference to the Object. 
-	 */
-	private final WeakReference<Object> _object_ref;
-	
-	/**
-	 * The IActivationAdapter.
-	 */
-	private final IActivationAdapter _adapter;
-	
-	/**
-	 * Constructor.
-	 * @param object The Object to manage
-	 * @param adapter The IActivationAdapter to activate the object
-	 */
-	public ObjectAdapterTupel(final Object object, final IActivationAdapter adapter) {
-		assert object!=null;
-		_object_ref = new WeakReference<Object>(object);
-		_adapter = adapter;
-	}
-	
-	/**
-	 * Delivers the object.
-	 * @return  The object or <code>null</code> if the object has already
-	 *          been garbage collected
-	 */
-	public final Object getObject() {
-		return _object_ref.get();
-	}
-	
-	/**
-	 * Delivers the IActivationAdapter for the object.
-	 * @return  The IActivationAdapter for the object
-	 */
-	public final IActivationAdapter getAdapter() {
-		return _adapter;
-	}
-	
-	/**
-	 * Forces the IActivationAdapter for the object to activate the object.
-	 * @param activate  The value for the activation
-	 */
-	public final void activate(final boolean activate) {
+    
+    /**
+     * Weak reference to the Object. 
+     */
+    private final WeakReference<Object> _object_ref;
+    
+    /**
+     * The IActivationAdapter.
+     */
+    private final IActivationAdapter _adapter;
+    
+    /**
+     * Constructor.
+     * @param object The Object to manage
+     * @param adapter The IActivationAdapter to activate the object
+     */
+    public ObjectAdapterTupel(final Object object, final IActivationAdapter adapter) {
+        assert object!=null;
+        _object_ref = new WeakReference<Object>(object);
+        _adapter = adapter;
+    }
+    
+    /**
+     * Delivers the object.
+     * @return  The object or <code>null</code> if the object has already
+     *          been garbage collected
+     */
+    public final Object getObject() {
+        return _object_ref.get();
+    }
+    
+    /**
+     * Delivers the IActivationAdapter for the object.
+     * @return  The IActivationAdapter for the object
+     */
+    public final IActivationAdapter getAdapter() {
+        return _adapter;
+    }
+    
+    /**
+     * Forces the IActivationAdapter for the object to activate the object.
+     * @param activate  The value for the activation
+     */
+    public final void activate(final boolean activate) {
         // Object might be garbage collected ...
         final Object object = _object_ref.get();
         if (object != null)
             _adapter.activate(object, activate);
-	}
-	
-	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 * @param o another ObjectAdapterTupel
-	 * @return true, if this is equal to another ObjectAdapterTupel
-	 */
-	@Override
+    }
+    
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     * @param o another ObjectAdapterTupel
+     * @return true, if this is equal to another ObjectAdapterTupel
+     */
+    @Override
     public final boolean equals(final Object o) {
-		if (o instanceof ObjectAdapterTupel) {
-	        // Object might be garbage collected ...
-	        final Object object = _object_ref.get();
-			return object != null  && object.equals(((ObjectAdapterTupel)o).getObject());
-		} else {
-			return false;
-		}
-	}
-	
-	/**
-	 * @see java.lang.Object#hashCode()
-	 * @return  the hashCode of this instance
-	 */
-	@Override
+        if (o instanceof ObjectAdapterTupel) {
+            // Object might be garbage collected ...
+            final Object object = _object_ref.get();
+            return object != null  && object.equals(((ObjectAdapterTupel)o).getObject());
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * @see java.lang.Object#hashCode()
+     * @return  the hashCode of this instance
+     */
+    @Override
     public final int hashCode() {
-		return super.hashCode();
-	}
+        return super.hashCode();
+    }
 
 }

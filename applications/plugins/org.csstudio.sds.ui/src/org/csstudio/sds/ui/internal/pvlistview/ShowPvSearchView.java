@@ -32,16 +32,16 @@ import org.eclipse.ui.PlatformUI;
 
 public class ShowPvSearchView extends AbstractHandler {
 
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
+    @Override
+    public Object execute(ExecutionEvent event) throws ExecutionException {
         IWorkbench workbench = PlatformUI.getWorkbench();
         IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         IWorkbenchPage page = window.getActivePage();
         try {
-			page.showView(PvSearchView.VIEW_ID);
-		} catch (PartInitException e) {
-			e.printStackTrace();
-		}
+            page.showView(PvSearchView.VIEW_ID);
+        } catch (PartInitException e) {
+            e.printStackTrace();
+        }
         return null;
-	}
+    }
 }

@@ -18,10 +18,10 @@ import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
  */
 public class AlarmTextHelper
 {
-	/** @param alarms List of alarms
-	 *  @return Text that describes the alarms
-	 */
-	public static String createAlarmInfoText(final List<AlarmTreeLeaf> alarms)
+    /** @param alarms List of alarms
+     *  @return Text that describes the alarms
+     */
+    public static String createAlarmInfoText(final List<AlarmTreeLeaf> alarms)
     {
         final StringBuilder selected_alarms = new StringBuilder();
         for (AlarmTreeLeaf alarm : alarms)
@@ -29,6 +29,6 @@ public class AlarmTextHelper
             selected_alarms.append(alarm.getVerboseDescription());
             selected_alarms.append("\n\n"); //$NON-NLS-1$
         }
-	    return selected_alarms.toString();
+        return selected_alarms.toString();
     }
 }

@@ -15,13 +15,13 @@ import org.eclipse.gef.EditPartViewer;
  */
 public class ProcessVariableDragSourceListener extends AbstractDragSourceListener<ProcessVariable> {
 
-	public ProcessVariableDragSourceListener(EditPartViewer viewer) {
-		super(viewer, SerializableItemTransfer.getTransfer(ProcessVariable.class));
-	}
+    public ProcessVariableDragSourceListener(EditPartViewer viewer) {
+        super(viewer, SerializableItemTransfer.getTransfer(ProcessVariable.class));
+    }
 
-	@Override
-	protected ProcessVariable convert(IProcessVariableAddress mainAddress, List<IProcessVariableAddress> allAddresses) {
-		return mainAddress != null ? new ProcessVariable(mainAddress.getProperty()) : null;
-	}
+    @Override
+    protected ProcessVariable convert(IProcessVariableAddress mainAddress, List<IProcessVariableAddress> allAddresses) {
+        return mainAddress != null ? new ProcessVariable(mainAddress.getProperty()) : null;
+    }
 
 }

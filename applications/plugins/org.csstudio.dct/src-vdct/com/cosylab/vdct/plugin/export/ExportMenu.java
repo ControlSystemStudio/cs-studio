@@ -43,8 +43,8 @@ import com.cosylab.vdct.plugin.*;
  */
 public class ExportMenu extends JMenu implements PluginListener
 {
-	private class ExportPluginMenuItem extends JMenuItem implements PropertyChangeListener, ActionListener
-	{
+    private class ExportPluginMenuItem extends JMenuItem implements PropertyChangeListener, ActionListener
+    {
 /**
  * Insert the method's description here.
  * Creation date: (7.12.2001 17:06:52)
@@ -52,14 +52,14 @@ public class ExportMenu extends JMenu implements PluginListener
  */
 public ExportPluginMenuItem(PluginObject plugin)
 {
-	addActionListener(this);
+    addActionListener(this);
     setPlugin(plugin);
 }
 
 public void actionPerformed(ActionEvent event)
 {
-	if (plugin!=null)
-		((ExportPlugin)plugin.getPlugin()).export(com.cosylab.vdct.graphics.objects.Group.getRoot());
+    if (plugin!=null)
+        ((ExportPlugin)plugin.getPlugin()).export(com.cosylab.vdct.graphics.objects.Group.getRoot());
 }
 
 /**
@@ -70,16 +70,16 @@ public void actionPerformed(ActionEvent event)
  */
 public void setPlugin(PluginObject newPlugin)
 {
-	if (plugin!=null)
-		plugin.removePropertyChangeListener(this);
+    if (plugin!=null)
+        plugin.removePropertyChangeListener(this);
 
-	plugin = newPlugin;
+    plugin = newPlugin;
 
-	if (plugin!=null)
-	{
-		plugin.addPropertyChangeListener(this);
-		updateStatus();
-	}
+    if (plugin!=null)
+    {
+        plugin.addPropertyChangeListener(this);
+        updateStatus();
+    }
 }
 
 /**
@@ -89,8 +89,8 @@ public void setPlugin(PluginObject newPlugin)
  */
 public void propertyChange(PropertyChangeEvent evt)
 {
-	if (evt.getPropertyName().equals("Status"))
-		updateStatus();
+    if (evt.getPropertyName().equals("Status"))
+        updateStatus();
 }
 
 /**
@@ -101,10 +101,10 @@ public void propertyChange(PropertyChangeEvent evt)
  */
 private void updateStatus()
 {
-	if (plugin!=null)
-	{
-		this.setEnabled(plugin.getStatus()==PluginObject.PLUGIN_STARTED);
-	}
+    if (plugin!=null)
+    {
+        this.setEnabled(plugin.getStatus()==PluginObject.PLUGIN_STARTED);
+    }
 }
 
 /**
@@ -112,13 +112,13 @@ private void updateStatus()
  * Creation date: (7.12.2001 17:06:11)
  * @param
  * @return
- */	
+ */    
 public String getText()
 {
-	if( plugin!=null )
-		return plugin.getName();
-	else
-		return "";
+    if( plugin!=null )
+        return plugin.getName();
+    else
+        return "";
 }
 
 /**
@@ -129,18 +129,18 @@ public String getText()
  */
 public Icon getIcon()
 {
-	/*if( plugin!=null )
-		return plugin.getIcon();
-	else*/
-		return null;
+    /*if( plugin!=null )
+        return plugin.getIcon();
+    else*/
+        return null;
 }
 
 
 
-		private PluginObject plugin = null;
-	}
+        private PluginObject plugin = null;
+    }
 
-	private Map exportMenuItems = new HashMap();
+    private Map exportMenuItems = new HashMap();
 /**
  * Insert the method's description here.
  * Creation date: (7.12.2001 17:08:53)
@@ -156,9 +156,9 @@ public ExportMenu()
  */
 public void init()
 {
-	PluginManager.getInstance().addPluginListener(this);
-	if (getItemCount()==0)
-		setEnabled(false);
+    PluginManager.getInstance().addPluginListener(this);
+    if (getItemCount()==0)
+        setEnabled(false);
 
 }
 /**
@@ -168,20 +168,20 @@ public void init()
  */
 public void pluginAdded(PluginObject plugin)
 {
-	if (plugin.getPlugin() instanceof ExportPlugin)
-	{
-		if( plugin.getStatus()==PluginObject.PLUGIN_NOT_LOADED ||
-		    plugin.getStatus()==PluginObject.PLUGIN_INVALID )
-			    return;
+    if (plugin.getPlugin() instanceof ExportPlugin)
+    {
+        if( plugin.getStatus()==PluginObject.PLUGIN_NOT_LOADED ||
+            plugin.getStatus()==PluginObject.PLUGIN_INVALID )
+                return;
 
-		ExportPluginMenuItem menu = new ExportPluginMenuItem(plugin);
+        ExportPluginMenuItem menu = new ExportPluginMenuItem(plugin);
 
-		add(menu);
-		exportMenuItems.put(plugin, menu);
+        add(menu);
+        exportMenuItems.put(plugin, menu);
 
-		if (getItemCount()>0)
-			setEnabled(true);
-	}
+        if (getItemCount()>0)
+            setEnabled(true);
+    }
 
 }
 /**
@@ -191,18 +191,18 @@ public void pluginAdded(PluginObject plugin)
  */
 public void pluginRemoved(PluginObject plugin)
 {
-	if (plugin.getPlugin() instanceof ExportPlugin)
-	{
-		ExportPluginMenuItem menuItem = (ExportPluginMenuItem)exportMenuItems.remove(plugin);
+    if (plugin.getPlugin() instanceof ExportPlugin)
+    {
+        ExportPluginMenuItem menuItem = (ExportPluginMenuItem)exportMenuItems.remove(plugin);
 
-		if (menuItem!=null)
-		{
-			remove(menuItem);
-			menuItem.setPlugin(null);
+        if (menuItem!=null)
+        {
+            remove(menuItem);
+            menuItem.setPlugin(null);
 
-			if (getItemCount()==0)
-				setEnabled(false);
-		}
-	}
+            if (getItemCount()==0)
+                setEnabled(false);
+        }
+    }
 }
 }

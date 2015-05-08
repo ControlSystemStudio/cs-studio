@@ -30,64 +30,64 @@ import java.util.Random;
  * 
  */
 public class RandomDoubleGenerator extends AbstractDataGenerator<Double> {
-	private double _min;
-	private double _max;
-	private Random _random;
+    private double _min;
+    private double _max;
+    private Random _random;
 
-	/**
-	 * Constructor.
-	 * @param localChannel the local channel
-	 * @param defaultPeriod the default period
-	 * @param options
-	 */
-	public RandomDoubleGenerator(LocalChannel localChannel, int defaultPeriod,
-			String[] options) {
-		super(localChannel, defaultPeriod, options);
-		_random = new Random(System.currentTimeMillis()
-				+ localChannel.hashCode());
-	}
+    /**
+     * Constructor.
+     * @param localChannel the local channel
+     * @param defaultPeriod the default period
+     * @param options
+     */
+    public RandomDoubleGenerator(LocalChannel localChannel, int defaultPeriod,
+            String[] options) {
+        super(localChannel, defaultPeriod, options);
+        _random = new Random(System.currentTimeMillis()
+                + localChannel.hashCode());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void init(String[] options) {
-		try {
-			_min = Double.parseDouble(options[0]);
-		} catch (NumberFormatException nfe) {
-			_min = 0;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void init(String[] options) {
+        try {
+            _min = Double.parseDouble(options[0]);
+        } catch (NumberFormatException nfe) {
+            _min = 0;
+        }
 
-		try {
-			_max = Double.parseDouble(options[1]);
-		} catch (NumberFormatException nfe) {
-			_max = 1;
-		}
+        try {
+            _max = Double.parseDouble(options[1]);
+        } catch (NumberFormatException nfe) {
+            _max = 1;
+        }
 
-		try {
-			int period = Integer.parseInt(options[2]);
-			setPeriod(period);
-		} catch (NumberFormatException nfe) {
-			// ignore
-		}
+        try {
+            int period = Integer.parseInt(options[2]);
+            setPeriod(period);
+        } catch (NumberFormatException nfe) {
+            // ignore
+        }
 
-		if (_min > _max) {
-			double tmp = _min;
-			_min = _max;
-			_max = tmp;
-		}
-	}
+        if (_min > _max) {
+            double tmp = _min;
+            _min = _max;
+            _max = tmp;
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Double generateNextValue() {
-		double d = _random.nextDouble();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Double generateNextValue() {
+        double d = _random.nextDouble();
 
-		double result = _min + ((_max - _min) * d);
+        double result = _min + ((_max - _min) * d);
 
-		return result;
-	}
+        return result;
+    }
 
 }

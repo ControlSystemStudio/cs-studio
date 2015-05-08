@@ -11,30 +11,30 @@ import org.eclipse.swt.graphics.Image;
  */
 class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
 
-	private static int count = 0;
-	
-	public static void resetCount(){
-		count = 0;
-	}
-	
-	public Image getColumnImage(final Object element, final int columnIndex) {
-		return null;
-	}
+    private static int count = 0;
+    
+    public static void resetCount(){
+        count = 0;
+    }
+    
+    public Image getColumnImage(final Object element, final int columnIndex) {
+        return null;
+    }
 
-	public String getColumnText(final Object element, final int columnIndex) {
-		if(element instanceof ChannelStructure){
-		ChannelStructure tmp = (ChannelStructure) element;
-		switch(columnIndex){
-			case 0:
-				return ""+tmp.getId();
-			case 1:
-				return tmp.getClientAddress();
-			case 2:
-				return tmp.getAliasName();
-			case 3:
-				return tmp.getFrequency()+" Hz";
-			}
-		}
-		return null;
-	}
+    public String getColumnText(final Object element, final int columnIndex) {
+        if(element instanceof ChannelStructure){
+        ChannelStructure tmp = (ChannelStructure) element;
+        switch(columnIndex){
+            case 0:
+                return ""+tmp.getId();
+            case 1:
+                return tmp.getClientAddress();
+            case 2:
+                return tmp.getAliasName();
+            case 3:
+                return tmp.getFrequency()+" Hz";
+            }
+        }
+        return null;
+    }
 }

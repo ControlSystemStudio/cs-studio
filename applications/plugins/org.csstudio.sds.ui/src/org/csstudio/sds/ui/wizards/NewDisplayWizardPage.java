@@ -37,42 +37,42 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  * 
  */
 public final class NewDisplayWizardPage extends WizardNewFileCreationPage {
-	/**
-	 * Creates a new SDS file creation wizard page.
-	 * 
-	 * @param pageName
-	 *            the name of the page
-	 * @param selection
-	 *            the current resource selection
-	 */
-	public NewDisplayWizardPage(final String pageName,
-			final IStructuredSelection selection) {
-		super(pageName, selection);
-		setTitle("Create a new display");
-		setDescription("Create a new display in the selected project or folder.");
-	}
+    /**
+     * Creates a new SDS file creation wizard page.
+     * 
+     * @param pageName
+     *            the name of the page
+     * @param selection
+     *            the current resource selection
+     */
+    public NewDisplayWizardPage(final String pageName,
+            final IStructuredSelection selection) {
+        super(pageName, selection);
+        setTitle("Create a new display");
+        setDescription("Create a new display in the selected project or folder.");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected InputStream getInitialContents() {
-		return PersistenceUtil.createStream(new DisplayModel());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected InputStream getInitialContents() {
+        return PersistenceUtil.createStream(new DisplayModel());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String getNewFileLabel() {
-		return "Display name:";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getNewFileLabel() {
+        return "Display name:";
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getFileExtension() {
-		return DisplayEditor.SDS_FILE_EXTENSION;//$NON-NLS-1$
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getFileExtension() {
+        return DisplayEditor.SDS_FILE_EXTENSION;//$NON-NLS-1$
+    }
 }

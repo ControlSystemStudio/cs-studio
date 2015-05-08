@@ -43,23 +43,23 @@ import com.cosylab.vdct.graphics.objects.VisibleObject;
  */
  
 public class LinkCommand extends com.cosylab.vdct.events.Command {
-	private DrawingSurface drawingSurface;
-	private LinkSource field = null;
-	private VisibleObject obj = null;
+    private DrawingSurface drawingSurface;
+    private LinkSource field = null;
+    private VisibleObject obj = null;
 /**
  * Insert the method's description here.
  * Creation date: (21.12.2000 22:43:26)
  * @param drawingSurface com.cosylab.vdct.graphics.DrawingSurface 
  */
 public LinkCommand(DrawingSurface drawingSurface) {
-	this.drawingSurface=drawingSurface;
+    this.drawingSurface=drawingSurface;
 }
 /**
  * Insert the method's description here.
  * Creation date: (21.12.2000 22:42:23)
  */
 public void execute() {
-	drawingSurface.linkCommand(obj, field);
+    drawingSurface.linkCommand(obj, field);
 }
 /**
  * Insert the method's description here.
@@ -68,8 +68,8 @@ public void execute() {
  * @param field com.cosylab.vdct.graphics.objects.LinkSource
  */
 public void setData(VisibleObject obj, LinkSource field) {
-	this.field=field;
-	this.obj=obj;
+    this.field=field;
+    this.obj=obj;
 }
 
 }

@@ -32,73 +32,73 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  *
  */
 public final class SwitchModel extends AbstractWidgetModel {
-	/**
-	 * Unique identifier.
-	 */
-	public static final String ID = "org.csstudio.sds.components.Switch";
+    /**
+     * Unique identifier.
+     */
+    public static final String ID = "org.csstudio.sds.components.Switch";
 
-	/**
-	 * The IDs of the properties.
-	 */
-	public static final String PROP_TRANSPARENT = "transparency";
-	public static final String PROP_TYPE = "switch.type";
-	public static final String PROP_STATE = "switch.state";
-	public static final String PROP_ROTATE = "rotation";
-	public static final String PROP_LINEWIDTH = "linewidth";
+    /**
+     * The IDs of the properties.
+     */
+    public static final String PROP_TRANSPARENT = "transparency";
+    public static final String PROP_TYPE = "switch.type";
+    public static final String PROP_STATE = "switch.state";
+    public static final String PROP_ROTATE = "rotation";
+    public static final String PROP_LINEWIDTH = "linewidth";
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTypeID() {
-		return ID;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTypeID() {
+        return ID;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void configureProperties() {
-		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.FORMAT, true, true, PROP_COLOR_BACKGROUND);
-		if (SwitchPlugins.names.length > 0) {
-			addArrayOptionProperty(PROP_TYPE, "Switch Type", WidgetPropertyCategory.DISPLAY, SwitchPlugins.names, 0, true, PROP_TOOLTIP);
-		}
-		addIntegerProperty(PROP_STATE, "Switch State", WidgetPropertyCategory.DISPLAY, 0, false, PROP_TYPE);
-		addIntegerProperty(PROP_ROTATE, "Rotation", WidgetPropertyCategory.DISPLAY, 0, 0, 360, false, PROP_STATE);
-		addIntegerProperty(PROP_LINEWIDTH, "Line Width", WidgetPropertyCategory.DISPLAY, 4, false, PROP_ROTATE);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configureProperties() {
+        addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.FORMAT, true, true, PROP_COLOR_BACKGROUND);
+        if (SwitchPlugins.names.length > 0) {
+            addArrayOptionProperty(PROP_TYPE, "Switch Type", WidgetPropertyCategory.DISPLAY, SwitchPlugins.names, 0, true, PROP_TOOLTIP);
+        }
+        addIntegerProperty(PROP_STATE, "Switch State", WidgetPropertyCategory.DISPLAY, 0, false, PROP_TYPE);
+        addIntegerProperty(PROP_ROTATE, "Rotation", WidgetPropertyCategory.DISPLAY, 0, 0, 360, false, PROP_STATE);
+        addIntegerProperty(PROP_LINEWIDTH, "Line Width", WidgetPropertyCategory.DISPLAY, 4, false, PROP_ROTATE);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String getDefaultToolTip() {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
-		buffer.append("Type:\t");
-		buffer.append(createTooltipParameter(PROP_TYPE) + "\n");
-		buffer.append("State:\t");
-		buffer.append(createTooltipParameter(PROP_STATE));
-		return buffer.toString();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getDefaultToolTip() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
+        buffer.append("Type:\t");
+        buffer.append(createTooltipParameter(PROP_TYPE) + "\n");
+        buffer.append("State:\t");
+        buffer.append(createTooltipParameter(PROP_STATE));
+        return buffer.toString();
+    }
 
-	public boolean getTransparent() {
-		return getBooleanProperty(PROP_TRANSPARENT);
-	}
+    public boolean getTransparent() {
+        return getBooleanProperty(PROP_TRANSPARENT);
+    }
 
-	public int getType() {
-		return getArrayOptionProperty(PROP_TYPE);
-	}
+    public int getType() {
+        return getArrayOptionProperty(PROP_TYPE);
+    }
 
-	public int getState() {
-		return getIntegerProperty(PROP_STATE);
-	}
+    public int getState() {
+        return getIntegerProperty(PROP_STATE);
+    }
 
-	public int getRotation() {
-		return getIntegerProperty(PROP_ROTATE);
-	}
+    public int getRotation() {
+        return getIntegerProperty(PROP_ROTATE);
+    }
 
-	public int getLineWidth() {
-		return getIntegerProperty(PROP_LINEWIDTH);
-	}
+    public int getLineWidth() {
+        return getIntegerProperty(PROP_LINEWIDTH);
+    }
 }

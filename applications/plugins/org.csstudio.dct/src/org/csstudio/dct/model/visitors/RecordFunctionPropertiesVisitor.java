@@ -14,22 +14,22 @@ import org.csstudio.dct.model.IRecord;
  * 
  */
 public final class RecordFunctionPropertiesVisitor extends AbstractVisitor {
-	private Map<String, String> properties;
+    private Map<String, String> properties;
 
-	public RecordFunctionPropertiesVisitor( Map<String, String> properties) {
-		this.properties = properties;
-	}
+    public RecordFunctionPropertiesVisitor( Map<String, String> properties) {
+        this.properties = properties;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void visit(IRecord record) {
-		if (record.isAbstract()) {
-			for (String key : properties.keySet()) {
-				if (!record.getProperties().containsKey(key)) {
-					record.addProperty(key, properties.get(key));
-				}
-			}
-		}
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public void visit(IRecord record) {
+        if (record.isAbstract()) {
+            for (String key : properties.keySet()) {
+                if (!record.getProperties().containsKey(key)) {
+                    record.addProperty(key, properties.get(key));
+                }
+            }
+        }
+    }
 }

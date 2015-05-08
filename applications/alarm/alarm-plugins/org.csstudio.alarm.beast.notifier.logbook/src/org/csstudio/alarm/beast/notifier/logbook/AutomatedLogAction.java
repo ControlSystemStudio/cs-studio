@@ -22,15 +22,15 @@ import org.csstudio.alarm.beast.notifier.model.IAutomatedAction;
  */
 public class AutomatedLogAction implements IActionProvider {
 
-	/** {@inheritDoc} */
-	@Override
-	public IActionValidator getValidator() {
-		return new LogCommandValidator();
-	}
+    /** {@inheritDoc} */
+    @Override
+    public IActionValidator getValidator() {
+        return new LogCommandValidator();
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public IAutomatedAction getNotifier() {
-		return new LogActionImpl();
-	}
+    /** {@inheritDoc} */
+    @Override
+    public IAutomatedAction getNotifier() {
+        return new LogActionImpl();
+    }
 }

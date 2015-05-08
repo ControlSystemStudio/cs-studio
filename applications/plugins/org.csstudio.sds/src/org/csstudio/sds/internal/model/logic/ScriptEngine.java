@@ -36,27 +36,27 @@ import org.csstudio.sds.model.IScript;
  * 
  */
 public final class ScriptEngine {
-	/**
-	 * The associated rule.
-	 */
-	private IScript _script;
+    /**
+     * The associated rule.
+     */
+    private IScript _script;
 
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param script
-	 *            The script that is executed.
-	 */
-	public ScriptEngine(final IScript script) {
-		assert script != null;
+    /**
+     * Standard constructor.
+     * 
+     * @param script
+     *            The script that is executed.
+     */
+    public ScriptEngine(final IScript script) {
+        assert script != null;
 
-		_script = script;
-	}
+        _script = script;
+    }
 
-	/**
-	 * Executes the script.
-	 */
-	public synchronized void processScript() {
-		_script.execute();
-	}
+    /**
+     * Executes the script.
+     */
+    public synchronized void processScript() {
+        _script.execute();
+    }
 }

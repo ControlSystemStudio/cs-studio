@@ -49,77 +49,77 @@ import org.eclipse.swt.widgets.Composite;
  * @author Kai Meyer
  */
 public class StringMapPropertyDescriptor extends PropertyDescriptor {
-	
-	/**
-	 * The name of the property.
-	 */
-	private final String _name;
-	/**
-	 * Creates an property descriptor with the given id and display name.
-	 * 
-	 * @param id
-	 *            the id of the property
-	 * @param displayName
-	 *            the name to display for the property
-	 * @param category
-	 *            the category
-	 */
-	public StringMapPropertyDescriptor(final Object id, final String displayName, PropertyTypesEnum type,
-			final String category) {
-		super(id, displayName, type);
-		_name = displayName;
-		assert category != null;
-		setCategory(category);
-		
-		this.setLabelProvider(new MapLabelProvider());
-	}
+    
+    /**
+     * The name of the property.
+     */
+    private final String _name;
+    /**
+     * Creates an property descriptor with the given id and display name.
+     * 
+     * @param id
+     *            the id of the property
+     * @param displayName
+     *            the name to display for the property
+     * @param category
+     *            the category
+     */
+    public StringMapPropertyDescriptor(final Object id, final String displayName, PropertyTypesEnum type,
+            final String category) {
+        super(id, displayName, type);
+        _name = displayName;
+        assert category != null;
+        setCategory(category);
+        
+        this.setLabelProvider(new MapLabelProvider());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CellEditor createPropertyEditor(final Composite parent) {
-		CellEditor editor = new StringMapCellEditor(parent, _name);
-		if (getValidator() != null) {
-			editor.setValidator(getValidator());
-		}
-		return editor;
-	}
-	
-	/**
-	 * A label provider for a Map of Strings.
-	 * 
-	 * @author Kai Meyer
-	 */
-	private final class MapLabelProvider extends LabelProvider {
-		/**
-		 * {@inheritDoc}
-		 */
-		@SuppressWarnings("unchecked")
-		@Override
-		public String getText(final Object element) {
-			if (element instanceof Map) {
-				Map<String, String> map = (Map<String, String>) element;
-				StringBuffer buffer = new StringBuffer("[");
-				if (!map.isEmpty()) {
-					Iterator<String> it = map.keySet().iterator();
-					
-					while(it.hasNext()) {
-						String key = it.next();
-						String val = map.get(key);
-						
-						buffer.append(key);
-						buffer.append(":");
-						buffer.append(val);
-						buffer.append(it.hasNext()?", ":"");
-					}
-				}
-				buffer.append("]");
-				return buffer.toString();
-			} else {
-				return element.toString();
-			}
-		}
-		
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CellEditor createPropertyEditor(final Composite parent) {
+        CellEditor editor = new StringMapCellEditor(parent, _name);
+        if (getValidator() != null) {
+            editor.setValidator(getValidator());
+        }
+        return editor;
+    }
+    
+    /**
+     * A label provider for a Map of Strings.
+     * 
+     * @author Kai Meyer
+     */
+    private final class MapLabelProvider extends LabelProvider {
+        /**
+         * {@inheritDoc}
+         */
+        @SuppressWarnings("unchecked")
+        @Override
+        public String getText(final Object element) {
+            if (element instanceof Map) {
+                Map<String, String> map = (Map<String, String>) element;
+                StringBuffer buffer = new StringBuffer("[");
+                if (!map.isEmpty()) {
+                    Iterator<String> it = map.keySet().iterator();
+                    
+                    while(it.hasNext()) {
+                        String key = it.next();
+                        String val = map.get(key);
+                        
+                        buffer.append(key);
+                        buffer.append(":");
+                        buffer.append(val);
+                        buffer.append(it.hasNext()?", ":"");
+                    }
+                }
+                buffer.append("]");
+                return buffer.toString();
+            } else {
+                return element.toString();
+            }
+        }
+        
+    }
 }

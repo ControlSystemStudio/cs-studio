@@ -15,97 +15,97 @@ import org.eclipse.core.runtime.Platform;
  * 
  */
 public abstract class AbstractElement implements IElement, IAdaptable, Serializable {
-	private static final long serialVersionUID = 6033398826670082191L;
-	
-	private String name;
-	private UUID id;
+    private static final long serialVersionUID = 6033398826670082191L;
+    
+    private String name;
+    private UUID id;
 
-	public AbstractElement() {
-	}
+    public AbstractElement() {
+    }
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param name
-	 *            the name
-	 */
-	public AbstractElement(String name) {
-		this.name = name;
-		id = UUID.randomUUID();
-	}
+    /**
+     * Constructor.
+     * 
+     * @param name
+     *            the name
+     */
+    public AbstractElement(String name) {
+        this.name = name;
+        id = UUID.randomUUID();
+    }
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param name
-	 *            the name
-	 * @param id
-	 *            the id
-	 */
-	public AbstractElement(String name, UUID id) {
-		assert id != null;
-		this.name = name;
-		this.id = id;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param name
+     *            the name
+     * @param id
+     *            the id
+     */
+    public AbstractElement(String name, UUID id) {
+        assert id != null;
+        this.name = name;
+        this.id = id;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public final String getName() {
-		return name;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public final String getName() {
+        return name;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public final void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public final void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public final UUID getId() {
-		return id;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public final UUID getId() {
+        return id;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		// result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        // result = prime * result + ((name == null) ? 0 : name.hashCode());
+        return result;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		boolean result = false;
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        boolean result = false;
 
-		if (obj instanceof AbstractElement) {
-			AbstractElement element = (AbstractElement) obj;
+        if (obj instanceof AbstractElement) {
+            AbstractElement element = (AbstractElement) obj;
 
-			if (CompareUtil.equals(getName(), element.getName())) {
-				if (CompareUtil.equals(getId(), element.getId())) {
-					result = true;
-				}
-			}
-		}
+            if (CompareUtil.equals(getName(), element.getName())) {
+                if (CompareUtil.equals(getId(), element.getId())) {
+                    result = true;
+                }
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public final Object getAdapter(Class adapter) {
-		return Platform.getAdapterManager().getAdapter(this, adapter);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public final Object getAdapter(Class adapter) {
+        return Platform.getAdapterManager().getAdapter(this, adapter);
+    }
 }

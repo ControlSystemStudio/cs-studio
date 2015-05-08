@@ -48,18 +48,18 @@ public interface LinkTypeConfigPlugin extends Plugin {
  * An example of default implementation:
  * <pre>
  * 
- * 	Hashtable linkTypeConfigTable = new Hashtable();
+ *     Hashtable linkTypeConfigTable = new Hashtable();
  * 
- *	linkTypeConfigTable.put("CONSTANT", new Object[] { Pattern.compile(".*"), "", "CONSTANT" });
- *	linkTypeConfigTable.put("PV_LINK", new Object[] { Pattern.compile(".*"), "", "PV_LINK" } );
- *	linkTypeConfigTable.put("VME_IO", new Object[] { Pattern.compile("#C\\d+ S\\d+ @.*"), "#C0 S0 @", "VME_IO - #Ccard Ssignal @parm" });
- *	linkTypeConfigTable.put("CAMAC_IO", new Object[] { Pattern.compile("#B\\d+ C\\d+ N\\d+ A\\d+ F\\d+ @.*"), "CAMAC_IO - #B0 C0 N0 A0 F0 @", "#Bbranch Ccrate Nstation Asubaddress Ffunction @parm" });
- *	linkTypeConfigTable.put("AB_IO", new Object[] { Pattern.compile("#L\\d+ A\\d+ C\\d+ S\\d+ @.*"), "#L0 A0 C0 S0 @", "AB_IO - #Llink Aadapter Ccard Ssignal @parm" });
- *	linkTypeConfigTable.put("GPIB_IO", new Object[] { Pattern.compile("#L\\d+ A\\d+ @.*"), "#L0 A0 @", "GPIB_IO - #Llink Aaddr @parm" });
- *	linkTypeConfigTable.put("BITBUS_IO", new Object[] { Pattern.compile("#L\\d+ N\\d+ P\\d+ S\\d+ @.*"), "BITBUS_IO - @L0 N0 P0 S0 @", "#Llink Nnode Pport Ssignal @parm" });
- *	linkTypeConfigTable.put("INST_IO", new Object[] { Pattern.compile("@.*"), "@", "INST_IO - @" });
- *	linkTypeConfigTable.put("RF_IO", new Object[] { Pattern.compile("#R\\d+ M\\d+ D\\d+ E\\d+ @.*"), "#R0 M0 D0 E0 @", "RF_IO - #Rcryo Mmicro Ddataset Eelement" });
- *	linkTypeConfigTable.put("VXI_IO", new Object[] { Pattern.compile("#V\\d+ (C\\d+)?+  S\\d+ @.*"), "#V0 C0 S0 @", "VXI_IO - #Vframe Cslot Ssignal @parm" });
+ *    linkTypeConfigTable.put("CONSTANT", new Object[] { Pattern.compile(".*"), "", "CONSTANT" });
+ *    linkTypeConfigTable.put("PV_LINK", new Object[] { Pattern.compile(".*"), "", "PV_LINK" } );
+ *    linkTypeConfigTable.put("VME_IO", new Object[] { Pattern.compile("#C\\d+ S\\d+ @.*"), "#C0 S0 @", "VME_IO - #Ccard Ssignal @parm" });
+ *    linkTypeConfigTable.put("CAMAC_IO", new Object[] { Pattern.compile("#B\\d+ C\\d+ N\\d+ A\\d+ F\\d+ @.*"), "CAMAC_IO - #B0 C0 N0 A0 F0 @", "#Bbranch Ccrate Nstation Asubaddress Ffunction @parm" });
+ *    linkTypeConfigTable.put("AB_IO", new Object[] { Pattern.compile("#L\\d+ A\\d+ C\\d+ S\\d+ @.*"), "#L0 A0 C0 S0 @", "AB_IO - #Llink Aadapter Ccard Ssignal @parm" });
+ *    linkTypeConfigTable.put("GPIB_IO", new Object[] { Pattern.compile("#L\\d+ A\\d+ @.*"), "#L0 A0 @", "GPIB_IO - #Llink Aaddr @parm" });
+ *    linkTypeConfigTable.put("BITBUS_IO", new Object[] { Pattern.compile("#L\\d+ N\\d+ P\\d+ S\\d+ @.*"), "BITBUS_IO - @L0 N0 P0 S0 @", "#Llink Nnode Pport Ssignal @parm" });
+ *    linkTypeConfigTable.put("INST_IO", new Object[] { Pattern.compile("@.*"), "@", "INST_IO - @" });
+ *    linkTypeConfigTable.put("RF_IO", new Object[] { Pattern.compile("#R\\d+ M\\d+ D\\d+ E\\d+ @.*"), "#R0 M0 D0 E0 @", "RF_IO - #Rcryo Mmicro Ddataset Eelement" });
+ *    linkTypeConfigTable.put("VXI_IO", new Object[] { Pattern.compile("#V\\d+ (C\\d+)?+  S\\d+ @.*"), "#V0 C0 S0 @", "VXI_IO - #Vframe Cslot Ssignal @parm" });
  * </pre> 
  * If <code>null</code> is returned, VisualDCT interprets this as 'failed to load' / 'no configuration found'. 
  * If all <code>LinkTypeConfigPlugin</code> plugins return <code>null</code>, VisualDCT loads default configuration.

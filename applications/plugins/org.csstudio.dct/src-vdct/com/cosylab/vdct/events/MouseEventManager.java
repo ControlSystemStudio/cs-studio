@@ -39,16 +39,16 @@ import com.cosylab.vdct.util.DoubleClickProxy;
  * @author Matej Sekoranja
  */
 public class MouseEventManager extends EventManager {
-	protected static MouseEventManager instance = null;
+    protected static MouseEventManager instance = null;
 /**
  * Insert the method's description here.
  * Creation date: (18.12.2000 15:30:35)
  * @return com.cosylab.vdct.events.MouseEventManager
  */
 public static MouseEventManager getInstance() {
-	if (instance==null)
-		instance = new MouseEventManager();
-	return instance;
+    if (instance==null)
+        instance = new MouseEventManager();
+    return instance;
 }
 /**
  * Insert the method's description here.
@@ -57,7 +57,7 @@ public static MouseEventManager getInstance() {
  * @param component javax.swing.JComponent
  */
 public void registerSubscreiber(String id, JComponent component) {
-	super.registerSubscreiber(id, component);
+    super.registerSubscreiber(id, component);
 }
 /**
  * Insert the method's description here.
@@ -66,12 +66,12 @@ public void registerSubscreiber(String id, JComponent component) {
  * @param listener javax.swing.event.MouseInputListener
  */
 public void subscribe(String subscriberID, MouseInputListener listener) {
-	JComponent comp = (JComponent)getSubscreiber().get(subscriberID);
-	if (comp!=null) {
-		DoubleClickProxy proxy = new DoubleClickProxy(listener);
-		comp.addMouseListener(proxy);
-		comp.addMouseMotionListener(proxy);
-	}
+    JComponent comp = (JComponent)getSubscreiber().get(subscriberID);
+    if (comp!=null) {
+        DoubleClickProxy proxy = new DoubleClickProxy(listener);
+        comp.addMouseListener(proxy);
+        comp.addMouseMotionListener(proxy);
+    }
 }
 /**
  * Insert the method's description here.
@@ -81,7 +81,7 @@ public void subscribe(String subscriberID, MouseInputListener listener) {
  */
  
 public void unregisterSubscreiber(String id, JComponent component) {
-	super.unregisterSubscreiber(id, component);
+    super.unregisterSubscreiber(id, component);
 }
 /**
  * Insert the method's description here.
@@ -90,10 +90,10 @@ public void unregisterSubscreiber(String id, JComponent component) {
  * @param listener javax.swing.event.MouseInputListener
  */
 public void unsubscribe(String subscriberID, MouseInputListener listener) {
-	JComponent comp = (JComponent)getSubscreiber().get(subscriberID);
-	if (comp!=null) {
-		comp.removeMouseListener(listener);
-		comp.removeMouseMotionListener(listener);
-	}
+    JComponent comp = (JComponent)getSubscreiber().get(subscriberID);
+    if (comp!=null) {
+        comp.removeMouseListener(listener);
+        comp.removeMouseMotionListener(listener);
+    }
 }
 }

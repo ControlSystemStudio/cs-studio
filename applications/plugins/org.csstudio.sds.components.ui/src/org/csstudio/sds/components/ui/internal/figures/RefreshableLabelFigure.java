@@ -49,72 +49,72 @@ import org.eclipse.swt.graphics.Font;
  */
 public final class RefreshableLabelFigure extends Shape implements IAdaptable, ITextFigure {
 
-	/**
-	 * A border adapter, which covers all border drawing.
-	 */
-	private IBorderEquippedWidget _borderAdapter;
+    /**
+     * A border adapter, which covers all border drawing.
+     */
+    private IBorderEquippedWidget _borderAdapter;
 
-	/**
-	 * Default label font.
-	 */
-	private Font _font = CustomMediaFactory.getInstance().getFont("Arial", 8, SWT.NONE);
+    /**
+     * Default label font.
+     */
+    private Font _font = CustomMediaFactory.getInstance().getFont("Arial", 8, SWT.NONE);
 
-	/**
-	 * An Array, which contains the PositionConstants for Center, Top, Bottom, Left, Right.
-	 */
-	private final int[] _alignments = new int[] {PositionConstants.CENTER, PositionConstants.TOP, PositionConstants.BOTTOM, PositionConstants.LEFT, PositionConstants.RIGHT};
+    /**
+     * An Array, which contains the PositionConstants for Center, Top, Bottom, Left, Right.
+     */
+    private final int[] _alignments = new int[] {PositionConstants.CENTER, PositionConstants.TOP, PositionConstants.BOTTOM, PositionConstants.LEFT, PositionConstants.RIGHT};
 
-	/**
-	 * The alignment of the text.
-	 */
-	private int _alignment=0;
-	/**
-	 * The rotation of the text.
-	 */
-	private double _rotation=90.0;
-	/**
-	 * The x offset of the text.
-	 */
-	private int _xOff=0;
-	/**
-	 * The x offset of the text.
-	 */
-	private int _yOff=0;
-	/**
-	 * Value fields.
-	 */
-	private String _textValue="";
-	/**
-	 * Is the background transparent or not?
-	 */
-	private boolean _transparent=true;
+    /**
+     * The alignment of the text.
+     */
+    private int _alignment=0;
+    /**
+     * The rotation of the text.
+     */
+    private double _rotation=90.0;
+    /**
+     * The x offset of the text.
+     */
+    private int _xOff=0;
+    /**
+     * The x offset of the text.
+     */
+    private int _yOff=0;
+    /**
+     * Value fields.
+     */
+    private String _textValue="";
+    /**
+     * Is the background transparent or not?
+     */
+    private boolean _transparent=true;
 
     private RhombusAdapter _rhombusAdapter;
 
     private CrossedOutAdapter _crossedOutAdapter;
 
-	/**
-	 * Fills the image. Nothing to do here.
-	 * @param gfx The {@link Graphics} to use.
-	 */
-	@Override
+    /**
+     * Fills the image. Nothing to do here.
+     * @param gfx The {@link Graphics} to use.
+     */
+    @Override
     protected void fillShape(final Graphics gfx) {/* Nothing to do here.*/}
 
-	/**
-	 * Draws the outline of the image. Nothing to do here.
-	 * @param gfx The {@link Graphics} to use.
-	 */
-	@Override
+    /**
+     * Draws the outline of the image. Nothing to do here.
+     * @param gfx The {@link Graphics} to use.
+     */
+    @Override
     protected void outlineShape(final Graphics gfx) {/* Nothing to do here.*/}
 
 
-	public RefreshableLabelFigure() {
+    public RefreshableLabelFigure() {
     }
-	/**
-	 * The main drawing routine.
-	 * @param gfx The {@link Graphics} to use.
-	 */
-	@Override
+    /**
+     * The main drawing routine.
+     * @param gfx The {@link Graphics} to use.
+     */
+    @Override
     public void paintFigure(final Graphics gfx) {
 
         Rectangle bound = getBounds().getCopy();
@@ -189,75 +189,75 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable, I
 
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void setFont(final Font newval) {
-		_font=newval;
-	}
+        _font=newval;
+    }
 
-	/**
-	 * Sets the alignment for the text.
-	 * @param newval The alignment for the text
-	 */
-	public void setTextAlignment(final int newval) {
-		if ((newval>=0) && (newval<_alignments.length)) {
-			_alignment=newval;
-		}
-	}
+    /**
+     * Sets the alignment for the text.
+     * @param newval The alignment for the text
+     */
+    public void setTextAlignment(final int newval) {
+        if ((newval>=0) && (newval<_alignments.length)) {
+            _alignment=newval;
+        }
+    }
 
-	/**
-	 * Sets the transparent state of the background.
-	 * @param newval The transparent state
-	 */
-	public void setTransparent(final boolean newval) {
-		_transparent=newval;
-	}
+    /**
+     * Sets the transparent state of the background.
+     * @param newval The transparent state
+     */
+    public void setTransparent(final boolean newval) {
+        _transparent=newval;
+    }
 
-	/**
-	 * Sets the rotation for the text.
-	 * @param newval The rotation for the text
-	 */
-	public void setRotation(final double newval) {
-		_rotation=newval;
-	}
+    /**
+     * Sets the rotation for the text.
+     * @param newval The rotation for the text
+     */
+    public void setRotation(final double newval) {
+        _rotation=newval;
+    }
 
-	/**
-	 * Sets the x offset for the text.
-	 * @param newval The x offset
-	 */
-	public void setXOff(final int newval) {
-		_xOff=newval;
-	}
+    /**
+     * Sets the x offset for the text.
+     * @param newval The x offset
+     */
+    public void setXOff(final int newval) {
+        _xOff=newval;
+    }
 
-	/**
-	 * Sets the y offset for the text.
-	 * @param newval The y offset
-	 */
-	public void setYOff(final int newval) {
-		_yOff=newval;
-	}
+    /**
+     * Sets the y offset for the text.
+     * @param newval The y offset
+     */
+    public void setYOff(final int newval) {
+        _yOff=newval;
+    }
 
-	/**
-	 * Sets the value for the text.
-	 * @param newval The value for the text
-	 */
-	public void setTextValue(final String newval) {
-		_textValue=newval;
-	}
+    /**
+     * Sets the value for the text.
+     * @param newval The value for the text
+     */
+    public void setTextValue(final String newval) {
+        _textValue=newval;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(final Class adapter) {
-		if (adapter == IBorderEquippedWidget.class) {
-			if (_borderAdapter == null) {
-				_borderAdapter = new BorderAdapter(this);
-			}
-			return _borderAdapter;
-		} else if(adapter == ICrossedFigure.class) {
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("rawtypes")
+    public Object getAdapter(final Class adapter) {
+        if (adapter == IBorderEquippedWidget.class) {
+            if (_borderAdapter == null) {
+                _borderAdapter = new BorderAdapter(this);
+            }
+            return _borderAdapter;
+        } else if(adapter == ICrossedFigure.class) {
             if(_crossedOutAdapter==null) {
                 _crossedOutAdapter = new CrossedOutAdapter(this);
             }
@@ -269,7 +269,7 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable, I
             return _rhombusAdapter;
         }
 
-		return null;
-	}
+        return null;
+    }
 
 }

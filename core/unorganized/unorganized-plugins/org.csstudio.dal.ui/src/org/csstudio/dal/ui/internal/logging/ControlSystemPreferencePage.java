@@ -35,56 +35,56 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.Bundle;
 
 public class ControlSystemPreferencePage extends FieldEditorPreferencePage
-		implements IWorkbenchPreferencePage {
+        implements IWorkbenchPreferencePage {
 
-	public ControlSystemPreferencePage() {
-		super(FieldEditorPreferencePage.GRID);
-		setMessage("Set the default control system");
-	}
+    public ControlSystemPreferencePage() {
+        super(FieldEditorPreferencePage.GRID);
+        setMessage("Set the default control system");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void createFieldEditors() {
-		String[][] labelsAndValues = new String[ControlSystemEnum.valuesShown().length][2];
-		for (int i = 0; i < ControlSystemEnum.valuesShown().length; i++) {
-			labelsAndValues[i] = new String[] {
-					ControlSystemEnum.valuesShown()[i].name(),
-					ControlSystemEnum.valuesShown()[i].name() };
-		}
-		RadioGroupFieldEditor radioFields = new RadioGroupFieldEditor(
-				ProcessVariableAdressFactory.PROP_CONTROL_SYSTEM, "Control Systems", 1,
-				labelsAndValues, getFieldEditorParent());
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void createFieldEditors() {
+        String[][] labelsAndValues = new String[ControlSystemEnum.valuesShown().length][2];
+        for (int i = 0; i < ControlSystemEnum.valuesShown().length; i++) {
+            labelsAndValues[i] = new String[] {
+                    ControlSystemEnum.valuesShown()[i].name(),
+                    ControlSystemEnum.valuesShown()[i].name() };
+        }
+        RadioGroupFieldEditor radioFields = new RadioGroupFieldEditor(
+                ProcessVariableAdressFactory.PROP_CONTROL_SYSTEM, "Control Systems", 1,
+                labelsAndValues, getFieldEditorParent());
 
-		addField(radioFields);
+        addField(radioFields);
 
-		BooleanFieldEditor bfe = new BooleanFieldEditor(
-				ProcessVariableAdressFactory.PROP_ASK_FOR_CONTROL_SYSTEM,
-				"Ask for the right control system, each time a user drops a text String into CSS.",
-				getFieldEditorParent());
-		
-		addField(bfe);
-	}
+        BooleanFieldEditor bfe = new BooleanFieldEditor(
+                ProcessVariableAdressFactory.PROP_ASK_FOR_CONTROL_SYSTEM,
+                "Ask for the right control system, each time a user drops a text String into CSS.",
+                getFieldEditorParent());
+        
+        addField(bfe);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IPreferenceStore doGetPreferenceStore() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IPreferenceStore doGetPreferenceStore() {
         InstanceScope context = new InstanceScope();
         Bundle bundle = SimpleDalPluginActivator.getDefault().getBundle();
         String symbolicName = bundle
                 .getSymbolicName();
         return new ScopedPreferenceStore(context, symbolicName);
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void init(final IWorkbench workbench) {
-	    // nothing to do
-	}
+        // nothing to do
+    }
 
 }

@@ -34,66 +34,66 @@ import org.csstudio.dal.DataExchangeException;
  */
 public class RandomNoiseValueProvider<T> implements ValueProvider<T>
 {
-	public double changeScale = 0.1;
-	public Double dval;
-	public Long lval;
+    public double changeScale = 0.1;
+    public Double dval;
+    public Long lval;
 
-	/**
-	 * Random value provider for Double values.
-	 */
-	public RandomNoiseValueProvider(Double value, double scale)
-	{
-		super();
-		dval = value;
-		changeScale = scale;
-	}
+    /**
+     * Random value provider for Double values.
+     */
+    public RandomNoiseValueProvider(Double value, double scale)
+    {
+        super();
+        dval = value;
+        changeScale = scale;
+    }
 
-	/**
-	 * Random value provider for Long values.
-	 */
-	public RandomNoiseValueProvider(Long value, double scale)
-	{
-		super();
-		lval = value;
-		changeScale = scale;
-	}
+    /**
+     * Random value provider for Long values.
+     */
+    public RandomNoiseValueProvider(Long value, double scale)
+    {
+        super();
+        lval = value;
+        changeScale = scale;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.simulation.ValueProvider#get()
-	 */
-	public T get() throws DataExchangeException
-	{
-		boolean positive = Math.random() > 0.5;
-		double random = Math.random();
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.simulation.ValueProvider#get()
+     */
+    public T get() throws DataExchangeException
+    {
+        boolean positive = Math.random() > 0.5;
+        double random = Math.random();
 
-		if (dval != null) {
-			if (positive) {
-				return (T)new Double(dval * (1.0 + random * changeScale));
-			}
+        if (dval != null) {
+            if (positive) {
+                return (T)new Double(dval * (1.0 + random * changeScale));
+            }
 
-			return (T)new Double(dval * (1.0 - random * changeScale));
-		}
+            return (T)new Double(dval * (1.0 - random * changeScale));
+        }
 
-		long step = (long)(Math.max(1, (long)(lval * changeScale)) * random);
+        long step = (long)(Math.max(1, (long)(lval * changeScale)) * random);
 
-		if (positive) {
-			return (T)new Long(lval + step);
-		}
+        if (positive) {
+            return (T)new Long(lval + step);
+        }
 
-		return (T)new Long(lval - step);
-	}
+        return (T)new Long(lval - step);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.simulation.ValueProvider#set(T)
-	 */
-	public void set(T value) throws DataExchangeException
-	{
-		if (dval != null) {
-			dval = (Double)value;
-		}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.simulation.ValueProvider#set(T)
+     */
+    public void set(T value) throws DataExchangeException
+    {
+        if (dval != null) {
+            dval = (Double)value;
+        }
 
-		lval = (Long)value;
-	}
+        lval = (Long)value;
+    }
 }
 
 /* __oOo__ */

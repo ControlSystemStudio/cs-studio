@@ -57,107 +57,107 @@ import org.eclipse.swt.widgets.Display;
  */
 public final class ColorPropertyDescriptor extends PropertyDescriptor {
 
-	static ImageRegistry imageRegistry = new ImageRegistry();
-	
-	/**
-	 * Creates an property descriptor with the given id and display name.
-	 * 
-	 * @param id
-	 *            the id of the property
-	 * @param displayName
-	 *            the name to display for the property
-	 */
-	public ColorPropertyDescriptor(final Object id, final String displayName, PropertyTypesEnum type) {
-		super(id, displayName, type);
+    static ImageRegistry imageRegistry = new ImageRegistry();
+    
+    /**
+     * Creates an property descriptor with the given id and display name.
+     * 
+     * @param id
+     *            the id of the property
+     * @param displayName
+     *            the name to display for the property
+     */
+    public ColorPropertyDescriptor(final Object id, final String displayName, PropertyTypesEnum type) {
+        super(id, displayName, type);
 
-		setLabelProvider(new RgbLabelProvider());
-	}
+        setLabelProvider(new RgbLabelProvider());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CellEditor createPropertyEditor(final Composite parent) {
-		//CellEditor editor = new ColorCellEditor(parent);
-		RGBCellEditor editor = new RGBCellEditor(parent);
-		if (getValidator() != null) {
-			editor.setValidator(getValidator());
-		}
-		
-		
-		return new TextCellEditor(parent);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CellEditor createPropertyEditor(final Composite parent) {
+        //CellEditor editor = new ColorCellEditor(parent);
+        RGBCellEditor editor = new RGBCellEditor(parent);
+        if (getValidator() != null) {
+            editor.setValidator(getValidator());
+        }
+        
+        
+        return new TextCellEditor(parent);
+    }
 
-	/**
-	 * A label provider for RGB value, which displays a small colored icon and
-	 * the RGB value as String as well.
-	 * 
-	 * @author swende
-	 * 
-	 */
-	private final class RgbLabelProvider extends LabelProvider {
-		
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public Image getImage(final Object element) {
-			Color color = SdsUiPlugin.getDefault().getColorAndFontService().getColor((String)element);
-			RGB rgb = color.getRGB();
-			String id = "SDS.COLORPROPERTY.ICON_"+rgb.red+"_"+rgb.green+"_"+rgb.blue;
-		
-			if(imageRegistry.get(id)==null) {
-				imageRegistry.put(id, createIcon(rgb));
-			} else {
-				return imageRegistry.get(id);	
-			}
-			
-			return imageRegistry.get(id);
-		}
+    /**
+     * A label provider for RGB value, which displays a small colored icon and
+     * the RGB value as String as well.
+     * 
+     * @author swende
+     * 
+     */
+    private final class RgbLabelProvider extends LabelProvider {
+        
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Image getImage(final Object element) {
+            Color color = SdsUiPlugin.getDefault().getColorAndFontService().getColor((String)element);
+            RGB rgb = color.getRGB();
+            String id = "SDS.COLORPROPERTY.ICON_"+rgb.red+"_"+rgb.green+"_"+rgb.blue;
+        
+            if(imageRegistry.get(id)==null) {
+                imageRegistry.put(id, createIcon(rgb));
+            } else {
+                return imageRegistry.get(id);    
+            }
+            
+            return imageRegistry.get(id);
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public String getText(final Object element) {
-			return element.toString();
-		}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String getText(final Object element) {
+            return element.toString();
+        }
 
-		/**
-		 * Creates a small icon using the specified color.
-		 * 
-		 * @param rgb
-		 *            the color
-		 * @return an icon
-		 */
-		private Image createIcon(final RGB rgb) {
-			assert rgb != null : "rgb!=null"; //$NON-NLS-1$
+        /**
+         * Creates a small icon using the specified color.
+         * 
+         * @param rgb
+         *            the color
+         * @return an icon
+         */
+        private Image createIcon(final RGB rgb) {
+            assert rgb != null : "rgb!=null"; //$NON-NLS-1$
 
-			Color color = CustomMediaFactory.getInstance().getColor(rgb);
+            Color color = CustomMediaFactory.getInstance().getColor(rgb);
 
-			// create new graphics context, to draw on
-			Image image = new Image(Display.getCurrent(), 16, 16);
-			GC gc = new GC(image);
+            // create new graphics context, to draw on
+            Image image = new Image(Display.getCurrent(), 16, 16);
+            GC gc = new GC(image);
 
-			// draw transparent background
-			Color bg = CustomMediaFactory.getInstance().getColor(255, 255, 255);
-			gc.setBackground(bg);
-			gc.fillRectangle(0, 0, 16, 16);
-			// draw icon
-			gc.setBackground(color);
-			Rectangle r = new Rectangle(1, 4, 14, 9);
-			gc.fillRectangle(r);
-			gc
-					.setBackground(CustomMediaFactory.getInstance().getColor(0,
-							0, 0));
-			gc.drawRectangle(r);
-			gc.dispose();
+            // draw transparent background
+            Color bg = CustomMediaFactory.getInstance().getColor(255, 255, 255);
+            gc.setBackground(bg);
+            gc.fillRectangle(0, 0, 16, 16);
+            // draw icon
+            gc.setBackground(color);
+            Rectangle r = new Rectangle(1, 4, 14, 9);
+            gc.fillRectangle(r);
+            gc
+                    .setBackground(CustomMediaFactory.getInstance().getColor(0,
+                            0, 0));
+            gc.drawRectangle(r);
+            gc.dispose();
 
-			// setup tranparency
-			image.getImageData().transparentPixel = image.getImageData().palette.getPixel(new RGB(255,
-					255, 255));
+            // setup tranparency
+            image.getImageData().transparentPixel = image.getImageData().palette.getPixel(new RGB(255,
+                    255, 255));
 
-			return image;
-		}
-	}
+            return image;
+        }
+    }
 }

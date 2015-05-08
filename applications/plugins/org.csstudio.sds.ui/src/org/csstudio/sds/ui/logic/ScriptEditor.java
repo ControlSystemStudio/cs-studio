@@ -31,11 +31,11 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
  * 
  */
 public class ScriptEditor extends AbstractTextEditor {
-	/**
-	 * Constructor.
-	 */
-	public ScriptEditor() {
-		setDocumentProvider(new ScriptDocumentProvider());
-	}
+    /**
+     * Constructor.
+     */
+    public ScriptEditor() {
+        setDocumentProvider(new ScriptDocumentProvider());
+    }
 
 }

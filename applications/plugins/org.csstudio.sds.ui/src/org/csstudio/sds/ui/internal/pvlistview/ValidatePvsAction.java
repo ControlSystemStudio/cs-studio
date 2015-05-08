@@ -13,38 +13,38 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 public class ValidatePvsAction extends Action {
 
-	private final IProcessVariableAddressValidationService validationService;
-	private final HashMap<IProcessVariableAddress, Tuple<ValidationResult,String>> serviceValidations;
-	private final PvListView pvListView;
+    private final IProcessVariableAddressValidationService validationService;
+    private final HashMap<IProcessVariableAddress, Tuple<ValidationResult,String>> serviceValidations;
+    private final PvListView pvListView;
 
-	public ValidatePvsAction(
-			IProcessVariableAddressValidationService validationService,
-			HashMap<IProcessVariableAddress, Tuple<ValidationResult,String>> serviceValidations,
-			PvListView pvListView) {
-				this.validationService = validationService;
-				this.serviceValidations = serviceValidations;
-				this.pvListView = pvListView;
-	}
-	
-	@Override
-	public String getText() {
-		return validationService.getServiceName();
-	}
-	
-	@Override
-	public String getToolTipText() {
-		return validationService.getServiceDescription();
-	}
-	
-	@Override
-	public ImageDescriptor getImageDescriptor() {
-		return AbstractUIPlugin.imageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID,
-				"icons/validationButtonImage.png");
-	}
-	
-	@Override
-	public void run() {
-		pvListView.handleValidationAction(validationService, serviceValidations);
-	}
+    public ValidatePvsAction(
+            IProcessVariableAddressValidationService validationService,
+            HashMap<IProcessVariableAddress, Tuple<ValidationResult,String>> serviceValidations,
+            PvListView pvListView) {
+                this.validationService = validationService;
+                this.serviceValidations = serviceValidations;
+                this.pvListView = pvListView;
+    }
+    
+    @Override
+    public String getText() {
+        return validationService.getServiceName();
+    }
+    
+    @Override
+    public String getToolTipText() {
+        return validationService.getServiceDescription();
+    }
+    
+    @Override
+    public ImageDescriptor getImageDescriptor() {
+        return AbstractUIPlugin.imageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID,
+                "icons/validationButtonImage.png");
+    }
+    
+    @Override
+    public void run() {
+        pvListView.handleValidationAction(validationService, serviceValidations);
+    }
 
 }

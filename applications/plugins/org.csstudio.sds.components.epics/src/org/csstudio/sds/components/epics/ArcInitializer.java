@@ -31,10 +31,10 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
  */
 public final class ArcInitializer extends AbstractEpicsWidgetInitializer {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void initialize(final AbstractControlSystemSchema schema) {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void initialize(final AbstractControlSystemSchema schema) {
+    }
 }

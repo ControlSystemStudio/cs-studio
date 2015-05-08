@@ -25,52 +25,52 @@ import org.csstudio.alarm.beast.client.AADataStructure;
 @SuppressWarnings("nls")
 public class SmsCommandHandler extends AbstractCommandHandler {
 
-	private List<String> to;
-	private String body;
+    private List<String> to;
+    private String body;
 
-	public SmsCommandHandler(String details) {
-		super(details, "sms");
-	}
+    public SmsCommandHandler(String details) {
+        super(details, "sms");
+    }
 
-	@Override
+    @Override
     protected void handleParameter(String data, ParamType type) throws Exception {
-		if (type == null || data == null) return;
-		switch (type) {
-		case To:
-			to = extractSMSNumbers(data.toLowerCase());
-			break;
-		case Body:
-			body = data.trim();
-			validateNSF(body);
-			break;
-		default:
-			break;
-		}
-	}
+        if (type == null || data == null) return;
+        switch (type) {
+        case To:
+            to = extractSMSNumbers(data.toLowerCase());
+            break;
+        case Body:
+            body = data.trim();
+            validateNSF(body);
+            break;
+        default:
+            break;
+        }
+    }
 
-	private List<String> extractSMSNumbers(String data) throws Exception {
-		StringTokenizer st = new StringTokenizer(data, DELIMITERS);
-		List<String> smsList = new ArrayList<String>();
-		while (st.hasMoreElements()) {
-			String token = st.nextToken().trim();
-			Matcher smsMatcher = PhoneUtils.PhonePattern.matcher(token);
-			if (smsMatcher.matches())
-				smsList.add(token);
-			else throw new Exception("Invalid phone number: " + token);
-		}
-		return smsList;
-	}
+    private List<String> extractSMSNumbers(String data) throws Exception {
+        StringTokenizer st = new StringTokenizer(data, DELIMITERS);
+        List<String> smsList = new ArrayList<String>();
+        while (st.hasMoreElements()) {
+            String token = st.nextToken().trim();
+            Matcher smsMatcher = PhoneUtils.PhonePattern.matcher(token);
+            if (smsMatcher.matches())
+                smsList.add(token);
+            else throw new Exception("Invalid phone number: " + token);
+        }
+        return smsList;
+    }
 
-	public List<String> getTo() {
-		return to;
-	}
-	public String getBody() {
-		if (body == null) return "";
-		return body;
-	}
+    public List<String> getTo() {
+        return to;
+    }
+    public String getBody() {
+        if (body == null) return "";
+        return body;
+    }
 
-	@Override
-	public String toString() {
-		return "SmsCommandHandler [to=" + to + ", body=" + body + "]";
-	}
+    @Override
+    public String toString() {
+        return "SmsCommandHandler [to=" + to + ", body=" + body + "]";
+    }
 }

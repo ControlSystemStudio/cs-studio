@@ -90,18 +90,18 @@ public class GUI implements ModelListener
 
         parent.addDisposeListener(new DisposeListener()
         {
-			@Override
+            @Override
             public void widgetDisposed(DisposeEvent e)
-			{
-				if (model != null)
-					model.close();
-			}
+            {
+                if (model != null)
+                    model.close();
+            }
         });
 
         // Publish the current selection to the site
         // (to allow context menu extensions based on the selection)
         if (site != null)
-        	site.setSelectionProvider(table_viewer);
+            site.setSelectionProvider(table_viewer);
     }
 
     /** Create the GUI elements
@@ -209,12 +209,12 @@ public class GUI implements ModelListener
     }
 
     /** @return SelectionProvider (TableViewer) for selected messages */
-	public ISelectionProvider getSelectionProvider()
-	{
-		return table_viewer;
-	}
+    public ISelectionProvider getSelectionProvider()
+    {
+        return table_viewer;
+    }
 
-	/** @return Currently selected topic */
+    /** @return Currently selected topic */
     public String getTopic()
     {
         return topic.getText().trim();

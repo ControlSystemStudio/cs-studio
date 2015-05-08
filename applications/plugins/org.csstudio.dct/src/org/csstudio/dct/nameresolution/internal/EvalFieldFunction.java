@@ -18,24 +18,24 @@ import com.bestcode.mathparser.MathParserFactory;
  */
 public final class EvalFieldFunction implements IFieldFunction {
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public String evaluate(String name, String[] parameters, IRecord record, String fieldName) throws Exception {
-		String result = "";
+    /**
+     *{@inheritDoc}
+     */
+    public String evaluate(String name, String[] parameters, IRecord record, String fieldName) throws Exception {
+        String result = "";
 
-		try {
-			IMathParser parser = MathParserFactory.create();
-			parser.setExpression(parameters[0]);
-			result = "" + parser.getValue();
-		} catch (Exception e) {
-			throw new IllegalArgumentException("Error in mathematical expression.");
-		}
-		return result;
-	}
+        try {
+            IMathParser parser = MathParserFactory.create();
+            parser.setExpression(parameters[0]);
+            result = "" + parser.getValue();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error in mathematical expression.");
+        }
+        return result;
+    }
 
-	public List<IContentProposal> getParameterProposal(int parameterIndex, String[] knownParameters, IRecord record) {
-		return Collections.EMPTY_LIST;
-	}
+    public List<IContentProposal> getParameterProposal(int parameterIndex, String[] knownParameters, IRecord record) {
+        return Collections.EMPTY_LIST;
+    }
 
 }

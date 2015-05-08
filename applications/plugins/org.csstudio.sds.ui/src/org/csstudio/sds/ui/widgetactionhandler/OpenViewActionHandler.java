@@ -41,18 +41,18 @@ import org.eclipse.core.runtime.IPath;
  */
 public final class OpenViewActionHandler implements IWidgetActionHandler {
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @required action instanceof OpenDisplayWidgetAction
-	 */
-	public void executeAction(final AbstractWidgetModel widget,
-			final AbstractWidgetActionModel action) {
-		assert action instanceof OpenDisplayActionModel : "Precondition violated: action instanceof OpenDisplayWidgetAction";
-		OpenDisplayActionModel displayAction = (OpenDisplayActionModel) action;
-		IPath path = displayAction.getResource();
-		Map<String, String> newAlias = displayAction.getAliases();
-		RunModeService.getInstance().openDisplayViewInRunMode(path, newAlias);
-	}
+    /**
+     * {@inheritDoc}
+     * 
+     * @required action instanceof OpenDisplayWidgetAction
+     */
+    public void executeAction(final AbstractWidgetModel widget,
+            final AbstractWidgetActionModel action) {
+        assert action instanceof OpenDisplayActionModel : "Precondition violated: action instanceof OpenDisplayWidgetAction";
+        OpenDisplayActionModel displayAction = (OpenDisplayActionModel) action;
+        IPath path = displayAction.getResource();
+        Map<String, String> newAlias = displayAction.getAliases();
+        RunModeService.getInstance().openDisplayViewInRunMode(path, newAlias);
+    }
 
 }

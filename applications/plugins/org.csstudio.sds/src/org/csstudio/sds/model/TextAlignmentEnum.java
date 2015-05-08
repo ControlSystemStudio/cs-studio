@@ -27,87 +27,87 @@ package org.csstudio.sds.model;
  *
  */
 public enum TextAlignmentEnum {
-	/**
-	 * Center alignment.
-	 */
-	CENTER(0, "Center"),
-	/**
-	 * Top alignment.
-	 */
-	TOP(1, "Top"),
-	/**
-	 * Bottom alignment.
-	 */
-	BOTTOM(2, "Bottom"),
-	/**
-	 * Left alignment.
-	 */
-	LEFT(3, "Left"),
-	/**
-	 * Right alignment.
-	 */
-	RIGHT(4, "Right");
-	
-	/**
-	 * The index of his enum.
-	 */
-	private int _index;
-	/**
-	 * The display name of this enum.
-	 */
-	private String _displayName;
-	
-	/**
-	 * Constructor.
-	 * @param index The index of this value
-	 * @param displayName The name of this value
-	 */
-	private TextAlignmentEnum(final int index, final String displayName) {
-		_index = index;
-		_displayName = displayName;
-	}
-	
-	/**
-	 * Returns the index of this {@link BorderStyleEnum}.
-	 * @return The index
-	 */
-	public int getIndex() {
-		return _index;
-	}
-	
-	/**
-	 * Returns the display name of this {@link BorderStyleEnum}.
-	 * @return The display name
-	 */
-	public String getDisplayName() {
-		return _displayName;
-	}
-	
-	/**
-	 * Returns the display names of the all text alignments.
-	 * @return The display names
-	 */
-	public static String[] getDisplayNames() {
-		TextAlignmentEnum[] enums = TextAlignmentEnum.values();
-		String[] result = new String[enums.length];
-		for (int i=0;i<enums.length;i++) {
-			result[i] = enums[i].getDisplayName();
-		}
-		return result;
-	}
-	
-	/**
-	 * Returns the corresponding {@link TextAlignmentEnum} to the given index or <code>null</code> if the index is unknown.
-	 * @param index The index of the enum
-	 * @return The corresponding {@link TextAlignmentEnum} or <code>null</code> if the index is unknown
-	 */
-	public static TextAlignmentEnum getEnumForIndex(final int index) {
-		for (TextAlignmentEnum ttenum : TextAlignmentEnum.values()) {
-			if (ttenum.getIndex()==index) {
-				return ttenum;
-			}
-		}
-		return null;
-	}
+    /**
+     * Center alignment.
+     */
+    CENTER(0, "Center"),
+    /**
+     * Top alignment.
+     */
+    TOP(1, "Top"),
+    /**
+     * Bottom alignment.
+     */
+    BOTTOM(2, "Bottom"),
+    /**
+     * Left alignment.
+     */
+    LEFT(3, "Left"),
+    /**
+     * Right alignment.
+     */
+    RIGHT(4, "Right");
+    
+    /**
+     * The index of his enum.
+     */
+    private int _index;
+    /**
+     * The display name of this enum.
+     */
+    private String _displayName;
+    
+    /**
+     * Constructor.
+     * @param index The index of this value
+     * @param displayName The name of this value
+     */
+    private TextAlignmentEnum(final int index, final String displayName) {
+        _index = index;
+        _displayName = displayName;
+    }
+    
+    /**
+     * Returns the index of this {@link BorderStyleEnum}.
+     * @return The index
+     */
+    public int getIndex() {
+        return _index;
+    }
+    
+    /**
+     * Returns the display name of this {@link BorderStyleEnum}.
+     * @return The display name
+     */
+    public String getDisplayName() {
+        return _displayName;
+    }
+    
+    /**
+     * Returns the display names of the all text alignments.
+     * @return The display names
+     */
+    public static String[] getDisplayNames() {
+        TextAlignmentEnum[] enums = TextAlignmentEnum.values();
+        String[] result = new String[enums.length];
+        for (int i=0;i<enums.length;i++) {
+            result[i] = enums[i].getDisplayName();
+        }
+        return result;
+    }
+    
+    /**
+     * Returns the corresponding {@link TextAlignmentEnum} to the given index or <code>null</code> if the index is unknown.
+     * @param index The index of the enum
+     * @return The corresponding {@link TextAlignmentEnum} or <code>null</code> if the index is unknown
+     */
+    public static TextAlignmentEnum getEnumForIndex(final int index) {
+        for (TextAlignmentEnum ttenum : TextAlignmentEnum.values()) {
+            if (ttenum.getIndex()==index) {
+                return ttenum;
+            }
+        }
+        return null;
+    }
 
 }

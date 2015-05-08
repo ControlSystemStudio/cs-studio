@@ -29,108 +29,108 @@ public class LinkTable extends BeanComposite {
     private Composite composite;
 
     public LinkTable(Composite parent, int style) {
-	super(parent, style);
-	setLayout(new GridLayout(1, false));
+    super(parent, style);
+    setLayout(new GridLayout(1, false));
 
-	errorBar = new ErrorBar(this, SWT.NONE);
-	errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
-		1, 1));
+    errorBar = new ErrorBar(this, SWT.NONE);
+    errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
+        1, 1));
 
-	Label lblNewLabel = new Label(this, SWT.NONE);
-	lblNewLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true,
-		false, 1, 1));
-	lblNewLabel.setText("Attachments:");
+    Label lblNewLabel = new Label(this, SWT.NONE);
+    lblNewLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true,
+        false, 1, 1));
+    lblNewLabel.setText("Attachments:");
 
-	composite = new Composite(this, SWT.NONE);
-	composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
-		1));
+    composite = new Composite(this, SWT.NONE);
+    composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
+        1));
 
-	composite.setLayout(new GridLayout(2, false));
+    composite.setLayout(new GridLayout(2, false));
 
-	addPropertyChangeListener(new PropertyChangeListener() {
+    addPropertyChangeListener(new PropertyChangeListener() {
 
-	    @Override
-	    public void propertyChange(PropertyChangeEvent event) {
-		switch (event.getPropertyName()) {
-		case "files":
-		    updateGrid(composite);
-		    break;
-		default:
-		    break;
-		}
-	    }
-	});
+        @Override
+        public void propertyChange(PropertyChangeEvent event) {
+        switch (event.getPropertyName()) {
+        case "files":
+            updateGrid(composite);
+            break;
+        default:
+            break;
+        }
+        }
+    });
 
-	updateGrid(composite);
+    updateGrid(composite);
 
     }
 
     private void updateGrid(Composite parent) {
-	for (Control control : parent.getChildren()) {
-	    control.dispose();
-	}
-	parent.redraw();
-	for (final Attachment attachment : files) {
-	    final Button check = new Button(parent, SWT.CHECK);
-	    check.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
-		    false, 1, 1));
+    for (Control control : parent.getChildren()) {
+        control.dispose();
+    }
+    parent.redraw();
+    for (final Attachment attachment : files) {
+        final Button check = new Button(parent, SWT.CHECK);
+        check.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
+            false, 1, 1));
 
-	    check.addSelectionListener(new SelectionListener() {
+        check.addSelectionListener(new SelectionListener() {
 
-		@Override
-		public void widgetSelected(SelectionEvent e) {
-		    List<Integer> newSelectionIndex;
-		    if (check.getSelection()) {
-			newSelectionIndex = getSelectionIndex();
-			newSelectionIndex.add(Integer.valueOf(files
-				.indexOf(attachment)));
-		    } else {
-			newSelectionIndex = getSelectionIndex();
-			newSelectionIndex.add((Integer) files
-				.indexOf(attachment));
-		    }
-		    setSelectionIndex(newSelectionIndex);
-		}
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            List<Integer> newSelectionIndex;
+            if (check.getSelection()) {
+            newSelectionIndex = getSelectionIndex();
+            newSelectionIndex.add(Integer.valueOf(files
+                .indexOf(attachment)));
+            } else {
+            newSelectionIndex = getSelectionIndex();
+            newSelectionIndex.add((Integer) files
+                .indexOf(attachment));
+            }
+            setSelectionIndex(newSelectionIndex);
+        }
 
-		@Override
-		public void widgetDefaultSelected(SelectionEvent e) {
-		    // TODO Auto-generated method stub
+        @Override
+        public void widgetDefaultSelected(SelectionEvent e) {
+            // TODO Auto-generated method stub
 
-		}
-	    });
+        }
+        });
 
-	    final Link link = new Link(parent, SWT.RIGHT);
-	    link.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
-		    1, 1));
+        final Link link = new Link(parent, SWT.RIGHT);
+        link.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
+            1, 1));
 
-	    link.setText("<a>" + attachment.getFileName() + "</a>");
-	    link.addSelectionListener(new SelectionListener() {
+        link.setText("<a>" + attachment.getFileName() + "</a>");
+        link.addSelectionListener(new SelectionListener() {
 
-		@Override
-		public void widgetSelected(SelectionEvent event) {
-		    linkAction(attachment);
-		}
+        @Override
+        public void widgetSelected(SelectionEvent event) {
+            linkAction(attachment);
+        }
 
-		@Override
-		public void widgetDefaultSelected(SelectionEvent arg0) {
-		}
-	    });
+        @Override
+        public void widgetDefaultSelected(SelectionEvent arg0) {
+        }
+        });
 
-	}
-	parent.layout();
-	parent.redraw();
+    }
+    parent.layout();
+    parent.redraw();
     }
 
     public void linkAction(Attachment attachment) {
-	String url = attachment.getFileName();
-	Program.launch(url);
+    String url = attachment.getFileName();
+    Program.launch(url);
     }
 
     /**
      * @return the files
      */
     public synchronized List<Attachment> getFiles() {
-	return Collections.unmodifiableList(files);
+    return Collections.unmodifiableList(files);
     }
 
     /**
@@ -138,16 +138,16 @@ public class LinkTable extends BeanComposite {
      *            the files to set
      */
     public synchronized void setFiles(List<Attachment> files) {
-	List<Attachment> oldValue = this.files;
-	this.files = files;
-	changeSupport.firePropertyChange("files", oldValue, this.files);
+    List<Attachment> oldValue = this.files;
+    this.files = files;
+    changeSupport.firePropertyChange("files", oldValue, this.files);
     }
 
     /**
      * @return the selectionIndex
      */
     private synchronized List<Integer> getSelectionIndex() {
-	return new ArrayList<Integer>(selectionIndex);
+    return new ArrayList<Integer>(selectionIndex);
     }
 
     /**
@@ -155,22 +155,22 @@ public class LinkTable extends BeanComposite {
      *            the selectionIndex to set
      */
     private synchronized void setSelectionIndex(List<Integer> selectionIndex) {
-	List<Integer> oldValue = this.selectionIndex;
-	this.selectionIndex = selectionIndex;
-	changeSupport.firePropertyChange("selection", oldValue,
-		this.selectionIndex);
+    List<Integer> oldValue = this.selectionIndex;
+    this.selectionIndex = selectionIndex;
+    changeSupport.firePropertyChange("selection", oldValue,
+        this.selectionIndex);
     }
 
     /**
      * @return the selection
      */
     public synchronized List<Attachment> getSelection() {
-	List<Attachment> selection = new ArrayList<Attachment>(
-		this.selectionIndex.size());
-	for (int index : this.selectionIndex) {
-	    selection.add(files.get(index));
-	}
-	return Collections.unmodifiableList(selection);
+    List<Attachment> selection = new ArrayList<Attachment>(
+        this.selectionIndex.size());
+    for (int index : this.selectionIndex) {
+        selection.add(files.get(index));
+    }
+    return Collections.unmodifiableList(selection);
     }
 
     /**
@@ -178,18 +178,18 @@ public class LinkTable extends BeanComposite {
      *            the selection to set
      */
     public synchronized void setSelection(List<Attachment> selection) {
-	List<Integer> oldValue = this.selectionIndex;
-	List<Integer> newSelectionIndex = new ArrayList<Integer>(
-		selection.size());
-	for (Attachment t : selection) {
-	    int index = files.indexOf(t);
-	    if (index >= 0) {
-		newSelectionIndex.add(files.indexOf(t));
-	    }
-	}
-	this.selectionIndex = newSelectionIndex;
-	changeSupport.firePropertyChange("selection", oldValue,
-		this.selectionIndex);
+    List<Integer> oldValue = this.selectionIndex;
+    List<Integer> newSelectionIndex = new ArrayList<Integer>(
+        selection.size());
+    for (Attachment t : selection) {
+        int index = files.indexOf(t);
+        if (index >= 0) {
+        newSelectionIndex.add(files.indexOf(t));
+        }
+    }
+    this.selectionIndex = newSelectionIndex;
+    changeSupport.firePropertyChange("selection", oldValue,
+        this.selectionIndex);
     }
 
 }

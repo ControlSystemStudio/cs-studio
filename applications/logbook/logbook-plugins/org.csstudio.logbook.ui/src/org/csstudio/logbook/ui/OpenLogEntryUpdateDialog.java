@@ -19,13 +19,13 @@ import org.eclipse.ui.handlers.HandlerUtil;
 public class OpenLogEntryUpdateDialog extends AbstractAdaptedHandler<UpdateLogEntryBuilder> {
 
     public OpenLogEntryUpdateDialog() {
-	super(UpdateLogEntryBuilder.class);
+    super(UpdateLogEntryBuilder.class);
     }
 
     @Override
     protected void execute(List<UpdateLogEntryBuilder> data, ExecutionEvent event)
-	    throws Exception {
-	final Shell shell = HandlerUtil.getActiveShell(event);	
+        throws Exception {
+    final Shell shell = HandlerUtil.getActiveShell(event);    
         if (data != null && !data.isEmpty()) {
             if (data.size() == 1) {
                 LogEntryUpdateDialog dialog = new LogEntryUpdateDialog(shell,

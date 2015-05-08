@@ -25,12 +25,12 @@ package org.csstudio.platform.utility.jms.preferences;
  * Constant definitions for plug-in preferences
  */
 public class PreferenceConstants {
-	public static final String INITIAL_CONTEXT_FACTORY = "context factory"; //$NON-NLS-1$
-	public static final String URL = "provider url"; //$NON-NLS-1$
-	public static final String QUEUE = "message queue"; //$NON-NLS-1$
-	public static final String JMS_URL_PRIMARY = "jmsUrlPrimary";
-	public static final String JMS_URL_SECONDARY = "jmsUrlSecondary";
-	public static final String SENDER_BROKER_URL = "senderBrokerURL";
-	public static final String RECEIVER_BROKER_URL_1 = "receiverBrokerURL1";
-	public static final String RECEIVER_BROKER_URL_2 = "receiverBrokerURL2";
+    public static final String INITIAL_CONTEXT_FACTORY = "context factory"; //$NON-NLS-1$
+    public static final String URL = "provider url"; //$NON-NLS-1$
+    public static final String QUEUE = "message queue"; //$NON-NLS-1$
+    public static final String JMS_URL_PRIMARY = "jmsUrlPrimary";
+    public static final String JMS_URL_SECONDARY = "jmsUrlSecondary";
+    public static final String SENDER_BROKER_URL = "senderBrokerURL";
+    public static final String RECEIVER_BROKER_URL_1 = "receiverBrokerURL1";
+    public static final String RECEIVER_BROKER_URL_2 = "receiverBrokerURL2";
 }

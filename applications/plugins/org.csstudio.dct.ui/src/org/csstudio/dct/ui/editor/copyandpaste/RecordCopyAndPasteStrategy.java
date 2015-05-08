@@ -20,84 +20,84 @@ import org.eclipse.gef.commands.CompoundCommand;
 
 public class RecordCopyAndPasteStrategy implements ICopyAndPasteStrategy {
 
-	public Command createPasteCommand(List<IElement> copiedElements, IProject project, List<IElement> selectedElements) {
-		assert copiedElements != null;
-		assert project != null;
-		assert selectedElements != null;
+    public Command createPasteCommand(List<IElement> copiedElements, IProject project, List<IElement> selectedElements) {
+        assert copiedElements != null;
+        assert project != null;
+        assert selectedElements != null;
 
-		CompoundCommand cmd = new CompoundCommand();
+        CompoundCommand cmd = new CompoundCommand();
 
-		for (IElement c : selectedElements) {
-			assert c instanceof IContainer;
+        for (IElement c : selectedElements) {
+            assert c instanceof IContainer;
 
-			for (IElement e : copiedElements) {
-				if (e instanceof IRecord) {
-					IRecord r = (IRecord) e;
-					// TODO (hrickens) [26.08.2011]: Code duplication! Same code on BaseCopyAndPasteStrategy.chainPrototype(IPrototype prototype2Copy, CompoundCommand commandChain, Map<UUID, IPrototype> alreadyCreatedPrototypes, IProject project, IFolder targetFolder) 
-					IRecord nr = RecordFactory.createRecord(project, r.getType(), r.getName(), UUID.randomUUID());
+            for (IElement e : copiedElements) {
+                if (e instanceof IRecord) {
+                    IRecord r = (IRecord) e;
+                    // TODO (hrickens) [26.08.2011]: Code duplication! Same code on BaseCopyAndPasteStrategy.chainPrototype(IPrototype prototype2Copy, CompoundCommand commandChain, Map<UUID, IPrototype> alreadyCreatedPrototypes, IProject project, IFolder targetFolder) 
+                    IRecord nr = RecordFactory.createRecord(project, r.getType(), r.getName(), UUID.randomUUID());
 
-					cmd.add(new ChangeBeanPropertyCommand(nr, "epicsName", r.getEpicsName()));
-					cmd.add(new ChangeBeanPropertyCommand(nr, "disabled", r.getDisabled()));
-					cmd.add(new ChangeBeanPropertyCommand(nr, "name", r.getName()));
-					
-					cmd.add(new AddRecordCommand((IContainer) c, nr));
+                    cmd.add(new ChangeBeanPropertyCommand(nr, "epicsName", r.getEpicsName()));
+                    cmd.add(new ChangeBeanPropertyCommand(nr, "disabled", r.getDisabled()));
+                    cmd.add(new ChangeBeanPropertyCommand(nr, "name", r.getName()));
+                    
+                    cmd.add(new AddRecordCommand((IContainer) c, nr));
 
-					for (String key : r.getFields().keySet()) {
-						cmd.add(new ChangeFieldValueCommand(nr, key, r.getField(key)));
-					}
-				}
-			}
-		}
+                    for (String key : r.getFields().keySet()) {
+                        cmd.add(new ChangeFieldValueCommand(nr, key, r.getField(key)));
+                    }
+                }
+            }
+        }
 
-		return cmd;
-	}
+        return cmd;
+    }
 
-	public List<Serializable> createCopyElements(List<IElement> selectedElements) {
-		List<Serializable> copies = new ArrayList<Serializable>();
+    public List<Serializable> createCopyElements(List<IElement> selectedElements) {
+        List<Serializable> copies = new ArrayList<Serializable>();
 
-		// create a temporary display model
-		for (IElement e : selectedElements) {
-			assert e instanceof IRecord;
-			IRecord r = (IRecord) e;
+        // create a temporary display model
+        for (IElement e : selectedElements) {
+            assert e instanceof IRecord;
+            IRecord r = (IRecord) e;
 
-			Record rcopy = new Record(r.getName(), r.getType(), UUID.randomUUID());
-			rcopy.setFields(new HashMap<String, String>(r.getFields()));
-			rcopy.setDisabled(r.getDisabled());
-			rcopy.setEpicsName(r.getEpicsName());
-			rcopy.setName(r.getName());
-			copies.add(rcopy);
-		}
+            Record rcopy = new Record(r.getName(), r.getType(), UUID.randomUUID());
+            rcopy.setFields(new HashMap<String, String>(r.getFields()));
+            rcopy.setDisabled(r.getDisabled());
+            rcopy.setEpicsName(r.getEpicsName());
+            rcopy.setName(r.getName());
+            copies.add(rcopy);
+        }
 
-		return copies;
-	}
+        return copies;
+    }
 
-	public boolean canCopy(List<IElement> selectedElements) {
-		boolean result = false;
+    public boolean canCopy(List<IElement> selectedElements) {
+        boolean result = false;
 
-		if (!selectedElements.isEmpty()) {
-			result = true;
-			for (IElement e : selectedElements) {
-				result &= e instanceof IRecord;
-			}
-		}
-		
-		return result;
-	}
+        if (!selectedElements.isEmpty()) {
+            result = true;
+            for (IElement e : selectedElements) {
+                result &= e instanceof IRecord;
+            }
+        }
+        
+        return result;
+    }
 
-	public boolean canPaste(List<IElement> selectedElements) {
-		boolean result = false;
+    public boolean canPaste(List<IElement> selectedElements) {
+        boolean result = false;
 
-		if (!selectedElements.isEmpty()) {
-			result = true;
-			for (IElement e : selectedElements) {
-				result &= e instanceof IContainer;
-			}
-		}
-		
-		return result;
-	}
+        if (!selectedElements.isEmpty()) {
+            result = true;
+            for (IElement e : selectedElements) {
+                result &= e instanceof IContainer;
+            }
+        }
+        
+        return result;
+    }
 
-	public String getContentDescription() {
-		return "Records";
-	}
+    public String getContentDescription() {
+        return "Records";
+    }
 }

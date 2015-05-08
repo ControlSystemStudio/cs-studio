@@ -215,12 +215,12 @@ final class PropertySheetViewer extends Viewer {
                             final DynamicAspectsWizard wizard = entry
                                     .getDynamicsDescriptionConfigurationWizard();
 
-                			if (wizard != null) {
-                				if(Window.OK ==ModalWizardDialog.open(Display.getCurrent()
-                						.getActiveShell(), wizard)) {
-                					entry.applyDynamicsDescriptor(wizard.getDynamicsDescriptor());
-                				}
-                			}
+                            if (wizard != null) {
+                                if(Window.OK ==ModalWizardDialog.open(Display.getCurrent()
+                                        .getActiveShell(), wizard)) {
+                                    entry.applyDynamicsDescriptor(wizard.getDynamicsDescriptor());
+                                }
+                            }
                         }
                     }
                 });
@@ -872,85 +872,85 @@ final class PropertySheetViewer extends Viewer {
      * Establish this viewer as a listener on the control.
      */
     private void hookControl() {
-		// Handle selections in the Tree
-		// Part1: Double click only (allow traversal via keyboard without
-		// activation
-		_tree.addSelectionListener(new SelectionAdapter() {
-			/*
-			 * (non-Javadoc)
-			 *
-			 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-			 */
-			@Override
-			public void widgetSelected(final SelectionEvent e) {
-				// The viewer only owns the status line when there is
-				// no 'active' cell editor
-				if (_cellEditor == null || !_cellEditor.isActivated()) {
-					updateStatusLine(e.item);
-				}
-			}
+        // Handle selections in the Tree
+        // Part1: Double click only (allow traversal via keyboard without
+        // activation
+        _tree.addSelectionListener(new SelectionAdapter() {
+            /*
+             * (non-Javadoc)
+             *
+             * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                // The viewer only owns the status line when there is
+                // no 'active' cell editor
+                if (_cellEditor == null || !_cellEditor.isActivated()) {
+                    updateStatusLine(e.item);
+                }
+            }
 
-			/*
-			 * (non-Javadoc)
-			 *
-			 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-			 */
-			@Override
-			public void widgetDefaultSelected(final SelectionEvent e) {
-				handleSelect((TreeItem) e.item);
-			}
-		});
-		// Part2: handle single click activation of cell editor
-		_tree.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(final MouseEvent event) {
-				// only activate if there is a cell editor
-				if (event.button == 1 && event.stateMask == 0) {
-					final Point pt = new Point(event.x, event.y);
-					final TreeItem item = _tree.getItem(pt);
-					if (item != null) {
-						handleSelect(item);
-					}
-				}else  if (event.button == 1 && event.stateMask == SWT.MOD1) {
+            /*
+             * (non-Javadoc)
+             *
+             * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            @Override
+            public void widgetDefaultSelected(final SelectionEvent e) {
+                handleSelect((TreeItem) e.item);
+            }
+        });
+        // Part2: handle single click activation of cell editor
+        _tree.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseDown(final MouseEvent event) {
+                // only activate if there is a cell editor
+                if (event.button == 1 && event.stateMask == 0) {
+                    final Point pt = new Point(event.x, event.y);
+                    final TreeItem item = _tree.getItem(pt);
+                    if (item != null) {
+                        handleSelect(item);
+                    }
+                }else  if (event.button == 1 && event.stateMask == SWT.MOD1) {
                     final Point pt = new Point(event.x, event.y);
                     final TreeItem item = _tree.getItem(pt);
                     openDynamicWizard(item);
                 }
-			}
-		});
+            }
+        });
 
-		// Add a tree listener to expand and collapse which
-		// allows for lazy creation of children
-		_tree.addTreeListener(new TreeListener() {
-			@Override
+        // Add a tree listener to expand and collapse which
+        // allows for lazy creation of children
+        _tree.addTreeListener(new TreeListener() {
+            @Override
             public void treeExpanded(final TreeEvent event) {
-				handleTreeExpand(event);
-			}
+                handleTreeExpand(event);
+            }
 
-			@Override
+            @Override
             public void treeCollapsed(final TreeEvent event) {
-				handleTreeCollapse(event);
-			}
-		});
+                handleTreeCollapse(event);
+            }
+        });
 
-		// Refresh the tree when F5 pressed
-		_tree.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(final KeyEvent e) {
-				if (e.character == SWT.ESC) {
-					deactivateCellEditor();
-				} else if (e.keyCode == SWT.F5) {
-					// The following will simulate a reselect
-					setInput(getInput());
-				} else if (e.stateMask==SWT.MOD1&&(e.keyCode==SWT.CR||e.keyCode==SWT.KEYPAD_CR)) {
-				    final TreeItem[] selection = _tree.getSelection();
-				    if(selection!=null&&selection.length>0) {
-				        openDynamicWizard(selection[0]);
-				    }
-				}
-			}
-		});
-	}
+        // Refresh the tree when F5 pressed
+        _tree.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(final KeyEvent e) {
+                if (e.character == SWT.ESC) {
+                    deactivateCellEditor();
+                } else if (e.keyCode == SWT.F5) {
+                    // The following will simulate a reselect
+                    setInput(getInput());
+                } else if (e.stateMask==SWT.MOD1&&(e.keyCode==SWT.CR||e.keyCode==SWT.KEYPAD_CR)) {
+                    final TreeItem[] selection = _tree.getSelection();
+                    if(selection!=null&&selection.length>0) {
+                        openDynamicWizard(selection[0]);
+                    }
+                }
+            }
+        });
+    }
 
     /**
      * Update the status line based on the data of item.
@@ -1529,12 +1529,12 @@ final class PropertySheetViewer extends Viewer {
             if (entry != null) {
                 final DynamicAspectsWizard wizard = entry.getDynamicsDescriptionConfigurationWizard();
 
-    			if (wizard != null) {
-    				if(Window.OK ==ModalWizardDialog.open(Display.getCurrent()
-    						.getActiveShell(), wizard)) {
-    					entry.applyDynamicsDescriptor(wizard.getDynamicsDescriptor());
-    				}
-    			}
+                if (wizard != null) {
+                    if(Window.OK ==ModalWizardDialog.open(Display.getCurrent()
+                            .getActiveShell(), wizard)) {
+                        entry.applyDynamicsDescriptor(wizard.getDynamicsDescriptor());
+                    }
+                }
             }
         }
     }

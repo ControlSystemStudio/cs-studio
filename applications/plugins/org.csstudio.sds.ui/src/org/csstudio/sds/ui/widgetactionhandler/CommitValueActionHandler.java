@@ -33,16 +33,16 @@ import org.csstudio.sds.model.properties.actions.CommitValueActionModel;
  */
 public final class CommitValueActionHandler implements IWidgetActionHandler {
 
-	/**
-	 * {@inheritDoc}
-	 * @required action instanceof CommitValueWidgetAction
-	 */
-	public void executeAction(final AbstractWidgetModel widget, final AbstractWidgetActionModel action) {
-		assert action instanceof CommitValueActionModel : "Precondition violated: action instanceof CommitValueWidgetAction";
-		CommitValueActionModel valueAction = (CommitValueActionModel) action;
-		
-		WidgetProperty property = widget.getPropertyInternal(AbstractWidgetModel.PROP_ACTIONDATA);
-		property.setManualValue(valueAction.getValue());
-	}
+    /**
+     * {@inheritDoc}
+     * @required action instanceof CommitValueWidgetAction
+     */
+    public void executeAction(final AbstractWidgetModel widget, final AbstractWidgetActionModel action) {
+        assert action instanceof CommitValueActionModel : "Precondition violated: action instanceof CommitValueWidgetAction";
+        CommitValueActionModel valueAction = (CommitValueActionModel) action;
+        
+        WidgetProperty property = widget.getPropertyInternal(AbstractWidgetModel.PROP_ACTIONDATA);
+        property.setManualValue(valueAction.getValue());
+    }
 
 }

@@ -26,10 +26,10 @@ public class JDBCSampleService extends JDBCService {
                     .addArgument("value", "The value", VNumber.class)
                 ));
         try {
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
     
 }

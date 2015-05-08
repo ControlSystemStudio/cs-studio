@@ -39,38 +39,38 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
  * 
  */
 public final class SdsPreferenceInitializer extends
-		AbstractPreferenceInitializer {
+        AbstractPreferenceInitializer {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void initializeDefaultPreferences() {
-		IEclipsePreferences node = new DefaultScope()
-				.getNode(SdsPlugin.PLUGIN_ID);
-		initializeInitializationSchemaPreferences(node);
-		
-		// Cursors
-		node.put(PreferenceConstants.CURSOR_SELECTION_RULE, ICursorService.DEFAULT_RULE_ID);
-		
-		//Display Options
-		node.put(PreferenceConstants.PROP_WIDGET_CATEGORIZATION, CategorizationType.DRAWER.getId());
-		
-		node.putBoolean(PreferenceConstants.PROP_WRITE_ACCESS_DENIED, false);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void initializeDefaultPreferences() {
+        IEclipsePreferences node = new DefaultScope()
+                .getNode(SdsPlugin.PLUGIN_ID);
+        initializeInitializationSchemaPreferences(node);
+        
+        // Cursors
+        node.put(PreferenceConstants.CURSOR_SELECTION_RULE, ICursorService.DEFAULT_RULE_ID);
+        
+        //Display Options
+        node.put(PreferenceConstants.PROP_WIDGET_CATEGORIZATION, CategorizationType.DRAWER.getId());
+        
+        node.putBoolean(PreferenceConstants.PROP_WRITE_ACCESS_DENIED, false);
+    }
 
-	/**
-	 * Initializes all preference settings for the control system specific
-	 * initialization of widget models.
-	 * 
-	 * @param node
-	 *            the preferences node to use
-	 */
-	private void initializeInitializationSchemaPreferences(
-			final IEclipsePreferences node) {
-		node.put(WidgetInitializationService.PROP_SCHEMA, ManualSchema.ID);
-		node.putInt(PreferenceConstants.PROP_GRID_SPACING, 12);
-		node.putBoolean(PreferenceConstants.PROP_ANTIALIASING, false);
-	}
+    /**
+     * Initializes all preference settings for the control system specific
+     * initialization of widget models.
+     * 
+     * @param node
+     *            the preferences node to use
+     */
+    private void initializeInitializationSchemaPreferences(
+            final IEclipsePreferences node) {
+        node.put(WidgetInitializationService.PROP_SCHEMA, ManualSchema.ID);
+        node.putInt(PreferenceConstants.PROP_GRID_SPACING, 12);
+        node.putBoolean(PreferenceConstants.PROP_ANTIALIASING, false);
+    }
 
 }

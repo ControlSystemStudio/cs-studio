@@ -14,36 +14,36 @@ import org.epics.graphene.InterpolationScheme;
  * 
  */
 public class MultiAxisLineGraph2DConfigurationDialog
-		extends AbstractPointDatasetGraph2DConfigurationDialog<MultiAxisLineGraph2DWidget, MultiAxisLineGraph2DConfigurationPanel> {
+        extends AbstractPointDatasetGraph2DConfigurationDialog<MultiAxisLineGraph2DWidget, MultiAxisLineGraph2DConfigurationPanel> {
 
-	protected MultiAxisLineGraph2DConfigurationDialog(MultiAxisLineGraph2DWidget control,
-			String title) {
-		super(control, title);
-		addInitialValues("interpolation", getWidget().getInterpolation());
-		addInitialValues("separateAreas", getWidget().isSeparateAreas());
-	}
+    protected MultiAxisLineGraph2DConfigurationDialog(MultiAxisLineGraph2DWidget control,
+            String title) {
+        super(control, title);
+        addInitialValues("interpolation", getWidget().getInterpolation());
+        addInitialValues("separateAreas", getWidget().isSeparateAreas());
+    }
 
-	@Override
-	protected void onPropertyChange(PropertyChangeEvent evt) {
-		super.onPropertyChange(evt);
-		getWidget().setInterpolation(
-				getConfigurationComposite().getInterpolation());
-		getWidget().setSeparateAreas(
-				getConfigurationComposite().isSeparateAreas());
-	}
+    @Override
+    protected void onPropertyChange(PropertyChangeEvent evt) {
+        super.onPropertyChange(evt);
+        getWidget().setInterpolation(
+                getConfigurationComposite().getInterpolation());
+        getWidget().setSeparateAreas(
+                getConfigurationComposite().isSeparateAreas());
+    }
 
-	@Override
-	protected void populateInitialValues() {
-		super.populateInitialValues();
-		getConfigurationComposite().setInterpolation(
-				(InterpolationScheme) getInitialValues().get("interpolation"));
-		getConfigurationComposite().setSeparateAreas(
-				(Boolean) getInitialValues().get("separateAreas"));
-	}
+    @Override
+    protected void populateInitialValues() {
+        super.populateInitialValues();
+        getConfigurationComposite().setInterpolation(
+                (InterpolationScheme) getInitialValues().get("interpolation"));
+        getConfigurationComposite().setSeparateAreas(
+                (Boolean) getInitialValues().get("separateAreas"));
+    }
 
-	@Override
-	protected MultiAxisLineGraph2DConfigurationPanel createConfigurationComposite(
-			Shell shell) {
-		return new MultiAxisLineGraph2DConfigurationPanel(shell, SWT.DIALOG_TRIM);
-	}
+    @Override
+    protected MultiAxisLineGraph2DConfigurationPanel createConfigurationComposite(
+            Shell shell) {
+        return new MultiAxisLineGraph2DConfigurationPanel(shell, SWT.DIALOG_TRIM);
+    }
 }

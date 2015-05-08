@@ -19,46 +19,46 @@ import org.eclipse.swt.graphics.Image;
 * 
 */
 public class PropertiesLabelProvider extends LabelProvider implements
-				ITableLabelProvider {
+                ITableLabelProvider {
 
-			/**
-			 * {@inheritDoc}
-			 */
-			public Image getColumnImage(final Object element,
-					final int columnIndex) {
-				if (columnIndex == 1 && element instanceof AbstractWidgetProperty) {
-					AbstractWidgetProperty property = (AbstractWidgetProperty) element;
-					
-					if (property != null && property.isVisibleInPropSheet()) {
-						if (property.getPropertyDescriptor().getLabelProvider() != null) 
-							return property.getPropertyDescriptor().getLabelProvider().
-								getImage(property.getPropertyValue());
-					}
-				}
-				return null;
-			}
+            /**
+             * {@inheritDoc}
+             */
+            public Image getColumnImage(final Object element,
+                    final int columnIndex) {
+                if (columnIndex == 1 && element instanceof AbstractWidgetProperty) {
+                    AbstractWidgetProperty property = (AbstractWidgetProperty) element;
+                    
+                    if (property != null && property.isVisibleInPropSheet()) {
+                        if (property.getPropertyDescriptor().getLabelProvider() != null) 
+                            return property.getPropertyDescriptor().getLabelProvider().
+                                getImage(property.getPropertyValue());
+                    }
+                }
+                return null;
+            }
 
-			/**
-			 * {@inheritDoc}
-			 */
-			public String getColumnText(final Object element,
-					final int columnIndex) {
-				if (element instanceof AbstractWidgetProperty) {
-					AbstractWidgetProperty property = (AbstractWidgetProperty) element;
-					if (columnIndex == 0) {
-						return property.getDescription();
-					}
-					
-					if (property != null && property.isVisibleInPropSheet() && property.getPropertyDescriptor().getLabelProvider() != null) {
-						return property.getPropertyDescriptor().getLabelProvider().getText(
-								property.getPropertyValue());
-					}
-				}
-				if (element != null) {
-					return element.toString();
-				}
-				return "error";
-			}
-		
+            /**
+             * {@inheritDoc}
+             */
+            public String getColumnText(final Object element,
+                    final int columnIndex) {
+                if (element instanceof AbstractWidgetProperty) {
+                    AbstractWidgetProperty property = (AbstractWidgetProperty) element;
+                    if (columnIndex == 0) {
+                        return property.getDescription();
+                    }
+                    
+                    if (property != null && property.isVisibleInPropSheet() && property.getPropertyDescriptor().getLabelProvider() != null) {
+                        return property.getPropertyDescriptor().getLabelProvider().getText(
+                                property.getPropertyValue());
+                    }
+                }
+                if (element != null) {
+                    return element.toString();
+                }
+                return "error";
+            }
+        
 
 }

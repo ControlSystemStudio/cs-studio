@@ -10,39 +10,39 @@ import org.eclipse.gef.commands.Command;
  * 
  */
 public final class RemoveFolderCommand extends Command {
-	private IFolder folder;
-	private IFolder container;
-	private int index;
-	
+    private IFolder folder;
+    private IFolder container;
+    private int index;
+    
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param folder
-	 *            the folder which will contain the new prototype
-	 */
-	public RemoveFolderCommand(IFolder folder) {
-		assert folder != null;
-		this.folder = folder;
-		this.container = folder.getParentFolder();
-		this.index = container.getMembers().indexOf(folder);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param folder
+     *            the folder which will contain the new prototype
+     */
+    public RemoveFolderCommand(IFolder folder) {
+        assert folder != null;
+        this.folder = folder;
+        this.container = folder.getParentFolder();
+        this.index = container.getMembers().indexOf(folder);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void execute() {
-		container.removeMember(folder);
-		folder.setParentFolder(null);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void execute() {
+        container.removeMember(folder);
+        folder.setParentFolder(null);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void undo() {
-		container.addMember(Math.min(index, container.getMembers().size()), folder);
-		folder.setParentFolder(container);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void undo() {
+        container.addMember(Math.min(index, container.getMembers().size()), folder);
+        folder.setParentFolder(container);
+    }
 }

@@ -57,7 +57,7 @@ import com.cosylab.vdct.graphics.objects.VisibleObject;
  * Changing the search options does not affect a search in progress.
  */
 public class FindPanel extends JPanel
-	implements Runnable, FindProgressCallback {
+    implements Runnable, FindProgressCallback {
 
     /**
      * Label for this accessory.
@@ -226,7 +226,7 @@ public class FindPanel extends JPanel
 
     /**
      * Show selected (in result panel) object.
-     * @param selectedObject	object to show
+     * @param selectedObject    object to show
      */
     public void goTo(Object selectedObject)
     {
@@ -240,7 +240,7 @@ public class FindPanel extends JPanel
      * <b>killFind </b> to true. Also stops when number of search hits (matches)
      * equals <b>maxMatches </b>.
      *
-     * @param root	base group where to start search
+     * @param root    base group where to start search
      * @param filters
      *            matches must pass each filters in array
      * @exception InterruptedException
@@ -253,11 +253,11 @@ public class FindPanel extends JPanel
         if (base == null || filters == null || killFind)
             return;
 
-    	Enumeration e = base.getSubObjectsV().elements();
-    	while (e.hasMoreElements()) {
-    		Object obj = e.nextElement();
-    		if (obj instanceof Record)
-    		{
+        Enumeration e = base.getSubObjectsV().elements();
+        while (e.hasMoreElements()) {
+            Object obj = e.nextElement();
+            if (obj instanceof Record)
+            {
                 total++;
                 
                 if (accept(obj, filters))
@@ -265,21 +265,21 @@ public class FindPanel extends JPanel
                     matches++;
                     searchTabs.addMatch(obj);
                 }
-    		
+            
                 updateProgress();
                 if (killFind)
                     return;
                 Thread.yield();
-    		}
-    		
-    		
+            }
+            
+            
             // recursive
             if (obj instanceof Group) runFind((Group)obj, filters);
 
             if ((maxMatches > 0) && (matches >= maxMatches))
                 return; // stopgap measure so that we don't overload
-    		
-    	}
+            
+        }
     }
 
     /**
@@ -380,7 +380,7 @@ public class FindPanel extends JPanel
      */
     class FindAction extends AbstractAction
     {
-	    /**
+        /**
          * Construct a search control action currently implements
          * <code>FindAccesory.ACTION_START</code> and <code>FindPanel.ACTION_STOP</code>.
          *
@@ -662,15 +662,15 @@ public class FindPanel extends JPanel
             JMenuItem item = new JMenuItem("Select selection in workspace");
             item.addActionListener(new ActionListener()
                     {
-                		public void actionPerformed(ActionEvent e)
-                		{
-                		    Object[] selected = fileList.getSelectedValues();
-                		    for (int i = 0; i < selected.length; i++)
-                		        if (selected[i] instanceof VisibleObject)
-                		            ViewState.getInstance().setAsSelected((VisibleObject)selected[i]);
-                		    if (selected.length > 0)
-                		        DrawingSurface.getInstance().repaint();
-                		}
+                        public void actionPerformed(ActionEvent e)
+                        {
+                            Object[] selected = fileList.getSelectedValues();
+                            for (int i = 0; i < selected.length; i++)
+                                if (selected[i] instanceof VisibleObject)
+                                    ViewState.getInstance().setAsSelected((VisibleObject)selected[i]);
+                            if (selected.length > 0)
+                                DrawingSurface.getInstance().repaint();
+                        }
                     });
             menu.add(item);
             
@@ -678,8 +678,8 @@ public class FindPanel extends JPanel
             MouseListener mouseListener = new MouseAdapter() {
                 public void mouseClicked(MouseEvent e)
                 {
-        			boolean leftButtonPush = (e.getModifiers() & InputEvent.BUTTON1_MASK) != 0;
-        			boolean rightButtonPush = (e.getModifiers() & InputEvent.BUTTON3_MASK) != 0;
+                    boolean leftButtonPush = (e.getModifiers() & InputEvent.BUTTON1_MASK) != 0;
+                    boolean rightButtonPush = (e.getModifiers() & InputEvent.BUTTON3_MASK) != 0;
 
                     if (e.getClickCount() == 1 && rightButtonPush) {
                         if (fileList.getSelectedValues().length > 0)

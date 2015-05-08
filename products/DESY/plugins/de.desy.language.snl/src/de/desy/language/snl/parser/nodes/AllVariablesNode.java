@@ -7,22 +7,22 @@ package de.desy.language.snl.parser.nodes;
  */
 public class AllVariablesNode extends AbstractSNLNode {
 
-	public AllVariablesNode() {
-	}
+    public AllVariablesNode() {
+    }
 
-	@Override
-	public String humanReadableRepresentation() {
-		return "Variables";
-	}
+    @Override
+    public String humanReadableRepresentation() {
+        return "Variables";
+    }
 
-	@Override
-	public String getNodeTypeName() {
-		return "Variables";
-	}
+    @Override
+    public String getNodeTypeName() {
+        return "Variables";
+    }
 
-	@Override
-	protected String doGetSourceIdentifier() {
-		return "Variables";
-	}
+    @Override
+    protected String doGetSourceIdentifier() {
+        return "Variables";
+    }
 
 }

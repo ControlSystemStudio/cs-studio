@@ -47,281 +47,281 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 
     private static final Logger LOG = LoggerFactory.getLogger(ProcessVariableConnectionService.class);
 
-	private Map<ConnectorIdentification, AbstractConnector> _connectors;
+    private Map<ConnectorIdentification, AbstractConnector> _connectors;
 
-	private IConnectorFactory _connectorFactory;
+    private IConnectorFactory _connectorFactory;
 
-	/**
-	 * A cleanup thread which disposes unnecessary connections.
-	 */
-	private Thread _cleanupThread;
+    /**
+     * A cleanup thread which disposes unnecessary connections.
+     */
+    private Thread _cleanupThread;
 
-	/**
-	 * The singleton instance.
-	 */
-	private static IProcessVariableConnectionService _instance;
+    /**
+     * The singleton instance.
+     */
+    private static IProcessVariableConnectionService _instance;
 
-	/**
-	 * Constructor.
-	 */
-	public ProcessVariableConnectionService(IConnectorFactory connectorFactory) {
-		assert connectorFactory != null;
-		_connectors = new HashMap<ConnectorIdentification, AbstractConnector>();
-		_connectorFactory = connectorFactory;
-		_cleanupThread = new CleanupThread();
-		_cleanupThread.start();
-	}
+    /**
+     * Constructor.
+     */
+    public ProcessVariableConnectionService(IConnectorFactory connectorFactory) {
+        assert connectorFactory != null;
+        _connectors = new HashMap<ConnectorIdentification, AbstractConnector>();
+        _connectorFactory = connectorFactory;
+        _cleanupThread = new CleanupThread();
+        _cleanupThread.start();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public List<IConnector> getConnectors() {
-		List<IConnector> result = new ArrayList<IConnector>();
+    /**
+     * {@inheritDoc}
+     */
+    public List<IConnector> getConnectors() {
+        List<IConnector> result = new ArrayList<IConnector>();
 
-		result.addAll(_connectors.values());
-		return result;
+        result.addAll(_connectors.values());
+        return result;
 
-	}
+    }
 
-	public int getNumberOfActiveConnectors() {
-		int result = 0;
-		synchronized (_connectors) {
-			for (IConnector c : _connectors.values()) {
-				result += c != null ? 1 : 0;
-			}
-		}
+    public int getNumberOfActiveConnectors() {
+        int result = 0;
+        synchronized (_connectors) {
+            for (IConnector c : _connectors.values()) {
+                result += c != null ? 1 : 0;
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public <E> E readValueSynchronously(IProcessVariableAddress processVariableAddress, ValueType valueType) throws ConnectionException {
-		AbstractConnector connector = getConnector(processVariableAddress, valueType);
+    /**
+     * {@inheritDoc}
+     */
+    public <E> E readValueSynchronously(IProcessVariableAddress processVariableAddress, ValueType valueType) throws ConnectionException {
+        AbstractConnector connector = getConnector(processVariableAddress, valueType);
 
-		E value = null;
+        E value = null;
 
-		try {
-			if (processVariableAddress.isCharacteristic()) {
-				value = connector.getCharacteristicSynchronously(processVariableAddress.getCharacteristic(), valueType);
-			} else {
-				value = connector.getValueSynchronously();
-			}
-		} catch (Exception e) {
-			LOG.debug(e.toString());
-			throw new ConnectionException(e);
-		}
+        try {
+            if (processVariableAddress.isCharacteristic()) {
+                value = connector.getCharacteristicSynchronously(processVariableAddress.getCharacteristic(), valueType);
+            } else {
+                value = connector.getValueSynchronously();
+            }
+        } catch (Exception e) {
+            LOG.debug(e.toString());
+            throw new ConnectionException(e);
+        }
 
-		return value;
-	}
+        return value;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public void readValueAsynchronously(IProcessVariableAddress processVariableAddress, ValueType valueType,
-			IProcessVariableValueListener listener) {
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public void readValueAsynchronously(IProcessVariableAddress processVariableAddress, ValueType valueType,
+            IProcessVariableValueListener listener) {
 
-		AbstractConnector connector = getConnector(processVariableAddress, valueType);
+        AbstractConnector connector = getConnector(processVariableAddress, valueType);
 
-		if (processVariableAddress.isCharacteristic()) {
-			connector.getCharacteristicAsynchronously(processVariableAddress.getCharacteristic(), valueType, listener);
-		} else {
-			connector.getValueAsynchronously(listener);
-		}
-	}
+        if (processVariableAddress.isCharacteristic()) {
+            connector.getCharacteristicAsynchronously(processVariableAddress.getCharacteristic(), valueType, listener);
+        } else {
+            connector.getValueAsynchronously(listener);
+        }
+    }
 
-	public boolean writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType valueType)
-			throws ConnectionException {
-		AbstractConnector connector = getConnector(processVariableAddress, valueType);
-		boolean result = false;
+    public boolean writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType valueType)
+            throws ConnectionException {
+        AbstractConnector connector = getConnector(processVariableAddress, valueType);
+        boolean result = false;
 
-		try {
-			result = connector.setValueSynchronously(value);
-		} catch (Exception e) {
-			LOG.debug(e.toString());
-			throw new ConnectionException(e);
-		}
+        try {
+            result = connector.setValueSynchronously(value);
+        } catch (Exception e) {
+            LOG.debug(e.toString());
+            throw new ConnectionException(e);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	public void writeValueAsynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType valueType,
-			IProcessVariableWriteListener listener) {
-		AbstractConnector connector = getConnector(processVariableAddress, valueType);
-		connector.setValueAsynchronously(value, listener);
-	}
+    public void writeValueAsynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType valueType,
+            IProcessVariableWriteListener listener) {
+        AbstractConnector connector = getConnector(processVariableAddress, valueType);
+        connector.setValueAsynchronously(value, listener);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public void register(IProcessVariableValueListener listener, IProcessVariableAddress pv, ValueType valueType) {
-		AbstractConnector connector = getConnector(pv, valueType);
-		connector.addProcessVariableValueListener(pv.getCharacteristic(), listener);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public void register(IProcessVariableValueListener listener, IProcessVariableAddress pv, ValueType valueType) {
+        AbstractConnector connector = getConnector(pv, valueType);
+        connector.addProcessVariableValueListener(pv.getCharacteristic(), listener);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public void unregister(IProcessVariableValueListener listener) {
-		// we remove the listener from all connectors
-		synchronized (_connectors) {
-			for (AbstractConnector c : _connectors.values()) {
-				if (c.removeProcessVariableValueListener(listener)) {
-					LOG.debug("UNREGISTER '" + c.getName());
-				}
-			}
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public void unregister(IProcessVariableValueListener listener) {
+        // we remove the listener from all connectors
+        synchronized (_connectors) {
+            for (AbstractConnector c : _connectors.values()) {
+                if (c.removeProcessVariableValueListener(listener)) {
+                    LOG.debug("UNREGISTER '" + c.getName());
+                }
+            }
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public SettableState checkWriteAccessSynchronously(IProcessVariableAddress pv) {
-		AbstractConnector connector = getConnector(pv, pv.getValueTypeHint() != null ? pv.getValueTypeHint() : ValueType.DOUBLE);
+    /**
+     * {@inheritDoc}
+     */
+    public SettableState checkWriteAccessSynchronously(IProcessVariableAddress pv) {
+        AbstractConnector connector = getConnector(pv, pv.getValueTypeHint() != null ? pv.getValueTypeHint() : ValueType.DOUBLE);
 
-		return connector.isSettable();
-	}
+        return connector.isSettable();
+    }
 
-	/**
-	 * Returns a connector for the specified process variable and type. If a
-	 * connector exists already it is returned, otherwise a new connector will
-	 * be created.
-	 * 
-	 * @param pv
-	 *            the process variable
-	 * @param valueType
-	 *            the value type
-	 * @return the connector (it is ensured, that this is not null)
-	 */
-	private AbstractConnector getConnector(IProcessVariableAddress pv, ValueType valueType) {
-		AbstractConnector connector = null;
+    /**
+     * Returns a connector for the specified process variable and type. If a
+     * connector exists already it is returned, otherwise a new connector will
+     * be created.
+     * 
+     * @param pv
+     *            the process variable
+     * @param valueType
+     *            the value type
+     * @return the connector (it is ensured, that this is not null)
+     */
+    private AbstractConnector getConnector(IProcessVariableAddress pv, ValueType valueType) {
+        AbstractConnector connector = null;
 
-		// there is one connector for each pv-type-combination
-		ConnectorIdentification key = new ConnectorIdentification(pv, valueType);
+        // there is one connector for each pv-type-combination
+        ConnectorIdentification key = new ConnectorIdentification(pv, valueType);
 
-		// get a connector
-		synchronized (_connectors) {
+        // get a connector
+        synchronized (_connectors) {
 
-			connector = (AbstractConnector) _connectors.get(key);
+            connector = (AbstractConnector) _connectors.get(key);
 
-			// ... reuse existing connector a create a new one
-			if (connector == null) {
-				connector = _connectorFactory.createConnector(pv, valueType);
-				_connectors.put(key, connector);
-			}
+            // ... reuse existing connector a create a new one
+            if (connector == null) {
+                connector = _connectorFactory.createConnector(pv, valueType);
+                _connectors.put(key, connector);
+            }
 
-			connector.block();
-		}
+            connector.block();
+        }
 
-		assert connector != null;
+        assert connector != null;
 
-		connector.init();
+        connector.init();
 
-		return connector;
-	}
+        return connector;
+    }
 
-	/**
-	 * Injects a connector factory.
-	 * 
-	 * @param connectorFactory
-	 *            the connector factory
-	 */
-	public void setConnectorFactory(IConnectorFactory connectorFactory) {
-		_connectorFactory = connectorFactory;
-	}
+    /**
+     * Injects a connector factory.
+     * 
+     * @param connectorFactory
+     *            the connector factory
+     */
+    public void setConnectorFactory(IConnectorFactory connectorFactory) {
+        _connectorFactory = connectorFactory;
+    }
 
-	/**
-	 * Cleanup thread, which removes connectors that are not needed anymore.
-	 * 
-	 * @author swende
-	 * 
-	 */
-	final class CleanupThread extends Thread {
+    /**
+     * Cleanup thread, which removes connectors that are not needed anymore.
+     * 
+     * @author swende
+     * 
+     */
+    final class CleanupThread extends Thread {
 
-		private long _sleepTime;
+        private long _sleepTime;
 
-		/**
-		 * Flag that indicates if the thread should continue its execution.
-		 */
-		private boolean _running;
+        /**
+         * Flag that indicates if the thread should continue its execution.
+         */
+        private boolean _running;
 
-		/**
-		 * Standard constructor.
-		 */
-		CleanupThread() {
-			super("ProcessVariableConnectionService#CleanupThread");
-			// Have to be a daemon to be automatically stopped on a system
-			// shutdown.
-			this.setDaemon(true);
-			_running = true;
-			_sleepTime = 10000;
-		}
+        /**
+         * Standard constructor.
+         */
+        CleanupThread() {
+            super("ProcessVariableConnectionService#CleanupThread");
+            // Have to be a daemon to be automatically stopped on a system
+            // shutdown.
+            this.setDaemon(true);
+            _running = true;
+            _sleepTime = 10000;
+        }
 
-		/**
-		 * {@inheritDoc}.
-		 */
-		@Override
-		public void run() {
-			while (_running) {
+        /**
+         * {@inheritDoc}.
+         */
+        @Override
+        public void run() {
+            while (_running) {
 
-				try {
-					sleep(_sleepTime);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+                try {
+                    sleep(_sleepTime);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-				doCleanup();
-				yield();
-			}
-		}
+                doCleanup();
+                yield();
+            }
+        }
 
-		/**
-		 * Stops the execution of this BundelingThread.
-		 */
-		public void stopExecution() {
-			_running = false;
-		}
+        /**
+         * Stops the execution of this BundelingThread.
+         */
+        public void stopExecution() {
+            _running = false;
+        }
 
-		/**
-		 * Performs the cleanup.
-		 */
-		private void doCleanup() {
-			List<AbstractConnector> deletedConnectors = new ArrayList<AbstractConnector>();
+        /**
+         * Performs the cleanup.
+         */
+        private void doCleanup() {
+            List<AbstractConnector> deletedConnectors = new ArrayList<AbstractConnector>();
 
-			synchronized (_connectors) {
-				List<ConnectorIdentification> deleteCandidates = new ArrayList<ConnectorIdentification>();
-				Iterator<ConnectorIdentification> it = _connectors.keySet().iterator();
+            synchronized (_connectors) {
+                List<ConnectorIdentification> deleteCandidates = new ArrayList<ConnectorIdentification>();
+                Iterator<ConnectorIdentification> it = _connectors.keySet().iterator();
 
-				while (it.hasNext()) {
-					ConnectorIdentification key = it.next();
-					AbstractConnector connector = _connectors.get(key);
+                while (it.hasNext()) {
+                    ConnectorIdentification key = it.next();
+                    AbstractConnector connector = _connectors.get(key);
 
-					// perform cleanup
-					connector.cleanupWeakReferences();
-					
-					// dispose if possible 
-					if (connector.isDisposable()) {
-						deleteCandidates.add(key);
-					}
-				}
+                    // perform cleanup
+                    connector.cleanupWeakReferences();
+                    
+                    // dispose if possible 
+                    if (connector.isDisposable()) {
+                        deleteCandidates.add(key);
+                    }
+                }
 
-				for (ConnectorIdentification key : deleteCandidates) {
-					AbstractConnector connector = _connectors.remove(key);
-					deletedConnectors.add(connector);
-				}
-			}
+                for (ConnectorIdentification key : deleteCandidates) {
+                    AbstractConnector connector = _connectors.remove(key);
+                    deletedConnectors.add(connector);
+                }
+            }
 
-			// important: dispose the connectors outside the synchronized block
-			for (AbstractConnector connector : deletedConnectors) {
-				connector.dispose();
-			}
+            // important: dispose the connectors outside the synchronized block
+            for (AbstractConnector connector : deletedConnectors) {
+                connector.dispose();
+            }
 
-			LOG.debug("Cleanup-Thread: " + deletedConnectors.size() + " connectors disposed!");
-		}
-	}
+            LOG.debug("Cleanup-Thread: " + deletedConnectors.size() + " connectors disposed!");
+        }
+    }
 
 }

@@ -28,27 +28,27 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 public class ProcessVariableAdressAdapterFactory implements IAdapterFactory {
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object getAdapter(final Object adaptableObject,
-			final Class adapterType) {
-		assert adaptableObject != null;
-		assert adapterType != null;
-		assert adaptableObject instanceof IProcessVariableAddress;
+    /**
+     * {@inheritDoc}
+     */
+    public Object getAdapter(final Object adaptableObject,
+            final Class adapterType) {
+        assert adaptableObject != null;
+        assert adapterType != null;
+        assert adaptableObject instanceof IProcessVariableAddress;
 
-		Object result = null;
+        Object result = null;
 
-		if (adapterType == IWorkbenchAdapter.class) {
-			result = new ProcessVariableAdressWorkbenchAdapter();
-		}
+        if (adapterType == IWorkbenchAdapter.class) {
+            result = new ProcessVariableAdressWorkbenchAdapter();
+        }
 
-		return result;
-	}
+        return result;
+    }
 
 
-	public Class[] getAdapterList() {
-		return new Class[] { IWorkbenchAdapter.class };
-	}
+    public Class[] getAdapterList() {
+        return new Class[] { IWorkbenchAdapter.class };
+    }
 
 }

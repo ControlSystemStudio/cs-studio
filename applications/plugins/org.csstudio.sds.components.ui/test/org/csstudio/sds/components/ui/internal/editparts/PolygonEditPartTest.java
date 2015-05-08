@@ -37,27 +37,27 @@ import org.junit.Test;
  */
 public final class PolygonEditPartTest {
 
-	/**
-	 * The instance to test.
-	 */
-	private PolygonEditPart _editPart;
+    /**
+     * The instance to test.
+     */
+    private PolygonEditPart _editPart;
 
-	/**
-	 * Test set up.
-	 */
-	@Before
-	public void setUp() {
-		_editPart = new PolygonEditPart();
-		_editPart.setModel(new PolygonModel());
-	}
+    /**
+     * Test set up.
+     */
+    @Before
+    public void setUp() {
+        _editPart = new PolygonEditPart();
+        _editPart.setModel(new PolygonModel());
+    }
 
-	/**
-	 * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.PolygonEditPart#doCreateFigure()}.
-	 */
-	@Test
-	public void testCreateFigure() {
-		IFigure figure = _editPart.doCreateFigure();
-		assertTrue(figure instanceof RefreshablePolygonFigure);
-	}
+    /**
+     * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.PolygonEditPart#doCreateFigure()}.
+     */
+    @Test
+    public void testCreateFigure() {
+        IFigure figure = _editPart.doCreateFigure();
+        assertTrue(figure instanceof RefreshablePolygonFigure);
+    }
 
 }

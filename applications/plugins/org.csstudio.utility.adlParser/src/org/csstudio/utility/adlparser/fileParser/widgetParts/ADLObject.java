@@ -41,7 +41,7 @@ import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
  * @since 04.09.2007
  */
 public class ADLObject extends WidgetPart{
-	//TODO Strip out old code lines that refer to SDS implementations
+    //TODO Strip out old code lines that refer to SDS implementations
 
     /** The x-coordinate of the Object.*/
     private int _x;
@@ -192,12 +192,12 @@ public class ADLObject extends WidgetPart{
      * @return child objects
      */
     public Object[] getChildren(){
-    	Object[] ret = new Object[4];
-    	ret[0] = new ADLResource(ADLResource.X, new Integer(_x));
-    	ret[1] = new ADLResource(ADLResource.Y, new Integer(_y));
-    	ret[2] = new ADLResource(ADLResource.WIDTH, new Integer(_width));
-    	ret[3] = new ADLResource(ADLResource.HEIGHT, new Integer(_height));
+        Object[] ret = new Object[4];
+        ret[0] = new ADLResource(ADLResource.X, new Integer(_x));
+        ret[1] = new ADLResource(ADLResource.Y, new Integer(_y));
+        ret[2] = new ADLResource(ADLResource.WIDTH, new Integer(_width));
+        ret[3] = new ADLResource(ADLResource.HEIGHT, new Integer(_height));
 
-    	return ret;
+        return ret;
     }
 }

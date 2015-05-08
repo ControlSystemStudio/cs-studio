@@ -41,21 +41,21 @@ import org.eclipse.swt.widgets.Text;
  * @author Joerg Rathlev
  */
 class SystemPropertyDialog extends Dialog {
-	
-	/**
-	 * The key.
-	 */
-	private String _key = ""; //$NON-NLS-1$
-	
-	/**
-	 * The value.
-	 */
-	private String _value = ""; //$NON-NLS-1$
+    
+    /**
+     * The key.
+     */
+    private String _key = ""; //$NON-NLS-1$
+    
+    /**
+     * The value.
+     */
+    private String _value = ""; //$NON-NLS-1$
 
-	/**
-	 * Creates a new dialog.
-	 * @param parentShell the parent shell.
-	 */
+    /**
+     * Creates a new dialog.
+     * @param parentShell the parent shell.
+     */
     protected SystemPropertyDialog(final Shell parentShell) {
         super(parentShell);
     }
@@ -95,15 +95,15 @@ class SystemPropertyDialog extends Dialog {
         keyText.setLayoutData(layoutData);
         keyText.setText(_key);
         keyText.addModifyListener(new ModifyListener() {
-        	public void modifyText(final ModifyEvent e) {
-        		if (e.widget == keyText) {
-        			_key = keyText.getText();
-        			// enable the OK button if the "key" field contains not
-        			// just whitespace
-        			getButton(IDialogConstants.OK_ID).setEnabled(
-        					!_key.trim().equals("")); //$NON-NLS-1$
-        		}
-        	}
+            public void modifyText(final ModifyEvent e) {
+                if (e.widget == keyText) {
+                    _key = keyText.getText();
+                    // enable the OK button if the "key" field contains not
+                    // just whitespace
+                    getButton(IDialogConstants.OK_ID).setEnabled(
+                            !_key.trim().equals("")); //$NON-NLS-1$
+                }
+            }
         });
         
         Label valueLabel = new Label(contents, SWT.NULL);
@@ -112,11 +112,11 @@ class SystemPropertyDialog extends Dialog {
         valueText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
         valueText.setText(_value);
         valueText.addModifyListener(new ModifyListener() {
-        	public void modifyText(final ModifyEvent e) {
-        		if (e.widget == valueText) {
-        			_value = valueText.getText();
-        		}
-        	}
+            public void modifyText(final ModifyEvent e) {
+                if (e.widget == valueText) {
+                    _value = valueText.getText();
+                }
+            }
         });
 
         return contents;
@@ -129,21 +129,21 @@ class SystemPropertyDialog extends Dialog {
      */
     @Override
     protected void createButtonsForButtonBar(final Composite parent) {
-    	super.createButtonsForButtonBar(parent);
-    	getButton(IDialogConstants.OK_ID).setEnabled(false);
+        super.createButtonsForButtonBar(parent);
+        getButton(IDialogConstants.OK_ID).setEnabled(false);
     }
 
-	/**
-	 * @return the key.
-	 */
-	String getKey() {
-		return _key;
-	}
+    /**
+     * @return the key.
+     */
+    String getKey() {
+        return _key;
+    }
 
-	/**
-	 * @return the value.
-	 */
-	String getValue() {
-		return _value;
-	}
+    /**
+     * @return the value.
+     */
+    String getValue() {
+        return _value;
+    }
 }

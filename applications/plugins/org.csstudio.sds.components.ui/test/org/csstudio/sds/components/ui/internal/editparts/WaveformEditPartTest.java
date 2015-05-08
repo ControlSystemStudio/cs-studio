@@ -35,28 +35,28 @@ import org.junit.Test;
  */
 public final class WaveformEditPartTest {
 
-	/**
-	 * The instance to test.
-	 */
-	private WaveformEditPart _editPart;
+    /**
+     * The instance to test.
+     */
+    private WaveformEditPart _editPart;
 
-	/**
-	 * Test set up.
-	 */
-	@Before
-	public void setUp() {
-		_editPart = new WaveformEditPart();
-		_editPart.setModel(new WaveformModel());
-	}
+    /**
+     * Test set up.
+     */
+    @Before
+    public void setUp() {
+        _editPart = new WaveformEditPart();
+        _editPart.setModel(new WaveformModel());
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.components.ui.internal.editparts.WaveformEditPart#doCreateFigure()}.
-	 */
-	@Test
-	public void testCreateFigure() {
-		IFigure figure = _editPart.doCreateFigure();
-		assertTrue(figure instanceof WaveformFigure);
-	}
+    /**
+     * Test method for
+     * {@link org.csstudio.sds.components.ui.internal.editparts.WaveformEditPart#doCreateFigure()}.
+     */
+    @Test
+    public void testCreateFigure() {
+        IFigure figure = _editPart.doCreateFigure();
+        assertTrue(figure instanceof WaveformFigure);
+    }
 
 }

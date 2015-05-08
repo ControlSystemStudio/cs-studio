@@ -38,21 +38,21 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
  */
 public final class RectangleInitializer extends AbstractEpicsWidgetInitializer {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void initialize(final AbstractControlSystemSchema schema) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void initialize(final AbstractControlSystemSchema schema) {
 
-		initializeCommonConnectionStates();
-		initializeDynamicProperty(EllipseModel.PROP_FILL, "$channel$", null,
-				DirectConnectionRule.TYPE_ID);
-		Map<ConnectionState, Object> valueByConnectionState = new HashMap<ConnectionState, Object>();
-		valueByConnectionState.put(ConnectionState.CONNECTION_LOST,
-				0);
-		valueByConnectionState.put(ConnectionState.INITIAL, 0);
-		initializeDynamicPropertyForConnectionState(EllipseModel.PROP_FILL,
-				"$channel$", valueByConnectionState,
-				DirectConnectionRule.TYPE_ID);
-	}
+        initializeCommonConnectionStates();
+        initializeDynamicProperty(EllipseModel.PROP_FILL, "$channel$", null,
+                DirectConnectionRule.TYPE_ID);
+        Map<ConnectionState, Object> valueByConnectionState = new HashMap<ConnectionState, Object>();
+        valueByConnectionState.put(ConnectionState.CONNECTION_LOST,
+                0);
+        valueByConnectionState.put(ConnectionState.INITIAL, 0);
+        initializeDynamicPropertyForConnectionState(EllipseModel.PROP_FILL,
+                "$channel$", valueByConnectionState,
+                DirectConnectionRule.TYPE_ID);
+    }
 }

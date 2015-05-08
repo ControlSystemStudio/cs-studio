@@ -19,34 +19,34 @@ import org.eclipse.swt.graphics.RGB;
  */
 public class Valuator2Model extends AbstractADL2Model {
 
-	public Valuator2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
-		super(adlWidget, colorMap, parentModel);
-	}
+    public Valuator2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
+        super(adlWidget, colorMap, parentModel);
+    }
 
-	@Override
-	public void processWidget(ADLWidget adlWidget) {
-		className = "Valuator2Model";
-		Valuator valuatorWidget = new Valuator(adlWidget);
-		if (valuatorWidget != null) {
-			setADLObjectProps(valuatorWidget, widgetModel);
-			setADLControlProps(valuatorWidget, widgetModel);
-		}
-		//TODO Add PV Limits to Valuator2Model
-		TranslatorUtils.printNotHandledWarning(className, "Limits");
-		//TODO Add Label info to Valuator2Model
-		TranslatorUtils.printNotHandledWarning(className, "Label");
-		//TODO Add Direction to Valuator2Model
-		TranslatorUtils.printNotHandledWarning(className, "Direction");
-		//TODO Add ColorMode to Valuator2Model
-		TranslatorUtils.printNotHandledWarning(className, "Color Mode");
-		//TODO Add Increment to Valuator2Model
-		TranslatorUtils.printNotHandledWarning(className, "Increment");
-	}
+    @Override
+    public void processWidget(ADLWidget adlWidget) {
+        className = "Valuator2Model";
+        Valuator valuatorWidget = new Valuator(adlWidget);
+        if (valuatorWidget != null) {
+            setADLObjectProps(valuatorWidget, widgetModel);
+            setADLControlProps(valuatorWidget, widgetModel);
+        }
+        //TODO Add PV Limits to Valuator2Model
+        TranslatorUtils.printNotHandledWarning(className, "Limits");
+        //TODO Add Label info to Valuator2Model
+        TranslatorUtils.printNotHandledWarning(className, "Label");
+        //TODO Add Direction to Valuator2Model
+        TranslatorUtils.printNotHandledWarning(className, "Direction");
+        //TODO Add ColorMode to Valuator2Model
+        TranslatorUtils.printNotHandledWarning(className, "Color Mode");
+        //TODO Add Increment to Valuator2Model
+        TranslatorUtils.printNotHandledWarning(className, "Increment");
+    }
 
-	@Override
-	public void makeModel(ADLWidget adlWidget,
-			AbstractContainerModel parentModel) {
-		widgetModel = new ScaledSliderModel();
-		parentModel.addChild(widgetModel, true);
-	}
+    @Override
+    public void makeModel(ADLWidget adlWidget,
+            AbstractContainerModel parentModel) {
+        widgetModel = new ScaledSliderModel();
+        parentModel.addChild(widgetModel, true);
+    }
 }

@@ -8,33 +8,33 @@ import de.desy.language.snl.parser.nodes.StateSetNode;
  */
 public class StateSetModel extends SNLModel {
 
-	private static final long serialVersionUID = 1;
-	private StateSetNode _stateSetNode;
+    private static final long serialVersionUID = 1;
+    private StateSetNode _stateSetNode;
 
-	public String getIconName() {
-		return "rectangle16.gif";
-	}
+    public String getIconName() {
+        return "rectangle16.gif";
+    }
 
-	public String toString() {
-		return "StateSet '" + _stateSetNode.getSourceIdentifier() + "'";
-	}
+    public String toString() {
+        return "StateSet '" + _stateSetNode.getSourceIdentifier() + "'";
+    }
 
-	@Override
-	public String getIdentifier() {
-		return _stateSetNode.getSourceIdentifier();
-	}
-	
-	public void setStateSetNode(StateSetNode node) {
-		_stateSetNode = node;
-	}
-	
-	public StateSetNode getStateSetNode() {
-		return _stateSetNode;
-	}
+    @Override
+    public String getIdentifier() {
+        return _stateSetNode.getSourceIdentifier();
+    }
+    
+    public void setStateSetNode(StateSetNode node) {
+        _stateSetNode = node;
+    }
+    
+    public StateSetNode getStateSetNode() {
+        return _stateSetNode;
+    }
 
-	@Override
-	protected boolean canHaveChildren() {
-		return true;
-	}
-	
+    @Override
+    protected boolean canHaveChildren() {
+        return true;
+    }
+    
 }

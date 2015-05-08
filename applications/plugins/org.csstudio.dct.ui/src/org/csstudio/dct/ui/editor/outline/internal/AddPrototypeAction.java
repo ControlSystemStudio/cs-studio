@@ -22,34 +22,34 @@ import org.eclipse.swt.widgets.Display;
  */
 public final class AddPrototypeAction extends AbstractOutlineAction {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Command createCommand(List<IElement> selection) {
-		assert selection != null;
-		assert selection.size() == 1;
-		assert selection.get(0) instanceof IFolder;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Command createCommand(List<IElement> selection) {
+        assert selection != null;
+        assert selection.size() == 1;
+        assert selection.get(0) instanceof IFolder;
 
-		CompoundCommand result = null;
+        CompoundCommand result = null;
 
-		InputDialog dialog = new InputDialog(Display.getCurrent().getActiveShell(), "Prototype Name",
-				"Please enter a name for the new prototype:", "New Prototype", new IInputValidator() {
-					public String isValid(String newText) {
-						if (newText == null || newText.trim().length() <= 0) {
-							return "Please enter a valid name";
-						}
-						return null;
-					}
-				});
+        InputDialog dialog = new InputDialog(Display.getCurrent().getActiveShell(), "Prototype Name",
+                "Please enter a name for the new prototype:", "New Prototype", new IInputValidator() {
+                    public String isValid(String newText) {
+                        if (newText == null || newText.trim().length() <= 0) {
+                            return "Please enter a valid name";
+                        }
+                        return null;
+                    }
+                });
 
-		if (dialog.open() == Dialog.OK) {
-			result = new CompoundCommand();
-			Prototype prototype = new Prototype(dialog.getValue(), UUID.randomUUID());
-			result.add(new AddPrototypeCommand((IFolder) selection.get(0), prototype));
-			result.add(new SelectInOutlineCommand(getOutlineView(), prototype));
-		}
+        if (dialog.open() == Dialog.OK) {
+            result = new CompoundCommand();
+            Prototype prototype = new Prototype(dialog.getValue(), UUID.randomUUID());
+            result.add(new AddPrototypeCommand((IFolder) selection.get(0), prototype));
+            result.add(new SelectInOutlineCommand(getOutlineView(), prototype));
+        }
 
-		return result;
-	}
+        return result;
+    }
 }

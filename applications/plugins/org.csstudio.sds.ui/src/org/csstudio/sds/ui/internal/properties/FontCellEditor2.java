@@ -50,81 +50,81 @@ import org.eclipse.swt.widgets.Shell;
  * @author Kay Kasemir, Kai Meyer
  */
 public final class FontCellEditor2 extends CellEditor {
-	/**
-	 * A shell.
-	 */
-	private Shell _shell;
+    /**
+     * A shell.
+     */
+    private Shell _shell;
 
-	/**
-	 * The current RGB value.
-	 */
-	private String _value;
+    /**
+     * The current RGB value.
+     */
+    private String _value;
 
-	/**
-	 * Creates a new font cell editor parented under the given control. The cell
-	 * editor value is an SWT Font value.
-	 * 
-	 * @param parent
-	 *            The parent table.
-	 */
-	public FontCellEditor2(final Composite parent) {
-		super(parent, SWT.NONE);
-		_shell = parent.getShell();
-	}
+    /**
+     * Creates a new font cell editor parented under the given control. The cell
+     * editor value is an SWT Font value.
+     * 
+     * @param parent
+     *            The parent table.
+     */
+    public FontCellEditor2(final Composite parent) {
+        super(parent, SWT.NONE);
+        _shell = parent.getShell();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void activate() {
-		FontDialog dialog = new FontDialog(_shell);
-		if (_value != null) {
-			Font font = SdsUiPlugin.getDefault().getColorAndFontService().getFont(_value);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void activate() {
+        FontDialog dialog = new FontDialog(_shell);
+        if (_value != null) {
+            Font font = SdsUiPlugin.getDefault().getColorAndFontService().getFont(_value);
 
-			if (font != null) {
-				dialog.setFontList(new FontData[] { font.getFontData()[0] });
-			}
-		}
-		FontData fd = dialog.open();
+            if (font != null) {
+                dialog.setFontList(new FontData[] { font.getFontData()[0] });
+            }
+        }
+        FontData fd = dialog.open();
 
-		_value = ColorAndFontUtil.toFontString(fd.getName(), fd.getHeight(), SWT.BOLD == (fd.getStyle() & SWT.BOLD),
-				SWT.ITALIC == (fd.getStyle() & SWT.ITALIC));
+        _value = ColorAndFontUtil.toFontString(fd.getName(), fd.getHeight(), SWT.BOLD == (fd.getStyle() & SWT.BOLD),
+                SWT.ITALIC == (fd.getStyle() & SWT.ITALIC));
 
-		if (_value != null) {
-			fireApplyEditorValue();
-		}
-	}
+        if (_value != null) {
+            fireApplyEditorValue();
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Control createControl(final Composite parent) {
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Control createControl(final Composite parent) {
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Object doGetValue() {
-		return _value;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Object doGetValue() {
+        return _value;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doSetFocus() {
-		// Ignore
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doSetFocus() {
+        // Ignore
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doSetValue(final Object value) {
-		Assert.isTrue(value instanceof String);
-		this._value = (String) value;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doSetValue(final Object value) {
+        Assert.isTrue(value instanceof String);
+        this._value = (String) value;
+    }
 }

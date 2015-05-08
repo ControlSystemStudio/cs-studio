@@ -34,74 +34,74 @@ import org.eclipse.core.runtime.IPath;
  * 
  */
 public final class ResourceProperty extends WidgetProperty {
-	
-	/**
-	 * The file extension, which should be accepted.
-	 */
-	private String[] _fileExtensions;
+    
+    /**
+     * The file extension, which should be accepted.
+     */
+    private String[] _fileExtensions;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param description
-	 *            a description
-	 * @param category
-	 *            a category
-	 * @param defaultValue
-	 *            the default value
-	 * @param fileExtensions
-	 * 			  the accepted file extensions
-	 */
-	public ResourceProperty(final String description,
-			final WidgetPropertyCategory category, final IPath defaultValue,
-			final String[] fileExtensions) {
-		super(PropertyTypesEnum.RESOURCE, description, category, defaultValue,
-				null);
-		_fileExtensions = fileExtensions;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object checkValue(final Object value) {
-		assert value != null : "value!=null"; //$NON-NLS-1$
+    /**
+     * Constructor.
+     * 
+     * @param description
+     *            a description
+     * @param category
+     *            a category
+     * @param defaultValue
+     *            the default value
+     * @param fileExtensions
+     *               the accepted file extensions
+     */
+    public ResourceProperty(final String description,
+            final WidgetPropertyCategory category, final IPath defaultValue,
+            final String[] fileExtensions) {
+        super(PropertyTypesEnum.RESOURCE, description, category, defaultValue,
+                null);
+        _fileExtensions = fileExtensions;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object checkValue(final Object value) {
+        assert value != null : "value!=null"; //$NON-NLS-1$
 
-		Object acceptedValue = null;
+        Object acceptedValue = null;
 
-		if (value instanceof IPath) {
-			IPath path = (IPath) value;
-			if (_fileExtensions!=null && _fileExtensions.length>0) {
-				for (String extension : _fileExtensions) {
-					if (extension.equalsIgnoreCase(path.getFileExtension())) {
-						acceptedValue = value; 
-					}
-				}
-			} else {
-				acceptedValue = value;
-			}
-			if (path.isEmpty()) {
-				acceptedValue = value;
-			}
-		}
-		
-		return acceptedValue;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getCompatibleJavaTypes() {
-		return new Class[]{IPath.class};
-	}
-	
-	/**
-	 * Returns the accepted file extensions.
-	 * @return String[]
-	 * 			the accepted file extensions
-	 */
-	public String[] getFileExtensions() {
-		return _fileExtensions;
-	}
+        if (value instanceof IPath) {
+            IPath path = (IPath) value;
+            if (_fileExtensions!=null && _fileExtensions.length>0) {
+                for (String extension : _fileExtensions) {
+                    if (extension.equalsIgnoreCase(path.getFileExtension())) {
+                        acceptedValue = value; 
+                    }
+                }
+            } else {
+                acceptedValue = value;
+            }
+            if (path.isEmpty()) {
+                acceptedValue = value;
+            }
+        }
+        
+        return acceptedValue;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getCompatibleJavaTypes() {
+        return new Class[]{IPath.class};
+    }
+    
+    /**
+     * Returns the accepted file extensions.
+     * @return String[]
+     *             the accepted file extensions
+     */
+    public String[] getFileExtensions() {
+        return _fileExtensions;
+    }
 }

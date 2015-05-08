@@ -16,12 +16,12 @@ import org.eclipse.swt.widgets.Shell;
  */
 public abstract class RowEditDialog extends Dialog {
 
-	private static final long serialVersionUID = 4588630288423871309L;
-	protected String[] rowData;
+    private static final long serialVersionUID = 4588630288423871309L;
+    protected String[] rowData;
 
-	/** Initialize Dialog */
-	protected RowEditDialog(final Shell parentShell) {
-    	super(parentShell);
+    /** Initialize Dialog */
+    protected RowEditDialog(final Shell parentShell) {
+        super(parentShell);
     }
 
     @Override
@@ -36,17 +36,17 @@ public abstract class RowEditDialog extends Dialog {
     }
 
     /**Set the rowData which will be initially displayed in the Edit Dialog.
-	 * It must be called prior to open().
-	 * @param rowData the rowData to set
-	 */
-	public void setRowData(final String[] rowData) {
-		this.rowData = rowData;
-	}
+     * It must be called prior to open().
+     * @param rowData the rowData to set
+     */
+    public void setRowData(final String[] rowData) {
+        this.rowData = rowData;
+    }
 
-	/**
-	 * @return the rowData
-	 */
-	public String[] getRowData() {
-		return rowData;
-	}
+    /**
+     * @return the rowData
+     */
+    public String[] getRowData() {
+        return rowData;
+    }
 }

@@ -37,9 +37,9 @@ import org.w3c.dom.Element;
  */
 public class OpiWidget {
 
-	protected Element widget;
-	
-	public OpiWidget(String typeId, Document document, Element parentEl) {
-		super();
-	}
+    protected Element widget;
+    
+    public OpiWidget(String typeId, Document document, Element parentEl) {
+        super();
+    }
 }

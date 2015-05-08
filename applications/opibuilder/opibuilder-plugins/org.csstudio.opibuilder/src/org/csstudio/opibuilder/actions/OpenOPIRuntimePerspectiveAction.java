@@ -20,21 +20,21 @@ import org.eclipse.ui.PlatformUI;
  */
 public class OpenOPIRuntimePerspectiveAction implements IObjectActionDelegate {
 
-	private IWorkbenchWindow window;
+    private IWorkbenchWindow window;
 
-	@Override
+    @Override
     public void run(IAction action) {
-		if(window == null)
-			window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		PerspectiveHelper.showPerspectiveOrPromptForReset(OPIRunnerPerspective.ID, window);
-	}
+        if(window == null)
+            window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        PerspectiveHelper.showPerspectiveOrPromptForReset(OPIRunnerPerspective.ID, window);
+    }
 
-	@Override
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
-	}
+    }
 
-	@Override
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		window=targetPart.getSite().getWorkbenchWindow();
-	}
+    @Override
+    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+        window=targetPart.getSite().getWorkbenchWindow();
+    }
 }

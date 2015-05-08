@@ -32,49 +32,49 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator extends AbstractUIPlugin {
 
-	// The plug-in ID
-	private static final String PLUGIN_ID = "org.csstudio.utility.nameSpaceBrowser"; //$NON-NLS-1$
+    // The plug-in ID
+    private static final String PLUGIN_ID = "org.csstudio.utility.nameSpaceBrowser"; //$NON-NLS-1$
 
-	// The shared instance
-	public static Activator plugin;
+    // The shared instance
+    public static Activator plugin;
 
-	/**
-	 * The constructor
-	 */
-	public Activator() {
-		plugin = this;
-	}
+    /**
+     * The constructor
+     */
+    public Activator() {
+        plugin = this;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+     */
+    @Override
     public void start(final BundleContext context) throws Exception {
-		super.start(context);
-	}
+        super.start(context);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+     */
+    @Override
     public void stop(final BundleContext context) throws Exception {
-		super.stop(context);
-		plugin = null;
-	}
+        super.stop(context);
+        plugin = null;
+    }
 
-	/**
-	 * Returns the shared instance
-	 *
-	 * @return the shared instance
-	 */
-	public static Activator getDefault() {
-		return plugin;
-	}
+    /**
+     * Returns the shared instance
+     *
+     * @return the shared instance
+     */
+    public static Activator getDefault() {
+        return plugin;
+    }
 
 
-	/** Add informational message to the plugin log. */
+    /** Add informational message to the plugin log. */
     public static void logInfo(final String message)
     {
         getDefault().log(IStatus.INFO, message, null);

@@ -33,93 +33,93 @@ import org.jdom.Element;
  */
 public final class FontPropertyPersistenceHandler extends AbstractPropertyPersistenceHandler {
 
-	private static int ITALIC = 1 << 1;
-	private static int BOLD = 1 << 0;
+    private static int ITALIC = 1 << 1;
+    private static int BOLD = 1 << 0;
 
-	/**
-	 * XML attribute name <code>font</code>.
-	 */
-	public static final String XML_ELEMENT_FONT = "font"; //$NON-NLS-1$
+    /**
+     * XML attribute name <code>font</code>.
+     */
+    public static final String XML_ELEMENT_FONT = "font"; //$NON-NLS-1$
 
-	/**
-	 * XML attribute name <code>fontName</code>.
-	 */
-	public static final String XML_ATTRIBUTE_FONT = "font"; //$NON-NLS-1$
+    /**
+     * XML attribute name <code>fontName</code>.
+     */
+    public static final String XML_ATTRIBUTE_FONT = "font"; //$NON-NLS-1$
 
-	/**
-	 * XML attribute name <code>fontName</code>.
-	 */
-	@Deprecated
-	public static final String XML_ATTRIBUTE_FONT_NAME = "fontName"; //$NON-NLS-1$
+    /**
+     * XML attribute name <code>fontName</code>.
+     */
+    @Deprecated
+    public static final String XML_ATTRIBUTE_FONT_NAME = "fontName"; //$NON-NLS-1$
 
-	/**
-	 * XML attribute name <code>fontName</code>.
-	 */
-	@Deprecated
-	public static final String XML_ATTRIBUTE_FONT_HEIGHT = "height"; //$NON-NLS-1$
+    /**
+     * XML attribute name <code>fontName</code>.
+     */
+    @Deprecated
+    public static final String XML_ATTRIBUTE_FONT_HEIGHT = "height"; //$NON-NLS-1$
 
-	/**
-	 * XML attribute name <code>fontName</code>.
-	 */
-	@Deprecated
-	public static final String XML_ATTRIBUTE_FONT_STYLE = "style"; //$NON-NLS-1$
+    /**
+     * XML attribute name <code>fontName</code>.
+     */
+    @Deprecated
+    public static final String XML_ATTRIBUTE_FONT_STYLE = "style"; //$NON-NLS-1$
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void writeProperty(final Element domElement, final Object propertyValue) {
-		Element fontElement = new Element(XML_ELEMENT_FONT);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeProperty(final Element domElement, final Object propertyValue) {
+        Element fontElement = new Element(XML_ELEMENT_FONT);
 
-		String font = (String) propertyValue;
-		fontElement.setAttribute(XML_ATTRIBUTE_FONT, font);
-		domElement.addContent(fontElement);
-	}
+        String font = (String) propertyValue;
+        fontElement.setAttribute(XML_ATTRIBUTE_FONT, font);
+        domElement.addContent(fontElement);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object readProperty(final Element domElement) {
-		Element fontElement = domElement.getChild(XML_ELEMENT_FONT);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object readProperty(final Element domElement) {
+        Element fontElement = domElement.getChild(XML_ELEMENT_FONT);
 
-		// .. try to get the composite font string
-		String font = fontElement.getAttributeValue(XML_ATTRIBUTE_FONT);
+        // .. try to get the composite font string
+        String font = fontElement.getAttributeValue(XML_ATTRIBUTE_FONT);
 
-		// .. if its not available, try it the old way (before SDS 2.0)
-		if (font == null || font.length() <= 0) {
-			String nameAttribute = fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_NAME);
-			String heightAttribute = fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_HEIGHT);
-			String styleAttribute = fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_STYLE);
+        // .. if its not available, try it the old way (before SDS 2.0)
+        if (font == null || font.length() <= 0) {
+            String nameAttribute = fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_NAME);
+            String heightAttribute = fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_HEIGHT);
+            String styleAttribute = fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_STYLE);
 
-			try {
-				// .. name
-				String name = (nameAttribute != null && nameAttribute.length() > 0) ? nameAttribute : "Arial";
+            try {
+                // .. name
+                String name = (nameAttribute != null && nameAttribute.length() > 0) ? nameAttribute : "Arial";
 
-				// .. size
-				int height = -1;
-				try {
-					height = Integer.parseInt(heightAttribute);
-				} catch (NumberFormatException nfe) {
-				}
+                // .. size
+                int height = -1;
+                try {
+                    height = Integer.parseInt(heightAttribute);
+                } catch (NumberFormatException nfe) {
+                }
 
-				// .. styles (bold, italic)
-				int style = 0;
-				try {
-					style = Integer.parseInt(styleAttribute);
-				} catch (NumberFormatException nfe) {
-				}
+                // .. styles (bold, italic)
+                int style = 0;
+                try {
+                    style = Integer.parseInt(styleAttribute);
+                } catch (NumberFormatException nfe) {
+                }
 
-				boolean italic = ((style & ITALIC) == ITALIC);
-				boolean bold = ((style & BOLD) == BOLD);
+                boolean italic = ((style & ITALIC) == ITALIC);
+                boolean bold = ((style & BOLD) == BOLD);
 
-				font = ColorAndFontUtil.toFontString(name, height, bold, italic);
-			} catch (Exception e) {
-				font = ColorAndFontUtil.toFontString("Arial", 8);
-			}
+                font = ColorAndFontUtil.toFontString(name, height, bold, italic);
+            } catch (Exception e) {
+                font = ColorAndFontUtil.toFontString("Arial", 8);
+            }
 
-		}
-		return font;
-	}
+        }
+        return font;
+    }
 
 }

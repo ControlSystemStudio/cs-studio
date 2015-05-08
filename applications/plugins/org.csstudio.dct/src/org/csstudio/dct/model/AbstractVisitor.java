@@ -13,37 +13,37 @@ import org.csstudio.dct.model.internal.Project;
  */
 public abstract class AbstractVisitor implements IVisitor {
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void visit(Project project) {
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public void visit(Project project) {
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void visit(IFolder folder) {
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public void visit(IFolder folder) {
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void visit(IPrototype prototype) {
+    /**
+     *{@inheritDoc}
+     */
+    public void visit(IPrototype prototype) {
 
-	}
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void visit(IInstance instance) {
+    /**
+     *{@inheritDoc}
+     */
+    public void visit(IInstance instance) {
 
-	}
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void visit(IRecord record) {
+    /**
+     *{@inheritDoc}
+     */
+    public void visit(IRecord record) {
 
-	}
+    }
 
 }

@@ -15,13 +15,13 @@ import org.epics.pvmanager.formula.FormulaFunctionSetDescription;
  */
 public class TestFunctionSet extends FormulaFunctionSet {
 
-	/**
-	 * Creates a new set.
-	 */
-	public TestFunctionSet() {
-		super(new FormulaFunctionSetDescription("test", "Unitary tests functions")
-					.addFormulaFunction(new TestFormulaFunction("sin1", "sin1", "arg"))
-					.addFormulaFunction(new TestFormulaFunction("sin2", "sin2", "arg")));
-	}
+    /**
+     * Creates a new set.
+     */
+    public TestFunctionSet() {
+        super(new FormulaFunctionSetDescription("test", "Unitary tests functions")
+                    .addFormulaFunction(new TestFormulaFunction("sin1", "sin1", "arg"))
+                    .addFormulaFunction(new TestFormulaFunction("sin2", "sin2", "arg")));
+    }
 
 }

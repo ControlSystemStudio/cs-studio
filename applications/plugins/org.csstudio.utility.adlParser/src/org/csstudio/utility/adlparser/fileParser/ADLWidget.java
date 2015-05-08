@@ -62,8 +62,8 @@ public class ADLWidget {
      * @param type Widget  type
      */
     public final void setType(final String type){
-    	//TODO replacement of slashes does not work
-    	_type = type.replaceAll("[\\{\"]", "").trim().toLowerCase();  //$NON-NLS-1$ //$NON-NLS-2$
+        //TODO replacement of slashes does not work
+        _type = type.replaceAll("[\\{\"]", "").trim().toLowerCase();  //$NON-NLS-1$ //$NON-NLS-2$
     }
     /**
      * 

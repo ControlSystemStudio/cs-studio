@@ -39,146 +39,146 @@ import org.eclipse.draw2d.geometry.Rectangle;
  *
  */
 public final class RefreshableRectangleFigure extends RectangleFigure implements IAdaptable {
-	/**
-	 * The fill grade (0 - 100%).
-	 */
-	private double _fillGrade = 100;
+    /**
+     * The fill grade (0 - 100%).
+     */
+    private double _fillGrade = 100;
 
-	/**
-	 * The orientation (horizontal==true | vertical==false).
-	 */
-	private boolean _orientationHorizontal = true;
+    /**
+     * The orientation (horizontal==true | vertical==false).
+     */
+    private boolean _orientationHorizontal = true;
 
-	/**
-	 * The transparent state of the background.
-	 */
-	private boolean _transparent = false;
+    /**
+     * The transparent state of the background.
+     */
+    private boolean _transparent = false;
 
-	/**
-	 * A border adapter, which covers all border handlings.
-	 */
-	private IBorderEquippedWidget _borderAdapter;
+    /**
+     * A border adapter, which covers all border handlings.
+     */
+    private IBorderEquippedWidget _borderAdapter;
 
     private CrossedOutAdapter _crossedOutAdapter;
 
     private RhombusAdapter _rhombusAdapter;
 
-	public RefreshableRectangleFigure() {
-	}
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected synchronized void fillShape(final Graphics graphics) {
-		Rectangle figureBounds = getBounds().getCopy();
-		figureBounds.crop(this.getInsets());
-		if (!_transparent) {
-			graphics.setBackgroundColor(getBackgroundColor());
-			graphics.fillRectangle(figureBounds);
-		}
-		graphics.setBackgroundColor(getForegroundColor());
-		Rectangle fillRectangle;
-		if (_orientationHorizontal) {
-			int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
-			fillRectangle = new Rectangle(figureBounds.x,figureBounds.y,newW,figureBounds.height);
-		} else {
-			int newH = (int) Math.round(figureBounds.height * (getFill() / 100));
-			fillRectangle = new Rectangle(figureBounds.x,figureBounds.y+figureBounds.height-newH,figureBounds.width,newH);
-		}
-		graphics.fillRectangle(fillRectangle);
+    public RefreshableRectangleFigure() {
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected synchronized void fillShape(final Graphics graphics) {
+        Rectangle figureBounds = getBounds().getCopy();
+        figureBounds.crop(this.getInsets());
+        if (!_transparent) {
+            graphics.setBackgroundColor(getBackgroundColor());
+            graphics.fillRectangle(figureBounds);
+        }
+        graphics.setBackgroundColor(getForegroundColor());
+        Rectangle fillRectangle;
+        if (_orientationHorizontal) {
+            int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
+            fillRectangle = new Rectangle(figureBounds.x,figureBounds.y,newW,figureBounds.height);
+        } else {
+            int newH = (int) Math.round(figureBounds.height * (getFill() / 100));
+            fillRectangle = new Rectangle(figureBounds.x,figureBounds.y+figureBounds.height-newH,figureBounds.width,newH);
+        }
+        graphics.fillRectangle(fillRectangle);
         _crossedOutAdapter.paint(graphics);
         _rhombusAdapter.paint(graphics);
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void paintFigure(final Graphics graphics) {
-		fillShape(graphics);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void paintFigure(final Graphics graphics) {
+        fillShape(graphics);
+    }
 
-	/**
-	 * This method is a tribute to unit tests, which need a way to test the
-	 * performance of the figure implementation. Implementors should produce
-	 * some random changes and refresh the figure, when this method is called.
-	 *
-	 */
-	public void randomNoiseRefresh() {
-		setFill(Math.random() * 100);
-		repaint();
-	}
+    /**
+     * This method is a tribute to unit tests, which need a way to test the
+     * performance of the figure implementation. Implementors should produce
+     * some random changes and refresh the figure, when this method is called.
+     *
+     */
+    public void randomNoiseRefresh() {
+        setFill(Math.random() * 100);
+        repaint();
+    }
 
-	/**
-	 * Sets the fill grade.
-	 *
-	 * @param fill
-	 *            the fill grade.
-	 */
-	public void setFill(final double fill) {
-		_fillGrade = fill;
-	}
+    /**
+     * Sets the fill grade.
+     *
+     * @param fill
+     *            the fill grade.
+     */
+    public void setFill(final double fill) {
+        _fillGrade = fill;
+    }
 
-	/**
-	 * Gets the fill grade.
-	 *
-	 * @return the fill grade
-	 */
-	public double getFill() {
-		return _fillGrade;
-	}
+    /**
+     * Gets the fill grade.
+     *
+     * @return the fill grade
+     */
+    public double getFill() {
+        return _fillGrade;
+    }
 
-	/**
-	 * Sets the transparent state of the background.
-	 *
-	 * @param transparent
-	 *            the transparent state.
-	 */
-	public void setTransparent(final boolean transparent) {
-		_transparent = transparent;
-	}
+    /**
+     * Sets the transparent state of the background.
+     *
+     * @param transparent
+     *            the transparent state.
+     */
+    public void setTransparent(final boolean transparent) {
+        _transparent = transparent;
+    }
 
-	/**
-	 * Gets the transparent state of the background.
-	 *
-	 * @return the transparent state of the background
-	 */
-	public boolean getTransparent() {
-		return _transparent;
-	}
+    /**
+     * Gets the transparent state of the background.
+     *
+     * @return the transparent state of the background
+     */
+    public boolean getTransparent() {
+        return _transparent;
+    }
 
-	/**
-	 * Sets the orientation (horizontal==true | vertical==false).
-	 *
-	 * @param horizontal
-	 *            The orientation.
-	 */
-	public void setOrientation(final boolean horizontal) {
-		_orientationHorizontal = horizontal;
-	}
+    /**
+     * Sets the orientation (horizontal==true | vertical==false).
+     *
+     * @param horizontal
+     *            The orientation.
+     */
+    public void setOrientation(final boolean horizontal) {
+        _orientationHorizontal = horizontal;
+    }
 
-	/**
-	 * Gets the orientation (horizontal==true | vertical==false).
-	 *
-	 * @return boolean
-	 * 				The orientation
-	 */
-	public boolean getOrientation() {
-		return _orientationHorizontal;
-	}
+    /**
+     * Gets the orientation (horizontal==true | vertical==false).
+     *
+     * @return boolean
+     *                 The orientation
+     */
+    public boolean getOrientation() {
+        return _orientationHorizontal;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(final Class adapter) {
-		if (adapter == IBorderEquippedWidget.class) {
-			if(_borderAdapter==null) {
-				_borderAdapter = new BorderAdapter(this);
-			}
-			return _borderAdapter;
-		} else if(adapter == ICrossedFigure.class) {
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("rawtypes")
+    public Object getAdapter(final Class adapter) {
+        if (adapter == IBorderEquippedWidget.class) {
+            if(_borderAdapter==null) {
+                _borderAdapter = new BorderAdapter(this);
+            }
+            return _borderAdapter;
+        } else if(adapter == ICrossedFigure.class) {
             if(_crossedOutAdapter==null) {
                 _crossedOutAdapter = new CrossedOutAdapter(this);
             }
@@ -190,7 +190,7 @@ public final class RefreshableRectangleFigure extends RectangleFigure implements
             return _rhombusAdapter;
         }
 
-		return null;
-	}
+        return null;
+    }
 
 }

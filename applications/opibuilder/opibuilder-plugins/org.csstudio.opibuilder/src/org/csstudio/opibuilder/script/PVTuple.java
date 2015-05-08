@@ -12,16 +12,16 @@ package org.csstudio.opibuilder.script;
  *
  */
 public class PVTuple{
-	public String pvName;
-	public boolean trigger;
-	
-	public PVTuple(String pvName, boolean trigger) {
-		this.pvName = pvName;
-		this.trigger = trigger;
-	}
-	
-	public PVTuple getCopy(){
-		return new PVTuple(pvName, trigger);
-	}
-	
+    public String pvName;
+    public boolean trigger;
+    
+    public PVTuple(String pvName, boolean trigger) {
+        this.pvName = pvName;
+        this.trigger = trigger;
+    }
+    
+    public PVTuple getCopy(){
+        return new PVTuple(pvName, trigger);
+    }
+    
 }

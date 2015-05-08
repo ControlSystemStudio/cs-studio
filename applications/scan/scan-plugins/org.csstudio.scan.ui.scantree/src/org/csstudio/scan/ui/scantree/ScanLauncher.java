@@ -28,27 +28,27 @@ import org.eclipse.ui.IEditorLauncher;
 public class ScanLauncher implements IEditorLauncher
 {
     /** {@inheritDoc} */
-	@Override
-	public void open(final IPath path)
-	{
+    @Override
+    public void open(final IPath path)
+    {
         final Job job = new Job(Messages.SubmitScan)
         {
             @Override
             protected IStatus run(final IProgressMonitor monitor)
             {
-            	monitor.beginTask(Messages.SubmitScan, 6);
+                monitor.beginTask(Messages.SubmitScan, 6);
                 try
                 {
-                	final File file = path.toFile();
-            		final String scan_name = ScanEditor.getScanNameFromFile(file.toString());
+                    final File file = path.toFile();
+                    final String scan_name = ScanEditor.getScanNameFromFile(file.toString());
 
-            		// Get file content as is
-            		final String scan = IOUtils.toString(new FileInputStream(file));
+                    // Get file content as is
+                    final String scan = IOUtils.toString(new FileInputStream(file));
 
-            		// Parse file, then re-format
-					// final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
-					// final List<ScanCommand> commands = reader.readXMLStream(new FileInputStream(file));
-					// final String scan = XMLCommandWriter.toXMLString(commands);
+                    // Parse file, then re-format
+                    // final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
+                    // final List<ScanCommand> commands = reader.readXMLStream(new FileInputStream(file));
+                    // final String scan = XMLCommandWriter.toXMLString(commands);
                     monitor.worked(1);
 
                     final ScanInfoModel model = ScanInfoModel.getInstance();
@@ -57,21 +57,21 @@ public class ScanLauncher implements IEditorLauncher
                     int attempts = 5;
                     while (attempts > 0)
                     {
-                    	try
-                    	{
-                    	    model.getScanClient().submitScan(scan_name, scan);
-                    	}
-                		catch (Exception ex)
-                		{
-                			if (--attempts <= 0)
-                				throw ex;
-                			// Not connected to server: Try again later
-                			Thread.sleep(1000);
-                			monitor.subTask(Messages.WaitingForScanServer);
-		                    monitor.worked(1);
-                			continue;
-                		}
-						break;
+                        try
+                        {
+                            model.getScanClient().submitScan(scan_name, scan);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (--attempts <= 0)
+                                throw ex;
+                            // Not connected to server: Try again later
+                            Thread.sleep(1000);
+                            monitor.subTask(Messages.WaitingForScanServer);
+                            monitor.worked(1);
+                            continue;
+                        }
+                        break;
                     }
                 }
                 catch (Exception ex)
@@ -87,5 +87,5 @@ public class ScanLauncher implements IEditorLauncher
         };
         job.setUser(true);
         job.schedule();
-	}
+    }
 }

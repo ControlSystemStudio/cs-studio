@@ -42,13 +42,13 @@ public class DBGParseException extends Exception {
  * @param s java.lang.String
  */
 public DBGParseException(String s, EnhancedStreamTokenizer t, String fileName) {
-	super(s);
-	if (t.ttype == StreamTokenizer.TT_WORD)
-		if (t.sval!=null)
-			Console.getInstance().print("\nError found in file '"+fileName+"', line "+t.lineno()+" near token '"+t.sval+"': ");
-		else
-			Console.getInstance().print("\nError found in file '"+fileName+"', line "+t.lineno()+": ");
-	else
-		Console.getInstance().print("\nError found in file '"+fileName+"', line "+t.lineno()+" near token '"+(int)t.nval+"': ");
+    super(s);
+    if (t.ttype == StreamTokenizer.TT_WORD)
+        if (t.sval!=null)
+            Console.getInstance().print("\nError found in file '"+fileName+"', line "+t.lineno()+" near token '"+t.sval+"': ");
+        else
+            Console.getInstance().print("\nError found in file '"+fileName+"', line "+t.lineno()+": ");
+    else
+        Console.getInstance().print("\nError found in file '"+fileName+"', line "+t.lineno()+" near token '"+(int)t.nval+"': ");
 }
 }

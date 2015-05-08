@@ -17,11 +17,11 @@ import org.csstudio.autocomplete.proposals.ProposalStyle;
  */
 public class TooltipContent {
 
-	/** Multiple-lines value that will be displayed in UI. */
-	public String value;
-	/** SWT StyleRange that will be applied to value. */
-	public ProposalStyle[] styles;
-	public int maxLineLength;
-	public int numberOfLines;
+    /** Multiple-lines value that will be displayed in UI. */
+    public String value;
+    /** SWT StyleRange that will be applied to value. */
+    public ProposalStyle[] styles;
+    public int maxLineLength;
+    public int numberOfLines;
 
 }

@@ -31,41 +31,41 @@ import org.jdom.Element;
  * 
  */
 public final class OptionPropertyPersistenceHandler extends
-		AbstractPropertyPersistenceHandler {
+        AbstractPropertyPersistenceHandler {
 
-	/**
-	 * XML attribute name <code>option</code>.
-	 */
-	public static final String XML_ELEMENT_OPTION = "option"; //$NON-NLS-1$
+    /**
+     * XML attribute name <code>option</code>.
+     */
+    public static final String XML_ELEMENT_OPTION = "option"; //$NON-NLS-1$
 
-	/**
-	 * XML attribute name <code>option (id)</code>.
-	 */
-	public static final String XML_ATTRIBUTE_OPTION_ID = "id"; //$NON-NLS-1$
+    /**
+     * XML attribute name <code>option (id)</code>.
+     */
+    public static final String XML_ATTRIBUTE_OPTION_ID = "id"; //$NON-NLS-1$
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void writeProperty(final Element domElement,
-			final Object propertyValue) {
-		Element optionElement = new Element(XML_ELEMENT_OPTION);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeProperty(final Element domElement,
+            final Object propertyValue) {
+        Element optionElement = new Element(XML_ELEMENT_OPTION);
 
-		optionElement.setAttribute(XML_ATTRIBUTE_OPTION_ID, propertyValue
-				.toString());
+        optionElement.setAttribute(XML_ATTRIBUTE_OPTION_ID, propertyValue
+                .toString());
 
-		domElement.addContent(optionElement);
-	}
+        domElement.addContent(optionElement);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object readProperty(final Element domElement) {
-		Element optionElement = domElement.getChild(XML_ELEMENT_OPTION);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object readProperty(final Element domElement) {
+        Element optionElement = domElement.getChild(XML_ELEMENT_OPTION);
 
-		return optionElement
-				.getAttributeValue(XML_ATTRIBUTE_OPTION_ID);
-	}
+        return optionElement
+                .getAttributeValue(XML_ATTRIBUTE_OPTION_ID);
+    }
 
 }

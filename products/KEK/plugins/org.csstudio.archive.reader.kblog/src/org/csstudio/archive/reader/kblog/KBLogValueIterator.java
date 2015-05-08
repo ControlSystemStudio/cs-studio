@@ -8,5 +8,5 @@ import org.csstudio.archive.reader.ValueIterator;
  * @author Takashi Nakamoto
  */
 public interface KBLogValueIterator extends ValueIterator {
-	public boolean isClosed();
+    public boolean isClosed();
 }

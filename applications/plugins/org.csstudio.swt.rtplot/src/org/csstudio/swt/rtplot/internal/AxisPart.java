@@ -94,8 +94,8 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
     @Override
     public void setGridVisible(final boolean grid)
     {
-    	if (show_grid == grid)
-    		return;
+        if (show_grid == grid)
+            return;
         show_grid = grid;
         requestLayout();
         requestRefresh();

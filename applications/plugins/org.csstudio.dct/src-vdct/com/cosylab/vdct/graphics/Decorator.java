@@ -36,7 +36,7 @@ import java.awt.Graphics;
  * @author Matej Sekoranja
  */
 public abstract class Decorator implements VisualComponent {
-	private VisualComponent component;
+    private VisualComponent component;
 /**
  * Insert the method's description here.
  * Creation date: (10.12.2000 13:25:58)
@@ -46,14 +46,14 @@ public Decorator() {}
  * ComponentManager constructor comment.
  */
 public Decorator(VisualComponent component) {
-	this.component=component;
+    this.component=component;
 }
 /**
  * Default implementation
  * Creation date: (10.12.2000 11:25:20)
  */
 public void draw(Graphics g) {
-	component.draw(g);
+    component.draw(g);
 }
 /**
  * Insert the method's description here.
@@ -61,15 +61,15 @@ public void draw(Graphics g) {
  * @return com.cosylab.vdct.graphics.VisualComponent
  */
 public VisualComponent getComponent() {
-	return component;
+    return component;
 }
 /**
  * Insert the method's description here.
  * Creation date: (11.12.2000 16:23:31)
  */
 public int getComponentHeight() {
-	if (component==null) return 0;
-	else return component.getComponentHeight();
+    if (component==null) return 0;
+    else return component.getComponentHeight();
 }
 /**
  * Insert the method's description here.
@@ -77,15 +77,15 @@ public int getComponentHeight() {
  * @return int
  */
 public int getComponentWidth() {
-	if (component==null) return 0;
-	else return component.getComponentWidth();
+    if (component==null) return 0;
+    else return component.getComponentWidth();
 }
 /**
  * Default implementation
  * Creation date: (10.12.2000 11:26:54)
  */
 public void resize(int x0, int y0, int width, int height) {
-	component.resize(x0, y0, width, height);
+    component.resize(x0, y0, width, height);
 }
 /**
  * Insert the method's description here.
@@ -93,6 +93,6 @@ public void resize(int x0, int y0, int width, int height) {
  * @param newComponent com.cosylab.vdct.graphics.VisualComponent
  */
 public void setComponent(VisualComponent newComponent) {
-	component = newComponent;
+    component = newComponent;
 }
 }

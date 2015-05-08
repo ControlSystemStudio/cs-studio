@@ -13,35 +13,35 @@ import org.csstudio.dct.model.internal.Project;
  * 
  */
 public interface IVisitor {
-	/**
-	 * Call back method for {@link Project} nodes.
-	 * 
-	 * @param project
-	 *            a project
-	 */
-	void visit(Project project);
+    /**
+     * Call back method for {@link Project} nodes.
+     * 
+     * @param project
+     *            a project
+     */
+    void visit(Project project);
 
-	/**
-	 * Call back method for {@link IFolder} nodes.
-	 * @param folder a folder
-	 */
-	void visit(IFolder folder);
+    /**
+     * Call back method for {@link IFolder} nodes.
+     * @param folder a folder
+     */
+    void visit(IFolder folder);
 
-	/**
-	 * Call back method for {@link IPrototype} nodes.
-	 * @param prototype a prototype
-	 */
-	void visit(IPrototype prototype);
+    /**
+     * Call back method for {@link IPrototype} nodes.
+     * @param prototype a prototype
+     */
+    void visit(IPrototype prototype);
 
-	/**
-	 * Call back method for {@link IInstance} nodes.
-	 * @param instance a instance
-	 */
-	void visit(IInstance instance);
+    /**
+     * Call back method for {@link IInstance} nodes.
+     * @param instance a instance
+     */
+    void visit(IInstance instance);
 
-	/**
-	 * Call back method for {@link IRecord} nodes.
-	 * @param record a record
-	 */
-	void visit(IRecord record);
+    /**
+     * Call back method for {@link IRecord} nodes.
+     * @param record a record
+     */
+    void visit(IRecord record);
 }

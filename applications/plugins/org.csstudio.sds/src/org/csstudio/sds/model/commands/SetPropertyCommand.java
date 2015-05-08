@@ -34,51 +34,51 @@ import org.eclipse.gef.commands.CompoundCommand;
  *
  */
 public class SetPropertyCommand extends Command {
-	private CompoundCommand chain;
-	private AbstractWidgetModel widget;
-	private WidgetProperty property;
-	private Object value;
+    private CompoundCommand chain;
+    private AbstractWidgetModel widget;
+    private WidgetProperty property;
+    private Object value;
 
-	
-	/**
-	 * Constructor.
-	 * @param widget
-	 * 			The widget, which property value should be set
-	 * @param propertyName
-	 * 			The name of the property
-	 * @param value
-	 * 			The new value for the property
-	 */
-	public SetPropertyCommand(final AbstractWidgetModel widget, final String propertyName, final Object value) {
-		this.widget = widget;
-		this.property = widget.getPropertyInternal(propertyName);
-		this.value = value;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void execute() {
-		if(chain==null) {
-			// .. create a command chain
-			chain = new CompoundCommand();
-			
-			// .. change the property value
-			chain.add(new ChangePropertyCommand(property, value));
-			
-			// .. add contributed commands
-			SdsPlugin.getDefault().getWidgetPropertyPostProcessingService().applyForSingleProperty(widget, property, chain, EventType.ON_MANUAL_CHANGE);
-		}
+    
+    /**
+     * Constructor.
+     * @param widget
+     *             The widget, which property value should be set
+     * @param propertyName
+     *             The name of the property
+     * @param value
+     *             The new value for the property
+     */
+    public SetPropertyCommand(final AbstractWidgetModel widget, final String propertyName, final Object value) {
+        this.widget = widget;
+        this.property = widget.getPropertyInternal(propertyName);
+        this.value = value;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void execute() {
+        if(chain==null) {
+            // .. create a command chain
+            chain = new CompoundCommand();
+            
+            // .. change the property value
+            chain.add(new ChangePropertyCommand(property, value));
+            
+            // .. add contributed commands
+            SdsPlugin.getDefault().getWidgetPropertyPostProcessingService().applyForSingleProperty(widget, property, chain, EventType.ON_MANUAL_CHANGE);
+        }
 
-		chain.execute();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void undo() {
-		chain.undo();
-	}
+        chain.execute();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void undo() {
+        chain.undo();
+    }
 }

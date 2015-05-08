@@ -55,32 +55,32 @@ public class EPICSDataProvider implements DataProvider
             public void pvChanged(final PVReaderEvent<VType> event)
             {
                 final PVReader<VType> pv = event.getPvReader();
-            	final Exception error = pv.lastException();
-            	if (error != null)
-            	{
-                	Activator.getLogger().log(Level.WARNING, "Error for " + pv.getName(), error);
-                	// Done (with no data)
+                final Exception error = pv.lastException();
+                if (error != null)
+                {
+                    Activator.getLogger().log(Level.WARNING, "Error for " + pv.getName(), error);
+                    // Done (with no data)
                     done.countDown();
-            	}
+                }
             
-            	// No error:
-            	final String full_name;
-            	
-            	if (name.indexOf("://") > 0)
-            		full_name = name;
-            	else
-					full_name = ConfigurationHelper.defaultDataSourceName() + "://" + name;
+                // No error:
+                final String full_name;
+                
+                if (name.indexOf("://") > 0)
+                    full_name = name;
+                else
+                    full_name = ConfigurationHelper.defaultDataSourceName() + "://" + name;
                 final Map<String, ChannelHandler> channels = PVManager.getDefaultDataSource().getChannels();
-				final ChannelHandler channel = channels.get(full_name);
+                final ChannelHandler channel = channels.get(full_name);
                 if (channel == null)
                 {
-                	Activator.getLogger().log(Level.WARNING, "No channel info for {0}", full_name);
+                    Activator.getLogger().log(Level.WARNING, "No channel info for {0}", full_name);
                 }
                 else
                 {
                     final Map<String, Object> properties = channel.getProperties();
                     for (String prop : properties.keySet())
-                    	EPICSDataProvider.this.properties.put("PV: " + prop, properties.get(prop).toString());
+                        EPICSDataProvider.this.properties.put("PV: " + prop, properties.get(prop).toString());
                 }
                 done.countDown();
             }

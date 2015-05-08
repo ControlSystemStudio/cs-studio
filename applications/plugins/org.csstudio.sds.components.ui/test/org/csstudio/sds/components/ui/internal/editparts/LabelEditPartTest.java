@@ -43,35 +43,35 @@ import org.junit.Test;
  */
 public final class LabelEditPartTest {
 
-	/**
-	 * The instance to test.
-	 */
-	private LabelEditPart _editPart;
+    /**
+     * The instance to test.
+     */
+    private LabelEditPart _editPart;
 
-	/**
-	 * Test set up.
-	 */
-	@Before
-	public void setUp() {
-		_editPart = new LabelEditPart();
-		final LabelModel labelModel = new LabelModel(new ArrayList<AbstractCursor>());
+    /**
+     * Test set up.
+     */
+    @Before
+    public void setUp() {
+        _editPart = new LabelEditPart();
+        final LabelModel labelModel = new LabelModel(new ArrayList<AbstractCursor>());
         _editPart.setModel(labelModel);
-	}
+    }
 
-	/**
-	 * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.LabelEditPart#doCreateFigure()}.
-	 */
-	@Test
-	public void testCreateFigure() {
-		final IFigure figure = _editPart.doCreateFigure();
-		assertTrue(figure instanceof RefreshableLabelFigure);
-	}
+    /**
+     * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.LabelEditPart#doCreateFigure()}.
+     */
+    @Test
+    public void testCreateFigure() {
+        final IFigure figure = _editPart.doCreateFigure();
+        assertTrue(figure instanceof RefreshableLabelFigure);
+    }
 
-	@Test
-	public void testTextTypeEnumHEX() throws Exception {
-	    _editPart.getCastedModel().setPropertyValue(AbstractTextTypeWidgetModel.PROP_TEXT_TYPE, TextTypeEnum.EXP.getIndex());
+    @Test
+    public void testTextTypeEnumHEX() throws Exception {
+        _editPart.getCastedModel().setPropertyValue(AbstractTextTypeWidgetModel.PROP_TEXT_TYPE, TextTypeEnum.EXP.getIndex());
 
-	    _editPart.getCastedModel().setTextValue("1");
+        _editPart.getCastedModel().setTextValue("1");
         String determineLabel = _editPart.determineLabel(LabelModel.PROP_TEXTVALUE);
         assertEquals("1,0E00", determineLabel);
 

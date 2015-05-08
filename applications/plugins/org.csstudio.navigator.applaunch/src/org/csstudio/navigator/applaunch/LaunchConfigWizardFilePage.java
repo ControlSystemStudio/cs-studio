@@ -20,35 +20,35 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 public class LaunchConfigWizardFilePage extends WizardNewFileCreationPage
 {
     private LaunchConfig config = new LaunchConfig();
-	
-	public LaunchConfigWizardFilePage(IStructuredSelection selection)
+    
+    public LaunchConfigWizardFilePage(IStructuredSelection selection)
     {
-		super(Messages.LaunchConfigTitle, selection);
-		setTitle(Messages.LaunchConfigTitle);
-		setDescription(Messages.FileWizardDescr);
+        super(Messages.LaunchConfigTitle, selection);
+        setTitle(Messages.LaunchConfigTitle);
+        setDescription(Messages.FileWizardDescr);
     }
 
-	public void setConfig(final LaunchConfig config)
+    public void setConfig(final LaunchConfig config)
     {
-		this.config = config;
+        this.config = config;
     }
 
-	@Override
+    @Override
     public boolean isPageComplete()
     {
-		// Need at least ".app"
-	    return super.isPageComplete()  ||  getFileName().length() > 4;
+        // Need at least ".app"
+        return super.isPageComplete()  ||  getFileName().length() > 4;
     }
 
-	@Override
-	protected InputStream getInitialContents()
-	{
-		return new ByteArrayInputStream(config.getXML().getBytes());
-	}
-	
-	@Override
-	public String getFileExtension()
-	{
-		return "app";
-	}
+    @Override
+    protected InputStream getInitialContents()
+    {
+        return new ByteArrayInputStream(config.getXML().getBytes());
+    }
+    
+    @Override
+    public String getFileExtension()
+    {
+        return "app";
+    }
 }

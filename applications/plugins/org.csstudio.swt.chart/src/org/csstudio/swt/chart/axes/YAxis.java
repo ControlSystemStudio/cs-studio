@@ -349,7 +349,7 @@ public class YAxis extends Axis
         }
         // Determined low..high.
         if (low == high)
-        {	// If low equals high we'll move the trace to the middle.
+        {    // If low equals high we'll move the trace to the middle.
             low -= 1.0;
             high += 1.0;
         }
@@ -520,10 +520,10 @@ public class YAxis extends Axis
         // Axis and Tick marks
 /*
           if (selected)
-        {	// Fill yaxis background with grid color.
-        	gc.setBackground(grid_color);
-        	gc.fillRectangle(region.x + 1, region.y, region.width - 2, region.height);
-        	// "Thick" line
+        {    // Fill yaxis background with grid color.
+            gc.setBackground(grid_color);
+            gc.fillRectangle(region.x + 1, region.y, region.width - 2, region.height);
+            // "Thick" line
             gc.drawRectangle(
                 region.x + region.width-2,
                 region.y, 

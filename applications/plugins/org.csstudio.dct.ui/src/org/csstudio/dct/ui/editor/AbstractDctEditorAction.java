@@ -13,45 +13,45 @@ import org.eclipse.ui.IEditorPart;
  * 
  */
 public abstract class AbstractDctEditorAction implements IEditorActionDelegate, CommandStackEventListener {
-	private DctEditor editor;
-	private IAction actionProxy;
+    private DctEditor editor;
+    private IAction actionProxy;
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public final void setActiveEditor(IAction action, IEditorPart targetEditor) {
-		if (targetEditor instanceof DctEditor) {
-			editor = (DctEditor) targetEditor;
-			actionProxy = action;
+    /**
+     *{@inheritDoc}
+     */
+    public final void setActiveEditor(IAction action, IEditorPart targetEditor) {
+        if (targetEditor instanceof DctEditor) {
+            editor = (DctEditor) targetEditor;
+            actionProxy = action;
 
-			activeEditorChanged(editor);
-		}
-	}
+            activeEditorChanged(editor);
+        }
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void selectionChanged(IAction action, ISelection selection) {
+    /**
+     *{@inheritDoc}
+     */
+    public void selectionChanged(IAction action, ISelection selection) {
 
-	}
+    }
 
-	/**
-	 * Returns the action proxy that handles the presentation portion of the
-	 * action
-	 * 
-	 * @return the action proxy that handles the presentation portion of the
-	 *         action
-	 */
-	public final IAction getActionProxy() {
-		return actionProxy;
-	}
+    /**
+     * Returns the action proxy that handles the presentation portion of the
+     * action
+     * 
+     * @return the action proxy that handles the presentation portion of the
+     *         action
+     */
+    public final IAction getActionProxy() {
+        return actionProxy;
+    }
 
-	/**
-	 * Templates method which is called, when the active DCT editor changes.
-	 * 
-	 * @param editor
-	 *            the currently active DCT editor
-	 */
-	protected abstract void activeEditorChanged(DctEditor editor);
+    /**
+     * Templates method which is called, when the active DCT editor changes.
+     * 
+     * @param editor
+     *            the currently active DCT editor
+     */
+    protected abstract void activeEditorChanged(DctEditor editor);
 
 }

@@ -35,42 +35,42 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
  * Preference page for configuring the shared JMS connection services.
  */
 public class SharedJmsConnectionPreferencePage
-	extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage {
+    extends FieldEditorPreferencePage
+    implements IWorkbenchPreferencePage {
 
-	private ScopedPreferenceStore _prefStore;
-	
-	public SharedJmsConnectionPreferencePage() {
-		super(GRID);
+    private ScopedPreferenceStore _prefStore;
+    
+    public SharedJmsConnectionPreferencePage() {
+        super(GRID);
 
-		_prefStore = new ScopedPreferenceStore(InstanceScope.INSTANCE,
-				Activator.getDefault().getBundle().getSymbolicName());
-		setPreferenceStore(_prefStore);
-		
-		setDescription(Messages.SharedJmsConnectionPreferencePage_Description);
-	}
-	
-	/**
-	 * Creates the field editors. Field editors are abstractions of
-	 * the common GUI blocks needed to manipulate various types
-	 * of preferences. Each field editor knows how to save and
-	 * restore itself.
-	 */
-	public void createFieldEditors() {
-		addField(new StringFieldEditor(PreferenceConstants.SENDER_BROKER_URL,
-				Messages.SharedJmsConnectionPreferencePage_SenderUrlLabel,
-				getFieldEditorParent()));
-		addField(new StringFieldEditor(PreferenceConstants.RECEIVER_BROKER_URL_1,
-				Messages.SharedJmsConnectionPreferencePage_ReceiverUrl1Label,
-				getFieldEditorParent()));
-		addField(new StringFieldEditor(PreferenceConstants.RECEIVER_BROKER_URL_2,
-				Messages.SharedJmsConnectionPreferencePage_ReceiverUrl2Label,
-				getFieldEditorParent()));
-	}
+        _prefStore = new ScopedPreferenceStore(InstanceScope.INSTANCE,
+                Activator.getDefault().getBundle().getSymbolicName());
+        setPreferenceStore(_prefStore);
+        
+        setDescription(Messages.SharedJmsConnectionPreferencePage_Description);
+    }
+    
+    /**
+     * Creates the field editors. Field editors are abstractions of
+     * the common GUI blocks needed to manipulate various types
+     * of preferences. Each field editor knows how to save and
+     * restore itself.
+     */
+    public void createFieldEditors() {
+        addField(new StringFieldEditor(PreferenceConstants.SENDER_BROKER_URL,
+                Messages.SharedJmsConnectionPreferencePage_SenderUrlLabel,
+                getFieldEditorParent()));
+        addField(new StringFieldEditor(PreferenceConstants.RECEIVER_BROKER_URL_1,
+                Messages.SharedJmsConnectionPreferencePage_ReceiverUrl1Label,
+                getFieldEditorParent()));
+        addField(new StringFieldEditor(PreferenceConstants.RECEIVER_BROKER_URL_2,
+                Messages.SharedJmsConnectionPreferencePage_ReceiverUrl2Label,
+                getFieldEditorParent()));
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void init(IWorkbench workbench) {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void init(IWorkbench workbench) {
+    }
 }

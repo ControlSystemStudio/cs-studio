@@ -40,35 +40,35 @@ import org.csstudio.utility.jms.IConnectionMonitor;
  */
 public interface IMessageListenerSession {
 
-	/**
-	 * Closes this message listener session. Clients will no longer receive any
-	 * messages after they have closed this session.
-	 */
-	void close();
+    /**
+     * Closes this message listener session. Clients will no longer receive any
+     * messages after they have closed this session.
+     */
+    void close();
 
-	/**
-	 * Adds a connection monitor which monitors the availability of the
-	 * underlying JMS connections.
-	 * 
-	 * @param monitor
-	 *            a connection monitor.
-	 */
-	void addMonitor(IConnectionMonitor monitor);
+    /**
+     * Adds a connection monitor which monitors the availability of the
+     * underlying JMS connections.
+     * 
+     * @param monitor
+     *            a connection monitor.
+     */
+    void addMonitor(IConnectionMonitor monitor);
 
-	/**
-	 * Removes the specified connection monitor from this session.
-	 * 
-	 * @param monitor
-	 *            the monitor to remove.
-	 */
-	void removeMonitor(IConnectionMonitor monitor);
+    /**
+     * Removes the specified connection monitor from this session.
+     * 
+     * @param monitor
+     *            the monitor to remove.
+     */
+    void removeMonitor(IConnectionMonitor monitor);
 
-	/**
-	 * Returns whether all of the underlying JMS connections are currently
-	 * active.
-	 * 
-	 * @return <code>true</code> if all underlying connections are started and
-	 *         not interrupted, <code>false</code> otherwise.
-	 */
-	boolean isActive();
+    /**
+     * Returns whether all of the underlying JMS connections are currently
+     * active.
+     * 
+     * @return <code>true</code> if all underlying connections are started and
+     *         not interrupted, <code>false</code> otherwise.
+     */
+    boolean isActive();
 }

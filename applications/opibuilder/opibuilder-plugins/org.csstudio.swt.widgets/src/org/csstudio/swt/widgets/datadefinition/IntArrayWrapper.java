@@ -12,25 +12,25 @@ package org.csstudio.swt.widgets.datadefinition;
  *
  */
 public class IntArrayWrapper implements IPrimaryArrayWrapper {
-	
-	private int[] data;
-	
-	
+    
+    private int[] data;
+    
+    
 
-	public IntArrayWrapper(int[] data) {
-		this.data = data;
-	}
+    public IntArrayWrapper(int[] data) {
+        this.data = data;
+    }
 
-	public void setData(int[] data) {
-		this.data = data;
-	}
-	
-	public double get(int i) {
-		return data[i];
-	}
+    public void setData(int[] data) {
+        this.data = data;
+    }
+    
+    public double get(int i) {
+        return data[i];
+    }
 
-	public int getSize() {
-		return data.length;
-	}
+    public int getSize() {
+        return data.length;
+    }
 
 }

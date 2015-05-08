@@ -30,10 +30,10 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  */
 public class Activator
 {
-	/** Plug-in ID defined in MANIFEST.MF */
-	public static final String PLUGIN_ID = "org.csstudio.platform.jaasAuthentication.ui"; //$NON-NLS-1$
+    /** Plug-in ID defined in MANIFEST.MF */
+    public static final String PLUGIN_ID = "org.csstudio.platform.jaasAuthentication.ui"; //$NON-NLS-1$
 
-	 /** @return Returns an image descriptor for the image file at the given plug-in
+     /** @return Returns an image descriptor for the image file at the given plug-in
      *  relative path.
      *  @param path The path
      */

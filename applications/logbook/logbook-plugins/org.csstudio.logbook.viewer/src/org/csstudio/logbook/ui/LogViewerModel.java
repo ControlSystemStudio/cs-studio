@@ -20,7 +20,7 @@ public class LogViewerModel implements IEditorInput {
      * 
      */
     public LogViewerModel(LogEntry logEntry) {
-	this.logEntry = logEntry;
+    this.logEntry = logEntry;
     }
 
     /*
@@ -29,9 +29,9 @@ public class LogViewerModel implements IEditorInput {
      * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
      */
     @SuppressWarnings("rawtypes")
-	@Override
+    @Override
     public Object getAdapter(Class adapter) {
-	return null;
+    return null;
     }
 
     /*
@@ -41,7 +41,7 @@ public class LogViewerModel implements IEditorInput {
      */
     @Override
     public boolean exists() {
-	return false;
+    return false;
     }
 
     /*
@@ -51,7 +51,7 @@ public class LogViewerModel implements IEditorInput {
      */
     @Override
     public ImageDescriptor getImageDescriptor() {
-	return null;
+    return null;
     }
 
     /*
@@ -61,11 +61,11 @@ public class LogViewerModel implements IEditorInput {
      */
     @Override
     public String getName() {
-	StringBuffer sb = new StringBuffer("Detail View for logEntry");
-	if (logEntry != null) {
-	    sb.append(": " + logEntry.getId());
-	}
-	return sb.toString();
+    StringBuffer sb = new StringBuffer("Detail View for logEntry");
+    if (logEntry != null) {
+        sb.append(": " + logEntry.getId());
+    }
+    return sb.toString();
     }
 
     /*
@@ -75,7 +75,7 @@ public class LogViewerModel implements IEditorInput {
      */
     @Override
     public IPersistableElement getPersistable() {
-	return null;
+    return null;
     }
 
     /*
@@ -85,15 +85,15 @@ public class LogViewerModel implements IEditorInput {
      */
     @Override
     public String getToolTipText() {
-	StringBuffer sb = new StringBuffer("Detail View for logEntry");
-	if (logEntry != null) {
-	    sb.append(": " + logEntry.getId());
-	}
-	return sb.toString();
+    StringBuffer sb = new StringBuffer("Detail View for logEntry");
+    if (logEntry != null) {
+        sb.append(": " + logEntry.getId());
+    }
+    return sb.toString();
     }
 
     public LogEntry getLogEntry() {
-	return this.logEntry;
+    return this.logEntry;
     }
 
 }

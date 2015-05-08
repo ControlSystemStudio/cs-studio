@@ -32,45 +32,45 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
  */
 public abstract class AbstractUserDependentActionDelegate extends AbstractUserDependentAction implements IWorkbenchWindowActionDelegate {
 
-	/**
-	 * The proxy of this action.
-	 */
-	private IAction _action;
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param rightId ID of the right necessary to execute this action.
-	 */
-	public AbstractUserDependentActionDelegate(final String rightId) {
-		super(rightId);
-	}
+    /**
+     * The proxy of this action.
+     */
+    private IAction _action;
+    
+    /**
+     * Constructor.
+     * 
+     * @param rightId ID of the right necessary to execute this action.
+     */
+    public AbstractUserDependentActionDelegate(final String rightId) {
+        super(rightId);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public final void run(final IAction action) {
-		_action = action;
-		updateState();
-		run();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public final void run(final IAction action) {
+        _action = action;
+        updateState();
+        run();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public final void selectionChanged(final IAction action, final ISelection selection) {
-		_action = action;
-		updateState();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public final void selectionChanged(final IAction action, final ISelection selection) {
+        _action = action;
+        updateState();
+    }
 
-	/**
-	 * {@inheritDoc} 
-	 */
-	@Override
-	protected final void updateState() {
-		if (_action != null) {
-			_action.setEnabled(SecurityFacade.getInstance().canExecute(getRightId()));
-		}
-	}
-	
+    /**
+     * {@inheritDoc} 
+     */
+    @Override
+    protected final void updateState() {
+        if (_action != null) {
+            _action.setEnabled(SecurityFacade.getInstance().canExecute(getRightId()));
+        }
+    }
+    
 }

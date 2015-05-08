@@ -43,65 +43,65 @@ import org.csstudio.dal.simple.RemoteInfo;
  * 
  */
 public interface IProcessVariableAddress {
-	/**
-	 * Returns the "control system" part of the process variable.
-	 * 
-	 * @return the control system part
-	 */
-	ControlSystemEnum getControlSystem();
+    /**
+     * Returns the "control system" part of the process variable.
+     * 
+     * @return the control system part
+     */
+    ControlSystemEnum getControlSystem();
 
-	/**
-	 * Returns the "device" part of the process variable.
-	 * 
-	 * @return the device
-	 */
-	String getDevice();
+    /**
+     * Returns the "device" part of the process variable.
+     * 
+     * @return the device
+     */
+    String getDevice();
 
-	/**
-	 * Returns the "property" part of the process variable.
-	 * 
-	 * @return the property
-	 */
-	String getProperty();
+    /**
+     * Returns the "property" part of the process variable.
+     * 
+     * @return the property
+     */
+    String getProperty();
 
-	/**
-	 * Returns the "characteristic" part of the process variable pointer or
-	 * null.
-	 * 
-	 * @return the characteristic part or null
-	 */
-	String getCharacteristic();
+    /**
+     * Returns the "characteristic" part of the process variable pointer or
+     * null.
+     * 
+     * @return the characteristic part or null
+     */
+    String getCharacteristic();
 
-	String getRawName();
+    String getRawName();
 
-	String getFullName();
+    String getFullName();
 
-	boolean isCharacteristic();
+    boolean isCharacteristic();
 
-	ValueType getValueTypeHint();
+    ValueType getValueTypeHint();
 
-	/**
-	 * Returns a DAL {@link RemoteInfo} object for this process variable
-	 * address. May be null, if DAL does not support this kind of PVs.
-	 * 
-	 * @return a DAL RemoteInfo or null
-	 */
-	RemoteInfo toDalRemoteInfo();
+    /**
+     * Returns a DAL {@link RemoteInfo} object for this process variable
+     * address. May be null, if DAL does not support this kind of PVs.
+     * 
+     * @return a DAL RemoteInfo or null
+     */
+    RemoteInfo toDalRemoteInfo();
 
-	/**
-	 * Derives an address that cuts off an existing characteristic.
-	 * 
-	 * @return a "normal" address (without characteristic)
-	 */
-	IProcessVariableAddress deriveNoCharacteristicPart();
+    /**
+     * Derives an address that cuts off an existing characteristic.
+     * 
+     * @return a "normal" address (without characteristic)
+     */
+    IProcessVariableAddress deriveNoCharacteristicPart();
 
-	/**
-	 * Derives an address for the specified characteristic.
-	 * 
-	 * @param characteristic
-	 *            the characteristic
-	 * 
-	 * @return an address for a characteristic
-	 */
-	IProcessVariableAddress deriveCharacteristic(String characteristic);
+    /**
+     * Derives an address for the specified characteristic.
+     * 
+     * @param characteristic
+     *            the characteristic
+     * 
+     * @return an address for a characteristic
+     */
+    IProcessVariableAddress deriveCharacteristic(String characteristic);
 }

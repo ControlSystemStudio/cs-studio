@@ -36,7 +36,7 @@ final class ServerInfoRequest {
      */
     final static String NO_ALARM = "OK";
     
-    private String description;	
+    private String description;    
     private int version;
     private String how_strings[];
     private String status_strings[];
@@ -53,22 +53,22 @@ final class ServerInfoRequest {
         
         // send request
 
-	PVStructure pvRequest = createRequest();
-	PVStructure pvResult  = client.request(pvRequest, REQUEST_TIMEOUT);
+    PVStructure pvRequest = createRequest();
+    PVStructure pvResult  = client.request(pvRequest, REQUEST_TIMEOUT);
         
         // process result
-        //	{ int32             ver,
-		//	  string            desc,
-		//	  string            how[],
-		//	  string            stat[],
-		//	  { int32 num,
-		//	    string sevr,
-		//	    bool has_value,
-		//	    bool txt_stat
-		//	  }                 sevr[]
-		//	} = archiver.info()
+        //    { int32             ver,
+        //      string            desc,
+        //      string            how[],
+        //      string            stat[],
+        //      { int32 num,
+        //        string sevr,
+        //        bool has_value,
+        //        bool txt_stat
+        //      }                 sevr[]
+        //    } = archiver.info()
 
-		version     = pvResult.getIntField("ver").get(); 
+        version     = pvResult.getIntField("ver").get(); 
         description = pvResult.getStringField("desc").get();
         
         // Get 'how'. Silly code to copy that into a type-safe vector.
@@ -83,12 +83,12 @@ final class ServerInfoRequest {
 
     /** @return Returns the version number. */
     public int getVersion() {
-    	return version;
+        return version;
     }
 
     /** @return Returns the description. */
     public String getDescription() {
-    	return description;
+        return description;
     }
 
     /** @return Returns the list of supported request types. */
@@ -118,14 +118,14 @@ final class ServerInfoRequest {
 
     /** @return Returns a more or less useful string for debugging. */
     @Override public String toString() {
-    	final StringBuffer result = new StringBuffer();
-    	result.append(String.format("Server version : %d\n", version));
-    	result.append(String.format("Description    :\n%s", description));
-    	result.append("Available request methods:\n");
-    	for (int i=0; i<how_strings.length; ++i){
-    		result.append(String.format("%d = '%s'\n", i, how_strings[i]));
+        final StringBuffer result = new StringBuffer();
+        result.append(String.format("Server version : %d\n", version));
+        result.append(String.format("Description    :\n%s", description));
+        result.append("Available request methods:\n");
+        for (int i=0; i<how_strings.length; ++i){
+            result.append(String.format("%d = '%s'\n", i, how_strings[i]));
         }
-    	return result.toString();
+        return result.toString();
     }
     
     public String getName() {
@@ -160,7 +160,7 @@ final class ServerInfoRequest {
     }
     
     private void setHows(PVStructure pvResult){
-        	
+            
         PVStringArray howsArray =  (PVStringArray) 
              pvResult.getScalarArrayField("how", ScalarType.pvString);
         
@@ -177,7 +177,7 @@ final class ServerInfoRequest {
     }
     
     private void setStat(PVStructure pvResult){
-        	
+            
         PVStringArray statArray =  (PVStringArray) 
              pvResult.getScalarArrayField("stat", ScalarType.pvString);
         
@@ -222,15 +222,15 @@ final class ServerInfoRequest {
             AlarmSeverity severity;
             
             if ("NO_ALARM".equals(sevr)  ||  NO_ALARM.equals(sevr))
-            	severity = AlarmSeverity.NONE;
+                severity = AlarmSeverity.NONE;
             else if ("MINOR".equals(sevr))
-            	severity = AlarmSeverity.MINOR;
+                severity = AlarmSeverity.MINOR;
             else if ("MAJOR".equals(sevr))
-            	severity = AlarmSeverity.MAJOR;
+                severity = AlarmSeverity.MAJOR;
             else if ("MAJOR".equals(sevr))
-            	severity = AlarmSeverity.INVALID;
+                severity = AlarmSeverity.INVALID;
             else
-            	severity = AlarmSeverity.UNDEFINED;
+                severity = AlarmSeverity.UNDEFINED;
             
             severities.put(num, 
                     new SeverityImpl(severity, sevr, has_value, txt_stat));

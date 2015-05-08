@@ -41,6 +41,6 @@ public class PluginContext
  * @return java.lang.String
  */
 public static String getVersion() {
-	return com.cosylab.vdct.Version.VERSION;
+    return com.cosylab.vdct.Version.VERSION;
 }
 }

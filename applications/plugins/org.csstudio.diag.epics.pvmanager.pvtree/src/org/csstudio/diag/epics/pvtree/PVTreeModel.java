@@ -64,7 +64,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
             root = null;
         }
         if (name != null && !name.trim().isEmpty()) {
-        	root = new PVTreeItem(this, null, Messages.PV, name);
+            root = new PVTreeItem(this, null, Messages.PV, name);
         }
         itemChanged(root);
     }
@@ -181,8 +181,8 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
             @Override
             public void run()
             {
-               	if (! tree.isDisposed())
-	                viewer.update(item, null);
+                   if (! tree.isDisposed())
+                    viewer.update(item, null);
             }
         });
     }
@@ -198,8 +198,8 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
             @Override
             public void run()
             {
-            	if (tree.isDisposed())
-            	    return;
+                if (tree.isDisposed())
+                    return;
                 if (item == root)
                     viewer.refresh();
                 else

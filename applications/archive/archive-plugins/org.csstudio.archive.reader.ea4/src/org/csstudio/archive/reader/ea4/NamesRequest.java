@@ -39,7 +39,7 @@ public class NamesRequest {
     private Timestamp starts[];
     private Timestamp ends[];
 
-	
+    
     /** Create a name lookup.
       * @param pattern Regular expression pattern for the name.
     */
@@ -74,7 +74,7 @@ public class NamesRequest {
         this.ends     = new Timestamp[data.data.length];
         
         for(int i=0; i < data.data.length; i++) {   
-        	
+            
             PVStructure info = data.data[i];
             
             chNames[i]    = info.getStringField("name").get();   
@@ -101,19 +101,19 @@ public class NamesRequest {
     public final Timestamp[] getEnds() {
         return ends;
     }
-	
+    
     /** @return Returns a more or less useful string. */
     @Override public String toString() {
-		
+        
         StringBuffer result = new StringBuffer();
         result.append(String.format("Names with key %d matching '%s':\n",
                     key, pattern));
             
         for (int i=0; i < chNames.length; ++i) {
                 if (i>0) result.append(", ");
-		result.append('\'');
-		result.append(chNames[i]);
-		result.append('\'');
+        result.append('\'');
+        result.append(chNames[i]);
+        result.append('\'');
         }
         
         return result.toString();

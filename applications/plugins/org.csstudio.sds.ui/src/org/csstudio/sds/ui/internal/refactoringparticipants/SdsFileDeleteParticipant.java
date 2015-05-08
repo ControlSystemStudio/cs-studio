@@ -17,73 +17,73 @@ import org.eclipse.ui.part.FileEditorInput;
 
 public class SdsFileDeleteParticipant extends DeleteParticipant {
 
-	private IFile _deletedFile;
+    private IFile _deletedFile;
 
-	public SdsFileDeleteParticipant() {
-	}
+    public SdsFileDeleteParticipant() {
+    }
 
-	@Override
-	protected boolean initialize(Object element) {
-		if (element instanceof IFile) {
-			IFile file = (IFile) element;
-			if (file.getFileExtension().equalsIgnoreCase("css-sds")) {
-				_deletedFile = file;
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    protected boolean initialize(Object element) {
+        if (element instanceof IFile) {
+            IFile file = (IFile) element;
+            if (file.getFileExtension().equalsIgnoreCase("css-sds")) {
+                _deletedFile = file;
+                return true;
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public String getName() {
-		return "SDS File Delete Participant";
-	}
+    @Override
+    public String getName() {
+        return "SDS File Delete Participant";
+    }
 
-	@Override
-	public RefactoringStatus checkConditions(IProgressMonitor pm,
-			CheckConditionsContext context) throws OperationCanceledException {
-		RefactoringStatus status = new RefactoringStatus();
-		IWorkbenchPage activePage = findActiveWorkbenchPage();
-		final IEditorPart editor = findOpenEditor(activePage, _deletedFile);
-		if (editor != null) {
-			closeOpenEditor(activePage, editor);
-		}
-		return status;
-	}
+    @Override
+    public RefactoringStatus checkConditions(IProgressMonitor pm,
+            CheckConditionsContext context) throws OperationCanceledException {
+        RefactoringStatus status = new RefactoringStatus();
+        IWorkbenchPage activePage = findActiveWorkbenchPage();
+        final IEditorPart editor = findOpenEditor(activePage, _deletedFile);
+        if (editor != null) {
+            closeOpenEditor(activePage, editor);
+        }
+        return status;
+    }
 
-	private void closeOpenEditor(final IWorkbenchPage activePage, final IEditorPart editor) {
-		Display.getDefault().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				activePage.closeEditor(editor, false);
-			}
-		});
-	}
+    private void closeOpenEditor(final IWorkbenchPage activePage, final IEditorPart editor) {
+        Display.getDefault().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                activePage.closeEditor(editor, false);
+            }
+        });
+    }
 
-	private IEditorPart findOpenEditor(IWorkbenchPage activePage, IFile openFile) {
-		IEditorPart editor = activePage
-				.findEditor(new FileEditorInput(openFile));
-		if (editor != null) {
-			return editor;
-		}
-		return null;
-	}
+    private IEditorPart findOpenEditor(IWorkbenchPage activePage, IFile openFile) {
+        IEditorPart editor = activePage
+                .findEditor(new FileEditorInput(openFile));
+        if (editor != null) {
+            return editor;
+        }
+        return null;
+    }
 
-	private IWorkbenchPage findActiveWorkbenchPage() {
-		IWorkbenchWindow[] workbenchWindows = PlatformUI.getWorkbench()
-				.getWorkbenchWindows();
-		for (IWorkbenchWindow window : workbenchWindows) {
-			if (window.getActivePage() != null) {
-				return window.getActivePage();
-			}
-		}
-		return null;
-	}
+    private IWorkbenchPage findActiveWorkbenchPage() {
+        IWorkbenchWindow[] workbenchWindows = PlatformUI.getWorkbench()
+                .getWorkbenchWindows();
+        for (IWorkbenchWindow window : workbenchWindows) {
+            if (window.getActivePage() != null) {
+                return window.getActivePage();
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public Change createChange(IProgressMonitor pm) throws CoreException,
-			OperationCanceledException {
-		return null;
-	}
+    @Override
+    public Change createChange(IProgressMonitor pm) throws CoreException,
+            OperationCanceledException {
+        return null;
+    }
 
 }

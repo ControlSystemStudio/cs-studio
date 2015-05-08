@@ -33,46 +33,46 @@
  */
 public final class Credentials {
 
-	/**
-	 * The username.
-	 */
-	private String _username;
-	
-	/**
-	 * The password.
-	 */
-	private String _password;
-	
-	/**
-	 * Anonymous user's credentials
-	 */
-	final public static Credentials ANONYMOUS = 
-		new Credentials(null, null);
-	
-	/**
-	 * Creates a new {@code Credentials} object.
-	 * 
-	 * @param username the username.
-	 * @param password the password.
-	 */
-	public Credentials(String username, String password) {
-		this._username = username;
-		this._password = password;
-	}
-	
-	/**
-	 * Returns the username.
-	 * @return the username.
-	 */
-	public String getUsername() {
-		return _username;
-	}
-	
-	/**
-	 * Returns the password.
-	 * @return the password.
-	 */
-	public String getPassword() {
-		return _password;
-	}
+    /**
+     * The username.
+     */
+    private String _username;
+    
+    /**
+     * The password.
+     */
+    private String _password;
+    
+    /**
+     * Anonymous user's credentials
+     */
+    final public static Credentials ANONYMOUS = 
+        new Credentials(null, null);
+    
+    /**
+     * Creates a new {@code Credentials} object.
+     * 
+     * @param username the username.
+     * @param password the password.
+     */
+    public Credentials(String username, String password) {
+        this._username = username;
+        this._password = password;
+    }
+    
+    /**
+     * Returns the username.
+     * @return the username.
+     */
+    public String getUsername() {
+        return _username;
+    }
+    
+    /**
+     * Returns the password.
+     * @return the password.
+     */
+    public String getPassword() {
+        return _password;
+    }
 }

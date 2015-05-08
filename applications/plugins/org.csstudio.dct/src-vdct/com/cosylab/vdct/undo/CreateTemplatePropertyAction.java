@@ -37,17 +37,17 @@ import com.cosylab.vdct.inspector.InspectorManager;
  * @author 
  */
 public class CreateTemplatePropertyAction extends ActionObject {
-	protected Template object;
-	protected String name;
+    protected Template object;
+    protected String name;
 
-	private static final String nullString = "";	
+    private static final String nullString = "";    
 /**
  * Insert the method's description here.
  * Creation date: (3.5.2001 16:27:58)
  */
 public CreateTemplatePropertyAction(Template object, String name) {
-	this.object=object;
-	this.name=name;
+    this.object=object;
+    this.name=name;
 }
 /**
  * Insert the method's description here.
@@ -55,26 +55,26 @@ public CreateTemplatePropertyAction(Template object, String name) {
  * @return java.lang.String
  */
 public String getDescription() {
-	return "Create Template Property ["+object+"]("+name+")";
+    return "Create Template Property ["+object+"]("+name+")";
 }
 /**
  * This method was created in VisualAge.
  */
 protected void redoAction() {
-	object.getTemplateData().addProperty(name, nullString);
+    object.getTemplateData().addProperty(name, nullString);
 
-	object.updateTemplateFields();
-	InspectorManager.getInstance().updateObject(object);
-	object.unconditionalValidation();
+    object.updateTemplateFields();
+    InspectorManager.getInstance().updateObject(object);
+    object.unconditionalValidation();
 }
 /**
  * This method was created in VisualAge.
  */
 protected void undoAction() {
-	object.getTemplateData().removeProperty(name);
+    object.getTemplateData().removeProperty(name);
 
-	object.updateTemplateFields();
-	InspectorManager.getInstance().updateObject(object);
-	object.unconditionalValidation();
+    object.updateTemplateFields();
+    InspectorManager.getInstance().updateObject(object);
+    object.unconditionalValidation();
 }
 }

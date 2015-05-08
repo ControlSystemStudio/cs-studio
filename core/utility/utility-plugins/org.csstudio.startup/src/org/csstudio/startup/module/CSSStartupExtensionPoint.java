@@ -19,5 +19,5 @@ package org.csstudio.startup.module;
 public interface CSSStartupExtensionPoint
 {
     /** ID of the extension point for adding CSS startup modules */
-	public static final String NAME = "org.csstudio.startup.module"; //$NON-NLS-1$
+    public static final String NAME = "org.csstudio.startup.module"; //$NON-NLS-1$
 }

@@ -16,10 +16,10 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class ScriptExecutorDemo
 {
-	@Test
-	public void testScriptRunner() throws Exception
-	{
-		final ScriptInfo info = new ScriptInfo("Command 1", "notepad.exe");
-		ScriptExecutor.runWithPVs(info.getScript(), new ProcessVariable("pv1"));
-	}
+    @Test
+    public void testScriptRunner() throws Exception
+    {
+        final ScriptInfo info = new ScriptInfo("Command 1", "notepad.exe");
+        ScriptExecutor.runWithPVs(info.getScript(), new ProcessVariable("pv1"));
+    }
 }

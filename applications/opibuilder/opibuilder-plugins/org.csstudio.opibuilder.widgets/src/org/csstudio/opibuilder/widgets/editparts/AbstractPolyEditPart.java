@@ -44,108 +44,108 @@ import org.eclipse.gef.EditPart;
  * 
  */
 public abstract class AbstractPolyEditPart extends AbstractShapeEditPart {
-	
-	
-	@Override
-	public AbstractPolyModel getWidgetModel() {
-		return (AbstractPolyModel)getModel();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		super.registerPropertyChangeHandlers();
-				
-		// points
-		IWidgetPropertyChangeHandler pointsHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				Polyline polyline = (Polyline) refreshableFigure;
+    
+    
+    @Override
+    public AbstractPolyModel getWidgetModel() {
+        return (AbstractPolyModel)getModel();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        super.registerPropertyChangeHandlers();
+                
+        // points
+        IWidgetPropertyChangeHandler pointsHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                Polyline polyline = (Polyline) refreshableFigure;
 
-				PointList points = (PointList) newValue;
-				if(points.size() != polyline.getPoints().size()){
-					anchorMap = null;
-					//delete connections on deleted points
-					if(points.size() < polyline.getPoints().size()){
-						for(ConnectionModel conn : getWidgetModel().getSourceConnections()){
-							if(Integer.parseInt(conn.getSourceTerminal()) >= points.size()){
-								conn.disconnect();
-							}
-						}						
-						for(ConnectionModel conn : getWidgetModel().getTargetConnections()){
-							if(Integer.parseInt(conn.getTargetTerminal()) >= points.size()){
-								conn.disconnect();
-							}
-						}
-					}						
-				}
-				// deselect the widget (this refreshes the polypoint drag
-				// handles)
-				int selectionState = getSelected();
-				setSelected(EditPart.SELECTED_NONE);
+                PointList points = (PointList) newValue;
+                if(points.size() != polyline.getPoints().size()){
+                    anchorMap = null;
+                    //delete connections on deleted points
+                    if(points.size() < polyline.getPoints().size()){
+                        for(ConnectionModel conn : getWidgetModel().getSourceConnections()){
+                            if(Integer.parseInt(conn.getSourceTerminal()) >= points.size()){
+                                conn.disconnect();
+                            }
+                        }                        
+                        for(ConnectionModel conn : getWidgetModel().getTargetConnections()){
+                            if(Integer.parseInt(conn.getTargetTerminal()) >= points.size()){
+                                conn.disconnect();
+                            }
+                        }
+                    }                        
+                }
+                // deselect the widget (this refreshes the polypoint drag
+                // handles)
+                int selectionState = getSelected();
+                setSelected(EditPart.SELECTED_NONE);
 
-				polyline.setPoints(points);
-				doRefreshVisuals(polyline);
+                polyline.setPoints(points);
+                doRefreshVisuals(polyline);
 
-				// restore the selection state
-				setSelected(selectionState);
-				
-				return false;
-			}
-		};
-		setPropertyChangeHandler(AbstractPolyModel.PROP_POINTS, pointsHandler);
-		
-		
-		IWidgetPropertyChangeHandler rotationHandler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				getWidgetModel().setPoints(
-						PointsUtil.rotatePoints(getWidgetModel().getOriginalPoints().getCopy(), 
-								(Double)newValue), false);
-				return false;
-			}
-		};
-		
-		setPropertyChangeHandler(AbstractPolyModel.PROP_ROTATION, rotationHandler);
-		
-		
-	}
-	
-	@Override
-	public Polyline getFigure() {
-		return (Polyline) super.getFigure();
-	}
-	
-	
-	@Override
-	protected void fillAnchorMap() {
-		anchorMap = new HashMap<String, ConnectionAnchor>(getFigure().getPoints().size());
-		for(int i=0; i<getFigure().getPoints().size(); i++){
-			anchorMap.put(Integer.toString(i), new PolyGraphAnchor(getFigure(), i));
-		}
-	}
-	
-	
-	public static class PolyGraphAnchor extends AbstractConnectionAnchor {
-		private  int pointIndex;
-		private Polyline polyline;
-		public PolyGraphAnchor(final Polyline owner, final int pointIndex) {
-			setOwner(owner);
-			this.polyline = owner;
-			this.pointIndex = pointIndex;
-		}
+                // restore the selection state
+                setSelected(selectionState);
+                
+                return false;
+            }
+        };
+        setPropertyChangeHandler(AbstractPolyModel.PROP_POINTS, pointsHandler);
+        
+        
+        IWidgetPropertyChangeHandler rotationHandler = new IWidgetPropertyChangeHandler(){
+            public boolean handleChange(Object oldValue, Object newValue,
+                    IFigure figure) {
+                getWidgetModel().setPoints(
+                        PointsUtil.rotatePoints(getWidgetModel().getOriginalPoints().getCopy(), 
+                                (Double)newValue), false);
+                return false;
+            }
+        };
+        
+        setPropertyChangeHandler(AbstractPolyModel.PROP_ROTATION, rotationHandler);
+        
+        
+    }
+    
+    @Override
+    public Polyline getFigure() {
+        return (Polyline) super.getFigure();
+    }
+    
+    
+    @Override
+    protected void fillAnchorMap() {
+        anchorMap = new HashMap<String, ConnectionAnchor>(getFigure().getPoints().size());
+        for(int i=0; i<getFigure().getPoints().size(); i++){
+            anchorMap.put(Integer.toString(i), new PolyGraphAnchor(getFigure(), i));
+        }
+    }
+    
+    
+    public static class PolyGraphAnchor extends AbstractConnectionAnchor {
+        private  int pointIndex;
+        private Polyline polyline;
+        public PolyGraphAnchor(final Polyline owner, final int pointIndex) {
+            setOwner(owner);
+            this.polyline = owner;
+            this.pointIndex = pointIndex;
+        }
 
-		@Override
-		public Point getLocation(Point reference) {
-			Point p = polyline.getPoints().getPoint(pointIndex);
-			polyline.translateToAbsolute(p);
-			return p;
-		}
-		
-	}
-	
-	
+        @Override
+        public Point getLocation(Point reference) {
+            Point p = polyline.getPoints().getPoint(pointIndex);
+            polyline.translateToAbsolute(p);
+            return p;
+        }
+        
+    }
+    
+    
 }

@@ -151,11 +151,11 @@ public class PVTable implements PVTableModelListener
             }
 
             @Override
-			protected CellEditor getCellEditor(final Object element)
+            protected CellEditor getCellEditor(final Object element)
             {
-				return AutoCompleteUIHelper
-						.createAutoCompleteTextCellEditor(table, AutoCompleteTypes.PV);
-			}
+                return AutoCompleteUIHelper
+                        .createAutoCompleteTextCellEditor(table, AutoCompleteTypes.PV);
+            }
 
             @Override
             protected void setValue(final Object element, final Object value)

@@ -34,205 +34,205 @@ import de.desy.language.editor.core.ILanguageElements;
  * @version 0.1
  */
 public enum PredefinedMethods implements ILanguageElements {
-	/**
-	 * Performs a delay.
-	 */
-	delay("delay", (short) 1),
+    /**
+     * Performs a delay.
+     */
+    delay("delay", (short) 1),
 
-	/**
-	 * Clears event flags and causes associated event.
-	 */
-	efClear("efClear", (short) 1),
+    /**
+     * Clears event flags and causes associated event.
+     */
+    efClear("efClear", (short) 1),
 
-	/**
-	 * Sets event flags and causes associated event.
-	 */
-	efSet("efSet", (short) 1),
+    /**
+     * Sets event flags and causes associated event.
+     */
+    efSet("efSet", (short) 1),
 
-	/**
-	 * Checks if the flag was set.
-	 */
-	efTest("efTest", (short) 1),
+    /**
+     * Checks if the flag was set.
+     */
+    efTest("efTest", (short) 1),
 
-	/**
-	 * Test the flag, clears event flags and causes associated event.
-	 */
-	efTestAndClear("efTestAndClear", (short) 1),
+    /**
+     * Test the flag, clears event flags and causes associated event.
+     */
+    efTestAndClear("efTestAndClear", (short) 1),
 
-	/**
-	 * Value of specified macro name.
-	 */
-	macValueGet("macValueGet", (short) 1),
+    /**
+     * Value of specified macro name.
+     */
+    macValueGet("macValueGet", (short) 1),
 
-	/**
-	 * Assigns a variable to a PV.
-	 */
-	pvAssign("pvAssign", (short) 2),
+    /**
+     * Assigns a variable to a PV.
+     */
+    pvAssign("pvAssign", (short) 2),
 
-	/**
-	 * The count of assigned channels.
-	 */
-	pvAssignCount("pvAssignCount", (short) 0),
+    /**
+     * The count of assigned channels.
+     */
+    pvAssignCount("pvAssignCount", (short) 0),
 
-	/**
-	 * Checks if the variable is assigned to a PV.
-	 */
-	pvAssigned("pvAssigned", (short) 1),
+    /**
+     * Checks if the variable is assigned to a PV.
+     */
+    pvAssigned("pvAssigned", (short) 1),
 
-	/**
-	 * The count of associated channels.
-	 */
-	pvChannelCount("pvChannelCount", (short) 0),
+    /**
+     * The count of associated channels.
+     */
+    pvChannelCount("pvChannelCount", (short) 0),
 
-	/**
-	 * The count of connected channels.
-	 */
-	pvConnectCount("pvConnectCount", (short) 0),
+    /**
+     * The count of connected channels.
+     */
+    pvConnectCount("pvConnectCount", (short) 0),
 
-	/**
-	 * Checks if the variable is connected to a PV.
-	 */
-	pvConnected("pvConnected", (short) 1),
+    /**
+     * Checks if the variable is connected to a PV.
+     */
+    pvConnected("pvConnected", (short) 1),
 
-	/**
-	 * The count of associated variables to the pv.
-	 */
-	pvCount("pvCount", (short) 1),
+    /**
+     * The count of associated variables to the pv.
+     */
+    pvCount("pvCount", (short) 1),
 
-	/**
-	 * Flushes the PV layers buffer.
-	 */
-	pvFlush("pvFlush", (short) 0),
+    /**
+     * Flushes the PV layers buffer.
+     */
+    pvFlush("pvFlush", (short) 0),
 
-	/**
-	 * Clears the PV monitor queue.
-	 */
-	pvFreeQ("pvFreeQ", (short) 1),
+    /**
+     * Clears the PV monitor queue.
+     */
+    pvFreeQ("pvFreeQ", (short) 1),
 
-	/**
-	 * Gets a PV value.
-	 */
-	pvGet_Channel("pvGet", (short) 1),
+    /**
+     * Gets a PV value.
+     */
+    pvGet_Channel("pvGet", (short) 1),
 
-	/**
-	 * Gets a PV value in given Sync-Mode.
-	 */
-	pvGet_WithSyncState("pvGet", (short) 2),
+    /**
+     * Gets a PV value in given Sync-Mode.
+     */
+    pvGet_WithSyncState("pvGet", (short) 2),
 
-	/**
-	 * Gets a PV value.
-	 */
-	pvGetComplete_Channel("pvGetComplete", (short) 1),
+    /**
+     * Gets a PV value.
+     */
+    pvGetComplete_Channel("pvGetComplete", (short) 1),
 
-	/**
-	 * Gets a PV value (monitor queue).
-	 */
-	pvGetQ("pvGetQ", (short) 1),
+    /**
+     * Gets a PV value (monitor queue).
+     */
+    pvGetQ("pvGetQ", (short) 1),
 
-	/**
-	 * TODO What does this method ??
-	 */
-	pvIndex("pvIndex", (short) 1),
+    /**
+     * TODO What does this method ??
+     */
+    pvIndex("pvIndex", (short) 1),
 
-	/**
-	 * Monitors a PV.
-	 */
-	pvMonitor("pvMonitor", (short) 1),
+    /**
+     * Monitors a PV.
+     */
+    pvMonitor("pvMonitor", (short) 1),
 
-	/**
-	 * Puts a PV value back to channel.
-	 */
-	pvPut_Channel("pvPut", (short) 1),
+    /**
+     * Puts a PV value back to channel.
+     */
+    pvPut_Channel("pvPut", (short) 1),
 
-	/**
-	 * Puts a PV value back to channel in given sync-state.
-	 */
-	pvPut_WithSyncState("pvPut", (short) 2),
+    /**
+     * Puts a PV value back to channel in given sync-state.
+     */
+    pvPut_WithSyncState("pvPut", (short) 2),
 
-	/**
-	 * Puts a PV value back to channel.
-	 */
-	pvPutComplete("pvPutComplete", (short) 1),
+    /**
+     * Puts a PV value back to channel.
+     */
+    pvPutComplete("pvPutComplete", (short) 1),
 
-	/**
-	 * Puts a PV array-value back to channel.
-	 */
-	pvPutComplete_ArrayLong("pvPutComplete", (short) 2),
+    /**
+     * Puts a PV array-value back to channel.
+     */
+    pvPutComplete_ArrayLong("pvPutComplete", (short) 2),
 
-	/**
-	 * Puts a PV array-value back to channel.
-	 */
-	pvPutComplete_ArrayLongLong("pvPutComplete", (short) 3),
+    /**
+     * Puts a PV array-value back to channel.
+     */
+    pvPutComplete_ArrayLongLong("pvPutComplete", (short) 3),
 
-	/**
-	 * The alarm severity of this pv.
-	 */
-	pvSeverity("pvSeverity", (short) 1),
+    /**
+     * The alarm severity of this pv.
+     */
+    pvSeverity("pvSeverity", (short) 1),
 
-	/**
-	 * Returns the alarm state of to the pv.
-	 */
-	pvStatus("pvStatus", (short) 1),
+    /**
+     * Returns the alarm state of to the pv.
+     */
+    pvStatus("pvStatus", (short) 1),
 
-	/**
-	 * Stops monitoring a PV.
-	 */
-	pvStopMonitor("pvStopMonitor", (short) 1),
+    /**
+     * Stops monitoring a PV.
+     */
+    pvStopMonitor("pvStopMonitor", (short) 1),
 
-	/**
-	 * The time-stamp of the current value of this pv.
-	 */
-	pvTimeStamp("pvTimeStamp", (short) 1),
+    /**
+     * The time-stamp of the current value of this pv.
+     */
+    pvTimeStamp("pvTimeStamp", (short) 1),
 
-	/**
-	 * Prints the text.
-	 */
-	printf("printf", (short) 1),
+    /**
+     * Prints the text.
+     */
+    printf("printf", (short) 1),
 
-	/**
-	 * Prints the text.
-	 */
-	sprintf("sprintf", (short) 1);
+    /**
+     * Prints the text.
+     */
+    sprintf("sprintf", (short) 1);
 
-	/**
-	 * The name of the method (the beginning of the signature).
-	 */
-	private String _methodName;
+    /**
+     * The name of the method (the beginning of the signature).
+     */
+    private String _methodName;
 
-	/**
-	 * The number of required parameters.
-	 */
-	private short _paramCount;
+    /**
+     * The number of required parameters.
+     */
+    private short _paramCount;
 
-	/**
-	 * @param methodName
-	 *            The name of the method in the source.
-	 * @param parameterCount
-	 *            The count of parameters.
-	 */
-	PredefinedMethods(final String methodName, final short parameterCount) {
-		this._methodName = methodName;
-		this._paramCount = parameterCount;
-	}
+    /**
+     * @param methodName
+     *            The name of the method in the source.
+     * @param parameterCount
+     *            The count of parameters.
+     */
+    PredefinedMethods(final String methodName, final short parameterCount) {
+        this._methodName = methodName;
+        this._paramCount = parameterCount;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getElementName() {
-		return this.getMethodName();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getElementName() {
+        return this.getMethodName();
+    }
 
-	/**
-	 * Returns the name of the method (the beginning of the signature).
-	 */
-	public String getMethodName() {
-		return this._methodName;
-	}
+    /**
+     * Returns the name of the method (the beginning of the signature).
+     */
+    public String getMethodName() {
+        return this._methodName;
+    }
 
-	/**
-	 * The number of required parameters.
-	 */
-	public short getParamCount() {
-		return this._paramCount;
-	}
+    /**
+     * The number of required parameters.
+     */
+    public short getParamCount() {
+        return this._paramCount;
+    }
 }

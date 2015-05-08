@@ -45,143 +45,143 @@ import org.eclipse.gef.editparts.ZoomManager;
  */
 public final class LinkingContainerFigure extends Panel implements IAdaptable {
 
-	/**
-	 * The content pane of this widget.
-	 */
-	private final ScalableFreeformLayeredPane _pane;
-	/**
-	 * The zoom manager for this widget.
-	 */
-	private final ZoomManager _zoomManager;
+    /**
+     * The content pane of this widget.
+     */
+    private final ScalableFreeformLayeredPane _pane;
+    /**
+     * The zoom manager for this widget.
+     */
+    private final ZoomManager _zoomManager;
 
-	private final FreeformViewport _freeformViewport;
-	private boolean autoFit;
+    private final FreeformViewport _freeformViewport;
+    private boolean autoFit;
 
-	private final ScrollPane scrollpane;
+    private final ScrollPane scrollpane;
     private CrossedOutAdapter _crossedOutAdapter;
     private IRhombusEquippedWidget _rhombusAdapter;
-	/**
-	 * Constructor.
-	 */
-	public LinkingContainerFigure() {
-		final XYLayout layout = new XYLayout();
-		setLayoutManager(layout);
+    /**
+     * Constructor.
+     */
+    public LinkingContainerFigure() {
+        final XYLayout layout = new XYLayout();
+        setLayoutManager(layout);
 
-		scrollpane = new ScrollPane();
-		scrollpane.setScrollBarVisibility(ScrollPane.NEVER);
-		_freeformViewport = new FreeformViewport();
-		_freeformViewport.setSize(40,40);
-		scrollpane.setViewport(_freeformViewport);
-		add(scrollpane);
+        scrollpane = new ScrollPane();
+        scrollpane.setScrollBarVisibility(ScrollPane.NEVER);
+        _freeformViewport = new FreeformViewport();
+        _freeformViewport.setSize(40,40);
+        scrollpane.setViewport(_freeformViewport);
+        add(scrollpane);
 
-		_pane = new ScalableFreeformLayeredPane();
-		_pane.setLayoutManager(new FreeformLayout());
+        _pane = new ScalableFreeformLayeredPane();
+        _pane.setLayoutManager(new FreeformLayout());
 
-		scrollpane.setContents(_pane);
+        scrollpane.setContents(_pane);
 
-		_zoomManager = new ZoomManager(_pane, _freeformViewport);
+        _zoomManager = new ZoomManager(_pane, _freeformViewport);
 
-		setForegroundColor(ColorConstants.blue);
-		setOpaque(true);
+        setForegroundColor(ColorConstants.blue);
+        setOpaque(true);
 
-		addFigureListener(new FigureListener() {
-			public void figureMoved(final IFigure source) {
-				updateChildConstraints();
-				updateZoom();
-			}
+        addFigureListener(new FigureListener() {
+            public void figureMoved(final IFigure source) {
+                updateChildConstraints();
+                updateZoom();
+            }
 
-		});
+        });
 
-		updateChildConstraints();
-		updateZoom();
-	}
+        updateChildConstraints();
+        updateZoom();
+    }
 
-	@Override
-	public void paint(final Graphics graphics) {
-	    super.paint(graphics);
-	    _crossedOutAdapter.paint(graphics);
-	    _rhombusAdapter.paint(graphics);
-	}
+    @Override
+    public void paint(final Graphics graphics) {
+        super.paint(graphics);
+        _crossedOutAdapter.paint(graphics);
+        _rhombusAdapter.paint(graphics);
+    }
 
-	/**
-	 *
-	 *
-	 */
-	private void updateChildConstraints() {
-		final Rectangle figureBounds = getBounds();
+    /**
+     *
+     *
+     */
+    private void updateChildConstraints() {
+        final Rectangle figureBounds = getBounds();
 
-		Rectangle r = new Rectangle(0, 0, figureBounds.width
-				, figureBounds.height);
+        Rectangle r = new Rectangle(0, 0, figureBounds.width
+                , figureBounds.height);
 
-		_freeformViewport.setSize(r.width, r.height);
-		_pane.setSize(new Dimension(r.width, r.height));
-		setConstraint(scrollpane, r);
-	}
-
-
-	/**
-	 * Returns the content pane.
-	 *
-	 * @return IFigure The content pane.
-	 */
-	public LayeredPane getContentsPane() {
-		return _pane;
-	}
-
-	/**
-	 * Refreshes the zoom.
-	 */
-	public void updateZoom() {
-		_zoomManager.setZoom(1.0);
-
-		if (autoFit) {
-			_zoomManager.setZoomAsText(ZoomManager.FIT_ALL);
-		}
-	}
+        _freeformViewport.setSize(r.width, r.height);
+        _pane.setSize(new Dimension(r.width, r.height));
+        setConstraint(scrollpane, r);
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
+    /**
+     * Returns the content pane.
+     *
+     * @return IFigure The content pane.
+     */
+    public LayeredPane getContentsPane() {
+        return _pane;
+    }
+
+    /**
+     * Refreshes the zoom.
+     */
+    public void updateZoom() {
+        _zoomManager.setZoom(1.0);
+
+        if (autoFit) {
+            _zoomManager.setZoomAsText(ZoomManager.FIT_ALL);
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected boolean useLocalCoordinates() {
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * This method is a tribute to unit tests, which need a way to test the
-	 * performance of the figure implementation. Implementors should produce
-	 * some random changes and refresh the figure, when this method is called.
-	 *
-	 */
-	public void randomNoiseRefresh() {
-		// nothing to do yet
-	}
+    /**
+     * This method is a tribute to unit tests, which need a way to test the
+     * performance of the figure implementation. Implementors should produce
+     * some random changes and refresh the figure, when this method is called.
+     *
+     */
+    public void randomNoiseRefresh() {
+        // nothing to do yet
+    }
 
-	public void setAutoFit(final boolean autoFit) {
-		this.autoFit = autoFit;
-		updateZoom();
-	}
+    public void setAutoFit(final boolean autoFit) {
+        this.autoFit = autoFit;
+        updateZoom();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object getAdapter(final Class adapter) {
-		if (adapter == IBorderEquippedWidget.class) {
-			return new BorderAdapter(this);
-		}else  if (adapter == ICrossedFigure.class) {
-		    if(_crossedOutAdapter==null) {
-		        _crossedOutAdapter = new CrossedOutAdapter(this);
-		    }
+    /**
+     * {@inheritDoc}
+     */
+    public Object getAdapter(final Class adapter) {
+        if (adapter == IBorderEquippedWidget.class) {
+            return new BorderAdapter(this);
+        }else  if (adapter == ICrossedFigure.class) {
+            if(_crossedOutAdapter==null) {
+                _crossedOutAdapter = new CrossedOutAdapter(this);
+            }
             return _crossedOutAdapter;
-		}else  if (adapter == IRhombusEquippedWidget.class) {
-		    if(_rhombusAdapter==null) {
-		        _rhombusAdapter = new RhombusAdapter(this);
-		    }
-		    return _rhombusAdapter;
-		}
-		return null;
+        }else  if (adapter == IRhombusEquippedWidget.class) {
+            if(_rhombusAdapter==null) {
+                _rhombusAdapter = new RhombusAdapter(this);
+            }
+            return _rhombusAdapter;
+        }
+        return null;
 
-	}
+    }
 
 }

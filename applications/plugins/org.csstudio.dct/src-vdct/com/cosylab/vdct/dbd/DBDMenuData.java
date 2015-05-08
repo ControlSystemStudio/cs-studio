@@ -38,81 +38,81 @@ import org.csstudio.dct.metamodel.internal.Choice;
  * This type was created in VisualAge.
  */
 public class DBDMenuData {
-	protected String name;
-	protected Hashtable choices;
+    protected String name;
+    protected Hashtable choices;
 
-	private List<Choice> choicesForCssDct = new ArrayList<Choice>();
+    private List<Choice> choicesForCssDct = new ArrayList<Choice>();
 
-	/**
-	 * MenuData constructor comment.
-	 */
-	public DBDMenuData() {
-		choices = new Hashtable();
-	}
+    /**
+     * MenuData constructor comment.
+     */
+    public DBDMenuData() {
+        choices = new Hashtable();
+    }
 
-	/**
-	 * This method was created in VisualAge.
-	 * 
-	 * @param choice_name
-	 *            java.lang.String
-	 * @param choice_value
-	 *            java.lang.String
-	 */
-	public void addMenuChoice(String choice_name, String choice_value) {
-		if (!choices.containsKey(choice_name)) {
-			choices.put(choice_name, choice_value);
-			
-			// swende: insert at the end, to keep the original order
-			choicesForCssDct.add(choicesForCssDct.size(), new Choice(choice_name, choice_value));
-		}
-	}
+    /**
+     * This method was created in VisualAge.
+     * 
+     * @param choice_name
+     *            java.lang.String
+     * @param choice_value
+     *            java.lang.String
+     */
+    public void addMenuChoice(String choice_name, String choice_value) {
+        if (!choices.containsKey(choice_name)) {
+            choices.put(choice_name, choice_value);
+            
+            // swende: insert at the end, to keep the original order
+            choicesForCssDct.add(choicesForCssDct.size(), new Choice(choice_name, choice_value));
+        }
+    }
 
-	/**
-	 * This method was created in VisualAge.
-	 * 
-	 * @param value
-	 *            java.lang.String
-	 */
-	public boolean containsValue(String value) {
-		String val;
-		Enumeration e = choices.elements();
-		while (e.hasMoreElements()) {
-			val = e.nextElement().toString();
-			if (val.equals(value))
-				return true;
-		}
-		return false;
-	}
+    /**
+     * This method was created in VisualAge.
+     * 
+     * @param value
+     *            java.lang.String
+     */
+    public boolean containsValue(String value) {
+        String val;
+        Enumeration e = choices.elements();
+        while (e.hasMoreElements()) {
+            val = e.nextElement().toString();
+            if (val.equals(value))
+                return true;
+        }
+        return false;
+    }
 
-	/**
-	 * Insert the method's description here. Creation date: (9.12.2000 16:26:16)
-	 * 
-	 * @return java.util.Hashtable
-	 */
-	public java.util.Hashtable getChoices() {
-		return choices;
-	}
+    /**
+     * Insert the method's description here. Creation date: (9.12.2000 16:26:16)
+     * 
+     * @return java.util.Hashtable
+     */
+    public java.util.Hashtable getChoices() {
+        return choices;
+    }
 
-	/**
-	 * Insert the method's description here. Creation date: (9.12.2000 16:26:16)
-	 * 
-	 * @return java.lang.String
-	 */
-	public java.lang.String getName() {
-		return name;
-	}
+    /**
+     * Insert the method's description here. Creation date: (9.12.2000 16:26:16)
+     * 
+     * @return java.lang.String
+     */
+    public java.lang.String getName() {
+        return name;
+    }
 
-	/**
-	 * Insert the method's description here. Creation date: (9.12.2000 16:26:16)
-	 * 
-	 * @param newName
-	 *            java.lang.String
-	 */
-	public void setName(java.lang.String newName) {
-		name = newName;
-	}
-	
-	public List<Choice> getChoicesForCssDct() {
-		return choicesForCssDct;
-	}
+    /**
+     * Insert the method's description here. Creation date: (9.12.2000 16:26:16)
+     * 
+     * @param newName
+     *            java.lang.String
+     */
+    public void setName(java.lang.String newName) {
+        name = newName;
+    }
+    
+    public List<Choice> getChoicesForCssDct() {
+        return choicesForCssDct;
+    }
 }

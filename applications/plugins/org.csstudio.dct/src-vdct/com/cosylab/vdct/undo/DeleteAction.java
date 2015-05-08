@@ -39,7 +39,7 @@ public class DeleteAction extends CreateAction {
  * @param object com.cosylab.vdct.graphics.objects.VisibleObject
  */
 public DeleteAction(com.cosylab.vdct.graphics.objects.VisibleObject object) {
-	super(object);
+    super(object);
 }
 /**
  * Insert the method's description here.
@@ -47,18 +47,18 @@ public DeleteAction(com.cosylab.vdct.graphics.objects.VisibleObject object) {
  * @return java.lang.String
  */
 public String getDescription() {
-	return "Delete ["+object+"]("+x+", "+y+")";
+    return "Delete ["+object+"]("+x+", "+y+")";
 }
 /**
  * This method was created in VisualAge.
  */
 protected void redoAction() {
-	super.undoAction();
+    super.undoAction();
 }
 /**
  * This method was created in VisualAge.
  */
 protected void undoAction() {
-	super.redoAction();
+    super.redoAction();
 }
 }

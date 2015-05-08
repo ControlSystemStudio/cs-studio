@@ -43,31 +43,31 @@ public interface ScanContext
     public MacroContext getMacros();
 
     /** Get a device by (alias) name.
-	 *  @param name (Alias) name of the device.
-	 *  @return {@link Device} with that name
-	 *  @throws Exception when device name not known
-	 */
-	public Device getDevice(final String name) throws Exception;
+     *  @param name (Alias) name of the device.
+     *  @return {@link Device} with that name
+     *  @throws Exception when device name not known
+     */
+    public Device getDevice(final String name) throws Exception;
 
-	/** Set log mode
-	 *  @param automatic Should commands automatically log every change that they perform/observe?
-	 */
-	public void setLogMode(final boolean automatic);
+    /** Set log mode
+     *  @param automatic Should commands automatically log every change that they perform/observe?
+     */
+    public void setLogMode(final boolean automatic);
 
-	/** @return Should commands automatically log every change that they perform/observe?
-	 */
-	public boolean isAutomaticLogMode();
+    /** @return Should commands automatically log every change that they perform/observe?
+     */
+    public boolean isAutomaticLogMode();
 
-	/** Obtain the active data log.
-	 *
-	 *  <p>Only present while scan is being executed.
-	 *  Caller must NOT close this log.
-	 *
-	 *  @return {@link DataLog}
-	 */
-	abstract public Optional<DataLog> getDataLog();
+    /** Obtain the active data log.
+     *
+     *  <p>Only present while scan is being executed.
+     *  Caller must NOT close this log.
+     *
+     *  @return {@link DataLog}
+     */
+    abstract public Optional<DataLog> getDataLog();
 
-	/** Execute a list of commands
+    /** Execute a list of commands
      *  @param commands {@link ScanCommandImpl}s to execute
      *  @throws Exception on error in executing a command
      */
@@ -79,9 +79,9 @@ public interface ScanContext
      */
     abstract public void execute(final ScanCommandImpl<?> command) throws Exception;
 
-	/** Inform scan context that work has been performed.
-	 *  Meant to be called by {@link ScanCommandImpl}s
-	 *  @param work_units Number of performed work units
-	 */
+    /** Inform scan context that work has been performed.
+     *  Meant to be called by {@link ScanCommandImpl}s
+     *  @param work_units Number of performed work units
+     */
     public void workPerformed(final int work_units);
 }

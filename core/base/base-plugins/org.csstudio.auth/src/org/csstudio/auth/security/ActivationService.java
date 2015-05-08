@@ -57,220 +57,220 @@ import org.eclipse.core.runtime.Platform;
  * @author Kay Kasemir Weak Reference handling
  */
 public final class ActivationService implements IUserManagementListener,
-		IRightsManagementListener {
+        IRightsManagementListener {
 
-	/**
-	 * A HashMap which contains a ActivateableList under an ID.
-	 * 
-	 * Contains entries like
-	 *   "alarm_ack" -> ActivateableList { object, adapter }
-	 * for all the items that need to be enabled/disabled based on
-	 * the "alarm_ack" right.
-	 */
-	private final Map<String, ActivateableList> _activatesMap;
+    /**
+     * A HashMap which contains a ActivateableList under an ID.
+     * 
+     * Contains entries like
+     *   "alarm_ack" -> ActivateableList { object, adapter }
+     * for all the items that need to be enabled/disabled based on
+     * the "alarm_ack" right.
+     */
+    private final Map<String, ActivateableList> _activatesMap;
 
-	/**
-	 * The singleton instance of this class.
-	 */
-	private static ActivationService _instance;
+    /**
+     * The singleton instance of this class.
+     */
+    private static ActivationService _instance;
 
-	/**
-	 * Constructor of this class. Registers this ActivationManagement as
-	 * UserManagementListener and RightsManagementListener
-	 */
-	private ActivationService() {
-		_activatesMap = new HashMap<String, ActivateableList>();
-		SecurityFacade.getInstance().addUserManagementListener(this);
-		RightsManagementService.getInstance().addRightsManagementListener(this);
-	}
+    /**
+     * Constructor of this class. Registers this ActivationManagement as
+     * UserManagementListener and RightsManagementListener
+     */
+    private ActivationService() {
+        _activatesMap = new HashMap<String, ActivateableList>();
+        SecurityFacade.getInstance().addUserManagementListener(this);
+        RightsManagementService.getInstance().addRightsManagementListener(this);
+    }
 
-	/**
-	 * Returns the singleton instance of this class.
-	 * @return The singleton instance of this class
-	 */
-	public static ActivationService getInstance() {
-		if (_instance == null) {
-			_instance = new ActivationService();
-		}
-		return _instance;
-	}
+    /**
+     * Returns the singleton instance of this class.
+     * @return The singleton instance of this class
+     */
+    public static ActivationService getInstance() {
+        if (_instance == null) {
+            _instance = new ActivationService();
+        }
+        return _instance;
+    }
 
-	/**
-	 * Registers the given object with the given ID.
-	 * It is necessary that an {@link IActivationAdapter} is registered by the 
-	 * AdapterManager of the Platform or the object is an {@link IAdaptable} and
-	 * delivers an {@link IActivationAdapter}.
-	 * If no IActivationAdapter is found the registration is denied.
-	 * 
-	 * @param id
-	 *            The ID for the object
-	 * @param defaultRight
-	 *            An IRight as default value if the ID is unknown; can be null
-	 * @param object
-	 *            The object to manage
-	 * @throws NoActivationAdapterFoundException
-	 *             If no standard IActivationAdapter is available for the object
-	 */
-	public void registerObject(final String id, final String defaultRight,
-			final Object object) throws NoActivationAdapterFoundException {
-		IActivationAdapter standard = this.getActivationAdapter(object);
-		if (standard == null) {
-			throw new NoActivationAdapterFoundException(object.getClass());
-		} else {
-			this.registerWidget(id, defaultRight, object, standard);
-		}
-	}
-	
-	/**
-	 * Returns a IActivationAdapter for the object or null.
-	 * @param object
-	 * 			The object, which {@link IActivationAdapter} should be returned
-	 * @return IActivationAdapter
-	 * 			The IActivationAdapter for the object or null
-	 */
-	private IActivationAdapter getActivationAdapter(final Object object) {
-		IActivationAdapter adapter = null;
-		if (object instanceof IAdaptable) {
-			adapter = (IActivationAdapter) ((IAdaptable)object).getAdapter(IActivationAdapter.class);
-		}
-		if (adapter==null) {
-			adapter = (IActivationAdapter) Platform.getAdapterManager()
-				.getAdapter(object, IActivationAdapter.class);
-		}
-		return adapter;
-	}
-	
-	/**
-	 * Registers the given object.
-	 * Calls <i>registerOject(String, String, Object)</i>
-	 * @param id
-	 * 			The id for the object
-	 * @param object
-	 * 			The object to manage
-	 */
-	public void registerObject(final String id,	final Object object) {
-		registerObject(id, null, object);
-	}
+    /**
+     * Registers the given object with the given ID.
+     * It is necessary that an {@link IActivationAdapter} is registered by the 
+     * AdapterManager of the Platform or the object is an {@link IAdaptable} and
+     * delivers an {@link IActivationAdapter}.
+     * If no IActivationAdapter is found the registration is denied.
+     * 
+     * @param id
+     *            The ID for the object
+     * @param defaultRight
+     *            An IRight as default value if the ID is unknown; can be null
+     * @param object
+     *            The object to manage
+     * @throws NoActivationAdapterFoundException
+     *             If no standard IActivationAdapter is available for the object
+     */
+    public void registerObject(final String id, final String defaultRight,
+            final Object object) throws NoActivationAdapterFoundException {
+        IActivationAdapter standard = this.getActivationAdapter(object);
+        if (standard == null) {
+            throw new NoActivationAdapterFoundException(object.getClass());
+        } else {
+            this.registerWidget(id, defaultRight, object, standard);
+        }
+    }
+    
+    /**
+     * Returns a IActivationAdapter for the object or null.
+     * @param object
+     *             The object, which {@link IActivationAdapter} should be returned
+     * @return IActivationAdapter
+     *             The IActivationAdapter for the object or null
+     */
+    private IActivationAdapter getActivationAdapter(final Object object) {
+        IActivationAdapter adapter = null;
+        if (object instanceof IAdaptable) {
+            adapter = (IActivationAdapter) ((IAdaptable)object).getAdapter(IActivationAdapter.class);
+        }
+        if (adapter==null) {
+            adapter = (IActivationAdapter) Platform.getAdapterManager()
+                .getAdapter(object, IActivationAdapter.class);
+        }
+        return adapter;
+    }
+    
+    /**
+     * Registers the given object.
+     * Calls <i>registerOject(String, String, Object)</i>
+     * @param id
+     *             The id for the object
+     * @param object
+     *             The object to manage
+     */
+    public void registerObject(final String id,    final Object object) {
+        registerObject(id, null, object);
+    }
 
-	/**
-	 * Registers the given object with the given ID and the given
-	 * {@link IActivationAdapter}.
-	 * 
-	 * @param id
-	 *            The ID for the object
-	 * @param defaultRight
-	 *            An IRight as default value if the ID is unknown; can be null
-	 * @param object
-	 *            The object to manage
-	 * @param adapter
-	 *            The {@link IActivationAdapter} for the given object; must not be null
-	 */
-	public void registerWidget(final String id, final String defaultRight,
-			final Object object, final IActivationAdapter adapter) {
-		if (adapter == null) {
-			throw new NullPointerException("IActivationAdapter was null");
-		}
-		if (id != null) {
-			if (_activatesMap.containsKey(id)) {
-				ActivateableList liste = _activatesMap.get(id);
-				if (!liste.contains(object)) {
-					liste.addObject(object, adapter);
-					adapter.activate(object, SecurityFacade.getInstance()
-							.canExecute(id));
-				}
-			} else {
-				ActivateableList liste = new ActivateableList(defaultRight);
-				liste.addObject(object, adapter);
-				_activatesMap.put(id, liste);
-				adapter.activate(object, SecurityFacade.getInstance()
-						.canExecute(id));
-			}	
-		}
-	}
+    /**
+     * Registers the given object with the given ID and the given
+     * {@link IActivationAdapter}.
+     * 
+     * @param id
+     *            The ID for the object
+     * @param defaultRight
+     *            An IRight as default value if the ID is unknown; can be null
+     * @param object
+     *            The object to manage
+     * @param adapter
+     *            The {@link IActivationAdapter} for the given object; must not be null
+     */
+    public void registerWidget(final String id, final String defaultRight,
+            final Object object, final IActivationAdapter adapter) {
+        if (adapter == null) {
+            throw new NullPointerException("IActivationAdapter was null");
+        }
+        if (id != null) {
+            if (_activatesMap.containsKey(id)) {
+                ActivateableList liste = _activatesMap.get(id);
+                if (!liste.contains(object)) {
+                    liste.addObject(object, adapter);
+                    adapter.activate(object, SecurityFacade.getInstance()
+                            .canExecute(id));
+                }
+            } else {
+                ActivateableList liste = new ActivateableList(defaultRight);
+                liste.addObject(object, adapter);
+                _activatesMap.put(id, liste);
+                adapter.activate(object, SecurityFacade.getInstance()
+                        .canExecute(id));
+            }    
+        }
+    }
 
-	/**
-	 * Unregisters the given object.
-	 * 
-	 * @param id
-	 *            The ID, which was used to register the widget
-	 * @param object
-	 *            The object, which should be unregistered
-	 * @return True if the object could be unregistered; false otherwise
-	 */
-	public boolean unregisterObject(final String id, final Object object) {
-		if (_activatesMap.containsKey(id)) {
-			boolean bool = _activatesMap.get(id).removeObject(object);
-			if (_activatesMap.get(id).isEmpty()) {
-				_activatesMap.remove(id);
-			}
-			return bool;
-		} else {
-			return false;
-		}
-	}
+    /**
+     * Unregisters the given object.
+     * 
+     * @param id
+     *            The ID, which was used to register the widget
+     * @param object
+     *            The object, which should be unregistered
+     * @return True if the object could be unregistered; false otherwise
+     */
+    public boolean unregisterObject(final String id, final Object object) {
+        if (_activatesMap.containsKey(id)) {
+            boolean bool = _activatesMap.get(id).removeObject(object);
+            if (_activatesMap.get(id).isEmpty()) {
+                _activatesMap.remove(id);
+            }
+            return bool;
+        } else {
+            return false;
+        }
+    }
 
-	/**
-	 * Unregisters the given object.
-	 * 
-	 * @param object
-	 *            The object, which should be unregistered
-	 * @return True if the object could be unregistered; false otherwise
-	 */
-	public boolean unregisterObject(final Object object) {
-		boolean bool = false;
-		String[] keys = _activatesMap.keySet().toArray(new String[0]);
-		for (int i = 0; i < keys.length; i++) {
-			ActivateableList liste = _activatesMap.get(keys[i]);
-			if (liste.removeObject(object)) {
-				if (liste.isEmpty()) {
-					_activatesMap.remove(keys[i]);
-				}
-				bool = true;
-			}
-		}
-		return bool;
-	}
+    /**
+     * Unregisters the given object.
+     * 
+     * @param object
+     *            The object, which should be unregistered
+     * @return True if the object could be unregistered; false otherwise
+     */
+    public boolean unregisterObject(final Object object) {
+        boolean bool = false;
+        String[] keys = _activatesMap.keySet().toArray(new String[0]);
+        for (int i = 0; i < keys.length; i++) {
+            ActivateableList liste = _activatesMap.get(keys[i]);
+            if (liste.removeObject(object)) {
+                if (liste.isEmpty()) {
+                    _activatesMap.remove(keys[i]);
+                }
+                bool = true;
+            }
+        }
+        return bool;
+    }
 
-	/**
-	 * Disposes the current {@link ActivationService}. All registered objects
-	 * are removed and unregisters this {@link ActivationService} as 
-	 * UserManagementListener and RightsManagementListener
-	 */
-	public void dispose() {
-		SecurityFacade.getInstance().removeUserManagementListener(this);
-		RightsManagementService.getInstance().removeListener(this);
-		_activatesMap.clear();
-		_instance = null;
-	}
+    /**
+     * Disposes the current {@link ActivationService}. All registered objects
+     * are removed and unregisters this {@link ActivationService} as 
+     * UserManagementListener and RightsManagementListener
+     */
+    public void dispose() {
+        SecurityFacade.getInstance().removeUserManagementListener(this);
+        RightsManagementService.getInstance().removeListener(this);
+        _activatesMap.clear();
+        _instance = null;
+    }
 
-	/**
-	 * Checks all registered objects if they should be activated or deactivated.
-	 */
-	private void doRefreshState()
-	{
-	    final Set<String> key_set = _activatesMap.keySet();
+    /**
+     * Checks all registered objects if they should be activated or deactivated.
+     */
+    private void doRefreshState()
+    {
+        final Set<String> key_set = _activatesMap.keySet();
         final String keys[] = key_set.toArray(new String[key_set.size()]);
-		for (int i = 0; i < keys.length; ++i)
-		{
-			final ActivateableList activatable_list = _activatesMap.get(keys[i]);
+        for (int i = 0; i < keys.length; ++i)
+        {
+            final ActivateableList activatable_list = _activatesMap.get(keys[i]);
             final boolean activate =
                 SecurityFacade.getInstance().canExecute(keys[i]);
             activatable_list.activate(activate);
-		}
-	}
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void handleUserManagementEvent(UserManagementEvent event) {
-		this.doRefreshState();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void handleUserManagementEvent(UserManagementEvent event) {
+        this.doRefreshState();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void handleRightsManagementEvent(RightsManagementEvent event) {
-		this.doRefreshState();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void handleRightsManagementEvent(RightsManagementEvent event) {
+        this.doRefreshState();
+    }
 
 }

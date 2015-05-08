@@ -32,28 +32,28 @@ package org.csstudio.platform.internal.simpledal.converters;
  * 
  */
 class LongConverter implements IValueTypeConverter<Long> {
-	/**
-	 * {@inheritDoc}
-	 */
-	public Long convert(Object value) throws NumberFormatException {
-		Long result = 0l;
+    /**
+     * {@inheritDoc}
+     */
+    public Long convert(Object value) throws NumberFormatException {
+        Long result = 0l;
 
-		if (value != null) {
-			if (value instanceof Long) {
-				result = (Long) value;
-			} else if (value instanceof Number) {
-				Number n = (Number) value;
-				result = n.longValue();
-			} else {
-			    if(value.toString().matches("[-+]?0[xX].*")) {
-			        result = Long.parseLong(value.toString().replaceFirst("(\\+)?0[xX]", ""),16);
-			    }else {
-			        // TODO: discuss behavior for values in Exp format. 
-			        result = Long.parseLong(value.toString());
-			    }
-			}
-		}
-		assert result != null;
-		return result;
-	}
+        if (value != null) {
+            if (value instanceof Long) {
+                result = (Long) value;
+            } else if (value instanceof Number) {
+                Number n = (Number) value;
+                result = n.longValue();
+            } else {
+                if(value.toString().matches("[-+]?0[xX].*")) {
+                    result = Long.parseLong(value.toString().replaceFirst("(\\+)?0[xX]", ""),16);
+                }else {
+                    // TODO: discuss behavior for values in Exp format. 
+                    result = Long.parseLong(value.toString());
+                }
+            }
+        }
+        assert result != null;
+        return result;
+    }
 }

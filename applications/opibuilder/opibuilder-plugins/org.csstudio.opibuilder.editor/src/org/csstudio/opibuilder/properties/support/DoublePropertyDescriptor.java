@@ -36,29 +36,29 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  */
 public final class DoublePropertyDescriptor extends TextPropertyDescriptor {
 
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param id
-	 *            the id of the property
-	 * @param displayName
-	 *            the name to display for the property
-	 * @param category
-	 *            the category
-	 */
-	public DoublePropertyDescriptor(final Object id, final String displayName) {
-		super(id, displayName);
-	}
+    /**
+     * Standard constructor.
+     * 
+     * @param id
+     *            the id of the property
+     * @param displayName
+     *            the name to display for the property
+     * @param category
+     *            the category
+     */
+    public DoublePropertyDescriptor(final Object id, final String displayName) {
+        super(id, displayName);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CellEditor createPropertyEditor(final Composite parent) {
-		CellEditor editor = new DoubleCellEditor(parent);
-		if (getValidator() != null) {
-			editor.setValidator(getValidator());
-		}
-		return editor;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CellEditor createPropertyEditor(final Composite parent) {
+        CellEditor editor = new DoubleCellEditor(parent);
+        if (getValidator() != null) {
+            editor.setValidator(getValidator());
+        }
+        return editor;
+    }
 }

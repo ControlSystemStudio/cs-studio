@@ -26,10 +26,10 @@ import org.eclipse.osgi.util.NLS;
 @SuppressWarnings("nls")
 public class QueueManager implements Runnable
 {
-	/** Delay (millisecs) to wait after an error */
+    /** Delay (millisecs) to wait after an error */
     final private static int ERROR_DELAY_MS = 5000;
 
-	/** Code used to wake the queue manager; not spoken */
+    /** Code used to wake the queue manager; not spoken */
     final static private String MAGIC_EXIT_MESSAGE = "PleaseDoExitNow?!";
 
     final private JMSAnnunciatorListener listener;
@@ -70,33 +70,33 @@ public class QueueManager implements Runnable
         thread.start();
     }
 
-	/** method run is the code to be executed by new thread */
+    /** method run is the code to be executed by new thread */
     @Override
     public void run()
     {
         while (run)
         {
-        	Annunciator speech = null;
+            Annunciator speech = null;
             try
             {
                 // Create annunciator
-            	try {
-	                speech = AnnunciatorFactory.getAnnunciator();
-	                if (translations != null)
-	                    speech.setTranslations(translations);
-            	} catch (NoSoundCardAvailableException e) {
-            		if(enabled) {
-            			// If no sound card switched to silence mode
-            			enabled = false;
-            			listener.annunciatorError(e);
-            		}
-            	}
+                try {
+                    speech = AnnunciatorFactory.getAnnunciator();
+                    if (translations != null)
+                        speech.setTranslations(translations);
+                } catch (NoSoundCardAvailableException e) {
+                    if(enabled) {
+                        // If no sound card switched to silence mode
+                        enabled = false;
+                        listener.annunciatorError(e);
+                    }
+                }
 
                 while (run) // Wait for anybody to add messages to the queue
                 {
                     // Retrieves and removes the head of this queue, waiting if
                     // no elements are present on this queue.
-                	AnnunciationMessage qc = queue.poll();
+                    AnnunciationMessage qc = queue.poll();
                     String message = qc.getMessage();
 
                     // Exit requested?
@@ -122,7 +122,7 @@ public class QueueManager implements Runnable
                                 // Speak message off queue, then notify listener
                                 message = qc.getMessage();
                                 if(speech != null)
-                                	speech.say(message);
+                                    speech.say(message);
                                 listener.performedAnnunciation(qc);
                             }
                             else
@@ -132,7 +132,7 @@ public class QueueManager implements Runnable
                         {
                             final String more = NLS.bind(Messages.MoreMessagesFmt, flurry);
                             if(speech != null)
-                            	speech.say(more);
+                                speech.say(more);
                             listener.performedAnnunciation(new AnnunciationMessage(Severity.forInfo(), more));
                         }
                     }
@@ -143,11 +143,11 @@ public class QueueManager implements Runnable
                 listener.annunciatorError(ex);
                 try
                 {
-                	Thread.sleep(ERROR_DELAY_MS);
+                    Thread.sleep(ERROR_DELAY_MS);
                 }
                 catch (InterruptedException iex)
                 {
-                	// Ignore
+                    // Ignore
                 }
             }
             finally

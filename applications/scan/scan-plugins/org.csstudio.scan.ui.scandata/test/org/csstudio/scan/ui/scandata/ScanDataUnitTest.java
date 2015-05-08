@@ -22,55 +22,55 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class ScanDataUnitTest implements ScanDataModelListener
 {
-	final private CountDownLatch received_data = new CountDownLatch(1);
+    final private CountDownLatch received_data = new CountDownLatch(1);
 
-	/** @return The first scan we can find on the server */
+    /** @return The first scan we can find on the server */
     private ScanInfo findMeAScan() throws Exception
-	{
-		System.out.println("Looking for a scan...");
-		// Get some scan info
-		final ScanInfoModel model = ScanInfoModel.getInstance();
-		try
-		{	// Poll...
-			List<ScanInfo> scans = model.getInfos();
-			while (scans.size() < 1)
-			{
-				Thread.sleep(500);
-				scans = model.getInfos();
-			}
+    {
+        System.out.println("Looking for a scan...");
+        // Get some scan info
+        final ScanInfoModel model = ScanInfoModel.getInstance();
+        try
+        {    // Poll...
+            List<ScanInfo> scans = model.getInfos();
+            while (scans.size() < 1)
+            {
+                Thread.sleep(500);
+                scans = model.getInfos();
+            }
 
-			final ScanInfo scan = scans.get(0);
-			System.out.println("Found " + scan);
-			return scan;
-		}
-		finally
-		{
-			model.release();
-		}
-	}
+            final ScanInfo scan = scans.get(0);
+            System.out.println("Found " + scan);
+            return scan;
+        }
+        finally
+        {
+            model.release();
+        }
+    }
 
     /** Should receive a scan data update and NOT time out */
-	@Test(timeout=10000)
-	public void testScanData() throws Exception
-	{
-		final ScanInfo scan = findMeAScan();
+    @Test(timeout=10000)
+    public void testScanData() throws Exception
+    {
+        final ScanInfo scan = findMeAScan();
 
-		final ScanDataModel model = new ScanDataModel(scan.getId(), this);
-		try
-		{
-			received_data.await();
-		}
-		finally
-		{
-			model.release();
-		}
-	}
+        final ScanDataModel model = new ScanDataModel(scan.getId(), this);
+        try
+        {
+            received_data.await();
+        }
+        finally
+        {
+            model.release();
+        }
+    }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void updateScanData(final ScanData data)
     {
-		new ScanDataIterator(data).printTable(System.out);
-		received_data.countDown();
+        new ScanDataIterator(data).printTable(System.out);
+        received_data.countDown();
     }
 }

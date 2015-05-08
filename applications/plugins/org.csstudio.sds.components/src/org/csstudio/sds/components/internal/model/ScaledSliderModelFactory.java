@@ -12,19 +12,19 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  */
 public final class ScaledSliderModelFactory implements IWidgetModelFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractWidgetModel createWidgetModel() {
-		return new ScaledSliderModel();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractWidgetModel createWidgetModel() {
+        return new ScaledSliderModel();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class getWidgetModelType() {
-		return ScaledSliderModel.class;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class getWidgetModelType() {
+        return ScaledSliderModel.class;
+    }
 
 }

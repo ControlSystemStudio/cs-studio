@@ -19,8 +19,8 @@ public class BubbleGraph2DView extends AbstractGraph2DView<BubbleGraph2DWidget> 
 
     @Override
     protected BubbleGraph2DWidget createAbstractGraph2DWidget(
-	    Composite parent, int style) {
-	return new BubbleGraph2DWidget(parent, SWT.NONE);
+        Composite parent, int style) {
+    return new BubbleGraph2DWidget(parent, SWT.NONE);
     }
 
 }

@@ -33,9 +33,9 @@ package org.csstudio.dal;
  *    @see org.csstudio.dal.DynamicValueProperty
  */
 public interface NumericProperty<T,Ts> extends DynamicValueProperty<T>,
-	NumericSimpleProperty<T,Ts>
+    NumericSimpleProperty<T,Ts>
 {
-	//
+    //
 }
 
 /* __oOo__ */

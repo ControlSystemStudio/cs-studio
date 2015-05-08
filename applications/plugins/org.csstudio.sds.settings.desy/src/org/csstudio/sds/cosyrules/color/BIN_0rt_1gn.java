@@ -31,38 +31,38 @@ import org.csstudio.sds.util.ColorAndFontUtil;
  *
  */
 public final class BIN_0rt_1gn implements IRule {
-	/**
-	 * The ID for this rule.
-	 */
-	public static final String TYPE_ID = "cosyrules.color.bin_0rt_1gn";
+    /**
+     * The ID for this rule.
+     */
+    public static final String TYPE_ID = "cosyrules.color.bin_0rt_1gn";
 
-	/**
-	 * Standard constructor.
-	 */
-	public BIN_0rt_1gn() {
-	}
+    /**
+     * Standard constructor.
+     */
+    public BIN_0rt_1gn() {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object evaluate(final Object[] arguments) {
-		if ((arguments != null) && (arguments.length > 0)) {
-		    double d = 0.0;
+    /**
+     * {@inheritDoc}
+     */
+    public Object evaluate(final Object[] arguments) {
+        if ((arguments != null) && (arguments.length > 0)) {
+            double d = 0.0;
             if (arguments[0] instanceof Double) {
                  d = (Double) arguments[0];
             }else if (arguments[0] instanceof Long) {
                 d = ((Long)  arguments[0]).doubleValue();
             }
             if (Math.abs(d-0.00)<0.00001) {
-				return ColorAndFontUtil.toHex(253,0,0);
-			}
-			if ((d>=1.00) && (d<=65535.0)) {
-				return ColorAndFontUtil.toHex(30,187,0);
-			}
-		}
+                return ColorAndFontUtil.toHex(253,0,0);
+            }
+            if ((d>=1.00) && (d<=65535.0)) {
+                return ColorAndFontUtil.toHex(30,187,0);
+            }
+        }
 
-		return ColorAndFontUtil.toHex(0,0,0);
-	}
+        return ColorAndFontUtil.toHex(0,0,0);
+    }
 
     /**
      * {@inheritDoc}

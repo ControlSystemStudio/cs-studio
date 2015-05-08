@@ -12,52 +12,52 @@ import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.swt.dnd.DND;
 
 public class LibraryElementDropTargetListener extends
-		AbstractTransferDropTargetListener {
+        AbstractTransferDropTargetListener {
 
-	public LibraryElementDropTargetListener(EditPartViewer viewer) {
-		super(viewer, WidgetModelTransfer.getInstance());
-	}
-	
-	List<AbstractWidgetModel> widgets;
+    public LibraryElementDropTargetListener(EditPartViewer viewer) {
+        super(viewer, WidgetModelTransfer.getInstance());
+    }
+    
+    List<AbstractWidgetModel> widgets;
 
-	@Override
-	protected Request createTargetRequest() {
-		CreateRequest request = new CreateRequest();
-		CreationFactory creationFactory = new CreationFactory() {
+    @Override
+    protected Request createTargetRequest() {
+        CreateRequest request = new CreateRequest();
+        CreationFactory creationFactory = new CreationFactory() {
 
-			@Override
-			public Object getObjectType() {
-				return "List_AbstractWidgetModel";
-			}
+            @Override
+            public Object getObjectType() {
+                return "List_AbstractWidgetModel";
+            }
 
-			@Override
-			public Object getNewObject() {
-				return widgets;
-			}
-		};
-		request.setFactory(creationFactory);
-		
-		return request;
+            @Override
+            public Object getNewObject() {
+                return widgets;
+            }
+        };
+        request.setFactory(creationFactory);
+        
+        return request;
 
-	}
+    }
 
-	@Override
-	protected void updateTargetRequest() {
-		((CreateRequest) getTargetRequest())
-				.setLocation(getDropLocation());
-	}
+    @Override
+    protected void updateTargetRequest() {
+        ((CreateRequest) getTargetRequest())
+                .setLocation(getDropLocation());
+    }
 
-	@Override
-	protected void handleDragOver() {
-		getCurrentEvent().detail = DND.DROP_COPY;
-		super.handleDragOver();
-	}
+    @Override
+    protected void handleDragOver() {
+        getCurrentEvent().detail = DND.DROP_COPY;
+        super.handleDragOver();
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	protected void handleDrop() {
-		widgets = (List<AbstractWidgetModel>) getCurrentEvent().data;
-		getCurrentEvent().detail = DND.DROP_COPY;
-		super.handleDrop();
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    protected void handleDrop() {
+        widgets = (List<AbstractWidgetModel>) getCurrentEvent().data;
+        getCurrentEvent().detail = DND.DROP_COPY;
+        super.handleDrop();
+    }
 }

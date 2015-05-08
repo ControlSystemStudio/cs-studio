@@ -39,26 +39,26 @@ import org.slf4j.LoggerFactory;
 public final class TooltipProperty extends StringProperty {
     private static final Logger LOG = LoggerFactory.getLogger(TooltipProperty.class);
 
-	private AbstractWidgetModel widgetModel;
-	public TooltipProperty(String description, WidgetPropertyCategory category, String defaultValue, AbstractWidgetModel widgetModel) {
-		super(PropertyTypesEnum.PARAMSTRING, description, category, defaultValue);
-		this.widgetModel = widgetModel;
-	}
+    private AbstractWidgetModel widgetModel;
+    public TooltipProperty(String description, WidgetPropertyCategory category, String defaultValue, AbstractWidgetModel widgetModel) {
+        super(PropertyTypesEnum.PARAMSTRING, description, category, defaultValue);
+        this.widgetModel = widgetModel;
+    }
 
-	@Override
-	public String getTextForTooltip() {
-		String v = getPropertyValue();
-		String tooltip = "-";
+    @Override
+    public String getTextForTooltip() {
+        String v = getPropertyValue();
+        String tooltip = "-";
 
-		if (v != null && v.length() > 0) {
-			try {
-				tooltip = ChannelReferenceValidationUtil.createCanonicalName(v, widgetModel.getAllInheritedAliases());
-			} catch (ChannelReferenceValidationException e) {
-				LOG.debug("Aliases in \"" + v + "\" cannot be resolved, error message is: " + e.getMessage());
-				tooltip = v + "(not resolvable)";
-			}
-		}
+        if (v != null && v.length() > 0) {
+            try {
+                tooltip = ChannelReferenceValidationUtil.createCanonicalName(v, widgetModel.getAllInheritedAliases());
+            } catch (ChannelReferenceValidationException e) {
+                LOG.debug("Aliases in \"" + v + "\" cannot be resolved, error message is: " + e.getMessage());
+                tooltip = v + "(not resolvable)";
+            }
+        }
 
-		return tooltip;
-	}
+        return tooltip;
+    }
 }

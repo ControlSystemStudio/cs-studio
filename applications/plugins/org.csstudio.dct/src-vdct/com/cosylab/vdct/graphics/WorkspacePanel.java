@@ -47,32 +47,32 @@ public class WorkspacePanel extends PanelDecorator implements ComponentListener 
  * Creation date: (10.12.2000 12:34:33)
  */
 public WorkspacePanel() {
-	initialize();
+    initialize();
 }
 /**
  * WorkspacePanel constructor comment.
  * @param component com.cosylab.vdct.graphics.VisualComponent
  */
 public WorkspacePanel(VisualComponent component) {
-	super(component);
+    super(component);
 }
-	/**
-	 * Invoked when the component has been made invisible.
-	 */
+    /**
+     * Invoked when the component has been made invisible.
+     */
 public void componentHidden(ComponentEvent e) {}
-	/**
-	 * Invoked when the component's position changes.
-	 */
+    /**
+     * Invoked when the component's position changes.
+     */
 public void componentMoved(ComponentEvent e) {}
-	/**
-	 * Invoked when the component's size changes.
-	 */
+    /**
+     * Invoked when the component's size changes.
+     */
 public void componentResized(ComponentEvent e) {
-	getComponent().resize(0, 0, getWidth(), getHeight());
+    getComponent().resize(0, 0, getWidth(), getHeight());
 }
-	/**
-	 * Invoked when the component has been made visible.
-	 */
+    /**
+     * Invoked when the component has been made visible.
+     */
 public void componentShown(ComponentEvent e) {
 }
 /**
@@ -80,9 +80,9 @@ public void componentShown(ComponentEvent e) {
  * Creation date: (11.12.2000 15:44:25)
  */
 protected void initialize() {
-	addComponentListener(this);
-	MouseEventManager.getInstance().registerSubscreiber("WorkspacePanel", this);
-	CommandManager.getInstance().addCommand("NullCommand", new NullCommand(this));
+    addComponentListener(this);
+    MouseEventManager.getInstance().registerSubscreiber("WorkspacePanel", this);
+    CommandManager.getInstance().addCommand("NullCommand", new NullCommand(this));
 }
 
 /**
@@ -92,6 +92,6 @@ protected void initialize() {
  */
 
 protected void paintComponent(Graphics g) {
-	getComponent().draw(g);
+    getComponent().draw(g);
 }
 }

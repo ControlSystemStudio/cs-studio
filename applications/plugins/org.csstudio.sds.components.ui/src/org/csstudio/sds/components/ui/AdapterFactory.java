@@ -37,33 +37,33 @@ import org.eclipse.core.runtime.IAdapterFactory;
 @SuppressWarnings("rawtypes")
 public class AdapterFactory implements IAdapterFactory {
     @Override
-    public Class[] getAdapterList()	{
+    public Class[] getAdapterList()    {
         return new Class[] { ProcessVariableWithSamples.class };
     }
 
     @Override
     public Object getAdapter(final Object adaptableObject, final Class adapterType) {
-    	ProcessVariableWithSamples pv;
+        ProcessVariableWithSamples pv;
         if (adapterType == ProcessVariableWithSamples.class) {
-        	if (adaptableObject instanceof AdvancedSliderEditPart) {
-        		IValue[] samples = new IValue[1];
-        		samples [0] = ((AdvancedSliderEditPart)adaptableObject).getSample(0);
-				pv = new ProcessVariableWithSamples(((AdvancedSliderEditPart)adaptableObject).getName(), samples);
-				return pv;
-        	}
-        	if (adaptableObject instanceof MenuButtonEditPart) {
-        		IValue[] samples = new IValue[1];
-        		samples [0] = ((MenuButtonEditPart)adaptableObject).getSample(0);
-        		pv = new ProcessVariableWithSamples(((MenuButtonEditPart)adaptableObject).getName(), samples);
-        		return pv;
-        	}
-        	if (adaptableObject instanceof TextInputEditPart) {
-        		IValue[] samples = new IValue[1];
-        		samples [0] = ((TextInputEditPart)adaptableObject).getSample(0);
-        		pv = new ProcessVariableWithSamples(((TextInputEditPart)adaptableObject).getName(), samples);
-        		return pv;
-        	}
-		}
+            if (adaptableObject instanceof AdvancedSliderEditPart) {
+                IValue[] samples = new IValue[1];
+                samples [0] = ((AdvancedSliderEditPart)adaptableObject).getSample(0);
+                pv = new ProcessVariableWithSamples(((AdvancedSliderEditPart)adaptableObject).getName(), samples);
+                return pv;
+            }
+            if (adaptableObject instanceof MenuButtonEditPart) {
+                IValue[] samples = new IValue[1];
+                samples [0] = ((MenuButtonEditPart)adaptableObject).getSample(0);
+                pv = new ProcessVariableWithSamples(((MenuButtonEditPart)adaptableObject).getName(), samples);
+                return pv;
+            }
+            if (adaptableObject instanceof TextInputEditPart) {
+                IValue[] samples = new IValue[1];
+                samples [0] = ((TextInputEditPart)adaptableObject).getSample(0);
+                pv = new ProcessVariableWithSamples(((TextInputEditPart)adaptableObject).getName(), samples);
+                return pv;
+            }
+        }
         return null;
     }
 }

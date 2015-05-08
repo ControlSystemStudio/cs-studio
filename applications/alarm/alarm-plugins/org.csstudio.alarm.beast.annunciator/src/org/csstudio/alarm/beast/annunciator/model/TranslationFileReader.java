@@ -32,62 +32,62 @@ import org.csstudio.utility.speech.Translation;
 @SuppressWarnings("nls")
 class TranslationFileReader 
 {
-	/** Read translations from file
-	 *  @param filename File to parse
+    /** Read translations from file
+     *  @param filename File to parse
      *  @return Array of translations
-	 *  @throws Exception on error (file not found, parse error)
-	 */
+     *  @throws Exception on error (file not found, parse error)
+     */
     public static Translation[] getTranslations(
-	                        final String translations_file) throws Exception
-	{
-		final ArrayList<Translation> trans_arr = new ArrayList<Translation>();
-		
-		// Open the file 
-		final FileInputStream fstream = new FileInputStream(translations_file);
-		try {
-		    // Convert file into buffered reader which can read line-by-line
-			final DataInputStream in = new DataInputStream(fstream);
-			final BufferedReader br = new BufferedReader(new InputStreamReader(in));
+                            final String translations_file) throws Exception
+    {
+        final ArrayList<Translation> trans_arr = new ArrayList<Translation>();
+        
+        // Open the file 
+        final FileInputStream fstream = new FileInputStream(translations_file);
+        try {
+            // Convert file into buffered reader which can read line-by-line
+            final DataInputStream in = new DataInputStream(fstream);
+            final BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
-			String strLine;
-			int countLines = 0;
-			
-			// Read File Line By Line
-			while ((strLine = br.readLine()) != null) 
-			{
-			    // Count lines read from the file
-				countLines++;
-				
-				// Remove spaces
-				strLine = strLine.trim();
-				
-				// Skip comments
-				if (strLine.length() <= 0  ||
-				    strLine.startsWith("#"))
-					continue;
-				
-				// Expect some_regular_expression_pattern = translation
-				final int separator = strLine.indexOf("=");
-				if (separator < 0) {
-					br.close();
-					throw new Exception("Missing separator in line "
-							+ countLines);
-				}
-				// Add pattern & replacement to array of translations
-				final String pattern = strLine.substring(0, separator);
-				final String replacement = strLine.substring(separator + 1,
-						strLine.length());
-				trans_arr.add(new Translation(pattern, replacement));
-			}
-			br.close();
-		}
-		finally
-		{
-			// Close the input stream
-			fstream.close();
-		}
-		
-		// Convert array list into plain array
-		return trans_arr.toArray(new Translation[trans_arr.size()]);
-	}
+            String strLine;
+            int countLines = 0;
+            
+            // Read File Line By Line
+            while ((strLine = br.readLine()) != null) 
+            {
+                // Count lines read from the file
+                countLines++;
+                
+                // Remove spaces
+                strLine = strLine.trim();
+                
+                // Skip comments
+                if (strLine.length() <= 0  ||
+                    strLine.startsWith("#"))
+                    continue;
+                
+                // Expect some_regular_expression_pattern = translation
+                final int separator = strLine.indexOf("=");
+                if (separator < 0) {
+                    br.close();
+                    throw new Exception("Missing separator in line "
+                            + countLines);
+                }
+                // Add pattern & replacement to array of translations
+                final String pattern = strLine.substring(0, separator);
+                final String replacement = strLine.substring(separator + 1,
+                        strLine.length());
+                trans_arr.add(new Translation(pattern, replacement));
+            }
+            br.close();
+        }
+        finally
+        {
+            // Close the input stream
+            fstream.close();
+        }
+        
+        // Convert array list into plain array
+        return trans_arr.toArray(new Translation[trans_arr.size()]);
+    }
 }

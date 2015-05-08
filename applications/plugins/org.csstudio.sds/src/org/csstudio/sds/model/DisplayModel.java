@@ -40,128 +40,128 @@ import java.util.Map;
  * 
  */
 public final class DisplayModel extends ContainerModel {
-	/**
-	 * ID for the <i>Display Border Visibility</i> of the model.
-	 */
-	public static final String PROP_DISPLAY_BORDER_VISIBILITY = "display_border_visibility";
+    /**
+     * ID for the <i>Display Border Visibility</i> of the model.
+     */
+    public static final String PROP_DISPLAY_BORDER_VISIBILITY = "display_border_visibility";
 
-	public static final String PROP_GRID_ON = "grid_on";
-	public static final String PROP_RULER_ON = "ruler_on";
-	public static final String PROP_GEOMETRY_ON = "geometry_on";
-	public static final String PROP_OPEN_RELATIVE_ON = "open_relative_on";
+    public static final String PROP_GRID_ON = "grid_on";
+    public static final String PROP_RULER_ON = "ruler_on";
+    public static final String PROP_GEOMETRY_ON = "geometry_on";
+    public static final String PROP_OPEN_RELATIVE_ON = "open_relative_on";
 
-	/**
-	 * The runtime context. (This is transient and will not get persisted).
-	 */
-	private RuntimeContext runtimeContext;
+    /**
+     * The runtime context. (This is transient and will not get persisted).
+     */
+    private RuntimeContext runtimeContext;
 
-	
-	/**
-	 * Constructor.
-	 */
-	public DisplayModel(boolean parentChecksEnabled) {
-		super(parentChecksEnabled);
-	}
+    
+    /**
+     * Constructor.
+     */
+    public DisplayModel(boolean parentChecksEnabled) {
+        super(parentChecksEnabled);
+    }
 
-	/**
-	 * Standard constructor.
-	 */
-	public DisplayModel() {
-		super();
-		setWidth(800);
-		setHeight(600);
-	}
+    /**
+     * Standard constructor.
+     */
+    public DisplayModel() {
+        super();
+        setWidth(800);
+        setHeight(600);
+    }
 
-	@Override
-	public DisplayModel getRoot() {
-		return this;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void configureProperties() {
-		addBooleanProperty(PROP_DISPLAY_BORDER_VISIBILITY, 
-				"Show Display Border", WidgetPropertyCategory.BORDER, true, false);
-		addBooleanProperty(PROP_GRID_ON, "Grid Visible",
-				WidgetPropertyCategory.DISPLAY, false, false);
-		addBooleanProperty(PROP_RULER_ON, "Ruler Visible",
-				WidgetPropertyCategory.DISPLAY, false, false);
-		addBooleanProperty(PROP_GEOMETRY_ON, "Snap to Geometry activated",
-				WidgetPropertyCategory.DISPLAY, false, false);
-		addBooleanProperty(PROP_OPEN_RELATIVE_ON, "Open Relative",
-				WidgetPropertyCategory.POSITION, false, true, AbstractWidgetModel.PROP_POS_X);
-		
-		// .. hide properties
-		hideProperty(PROP_BORDER_COLOR, getTypeID());
-		hideProperty(PROP_BORDER_STYLE, getTypeID());
-		hideProperty(PROP_BORDER_WIDTH, getTypeID());
-		hideProperty(PROP_LAYER, getTypeID());
-		hideProperty(PROP_ENABLED, getTypeID());
-		hideProperty(PROP_TOOLTIP, getTypeID());
-		hideProperty(PROP_CURSOR, getTypeID());
-		hideProperty(PROP_GRID_ON, getTypeID());
-		hideProperty(PROP_RULER_ON, getTypeID());
-		hideProperty(PROP_GEOMETRY_ON, getTypeID());
-	}
+    @Override
+    public DisplayModel getRoot() {
+        return this;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configureProperties() {
+        addBooleanProperty(PROP_DISPLAY_BORDER_VISIBILITY, 
+                "Show Display Border", WidgetPropertyCategory.BORDER, true, false);
+        addBooleanProperty(PROP_GRID_ON, "Grid Visible",
+                WidgetPropertyCategory.DISPLAY, false, false);
+        addBooleanProperty(PROP_RULER_ON, "Ruler Visible",
+                WidgetPropertyCategory.DISPLAY, false, false);
+        addBooleanProperty(PROP_GEOMETRY_ON, "Snap to Geometry activated",
+                WidgetPropertyCategory.DISPLAY, false, false);
+        addBooleanProperty(PROP_OPEN_RELATIVE_ON, "Open Relative",
+                WidgetPropertyCategory.POSITION, false, true, AbstractWidgetModel.PROP_POS_X);
+        
+        // .. hide properties
+        hideProperty(PROP_BORDER_COLOR, getTypeID());
+        hideProperty(PROP_BORDER_STYLE, getTypeID());
+        hideProperty(PROP_BORDER_WIDTH, getTypeID());
+        hideProperty(PROP_LAYER, getTypeID());
+        hideProperty(PROP_ENABLED, getTypeID());
+        hideProperty(PROP_TOOLTIP, getTypeID());
+        hideProperty(PROP_CURSOR, getTypeID());
+        hideProperty(PROP_GRID_ON, getTypeID());
+        hideProperty(PROP_RULER_ON, getTypeID());
+        hideProperty(PROP_GEOMETRY_ON, getTypeID());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTypeID() {
-		return "display";
-	}
-	
-	public boolean getGridState() {
-		return getBooleanProperty(PROP_GRID_ON);
-	}
-	
-	public boolean getRulerState() {
-		return getBooleanProperty(PROP_RULER_ON);
-	}
-	
-	public boolean getGeometryState() {
-		return getBooleanProperty(PROP_GEOMETRY_ON);
-	}
-	
-	public boolean getOpenRelative() {
-		return getBooleanProperty(PROP_OPEN_RELATIVE_ON);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTypeID() {
+        return "display";
+    }
+    
+    public boolean getGridState() {
+        return getBooleanProperty(PROP_GRID_ON);
+    }
+    
+    public boolean getRulerState() {
+        return getBooleanProperty(PROP_RULER_ON);
+    }
+    
+    public boolean getGeometryState() {
+        return getBooleanProperty(PROP_GEOMETRY_ON);
+    }
+    
+    public boolean getOpenRelative() {
+        return getBooleanProperty(PROP_OPEN_RELATIVE_ON);
+    }
 
-	public RuntimeContext getRuntimeContext() {
-		return runtimeContext;
-	}
+    public RuntimeContext getRuntimeContext() {
+        return runtimeContext;
+    }
 
-	public void setRuntimeContext(RuntimeContext runtimeContext) {
-		this.runtimeContext = runtimeContext;
-	}
+    public void setRuntimeContext(RuntimeContext runtimeContext) {
+        this.runtimeContext = runtimeContext;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String getDefaultToolTip() {
-		return "";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getDefaultToolTip() {
+        return "";
+    }
 
-	@Override
-	public Map<String, String> getAliases() {
-		Map<String, String> aliases = new HashMap<String, String>();
+    @Override
+    public Map<String, String> getAliases() {
+        Map<String, String> aliases = new HashMap<String, String>();
 
-		if (runtimeContext != null && runtimeContext.getAliases() != null) {
-			aliases.putAll(runtimeContext.getAliases());
+        if (runtimeContext != null && runtimeContext.getAliases() != null) {
+            aliases.putAll(runtimeContext.getAliases());
 
-			Map<String, String> staticAliases = super.getAliases();
+            Map<String, String> staticAliases = super.getAliases();
 
-			if (staticAliases != null) {
-				aliases.putAll(staticAliases);
-			}
-		} else {
-			aliases = super.getAliases();
-		}
+            if (staticAliases != null) {
+                aliases.putAll(staticAliases);
+            }
+        } else {
+            aliases = super.getAliases();
+        }
 
-		return Collections.unmodifiableMap(aliases);
-	}
+        return Collections.unmodifiableMap(aliases);
+    }
 }

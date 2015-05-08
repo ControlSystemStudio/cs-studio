@@ -44,7 +44,7 @@ public abstract class WidgetPart {
     /**
      * The Widget that set the parameter from ADLWidget.
      */
-	protected String name = new String();
+    protected String name = new String();
     /**
      * The default constructor.
      * 
@@ -55,14 +55,14 @@ public abstract class WidgetPart {
     public WidgetPart(final ADLWidget widgetPart) throws WrongADLFormatException {
         init();
         if (!widgetPart.getType().startsWith(getName())){
-        	throw new WrongADLFormatException("part type does not match widget name(part type, widget name): (" 
-        			+widgetPart.getType() + ", " + getName() + ")");
+            throw new WrongADLFormatException("part type does not match widget name(part type, widget name): (" 
+                    +widgetPart.getType() + ", " + getName() + ")");
         }
         parseWidgetPart(widgetPart);
     }
 
     public WidgetPart(){
-    	init();
+        init();
     }
     /**
      * Initialization.
@@ -81,7 +81,7 @@ public abstract class WidgetPart {
 
 
     public String getName(){
-    	return name;
+        return name;
     }
  
 }

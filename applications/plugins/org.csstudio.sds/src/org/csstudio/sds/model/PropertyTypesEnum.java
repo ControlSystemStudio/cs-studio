@@ -41,216 +41,216 @@ import org.eclipse.swt.graphics.FontData;
  */
 public enum PropertyTypesEnum {
 
-	/**
-	 * An array of double values.
-	 */
-	DOUBLEARRAY("sds.doublearray", double[].class, ValueType.DOUBLE_SEQUENCE), //$NON-NLS-1$
+    /**
+     * An array of double values.
+     */
+    DOUBLEARRAY("sds.doublearray", double[].class, ValueType.DOUBLE_SEQUENCE), //$NON-NLS-1$
 
-	/**
-	 * An option.
-	 */
-	OPTION("sds.choiceoption", String.class, ValueType.STRING), //$NON-NLS-1$
-	
-	/**
-	 * An option.
-	 */
-	ARRAYOPTION("sds.option", Integer.class, ValueType.LONG), //$NON-NLS-1$
+    /**
+     * An option.
+     */
+    OPTION("sds.choiceoption", String.class, ValueType.STRING), //$NON-NLS-1$
+    
+    /**
+     * An option.
+     */
+    ARRAYOPTION("sds.option", Integer.class, ValueType.LONG), //$NON-NLS-1$
 
-	/**
-	 * A double value.
-	 */
-	DOUBLE("sds.double", Double.class, ValueType.DOUBLE), //$NON-NLS-1$
+    /**
+     * A double value.
+     */
+    DOUBLE("sds.double", Double.class, ValueType.DOUBLE), //$NON-NLS-1$
 
-	/**
-	 * An integer value.
-	 */
-	INTEGER("sds.integer", Integer.class, ValueType.LONG), //$NON-NLS-1$
+    /**
+     * An integer value.
+     */
+    INTEGER("sds.integer", Integer.class, ValueType.LONG), //$NON-NLS-1$
 
-	/**
-	 * A string.
-	 */
-	STRING("sds.string", String.class, ValueType.DOUBLE), //$NON-NLS-1$
+    /**
+     * A string.
+     */
+    STRING("sds.string", String.class, ValueType.DOUBLE), //$NON-NLS-1$
 
-	/**
-	 * A parameterized string.
-	 */
-	PARAMSTRING("sds.paramstring", String.class, ValueType.DOUBLE), //$NON-NLS-1$
+    /**
+     * A parameterized string.
+     */
+    PARAMSTRING("sds.paramstring", String.class, ValueType.DOUBLE), //$NON-NLS-1$
 
-	/**
-	 * A boolean.
-	 */
-	BOOLEAN("sds.boolean", Boolean.class, ValueType.DOUBLE), //$NON-NLS-1$
+    /**
+     * A boolean.
+     */
+    BOOLEAN("sds.boolean", Boolean.class, ValueType.DOUBLE), //$NON-NLS-1$
 
-	/**
-	 * A color.
-	 */
-	COLOR("sds.color", String.class, ValueType.LONG), //$NON-NLS-1$
+    /**
+     * A color.
+     */
+    COLOR("sds.color", String.class, ValueType.LONG), //$NON-NLS-1$
 
-	/**
-	 * A font.
-	 */
-	FONT("sds.font", FontData.class, ValueType.LONG), //$NON-NLS-1$
+    /**
+     * A font.
+     */
+    FONT("sds.font", FontData.class, ValueType.LONG), //$NON-NLS-1$
 
-	/**
-	 * A list of points (x/y).
-	 */
-	POINT_LIST("sds.pointlist", PointList.class, ValueType.LONG), //$NON-NLS-1$
+    /**
+     * A list of points (x/y).
+     */
+    POINT_LIST("sds.pointlist", PointList.class, ValueType.LONG), //$NON-NLS-1$
 
-	/**
-	 * A Map. The key and the value is a String
-	 */
-	MAP("sds.map", Map.class, ValueType.LONG),
+    /**
+     * A Map. The key and the value is a String
+     */
+    MAP("sds.map", Map.class, ValueType.LONG),
 
-	/**
-	 * A IResource.
-	 */
-	RESOURCE("sds.path", IPath.class, ValueType.LONG),
+    /**
+     * A IResource.
+     */
+    RESOURCE("sds.path", IPath.class, ValueType.LONG),
 
-	/**
-	 * A ProcessVariable.
-	 */
-	PROCESSVARIABLE("sds.pv", IProcessVariableAddress.class, ValueType.LONG),
+    /**
+     * A ProcessVariable.
+     */
+    PROCESSVARIABLE("sds.pv", IProcessVariableAddress.class, ValueType.LONG),
 
-	/**
-	 * A Action.
-	 */
-	ACTION("sds.action", ActionData.class, ValueType.LONG), 
-	
-	/**
-	 * A Behavior
-	 */
-	BEHAVIOR("sds.behavior", String.class, ValueType.STRING);
+    /**
+     * A Action.
+     */
+    ACTION("sds.action", ActionData.class, ValueType.LONG), 
+    
+    /**
+     * A Behavior
+     */
+    BEHAVIOR("sds.behavior", String.class, ValueType.STRING);
 
-	/**
-	 * The ID of the property type. Will be used as portable representation of
-	 * the created instance.
-	 */
-	private String _id;
+    /**
+     * The ID of the property type. Will be used as portable representation of
+     * the created instance.
+     */
+    private String _id;
 
-	/**
-	 * The Java type, which is expected for property values.
-	 */
-	@SuppressWarnings("unchecked")
-	private Class _javaType;
+    /**
+     * The Java type, which is expected for property values.
+     */
+    @SuppressWarnings("unchecked")
+    private Class _javaType;
 
-	/**
-	 * A hint for the necessary DAL property type.
-	 */
-	private ValueType _valueType;
+    /**
+     * A hint for the necessary DAL property type.
+     */
+    private ValueType _valueType;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param id
-	 *            The ID. Will be used as portable representation of the created
-	 *            instance.
-	 * @param javaType
-	 *            the Java type, which is expected for property values
-	 * @param valueType
-	 *            a hint for the necessary DAL property type
-	 */
-	@SuppressWarnings("unchecked")
-	private PropertyTypesEnum(final String id, final Class javaType,
-			final ValueType valueType) {
-		assert id != null;
-		assert javaType != null;
-		assert valueType != null;
-		_id = id;
-		_javaType = javaType;
-		_valueType = valueType;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param id
+     *            The ID. Will be used as portable representation of the created
+     *            instance.
+     * @param javaType
+     *            the Java type, which is expected for property values
+     * @param valueType
+     *            a hint for the necessary DAL property type
+     */
+    @SuppressWarnings("unchecked")
+    private PropertyTypesEnum(final String id, final Class javaType,
+            final ValueType valueType) {
+        assert id != null;
+        assert javaType != null;
+        assert valueType != null;
+        _id = id;
+        _javaType = javaType;
+        _valueType = valueType;
+    }
 
-	/**
-	 * Returns the Java type, which is expected for property values.
-	 * 
-	 * @return the Java type, which is expected for property values
-	 */
-	@SuppressWarnings("unchecked")
-	public Class getJavaType() {
-		return _javaType;
-	}
+    /**
+     * Returns the Java type, which is expected for property values.
+     * 
+     * @return the Java type, which is expected for property values
+     */
+    @SuppressWarnings("unchecked")
+    public Class getJavaType() {
+        return _javaType;
+    }
 
-	/**
-	 * Returns a hint for the necessary DAL property type.
-	 * 
-	 * @return a hint for the necessary DAL property type
-	 */
-	public ValueType getTypeHint() {
-		return _valueType;
-	}
+    /**
+     * Returns a hint for the necessary DAL property type.
+     * 
+     * @return a hint for the necessary DAL property type
+     */
+    public ValueType getTypeHint() {
+        return _valueType;
+    }
 
-	/**
-	 * @return An ID that allows for persisting and recreating instances of this
-	 *         class.
-	 */
-	public String toPortableString() {
-		return _id;
-	}
+    /**
+     * @return An ID that allows for persisting and recreating instances of this
+     *         class.
+     */
+    public String toPortableString() {
+        return _id;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		return _id;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return _id;
+    }
 
-	/**
-	 * A map that contains all instances of this class.
-	 */
-	private static Map<String, PropertyTypesEnum> _mapping;
+    /**
+     * A map that contains all instances of this class.
+     */
+    private static Map<String, PropertyTypesEnum> _mapping;
 
-	static {
-		_mapping = new HashMap<String, PropertyTypesEnum>();
+    static {
+        _mapping = new HashMap<String, PropertyTypesEnum>();
 
-		for (PropertyTypesEnum type : PropertyTypesEnum.values()) {
-			_mapping.put(type.toPortableString(), type);
-		}
-	}
+        for (PropertyTypesEnum type : PropertyTypesEnum.values()) {
+            _mapping.put(type.toPortableString(), type);
+        }
+    }
 
-	/**
-	 * Creates an instance of this class from a string representation.
-	 * 
-	 * @param portableString
-	 *            Required.
-	 * @return The instance that is represented by the string.
-	 * @throws Exception
-	 *             Thrown if the string does not represent an instance of this
-	 *             class.
-	 */
-	public static PropertyTypesEnum createFromPortable(
-			final String portableString) throws Exception {
-		assert portableString != null;
+    /**
+     * Creates an instance of this class from a string representation.
+     * 
+     * @param portableString
+     *            Required.
+     * @return The instance that is represented by the string.
+     * @throws Exception
+     *             Thrown if the string does not represent an instance of this
+     *             class.
+     */
+    public static PropertyTypesEnum createFromPortable(
+            final String portableString) throws Exception {
+        assert portableString != null;
 
-		PropertyTypesEnum result = _mapping.get(portableString);
+        PropertyTypesEnum result = _mapping.get(portableString);
 
-		if (result == null) {
-			throw new Exception(
-					"No type exists for the id " + portableString + "!"); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		
-		return result;
-	}
-	
-	/**
-	 * Creates an instance of this class from a java class.
-	 * 
-	 * @param type
-	 *            Required.
-	 * @return The instance that is represented by the class.
-	 * @throws RuntimeException
-	 *             Thrown if the class does not belong to an instance of this
-	 *             class.
-	 */
-	@SuppressWarnings("unchecked")
-	public static PropertyTypesEnum createFromJavaType(final Class type) throws RuntimeException {
-		for (PropertyTypesEnum pte : PropertyTypesEnum.values()) {
-			if (pte.getJavaType().equals(type)) {
-				return pte;
-			}
-		}
-		throw new RuntimeException(
-				"No type exists for the class " + type + "!"); //$NON-NLS-1$ //$NON-NLS-2$
-	}
+        if (result == null) {
+            throw new Exception(
+                    "No type exists for the id " + portableString + "!"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Creates an instance of this class from a java class.
+     * 
+     * @param type
+     *            Required.
+     * @return The instance that is represented by the class.
+     * @throws RuntimeException
+     *             Thrown if the class does not belong to an instance of this
+     *             class.
+     */
+    @SuppressWarnings("unchecked")
+    public static PropertyTypesEnum createFromJavaType(final Class type) throws RuntimeException {
+        for (PropertyTypesEnum pte : PropertyTypesEnum.values()) {
+            if (pte.getJavaType().equals(type)) {
+                return pte;
+            }
+        }
+        throw new RuntimeException(
+                "No type exists for the class " + type + "!"); //$NON-NLS-1$ //$NON-NLS-2$
+    }
 
 }

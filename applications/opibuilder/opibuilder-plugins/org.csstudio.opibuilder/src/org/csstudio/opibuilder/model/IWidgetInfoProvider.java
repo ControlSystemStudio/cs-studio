@@ -15,7 +15,7 @@ package org.csstudio.opibuilder.model;
  *
  */
 public interface IWidgetInfoProvider {
-	
-	public Object getInfo(String key);
+    
+    public Object getInfo(String key);
 
 }

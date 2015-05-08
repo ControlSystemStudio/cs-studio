@@ -37,83 +37,83 @@ import org.csstudio.dal.spi.PropertyFactory;
  * 
  */
 public final class DALPropertyFactoriesProvider {
-	/**
-	 * The singleton instance.
-	 */
-	private static DALPropertyFactoriesProvider _instance;
+    /**
+     * The singleton instance.
+     */
+    private static DALPropertyFactoriesProvider _instance;
 
-	/**
-	 * Cached property factories for DAL.
-	 */
-	private Map<ControlSystemEnum, PropertyFactory> _propertyFactories;
+    /**
+     * Cached property factories for DAL.
+     */
+    private Map<ControlSystemEnum, PropertyFactory> _propertyFactories;
 
-	/**
-	 * A DAL application context.
-	 */
-	private AbstractApplicationContext _applicationContext;
+    /**
+     * A DAL application context.
+     */
+    private AbstractApplicationContext _applicationContext;
 
-	/**
-	 * Constructor.
-	 */
-	private DALPropertyFactoriesProvider() {
-		_propertyFactories = new HashMap<ControlSystemEnum, PropertyFactory>();
-		_applicationContext = new CssApplicationContext("CSS"); //$NON-NLS-1$
-	}
+    /**
+     * Constructor.
+     */
+    private DALPropertyFactoriesProvider() {
+        _propertyFactories = new HashMap<ControlSystemEnum, PropertyFactory>();
+        _applicationContext = new CssApplicationContext("CSS"); //$NON-NLS-1$
+    }
 
 
     /**
-	 * Gets the singleton instance.
-	 * 
-	 * @return the singleton instance
-	 */
-	public static synchronized DALPropertyFactoriesProvider getInstance() {
-		if (_instance == null) {
-			_instance = new DALPropertyFactoriesProvider();
-		}
+     * Gets the singleton instance.
+     * 
+     * @return the singleton instance
+     */
+    public static synchronized DALPropertyFactoriesProvider getInstance() {
+        if (_instance == null) {
+            _instance = new DALPropertyFactoriesProvider();
+        }
 
-		return _instance;
-	}
+        return _instance;
+    }
 
-	/**
-	 * Returns a DAL {@link PropertyFactory} for the specified control system.
-	 * 
-	 * @param controlSystem
-	 *            the control system
-	 * 
-	 * @return a DAL property factory
-	 */
-	public synchronized PropertyFactory getPropertyFactory(ControlSystemEnum controlSystem) {
-		if (!controlSystem.isSupportedByDAL()) {
-			throw new IllegalArgumentException(
-					"Control System "
-							+ controlSystem
-							+ " is currently not supported by the data access layer (DAL).");
-		} else {
-			PropertyFactory result = _propertyFactories.get(controlSystem);
+    /**
+     * Returns a DAL {@link PropertyFactory} for the specified control system.
+     * 
+     * @param controlSystem
+     *            the control system
+     * 
+     * @return a DAL property factory
+     */
+    public synchronized PropertyFactory getPropertyFactory(ControlSystemEnum controlSystem) {
+        if (!controlSystem.isSupportedByDAL()) {
+            throw new IllegalArgumentException(
+                    "Control System "
+                            + controlSystem
+                            + " is currently not supported by the data access layer (DAL).");
+        } else {
+            PropertyFactory result = _propertyFactories.get(controlSystem);
 
-			if (result == null) {
-				
-				result = DefaultPropertyFactoryService
-						.getPropertyFactoryService().getPropertyFactory(
-								_applicationContext,
-								LinkPolicy.ASYNC_LINK_POLICY,
-								controlSystem.getResponsibleDalPlugId());
+            if (result == null) {
+                
+                result = DefaultPropertyFactoryService
+                        .getPropertyFactoryService().getPropertyFactory(
+                                _applicationContext,
+                                LinkPolicy.ASYNC_LINK_POLICY,
+                                controlSystem.getResponsibleDalPlugId());
 
-				_propertyFactories.put(controlSystem, result);
-			}
+                _propertyFactories.put(controlSystem, result);
+            }
 
-			return result;
-		}
-	}
+            return result;
+        }
+    }
 
-	
-	/**
-	 * Returns the {@link AbstractApplicationContext} to set properties
-	 * from DAL plugs to the configuration.
-	 * 
-	 * @return ApplicationContext
-	 */
-	public AbstractApplicationContext getApplicationContext() {
-	    return _applicationContext;
-	}
+    
+    /**
+     * Returns the {@link AbstractApplicationContext} to set properties
+     * from DAL plugs to the configuration.
+     * 
+     * @return ApplicationContext
+     */
+    public AbstractApplicationContext getApplicationContext() {
+        return _applicationContext;
+    }
 }

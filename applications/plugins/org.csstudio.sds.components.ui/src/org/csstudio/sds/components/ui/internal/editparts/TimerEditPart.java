@@ -53,167 +53,167 @@ public final class TimerEditPart extends AbstractWidgetEditPart {
 
     private static final Logger LOG = LoggerFactory.getLogger(TimerEditPart.class);
 
-	private long _lastExecution;
+    private long _lastExecution;
 
-	@SuppressWarnings("unchecked")
-	private ScheduledFuture _scheduledFuture1;
-	@SuppressWarnings("unchecked")
-	private ScheduledFuture _scheduledFuture2;
+    @SuppressWarnings("unchecked")
+    private ScheduledFuture _scheduledFuture1;
+    @SuppressWarnings("unchecked")
+    private ScheduledFuture _scheduledFuture2;
 
-	/**
-	 * The used {@link ScriptEngine}.
-	 */
-	private ScriptEngine _scriptEngine;
+    /**
+     * The used {@link ScriptEngine}.
+     */
+    private ScriptEngine _scriptEngine;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void activate() {
-		super.activate();
-		startScriptExecution();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void activate() {
+        super.activate();
+        startScriptExecution();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void deactivate() {
-		cancelScriptExecution();
-		super.deactivate();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		TimerModel timerModel = getTimerModel();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deactivate() {
+        cancelScriptExecution();
+        super.deactivate();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        TimerModel timerModel = getTimerModel();
 
-		RefreshableTimerFigure timerFigure = new RefreshableTimerFigure();
-		timerFigure.setVisible(timerModel.isVisible());
+        RefreshableTimerFigure timerFigure = new RefreshableTimerFigure();
+        timerFigure.setVisible(timerModel.isVisible());
 
-		return timerFigure;
-	}
+        return timerFigure;
+    }
 
-	/**
-	 * Return the associated {@link TimerModel}.
-	 * 
-	 * @return The TimerModel
-	 */
-	private TimerModel getTimerModel() {
-		return (TimerModel) this.getCastedModel();
-	}
+    /**
+     * Return the associated {@link TimerModel}.
+     * 
+     * @return The TimerModel
+     */
+    private TimerModel getTimerModel() {
+        return (TimerModel) this.getCastedModel();
+    }
 
-	/**
-	 * Configures the internal timer.
-	 */
-	private void startScriptExecution() {
-		final TimerModel model = this.getTimerModel();
+    /**
+     * Configures the internal timer.
+     */
+    private void startScriptExecution() {
+        final TimerModel model = this.getTimerModel();
 
-		if (model.isAccesible() && model.getDelay() > 0
-				&& model.getScriptPath() != null
-				&& getExecutionMode().equals(ExecutionMode.RUN_MODE)
-				&& _scheduledFuture1 == null && _scheduledFuture2 == null) {
+        if (model.isAccesible() && model.getDelay() > 0
+                && model.getScriptPath() != null
+                && getExecutionMode().equals(ExecutionMode.RUN_MODE)
+                && _scheduledFuture1 == null && _scheduledFuture2 == null) {
 
-			IPath path = model.getScriptPath();
-			if (!path.isEmpty()) {
-				IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(
-						path);
-				try {
-					// load the script
-					IScript script = new RunnableScript(file.getName(), file
-							.getContents());
-					_scriptEngine = new ScriptEngine(script);
+            IPath path = model.getScriptPath();
+            if (!path.isEmpty()) {
+                IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(
+                        path);
+                try {
+                    // load the script
+                    IScript script = new RunnableScript(file.getName(), file
+                            .getContents());
+                    _scriptEngine = new ScriptEngine(script);
 
-					// runnable for the script execution
-					Runnable r = new Runnable() {
+                    // runnable for the script execution
+                    Runnable r = new Runnable() {
 
-						public void run() {
-							if (_scriptEngine != null) {
-								Thread t = new Thread(new Runnable() {
-									public void run() {
-										_scriptEngine.processScript();
-									}
-								});
-								t.start();
+                        public void run() {
+                            if (_scriptEngine != null) {
+                                Thread t = new Thread(new Runnable() {
+                                    public void run() {
+                                        _scriptEngine.processScript();
+                                    }
+                                });
+                                t.start();
 
-								_lastExecution = System.currentTimeMillis();
-							}
-						}
-					};
+                                _lastExecution = System.currentTimeMillis();
+                            }
+                        }
+                    };
 
-					// runnable for updating the figure to see the progress
-					Runnable r2 = new Runnable() {
-						public void run() {
-							new CheckedUiRunnable() {
-								@Override
-								protected void doRunInUi() {
-									long t = System.currentTimeMillis()
-											- _lastExecution;
-									double p = Math.min(1.0, (double) t
-											/ model.getDelay());
-									RefreshableTimerFigure figure = (RefreshableTimerFigure) getFigure();
-									figure.setPercentage(p);
-								}
-							};
-						}
-					};
+                    // runnable for updating the figure to see the progress
+                    Runnable r2 = new Runnable() {
+                        public void run() {
+                            new CheckedUiRunnable() {
+                                @Override
+                                protected void doRunInUi() {
+                                    long t = System.currentTimeMillis()
+                                            - _lastExecution;
+                                    double p = Math.min(1.0, (double) t
+                                            / model.getDelay());
+                                    RefreshableTimerFigure figure = (RefreshableTimerFigure) getFigure();
+                                    figure.setPercentage(p);
+                                }
+                            };
+                        }
+                    };
 
-					_lastExecution = System.currentTimeMillis();
+                    _lastExecution = System.currentTimeMillis();
 
-					// schedule the runnables
-					_scheduledFuture1 = ExecutionService.getInstance()
-							.getScheduledExecutorService().scheduleAtFixedRate(
-									r, model.getDelay(), model.getDelay(),
-									TimeUnit.MILLISECONDS);
+                    // schedule the runnables
+                    _scheduledFuture1 = ExecutionService.getInstance()
+                            .getScheduledExecutorService().scheduleAtFixedRate(
+                                    r, model.getDelay(), model.getDelay(),
+                                    TimeUnit.MILLISECONDS);
 
-					_scheduledFuture2 = ExecutionService.getInstance()
-							.getScheduledExecutorService().scheduleAtFixedRate(
-									r2, 100, 100, TimeUnit.MILLISECONDS);
+                    _scheduledFuture2 = ExecutionService.getInstance()
+                            .getScheduledExecutorService().scheduleAtFixedRate(
+                                    r2, 100, 100, TimeUnit.MILLISECONDS);
 
-				} catch (Exception e) {
-					LOG.error("Could not start timer.");
-				}
-			}
-		}
-	}
+                } catch (Exception e) {
+                    LOG.error("Could not start timer.");
+                }
+            }
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
 
-				cancelScriptExecution();
-				startScriptExecution();
-				
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_ENABLED, handler);
-		setPropertyChangeHandler(TimerModel.PROP_DELAY, handler);
-		setPropertyChangeHandler(TimerModel.PROP_SCRIPT, handler);
-		setPropertyChangeHandler(TimerModel.PROP_ACCESS_GRANTED, handler);
-	}
+                cancelScriptExecution();
+                startScriptExecution();
+                
+                return true;
+            }
+        };
+        setPropertyChangeHandler(AbstractWidgetModel.PROP_ENABLED, handler);
+        setPropertyChangeHandler(TimerModel.PROP_DELAY, handler);
+        setPropertyChangeHandler(TimerModel.PROP_SCRIPT, handler);
+        setPropertyChangeHandler(TimerModel.PROP_ACCESS_GRANTED, handler);
+    }
 
 
 
-	private void cancelScriptExecution() {
-		_scriptEngine = null;
+    private void cancelScriptExecution() {
+        _scriptEngine = null;
 
-		if (_scheduledFuture1 != null) {
-			_scheduledFuture1.cancel(true);
-			_scheduledFuture1 = null;
-		}
-		if (_scheduledFuture2 != null) {
-			_scheduledFuture2.cancel(true);
-			_scheduledFuture2 = null;
-		}
+        if (_scheduledFuture1 != null) {
+            _scheduledFuture1.cancel(true);
+            _scheduledFuture1 = null;
+        }
+        if (_scheduledFuture2 != null) {
+            _scheduledFuture2.cancel(true);
+            _scheduledFuture2 = null;
+        }
 
-	}
+    }
 
 }

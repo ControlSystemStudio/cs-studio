@@ -15,27 +15,27 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class LaunchConfigWizardContentPage extends WizardPage
 {
-	final private LaunchConfigUI gui = new LaunchConfigUI(new LaunchConfig());
-	
-	public LaunchConfigWizardContentPage()
+    final private LaunchConfigUI gui = new LaunchConfigUI(new LaunchConfig());
+    
+    public LaunchConfigWizardContentPage()
     {
-	    super(Messages.LaunchConfigTitle);
-	    setTitle(Messages.LaunchConfigTitle);
-	    setDescription(Messages.ConfigureDescr);
+        super(Messages.LaunchConfigTitle);
+        setTitle(Messages.LaunchConfigTitle);
+        setDescription(Messages.ConfigureDescr);
     }
 
-	@Override
+    @Override
     public void createControl(final Composite parent)
     {
-		final Composite box = gui.createControl(parent);
-			
-		// Have to do this, see API of createControl()
-		setControl(box);
+        final Composite box = gui.createControl(parent);
+            
+        // Have to do this, see API of createControl()
+        setControl(box);
     }
-	
-	/** @return LaunchConfig that the user selected */
+    
+    /** @return LaunchConfig that the user selected */
     public LaunchConfig getConfig()
     {
-    	return gui.getConfig();
+        return gui.getConfig();
     }
 }

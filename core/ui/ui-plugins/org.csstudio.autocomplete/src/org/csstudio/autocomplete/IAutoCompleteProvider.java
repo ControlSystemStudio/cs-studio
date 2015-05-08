@@ -19,19 +19,19 @@ import org.csstudio.autocomplete.parser.ContentType;
  */
 public interface IAutoCompleteProvider {
 
-	/** @return <code>true</code> if provider handles this type of content */
-	public boolean accept(final ContentType type);
+    /** @return <code>true</code> if provider handles this type of content */
+    public boolean accept(final ContentType type);
 
-	/**
-	 * @return {@link AutoCompleteResult} matching the provided
-	 *         {@link ContentDescriptor}
-	 */
-	public AutoCompleteResult listResult(final ContentDescriptor desc,
-			final int limit);
+    /**
+     * @return {@link AutoCompleteResult} matching the provided
+     *         {@link ContentDescriptor}
+     */
+    public AutoCompleteResult listResult(final ContentDescriptor desc,
+            final int limit);
 
-	/**
-	 * Called by {@link AutoCompleteService} when the task is canceled.
-	 */
-	public void cancel();
+    /**
+     * Called by {@link AutoCompleteService} when the task is canceled.
+     */
+    public void cancel();
 
 }

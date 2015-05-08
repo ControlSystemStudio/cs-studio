@@ -32,7 +32,7 @@ import org.csstudio.dal.CommonDataTypes;
  */
 public interface MetaData
 {
-	/** @return Suggested lower display limit. */
+    /** @return Suggested lower display limit. */
     public double getDisplayLow();
 
     /** @return Suggested upper display limit. */

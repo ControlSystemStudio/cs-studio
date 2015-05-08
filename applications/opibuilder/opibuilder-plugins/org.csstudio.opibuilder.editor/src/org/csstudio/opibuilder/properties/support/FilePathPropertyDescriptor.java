@@ -47,64 +47,64 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  * @author Kai Meyer (original author), Xihui Chen (since import from SDS 2009/9) 
  */
 public class FilePathPropertyDescriptor extends TextPropertyDescriptor {
-	
-	/**
-	 * The accepted file extensions.
-	 */
-	private String[] _fileExtensions;
-	
-	private AbstractWidgetModel widgetModel;
-	
-	/**
-	 * Creates an property descriptor with the given id and display name.
-	 * 
-	 * @param id
-	 *            the id of the property
-	 * @param displayName
-	 *            the name to display for the property
-	 * @param widgetModel 
-	 * 			  the widget model which contains the property of this descriptor.
-	 * @param fileExtensions
-	 * 			  The accepted file extensions
-	 */
-	public FilePathPropertyDescriptor(final Object id, final String displayName, final AbstractWidgetModel widgetModel,
-			final String[] fileExtensions) {
-		super(id, displayName);
-		_fileExtensions = fileExtensions;
-		this.widgetModel = widgetModel;
-		this.setLabelProvider(new PathLabelProvider());
-	}
+    
+    /**
+     * The accepted file extensions.
+     */
+    private String[] _fileExtensions;
+    
+    private AbstractWidgetModel widgetModel;
+    
+    /**
+     * Creates an property descriptor with the given id and display name.
+     * 
+     * @param id
+     *            the id of the property
+     * @param displayName
+     *            the name to display for the property
+     * @param widgetModel 
+     *               the widget model which contains the property of this descriptor.
+     * @param fileExtensions
+     *               The accepted file extensions
+     */
+    public FilePathPropertyDescriptor(final Object id, final String displayName, final AbstractWidgetModel widgetModel,
+            final String[] fileExtensions) {
+        super(id, displayName);
+        _fileExtensions = fileExtensions;
+        this.widgetModel = widgetModel;
+        this.setLabelProvider(new PathLabelProvider());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CellEditor createPropertyEditor(final Composite parent) {
-		CellEditor editor = new FilePathCellEditor(parent, widgetModel, _fileExtensions);
-		if (getValidator() != null) {
-			editor.setValidator(getValidator());
-		}
-		return editor;
-	}
-	
-	/**
-	 * A label provider for a IResource.
-	 * 
-	 * @author Kai Meyer
-	 */
-	private final static class PathLabelProvider extends LabelProvider {
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public String getText(final Object element) {
-			if (element instanceof IPath) {
-				IPath path = (IPath) element;
-				return path.toString();
-			} else {
-				return element.toString();
-			}
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CellEditor createPropertyEditor(final Composite parent) {
+        CellEditor editor = new FilePathCellEditor(parent, widgetModel, _fileExtensions);
+        if (getValidator() != null) {
+            editor.setValidator(getValidator());
+        }
+        return editor;
+    }
+    
+    /**
+     * A label provider for a IResource.
+     * 
+     * @author Kai Meyer
+     */
+    private final static class PathLabelProvider extends LabelProvider {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String getText(final Object element) {
+            if (element instanceof IPath) {
+                IPath path = (IPath) element;
+                return path.toString();
+            } else {
+                return element.toString();
+            }
+        }
 
-	}
+    }
 }

@@ -32,18 +32,18 @@ import org.eclipse.draw2d.IFigure;
  * 
  */
 public interface IWidgetPropertyChangeHandler {
-	/**
-	 * Handle the change of an widget property by applying graphical operations
-	 * to the given figure.
-	 * 
-	 * @param oldValue
-	 *            The old property value.
-	 * @param newValue
-	 *            The new property value.
-	 * @param figure
-	 *            The figure to apply graphical operations to.
-	 * @return Not used. Reserved for future use.
-	 */
-	boolean handleChange(Object oldValue, Object newValue,
-			IFigure figure);
+    /**
+     * Handle the change of an widget property by applying graphical operations
+     * to the given figure.
+     * 
+     * @param oldValue
+     *            The old property value.
+     * @param newValue
+     *            The new property value.
+     * @param figure
+     *            The figure to apply graphical operations to.
+     * @return Not used. Reserved for future use.
+     */
+    boolean handleChange(Object oldValue, Object newValue,
+            IFigure figure);
 }

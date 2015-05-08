@@ -51,136 +51,136 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class ScriptDocumentProvider extends AbstractDocumentProvider {
-	
+    
     private static final Logger LOG = LoggerFactory.getLogger(ScriptDocumentProvider.class);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IAnnotationModel createAnnotationModel(Object element)
-			throws CoreException {
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IAnnotationModel createAnnotationModel(Object element)
+            throws CoreException {
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IRunnableContext getOperationRunner(IProgressMonitor monitor) {
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IRunnableContext getOperationRunner(IProgressMonitor monitor) {
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isModifiable(Object element) {
-		return true;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isModifiable(Object element) {
+        return true;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isReadOnly(Object element) {
-		return false;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isReadOnly(Object element) {
+        return false;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IDocument createDocument(Object element) throws CoreException {
-		if (element instanceof IEditorInput) {
-			IDocument document = new Document();
-			if (setDocumentContent(document, (IEditorInput) element)) {
-				return document;
-			}
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IDocument createDocument(Object element) throws CoreException {
+        if (element instanceof IEditorInput) {
+            IDocument document = new Document();
+            if (setDocumentContent(document, (IEditorInput) element)) {
+                return document;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 * Set the document content.
-	 * 
-	 * @param document
-	 *            target document.
-	 * @param editorInput
-	 *            the editor input to fetch the content from.
-	 * @return true, if the content could be set.
-	 * @throws CoreException
-	 *             if an error occurred.
-	 */
-	protected boolean setDocumentContent(IDocument document,
-			IEditorInput editorInput) throws CoreException {
+    /**
+     * Set the document content.
+     * 
+     * @param document
+     *            target document.
+     * @param editorInput
+     *            the editor input to fetch the content from.
+     * @return true, if the content could be set.
+     * @throws CoreException
+     *             if an error occurred.
+     */
+    protected boolean setDocumentContent(IDocument document,
+            IEditorInput editorInput) throws CoreException {
 
-		boolean result = false;
+        boolean result = false;
 
-		if (editorInput instanceof FileEditorInput) {
-			IFile file = ((FileEditorInput) editorInput).getFile();
+        if (editorInput instanceof FileEditorInput) {
+            IFile file = ((FileEditorInput) editorInput).getFile();
 
-			InputStreamReader inReader = new InputStreamReader(file
-					.getContents());
-			StringBuffer buffer = new StringBuffer();
+            InputStreamReader inReader = new InputStreamReader(file
+                    .getContents());
+            StringBuffer buffer = new StringBuffer();
 
-			try {
-				char[] readBuffer = new char[2048];
-				int n = inReader.read(readBuffer);
-				while (n > 0) {
-					buffer.append(readBuffer, 0, n);
-					n = inReader.read(readBuffer);
-				}
+            try {
+                char[] readBuffer = new char[2048];
+                int n = inReader.read(readBuffer);
+                while (n > 0) {
+                    buffer.append(readBuffer, 0, n);
+                    n = inReader.read(readBuffer);
+                }
 
-				document.set(buffer.toString());
-				result = true;
-			} catch (IOException e) {
-				LOG.error(e.toString());
-			} finally {
-				try {
-					inReader.close();
-				} catch (IOException e) {
-					LOG.error(e.toString());
-				}
-			}
-		}
+                document.set(buffer.toString());
+                result = true;
+            } catch (IOException e) {
+                LOG.error(e.toString());
+            } finally {
+                try {
+                    inReader.close();
+                } catch (IOException e) {
+                    LOG.error(e.toString());
+                }
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doSaveDocument(IProgressMonitor monitor, Object element,
-			IDocument document, boolean overwrite) throws CoreException {
-		try {
-			if (element instanceof FileEditorInput) {
-				ByteArrayInputStream bais = new ByteArrayInputStream(document
-						.get().getBytes());
-				((FileEditorInput) element).getFile().setContents(bais, false,
-						false, null);
-				monitor.done();
-			} else if (element instanceof FileStoreEditorInput) {
-				File file = URIUtil.toPath(
-						((FileStoreEditorInput) element).getURI()).toFile();
-				String content = document.get();
-				try {
-					FileWriter fileWriter = new FileWriter(file, false);
-					BufferedWriter writer = new BufferedWriter(fileWriter);
-					writer.write(content);
-					writer.flush();
-					writer.close();
-					monitor.done();
-				} catch (IOException e) {
-					LOG.error(e.toString());
-					monitor.setCanceled(true);
-				}
-			}
-		} catch (CoreException e) {
-			LOG.error(e.toString());
-			monitor.setCanceled(true);
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doSaveDocument(IProgressMonitor monitor, Object element,
+            IDocument document, boolean overwrite) throws CoreException {
+        try {
+            if (element instanceof FileEditorInput) {
+                ByteArrayInputStream bais = new ByteArrayInputStream(document
+                        .get().getBytes());
+                ((FileEditorInput) element).getFile().setContents(bais, false,
+                        false, null);
+                monitor.done();
+            } else if (element instanceof FileStoreEditorInput) {
+                File file = URIUtil.toPath(
+                        ((FileStoreEditorInput) element).getURI()).toFile();
+                String content = document.get();
+                try {
+                    FileWriter fileWriter = new FileWriter(file, false);
+                    BufferedWriter writer = new BufferedWriter(fileWriter);
+                    writer.write(content);
+                    writer.flush();
+                    writer.close();
+                    monitor.done();
+                } catch (IOException e) {
+                    LOG.error(e.toString());
+                    monitor.setCanceled(true);
+                }
+            }
+        } catch (CoreException e) {
+            LOG.error(e.toString());
+            monitor.setCanceled(true);
+        }
+    }
 }

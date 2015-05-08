@@ -31,18 +31,18 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  * @author jbercic
  */
 public final class ArcModelFactory implements IWidgetModelFactory {
-	
-	/**
-	 * {@inheritDoc}.
-	 */
-	public AbstractWidgetModel createWidgetModel() {
-		return new ArcModel();
-	}
+    
+    /**
+     * {@inheritDoc}.
+     */
+    public AbstractWidgetModel createWidgetModel() {
+        return new ArcModel();
+    }
 
-	/**
-	 * {@inheritDoc}.
-	 */
-	public Class getWidgetModelType() {
-		return ArcModel.class;
-	}
+    /**
+     * {@inheritDoc}.
+     */
+    public Class getWidgetModelType() {
+        return ArcModel.class;
+    }
 }

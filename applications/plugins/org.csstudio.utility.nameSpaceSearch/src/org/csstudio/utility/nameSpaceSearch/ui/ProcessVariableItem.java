@@ -25,19 +25,19 @@ import org.csstudio.csdata.ProcessVariable;
 
 public class ProcessVariableItem extends ProcessVariable {
 
-	private static final long serialVersionUID = 39208429632981409L;
-	private String[] path;
+    private static final long serialVersionUID = 39208429632981409L;
+    private String[] path;
 
-	public ProcessVariableItem(String name, String[] path) {
-		super(name);
-		this.path = path;
-	}
+    public ProcessVariableItem(String name, String[] path) {
+        super(name);
+        this.path = path;
+    }
 
-	public String[] getPath() {
-		return path;
-	}
+    public String[] getPath() {
+        return path;
+    }
 
-	public Object getAdapter(Class adapter) {
-		return null;
-	}
+    public Object getAdapter(Class adapter) {
+        return null;
+    }
 }

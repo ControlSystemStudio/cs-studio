@@ -47,59 +47,59 @@ import org.eclipse.gef.requests.GroupRequest;
  * 
  */
 public abstract class AbstractWidgetEditPart extends AbstractBaseEditPart implements
-		NodeEditPart {
+        NodeEditPart {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected final void createEditPolicies() {
-		installEditPolicy(EditPolicy.COMPONENT_ROLE, new ComponentEditPolicy() {
-			@Override
-			protected Command createDeleteCommand(
-					final GroupRequest deleteRequest) {
-				ContainerModel model = (ContainerModel) getHost().getParent()
-						.getModel();
-				AbstractWidgetModel widgetModel = (AbstractWidgetModel) getHost()
-						.getModel();
-				return new DeleteWidgetsCommand(getViewer(), model, Arrays.asList(widgetModel));
-			}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected final void createEditPolicies() {
+        installEditPolicy(EditPolicy.COMPONENT_ROLE, new ComponentEditPolicy() {
+            @Override
+            protected Command createDeleteCommand(
+                    final GroupRequest deleteRequest) {
+                ContainerModel model = (ContainerModel) getHost().getParent()
+                        .getModel();
+                AbstractWidgetModel widgetModel = (AbstractWidgetModel) getHost()
+                        .getModel();
+                return new DeleteWidgetsCommand(getViewer(), model, Arrays.asList(widgetModel));
+            }
 
-			@Override
-			public Command getCommand(final Request request) {
-				if (DropPvRequest.REQ_DROP_PV.equals(request.getType())) {
-					return new ChangeSettingsFromDroppedPvCommand(
-							(DropPvRequest) request,
-							AbstractWidgetEditPart.this);
-				}
-				return super.getCommand(request);
-			}
+            @Override
+            public Command getCommand(final Request request) {
+                if (DropPvRequest.REQ_DROP_PV.equals(request.getType())) {
+                    return new ChangeSettingsFromDroppedPvCommand(
+                            (DropPvRequest) request,
+                            AbstractWidgetEditPart.this);
+                }
+                return super.getCommand(request);
+            }
 
-			@Override
-			public EditPart getTargetEditPart(final Request request) {
-				if (DropPvRequest.REQ_DROP_PV.equals(request.getType())) {
-					return getHost();
-				}
-				return super.getTargetEditPart(request);
-			}
-		});
+            @Override
+            public EditPart getTargetEditPart(final Request request) {
+                if (DropPvRequest.REQ_DROP_PV.equals(request.getType())) {
+                    return getHost();
+                }
+                return super.getTargetEditPart(request);
+            }
+        });
 
-		createEditPoliciesHook();
-	}
+        createEditPoliciesHook();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected synchronized void doRefreshVisuals(final IFigure figure) {
-		super.doRefreshVisuals(figure);
-		figure.setOpaque(true);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected synchronized void doRefreshVisuals(final IFigure figure) {
+        super.doRefreshVisuals(figure);
+        figure.setOpaque(true);
+    }
 
-	/**
-	 * Hook method for sub classes that want to define custom edit policies.
-	 */
-	protected void createEditPoliciesHook() {
-	}
-	
+    /**
+     * Hook method for sub classes that want to define custom edit policies.
+     */
+    protected void createEditPoliciesHook() {
+    }
+    
 }

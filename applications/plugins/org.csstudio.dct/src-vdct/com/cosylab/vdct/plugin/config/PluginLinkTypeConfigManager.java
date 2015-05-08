@@ -49,9 +49,9 @@ public final class PluginLinkTypeConfigManager implements PluginListener, Proper
  */
 protected PluginLinkTypeConfigManager()
 {
-	list = new LinkedList();
-		
-	PluginManager.getInstance().addPluginListener(this);
+    list = new LinkedList();
+        
+    PluginManager.getInstance().addPluginListener(this);
 }
 /**
  * Insert the method's description here.
@@ -59,8 +59,8 @@ protected PluginLinkTypeConfigManager()
  * @return com.cosylab.vdct.plugin.PluginExportManager
  */
 public static PluginLinkTypeConfigManager getInstance() {
-	if (instance==null) instance = new PluginLinkTypeConfigManager();
-	return instance;
+    if (instance==null) instance = new PluginLinkTypeConfigManager();
+    return instance;
 }
 /**
  * Insert the method's description here.
@@ -70,20 +70,20 @@ public static PluginLinkTypeConfigManager getInstance() {
  */
 public void pluginAdded(PluginObject plugin)
 {
-	if (plugin.getPlugin() instanceof LinkTypeConfigPlugin)
-	{
-		if (!list.contains(plugin))
-		{
-			list.add(plugin);
-			plugin.addPropertyChangeListener(this);
-			com.cosylab.vdct.Console.getInstance().println(plugin.getName()+" is registered as link type config plugin.");
-			
-			Hashtable table = ((LinkTypeConfigPlugin)plugin.getPlugin()).getLinkTypeConfig();
-			if (table!=null)
-				DataProvider.getInstance().addLinkTypeConfig(table);
-		}
+    if (plugin.getPlugin() instanceof LinkTypeConfigPlugin)
+    {
+        if (!list.contains(plugin))
+        {
+            list.add(plugin);
+            plugin.addPropertyChangeListener(this);
+            com.cosylab.vdct.Console.getInstance().println(plugin.getName()+" is registered as link type config plugin.");
+            
+            Hashtable table = ((LinkTypeConfigPlugin)plugin.getPlugin()).getLinkTypeConfig();
+            if (table!=null)
+                DataProvider.getInstance().addLinkTypeConfig(table);
+        }
 
-	}
+    }
 }
 /**
  * Insert the method's description here.
@@ -93,11 +93,11 @@ public void pluginAdded(PluginObject plugin)
  */
 public void pluginRemoved(PluginObject plugin)
 {
-	if (plugin.getPlugin() instanceof LinkTypeConfigPlugin)
-	{
-		list.remove(plugin);
-		plugin.removePropertyChangeListener(this);
-	}
+    if (plugin.getPlugin() instanceof LinkTypeConfigPlugin)
+    {
+        list.remove(plugin);
+        plugin.removePropertyChangeListener(this);
+    }
 }
 /**
  * Not implemented
@@ -107,17 +107,17 @@ public void pluginRemoved(PluginObject plugin)
  */
 public void propertyChange(PropertyChangeEvent evt)
 {
-	PluginObject plugin = (PluginObject)evt.getSource();
-	String propertyName = evt.getPropertyName();
+    PluginObject plugin = (PluginObject)evt.getSource();
+    String propertyName = evt.getPropertyName();
 
-	if (propertyName.equals("Status"))
-	{
-		if (plugin.getStatus() == PluginObject.PLUGIN_STARTED)
-		{
-		}
-		else if (plugin.getStatus() == PluginObject.PLUGIN_STOPPED)
-		{
-		}
-	}
+    if (propertyName.equals("Status"))
+    {
+        if (plugin.getStatus() == PluginObject.PLUGIN_STARTED)
+        {
+        }
+        else if (plugin.getStatus() == PluginObject.PLUGIN_STOPPED)
+        {
+        }
+    }
 }
 }

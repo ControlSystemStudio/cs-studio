@@ -11,13 +11,13 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  */
 public class BooleanSwitchModelFactory implements IWidgetModelFactory {
 
-	public AbstractWidgetModel createWidgetModel() {
-		return new BooleanSwitchModel();
-	}
+    public AbstractWidgetModel createWidgetModel() {
+        return new BooleanSwitchModel();
+    }
 
-	@SuppressWarnings("unchecked")
-	public Class getWidgetModelType() {
-		return BooleanSwitchModel.class;
-	}
+    @SuppressWarnings("unchecked")
+    public Class getWidgetModelType() {
+        return BooleanSwitchModel.class;
+    }
 
 }

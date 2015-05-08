@@ -19,8 +19,8 @@ public class Messages extends NLS
     public static String ID_Fmt;
     public static String Info;
     public static String InfoTitle;
-	public static String MemInfo;
-	public static String MemInfoTT;
+    public static String MemInfo;
+    public static String MemInfoTT;
     public static String Name;
     public static String NameFmt;
     public static String NoError;

@@ -27,7 +27,7 @@ import de.desy.language.snl.diagram.model.WhenConnection;
  * the <tt>setNewTarget(Shape)</tt> method and return the command instance.</li>
  * </ol>
  * @see de.desy.language.snl.diagram.ui.parts.ShapeEditPart#createEditPolicies() for an
- * 			 example of the above procedure.
+ *              example of the above procedure.
  * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy
  * @see #setNewSource(SNLModel)
  * @see #setNewTarget(SNLModel)
@@ -52,12 +52,12 @@ private final SNLModel oldTarget;
  * @throws IllegalArgumentException if conn is null
  */
 public ConnectionReconnectCommand(final WhenConnection conn) {
-	if (conn == null) {
-		throw new IllegalArgumentException();
-	}
-	this.connection = conn;
-	this.oldSource = conn.getSource();
-	this.oldTarget = conn.getTarget();
+    if (conn == null) {
+        throw new IllegalArgumentException();
+    }
+    this.connection = conn;
+    this.oldSource = conn.getSource();
+    this.oldTarget = conn.getTarget();
 }
 
 /* (non-Javadoc)
@@ -65,52 +65,52 @@ public ConnectionReconnectCommand(final WhenConnection conn) {
  */
 @Override
 public boolean canExecute() {
-	if (newSource != null) {
-		return checkSourceReconnection();
-	} else if (newTarget != null) {
-		return checkTargetReconnection();
-	}
-	return false;
+    if (newSource != null) {
+        return checkSourceReconnection();
+    } else if (newTarget != null) {
+        return checkTargetReconnection();
+    }
+    return false;
 }
 
 /**
  * Return true, if reconnecting the connection-instance to newSource is allowed.
  */
 private boolean checkSourceReconnection() {
-	// connection endpoints must be different Shapes
-	if (newSource.equals(oldTarget)) {
-		return false;
-	}
-	// return false, if the connection exists already
-	for (final Iterator iter = newSource.getSourceConnections().iterator(); iter.hasNext();) {
-		final WhenConnection conn = (WhenConnection) iter.next();
-		// return false if a newSource -> oldTarget connection exists already
-		// and it is a different instance than the connection-field
-		if (conn.getTarget().equals(oldTarget) &&  !conn.equals(connection)) {
-			return false;
-		}
-	}
-	return true;
+    // connection endpoints must be different Shapes
+    if (newSource.equals(oldTarget)) {
+        return false;
+    }
+    // return false, if the connection exists already
+    for (final Iterator iter = newSource.getSourceConnections().iterator(); iter.hasNext();) {
+        final WhenConnection conn = (WhenConnection) iter.next();
+        // return false if a newSource -> oldTarget connection exists already
+        // and it is a different instance than the connection-field
+        if (conn.getTarget().equals(oldTarget) &&  !conn.equals(connection)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 /**
  * Return true, if reconnecting the connection-instance to newTarget is allowed. 
  */
 private boolean checkTargetReconnection() {
-	// connection endpoints must be different Shapes
-	if (newTarget.equals(oldSource)) {
-		return false;
-	}
-	// return false, if the connection exists already
-	for (final Iterator iter = newTarget.getTargetConnections().iterator(); iter.hasNext();) {
-		final WhenConnection conn = (WhenConnection) iter.next();
-		// return false if a oldSource -> newTarget connection exists already
-		// and it is a differenct instance that the connection-field
-		if (conn.getSource().equals(oldSource) && !conn.equals(connection)) {
-			return false;
-		}
-	}
-	return true;
+    // connection endpoints must be different Shapes
+    if (newTarget.equals(oldSource)) {
+        return false;
+    }
+    // return false, if the connection exists already
+    for (final Iterator iter = newTarget.getTargetConnections().iterator(); iter.hasNext();) {
+        final WhenConnection conn = (WhenConnection) iter.next();
+        // return false if a oldSource -> newTarget connection exists already
+        // and it is a differenct instance that the connection-field
+        if (conn.getSource().equals(oldSource) && !conn.equals(connection)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 /**
@@ -119,13 +119,13 @@ private boolean checkTargetReconnection() {
  */
 @Override
 public void execute() {
-	if (newSource != null) {
-		connection.reconnect(newSource, oldTarget);
-	} else if (newTarget != null) {
-		connection.reconnect(oldSource, newTarget);
-	} else {
-		throw new IllegalStateException("Should not happen");
-	}
+    if (newSource != null) {
+        connection.reconnect(newSource, oldTarget);
+    } else if (newTarget != null) {
+        connection.reconnect(oldSource, newTarget);
+    } else {
+        throw new IllegalStateException("Should not happen");
+    }
 }
 
 /**
@@ -141,12 +141,12 @@ public void execute() {
  * @throws IllegalArgumentException if connectionSource is null
  */
 public void setNewSource(final SNLModel connectionSource) {
-	if (connectionSource == null) {
-		throw new IllegalArgumentException();
-	}
-	setLabel("move connection startpoint");
-	newSource = connectionSource;
-	newTarget = null;
+    if (connectionSource == null) {
+        throw new IllegalArgumentException();
+    }
+    setLabel("move connection startpoint");
+    newSource = connectionSource;
+    newTarget = null;
 }
 
 /**
@@ -162,12 +162,12 @@ public void setNewSource(final SNLModel connectionSource) {
  * @throws IllegalArgumentException if connectionTarget is null
  */
 public void setNewTarget(final SNLModel connectionTarget) {
-	if (connectionTarget == null) {
-		throw new IllegalArgumentException();
-	}
-	setLabel("move connection endpoint");
-	newSource = null;
-	newTarget = connectionTarget;
+    if (connectionTarget == null) {
+        throw new IllegalArgumentException();
+    }
+    setLabel("move connection endpoint");
+    newSource = null;
+    newTarget = connectionTarget;
 }
 
 /**
@@ -175,7 +175,7 @@ public void setNewTarget(final SNLModel connectionTarget) {
  */
 @Override
 public void undo() {
-	connection.reconnect(oldSource, oldTarget);
+    connection.reconnect(oldSource, oldTarget);
 }
-	
+    
 }

@@ -33,31 +33,31 @@ package com.cosylab.vdct.db;
  */
 public class DBDataEntry extends DBEntry
 {
-	protected String data;
+    protected String data;
 
-	/**
-	 * Constructor.
-	 */
-	public DBDataEntry(String data)
-	{
-		setData(data);
-	}
-	/**
-	 * Returns the data.
-	 * @return String
-	 */
-	public String getData()
-	{
-		return data;
-	}
+    /**
+     * Constructor.
+     */
+    public DBDataEntry(String data)
+    {
+        setData(data);
+    }
+    /**
+     * Returns the data.
+     * @return String
+     */
+    public String getData()
+    {
+        return data;
+    }
 
-	/**
-	 * Sets the data.
-	 * @param data The data to set
-	 */
-	public void setData(String data)
-	{
-		this.data = data;
-	}
+    /**
+     * Sets the data.
+     * @param data The data to set
+     */
+    public void setData(String data)
+    {
+        this.data = data;
+    }
 
 }

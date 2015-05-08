@@ -33,13 +33,13 @@ import org.csstudio.sds.importer.SampleDisplayImporter;
  * 
  */
 public final class SampleDisplayImportWizard extends
-		AbstractDisplayImportWizard {
+        AbstractDisplayImportWizard {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected AbstractDisplayImporter getImporter() {
-		return new SampleDisplayImporter();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected AbstractDisplayImporter getImporter() {
+        return new SampleDisplayImporter();
+    }
 }

@@ -43,51 +43,51 @@ package org.csstudio.dal;
  * @version $id$
  */
 public interface NumericSimpleProperty<T,Ts> extends SimpleProperty<T>,
-	NumericPropertyCharacteristics
+    NumericPropertyCharacteristics
 {
-	/**
-	 * Accessor method for units characteristic. If the property
-	 * represents a physical value, this accessor returns the  units of the
-	 * physical value. In other cases (or in case  of dimensionless
-	 * quantities), this method must return  an empty string.
-	 *
-	 * @return String the units characteristic
-	 *
-	 * @exception DataExchangeException if the characteristic query  operation
-	 *            fails
-	 */
-	public String getUnits() throws DataExchangeException;
+    /**
+     * Accessor method for units characteristic. If the property
+     * represents a physical value, this accessor returns the  units of the
+     * physical value. In other cases (or in case  of dimensionless
+     * quantities), this method must return  an empty string.
+     *
+     * @return String the units characteristic
+     *
+     * @exception DataExchangeException if the characteristic query  operation
+     *            fails
+     */
+    public String getUnits() throws DataExchangeException;
 
-	/**
-	 * Accessor method for format characteristic. Return value is a
-	 * C-style format string. Format specification is not bound to the actual
-	 * type, it should however be compatible with the underlying data type.
-	 * If implementation does not have this information, exception is thrown.
-	 * This ensures, that caller can handle such cases.
-	 *
-	 * @return C-style format string.
-	 *
-	 * @throws DataExchangeException
-	 */
-	public String getFormat() throws DataExchangeException;
+    /**
+     * Accessor method for format characteristic. Return value is a
+     * C-style format string. Format specification is not bound to the actual
+     * type, it should however be compatible with the underlying data type.
+     * If implementation does not have this information, exception is thrown.
+     * This ensures, that caller can handle such cases.
+     *
+     * @return C-style format string.
+     *
+     * @throws DataExchangeException
+     */
+    public String getFormat() throws DataExchangeException;
 
-	/**
-	 * Returns the minimum value that this property may take.
-	 *
-	 * @return the minimum value
-	 *
-	 * @exception DataExchangeException when the query fails
-	 */
-	public Ts getMinimum() throws DataExchangeException;
+    /**
+     * Returns the minimum value that this property may take.
+     *
+     * @return the minimum value
+     *
+     * @exception DataExchangeException when the query fails
+     */
+    public Ts getMinimum() throws DataExchangeException;
 
-	/**
-	 * Returns the maximum value that this property may take.
-	 *
-	 * @return the maximum value
-	 *
-	 * @exception DataExchangeException when the query fails
-	 */
-	public Ts getMaximum() throws DataExchangeException;
+    /**
+     * Returns the maximum value that this property may take.
+     *
+     * @return the maximum value
+     *
+     * @exception DataExchangeException when the query fails
+     */
+    public Ts getMaximum() throws DataExchangeException;
 }
 
 /* __oOo__ */

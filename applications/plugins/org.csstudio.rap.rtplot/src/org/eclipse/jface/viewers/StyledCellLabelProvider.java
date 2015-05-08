@@ -13,25 +13,25 @@ import org.eclipse.swt.widgets.Event;
  */
 public abstract class StyledCellLabelProvider extends CellLabelProvider {
 
-	public static final int COLORS_ON_SELECTION = 1 << 0;
-	public static final int NO_FOCUS = 1 << 1;
+    public static final int COLORS_ON_SELECTION = 1 << 0;
+    public static final int NO_FOCUS = 1 << 1;
 
-	public StyledCellLabelProvider() {
-		this(0);
-	}
+    public StyledCellLabelProvider() {
+        this(0);
+    }
 
-	public StyledCellLabelProvider(int style) {
+    public StyledCellLabelProvider(int style) {
 
-	}
-	
-	protected void paint(final Event event, final Object element) {
-		//
-	}
-	
+    }
+    
+    protected void paint(final Event event, final Object element) {
+        //
+    }
+    
 
-	public void update(ViewerCell cell) {
-		// TODO Auto-generated method stub
-		
-	}
-	
+    public void update(ViewerCell cell) {
+        // TODO Auto-generated method stub
+        
+    }
+    
 }

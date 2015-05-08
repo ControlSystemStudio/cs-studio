@@ -36,9 +36,9 @@ import java.util.BitSet;
  * @see org.csstudio.dal.DynamicValueProperty
  */
 public interface PatternProperty extends DynamicValueProperty<BitSet>,
-	PatternSimpleProperty
+    PatternSimpleProperty
 {
-	//
+    //
 }
 
 /* __oOo__ */

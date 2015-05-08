@@ -31,50 +31,50 @@ import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ValueType;
 
 public final class LocalChannelPool {
-	/**
-	 * Contains all active channels.
-	 */
-	private ConcurrentHashMap<IProcessVariableAddress, LocalChannel> _channels;
+    /**
+     * Contains all active channels.
+     */
+    private ConcurrentHashMap<IProcessVariableAddress, LocalChannel> _channels;
 
-	/**
-	 * The singleton instance.
-	 */
-	private static LocalChannelPool _instance;
+    /**
+     * The singleton instance.
+     */
+    private static LocalChannelPool _instance;
 
-	/**
-	 * Constructor.
-	 */
-	private LocalChannelPool() {
-		_channels = new ConcurrentHashMap<IProcessVariableAddress, LocalChannel>();
-	}
+    /**
+     * Constructor.
+     */
+    private LocalChannelPool() {
+        _channels = new ConcurrentHashMap<IProcessVariableAddress, LocalChannel>();
+    }
 
-	/**
-	 * Gets the singleton instance.
-	 * 
-	 * @return the singleton instance
-	 */
-	public static synchronized LocalChannelPool getInstance() {
-		if (_instance == null) {
-			_instance = new LocalChannelPool();
-		}
+    /**
+     * Gets the singleton instance.
+     * 
+     * @return the singleton instance
+     */
+    public static synchronized LocalChannelPool getInstance() {
+        if (_instance == null) {
+            _instance = new LocalChannelPool();
+        }
 
-		return _instance;
-	}
+        return _instance;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public synchronized LocalChannel getChannel(
-			final IProcessVariableAddress processVariable, ValueType valueType) {
-		assert processVariable != null;
+    /**
+     * {@inheritDoc}
+     */
+    public synchronized LocalChannel getChannel(
+            final IProcessVariableAddress processVariable, ValueType valueType) {
+        assert processVariable != null;
 
-		LocalChannel channel = _channels.get(processVariable);
+        LocalChannel channel = _channels.get(processVariable);
 
-		if (channel == null) {
-			channel = new LocalChannel(processVariable);
-			_channels.put(processVariable, channel);
-		}
+        if (channel == null) {
+            channel = new LocalChannel(processVariable);
+            _channels.put(processVariable, channel);
+        }
 
-		return channel;
-	}
+        return channel;
+    }
 }

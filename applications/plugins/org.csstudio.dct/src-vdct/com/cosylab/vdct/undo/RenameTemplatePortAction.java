@@ -37,20 +37,20 @@ import com.cosylab.vdct.vdb.VDBTemplate;
  * @author 
  */
 public class RenameTemplatePortAction extends ActionObject {
-	protected VDBTemplate object;
-	protected VDBPort port;
-	protected String oldName;
-	protected String newName;
+    protected VDBTemplate object;
+    protected VDBPort port;
+    protected String oldName;
+    protected String newName;
 
 /**
  * Insert the method's description here.
  * Creation date: (3.5.2001 16:27:58)
  */
 public RenameTemplatePortAction(VDBTemplate object, VDBPort port, String oldName, String newName) {
-	this.object=object;
-	this.port=port;
-	this.oldName=oldName;
-	this.newName=newName;
+    this.object=object;
+    this.port=port;
+    this.oldName=oldName;
+    this.newName=newName;
 }
 /**
  * Insert the method's description here.
@@ -58,18 +58,18 @@ public RenameTemplatePortAction(VDBTemplate object, VDBPort port, String oldName
  * @return java.lang.String
  */
 public String getDescription() {
-	return "Rename Template Port ["+object+"]("+port.getFullName()+": "+oldName+" -> "+newName+")";
+    return "Rename Template Port ["+object+"]("+port.getFullName()+": "+oldName+" -> "+newName+")";
 }
 /**
  * This method was created in VisualAge.
  */
 protected void redoAction() {
-	object.renamePort(port, newName);
+    object.renamePort(port, newName);
 }
 /**
  * This method was created in VisualAge.
  */
 protected void undoAction() {
-	object.renamePort(port, oldName);
+    object.renamePort(port, oldName);
 }
 }

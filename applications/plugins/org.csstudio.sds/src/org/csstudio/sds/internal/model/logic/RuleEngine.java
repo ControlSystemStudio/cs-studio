@@ -37,71 +37,71 @@ import org.csstudio.sds.model.IRule;
  * 
  */
 public final class RuleEngine {
-	/**
-	 * The associated rule.
-	 */
-	private IRule _rule;
+    /**
+     * The associated rule.
+     */
+    private IRule _rule;
 
-	/**
-	 * The state of this rule engine.
-	 */
-	private RuleState _state;
+    /**
+     * The state of this rule engine.
+     */
+    private RuleState _state;
 
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param rule
-	 *            The rule that is used for the evaluation of the received
-	 *            control system events.
-	 * @param channelReferences
-	 *            references to all input channels, the rule relies on
-	 */
-	public RuleEngine(final IRule rule,
-			final ParameterDescriptor[] parameters) {
-		assert rule != null;
-		assert parameters != null;
+    /**
+     * Standard constructor.
+     * 
+     * @param rule
+     *            The rule that is used for the evaluation of the received
+     *            control system events.
+     * @param channelReferences
+     *            references to all input channels, the rule relies on
+     */
+    public RuleEngine(final IRule rule,
+            final ParameterDescriptor[] parameters) {
+        assert rule != null;
+        assert parameters != null;
 
-		_rule = rule;
-		_state = new RuleState(parameters);
-	}
+        _rule = rule;
+        _state = new RuleState(parameters);
+    }
 
-	/**
-	 * Updates the latest value for the provided channel and processes the rule
-	 * based on the latest input values for all input channels, which have been
-	 * cached in a state object.
-	 * 
-	 * @param parameter
-	 *            a channel reference for the channel which delivered a new
-	 *            value
-	 * @param newValue
-	 *            the new value
-	 * 
-	 * @return the result of the rule
-	 */
-	public synchronized Object processRule(
-			final ParameterDescriptor parameter, final Object newValue) {
-		// cache the new value
-		_state.cacheParameterValue(parameter, newValue);
+    /**
+     * Updates the latest value for the provided channel and processes the rule
+     * based on the latest input values for all input channels, which have been
+     * cached in a state object.
+     * 
+     * @param parameter
+     *            a channel reference for the channel which delivered a new
+     *            value
+     * @param newValue
+     *            the new value
+     * 
+     * @return the result of the rule
+     */
+    public synchronized Object processRule(
+            final ParameterDescriptor parameter, final Object newValue) {
+        // cache the new value
+        _state.cacheParameterValue(parameter, newValue);
 
-		// get all cached values
-		Object[] values = _state.getRecentParameterValues();
+        // get all cached values
+        Object[] values = _state.getRecentParameterValues();
 
-		// apply the rule
-		Object value = _rule.evaluate(values);
+        // apply the rule
+        Object value = _rule.evaluate(values);
 
-		return value;
-	}
+        return value;
+    }
 
-	/**
-	 * Cache the constant value for a given channel name.
-	 * 
-	 * @param parameter
-	 *            A channel name.
-	 * @param value
-	 *            The constant value from the given channel.
-	 */
-	public synchronized void cacheConstantValue(final ParameterDescriptor parameter, final Object value) {
-		_state.cacheParameterValue(parameter, value);
-	}
+    /**
+     * Cache the constant value for a given channel name.
+     * 
+     * @param parameter
+     *            A channel name.
+     * @param value
+     *            The constant value from the given channel.
+     */
+    public synchronized void cacheConstantValue(final ParameterDescriptor parameter, final Object value) {
+        _state.cacheParameterValue(parameter, value);
+    }
 
 }

@@ -361,8 +361,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     /** @return {@link Image} of current plot. Caller must dispose */
     public Image getImage()
     {
-    	//TODO 
-    	
+        //TODO 
+        
         return new Image(display, area.width, area.height);        
     }
 

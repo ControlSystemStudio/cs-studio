@@ -8,11 +8,11 @@ package de.desy.language.editor.ui.editor;
  * @author C1 WPS / KM, MZ
  */
 public abstract class HighlightingListener {
-	public void highlightRegion(final int startOffset, final int endOffset,
-			final boolean activateEditor) {
-		this.doHighlightRegion(startOffset, endOffset, activateEditor);
-	}
+    public void highlightRegion(final int startOffset, final int endOffset,
+            final boolean activateEditor) {
+        this.doHighlightRegion(startOffset, endOffset, activateEditor);
+    }
 
-	protected abstract void doHighlightRegion(int startOffset, int endOffset,
-			boolean activateEditor);
+    protected abstract void doHighlightRegion(int startOffset, int endOffset,
+            boolean activateEditor);
 }

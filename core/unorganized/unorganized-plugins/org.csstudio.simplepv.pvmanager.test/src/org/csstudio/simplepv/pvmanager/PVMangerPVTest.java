@@ -26,45 +26,45 @@ public class PVMangerPVTest {
 
 private static final String PVMANAGER = "pvmanager";
 
-	@Before
-	public void setup() {
-		// A workaround for problem with AWT code inside PVManager on Mac OS X.
-		System.setProperty("java.awt.headless", "true");
-		PVManagerPV.setDebug(false);
-	}
-	
-	@Test
-	public void testSimpleRead() throws Exception {
-		BasicReadTester tester = 
-				new BasicReadTester(PVMANAGER, "sim://ramp(0,100,1,0.1)");
-		tester.testAll();
-		
-	}
-	
-	@Test
-	public void testBufferingRead() throws Exception {
-		BufferingReadTester tester = 
-				new BufferingReadTester(PVMANAGER, "sim://ramp(0,80,1,0.1)");
-		tester.testAll();		
-	}
+    @Before
+    public void setup() {
+        // A workaround for problem with AWT code inside PVManager on Mac OS X.
+        System.setProperty("java.awt.headless", "true");
+        PVManagerPV.setDebug(false);
+    }
+    
+    @Test
+    public void testSimpleRead() throws Exception {
+        BasicReadTester tester = 
+                new BasicReadTester(PVMANAGER, "sim://ramp(0,100,1,0.1)");
+        tester.testAll();
+        
+    }
+    
+    @Test
+    public void testBufferingRead() throws Exception {
+        BufferingReadTester tester = 
+                new BufferingReadTester(PVMANAGER, "sim://ramp(0,80,1,0.1)");
+        tester.testAll();        
+    }
 
-	
-	@Test
-	public void testReadWrite() throws Exception {
-		BasicReadWriteTester tester = 
-				new BasicReadWriteTester(PVMANAGER, "loc://test(0)");
-		tester.testAll();		
-	}
-	
-	@Test
-	public void testBulkOperations() throws Exception{
-		BulkTester tester = new BulkTester(PVMANAGER, 10000, new PVNameProvider() {
+    
+    @Test
+    public void testReadWrite() throws Exception {
+        BasicReadWriteTester tester = 
+                new BasicReadWriteTester(PVMANAGER, "loc://test(0)");
+        tester.testAll();        
+    }
+    
+    @Test
+    public void testBulkOperations() throws Exception{
+        BulkTester tester = new BulkTester(PVMANAGER, 10000, new PVNameProvider() {
 
-			@Override
-			public String getPVName(int index) {
-				return "sim://ramp(0," + (index +1)+ ",0.1)";
-			}
-		});
-		tester.testAll();
-	}
+            @Override
+            public String getPVName(int index) {
+                return "sim://ramp(0," + (index +1)+ ",0.1)";
+            }
+        });
+        tester.testAll();
+    }
 }

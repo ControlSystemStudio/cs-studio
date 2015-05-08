@@ -33,34 +33,34 @@ import org.junit.Test;
  */
 public final class EllipseElementTest {
 
-	/**
-	 * A test instance.
-	 */
-	private EllipseModel _ellipseElement;
-	
-	/**
-	 * Test setup.
-	 */
-	@Before
-	public void setUp() {
-		_ellipseElement = new EllipseModel();
-	}
+    /**
+     * A test instance.
+     */
+    private EllipseModel _ellipseElement;
+    
+    /**
+     * Test setup.
+     */
+    @Before
+    public void setUp() {
+        _ellipseElement = new EllipseModel();
+    }
 
-	/**
-	 * Test method for {@link org.csstudio.sds.components.model.EllipseModel#getTypeID()}.
-	 */
-	@Test
-	public void testGetTypeID() {
-		_ellipseElement.getTypeID().equals(EllipseModel.ID);
-	}
+    /**
+     * Test method for {@link org.csstudio.sds.components.model.EllipseModel#getTypeID()}.
+     */
+    @Test
+    public void testGetTypeID() {
+        _ellipseElement.getTypeID().equals(EllipseModel.ID);
+    }
 
-	/**
-	 * Tests, if all properties where properly installed.
-	 */
-	@Test
-	public void testProperties () {
-		assertTrue(_ellipseElement.hasProperty(EllipseModel.PROP_FILL));
-		// Add further properties here
-	}
+    /**
+     * Tests, if all properties where properly installed.
+     */
+    @Test
+    public void testProperties () {
+        assertTrue(_ellipseElement.hasProperty(EllipseModel.PROP_FILL));
+        // Add further properties here
+    }
 
 }

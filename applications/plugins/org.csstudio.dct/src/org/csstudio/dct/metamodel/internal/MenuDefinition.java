@@ -16,54 +16,54 @@ import org.csstudio.dct.metamodel.IMenuDefinition;
  */
 public final class MenuDefinition implements IMenuDefinition, Serializable {
 
-	private String name;
-	private List<IChoice> choices;
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param name a non-empty name
-	 */
-	public MenuDefinition(String name) {
-		assert name != null;
-		this.name = name;
-		choices = new ArrayList<IChoice>();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public List<IChoice> getChoices() {
-		return choices;
-	}
-	
-	public void setChoices(List<IChoice> choices) {
-		this.choices = choices;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void addChoice(IChoice choice) {
-		choices.add(choice);
-	}
+    private String name;
+    private List<IChoice> choices;
+    
+    /**
+     * Constructor.
+     * 
+     * @param name a non-empty name
+     */
+    public MenuDefinition(String name) {
+        assert name != null;
+        this.name = name;
+        choices = new ArrayList<IChoice>();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public List<IChoice> getChoices() {
+        return choices;
+    }
+    
+    public void setChoices(List<IChoice> choices) {
+        this.choices = choices;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void addChoice(IChoice choice) {
+        choices.add(choice);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void removeChoice(IChoice choice) {
-		choices.remove(choice);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void removeChoice(IChoice choice) {
+        choices.remove(choice);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getName() {
-		return name;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
 
 }

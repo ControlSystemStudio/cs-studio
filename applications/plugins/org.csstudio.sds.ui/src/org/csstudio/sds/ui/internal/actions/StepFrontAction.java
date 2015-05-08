@@ -35,29 +35,29 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public final class StepFrontAction extends AbstractOrderAction {
 
-	/**
-	 * Action ID of this action.
-	 */
-	public static final String ID = "org.csstudio.sds.ui.internal.actions.StepFrontAction";
+    /**
+     * Action ID of this action.
+     */
+    public static final String ID = "org.csstudio.sds.ui.internal.actions.StepFrontAction";
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param workbenchPart
-	 *            a workbench part
-	 */
-	public StepFrontAction(final IWorkbenchPart workbenchPart) {
-		super(workbenchPart);
-		setId(ID);
-		setText("One Step to Front");
-	}
+    /**
+     * Constructor.
+     * 
+     * @param workbenchPart
+     *            a workbench part
+     */
+    public StepFrontAction(final IWorkbenchPart workbenchPart) {
+        super(workbenchPart);
+        setId(ID);
+        setText("One Step to Front");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected Command createCommand(final ContainerModel container,
-			final AbstractWidgetModel widget) {
-		return new ChangeOrderCommand(container, widget, container.getNextLayerIndex(widget));
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected Command createCommand(final ContainerModel container,
+            final AbstractWidgetModel widget) {
+        return new ChangeOrderCommand(container, widget, container.getNextLayerIndex(widget));
+    }
 
 }

@@ -48,32 +48,32 @@ public class ArchivesRequest {
          
      // send request
 
-	PVStructure pvRequest = createRequest();
-	PVStructure pvResult = client.request(pvRequest, REQUEST_TIMEOUT);
+    PVStructure pvRequest = createRequest();
+    PVStructure pvResult = client.request(pvRequest, REQUEST_TIMEOUT);
      
      // process result
 
-	PVStructureArray infos = pvResult.getStructureArrayField("archives"); 
+    PVStructureArray infos = pvResult.getStructureArrayField("archives"); 
      
      StructureArrayData data = new StructureArrayData();       
      infos.get(0, infos.getLength(), data);
           
      archive_infos = new ArchiveInfo[data.data.length];
-	for(int i=0; i < data.data.length; i++) {
+    for(int i=0; i < data.data.length; i++) {
          
-	    PVStructure info = data.data[i];
+        PVStructure info = data.data[i];
 
-	    int key     = info.getIntField("key").get();
-	    String name = info.getStringField("name").get();
-	    String path = info.getStringField("path").get();
+        int key     = info.getIntField("key").get();
+        String name = info.getStringField("name").get();
+        String path = info.getStringField("path").get();
         
          archive_infos[i] = new ArchiveInfo(name, path, key);     
-	}
+    }
  }
      
  /** @return Returns all the archive infos obtained in the request. */
  public ArchiveInfo[] getArchiveInfos() {
-	return archive_infos;
+    return archive_infos;
  }
 
  /** @return Returns a more or less useful string. */
@@ -81,11 +81,11 @@ public class ArchivesRequest {
  @Override public String toString() {
      StringBuffer result = new StringBuffer();
      for (int i = 0; i < archive_infos.length; i++){
-     	result.append(String.format("Key %4d: '%s' (%s)\n",
+         result.append(String.format("Key %4d: '%s' (%s)\n",
              archive_infos[i].getKey(),
              archive_infos[i].getName(),
              archive_infos[i].getDescription()));
-	}
+    }
      return result.toString();
  }
 

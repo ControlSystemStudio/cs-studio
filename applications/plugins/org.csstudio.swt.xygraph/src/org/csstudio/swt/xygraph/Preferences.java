@@ -33,17 +33,17 @@ public class Preferences
 
     public static boolean useAdvancedGraphics()
     {
-    	if(use_advanced_graphics){
-    		String value = System.getProperty("prohibit_advanced_graphics"); //$NON-NLS-1$
-    		if(value == null || !value.equals("true")) //$NON-NLS-1$
-    			return true;
-    		return  false;
-    	}
+        if(use_advanced_graphics){
+            String value = System.getProperty("prohibit_advanced_graphics"); //$NON-NLS-1$
+            if(value == null || !value.equals("true")) //$NON-NLS-1$
+                return true;
+            return  false;
+        }
         return false;
     }
     
     public static boolean isCombineLabelsAndTraces() {
-    	final IPreferencesService prefs = Platform.getPreferencesService();
+        final IPreferencesService prefs = Platform.getPreferencesService();
         if (prefs == null)
             return false;
         else

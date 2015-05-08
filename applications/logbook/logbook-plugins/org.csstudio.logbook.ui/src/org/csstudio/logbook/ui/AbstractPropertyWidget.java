@@ -30,34 +30,34 @@ public abstract class AbstractPropertyWidget extends Composite {
      * @param logEntryChangeset
      */
     public AbstractPropertyWidget(Composite parent, int style,
-	    LogEntryChangeset logEntryChangeset, boolean editable) {
-	super(parent, style);
-	if (logEntryChangeset != null) {
-	    this.logEntryChangeset = logEntryChangeset;
-	    this.logEntryChangeset
-		    .addPropertyChangeListener(new PropertyChangeListener() {
+        LogEntryChangeset logEntryChangeset, boolean editable) {
+    super(parent, style);
+    if (logEntryChangeset != null) {
+        this.logEntryChangeset = logEntryChangeset;
+        this.logEntryChangeset
+            .addPropertyChangeListener(new PropertyChangeListener() {
 
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-			    Display.getDefault().asyncExec(() -> {updateUI();});
-			    
-			}
-		    });
-	}
-	this.editable = editable;
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                Display.getDefault().asyncExec(() -> {updateUI();});
+                
+            }
+            });
+    }
+    this.editable = editable;
     }
 
     public boolean isEditable() {
-	return editable;
+    return editable;
     }
 
     public void setEditable(boolean editable) {
-	this.editable = editable;
-	updateUI();
+    this.editable = editable;
+    updateUI();
     }
 
     public LogEntryChangeset getLogEntryChangeset() {
-	return this.logEntryChangeset;
+    return this.logEntryChangeset;
     }
 
     public abstract void updateUI();

@@ -39,7 +39,7 @@ public class MoveFieldDownAction extends MoveFieldUpAction {
  * @param field com.cosylab.vdct.graphics.objects.Field
  */
 public MoveFieldDownAction(com.cosylab.vdct.graphics.objects.Field field) {
-	super(field);
+    super(field);
 }
 /**
  * Insert the method's description here.
@@ -47,18 +47,18 @@ public MoveFieldDownAction(com.cosylab.vdct.graphics.objects.Field field) {
  * @return java.lang.String
  */
 public String getDescription() {
-	return "Move field down ["+field+"]";
+    return "Move field down ["+field+"]";
 }
 /**
  * This method was created in VisualAge.
  */
 protected void redoAction() {
-	super.undoAction();
+    super.undoAction();
 }
 /**
  * This method was created in VisualAge.
  */
 protected void undoAction() {
-	super.redoAction();
+    super.redoAction();
 }
 }

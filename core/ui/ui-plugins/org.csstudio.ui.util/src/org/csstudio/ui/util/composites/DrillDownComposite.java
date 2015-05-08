@@ -46,23 +46,23 @@ import org.eclipse.ui.part.DrillDownAdapter;
  */
 //TODO: Copied from org.csstudio.platform.ui. Review is needed.
 class DrillDownComposite extends Composite {
-	
-	/**
-	 * The ToolBarManager of this DrillDownComposite.
-	 */
-	private ToolBarManager _toolBarMgr;
+    
+    /**
+     * The ToolBarManager of this DrillDownComposite.
+     */
+    private ToolBarManager _toolBarMgr;
 
-	/**
-	 * The Treeviewer of this DrillDownComposite.
-	 */
+    /**
+     * The Treeviewer of this DrillDownComposite.
+     */
     private TreeViewer _fChildTree;
 
     /**
      * The DrillDownAdapter for the Tree.
      */
     private DrillDownAdapter _adapter;
-	
-	/**
+    
+    /**
      * Constructs a new DrillDownTreeViewer.
      *
      * @param parent the parent composite for this control
@@ -120,10 +120,10 @@ class DrillDownComposite extends Composite {
     /**
      * Delivers the ToolBarManager of this DrillDownComposite.
      * @return ToolBarManager
-     * 			The ToolbarManager of this DrillDownComposite
+     *             The ToolbarManager of this DrillDownComposite
      */
     public final ToolBarManager getToolBarManager() {
-    	return _toolBarMgr;
+        return _toolBarMgr;
     }
 
 }

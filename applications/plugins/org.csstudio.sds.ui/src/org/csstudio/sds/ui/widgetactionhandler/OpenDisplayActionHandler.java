@@ -47,69 +47,69 @@ public final class OpenDisplayActionHandler implements IWidgetActionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(OpenDisplayActionHandler.class);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void executeAction(final AbstractWidgetModel widget,
-			final AbstractWidgetActionModel action) {
-		assert action instanceof OpenDisplayActionModel : "Precondition violated: action instanceof OpenDisplayWidgetAction";
-		OpenDisplayActionModel displayAction = (OpenDisplayActionModel) action;
-		IPath path = displayAction.getResource();
+    /**
+     * {@inheritDoc}
+     */
+    public void executeAction(final AbstractWidgetModel widget,
+            final AbstractWidgetActionModel action) {
+        assert action instanceof OpenDisplayActionModel : "Precondition violated: action instanceof OpenDisplayWidgetAction";
+        OpenDisplayActionModel displayAction = (OpenDisplayActionModel) action;
+        IPath path = displayAction.getResource();
 
-		// resolve the forwarded aliases
+        // resolve the forwarded aliases
 
-		// ... we take all aliases that are in the namespace of the widget that
-		// was used to execute this action
-		Map<String, String> allAliases = widget.getAllInheritedAliases();
+        // ... we take all aliases that are in the namespace of the widget that
+        // was used to execute this action
+        Map<String, String> allAliases = widget.getAllInheritedAliases();
 
-		// ... the aliases that are forwarded to the new display are configured
-		// on the action
-		Map<String, String> forwardedAliases = displayAction.getAliases();
+        // ... the aliases that are forwarded to the new display are configured
+        // on the action
+        Map<String, String> forwardedAliases = displayAction.getAliases();
 
-		// ... we resolve the forwarded aliases using all known information
-		for (String key : forwardedAliases.keySet()) {
-			String raw = forwardedAliases.get(key);
+        // ... we resolve the forwarded aliases using all known information
+        for (String key : forwardedAliases.keySet()) {
+            String raw = forwardedAliases.get(key);
 
-			String resolved;
-			try {
-				resolved = ChannelReferenceValidationUtil.createCanonicalName(
-						raw, allAliases);
+            String resolved;
+            try {
+                resolved = ChannelReferenceValidationUtil.createCanonicalName(
+                        raw, allAliases);
 
-				forwardedAliases.put(key, resolved);
-			} catch (ChannelReferenceValidationException e) {
-				// ignore
-				LOG.info("Cannot resolve alias [" + raw + "]");
-			}
+                forwardedAliases.put(key, resolved);
+            } catch (ChannelReferenceValidationException e) {
+                // ignore
+                LOG.info("Cannot resolve alias [" + raw + "]");
+            }
 
-		}
+        }
 
-		// close the parent display if necessary
+        // close the parent display if necessary
 
-		boolean shouldClose = SdsUiPlugin.getCorePreferenceStore().getBoolean(
-				PreferenceConstants.PROP_CLOSE_PARENT_DISPLAY);
+        boolean shouldClose = SdsUiPlugin.getCorePreferenceStore().getBoolean(
+                PreferenceConstants.PROP_CLOSE_PARENT_DISPLAY);
 
-		if (displayAction.getClose() || shouldClose) {
-			RuntimeContext rtc = widget.getRoot().getRuntimeContext();
+        if (displayAction.getClose() || shouldClose) {
+            RuntimeContext rtc = widget.getRoot().getRuntimeContext();
 
-			if (rtc != null) {
-				RunModeService.getInstance().closeRunModeBox(
-						rtc.getRunModeBoxInput());
-			}
-		}
+            if (rtc != null) {
+                RunModeService.getInstance().closeRunModeBox(
+                        rtc.getRunModeBoxInput());
+            }
+        }
 
-		// open the new display in a shell or view
-		if (displayAction.getTarget() == OpenDisplayActionTarget.SHELL) {
-			RunModeService.getInstance().openDisplayShellInRunMode(
-					path,
-					forwardedAliases,
-					(RunModeBoxInput) widget.getRoot().getRuntimeContext()
-							.getRunModeBoxInput());
-		} else if (displayAction.getTarget() == OpenDisplayActionTarget.VIEW) {
-			RunModeService.getInstance().openDisplayViewInRunMode(path,
-					forwardedAliases);
-		} else {
-			throw new IllegalArgumentException("Not implemented yet.");
-		}
-	}
+        // open the new display in a shell or view
+        if (displayAction.getTarget() == OpenDisplayActionTarget.SHELL) {
+            RunModeService.getInstance().openDisplayShellInRunMode(
+                    path,
+                    forwardedAliases,
+                    (RunModeBoxInput) widget.getRoot().getRuntimeContext()
+                            .getRunModeBoxInput());
+        } else if (displayAction.getTarget() == OpenDisplayActionTarget.VIEW) {
+            RunModeService.getInstance().openDisplayViewInRunMode(path,
+                    forwardedAliases);
+        } else {
+            throw new IllegalArgumentException("Not implemented yet.");
+        }
+    }
 
 }

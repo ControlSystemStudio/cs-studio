@@ -11,5 +11,5 @@ import org.csstudio.platform.model.pvs.ValueType;
  * 
  */
 interface IConnectorFactory {
-	AbstractConnector createConnector(IProcessVariableAddress pv, ValueType valueType);
+    AbstractConnector createConnector(IProcessVariableAddress pv, ValueType valueType);
 }

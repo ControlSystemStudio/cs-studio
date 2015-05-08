@@ -26,8 +26,8 @@ import org.eclipse.swt.graphics.Font;
  * @author Xihui Chen
  *
  */
-public abstract class AbstractScale extends Figure{	
-	
+public abstract class AbstractScale extends Figure{    
+    
 
     /** ticks label's position relative to tick marks*/
     public enum LabelSide {
@@ -42,24 +42,24 @@ public abstract class AbstractScale extends Figure{
     }
 
 
-	public static final double DEFAULT_MAX = 100d;
+    public static final double DEFAULT_MAX = 100d;
 
 
-	public static final double DEFAULT_MIN = 0d;
+    public static final double DEFAULT_MIN = 0d;
 
 
-	public static final String DEFAULT_ENGINEERING_FORMAT = "0.####E0";//$NON-NLS-1$
+    public static final String DEFAULT_ENGINEERING_FORMAT = "0.####E0";//$NON-NLS-1$
 
 
-	/**
-	 * the digits limit to be displayed in engineering format
-	 */
-	private static final int ENGINEERING_LIMIT = 4;
+    /**
+     * the digits limit to be displayed in engineering format
+     */
+    private static final int ENGINEERING_LIMIT = 4;
 
-	private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd\nHH:mm:ss";    	//$NON-NLS-1$
+    private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd\nHH:mm:ss";        //$NON-NLS-1$
     
-	private static final Map<String, Format> formatCache = new HashMap<String, Format>();
-	
+    private static final Map<String, Format> formatCache = new HashMap<String, Format>();
+    
     /** ticks label position */
     private LabelSide tickLableSide = LabelSide.Primary;   
 
@@ -72,17 +72,17 @@ public abstract class AbstractScale extends Figure{
     
     /** the default label format */
     private String default_decimal_format = "############.##";    //$NON-NLS-1$
-	
+    
     /** the state if the axis scale is log scale */
     protected boolean logScaleEnabled = false;
     
-	/** The minimum value of the scale */
+    /** The minimum value of the scale */
     protected double min = DEFAULT_MIN;
-	
-	/** The maximum value of the scale */
-	protected double max = DEFAULT_MAX;	
+    
+    /** The maximum value of the scale */
+    protected double max = DEFAULT_MAX;    
 
-	 /** the format for tick labels */
+     /** the format for tick labels */
      private String formatPattern;
     
     /** the time unit for tick step */
@@ -96,7 +96,7 @@ public abstract class AbstractScale extends Figure{
     
     private boolean scaleLineVisible = true;
 
-	/** the pixels hint for major tick mark step */
+    /** the pixels hint for major tick mark step */
     private int majorTickMarkStepHint = 40;
     
     /** the pixels hint for minor tick mark step */
@@ -107,15 +107,15 @@ public abstract class AbstractScale extends Figure{
     private double majorGridStep = 0;
 
     private boolean autoFormat = true;
-	
+    
     private Range range = new Range(min, max);
 
 
-	private int formatPatternSize = 0;
+    private int formatPatternSize = 0;
     
     
     
-	/**
+    /**
      * Formats the given object.
      * 
      * @param obj
@@ -123,118 +123,118 @@ public abstract class AbstractScale extends Figure{
      * @return the formatted string
      */
     public String format(Object obj) {
-    	return format(obj, false);
+        return format(obj, false);
     }
     
-	/**
+    /**
      * Formats the given object.
      * 
      * @param obj
      *            the object
      * @param minOrMaxDate
-     * 			true if it is the min or max date on the scale.
+     *             true if it is the min or max date on the scale.
      * @return the formatted string
      */
     public String format(Object obj, boolean minOrMaxDate) {     
-        	
+            
             if (isDateEnabled()) {
-              	if (autoFormat || formatPattern == null || formatPattern.equals("")
-            			|| formatPattern.equals(default_decimal_format)
-            			|| formatPattern.equals(DEFAULT_ENGINEERING_FORMAT)) {            		
-            		double length = Math.abs(max - min);            		
-	                if (length <=5000 || timeUnit == Calendar.MILLISECOND) { //less than five second
-	                	internalSetFormatPattern("ss.SSS");//$NON-NLS-1$
-	                } else if (length <=1800000d || timeUnit == Calendar.SECOND) { //less than 30 min
-	                	internalSetFormatPattern("HH:mm:ss");//$NON-NLS-1$
-	                } else if (length <= 86400000d || timeUnit == Calendar.MINUTE) { // less than a day
-	                	internalSetFormatPattern("HH:mm");//$NON-NLS-1$
-	                } else if (length <= 604800000d || timeUnit == Calendar.HOUR_OF_DAY) { //less than a week
-	                	internalSetFormatPattern("MM-dd\nHH:mm");//$NON-NLS-1$
-	                } else if (length <= 2592000000d || timeUnit == Calendar.DATE) { //less than a month
-	                	internalSetFormatPattern("MM-dd");//$NON-NLS-1$
-//	                } else if (length <= 31536000000d ||timeUnit == Calendar.MONTH) { //less than a year
-//	                	formatPattern = "yyyy-MM-dd";//$NON-NLS-1$
-	                } else {		//more than a month
-	                	internalSetFormatPattern("yyyy-MM-dd"); //$NON-NLS-1$
-	                } 
-	                autoFormat = true;
-            	}
-              	if(minOrMaxDate && autoFormat){
-              			if(Math.abs(max - min)<5000)
-              				return new SimpleDateFormat("yyyy-MM-dd\nHH:mm:ss.SSS").format(obj); //$NON-NLS-1$
-           			return getFormat(DEFAULT_DATE_FORMAT, true).format(obj);
-              	}
-            	return getFormat(formatPattern, true).format(obj);
+                  if (autoFormat || formatPattern == null || formatPattern.equals("")
+                        || formatPattern.equals(default_decimal_format)
+                        || formatPattern.equals(DEFAULT_ENGINEERING_FORMAT)) {                    
+                    double length = Math.abs(max - min);                    
+                    if (length <=5000 || timeUnit == Calendar.MILLISECOND) { //less than five second
+                        internalSetFormatPattern("ss.SSS");//$NON-NLS-1$
+                    } else if (length <=1800000d || timeUnit == Calendar.SECOND) { //less than 30 min
+                        internalSetFormatPattern("HH:mm:ss");//$NON-NLS-1$
+                    } else if (length <= 86400000d || timeUnit == Calendar.MINUTE) { // less than a day
+                        internalSetFormatPattern("HH:mm");//$NON-NLS-1$
+                    } else if (length <= 604800000d || timeUnit == Calendar.HOUR_OF_DAY) { //less than a week
+                        internalSetFormatPattern("MM-dd\nHH:mm");//$NON-NLS-1$
+                    } else if (length <= 2592000000d || timeUnit == Calendar.DATE) { //less than a month
+                        internalSetFormatPattern("MM-dd");//$NON-NLS-1$
+//                    } else if (length <= 31536000000d ||timeUnit == Calendar.MONTH) { //less than a year
+//                        formatPattern = "yyyy-MM-dd";//$NON-NLS-1$
+                    } else {        //more than a month
+                        internalSetFormatPattern("yyyy-MM-dd"); //$NON-NLS-1$
+                    } 
+                    autoFormat = true;
+                }
+                  if(minOrMaxDate && autoFormat){
+                          if(Math.abs(max - min)<5000)
+                              return new SimpleDateFormat("yyyy-MM-dd\nHH:mm:ss.SSS").format(obj); //$NON-NLS-1$
+                       return getFormat(DEFAULT_DATE_FORMAT, true).format(obj);
+                  }
+                return getFormat(formatPattern, true).format(obj);
             }
             
-            if (formatPattern == null || formatPattern.equals("")) {            	
-            	formatPattern = default_decimal_format;  
-            	autoFormat = true;
+            if (formatPattern == null || formatPattern.equals("")) {                
+                formatPattern = default_decimal_format;  
+                autoFormat = true;
             }       
                                 
             return getFormat(formatPattern, false).format(obj);
    }
     
     private Format getFormat(String pattern, boolean isDateFormat){
-    	Format result = formatCache.get(pattern);
-    	if(result == null){
-    		if(isDateFormat)
-    			result = new SimpleDateFormat(pattern);
-    		else
-    			result = new DecimalFormat(pattern);
-    		formatCache.put(pattern, result);
-    	}
-    	return result;
+        Format result = formatCache.get(pattern);
+        if(result == null){
+            if(isDateFormat)
+                result = new SimpleDateFormat(pattern);
+            else
+                result = new DecimalFormat(pattern);
+            formatCache.put(pattern, result);
+        }
+        return result;
     }
-	
-	/**
-	 * @return the majorTickMarkStepHint
-	 */
-	public int getMajorTickMarkStepHint() {
-		if(isDateEnabled()){
-			return Math.max(majorTickMarkStepHint, formatPatternSize);
-		}
-		return majorTickMarkStepHint;
-	}
+    
+    /**
+     * @return the majorTickMarkStepHint
+     */
+    public int getMajorTickMarkStepHint() {
+        if(isDateEnabled()){
+            return Math.max(majorTickMarkStepHint, formatPatternSize);
+        }
+        return majorTickMarkStepHint;
+    }
 
-	/** get the scale range */ 
+    /** get the scale range */ 
     public Range getRange() {
         return range;
     }
 
-	
-	/**
-	 * @return the side of the tick label relative to the tick marks
-	 */
-	public LabelSide getTickLablesSide() {
-		return tickLableSide;
-	}
+    
+    /**
+     * @return the side of the tick label relative to the tick marks
+     */
+    public LabelSide getTickLablesSide() {
+        return tickLableSide;
+    }
 
-	/**
-	 * @return the timeUnit
-	 */
-	public int getTimeUnit() {
-		return timeUnit;
-	}
-
-
-	/**
-	 * @return the dateEnabled
-	 */
-	public boolean isDateEnabled() {
-		return dateEnabled;
-	}
-
-	/**
-	 * @return the dirty
-	 */
-	public boolean isDirty() {
-		return dirty;
-	}
+    /**
+     * @return the timeUnit
+     */
+    public int getTimeUnit() {
+        return timeUnit;
+    }
 
 
+    /**
+     * @return the dateEnabled
+     */
+    public boolean isDateEnabled() {
+        return dateEnabled;
+    }
 
-	/**
+    /**
+     * @return the dirty
+     */
+    public boolean isDirty() {
+        return dirty;
+    }
+
+
+
+    /**
      * Gets the state indicating if log scale is enabled.
      * 
      * @return true if log scale is enabled
@@ -243,59 +243,59 @@ public abstract class AbstractScale extends Figure{
         return logScaleEnabled;
     }
 
-	
-	/**
-	 * @return the minorTicksVisible
-	 */
-	public boolean isMinorTicksVisible() {
-		return minorTicksVisible;
-	}
-
-	
+    
     /**
-	 * @return the scaleLineVisible
-	 */
-	public boolean isScaleLineVisible() {
-		return scaleLineVisible;
-	}
+     * @return the minorTicksVisible
+     */
+    public boolean isMinorTicksVisible() {
+        return minorTicksVisible;
+    }
 
-	/**
-	 * @param dateEnabled the dateEnabled to set
-	 */
-	public void setDateEnabled(boolean dateEnabled) {
-		this.dateEnabled = dateEnabled;
+    
+    /**
+     * @return the scaleLineVisible
+     */
+    public boolean isScaleLineVisible() {
+        return scaleLineVisible;
+    }
+
+    /**
+     * @param dateEnabled the dateEnabled to set
+     */
+    public void setDateEnabled(boolean dateEnabled) {
+        this.dateEnabled = dateEnabled;
         setDirty(true);
         revalidate();
 
-	}
+    }
 
-	/** Whenever any parameter has been changed, the scale should be marked as dirty, 
+    /** Whenever any parameter has been changed, the scale should be marked as dirty, 
      * so all the inner parameters could be recalculated before the next paint
-	 * @param dirty the dirty to set
-	 */
-	protected void setDirty(boolean dirty) {
-		this.dirty = dirty;
-	}
+     * @param dirty the dirty to set
+     */
+    protected void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
 
-	/**
+    /**
      * Sets the format pattern for axis tick label. see {@link Format}
      * <p>
      * If <tt>null</tt> is set, default format will be used.
      * 
      * @param format
      *            the format
-	 * @exception NullPointerException if <code>pattern</code> is null
+     * @exception NullPointerException if <code>pattern</code> is null
      * @exception IllegalArgumentException if the given pattern is invalid.
      */
     public void setFormatPattern(String formatPattern) {
-    	 try {
- 			new DecimalFormat(formatPattern);
- 		} catch (NullPointerException e) {
- 			throw e;
- 		} catch (IllegalArgumentException e){
- 			throw e;
- 		}
-		
+         try {
+             new DecimalFormat(formatPattern);
+         } catch (NullPointerException e) {
+             throw e;
+         } catch (IllegalArgumentException e){
+             throw e;
+         }
+        
         internalSetFormatPattern(formatPattern);
         autoFormat = false;
         setDirty(true);
@@ -304,30 +304,30 @@ public abstract class AbstractScale extends Figure{
     }
     
     private void internalSetFormatPattern(String formatPattern){
-    	if(formatPattern.equals(this.formatPattern))
-    		return;
-    	this.formatPattern = formatPattern;
-    	if(isDateEnabled())
-    		formatPatternSize = Draw2dSingletonUtil.getTextUtilities().getTextExtents(formatPattern, getFont()).width;
+        if(formatPattern.equals(this.formatPattern))
+            return;
+        this.formatPattern = formatPattern;
+        if(isDateEnabled())
+            formatPatternSize = Draw2dSingletonUtil.getTextUtilities().getTextExtents(formatPattern, getFont()).width;
     }
 
-	/**
-	 * @return the formatPattern
-	 */
-	public String getFormatPattern() {
-		return formatPattern;
-	}
-	
-	
-	
-	@Override
-	public void setFont(Font f) {
-		super.setFont(f);
-		setDirty(true);
-		revalidate();
-	}
+    /**
+     * @return the formatPattern
+     */
+    public String getFormatPattern() {
+        return formatPattern;
+    }
+    
+    
+    
+    @Override
+    public void setFont(Font f) {
+        super.setFont(f);
+        setDirty(true);
+        revalidate();
+    }
 
-	/**
+    /**
      * @param enabled true if enabling log scales
      * @throws IllegalStateException
      */
@@ -337,71 +337,71 @@ public abstract class AbstractScale extends Figure{
             return;
         }        
         if(enabled) {
-        	if(min == DEFAULT_MIN && max == DEFAULT_MAX) {
-        		min = DEFAULT_LOG_SCALE_MIN;
-        		max = DEFAULT_LOG_SCALE_MAX;       			
-        	}
-        	if(min <= 0) {
-        		min = DEFAULT_LOG_SCALE_MIN;
-        	}
-        	if(max <= min) {
-        		max = min + DEFAULT_LOG_SCALE_MAX;
-        	}
+            if(min == DEFAULT_MIN && max == DEFAULT_MAX) {
+                min = DEFAULT_LOG_SCALE_MIN;
+                max = DEFAULT_LOG_SCALE_MAX;                   
+            }
+            if(min <= 0) {
+                min = DEFAULT_LOG_SCALE_MIN;
+            }
+            if(max <= min) {
+                max = min + DEFAULT_LOG_SCALE_MAX;
+            }
         } else if(min == DEFAULT_LOG_SCALE_MIN && max == DEFAULT_LOG_SCALE_MAX) {
-        	min = DEFAULT_MIN;
-        	max = DEFAULT_MAX;
+            min = DEFAULT_MIN;
+            max = DEFAULT_MAX;
         }
-        	
+            
         logScaleEnabled = enabled;
         range = new Range(min, max);
         setDirty(true);
-		revalidate();
-		repaint();
-		
+        revalidate();
+        repaint();
+        
     }
 
-	/**
-	 * @param majorTickMarkStepHint the majorTickMarkStepHint to set, should be less than 1000.
-	 */
-	public void setMajorTickMarkStepHint(int majorTickMarkStepHint) {		
-		this.majorTickMarkStepHint = majorTickMarkStepHint;
-		setDirty(true);
-		revalidate();
-		repaint();
-	}
+    /**
+     * @param majorTickMarkStepHint the majorTickMarkStepHint to set, should be less than 1000.
+     */
+    public void setMajorTickMarkStepHint(int majorTickMarkStepHint) {        
+        this.majorTickMarkStepHint = majorTickMarkStepHint;
+        setDirty(true);
+        revalidate();
+        repaint();
+    }
 
-	/**
-	 * @param minorTicksVisible the minorTicksVisible to set
-	 */
-	public void setMinorTicksVisible(boolean minorTicksVisible) {
-		this.minorTicksVisible = minorTicksVisible;
-	}
+    /**
+     * @param minorTicksVisible the minorTicksVisible to set
+     */
+    public void setMinorTicksVisible(boolean minorTicksVisible) {
+        this.minorTicksVisible = minorTicksVisible;
+    }
 
     /** set the scale range */
-	public void setRange(final Range range) {
-	    if (range == null) {
-	        SWT.error(SWT.ERROR_NULL_ARGUMENT);
-	        return; // to suppress warnings...
-	    }
-	    setRange(range.getLower(), range.getUpper());
-	}
+    public void setRange(final Range range) {
+        if (range == null) {
+            SWT.error(SWT.ERROR_NULL_ARGUMENT);
+            return; // to suppress warnings...
+        }
+        setRange(range.getLower(), range.getUpper());
+    }
 
-	/**Set the range with option to honor its original direction.
-	 * @param t1 value 1 of the range
-	 * @param t2 value 2 of the range
-	 * @param honorOriginDirection if true, the start and end value of the range
-	 * will set according to its original direction.
-	 */
-	public void setRange(double t1, double t2, boolean honorOriginDirection){
-		if(honorOriginDirection){
-			if(getRange().isMinBigger()){
-				setRange(t1>t2? t1:t2, t1>t2?t2:t1);
-			}else
-				setRange(t1>t2? t2:t1, t1>t2?t1:t2);
-		}else
-			setRange(t1, t2);
-	}
-	
+    /**Set the range with option to honor its original direction.
+     * @param t1 value 1 of the range
+     * @param t2 value 2 of the range
+     * @param honorOriginDirection if true, the start and end value of the range
+     * will set according to its original direction.
+     */
+    public void setRange(double t1, double t2, boolean honorOriginDirection){
+        if(honorOriginDirection){
+            if(getRange().isMinBigger()){
+                setRange(t1>t2? t1:t2, t1>t2?t2:t1);
+            }else
+                setRange(t1>t2? t2:t1, t1>t2?t1:t2);
+        }else
+            setRange(t1, t2);
+    }
+    
     /**set the scale range
      * @param lower the lower limit
      * @param upper the upper limit
@@ -410,15 +410,15 @@ public abstract class AbstractScale extends Figure{
      */
     public void setRange(double lower, double upper){
         if (Double.isNaN(lower) || Double.isNaN(upper) 
-        		|| Double.isInfinite(lower) || Double.isInfinite(upper) || Double.isInfinite(upper-lower)) {
+                || Double.isInfinite(lower) || Double.isInfinite(upper) || Double.isInfinite(upper-lower)) {
             throw new IllegalArgumentException("Illegal range: lower=" + lower + ", upper=" + upper);
         }
         
         //in case of lower > upper, reverse them.       
 //        if(lower > upper){
-//        	double temp = lower;        	
-//        	lower = upper;
-//        	upper = temp;
+//            double temp = lower;            
+//            lower = upper;
+//            upper = temp;
 //        }        
         
        // if (min == lower && max == upper) {
@@ -426,13 +426,13 @@ public abstract class AbstractScale extends Figure{
        // }
 
         if (lower == upper) {
-        	upper = lower +1;
-        	if(Double.isInfinite(upper))
+            upper = lower +1;
+            if(Double.isInfinite(upper))
                 throw new IllegalArgumentException("Illegal range: lower=" + lower + ", upper=" + upper);
         }
 
         if (logScaleEnabled && lower <= 0) {
-        	lower = DEFAULT_LOG_SCALE_MIN;
+            lower = DEFAULT_LOG_SCALE_MIN;
         }
 
         min = lower;
@@ -441,28 +441,28 @@ public abstract class AbstractScale extends Figure{
         
         //calculate the default decimal format
         if(formatPattern ==null || formatPattern == default_decimal_format) {
-        	 if(Math.abs(max-min) > 0.1)
-            	default_decimal_format = "############.##";
+             if(Math.abs(max-min) > 0.1)
+                default_decimal_format = "############.##";
              else {
-            	default_decimal_format = "##.##";
-	            double mantissa = Math.abs(max-min);   
-	            while (mantissa < 1) {
-	                mantissa *= 10.0;
-	                default_decimal_format += "#"; 
-	            }
+                default_decimal_format = "##.##";
+                double mantissa = Math.abs(max-min);   
+                while (mantissa < 1) {
+                    mantissa *= 10.0;
+                    default_decimal_format += "#"; 
+                }
              }
-        	 formatPattern = default_decimal_format;
-        	 autoFormat = true;
+             formatPattern = default_decimal_format;
+             autoFormat = true;
         }
         
         if(formatPattern.equals(default_decimal_format) || 
-        		formatPattern.equals(DEFAULT_ENGINEERING_FORMAT)) {
-        	if((max != 0 && Math.abs(Math.log10(Math.abs(max))) >= ENGINEERING_LIMIT)
-        		|| (min !=0 && Math.abs(Math.log10(Math.abs(min))) >= ENGINEERING_LIMIT))
+                formatPattern.equals(DEFAULT_ENGINEERING_FORMAT)) {
+            if((max != 0 && Math.abs(Math.log10(Math.abs(max))) >= ENGINEERING_LIMIT)
+                || (min !=0 && Math.abs(Math.log10(Math.abs(min))) >= ENGINEERING_LIMIT))
                 formatPattern = DEFAULT_ENGINEERING_FORMAT;
-        	else
-        		formatPattern = default_decimal_format;
-        	autoFormat = true;
+            else
+                formatPattern = default_decimal_format;
+            autoFormat = true;
         } 
         range = new Range(min, max);
         setDirty(true);
@@ -471,87 +471,87 @@ public abstract class AbstractScale extends Figure{
     }
 
 
-	/**
-	 * @param scaleLineVisible the scaleLineVisible to set
-	 */
-	public void setScaleLineVisible(boolean scaleLineVisible) {
-		this.scaleLineVisible = scaleLineVisible;
-	}
+    /**
+     * @param scaleLineVisible the scaleLineVisible to set
+     */
+    public void setScaleLineVisible(boolean scaleLineVisible) {
+        this.scaleLineVisible = scaleLineVisible;
+    }
 
-	/**
-	 * @param tickLabelSide the side of the tick label relative to tick mark
-	 */
-	public void setTickLableSide(LabelSide tickLabelSide) {
-		this.tickLableSide = tickLabelSide;
-		revalidate();
-	}
+    /**
+     * @param tickLabelSide the side of the tick label relative to tick mark
+     */
+    public void setTickLableSide(LabelSide tickLabelSide) {
+        this.tickLableSide = tickLabelSide;
+        revalidate();
+    }
 
-	/**Set the time unit for a date enabled scale. The format of the time
+    /**Set the time unit for a date enabled scale. The format of the time
      * would be determined by it.
-	 * @param timeUnit the timeUnit to set. It should be one of: 
-	 * <tt>Calendar.MILLISECOND</tt>, <tt>Calendar.SECOND</tt>, 
-	 * <tt>Calendar.MINUTE</tt>, <tt>Calendar.HOUR_OF_DAY</tt>, 
-	 * <tt>Calendar.DATE</tt>, <tt>Calendar.MONTH</tt>, 
-	 * <tt>Calendar.YEAR</tt>.
-	 * @see Calendar
-	 */
-	public void setTimeUnit(int timeUnit) {
-		this.timeUnit = timeUnit;
+     * @param timeUnit the timeUnit to set. It should be one of: 
+     * <tt>Calendar.MILLISECOND</tt>, <tt>Calendar.SECOND</tt>, 
+     * <tt>Calendar.MINUTE</tt>, <tt>Calendar.HOUR_OF_DAY</tt>, 
+     * <tt>Calendar.DATE</tt>, <tt>Calendar.MONTH</tt>, 
+     * <tt>Calendar.YEAR</tt>.
+     * @see Calendar
+     */
+    public void setTimeUnit(int timeUnit) {
+        this.timeUnit = timeUnit;
         setDirty(true);
-	}
+    }
 
-	/**
+    /**
      * Updates the tick, recalculate all inner parameters
      */
     public abstract void updateTick();
 
-	/**
-	 * @param majorGridStep the majorGridStep to set
-	 */
-	public void setMajorGridStep(double majorGridStep) {
-		this.majorGridStep = majorGridStep;
-		setDirty(true);
-	}
+    /**
+     * @param majorGridStep the majorGridStep to set
+     */
+    public void setMajorGridStep(double majorGridStep) {
+        this.majorGridStep = majorGridStep;
+        setDirty(true);
+    }
 
-	/**
-	 * @return the majorGridStep
-	 */
-	public double getMajorGridStep() {
-		return majorGridStep;
-	}
+    /**
+     * @return the majorGridStep
+     */
+    public double getMajorGridStep() {
+        return majorGridStep;
+    }
 
-	/**
-	 * @param minorTickMarkStepHint the minorTickMarkStepHint to set
-	 */
-	public void setMinorTickMarkStepHint(int minorTickMarkStepHint) {
-		this.minorTickMarkStepHint = minorTickMarkStepHint;
-	}
+    /**
+     * @param minorTickMarkStepHint the minorTickMarkStepHint to set
+     */
+    public void setMinorTickMarkStepHint(int minorTickMarkStepHint) {
+        this.minorTickMarkStepHint = minorTickMarkStepHint;
+    }
 
-	/**
-	 * @return the minorTickMarkStepHint
-	 */
-	public int getMinorTickMarkStepHint() {
-		return minorTickMarkStepHint;
-	}
+    /**
+     * @return the minorTickMarkStepHint
+     */
+    public int getMinorTickMarkStepHint() {
+        return minorTickMarkStepHint;
+    }
 
-	/**
-	 * @param autoFormat the autoFormat to set
-	 */
-	public void setAutoFormat(boolean autoFormat) {
-		this.autoFormat = autoFormat;
-		if(autoFormat){
-			formatPattern = null;
-			setRange(getRange());
-			format(0);
-		}
-		
-	}
+    /**
+     * @param autoFormat the autoFormat to set
+     */
+    public void setAutoFormat(boolean autoFormat) {
+        this.autoFormat = autoFormat;
+        if(autoFormat){
+            formatPattern = null;
+            setRange(getRange());
+            format(0);
+        }
+        
+    }
 
-	/**
-	 * @return the autoFormat
-	 */
-	public boolean isAutoFormat() {
-		return autoFormat;
-	}
+    /**
+     * @return the autoFormat
+     */
+    public boolean isAutoFormat() {
+        return autoFormat;
+    }
  
 }

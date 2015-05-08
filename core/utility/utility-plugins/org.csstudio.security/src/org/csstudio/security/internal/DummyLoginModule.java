@@ -46,73 +46,73 @@ import com.sun.security.auth.UserPrincipal;
  */
 public class DummyLoginModule implements LoginModule
 {
-	private Subject subject;
-	private CallbackHandler callbackHandler;
-	private UserPrincipal principal = null;
-	private boolean debug;
+    private Subject subject;
+    private CallbackHandler callbackHandler;
+    private UserPrincipal principal = null;
+    private boolean debug;
 
-	@Override
+    @Override
     public void initialize(final Subject subject, final CallbackHandler handler,
-			final Map<String, ?> sharedState, final Map<String, ?> options)
-	{
-		this.subject = subject;
-		this.callbackHandler = handler;
+            final Map<String, ?> sharedState, final Map<String, ?> options)
+    {
+        this.subject = subject;
+        this.callbackHandler = handler;
         debug = "true".equalsIgnoreCase((String)options.get("debug"));
-	}
+    }
 
     @Override
-	public boolean login() throws LoginException
-	{
-		final String username = getUsernameFromCallbackHandler();
-		if (debug)
-			System.out.println("Dummy login for '" + username + "'");
-		if ("fail".equals(username))
-		{
-			principal = null;
-			return false;
-		}
-		principal = new UserPrincipal(username);
-		return true;		
-	}
+    public boolean login() throws LoginException
+    {
+        final String username = getUsernameFromCallbackHandler();
+        if (debug)
+            System.out.println("Dummy login for '" + username + "'");
+        if ("fail".equals(username))
+        {
+            principal = null;
+            return false;
+        }
+        principal = new UserPrincipal(username);
+        return true;        
+    }
 
     @Override
-	public boolean abort() throws LoginException
-	{
-		// always successful, there is nothing to rollback
-		return true;
-	}
+    public boolean abort() throws LoginException
+    {
+        // always successful, there is nothing to rollback
+        return true;
+    }
 
     @Override
-	public boolean commit() throws LoginException
-	{
-		if (principal != null)
-			subject.getPrincipals().add(principal);
-		return true;
-	}
+    public boolean commit() throws LoginException
+    {
+        if (principal != null)
+            subject.getPrincipals().add(principal);
+        return true;
+    }
 
-	/** Sends a {@code NameCallback} to the callback handler to get the
-	 *  username.
-	 *  @throws LoginException 
-	 */
-	private String getUsernameFromCallbackHandler() throws LoginException
-	{
-		NameCallback nameCallback = new NameCallback("User name");
-		try
-		{
-			callbackHandler.handle(new Callback[] {nameCallback});
-			return nameCallback.getName();
-		}
-		catch (Exception ex)
-		{
-			throw new LoginException("Cannot obtain user name");
-		}
-	}
-	
+    /** Sends a {@code NameCallback} to the callback handler to get the
+     *  username.
+     *  @throws LoginException 
+     */
+    private String getUsernameFromCallbackHandler() throws LoginException
+    {
+        NameCallback nameCallback = new NameCallback("User name");
+        try
+        {
+            callbackHandler.handle(new Callback[] {nameCallback});
+            return nameCallback.getName();
+        }
+        catch (Exception ex)
+        {
+            throw new LoginException("Cannot obtain user name");
+        }
+    }
+    
     @Override
-	public boolean logout() throws LoginException
-	{
-		subject.getPrincipals().remove(principal);
-		principal = null;
-		return true;
-	}
+    public boolean logout() throws LoginException
+    {
+        subject.getPrincipals().remove(principal);
+        principal = null;
+        return true;
+    }
 }

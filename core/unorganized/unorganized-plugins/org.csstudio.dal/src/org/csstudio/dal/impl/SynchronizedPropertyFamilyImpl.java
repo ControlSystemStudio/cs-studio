@@ -17,35 +17,35 @@ import org.csstudio.dal.spi.PropertyFactory;
  *
  */
 public class SynchronizedPropertyFamilyImpl extends PropertyFamilyImpl 
-				implements PropertyFamily {
+                implements PropertyFamily {
 
-	/**
-	 * Constructs a new PropertyFamily, which uses a synchronized collection
-	 * to store the devices.
-	 * 
-	 * @param pf the owner of this family
-	 */
-	public SynchronizedPropertyFamilyImpl(PropertyFactory pf) {
-		super(pf);
-		properties = Collections.synchronizedMap(properties);
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.group.PropertyCollectionMap#remove(org.csstudio.dal.DynamicValueProperty)
-	 */
-	@Override
-	protected synchronized void remove(DynamicValueProperty<?> property) {
-		super.remove(property);
-	}
+    /**
+     * Constructs a new PropertyFamily, which uses a synchronized collection
+     * to store the devices.
+     * 
+     * @param pf the owner of this family
+     */
+    public SynchronizedPropertyFamilyImpl(PropertyFactory pf) {
+        super(pf);
+        properties = Collections.synchronizedMap(properties);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.group.PropertyCollectionMap#remove(org.csstudio.dal.DynamicValueProperty)
+     */
+    @Override
+    protected synchronized void remove(DynamicValueProperty<?> property) {
+        super.remove(property);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.impl.PropertyFamilyImpl#add(org.csstudio.dal.DynamicValueProperty)
-	 */
-	@Override
-	public synchronized void add(DynamicValueProperty<?> property) {
-		super.add(property);
-	}
-	
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.impl.PropertyFamilyImpl#add(org.csstudio.dal.DynamicValueProperty)
+     */
+    @Override
+    public synchronized void add(DynamicValueProperty<?> property) {
+        super.add(property);
+    }
+    
 }

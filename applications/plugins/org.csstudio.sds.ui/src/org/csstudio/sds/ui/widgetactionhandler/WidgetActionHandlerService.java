@@ -36,65 +36,65 @@ import org.slf4j.LoggerFactory;
  *
  */
 public final class WidgetActionHandlerService {
-	
+    
     private static final Logger LOG = LoggerFactory.getLogger(WidgetActionHandlerService.class);
 
-	/**
-	 * The instance of the service.
-	 */
-	private static WidgetActionHandlerService _instance;
-	/**
-	 * The map of known {@link IWidgetActionHandler}.
-	 */
-	private Map<ActionType, IWidgetActionHandler> _handler;
-	
-	/**
-	 * Constructor.
-	 */
-	private WidgetActionHandlerService() {
-		initHandlers();
-	}
-	
-	/**
-	 * Creates and registers {@link IWidgetActionHandler}.
-	 */
-	private void initHandlers() {
-		_handler = new HashMap<ActionType, IWidgetActionHandler>();
-		_handler.put(ActionType.OPEN_DISPLAY, new OpenDisplayActionHandler());
-		_handler.put(ActionType.COMMIT_VALUE, new CommitValueActionHandler());
-		_handler.put(ActionType.EXECUTE_SCRIPT, new ExecuteScriptActionHandler());
-		_handler.put(ActionType.OPEN_DATA_BROWSER, new OpenDataBrowserActionHandler());
-	}
+    /**
+     * The instance of the service.
+     */
+    private static WidgetActionHandlerService _instance;
+    /**
+     * The map of known {@link IWidgetActionHandler}.
+     */
+    private Map<ActionType, IWidgetActionHandler> _handler;
+    
+    /**
+     * Constructor.
+     */
+    private WidgetActionHandlerService() {
+        initHandlers();
+    }
+    
+    /**
+     * Creates and registers {@link IWidgetActionHandler}.
+     */
+    private void initHandlers() {
+        _handler = new HashMap<ActionType, IWidgetActionHandler>();
+        _handler.put(ActionType.OPEN_DISPLAY, new OpenDisplayActionHandler());
+        _handler.put(ActionType.COMMIT_VALUE, new CommitValueActionHandler());
+        _handler.put(ActionType.EXECUTE_SCRIPT, new ExecuteScriptActionHandler());
+        _handler.put(ActionType.OPEN_DATA_BROWSER, new OpenDataBrowserActionHandler());
+    }
 
-	/**
-	 * Returns the instance of the {@link WidgetActionHandlerService}.
-	 * @return The instance.
-	 */
-	public static WidgetActionHandlerService getInstance() {
-		if (_instance==null) {
-			_instance = new WidgetActionHandlerService();
-		}
-		return _instance;
-	}
-	
-	/**
-	 * Performs the action depending on the given {@link ActionType}.
-	 * @param widget The {@link AbstractWidgetModel}
-	 * @param action The type of the action
-	 */
-	public void performAction(final AbstractWidgetModel widget, final AbstractWidgetActionModel action) {
-		if (action.isEnabled() && _handler.containsKey(action.getType())) {
-			_handler.get(action.getType()).executeAction(widget, action);
-		} else {
-			this.doUnknownAction();
-		}
-	}
-	
-	/**
-	 * Performs the unspecified  action.
-	 */
-	private void doUnknownAction() {
-		LOG.info("Unknown WidgetAction performed!");
-	}
+    /**
+     * Returns the instance of the {@link WidgetActionHandlerService}.
+     * @return The instance.
+     */
+    public static WidgetActionHandlerService getInstance() {
+        if (_instance==null) {
+            _instance = new WidgetActionHandlerService();
+        }
+        return _instance;
+    }
+    
+    /**
+     * Performs the action depending on the given {@link ActionType}.
+     * @param widget The {@link AbstractWidgetModel}
+     * @param action The type of the action
+     */
+    public void performAction(final AbstractWidgetModel widget, final AbstractWidgetActionModel action) {
+        if (action.isEnabled() && _handler.containsKey(action.getType())) {
+            _handler.get(action.getType()).executeAction(widget, action);
+        } else {
+            this.doUnknownAction();
+        }
+    }
+    
+    /**
+     * Performs the unspecified  action.
+     */
+    private void doUnknownAction() {
+        LOG.info("Unknown WidgetAction performed!");
+    }
 
 }

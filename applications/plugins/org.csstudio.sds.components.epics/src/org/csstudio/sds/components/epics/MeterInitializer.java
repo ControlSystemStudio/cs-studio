@@ -32,23 +32,23 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
  */
 public final class MeterInitializer extends AbstractEpicsWidgetInitializer {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void initialize(final AbstractControlSystemSchema schema) {
-		initializeCommonAlarmBehaviour();
-		initializeCommonConnectionStates();
-		
-		initializeDynamicProperty(MeterModel.PROP_MINVAL, "$channel$[graphMin], double");
-		initializeDynamicProperty(MeterModel.PROP_MAXVAL, "$channel$[graphMax], double");
-		initializeDynamicProperty(MeterModel.PROP_HIHIBOUND,
-				"$channel$[alarmMax], double");
-		initializeDynamicProperty(MeterModel.PROP_HIBOUND, "$channel$[warningMax], double");
-		initializeDynamicProperty(MeterModel.PROP_LOBOUND,
-				"$channel$[alarmMin], double");
-		initializeDynamicProperty(MeterModel.PROP_LOLOBOUND, "$channel$[warningMin], double");
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void initialize(final AbstractControlSystemSchema schema) {
+        initializeCommonAlarmBehaviour();
+        initializeCommonConnectionStates();
+        
+        initializeDynamicProperty(MeterModel.PROP_MINVAL, "$channel$[graphMin], double");
+        initializeDynamicProperty(MeterModel.PROP_MAXVAL, "$channel$[graphMax], double");
+        initializeDynamicProperty(MeterModel.PROP_HIHIBOUND,
+                "$channel$[alarmMax], double");
+        initializeDynamicProperty(MeterModel.PROP_HIBOUND, "$channel$[warningMax], double");
+        initializeDynamicProperty(MeterModel.PROP_LOBOUND,
+                "$channel$[alarmMin], double");
+        initializeDynamicProperty(MeterModel.PROP_LOLOBOUND, "$channel$[warningMin], double");
 
-		initializeDynamicProperty(MeterModel.PROP_VALUE, "$channel$");
-	}
+        initializeDynamicProperty(MeterModel.PROP_VALUE, "$channel$");
+    }
 }

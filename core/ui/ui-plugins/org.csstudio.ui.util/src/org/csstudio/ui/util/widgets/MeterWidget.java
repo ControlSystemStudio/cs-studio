@@ -26,10 +26,10 @@ import org.eclipse.swt.widgets.Composite;
 public class MeterWidget extends Canvas
 {
     /** Line width for scale outline (rest uses width 1) */
-	final private static int LINE_WIDTH = 5;
+    final private static int LINE_WIDTH = 5;
 
-	/** Number of labels (and ticks) */
-	final private static int LABEL_COUNT = 5;
+    /** Number of labels (and ticks) */
+    final private static int LABEL_COUNT = 5;
 
     final private static int startAngle = 140;
     final private static int endAngle = 40;
@@ -84,29 +84,29 @@ public class MeterWidget extends Canvas
     /** Y-Radius of scale */
     private int y_radius;
 
-	/** Constructor */
-	public MeterWidget(final Composite parent, final int style)
-	{
-	    // To reduce flicker, don't clear the background.
-	    // On Linux, however, that seems to corrupt the overall
-	    // widget layout, so we don't use that option.
-	    // super(parent, style | SWT.NO_BACKGROUND);
+    /** Constructor */
+    public MeterWidget(final Composite parent, final int style)
+    {
+        // To reduce flicker, don't clear the background.
+        // On Linux, however, that seems to corrupt the overall
+        // widget layout, so we don't use that option.
+        // super(parent, style | SWT.NO_BACKGROUND);
         super(parent, SWT.NO_BACKGROUND);
-		addDisposeListener(new DisposeListener() {
-			
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-		        invalidateScale();
-		        alarmColor.dispose();
-		        warningColor.dispose();
-		        okColor.dispose();
-		        needleColor.dispose();
-		        faceColor.dispose();
-		        backgroundColor.dispose();
-			}
-		});
-		addPaintListener(paintListener);
-	}
+        addDisposeListener(new DisposeListener() {
+            
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+                invalidateScale();
+                alarmColor.dispose();
+                warningColor.dispose();
+                okColor.dispose();
+                needleColor.dispose();
+                faceColor.dispose();
+                backgroundColor.dispose();
+            }
+        });
+        addPaintListener(paintListener);
+    }
 
     /**
      * Configure the meter.
@@ -127,12 +127,12 @@ public class MeterWidget extends Canvas
                           final double max,
                           final int precision)
     {
-    	if (this.min == min && this.lowAlarm == lowAlarm && this.lowWarning == lowWarning &&
-    			this.highWarning == highWarning && this.highAlarm == highAlarm &&
-    			this.max == max && this.precision == precision) {
-    		return;
-    	}
-    	
+        if (this.min == min && this.lowAlarm == lowAlarm && this.lowWarning == lowWarning &&
+                this.highWarning == highWarning && this.highAlarm == highAlarm &&
+                this.max == max && this.precision == precision) {
+            return;
+        }
+        
         if (min > max)
         {   // swap
             this.min = min;
@@ -152,13 +152,13 @@ public class MeterWidget extends Canvas
         // Check for limits that are outside the value range
         // or NaN (since EPICS R3.14.11)
         if (lowAlarm > this.min  &&  lowAlarm < this.max)
-        	this.lowAlarm = lowAlarm;
+            this.lowAlarm = lowAlarm;
         else
-        	this.lowAlarm = this.min;
+            this.lowAlarm = this.min;
         
         if (lowWarning > this.min  &&  lowWarning < this.max)
-        	this.lowWarning = lowWarning;
-    	else
+            this.lowWarning = lowWarning;
+        else
             this.lowWarning = this.lowAlarm;
 
         
@@ -168,7 +168,7 @@ public class MeterWidget extends Canvas
             this.highAlarm = this.max;
 
         if (highWarning > this.min  &&  highWarning < this.max)
-        	this.highWarning = highWarning;
+            this.highWarning = highWarning;
         else
             this.highWarning = this.highAlarm;
 
@@ -180,9 +180,9 @@ public class MeterWidget extends Canvas
     /** Set current value. */
     public void setValue(final double value)
     {
-    	if (this.value == value)
-    		return;
-    	
+        if (this.value == value)
+            return;
+        
         this.value = value;
         if (!isDisposed()) {
             redraw();
@@ -191,13 +191,13 @@ public class MeterWidget extends Canvas
     
     @Override
     public void setEnabled(boolean enabled) {
-    	// When the widget is disabled, force the redraw.
-    	boolean oldEnabled = getEnabled();
-    	super.setEnabled(enabled);
-    	if (oldEnabled != enabled) {
-    		invalidateScale();
-    		redraw();
-    	}
+        // When the widget is disabled, force the redraw.
+        boolean oldEnabled = getEnabled();
+        super.setEnabled(enabled);
+        if (oldEnabled != enabled) {
+            invalidateScale();
+            redraw();
+        }
     }
 
     /** Reset the scale.
@@ -213,21 +213,21 @@ public class MeterWidget extends Canvas
         }
     }
 
-	/** @see org.eclipse.swt.widgets.Composite#computeSize(int, int, boolean) */
-	@Override
-	public Point computeSize(final int wHint, final int hHint, final boolean changed)
-	{
-		int width, height;
-		height = 100;
-		width = 100;
-		if (wHint != SWT.DEFAULT) {
+    /** @see org.eclipse.swt.widgets.Composite#computeSize(int, int, boolean) */
+    @Override
+    public Point computeSize(final int wHint, final int hHint, final boolean changed)
+    {
+        int width, height;
+        height = 100;
+        width = 100;
+        if (wHint != SWT.DEFAULT) {
             width = wHint;
         }
-		if (hHint != SWT.DEFAULT) {
+        if (hHint != SWT.DEFAULT) {
             height = hHint;
         }
-		return new Point(width, height);
-	}
+        return new Point(width, height);
+    }
 
     /** @return Angle in degrees for given value on scale. */
     private double getAngle(final double value)
@@ -242,51 +242,51 @@ public class MeterWidget extends Canvas
     }
     
     private PaintListener paintListener = new PaintListener() {
-		
-		@Override
-		public void paintControl(PaintEvent e) {
-			//long start = System.nanoTime();
-			
-	        final GC gc = e.gc;
+        
+        @Override
+        public void paintControl(PaintEvent e) {
+            //long start = System.nanoTime();
+            
+            final GC gc = e.gc;
 
-	        // Get the rectangle that exactly fills the 'inner' area
-	        // such that drawRectangle() will match.
-	        Rectangle displayArea = getClientArea();
-	        
-	    	//paintScale(client_rect, gc);
-	        
-	        // Background and border
-	        gc.setForeground(faceColor);
-	        gc.setBackground(backgroundColor);
-	        gc.setLineWidth(LINE_WIDTH);
-	        gc.setLineCap(SWT.CAP_ROUND);
-	        gc.setLineJoin(SWT.JOIN_ROUND);
+            // Get the rectangle that exactly fills the 'inner' area
+            // such that drawRectangle() will match.
+            Rectangle displayArea = getClientArea();
+            
+            //paintScale(client_rect, gc);
+            
+            // Background and border
+            gc.setForeground(faceColor);
+            gc.setBackground(backgroundColor);
+            gc.setLineWidth(LINE_WIDTH);
+            gc.setLineCap(SWT.CAP_ROUND);
+            gc.setLineJoin(SWT.JOIN_ROUND);
 
-	        // To reduce flicker, the scale is drawn as a prepared image into
-	        // the widget whose background has not been cleared.
-	        createScaleImage(gc, displayArea);
-	        if (getEnabled())
-	        {
-	            gc.drawImage(scaleImage, 0, 0);
+            // To reduce flicker, the scale is drawn as a prepared image into
+            // the widget whose background has not been cleared.
+            createScaleImage(gc, displayArea);
+            if (getEnabled())
+            {
+                gc.drawImage(scaleImage, 0, 0);
 
-	            paintNeedle(gc);
-	        }
-	        else
-	        {   // Not enabled
-	            final Image grayed =
-	                new Image(gc.getDevice(), scaleImage, SWT.IMAGE_DISABLE);
-	            gc.drawImage(grayed, 0, 0);
-	            grayed.dispose();
+                paintNeedle(gc);
+            }
+            else
+            {   // Not enabled
+                final Image grayed =
+                    new Image(gc.getDevice(), scaleImage, SWT.IMAGE_DISABLE);
+                gc.drawImage(grayed, 0, 0);
+                grayed.dispose();
 
-	            final String message = "No numeric display info";
-	            final Point size = gc.textExtent(message);
-	            gc.drawString(message,
-	             (displayArea.width-size.x)/2, (displayArea.height-size.y)/2, true);
-	        }
-	        
-	        //System.out.println("MeterWidget paint: " + (System.nanoTime() - start));
-		}
-	};
+                final String message = "No numeric display info";
+                final Point size = gc.textExtent(message);
+                gc.drawString(message,
+                 (displayArea.width-size.x)/2, (displayArea.height-size.y)/2, true);
+            }
+            
+            //System.out.println("MeterWidget paint: " + (System.nanoTime() - start));
+        }
+    };
     
     private void paintNeedle(final GC gc) {
         gc.setLineWidth(LINE_WIDTH);
@@ -331,8 +331,8 @@ public class MeterWidget extends Canvas
         scale_gc.dispose();
     }
 
-	private void paintScale(final Rectangle displayArea, final GC scale_gc) {
-		scale_gc.setForeground(faceColor);
+    private void paintScale(final Rectangle displayArea, final GC scale_gc) {
+        scale_gc.setForeground(faceColor);
         scale_gc.setBackground(backgroundColor);
         scale_gc.setLineWidth(LINE_WIDTH);
         scale_gc.setLineCap(SWT.CAP_ROUND);
@@ -445,13 +445,13 @@ public class MeterWidget extends Canvas
             
             // Don't print the numbers if disabled
             if (getEnabled()) {
-            	scale_gc.drawString(label_text,
+                scale_gc.drawString(label_text,
                           (int)(pivot_x + tick_x_radius*cos_angle)-size.x/2,
                           (int)(pivot_y - tick_y_radius*sin_angle)-size.y,
                           true);
             }
         }
-	}
+    }
 
     /** Create path for a section of the colored scale.
      *  @param device Device

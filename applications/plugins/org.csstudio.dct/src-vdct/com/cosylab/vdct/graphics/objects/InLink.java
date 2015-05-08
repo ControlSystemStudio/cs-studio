@@ -35,8 +35,8 @@ package com.cosylab.vdct.graphics.objects;
  */
 public interface InLink extends Linkable {
 
-	public static final int INPUT_MACRO_MODE = 0;
-	public static final int OUTPUT_MACRO_MODE = 1;
+    public static final int INPUT_MACRO_MODE = 0;
+    public static final int OUTPUT_MACRO_MODE = 1;
 /**
  * Insert the method's description here.
  * Creation date: (29.1.2001 17:55:10)

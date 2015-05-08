@@ -36,79 +36,79 @@ import org.eclipse.ui.progress.UIJob;
  * @author Sven Wende, Kai Meyer
  */
 public final class ChangeSettingsFromDroppedPvCommand extends Command {
-	/**
-	 * The Abstract EditPart.
-	 */
-	private AbstractWidgetEditPart _editPart;
-	/**
-	 * The Request.
-	 */
-	private DropPvRequest _request;
+    /**
+     * The Abstract EditPart.
+     */
+    private AbstractWidgetEditPart _editPart;
+    /**
+     * The Request.
+     */
+    private DropPvRequest _request;
 
-	/**
-	 * The old alias value.
-	 */
-	private String _oldValue;
+    /**
+     * The old alias value.
+     */
+    private String _oldValue;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param request
-	 *            The Request
-	 * @param editPart
-	 *            The EditPart for the Widget
-	 */
-	public ChangeSettingsFromDroppedPvCommand(final DropPvRequest request, final AbstractWidgetEditPart editPart) {
-		assert request != null;
-		assert editPart != null;
-		_request = request;
-		_editPart = editPart;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param request
+     *            The Request
+     * @param editPart
+     *            The EditPart for the Widget
+     */
+    public ChangeSettingsFromDroppedPvCommand(final DropPvRequest request, final AbstractWidgetEditPart editPart) {
+        assert request != null;
+        assert editPart != null;
+        _request = request;
+        _editPart = editPart;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void execute() {
-		_oldValue = _editPart.getWidgetModel().getAliases().get("channel");
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void execute() {
+        _oldValue = _editPart.getWidgetModel().getAliases().get("channel");
 
-		if (_request.getDroppedProcessVariables().size() > 0) {
-			// FIXME: SW: Umgang, falls mehrere PVs gedroppt wurden
-			_editPart.getWidgetModel().setAliasValue("channel", _request.getDroppedProcessVariables().get(0).getFullName());
+        if (_request.getDroppedProcessVariables().size() > 0) {
+            // FIXME: SW: Umgang, falls mehrere PVs gedroppt wurden
+            _editPart.getWidgetModel().setAliasValue("channel", _request.getDroppedProcessVariables().get(0).getFullName());
 
-			// remember the state
-			_editPart.getWidgetModel().saveState();
+            // remember the state
+            _editPart.getWidgetModel().saveState();
 
-			// connect
-			_editPart.getWidgetModel().setLive(true);
+            // connect
+            _editPart.getWidgetModel().setLive(true);
 
-			UIJob job = new UIJob("Temporary Connect") {
-				@Override
-				public IStatus runInUIThread(final IProgressMonitor monitor) {
-					_editPart.getWidgetModel().setLive(false);
+            UIJob job = new UIJob("Temporary Connect") {
+                @Override
+                public IStatus runInUIThread(final IProgressMonitor monitor) {
+                    _editPart.getWidgetModel().setLive(false);
 
-					// reset widget state
-					_editPart.getWidgetModel().restoreState();
+                    // reset widget state
+                    _editPart.getWidgetModel().restoreState();
 
-					return Status.OK_STATUS;
-				}
-			};
-			job.schedule(3000);
-		}
-	}
+                    return Status.OK_STATUS;
+                }
+            };
+            job.schedule(3000);
+        }
+    }
 
-	@Override
-	public void undo() {
-		_editPart.getWidgetModel().setLive(false);
+    @Override
+    public void undo() {
+        _editPart.getWidgetModel().setLive(false);
 
-		if (_oldValue == null) {
-			_editPart.getWidgetModel().removeAlias("channel");
-		} else {
-			_editPart.getWidgetModel().setAliasValue("channel", _oldValue);
-		}
+        if (_oldValue == null) {
+            _editPart.getWidgetModel().removeAlias("channel");
+        } else {
+            _editPart.getWidgetModel().setAliasValue("channel", _oldValue);
+        }
 
-		// reset widget state
-		_editPart.getWidgetModel().restoreState();
+        // reset widget state
+        _editPart.getWidgetModel().restoreState();
 
-	}
+    }
 }

@@ -47,73 +47,73 @@ import org.eclipse.ui.actions.ActionFactory;
  * 
  */
 public final class DisplayContextMenuProvider extends ContextMenuProvider {
-	/**
-	 * The action registry.
-	 */
-	private ActionRegistry _actionRegistry;
+    /**
+     * The action registry.
+     */
+    private ActionRegistry _actionRegistry;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param viewer
-	 *            the graphical viewer
-	 * @param actionRegistry
-	 *            the action registry
-	 */
-	public DisplayContextMenuProvider(final EditPartViewer viewer,
-			final ActionRegistry actionRegistry) {
-		super(viewer);
-		assert actionRegistry != null : "actionRegistry!=null"; //$NON-NLS-1$
-		_actionRegistry = actionRegistry;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param viewer
+     *            the graphical viewer
+     * @param actionRegistry
+     *            the action registry
+     */
+    public DisplayContextMenuProvider(final EditPartViewer viewer,
+            final ActionRegistry actionRegistry) {
+        super(viewer);
+        assert actionRegistry != null : "actionRegistry!=null"; //$NON-NLS-1$
+        _actionRegistry = actionRegistry;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void buildContextMenu(final IMenuManager menu) {		
-		GEFActionConstants.addStandardActionGroups(menu);
-		
-		// add Grouping Actions
-		menu.appendToGroup(GEFActionConstants.GROUP_ADD, _actionRegistry.getAction(RemoveGroupAction.ID));
-		menu.appendToGroup(GEFActionConstants.GROUP_ADD, _actionRegistry.getAction(CreateGroupAction.ID));
-		
-		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, _actionRegistry
-				.getAction(CutWidgetsAction.ID));
-		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, _actionRegistry
-				.getAction(CopyWidgetsAction.ID));
-		
-		PasteWidgetsAction action = (PasteWidgetsAction) _actionRegistry
-				.getAction(PasteWidgetsAction.ID);
-		// remember the current mouse pointer location, so that widgets will
-		// be pasted where the user right-clicked
-		action.fetchCurrentCursorLocation();
-		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
-		
-		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, _actionRegistry
-				.getAction(ActionFactory.UNDO.getId()));
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void buildContextMenu(final IMenuManager menu) {        
+        GEFActionConstants.addStandardActionGroups(menu);
+        
+        // add Grouping Actions
+        menu.appendToGroup(GEFActionConstants.GROUP_ADD, _actionRegistry.getAction(RemoveGroupAction.ID));
+        menu.appendToGroup(GEFActionConstants.GROUP_ADD, _actionRegistry.getAction(CreateGroupAction.ID));
+        
+        menu.appendToGroup(GEFActionConstants.GROUP_EDIT, _actionRegistry
+                .getAction(CutWidgetsAction.ID));
+        menu.appendToGroup(GEFActionConstants.GROUP_EDIT, _actionRegistry
+                .getAction(CopyWidgetsAction.ID));
+        
+        PasteWidgetsAction action = (PasteWidgetsAction) _actionRegistry
+                .getAction(PasteWidgetsAction.ID);
+        // remember the current mouse pointer location, so that widgets will
+        // be pasted where the user right-clicked
+        action.fetchCurrentCursorLocation();
+        menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
+        
+        menu.appendToGroup(GEFActionConstants.GROUP_EDIT, _actionRegistry
+                .getAction(ActionFactory.UNDO.getId()));
 
-		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, _actionRegistry
-				.getAction(ActionFactory.REDO.getId()));
+        menu.appendToGroup(GEFActionConstants.GROUP_EDIT, _actionRegistry
+                .getAction(ActionFactory.REDO.getId()));
 
-		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, _actionRegistry
-				.getAction(ActionFactory.DELETE.getId()));
-		//menu.add(new Separator("ChangeOrder"));
-		MenuManager orderMenu = new MenuManager("Order");
-		orderMenu.add(new Separator("order"));
-		orderMenu.appendToGroup("order", _actionRegistry
-				.getAction(MoveToFrontAction.ID));
-		orderMenu.appendToGroup("order", _actionRegistry
-				.getAction(StepFrontAction.ID));
-		orderMenu.appendToGroup("order", _actionRegistry
-				.getAction(StepBackAction.ID));
-		orderMenu.appendToGroup("order", _actionRegistry
-				.getAction(MoveToBackAction.ID));
-		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, orderMenu);
-		
-		MenuManager cssMenu = new MenuManager("CSS", "css");
-		cssMenu.add(new Separator("additions"));
-		menu.add(cssMenu);
-		
-	}
+        menu.appendToGroup(GEFActionConstants.GROUP_EDIT, _actionRegistry
+                .getAction(ActionFactory.DELETE.getId()));
+        //menu.add(new Separator("ChangeOrder"));
+        MenuManager orderMenu = new MenuManager("Order");
+        orderMenu.add(new Separator("order"));
+        orderMenu.appendToGroup("order", _actionRegistry
+                .getAction(MoveToFrontAction.ID));
+        orderMenu.appendToGroup("order", _actionRegistry
+                .getAction(StepFrontAction.ID));
+        orderMenu.appendToGroup("order", _actionRegistry
+                .getAction(StepBackAction.ID));
+        orderMenu.appendToGroup("order", _actionRegistry
+                .getAction(MoveToBackAction.ID));
+        menu.appendToGroup(GEFActionConstants.GROUP_EDIT, orderMenu);
+        
+        MenuManager cssMenu = new MenuManager("CSS", "css");
+        cssMenu.add(new Separator("additions"));
+        menu.add(cssMenu);
+        
+    }
 }

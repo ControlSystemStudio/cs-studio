@@ -32,12 +32,12 @@ package org.csstudio.platform.internal.simpledal.converters;
  * 
  */
 class StringConverter implements IValueTypeConverter<String> {
-	/**
-	 * {@inheritDoc}
-	 */
-	public String convert(Object value) {
-		String result = value!=null?value.toString():"";
-		assert result != null;
-		return result;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String convert(Object value) {
+        String result = value!=null?value.toString():"";
+        assert result != null;
+        return result;
+    }
 }

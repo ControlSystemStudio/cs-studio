@@ -31,12 +31,12 @@ package org.csstudio.auth.security;
  *
  */
 public interface IActivationAdapter {
-	
-	/**
-	 * Activates the given object.
-	 * @param o The object to activate
-	 * @param activate The value for the activation
-	 */
-	void activate(Object o, boolean activate);
+    
+    /**
+     * Activates the given object.
+     * @param o The object to activate
+     * @param activate The value for the activation
+     */
+    void activate(Object o, boolean activate);
 
 }

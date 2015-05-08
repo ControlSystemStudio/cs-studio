@@ -74,9 +74,9 @@ public class Message implements IPropertySource
 
     public static String format(final Date date)
     {
-    	synchronized (date_format)
+        synchronized (date_format)
         {
-        	return date_format.format(date);
+            return date_format.format(date);
         }
     }
 
@@ -122,56 +122,56 @@ public class Message implements IPropertySource
     }
 
     /** @see IPropertySource */
-	@Override
+    @Override
     public IPropertyDescriptor[] getPropertyDescriptors()
-	{
-		final Set<String> key_set = properties.keySet();
-		final List<IPropertyDescriptor> props = new ArrayList<IPropertyDescriptor>();
-		// Create read-only properties in the property view.
-		// (Would use TextPropertyDescriptor for edit-able)
-		props.add(new PropertyDescriptor(ID, ID));
-		for (String key : key_set)
-		    if (key != null)
-		        props.add(new PropertyDescriptor(key, key));
-		return props.toArray(new IPropertyDescriptor[props.size()]);
-	}
+    {
+        final Set<String> key_set = properties.keySet();
+        final List<IPropertyDescriptor> props = new ArrayList<IPropertyDescriptor>();
+        // Create read-only properties in the property view.
+        // (Would use TextPropertyDescriptor for edit-able)
+        props.add(new PropertyDescriptor(ID, ID));
+        for (String key : key_set)
+            if (key != null)
+                props.add(new PropertyDescriptor(key, key));
+        return props.toArray(new IPropertyDescriptor[props.size()]);
+    }
 
-	/** @see IPropertySource */
-	@Override
+    /** @see IPropertySource */
+    @Override
     public Object getEditableValue()
-	{
-	    return this;
-	}
+    {
+        return this;
+    }
 
-	 /** @see IPropertySource */
-	@Override
+     /** @see IPropertySource */
+    @Override
     public Object getPropertyValue(final Object id)
-	{
-	    if (id == ID)
-	        return Integer.toString(this.id);
-		return properties.get(id);
-	}
+    {
+        if (id == ID)
+            return Integer.toString(this.id);
+        return properties.get(id);
+    }
 
-	/** @see IPropertySource */
-	@Override
+    /** @see IPropertySource */
+    @Override
     public boolean isPropertySet(final Object id)
-	{
-		return getPropertyValue(id) != null;
-	}
+    {
+        return getPropertyValue(id) != null;
+    }
 
-	/** @see IPropertySource */
-	@Override
+    /** @see IPropertySource */
+    @Override
     public void resetPropertyValue(final Object id)
-	{
-		// NOP, properties are read-only
-	}
+    {
+        // NOP, properties are read-only
+    }
 
-	/** @see IPropertySource */
-	@Override
+    /** @see IPropertySource */
+    @Override
     public void setPropertyValue(final Object id, final Object value)
-	{
-		// NOP, properties are read-only
-	}
+    {
+        // NOP, properties are read-only
+    }
 
     /** {@inhericDoc} */
     @SuppressWarnings("nls")

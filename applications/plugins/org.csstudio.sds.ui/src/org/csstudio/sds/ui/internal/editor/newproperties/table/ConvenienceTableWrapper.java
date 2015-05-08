@@ -56,286 +56,286 @@ import org.eclipse.swt.widgets.Table;
  */
 public final class ConvenienceTableWrapper {
 
-	public static final TableViewer equip(Table table,
-			ColumnConfig... columnConfigurations) {
-		return equip(table.getParent(), table, columnConfigurations);
-	}
+    public static final TableViewer equip(Table table,
+            ColumnConfig... columnConfigurations) {
+        return equip(table.getParent(), table, columnConfigurations);
+    }
 
-	public static final TableViewer equip(Composite parent,
-			ColumnConfig[] columnConfigurations) {
-		// .. create a composite arround the table that allows for weighted
-		// column width of the table
-		Composite tableComposite = new Composite(parent, SWT.NONE);
-		GridDataFactory.fillDefaults().grab(true, false).hint(0, 100).applyTo(
-				tableComposite);
-		TableColumnLayout tableColumnLayout = new TableColumnLayout();
-		tableComposite.setLayout(tableColumnLayout);
+    public static final TableViewer equip(Composite parent,
+            ColumnConfig[] columnConfigurations) {
+        // .. create a composite arround the table that allows for weighted
+        // column width of the table
+        Composite tableComposite = new Composite(parent, SWT.NONE);
+        GridDataFactory.fillDefaults().grab(true, false).hint(0, 100).applyTo(
+                tableComposite);
+        TableColumnLayout tableColumnLayout = new TableColumnLayout();
+        tableComposite.setLayout(tableColumnLayout);
 
-		// create table
-		Table table = new Table(tableComposite, SWT.FULL_SELECTION
-				| SWT.HIDE_SELECTION | SWT.DOUBLE_BUFFERED | SWT.SCROLL_PAGE);
-		table.setLinesVisible(true);
-		table.setHeaderVisible(false);
+        // create table
+        Table table = new Table(tableComposite, SWT.FULL_SELECTION
+                | SWT.HIDE_SELECTION | SWT.DOUBLE_BUFFERED | SWT.SCROLL_PAGE);
+        table.setLinesVisible(true);
+        table.setHeaderVisible(false);
 
-		return equip(tableComposite, table, columnConfigurations);
-	}
+        return equip(tableComposite, table, columnConfigurations);
+    }
 
-	private static final TableViewer equip(Composite parent, Table table,
-			ColumnConfig[] columnConfigurations) {
-		TableColumnLayout tableColumnLayout = (TableColumnLayout) parent
-				.getLayout();
+    private static final TableViewer equip(Composite parent, Table table,
+            ColumnConfig[] columnConfigurations) {
+        TableColumnLayout tableColumnLayout = (TableColumnLayout) parent
+                .getLayout();
 
-		// create the table viewer
-		TableViewer viewer = new TableViewer(table);
+        // create the table viewer
+        TableViewer viewer = new TableViewer(table);
 
-		// .. create table columns
-		String[] columnNames = new String[columnConfigurations.length];
+        // .. create table columns
+        String[] columnNames = new String[columnConfigurations.length];
 
-		for (int i = 0; i < columnConfigurations.length; i++) {
-			ColumnConfig config = columnConfigurations[i];
-			columnNames[i] = config.getId();
-			TableViewerColumn column = new TableViewerColumn(viewer, SWT.NONE);
-			column.getColumn().setText(config.getTitle());
-			column.getColumn().setAlignment(SWT.LEFT);
+        for (int i = 0; i < columnConfigurations.length; i++) {
+            ColumnConfig config = columnConfigurations[i];
+            columnNames[i] = config.getId();
+            TableViewerColumn column = new TableViewerColumn(viewer, SWT.NONE);
+            column.getColumn().setText(config.getTitle());
+            column.getColumn().setAlignment(SWT.LEFT);
 
-			tableColumnLayout.setColumnData(column.getColumn(), config
-					.getWeight() > 0 ? new ColumnWeightData(config.getWeight(),
-					config.getMinimumWidth(), config.isResizable())
-					: new ColumnPixelData(config.getMinimumWidth(), config
-							.isResizable()));
+            tableColumnLayout.setColumnData(column.getColumn(), config
+                    .getWeight() > 0 ? new ColumnWeightData(config.getWeight(),
+                    config.getMinimumWidth(), config.isResizable())
+                    : new ColumnPixelData(config.getMinimumWidth(), config
+                            .isResizable()));
 
-			column.setEditingSupport(new DelegatingColumnEditingSupport(viewer,
-					i));
-		}
+            column.setEditingSupport(new DelegatingColumnEditingSupport(viewer,
+                    i));
+        }
 
-		viewer.setColumnProperties(columnNames);
+        viewer.setColumnProperties(columnNames);
 
-		ColumnViewerToolTipSupport.enableFor(viewer, ToolTip.NO_RECREATE);
+        ColumnViewerToolTipSupport.enableFor(viewer, ToolTip.NO_RECREATE);
 
-		// configure keyboard support
-		TableViewerFocusCellManager focusCellManager = new TableViewerFocusCellManager(
-				viewer, new FocusCellOwnerDrawHighlighter(viewer));
+        // configure keyboard support
+        TableViewerFocusCellManager focusCellManager = new TableViewerFocusCellManager(
+                viewer, new FocusCellOwnerDrawHighlighter(viewer));
 
-		ColumnViewerEditorActivationStrategy actSupport = new ColumnViewerEditorActivationStrategy(
-				viewer) {
-			protected boolean isEditorActivationEvent(
-					final ColumnViewerEditorActivationEvent event) {
-				return event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL
-						|| event.eventType == ColumnViewerEditorActivationEvent.MOUSE_CLICK_SELECTION
-						|| (event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED && event.keyCode == SWT.F2)
-						|| event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
-			}
+        ColumnViewerEditorActivationStrategy actSupport = new ColumnViewerEditorActivationStrategy(
+                viewer) {
+            protected boolean isEditorActivationEvent(
+                    final ColumnViewerEditorActivationEvent event) {
+                return event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL
+                        || event.eventType == ColumnViewerEditorActivationEvent.MOUSE_CLICK_SELECTION
+                        || (event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED && event.keyCode == SWT.F2)
+                        || event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
+            }
 
-		};
+        };
 
-		TableViewerEditor.create(viewer, focusCellManager, actSupport,
-				ColumnViewerEditor.TABBING_HORIZONTAL
-						| ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR
-						| ColumnViewerEditor.TABBING_VERTICAL
-						| ColumnViewerEditor.KEYBOARD_ACTIVATION);
+        TableViewerEditor.create(viewer, focusCellManager, actSupport,
+                ColumnViewerEditor.TABBING_HORIZONTAL
+                        | ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR
+                        | ColumnViewerEditor.TABBING_VERTICAL
+                        | ColumnViewerEditor.KEYBOARD_ACTIVATION);
 
-		// .. sorter
-		viewer.setSorter(new ViewerSorter() {
-			@Override
-			public int compare(Viewer viewer, Object e1, Object e2) {
-				ITableRow r1 = (ITableRow) e1;
-				ITableRow r2 = (ITableRow) e2;
-				return r1.compareTo(r2);
-			}
-		});
+        // .. sorter
+        viewer.setSorter(new ViewerSorter() {
+            @Override
+            public int compare(Viewer viewer, Object e1, Object e2) {
+                ITableRow r1 = (ITableRow) e1;
+                ITableRow r2 = (ITableRow) e2;
+                return r1.compareTo(r2);
+            }
+        });
 
-		viewer.setContentProvider(new ContentProvider());
-		viewer.setLabelProvider(new LabelProvider());
+        viewer.setContentProvider(new ContentProvider());
+        viewer.setLabelProvider(new LabelProvider());
 
-		return viewer;
-	}
+        return viewer;
+    }
 
-	/**
-	 * Editing support implementation.
-	 * 
-	 * @author Sven Wende
-	 */
-	static final class DelegatingColumnEditingSupport extends EditingSupport {
-		private int columnIndex;
+    /**
+     * Editing support implementation.
+     * 
+     * @author Sven Wende
+     */
+    static final class DelegatingColumnEditingSupport extends EditingSupport {
+        private int columnIndex;
 
-		public DelegatingColumnEditingSupport(ColumnViewer viewer,
-				int columnIndex) {
-			super(viewer);
-			assert columnIndex >= 0 : "columnIndex>=0";
-			this.columnIndex = columnIndex;
-		}
+        public DelegatingColumnEditingSupport(ColumnViewer viewer,
+                int columnIndex) {
+            super(viewer);
+            assert columnIndex >= 0 : "columnIndex>=0";
+            this.columnIndex = columnIndex;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		protected boolean canEdit(Object element) {
-			ITableRow row = (ITableRow) element;
-			return row.canModify(columnIndex);
-		}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected boolean canEdit(Object element) {
+            ITableRow row = (ITableRow) element;
+            return row.canModify(columnIndex);
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		protected CellEditor getCellEditor(Object element) {
-			ITableRow row = (ITableRow) element;
-			return row.getCellEditor(columnIndex, ((TableViewer) getViewer())
-					.getTable());
-		}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected CellEditor getCellEditor(Object element) {
+            ITableRow row = (ITableRow) element;
+            return row.getCellEditor(columnIndex, ((TableViewer) getViewer())
+                    .getTable());
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		protected Object getValue(Object element) {
-			ITableRow row = (ITableRow) element;
-			return row.getEditingValue(columnIndex);
-		}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected Object getValue(Object element) {
+            ITableRow row = (ITableRow) element;
+            return row.getEditingValue(columnIndex);
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		protected void setValue(Object element, Object value) {
-			ITableRow row = (ITableRow) element;
-			row.setValue(columnIndex, value);
-			getViewer().refresh();
-		}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void setValue(Object element, Object value) {
+            ITableRow row = (ITableRow) element;
+            row.setValue(columnIndex, value);
+            getViewer().refresh();
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ColumnViewer getViewer() {
-			return super.getViewer();
-		}
-	}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public ColumnViewer getViewer() {
+            return super.getViewer();
+        }
+    }
 
-	/**
-	 * Content provider implementation.
-	 * 
-	 * @author Sven Wende
-	 */
-	static final class ContentProvider implements IStructuredContentProvider {
-		/**
-		 * {@inheritDoc}
-		 */
-		public void inputChanged(final Viewer viewer, final Object oldInput,
-				final Object newInput) {
+    /**
+     * Content provider implementation.
+     * 
+     * @author Sven Wende
+     */
+    static final class ContentProvider implements IStructuredContentProvider {
+        /**
+         * {@inheritDoc}
+         */
+        public void inputChanged(final Viewer viewer, final Object oldInput,
+                final Object newInput) {
 
-		}
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@SuppressWarnings("unchecked")
-		public Object[] getElements(final Object parent) {
-			return ((List<ITableRow>) parent).toArray();
-		}
+        /**
+         * {@inheritDoc}
+         */
+        @SuppressWarnings("unchecked")
+        public Object[] getElements(final Object parent) {
+            return ((List<ITableRow>) parent).toArray();
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public void dispose() {
+        /**
+         * {@inheritDoc}
+         */
+        public void dispose() {
 
-		}
-	}
+        }
+    }
 
-	/**
-	 * Label provider implementation.
-	 * 
-	 * @author Sven Wende
-	 */
-	static final class LabelProvider extends ColumnLabelProvider {
+    /**
+     * Label provider implementation.
+     * 
+     * @author Sven Wende
+     */
+    static final class LabelProvider extends ColumnLabelProvider {
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public void update(final ViewerCell cell) {
-			ITableRow row = (ITableRow) cell.getElement();
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void update(final ViewerCell cell) {
+            ITableRow row = (ITableRow) cell.getElement();
 
-			int index = cell.getColumnIndex();
+            int index = cell.getColumnIndex();
 
-			// set the text
-			cell.setText(getText(row, index));
+            // set the text
+            cell.setText(getText(row, index));
 
-			// image
-			Image img = row.getImage(index);
+            // image
+            Image img = row.getImage(index);
 
-			if (img != null) {
-				cell.setImage(img);
-			}
+            if (img != null) {
+                cell.setImage(img);
+            }
 
-			// background color
-			RGB bgColor = row.getBackgroundColor(index);
+            // background color
+            RGB bgColor = row.getBackgroundColor(index);
 
-			if (bgColor != null) {
-				cell.setBackground(CustomMediaFactory.getInstance().getColor(
-						bgColor));
-			}
+            if (bgColor != null) {
+                cell.setBackground(CustomMediaFactory.getInstance().getColor(
+                        bgColor));
+            }
 
-			// foreground color
-			RGB fgColor = row.getForegroundColor(index);
+            // foreground color
+            RGB fgColor = row.getForegroundColor(index);
 
-			if (fgColor != null) {
-				cell.setForeground(CustomMediaFactory.getInstance().getColor(
-						fgColor));
-			}
+            if (fgColor != null) {
+                cell.setForeground(CustomMediaFactory.getInstance().getColor(
+                        fgColor));
+            }
 
-			// font
-			Font font = row.getFont(index);
+            // font
+            Font font = row.getFont(index);
 
-			if (font != null) {
-				cell.setFont(font);
-			}
-		}
+            if (font != null) {
+                cell.setFont(font);
+            }
+        }
 
-		/**
-		 * Returns the text to display.
-		 * 
-		 * @param element
-		 *            the current element
-		 * @param column
-		 *            the current column index
-		 * @return The text to display in the viewer
-		 */
-		private String getText(final Object element, final int column) {
-			ITableRow row = (ITableRow) element;
-			String result = row.getDisplayValue(column);
-			return result;
-		}
+        /**
+         * Returns the text to display.
+         * 
+         * @param element
+         *            the current element
+         * @param column
+         *            the current column index
+         * @return The text to display in the viewer
+         */
+        private String getText(final Object element, final int column) {
+            ITableRow row = (ITableRow) element;
+            String result = row.getDisplayValue(column);
+            return result;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public String getToolTipText(final Object element) {
-			ITableRow row = (ITableRow) element;
-			return row.getTooltip();
-		}
+        /**
+         * {@inheritDoc}
+         */
+        public String getToolTipText(final Object element) {
+            ITableRow row = (ITableRow) element;
+            return row.getTooltip();
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public Point getToolTipShift(final Object object) {
-			return new Point(5, 5);
-		}
+        /**
+         * {@inheritDoc}
+         */
+        public Point getToolTipShift(final Object object) {
+            return new Point(5, 5);
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public int getToolTipDisplayDelayTime(final Object object) {
-			return 100;
-		}
+        /**
+         * {@inheritDoc}
+         */
+        public int getToolTipDisplayDelayTime(final Object object) {
+            return 100;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public int getToolTipTimeDisplayed(final Object object) {
-			return 10000;
-		}
+        /**
+         * {@inheritDoc}
+         */
+        public int getToolTipTimeDisplayed(final Object object) {
+            return 10000;
+        }
 
-	}
+    }
 
 }

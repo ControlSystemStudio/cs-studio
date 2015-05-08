@@ -32,13 +32,13 @@ import org.epics.css.dal.simulation.ValueProvider;
  */
 public class CountdownGeneratorFactory implements ValueProviderFactory {
 
-	@SuppressWarnings("unchecked")
-	public <T> ValueProvider<T> createGenerator(Class<T> type, String... options) {
-		if (Double.class.isAssignableFrom(type)) {
-			return (ValueProvider<T>) new CountdownDoubleGenerator(options);
-		} else if (Long.class.isAssignableFrom(type)) {
-			return (ValueProvider<T>) new CountdownLongGenerator(options);
-		} 
-		return null;
-	}
+    @SuppressWarnings("unchecked")
+    public <T> ValueProvider<T> createGenerator(Class<T> type, String... options) {
+        if (Double.class.isAssignableFrom(type)) {
+            return (ValueProvider<T>) new CountdownDoubleGenerator(options);
+        } else if (Long.class.isAssignableFrom(type)) {
+            return (ValueProvider<T>) new CountdownLongGenerator(options);
+        } 
+        return null;
+    }
 }

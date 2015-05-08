@@ -11,18 +11,18 @@ package org.csstudio.autocomplete.parser.engine.expr;
 
 public abstract class ExprNumber extends Expr {
 
-	ExprNumber(ExprType type) {
-		super(type);
-	}
+    ExprNumber(ExprType type) {
+        super(type);
+    }
 
-	public void validate() throws ExprException {
-	}
+    public void validate() throws ExprException {
+    }
 
-	public boolean booleanValue() {
-		return intValue() != 0;
-	}
+    public boolean booleanValue() {
+        return intValue() != 0;
+    }
 
-	public abstract int intValue();
+    public abstract int intValue();
 
-	public abstract double doubleValue();
+    public abstract double doubleValue();
 }

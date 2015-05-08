@@ -32,7 +32,7 @@ package com.cosylab.vdct.undo;
  * This type was created in VisualAge.
  */
 public abstract class ActionObject {
-	//protected boolean done = true;
+    //protected boolean done = true;
 /**
  * Insert the method's description here.
  * Creation date: (3.5.2001 15:50:42)
@@ -44,17 +44,17 @@ public abstract String getDescription();
  * @return boolean
  */
 public boolean isDone() {
-	//return done; 
-	return false;
+    //return done; 
+    return false;
 }
 /**
  * This method was created in VisualAge.
  */
 public void redo() {
-	//if (!done) {
-		redoAction();
-	/*	done=true;
-	}*/
+    //if (!done) {
+        redoAction();
+    /*    done=true;
+    }*/
 }
 /**
  * This method was created in VisualAge.
@@ -64,10 +64,10 @@ protected abstract void redoAction();
  * This method was created in VisualAge.
  */
 public void undo() {
-	//if (done) {
-		undoAction();
-	/*	done=false;
-	}*/
+    //if (done) {
+        undoAction();
+    /*    done=false;
+    }*/
 }
 /**
  * This method was created in VisualAge.

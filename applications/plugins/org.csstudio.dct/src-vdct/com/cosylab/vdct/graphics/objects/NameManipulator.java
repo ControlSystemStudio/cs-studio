@@ -38,37 +38,37 @@ import java.util.Map;
  */
 public interface NameManipulator {
 
-	/**
-	 * Insert the type's description here.
-	 * Creation date: (27.12.2000 11:47:12)
-	 */	
-	public String getResolvedName(String name);
-	
-	/**
-	 * Insert the type's description here.
-	 * Creation date: (27.12.2000 11:47:12)
-	 */	
-	public String getAddedPrefix();
+    /**
+     * Insert the type's description here.
+     * Creation date: (27.12.2000 11:47:12)
+     */    
+    public String getResolvedName(String name);
+    
+    /**
+     * Insert the type's description here.
+     * Creation date: (27.12.2000 11:47:12)
+     */    
+    public String getAddedPrefix();
 
-	/**
-	 * Insert the type's description here.
-	 * Creation date: (27.12.2000 11:47:12)
-	 */	
-	public String getRemovedPrefix();
+    /**
+     * Insert the type's description here.
+     * Creation date: (27.12.2000 11:47:12)
+     */    
+    public String getRemovedPrefix();
 
-	/**
-	 * Insert the type's description here.
-	 * Creation date: (27.12.2000 11:47:12)
-	 */	
-	public Map getSubstitutions();
-	/**
-	 * Insert the type's description here.
-	 * Creation date: (27.12.2000 11:47:12)
-	 */	
-	public Map getPorts();
-	/**
-	 * Insert the type's description here.
-	 * Creation date: (27.12.2000 11:47:12)
-	 */	
-	public File getFile();
+    /**
+     * Insert the type's description here.
+     * Creation date: (27.12.2000 11:47:12)
+     */    
+    public Map getSubstitutions();
+    /**
+     * Insert the type's description here.
+     * Creation date: (27.12.2000 11:47:12)
+     */    
+    public Map getPorts();
+    /**
+     * Insert the type's description here.
+     * Creation date: (27.12.2000 11:47:12)
+     */    
+    public File getFile();
 }

@@ -37,95 +37,95 @@ import static org.junit.Assert.*;
 
 public class AnyDataTest {
 
-	private PropertyFactory _propertyFactory;
-	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @throws Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-		// set system properties
-		System.setProperty("dal.plugs", "EPICS");
-		System.setProperty("dal.plugs.default", "EPICS");
-		System.setProperty("dal.propertyfactory.EPICS",
-				"org.csstudio.dal.epics.PropertyFactoryImpl");
+    private PropertyFactory _propertyFactory;
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws Exception
+     */
+    @Before
+    public void setUp() throws Exception {
+        // set system properties
+        System.setProperty("dal.plugs", "EPICS");
+        System.setProperty("dal.plugs.default", "EPICS");
+        System.setProperty("dal.propertyfactory.EPICS",
+                "org.csstudio.dal.epics.PropertyFactoryImpl");
 
-		System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list",
-				"YES");
-		System.setProperty(
-				"com.cosylab.epics.caj.CAJContext.connection_timeout", "30.0");
-		System.setProperty("com.cosylab.epics.caj.CAJContext.beacon_period",
-				"15.0");
-		System.setProperty("com.cosylab.epics.caj.CAJContext.repeater_port",
-				"5065");
-		System.setProperty("com.cosylab.epics.caj.CAJContext.server_port",
-				"5064");
-		System.setProperty("com.cosylab.epics.caj.CAJContext.max_array_bytes",
-				"16384");
+        System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list",
+                "YES");
+        System.setProperty(
+                "com.cosylab.epics.caj.CAJContext.connection_timeout", "30.0");
+        System.setProperty("com.cosylab.epics.caj.CAJContext.beacon_period",
+                "15.0");
+        System.setProperty("com.cosylab.epics.caj.CAJContext.repeater_port",
+                "5065");
+        System.setProperty("com.cosylab.epics.caj.CAJContext.server_port",
+                "5064");
+        System.setProperty("com.cosylab.epics.caj.CAJContext.max_array_bytes",
+                "16384");
 
-		// get the property _factory
-		_propertyFactory = DefaultPropertyFactoryService.getPropertyFactoryService()
-				.getPropertyFactory(new DefaultApplicationContext("Test"),
-						LinkPolicy.ASYNC_LINK_POLICY, "EPICS");
+        // get the property _factory
+        _propertyFactory = DefaultPropertyFactoryService.getPropertyFactoryService()
+                .getPropertyFactory(new DefaultApplicationContext("Test"),
+                        LinkPolicy.ASYNC_LINK_POLICY, "EPICS");
 
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @throws Exception
-	 */
-	@Test
-	public void testCacheBug() throws Exception {
-		String pv = "Chiller:Pressure:1";
-		
-		// get the pv as DoubleProperty
-		DoubleProperty doubleProperty = _propertyFactory.getProperty(pv, DoubleProperty.class, null);
-		assertNotNull(doubleProperty);
-		assertTrue(doubleProperty instanceof DoubleProperty);
-		
-		doubleProperty.addDynamicValueListener(new DynamicValueListener() {
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testCacheBug() throws Exception {
+        String pv = "Chiller:Pressure:1";
+        
+        // get the pv as DoubleProperty
+        DoubleProperty doubleProperty = _propertyFactory.getProperty(pv, DoubleProperty.class, null);
+        assertNotNull(doubleProperty);
+        assertTrue(doubleProperty instanceof DoubleProperty);
+        
+        doubleProperty.addDynamicValueListener(new DynamicValueListener() {
 
-			public void conditionChange(DynamicValueEvent arg0) {
+            public void conditionChange(DynamicValueEvent arg0) {
 
-			}
+            }
 
-			public void errorResponse(DynamicValueEvent arg0) {
+            public void errorResponse(DynamicValueEvent arg0) {
 
-			}
+            }
 
-			public void timelagStarts(DynamicValueEvent arg0) {
+            public void timelagStarts(DynamicValueEvent arg0) {
 
-			}
+            }
 
-			public void timelagStops(DynamicValueEvent arg0) {
+            public void timelagStops(DynamicValueEvent arg0) {
 
-			}
+            }
 
-			public void timeoutStarts(DynamicValueEvent arg0) {
+            public void timeoutStarts(DynamicValueEvent arg0) {
 
-			}
+            }
 
-			public void timeoutStops(DynamicValueEvent arg0) {
+            public void timeoutStops(DynamicValueEvent arg0) {
 
-			}
+            }
 
-			public void valueChanged(DynamicValueEvent event) {
-				AnyData anyData = event.getData();
-				MetaData metaData = anyData.getMetaData();
-				System.out.println("Metadata available = " + (metaData != null ? "yes" : "no"));
-			}
+            public void valueChanged(DynamicValueEvent event) {
+                AnyData anyData = event.getData();
+                MetaData metaData = anyData.getMetaData();
+                System.out.println("Metadata available = " + (metaData != null ? "yes" : "no"));
+            }
 
-			public void valueUpdated(DynamicValueEvent arg0) {
+            public void valueUpdated(DynamicValueEvent arg0) {
 
-			}
+            }
 
-		});
+        });
 
-		
-		Thread.sleep(5000);
+        
+        Thread.sleep(5000);
 
-	}
+    }
 }

@@ -105,10 +105,10 @@ public class ADLControl extends WidgetPart{
             }else if(row[0].trim().toLowerCase().equals("bclr")){ //$NON-NLS-1$
                 _bclr=row[1].trim();
             }else if(row[0].trim().toLowerCase().equals("chan")){ // chan and ctrl means both the same.  //$NON-NLS-1$
-            	DebugHelper.add(this, row[1]);
+                DebugHelper.add(this, row[1]);
                 _chan=ADLHelper.cleanString(row[1]);
             }else if(row[0].trim().toLowerCase().equals("ctrl")){ //$NON-NLS-1$
-            	DebugHelper.add(this, row[1]);
+                DebugHelper.add(this, row[1]);
                 _chan=ADLHelper.cleanString(row[1]);
             }else {
                 throw new WrongADLFormatException(Messages.ADLControl_WrongADLFormatException_Parameter_Begin+parameter+Messages.ADLControl_WrongADLFormatException_Parameter_End);

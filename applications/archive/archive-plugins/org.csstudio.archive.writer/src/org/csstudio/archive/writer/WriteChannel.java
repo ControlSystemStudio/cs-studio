@@ -15,6 +15,6 @@ package org.csstudio.archive.writer;
  */
 public interface WriteChannel
 {
-	/** @return Name of the channel */
-	public String getName();
+    /** @return Name of the channel */
+    public String getName();
 }

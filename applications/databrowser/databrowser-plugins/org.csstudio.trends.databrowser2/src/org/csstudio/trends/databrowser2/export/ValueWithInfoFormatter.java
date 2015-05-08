@@ -40,9 +40,9 @@ public class ValueWithInfoFormatter extends ValueFormatter
     @Override
     public String format(final VType value)
     {
-		if (value instanceof VString
-				|| value instanceof VStringArray
-				|| Double.isNaN(VTypeHelper.toDouble(value)))
+        if (value instanceof VString
+                || value instanceof VStringArray
+                || Double.isNaN(VTypeHelper.toDouble(value)))
             return super.format(value) +
                 Messages.Export_Delimiter + Messages.Export_NoValueMarker +
                 Messages.Export_Delimiter + Messages.Export_NoValueMarker;

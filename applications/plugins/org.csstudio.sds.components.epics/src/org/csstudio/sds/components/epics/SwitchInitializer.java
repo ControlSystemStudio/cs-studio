@@ -33,17 +33,17 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
  */
 public final class SwitchInitializer extends AbstractEpicsWidgetInitializer {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void initialize(final AbstractControlSystemSchema schema) {
-		initializeCommonConnectionStates();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void initialize(final AbstractControlSystemSchema schema) {
+        initializeCommonConnectionStates();
 
-		initializeDynamicProperty(SwitchModel.PROP_STATE, "$channel$", null,
-				DirectConnectionRule.TYPE_ID);
+        initializeDynamicProperty(SwitchModel.PROP_STATE, "$channel$", null,
+                DirectConnectionRule.TYPE_ID);
 
-		initializeStaticProperty(SwitchModel.PROP_TRANSPARENT, false);
-	}
+        initializeStaticProperty(SwitchModel.PROP_TRANSPARENT, false);
+    }
 
 }

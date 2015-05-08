@@ -31,22 +31,22 @@ import java.util.List;
  * 
  */
 public class DisplayModelLoadAdapter implements IDisplayModelLoadListener {
-	/**
-	 * {@inheritDoc}
-	 */
-	public void onDisplayModelLoaded() {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void onDisplayModelLoaded() {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void onDisplayPropertiesLoaded() {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void onDisplayPropertiesLoaded() {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void onErrorsOccured(final List<String> errors) {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void onErrorsOccured(final List<String> errors) {
+    }
 
 }

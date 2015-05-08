@@ -243,9 +243,9 @@ public class OPIRuntimeDelegate implements IAdaptable{
 
         if (zoomManager != null) {
             List<String> zoomLevels = new ArrayList<String>(3);
-			zoomLevels.add(Draw2dSingletonUtil.ZoomManager_FIT_ALL);
-			zoomLevels.add(Draw2dSingletonUtil.ZoomManager_FIT_WIDTH);
-			zoomLevels.add(Draw2dSingletonUtil.ZoomManager_FIT_HEIGHT);
+            zoomLevels.add(Draw2dSingletonUtil.ZoomManager_FIT_ALL);
+            zoomLevels.add(Draw2dSingletonUtil.ZoomManager_FIT_WIDTH);
+            zoomLevels.add(Draw2dSingletonUtil.ZoomManager_FIT_HEIGHT);
             zoomManager.setZoomLevelContributions(zoomLevels);
 
             zoomManager.setZoomLevels(createZoomLevels());
@@ -510,7 +510,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
     public void dispose() {
         getActionRegistry().dispose();
         if (displayOpenManager != null) {
-        	displayOpenManager.dispose();
+            displayOpenManager.dispose();
             displayOpenManager = null;
         }
     }

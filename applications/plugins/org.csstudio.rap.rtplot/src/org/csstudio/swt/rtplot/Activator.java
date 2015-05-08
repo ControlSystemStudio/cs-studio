@@ -42,14 +42,14 @@ public class Activator
             final URL image_url = bundle.getEntry(path);
             return ImageDescriptor.createFromURL(image_url);
             
-//            return AbstractUIPlugin.imageDescriptorFromPlugin(ID, path);				
+//            return AbstractUIPlugin.imageDescriptorFromPlugin(ID, path);                
         }
         catch (Throwable ex)
         {   // ... otherwise, this is an SWT-only test without the plugin.
-        	// Might be run within the org.csstudio.ui.rtplot plugin directory
-        	// or the org.csstudio.ui.rtplot.test fragment dir, so
-        	// always go back to the plugin dir.
-        	path = "../" + ID + "/" + path;
+            // Might be run within the org.csstudio.ui.rtplot plugin directory
+            // or the org.csstudio.ui.rtplot.test fragment dir, so
+            // always go back to the plugin dir.
+            path = "../" + ID + "/" + path;
             try
             {
                 final Display display = Display.getCurrent();

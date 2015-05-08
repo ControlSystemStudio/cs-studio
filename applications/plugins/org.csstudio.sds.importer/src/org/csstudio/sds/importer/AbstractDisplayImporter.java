@@ -39,104 +39,104 @@ import org.eclipse.core.runtime.IPath;
  * 
  */
 public abstract class AbstractDisplayImporter {
-	/**
-	 * Import the display that is stored in the given source file into a SDS
-	 * diaplay in the workspace.
-	 * 
-	 * @param sourceFile
-	 *            The source file's full path.
-	 * @param targetProject
-	 *            The target workspace project.
-	 * @param targetFileName
-	 *            The target SDS display name.
-	 * @return true if the import was successful, or false otherwise.
-	 * @throws Exception
-	 *             if an error occurred during the import.
-	 */
-	public abstract boolean importDisplay(String sourceFile,
-			IPath targetProject, String targetFileName) throws Exception;
+    /**
+     * Import the display that is stored in the given source file into a SDS
+     * diaplay in the workspace.
+     * 
+     * @param sourceFile
+     *            The source file's full path.
+     * @param targetProject
+     *            The target workspace project.
+     * @param targetFileName
+     *            The target SDS display name.
+     * @return true if the import was successful, or false otherwise.
+     * @throws Exception
+     *             if an error occurred during the import.
+     */
+    public abstract boolean importDisplay(String sourceFile,
+            IPath targetProject, String targetFileName) throws Exception;
 
-	/**
-	 * Create a widget element with the given type ID.
-	 * 
-	 * @param typeId
-	 *            The type ID of the widget element.
-	 * @return A new widget element with the given type ID.
-	 */
-	protected final AbstractWidgetModel createWidgetModel(String typeId) {
-		AbstractWidgetModel result =  WidgetModelFactoryService.getInstance()
-				.getWidgetModel(typeId);
-		
-		// .. update model to ensure invariants that have been declared by {@link SdsPlugin#EXTPOINT_WIDGET_PROPERTY_POSTPROCESSORS}
-		SdsPlugin.getDefault().getWidgetPropertyPostProcessingService().applyForAllProperties(result, EventType.ON_DISPLAY_MODEL_LOADED);
-		
-		return result;
-	}
+    /**
+     * Create a widget element with the given type ID.
+     * 
+     * @param typeId
+     *            The type ID of the widget element.
+     * @return A new widget element with the given type ID.
+     */
+    protected final AbstractWidgetModel createWidgetModel(String typeId) {
+        AbstractWidgetModel result =  WidgetModelFactoryService.getInstance()
+                .getWidgetModel(typeId);
+        
+        // .. update model to ensure invariants that have been declared by {@link SdsPlugin#EXTPOINT_WIDGET_PROPERTY_POSTPROCESSORS}
+        SdsPlugin.getDefault().getWidgetPropertyPostProcessingService().applyForAllProperties(result, EventType.ON_DISPLAY_MODEL_LOADED);
+        
+        return result;
+    }
 
-	/**
-	 * Connect a property of the given model element to one single input
-	 * channel.
-	 * 
-	 * @param model
-	 *            The model element.
-	 * @param propertyId
-	 *            The Id if the property that should be connected.
-	 * @param channelName
-	 *            The target channel name.
-	 * @param channelType
-	 *            The target channel type.
-	 */
-	protected final void connectToSingleInputChannel(
-			final AbstractWidgetModel model, final String propertyId,
-			final String channelName) {
-		DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
-		dynamicsDescriptor.addInputChannel(new ParameterDescriptor(channelName));
-		model.setDynamicsDescriptor(propertyId, dynamicsDescriptor);
-	}
+    /**
+     * Connect a property of the given model element to one single input
+     * channel.
+     * 
+     * @param model
+     *            The model element.
+     * @param propertyId
+     *            The Id if the property that should be connected.
+     * @param channelName
+     *            The target channel name.
+     * @param channelType
+     *            The target channel type.
+     */
+    protected final void connectToSingleInputChannel(
+            final AbstractWidgetModel model, final String propertyId,
+            final String channelName) {
+        DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor(channelName));
+        model.setDynamicsDescriptor(propertyId, dynamicsDescriptor);
+    }
 
-	/**
-	 * Connect a property of the given model element to one single input
-	 * channel.
-	 * 
-	 * @param model
-	 *            The model element.
-	 * @param propertyId
-	 *            The Id if the property that should be connected.
-	 * @param channelName
-	 *            The target channel name.
-	 * @param channelType
-	 *            The target channel type.
-	 * @param ruleId
-	 *            The ID of the used logic rule.
-	 */
-	protected final void connectToSingleInputChannel(
-			final AbstractWidgetModel model, final String propertyId,
-			final String channelName,
-			final String ruleId) {
-		DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor(ruleId);
-		dynamicsDescriptor.addInputChannel(new ParameterDescriptor(channelName));
-		model.setDynamicsDescriptor(propertyId, dynamicsDescriptor);
-	}
+    /**
+     * Connect a property of the given model element to one single input
+     * channel.
+     * 
+     * @param model
+     *            The model element.
+     * @param propertyId
+     *            The Id if the property that should be connected.
+     * @param channelName
+     *            The target channel name.
+     * @param channelType
+     *            The target channel type.
+     * @param ruleId
+     *            The ID of the used logic rule.
+     */
+    protected final void connectToSingleInputChannel(
+            final AbstractWidgetModel model, final String propertyId,
+            final String channelName,
+            final String ruleId) {
+        DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor(ruleId);
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor(channelName));
+        model.setDynamicsDescriptor(propertyId, dynamicsDescriptor);
+    }
 
-	/**
-	 * Connect a property of the given model element to an output channel.
-	 * 
-	 * @param model
-	 *            The model element.
-	 * @param propertyId
-	 *            The Id if the property that should be connected.
-	 * @param channelName
-	 *            The target channel name.
-	 * @param channelType
-	 *            The target channel type.
-	 */
-	protected final void connectToOutputChannel(
-			final AbstractWidgetModel model, final String propertyId,
-			final String channelName) {
-		DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
-		ParameterDescriptor channel = new ParameterDescriptor(channelName);
-		dynamicsDescriptor.addInputChannel(channel);
-		dynamicsDescriptor.setOutputChannel(channel);
-		model.setDynamicsDescriptor(propertyId, dynamicsDescriptor);
-	}
+    /**
+     * Connect a property of the given model element to an output channel.
+     * 
+     * @param model
+     *            The model element.
+     * @param propertyId
+     *            The Id if the property that should be connected.
+     * @param channelName
+     *            The target channel name.
+     * @param channelType
+     *            The target channel type.
+     */
+    protected final void connectToOutputChannel(
+            final AbstractWidgetModel model, final String propertyId,
+            final String channelName) {
+        DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
+        ParameterDescriptor channel = new ParameterDescriptor(channelName);
+        dynamicsDescriptor.addInputChannel(channel);
+        dynamicsDescriptor.setOutputChannel(channel);
+        model.setDynamicsDescriptor(propertyId, dynamicsDescriptor);
+    }
 }

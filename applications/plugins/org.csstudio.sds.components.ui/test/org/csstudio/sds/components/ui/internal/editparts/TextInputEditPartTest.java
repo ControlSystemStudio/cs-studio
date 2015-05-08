@@ -35,28 +35,28 @@ import org.junit.Test;
  */
 public final class TextInputEditPartTest {
 
-	/**
-	 * The instance to test.
-	 */
-	private TextInputEditPart _editPart;
+    /**
+     * The instance to test.
+     */
+    private TextInputEditPart _editPart;
 
-	/**
-	 * Test set up.
-	 */
-	@Before
-	public void setUp() {
-		_editPart = new TextInputEditPart();
-		_editPart.setModel(new TextInputModel());
-	}
+    /**
+     * Test set up.
+     */
+    @Before
+    public void setUp() {
+        _editPart = new TextInputEditPart();
+        _editPart.setModel(new TextInputModel());
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.components.ui.internal.editparts.TextInputEditPart#doCreateFigure()}.
-	 */
-	@Test
-	public void testCreateFigure() {
-		IFigure figure = _editPart.doCreateFigure();
-		assertTrue(figure instanceof RefreshableLabelFigure);
-	}
+    /**
+     * Test method for
+     * {@link org.csstudio.sds.components.ui.internal.editparts.TextInputEditPart#doCreateFigure()}.
+     */
+    @Test
+    public void testCreateFigure() {
+        IFigure figure = _editPart.doCreateFigure();
+        assertTrue(figure instanceof RefreshableLabelFigure);
+    }
 
 }

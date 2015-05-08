@@ -43,60 +43,60 @@ import org.eclipse.core.runtime.IPath;
  */
 public final class ExecuteScriptActionHandler implements IWidgetActionHandler {
 
-	private Map<AbstractWidgetModel, ScriptEngine> _engineMap;
+    private Map<AbstractWidgetModel, ScriptEngine> _engineMap;
 
-	public ExecuteScriptActionHandler() {
-		_engineMap = new HashMap<AbstractWidgetModel, ScriptEngine>();
-	}
+    public ExecuteScriptActionHandler() {
+        _engineMap = new HashMap<AbstractWidgetModel, ScriptEngine>();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @required action instanceof ExecuteScriptActionModel
-	 */
-	public void executeAction(final AbstractWidgetModel widget,
-			final AbstractWidgetActionModel action) {
-		assert action instanceof ExecuteScriptActionModel : "Precondition violated: action instanceof ExecuteScriptActionModel";
-		ExecuteScriptActionModel valueAction = (ExecuteScriptActionModel) action;
-		IPath scriptPath = valueAction.getScriptPath();
-		boolean keepScriptStatus = valueAction.getKeepScriptStatus();
+    /**
+     * {@inheritDoc}
+     * 
+     * @required action instanceof ExecuteScriptActionModel
+     */
+    public void executeAction(final AbstractWidgetModel widget,
+            final AbstractWidgetActionModel action) {
+        assert action instanceof ExecuteScriptActionModel : "Precondition violated: action instanceof ExecuteScriptActionModel";
+        ExecuteScriptActionModel valueAction = (ExecuteScriptActionModel) action;
+        IPath scriptPath = valueAction.getScriptPath();
+        boolean keepScriptStatus = valueAction.getKeepScriptStatus();
 
-		try {
-			IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(
-					scriptPath);
-			final ScriptEngine scriptEngine = determineEngine(widget,
-					file, keepScriptStatus);
-			if (scriptEngine != null) {
-				Thread t = new Thread(new Runnable() {
-					public void run() {
-						scriptEngine.processScript();
-					}
-				});
-				t.start();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        try {
+            IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(
+                    scriptPath);
+            final ScriptEngine scriptEngine = determineEngine(widget,
+                    file, keepScriptStatus);
+            if (scriptEngine != null) {
+                Thread t = new Thread(new Runnable() {
+                    public void run() {
+                        scriptEngine.processScript();
+                    }
+                });
+                t.start();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	}
+    }
 
-	private ScriptEngine determineEngine(AbstractWidgetModel widget,
-			IFile file, boolean keepScriptEngine) throws LogicException,
-			CoreException {
-		ScriptEngine scriptEngine = null;
-		if (keepScriptEngine) {
-			if (!_engineMap.containsKey(widget)) {
-				IScript script = new RunnableScript(file.getName(), file
-						.getContents());
-				_engineMap.put(widget, new ScriptEngine(script));
-			}
-			scriptEngine = _engineMap.get(widget);
-		} else {
-			IScript script = new RunnableScript(file.getName(), file
-					.getContents());
-			scriptEngine = new ScriptEngine(script);
-		}
-		return scriptEngine;
-	}
+    private ScriptEngine determineEngine(AbstractWidgetModel widget,
+            IFile file, boolean keepScriptEngine) throws LogicException,
+            CoreException {
+        ScriptEngine scriptEngine = null;
+        if (keepScriptEngine) {
+            if (!_engineMap.containsKey(widget)) {
+                IScript script = new RunnableScript(file.getName(), file
+                        .getContents());
+                _engineMap.put(widget, new ScriptEngine(script));
+            }
+            scriptEngine = _engineMap.get(widget);
+        } else {
+            IScript script = new RunnableScript(file.getName(), file
+                    .getContents());
+            scriptEngine = new ScriptEngine(script);
+        }
+        return scriptEngine;
+    }
 
 }

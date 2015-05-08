@@ -12,19 +12,19 @@ import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescrip
  * 
  */
 public class TunerModel extends AbstractChannelWidgetModel {
-	
-	public TunerModel() {
-		super(AbstractSelectionWidgetModelDescription.newModelFrom(TunerWidget.class));
-	}
+    
+    public TunerModel() {
+        super(AbstractSelectionWidgetModelDescription.newModelFrom(TunerWidget.class));
+    }
 
-	public final String ID = "org.csstudio.channel.opiwidgets.AbstractChannelWidget"; //$NON-NLS-1$
-	@Override
-	protected void configureProperties() {
-	}
+    public final String ID = "org.csstudio.channel.opiwidgets.AbstractChannelWidget"; //$NON-NLS-1$
+    @Override
+    protected void configureProperties() {
+    }
 
-	@Override
-	public String getTypeID() {
-		return ID;
-	}
+    @Override
+    public String getTypeID() {
+        return ID;
+    }
 
 }

@@ -26,7 +26,7 @@ public class GUIDemo
     @Before
     public void setup()
     {
-    	TestSettings.setup();
+        TestSettings.setup();
     }
 
     @Test

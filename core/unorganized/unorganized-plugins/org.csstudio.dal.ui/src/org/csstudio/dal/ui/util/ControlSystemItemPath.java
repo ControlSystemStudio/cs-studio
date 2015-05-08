@@ -33,120 +33,120 @@ import java.util.regex.Pattern;
  * 
  */
 public final class ControlSystemItemPath implements Serializable {
-	/**
-	 * The serial version UID.
-	 */
-	private static final long serialVersionUID = 4959241842467380642L;
+    /**
+     * The serial version UID.
+     */
+    private static final long serialVersionUID = 4959241842467380642L;
 
-	/**
-	 * Placeholder, which is used in PORTABLE_FORMAT.
-	 */
-	private static final String TYPE_PART = "TYPE"; //$NON-NLS-1$
+    /**
+     * Placeholder, which is used in PORTABLE_FORMAT.
+     */
+    private static final String TYPE_PART = "TYPE"; //$NON-NLS-1$
 
-	/**
-	 * Placeholder, which is used in PORTABLE_FORMAT.
-	 */
-	private static final String OBJECT_PART = "OBJECT_PART"; //$NON-NLS-1$
+    /**
+     * Placeholder, which is used in PORTABLE_FORMAT.
+     */
+    private static final String OBJECT_PART = "OBJECT_PART"; //$NON-NLS-1$
 
-	/**
-	 * Defines the format of the String representation. Should contain the
-	 * placeholders TYPE_PART and OBJECT_PART.
-	 */
-	private static final String PORTABLE_FORMAT = "##" + TYPE_PART + "###" //$NON-NLS-1$ //$NON-NLS-2$
-			+ OBJECT_PART + "##"; //$NON-NLS-1$
+    /**
+     * Defines the format of the String representation. Should contain the
+     * placeholders TYPE_PART and OBJECT_PART.
+     */
+    private static final String PORTABLE_FORMAT = "##" + TYPE_PART + "###" //$NON-NLS-1$ //$NON-NLS-2$
+            + OBJECT_PART + "##"; //$NON-NLS-1$
 
-	/**
-	 * The type identifier for the control system item, which should be
-	 * transferred to a String representation.
-	 */
-	private String _typeId;
+    /**
+     * The type identifier for the control system item, which should be
+     * transferred to a String representation.
+     */
+    private String _typeId;
 
-	/**
-	 * The part of the String representation, which contains the individual data
-	 * of the control system item, that should be transferred to a String
-	 * representation.
-	 */
-	private String _itemData;
+    /**
+     * The part of the String representation, which contains the individual data
+     * of the control system item, that should be transferred to a String
+     * representation.
+     */
+    private String _itemData;
 
-	/**
-	 * Privat default constructur. Used only for serialization.
-	 */
-	private ControlSystemItemPath() {
-		_itemData = ""; //$NON-NLS-1$
-		_typeId = ""; //$NON-NLS-1$
-	}
+    /**
+     * Privat default constructur. Used only for serialization.
+     */
+    private ControlSystemItemPath() {
+        _itemData = ""; //$NON-NLS-1$
+        _typeId = ""; //$NON-NLS-1$
+    }
 
-	/**
-	 * Constructs a path.
-	 * 
-	 * @param typeId
-	 *            the type identification of the control system item
-	 * @param itemData
-	 *            a String representation of the control system item´s data
-	 * 
-	 */
-	public ControlSystemItemPath(final String typeId, final String itemData) {
-		assert typeId != null;
-		assert itemData != null;
-		_typeId = typeId;
-		_itemData = itemData;
-	}
+    /**
+     * Constructs a path.
+     * 
+     * @param typeId
+     *            the type identification of the control system item
+     * @param itemData
+     *            a String representation of the control system item´s data
+     * 
+     */
+    public ControlSystemItemPath(final String typeId, final String itemData) {
+        assert typeId != null;
+        assert itemData != null;
+        _typeId = typeId;
+        _itemData = itemData;
+    }
 
-	/**
-	 * @return the type id
-	 */
-	public String getTypeId() {
-		return _typeId;
-	}
+    /**
+     * @return the type id
+     */
+    public String getTypeId() {
+        return _typeId;
+    }
 
-	/**
-	 * @return the item data in String format
-	 */
-	public String getItemData() {
-		return _itemData;
-	}
+    /**
+     * @return the item data in String format
+     */
+    public String getItemData() {
+        return _itemData;
+    }
 
-	/**
-	 * @return a portable String representation a the control system, which can
-	 *         be used externally
-	 */
-	public String toPortableString() {
-		String portable = PORTABLE_FORMAT.replace(TYPE_PART, _typeId).replace(
-				OBJECT_PART, _itemData);
-		return portable;
-	}
+    /**
+     * @return a portable String representation a the control system, which can
+     *         be used externally
+     */
+    public String toPortableString() {
+        String portable = PORTABLE_FORMAT.replace(TYPE_PART, _typeId).replace(
+                OBJECT_PART, _itemData);
+        return portable;
+    }
 
-	/**
-	 * Creates a path object from a String representation.
-	 * 
-	 * @param portableString
-	 *            the portable String, which must use the same format as it is
-	 *            provided by {@link #toPortableString()}
-	 * 
-	 * @return a path object or null, if the provided String does not satisfy
-	 *         the format needs
-	 */
-	public static ControlSystemItemPath createFromPortableString(
-			final String portableString) {
-		ControlSystemItemPath path = null;
+    /**
+     * Creates a path object from a String representation.
+     * 
+     * @param portableString
+     *            the portable String, which must use the same format as it is
+     *            provided by {@link #toPortableString()}
+     * 
+     * @return a path object or null, if the provided String does not satisfy
+     *         the format needs
+     */
+    public static ControlSystemItemPath createFromPortableString(
+            final String portableString) {
+        ControlSystemItemPath path = null;
 
-		String regex = PORTABLE_FORMAT.replace(TYPE_PART, "(.*)").replace( //$NON-NLS-1$
-				OBJECT_PART, "(.*)"); //$NON-NLS-1$
+        String regex = PORTABLE_FORMAT.replace(TYPE_PART, "(.*)").replace( //$NON-NLS-1$
+                OBJECT_PART, "(.*)"); //$NON-NLS-1$
 
-		Pattern pattern = Pattern.compile(regex);
-		// Get a Matcher based on the target string.
-		Matcher matcher = pattern.matcher(portableString);
+        Pattern pattern = Pattern.compile(regex);
+        // Get a Matcher based on the target string.
+        Matcher matcher = pattern.matcher(portableString);
 
-		// Find all the matches.
-		if (matcher.find()) {
-			String typeId = matcher.group(1);
-			String objecPart = matcher.group(2);
+        // Find all the matches.
+        if (matcher.find()) {
+            String typeId = matcher.group(1);
+            String objecPart = matcher.group(2);
 
-			if (typeId != null && !typeId.equals("") && objecPart != null) { //$NON-NLS-1$
-				path = new ControlSystemItemPath(typeId, objecPart);
-			}
-		}
+            if (typeId != null && !typeId.equals("") && objecPart != null) { //$NON-NLS-1$
+                path = new ControlSystemItemPath(typeId, objecPart);
+            }
+        }
 
-		return path;
-	}
+        return path;
+    }
 }

@@ -55,259 +55,259 @@ import org.eclipse.ui.part.ViewPart;
  */
 public final class PerformanceMeasuresView extends ViewPart {
 
-	/**
-	 * The view identification as configured in the plugin.xml.
-	 */
-	public static final String VIEW_ID = "org.csstudio.sds.ui.internal.statistics.PerformanceMeasuresView"; //$NON-NLS-1$
+    /**
+     * The view identification as configured in the plugin.xml.
+     */
+    public static final String VIEW_ID = "org.csstudio.sds.ui.internal.statistics.PerformanceMeasuresView"; //$NON-NLS-1$
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void createPartControl(final Composite parent) {
-		parent.setLayout(LayoutUtil.createGridLayout(1, 0, 10, 10));
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void createPartControl(final Composite parent) {
+        parent.setLayout(LayoutUtil.createGridLayout(1, 0, 10, 10));
 
-		// create a table viewer, which displays the current measures
-		final TableViewer measureResultsViewer = createMeasureResultsTable(parent);
+        // create a table viewer, which displays the current measures
+        final TableViewer measureResultsViewer = createMeasureResultsTable(parent);
 
-		// create a button, which resets the statistics
-		Button resetStatisticButton = new Button(parent, SWT.NONE);
-		resetStatisticButton.setText("Reset");
-		resetStatisticButton.addMouseListener(new MouseAdapter() {
+        // create a button, which resets the statistics
+        Button resetStatisticButton = new Button(parent, SWT.NONE);
+        resetStatisticButton.setText("Reset");
+        resetStatisticButton.addMouseListener(new MouseAdapter() {
 
-			@Override
-			public void mouseDown(final MouseEvent e) {
-				StatisticUtil.getInstance().init();
-				measureResultsViewer.refresh();
-			}
+            @Override
+            public void mouseDown(final MouseEvent e) {
+                StatisticUtil.getInstance().init();
+                measureResultsViewer.refresh();
+            }
 
-		});
+        });
 
-		final Display display = Display.getCurrent();
-		final Job job = new Job("Long Running Job") {
-			@Override
-			protected IStatus run(final IProgressMonitor monitor) {
-				try {
-					display.asyncExec(new Runnable() {
-						public void run() {
-							if (!measureResultsViewer.getControl().isDisposed()) {
-								measureResultsViewer.refresh();
-							}
-						}
+        final Display display = Display.getCurrent();
+        final Job job = new Job("Long Running Job") {
+            @Override
+            protected IStatus run(final IProgressMonitor monitor) {
+                try {
+                    display.asyncExec(new Runnable() {
+                        public void run() {
+                            if (!measureResultsViewer.getControl().isDisposed()) {
+                                measureResultsViewer.refresh();
+                            }
+                        }
 
-					});
+                    });
 
-					return Status.OK_STATUS;
-				} finally {
-					schedule(500);
-				}
-			}
-		};
+                    return Status.OK_STATUS;
+                } finally {
+                    schedule(500);
+                }
+            }
+        };
 
-		// job.setSystem(true);
-		job.schedule();
+        // job.setSystem(true);
+        job.schedule();
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setFocus() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setFocus() {
 
-	}
+    }
 
-	/**
-	 * Creates a table viewer, which enables the user to enter aliases.
-	 * 
-	 * @param parent
-	 *            the parent composite
-	 * 
-	 * @return the created viewer
-	 */
-	private TableViewer createMeasureResultsTable(final Composite parent) {
-		Group group = new Group(parent, SWT.NONE);
-		group.setLayout(LayoutUtil.createGridLayout(1, 0, 0, 0));
-		group.setText("Performance Measures");
-		group.setLayoutData(LayoutUtil
-				.createGridDataForHorizontalFillingCell(100));
+    /**
+     * Creates a table viewer, which enables the user to enter aliases.
+     * 
+     * @param parent
+     *            the parent composite
+     * 
+     * @return the created viewer
+     */
+    private TableViewer createMeasureResultsTable(final Composite parent) {
+        Group group = new Group(parent, SWT.NONE);
+        group.setLayout(LayoutUtil.createGridLayout(1, 0, 0, 0));
+        group.setText("Performance Measures");
+        group.setLayoutData(LayoutUtil
+                .createGridDataForHorizontalFillingCell(100));
 
-		// define column names
-		String[] columnNames = new String[] {
-				"PROP_NAME", "PROP_VALUE", "PROP_DESCRIPTION" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        // define column names
+        String[] columnNames = new String[] {
+                "PROP_NAME", "PROP_VALUE", "PROP_DESCRIPTION" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-		// create table
-		final Table table = new Table(group, SWT.FULL_SELECTION
-				| SWT.SCROLL_PAGE);
-		table.setLinesVisible(true);
-		table.setLayoutData(LayoutUtil.createGridDataForFillingCell());
-		table.setHeaderVisible(true);
+        // create table
+        final Table table = new Table(group, SWT.FULL_SELECTION
+                | SWT.SCROLL_PAGE);
+        table.setLinesVisible(true);
+        table.setLayoutData(LayoutUtil.createGridDataForFillingCell());
+        table.setHeaderVisible(true);
 
-		TableColumn column = new TableColumn(table, SWT.CENTER, 0);
-		column.setText("Category");
-		column.setWidth(140);
+        TableColumn column = new TableColumn(table, SWT.CENTER, 0);
+        column.setText("Category");
+        column.setWidth(140);
 
-		column = new TableColumn(table, SWT.LEFT, 1);
-		column.setText("Exec [Counter]");
-		column.setWidth(140);
+        column = new TableColumn(table, SWT.LEFT, 1);
+        column.setText("Exec [Counter]");
+        column.setWidth(140);
 
-		column = new TableColumn(table, SWT.LEFT, 2);
-		column.setText("Time [Execution]");
-		column.setWidth(140);
+        column = new TableColumn(table, SWT.LEFT, 2);
+        column.setText("Time [Execution]");
+        column.setWidth(140);
 
-		column = new TableColumn(table, SWT.LEFT, 3);
-		column.setText("Time [Total]");
-		column.setWidth(140);
+        column = new TableColumn(table, SWT.LEFT, 3);
+        column.setText("Time [Total]");
+        column.setWidth(140);
 
-		column = new TableColumn(table, SWT.LEFT, 4);
-		column.setText("Avg Exec [ calls / ms");
-		column.setWidth(140);
+        column = new TableColumn(table, SWT.LEFT, 4);
+        column.setText("Avg Exec [ calls / ms");
+        column.setWidth(140);
 
-		column = new TableColumn(table, SWT.LEFT, 5);
-		column.setText("Avg Exec Time [ms / call");
-		column.setWidth(140);
+        column = new TableColumn(table, SWT.LEFT, 5);
+        column.setText("Avg Exec Time [ms / call");
+        column.setWidth(140);
 
-		column = new TableColumn(table, SWT.LEFT, 6);
-		column.setText("Avg Total Time [ms / call");
-		column.setWidth(140);
+        column = new TableColumn(table, SWT.LEFT, 6);
+        column.setText("Avg Total Time [ms / call");
+        column.setWidth(140);
 
-		// create viewer
-		final TableViewer viewer = new TableViewer(table);
-		// viewer.setUseHashlookup(true);
+        // create viewer
+        final TableViewer viewer = new TableViewer(table);
+        // viewer.setUseHashlookup(true);
 
-		// define column properties
-		viewer.setColumnProperties(columnNames);
+        // define column properties
+        viewer.setColumnProperties(columnNames);
 
-		// content and label provider
-		viewer.setContentProvider(new MeasuresTableContentProvider());
-		viewer.setLabelProvider(new MeasuresTableLabelProvider());
-		viewer.setInput(MeasureCategoriesEnum.values());
+        // content and label provider
+        viewer.setContentProvider(new MeasuresTableContentProvider());
+        viewer.setLabelProvider(new MeasuresTableLabelProvider());
+        viewer.setInput(MeasureCategoriesEnum.values());
 
-		return viewer;
-	}
+        return viewer;
+    }
 
-	/**
-	 * Content provider for the encapsulated measures table.
-	 * 
-	 * @author Sven Wende
-	 */
-	protected final class MeasuresTableContentProvider implements
-			IStructuredContentProvider {
-		/**
-		 * {@inheritDoc}
-		 */
-		public void inputChanged(final Viewer viewer, final Object oldInput,
-				final Object newInput) {
+    /**
+     * Content provider for the encapsulated measures table.
+     * 
+     * @author Sven Wende
+     */
+    protected final class MeasuresTableContentProvider implements
+            IStructuredContentProvider {
+        /**
+         * {@inheritDoc}
+         */
+        public void inputChanged(final Viewer viewer, final Object oldInput,
+                final Object newInput) {
 
-		}
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public Object[] getElements(final Object parent) {
-			return (Object[]) parent;
-		}
+        /**
+         * {@inheritDoc}
+         */
+        public Object[] getElements(final Object parent) {
+            return (Object[]) parent;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public void dispose() {
+        /**
+         * {@inheritDoc}
+         */
+        public void dispose() {
 
-		}
-	}
+        }
+    }
 
-	/**
-	 * Label provider for the encapsulated measures table.
-	 * 
-	 * @author Sven Wende
-	 */
-	protected final class MeasuresTableLabelProvider implements
-			ITableLabelProvider {
-		/**
-		 * A number formatter needed for output.
-		 */
-		private NumberFormat _formatter = NumberFormat.getNumberInstance();
+    /**
+     * Label provider for the encapsulated measures table.
+     * 
+     * @author Sven Wende
+     */
+    protected final class MeasuresTableLabelProvider implements
+            ITableLabelProvider {
+        /**
+         * A number formatter needed for output.
+         */
+        private NumberFormat _formatter = NumberFormat.getNumberInstance();
 
-		/**
-		 * The used statistics util.
-		 */
-		private StatisticUtil _statisticUtil = StatisticUtil.getInstance();
+        /**
+         * The used statistics util.
+         */
+        private StatisticUtil _statisticUtil = StatisticUtil.getInstance();
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public Image getColumnImage(final Object element, final int columnIndex) {
-			return null;
-		}
+        /**
+         * {@inheritDoc}
+         */
+        public Image getColumnImage(final Object element, final int columnIndex) {
+            return null;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public String getColumnText(final Object element, final int columnIndex) {
-			String result = ""; //$NON-NLS-1$
-			MeasureCategoriesEnum category = (MeasureCategoriesEnum) element;
+        /**
+         * {@inheritDoc}
+         */
+        public String getColumnText(final Object element, final int columnIndex) {
+            String result = ""; //$NON-NLS-1$
+            MeasureCategoriesEnum category = (MeasureCategoriesEnum) element;
 
-			switch (columnIndex) {
-			case 0:
-				result = category.toString();
-				break;
-			case 1:
-				result = _formatter.format(_statisticUtil
-						.getExecutionCount(category));
-				break;
-			case 2:
-				result = _formatter.format(_statisticUtil
-						.getExecutionTimeSum(category));
-				break;
-			case 3:
-				result = _formatter.format(_statisticUtil.getRunningTime());
-				break;
-			case 4:
-				result = _formatter.format(_statisticUtil
-						.getAverageCallsPerMs(category));
-				break;
-			case 5:
-				result = _formatter.format(_statisticUtil
-						.getAverageExecutionTimePerCall(category));
-				break;
-			case 6:
-				result = _formatter.format(_statisticUtil
-						.getAverageTimeBetweenCalls(category));
-				break;
-			default:
-				break;
-			}
+            switch (columnIndex) {
+            case 0:
+                result = category.toString();
+                break;
+            case 1:
+                result = _formatter.format(_statisticUtil
+                        .getExecutionCount(category));
+                break;
+            case 2:
+                result = _formatter.format(_statisticUtil
+                        .getExecutionTimeSum(category));
+                break;
+            case 3:
+                result = _formatter.format(_statisticUtil.getRunningTime());
+                break;
+            case 4:
+                result = _formatter.format(_statisticUtil
+                        .getAverageCallsPerMs(category));
+                break;
+            case 5:
+                result = _formatter.format(_statisticUtil
+                        .getAverageExecutionTimePerCall(category));
+                break;
+            case 6:
+                result = _formatter.format(_statisticUtil
+                        .getAverageTimeBetweenCalls(category));
+                break;
+            default:
+                break;
+            }
 
-			assert result != null : "result!=null"; //$NON-NLS-1$;
+            assert result != null : "result!=null"; //$NON-NLS-1$;
 
-			return result;
-		}
+            return result;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public void addListener(final ILabelProviderListener listener) {
-		}
+        /**
+         * {@inheritDoc}
+         */
+        public void addListener(final ILabelProviderListener listener) {
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public void dispose() {
-		}
+        /**
+         * {@inheritDoc}
+         */
+        public void dispose() {
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public boolean isLabelProperty(final Object element,
-				final String property) {
-			return false;
-		}
+        /**
+         * {@inheritDoc}
+         */
+        public boolean isLabelProperty(final Object element,
+                final String property) {
+            return false;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public void removeListener(final ILabelProviderListener listener) {
-		}
-	}
+        /**
+         * {@inheritDoc}
+         */
+        public void removeListener(final ILabelProviderListener listener) {
+        }
+    }
 
 }

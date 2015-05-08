@@ -38,54 +38,54 @@ public class SdsResourceChangeListener implements IResourceChangeListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(SdsResourceChangeListener.class);
 
-	/**
-	 * The used resource delta visitor.
-	 */
-	private IResourceDeltaVisitor _visitor;
+    /**
+     * The used resource delta visitor.
+     */
+    private IResourceDeltaVisitor _visitor;
 
-	/**
-	 * Constructor.
-	 */
-	public SdsResourceChangeListener() {
-		_visitor = new DeltaVisitor();
-	}
+    /**
+     * Constructor.
+     */
+    public SdsResourceChangeListener() {
+        _visitor = new DeltaVisitor();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void resourceChanged(IResourceChangeEvent event) {
-		try {
-			event.getDelta().accept(_visitor);
-		} catch (CoreException e) {
-			LOG.error(e.toString());
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void resourceChanged(IResourceChangeEvent event) {
+        try {
+            event.getDelta().accept(_visitor);
+        } catch (CoreException e) {
+            LOG.error(e.toString());
+        }
+    }
 
-	private class DeltaVisitor implements IResourceDeltaVisitor {
+    private class DeltaVisitor implements IResourceDeltaVisitor {
 
-		public boolean visit(IResourceDelta delta) throws CoreException {
-			boolean result = true;
+        public boolean visit(IResourceDelta delta) throws CoreException {
+            boolean result = true;
 
-			IResource resource = delta.getResource();
+            IResource resource = delta.getResource();
 
-			// FIXME: Sven Wende: Soll das wirklich auf jedem File passieren? Es muss zusätzlich nach Dateitypen gefiltert werden!
-			if (resource instanceof IFile) {
-				result = false;
+            // FIXME: Sven Wende: Soll das wirklich auf jedem File passieren? Es muss zusätzlich nach Dateitypen gefiltert werden!
+            if (resource instanceof IFile) {
+                result = false;
 
-				if (delta.getKind() == IResourceDelta.CHANGED) {
-					RuleService.getInstance().updateScriptedRule(
-							resource.getName(), (IFile) resource);
-				} else if (delta.getKind() == IResourceDelta.REMOVED) {
-					RuleService.getInstance().updateScriptedRule(
-							resource.getName(), null);
-				}
-			} else if (resource instanceof IProject) {
-				result = RuleService.SCRIPT_PROJECT_NAME.equals(resource
-						.getName());
-			}
+                if (delta.getKind() == IResourceDelta.CHANGED) {
+                    RuleService.getInstance().updateScriptedRule(
+                            resource.getName(), (IFile) resource);
+                } else if (delta.getKind() == IResourceDelta.REMOVED) {
+                    RuleService.getInstance().updateScriptedRule(
+                            resource.getName(), null);
+                }
+            } else if (resource instanceof IProject) {
+                result = RuleService.SCRIPT_PROJECT_NAME.equals(resource
+                        .getName());
+            }
 
-			return result;
-		}
-	}
+            return result;
+        }
+    }
 
 }

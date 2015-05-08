@@ -19,11 +19,11 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
         return new ApplicationWorkbenchWindowAdvisor(configurer);
     }
 
-	public String getInitialWindowPerspectiveId() {
-		HttpServletRequest request = RWT.getRequest();
-		 String opiPath = request.getParameter( "mode" ); //$NON-NLS-1$
-		 if(opiPath!=null && opiPath.equals("standalone")) //$NON-NLS-1$
-			 return StandaloneRuntimePerspective.ID;
-		return OPIRunnerPerspective.ID;
-	}
+    public String getInitialWindowPerspectiveId() {
+        HttpServletRequest request = RWT.getRequest();
+         String opiPath = request.getParameter( "mode" ); //$NON-NLS-1$
+         if(opiPath!=null && opiPath.equals("standalone")) //$NON-NLS-1$
+             return StandaloneRuntimePerspective.ID;
+        return OPIRunnerPerspective.ID;
+    }
 }

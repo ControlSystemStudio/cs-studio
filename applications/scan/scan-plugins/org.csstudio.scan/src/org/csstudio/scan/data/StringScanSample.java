@@ -31,33 +31,33 @@ public class StringScanSample extends ScanSample
      *  @param serial Serial to identify when the sample was taken
      *  @param values Values
      */
-	public StringScanSample(final Date timestamp,
-	        final long serial, final String... values)
-	{
-		super(timestamp, serial);
-		this.values = values;
-	}
-
-	/** @return Array size */
-	public int size()
-	{
-	    return values.length;
-	}
-
-	/** @param index Array index
-	 *  @return String for that array index
-	 */
-	public String getString(final int index)
+    public StringScanSample(final Date timestamp,
+            final long serial, final String... values)
     {
-    	return values[index];
+        super(timestamp, serial);
+        this.values = values;
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** @return Array size */
+    public int size()
+    {
+        return values.length;
+    }
+
+    /** @param index Array index
+     *  @return String for that array index
+     */
+    public String getString(final int index)
+    {
+        return values[index];
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Object[] getValues()
-	{
-		return values;
-	}
+    {
+        return values;
+    }
 
     @Override
     public String toString()

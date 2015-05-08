@@ -35,25 +35,25 @@ import java.util.*;
  */
 
 public class DBDRecordData {
-	protected String name;
-	protected Hashtable fields = null;
-	protected Vector fieldsV = null;
+    protected String name;
+    protected Hashtable fields = null;
+    protected Vector fieldsV = null;
 /**
  * RecordData constructor comment.
  */
 public DBDRecordData() {
-	fields = new Hashtable();
-	fieldsV = new Vector();
+    fields = new Hashtable();
+    fieldsV = new Vector();
 }
 /**
  * This method was created in VisualAge.
  * @param fd VisualDCTPackage.FieldData
  */
 public void addField(DBDFieldData fd) {
-	if (!fields.containsKey(fd.name)) {
-		fields.put(fd.name, fd);
-		fieldsV.addElement(fd);
-	}
+    if (!fields.containsKey(fd.name)) {
+        fields.put(fd.name, fd);
+        fieldsV.addElement(fd);
+    }
 }
 /**
  * This method was created in VisualAge.
@@ -61,7 +61,7 @@ public void addField(DBDFieldData fd) {
  * @param fieldName java.lang.String
  */
 public DBDFieldData getDBDFieldData(String fieldName) {
-	return (DBDFieldData)(fields.get(fieldName));
+    return (DBDFieldData)(fields.get(fieldName));
 }
 /**
  * Insert the method's description here.
@@ -69,7 +69,7 @@ public DBDFieldData getDBDFieldData(String fieldName) {
  * @return java.util.Hashtable
  */
 public java.util.Hashtable getFields() {
-	return fields;
+    return fields;
 }
 /**
  * Insert the method's description here.
@@ -77,7 +77,7 @@ public java.util.Hashtable getFields() {
  * @return java.util.Vector
  */
 public java.util.Vector getFieldsV() {
-	return fieldsV;
+    return fieldsV;
 }
 /**
  * Insert the method's description here.
@@ -85,7 +85,7 @@ public java.util.Vector getFieldsV() {
  * @return java.lang.String
  */
 public java.lang.String getName() {
-	return name;
+    return name;
 }
 /**
  * Insert the method's description here.
@@ -93,6 +93,6 @@ public java.lang.String getName() {
  * @param newName java.lang.String
  */
 public void setName(java.lang.String newName) {
-	name = newName;
+    name = newName;
 }
 }

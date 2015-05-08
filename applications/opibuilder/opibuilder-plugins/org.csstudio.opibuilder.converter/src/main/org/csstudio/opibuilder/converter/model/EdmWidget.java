@@ -16,107 +16,107 @@ package org.csstudio.opibuilder.converter.model;
  */
 public class EdmWidget extends EdmEntity {
 
-	@EdmAttributeAn private int x;
-	@EdmAttributeAn private int y;
-	@EdmAttributeAn private int w;
-	@EdmAttributeAn private int h;
-	@EdmAttributeAn private int major;
-	@EdmAttributeAn private int minor;
-	@EdmAttributeAn private int release;
-	@EdmAttributeAn @EdmOptionalAn private String visPv;
-	@EdmAttributeAn @EdmOptionalAn private double visMax;
-	@EdmAttributeAn @EdmOptionalAn private double visMin;
-	@EdmAttributeAn @EdmOptionalAn private boolean visInvert;
-	
-	@EdmAttributeAn @EdmOptionalAn private EdmFont font;
-	@EdmAttributeAn @EdmOptionalAn private EdmColor fgColor;
-	@EdmAttributeAn @EdmOptionalAn private EdmColor bgColor;
-	@EdmAttributeAn @EdmOptionalAn private boolean fgAlarm;
-	@EdmAttributeAn @EdmOptionalAn private boolean bgAlarm;
-	@EdmAttributeAn @EdmOptionalAn private String alarmPv;
-	@EdmAttributeAn @EdmOptionalAn private String colorPv;
-	
-	/**
-	 * Constructs EdmWidget from general EdmEntity.
-	 *
-	 * @param genericEntity
-	 * @throws EdmException
-	 */
-	public EdmWidget(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
-	
-	public final String getAlarmPv() {
-		return alarmPv==null?colorPv:alarmPv;
-	}
-	
-	public int getMajor() {
-		return major;
-	}
+    @EdmAttributeAn private int x;
+    @EdmAttributeAn private int y;
+    @EdmAttributeAn private int w;
+    @EdmAttributeAn private int h;
+    @EdmAttributeAn private int major;
+    @EdmAttributeAn private int minor;
+    @EdmAttributeAn private int release;
+    @EdmAttributeAn @EdmOptionalAn private String visPv;
+    @EdmAttributeAn @EdmOptionalAn private double visMax;
+    @EdmAttributeAn @EdmOptionalAn private double visMin;
+    @EdmAttributeAn @EdmOptionalAn private boolean visInvert;
+    
+    @EdmAttributeAn @EdmOptionalAn private EdmFont font;
+    @EdmAttributeAn @EdmOptionalAn private EdmColor fgColor;
+    @EdmAttributeAn @EdmOptionalAn private EdmColor bgColor;
+    @EdmAttributeAn @EdmOptionalAn private boolean fgAlarm;
+    @EdmAttributeAn @EdmOptionalAn private boolean bgAlarm;
+    @EdmAttributeAn @EdmOptionalAn private String alarmPv;
+    @EdmAttributeAn @EdmOptionalAn private String colorPv;
+    
+    /**
+     * Constructs EdmWidget from general EdmEntity.
+     *
+     * @param genericEntity
+     * @throws EdmException
+     */
+    public EdmWidget(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
+    
+    public final String getAlarmPv() {
+        return alarmPv==null?colorPv:alarmPv;
+    }
+    
+    public int getMajor() {
+        return major;
+    }
 
-	public int getMinor() {
-		return minor;
-	}
+    public int getMinor() {
+        return minor;
+    }
 
-	public int getRelease() {
-		return release;
-	}
-	public int getX() {
-		return x;
-	}
+    public int getRelease() {
+        return release;
+    }
+    public int getX() {
+        return x;
+    }
 
-	public int getY() {
-		return y;
-	}
+    public int getY() {
+        return y;
+    }
 
-	public int getW() {
-		return w;
-	}
+    public int getW() {
+        return w;
+    }
 
-	public int getH() {
-		return h;
-	}
-	
-	public final String getVisPv() {
-		return visPv;
-	}
+    public int getH() {
+        return h;
+    }
+    
+    public final String getVisPv() {
+        return visPv;
+    }
 
-	public final double getVisMax() {
-		return visMax;
-	}
+    public final double getVisMax() {
+        return visMax;
+    }
 
-	public final double getVisMin() {
-		return visMin;
-	}
+    public final double getVisMin() {
+        return visMin;
+    }
 
-	public final boolean isVisInvert() {
-		return visInvert;
-	}
-
-
-	public final EdmFont getFont() {
-		return font;		
-	}
+    public final boolean isVisInvert() {
+        return visInvert;
+    }
 
 
-	public final EdmColor getFgColor() {
-		return fgColor;
-	}
+    public final EdmFont getFont() {
+        return font;        
+    }
 
 
-	public final EdmColor getBgColor() {
-		return bgColor;
-	}
+    public final EdmColor getFgColor() {
+        return fgColor;
+    }
 
 
-	public final boolean isFgAlarm() {
-		return fgAlarm;
-	}
+    public final EdmColor getBgColor() {
+        return bgColor;
+    }
 
 
-	public final boolean isBgAlarm() {
-		return bgAlarm;
-	}
-	
-	
+    public final boolean isFgAlarm() {
+        return fgAlarm;
+    }
+
+
+    public final boolean isBgAlarm() {
+        return bgAlarm;
+    }
+    
+    
 }

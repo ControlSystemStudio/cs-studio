@@ -63,7 +63,7 @@ public class Trace
     /** @return Returns the name of this trace. */
     public final String getName()
     {
-    	return name;
+        return name;
     }
     
     /** @return Returns the SampleSequence interface for this trace. */
@@ -114,6 +114,6 @@ public class Trace
     /** @return Returns trace type */
     public final TraceType getType() 
     {
-    	return type;
+        return type;
     }
 }

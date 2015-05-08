@@ -37,33 +37,33 @@ import org.csstudio.dal.impl.ResponseImpl;
  */
 public class PutRequest<T> extends RequestImpl<T> implements PutListener
 {
-	/**
-	 * Proxy of this request.
-	 */
-	protected PropertyProxyImpl<T> proxy;
-	private final T value;
-	/**
-	 * Construcor.
+    /**
+     * Proxy of this request.
+     */
+    protected PropertyProxyImpl<T> proxy;
+    private final T value;
+    /**
+     * Construcor.
      * @param proxy proxy of this request.
      * @param l listener to notify.
      */
-	public PutRequest(final PropertyProxyImpl<T> proxy, final ResponseListener<T> l, final T value)
-	{
-		super(proxy, l, 1);
-		this.proxy = proxy;
-		this.value = value;
-	}
+    public PutRequest(final PropertyProxyImpl<T> proxy, final ResponseListener<T> l, final T value)
+    {
+        super(proxy, l, 1);
+        this.proxy = proxy;
+        this.value = value;
+    }
 
-	/*
-	 * @see gov.aps.jca.event.PutListener#putCompleted(gov.aps.jca.event.PutEvent)
-	 */
-	@Override
+    /*
+     * @see gov.aps.jca.event.PutListener#putCompleted(gov.aps.jca.event.PutEvent)
+     */
+    @Override
     public void putCompleted(final PutEvent ev)
-	{
-		addResponse(new ResponseImpl<T>(proxy, this, value, "value",
-		        ev.getStatus().isSuccessful(), null, proxy.getCondition(), null,
-		        true));
-	}
+    {
+        addResponse(new ResponseImpl<T>(proxy, this, value, "value",
+                ev.getStatus().isSuccessful(), null, proxy.getCondition(), null,
+                true));
+    }
 }
 
 /* __oOo__ */

@@ -12,30 +12,30 @@ import org.eclipse.gef.commands.Command;
  *
  */
 public class ActionButtonDataPostProcessor extends
-		AbstractWidgetPropertyPostProcessor<ActionButtonModel> {
+        AbstractWidgetPropertyPostProcessor<ActionButtonModel> {
 
-	@Override
-	protected Command doCreateCommand(ActionButtonModel widget) {
-		assert widget != null : "widget != null";
-		
-		return new AbstractEnsureInvariantsCommand<ActionButtonModel>(widget, ActionButtonModel.PROP_ACTIONDATA) {
+    @Override
+    protected Command doCreateCommand(ActionButtonModel widget) {
+        assert widget != null : "widget != null";
+        
+        return new AbstractEnsureInvariantsCommand<ActionButtonModel>(widget, ActionButtonModel.PROP_ACTIONDATA) {
 
-			@Override
-			protected boolean shouldHideProperties(ActionButtonModel widget,
-					String propertyId) {
-				ActionData data = widget.getActionDataProperty(propertyId);		
-				return data.getWidgetActions().isEmpty();
-			}
+            @Override
+            protected boolean shouldHideProperties(ActionButtonModel widget,
+                    String propertyId) {
+                ActionData data = widget.getActionDataProperty(propertyId);        
+                return data.getWidgetActions().isEmpty();
+            }
 
-			@Override
-			protected String[] getPropertyIds() {
-				return new String[] {
-						ActionButtonModel.PROP_ACTION_PRESSED_INDEX,
-						ActionButtonModel.PROP_ACTION_RELEASED_INDEX };
-			}
-			
-		};
-		
-	}
+            @Override
+            protected String[] getPropertyIds() {
+                return new String[] {
+                        ActionButtonModel.PROP_ACTION_PRESSED_INDEX,
+                        ActionButtonModel.PROP_ACTION_RELEASED_INDEX };
+            }
+            
+        };
+        
+    }
 
 }

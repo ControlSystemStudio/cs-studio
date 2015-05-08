@@ -108,9 +108,9 @@ class PVTreeItem
      *  @param pv_name The name of this PV entry.
      */
     public PVTreeItem(final PVTreeModel model,
-    		final PVTreeItem parent,
-    		final String info,
-    		final String pv_name)
+            final PVTreeItem parent,
+            final String info,
+            final String pv_name)
     {
         this.model = model;
         this.parent = parent;
@@ -146,7 +146,7 @@ class PVTreeItem
         // Try to read the pv
         try
         {
-        	pv = createPV(pv_name, value_listener);
+            pv = createPV(pv_name, value_listener);
         }
         catch (Exception e)
         {
@@ -168,26 +168,26 @@ class PVTreeItem
             Plugin.getLogger().fine("Known item, not traversing inputs (again)");
             return;
         }
-    	try
-    	{
+        try
+        {
             final PVListener listener = new StringListener()
-    	    {
-				@Override
-				public void handleText(final String text)
-				{
-    	            // type should be a text.
-    	            // If it starts with a number, it's probably not an
-    	            // EPICS record type but a simulated PV
-    	            final char first_char = text.charAt(0);
-    	            if (first_char >= 'a' && first_char <= 'z')
-    	                type = text;
-    	            else
-    	                type = Messages.UnknownPVType;
-    	            // Only need one update
-    	            type_pv.removeListener(this);
-    	            updateType();
-				}
-    	    };
+            {
+                @Override
+                public void handleText(final String text)
+                {
+                    // type should be a text.
+                    // If it starts with a number, it's probably not an
+                    // EPICS record type but a simulated PV
+                    final char first_char = text.charAt(0);
+                    if (first_char >= 'a' && first_char <= 'z')
+                        type = text;
+                    else
+                        type = Messages.UnknownPVType;
+                    // Only need one update
+                    type_pv.removeListener(this);
+                    updateType();
+                }
+            };
             type_pv = createPV(record_name + ".RTYP", listener);
         }
         catch (Exception e)
@@ -227,12 +227,12 @@ class PVTreeItem
     /** @return PV for the given name */
     private PV createLinkPV(final String name) throws Exception
     {
-    	final PVListener listener = new StringListener()
+        final PVListener listener = new StringListener()
         {
-			@Override
-			public void handleText(final String text)
-			{
-				link_value = text;
+            @Override
+            public void handleText(final String text)
+            {
+                link_value = text;
                 // The value could be
                 // a) a record name followed by "... NPP NMS". Remove that.
                 // b) a hardware input/output "@... " or "#...". Keep that.
@@ -247,9 +247,9 @@ class PVTreeItem
                 // Only one update
                 link_pv.removeListener(this);
                 updateLink();
-			}
-	    };
-	    return createPV(name, listener);
+            }
+        };
+        return createPV(name, listener);
     }
 
     /** Delete the type_pv */
@@ -388,7 +388,7 @@ class PVTreeItem
         }
         else
         {
-        	Plugin.getLogger().log(Level.FINE,
+            Plugin.getLogger().log(Level.FINE,
                     "{0} received ''{1}''", new Object[] { link_pv.getName(), link_value });
         }
         disposeLinkPV();

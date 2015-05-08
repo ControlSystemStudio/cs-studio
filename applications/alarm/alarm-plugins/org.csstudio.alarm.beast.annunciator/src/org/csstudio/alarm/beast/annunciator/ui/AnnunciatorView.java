@@ -208,7 +208,7 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
     /** @param toolbar Tool bar to which to add */
     private void addToolbarActions(final IToolBarManager toolbar)
     {
-    	silenceAction = new SilenceAction(this);
+        silenceAction = new SilenceAction(this);
         toolbar.add(silenceAction);
         toolbar.add(new ClearAction(this));
     }
@@ -262,23 +262,23 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
     @Override
     public void annunciatorError(final Throwable ex)
     {
-    	if(NoSoundCardAvailableException.class.equals(ex.getClass())) {
+        if(NoSoundCardAvailableException.class.equals(ex.getClass())) {
             // Update table in UI thread
             final Control control = message_table.getControl();
             if (control.isDisposed())
                 return;
-			control.getDisplay().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-	                if (control.isDisposed())
-	                    return;
-	                silenceAction.setEnabled(false);
-	                setAnnunciationsEnabled(false);
-				}
-			});
-	        logAnnunciation(new AnnunciationMessage(Severity.forError(), ex.getMessage()));
-    		return;
-    	}
+            control.getDisplay().asyncExec(new Runnable() {
+                @Override
+                public void run() {
+                    if (control.isDisposed())
+                        return;
+                    silenceAction.setEnabled(false);
+                    setAnnunciationsEnabled(false);
+                }
+            });
+            logAnnunciation(new AnnunciationMessage(Severity.forError(), ex.getMessage()));
+            return;
+        }
         logAnnunciation(new AnnunciationMessage(Severity.forError(), ex.getMessage()));
         Activator.getLogger().log(Level.WARNING, "Annunciator Error", ex); //$NON-NLS-1$
     }

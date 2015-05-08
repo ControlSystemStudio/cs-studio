@@ -30,17 +30,17 @@ import org.epics.css.dal.simulation.ValueProvider;
  * 
  */
 public class RandomDoubleGeneratorFactory implements ValueProviderFactory {
-	
-	@SuppressWarnings("unchecked")
-	public <T> ValueProvider<T> createGenerator(Class<T> type, String... options) {
-		if (Double.class.isAssignableFrom(type)) {
-			return (ValueProvider<T>) new RandomDoubleGenerator(options);
-		} else if (Long.class.isAssignableFrom(type)) {
-			return (ValueProvider<T>) new RandomLongGenerator(options);
-		} else if (String.class.isAssignableFrom(type)) {
-			
-		}
-		return null;
-	}
+    
+    @SuppressWarnings("unchecked")
+    public <T> ValueProvider<T> createGenerator(Class<T> type, String... options) {
+        if (Double.class.isAssignableFrom(type)) {
+            return (ValueProvider<T>) new RandomDoubleGenerator(options);
+        } else if (Long.class.isAssignableFrom(type)) {
+            return (ValueProvider<T>) new RandomLongGenerator(options);
+        } else if (String.class.isAssignableFrom(type)) {
+            
+        }
+        return null;
+    }
 
 }

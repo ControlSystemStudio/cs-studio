@@ -46,8 +46,8 @@ public class ValueInfo
     /** Smoothed period in seconds between received values. */
     private SmoothedDouble value_period = new SmoothedDouble();
 
-	/** The most recent value of the PV, as a string. */
-	private volatile String value_str = "";
+    /** The most recent value of the PV, as a string. */
+    private volatile String value_str = "";
 
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.000");
 

@@ -37,16 +37,16 @@ import com.cosylab.vdct.vdb.VDBTemplate;
  * @author 
  */
 public class CreateTemplatePortAction extends ActionObject {
-	protected VDBTemplate object;
-	protected VDBPort port;
+    protected VDBTemplate object;
+    protected VDBPort port;
 
 /**
  * Insert the method's description here.
  * Creation date: (3.5.2001 16:27:58)
  */
 public CreateTemplatePortAction(VDBTemplate object, VDBPort port) {
-	this.object=object;
-	this.port=port;
+    this.object=object;
+    this.port=port;
 }
 /**
  * Insert the method's description here.
@@ -54,18 +54,18 @@ public CreateTemplatePortAction(VDBTemplate object, VDBPort port) {
  * @return java.lang.String
  */
 public String getDescription() {
-	return "Create Template Port ["+object+"]("+port.getFullName()+")";
+    return "Create Template Port ["+object+"]("+port.getFullName()+")";
 }
 /**
  * This method was created in VisualAge.
  */
 protected void redoAction() {
-	object.addPort(port);
+    object.addPort(port);
 }
 /**
  * This method was created in VisualAge.
  */
 protected void undoAction() {
-	object.removePort(port);
+    object.removePort(port);
 }
 }

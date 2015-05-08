@@ -27,62 +27,62 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class ColorBlob extends Canvas implements PaintListener, DisposeListener
 {
-	/** The color */
-	private Color color;
-	private SelectionAdapter selected = null;
+    /** The color */
+    private Color color;
+    private SelectionAdapter selected = null;
 
-	/** Initialize
-	 *  @param parent Parent widget
-	 */
-	public ColorBlob(final Composite parent, final RGB rgb)
-	{
-		super(parent, SWT.BORDER);
-		color = new Color(getDisplay(), rgb);
-		addDisposeListener(this);
-		addPaintListener(this);
-		addMouseListener(new MouseAdapter()
-		{
-			@Override
-			public void mouseDown(MouseEvent e)
-			{
-				if (selected != null)
-					selected.widgetSelected(null);
-			}
-		});
-	}
+    /** Initialize
+     *  @param parent Parent widget
+     */
+    public ColorBlob(final Composite parent, final RGB rgb)
+    {
+        super(parent, SWT.BORDER);
+        color = new Color(getDisplay(), rgb);
+        addDisposeListener(this);
+        addPaintListener(this);
+        addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseDown(MouseEvent e)
+            {
+                if (selected != null)
+                    selected.widgetSelected(null);
+            }
+        });
+    }
 
     public void addSelectionListener(SelectionAdapter selected)
-	{
-		this.selected  = selected;
-	}
+    {
+        this.selected  = selected;
+    }
 
-	/** @param rgb Set the color displayed in the widget */
-	public void setColor(final RGB rgb)
-	{
-	    color.dispose();
-		color = new Color(getDisplay(), rgb);
-		redraw();
-	}
+    /** @param rgb Set the color displayed in the widget */
+    public void setColor(final RGB rgb)
+    {
+        color.dispose();
+        color = new Color(getDisplay(), rgb);
+        redraw();
+    }
 
-	public RGB getColor() {
-		return color.getRGB();
-	}
+    public RGB getColor() {
+        return color.getRGB();
+    }
 
-	/** @see DisposeListener */
-	@Override
+    /** @see DisposeListener */
+    @Override
     public void widgetDisposed(final DisposeEvent e)
-	{
-		color.dispose();
-	}
+    {
+        color.dispose();
+    }
 
-	/** @see PaintListener */
-	@Override
+    /** @see PaintListener */
+    @Override
     public void paintControl(final PaintEvent e)
-	{
-		final GC gc = e.gc;
-		gc.setBackground(color);
-		final Rectangle area = getClientArea();
-		gc.fillRectangle(area);
-	}
+    {
+        final GC gc = e.gc;
+        gc.setBackground(color);
+        final Rectangle area = getClientArea();
+        gc.fillRectangle(area);
+    }
 
 }

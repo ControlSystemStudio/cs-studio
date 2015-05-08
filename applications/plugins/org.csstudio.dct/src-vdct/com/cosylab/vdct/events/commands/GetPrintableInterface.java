@@ -37,14 +37,14 @@ import java.awt.print.*;
  * @author 
  */
 public class GetPrintableInterface extends Command {
-	Pageable pageable = null;
+    Pageable pageable = null;
 /**
  * Insert the method's description here.
  * Creation date: (12.5.2001 17:41:08)
  * @param printable java.awt.print.Printable
  */
 public GetPrintableInterface(Pageable intf) {
-	this.pageable=intf;
+    this.pageable=intf;
 }
 /**
  * Insert the method's description here.
@@ -57,7 +57,7 @@ public void execute() {}
  * @return java.awt.print.Pageable
  */
 public java.awt.print.Pageable getPageable() {
-	return pageable;
+    return pageable;
 }
 /**
  * Insert the method's description here.
@@ -65,6 +65,6 @@ public java.awt.print.Pageable getPageable() {
  * @param newPageable java.awt.print.Pageable
  */
 public void setPageable(java.awt.print.Pageable newPageable) {
-	pageable = newPageable;
+    pageable = newPageable;
 }
 }

@@ -36,19 +36,19 @@ import org.csstudio.sds.ui.properties.PropertyTypeCellEditorValidator;
  *
  */
 public final class ProcessVariablePropertyDescriptorFactory implements
-		IPropertyDescriptorFactory {
+        IPropertyDescriptorFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IPropertyDescriptor createPropertyDescriptor(final Object id,
-			final WidgetProperty property) {
-		PropertyDescriptor descriptor = new ProcessVariablePropertyDescriptor(id,
-				property.getDescription(), PropertyTypesEnum.PROCESSVARIABLE, property.getCategory().toString());
-		
-		// validator
-		descriptor.setValidator(new PropertyTypeCellEditorValidator(property));
-		return descriptor;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public IPropertyDescriptor createPropertyDescriptor(final Object id,
+            final WidgetProperty property) {
+        PropertyDescriptor descriptor = new ProcessVariablePropertyDescriptor(id,
+                property.getDescription(), PropertyTypesEnum.PROCESSVARIABLE, property.getCategory().toString());
+        
+        // validator
+        descriptor.setValidator(new PropertyTypeCellEditorValidator(property));
+        return descriptor;
+    }
 
 }

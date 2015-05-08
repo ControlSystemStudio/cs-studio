@@ -25,52 +25,52 @@
 package org.csstudio.sds.ui.internal.dynamicswizard;
 
 public class InputChannelTableRow {
-	private ParameterType _parameterType;
-	private String _description;
-	private String _channel;
-	private String _defaultValue = "";
+    private ParameterType _parameterType;
+    private String _description;
+    private String _channel;
+    private String _defaultValue = "";
 
-	public InputChannelTableRow(ParameterType parameterType, String description, String channel) {
-		_parameterType = parameterType;
-		_description = description;
-		_channel = channel;
-	}
-	
-	public String getDescription() {
-		return _description;
-	}
-	
-	public void setDescription(String description) {
-		_description = description;
-	}
+    public InputChannelTableRow(ParameterType parameterType, String description, String channel) {
+        _parameterType = parameterType;
+        _description = description;
+        _channel = channel;
+    }
+    
+    public String getDescription() {
+        return _description;
+    }
+    
+    public void setDescription(String description) {
+        _description = description;
+    }
 
-	public String getChannel() {
-		return _channel;
-	}
-	
-	public void setChannel(String channel) {
-		_channel = channel;
-	}
-	
-	public String getDefaultValue() {
-		return _defaultValue;
-	}
-	
-	public String getDefaultValueAsString() {
-		if (_defaultValue==null) {
-			return "";
-		}
-		return _defaultValue;
-	}
-	
-	public void setDefaultValue(String defaultvalue) {
-		assert defaultvalue != null : "defaultvalue != null";
-		
-		_defaultValue = defaultvalue;
-	}
+    public String getChannel() {
+        return _channel;
+    }
+    
+    public void setChannel(String channel) {
+        _channel = channel;
+    }
+    
+    public String getDefaultValue() {
+        return _defaultValue;
+    }
+    
+    public String getDefaultValueAsString() {
+        if (_defaultValue==null) {
+            return "";
+        }
+        return _defaultValue;
+    }
+    
+    public void setDefaultValue(String defaultvalue) {
+        assert defaultvalue != null : "defaultvalue != null";
+        
+        _defaultValue = defaultvalue;
+    }
 
-	public ParameterType getParameterType() {
-		return _parameterType;
-	}
-	
-}	
+    public ParameterType getParameterType() {
+        return _parameterType;
+    }
+    
+}    

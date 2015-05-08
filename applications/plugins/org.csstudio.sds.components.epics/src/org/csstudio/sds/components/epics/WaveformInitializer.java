@@ -31,19 +31,19 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
  */
 public final class WaveformInitializer extends AbstractEpicsWidgetInitializer {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void initialize(final AbstractControlSystemSchema schema) {
+    /**
+     * {@inheritDoc}
+     */
+    public void initialize(final AbstractControlSystemSchema schema) {
 
-		initializeCommonConnectionStates();
+        initializeCommonConnectionStates();
 
-		initializeDynamicProperty(WaveformModel.dataPropertyId(0), "$channel$");
+        initializeDynamicProperty(WaveformModel.dataPropertyId(0), "$channel$");
 
-		initializeDynamicProperty(WaveformModel.PROP_MIN,
-				"$channel$.[graphMin], double");
-		initializeDynamicProperty(WaveformModel.PROP_MAX,
-				"$channel$.[graphMax], double");
-		initializeStaticProperty(WaveformModel.PROP_AUTOSCALE, false);
-	}
+        initializeDynamicProperty(WaveformModel.PROP_MIN,
+                "$channel$.[graphMin], double");
+        initializeDynamicProperty(WaveformModel.PROP_MAX,
+                "$channel$.[graphMax], double");
+        initializeStaticProperty(WaveformModel.PROP_AUTOSCALE, false);
+    }
 }

@@ -39,22 +39,22 @@ import org.csstudio.sds.ui.properties.PropertyTypeCellEditorValidator;
  * 
  */
 public final class OptionPropertyDescriptorFactory implements
-		IPropertyDescriptorFactory {
+        IPropertyDescriptorFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IPropertyDescriptor createPropertyDescriptor(final Object id,
-			final WidgetProperty property) {
-		final OptionProperty optionProperty = (OptionProperty) property;
-		
-		PropertyDescriptor descriptor = new OptionComboBoxPropertyDescriptor(id,
-				property.getDescription(), PropertyTypesEnum.OPTION, property.getCategory().toString(), 
-				optionProperty.getOptions());
+    /**
+     * {@inheritDoc}
+     */
+    public IPropertyDescriptor createPropertyDescriptor(final Object id,
+            final WidgetProperty property) {
+        final OptionProperty optionProperty = (OptionProperty) property;
+        
+        PropertyDescriptor descriptor = new OptionComboBoxPropertyDescriptor(id,
+                property.getDescription(), PropertyTypesEnum.OPTION, property.getCategory().toString(), 
+                optionProperty.getOptions());
 
-		// validator
-		descriptor.setValidator(new PropertyTypeCellEditorValidator(property));
-		return descriptor;
-	}
+        // validator
+        descriptor.setValidator(new PropertyTypeCellEditorValidator(property));
+        return descriptor;
+    }
 
 }

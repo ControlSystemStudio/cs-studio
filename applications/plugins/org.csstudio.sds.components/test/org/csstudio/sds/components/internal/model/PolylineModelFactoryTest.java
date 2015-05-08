@@ -38,35 +38,35 @@ import org.junit.Test;
  */
 public final class PolylineModelFactoryTest {
 
-	/**
-	 * A factory instance for testing issues.
-	 */
-	private PolylineModelFactory _factory;
-	
-	/**
-	 * Test setup.
-	 */
-	@Before
-	public void setUp()  {
-		_factory= new PolylineModelFactory();
-	}
+    /**
+     * A factory instance for testing issues.
+     */
+    private PolylineModelFactory _factory;
+    
+    /**
+     * Test setup.
+     */
+    @Before
+    public void setUp()  {
+        _factory= new PolylineModelFactory();
+    }
 
-	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.PolylineModelFactory#createWidgetModel()}.
-	 */
-	@Test
-	public void testCreateModelElement() {
-		AbstractWidgetModel model = _factory.createWidgetModel();
-		assertNotNull(model);
-		assertTrue(model instanceof PolylineModel);
-	}
+    /**
+     * Test method for {@link org.csstudio.sds.components.internal.model.PolylineModelFactory#createWidgetModel()}.
+     */
+    @Test
+    public void testCreateModelElement() {
+        AbstractWidgetModel model = _factory.createWidgetModel();
+        assertNotNull(model);
+        assertTrue(model instanceof PolylineModel);
+    }
 
-	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.PolylineModelFactory#getWidgetModelType()}.
-	 */
-	@Test
-	public void testGetModelElementType() {
-		assertEquals(PolylineModel.class, _factory.getWidgetModelType());
-	}
+    /**
+     * Test method for {@link org.csstudio.sds.components.internal.model.PolylineModelFactory#getWidgetModelType()}.
+     */
+    @Test
+    public void testGetModelElementType() {
+        assertEquals(PolylineModel.class, _factory.getWidgetModelType());
+    }
 
 }

@@ -50,253 +50,253 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
 
     private static final Logger LOG = LoggerFactory.getLogger(RecordNodeEditPart.class);
 
-	private ConnectionAnchor anchorRight, anchorLeft, anchorTop, anchorBottom;
+    private ConnectionAnchor anchorRight, anchorLeft, anchorTop, anchorBottom;
 
-	private ChopboxAnchor anchorCenter;
+    private ChopboxAnchor anchorCenter;
 
-	private List<ConnectionAnchor> outgoingAnchors, incomingAnchors;
+    private List<ConnectionAnchor> outgoingAnchors, incomingAnchors;
 
-	private static final Map<ConnectionState, RGB> colors = new HashMap<ConnectionState, RGB>();
+    private static final Map<ConnectionState, RGB> colors = new HashMap<ConnectionState, RGB>();
 
-	static {
-		colors.put(ConnectionState.INITIAL, new RGB(255, 255, 0));
-		colors.put(ConnectionState.CONNECTED, new RGB(0, 255, 0));
-		colors.put(ConnectionState.CONNECTION_LOST, new RGB(255, 0, 0));
-		colors.put(ConnectionState.DISCONNECTED, new RGB(255, 0, 0));
-		colors.put(ConnectionState.CONNECTION_FAILED, new RGB(255, 0, 0));
-	}
+    static {
+        colors.put(ConnectionState.INITIAL, new RGB(255, 255, 0));
+        colors.put(ConnectionState.CONNECTED, new RGB(0, 255, 0));
+        colors.put(ConnectionState.CONNECTION_LOST, new RGB(255, 0, 0));
+        colors.put(ConnectionState.DISCONNECTED, new RGB(255, 0, 0));
+        colors.put(ConnectionState.CONNECTION_FAILED, new RGB(255, 0, 0));
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected void createEditPolicies() {
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected void createEditPolicies() {
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	public void activate() {
-		super.activate();
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public void activate() {
+        super.activate();
 
-		getCastedModel().addPropertyChangeListener(this);
+        getCastedModel().addPropertyChangeListener(this);
 
-		final IRecord record = getCastedModel().getElement();
+        final IRecord record = getCastedModel().getElement();
 
-		if (!record.isAbstract()) {
-			try {
-				final String name = AliasResolutionUtil.getEpicsNameFromHierarchy(record);
-				final String resolvedName = ResolutionUtil.resolve(name, record);
-				final IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(resolvedName);
-				ProcessVariableConnectionServiceFactory.getDefault().getProcessVariableConnectionService().register(this, pv, ValueType.DOUBLE);
+        if (!record.isAbstract()) {
+            try {
+                final String name = AliasResolutionUtil.getEpicsNameFromHierarchy(record);
+                final String resolvedName = ResolutionUtil.resolve(name, record);
+                final IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(resolvedName);
+                ProcessVariableConnectionServiceFactory.getDefault().getProcessVariableConnectionService().register(this, pv, ValueType.DOUBLE);
 
-				final RecordFigure figure = (RecordFigure) getFigure();
+                final RecordFigure figure = (RecordFigure) getFigure();
 
-				// .. set initial color for the connection state
-				figure.setConnectionIndictorColor(CustomMediaFactory.getInstance().getColor(colors.get(ConnectionState.INITIAL)));
+                // .. set initial color for the connection state
+                figure.setConnectionIndictorColor(CustomMediaFactory.getInstance().getColor(colors.get(ConnectionState.INITIAL)));
 
-				// .. prepare record information for tooltip
-				final Map<String, String> fields = record.getFinalFields();
+                // .. prepare record information for tooltip
+                final Map<String, String> fields = record.getFinalFields();
 
-				final List<String> keys = new ArrayList<String>(fields.keySet());
-				Collections.sort(keys);
-				final LinkedHashMap<String, String> infos = new LinkedHashMap<String, String>();
-				for (final String key : keys) {
-					final String value = fields.get(key);
+                final List<String> keys = new ArrayList<String>(fields.keySet());
+                Collections.sort(keys);
+                final LinkedHashMap<String, String> infos = new LinkedHashMap<String, String>();
+                for (final String key : keys) {
+                    final String value = fields.get(key);
 
-					if (value != null && value.length() > 0) {
-						infos.put(key, value);
-					}
-				}
-				figure.setRecordInformation(infos);
+                    if (value != null && value.length() > 0) {
+                        infos.put(key, value);
+                    }
+                }
+                figure.setRecordInformation(infos);
 
-			} catch (final AliasResolutionException e) {
-				LOG.error("Error: ", e);
-			}
-		}
+            } catch (final AliasResolutionException e) {
+                LOG.error("Error: ", e);
+            }
+        }
 
-	}
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	public void deactivate() {
-		getCastedModel().removePropertyChangeListener(this);
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public void deactivate() {
+        getCastedModel().removePropertyChangeListener(this);
 
-		final List l = getTargetConnections();
-		for (int i = 0; i < l.size(); i++) {
-			((EditPart) l.get(i)).deactivate();
-		}
-		super.deactivate();
+        final List l = getTargetConnections();
+        for (int i = 0; i < l.size(); i++) {
+            ((EditPart) l.get(i)).deactivate();
+        }
+        super.deactivate();
 
-	}
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected IFigure createFigure() {
-		final RecordFigure figure = new RecordFigure(getCastedModel().getCaption());
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected IFigure createFigure() {
+        final RecordFigure figure = new RecordFigure(getCastedModel().getCaption());
 
-		outgoingAnchors = new ArrayList<ConnectionAnchor>();
+        outgoingAnchors = new ArrayList<ConnectionAnchor>();
 
-		for (int i = 0; i < getCastedModel().getSourceConnections().size(); i++) {
-			final ConnectionAnchor a = new ConnectionAnchor(figure);
-			a.offsetH = 70;
-			a.offsetV = i * 5 + 3;
-			outgoingAnchors.add(a);
-		}
+        for (int i = 0; i < getCastedModel().getSourceConnections().size(); i++) {
+            final ConnectionAnchor a = new ConnectionAnchor(figure);
+            a.offsetH = 70;
+            a.offsetV = i * 5 + 3;
+            outgoingAnchors.add(a);
+        }
 
-		incomingAnchors = new ArrayList<ConnectionAnchor>();
+        incomingAnchors = new ArrayList<ConnectionAnchor>();
 
-		for (int i = 0; i < getCastedModel().getTargetConnections().size(); i++) {
-			final ConnectionAnchor a = new ConnectionAnchor(figure);
-			a.offsetH = 0;
-			a.offsetV = i * 5 + 3;
-			incomingAnchors.add(a);
-		}
+        for (int i = 0; i < getCastedModel().getTargetConnections().size(); i++) {
+            final ConnectionAnchor a = new ConnectionAnchor(figure);
+            a.offsetH = 0;
+            a.offsetV = i * 5 + 3;
+            incomingAnchors.add(a);
+        }
 
-		anchorCenter = new ChopboxAnchor(figure);
+        anchorCenter = new ChopboxAnchor(figure);
 
-		anchorLeft = new ConnectionAnchor(figure);
+        anchorLeft = new ConnectionAnchor(figure);
 
-		anchorRight = new ConnectionAnchor(figure);
-		anchorTop = new ConnectionAnchor(figure);
-		anchorBottom = new ConnectionAnchor(figure);
+        anchorRight = new ConnectionAnchor(figure);
+        anchorTop = new ConnectionAnchor(figure);
+        anchorBottom = new ConnectionAnchor(figure);
 
-		anchorLeft.topDown = false;
-		anchorRight.topDown = false;
-		anchorTop.topDown = false;
-		anchorBottom.topDown = false;
+        anchorLeft.topDown = false;
+        anchorRight.topDown = false;
+        anchorTop.topDown = false;
+        anchorBottom.topDown = false;
 
-		createOrUpdateAnchorsLocations();
+        createOrUpdateAnchorsLocations();
 
-		Color bgcolor = CustomMediaFactory.getInstance().getColor(100, 100, 255);
-		Color fgcolor = CustomMediaFactory.getInstance().getColor(255, 255, 255);
+        Color bgcolor = CustomMediaFactory.getInstance().getColor(100, 100, 255);
+        Color fgcolor = CustomMediaFactory.getInstance().getColor(255, 255, 255);
 
-		// .. render passive records with white background color
-		final String scanFieldSetting = getCastedModel().getElement().getFinalFields().get("SCAN");
-		if ("passive".equalsIgnoreCase(scanFieldSetting)) {
-			bgcolor = CustomMediaFactory.getInstance().getColor(255, 255, 255);
-			fgcolor = CustomMediaFactory.getInstance().getColor(0, 0, 0);
-		}
+        // .. render passive records with white background color
+        final String scanFieldSetting = getCastedModel().getElement().getFinalFields().get("SCAN");
+        if ("passive".equalsIgnoreCase(scanFieldSetting)) {
+            bgcolor = CustomMediaFactory.getInstance().getColor(255, 255, 255);
+            fgcolor = CustomMediaFactory.getInstance().getColor(0, 0, 0);
+        }
 
-		figure.setBackgroundColor(bgcolor);
-		figure.setForegroundColor(fgcolor);
+        figure.setBackgroundColor(bgcolor);
+        figure.setForegroundColor(fgcolor);
 
-		// .. render connection state
-		figure.setConnectionIndictorColor(bgcolor);
+        // .. render connection state
+        figure.setConnectionIndictorColor(bgcolor);
 
-		return figure;
-	}
+        return figure;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public AbstractConnectionAnchor getSourceConnectionAnchor(final ConnectionEditPart connectionEditpart) {
-		final Connection connection = (Connection) connectionEditpart.getModel();
-		final int index = getCastedModel().getSourceConnections().indexOf(connection);
-		return anchorCenter;
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public AbstractConnectionAnchor getSourceConnectionAnchor(final ConnectionEditPart connectionEditpart) {
+        final Connection connection = (Connection) connectionEditpart.getModel();
+        final int index = getCastedModel().getSourceConnections().indexOf(connection);
+        return anchorCenter;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public AbstractConnectionAnchor getSourceConnectionAnchor(final Request request) {
-		return null;
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public AbstractConnectionAnchor getSourceConnectionAnchor(final Request request) {
+        return null;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public AbstractConnectionAnchor getTargetConnectionAnchor(final ConnectionEditPart connectionEditpart) {
-		return anchorCenter;
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public AbstractConnectionAnchor getTargetConnectionAnchor(final ConnectionEditPart connectionEditpart) {
+        return anchorCenter;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public AbstractConnectionAnchor getTargetConnectionAnchor(final Request request) {
-		return null;
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public AbstractConnectionAnchor getTargetConnectionAnchor(final Request request) {
+        return null;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void propertyChange(final PropertyChangeEvent evt) {
+    /**
+     *{@inheritDoc}
+     */
+    public void propertyChange(final PropertyChangeEvent evt) {
 
-	}
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected List getModelSourceConnections() {
-		return getCastedModel().getSourceConnections();
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected List getModelSourceConnections() {
+        return getCastedModel().getSourceConnections();
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected List getModelTargetConnections() {
-		return getCastedModel().getTargetConnections();
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected List getModelTargetConnections() {
+        return getCastedModel().getTargetConnections();
+    }
 
-	protected RecordFigure getCastedFigure() {
-		return (RecordFigure) getFigure();
-	}
+    protected RecordFigure getCastedFigure() {
+        return (RecordFigure) getFigure();
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void connectionStateChanged(final ConnectionState connectionState) {
-		UiExecutionService.getInstance().queue(new Runnable() {
-			public void run() {
-				getCastedFigure().setConnectionIndictorColor(CustomMediaFactory.getInstance().getColor(colors.get(connectionState)));
+    /**
+     *{@inheritDoc}
+     */
+    public void connectionStateChanged(final ConnectionState connectionState) {
+        UiExecutionService.getInstance().queue(new Runnable() {
+            public void run() {
+                getCastedFigure().setConnectionIndictorColor(CustomMediaFactory.getInstance().getColor(colors.get(connectionState)));
 
-				final LinkedHashMap<String, String> infos = new LinkedHashMap<String, String>();
-				infos.put("State:", connectionState.name());
+                final LinkedHashMap<String, String> infos = new LinkedHashMap<String, String>();
+                infos.put("State:", connectionState.name());
 
-				getCastedFigure().setConnectionInformation(infos);
-			}
-		});
+                getCastedFigure().setConnectionInformation(infos);
+            }
+        });
 
-	}
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void errorOccured(final String error) {
+    /**
+     *{@inheritDoc}
+     */
+    public void errorOccured(final String error) {
 
-	}
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void valueChanged(final Object value, final Timestamp timestamp) {
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public void valueChanged(final Object value, final Timestamp timestamp) {
+    }
 
-	private RecordNode getCastedModel() {
-		return (RecordNode) getModel();
-	}
+    private RecordNode getCastedModel() {
+        return (RecordNode) getModel();
+    }
 
-	private void createOrUpdateAnchorsLocations() {
-		final Dimension size = new Dimension(70, 30);
+    private void createOrUpdateAnchorsLocations() {
+        final Dimension size = new Dimension(70, 30);
 
-		anchorLeft.offsetH = 0;
-		anchorLeft.offsetV = size.height / 2;
+        anchorLeft.offsetH = 0;
+        anchorLeft.offsetV = size.height / 2;
 
-		anchorRight.offsetH = size.width;
-		anchorRight.offsetV = size.height / 2;
+        anchorRight.offsetH = size.width;
+        anchorRight.offsetV = size.height / 2;
 
-		anchorTop.offsetH = size.width / 2;
-		anchorTop.offsetV = 0;
+        anchorTop.offsetH = size.width / 2;
+        anchorTop.offsetV = 0;
 
-		anchorBottom.offsetH = size.width / 2;
-		anchorBottom.offsetV = size.height;
-	}
+        anchorBottom.offsetH = size.width / 2;
+        anchorBottom.offsetV = size.height;
+    }
 
 }

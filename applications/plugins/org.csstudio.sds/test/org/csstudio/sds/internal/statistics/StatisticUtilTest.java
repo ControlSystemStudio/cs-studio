@@ -37,72 +37,72 @@ import org.junit.Test;
  */
 public final class StatisticUtilTest {
 
-	/**
-	 * Set up the test case.
-	 * 
-	 * @throws java.lang.Exception
-	 *             If an execption occurs during setup.
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
+    /**
+     * Set up the test case.
+     * 
+     * @throws java.lang.Exception
+     *             If an execption occurs during setup.
+     */
+    @Before
+    public void setUp() throws Exception {
+    }
 
-	/**
-	 * Tear down the test case.
-	 * 
-	 * @throws java.lang.Exception
-	 *             If an exception occurs during teardown.
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
+    /**
+     * Tear down the test case.
+     * 
+     * @throws java.lang.Exception
+     *             If an exception occurs during teardown.
+     */
+    @After
+    public void tearDown() throws Exception {
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.internal.statistics.StatisticUtil#getInstance()}.
-	 */
-	@Test
-	public void testGetInstance() {
-		assertNotNull(StatisticUtil.getInstance());
-	}
+    /**
+     * Test method for
+     * {@link org.csstudio.sds.internal.statistics.StatisticUtil#getInstance()}.
+     */
+    @Test
+    public void testGetInstance() {
+        assertNotNull(StatisticUtil.getInstance());
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.internal.statistics.StatisticUtil#recordWidgetRefresh(java.lang.Object)}.
-	 */
-	@Test
-	public void testRecordWidgetRefresh() {
-		StatisticUtil.getInstance().init();
+    /**
+     * Test method for
+     * {@link org.csstudio.sds.internal.statistics.StatisticUtil#recordWidgetRefresh(java.lang.Object)}.
+     */
+    @Test
+    public void testRecordWidgetRefresh() {
+        StatisticUtil.getInstance().init();
 
-		try {
-			StatisticUtil.getInstance().trackExecution(MeasureCategoriesEnum.SYNC_EXEC_CATEGORY, 10);
-			Thread.sleep(100);
-			StatisticUtil.getInstance().trackExecution(MeasureCategoriesEnum.SYNC_EXEC_CATEGORY, 10);
-			Thread.sleep(100);
-			StatisticUtil.getInstance().trackExecution(MeasureCategoriesEnum.SYNC_EXEC_CATEGORY, 10);
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			fail(e.getMessage());
-		}
-		
-	}
+        try {
+            StatisticUtil.getInstance().trackExecution(MeasureCategoriesEnum.SYNC_EXEC_CATEGORY, 10);
+            Thread.sleep(100);
+            StatisticUtil.getInstance().trackExecution(MeasureCategoriesEnum.SYNC_EXEC_CATEGORY, 10);
+            Thread.sleep(100);
+            StatisticUtil.getInstance().trackExecution(MeasureCategoriesEnum.SYNC_EXEC_CATEGORY, 10);
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            fail(e.getMessage());
+        }
+        
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.internal.statistics.StatisticUtil#init()}.
-	 */
-	@Test
-	public void testClearStatistics() {
-		StatisticUtil.getInstance().init();
-	}
+    /**
+     * Test method for
+     * {@link org.csstudio.sds.internal.statistics.StatisticUtil#init()}.
+     */
+    @Test
+    public void testClearStatistics() {
+        StatisticUtil.getInstance().init();
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.internal.statistics.StatisticUtil#toString()}.
-	 */
-	@Test
-	public void testToString() {
-		StatisticUtil.getInstance().init();
-	}
+    /**
+     * Test method for
+     * {@link org.csstudio.sds.internal.statistics.StatisticUtil#toString()}.
+     */
+    @Test
+    public void testToString() {
+        StatisticUtil.getInstance().init();
+    }
 
 }

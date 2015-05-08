@@ -43,28 +43,28 @@ import javax.naming.spi.InitialContextFactory;
  */
 public class InitialContextFactoryImpl implements InitialContextFactory
 {
-	private static InitialDirContextImpl ctx;
+    private static InitialDirContextImpl ctx;
 
-	/**
-	 * Defautlt constructor.
-	 */
-	public InitialContextFactoryImpl()
-	{
-		super();
-	}
+    /**
+     * Defautlt constructor.
+     */
+    public InitialContextFactoryImpl()
+    {
+        super();
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.spi.InitialContextFactory#getInitialContext(java.util.Hashtable)
-	 */
-	public Context getInitialContext(Hashtable<?, ?> environment)
-		throws NamingException
-	{
-		if (ctx == null) {
-			ctx = new InitialDirContextImpl(environment);
-		}
+    /* (non-Javadoc)
+     * @see javax.naming.spi.InitialContextFactory#getInitialContext(java.util.Hashtable)
+     */
+    public Context getInitialContext(Hashtable<?, ?> environment)
+        throws NamingException
+    {
+        if (ctx == null) {
+            ctx = new InitialDirContextImpl(environment);
+        }
 
-		return ctx;
-	}
+        return ctx;
+    }
 }
 
 /* __oOo__ */

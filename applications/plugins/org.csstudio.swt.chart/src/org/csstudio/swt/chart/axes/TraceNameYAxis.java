@@ -139,7 +139,7 @@ public class TraceNameYAxis extends YAxis
         // y+height = botton, then go up by half the 'extra'
         int y = region.y + (region.height + row_widths[row])/2;
         Color fg = gc.getForeground();
-    	
+        
         for (int i=0; i<getNumTraces(); ++i)
         {
             String name = getTrace(i).getName();

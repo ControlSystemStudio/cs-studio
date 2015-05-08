@@ -16,26 +16,26 @@ import org.epics.vtype.VType;
  * 
  */
 public class LineGraph2DSelection implements VTypeAdaptable,
-		ConfigurableWidgetAdaptable {
+        ConfigurableWidgetAdaptable {
 
-	private final LineGraph2DWidget widget;
+    private final LineGraph2DWidget widget;
 
-	public LineGraph2DSelection(LineGraph2DWidget widget) {
-		this.widget = widget;
-	}
-	
-	@Override
-	public VType toVType() {
-		Graph2DResult result = widget.getCurrentResult();
-		if (result != null) {
-			return result.getData();
-		}
-		return null;
-	}
+    public LineGraph2DSelection(LineGraph2DWidget widget) {
+        this.widget = widget;
+    }
+    
+    @Override
+    public VType toVType() {
+        Graph2DResult result = widget.getCurrentResult();
+        if (result != null) {
+            return result.getData();
+        }
+        return null;
+    }
 
-	@Override
-	public ConfigurableWidget toConfigurableWidget() {
-		return widget;
-	}
+    @Override
+    public ConfigurableWidget toConfigurableWidget() {
+        return widget;
+    }
 
 }

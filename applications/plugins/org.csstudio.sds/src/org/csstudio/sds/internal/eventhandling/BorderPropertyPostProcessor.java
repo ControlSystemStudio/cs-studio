@@ -19,51 +19,51 @@ import org.eclipse.gef.commands.CompoundCommand;
  */
 public class BorderPropertyPostProcessor extends AbstractWidgetPropertyPostProcessor<AbstractWidgetModel> {
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected Command doCreateCommand(AbstractWidgetModel widget) {
-		return new HideBorderStuffCommand(widget);
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected Command doCreateCommand(AbstractWidgetModel widget) {
+        return new HideBorderStuffCommand(widget);
+    }
 
-	private static final class HideBorderStuffCommand extends Command {
-		private final AbstractWidgetModel widget;
-		private CompoundCommand chain;
+    private static final class HideBorderStuffCommand extends Command {
+        private final AbstractWidgetModel widget;
+        private CompoundCommand chain;
 
-		private HideBorderStuffCommand(AbstractWidgetModel widget) {
-			this.widget = widget;
-		}
+        private HideBorderStuffCommand(AbstractWidgetModel widget) {
+            this.widget = widget;
+        }
 
-		@Override
-		public void execute() {
-			if (chain == null) {
-				chain = new CompoundCommand();
+        @Override
+        public void execute() {
+            if (chain == null) {
+                chain = new CompoundCommand();
 
-				// .. determine the selected border style
-				int optionIndex = widget.getArrayOptionProperty(AbstractWidgetModel.PROP_BORDER_STYLE);
+                // .. determine the selected border style
+                int optionIndex = widget.getArrayOptionProperty(AbstractWidgetModel.PROP_BORDER_STYLE);
 
-				if (BorderStyleEnum.NONE.getIndex() == optionIndex || 
-						BorderStyleEnum.RAISED.getIndex() == optionIndex ||
-						BorderStyleEnum.LOWERED.getIndex() == optionIndex) {
-					// .. hide color and width properties, when no border style
-					// is set
-					chain.add(new HidePropertyCommand(widget, AbstractWidgetModel.PROP_BORDER_WIDTH, AbstractWidgetModel.PROP_BORDER_STYLE));
-					chain.add(new HidePropertyCommand(widget, AbstractWidgetModel.PROP_BORDER_COLOR, AbstractWidgetModel.PROP_BORDER_STYLE));
-				} else {
-					// .. show color and width properties, when a border style
-					// is set
-					chain.add(new ShowPropertyCommand(widget, AbstractWidgetModel.PROP_BORDER_WIDTH, AbstractWidgetModel.PROP_BORDER_STYLE));
-					chain.add(new ShowPropertyCommand(widget, AbstractWidgetModel.PROP_BORDER_COLOR, AbstractWidgetModel.PROP_BORDER_STYLE));
-				}
-			}
+                if (BorderStyleEnum.NONE.getIndex() == optionIndex || 
+                        BorderStyleEnum.RAISED.getIndex() == optionIndex ||
+                        BorderStyleEnum.LOWERED.getIndex() == optionIndex) {
+                    // .. hide color and width properties, when no border style
+                    // is set
+                    chain.add(new HidePropertyCommand(widget, AbstractWidgetModel.PROP_BORDER_WIDTH, AbstractWidgetModel.PROP_BORDER_STYLE));
+                    chain.add(new HidePropertyCommand(widget, AbstractWidgetModel.PROP_BORDER_COLOR, AbstractWidgetModel.PROP_BORDER_STYLE));
+                } else {
+                    // .. show color and width properties, when a border style
+                    // is set
+                    chain.add(new ShowPropertyCommand(widget, AbstractWidgetModel.PROP_BORDER_WIDTH, AbstractWidgetModel.PROP_BORDER_STYLE));
+                    chain.add(new ShowPropertyCommand(widget, AbstractWidgetModel.PROP_BORDER_COLOR, AbstractWidgetModel.PROP_BORDER_STYLE));
+                }
+            }
 
-			chain.execute();
-		}
+            chain.execute();
+        }
 
-		@Override
-		public void undo() {
-			chain.undo();
-		}
-	}
+        @Override
+        public void undo() {
+            chain.undo();
+        }
+    }
 }

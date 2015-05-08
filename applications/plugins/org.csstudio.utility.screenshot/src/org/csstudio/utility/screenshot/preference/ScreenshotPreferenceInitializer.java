@@ -33,9 +33,9 @@ public class ScreenshotPreferenceInitializer extends AbstractPreferenceInitializ
     @Override
     public void initializeDefaultPreferences() {
         
-    	IEclipsePreferences node = new DefaultScope().getNode(ScreenshotPlugin.PLUGIN_ID);
+        IEclipsePreferences node = new DefaultScope().getNode(ScreenshotPlugin.PLUGIN_ID);
         
-    	node.put(ScreenshotPreferenceConstants.MAIL_SERVER, "your.mail.host");
+        node.put(ScreenshotPreferenceConstants.MAIL_SERVER, "your.mail.host");
         node.put(ScreenshotPreferenceConstants.MAIL_ADDRESS_SENDER, "user.name@where.ever.nir");
         node.put(ScreenshotPreferenceConstants.COPY_TO_SENDER, "false");
     }

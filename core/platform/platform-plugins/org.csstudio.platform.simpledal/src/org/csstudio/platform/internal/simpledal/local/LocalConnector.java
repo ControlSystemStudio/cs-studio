@@ -45,121 +45,121 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings("unchecked")
 public class LocalConnector extends AbstractConnector implements ILocalChannelListener {
-	
+    
     private static final Logger LOG = LoggerFactory.getLogger(LocalConnector.class);
 
-	/**
-	 * Constructor.
-	 */
-	public LocalConnector(IProcessVariableAddress pvAddress, ValueType valueType) {
-		super(pvAddress, valueType);
-		assert valueType != null;
-	}
+    /**
+     * Constructor.
+     */
+    public LocalConnector(IProcessVariableAddress pvAddress, ValueType valueType) {
+        super(pvAddress, valueType);
+        assert valueType != null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void valueChanged(Object value) {
-		doForwardValue(value, new Timestamp());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void valueChanged(Object value) {
+        doForwardValue(value, new Timestamp());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doGetValueAsynchronously(final IProcessVariableValueListener listener) {
-		Runnable r = new Runnable() {
-			public void run() {
-				Object value = LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(), getValueType()).getValue();
-				try {
-				    listener.valueChanged(ConverterUtil.convert(value, getValueType()), new Timestamp());
-				}catch(NumberFormatException nfe) {
-				    LOG.warn(nfe.toString());
-				}
-			}
-		};
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doGetValueAsynchronously(final IProcessVariableValueListener listener) {
+        Runnable r = new Runnable() {
+            public void run() {
+                Object value = LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(), getValueType()).getValue();
+                try {
+                    listener.valueChanged(ConverterUtil.convert(value, getValueType()), new Timestamp());
+                }catch(NumberFormatException nfe) {
+                    LOG.warn(nfe.toString());
+                }
+            }
+        };
 
-		ExecutionService.getInstance().executeWithNormalPriority(r);
-	}
+        ExecutionService.getInstance().executeWithNormalPriority(r);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Object doGetValueSynchronously() {
-		Object value = LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(), getValueType()).getValue();
-		return value;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Object doGetValueSynchronously() {
+        Object value = LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(), getValueType()).getValue();
+        return value;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doGetCharacteristicAsynchronously(String characteristicId, ValueType valueType, IProcessVariableValueListener listener)
-			throws Exception {
-		doGetValueAsynchronously(listener);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doGetCharacteristicAsynchronously(String characteristicId, ValueType valueType, IProcessVariableValueListener listener)
+            throws Exception {
+        doGetValueAsynchronously(listener);
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Object doGetCharacteristicSynchronously(String characteristicId, ValueType valueType) throws Exception {
-		return doGetValueSynchronously();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Object doGetCharacteristicSynchronously(String characteristicId, ValueType valueType) throws Exception {
+        return doGetValueSynchronously();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doSetValueAsynchronously(final Object value, final IProcessVariableWriteListener listener) {
-		Runnable r = new Runnable() {
-			public void run() {
-				LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(), getValueType()).setValue(value);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doSetValueAsynchronously(final Object value, final IProcessVariableWriteListener listener) {
+        Runnable r = new Runnable() {
+            public void run() {
+                LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(), getValueType()).setValue(value);
 
-				if (listener != null) {
-					listener.success();
-				}
-			}
-		};
+                if (listener != null) {
+                    listener.success();
+                }
+            }
+        };
 
-		ExecutionService.getInstance().executeWithNormalPriority(r);
+        ExecutionService.getInstance().executeWithNormalPriority(r);
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected boolean doSetValueSynchronously(Object value) {
-		LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(), getValueType()).setValue(value);
-		return true;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean doSetValueSynchronously(Object value) {
+        LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(), getValueType()).setValue(value);
+        return true;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doInit() {
-		LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(), getValueType()).addListener(this);
-		forwardConnectionState(ConnectionState.CONNECTED);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doInit() {
+        LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(), getValueType()).addListener(this);
+        forwardConnectionState(ConnectionState.CONNECTED);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doDispose() {
-		LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(), getValueType()).removeListener(this);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doDispose() {
+        LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(), getValueType()).removeListener(this);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected SettableState doIsSettable() {
-		return SettableState.SETTABLE;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected SettableState doIsSettable() {
+        return SettableState.SETTABLE;
+    }
 
 }

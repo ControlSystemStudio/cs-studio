@@ -47,44 +47,44 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public final class DeleteWidgetsAction extends DeleteAction {
 
-	public DeleteWidgetsAction(IWorkbenchPart part) {
-		super(part);
-	}
+    public DeleteWidgetsAction(IWorkbenchPart part) {
+        super(part);
+    }
 
-	@SuppressWarnings({ "unchecked", "restriction" })
-	@Override
-	public Command createDeleteCommand(List objects) {
-		if (objects.isEmpty() || !(objects.get(0) instanceof EditPart)) {
-			return null;
-		}
+    @SuppressWarnings({ "unchecked", "restriction" })
+    @Override
+    public Command createDeleteCommand(List objects) {
+        if (objects.isEmpty() || !(objects.get(0) instanceof EditPart)) {
+            return null;
+        }
 
-		GroupRequest deleteReq = new GroupRequest(RequestConstants.REQ_DELETE);
-		deleteReq.setEditParts(objects);
+        GroupRequest deleteReq = new GroupRequest(RequestConstants.REQ_DELETE);
+        deleteReq.setEditParts(objects);
 
-		CompoundCommand compoundCmd = new CompoundCommand(GEFMessages.DeleteAction_ActionDeleteCommandName);
+        CompoundCommand compoundCmd = new CompoundCommand(GEFMessages.DeleteAction_ActionDeleteCommandName);
 
-		Map<ContainerModel, List<AbstractWidgetModel>> deleteCandidates = new HashMap<ContainerModel, List<AbstractWidgetModel>>();
+        Map<ContainerModel, List<AbstractWidgetModel>> deleteCandidates = new HashMap<ContainerModel, List<AbstractWidgetModel>>();
 
-		for (int i = 0; i < objects.size(); i++) {
-			EditPart ep = (EditPart) objects.get(i);
+        for (int i = 0; i < objects.size(); i++) {
+            EditPart ep = (EditPart) objects.get(i);
 
-			AbstractWidgetModel w = (AbstractWidgetModel) ep.getModel();
-			ContainerModel c = w.getParent();
+            AbstractWidgetModel w = (AbstractWidgetModel) ep.getModel();
+            ContainerModel c = w.getParent();
 
-			if (c != null) {
-				if (!deleteCandidates.containsKey(c)) {
-					deleteCandidates.put(c, new ArrayList<AbstractWidgetModel>());
-				}
-				deleteCandidates.get(c).add(w);
-			}
-		}
+            if (c != null) {
+                if (!deleteCandidates.containsKey(c)) {
+                    deleteCandidates.put(c, new ArrayList<AbstractWidgetModel>());
+                }
+                deleteCandidates.get(c).add(w);
+            }
+        }
 
-		DisplayEditor editor = (DisplayEditor) getWorkbenchPart();
-		
-		for (ContainerModel c : deleteCandidates.keySet()) {
-			compoundCmd.add(new DeleteWidgetsCommand(editor.getGraphicalViewer(), c, deleteCandidates.get(c)));
-		}
+        DisplayEditor editor = (DisplayEditor) getWorkbenchPart();
+        
+        for (ContainerModel c : deleteCandidates.keySet()) {
+            compoundCmd.add(new DeleteWidgetsCommand(editor.getGraphicalViewer(), c, deleteCandidates.get(c)));
+        }
 
-		return compoundCmd;
-	}
+        return compoundCmd;
+    }
 }

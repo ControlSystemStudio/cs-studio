@@ -34,10 +34,10 @@ package com.cosylab.vdct.undo;
  * @author 
  */
 public class CommentChangeAction extends ActionObject {
-	private com.cosylab.vdct.vdb.CommentProperty commentProperty;
-	private String oldValue;
-	private String newValue;
-	
+    private com.cosylab.vdct.vdb.CommentProperty commentProperty;
+    private String oldValue;
+    private String newValue;
+    
 /**
  * Insert the method's description here.
  * Creation date: (3.5.2001 15:30:47)
@@ -46,9 +46,9 @@ public class CommentChangeAction extends ActionObject {
  * @param newValue java.lang.String
  */
 public CommentChangeAction(com.cosylab.vdct.vdb.CommentProperty commentProperty, String oldValue, String newValue) {
-	this.commentProperty=commentProperty;
-	this.oldValue=oldValue;
-	this.newValue=newValue;
+    this.commentProperty=commentProperty;
+    this.oldValue=oldValue;
+    this.newValue=newValue;
 }
 /**
  * Insert the method's description here.
@@ -56,18 +56,18 @@ public CommentChangeAction(com.cosylab.vdct.vdb.CommentProperty commentProperty,
  * @return java.lang.String
  */
 public java.lang.String getDescription() {
-	return "Comment value change ["+commentProperty.getName()+"](\""+oldValue+"\" to \""+newValue+"\")";
+    return "Comment value change ["+commentProperty.getName()+"](\""+oldValue+"\" to \""+newValue+"\")";
 }
 /**
  * This method was created in VisualAge.
  */
 protected void redoAction() {
-	commentProperty.setValue(newValue);
+    commentProperty.setValue(newValue);
 }
 /**
  * This method was created in VisualAge.
  */
 protected void undoAction() {
-	commentProperty.setValue(oldValue);
+    commentProperty.setValue(oldValue);
 }
 }

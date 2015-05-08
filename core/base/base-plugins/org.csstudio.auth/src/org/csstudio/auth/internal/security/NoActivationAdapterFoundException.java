@@ -28,24 +28,24 @@ package org.csstudio.auth.internal.security;
  */
 public class NoActivationAdapterFoundException extends ActivationServiceException {
 
-	/**
-	 * Generated serial version unified ID.
-	 */
-	private static final long serialVersionUID = 6392656289158291547L;
-		
-	/**
-	 * Constructor.
-	 * @param clazz The class for which no IActivationAdapter could be found
-	 */
-	public NoActivationAdapterFoundException(final Class<?> clazz) {
-		super(clazz);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	protected final String getMessage(final Class<?> clazz) {
-		return "No ActivationAdapter found for "+clazz;
-	}
-	
+    /**
+     * Generated serial version unified ID.
+     */
+    private static final long serialVersionUID = 6392656289158291547L;
+        
+    /**
+     * Constructor.
+     * @param clazz The class for which no IActivationAdapter could be found
+     */
+    public NoActivationAdapterFoundException(final Class<?> clazz) {
+        super(clazz);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected final String getMessage(final Class<?> clazz) {
+        return "No ActivationAdapter found for "+clazz;
+    }
+    
 }

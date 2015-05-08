@@ -42,85 +42,85 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class ProcessVariableExchangeUtil {
 
-	public static void addProcessVariableAdressDragSupport(Control control,
-			final int style, IProcessVariableAdressProvider provider) {
-		DragSource dragSource = new DragSource(control, style);
+    public static void addProcessVariableAdressDragSupport(Control control,
+            final int style, IProcessVariableAdressProvider provider) {
+        DragSource dragSource = new DragSource(control, style);
 
-		Transfer[] types = new Transfer[] {
-				ProcessVariableAddressTransfer.getInstance(),
-				TextTransfer.getInstance() };
+        Transfer[] types = new Transfer[] {
+                ProcessVariableAddressTransfer.getInstance(),
+                TextTransfer.getInstance() };
 
-		dragSource.setTransfer(types);
+        dragSource.setTransfer(types);
 
-		dragSource.addDragListener(new ProcessVariableAdressDragSourceAdapter(
-				provider));
-	}
+        dragSource.addDragListener(new ProcessVariableAdressDragSourceAdapter(
+                provider));
+    }
 
-	public static void addProcessVariableAddressDropSupport(Control control,
-			final int style, IProcessVariableAdressReceiver receiver) {
-		addProcessVariableAddressDropSupport(control, style, receiver,
-				new IShowControlSystemDialogStrategy() {
-					public boolean showControlSystem(String rawName) {
-						return true;
-					}
-				});
-	}
+    public static void addProcessVariableAddressDropSupport(Control control,
+            final int style, IProcessVariableAdressReceiver receiver) {
+        addProcessVariableAddressDropSupport(control, style, receiver,
+                new IShowControlSystemDialogStrategy() {
+                    public boolean showControlSystem(String rawName) {
+                        return true;
+                    }
+                });
+    }
 
-	public static void addProcessVariableAddressDropSupport(Control control,
-			final int style, IProcessVariableAdressReceiver receiver,
-			IShowControlSystemDialogStrategy showControlSystemDialogStrategy) {
-		assert control != null;
-		assert receiver != null;
-		assert showControlSystemDialogStrategy != null;
+    public static void addProcessVariableAddressDropSupport(Control control,
+            final int style, IProcessVariableAdressReceiver receiver,
+            IShowControlSystemDialogStrategy showControlSystemDialogStrategy) {
+        assert control != null;
+        assert receiver != null;
+        assert showControlSystemDialogStrategy != null;
 
-		DropTarget dropTarget = new DropTarget(control, style);
-		Transfer[] transferTypes = new Transfer[] { TextTransfer.getInstance(),
-				ProcessVariableAddressTransfer.getInstance() };
-		dropTarget.setTransfer(transferTypes);
-		dropTarget.addDropListener(new ProcessVariableAdressDropTargetAdapter(
-				receiver, showControlSystemDialogStrategy));
-	}
+        DropTarget dropTarget = new DropTarget(control, style);
+        Transfer[] transferTypes = new Transfer[] { TextTransfer.getInstance(),
+                ProcessVariableAddressTransfer.getInstance() };
+        dropTarget.setTransfer(transferTypes);
+        dropTarget.addDropListener(new ProcessVariableAdressDropTargetAdapter(
+                receiver, showControlSystemDialogStrategy));
+    }
 
-	public static IProcessVariableAddress parseProcessVariableAdress(
-			String rawName, boolean showControlSystemDialog) {
-		IProcessVariableAddress pv = null;
-		if (ProcessVariableAdressFactory.getInstance()
-				.hasValidControlSystemPrefix(rawName)) {
-			pv = ProcessVariableAdressFactory.getInstance()
-					.createProcessVariableAdress(rawName);
-		} else {
-			if (showControlSystemDialog
-					&& ProcessVariableAdressFactory.getInstance()
-							.askForControlSystem()) {
-				ChooseControlSystemPrefixDialog dialog = new ChooseControlSystemPrefixDialog(
-						PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-								.getShell());
+    public static IProcessVariableAddress parseProcessVariableAdress(
+            String rawName, boolean showControlSystemDialog) {
+        IProcessVariableAddress pv = null;
+        if (ProcessVariableAdressFactory.getInstance()
+                .hasValidControlSystemPrefix(rawName)) {
+            pv = ProcessVariableAdressFactory.getInstance()
+                    .createProcessVariableAdress(rawName);
+        } else {
+            if (showControlSystemDialog
+                    && ProcessVariableAdressFactory.getInstance()
+                            .askForControlSystem()) {
+                ChooseControlSystemPrefixDialog dialog = new ChooseControlSystemPrefixDialog(
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                                .getShell());
 
-				if (dialog.open() == Window.OK) {
-					// set preferences
+                if (dialog.open() == Window.OK) {
+                    // set preferences
 
-					boolean askAgain = !dialog.dontAskAgain();
+                    boolean askAgain = !dialog.dontAskAgain();
 
                     getCorePreferenceStore()
                             .setValue(ProcessVariableAdressFactory.PROP_ASK_FOR_CONTROL_SYSTEM,
                                       askAgain);
                     SimpleDalPluginActivator.getDefault().savePluginPreferences();
 
-					ControlSystemEnum controlSystem = dialog
-							.getSelectedControlSystem();
+                    ControlSystemEnum controlSystem = dialog
+                            .getSelectedControlSystem();
 
-					pv = ProcessVariableAdressFactory
-							.getInstance()
-							.createProcessVariableAdress(rawName, controlSystem);
-				}
-			} else {
-				pv = ProcessVariableAdressFactory.getInstance()
-						.createProcessVariableAdress(rawName);
-			}
-		}
+                    pv = ProcessVariableAdressFactory
+                            .getInstance()
+                            .createProcessVariableAdress(rawName, controlSystem);
+                }
+            } else {
+                pv = ProcessVariableAdressFactory.getInstance()
+                        .createProcessVariableAdress(rawName);
+            }
+        }
 
-		return pv;
-	}
+        return pv;
+    }
 
     public static IPreferenceStore getCorePreferenceStore() {
         return new ScopedPreferenceStore(new InstanceScope(), SimpleDalPluginActivator.getDefault()

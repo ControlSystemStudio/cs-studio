@@ -40,23 +40,23 @@ import java.util.Properties;
  */
 public class VisualDCTSystemTabModel implements SystemTabModel {
 
-	/**
-	 * Constructor for DefaultSystemTabModel.
-	 */
-	public VisualDCTSystemTabModel() {
-		super();
-	}
+    /**
+     * Constructor for DefaultSystemTabModel.
+     */
+    public VisualDCTSystemTabModel() {
+        super();
+    }
 
-	/**
-	 * @see com.cosylab.gui.components.about.SystemTabModel#getSystemProperties()
-	 */
-	public Properties getSystemProperties() {
-		return System.getProperties();
-	}
+    /**
+     * @see com.cosylab.gui.components.about.SystemTabModel#getSystemProperties()
+     */
+    public Properties getSystemProperties() {
+        return System.getProperties();
+    }
 
-	/**
-	 * @see com.cosylab.gui.components.about.AboutTabModel#aquireData()
-	 */
-	public void aquireData() {}
+    /**
+     * @see com.cosylab.gui.components.about.AboutTabModel#aquireData()
+     */
+    public void aquireData() {}
 
 }

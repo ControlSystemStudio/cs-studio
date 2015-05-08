@@ -32,33 +32,33 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
  */
 public final class ManualSchema extends AbstractControlSystemSchema {
 
-	/**
-	 * Schema identifier.
-	 */
-	public static final String ID = "schema.manual"; //$NON-NLS-1$
+    /**
+     * Schema identifier.
+     */
+    public static final String ID = "schema.manual"; //$NON-NLS-1$
 
-	@Override
-	protected String getDefaultBackgroundColor() {
-		return "#E6E6E6";
-	}
+    @Override
+    protected String getDefaultBackgroundColor() {
+        return "#E6E6E6";
+    }
 
-	@Override
-	protected String getDefaultErrorColor() {
-		return "#ff0000";
-	}
+    @Override
+    protected String getDefaultErrorColor() {
+        return "#ff0000";
+    }
 
-	@Override
-	protected String getDefaultForegroundColor() {
-		return "#0000C0";
-	}
+    @Override
+    protected String getDefaultForegroundColor() {
+        return "#0000C0";
+    }
 
-	@Override
-	protected String getDefaultRecordAlias() {
-		return null;
-	}
+    @Override
+    protected String getDefaultRecordAlias() {
+        return null;
+    }
 
-	@Override
-	protected void initializeWidget() {
-		// do nothing
-	}
+    @Override
+    protected void initializeWidget() {
+        // do nothing
+    }
 }

@@ -37,20 +37,20 @@ import com.cosylab.vdct.graphics.DrawingSurface;
  * @author Matej Sekoranja
  */
 public class RepaintCommand extends Command {
-	private DrawingSurface component;
+    private DrawingSurface component;
 /**
  * Insert the method's description here.
  * Creation date: (21.12.2000 22:43:26)
  * @param component javax.swing.JComponent
  */
 public RepaintCommand(DrawingSurface component) {
-	this.component=component;
+    this.component=component;
 }
 /**
  * Insert the method's description here.
  * Creation date: (21.12.2000 22:42:23)
  */
 public void execute() {
-	component.repaint();
+    component.repaint();
 }
 }

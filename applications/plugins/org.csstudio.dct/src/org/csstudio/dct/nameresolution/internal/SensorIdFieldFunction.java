@@ -23,45 +23,45 @@ import org.eclipse.jface.fieldassist.IContentProposal;
  */
 public final class SensorIdFieldFunction implements IFieldFunction {
 
-	private Map<String, ServiceExtension<ISensorIdService>> services;
+    private Map<String, ServiceExtension<ISensorIdService>> services;
 
-	/**
-	 * Constructor.
-	 */
-	public SensorIdFieldFunction() {
-		services = ExtensionPointUtil.lookupNamingServiceExtensions(DctActivator.EXTPOINT_SENSOR_ID_SERVICES);
-	}
+    /**
+     * Constructor.
+     */
+    public SensorIdFieldFunction() {
+        services = ExtensionPointUtil.lookupNamingServiceExtensions(DctActivator.EXTPOINT_SENSOR_ID_SERVICES);
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public String evaluate(String name, String[] parameters, IRecord record, String fieldName) throws Exception {
-		ISensorIdService service = null;
+    /**
+     *{@inheritDoc}
+     */
+    public String evaluate(String name, String[] parameters, IRecord record, String fieldName) throws Exception {
+        ISensorIdService service = null;
 
-		if (services.isEmpty()) {
-			throw new IllegalArgumentException("no service registered");
-		} else if (services.size() == 1) {
-			service = services.values().iterator().next().getService();
-		} else {
-			String id = Platform.getPreferencesService().getString(DctActivator.PLUGIN_ID, PreferenceSettings.SENSOR_ID_SERVICE_ID.name(), "",
-					null);
+        if (services.isEmpty()) {
+            throw new IllegalArgumentException("no service registered");
+        } else if (services.size() == 1) {
+            service = services.values().iterator().next().getService();
+        } else {
+            String id = Platform.getPreferencesService().getString(DctActivator.PLUGIN_ID, PreferenceSettings.SENSOR_ID_SERVICE_ID.name(), "",
+                    null);
 
-			if (!StringUtil.hasLength(id) || !services.containsKey(id)) {
-				throw new IllegalArgumentException("multiple services registered, please choose one in preferences");
-			} else {
-				service = services.get(id).getService();
-			}
-		}
+            if (!StringUtil.hasLength(id) || !services.containsKey(id)) {
+                throw new IllegalArgumentException("multiple services registered, please choose one in preferences");
+            } else {
+                service = services.get(id).getService();
+            }
+        }
 
-		assert service != null;
+        assert service != null;
 
-		return service.getSensorId(parameters[0], fieldName);
-	}
+        return service.getSensorId(parameters[0], fieldName);
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public List<IContentProposal> getParameterProposal(int parameterIndex, String[] knownParameters, IRecord record) {
-		return Collections.EMPTY_LIST;
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public List<IContentProposal> getParameterProposal(int parameterIndex, String[] knownParameters, IRecord record) {
+        return Collections.EMPTY_LIST;
+    }
 }

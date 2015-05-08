@@ -34,10 +34,10 @@ package com.cosylab.vdct.undo;
  * @author 
  */
 public class MacroValueChangeAction extends ActionObject {
-	private com.cosylab.vdct.vdb.VDBMacro macro;
-	private String oldValue;
-	private String newValue;
-	
+    private com.cosylab.vdct.vdb.VDBMacro macro;
+    private String oldValue;
+    private String newValue;
+    
 /**
  * Insert the method's description here.
  * Creation date: (3.5.2001 15:30:47)
@@ -46,9 +46,9 @@ public class MacroValueChangeAction extends ActionObject {
  * @param newValue java.lang.String
  */
 public MacroValueChangeAction(com.cosylab.vdct.vdb.VDBMacro macro, String oldValue, String newValue) {
-	this.macro=macro;
-	this.oldValue=oldValue;
-	this.newValue=newValue;
+    this.macro=macro;
+    this.oldValue=oldValue;
+    this.newValue=newValue;
 }
 /**
  * Insert the method's description here.
@@ -56,18 +56,18 @@ public MacroValueChangeAction(com.cosylab.vdct.vdb.VDBMacro macro, String oldVal
  * @return java.lang.String
  */
 public java.lang.String getDescription() {
-	return "Macro value change ["+macro.getFullName()+"](\""+oldValue+"\" to \""+newValue+"\")";
+    return "Macro value change ["+macro.getFullName()+"](\""+oldValue+"\" to \""+newValue+"\")";
 }
 /**
  * This method was created in VisualAge.
  */
 protected void redoAction() {
-	macro.setValue(newValue);
+    macro.setValue(newValue);
 }
 /**
  * This method was created in VisualAge.
  */
 protected void undoAction() {
-	macro.setValue(oldValue);
+    macro.setValue(oldValue);
 }
 }

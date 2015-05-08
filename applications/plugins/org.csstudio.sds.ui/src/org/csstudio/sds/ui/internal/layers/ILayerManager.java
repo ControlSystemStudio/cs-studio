@@ -34,19 +34,19 @@ import org.eclipse.gef.commands.CommandStack;
  * 
  */
 public interface ILayerManager {
-	/**
-	 * Returns an object which provides access to the layer model.
-	 * 
-	 * @return an object which provides access to the layer model
-	 */
-	LayerSupport getLayerSupport();
+    /**
+     * Returns an object which provides access to the layer model.
+     * 
+     * @return an object which provides access to the layer model
+     */
+    LayerSupport getLayerSupport();
 
-	/**
-	 * Returns the command stack, which should be used to execute commands that
-	 * manipulate layer information (like layer order, visibility etc.).
-	 * 
-	 * @return the command stack, which should be used to execute commands that
-	 *         manipulate layers
-	 */
-	CommandStack getCommandStack();
+    /**
+     * Returns the command stack, which should be used to execute commands that
+     * manipulate layer information (like layer order, visibility etc.).
+     * 
+     * @return the command stack, which should be used to execute commands that
+     *         manipulate layers
+     */
+    CommandStack getCommandStack();
 }

@@ -29,64 +29,64 @@ import org.osgi.framework.BundleContext;
  * The activator for the simple dal plugin.
  */
 public class SimpleDalPluginActivator extends Plugin {
-	/**
-	 * The shared instance of this _plugin class.
-	 */
-	private static SimpleDalPluginActivator _plugin;
+    /**
+     * The shared instance of this _plugin class.
+     */
+    private static SimpleDalPluginActivator _plugin;
 
-	/**
-	 * This plugin's ID.
-	 */
-	public static final String ID = "org.csstudio.platform.simpledal"; //$NON-NLS-1$
+    /**
+     * This plugin's ID.
+     */
+    public static final String ID = "org.csstudio.platform.simpledal"; //$NON-NLS-1$
 
-	/**
-	 * Standard constructor.
-	 */
-	public SimpleDalPluginActivator() {
-		_plugin = this;
-	}
+    /**
+     * Standard constructor.
+     */
+    public SimpleDalPluginActivator() {
+        _plugin = this;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void start(final BundleContext context) throws Exception {
-		super.start(context);
-		offerProcessVariableConnectionServiceFactoryAsOSGiService(context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void start(final BundleContext context) throws Exception {
+        super.start(context);
+        offerProcessVariableConnectionServiceFactoryAsOSGiService(context);
+    }
 
-	/**
-	 * Offers an instance of {@link ProcessVariableConnectionServiceFactory} to
-	 * the OSGi-Service registry.
-	 * 
-	 * Required by New-AMS-Application.
-	 * 
-	 * @param context
-	 *            The current bundle context.
-	 */
-	private void offerProcessVariableConnectionServiceFactoryAsOSGiService(
-			BundleContext context) {
-		context.registerService(ProcessVariableConnectionServiceFactory.class
-				.getName(), ProcessVariableConnectionServiceFactory
-				.getDefault(), null);
-	}
+    /**
+     * Offers an instance of {@link ProcessVariableConnectionServiceFactory} to
+     * the OSGi-Service registry.
+     * 
+     * Required by New-AMS-Application.
+     * 
+     * @param context
+     *            The current bundle context.
+     */
+    private void offerProcessVariableConnectionServiceFactoryAsOSGiService(
+            BundleContext context) {
+        context.registerService(ProcessVariableConnectionServiceFactory.class
+                .getName(), ProcessVariableConnectionServiceFactory
+                .getDefault(), null);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void stop(final BundleContext context) throws Exception {
-		super.stop(context);
-		// do nothing specific
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void stop(final BundleContext context) throws Exception {
+        super.stop(context);
+        // do nothing specific
+    }
 
-	/**
-	 * Returns the shared instance.
-	 * 
-	 * @return Return the shared instance.
-	 */
-	public static SimpleDalPluginActivator getDefault() {
-		return _plugin;
-	}
+    /**
+     * Returns the shared instance.
+     * 
+     * @return Return the shared instance.
+     */
+    public static SimpleDalPluginActivator getDefault() {
+        return _plugin;
+    }
 
 }

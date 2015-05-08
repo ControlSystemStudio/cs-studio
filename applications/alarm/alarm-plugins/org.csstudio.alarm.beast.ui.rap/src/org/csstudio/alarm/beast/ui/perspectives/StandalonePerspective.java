@@ -38,11 +38,11 @@ public class StandalonePerspective implements IPerspectiveFactory
         //      |
         //      +-------------
         //      | bottom
-    	
-    	final String editor = layout.getEditorArea();
+        
+        final String editor = layout.getEditorArea();
         layout.setFixed(true);
-    	layout.setEditorAreaVisible(false);
-    	
+        layout.setEditorAreaVisible(false);
+        
         final IFolderLayout left = layout.createFolder("left",
                         IPageLayout.LEFT, 0.25f, editor);
         final IFolderLayout top = layout.createFolder("top",
@@ -54,8 +54,8 @@ public class StandalonePerspective implements IPerspectiveFactory
         // Stuff for 'left'
         if (isViewAvailable(ID_ALARM_PANEL))
         {
-        	final IFolderLayout topleft = layout.createFolder("topleft", IPageLayout.TOP, 0.4f, "left");
-        	topleft.addView(ID_ALARM_PANEL);
+            final IFolderLayout topleft = layout.createFolder("topleft", IPageLayout.TOP, 0.4f, "left");
+            topleft.addView(ID_ALARM_PANEL);
         }
         left.addView(ID_ALARM_TREE);
         left.addPlaceholder(IPageLayout.ID_PROP_SHEET);
@@ -68,8 +68,8 @@ public class StandalonePerspective implements IPerspectiveFactory
     }
 
     /** Check if view is available, i.e. suitable plugin was included in product */
-	private boolean isViewAvailable(final String view)
+    private boolean isViewAvailable(final String view)
     {
-		return PlatformUI.getWorkbench().getViewRegistry().find(view) != null;
+        return PlatformUI.getWorkbench().getViewRegistry().find(view) != null;
     }
 }

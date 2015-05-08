@@ -29,7 +29,7 @@ import org.epics.vtype.ValueUtil;
 @SuppressWarnings("nls")
 public class VTypeHelper
 {
-	/** Read number from a {@link VType}
+    /** Read number from a {@link VType}
      *  @param value Value
      *  @return double or NaN
      */
@@ -82,19 +82,19 @@ public class VTypeHelper
 
 
     /** Decode a {@link VType}'s time stamp
-	 *  @param value Value to decode
-	 *  @return {@link Timestamp}
-	 */
-	final public static Timestamp getTimestamp(final VType value)
-	{
-		if (value instanceof Time)
-		{
-			final Time time = (Time) value;
-		    if (time.isTimeValid())
-		        return time.getTimestamp();
-		}
-	    return Timestamp.now();
-	}
+     *  @param value Value to decode
+     *  @return {@link Timestamp}
+     */
+    final public static Timestamp getTimestamp(final VType value)
+    {
+        if (value instanceof Time)
+        {
+            final Time time = (Time) value;
+            if (time.isTimeValid())
+                return time.getTimestamp();
+        }
+        return Timestamp.now();
+    }
 
     /** @return Copy of given value with timestamp set to 'now',
      *          or <code>null</code> if value is not handled
@@ -133,71 +133,71 @@ public class VTypeHelper
         return null;
     }
 
-	/** @param buf Buffer where value's time stamp is added
-	 *  @param value {@link VType}
-	 */
-	final public static void addTimestamp(final StringBuilder buf, final VType value)
-	{
-		final Timestamp stamp = getTimestamp(value);
-		buf.append(TimestampHelper.format(stamp));
-	}
+    /** @param buf Buffer where value's time stamp is added
+     *  @param value {@link VType}
+     */
+    final public static void addTimestamp(final StringBuilder buf, final VType value)
+    {
+        final Timestamp stamp = getTimestamp(value);
+        buf.append(TimestampHelper.format(stamp));
+    }
 
-	/** @param value {@link VType} value
-	 *  @return {@link AlarmSeverity}
-	 */
-	final public static AlarmSeverity getSeverity(final VType value)
-	{
-		final Alarm alarm = ValueUtil.alarmOf(value);
-		if (alarm == null)
-			return AlarmSeverity.NONE;
-		return alarm.getAlarmSeverity();
-	}
+    /** @param value {@link VType} value
+     *  @return {@link AlarmSeverity}
+     */
+    final public static AlarmSeverity getSeverity(final VType value)
+    {
+        final Alarm alarm = ValueUtil.alarmOf(value);
+        if (alarm == null)
+            return AlarmSeverity.NONE;
+        return alarm.getAlarmSeverity();
+    }
 
-	/** @param value {@link VType} value
-	 *  @return Alarm message
-	 */
-	final public static String getMessage(final VType value)
-	{
-		final Alarm alarm = ValueUtil.alarmOf(value);
-		if (alarm == null)
-			return "";
-		return alarm.getAlarmName();
-	}
+    /** @param value {@link VType} value
+     *  @return Alarm message
+     */
+    final public static String getMessage(final VType value)
+    {
+        final Alarm alarm = ValueUtil.alarmOf(value);
+        if (alarm == null)
+            return "";
+        return alarm.getAlarmName();
+    }
 
-	/** @param buf Buffer where value's alarm info is added (unless OK)
-	 *  @param value {@link VType}
-	 */
-	final public static void addAlarm(final StringBuilder buf, final VType value)
-	{
-		final Alarm alarm = ValueUtil.alarmOf(value);
-		if (alarm == null  ||  alarm.getAlarmSeverity() == AlarmSeverity.NONE)
-			return;
-		buf.append(alarm.getAlarmSeverity().toString())
-       	   .append("/")
-       	   .append(alarm.getAlarmName());
-	}
+    /** @param buf Buffer where value's alarm info is added (unless OK)
+     *  @param value {@link VType}
+     */
+    final public static void addAlarm(final StringBuilder buf, final VType value)
+    {
+        final Alarm alarm = ValueUtil.alarmOf(value);
+        if (alarm == null  ||  alarm.getAlarmSeverity() == AlarmSeverity.NONE)
+            return;
+        buf.append(alarm.getAlarmSeverity().toString())
+              .append("/")
+              .append(alarm.getAlarmName());
+    }
 
-	/** Format value as string
+    /** Format value as string
      *  @param value Value
      *  @param format Format to use
      *  @return String representation
      */
     final public static String toString(final VType value, final VTypeFormat format)
     {
-    	if (value == null)
-    		return "null";
-    	final StringBuilder buf = new StringBuilder();
-    	addTimestamp(buf, value);
-    	buf.append("\t");
-    	format.format(value, buf);
-    	if (value instanceof Display)
-    	{
-        	final Display display = (Display) value;
+        if (value == null)
+            return "null";
+        final StringBuilder buf = new StringBuilder();
+        addTimestamp(buf, value);
+        buf.append("\t");
+        format.format(value, buf);
+        if (value instanceof Display)
+        {
+            final Display display = (Display) value;
             if (display != null  &&  display.getUnits() != null)
                 buf.append(" ").append(display.getUnits());
-    	}
-    	buf.append("\t");
-    	addAlarm(buf, value);
+        }
+        buf.append("\t");
+        addAlarm(buf, value);
         return buf.toString();
     }
 

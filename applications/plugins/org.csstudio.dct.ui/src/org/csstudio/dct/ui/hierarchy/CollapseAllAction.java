@@ -12,17 +12,17 @@ import org.eclipse.ui.IViewPart;
  * 
  */
 public final class CollapseAllAction implements IViewActionDelegate {
-	private HierarchyView view;
-	
-	public void init(IViewPart view) {
-		this.view = (HierarchyView) view;
-	}
+    private HierarchyView view;
+    
+    public void init(IViewPart view) {
+        this.view = (HierarchyView) view;
+    }
 
-	public void run(IAction action) {
-		view.getTreeViewer().collapseAll();
-	}
+    public void run(IAction action) {
+        view.getTreeViewer().collapseAll();
+    }
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		
-	}
+    public void selectionChanged(IAction action, ISelection selection) {
+        
+    }
 }

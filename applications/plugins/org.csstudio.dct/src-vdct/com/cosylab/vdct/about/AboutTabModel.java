@@ -38,5 +38,5 @@ package com.cosylab.vdct.about;
  */
 public interface AboutTabModel {
 
-	public void aquireData();
+    public void aquireData();
 }

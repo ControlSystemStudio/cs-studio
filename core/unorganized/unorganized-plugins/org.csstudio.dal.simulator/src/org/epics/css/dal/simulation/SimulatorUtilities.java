@@ -51,175 +51,175 @@ import com.cosylab.naming.URIName;
  */
 public final class SimulatorUtilities
 {
-	public static final String CONNECTION_DELAY = "connectionDelay";
-	
-	private static HashMap<String, Object> configurations;
-	
-	static {
-		configurations  = new HashMap<String, Object>();
-		configurations.put(CONNECTION_DELAY, new Long(0));
-	}
-	
-	private SimulatorUtilities()
-	{
-		super();
-	}
+    public static final String CONNECTION_DELAY = "connectionDelay";
+    
+    private static HashMap<String, Object> configurations;
+    
+    static {
+        configurations  = new HashMap<String, Object>();
+        configurations.put(CONNECTION_DELAY, new Long(0));
+    }
+    
+    private SimulatorUtilities()
+    {
+        super();
+    }
 
-	/**
-	 * Loads to properties configuration, which enables EPICS plug.
-	 * @param p configuration
-	 */
-	public static void configureSimulatorPlug(Properties p)
-	{
-		Plugs.configureSimulatorPlug(p);
-	}
+    /**
+     * Loads to properties configuration, which enables EPICS plug.
+     * @param p configuration
+     */
+    public static void configureSimulatorPlug(Properties p)
+    {
+        Plugs.configureSimulatorPlug(p);
+    }
 
-	@SuppressWarnings("unchecked")
-	public static Class<?extends PropertyProxy<?,?>> getPropertyProxyImplementationClass(
-	    Class<?extends SimpleProperty<?>> propertyType, Class<?extends SimpleProperty<?>> implType)
-	{
-		
-		if (propertyType!=null) {
-			String n= propertyType.getName();
-			n= n.substring(n.lastIndexOf('.')+1);
-			n= "org.epics.css.dal.simulation."+n+"ProxyImpl";
-			
-			try {
-				return (Class<?extends PropertyProxy<?,?>>)Class.forName(n);
-			} catch (ClassNotFoundException e) {
-				// noop
-			}
-		}
-		
-		if (implType!=null) {
-			String n= implType.getName();
-			n= n.substring(n.lastIndexOf('.')+1,n.length()-4);
-			n= "org.epics.css.dal.simulation."+n+"ProxyImpl";
-			
-			try {
-				return (Class<?extends PropertyProxy<?,?>>)Class.forName(n);
-			} catch (ClassNotFoundException e) {
-				// noop
-			}
-		}
+    @SuppressWarnings("unchecked")
+    public static Class<?extends PropertyProxy<?,?>> getPropertyProxyImplementationClass(
+        Class<?extends SimpleProperty<?>> propertyType, Class<?extends SimpleProperty<?>> implType)
+    {
+        
+        if (propertyType!=null) {
+            String n= propertyType.getName();
+            n= n.substring(n.lastIndexOf('.')+1);
+            n= "org.epics.css.dal.simulation."+n+"ProxyImpl";
+            
+            try {
+                return (Class<?extends PropertyProxy<?,?>>)Class.forName(n);
+            } catch (ClassNotFoundException e) {
+                // noop
+            }
+        }
+        
+        if (implType!=null) {
+            String n= implType.getName();
+            n= n.substring(n.lastIndexOf('.')+1,n.length()-4);
+            n= "org.epics.css.dal.simulation."+n+"ProxyImpl";
+            
+            try {
+                return (Class<?extends PropertyProxy<?,?>>)Class.forName(n);
+            } catch (ClassNotFoundException e) {
+                // noop
+            }
+        }
 
-		return DoublePropertyProxyImpl.class;
-	}
+        return DoublePropertyProxyImpl.class;
+    }
 
-	@SuppressWarnings("unchecked")
-	public static Class<?extends DeviceProxy<?>> getDeviceProxyImplementationClass(
-	    Class<?extends AbstractDevice> deviceType)
-	{
-		if (PowerSupply.class.isAssignableFrom(deviceType)) return (Class<? extends DeviceProxy<?>>) PSDeviceProxy.class;
-		return (Class<? extends DeviceProxy<?>>) DeviceProxyImpl.class;
-	}
+    @SuppressWarnings("unchecked")
+    public static Class<?extends DeviceProxy<?>> getDeviceProxyImplementationClass(
+        Class<?extends AbstractDevice> deviceType)
+    {
+        if (PowerSupply.class.isAssignableFrom(deviceType)) return (Class<? extends DeviceProxy<?>>) PSDeviceProxy.class;
+        return (Class<? extends DeviceProxy<?>>) DeviceProxyImpl.class;
+    }
 
-	public static Object getCharacteristic(String characteristicName,
-	    PropertyProxy<?,?> ppi)
-	{
-		DirContext ctx = SimulatorPlug.getInstance().getDefaultDirectory();
+    public static Object getCharacteristic(String characteristicName,
+        PropertyProxy<?,?> ppi)
+    {
+        DirContext ctx = SimulatorPlug.getInstance().getDefaultDirectory();
 
-		try {
-			URIName uri = new URIName(null, SimulatorPlug.DEFAULT_AUTHORITY,
-				    ppi.getUniqueName(), null);
-			Attributes attr = ctx.getAttributes(uri);
-			Object characteristic = null;
+        try {
+            URIName uri = new URIName(null, SimulatorPlug.DEFAULT_AUTHORITY,
+                    ppi.getUniqueName(), null);
+            Attributes attr = ctx.getAttributes(uri);
+            Object characteristic = null;
 
-			if (attr instanceof org.epics.css.dal.directory.Attributes) {
-				org.epics.css.dal.directory.Attributes at = (org.epics.css.dal.directory.Attributes)attr;
-				characteristic = at.getAttributeValue(characteristicName);
-			} else if (attr != null) {
-				characteristic = attr.get(characteristicName).get();
-			}
+            if (attr instanceof org.epics.css.dal.directory.Attributes) {
+                org.epics.css.dal.directory.Attributes at = (org.epics.css.dal.directory.Attributes)attr;
+                characteristic = at.getAttributeValue(characteristicName);
+            } else if (attr != null) {
+                characteristic = attr.get(characteristicName).get();
+            }
 
-			if (characteristic == null) {
-				uri = new URIName(null, SimulatorPlug.DEFAULT_AUTHORITY,
-					    ppi.getClass().getSimpleName(), null);
-				attr = ctx.getAttributes(uri);
+            if (characteristic == null) {
+                uri = new URIName(null, SimulatorPlug.DEFAULT_AUTHORITY,
+                        ppi.getClass().getSimpleName(), null);
+                attr = ctx.getAttributes(uri);
 
-				if (attr instanceof org.epics.css.dal.directory.Attributes) {
-					org.epics.css.dal.directory.Attributes at = (org.epics.css.dal.directory.Attributes)attr;
-					characteristic = at.getAttributeValue(characteristicName);
-				} else if (attr != null) {
-					characteristic = attr.get(characteristicName).get();
-				}
-			}
+                if (attr instanceof org.epics.css.dal.directory.Attributes) {
+                    org.epics.css.dal.directory.Attributes at = (org.epics.css.dal.directory.Attributes)attr;
+                    characteristic = at.getAttributeValue(characteristicName);
+                } else if (attr != null) {
+                    characteristic = attr.get(characteristicName).get();
+                }
+            }
 
-			return characteristic;
-		} catch (NamingException e) {
-			throw new RuntimeException("Cannot instantiate URIName.", e);
-		}
-	}
+            return characteristic;
+        } catch (NamingException e) {
+            throw new RuntimeException("Cannot instantiate URIName.", e);
+        }
+    }
 
-	public static Object putCharacteristic(String characteristicName,
-		    String propertyUniqueName, Object value)
-	{
-		DirContext ctx = SimulatorPlug.getInstance().getDefaultDirectory();
+    public static Object putCharacteristic(String characteristicName,
+            String propertyUniqueName, Object value)
+    {
+        DirContext ctx = SimulatorPlug.getInstance().getDefaultDirectory();
 
-		try {
-			URIName uri = new URIName(null, SimulatorPlug.DEFAULT_AUTHORITY,
-				    propertyUniqueName, null);
-			Attributes attr = ctx.getAttributes(uri);
-			
-			if (attr==null) {
-				attr=new org.epics.css.dal.directory.Attributes();
-				ctx.bind(uri, null, attr);
-			}
-			
-			Object characteristic = null;
+        try {
+            URIName uri = new URIName(null, SimulatorPlug.DEFAULT_AUTHORITY,
+                    propertyUniqueName, null);
+            Attributes attr = ctx.getAttributes(uri);
+            
+            if (attr==null) {
+                attr=new org.epics.css.dal.directory.Attributes();
+                ctx.bind(uri, null, attr);
+            }
+            
+            Object characteristic = null;
 
-			if (attr instanceof org.epics.css.dal.directory.Attributes) {
-				org.epics.css.dal.directory.Attributes at = (org.epics.css.dal.directory.Attributes)attr;
-				characteristic = at.putAttributeValue(characteristicName, value);
-			} else if (attr != null) {
-				characteristic = attr.put(characteristicName, value);
-			}
+            if (attr instanceof org.epics.css.dal.directory.Attributes) {
+                org.epics.css.dal.directory.Attributes at = (org.epics.css.dal.directory.Attributes)attr;
+                characteristic = at.putAttributeValue(characteristicName, value);
+            } else if (attr != null) {
+                characteristic = attr.put(characteristicName, value);
+            }
 
 
-			return characteristic;
-		} catch (NamingException e) {
-			throw new RuntimeException("Cannot instantiate URIName.", e);
-		}
-	}
+            return characteristic;
+        } catch (NamingException e) {
+            throw new RuntimeException("Cannot instantiate URIName.", e);
+        }
+    }
 
-	public static String[] getCharacteristicNames(PropertyProxy<?,?> ppi)
-	{
-		DirContext ctx = SimulatorPlug.getInstance().getDefaultDirectory();
+    public static String[] getCharacteristicNames(PropertyProxy<?,?> ppi)
+    {
+        DirContext ctx = SimulatorPlug.getInstance().getDefaultDirectory();
 
-		try {
-			URIName uri = new URIName(null, SimulatorPlug.DEFAULT_AUTHORITY,
-				    ppi.getUniqueName(), null);
-			Attributes attr = ctx.getAttributes(uri);
+        try {
+            URIName uri = new URIName(null, SimulatorPlug.DEFAULT_AUTHORITY,
+                    ppi.getUniqueName(), null);
+            Attributes attr = ctx.getAttributes(uri);
 
-			if (attr == null) {
-				uri = new URIName(null, SimulatorPlug.DEFAULT_AUTHORITY,
-					    ppi.getClass().getSimpleName(), null);
-				attr = ctx.getAttributes(uri);
-			}
+            if (attr == null) {
+                uri = new URIName(null, SimulatorPlug.DEFAULT_AUTHORITY,
+                        ppi.getClass().getSimpleName(), null);
+                attr = ctx.getAttributes(uri);
+            }
 
-			NamingEnumeration<String> en = attr.getIDs();
-			ArrayList<String> list = new ArrayList<String>();
+            NamingEnumeration<String> en = attr.getIDs();
+            ArrayList<String> list = new ArrayList<String>();
 
-			while (en.hasMore()) {
-				list.add(en.next());
-			}
+            while (en.hasMore()) {
+                list.add(en.next());
+            }
 
-			String[] names = new String[list.size()];
+            String[] names = new String[list.size()];
 
-			return list.toArray(names);
-		} catch (NamingException e) {
-			throw new RuntimeException("Cannot instantiate URIName.", e);
-		}
-	}
-	
-	public static Object getConfiguration(String configName) {
-		return configurations.get(configName);
-	}
-	
-	public static void putConfiguration(String configName, Object config) {
-		configurations.put(configName, config);
-	}
-	
+            return list.toArray(names);
+        } catch (NamingException e) {
+            throw new RuntimeException("Cannot instantiate URIName.", e);
+        }
+    }
+    
+    public static Object getConfiguration(String configName) {
+        return configurations.get(configName);
+    }
+    
+    public static void putConfiguration(String configName, Object config) {
+        configurations.put(configName, config);
+    }
+    
 }
 
 /* __oOo__ */

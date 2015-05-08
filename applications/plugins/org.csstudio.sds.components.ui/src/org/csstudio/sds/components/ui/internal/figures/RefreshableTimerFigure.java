@@ -34,32 +34,32 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * 
  */
 public final class RefreshableTimerFigure extends Panel {
-	
-	private double percentage;
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void paintFigure(final Graphics graphics) {
-		Rectangle rectangle = this.getBounds().getCopy().crop(new Insets(2));
-		graphics.setBackgroundColor(ColorConstants.white);
-		graphics.fillOval(rectangle);
-		graphics.setForegroundColor(ColorConstants.black);
-		graphics.drawOval(rectangle);
-		int x = rectangle.x + rectangle.width/2;
-		int y = rectangle.y + rectangle.height/2;
-		graphics.setBackgroundColor(ColorConstants.red);
-		Double d = (double) percentage*360;
-		graphics.fillArc(rectangle.x, rectangle.y, rectangle.width, rectangle.height, 30, d.intValue());
-		graphics.drawLine(x, rectangle.y, x, rectangle.y+rectangle.height/6);
-		graphics.drawLine(x, rectangle.y+rectangle.height, x, rectangle.y+rectangle.height-rectangle.height/6);
-		graphics.drawLine(rectangle.x, y, rectangle.x+rectangle.width/6, y);
-		graphics.drawLine(rectangle.x+rectangle.width, y, rectangle.x+rectangle.width-rectangle.width/6, y);
-	}
-	
-	public void setPercentage(double percentage) {
-		this.percentage = percentage;
-		repaint();
-	}
+    
+    private double percentage;
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void paintFigure(final Graphics graphics) {
+        Rectangle rectangle = this.getBounds().getCopy().crop(new Insets(2));
+        graphics.setBackgroundColor(ColorConstants.white);
+        graphics.fillOval(rectangle);
+        graphics.setForegroundColor(ColorConstants.black);
+        graphics.drawOval(rectangle);
+        int x = rectangle.x + rectangle.width/2;
+        int y = rectangle.y + rectangle.height/2;
+        graphics.setBackgroundColor(ColorConstants.red);
+        Double d = (double) percentage*360;
+        graphics.fillArc(rectangle.x, rectangle.y, rectangle.width, rectangle.height, 30, d.intValue());
+        graphics.drawLine(x, rectangle.y, x, rectangle.y+rectangle.height/6);
+        graphics.drawLine(x, rectangle.y+rectangle.height, x, rectangle.y+rectangle.height-rectangle.height/6);
+        graphics.drawLine(rectangle.x, y, rectangle.x+rectangle.width/6, y);
+        graphics.drawLine(rectangle.x+rectangle.width, y, rectangle.x+rectangle.width-rectangle.width/6, y);
+    }
+    
+    public void setPercentage(double percentage) {
+        this.percentage = percentage;
+        repaint();
+    }
 }

@@ -39,143 +39,143 @@ import org.junit.Test;
  * 
  */
 public final class DisplayModelTest {
-	/**
-	 * Listener to be aware of model events.
-	 */
-	private PropertyChangeListener _listener;
+    /**
+     * Listener to be aware of model events.
+     */
+    private PropertyChangeListener _listener;
 
-	/**
-	 * The last tracked event.
-	 */
-	private PropertyChangeEvent _lastEvent;
+    /**
+     * The last tracked event.
+     */
+    private PropertyChangeEvent _lastEvent;
 
-	/**
-	 * Widget model for testing.
-	 */
-	private AbstractWidgetModel _widgetModel1;
+    /**
+     * Widget model for testing.
+     */
+    private AbstractWidgetModel _widgetModel1;
 
-	/**
-	 * Widget model for testing.
-	 */
-	private AbstractWidgetModel _widgetModel2;
+    /**
+     * Widget model for testing.
+     */
+    private AbstractWidgetModel _widgetModel2;
 
-	/**
-	 * Widget model for testing.
-	 */
-	private AbstractWidgetModel _widgetModel3;
+    /**
+     * Widget model for testing.
+     */
+    private AbstractWidgetModel _widgetModel3;
 
-	/**
-	 * Display model instance that will be tested.
-	 */
-	private DisplayModel _testModel;
+    /**
+     * Display model instance that will be tested.
+     */
+    private DisplayModel _testModel;
 
-	/**
-	 * Set up the test case.
-	 * 
-	 * @throws java.lang.Exception
-	 *             If an execption occurs during setup.
-	 */
-	@Before
-	public void setUp() throws Exception {
-		_listener = new PropertyChangeListener() {
-			public void propertyChange(final PropertyChangeEvent evt) {
-				_lastEvent = evt;
-			}
-		};
+    /**
+     * Set up the test case.
+     * 
+     * @throws java.lang.Exception
+     *             If an execption occurs during setup.
+     */
+    @Before
+    public void setUp() throws Exception {
+        _listener = new PropertyChangeListener() {
+            public void propertyChange(final PropertyChangeEvent evt) {
+                _lastEvent = evt;
+            }
+        };
 
-		_widgetModel1 = WidgetModelTestHelper.createWidgetModel();
-		_widgetModel2 = WidgetModelTestHelper.createWidgetModel();
-		_widgetModel3 = WidgetModelTestHelper.createWidgetModel();
+        _widgetModel1 = WidgetModelTestHelper.createWidgetModel();
+        _widgetModel2 = WidgetModelTestHelper.createWidgetModel();
+        _widgetModel3 = WidgetModelTestHelper.createWidgetModel();
 
-		_testModel = new DisplayModel();
+        _testModel = new DisplayModel();
 
-		_testModel.addWidget(_widgetModel1);
-		_testModel.addWidget(_widgetModel2);
-		_testModel.addWidget(_widgetModel3);
+        _testModel.addWidget(_widgetModel1);
+        _testModel.addWidget(_widgetModel2);
+        _testModel.addWidget(_widgetModel3);
 
-		_testModel.addPropertyChangeListener(_listener);
-	}
+        _testModel.addPropertyChangeListener(_listener);
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.model.DisplayModel#getWidgets()}.
-	 */
-	@Test
-	public void testGetModelElements() {
-		List<AbstractWidgetModel> models = _testModel.getWidgets();
+    /**
+     * Test method for
+     * {@link org.csstudio.sds.model.DisplayModel#getWidgets()}.
+     */
+    @Test
+    public void testGetModelElements() {
+        List<AbstractWidgetModel> models = _testModel.getWidgets();
 
-		assertEquals(3, models.size());
-		assertEquals(_widgetModel1, models.get(0));
-		assertEquals(_widgetModel2, models.get(1));
-		assertEquals(_widgetModel3, models.get(2));
-	}
+        assertEquals(3, models.size());
+        assertEquals(_widgetModel1, models.get(0));
+        assertEquals(_widgetModel2, models.get(1));
+        assertEquals(_widgetModel3, models.get(2));
+    }
 
-	/**
-	 * Test method for the display model event handling.
-	 */
-	@Test
-	public void testEventing() {
-		_testModel.removeWidget(_widgetModel3);
-		assertEquals(_testModel, _lastEvent.getSource());
-		assertEquals(DisplayModel.PROP_CHILD_REMOVED, _lastEvent
-				.getPropertyName());
-		assertEquals(null, _lastEvent.getNewValue());
-		assertEquals(_widgetModel3, _lastEvent.getOldValue());
+    /**
+     * Test method for the display model event handling.
+     */
+    @Test
+    public void testEventing() {
+        _testModel.removeWidget(_widgetModel3);
+        assertEquals(_testModel, _lastEvent.getSource());
+        assertEquals(DisplayModel.PROP_CHILD_REMOVED, _lastEvent
+                .getPropertyName());
+        assertEquals(null, _lastEvent.getNewValue());
+        assertEquals(_widgetModel3, _lastEvent.getOldValue());
 
-		List<AbstractWidgetModel> models = _testModel.getWidgets();
+        List<AbstractWidgetModel> models = _testModel.getWidgets();
 
-		assertEquals(2, models.size());
-		assertEquals(_widgetModel1, models.get(0));
-		assertEquals(_widgetModel2, models.get(1));
+        assertEquals(2, models.size());
+        assertEquals(_widgetModel1, models.get(0));
+        assertEquals(_widgetModel2, models.get(1));
 
-		_testModel.addWidget(_widgetModel3);
-		assertEquals(_testModel, _lastEvent.getSource());
-		assertEquals(DisplayModel.PROP_CHILD_ADDED, _lastEvent
-				.getPropertyName());
-		assertEquals(null, _lastEvent.getOldValue());
-		assertEquals(_widgetModel3, _lastEvent.getNewValue());
+        _testModel.addWidget(_widgetModel3);
+        assertEquals(_testModel, _lastEvent.getSource());
+        assertEquals(DisplayModel.PROP_CHILD_ADDED, _lastEvent
+                .getPropertyName());
+        assertEquals(null, _lastEvent.getOldValue());
+        assertEquals(_widgetModel3, _lastEvent.getNewValue());
 
-		models = _testModel.getWidgets();
+        models = _testModel.getWidgets();
 
-		assertEquals(3, models.size());
-		assertEquals(_widgetModel1, models.get(0));
-		assertEquals(_widgetModel2, models.get(1));
-		assertEquals(_widgetModel3, models.get(2));
+        assertEquals(3, models.size());
+        assertEquals(_widgetModel1, models.get(0));
+        assertEquals(_widgetModel2, models.get(1));
+        assertEquals(_widgetModel3, models.get(2));
 
-		// now remove the listener
-		_testModel.removePropertyChangeListener(_listener);
+        // now remove the listener
+        _testModel.removePropertyChangeListener(_listener);
 
-		// the event should remain the old one since there is no listener!
-		_testModel.removeWidget(_widgetModel3);
-		assertEquals(_testModel, _lastEvent.getSource());
-		assertEquals(DisplayModel.PROP_CHILD_ADDED, _lastEvent
-				.getPropertyName());
-		assertEquals(null, _lastEvent.getOldValue());
-		assertEquals(_widgetModel3, _lastEvent.getNewValue());
-		
-		// restore the state
-		_testModel.addWidget(_widgetModel3);
-		_testModel.addPropertyChangeListener(_listener);
-	}
-	
-	/**
-	 * Test adding elements with indices).
-	 */
-	@Test
-	public void testAddElement() {
-		int elementCount = _testModel.getWidgets().size();
-		
-		AbstractWidgetModel newFirstModel = WidgetModelTestHelper.createWidgetModel();
-		int index = 0;
-		_testModel.addWidget(index, newFirstModel);
-		assertEquals(elementCount+1, _testModel.getWidgets().size());
-		assertEquals(newFirstModel, _testModel.getWidgets().get(index));
-		
-		AbstractWidgetModel newLastModel = WidgetModelTestHelper.createWidgetModel();
-		index = _testModel.getWidgets().size();
-		_testModel.addWidget(index, newLastModel);
-		assertEquals(elementCount+2, _testModel.getWidgets().size());
-		assertEquals(newLastModel, _testModel.getWidgets().get(index));
-	}
+        // the event should remain the old one since there is no listener!
+        _testModel.removeWidget(_widgetModel3);
+        assertEquals(_testModel, _lastEvent.getSource());
+        assertEquals(DisplayModel.PROP_CHILD_ADDED, _lastEvent
+                .getPropertyName());
+        assertEquals(null, _lastEvent.getOldValue());
+        assertEquals(_widgetModel3, _lastEvent.getNewValue());
+        
+        // restore the state
+        _testModel.addWidget(_widgetModel3);
+        _testModel.addPropertyChangeListener(_listener);
+    }
+    
+    /**
+     * Test adding elements with indices).
+     */
+    @Test
+    public void testAddElement() {
+        int elementCount = _testModel.getWidgets().size();
+        
+        AbstractWidgetModel newFirstModel = WidgetModelTestHelper.createWidgetModel();
+        int index = 0;
+        _testModel.addWidget(index, newFirstModel);
+        assertEquals(elementCount+1, _testModel.getWidgets().size());
+        assertEquals(newFirstModel, _testModel.getWidgets().get(index));
+        
+        AbstractWidgetModel newLastModel = WidgetModelTestHelper.createWidgetModel();
+        index = _testModel.getWidgets().size();
+        _testModel.addWidget(index, newLastModel);
+        assertEquals(elementCount+2, _testModel.getWidgets().size());
+        assertEquals(newLastModel, _testModel.getWidgets().get(index));
+    }
 
 }

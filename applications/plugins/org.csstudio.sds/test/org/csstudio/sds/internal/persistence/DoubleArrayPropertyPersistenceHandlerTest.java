@@ -40,92 +40,92 @@ import org.junit.Test;
  * 
  */
 public final class DoubleArrayPropertyPersistenceHandlerTest {
-	/**
-	 * Test for the writing behaviour.
-	 */
-	@Test
-	public void testWriteProperty() {
-		DoubleArrayPropertyPersistenceHandler handler = new DoubleArrayPropertyPersistenceHandler();
-		WidgetProperty property = new DoubleArrayProperty(
-				"description", WidgetPropertyCategory.BEHAVIOR, new double[] {});//$NON-NLS-1$
-		property.setDynamicsDescriptor(new DynamicsDescriptor());
-		property.setPropertyValue(new double[] { 1.0, 2.0, 3.0, 4.0 });
+    /**
+     * Test for the writing behaviour.
+     */
+    @Test
+    public void testWriteProperty() {
+        DoubleArrayPropertyPersistenceHandler handler = new DoubleArrayPropertyPersistenceHandler();
+        WidgetProperty property = new DoubleArrayProperty(
+                "description", WidgetPropertyCategory.BEHAVIOR, new double[] {});//$NON-NLS-1$
+        property.setDynamicsDescriptor(new DynamicsDescriptor());
+        property.setPropertyValue(new double[] { 1.0, 2.0, 3.0, 4.0 });
 
-		Element valueTag = new Element("value"); //$NON-NLS-1$
+        Element valueTag = new Element("value"); //$NON-NLS-1$
 
-		handler.writeProperty(valueTag, property.getPropertyValue());
+        handler.writeProperty(valueTag, property.getPropertyValue());
 
-		assertEquals(1, valueTag.getChildren().size());
+        assertEquals(1, valueTag.getChildren().size());
 
-		Element doubleArrayElement = (Element) valueTag.getChildren().get(0);
-		assertEquals("doubleArray", doubleArrayElement.getName()); //$NON-NLS-1$
+        Element doubleArrayElement = (Element) valueTag.getChildren().get(0);
+        assertEquals("doubleArray", doubleArrayElement.getName()); //$NON-NLS-1$
 
-		assertEquals(4, doubleArrayElement.getChildren().size());
+        assertEquals(4, doubleArrayElement.getChildren().size());
 
-		Element doubleTag = (Element) doubleArrayElement.getChildren().get(0);
-		assertEquals("double", doubleTag.getName()); //$NON-NLS-1$
-		assertNotNull(doubleTag);
-		assertEquals(1, doubleTag.getAttributes().size());
-		String valueString = doubleTag.getAttributeValue("value"); //$NON-NLS-1$
-		assertEquals("1.0", valueString); //$NON-NLS-1$
+        Element doubleTag = (Element) doubleArrayElement.getChildren().get(0);
+        assertEquals("double", doubleTag.getName()); //$NON-NLS-1$
+        assertNotNull(doubleTag);
+        assertEquals(1, doubleTag.getAttributes().size());
+        String valueString = doubleTag.getAttributeValue("value"); //$NON-NLS-1$
+        assertEquals("1.0", valueString); //$NON-NLS-1$
 
-		doubleTag = (Element) doubleArrayElement.getChildren().get(1);
-		assertEquals("double", doubleTag.getName()); //$NON-NLS-1$
-		assertNotNull(doubleTag);
-		assertEquals(1, doubleTag.getAttributes().size());
-		valueString = doubleTag.getAttributeValue("value"); //$NON-NLS-1$
-		assertEquals("2.0", valueString); //$NON-NLS-1$
+        doubleTag = (Element) doubleArrayElement.getChildren().get(1);
+        assertEquals("double", doubleTag.getName()); //$NON-NLS-1$
+        assertNotNull(doubleTag);
+        assertEquals(1, doubleTag.getAttributes().size());
+        valueString = doubleTag.getAttributeValue("value"); //$NON-NLS-1$
+        assertEquals("2.0", valueString); //$NON-NLS-1$
 
-		doubleTag = (Element) doubleArrayElement.getChildren().get(2);
-		assertEquals("double", doubleTag.getName()); //$NON-NLS-1$
-		assertNotNull(doubleTag);
-		assertEquals(1, doubleTag.getAttributes().size());
-		valueString = doubleTag.getAttributeValue("value"); //$NON-NLS-1$
-		assertEquals("3.0", valueString); //$NON-NLS-1$
+        doubleTag = (Element) doubleArrayElement.getChildren().get(2);
+        assertEquals("double", doubleTag.getName()); //$NON-NLS-1$
+        assertNotNull(doubleTag);
+        assertEquals(1, doubleTag.getAttributes().size());
+        valueString = doubleTag.getAttributeValue("value"); //$NON-NLS-1$
+        assertEquals("3.0", valueString); //$NON-NLS-1$
 
-		doubleTag = (Element) doubleArrayElement.getChildren().get(3);
-		assertEquals("double", doubleTag.getName()); //$NON-NLS-1$
-		assertNotNull(doubleTag);
-		assertEquals(1, doubleTag.getAttributes().size());
-		valueString = doubleTag.getAttributeValue("value"); //$NON-NLS-1$
-		assertEquals("4.0", valueString); //$NON-NLS-1$
-	}
+        doubleTag = (Element) doubleArrayElement.getChildren().get(3);
+        assertEquals("double", doubleTag.getName()); //$NON-NLS-1$
+        assertNotNull(doubleTag);
+        assertEquals(1, doubleTag.getAttributes().size());
+        valueString = doubleTag.getAttributeValue("value"); //$NON-NLS-1$
+        assertEquals("4.0", valueString); //$NON-NLS-1$
+    }
 
-	/**
-	 * Test for the reading behaviour.
-	 */
-	@Test
-	public void testReadProperty() {
-		DoubleArrayPropertyPersistenceHandler handler = new DoubleArrayPropertyPersistenceHandler();
+    /**
+     * Test for the reading behaviour.
+     */
+    @Test
+    public void testReadProperty() {
+        DoubleArrayPropertyPersistenceHandler handler = new DoubleArrayPropertyPersistenceHandler();
 
-		Element propertyTag = new Element("anyTag"); //$NON-NLS-1$
-		Element arrayTag = new Element(
-				DoubleArrayPropertyPersistenceHandler.XML_ELEMENT_DOUBLE_ARRAY);
-		propertyTag.addContent(arrayTag);
+        Element propertyTag = new Element("anyTag"); //$NON-NLS-1$
+        Element arrayTag = new Element(
+                DoubleArrayPropertyPersistenceHandler.XML_ELEMENT_DOUBLE_ARRAY);
+        propertyTag.addContent(arrayTag);
 
-		arrayTag.addContent(new Element(
-				DoubleArrayPropertyPersistenceHandler.XML_ELEMENT_DOUBLE)
-				.setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, "1.0")); //$NON-NLS-1$
-		arrayTag.addContent(new Element(
-				DoubleArrayPropertyPersistenceHandler.XML_ELEMENT_DOUBLE)
-				.setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, "2.0")); //$NON-NLS-1$
-		arrayTag.addContent(new Element(
-				DoubleArrayPropertyPersistenceHandler.XML_ELEMENT_DOUBLE)
-				.setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, "3.0")); //$NON-NLS-1$
-		arrayTag.addContent(new Element(
-				DoubleArrayPropertyPersistenceHandler.XML_ELEMENT_DOUBLE)
-				.setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, "4.0")); //$NON-NLS-1$
+        arrayTag.addContent(new Element(
+                DoubleArrayPropertyPersistenceHandler.XML_ELEMENT_DOUBLE)
+                .setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, "1.0")); //$NON-NLS-1$
+        arrayTag.addContent(new Element(
+                DoubleArrayPropertyPersistenceHandler.XML_ELEMENT_DOUBLE)
+                .setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, "2.0")); //$NON-NLS-1$
+        arrayTag.addContent(new Element(
+                DoubleArrayPropertyPersistenceHandler.XML_ELEMENT_DOUBLE)
+                .setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, "3.0")); //$NON-NLS-1$
+        arrayTag.addContent(new Element(
+                DoubleArrayPropertyPersistenceHandler.XML_ELEMENT_DOUBLE)
+                .setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, "4.0")); //$NON-NLS-1$
 
-		Object propertyValue = handler.readProperty(propertyTag);
+        Object propertyValue = handler.readProperty(propertyTag);
 
-		assertTrue(propertyValue instanceof double[]);
+        assertTrue(propertyValue instanceof double[]);
 
-		double[] doubleArray = (double[]) propertyValue;
+        double[] doubleArray = (double[]) propertyValue;
 
-		assertEquals(4, doubleArray.length);
-		assertEquals(1.0, doubleArray[0], 0.001);
-		assertEquals(2.0, doubleArray[1], 0.001);
-		assertEquals(3.0, doubleArray[2], 0.001);
-		assertEquals(4.0, doubleArray[3], 0.001);
-	}
+        assertEquals(4, doubleArray.length);
+        assertEquals(1.0, doubleArray[0], 0.001);
+        assertEquals(2.0, doubleArray[1], 0.001);
+        assertEquals(3.0, doubleArray[2], 0.001);
+        assertEquals(4.0, doubleArray[3], 0.001);
+    }
 }

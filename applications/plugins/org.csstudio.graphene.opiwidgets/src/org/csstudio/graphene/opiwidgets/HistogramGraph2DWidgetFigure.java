@@ -13,13 +13,13 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class HistogramGraph2DWidgetFigure extends AbstractPointDatasetGraph2DWidgetFigure<HistogramGraph2DWidget> {
 
-	public HistogramGraph2DWidgetFigure(AbstractBaseEditPart editpart) {
-		super(editpart);
-	}
+    public HistogramGraph2DWidgetFigure(AbstractBaseEditPart editpart) {
+        super(editpart);
+    }
 
-	@Override
-	protected HistogramGraph2DWidget createSWTWidget(Composite parent, int style) {
-		return new HistogramGraph2DWidget(parent, style);
-	}
+    @Override
+    protected HistogramGraph2DWidget createSWTWidget(Composite parent, int style) {
+        return new HistogramGraph2DWidget(parent, style);
+    }
 
 }

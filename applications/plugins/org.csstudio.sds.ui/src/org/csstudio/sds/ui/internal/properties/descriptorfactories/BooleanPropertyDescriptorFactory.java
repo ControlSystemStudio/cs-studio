@@ -39,16 +39,16 @@ import org.csstudio.sds.ui.properties.PropertyTypeCellEditorValidator;
  *
  */
 public final class BooleanPropertyDescriptorFactory implements
-		IPropertyDescriptorFactory {
+        IPropertyDescriptorFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IPropertyDescriptor createPropertyDescriptor(final Object id, final WidgetProperty property) {
-		PropertyDescriptor descriptor = new BooleanPropertyDescriptor(id, property.getDescription(), PropertyTypesEnum.BOOLEAN);
-		// validator
-		descriptor.setValidator(new PropertyTypeCellEditorValidator(property));
-		return descriptor;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public IPropertyDescriptor createPropertyDescriptor(final Object id, final WidgetProperty property) {
+        PropertyDescriptor descriptor = new BooleanPropertyDescriptor(id, property.getDescription(), PropertyTypesEnum.BOOLEAN);
+        // validator
+        descriptor.setValidator(new PropertyTypeCellEditorValidator(property));
+        return descriptor;
+    }
 
 }

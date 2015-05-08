@@ -11,11 +11,11 @@ package org.csstudio.autocomplete.parser.engine.expr;
 
 public class ExprMissing extends Expr {
 
-	public ExprMissing() {
-		super(ExprType.Missing);
-	}
+    public ExprMissing() {
+        super(ExprType.Missing);
+    }
 
-	public String toString() {
-		return "";
-	}
+    public String toString() {
+        return "";
+    }
 }

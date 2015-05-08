@@ -13,8 +13,8 @@ package org.csstudio.alarm.beast.server;
  */
 public interface FilterListener
 {
-	/** Called by filter when its value changed
-	 *  @param value Current value
-	 */
-	void filterChanged(double value);
+    /** Called by filter when its value changed
+     *  @param value Current value
+     */
+    void filterChanged(double value);
 }

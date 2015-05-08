@@ -27,9 +27,9 @@ public class SendEMailAction extends AbstractSendEMailAction
      */
     public SendEMailAction(final Shell shell, final RTTimePlot graph)
     {
-		super(shell, Preferences.getEmailDefaultSender(),
-				Messages.LogentryDefaultTitle,
-				Messages.LogentryDefaultBody);
+        super(shell, Preferences.getEmailDefaultSender(),
+                Messages.LogentryDefaultTitle,
+                Messages.LogentryDefaultBody);
         this.graph = graph;
     }
 

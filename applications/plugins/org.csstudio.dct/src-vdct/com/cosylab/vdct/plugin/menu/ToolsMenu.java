@@ -55,9 +55,9 @@ public ToolsMenu()
  */
 public void init()
 {
-	PluginManager.getInstance().addPluginListener(this);
-	if (getItemCount()==0)
-		setEnabled(false);
+    PluginManager.getInstance().addPluginListener(this);
+    if (getItemCount()==0)
+        setEnabled(false);
 
 }
 /**
@@ -67,19 +67,19 @@ public void init()
  */
 public void pluginAdded(PluginObject plugin)
 {
-	if (plugin.getPlugin() instanceof MenuPlugin)
-	{
-		if( plugin.getStatus()==PluginObject.PLUGIN_NOT_LOADED ||
-		    plugin.getStatus()==PluginObject.PLUGIN_INVALID )
-			    return;
-			    
-		JMenu menuItem = ((MenuPlugin)(plugin.getPlugin())).getMenu();
-		
-		add(menuItem);
+    if (plugin.getPlugin() instanceof MenuPlugin)
+    {
+        if( plugin.getStatus()==PluginObject.PLUGIN_NOT_LOADED ||
+            plugin.getStatus()==PluginObject.PLUGIN_INVALID )
+                return;
+                
+        JMenu menuItem = ((MenuPlugin)(plugin.getPlugin())).getMenu();
+        
+        add(menuItem);
 
-		if (getItemCount()>0)
-			setEnabled(true);
-	}
+        if (getItemCount()>0)
+            setEnabled(true);
+    }
 
 }
 /**
@@ -89,17 +89,17 @@ public void pluginAdded(PluginObject plugin)
  */
 public void pluginRemoved(PluginObject plugin)
 {
-	if (plugin.getPlugin() instanceof MenuPlugin)
-	{
-		JMenu menuItem = ((MenuPlugin)(plugin.getPlugin())).getMenu();
+    if (plugin.getPlugin() instanceof MenuPlugin)
+    {
+        JMenu menuItem = ((MenuPlugin)(plugin.getPlugin())).getMenu();
 
-		if (menuItem!=null)
-		{
-			remove(menuItem);
+        if (menuItem!=null)
+        {
+            remove(menuItem);
 
-			if (getItemCount()==0)
-				setEnabled(false);
-		}
-	}
+            if (getItemCount()==0)
+                setEnabled(false);
+        }
+    }
 }
 }

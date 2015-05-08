@@ -91,8 +91,8 @@ public class JmsRemoteCommandService implements IRemoteCommandService {
         } catch (final JMSException e) {
             throw newRemoteCommandException("JmsRemoteCommandService.sendCommand failed", e);
         } catch (JmsUtilityException e) {
-        	throw newRemoteCommandException("JmsRemoteCommandService.sendCommand failed", e);
-		} finally {
+            throw newRemoteCommandException("JmsRemoteCommandService.sendCommand failed", e);
+        } finally {
             tryToCloseSession(session);
         }
         

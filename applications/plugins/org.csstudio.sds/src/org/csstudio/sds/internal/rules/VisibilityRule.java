@@ -32,17 +32,17 @@ import org.csstudio.sds.model.IRule;
  */
 public final class VisibilityRule implements IRule {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object evaluate(final Object[] arguments) {
-		if ((arguments != null) && (arguments.length > 0)
-				&& (arguments[0] instanceof Double)) {
-			return (Double) arguments[0] >20;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public Object evaluate(final Object[] arguments) {
+        if ((arguments != null) && (arguments.length > 0)
+                && (arguments[0] instanceof Double)) {
+            return (Double) arguments[0] >20;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
     /**
      * {@inheritDoc}

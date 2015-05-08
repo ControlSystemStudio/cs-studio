@@ -13,24 +13,24 @@ package org.csstudio.apputil.macros;
  */
 public class InfiniteLoopException extends Exception {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 569430280936384743L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 569430280936384743L;
 
-	public InfiniteLoopException() { // NOP
-	}
+    public InfiniteLoopException() { // NOP
+    }
 
-	public InfiniteLoopException(String message) {
-		super(message);
-	}
+    public InfiniteLoopException(String message) {
+        super(message);
+    }
 
-	public InfiniteLoopException(Throwable cause) {
-		super(cause);
-	}
+    public InfiniteLoopException(Throwable cause) {
+        super(cause);
+    }
 
-	public InfiniteLoopException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public InfiniteLoopException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

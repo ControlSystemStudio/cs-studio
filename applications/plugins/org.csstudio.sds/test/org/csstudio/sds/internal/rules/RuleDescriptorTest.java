@@ -38,25 +38,25 @@ import org.junit.Test;
  * 
  */
 public final class RuleDescriptorTest {
-	/**
-	 * Test method for {@link org.csstudio.sds.internal.rules.RuleDescriptor}.
-	 */
-	@Test
-	public void testRuleDescriptor() {
-		String ruleId = "ruleId"; //$NON-NLS-1$
-		String description = "description"; //$NON-NLS-1$
-		String[] parameterDescriptions = new String[] { "param1", "param2" }; //$NON-NLS-1$ //$NON-NLS-2$
-		IRule rule = new DirectConnectionRule();
-		RuleDescriptor rd = new RuleDescriptor(ruleId, description,
-				parameterDescriptions, new PropertyTypesEnum[] {PropertyTypesEnum.DOUBLE}, rule, true);
+    /**
+     * Test method for {@link org.csstudio.sds.internal.rules.RuleDescriptor}.
+     */
+    @Test
+    public void testRuleDescriptor() {
+        String ruleId = "ruleId"; //$NON-NLS-1$
+        String description = "description"; //$NON-NLS-1$
+        String[] parameterDescriptions = new String[] { "param1", "param2" }; //$NON-NLS-1$ //$NON-NLS-2$
+        IRule rule = new DirectConnectionRule();
+        RuleDescriptor rd = new RuleDescriptor(ruleId, description,
+                parameterDescriptions, new PropertyTypesEnum[] {PropertyTypesEnum.DOUBLE}, rule, true);
 
-		assertEquals(ruleId, rd.getRuleId());
-		assertEquals(description, rd.getDescription());
-		assertArrayEquals(parameterDescriptions, rd.getParameterDescriptions());
-		assertEquals(rule, rd.getRule());
-		assertTrue(rd.isScriptedRule());
+        assertEquals(ruleId, rd.getRuleId());
+        assertEquals(description, rd.getDescription());
+        assertArrayEquals(parameterDescriptions, rd.getParameterDescriptions());
+        assertEquals(rule, rd.getRule());
+        assertTrue(rd.isScriptedRule());
 
-		assertNotNull(rd.toString());
-	}
+        assertNotNull(rd.toString());
+    }
 
 }

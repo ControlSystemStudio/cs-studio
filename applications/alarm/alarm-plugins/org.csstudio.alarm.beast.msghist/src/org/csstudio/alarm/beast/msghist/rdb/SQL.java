@@ -34,9 +34,9 @@ public class SQL
     /** RDB schema */
     final String schema;
     
-	/** Array of property names which are handled as MESSAGE columns. */
-	final private String message_properties[];
-	
+    /** Array of property names which are handled as MESSAGE columns. */
+    final private String message_properties[];
+    
     /** Mapping of message property IDs to Names
      *  for properties that are MESSAGE_CONTENT rows.
      */
@@ -56,8 +56,8 @@ public class SQL
     public SQL(final RDBUtil rdb_util, final String schema) throws Exception
     {
         this.schema = schema;
-    	message_properties = determineMessageProperties(rdb_util);	
-    	readPropertyTypes(rdb_util);
+        message_properties = determineMessageProperties(rdb_util);    
+        readPropertyTypes(rdb_util);
     }
 
     /** @return Prefix to table name.
@@ -73,32 +73,32 @@ public class SQL
      *  @param rdb_util RDB Utility
      *  @return Array of properties kept MESSAGE table
      */
-	private String[] determineMessageProperties(final RDBUtil rdb_util)
-			throws Exception
-	{
-		final ArrayList<String> properties = new ArrayList<String>();
-		final Connection connection = rdb_util.getConnection();
-		final DatabaseMetaData meta = connection.getMetaData();
-				
-		// Catalog seems to be null
-		final String catalog = connection.getCatalog();
-		// Oracle uses upper-case table name
+    private String[] determineMessageProperties(final RDBUtil rdb_util)
+            throws Exception
+    {
+        final ArrayList<String> properties = new ArrayList<String>();
+        final Connection connection = rdb_util.getConnection();
+        final DatabaseMetaData meta = connection.getMetaData();
+                
+        // Catalog seems to be null
+        final String catalog = connection.getCatalog();
+        // Oracle uses upper-case table name
         String table = "message";
         if (rdb_util.getDialect() == Dialect.Oracle)
             table = table.toUpperCase();
         ResultSet columns = meta.getColumns(catalog, schema, table, null);
-		while (columns.next())
-		{   // We treat all columns in upper case.
-			final String column = columns.getString(4).toUpperCase();
-			if ("ID".equals(column) ||
-			    "DATUM".equals(column))
-				continue;
-			properties.add(column);
-		}
-		final String result[] = new String[properties.size()];
-		return properties.toArray(result);
-	}
-	
+        while (columns.next())
+        {   // We treat all columns in upper case.
+            final String column = columns.getString(4).toUpperCase();
+            if ("ID".equals(column) ||
+                "DATUM".equals(column))
+                continue;
+            properties.add(column);
+        }
+        final String result[] = new String[properties.size()];
+        return properties.toArray(result);
+    }
+    
     /** Get all properties that are kept in MESSAGE_CONTENT
      *  @param rdb_util RDB Utility
      *  @return Map of Property ID/Name
@@ -127,9 +127,9 @@ public class SQL
     }
 
     /** Check if a property is in the MESSAGE table or MESSAGE_CONTENT.
-	 *  @param property Property name to check
-	 *  @return <code>true</code> if property is column in MESSAGE table
-	 */
+     *  @param property Property name to check
+     *  @return <code>true</code> if property is column in MESSAGE table
+     */
     private boolean isMessageProperty(final String property)
     {       
         for (String msg_prop : message_properties)

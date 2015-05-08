@@ -37,26 +37,26 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
  */
 public final class LabelInitializer extends AbstractEpicsWidgetInitializer {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void initialize(final AbstractControlSystemSchema schema) {
-		initializeCommonConnectionStates();
-		initializeCommonAlarmBehaviour();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void initialize(final AbstractControlSystemSchema schema) {
+        initializeCommonConnectionStates();
+        initializeCommonAlarmBehaviour();
 
-		initializeStaticProperty(LabelModel.PROP_TEXTVALUE, "Label");
-		initializeStaticProperty(LabelModel.PROP_TRANSPARENT, false);
+        initializeStaticProperty(LabelModel.PROP_TEXTVALUE, "Label");
+        initializeStaticProperty(LabelModel.PROP_TRANSPARENT, false);
 
-		initializeDynamicProperty(LabelModel.PROP_TEXTVALUE, "$channel$", null,
-				DirectConnectionRule.TYPE_ID);
+        initializeDynamicProperty(LabelModel.PROP_TEXTVALUE, "$channel$", null,
+                DirectConnectionRule.TYPE_ID);
 
-		Map<ConnectionState, Object> stringsByConnectionState = new HashMap<ConnectionState, Object>();
-		stringsByConnectionState.put(ConnectionState.CONNECTION_LOST,
-				"Connection lost");
-		stringsByConnectionState.put(ConnectionState.INITIAL, "Initialisation");
-		initializeDynamicPropertyForConnectionState(LabelModel.PROP_TEXTVALUE,
-				"$channel$", stringsByConnectionState,
-				DirectConnectionRule.TYPE_ID);
-	}
+        Map<ConnectionState, Object> stringsByConnectionState = new HashMap<ConnectionState, Object>();
+        stringsByConnectionState.put(ConnectionState.CONNECTION_LOST,
+                "Connection lost");
+        stringsByConnectionState.put(ConnectionState.INITIAL, "Initialisation");
+        initializeDynamicPropertyForConnectionState(LabelModel.PROP_TEXTVALUE,
+                "$channel$", stringsByConnectionState,
+                DirectConnectionRule.TYPE_ID);
+    }
 }

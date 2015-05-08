@@ -33,18 +33,18 @@ import org.csstudio.sds.model.LinkingContainerModel;
  * 
  */
 public final class LinkingContainerModelFactory implements IWidgetModelFactory {
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractWidgetModel createWidgetModel() {
-		return new LinkingContainerModel();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractWidgetModel createWidgetModel() {
+        return new LinkingContainerModel();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class getWidgetModelType() {
-		return LinkingContainerModel.class;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class getWidgetModelType() {
+        return LinkingContainerModel.class;
+    }
 }

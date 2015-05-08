@@ -13,7 +13,7 @@ import org.epics.css.dal.simulation.ValueProvider;
  */
 public class MemorizedGeneratorFactory implements ValueProviderFactory {
 
-	public <T> ValueProvider<T> createGenerator(Class<T> type, String... options) {
-		return new MemoryValueProvider<T>();
-	}
+    public <T> ValueProvider<T> createGenerator(Class<T> type, String... options) {
+        return new MemoryValueProvider<T>();
+    }
 }

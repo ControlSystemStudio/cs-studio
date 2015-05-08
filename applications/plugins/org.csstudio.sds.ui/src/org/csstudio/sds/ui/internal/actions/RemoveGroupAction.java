@@ -46,56 +46,56 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public final class RemoveGroupAction extends AbstractWidgetSelectionAction {
 
-	public static final String ID = "org.csstudio.sds.ui.internal.actions.RemoveGroupAction";
+    public static final String ID = "org.csstudio.sds.ui.internal.actions.RemoveGroupAction";
 
-	public RemoveGroupAction(IWorkbenchPart workbenchPart, GraphicalViewer viewer) {
-		super(workbenchPart, viewer);
-		setId(ID);
-		setText("Remove Group");
-		setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID, "/icons/removegroup.gif"));
-	}
+    public RemoveGroupAction(IWorkbenchPart workbenchPart, GraphicalViewer viewer) {
+        super(workbenchPart, viewer);
+        setId(ID);
+        setText("Remove Group");
+        setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID, "/icons/removegroup.gif"));
+    }
 
-	@Override
-	protected boolean doCalculateEnabled(List<AbstractWidgetModel> selectedWidgets) {
-		return selectedWidgets.size() == 1 && selectedWidgets.get(0) instanceof GroupingContainerModel;
-	}
+    @Override
+    protected boolean doCalculateEnabled(List<AbstractWidgetModel> selectedWidgets) {
+        return selectedWidgets.size() == 1 && selectedWidgets.get(0) instanceof GroupingContainerModel;
+    }
 
-	@Override
-	protected Command doCreateCommand(List<AbstractWidgetModel> selectedWidgets) {
-		GroupingContainerModel container = (GroupingContainerModel) selectedWidgets.get(0);
-		assert container != null;
+    @Override
+    protected Command doCreateCommand(List<AbstractWidgetModel> selectedWidgets) {
+        GroupingContainerModel container = (GroupingContainerModel) selectedWidgets.get(0);
+        assert container != null;
 
-		CompoundCommand cmd = new CompoundCommand();
-		cmd.setLabel("Remove Group");
+        CompoundCommand cmd = new CompoundCommand();
+        cmd.setLabel("Remove Group");
 
-		List<AbstractWidgetModel> widgets = container.getWidgets();
+        List<AbstractWidgetModel> widgets = container.getWidgets();
 
-		// remove widgets from container
-		cmd.add(new DeleteWidgetsCommand(null, container, widgets));
+        // remove widgets from container
+        cmd.add(new DeleteWidgetsCommand(null, container, widgets));
 
-		// adjust widget positions
-		for (AbstractWidgetModel w : widgets) {
-			Point p = adaptWidgetPosition(w, container);
-			cmd.add(new SetPropertyCommand(w, AbstractWidgetModel.PROP_POS_X, p.x));
-			cmd.add(new SetPropertyCommand(w, AbstractWidgetModel.PROP_POS_Y, p.y));
-		}
+        // adjust widget positions
+        for (AbstractWidgetModel w : widgets) {
+            Point p = adaptWidgetPosition(w, container);
+            cmd.add(new SetPropertyCommand(w, AbstractWidgetModel.PROP_POS_X, p.x));
+            cmd.add(new SetPropertyCommand(w, AbstractWidgetModel.PROP_POS_Y, p.y));
+        }
 
-		// add widgets to surrounding container
-		cmd.add(new AddWidgetCommand(container.getParent(), widgets));
+        // add widgets to surrounding container
+        cmd.add(new AddWidgetCommand(container.getParent(), widgets));
 
-		// select the widgets
-		cmd.add(new SetSelectionCommand(getGraphicalViewer(), widgets));
+        // select the widgets
+        cmd.add(new SetSelectionCommand(getGraphicalViewer(), widgets));
 
-		// delete the container
-		cmd.add(new DeleteWidgetsCommand(null, container.getParent(), Arrays.asList((AbstractWidgetModel) container)));
+        // delete the container
+        cmd.add(new DeleteWidgetsCommand(null, container.getParent(), Arrays.asList((AbstractWidgetModel) container)));
 
-		return cmd;
-	}
+        return cmd;
+    }
 
-	private Point adaptWidgetPosition(final AbstractWidgetModel widgetModel, GroupingContainerModel container) {
-		int x = widgetModel.getX() + container.getX();
-		int y = widgetModel.getY() + container.getY();
-		return new Point(x, y);
-	}
+    private Point adaptWidgetPosition(final AbstractWidgetModel widgetModel, GroupingContainerModel container) {
+        int x = widgetModel.getX() + container.getX();
+        int y = widgetModel.getY() + container.getY();
+        return new Point(x, y);
+    }
 
 }

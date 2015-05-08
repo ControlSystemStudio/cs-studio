@@ -26,7 +26,7 @@ public class ReadConfigJob extends Job
      */
     public ReadConfigJob(final AlarmClientModel model)
     {
-    	this(model, null);
+        this(model, null);
     }
 
     /** Initialize job. Caller still has to <code>schedule()</code>!
@@ -48,7 +48,7 @@ public class ReadConfigJob extends Job
     {
         model.readConfiguration(monitor);
         if (listener != null)
-        	listener.newAlarmConfiguration(model);
+            listener.newAlarmConfiguration(model);
         model.fireNewConfig();
         return Status.OK_STATUS;
     }

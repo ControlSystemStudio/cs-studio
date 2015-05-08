@@ -55,7 +55,7 @@ public class CopyDemo
     private ArchiveWriter getWriter() throws Exception
     {
         return new RDBArchiveWriter("jdbc:mysql://server2/archive", "archive", "$archive", "", true);
-	}
+    }
     
     @Test
     public void demoCopy() throws Exception

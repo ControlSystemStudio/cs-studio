@@ -66,18 +66,18 @@ public class Plugin extends AbstractUIPlugin
      */
     public static ImageDescriptor getImageDescriptor(String path)
     {
-    	if (plugin == null)
-    	{	// Support JUnit demo without plugin context
-    		final File pwd = new File(".");
-    		try
-    		{
-				return ImageDescriptor.createFromURL(new URL("file://" + pwd.getAbsolutePath() + "/" + path));
-			}
-    		catch (MalformedURLException e)
-    		{
-    			return null;
-			}
-    	}
+        if (plugin == null)
+        {    // Support JUnit demo without plugin context
+            final File pwd = new File(".");
+            try
+            {
+                return ImageDescriptor.createFromURL(new URL("file://" + pwd.getAbsolutePath() + "/" + path));
+            }
+            catch (MalformedURLException e)
+            {
+                return null;
+            }
+        }
         return AbstractUIPlugin.imageDescriptorFromPlugin(ID, path);
     }
 }

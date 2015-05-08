@@ -34,13 +34,13 @@ package com.cosylab.vdct.db;
  * @author 
  */
 public class DBConnectorData {
-	protected String connectorID;
-	protected String targetID;
-	protected int x;
-	protected int y;
-	protected int mode;
-	protected java.awt.Color color;
-	protected String description;
+    protected String connectorID;
+    protected String targetID;
+    protected int x;
+    protected int y;
+    protected int mode;
+    protected java.awt.Color color;
+    protected String description;
 /**
  * Insert the method's description here.
  * Creation date: (23.4.2001 17:31:15)
@@ -51,12 +51,12 @@ public class DBConnectorData {
  * @param description java.lang.String
  */
 public DBConnectorData(String id, String targetID, int x, int y, java.awt.Color color, String description, int mode) {
-	this.connectorID = id;
-	this.targetID=targetID;
-	this.x=x; this.y=y;
-	this.color=color;
-	this.description=description;
-	this.mode=mode;
+    this.connectorID = id;
+    this.targetID=targetID;
+    this.x=x; this.y=y;
+    this.color=color;
+    this.description=description;
+    this.mode=mode;
 }
 /**
  * Insert the method's description here.
@@ -64,7 +64,7 @@ public DBConnectorData(String id, String targetID, int x, int y, java.awt.Color 
  * @return java.awt.Color
  */
 public java.awt.Color getColor() {
-	return color;
+    return color;
 }
 /**
  * Insert the method's description here.
@@ -72,7 +72,7 @@ public java.awt.Color getColor() {
  * @return java.lang.String
  */
 public java.lang.String getConnectorID() {
-	return connectorID;
+    return connectorID;
 }
 /**
  * Insert the method's description here.
@@ -80,7 +80,7 @@ public java.lang.String getConnectorID() {
  * @return java.lang.String
  */
 public java.lang.String getDescription() {
-	return description;
+    return description;
 }
 /**
  * Insert the method's description here.
@@ -88,7 +88,7 @@ public java.lang.String getDescription() {
  * @return java.lang.String
  */
 public java.lang.String getTargetID() {
-	return targetID;
+    return targetID;
 }
 /**
  * Insert the method's description here.
@@ -96,7 +96,7 @@ public java.lang.String getTargetID() {
  * @return int
  */
 public int getX() {
-	return x;
+    return x;
 }
 /**
  * Insert the method's description here.
@@ -104,7 +104,7 @@ public int getX() {
  * @return int
  */
 public int getY() {
-	return y;
+    return y;
 }
 /**
  * Insert the method's description here.
@@ -112,7 +112,7 @@ public int getY() {
  * @param newColor java.awt.Color
  */
 public void setColor(java.awt.Color newColor) {
-	color = newColor;
+    color = newColor;
 }
 /**
  * Insert the method's description here.
@@ -120,7 +120,7 @@ public void setColor(java.awt.Color newColor) {
  * @param newConnectorID java.lang.String
  */
 public void setConnectorID(java.lang.String newConnectorID) {
-	connectorID = newConnectorID;
+    connectorID = newConnectorID;
 }
 /**
  * Insert the method's description here.
@@ -128,7 +128,7 @@ public void setConnectorID(java.lang.String newConnectorID) {
  * @param newDescription java.lang.String
  */
 public void setDescription(java.lang.String newDescription) {
-	description = newDescription;
+    description = newDescription;
 }
 /**
  * Insert the method's description here.
@@ -136,7 +136,7 @@ public void setDescription(java.lang.String newDescription) {
  * @param newTargetID java.lang.String
  */
 public void setTargetID(java.lang.String newTargetID) {
-	targetID = newTargetID;
+    targetID = newTargetID;
 }
 /**
  * Insert the method's description here.
@@ -144,7 +144,7 @@ public void setTargetID(java.lang.String newTargetID) {
  * @param newX int
  */
 public void setX(int newX) {
-	x = newX;
+    x = newX;
 }
 /**
  * Insert the method's description here.
@@ -152,7 +152,7 @@ public void setX(int newX) {
  * @param newY int
  */
 public void setY(int newY) {
-	y = newY;
+    y = newY;
 }
 /**
  * Returns the mode.
@@ -160,7 +160,7 @@ public void setY(int newY) {
  */
 public int getMode()
 {
-	return mode;
+    return mode;
 }
 
 /**
@@ -169,7 +169,7 @@ public int getMode()
  */
 public void setMode(int mode)
 {
-	this.mode = mode;
+    this.mode = mode;
 }
 
 }

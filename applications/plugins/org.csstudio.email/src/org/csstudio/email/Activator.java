@@ -22,8 +22,8 @@ public class Activator
     
     final private static Logger logger = Logger.getLogger(ID);
 
-	/** @return Logger for plugin ID */
-	public static Logger getLogger() {
-		return logger;
-	}
+    /** @return Logger for plugin ID */
+    public static Logger getLogger() {
+        return logger;
+    }
 }

@@ -41,44 +41,44 @@ import org.junit.Test;
  * 
  */
 public final class IntegerPropertyPersistenceHandlerTest {
-	/**
-	 * Test for the writing behaviour.
-	 */
-	@Test
-	public void testWriteProperty() {
-		IntegerPropertyPersistenceHandler handler = new IntegerPropertyPersistenceHandler();
-		WidgetProperty property = new IntegerProperty(
-				"description", WidgetPropertyCategory.BEHAVIOR, 1);//$NON-NLS-1$
-		property.setDynamicsDescriptor(new DynamicsDescriptor());
-		property.setPropertyValue(103);
+    /**
+     * Test for the writing behaviour.
+     */
+    @Test
+    public void testWriteProperty() {
+        IntegerPropertyPersistenceHandler handler = new IntegerPropertyPersistenceHandler();
+        WidgetProperty property = new IntegerProperty(
+                "description", WidgetPropertyCategory.BEHAVIOR, 1);//$NON-NLS-1$
+        property.setDynamicsDescriptor(new DynamicsDescriptor());
+        property.setPropertyValue(103);
 
-		Element valueTag = new Element("anyTag"); //$NON-NLS-1$
+        Element valueTag = new Element("anyTag"); //$NON-NLS-1$
 
-		handler.writeProperty(valueTag, property.getPropertyValue());
+        handler.writeProperty(valueTag, property.getPropertyValue());
 
-		assertEquals(0, valueTag.getChildren().size());
+        assertEquals(0, valueTag.getChildren().size());
 
-		Attribute attrib = valueTag.getAttribute("value"); //$NON-NLS-1$
+        Attribute attrib = valueTag.getAttribute("value"); //$NON-NLS-1$
 
-		assertNotNull(attrib);
-		assertEquals("103", attrib.getValue()); //$NON-NLS-1$
-	}
+        assertNotNull(attrib);
+        assertEquals("103", attrib.getValue()); //$NON-NLS-1$
+    }
 
-	/**
-	 * Test for the reading behaviour.
-	 */
-	@Test
-	public void testReadProperty() {
-		IntegerPropertyPersistenceHandler handler = new IntegerPropertyPersistenceHandler();
+    /**
+     * Test for the reading behaviour.
+     */
+    @Test
+    public void testReadProperty() {
+        IntegerPropertyPersistenceHandler handler = new IntegerPropertyPersistenceHandler();
 
-		Element propertyTag = new Element("anyTag"); //$NON-NLS-1$
-		propertyTag.setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, "103"); //$NON-NLS-1$
+        Element propertyTag = new Element("anyTag"); //$NON-NLS-1$
+        propertyTag.setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, "103"); //$NON-NLS-1$
 
-		Object propertyValue = handler.readProperty(propertyTag);
+        Object propertyValue = handler.readProperty(propertyTag);
 
-		assertTrue(propertyValue instanceof Integer);
+        assertTrue(propertyValue instanceof Integer);
 
-		assertEquals(103, propertyValue);
-	}
+        assertEquals(103, propertyValue);
+    }
 
 }

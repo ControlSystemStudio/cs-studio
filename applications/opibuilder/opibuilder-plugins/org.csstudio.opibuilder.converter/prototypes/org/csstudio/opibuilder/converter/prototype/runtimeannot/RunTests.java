@@ -36,28 +36,28 @@ import java.lang.reflect.Method;
  *
  */
 public class RunTests {
-	public static void main(String[] args) throws Exception {
-		int passed = 0, failed = 0;
+    public static void main(String[] args) throws Exception {
+        int passed = 0, failed = 0;
 
-		Foo foo = new MegaFoo();
-		
-		for (Method m : Foo.class.getMethods()) {
-			if (m.isAnnotationPresent(Test.class)) {
-				try {
-					m.invoke(foo);
-					passed++;
-				} catch (Throwable ex) {
-					System.out.printf("Test %s failed: %s %n", m, ex.getCause());
-					failed++;
-				}
-			}
-		}
-		System.out.printf("Passed: %d, Failed %d%n", passed, failed);
+        Foo foo = new MegaFoo();
+        
+        for (Method m : Foo.class.getMethods()) {
+            if (m.isAnnotationPresent(Test.class)) {
+                try {
+                    m.invoke(foo);
+                    passed++;
+                } catch (Throwable ex) {
+                    System.out.printf("Test %s failed: %s %n", m, ex.getCause());
+                    failed++;
+                }
+            }
+        }
+        System.out.printf("Passed: %d, Failed %d%n", passed, failed);
 
-		for (Field f : foo.getClass().getDeclaredFields()) {
-			if (f.isAnnotationPresent(Test.class)) {
-				System.out.printf("Found field: %s\n", f.getName());
-			}
-		}
-	}
+        for (Field f : foo.getClass().getDeclaredFields()) {
+            if (f.isAnnotationPresent(Test.class)) {
+                System.out.printf("Found field: %s\n", f.getName());
+            }
+        }
+    }
 }

@@ -12,19 +12,19 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  */
 public final class XMeterModelFactory implements IWidgetModelFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractWidgetModel createWidgetModel() {
-		return new XMeterModel();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractWidgetModel createWidgetModel() {
+        return new XMeterModel();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class getWidgetModelType() {
-		return XMeterModel.class;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class getWidgetModelType() {
+        return XMeterModel.class;
+    }
 
 }

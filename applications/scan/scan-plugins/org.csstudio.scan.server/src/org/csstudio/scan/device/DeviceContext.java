@@ -55,7 +55,7 @@ public class DeviceContext
         final DeviceContext context = new DeviceContext();
         for (DeviceInfo alias : aliases)
             context.addPVDevice(alias);
-		return context;
+        return context;
     }
 
     /** Initialize empty device context

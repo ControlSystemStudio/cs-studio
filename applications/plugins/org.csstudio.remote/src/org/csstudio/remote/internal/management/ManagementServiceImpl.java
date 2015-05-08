@@ -56,216 +56,216 @@ import org.eclipse.core.runtime.Platform;
  * @author Joerg Rathlev
  */
 public class ManagementServiceImpl implements IManagementCommandService {
-	
-	private static final String EXTENSION_POINT_ID =
-		"org.csstudio.remote.managementCommands";
-	
-	
-	private Map<String, CommandContribution> _commands;
+    
+    private static final String EXTENSION_POINT_ID =
+        "org.csstudio.remote.managementCommands";
+    
+    
+    private Map<String, CommandContribution> _commands;
 
-	/**
-	 * Creates a new instance of this service implementation. 
-	 */
-	public ManagementServiceImpl() {
-	}
+    /**
+     * Creates a new instance of this service implementation. 
+     */
+    public ManagementServiceImpl() {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public CommandDescription[] getSupportedCommands() {
-		synchronized (this) {
-			if (_commands == null) {
-				readCommandsExtensionPoint();
-			}
-		}
-		List<CommandDescription> result = new ArrayList<CommandDescription>();
-		for (CommandContribution command : _commands.values()) {
-			result.add(command.getDescription());
-		}
-		return (CommandDescription[]) result.toArray(
-				new CommandDescription[result.size()]);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public CommandDescription[] getSupportedCommands() {
+        synchronized (this) {
+            if (_commands == null) {
+                readCommandsExtensionPoint();
+            }
+        }
+        List<CommandDescription> result = new ArrayList<CommandDescription>();
+        for (CommandContribution command : _commands.values()) {
+            result.add(command.getDescription());
+        }
+        return (CommandDescription[]) result.toArray(
+                new CommandDescription[result.size()]);
+    }
 
-	/**
-	 * Reads the remote management commands from the extension point.
-	 */
-	private void readCommandsExtensionPoint() {
-		_commands = new HashMap<String, CommandContribution>();
-		IExtension[] extensions = Platform.getExtensionRegistry()
-				.getExtensionPoint(EXTENSION_POINT_ID)
-				.getExtensions();
-		for (IExtension extension : extensions) {
-			IConfigurationElement[] configElements =
-				extension.getConfigurationElements();
-			for (IConfigurationElement configElement : configElements) {
-				readCommandContribution(configElement);
-			}
-		}
-	}
+    /**
+     * Reads the remote management commands from the extension point.
+     */
+    private void readCommandsExtensionPoint() {
+        _commands = new HashMap<String, CommandContribution>();
+        IExtension[] extensions = Platform.getExtensionRegistry()
+                .getExtensionPoint(EXTENSION_POINT_ID)
+                .getExtensions();
+        for (IExtension extension : extensions) {
+            IConfigurationElement[] configElements =
+                extension.getConfigurationElements();
+            for (IConfigurationElement configElement : configElements) {
+                readCommandContribution(configElement);
+            }
+        }
+    }
 
-	/**
-	 * Reads a single management command contribution from the specified
-	 * configuration element.
-	 * 
-	 * @param configElement
-	 *            the configuration element.
-	 */
-	private void readCommandContribution(IConfigurationElement configElement) {
-		String id = configElement.getAttribute("id");
-		try {
-			CommandContribution.Builder builder =
-				new CommandContribution.Builder()
-					.setIdentifier(id)
-					.setLabel(configElement.getAttribute("label"))
-					.setCommandImplementation(
-							(IManagementCommand) configElement
-								.createExecutableExtension("class"));
-			readParameterDefinitions(configElement, builder);
-			CommandContribution command = builder.build();
-			_commands.put(id, command);
-		} catch (Exception e) {
-			String contributor = configElement.getContributor().getName();
-//			TODO (jhatje): Change logging.
-//			log.error(this, "The management command with id " + id + 
-//					" from plug-in " + contributor + " is invalid. " +
-//					e.getMessage(), e);
-		}
-	}
+    /**
+     * Reads a single management command contribution from the specified
+     * configuration element.
+     * 
+     * @param configElement
+     *            the configuration element.
+     */
+    private void readCommandContribution(IConfigurationElement configElement) {
+        String id = configElement.getAttribute("id");
+        try {
+            CommandContribution.Builder builder =
+                new CommandContribution.Builder()
+                    .setIdentifier(id)
+                    .setLabel(configElement.getAttribute("label"))
+                    .setCommandImplementation(
+                            (IManagementCommand) configElement
+                                .createExecutableExtension("class"));
+            readParameterDefinitions(configElement, builder);
+            CommandContribution command = builder.build();
+            _commands.put(id, command);
+        } catch (Exception e) {
+            String contributor = configElement.getContributor().getName();
+//            TODO (jhatje): Change logging.
+//            log.error(this, "The management command with id " + id + 
+//                    " from plug-in " + contributor + " is invalid. " +
+//                    e.getMessage(), e);
+        }
+    }
 
-	/**
-	 * Reads the parameter definitions from the configuration element.
-	 * 
-	 * @param commandConfigElement
-	 *            the command configuration element.
-	 * @param commandBuilder
-	 *            the command contribution builder.
-	 */
-	private void readParameterDefinitions(
-			IConfigurationElement commandConfigElement,
-			CommandContribution.Builder commandBuilder) {
-		IConfigurationElement[] children = commandConfigElement.getChildren();
-		for (IConfigurationElement parameterConfig : children) {
-			CommandParameterDefinition.Builder definitionBuilder =
-				new CommandParameterDefinition.Builder()
-					.setIdentifier(parameterConfig.getAttribute("id"))
-					.setLabel(parameterConfig.getAttribute("label"));
+    /**
+     * Reads the parameter definitions from the configuration element.
+     * 
+     * @param commandConfigElement
+     *            the command configuration element.
+     * @param commandBuilder
+     *            the command contribution builder.
+     */
+    private void readParameterDefinitions(
+            IConfigurationElement commandConfigElement,
+            CommandContribution.Builder commandBuilder) {
+        IConfigurationElement[] children = commandConfigElement.getChildren();
+        for (IConfigurationElement parameterConfig : children) {
+            CommandParameterDefinition.Builder definitionBuilder =
+                new CommandParameterDefinition.Builder()
+                    .setIdentifier(parameterConfig.getAttribute("id"))
+                    .setLabel(parameterConfig.getAttribute("label"));
 
-			String parameterType = parameterConfig.getName();
-			IDynamicParameterValues dynamicValues = null;
-			if ("stringParameter".equals(parameterType)) {
-				definitionBuilder.setType(CommandParameterType.STRING);
-			} else if ("integerParameter".equals(parameterType)) {
-				definitionBuilder.setType(CommandParameterType.INTEGER)
-					.setMinimum(readIntegerParameterAttribute(
-						parameterConfig, "minimum", Integer.MIN_VALUE))
-					.setMaximum(readIntegerParameterAttribute(
-						parameterConfig, "maximum", Integer.MAX_VALUE));
-			} else if ("enumerationParameter".equals(parameterType)) {
-				definitionBuilder.setType(CommandParameterType.ENUMERATION);
-				readEnumerationValues(parameterConfig, definitionBuilder);
-			} else if ("dynamicEnumerationParameter".equals(parameterType)) {
-				definitionBuilder.setType(CommandParameterType.DYNAMIC_ENUMERATION);
-				try {
-					dynamicValues = (IDynamicParameterValues)
-							parameterConfig.createExecutableExtension("class");
-				} catch (CoreException e) {
-					throw new RuntimeException(
-							"Could not create object for dynamic parameter values.",
-							e);
-				}
-			} else {
-				throw new RuntimeException("Unknown parameter type: " +
-						parameterType);
-			}
-			commandBuilder.addParameter(definitionBuilder.build(), dynamicValues);
-		}
-	}
+            String parameterType = parameterConfig.getName();
+            IDynamicParameterValues dynamicValues = null;
+            if ("stringParameter".equals(parameterType)) {
+                definitionBuilder.setType(CommandParameterType.STRING);
+            } else if ("integerParameter".equals(parameterType)) {
+                definitionBuilder.setType(CommandParameterType.INTEGER)
+                    .setMinimum(readIntegerParameterAttribute(
+                        parameterConfig, "minimum", Integer.MIN_VALUE))
+                    .setMaximum(readIntegerParameterAttribute(
+                        parameterConfig, "maximum", Integer.MAX_VALUE));
+            } else if ("enumerationParameter".equals(parameterType)) {
+                definitionBuilder.setType(CommandParameterType.ENUMERATION);
+                readEnumerationValues(parameterConfig, definitionBuilder);
+            } else if ("dynamicEnumerationParameter".equals(parameterType)) {
+                definitionBuilder.setType(CommandParameterType.DYNAMIC_ENUMERATION);
+                try {
+                    dynamicValues = (IDynamicParameterValues)
+                            parameterConfig.createExecutableExtension("class");
+                } catch (CoreException e) {
+                    throw new RuntimeException(
+                            "Could not create object for dynamic parameter values.",
+                            e);
+                }
+            } else {
+                throw new RuntimeException("Unknown parameter type: " +
+                        parameterType);
+            }
+            commandBuilder.addParameter(definitionBuilder.build(), dynamicValues);
+        }
+    }
 
-	/**
-	 * Reads the enumeration values of the specified enumeration parameter
-	 * configuration element.
-	 * 
-	 * @param parameterConfig
-	 *            the configuration element.
-	 * @param definitionBuilder
-	 *            the builder for the parameter definition.
-	 */
-	private void readEnumerationValues(IConfigurationElement parameterConfig,
-			CommandParameterDefinition.Builder definitionBuilder) {
-		IConfigurationElement[] children =
-			parameterConfig.getChildren("enumerationValue");
-		for (IConfigurationElement enumerationValue : children) {
-			String value = enumerationValue.getAttribute("value");
-			String label = enumerationValue.getAttribute("label");
-			definitionBuilder.addEnumerationValue(
-					new CommandParameterEnumValue(value, label));
-		}
-	}
+    /**
+     * Reads the enumeration values of the specified enumeration parameter
+     * configuration element.
+     * 
+     * @param parameterConfig
+     *            the configuration element.
+     * @param definitionBuilder
+     *            the builder for the parameter definition.
+     */
+    private void readEnumerationValues(IConfigurationElement parameterConfig,
+            CommandParameterDefinition.Builder definitionBuilder) {
+        IConfigurationElement[] children =
+            parameterConfig.getChildren("enumerationValue");
+        for (IConfigurationElement enumerationValue : children) {
+            String value = enumerationValue.getAttribute("value");
+            String label = enumerationValue.getAttribute("label");
+            definitionBuilder.addEnumerationValue(
+                    new CommandParameterEnumValue(value, label));
+        }
+    }
 
-	/**
-	 * Reads a numeric attribute from the integer parameter configuration
-	 * element.
-	 * 
-	 * @param parameterConfig
-	 *            the configuration element.
-	 * @param attribute
-	 *            the name of the attribute to read.
-	 * @param defaultValue
-	 *            the default value. This value will be returned if the
-	 *            attribute is not specified in the configuration element or if
-	 *            the attribute does not contain an integer value.
-	 * @return the attribute value, or the default value if the attribute was
-	 *         not given.
-	 */
-	private int readIntegerParameterAttribute(
-			IConfigurationElement parameterConfig, String attribute,
-			int defaultValue) {
-		String str = parameterConfig.getAttribute(attribute);
-		if (str != null) {
-			try {
-				return Integer.parseInt(str);
-			} catch (NumberFormatException e) {
-				throw new RuntimeException("Invalid " + attribute +
-						" for integer parameter. \"" + str +
-						"\" is not an integer.", e);
-			}
-		} else {
-			return defaultValue;
-		}
-	}
+    /**
+     * Reads a numeric attribute from the integer parameter configuration
+     * element.
+     * 
+     * @param parameterConfig
+     *            the configuration element.
+     * @param attribute
+     *            the name of the attribute to read.
+     * @param defaultValue
+     *            the default value. This value will be returned if the
+     *            attribute is not specified in the configuration element or if
+     *            the attribute does not contain an integer value.
+     * @return the attribute value, or the default value if the attribute was
+     *         not given.
+     */
+    private int readIntegerParameterAttribute(
+            IConfigurationElement parameterConfig, String attribute,
+            int defaultValue) {
+        String str = parameterConfig.getAttribute(attribute);
+        if (str != null) {
+            try {
+                return Integer.parseInt(str);
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("Invalid " + attribute +
+                        " for integer parameter. \"" + str +
+                        "\" is not an integer.", e);
+            }
+        } else {
+            return defaultValue;
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public CommandResult execute(String commandId, CommandParameters parameters) {
-		CommandContribution command = _commands.get(commandId);
-		if (command != null) {
-			try {
-				return command.getCommandImplementation().execute(parameters);
-			} catch (RuntimeException e) {
-				return CommandResult.createFailureResult(e);
-			}
-		} else {
-			return CommandResult.createFailureResult(
-					"Command not supported: " + commandId);
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public CommandResult execute(String commandId, CommandParameters parameters) {
+        CommandContribution command = _commands.get(commandId);
+        if (command != null) {
+            try {
+                return command.getCommandImplementation().execute(parameters);
+            } catch (RuntimeException e) {
+                return CommandResult.createFailureResult(e);
+            }
+        } else {
+            return CommandResult.createFailureResult(
+                    "Command not supported: " + commandId);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public CommandParameterEnumValue[] getDynamicEnumerationValues(
-			String commandId, String parameterId) {
-		CommandContribution command = _commands.get(commandId);
-		if (command != null) {
-			try {
-				return command.getDynamicEnumerationValues(parameterId);
-			} catch (RuntimeException e) {
-				return new CommandParameterEnumValue[0];
-			}
-		} else {
-			return new CommandParameterEnumValue[0];
-		}
-	}
-	
+    /**
+     * {@inheritDoc}
+     */
+    public CommandParameterEnumValue[] getDynamicEnumerationValues(
+            String commandId, String parameterId) {
+        CommandContribution command = _commands.get(commandId);
+        if (command != null) {
+            try {
+                return command.getDynamicEnumerationValues(parameterId);
+            } catch (RuntimeException e) {
+                return new CommandParameterEnumValue[0];
+            }
+        } else {
+            return new CommandParameterEnumValue[0];
+        }
+    }
+    
 }

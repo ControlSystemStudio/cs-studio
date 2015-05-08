@@ -32,31 +32,31 @@ import com.cosylab.util.CommonException;
  */
 public class RemoteException extends CommonException
 {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/* (non-Javadoc)
-	 * @see CommonException#CommonException()
-	 */
-	public RemoteException()
-	{
-		super();
-	}
+    /* (non-Javadoc)
+     * @see CommonException#CommonException()
+     */
+    public RemoteException()
+    {
+        super();
+    }
 
-	/* (non-Javadoc)
-	 * @see CommonException#CommonException(java.lang.Object, java.lang.String)
-	 */
-	public RemoteException(Object instance, String s)
-	{
-		super(instance, s);
-	}
+    /* (non-Javadoc)
+     * @see CommonException#CommonException(java.lang.Object, java.lang.String)
+     */
+    public RemoteException(Object instance, String s)
+    {
+        super(instance, s);
+    }
 
-	/* (non-Javadoc)
-	 * @see CommonException#CommonException(java.lang.Object, java.lang.String, java.lang.Throwable)
-	 */
-	public RemoteException(Object instance, String message, Throwable t)
-	{
-		super(instance, message, t);
-	}
+    /* (non-Javadoc)
+     * @see CommonException#CommonException(java.lang.Object, java.lang.String, java.lang.Throwable)
+     */
+    public RemoteException(Object instance, String message, Throwable t)
+    {
+        super(instance, message, t);
+    }
 }
 
 /* __oOo__ */

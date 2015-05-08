@@ -67,139 +67,139 @@ import com.cosylab.vdct.xml.XMLManager;
  */
 public class LinkTypeConfig implements LinkTypeConfigPlugin
 {
-	
-	public static final String VDCT_LINK_CONFIG_FILE = ".vdctlinks.xml";
-	public static final String VDCT_LINK_CONFIG_FILE_ENV = "VDCT_LINK_CONFIG";
-	
-	/**
-	 * @see com.cosylab.vdct.plugin.config.LinkTypeConfigPlugin#getLinkTypeConfig()
-	 */
-	public Hashtable getLinkTypeConfig()
-	{
+    
+    public static final String VDCT_LINK_CONFIG_FILE = ".vdctlinks.xml";
+    public static final String VDCT_LINK_CONFIG_FILE_ENV = "VDCT_LINK_CONFIG";
+    
+    /**
+     * @see com.cosylab.vdct.plugin.config.LinkTypeConfigPlugin#getLinkTypeConfig()
+     */
+    public Hashtable getLinkTypeConfig()
+    {
 
-		String fileName = null;
-		Document doc = null;
-		try
-		{
-		    fileName = Constants.getConfigFile(VDCT_LINK_CONFIG_FILE, VDCT_LINK_CONFIG_FILE_ENV);
-		
-			// is file does not exists, load default file
-			if (!(new java.io.File(fileName).exists()))
-			{
-				com.cosylab.vdct.Console.getInstance().println("[LinkTypeConfigPlugin] No link type configuration file found.");
-				//fileName = getClass().getResource("/"+Constants.CONFIG_DIR+VDCT_LINK_CONFIG_FILE).getFile();
-				return null;
-			}
+        String fileName = null;
+        Document doc = null;
+        try
+        {
+            fileName = Constants.getConfigFile(VDCT_LINK_CONFIG_FILE, VDCT_LINK_CONFIG_FILE_ENV);
+        
+            // is file does not exists, load default file
+            if (!(new java.io.File(fileName).exists()))
+            {
+                com.cosylab.vdct.Console.getInstance().println("[LinkTypeConfigPlugin] No link type configuration file found.");
+                //fileName = getClass().getResource("/"+Constants.CONFIG_DIR+VDCT_LINK_CONFIG_FILE).getFile();
+                return null;
+            }
 
-			doc = XMLManager.readFileDocument(fileName);
-		}
-		catch (Exception e)
-		{
-			com.cosylab.vdct.Console.getInstance().println("[LinkTypeConfigPlugin] Failed to open link type configuration file '"+fileName+"'.");
-			com.cosylab.vdct.Console.getInstance().println(e);
-			return null;
-		}
-	
-		if (doc==null)
-		{
-			com.cosylab.vdct.Console.getInstance().println("[LinkTypeConfigPlugin] Invalid link type configuration file '"+fileName+"'.");
-			return null;
-		}
+            doc = XMLManager.readFileDocument(fileName);
+        }
+        catch (Exception e)
+        {
+            com.cosylab.vdct.Console.getInstance().println("[LinkTypeConfigPlugin] Failed to open link type configuration file '"+fileName+"'.");
+            com.cosylab.vdct.Console.getInstance().println(e);
+            return null;
+        }
+    
+        if (doc==null)
+        {
+            com.cosylab.vdct.Console.getInstance().println("[LinkTypeConfigPlugin] Invalid link type configuration file '"+fileName+"'.");
+            return null;
+        }
 
-		Hashtable table = new Hashtable();
-						
-		int count = 0;
-		//Node node = doc.getElementsByTagName("links").item(0);
-		NodeList nodes = doc.getElementsByTagName("link");
-		for (int i=0; i<nodes.getLength(); i++)
-		{
-			Element e = (Element)nodes.item(i); 
-			String type = e.getAttribute("type");
-			String pattern = e.getAttribute("pattern");
-			String def = e.getAttribute("default");
-			String desc = e.getAttribute("description");
-			if (type!=null && pattern!=null && def!=null && desc!=null)
-			{
-				try
-				{
-					table.put(type, new Object[] { Pattern.compile(pattern), def, desc });
-					count++;
-				}
-				catch (PatternSyntaxException pse)
-				{
-					com.cosylab.vdct.Console.getInstance().println("[LinkTypeConfigPlugin] Invalid pattern '"+pattern+"' for link type '"+type+"'. Skipping...");
-					com.cosylab.vdct.Console.getInstance().println(pse);
-					com.cosylab.vdct.Console.getInstance().println();
-				} 
-			}
-			else if (type!=null)
-				com.cosylab.vdct.Console.getInstance().println("[LinkTypeConfigPlugin] Invalid configuration for link type '"+type+"'. Skipping...");
-			else
-				com.cosylab.vdct.Console.getInstance().println("[LinkTypeConfigPlugin] Invalid configuration found. Skipping....");
-		}
-		com.cosylab.vdct.Console.getInstance().println("[LinkTypeConfigPlugin] Loaded "+count+" link type configuration(s).");
-		
-		return table;
-	}
+        Hashtable table = new Hashtable();
+                        
+        int count = 0;
+        //Node node = doc.getElementsByTagName("links").item(0);
+        NodeList nodes = doc.getElementsByTagName("link");
+        for (int i=0; i<nodes.getLength(); i++)
+        {
+            Element e = (Element)nodes.item(i); 
+            String type = e.getAttribute("type");
+            String pattern = e.getAttribute("pattern");
+            String def = e.getAttribute("default");
+            String desc = e.getAttribute("description");
+            if (type!=null && pattern!=null && def!=null && desc!=null)
+            {
+                try
+                {
+                    table.put(type, new Object[] { Pattern.compile(pattern), def, desc });
+                    count++;
+                }
+                catch (PatternSyntaxException pse)
+                {
+                    com.cosylab.vdct.Console.getInstance().println("[LinkTypeConfigPlugin] Invalid pattern '"+pattern+"' for link type '"+type+"'. Skipping...");
+                    com.cosylab.vdct.Console.getInstance().println(pse);
+                    com.cosylab.vdct.Console.getInstance().println();
+                } 
+            }
+            else if (type!=null)
+                com.cosylab.vdct.Console.getInstance().println("[LinkTypeConfigPlugin] Invalid configuration for link type '"+type+"'. Skipping...");
+            else
+                com.cosylab.vdct.Console.getInstance().println("[LinkTypeConfigPlugin] Invalid configuration found. Skipping....");
+        }
+        com.cosylab.vdct.Console.getInstance().println("[LinkTypeConfigPlugin] Loaded "+count+" link type configuration(s).");
+        
+        return table;
+    }
 
-	/**
-	 * @see com.cosylab.vdct.plugin.Plugin#destroy()
-	 */
-	public void destroy()
-	{
-	}
+    /**
+     * @see com.cosylab.vdct.plugin.Plugin#destroy()
+     */
+    public void destroy()
+    {
+    }
 
-	/**
-	 * @see com.cosylab.vdct.plugin.Plugin#getAuthor()
-	 */
-	public String getAuthor()
-	{
-		return "matej.sekoranja@cosylab.com";
-	}
+    /**
+     * @see com.cosylab.vdct.plugin.Plugin#getAuthor()
+     */
+    public String getAuthor()
+    {
+        return "matej.sekoranja@cosylab.com";
+    }
 
-	/**
-	 * @see com.cosylab.vdct.plugin.Plugin#getDescription()
-	 */
-	public String getDescription()
-	{
-		return "LinkTypeConfig plugin which loads link type config from XML file.";
-	}
+    /**
+     * @see com.cosylab.vdct.plugin.Plugin#getDescription()
+     */
+    public String getDescription()
+    {
+        return "LinkTypeConfig plugin which loads link type config from XML file.";
+    }
 
-	/**
-	 * @see com.cosylab.vdct.plugin.Plugin#getName()
-	 */
-	public String getName()
-	{
-		return "Link Type Configurator";
-	}
+    /**
+     * @see com.cosylab.vdct.plugin.Plugin#getName()
+     */
+    public String getName()
+    {
+        return "Link Type Configurator";
+    }
 
-	/**
-	 * @see com.cosylab.vdct.plugin.Plugin#getVersion()
-	 */
-	public String getVersion()
-	{
-		return "0.1";
-	}
+    /**
+     * @see com.cosylab.vdct.plugin.Plugin#getVersion()
+     */
+    public String getVersion()
+    {
+        return "0.1";
+    }
 
-	/**
-	 * @see com.cosylab.vdct.plugin.Plugin#init(Properties, PluginContext)
-	 */
-	public void init(Properties properties, PluginContext context)
-	{
-	}
+    /**
+     * @see com.cosylab.vdct.plugin.Plugin#init(Properties, PluginContext)
+     */
+    public void init(Properties properties, PluginContext context)
+    {
+    }
 
-	/**
-	 * @see com.cosylab.vdct.plugin.Plugin#start()
-	 */
-	public void start()
-	{
-	}
+    /**
+     * @see com.cosylab.vdct.plugin.Plugin#start()
+     */
+    public void start()
+    {
+    }
 
-	/**
-	 * @see com.cosylab.vdct.plugin.Plugin#stop()
-	 */
-	public void stop()
-	{
-	}
+    /**
+     * @see com.cosylab.vdct.plugin.Plugin#stop()
+     */
+    public void stop()
+    {
+    }
 
 }

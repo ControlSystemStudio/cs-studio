@@ -39,71 +39,71 @@ import org.eclipse.swt.dnd.TextTransfer;
  */
 public  class ProcessVariableAdressDragSourceAdapter extends DragSourceAdapter {
 
-	/**
-	 * A {@link IProcessVariableAdressProvider}
-	 */
-	private IProcessVariableAdressProvider _pvProvider;
+    /**
+     * A {@link IProcessVariableAdressProvider}
+     */
+    private IProcessVariableAdressProvider _pvProvider;
 
-	/**
-	 * Constructs a drag source adapter, which only provides items during DnD,
-	 * that are {@link IProcessVariableAddress}s.
-	 * 
-	 * @param pvProvider
-	 *            The provider of the {@link IProcessVariableAddress}
-	 */
-	public ProcessVariableAdressDragSourceAdapter(
-			IProcessVariableAdressProvider pvProvider) {
-		_pvProvider = pvProvider;
-	}
+    /**
+     * Constructs a drag source adapter, which only provides items during DnD,
+     * that are {@link IProcessVariableAddress}s.
+     * 
+     * @param pvProvider
+     *            The provider of the {@link IProcessVariableAddress}
+     */
+    public ProcessVariableAdressDragSourceAdapter(
+            IProcessVariableAdressProvider pvProvider) {
+        _pvProvider = pvProvider;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void dragStart(final DragSourceEvent event) {
-		super.dragStart(event);
-		ProcessVariableAddressTransfer.getInstance().setSelectedItems(this.getProceesVariables());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void dragStart(final DragSourceEvent event) {
+        super.dragStart(event);
+        ProcessVariableAddressTransfer.getInstance().setSelectedItems(this.getProceesVariables());
+    }
 
-	/**
-	 * Returns a new List of all provided {@link IProcessVariableAddress}
-	 * 
-	 * @return List of ProcessVariables A new List of all provided
-	 *         {@link IProcessVariableAddress}
-	 */
-	private List<IProcessVariableAddress> getProceesVariables() {
-		List<IProcessVariableAddress> list = new ArrayList<IProcessVariableAddress>();
-		if (_pvProvider != null) {
-			list.addAll(_pvProvider.getProcessVariableAdresses());
-		}
-		return list;
-	}
+    /**
+     * Returns a new List of all provided {@link IProcessVariableAddress}
+     * 
+     * @return List of ProcessVariables A new List of all provided
+     *         {@link IProcessVariableAddress}
+     */
+    private List<IProcessVariableAddress> getProceesVariables() {
+        List<IProcessVariableAddress> list = new ArrayList<IProcessVariableAddress>();
+        if (_pvProvider != null) {
+            list.addAll(_pvProvider.getProcessVariableAdresses());
+        }
+        return list;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void dragSetData(final DragSourceEvent event) {
-		List<IProcessVariableAddress> items = null;
-		List currentSelection = this.getProceesVariables();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void dragSetData(final DragSourceEvent event) {
+        List<IProcessVariableAddress> items = null;
+        List currentSelection = this.getProceesVariables();
 
-		if ((currentSelection != null) && (currentSelection.size() > 0)) {
-			items = this.getProceesVariables();
-		} else {
-			items = ProcessVariableAddressTransfer.getInstance().getSelectedItems();
-		}
-		if (ProcessVariableAddressTransfer.getInstance().isSupportedType(event.dataType)) {
-			event.data = items;
-		} else if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
-			StringBuffer sb = new StringBuffer();
-			// concatenate a String, which contains items line by line
-			for (IProcessVariableAddress item : items) {
-				String path = item.getRawName();
-				sb.append(path);
-				sb.append("\n"); //$NON-NLS-1$
-			}
-			event.data = sb.toString();
-		}
-	}
+        if ((currentSelection != null) && (currentSelection.size() > 0)) {
+            items = this.getProceesVariables();
+        } else {
+            items = ProcessVariableAddressTransfer.getInstance().getSelectedItems();
+        }
+        if (ProcessVariableAddressTransfer.getInstance().isSupportedType(event.dataType)) {
+            event.data = items;
+        } else if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
+            StringBuffer sb = new StringBuffer();
+            // concatenate a String, which contains items line by line
+            for (IProcessVariableAddress item : items) {
+                String path = item.getRawName();
+                sb.append(path);
+                sb.append("\n"); //$NON-NLS-1$
+            }
+            event.data = sb.toString();
+        }
+    }
 
 }

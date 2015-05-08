@@ -12,11 +12,11 @@ import org.csstudio.archive.reader.ArchiveReaderFactory;
  */
 public class AapiArchiveReaderFactory implements ArchiveReaderFactory {
 
-	/**
+    /**
      * {@inheritDoc}
      */
-	@Override
-	public ArchiveReader getArchiveReader(String url) throws Exception {
-		return new AapiArchiveReader(url);
-	}
+    @Override
+    public ArchiveReader getArchiveReader(String url) throws Exception {
+        return new AapiArchiveReader(url);
+    }
 }

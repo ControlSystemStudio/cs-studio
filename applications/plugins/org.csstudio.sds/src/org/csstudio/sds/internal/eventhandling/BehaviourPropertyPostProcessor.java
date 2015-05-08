@@ -21,50 +21,50 @@ import org.eclipse.gef.commands.CompoundCommand;
  */
 public class BehaviourPropertyPostProcessor extends AbstractWidgetPropertyPostProcessor<AbstractWidgetModel> {
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected Command doCreateCommand(AbstractWidgetModel widget) {
-		assert widget != null : "widget != null";
-		return new EnsureInvariantsCommand(widget);
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected Command doCreateCommand(AbstractWidgetModel widget) {
+        assert widget != null : "widget != null";
+        return new EnsureInvariantsCommand(widget);
+    }
 
-	private static final class EnsureInvariantsCommand extends Command {
-		private AbstractWidgetModel widget;
-		private CompoundCommand chain;
+    private static final class EnsureInvariantsCommand extends Command {
+        private AbstractWidgetModel widget;
+        private CompoundCommand chain;
 
-		private EnsureInvariantsCommand(AbstractWidgetModel widget) {
-			this.widget = widget;
-		}
+        private EnsureInvariantsCommand(AbstractWidgetModel widget) {
+            this.widget = widget;
+        }
 
-		@Override
-		public void execute() {
-			if (chain == null) {
-				chain = new CompoundCommand();
+        @Override
+        public void execute() {
+            if (chain == null) {
+                chain = new CompoundCommand();
 
-				// .. determine the selected behavior
-				String behaviorId = widget.getBehaviorProperty(AbstractWidgetModel.PROP_BEHAVIOR);
-				
-				IBehaviorService behaviourService = SdsPlugin.getDefault()
-						.getBehaviourService();
-				String[] invisiblePropertyIds = behaviourService
-						.getInvisiblePropertyIds(behaviorId, widget.getTypeID());
-				
-				for (WidgetProperty property : widget.getProperties()) {
-					chain.add(new ShowPropertyCommand(widget, property.getId(), AbstractWidgetModel.PROP_BEHAVIOR));
-				}
-				for (String propertyId : invisiblePropertyIds) {
-					chain.add(new HidePropertyCommand(widget, propertyId, AbstractWidgetModel.PROP_BEHAVIOR));
-				}
-			}
+                // .. determine the selected behavior
+                String behaviorId = widget.getBehaviorProperty(AbstractWidgetModel.PROP_BEHAVIOR);
+                
+                IBehaviorService behaviourService = SdsPlugin.getDefault()
+                        .getBehaviourService();
+                String[] invisiblePropertyIds = behaviourService
+                        .getInvisiblePropertyIds(behaviorId, widget.getTypeID());
+                
+                for (WidgetProperty property : widget.getProperties()) {
+                    chain.add(new ShowPropertyCommand(widget, property.getId(), AbstractWidgetModel.PROP_BEHAVIOR));
+                }
+                for (String propertyId : invisiblePropertyIds) {
+                    chain.add(new HidePropertyCommand(widget, propertyId, AbstractWidgetModel.PROP_BEHAVIOR));
+                }
+            }
 
-			chain.execute();
-		}
+            chain.execute();
+        }
 
-		@Override
-		public void undo() {
-			chain.undo();
-		}
-	}
+        @Override
+        public void undo() {
+            chain.undo();
+        }
+    }
 }

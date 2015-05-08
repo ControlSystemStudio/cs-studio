@@ -40,59 +40,59 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 abstract class AbstractOrderAction extends SelectionAction {
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param workbenchPart
-	 *            a workbench part
-	 */
-	public AbstractOrderAction(final IWorkbenchPart workbenchPart) {
-		super(workbenchPart);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param workbenchPart
+     *            a workbench part
+     */
+    public AbstractOrderAction(final IWorkbenchPart workbenchPart) {
+        super(workbenchPart);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected boolean calculateEnabled() {
-		return true;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean calculateEnabled() {
+        return true;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("rawtypes")
-	@Override
-	public void run() {
-		List selections = getSelectedObjects();
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("rawtypes")
+    @Override
+    public void run() {
+        List selections = getSelectedObjects();
 
-		CompoundCommand compoundCommand = new CompoundCommand(getText());
+        CompoundCommand compoundCommand = new CompoundCommand(getText());
 
-		for (Object selection : selections) {
-			if (selection instanceof AbstractBaseEditPart) {
-				AbstractBaseEditPart widgetEP = (AbstractBaseEditPart) selection;
+        for (Object selection : selections) {
+            if (selection instanceof AbstractBaseEditPart) {
+                AbstractBaseEditPart widgetEP = (AbstractBaseEditPart) selection;
 
-				if (widgetEP.getParent() instanceof AbstractContainerEditPart) {
-					ContainerModel container = ((AbstractContainerEditPart) widgetEP
-							.getParent()).getContainerModel();
-					Command cmd = createCommand(container, widgetEP
-							.getWidgetModel());
-					compoundCommand.add(cmd);
-				}
-			}
-		}
-		execute(compoundCommand);
-	}
-	
-	/**
-	 * Creates the command that manipulates the layer of the specified widget.
-	 * 
-	 * @param container
-	 *            the widgets parent container
-	 * @param widget
-	 *            the widget
-	 * @return the manipulating command
-	 */
-	protected abstract Command createCommand(final ContainerModel container,
-			final AbstractWidgetModel widget);
+                if (widgetEP.getParent() instanceof AbstractContainerEditPart) {
+                    ContainerModel container = ((AbstractContainerEditPart) widgetEP
+                            .getParent()).getContainerModel();
+                    Command cmd = createCommand(container, widgetEP
+                            .getWidgetModel());
+                    compoundCommand.add(cmd);
+                }
+            }
+        }
+        execute(compoundCommand);
+    }
+    
+    /**
+     * Creates the command that manipulates the layer of the specified widget.
+     * 
+     * @param container
+     *            the widgets parent container
+     * @param widget
+     *            the widget
+     * @return the manipulating command
+     */
+    protected abstract Command createCommand(final ContainerModel container,
+            final AbstractWidgetModel widget);
 }

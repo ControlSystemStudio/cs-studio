@@ -36,52 +36,52 @@ import org.eclipse.gef.commands.Command;
  */
 public final class DeleteGuideCommand extends Command {
 
-	/**
-	 * The RulerModel.
-	 */
-	private RulerModel _parent;
-	/**
-	 * The GuideModel.
-	 */
-	private GuideModel _guide;
-	/**
-	 * A Map of {@link AbstractWidgetModel} and Integers.
-	 */
-	private Map<AbstractWidgetModel, Integer> _oldParts;
-	
-	/**
-	 * Constructor.
-	 * @param guide
-	 * 			The GuideModel
-	 * @param parent
-	 * 			The RulerModel
-	 */
-	public DeleteGuideCommand(final GuideModel guide, final RulerModel parent) {
-		_guide = guide;
-		_parent = parent;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void execute() {
-		_oldParts = new HashMap<AbstractWidgetModel, Integer>(_guide.getMap());
-		Iterator<AbstractWidgetModel> iter = _oldParts.keySet().iterator();
-		while (iter.hasNext()) {
-			_guide.detachPart(iter.next());
-		}
-		_parent.removeGuide(_guide);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void undo() {
-		_parent.addGuide(_guide);
-		Iterator<AbstractWidgetModel> iter = _oldParts.keySet().iterator();
-		while (iter.hasNext()) {
-			AbstractWidgetModel model = iter.next();
-			_guide.attachPart(model, ((Integer)_oldParts.get(model)).intValue());
-		}
-	}
+    /**
+     * The RulerModel.
+     */
+    private RulerModel _parent;
+    /**
+     * The GuideModel.
+     */
+    private GuideModel _guide;
+    /**
+     * A Map of {@link AbstractWidgetModel} and Integers.
+     */
+    private Map<AbstractWidgetModel, Integer> _oldParts;
+    
+    /**
+     * Constructor.
+     * @param guide
+     *             The GuideModel
+     * @param parent
+     *             The RulerModel
+     */
+    public DeleteGuideCommand(final GuideModel guide, final RulerModel parent) {
+        _guide = guide;
+        _parent = parent;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void execute() {
+        _oldParts = new HashMap<AbstractWidgetModel, Integer>(_guide.getMap());
+        Iterator<AbstractWidgetModel> iter = _oldParts.keySet().iterator();
+        while (iter.hasNext()) {
+            _guide.detachPart(iter.next());
+        }
+        _parent.removeGuide(_guide);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void undo() {
+        _parent.addGuide(_guide);
+        Iterator<AbstractWidgetModel> iter = _oldParts.keySet().iterator();
+        while (iter.hasNext()) {
+            AbstractWidgetModel model = iter.next();
+            _guide.attachPart(model, ((Integer)_oldParts.get(model)).intValue());
+        }
+    }
 }

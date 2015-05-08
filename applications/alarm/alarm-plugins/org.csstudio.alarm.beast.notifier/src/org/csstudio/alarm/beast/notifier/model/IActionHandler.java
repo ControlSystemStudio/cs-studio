@@ -14,6 +14,6 @@ package org.csstudio.alarm.beast.notifier.model;
  */
 public interface IActionHandler {
 
-	/** Parse automated action details */
-	public void parse() throws Exception;
+    /** Parse automated action details */
+    public void parse() throws Exception;
 }

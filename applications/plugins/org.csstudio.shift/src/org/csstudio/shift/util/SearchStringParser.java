@@ -25,21 +25,21 @@ public class SearchStringParser {
      * @return
      */
     public static Map<String, String> searchParser(final String string, final String defaultKey) {
-	    final Map<String, String> result = new HashMap<String, String>();
+        final Map<String, String> result = new HashMap<String, String>();
         final Pattern p = Pattern.compile("([\\S]*):[.]*");
         final Matcher m = p.matcher(string);
-	    int start = 0;
-	    int end;
+        int start = 0;
+        int end;
         String key = defaultKey;
-	    while (m.find()) {
+        while (m.find()) {
             end = (m.start() - 1) >= 0 ? (m.start() - 1) : 0;
             result.put(key, string.substring(start, end).trim());
             key = m.group(1);
             start = m.end(1) + 1;
         }
-	    result.put(key, string.substring(start, string.length()).trim());
-	    result.remove(defaultKey);
-	    return result;
+        result.put(key, string.substring(start, string.length()).trim());
+        result.remove(defaultKey);
+        return result;
     }
 }
 

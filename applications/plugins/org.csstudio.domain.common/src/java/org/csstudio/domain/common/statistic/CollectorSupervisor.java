@@ -47,7 +47,7 @@ public final class CollectorSupervisor {
         // get an instance of our sigleton
         //
         if ( thisCollectorSupervisor == null) {
-        	thisCollectorSupervisor = new CollectorSupervisor();
+            thisCollectorSupervisor = new CollectorSupervisor();
         }
         return thisCollectorSupervisor;
     }

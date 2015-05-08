@@ -31,82 +31,82 @@ public final class ActionFilterAdapter implements IActionFilter {
     
     private static final Logger LOG = LoggerFactory.getLogger(ActionFilterAdapter.class);
     
-	private static final String ATTR_ERROR = "error";
+    private static final String ATTR_ERROR = "error";
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public boolean testAttribute(Object target, String name, String value) {
-		if (ATTR_ERROR.equals(name) && target instanceof IElement) {
-			FindErrorMarkerVisitor visitor = new FindErrorMarkerVisitor();
-			((IElement) target).accept(visitor);
+    /**
+     *{@inheritDoc}
+     */
+    public boolean testAttribute(Object target, String name, String value) {
+        if (ATTR_ERROR.equals(name) && target instanceof IElement) {
+            FindErrorMarkerVisitor visitor = new FindErrorMarkerVisitor();
+            ((IElement) target).accept(visitor);
 
-			String errors = visitor.isErrorFound() ? "true" : "false";
+            String errors = visitor.isErrorFound() ? "true" : "false";
 
-			return errors.equals(value);
-		}
+            return errors.equals(value);
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * Visitor that finds error markers.
-	 * 
-	 * @author Sven Wende
-	 * 
-	 */
-	static final class FindErrorMarkerVisitor implements IVisitor {
-		private boolean errorFound;
-		private final Set<UUID> nodesWithErrors;
+    /**
+     * Visitor that finds error markers.
+     * 
+     * @author Sven Wende
+     * 
+     */
+    static final class FindErrorMarkerVisitor implements IVisitor {
+        private boolean errorFound;
+        private final Set<UUID> nodesWithErrors;
 
-		public FindErrorMarkerVisitor() {
-			errorFound = false;
-			nodesWithErrors = new HashSet<UUID>();
-			try {
-				IMarker[] markers = ResourcesPlugin.getWorkspace().getRoot().findMarkers(IMarker.PROBLEM, false, IResource.DEPTH_INFINITE);
+        public FindErrorMarkerVisitor() {
+            errorFound = false;
+            nodesWithErrors = new HashSet<UUID>();
+            try {
+                IMarker[] markers = ResourcesPlugin.getWorkspace().getRoot().findMarkers(IMarker.PROBLEM, false, IResource.DEPTH_INFINITE);
 
-				for (IMarker marker : markers) {
-					String location = (String) marker.getAttribute(IMarker.LOCATION);
-					if (StringUtil.hasLength(location)) {
-						nodesWithErrors.add(UUID.fromString(location));
-					}
-				}
-			} catch (CoreException e) {
-				// 
-				LOG.warn("Warn", e);
-			}
+                for (IMarker marker : markers) {
+                    String location = (String) marker.getAttribute(IMarker.LOCATION);
+                    if (StringUtil.hasLength(location)) {
+                        nodesWithErrors.add(UUID.fromString(location));
+                    }
+                }
+            } catch (CoreException e) {
+                // 
+                LOG.warn("Warn", e);
+            }
 
-		}
+        }
 
-		public void visit(Project project) {
-			doVisit(project);
-		}
+        public void visit(Project project) {
+            doVisit(project);
+        }
 
-		public void visit(IFolder folder) {
-			doVisit(folder);
-		}
+        public void visit(IFolder folder) {
+            doVisit(folder);
+        }
 
-		public void visit(IPrototype prototype) {
-			doVisit(prototype);
-		}
+        public void visit(IPrototype prototype) {
+            doVisit(prototype);
+        }
 
-		public void visit(IInstance instance) {
-			doVisit(instance);
-		}
+        public void visit(IInstance instance) {
+            doVisit(instance);
+        }
 
-		public void visit(IRecord record) {
-			doVisit(record);
-		}
+        public void visit(IRecord record) {
+            doVisit(record);
+        }
 
-		public boolean isErrorFound() {
-			return errorFound;
-		}
+        public boolean isErrorFound() {
+            return errorFound;
+        }
 
-		private void doVisit(IElement element) {
-			if (nodesWithErrors.contains(element.getId())) {
-				errorFound = true;
-			}
-		}
+        private void doVisit(IElement element) {
+            if (nodesWithErrors.contains(element.getId())) {
+                errorFound = true;
+            }
+        }
 
-	}
+    }
 }

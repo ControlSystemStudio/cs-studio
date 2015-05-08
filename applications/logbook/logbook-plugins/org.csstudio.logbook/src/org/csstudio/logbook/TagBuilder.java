@@ -18,41 +18,41 @@ public class TagBuilder {
     private String state = null;
 
     public static TagBuilder tag(Tag tag) {
-	if (tag.getName() == null) {
-	    throw new NullPointerException("Tag name cannot be null");
-	} else {
-	    TagBuilder builder = new TagBuilder();
-	    builder.name = tag.getName();
-	    builder.state = tag.getState();
-	    return builder;
-	}
+    if (tag.getName() == null) {
+        throw new NullPointerException("Tag name cannot be null");
+    } else {
+        TagBuilder builder = new TagBuilder();
+        builder.name = tag.getName();
+        builder.state = tag.getState();
+        return builder;
+    }
 
     }
 
     public static TagBuilder tag(String name) {
-	if (name == null) {
-	    throw new NullPointerException("Tag name cannot be null");
-	} else {
-	    TagBuilder builder = new TagBuilder();
-	    builder.name = name;
-	    return builder;
-	}
+    if (name == null) {
+        throw new NullPointerException("Tag name cannot be null");
+    } else {
+        TagBuilder builder = new TagBuilder();
+        builder.name = name;
+        return builder;
+    }
     }
 
     public static TagBuilder tag(String name, String state) {
-	TagBuilder builder = new TagBuilder();
-	builder.name = name;
-	builder.state = state;
-	return builder;
+    TagBuilder builder = new TagBuilder();
+    builder.name = name;
+    builder.state = state;
+    return builder;
     }
 
     public TagBuilder state(String state) {
-	this.state = state;
-	return this;
+    this.state = state;
+    return this;
     }
 
     public Tag build() {
-	return new TagImpl(name, state);
+    return new TagImpl(name, state);
     }
 
     /**
@@ -63,24 +63,24 @@ public class TagBuilder {
      */
     private class TagImpl implements Tag {
 
-	private final String name;
-	private final String state;
+    private final String name;
+    private final String state;
 
-	public TagImpl(String name, String state) {
-	    super();
-	    this.name = name;
-	    this.state = state;
-	}
+    public TagImpl(String name, String state) {
+        super();
+        this.name = name;
+        this.state = state;
+    }
 
-	@Override
-	public String getName() {
-	    return name;
-	}
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public String getState() {
-	    return state;
-	}
+    @Override
+    public String getState() {
+        return state;
+    }
 
     }
 

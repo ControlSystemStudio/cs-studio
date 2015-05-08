@@ -45,72 +45,72 @@ import org.eclipse.ui.PlatformUI;
  * 
  */
 public final class UiExecutionService {
-	/**
-	 * The singleton instance.
-	 */
-	private static UiExecutionService _instance;
+    /**
+     * The singleton instance.
+     */
+    private static UiExecutionService _instance;
 
-	/**
-	 * A queue, which contains runnables that process the events that occured
-	 * during the last SLEEP_TIME milliseconds.
-	 */
-	private Queue<Runnable> _queue;
+    /**
+     * A queue, which contains runnables that process the events that occured
+     * during the last SLEEP_TIME milliseconds.
+     */
+    private Queue<Runnable> _queue;
 
-	/**
-	 * Standard constructor.
-	 */
-	private UiExecutionService() {
-		_queue = new ConcurrentLinkedQueue<Runnable>();
+    /**
+     * Standard constructor.
+     */
+    private UiExecutionService() {
+        _queue = new ConcurrentLinkedQueue<Runnable>();
 
-		ExecutionService.getInstance().getScheduledExecutorService()
-				.scheduleAtFixedRate(new Runnable() {
-					public void run() {
-						Display display = Display.getCurrent();
+        ExecutionService.getInstance().getScheduledExecutorService()
+                .scheduleAtFixedRate(new Runnable() {
+                    public void run() {
+                        Display display = Display.getCurrent();
 
-						if (display == null) {
-							PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-								public void run() {
-									Runnable r;
+                        if (display == null) {
+                            PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+                                public void run() {
+                                    Runnable r;
 
-									while ((r = _queue.poll()) != null) {
-										r.run();
-									}
-								}
-							});
-						} else {
-							Runnable r;
+                                    while ((r = _queue.poll()) != null) {
+                                        r.run();
+                                    }
+                                }
+                            });
+                        } else {
+                            Runnable r;
 
-							while ((r = _queue.poll()) != null) {
-								r.run();
-							}
-						}
-					}
-				}, 1000, 10, TimeUnit.MILLISECONDS);
-	}
+                            while ((r = _queue.poll()) != null) {
+                                r.run();
+                            }
+                        }
+                    }
+                }, 1000, 10, TimeUnit.MILLISECONDS);
+    }
 
-	/**
-	 * Queues a job to be run within the UI thread.
-	 * 
-	 * @param runnable
-	 *            the runnable
-	 */
-	public void queue(final Runnable runnable) {
-		_queue.add(runnable);
+    /**
+     * Queues a job to be run within the UI thread.
+     * 
+     * @param runnable
+     *            the runnable
+     */
+    public void queue(final Runnable runnable) {
+        _queue.add(runnable);
 
-	}
-	
-	/**
-	 * Gets the singleton instance.
-	 * 
-	 * @return the singleton instance
-	 */
-	public static synchronized UiExecutionService getInstance() {
-		if (_instance == null) {
-			_instance = new UiExecutionService();
-		}
+    }
+    
+    /**
+     * Gets the singleton instance.
+     * 
+     * @return the singleton instance
+     */
+    public static synchronized UiExecutionService getInstance() {
+        if (_instance == null) {
+            _instance = new UiExecutionService();
+        }
 
-		return _instance;
-	}
+        return _instance;
+    }
 
 
 }

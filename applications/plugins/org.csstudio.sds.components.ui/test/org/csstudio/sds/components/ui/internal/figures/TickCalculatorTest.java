@@ -31,35 +31,35 @@ import org.junit.Test;
 
 
 public class TickCalculatorTest {
-	
-	private TickCalculator t;
-	
-	@Before
-	public void setUp() {
-		t = new TickCalculator();
-	}
-	
-	@Test
-	public void testCalculateTicks() throws Exception {
-		t.setMinimumValue(1.0);
-		t.setMaximumValue(10.0);
-		t.setMaximumTickCount(10);
-		
-		List<Tick> ticks = t.calculateTicks();
-		assertEquals(10, ticks.size());
-		for (int i = 1; i <= 10; i++) {
-			assertEquals(i, ticks.get(i-1).value(), 0.001);
-			assertEquals(TickType.MAJOR, ticks.get(i-1).type());
-		}
-	}
-	
-	@Test
-	public void testInvalidDataRange() throws Exception {
-		t.setMinimumValue(10.0);
-		t.setMaximumValue(1.0);
-		t.setMaximumTickCount(10);
-		
-		assertTrue(t.calculateTicks().isEmpty());
-	}
-	
+    
+    private TickCalculator t;
+    
+    @Before
+    public void setUp() {
+        t = new TickCalculator();
+    }
+    
+    @Test
+    public void testCalculateTicks() throws Exception {
+        t.setMinimumValue(1.0);
+        t.setMaximumValue(10.0);
+        t.setMaximumTickCount(10);
+        
+        List<Tick> ticks = t.calculateTicks();
+        assertEquals(10, ticks.size());
+        for (int i = 1; i <= 10; i++) {
+            assertEquals(i, ticks.get(i-1).value(), 0.001);
+            assertEquals(TickType.MAJOR, ticks.get(i-1).type());
+        }
+    }
+    
+    @Test
+    public void testInvalidDataRange() throws Exception {
+        t.setMinimumValue(10.0);
+        t.setMaximumValue(1.0);
+        t.setMaximumTickCount(10);
+        
+        assertTrue(t.calculateTicks().isEmpty());
+    }
+    
 }

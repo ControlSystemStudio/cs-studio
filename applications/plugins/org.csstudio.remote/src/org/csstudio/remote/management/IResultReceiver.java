@@ -29,11 +29,11 @@ package org.csstudio.remote.management;
  */
 public interface IResultReceiver {
 
-	/**
-	 * Processes the specified result.
-	 * 
-	 * @param result
-	 *            a result returned by a management command.
-	 */
-	public void processResult(CommandResult result);
+    /**
+     * Processes the specified result.
+     * 
+     * @param result
+     *            a result returned by a management command.
+     */
+    public void processResult(CommandResult result);
 }

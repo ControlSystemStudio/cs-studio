@@ -37,22 +37,22 @@ import com.cosylab.vdct.VisualDCT;
  * @author 
  */
 public class SetWorkspaceScale extends Command {
-	private VisualDCT visualDCT;
-	private double scale;
+    private VisualDCT visualDCT;
+    private double scale;
 /**
  * Insert the method's description here.
  * Creation date: (29.12.2000 12:37:58)
  */
 
 public SetWorkspaceScale(VisualDCT visualDCT) {
-	this.visualDCT=visualDCT;
+    this.visualDCT=visualDCT;
 }
 /**
  * Insert the method's description here.
  * Creation date: (29.12.2000 12:37:43)
  */
 public void execute() {
-	visualDCT.setScale(scale);
+    visualDCT.setScale(scale);
 }
 /**
  * Insert the method's description here.
@@ -60,6 +60,6 @@ public void execute() {
  * @param scale double
  */
 public void setScale(double scale) {
-	this.scale=scale;
+    this.scale=scale;
 }
 }

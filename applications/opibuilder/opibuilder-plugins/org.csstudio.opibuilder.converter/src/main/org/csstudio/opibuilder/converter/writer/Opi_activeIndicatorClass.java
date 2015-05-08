@@ -16,15 +16,15 @@ import org.csstudio.opibuilder.converter.model.Edm_activeIndicatorClass;
  */
 public class Opi_activeIndicatorClass extends Opi_activeBarClass {
 
-	private static final String name = "EDM Indicator";
+    private static final String name = "EDM Indicator";
 
-	/**
-	 * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.
-	 */
-	public Opi_activeIndicatorClass(Context con, Edm_activeIndicatorClass r) {
-		super(con, r);
-		setName(name);
-		new OpiBoolean(widgetContext, "indicator_mode", true);		
-	}
+    /**
+     * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.
+     */
+    public Opi_activeIndicatorClass(Context con, Edm_activeIndicatorClass r) {
+        super(con, r);
+        setName(name);
+        new OpiBoolean(widgetContext, "indicator_mode", true);        
+    }
 
 }

@@ -35,71 +35,71 @@ import org.junit.Test;
  */
 public final class AbstractControlSystemSchemaTest {
 
-	private static final String ERROR_COLOR = "#010000";
-	private static final String FOREGROUND_COLOR = "#020202";
-	private static final String BACKGROUND_COLOR = "#000000";
-	private static final String ALIAS = "$channel$";
+    private static final String ERROR_COLOR = "#010000";
+    private static final String FOREGROUND_COLOR = "#020202";
+    private static final String BACKGROUND_COLOR = "#000000";
+    private static final String ALIAS = "$channel$";
 
-	/**
-	 * The instance under test.
-	 */
-	private AbstractControlSystemSchema _schema;
+    /**
+     * The instance under test.
+     */
+    private AbstractControlSystemSchema _schema;
 
-	/**
-	 * Test set up.
-	 * 
-	 */
-	@Before
-	public void setUp() {
-		_schema = new DummySchema();
+    /**
+     * Test set up.
+     * 
+     */
+    @Before
+    public void setUp() {
+        _schema = new DummySchema();
 
-	}
-	
-	@Test
-	public void testSchema() {
-		TestWidgetModel widget = new TestWidgetModel();
-		_schema.setWidgetModel(widget);
-		_schema.initialize();
-		
-		assertEquals(1, widget.getAliases().size());
-		assertTrue(widget.getAliases().containsKey(ALIAS));		
-	}
+    }
+    
+    @Test
+    public void testSchema() {
+        TestWidgetModel widget = new TestWidgetModel();
+        _schema.setWidgetModel(widget);
+        _schema.initialize();
+        
+        assertEquals(1, widget.getAliases().size());
+        assertTrue(widget.getAliases().containsKey(ALIAS));        
+    }
 
-	/**
-	 * A dummy initialization schema for unit tests.
-	 * 
-	 * @author Stefan Hofer
-	 * @version $Revision: 1.6 $
-	 * 
-	 */
-	static final class DummySchema extends AbstractControlSystemSchema {
+    /**
+     * A dummy initialization schema for unit tests.
+     * 
+     * @author Stefan Hofer
+     * @version $Revision: 1.6 $
+     * 
+     */
+    static final class DummySchema extends AbstractControlSystemSchema {
 
 
-		@Override
-		protected String getDefaultBackgroundColor() {
-			return BACKGROUND_COLOR;
-		}
+        @Override
+        protected String getDefaultBackgroundColor() {
+            return BACKGROUND_COLOR;
+        }
 
-		@Override
-		protected String getDefaultErrorColor() {
-			return ERROR_COLOR;
-		}
+        @Override
+        protected String getDefaultErrorColor() {
+            return ERROR_COLOR;
+        }
 
-		@Override
-		protected String getDefaultForegroundColor() {
-			return FOREGROUND_COLOR;
-		}
+        @Override
+        protected String getDefaultForegroundColor() {
+            return FOREGROUND_COLOR;
+        }
 
-		@Override
-		protected String getDefaultRecordAlias() {
-			return ALIAS;
-		}
+        @Override
+        protected String getDefaultRecordAlias() {
+            return ALIAS;
+        }
 
-		@Override
-		protected void initializeWidget() {
-			
-		}
+        @Override
+        protected void initializeWidget() {
+            
+        }
 
-	}
+    }
 
 }

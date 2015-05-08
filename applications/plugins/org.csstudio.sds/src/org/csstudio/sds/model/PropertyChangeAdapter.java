@@ -30,21 +30,21 @@ package org.csstudio.sds.model;
  *
  */
 public class PropertyChangeAdapter implements IPropertyChangeListener {
-	/**
-	 * {@inheritDoc}
-	 */
-	public void dynamicsDescriptorChanged(final DynamicsDescriptor dynamicsDescriptor) {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void dynamicsDescriptorChanged(final DynamicsDescriptor dynamicsDescriptor) {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void propertyManualValueChanged(String propertyId, final Object manualValue) {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void propertyManualValueChanged(String propertyId, final Object manualValue) {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void propertyValueChanged(final Object oldValue, final Object newValue) {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void propertyValueChanged(final Object oldValue, final Object newValue) {
+    }
 }

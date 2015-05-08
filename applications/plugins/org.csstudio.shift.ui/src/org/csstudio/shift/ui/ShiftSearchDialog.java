@@ -30,14 +30,14 @@ import com.google.common.base.Joiner;
 public class ShiftSearchDialog extends Dialog {
 
     protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
-	    this);
+        this);
 
     public void addPropertyChangeListener(final PropertyChangeListener listener) {
-	    changeSupport.addPropertyChangeListener(listener);
+        changeSupport.addPropertyChangeListener(listener);
     }
 
     public void removePropertyChangeListener(final PropertyChangeListener listener) {
-	    changeSupport.removePropertyChangeListener(listener);
+        changeSupport.removePropertyChangeListener(listener);
     }
 
     // GUI components
@@ -91,11 +91,11 @@ public class ShiftSearchDialog extends Dialog {
 
             @Override
             public void modifyText(final ModifyEvent e) {
-            	notificator.delayedExec(searchString, new Runnable() {
+                notificator.delayedExec(searchString, new Runnable() {
 
                 @Override
                 public void run() {
-                	setSearchParameters(ShiftSearchUtil.parseSearchString(searchString.getText()));
+                    setSearchParameters(ShiftSearchUtil.parseSearchString(searchString.getText()));
                 }
             });
             }
@@ -165,8 +165,8 @@ public class ShiftSearchDialog extends Dialog {
 
             @Override
             public void propertyChange(final PropertyChangeEvent evt) {
-            	searchParameters.put(ShiftSearchUtil.SEARCH_KEYWORD_SHIFTS,Joiner.on(",").join(shiftCombo.getSelection()));
-            	updateSearch();
+                searchParameters.put(ShiftSearchUtil.SEARCH_KEYWORD_SHIFTS,Joiner.on(",").join(shiftCombo.getSelection()));
+                updateSearch();
             }
         });
         final Label lbTypes = new Label(container, SWT.NONE);
@@ -179,8 +179,8 @@ public class ShiftSearchDialog extends Dialog {
 
             @Override
             public void propertyChange(final PropertyChangeEvent evt) {
-	            searchParameters.put(ShiftSearchUtil.SEARCH_KEYWORD_TYPE,Joiner.on(",").join(typeCombo.getSelection()));
-	            updateSearch();
+                searchParameters.put(ShiftSearchUtil.SEARCH_KEYWORD_TYPE,Joiner.on(",").join(typeCombo.getSelection()));
+                updateSearch();
             }
         });
 
@@ -195,12 +195,12 @@ public class ShiftSearchDialog extends Dialog {
 
             @Override
             public void modifyText(final ModifyEvent e) {
-            	notificator.delayedExec(textFrom, new Runnable() {
+                notificator.delayedExec(textFrom, new Runnable() {
 
                 @Override
                 public void run() {
-	                searchParameters.put(ShiftSearchUtil.SEARCH_KEYWORD_START, textFrom.getText());
-	                updateSearch();
+                    searchParameters.put(ShiftSearchUtil.SEARCH_KEYWORD_START, textFrom.getText());
+                    updateSearch();
                 }
             });
             }
@@ -217,12 +217,12 @@ public class ShiftSearchDialog extends Dialog {
 
             @Override
             public void modifyText(final ModifyEvent e) {
-            	notificator.delayedExec(textTo, new Runnable() {
+                notificator.delayedExec(textTo, new Runnable() {
 
                 @Override
                 public void run() {
-                	searchParameters.put(ShiftSearchUtil.SEARCH_KEYWORD_END, textTo.getText());
-                	updateSearch();
+                    searchParameters.put(ShiftSearchUtil.SEARCH_KEYWORD_END, textTo.getText());
+                    updateSearch();
                 }
             });
             }
@@ -239,31 +239,31 @@ public class ShiftSearchDialog extends Dialog {
         typeCombo.setItems(types);
         for (String keyword : initSearchParameters.keySet()) {
             if (ShiftSearchUtil.SEARCH_KEYWORD_TEXT.equals(keyword)) {
-            	textOwner.setText(initSearchParameters.get(keyword));
+                textOwner.setText(initSearchParameters.get(keyword));
             }
             if (ShiftSearchUtil.SEARCH_KEYWORD_SHIFTS.equals(keyword)) {
-            	shiftCombo.setSelection(initSearchParameters.get(keyword));
+                shiftCombo.setSelection(initSearchParameters.get(keyword));
             }
             if (ShiftSearchUtil.SEARCH_KEYWORD_TYPE.equals(keyword)) {
-            	typeCombo.setSelection(initSearchParameters.get(keyword));
+                typeCombo.setSelection(initSearchParameters.get(keyword));
             }
             if (ShiftSearchUtil.SEARCH_KEYWORD_START.equals(keyword)) {
-            	textFrom.setText(initSearchParameters.get(keyword));
+                textFrom.setText(initSearchParameters.get(keyword));
             }
             if (ShiftSearchUtil.SEARCH_KEYWORD_END.equals(keyword)) {
-            	textTo.setText(initSearchParameters.get(keyword));
+                textTo.setText(initSearchParameters.get(keyword));
             }
             if (ShiftSearchUtil.SEARCH_KEYWORD_OWNER.equals(keyword)) {
-            	textOwner.setText(initSearchParameters.get(keyword));
+                textOwner.setText(initSearchParameters.get(keyword));
             }
             if (ShiftSearchUtil.SEARCH_KEYWORD_STATUS.equals(keyword)) {
-            	textStatus.setText(initSearchParameters.get(keyword));
+                textStatus.setText(initSearchParameters.get(keyword));
             }
         }
     }
 
     protected void updateSearch() {
-	    searchString.setText(ShiftSearchUtil.parseSearchMap(searchParameters));
+        searchString.setText(ShiftSearchUtil.parseSearchMap(searchParameters));
     }
 
 
@@ -278,7 +278,7 @@ public class ShiftSearchDialog extends Dialog {
     }
 
     public String getSearchString() {
-	    return ShiftSearchUtil.parseSearchMap(searchParameters);
+        return ShiftSearchUtil.parseSearchMap(searchParameters);
     }
 
 }

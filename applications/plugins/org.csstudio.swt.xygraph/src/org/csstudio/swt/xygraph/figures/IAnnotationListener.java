@@ -13,7 +13,7 @@ package org.csstudio.swt.xygraph.figures;
  *
  */
 public interface IAnnotationListener {
-	
+    
     /**
      * This event indicates a change in the axis' value range
      */

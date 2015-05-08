@@ -42,48 +42,48 @@ import java.util.*;
 public class RecentFilesMenu extends JMenu
 {
 
-	class RecentFileMenuItem extends JMenuItem
-	{
-		private static final String invalid = "<invalid>";
-		private File file;
-		
-		public RecentFileMenuItem(File file)
-		{
-			super();
-			this.file = file;
-		}
-		
-		/**
-		 * Returns the file.
-		 * @return File
-		 */
-		public File getFile()
-		{
-			return file;
-		}
+    class RecentFileMenuItem extends JMenuItem
+    {
+        private static final String invalid = "<invalid>";
+        private File file;
+        
+        public RecentFileMenuItem(File file)
+        {
+            super();
+            this.file = file;
+        }
+        
+        /**
+         * Returns the file.
+         * @return File
+         */
+        public File getFile()
+        {
+            return file;
+        }
 
-		/**
-		 * Sets the file.
-		 * @param file The file to set
-		 */
-		public void setFile(File file)
-		{
-			this.file = file;
-		}
+        /**
+         * Sets the file.
+         * @param file The file to set
+         */
+        public void setFile(File file)
+        {
+            this.file = file;
+        }
 
 
-		/**
-		 * @see javax.swing.AbstractButton#getText()
-		 */
-		public String getText()
-		{
-			if (file != null)
-				return file.toString();
-			else
-				return invalid;
-		}
+        /**
+         * @see javax.swing.AbstractButton#getText()
+         */
+        public String getText()
+        {
+            if (file != null)
+                return file.toString();
+            else
+                return invalid;
+        }
 
-	}
+    }
 
 /**
  * Insert the method's description here.
@@ -92,8 +92,8 @@ public class RecentFilesMenu extends JMenu
  */
 public RecentFilesMenu()
 {
-	setEnabled(false);
-	setText("Recent files...");
+    setEnabled(false);
+    setText("Recent files...");
 }
 
 /**
@@ -103,7 +103,7 @@ public RecentFilesMenu()
  */
 public void addFile(File file)
 {
-	addFile(file, false);
+    addFile(file, false);
 }
 
 /**
@@ -113,42 +113,42 @@ public void addFile(File file)
  */
 public synchronized void addFile(File file, boolean makeLast)
 {
-	
-	RecentFileMenuItem mi = null;
+    
+    RecentFileMenuItem mi = null;
 
-	for (int i = 0; i < getItemCount(); i++)
-	{
-		RecentFileMenuItem rfmi = (RecentFileMenuItem)getItem(i);
-		if (rfmi.getFile().equals(file))
-		{
-			remove(i);
-			mi = rfmi;
-		}
-	}
-	
-	// none found, create a new item
-	if (mi == null)
-	{
-		mi = new RecentFileMenuItem(file);
-		
-		ActionListener[] ais = getActionListeners();
-		for (int i = 0; i < ais.length; i++)
-			mi.addActionListener(ais[i]);
-	}
-	
-	
-	// add new one at the top
-	if (!makeLast)
-		insert(mi, 0);
-	else
-		add(mi);
-	
-	// remove last
-	if (getItemCount()>Constants.MAX_RECENT_FILES)
-		remove(getItemCount()-1);
+    for (int i = 0; i < getItemCount(); i++)
+    {
+        RecentFileMenuItem rfmi = (RecentFileMenuItem)getItem(i);
+        if (rfmi.getFile().equals(file))
+        {
+            remove(i);
+            mi = rfmi;
+        }
+    }
+    
+    // none found, create a new item
+    if (mi == null)
+    {
+        mi = new RecentFileMenuItem(file);
+        
+        ActionListener[] ais = getActionListeners();
+        for (int i = 0; i < ais.length; i++)
+            mi.addActionListener(ais[i]);
+    }
+    
+    
+    // add new one at the top
+    if (!makeLast)
+        insert(mi, 0);
+    else
+        add(mi);
+    
+    // remove last
+    if (getItemCount()>Constants.MAX_RECENT_FILES)
+        remove(getItemCount()-1);
 
-	if (getItemCount()>0)	
-		setEnabled(true);
+    if (getItemCount()>0)    
+        setEnabled(true);
 }
 
 /**
@@ -157,15 +157,15 @@ public synchronized void addFile(File file, boolean makeLast)
  */
 public ArrayList getFiles()
 {
-	ArrayList list = new ArrayList();
-	
-	for (int i = 0; i < getItemCount(); i++)
-	{
-		RecentFileMenuItem rfmi = (RecentFileMenuItem)getItem(i);
-		list.add(rfmi.getFile());
-	}
-	
-	return list;
+    ArrayList list = new ArrayList();
+    
+    for (int i = 0; i < getItemCount(); i++)
+    {
+        RecentFileMenuItem rfmi = (RecentFileMenuItem)getItem(i);
+        list.add(rfmi.getFile());
+    }
+    
+    return list;
 }
 
 }

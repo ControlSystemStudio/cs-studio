@@ -37,63 +37,63 @@ import org.eclipse.swt.widgets.Composite;
  */
 public final class DoubleArrayPropertyDescriptor extends TextPropertyDescriptor {
 
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param id
-	 *            the id of the property
-	 * @param displayName
-	 *            the name to display for the property
-	 * @param category
-	 *            the category
-	 */
-	public DoubleArrayPropertyDescriptor(final Object id, final String displayName, PropertyTypesEnum type, final
-			String category) {
-		super(id, displayName, type, category);
-		
-		this.setLabelProvider(new DoubleArrayLabelProvider());
-	}
+    /**
+     * Standard constructor.
+     * 
+     * @param id
+     *            the id of the property
+     * @param displayName
+     *            the name to display for the property
+     * @param category
+     *            the category
+     */
+    public DoubleArrayPropertyDescriptor(final Object id, final String displayName, PropertyTypesEnum type, final
+            String category) {
+        super(id, displayName, type, category);
+        
+        this.setLabelProvider(new DoubleArrayLabelProvider());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CellEditor createPropertyEditor(final Composite parent) {
-		CellEditor editor = new DoubleArrayCellEditor(parent);
-		if (getValidator() != null) {
-			editor.setValidator(getValidator());
-		}
-		return editor;
-	}
-	
-	/**
-	 * A label provider for a double[] value.
-	 * 
-	 * @author Kai Meyer
-	 * 
-	 */
-	private final class DoubleArrayLabelProvider extends LabelProvider {
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public String getText(final Object element) {
-			if (element instanceof double[]) {
-				StringBuffer buffer = new StringBuffer();
-				buffer.append("(");
-				double[] array = (double[]) element;
-				if (array.length>0) {
-					buffer.append(array[0]);
-					for (int i=1;i<array.length;i++) {
-						buffer.append("; ");
-						buffer.append(array[i]);
-					}
-				}
-				buffer.append(")");
-				return buffer.toString();
-			} else {
-				return element.toString();
-			}
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CellEditor createPropertyEditor(final Composite parent) {
+        CellEditor editor = new DoubleArrayCellEditor(parent);
+        if (getValidator() != null) {
+            editor.setValidator(getValidator());
+        }
+        return editor;
+    }
+    
+    /**
+     * A label provider for a double[] value.
+     * 
+     * @author Kai Meyer
+     * 
+     */
+    private final class DoubleArrayLabelProvider extends LabelProvider {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String getText(final Object element) {
+            if (element instanceof double[]) {
+                StringBuffer buffer = new StringBuffer();
+                buffer.append("(");
+                double[] array = (double[]) element;
+                if (array.length>0) {
+                    buffer.append(array[0]);
+                    for (int i=1;i<array.length;i++) {
+                        buffer.append("; ");
+                        buffer.append(array[i]);
+                    }
+                }
+                buffer.append(")");
+                return buffer.toString();
+            } else {
+                return element.toString();
+            }
+        }
+    }
 }

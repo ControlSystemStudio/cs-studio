@@ -115,8 +115,8 @@ public class CheckBoxImages
         // happened to be on top of the screen.
         // Maybe this helps to avoid that?
         shell.forceActive();
-		final Image image = SingleSourcePlugin.getUIHelper().getScreenshot(
-				shell.getDisplay(), button, new Rectangle(0, 0, size, size));
+        final Image image = SingleSourcePlugin.getUIHelper().getScreenshot(
+                shell.getDisplay(), button, new Rectangle(0, 0, size, size));
         shell.close();
     
         return image;

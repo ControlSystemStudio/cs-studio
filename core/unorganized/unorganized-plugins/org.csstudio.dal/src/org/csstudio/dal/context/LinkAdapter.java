@@ -32,77 +32,77 @@ package org.csstudio.dal.context;
  */
 public class LinkAdapter<C extends Linkable> implements LinkListener<C>
 {
-	/**
-	 * Creates a new LinkAdapter object.
-	 */
-	public LinkAdapter()
-	{
-		super();
-	}
+    /**
+     * Creates a new LinkAdapter object.
+     */
+    public LinkAdapter()
+    {
+        super();
+    }
 
-	/**
-	 * @see LinkListener#resumed(ConnectionEvent)
-	 */
-	public void resumed(ConnectionEvent<C> e)
-	{
-		// override if needed
-	}
+    /**
+     * @see LinkListener#resumed(ConnectionEvent)
+     */
+    public void resumed(ConnectionEvent<C> e)
+    {
+        // override if needed
+    }
 
-	/**
-	 * @see LinkListener#suspended(ConnectionEvent)
-	 */
-	public void suspended(ConnectionEvent<C> e)
-	{
-		// override if needed
-	}
+    /**
+     * @see LinkListener#suspended(ConnectionEvent)
+     */
+    public void suspended(ConnectionEvent<C> e)
+    {
+        // override if needed
+    }
 
-	/**
-	 * @see LinkListener#connected(ConnectionEvent)
-	 */
-	public void connected(ConnectionEvent<C> e)
-	{
-		// override if needed
-	}
+    /**
+     * @see LinkListener#connected(ConnectionEvent)
+     */
+    public void connected(ConnectionEvent<C> e)
+    {
+        // override if needed
+    }
 
-	/**
-	 * @see LinkListener#operational(ConnectionEvent)
-	 */
-	public void operational(ConnectionEvent<C> e)
-	{
-		// override if needed
-	}
+    /**
+     * @see LinkListener#operational(ConnectionEvent)
+     */
+    public void operational(ConnectionEvent<C> e)
+    {
+        // override if needed
+    }
 
-	/**
-	 * @see LinkListener#disconnected(ConnectionEvent)
-	 */
-	public void disconnected(ConnectionEvent<C> e)
-	{
-		// override if needed
-	}
+    /**
+     * @see LinkListener#disconnected(ConnectionEvent)
+     */
+    public void disconnected(ConnectionEvent<C> e)
+    {
+        // override if needed
+    }
 
-	/**
-	 * @see LinkListener#connectionLost(ConnectionEvent)
-	 */
-	public void connectionLost(ConnectionEvent<C> e)
-	{
-		// override if needed
-	}
+    /**
+     * @see LinkListener#connectionLost(ConnectionEvent)
+     */
+    public void connectionLost(ConnectionEvent<C> e)
+    {
+        // override if needed
+    }
 
-	/**
-	 * @see LinkListener#destroyed(ConnectionEvent)
-	 */
-	public void destroyed(ConnectionEvent<C> e)
-	{
-		// override if needed
-	}
+    /**
+     * @see LinkListener#destroyed(ConnectionEvent)
+     */
+    public void destroyed(ConnectionEvent<C> e)
+    {
+        // override if needed
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.LinkListener#connectionFailed(org.csstudio.dal.context.ConnectionEvent)
-	 */
-	public void connectionFailed(ConnectionEvent<C> e)
-	{
-		// override if needed
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.LinkListener#connectionFailed(org.csstudio.dal.context.ConnectionEvent)
+     */
+    public void connectionFailed(ConnectionEvent<C> e)
+    {
+        // override if needed
+    }
 }
 
 /* __oOo__ */

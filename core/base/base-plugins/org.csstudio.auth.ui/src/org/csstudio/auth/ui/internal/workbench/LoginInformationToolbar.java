@@ -51,7 +51,7 @@ public class LoginInformationToolbar extends WorkbenchWindowControlContribution 
 
     private static final String LS = System.getProperty("line.separator"); //$NON-NLS-1$
 
-	/**
+    /**
      * Listens for user management events and processes them by updating the
      * text in the status bar.
      */
@@ -119,20 +119,20 @@ public class LoginInformationToolbar extends WorkbenchWindowControlContribution 
             .append(Messages.LoginInformationToolbar_System).append(System.getProperty("user.name")); //$NON-NLS-2$
 
             Button button = new Button(composite, SWT.PUSH);
-			button.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
-					false));
-			button.setText(Messages.LoginInformationToolbar_ButtonText);
-			button.setToolTipText(sb.toString());
-			button.addSelectionListener(new SelectionListener() {
+            button.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
+                    false));
+            button.setText(Messages.LoginInformationToolbar_ButtonText);
+            button.setToolTipText(sb.toString());
+            button.addSelectionListener(new SelectionListener() {
 
-				public void widgetSelected(SelectionEvent e) {
-					MessageDialog.openInformation(null,Messages.LoginInformationToolbar_Title , sb.toString());
-				}
+                public void widgetSelected(SelectionEvent e) {
+                    MessageDialog.openInformation(null,Messages.LoginInformationToolbar_Title , sb.toString());
+                }
 
-				public void widgetDefaultSelected(SelectionEvent e) {
-					MessageDialog.openInformation(null, Messages.LoginInformationToolbar_Title, sb.toString());
-				}
-			});
+                public void widgetDefaultSelected(SelectionEvent e) {
+                    MessageDialog.openInformation(null, Messages.LoginInformationToolbar_Title, sb.toString());
+                }
+            });
 
         } else {
             Label label = new Label(composite, SWT.NONE);

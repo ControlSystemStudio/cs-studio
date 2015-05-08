@@ -40,51 +40,51 @@ import org.junit.Test;
  * 
  */
 public final class OptionPropertyPersistenceHandlerTest {
-	/**
-	 * Test for the writing behaviour.
-	 */
-	@Test
-	public void testWriteProperty() {
-		ArrayOptionPropertyPersistenceHandler handler = new ArrayOptionPropertyPersistenceHandler();
-		WidgetProperty property = new ArrayOptionProperty(
-				"description", WidgetPropertyCategory.BEHAVIOR, new String[] { "Option1", "Option2", "Option3" }, 1);//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		property.setDynamicsDescriptor(new DynamicsDescriptor());
-		property.setPropertyValue(2);
+    /**
+     * Test for the writing behaviour.
+     */
+    @Test
+    public void testWriteProperty() {
+        ArrayOptionPropertyPersistenceHandler handler = new ArrayOptionPropertyPersistenceHandler();
+        WidgetProperty property = new ArrayOptionProperty(
+                "description", WidgetPropertyCategory.BEHAVIOR, new String[] { "Option1", "Option2", "Option3" }, 1);//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        property.setDynamicsDescriptor(new DynamicsDescriptor());
+        property.setPropertyValue(2);
 
-		Element propertyTag = new Element("anyTag"); //$NON-NLS-1$
+        Element propertyTag = new Element("anyTag"); //$NON-NLS-1$
 
-		handler.writeProperty(propertyTag, property.getPropertyValue());
-		assertEquals(1, propertyTag.getChildren().size());
+        handler.writeProperty(propertyTag, property.getPropertyValue());
+        assertEquals(1, propertyTag.getChildren().size());
 
-		Element optionElement = (Element) propertyTag.getChildren().get(0);
-		assertNotNull(optionElement);
-		assertEquals(0, optionElement.getChildren().size());
+        Element optionElement = (Element) propertyTag.getChildren().get(0);
+        assertNotNull(optionElement);
+        assertEquals(0, optionElement.getChildren().size());
 
-		assertEquals(
-				"2", //$NON-NLS-1$
-				optionElement
-						.getAttributeValue(ArrayOptionPropertyPersistenceHandler.XML_ATTRIBUTE_OPTION_ID));
-	}
+        assertEquals(
+                "2", //$NON-NLS-1$
+                optionElement
+                        .getAttributeValue(ArrayOptionPropertyPersistenceHandler.XML_ATTRIBUTE_OPTION_ID));
+    }
 
-	/**
-	 * Test for the reading behaviour.
-	 */
-	@Test
-	public void testReadProperty() {
-		ArrayOptionPropertyPersistenceHandler handler = new ArrayOptionPropertyPersistenceHandler();
+    /**
+     * Test for the reading behaviour.
+     */
+    @Test
+    public void testReadProperty() {
+        ArrayOptionPropertyPersistenceHandler handler = new ArrayOptionPropertyPersistenceHandler();
 
-		Element propertyTag = new Element("anyTag"); //$NON-NLS-1$
-		Element optionElement = new Element(
-				ArrayOptionPropertyPersistenceHandler.XML_ELEMENT_OPTION);
-		optionElement.setAttribute(
-				ArrayOptionPropertyPersistenceHandler.XML_ATTRIBUTE_OPTION_ID, "2"); //$NON-NLS-1$
-		propertyTag.addContent(optionElement);
+        Element propertyTag = new Element("anyTag"); //$NON-NLS-1$
+        Element optionElement = new Element(
+                ArrayOptionPropertyPersistenceHandler.XML_ELEMENT_OPTION);
+        optionElement.setAttribute(
+                ArrayOptionPropertyPersistenceHandler.XML_ATTRIBUTE_OPTION_ID, "2"); //$NON-NLS-1$
+        propertyTag.addContent(optionElement);
 
-		Object propertyValue = handler.readProperty(propertyTag);
+        Object propertyValue = handler.readProperty(propertyTag);
 
-		assertTrue(propertyValue instanceof Integer);
+        assertTrue(propertyValue instanceof Integer);
 
-		assertEquals(2, propertyValue);
-	}
+        assertEquals(2, propertyValue);
+    }
 
 }

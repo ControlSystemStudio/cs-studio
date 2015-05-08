@@ -37,93 +37,93 @@ import org.apache.log4j.Logger;
  */
 public class LinkBlocker<C extends Linkable> extends LinkAdapter<C>
 {
-	ConnectionEvent e;
-	boolean failed = false;
-	C l;
+    ConnectionEvent e;
+    boolean failed = false;
+    C l;
 
-	/**
-	 * Convenience static method for blocking.
-	 * @param l linkable
-	 * @param timeout timeout
-	 * @param throwException if exception is thrown when failure occurs
-	 * @return blocker
-	 * @throws ConnectionException
-	 */
-	public static final <T extends Linkable> LinkBlocker<T> blockUntillConnected(T l,
-	    long timeout, boolean throwException) throws ConnectionException
-	{
-		LinkBlocker<T> b = new LinkBlocker<T>(l);
-		b.blockTillConnected(timeout, throwException);
+    /**
+     * Convenience static method for blocking.
+     * @param l linkable
+     * @param timeout timeout
+     * @param throwException if exception is thrown when failure occurs
+     * @return blocker
+     * @throws ConnectionException
+     */
+    public static final <T extends Linkable> LinkBlocker<T> blockUntillConnected(T l,
+        long timeout, boolean throwException) throws ConnectionException
+    {
+        LinkBlocker<T> b = new LinkBlocker<T>(l);
+        b.blockTillConnected(timeout, throwException);
 
-		return b;
-	}
+        return b;
+    }
 
-	/**
-	 * Creates link blocker for provided linkable.
-	 * @param l linkable
-	 */
-	public LinkBlocker(C l)
-	{
-		this.l = l;
-		l.addLinkListener(this);
-	}
+    /**
+     * Creates link blocker for provided linkable.
+     * @param l linkable
+     */
+    public LinkBlocker(C l)
+    {
+        this.l = l;
+        l.addLinkListener(this);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.LinkAdapter#connected(org.csstudio.dal.context.ConnectionEvent)
-	 */
-	@Override
-	public synchronized void connected(ConnectionEvent<C> e)
-	{
-		this.e = e;
-		l.removeLinkListener(this);
-		notify();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.LinkAdapter#connected(org.csstudio.dal.context.ConnectionEvent)
+     */
+    @Override
+    public synchronized void connected(ConnectionEvent<C> e)
+    {
+        this.e = e;
+        l.removeLinkListener(this);
+        notify();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.LinkAdapter#connectionFailed(org.csstudio.dal.context.ConnectionEvent)
-	 */
-	@Override
-	public synchronized void connectionFailed(ConnectionEvent<C> e)
-	{
-		this.e = e;
-		failed = true;
-		l.removeLinkListener(this);
-		notify();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.LinkAdapter#connectionFailed(org.csstudio.dal.context.ConnectionEvent)
+     */
+    @Override
+    public synchronized void connectionFailed(ConnectionEvent<C> e)
+    {
+        this.e = e;
+        failed = true;
+        l.removeLinkListener(this);
+        notify();
+    }
 
-	public synchronized void blockTillConnected(long timeout,
-	    boolean throwException) throws ConnectionException
-	{
-		if (l.isConnected()) {
-			return;
-		}
+    public synchronized void blockTillConnected(long timeout,
+        boolean throwException) throws ConnectionException
+    {
+        if (l.isConnected()) {
+            return;
+        }
 
-		if (l.isConnectionFailed()) {
-			failed = true;
+        if (l.isConnectionFailed()) {
+            failed = true;
 
-			if (throwException) {
-				throw new ConnectionException(l, "Connection failed.", null);
-			}
-		}
+            if (throwException) {
+                throw new ConnectionException(l, "Connection failed.", null);
+            }
+        }
 
-		try {
-			wait(timeout);
-		} catch (Exception e) {
-			Logger.getLogger(LinkBlocker.class).debug("Wait interrupted.", e);
-		}
+        try {
+            wait(timeout);
+        } catch (Exception e) {
+            Logger.getLogger(LinkBlocker.class).debug("Wait interrupted.", e);
+        }
 
-		if (throwException) {
-			if (e == null) {
-				throw new ConnectionException(l,
-				    "Connection failed, "+(int)(timeout/1000)+"s timeout exceeded.", null);
-			}
+        if (throwException) {
+            if (e == null) {
+                throw new ConnectionException(l,
+                    "Connection failed, "+(int)(timeout/1000)+"s timeout exceeded.", null);
+            }
 
-			if (e.getState() != ConnectionState.CONNECTED) {
-				throw new ConnectionException(l, "Connection failed.",
-				    e.getError());
-			}
-		}
-	}
+            if (e.getState() != ConnectionState.CONNECTED) {
+                throw new ConnectionException(l, "Connection failed.",
+                    e.getError());
+            }
+        }
+    }
 }
 
 /* __oOo__ */

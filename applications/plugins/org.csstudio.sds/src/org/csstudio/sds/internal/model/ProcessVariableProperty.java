@@ -37,43 +37,43 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  */
 public final class ProcessVariableProperty extends WidgetProperty {
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param description
-	 *            a description
-	 * @param category
-	 *            a category
-	 * @param defaultValue
-	 *            the default value
-	 */
-	public ProcessVariableProperty(final String description,
-			final WidgetPropertyCategory category, final IProcessVariableAddress defaultValue) {
-		super(PropertyTypesEnum.PROCESSVARIABLE, description, category, defaultValue,
-				null);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object checkValue(final Object value) {
-		assert value != null : "value!=null"; //$NON-NLS-1$
+    /**
+     * Constructor.
+     * 
+     * @param description
+     *            a description
+     * @param category
+     *            a category
+     * @param defaultValue
+     *            the default value
+     */
+    public ProcessVariableProperty(final String description,
+            final WidgetPropertyCategory category, final IProcessVariableAddress defaultValue) {
+        super(PropertyTypesEnum.PROCESSVARIABLE, description, category, defaultValue,
+                null);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object checkValue(final Object value) {
+        assert value != null : "value!=null"; //$NON-NLS-1$
 
-		Object acceptedValue = value;
+        Object acceptedValue = value;
 
-		if (!(value instanceof IProcessVariableAddress)) {
-			acceptedValue = null;
-		}
-		
-		return acceptedValue;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getCompatibleJavaTypes() {
-		return new Class[]{IProcessVariableAddress.class};
-	}
+        if (!(value instanceof IProcessVariableAddress)) {
+            acceptedValue = null;
+        }
+        
+        return acceptedValue;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getCompatibleJavaTypes() {
+        return new Class[]{IProcessVariableAddress.class};
+    }
 }

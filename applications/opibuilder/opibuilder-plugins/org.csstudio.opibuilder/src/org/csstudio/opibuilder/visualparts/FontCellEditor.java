@@ -47,73 +47,73 @@ import org.eclipse.swt.widgets.Shell;
  * @author Kay Kasemir, Kai Meyer
  */
 public final class FontCellEditor extends CellEditor {
-	/**
-	 * A shell.
-	 */
-	private Shell _shell;
+    /**
+     * A shell.
+     */
+    private Shell _shell;
 
-	/**
-	 * The current RGB value.
-	 */
-	private FontData _value;
+    /**
+     * The current RGB value.
+     */
+    private FontData _value;
 
-	/**
-	 * Creates a new font cell editor parented under the given control. The
-	 * cell editor value is an SWT Font value.
-	 * 
-	 * @param parent
-	 *            The parent table.
-	 */
-	public FontCellEditor(final Composite parent) {
-		super(parent, SWT.NONE);
-		_shell = parent.getShell();
-	}
+    /**
+     * Creates a new font cell editor parented under the given control. The
+     * cell editor value is an SWT Font value.
+     * 
+     * @param parent
+     *            The parent table.
+     */
+    public FontCellEditor(final Composite parent) {
+        super(parent, SWT.NONE);
+        _shell = parent.getShell();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void activate() {
-		FontDialog dialog = new FontDialog(_shell);
-		if (_value != null) {
-			dialog.setFontList(new FontData[] {_value});
-		}
-		_value = dialog.open();
-		if (_value != null) {
-			fireApplyEditorValue();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void activate() {
+        FontDialog dialog = new FontDialog(_shell);
+        if (_value != null) {
+            dialog.setFontList(new FontData[] {_value});
+        }
+        _value = dialog.open();
+        if (_value != null) {
+            fireApplyEditorValue();
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Control createControl(final Composite parent) {
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Control createControl(final Composite parent) {
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Object doGetValue() {
-		return _value;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Object doGetValue() {
+        return _value;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doSetFocus() {
-		// Ignore
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doSetFocus() {
+        // Ignore
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doSetValue(final Object value) {
-		Assert.isTrue(value instanceof FontData);
-		this._value = (FontData) value;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doSetValue(final Object value) {
+        Assert.isTrue(value instanceof FontData);
+        this._value = (FontData) value;
+    }
 }

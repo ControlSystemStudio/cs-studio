@@ -35,30 +35,30 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public final class MoveToBackAction extends AbstractOrderAction {
 
-	/**
-	 * Action ID of this action.
-	 */
-	public static final String ID = "org.csstudio.sds.ui.internal.actions.MoveToBackAction";
+    /**
+     * Action ID of this action.
+     */
+    public static final String ID = "org.csstudio.sds.ui.internal.actions.MoveToBackAction";
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param workbenchPart
-	 *            a workbench part
-	 */
-	public MoveToBackAction(final IWorkbenchPart workbenchPart) {
-		super(workbenchPart);
-		setId(ID);
-		setText("To Back");
-	}
+    /**
+     * Constructor.
+     * 
+     * @param workbenchPart
+     *            a workbench part
+     */
+    public MoveToBackAction(final IWorkbenchPart workbenchPart) {
+        super(workbenchPart);
+        setId(ID);
+        setText("To Back");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Command createCommand(final ContainerModel container,
-			final AbstractWidgetModel widget) {
-		return new ChangeOrderCommand(container, widget, container
-				.getBackIndex(widget));
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Command createCommand(final ContainerModel container,
+            final AbstractWidgetModel widget) {
+        return new ChangeOrderCommand(container, widget, container
+                .getBackIndex(widget));
+    }
 }

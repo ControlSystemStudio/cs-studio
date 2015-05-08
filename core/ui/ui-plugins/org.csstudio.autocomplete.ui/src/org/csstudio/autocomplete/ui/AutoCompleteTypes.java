@@ -17,7 +17,7 @@ import org.csstudio.autocomplete.AutoCompleteType;
  */
 public class AutoCompleteTypes {
 
-	public static final String PV = AutoCompleteType.PV.value();
-	public static final String Formula = AutoCompleteType.Formula.value();
+    public static final String PV = AutoCompleteType.PV.value();
+    public static final String Formula = AutoCompleteType.Formula.value();
 
 }

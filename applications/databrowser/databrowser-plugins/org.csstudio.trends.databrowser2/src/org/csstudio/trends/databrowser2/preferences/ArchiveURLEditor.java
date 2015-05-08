@@ -79,7 +79,7 @@ public class ArchiveURLEditor extends RowEditDialog
     protected void okPressed()
     {
         rowData[0] = url == null ? "" : url.getText().trim();
-    	rowData[1] = alias == null ? "" : alias.getText().trim();
+        rowData[1] = alias == null ? "" : alias.getText().trim();
         super.okPressed();
     }
 }

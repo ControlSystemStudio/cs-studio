@@ -46,8 +46,8 @@ public class EPICSFwdLink extends EPICSOutLink {
  * @param fieldData com.cosylab.vdct.vdb.VDBFieldData
  */
 public EPICSFwdLink(ContainerObject parent, com.cosylab.vdct.vdb.VDBFieldData fieldData) {
-	super(parent, fieldData);
-	getLinkProperties().setProcess("PP");
+    super(parent, fieldData);
+    getLinkProperties().setProcess("PP");
 }
 
 /**
@@ -56,32 +56,32 @@ public EPICSFwdLink(ContainerObject parent, com.cosylab.vdct.vdb.VDBFieldData fi
  * @return java.util.Vector
  */
 public java.util.Vector getItems() {
-	Vector items = super.getItems();
+    Vector items = super.getItems();
 
-	// FWD has only CA and PP
-	Enumeration e = items.elements();
-	while (e.hasMoreElements())
-	{
-		Object obj = e.nextElement();
-		if (obj instanceof JMenu)
-		{
-			JMenu menu = (JMenu)obj;
-			if (menu.getText().equals(processString))
-			{
-				for (int i=0; i<menu.getItemCount(); i++)
-					{
-						JMenuItem menuItem = menu.getItem(i);
-						if (!menuItem.getText().equals(caString) &&
-							!menuItem.getText().equals(ppString))
-							{ menu.remove(i); i--; }
-					}
-				}
-			break;
-		}
-	}
-	
+    // FWD has only CA and PP
+    Enumeration e = items.elements();
+    while (e.hasMoreElements())
+    {
+        Object obj = e.nextElement();
+        if (obj instanceof JMenu)
+        {
+            JMenu menu = (JMenu)obj;
+            if (menu.getText().equals(processString))
+            {
+                for (int i=0; i<menu.getItemCount(); i++)
+                    {
+                        JMenuItem menuItem = menu.getItem(i);
+                        if (!menuItem.getText().equals(caString) &&
+                            !menuItem.getText().equals(ppString))
+                            { menu.remove(i); i--; }
+                    }
+                }
+            break;
+        }
+    }
+    
 
-	return items;
+    return items;
 }
 
 }

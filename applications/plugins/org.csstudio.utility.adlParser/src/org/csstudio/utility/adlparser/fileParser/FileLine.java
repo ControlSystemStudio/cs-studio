@@ -72,12 +72,12 @@ public class FileLine {
      * @return
      */
     public static boolean argEquals(String arg, String toCompare) {
-    	if(arg.trim().replaceAll( "\"", "" ).equalsIgnoreCase(toCompare)) {
-    		return true;
-    	}
-    	else {
-    		return false;
-    	}
+        if(arg.trim().replaceAll( "\"", "" ).equalsIgnoreCase(toCompare)) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     /** 
      * Method used in parseWidgetPart to get the value with quotes and leading and trailing spaces removed
@@ -85,7 +85,7 @@ public class FileLine {
      * @return
      */
     public static String getTrimmedValue(String input){
-    	return input.replaceAll( "\"", "" ).trim();
+        return input.replaceAll( "\"", "" ).trim();
     }
     
     /**
@@ -94,7 +94,7 @@ public class FileLine {
      * @return
      */
     public static int getIntValue(String input) throws NumberFormatException{
-    	return Integer.parseInt(FileLine.getTrimmedValue(input));
+        return Integer.parseInt(FileLine.getTrimmedValue(input));
     }
     
     /**
@@ -103,7 +103,7 @@ public class FileLine {
      * @return
      */
     public static float getFloatValue(String input) throws NumberFormatException {
-    	return Float.parseFloat(FileLine.getTrimmedValue(input));
+        return Float.parseFloat(FileLine.getTrimmedValue(input));
     }
     
     /**
@@ -112,7 +112,7 @@ public class FileLine {
      * @return
      */
     public static boolean getBooleanValue(String input) {
-    	return Boolean.parseBoolean(FileLine.getTrimmedValue(input));
+        return Boolean.parseBoolean(FileLine.getTrimmedValue(input));
     }
     
     /* (non-Javadoc)

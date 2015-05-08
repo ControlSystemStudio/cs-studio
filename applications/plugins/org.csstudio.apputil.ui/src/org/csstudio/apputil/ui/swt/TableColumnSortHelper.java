@@ -37,9 +37,9 @@ import org.eclipse.swt.widgets.TableColumn;
  *  @param <E> Data type used for rows in the table
  */
 public abstract class TableColumnSortHelper<E>
-	extends SelectionAdapter
+    extends SelectionAdapter
 {
-	final private TableViewer viewer;
+    final private TableViewer viewer;
     final private TableColumn column;
     private boolean up = true; // Initial sort: up
     
@@ -47,18 +47,18 @@ public abstract class TableColumnSortHelper<E>
      *  @param viewer {@link TableViewer}
      *  @param column {@link TableViewerColumn} of column to sort
      */
-	public TableColumnSortHelper(final TableViewer viewer,
+    public TableColumnSortHelper(final TableViewer viewer,
             final TableViewerColumn column)
     {
-		this.viewer = viewer;
-		this.column = column.getColumn();
-		this.column.addSelectionListener(this);
+        this.viewer = viewer;
+        this.column = column.getColumn();
+        this.column.addSelectionListener(this);
     }
 
     /** React to column selection
      *  @param event Not used
      */
-	@Override
+    @Override
     public void widgetSelected(final SelectionEvent e)
     {
         final Table table = viewer.getTable();
@@ -66,30 +66,30 @@ public abstract class TableColumnSortHelper<E>
         // Was this column already used for sorting?
         if (table.getSortColumn() == column)
         {   // toggle
-        	up = table.getSortDirection() != SWT.UP;
+            up = table.getSortDirection() != SWT.UP;
         }
         table.setSortDirection(up ? SWT.UP : SWT.DOWN);
         table.setSortColumn(column);
         
         viewer.setComparator(new ViewerComparator()
         {
-			@SuppressWarnings("unchecked")
+            @SuppressWarnings("unchecked")
             @Override
             public int compare(final Viewer viewer,
-            		final Object object1, final Object object2)
+                    final Object object1, final Object object2)
             {
-				final E item1 = (E)object1;
-				final E item2 = (E)object2;
-				final int cmp = TableColumnSortHelper.this.compare(item1, item2);
+                final E item1 = (E)object1;
+                final E item2 = (E)object2;
+                final int cmp = TableColumnSortHelper.this.compare(item1, item2);
                 return up ? cmp : -cmp;
             }
         });
     }
 
-	/** To be provided by implementing class
-	 *  @param item1 One of the items to compare
-	 *  @param item2 item to compare against
-	 *  @return -1, 0 or 1 depending on comparison
-	 */
-	abstract protected int compare(E item1, E item2);
+    /** To be provided by implementing class
+     *  @param item1 One of the items to compare
+     *  @param item2 item to compare against
+     *  @return -1, 0 or 1 depending on comparison
+     */
+    abstract protected int compare(E item1, E item2);
 }

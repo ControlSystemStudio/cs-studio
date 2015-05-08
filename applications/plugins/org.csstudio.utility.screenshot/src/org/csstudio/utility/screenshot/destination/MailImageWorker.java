@@ -72,12 +72,12 @@ public class MailImageWorker implements IImageWorker {
     
     private static final Logger LOG = LoggerFactory.getLogger(MailImageWorker.class);
     
-	/** The string that is used to build the screenshot plugin menu */
-	private final String MENU_ITEM_ENTRY = "eMail";
+    /** The string that is used to build the screenshot plugin menu */
+    private final String MENU_ITEM_ENTRY = "eMail";
 
-	/**
-	 * {@inheritDoc}
-	 */
+    /**
+     * {@inheritDoc}
+     */
     public String getMenuItemEntry() {
         return MENU_ITEM_ENTRY;
     }

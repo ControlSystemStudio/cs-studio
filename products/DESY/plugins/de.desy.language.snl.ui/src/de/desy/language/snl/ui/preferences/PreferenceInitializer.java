@@ -13,31 +13,31 @@ import de.desy.language.snl.ui.rules.SNLCodeElementTextAttributeConstants;
 
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
-	@Override
-	public void initializeDefaultPreferences() {
-		final IEclipsePreferences node = new DefaultScope()
-				.getNode(SNLUiActivator.PLUGIN_ID);
-		for (final SNLCodeElementTextAttributeConstants constant : SNLCodeElementTextAttributeConstants
-				.values()) {
-			final String value = StringConverter.asString(constant.getRGB());
-			node.put(
-					constant.asStringId() + PreferenceConstants.COLOR_POST_FIX,
-					value);
-			node.putBoolean(constant.asStringId()
-					+ PreferenceConstants.BOLD_POST_FIX, (constant
-					.getSwtFontStyleCode() & SWT.BOLD) > 0);
-			node.putBoolean(constant.asStringId()
-					+ PreferenceConstants.ITALIC_POST_FIX, (constant
-					.getSwtFontStyleCode() & SWT.ITALIC) > 0);
-			node.putBoolean(constant.asStringId()
-					+ PreferenceConstants.UNDERLINE_POST_FIX, (constant
-					.getSwtFontStyleCode() & TextAttribute.UNDERLINE) > 0);
-			node.putBoolean(constant.asStringId()
-					+ PreferenceConstants.STRIKETHROUGH_POST_FIX, (constant
-					.getSwtFontStyleCode() & TextAttribute.STRIKETHROUGH) > 0);
-		}
-		node.putBoolean(SNLUiActivator.PLUGIN_ID + PreferenceConstants.SAVE_AND_COMPILE_POST_FIX, false);
-		node.put(SNLUiActivator.PLUGIN_ID + PreferenceConstants.TARGET_PLATFORM, "none");
-	}
+    @Override
+    public void initializeDefaultPreferences() {
+        final IEclipsePreferences node = new DefaultScope()
+                .getNode(SNLUiActivator.PLUGIN_ID);
+        for (final SNLCodeElementTextAttributeConstants constant : SNLCodeElementTextAttributeConstants
+                .values()) {
+            final String value = StringConverter.asString(constant.getRGB());
+            node.put(
+                    constant.asStringId() + PreferenceConstants.COLOR_POST_FIX,
+                    value);
+            node.putBoolean(constant.asStringId()
+                    + PreferenceConstants.BOLD_POST_FIX, (constant
+                    .getSwtFontStyleCode() & SWT.BOLD) > 0);
+            node.putBoolean(constant.asStringId()
+                    + PreferenceConstants.ITALIC_POST_FIX, (constant
+                    .getSwtFontStyleCode() & SWT.ITALIC) > 0);
+            node.putBoolean(constant.asStringId()
+                    + PreferenceConstants.UNDERLINE_POST_FIX, (constant
+                    .getSwtFontStyleCode() & TextAttribute.UNDERLINE) > 0);
+            node.putBoolean(constant.asStringId()
+                    + PreferenceConstants.STRIKETHROUGH_POST_FIX, (constant
+                    .getSwtFontStyleCode() & TextAttribute.STRIKETHROUGH) > 0);
+        }
+        node.putBoolean(SNLUiActivator.PLUGIN_ID + PreferenceConstants.SAVE_AND_COMPILE_POST_FIX, false);
+        node.put(SNLUiActivator.PLUGIN_ID + PreferenceConstants.TARGET_PLATFORM, "none");
+    }
 
 }

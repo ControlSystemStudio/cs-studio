@@ -38,22 +38,22 @@ import javax.swing.JComponent;
  * @author Matej Sekoranja
  */
 public class SetCursorCommand extends Command {
-	private JComponent component;
-	private Cursor cursor;
+    private JComponent component;
+    private Cursor cursor;
 /**
  * Insert the method's description here.
  * Creation date: (21.12.2000 22:43:26)
  * @param component javax.swing.JComponent
  */
 public SetCursorCommand(JComponent component) {
-	this.component=component;
+    this.component=component;
 }
 /**
  * Insert the method's description here.
  * Creation date: (21.12.2000 22:42:23)
  */
 public void execute() {
-	component.setCursor(cursor);
+    component.setCursor(cursor);
 }
 /**
  * Insert the method's description here.
@@ -61,6 +61,6 @@ public void execute() {
  * @param cursor java.awt.Cursor
  */
 public void setCursor(Cursor cursor) {
-	this.cursor=cursor;
+    this.cursor=cursor;
 }
 }

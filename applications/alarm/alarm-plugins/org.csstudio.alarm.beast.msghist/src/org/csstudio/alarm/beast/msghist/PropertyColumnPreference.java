@@ -38,7 +38,7 @@ public class PropertyColumnPreference
      *  @throws Exception On error
      */
     static PropertyColumnPreference fromString(final String pref_string)
-    	throws Exception
+        throws Exception
     {
         final String[] pieces = pref_string.split(",");
         if (pieces.length != 3)
@@ -74,10 +74,10 @@ public class PropertyColumnPreference
         return weight;
     }
 
-	@Override
-	public String toString()
-	{
-		return "PropertyColumnPreference '" + name + ", min " + size
-			+ ", weight " + weight;
-	}
+    @Override
+    public String toString()
+    {
+        return "PropertyColumnPreference '" + name + ", min " + size
+            + ", weight " + weight;
+    }
 }

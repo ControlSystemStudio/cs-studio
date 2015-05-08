@@ -36,184 +36,184 @@ import java.util.Vector;
  */
 public class DBTemplate extends DBComment
 {
-	protected String id = null;
-	protected String fileName = null;
-	protected String description = null;
+    protected String id = null;
+    protected String fileName = null;
+    protected String description = null;
 
-	protected Hashtable ports = null;
-	protected Vector portsV = null;
+    protected Hashtable ports = null;
+    protected Vector portsV = null;
 
-	protected Hashtable macros = null;
-	protected Vector macrosV = null;
+    protected Hashtable macros = null;
+    protected Vector macrosV = null;
 
-	protected boolean initialized;
+    protected boolean initialized;
 
-	// data
-	protected DBData data = null;
+    // data
+    protected DBData data = null;
 
-	/**
-	 * Constructor.
-	 */
-	public DBTemplate(String id, String fileName)
-	{
-		this.id=id;
-		this.fileName=fileName;
+    /**
+     * Constructor.
+     */
+    public DBTemplate(String id, String fileName)
+    {
+        this.id=id;
+        this.fileName=fileName;
 
-		ports = new Hashtable();
-		portsV = new Vector();
+        ports = new Hashtable();
+        portsV = new Vector();
 
-		macros = new Hashtable();
-		macrosV = new Vector();
-	}
-	
+        macros = new Hashtable();
+        macrosV = new Vector();
+    }
+    
 
-	/**
-	 * Returns the description.
-	 * @return String
-	 */
-	public String getDescription()
-	{
-		return description;
-	}
+    /**
+     * Returns the description.
+     * @return String
+     */
+    public String getDescription()
+    {
+        return description;
+    }
 
-	/**
-	 * Returns the fileName.
-	 * @return String
-	 */
-	public String getFileName()
-	{
-		return fileName;
-	}
+    /**
+     * Returns the fileName.
+     * @return String
+     */
+    public String getFileName()
+    {
+        return fileName;
+    }
 
-	/**
-	 * Returns the id.
-	 * @return String
-	 */
-	public String getId()
-	{
-		return id;
-	}
+    /**
+     * Returns the id.
+     * @return String
+     */
+    public String getId()
+    {
+        return id;
+    }
 
-	/**
-	 * Sets the description.
-	 * @param description The description to set
-	 */
-	public void setDescription(String description)
-	{
-		this.description = description;
-	}
+    /**
+     * Sets the description.
+     * @param description The description to set
+     */
+    public void setDescription(String description)
+    {
+        this.description = description;
+    }
 
-	/**
-	 * Sets the fileName.
-	 * @param fileName The fileName to set
-	 */
-	public void setFileName(String fileName)
-	{
-		this.fileName = fileName;
-	}
+    /**
+     * Sets the fileName.
+     * @param fileName The fileName to set
+     */
+    public void setFileName(String fileName)
+    {
+        this.fileName = fileName;
+    }
 
-	/**
-	 * Sets the id.
-	 * @param id The id to set
-	 */
-	public void setId(String id)
-	{
-		this.id = id;
-	}
+    /**
+     * Sets the id.
+     * @param id The id to set
+     */
+    public void setId(String id)
+    {
+        this.id = id;
+    }
 
 
-	/**
-	 * Sets the data.
-	 * @param data The data to set
-	 */
-	public void setData(DBData data)
-	{
-		this.data = data;
-	}
+    /**
+     * Sets the data.
+     * @param data The data to set
+     */
+    public void setData(DBData data)
+    {
+        this.data = data;
+    }
 
-	/**
-	 * Returns the initialized.
-	 * @return boolean
-	 */
-	public boolean isInitialized()
-	{
-		return initialized;
-	}
+    /**
+     * Returns the initialized.
+     * @return boolean
+     */
+    public boolean isInitialized()
+    {
+        return initialized;
+    }
 
-	/**
-	 * Sets the initialized.
-	 * @param initialized The initialized to set
-	 */
-	public void setInitialized(boolean initialized)
-	{
-		this.initialized = initialized;
-	}
+    /**
+     * Sets the initialized.
+     * @param initialized The initialized to set
+     */
+    public void setInitialized(boolean initialized)
+    {
+        this.initialized = initialized;
+    }
 
-	/**
-	 * Returns the ports.
-	 * @return Hashtable
-	 */
-	public Hashtable getPorts()
-	{
-		return ports;
-	}
+    /**
+     * Returns the ports.
+     * @return Hashtable
+     */
+    public Hashtable getPorts()
+    {
+        return ports;
+    }
 
-	/**
-	 * Returns the portsV.
-	 * @return Vector
-	 */
-	public Vector getPortsV()
-	{
-		return portsV;
-	}
+    /**
+     * Returns the portsV.
+     * @return Vector
+     */
+    public Vector getPortsV()
+    {
+        return portsV;
+    }
 
-	/**
-	 */
-	public void addPort(DBPort port)
-	{
-		if (!ports.containsKey(port.getName()))
-		{
-			ports.put(port.getName(), port);
-			portsV.addElement(port);
-		}
-	}
+    /**
+     */
+    public void addPort(DBPort port)
+    {
+        if (!ports.containsKey(port.getName()))
+        {
+            ports.put(port.getName(), port);
+            portsV.addElement(port);
+        }
+    }
 
-	/**
-	 */
-	public void addMacro(DBMacro macro)
-	{
-		if (!macros.containsKey(macro.getName()))
-		{
-			macros.put(macro.getName(), macro);
-			macrosV.addElement(macro);
-		}
-	}
+    /**
+     */
+    public void addMacro(DBMacro macro)
+    {
+        if (!macros.containsKey(macro.getName()))
+        {
+            macros.put(macro.getName(), macro);
+            macrosV.addElement(macro);
+        }
+    }
 
-	/**
-	 * Returns the data.
-	 * @return DBData
-	 */
-	public DBData getData()
-	{
-		return data;
-	}
+    /**
+     * Returns the data.
+     * @return DBData
+     */
+    public DBData getData()
+    {
+        return data;
+    }
 
-	/**
-	 * Returns the macros.
-	 * @return Hashtable
-	 */
-	public Hashtable getMacros()
-	{
-		return macros;
-	}
+    /**
+     * Returns the macros.
+     * @return Hashtable
+     */
+    public Hashtable getMacros()
+    {
+        return macros;
+    }
 
-	/**
-	 * Returns the macrosV.
-	 * @return Vector
-	 */
-	public Vector getMacrosV()
-	{
-		return macrosV;
-	}
+    /**
+     * Returns the macrosV.
+     * @return Vector
+     */
+    public Vector getMacrosV()
+    {
+        return macrosV;
+    }
 
 }

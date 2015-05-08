@@ -21,13 +21,13 @@ import org.eclipse.swt.graphics.Font;
  * @author Xihui Chen
  */
 public class WidgetFrameBorder
-	extends CompoundBorder
-	implements LabeledBorder
+    extends CompoundBorder
+    implements LabeledBorder
 {
 
 
 {
-	createBorders();
+    createBorders();
 }
 
 /**
@@ -45,7 +45,7 @@ public WidgetFrameBorder() { }
  * @since 2.0
  */
 public WidgetFrameBorder(String label) {
-	setLabel(label);
+    setLabel(label);
 }
 
 /**
@@ -55,8 +55,8 @@ public WidgetFrameBorder(String label) {
  * @since 2.0
  */
 protected void createBorders() {
-	inner = new TitleBarBorder();
-	outer = new VersatileLineBorder(ColorConstants.black, 1, SWTConstants.LINE_SOLID);
+    inner = new TitleBarBorder();
+    outer = new VersatileLineBorder(ColorConstants.black, 1, SWTConstants.LINE_SOLID);
 }
 
 /**
@@ -67,14 +67,14 @@ protected void createBorders() {
  * @since 2.0
  */
 protected LabeledBorder getLabeledBorder() {
-	return (LabeledBorder)inner;
+    return (LabeledBorder)inner;
 }
 
 /**
  * @return the label for this border
  */
 public String getLabel() {
-	return getLabeledBorder().getLabel();
+    return getLabeledBorder().getLabel();
 }
 
 /**
@@ -82,7 +82,7 @@ public String getLabel() {
  * @param label the label
  */
 public void setLabel(String label) {
-	getLabeledBorder().setLabel(label);
+    getLabeledBorder().setLabel(label);
 }
 
 /**
@@ -90,7 +90,7 @@ public void setLabel(String label) {
  * @param font the font
  */
 public void setFont(Font font) {
-	getLabeledBorder().setFont(font);
+    getLabeledBorder().setFont(font);
 }
 
 }

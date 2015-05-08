@@ -49,96 +49,96 @@ import com.cosylab.util.ArrayHelper;
  */
 public class HistoryHolder
 {
-	/** Iterator for which data was extracted. */
-	public HistoryIterator iterator;
+    /** Iterator for which data was extracted. */
+    public HistoryIterator iterator;
 
-	/**
-	 * Array of values. Should have same type as array returned by iterator.
-	 * E.g. for double iterator values can be casted to <code>double[].</code>
-	 */
-	public Object values = new Object[0];
+    /**
+     * Array of values. Should have same type as array returned by iterator.
+     * E.g. for double iterator values can be casted to <code>double[].</code>
+     */
+    public Object values = new Object[0];
 
-	/** Array of timestamps. */
-	public long[] timestamps = new long[0];
+    /** Array of timestamps. */
+    public long[] timestamps = new long[0];
 
-	/** <code>true</code> if order extracted data was reversed. */
-	public boolean reversed = false;
+    /** <code>true</code> if order extracted data was reversed. */
+    public boolean reversed = false;
 
-	/**
-	 * Constructor that iterates through history and stores the retrieved data in two arrays
-	 */
-	public HistoryHolder(HistoryIterator it, boolean rev)
-		throws DataExchangeException
-	{
-		reversed = rev;
-		iterator = it;
+    /**
+     * Constructor that iterates through history and stores the retrieved data in two arrays
+     */
+    public HistoryHolder(HistoryIterator it, boolean rev)
+        throws DataExchangeException
+    {
+        reversed = rev;
+        iterator = it;
 
-		ArrayList<long[]> times = new ArrayList<long[]>(3);
-		ArrayList<Object> val = new ArrayList<Object>(3);
+        ArrayList<long[]> times = new ArrayList<long[]>(3);
+        ArrayList<Object> val = new ArrayList<Object>(3);
 
-		// get all values
-		while (iterator.hasNext()) {
-			iterator.next(0);
+        // get all values
+        while (iterator.hasNext()) {
+            iterator.next(0);
 
-			long[] t = iterator.getTimestamps();
+            long[] t = iterator.getTimestamps();
 
-			// end loop if iterator accidently run out of history
-			if (t == null || t.length == 0) {
-				break;
-			}
+            // end loop if iterator accidently run out of history
+            if (t == null || t.length == 0) {
+                break;
+            }
 
-			times.add(t);
+            times.add(t);
 
-			Object o = iterator.getValuesAsObject();
-			val.add(o);
-		}
+            Object o = iterator.getValuesAsObject();
+            val.add(o);
+        }
 
-		if (val.size() == 0) {
-			return;
-		}
+        if (val.size() == 0) {
+            return;
+        }
 
-		if (val.size() == 1) {
-			timestamps = (long[])times.get(0);
-			values = val.get(0);
-		}
+        if (val.size() == 1) {
+            timestamps = (long[])times.get(0);
+            values = val.get(0);
+        }
 
-		// get length and type of data
-		Iterator<Object> i = val.iterator();
+        // get length and type of data
+        Iterator<Object> i = val.iterator();
 
-		int l = 0;
+        int l = 0;
 
-		while (i.hasNext()) {
-			l += Array.getLength(i.next());
-		}
+        while (i.hasNext()) {
+            l += Array.getLength(i.next());
+        }
 
-		Class<?> c = Array.get(val.get(0), 0).getClass();
+        Class<?> c = Array.get(val.get(0), 0).getClass();
 
-		if (c.equals(Double.class)) {
-			values = new double[l];
-		} else if (c.equals(Long.class)) {
-			values = new long[l];
-		} else if (c.equals(Long.class)) {
-			values = new long[l];
-		} else {
-			values = (Object[])Array.newInstance(Array.get(val.get(0), 0)
-				    .getClass(), l);
-		}
+        if (c.equals(Double.class)) {
+            values = new double[l];
+        } else if (c.equals(Long.class)) {
+            values = new long[l];
+        } else if (c.equals(Long.class)) {
+            values = new long[l];
+        } else {
+            values = (Object[])Array.newInstance(Array.get(val.get(0), 0)
+                    .getClass(), l);
+        }
 
-		int index = 0;
-		i = val.iterator();
+        int index = 0;
+        i = val.iterator();
 
-		while (i.hasNext()) {
-			Object o = i.next();
-			l = Array.getLength(o);
-			System.arraycopy(o, 0, values, index, l);
-			index += l;
-		}
+        while (i.hasNext()) {
+            Object o = i.next();
+            l = Array.getLength(o);
+            System.arraycopy(o, 0, values, index, l);
+            index += l;
+        }
 
-		if (reversed) {
-			ArrayHelper.flip(values);
-			ArrayHelper.flip(timestamps);
-		}
-	}
+        if (reversed) {
+            ArrayHelper.flip(values);
+            ArrayHelper.flip(timestamps);
+        }
+    }
 }
 
 /* __oOo__ */

@@ -39,255 +39,255 @@ import java.util.Iterator;
  */
 public class PathSpecification
 {
-	
-	protected ArrayList currentPath = null;
-	
-	protected static final String NAME_EPICS_DB_INCLUDE_PATH = "EPICS_DB_INCLUDE_PATH";
-	
-	protected String currentDir = null;
-	
-	public PathSpecification (String defaultPath)
-	{
-		this(defaultPath, null);
-	}
-	
-	/**
-	 */
-	public PathSpecification (String defaultPath, PathSpecification parent)
-	{
-		currentDir = defaultPath;
-		
-		if (parent == null)
-			currentPath = new ArrayList();
-		else
-			currentPath = new ArrayList(parent.currentPath);
-		
-		// check if EPICS_DB_INCLUDE_PATH is available, this overrides current-directory default
-		String epicsIncludePath = System.getProperty(NAME_EPICS_DB_INCLUDE_PATH);
-		if (epicsIncludePath != null)
-			splitPath(epicsIncludePath, ".", currentPath);
-			// currentPath.add(epicsIncludePath);
-	    else
-	    	currentPath.add(currentDir);
+    
+    protected ArrayList currentPath = null;
+    
+    protected static final String NAME_EPICS_DB_INCLUDE_PATH = "EPICS_DB_INCLUDE_PATH";
+    
+    protected String currentDir = null;
+    
+    public PathSpecification (String defaultPath)
+    {
+        this(defaultPath, null);
+    }
+    
+    /**
+     */
+    public PathSpecification (String defaultPath, PathSpecification parent)
+    {
+        currentDir = defaultPath;
+        
+        if (parent == null)
+            currentPath = new ArrayList();
+        else
+            currentPath = new ArrayList(parent.currentPath);
+        
+        // check if EPICS_DB_INCLUDE_PATH is available, this overrides current-directory default
+        String epicsIncludePath = System.getProperty(NAME_EPICS_DB_INCLUDE_PATH);
+        if (epicsIncludePath != null)
+            splitPath(epicsIncludePath, ".", currentPath);
+            // currentPath.add(epicsIncludePath);
+        else
+            currentPath.add(currentDir);
 
-	}
-	
-	/**
-	 */
-	public static void splitPath(String dirs, String currentDir, ArrayList list)
-	{
-		if (dirs==null || dirs.length()==0)
-			return;
+    }
+    
+    /**
+     */
+    public static void splitPath(String dirs, String currentDir, ArrayList list)
+    {
+        if (dirs==null || dirs.length()==0)
+            return;
 
-		int pos1 = -1;
-		int pos2 = pos1;
-		do
-		{
-			pos2 = dirs.indexOf(File.pathSeparatorChar, pos1+1);
-			if (pos2==-1)
-				pos2 = dirs.length();
+        int pos1 = -1;
+        int pos2 = pos1;
+        do
+        {
+            pos2 = dirs.indexOf(File.pathSeparatorChar, pos1+1);
+            if (pos2==-1)
+                pos2 = dirs.length();
 
-			// special case for  "::" part
-			if ((pos1+1)==pos2)
-				list.add(currentDir);			
-			else
-			{
-				String part = dirs.substring(pos1+1, pos2);
-				if (part.equals("."))
-					list.add(currentDir);			
-				else if (part.startsWith("..") || part.startsWith("."))
-					list.add(currentDir + File.separator + part);			
-				else
-					list.add(part);			
-			}	
+            // special case for  "::" part
+            if ((pos1+1)==pos2)
+                list.add(currentDir);            
+            else
+            {
+                String part = dirs.substring(pos1+1, pos2);
+                if (part.equals("."))
+                    list.add(currentDir);            
+                else if (part.startsWith("..") || part.startsWith("."))
+                    list.add(currentDir + File.separator + part);            
+                else
+                    list.add(part);            
+            }    
 
-			pos1 = pos2;
-		} while (pos1<dirs.length());
-		
-	}
+            pos1 = pos2;
+        } while (pos1<dirs.length());
+        
+    }
 
-	/**
-	 */
-	public void setPath(String dirs)
-	{
-		if (dirs!=null && dirs.length()>0)
-		{
-			currentPath.clear();
-			splitPath(dirs, currentDir, currentPath);
-		}
-	}		
-	
-	/**
-	 */
-	public void addAddPath(String dirs)
-	{
-		//splitPath(dirs, currentDir, addPath);
-		splitPath(dirs, currentDir, currentPath);
-	}
+    /**
+     */
+    public void setPath(String dirs)
+    {
+        if (dirs!=null && dirs.length()>0)
+        {
+            currentPath.clear();
+            splitPath(dirs, currentDir, currentPath);
+        }
+    }        
+    
+    /**
+     */
+    public void addAddPath(String dirs)
+    {
+        //splitPath(dirs, currentDir, addPath);
+        splitPath(dirs, currentDir, currentPath);
+    }
 
-	/**
-	 */
-	public File search4File(String fileName) throws FileNotFoundException
-	{
-		// should we use paths?
-		File t = null;
-		if (fileName.indexOf('/')!=-1 || fileName.indexOf('\\')!=-1)
-		{
-			t = new File(currentDir, fileName);
-			if (t.exists())
-				return t;
-			else
-				return null;		
-		}
-		
-		// go and search		
-		Iterator pI = currentPath.iterator();
-		while (pI.hasNext())
-		{
-			String rootPath = (String)pI.next();
+    /**
+     */
+    public File search4File(String fileName) throws FileNotFoundException
+    {
+        // should we use paths?
+        File t = null;
+        if (fileName.indexOf('/')!=-1 || fileName.indexOf('\\')!=-1)
+        {
+            t = new File(currentDir, fileName);
+            if (t.exists())
+                return t;
+            else
+                return null;        
+        }
+        
+        // go and search        
+        Iterator pI = currentPath.iterator();
+        while (pI.hasNext())
+        {
+            String rootPath = (String)pI.next();
 
-			// check path
-			t = new File(rootPath, fileName);
-			if (t.exists())
-				return t;
-				
-		}
-		
-		// not found
-		
-		// construct full path string to print out
-		
-		StringBuffer path = new StringBuffer();
-		pI = currentPath.iterator();
-		while (pI.hasNext())
-		{
-			path.append(pI.next());
-			if (pI.hasNext()) path.append(File.pathSeparatorChar);
-		}
-		
-		// not found
-		throw new FileNotFoundException("File '"+fileName+"' not found (path: \""+path.toString()+"\").");
-	}
+            // check path
+            t = new File(rootPath, fileName);
+            if (t.exists())
+                return t;
+                
+        }
+        
+        // not found
+        
+        // construct full path string to print out
+        
+        StringBuffer path = new StringBuffer();
+        pI = currentPath.iterator();
+        while (pI.hasNext())
+        {
+            path.append(pI.next());
+            if (pI.hasNext()) path.append(File.pathSeparatorChar);
+        }
+        
+        // not found
+        throw new FileNotFoundException("File '"+fileName+"' not found (path: \""+path.toString()+"\").");
+    }
 
-	/**
-	 * @param path
-	 * @param relativeToPath
-	 * @return
-	 */
-	public static File getRelativeName(File path, File relativeToPath)
-	{
-		// make both paths absolute
-		if (!path.isAbsolute())
-			path = path.getAbsoluteFile();
-		if (!relativeToPath.isAbsolute())
-			relativeToPath = relativeToPath.getAbsoluteFile();
-			
-		// make both cannonical
-		try
-		{
-			path = path.getCanonicalFile();
-			relativeToPath = relativeToPath.getCanonicalFile();
-		}
-		catch (IOException ioe)
-		{
-			return path;
-		}
-		
-		// make relativeToPath directory
-		if (!relativeToPath.isDirectory())
-			relativeToPath = relativeToPath.getParentFile();
-			
-		String strPath;
-		if (path.isDirectory())
-			strPath = path.getAbsolutePath()+File.separator;
-		else
-			strPath = path.getAbsolutePath();
-		String strRelativeToPath = relativeToPath.getAbsolutePath()+File.separator;
-		
-		// get common part of path
-		int commonLength = 0;
-		int minLength = Math.min(strPath.length(), strRelativeToPath.length());
-		while (commonLength < minLength && 
-			   strPath.charAt(commonLength) == strRelativeToPath.charAt(commonLength))
-			commonLength++;
-			
-		// if none, return entire path
-		if (commonLength == 0)
-			return path;
-			
-		// strip off common part to separator
-		// there should be no separator in commonLength
-		commonLength = strPath.lastIndexOf(File.separatorChar, commonLength-1);
-			
-		// if none, return entire path
-		if (commonLength == 0)
-			return path;
+    /**
+     * @param path
+     * @param relativeToPath
+     * @return
+     */
+    public static File getRelativeName(File path, File relativeToPath)
+    {
+        // make both paths absolute
+        if (!path.isAbsolute())
+            path = path.getAbsoluteFile();
+        if (!relativeToPath.isAbsolute())
+            relativeToPath = relativeToPath.getAbsoluteFile();
+            
+        // make both cannonical
+        try
+        {
+            path = path.getCanonicalFile();
+            relativeToPath = relativeToPath.getCanonicalFile();
+        }
+        catch (IOException ioe)
+        {
+            return path;
+        }
+        
+        // make relativeToPath directory
+        if (!relativeToPath.isDirectory())
+            relativeToPath = relativeToPath.getParentFile();
+            
+        String strPath;
+        if (path.isDirectory())
+            strPath = path.getAbsolutePath()+File.separator;
+        else
+            strPath = path.getAbsolutePath();
+        String strRelativeToPath = relativeToPath.getAbsolutePath()+File.separator;
+        
+        // get common part of path
+        int commonLength = 0;
+        int minLength = Math.min(strPath.length(), strRelativeToPath.length());
+        while (commonLength < minLength && 
+               strPath.charAt(commonLength) == strRelativeToPath.charAt(commonLength))
+            commonLength++;
+            
+        // if none, return entire path
+        if (commonLength == 0)
+            return path;
+            
+        // strip off common part to separator
+        // there should be no separator in commonLength
+        commonLength = strPath.lastIndexOf(File.separatorChar, commonLength-1);
+            
+        // if none, return entire path
+        if (commonLength == 0)
+            return path;
 
-		String commonPath = strPath.substring(0, commonLength);
-		StringBuffer resultingRelativePath = new StringBuffer();
-		
-		
-		//calculcate "step downs"
-		final String stepDown = File.separator+"..";
-		while (relativeToPath.getParent()!=null &&		// needed to handle "<driveLetter>:" to "<driveLetter>:/" comparison  
-			   !relativeToPath.getAbsolutePath().equals(commonPath))
-		{
-			resultingRelativePath.append(stepDown);
-			relativeToPath = relativeToPath.getParentFile();
-		}
-		
-		// move up to path
-		resultingRelativePath.append(strPath.substring(commonLength));
-	
-		return new File(resultingRelativePath.substring(1));
-	}
+        String commonPath = strPath.substring(0, commonLength);
+        StringBuffer resultingRelativePath = new StringBuffer();
+        
+        
+        //calculcate "step downs"
+        final String stepDown = File.separator+"..";
+        while (relativeToPath.getParent()!=null &&        // needed to handle "<driveLetter>:" to "<driveLetter>:/" comparison  
+               !relativeToPath.getAbsolutePath().equals(commonPath))
+        {
+            resultingRelativePath.append(stepDown);
+            relativeToPath = relativeToPath.getParentFile();
+        }
+        
+        // move up to path
+        resultingRelativePath.append(strPath.substring(commonLength));
+    
+        return new File(resultingRelativePath.substring(1));
+    }
 
-/*	
-	public static void main(String[] argv)
-	{
-		System.out.println(getRelativeName(new File("/home/matej/test.dbd"), new File("/elsewhere/epics/vbds/test.vdb")));
-		System.out.println(getRelativeName(new File("/home/matej/test.dbd"), new File("/home/matejEpics/vbds/test.vdb")));
-		System.out.println(getRelativeName(new File("/home/matej/test.dbd"), new File("/homeHome/epics/vbds/test.vdb")));
-		System.out.println(getRelativeName(new File("/home/matej/test.dbd"), new File("/home/epics/vbds/test.vdb")));
-		System.out.println(getRelativeName(new File("C:/home/matej/test.dbd"), new File("D:/home/matej/test.vdb")));
-		System.out.println(getRelativeName(new File("/home/matej/test.dbd"), new File("/home/matej/test.vdb")));
-		System.out.println(getRelativeName(new File("/home/matej/test.dbd"), new File("/")));
-		
-		// test:
-		// new File(getRelativeName(path1, path2), path2).getCannonicalPath().equals(path1)
+/*    
+    public static void main(String[] argv)
+    {
+        System.out.println(getRelativeName(new File("/home/matej/test.dbd"), new File("/elsewhere/epics/vbds/test.vdb")));
+        System.out.println(getRelativeName(new File("/home/matej/test.dbd"), new File("/home/matejEpics/vbds/test.vdb")));
+        System.out.println(getRelativeName(new File("/home/matej/test.dbd"), new File("/homeHome/epics/vbds/test.vdb")));
+        System.out.println(getRelativeName(new File("/home/matej/test.dbd"), new File("/home/epics/vbds/test.vdb")));
+        System.out.println(getRelativeName(new File("C:/home/matej/test.dbd"), new File("D:/home/matej/test.vdb")));
+        System.out.println(getRelativeName(new File("/home/matej/test.dbd"), new File("/home/matej/test.vdb")));
+        System.out.println(getRelativeName(new File("/home/matej/test.dbd"), new File("/")));
+        
+        // test:
+        // new File(getRelativeName(path1, path2), path2).getCannonicalPath().equals(path1)
 
-	}
+    }
 */
 /*
-	public static void main(String[] argv)
-	{
-		// test
-		DBPathSpecification spec = new DBPathSpecification(CURRENT_DIR);
+    public static void main(String[] argv)
+    {
+        // test
+        DBPathSpecification spec = new DBPathSpecification(CURRENT_DIR);
 
-		System.out.println("===========");
-		spec.search4File("dummy");
-		System.out.println("===========");
-		spec.setPath("");		
-		spec.search4File("dummy");
-		System.out.println("===========");
-		spec.setPath(":");		
-		spec.search4File("dummy");
-		System.out.println("===========");
-		spec.setPath("nnn::mmm");		
-		spec.search4File("dummy");
-		System.out.println("===========");
-		spec.setPath(":nnn");		
-		spec.search4File("dummy");
-		System.out.println("===========");
-		spec.setPath("mmm:");		
-		spec.search4File("dummy");
-		System.out.println("===========");
-		spec.setPath(":usr:lib:dbd:dir:sth::well:sth:here");		
-		spec.search4File("dummy");
-		System.out.println("===========");
-		spec.addAddPath("added:added2");
-		spec.search4File("dummy");
-		System.out.println("===========");
-	}
+        System.out.println("===========");
+        spec.search4File("dummy");
+        System.out.println("===========");
+        spec.setPath("");        
+        spec.search4File("dummy");
+        System.out.println("===========");
+        spec.setPath(":");        
+        spec.search4File("dummy");
+        System.out.println("===========");
+        spec.setPath("nnn::mmm");        
+        spec.search4File("dummy");
+        System.out.println("===========");
+        spec.setPath(":nnn");        
+        spec.search4File("dummy");
+        System.out.println("===========");
+        spec.setPath("mmm:");        
+        spec.search4File("dummy");
+        System.out.println("===========");
+        spec.setPath(":usr:lib:dbd:dir:sth::well:sth:here");        
+        spec.search4File("dummy");
+        System.out.println("===========");
+        spec.addAddPath("added:added2");
+        spec.search4File("dummy");
+        System.out.println("===========");
+    }
 */
 }

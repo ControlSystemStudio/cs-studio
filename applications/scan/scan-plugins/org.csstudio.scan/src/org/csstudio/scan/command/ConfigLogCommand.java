@@ -73,12 +73,12 @@ public class ConfigLogCommand extends ScanCommand
     }
 
     /** {@inheritDoc} */
-	@Override
-	public String toString()
-	{
-		if (automatic)
-			return "Log mode: automatically";
-		else
-			return "Log mode: on demand";
-	}
+    @Override
+    public String toString()
+    {
+        if (automatic)
+            return "Log mode: automatically";
+        else
+            return "Log mode: on demand";
+    }
 }

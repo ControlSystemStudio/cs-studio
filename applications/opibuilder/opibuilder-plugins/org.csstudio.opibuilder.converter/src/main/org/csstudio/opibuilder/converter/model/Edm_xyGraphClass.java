@@ -13,83 +13,83 @@ package org.csstudio.opibuilder.converter.model;
  */
 public class Edm_xyGraphClass extends EdmWidget {
 
-	@EdmAttributeAn @EdmOptionalAn private String graphTitle;
-	@EdmAttributeAn @EdmOptionalAn private String xLabel;
-	@EdmAttributeAn @EdmOptionalAn private String yLabel;
-	@EdmAttributeAn @EdmOptionalAn private String y2Label;
-	
-
-	@EdmAttributeAn @EdmOptionalAn private EdmColor gridColor;
-	
-	@EdmAttributeAn @EdmOptionalAn private boolean border;
-	@EdmAttributeAn @EdmOptionalAn private boolean plotAreaBorder;
-	//------------
-	@EdmAttributeAn @EdmOptionalAn private boolean autoScaleBothDirections;
-	@EdmAttributeAn @EdmOptionalAn private double autoScaleThreshPct;
-	@EdmAttributeAn @EdmOptionalAn private String plotMode;
-	@EdmAttributeAn @EdmOptionalAn private int nPts;
-	@EdmAttributeAn @EdmOptionalAn private int updateTimerMs; //Update Delay
-	@EdmAttributeAn @EdmOptionalAn private String triggerPv;
-	@EdmAttributeAn @EdmOptionalAn private String resetPv;
-	@EdmAttributeAn @EdmOptionalAn private String resetMode;
-	
-	@EdmAttributeAn @EdmOptionalAn private double xMin;
-	@EdmAttributeAn @EdmOptionalAn private double yMin;
-	@EdmAttributeAn @EdmOptionalAn private double y2Min;
-	
-	@EdmAttributeAn @EdmOptionalAn private double xMax;
-	@EdmAttributeAn @EdmOptionalAn private double yMax;
-	@EdmAttributeAn @EdmOptionalAn private double y2Max;
-	
-	@EdmAttributeAn @EdmOptionalAn private boolean xShowMajorGrid;
-	@EdmAttributeAn @EdmOptionalAn private boolean yShowMajorGrid;
-	@EdmAttributeAn @EdmOptionalAn private boolean y2ShowMajorGrid;
-	
-	@EdmAttributeAn @EdmOptionalAn private String xAxisSrc; //AutoScale, fromUser
-	@EdmAttributeAn @EdmOptionalAn private String yAxisSrc; 
-	@EdmAttributeAn @EdmOptionalAn private String y2AxisSrc; 
-	
-	
-	
-	
-	//------------
-	@EdmAttributeAn @EdmOptionalAn private boolean showXAxis;
-	@EdmAttributeAn @EdmOptionalAn private boolean showYAxis;
-	@EdmAttributeAn @EdmOptionalAn private boolean showY2Axis;
-	
-	@EdmAttributeAn @EdmOptionalAn private String xAxisStyle;
-	@EdmAttributeAn @EdmOptionalAn private String xAxisTimeFormat;
-	@EdmAttributeAn @EdmOptionalAn private String yAxisStyle;
-	@EdmAttributeAn @EdmOptionalAn private String y2AxisStyle;
-	
-	
-	// trace properties
-	@EdmAttributeAn @EdmOptionalAn private int numTraces;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings xPv;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings yPv;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiColors plotColor;
-	
-	//----
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings plotStyle;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiInts lineThickness;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings lineStyle;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings plotUpdateMode;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings plotSymbolType;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiBooleans useY2Axis;	
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings opMode;
-	
-	public Edm_xyGraphClass(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
+    @EdmAttributeAn @EdmOptionalAn private String graphTitle;
+    @EdmAttributeAn @EdmOptionalAn private String xLabel;
+    @EdmAttributeAn @EdmOptionalAn private String yLabel;
+    @EdmAttributeAn @EdmOptionalAn private String y2Label;
+    
+
+    @EdmAttributeAn @EdmOptionalAn private EdmColor gridColor;
+    
+    @EdmAttributeAn @EdmOptionalAn private boolean border;
+    @EdmAttributeAn @EdmOptionalAn private boolean plotAreaBorder;
+    //------------
+    @EdmAttributeAn @EdmOptionalAn private boolean autoScaleBothDirections;
+    @EdmAttributeAn @EdmOptionalAn private double autoScaleThreshPct;
+    @EdmAttributeAn @EdmOptionalAn private String plotMode;
+    @EdmAttributeAn @EdmOptionalAn private int nPts;
+    @EdmAttributeAn @EdmOptionalAn private int updateTimerMs; //Update Delay
+    @EdmAttributeAn @EdmOptionalAn private String triggerPv;
+    @EdmAttributeAn @EdmOptionalAn private String resetPv;
+    @EdmAttributeAn @EdmOptionalAn private String resetMode;
+    
+    @EdmAttributeAn @EdmOptionalAn private double xMin;
+    @EdmAttributeAn @EdmOptionalAn private double yMin;
+    @EdmAttributeAn @EdmOptionalAn private double y2Min;
+    
+    @EdmAttributeAn @EdmOptionalAn private double xMax;
+    @EdmAttributeAn @EdmOptionalAn private double yMax;
+    @EdmAttributeAn @EdmOptionalAn private double y2Max;
+    
+    @EdmAttributeAn @EdmOptionalAn private boolean xShowMajorGrid;
+    @EdmAttributeAn @EdmOptionalAn private boolean yShowMajorGrid;
+    @EdmAttributeAn @EdmOptionalAn private boolean y2ShowMajorGrid;
+    
+    @EdmAttributeAn @EdmOptionalAn private String xAxisSrc; //AutoScale, fromUser
+    @EdmAttributeAn @EdmOptionalAn private String yAxisSrc; 
+    @EdmAttributeAn @EdmOptionalAn private String y2AxisSrc; 
+    
+    
+    
+    
+    //------------
+    @EdmAttributeAn @EdmOptionalAn private boolean showXAxis;
+    @EdmAttributeAn @EdmOptionalAn private boolean showYAxis;
+    @EdmAttributeAn @EdmOptionalAn private boolean showY2Axis;
+    
+    @EdmAttributeAn @EdmOptionalAn private String xAxisStyle;
+    @EdmAttributeAn @EdmOptionalAn private String xAxisTimeFormat;
+    @EdmAttributeAn @EdmOptionalAn private String yAxisStyle;
+    @EdmAttributeAn @EdmOptionalAn private String y2AxisStyle;
+    
+    
+    // trace properties
+    @EdmAttributeAn @EdmOptionalAn private int numTraces;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings xPv;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings yPv;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiColors plotColor;
+    
+    //----
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings plotStyle;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiInts lineThickness;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings lineStyle;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings plotUpdateMode;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings plotSymbolType;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiBooleans useY2Axis;    
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings opMode;
+    
+    public Edm_xyGraphClass(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
 
-	public EdmMultiStrings getOpMode() {
-		return opMode;
-	}
-	
+    public EdmMultiStrings getOpMode() {
+        return opMode;
+    }
+    
 
-	public String getxLabel() {
-		return xLabel;
-	}
+    public String getxLabel() {
+        return xLabel;
+    }
 
 
 
@@ -97,9 +97,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public String getyLabel() {
-		return yLabel;
-	}
+    public String getyLabel() {
+        return yLabel;
+    }
 
 
 
@@ -107,9 +107,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public boolean isAutoScaleBothDirections() {
-		return autoScaleBothDirections;
-	}
+    public boolean isAutoScaleBothDirections() {
+        return autoScaleBothDirections;
+    }
 
 
 
@@ -117,9 +117,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public double getAutoScaleThreshPct() {
-		return autoScaleThreshPct;
-	}
+    public double getAutoScaleThreshPct() {
+        return autoScaleThreshPct;
+    }
 
 
 
@@ -127,9 +127,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public String getPlotMode() {
-		return plotMode;
-	}
+    public String getPlotMode() {
+        return plotMode;
+    }
 
 
 
@@ -137,9 +137,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public int getnPts() {
-		return nPts;
-	}
+    public int getnPts() {
+        return nPts;
+    }
 
 
 
@@ -147,9 +147,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public int getUpdateTimerMs() {
-		return updateTimerMs;
-	}
+    public int getUpdateTimerMs() {
+        return updateTimerMs;
+    }
 
 
 
@@ -157,9 +157,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public String getResetPv() {
-		return resetPv;
-	}
+    public String getResetPv() {
+        return resetPv;
+    }
 
 
 
@@ -167,9 +167,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public String getResetMode() {
-		return resetMode;
-	}
+    public String getResetMode() {
+        return resetMode;
+    }
 
 
 
@@ -177,9 +177,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public double getxMin() {
-		return xMin;
-	}
+    public double getxMin() {
+        return xMin;
+    }
 
 
 
@@ -187,9 +187,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public double getyMin() {
-		return yMin;
-	}
+    public double getyMin() {
+        return yMin;
+    }
 
 
 
@@ -197,9 +197,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public double getY2Min() {
-		return y2Min;
-	}
+    public double getY2Min() {
+        return y2Min;
+    }
 
 
 
@@ -207,9 +207,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public double getxMax() {
-		return xMax;
-	}
+    public double getxMax() {
+        return xMax;
+    }
 
 
 
@@ -217,9 +217,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public double getyMax() {
-		return yMax;
-	}
+    public double getyMax() {
+        return yMax;
+    }
 
 
 
@@ -227,9 +227,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public double getY2Max() {
-		return y2Max;
-	}
+    public double getY2Max() {
+        return y2Max;
+    }
 
 
 
@@ -237,9 +237,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public boolean isxShowMajorGrid() {
-		return xShowMajorGrid;
-	}
+    public boolean isxShowMajorGrid() {
+        return xShowMajorGrid;
+    }
 
 
 
@@ -247,9 +247,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public boolean isyShowMajorGrid() {
-		return yShowMajorGrid;
-	}
+    public boolean isyShowMajorGrid() {
+        return yShowMajorGrid;
+    }
 
 
 
@@ -257,9 +257,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public boolean isY2ShowMajorGrid() {
-		return y2ShowMajorGrid;
-	}
+    public boolean isY2ShowMajorGrid() {
+        return y2ShowMajorGrid;
+    }
 
 
 
@@ -267,9 +267,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public String getxAxisSrc() {
-		return xAxisSrc;
-	}
+    public String getxAxisSrc() {
+        return xAxisSrc;
+    }
 
 
 
@@ -277,9 +277,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public String getyAxisSrc() {
-		return yAxisSrc;
-	}
+    public String getyAxisSrc() {
+        return yAxisSrc;
+    }
 
 
 
@@ -287,9 +287,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public String getY2AxisSrc() {
-		return y2AxisSrc;
-	}
+    public String getY2AxisSrc() {
+        return y2AxisSrc;
+    }
 
 
 
@@ -297,9 +297,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public String getxAxisStyle() {
-		return xAxisStyle;
-	}
+    public String getxAxisStyle() {
+        return xAxisStyle;
+    }
 
 
 
@@ -307,9 +307,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public String getxAxisTimeFormat() {
-		return xAxisTimeFormat;
-	}
+    public String getxAxisTimeFormat() {
+        return xAxisTimeFormat;
+    }
 
 
 
@@ -317,9 +317,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public String getyAxisStyle() {
-		return yAxisStyle;
-	}
+    public String getyAxisStyle() {
+        return yAxisStyle;
+    }
 
 
 
@@ -327,9 +327,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public EdmMultiStrings getxPv() {
-		return xPv;
-	}
+    public EdmMultiStrings getxPv() {
+        return xPv;
+    }
 
 
 
@@ -337,9 +337,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public EdmMultiStrings getyPv() {
-		return yPv;
-	}
+    public EdmMultiStrings getyPv() {
+        return yPv;
+    }
 
 
 
@@ -347,9 +347,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public EdmMultiStrings getPlotStyle() {
-		return plotStyle;
-	}
+    public EdmMultiStrings getPlotStyle() {
+        return plotStyle;
+    }
 
 
 
@@ -357,9 +357,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public EdmMultiInts getLineThickness() {
-		return lineThickness;
-	}
+    public EdmMultiInts getLineThickness() {
+        return lineThickness;
+    }
 
 
 
@@ -367,9 +367,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public EdmMultiStrings getLineStyle() {
-		return lineStyle;
-	}
+    public EdmMultiStrings getLineStyle() {
+        return lineStyle;
+    }
 
 
 
@@ -377,9 +377,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public EdmMultiStrings getPlotUpdateMode() {
-		return plotUpdateMode;
-	}
+    public EdmMultiStrings getPlotUpdateMode() {
+        return plotUpdateMode;
+    }
 
 
 
@@ -387,9 +387,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public EdmMultiStrings getPlotSymbolType() {
-		return plotSymbolType;
-	}
+    public EdmMultiStrings getPlotSymbolType() {
+        return plotSymbolType;
+    }
 
 
 
@@ -397,9 +397,9 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	public EdmMultiBooleans getUseY2Axis() {
-		return useY2Axis;
-	}
+    public EdmMultiBooleans getUseY2Axis() {
+        return useY2Axis;
+    }
 
 
 
@@ -407,72 +407,72 @@ public class Edm_xyGraphClass extends EdmWidget {
 
 
 
-	/**
-	 * @return the lineAlarm
-	 */
-	public final String getGraphTitle() {
-		return graphTitle;
-	}
-	public final String getXLabel() {
-		return xLabel;
-	}
-	public final String getYLabel() {
-		return yLabel;
-	}
-	public final String getY2Label() {
-		return y2Label;
-	}
-	
+    /**
+     * @return the lineAlarm
+     */
+    public final String getGraphTitle() {
+        return graphTitle;
+    }
+    public final String getXLabel() {
+        return xLabel;
+    }
+    public final String getYLabel() {
+        return yLabel;
+    }
+    public final String getY2Label() {
+        return y2Label;
+    }
+    
 
-	public EdmColor getGridColor() {
-		return gridColor;
-	}
-	
-	public boolean isBorder(){
-		return border;
-	}
-	public boolean isPlotAreaBorder(){
-		return plotAreaBorder;
-	}
-	//axis 
-	public boolean isShowXAxis(){
-		return showXAxis;
-	}
-	public boolean isShowYAxis(){
-		return showYAxis;
-	}
-	public boolean isShowY2Axis(){
-		return showY2Axis;
-	}
-	
-	public final String getXAxisStyle() {
-		return xAxisStyle;
-	}
-	public final String getXAxisTimeFormat() {
-		return xAxisTimeFormat;
-	}
-	public final String getYAxisStyle() {
-		return yAxisStyle;
-	}
-	
-	public String getY2AxisStyle() {
-		return y2AxisStyle;
-	}
-	
-	public final EdmMultiColors getPlotColor() {
-		return plotColor;
-	}	
-	public final EdmMultiStrings getXPv() {
-		return xPv;
-	}	
-	public final EdmMultiStrings getYPv() {
-		return yPv;
-	}
-	public int getNumTraces() {
-		return numTraces;
-	}
-	
-	public final String getTriggerPv() {
-		return triggerPv;
-	}
+    public EdmColor getGridColor() {
+        return gridColor;
+    }
+    
+    public boolean isBorder(){
+        return border;
+    }
+    public boolean isPlotAreaBorder(){
+        return plotAreaBorder;
+    }
+    //axis 
+    public boolean isShowXAxis(){
+        return showXAxis;
+    }
+    public boolean isShowYAxis(){
+        return showYAxis;
+    }
+    public boolean isShowY2Axis(){
+        return showY2Axis;
+    }
+    
+    public final String getXAxisStyle() {
+        return xAxisStyle;
+    }
+    public final String getXAxisTimeFormat() {
+        return xAxisTimeFormat;
+    }
+    public final String getYAxisStyle() {
+        return yAxisStyle;
+    }
+    
+    public String getY2AxisStyle() {
+        return y2AxisStyle;
+    }
+    
+    public final EdmMultiColors getPlotColor() {
+        return plotColor;
+    }    
+    public final EdmMultiStrings getXPv() {
+        return xPv;
+    }    
+    public final EdmMultiStrings getYPv() {
+        return yPv;
+    }
+    public int getNumTraces() {
+        return numTraces;
+    }
+    
+    public final String getTriggerPv() {
+        return triggerPv;
+    }
 }

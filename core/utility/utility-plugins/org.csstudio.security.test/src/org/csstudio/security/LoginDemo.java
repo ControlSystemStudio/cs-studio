@@ -66,7 +66,7 @@ public class LoginDemo
         assertThat(got_user, equalTo(true));
         
         System.out.println("Primary user name: " +
-        		SecuritySupport.getSubjectName(subject));
+                SecuritySupport.getSubjectName(subject));
     }
 
     /** Should work as long as passwords.conf isn't changed */

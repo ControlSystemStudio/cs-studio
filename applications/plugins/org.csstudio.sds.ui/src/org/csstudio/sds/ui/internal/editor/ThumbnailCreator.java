@@ -21,97 +21,97 @@ import org.eclipse.swt.widgets.Shell;
 
 public class ThumbnailCreator {
 
-	public static ImageData createImage(final DisplayModel model,
-			final int thumbSize) {
+    public static ImageData createImage(final DisplayModel model,
+            final int thumbSize) {
 
-		final ImageDataContainer resultContainer = new ImageDataContainer();
+        final ImageDataContainer resultContainer = new ImageDataContainer();
 
-		final Display display = Display.getDefault();
-		display.syncExec(new Runnable() {
+        final Display display = Display.getDefault();
+        display.syncExec(new Runnable() {
 
-			@Override
-			public void run() {
-				Shell shell = new Shell(display, SWT.NO_TRIM);
-				Image image = null;
-				try {
-					shell.setLayout(new FillLayout());
-					shell.setSize(model.getWidth(), model.getHeight());
+            @Override
+            public void run() {
+                Shell shell = new Shell(display, SWT.NO_TRIM);
+                Image image = null;
+                try {
+                    shell.setLayout(new FillLayout());
+                    shell.setSize(model.getWidth(), model.getHeight());
 
-					ThumbnailDrawingViewer viewer = new ThumbnailDrawingViewer();
-					viewer.createControl(shell);
-					viewer.setEditPartFactory(new NoBorderWidgetEditPartFactory(
-							ExecutionMode.EDIT_MODE));
-					viewer.setRootEditPart(new ScalableFreeformRootEditPart());
-					viewer.setContents(model);
+                    ThumbnailDrawingViewer viewer = new ThumbnailDrawingViewer();
+                    viewer.createControl(shell);
+                    viewer.setEditPartFactory(new NoBorderWidgetEditPartFactory(
+                            ExecutionMode.EDIT_MODE));
+                    viewer.setRootEditPart(new ScalableFreeformRootEditPart());
+                    viewer.setContents(model);
 
-					shell.layout();
+                    shell.layout();
 
-					image = viewer.getImage(thumbSize);
-					ImageData result = image.getImageData();
-					resultContainer.imageData = result;
+                    image = viewer.getImage(thumbSize);
+                    ImageData result = image.getImageData();
+                    resultContainer.imageData = result;
 
-				} finally {
-					if (image != null) {
-						image.dispose();
-					}
-					shell.dispose();
-				}
-			}
-		});
+                } finally {
+                    if (image != null) {
+                        image.dispose();
+                    }
+                    shell.dispose();
+                }
+            }
+        });
 
-		return resultContainer.imageData;
-	}
+        return resultContainer.imageData;
+    }
 
-	private static class ImageDataContainer {
-		public ImageData imageData;
-	}
+    private static class ImageDataContainer {
+        public ImageData imageData;
+    }
 
-	private static class ThumbnailDrawingViewer extends GraphicalViewerImpl {
+    private static class ThumbnailDrawingViewer extends GraphicalViewerImpl {
 
-		public Image getImage(int thumbSize) {
+        public Image getImage(int thumbSize) {
 
-			IFigure figure = getLightweightSystem().getRootFigure();
+            IFigure figure = getLightweightSystem().getRootFigure();
 
-			Rectangle bounds = figure.getBounds();
-			
-			double factor = Math.min(
-					(double) thumbSize / (double) bounds.width,
-					(double) thumbSize / (double) bounds.height);
-			
-			Image image = new Image(Display.getCurrent(),
-					(int) Math.ceil((double) bounds.width * factor),
-					(int) Math.ceil((double) bounds.height * factor));
-			GC gc = new GC(image);
-			Graphics graphics = new SWTGraphics(gc);
+            Rectangle bounds = figure.getBounds();
+            
+            double factor = Math.min(
+                    (double) thumbSize / (double) bounds.width,
+                    (double) thumbSize / (double) bounds.height);
+            
+            Image image = new Image(Display.getCurrent(),
+                    (int) Math.ceil((double) bounds.width * factor),
+                    (int) Math.ceil((double) bounds.height * factor));
+            GC gc = new GC(image);
+            Graphics graphics = new SWTGraphics(gc);
 
-			// TODO Antialiasing an GC oder Graphics konfigurieren
+            // TODO Antialiasing an GC oder Graphics konfigurieren
 
-			graphics.scale(factor);
+            graphics.scale(factor);
 
-			figure.paint(graphics);
+            figure.paint(graphics);
 
-			gc.dispose(); // TODO disposing in finally-Block
+            gc.dispose(); // TODO disposing in finally-Block
 
-			return image;
-		}
+            return image;
+        }
 
-	}
-	
-	private static class NoBorderWidgetEditPartFactory extends WidgetEditPartFactory {
+    }
+    
+    private static class NoBorderWidgetEditPartFactory extends WidgetEditPartFactory {
 
-		public NoBorderWidgetEditPartFactory(ExecutionMode executionMode) {
-			super(executionMode);
-		}
-		
-		@Override
-		public EditPart createEditPart(EditPart context, Object modelElement) {
-			EditPart result = super.createEditPart(context, modelElement); 
-			
-			if(modelElement instanceof DisplayModel) {
-				((DisplayEditPart)result).setExecutionMode(ExecutionMode.RUN_MODE);
-			}
-			return result;
-		}
-		
-	}
+        public NoBorderWidgetEditPartFactory(ExecutionMode executionMode) {
+            super(executionMode);
+        }
+        
+        @Override
+        public EditPart createEditPart(EditPart context, Object modelElement) {
+            EditPart result = super.createEditPart(context, modelElement); 
+            
+            if(modelElement instanceof DisplayModel) {
+                ((DisplayEditPart)result).setExecutionMode(ExecutionMode.RUN_MODE);
+            }
+            return result;
+        }
+        
+    }
 }

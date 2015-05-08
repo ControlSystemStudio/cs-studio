@@ -43,212 +43,212 @@ import org.eclipse.swt.graphics.Color;
  * 
  */
 public final class OPIRectangleFigure extends RectangleFigure implements Introspectable {
-	/**
-	 * The fill grade (0 - 100%).
-	 */
-	private double fill = 100;
-	
-	/**
-	 * The orientation (horizontal==true | vertical==false).
-	 */
-	private boolean horizontalFill = true;
-	
-	/**
-	 * The transparent state of the background.
-	 */
-	private boolean transparent = false;
-	
-	private Color lineColor = CustomMediaFactory.getInstance().getColor(
-			CustomMediaFactory.COLOR_PURPLE);
-	
-	private Color backGradientStartColor =ColorConstants.white; 
-	private Color foreGradientStartColor =ColorConstants.white; 
-	private boolean gradient=false;
-	private boolean useAdvancedGraphics=GraphicsUtil.useAdvancedGraphics();
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected synchronized void fillShape(final Graphics graphics) {
-		Rectangle figureBounds = getClientArea();
-		if (!transparent) {
-			if(isEnabled())
-				graphics.setBackgroundColor(getBackgroundColor());
-			if(gradient && useAdvancedGraphics){
-				graphics.setForegroundColor(backGradientStartColor);
-				graphics.fillGradient(figureBounds, horizontalFill);
-			}else
-				graphics.fillRectangle(figureBounds);	
-		}
-		if(getFill() > 0){
-			if(isEnabled())
-				graphics.setBackgroundColor(getForegroundColor());
-			Rectangle fillRectangle;
-			if (horizontalFill) {
-				int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
-				fillRectangle = new Rectangle(figureBounds.x,figureBounds.y,newW,figureBounds.height);
-			} else {
-				int newH = (int) Math.round(figureBounds.height * (getFill() / 100));
-				fillRectangle = new Rectangle(figureBounds.x,figureBounds.y+figureBounds.height-newH,figureBounds.width,newH);
-			}
-			if(gradient && useAdvancedGraphics){
-				graphics.setForegroundColor(foreGradientStartColor);
-				graphics.fillGradient(fillRectangle, horizontalFill);
-			}else
-				graphics.fillRectangle(fillRectangle);
-		}
-	}
-	
-	public BeanInfo getBeanInfo() throws IntrospectionException {
-		return new ShapeWidgetIntrospector().getBeanInfo(this.getClass());
-	}
-	
-	
-	/**
-	 * Gets the fill grade.
-	 * 
-	 * @return the fill grade
-	 */
-	public double getFill() {
-		return fill;
-	}
+    /**
+     * The fill grade (0 - 100%).
+     */
+    private double fill = 100;
+    
+    /**
+     * The orientation (horizontal==true | vertical==false).
+     */
+    private boolean horizontalFill = true;
+    
+    /**
+     * The transparent state of the background.
+     */
+    private boolean transparent = false;
+    
+    private Color lineColor = CustomMediaFactory.getInstance().getColor(
+            CustomMediaFactory.COLOR_PURPLE);
+    
+    private Color backGradientStartColor =ColorConstants.white; 
+    private Color foreGradientStartColor =ColorConstants.white; 
+    private boolean gradient=false;
+    private boolean useAdvancedGraphics=GraphicsUtil.useAdvancedGraphics();
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected synchronized void fillShape(final Graphics graphics) {
+        Rectangle figureBounds = getClientArea();
+        if (!transparent) {
+            if(isEnabled())
+                graphics.setBackgroundColor(getBackgroundColor());
+            if(gradient && useAdvancedGraphics){
+                graphics.setForegroundColor(backGradientStartColor);
+                graphics.fillGradient(figureBounds, horizontalFill);
+            }else
+                graphics.fillRectangle(figureBounds);    
+        }
+        if(getFill() > 0){
+            if(isEnabled())
+                graphics.setBackgroundColor(getForegroundColor());
+            Rectangle fillRectangle;
+            if (horizontalFill) {
+                int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
+                fillRectangle = new Rectangle(figureBounds.x,figureBounds.y,newW,figureBounds.height);
+            } else {
+                int newH = (int) Math.round(figureBounds.height * (getFill() / 100));
+                fillRectangle = new Rectangle(figureBounds.x,figureBounds.y+figureBounds.height-newH,figureBounds.width,newH);
+            }
+            if(gradient && useAdvancedGraphics){
+                graphics.setForegroundColor(foreGradientStartColor);
+                graphics.fillGradient(fillRectangle, horizontalFill);
+            }else
+                graphics.fillRectangle(fillRectangle);
+        }
+    }
+    
+    public BeanInfo getBeanInfo() throws IntrospectionException {
+        return new ShapeWidgetIntrospector().getBeanInfo(this.getClass());
+    }
+    
+    
+    /**
+     * Gets the fill grade.
+     * 
+     * @return the fill grade
+     */
+    public double getFill() {
+        return fill;
+    }
 
-	/**
-	 * @return the lineColor
-	 */
-	public Color getLineColor() {
-		return lineColor;
-	}
+    /**
+     * @return the lineColor
+     */
+    public Color getLineColor() {
+        return lineColor;
+    }
 
-	/**
-	 * Gets the transparent state of the background.
-	 * 
-	 * @return the transparent state of the background
-	 */
-	public boolean getTransparent() {
-		return transparent;
-	}
-
-
-	
-	/**
-	 * Gets the orientation (horizontal==true | vertical==false).
-	 * 
-	 * @return boolean
-	 * 				The orientation
-	 */
-	public boolean isHorizontalFill() {
-		return horizontalFill;
-	}
-
-	/**
-	 * @return the gradientStartColor
-	 */
-	public Color getBackGradientStartColor() {
-		return backGradientStartColor;
-	}
-	
-	public Color getForeGradientStartColor() {
-		return foreGradientStartColor;
-	}
-
-	/**
-	 * @return the gradient
-	 */
-	public boolean isGradient() {
-		return gradient;
-	}
-
-	/**
-	 * @param gradient the gradient to set
-	 */
-	public void setGradient(boolean gradient) {
-		this.gradient = gradient;
-		repaint();
-	}
-	
-	/**Set gradient start color.
-	 * @param gradientStartColor
-	 */
-	public void setBackGradientStartColor(Color gradientStartColor) {
-		this.backGradientStartColor = gradientStartColor;
-		repaint();
-	}
-	
-	public void setForeGradientStartColor(Color foreGradientStartColor) {
-		this.foreGradientStartColor = foreGradientStartColor;
-		repaint();
-	}
-	
-
-	/**
-	 * @see Shape#outlineShape(Graphics)
-	 */
-	protected void outlineShape(Graphics graphics) {	
-	    float lineInset = Math.max(1.0f, getLineWidth()) / 2.0f;
-	    int inset1 = (int)Math.floor(lineInset);
-	    int inset2 = (int)Math.ceil(lineInset);
-
-	    Rectangle r = Draw2dSingletonUtil.getRectangle().setBounds(getClientArea());
-	    r.x += inset1 ; 
-	    r.y += inset1; 
-	    r.width -= inset1 + inset2;
-	    r.height -= inset1 + inset2;
-	    if(isEnabled())
-	    	graphics.setForegroundColor(lineColor);
-	    graphics.drawRectangle(r);
-	}	
-
-	/**
-	 * Sets the fill grade.
-	 * 
-	 * @param fill
-	 *            the fill grade.
-	 */
-	public void setFill(final double fill) {
-		if(this.fill == fill)
-			return;
-		this.fill = fill;
-		repaint();
-	}
-
-	/**
-	 * Sets the orientation (horizontal==true | vertical==false).
-	 * 
-	 * @param horizontal
-	 *            The orientation.
-	 */
-	public void setHorizontalFill(final boolean horizontal) {
-		if(this.horizontalFill == horizontal)
-			return;
-		this.horizontalFill = horizontal;
-		repaint();
-	}
+    /**
+     * Gets the transparent state of the background.
+     * 
+     * @return the transparent state of the background
+     */
+    public boolean getTransparent() {
+        return transparent;
+    }
 
 
-	/**
-	 * @param lineColor the lineColor to set
-	 */
-	public void setLineColor(Color lineColor) {
-		if(this.lineColor != null && this.lineColor.equals(lineColor))
-			return;
-		this.lineColor = lineColor;
-		repaint();
-	}
+    
+    /**
+     * Gets the orientation (horizontal==true | vertical==false).
+     * 
+     * @return boolean
+     *                 The orientation
+     */
+    public boolean isHorizontalFill() {
+        return horizontalFill;
+    }
 
-	/**
-	 * Sets the transparent state of the background.
-	 * 
-	 * @param transparent
-	 *            the transparent state.
-	 */
-	public void setTransparent(final boolean transparent) {
-		if(this.transparent == transparent)
-			return;
-		this.transparent = transparent;
-		repaint();
-	}
+    /**
+     * @return the gradientStartColor
+     */
+    public Color getBackGradientStartColor() {
+        return backGradientStartColor;
+    }
+    
+    public Color getForeGradientStartColor() {
+        return foreGradientStartColor;
+    }
+
+    /**
+     * @return the gradient
+     */
+    public boolean isGradient() {
+        return gradient;
+    }
+
+    /**
+     * @param gradient the gradient to set
+     */
+    public void setGradient(boolean gradient) {
+        this.gradient = gradient;
+        repaint();
+    }
+    
+    /**Set gradient start color.
+     * @param gradientStartColor
+     */
+    public void setBackGradientStartColor(Color gradientStartColor) {
+        this.backGradientStartColor = gradientStartColor;
+        repaint();
+    }
+    
+    public void setForeGradientStartColor(Color foreGradientStartColor) {
+        this.foreGradientStartColor = foreGradientStartColor;
+        repaint();
+    }
+    
+
+    /**
+     * @see Shape#outlineShape(Graphics)
+     */
+    protected void outlineShape(Graphics graphics) {    
+        float lineInset = Math.max(1.0f, getLineWidth()) / 2.0f;
+        int inset1 = (int)Math.floor(lineInset);
+        int inset2 = (int)Math.ceil(lineInset);
+
+        Rectangle r = Draw2dSingletonUtil.getRectangle().setBounds(getClientArea());
+        r.x += inset1 ; 
+        r.y += inset1; 
+        r.width -= inset1 + inset2;
+        r.height -= inset1 + inset2;
+        if(isEnabled())
+            graphics.setForegroundColor(lineColor);
+        graphics.drawRectangle(r);
+    }    
+
+    /**
+     * Sets the fill grade.
+     * 
+     * @param fill
+     *            the fill grade.
+     */
+    public void setFill(final double fill) {
+        if(this.fill == fill)
+            return;
+        this.fill = fill;
+        repaint();
+    }
+
+    /**
+     * Sets the orientation (horizontal==true | vertical==false).
+     * 
+     * @param horizontal
+     *            The orientation.
+     */
+    public void setHorizontalFill(final boolean horizontal) {
+        if(this.horizontalFill == horizontal)
+            return;
+        this.horizontalFill = horizontal;
+        repaint();
+    }
+
+
+    /**
+     * @param lineColor the lineColor to set
+     */
+    public void setLineColor(Color lineColor) {
+        if(this.lineColor != null && this.lineColor.equals(lineColor))
+            return;
+        this.lineColor = lineColor;
+        repaint();
+    }
+
+    /**
+     * Sets the transparent state of the background.
+     * 
+     * @param transparent
+     *            the transparent state.
+     */
+    public void setTransparent(final boolean transparent) {
+        if(this.transparent == transparent)
+            return;
+        this.transparent = transparent;
+        repaint();
+    }
 
 
 

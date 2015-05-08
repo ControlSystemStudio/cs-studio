@@ -33,144 +33,144 @@ import org.eclipse.swt.widgets.Control;
  * 
  */
 public class OptionComboBoxCellEditor extends CellEditor {
-	private AbstractListViewer _viewer;
-	private CCombo _combobox; 
-	private IOption[] _options;
-	private IOption _selection;
+    private AbstractListViewer _viewer;
+    private CCombo _combobox; 
+    private IOption[] _options;
+    private IOption _selection;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param parent
-	 *            the parent composite
-	 * @param options
-	 *            the options
-	 * @param style
-	 *            the style
-	 */
-	public OptionComboBoxCellEditor(Composite parent, IOption[] options,
-			int style) {
-		super(parent, style);
-		assert options != null;
-		_options = options;
+    /**
+     * Constructor.
+     * 
+     * @param parent
+     *            the parent composite
+     * @param options
+     *            the options
+     * @param style
+     *            the style
+     */
+    public OptionComboBoxCellEditor(Composite parent, IOption[] options,
+            int style) {
+        super(parent, style);
+        assert options != null;
+        _options = options;
 
-		_viewer.setInput(_options);
-	}
+        _viewer.setInput(_options);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Control createControl(Composite parent) {
-		_combobox = new CCombo(parent, getStyle());
-		_combobox.setEditable(false);
-		_combobox.setVisibleItemCount(20);
-		_viewer = new ComboViewer(_combobox);
-		
-		_viewer.setLabelProvider(new LabelProvider());
-		_viewer.setContentProvider(new ArrayContentProvider());
-		_combobox.setFont(parent.getFont());
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Control createControl(Composite parent) {
+        _combobox = new CCombo(parent, getStyle());
+        _combobox.setEditable(false);
+        _combobox.setVisibleItemCount(20);
+        _viewer = new ComboViewer(_combobox);
+        
+        _viewer.setLabelProvider(new LabelProvider());
+        _viewer.setContentProvider(new ArrayContentProvider());
+        _combobox.setFont(parent.getFont());
 
-		_combobox.addKeyListener(new KeyAdapter() {
+        _combobox.addKeyListener(new KeyAdapter() {
             // hook key pressed - see PR 14201  
             public void keyPressed(KeyEvent e) {
                 keyReleaseOccured(e);
             }
         });
         
-		_combobox.addSelectionListener(new SelectionAdapter() {
-			public void widgetDefaultSelected(SelectionEvent event) {
-				applyEditorValueAndDeactivate();
-			}
-			
-            public void widgetSelected(SelectionEvent event) {
-            	ISelection sel = _viewer.getSelection();
-            	
-            	if(sel instanceof IStructuredSelection) {
-            		_selection = (IOption) ((IStructuredSelection) sel).getFirstElement();
-            		applyEditorValueAndDeactivate();
-            	}
+        _combobox.addSelectionListener(new SelectionAdapter() {
+            public void widgetDefaultSelected(SelectionEvent event) {
+                applyEditorValueAndDeactivate();
             }
-		});
+            
+            public void widgetSelected(SelectionEvent event) {
+                ISelection sel = _viewer.getSelection();
+                
+                if(sel instanceof IStructuredSelection) {
+                    _selection = (IOption) ((IStructuredSelection) sel).getFirstElement();
+                    applyEditorValueAndDeactivate();
+                }
+            }
+        });
 
-		_combobox.addTraverseListener(new TraverseListener() {
-			public void keyTraversed(TraverseEvent e) {
-				if (e.detail == SWT.TRAVERSE_ESCAPE
-						|| e.detail == SWT.TRAVERSE_RETURN) {
-					e.doit = false;
-				}
-			}
-		});
+        _combobox.addTraverseListener(new TraverseListener() {
+            public void keyTraversed(TraverseEvent e) {
+                if (e.detail == SWT.TRAVERSE_ESCAPE
+                        || e.detail == SWT.TRAVERSE_RETURN) {
+                    e.doit = false;
+                }
+            }
+        });
 
-		_combobox.addFocusListener(new FocusAdapter() {
-			public void focusLost(FocusEvent e) {
-				OptionComboBoxCellEditor.this.focusLost();
-			}
-		});
-		return _combobox;
+        _combobox.addFocusListener(new FocusAdapter() {
+            public void focusLost(FocusEvent e) {
+                OptionComboBoxCellEditor.this.focusLost();
+            }
+        });
+        return _combobox;
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Object doGetValue() {
-		String result = "";
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Object doGetValue() {
+        String result = "";
 
-		if (_selection != null) {
-			result = _selection.getIdentifier();
-		}
+        if (_selection != null) {
+            result = _selection.getIdentifier();
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doSetFocus() {
-		_viewer.getControl().setFocus();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doSetFocus() {
+        _viewer.getControl().setFocus();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doSetValue(Object value) {
-		_viewer.setSelection(new StructuredSelection(value));
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doSetValue(Object value) {
+        _viewer.setSelection(new StructuredSelection(value));
+    }
 
-	/**
-	 * Applies the currently selected value and deactivates the cell editor.
-	 */
-	void applyEditorValueAndDeactivate() {
-		Object newValue = doGetValue();
-		markDirty();
-		boolean isValid = isCorrect(newValue);
-		setValueValid(isValid);
+    /**
+     * Applies the currently selected value and deactivates the cell editor.
+     */
+    void applyEditorValueAndDeactivate() {
+        Object newValue = doGetValue();
+        markDirty();
+        boolean isValid = isCorrect(newValue);
+        setValueValid(isValid);
 
-		fireApplyEditorValue();
-		deactivate();
-	}
+        fireApplyEditorValue();
+        deactivate();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void focusLost() {
-		if (isActivated()) {
-			applyEditorValueAndDeactivate();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected void focusLost() {
+        if (isActivated()) {
+            applyEditorValueAndDeactivate();
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void keyReleaseOccured(KeyEvent keyEvent) {
-		if (keyEvent.character == '\u001b') { // Escape character
-			fireCancelEditor();
-		} else if (keyEvent.character == '\t') { // tab key
-			applyEditorValueAndDeactivate();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected void keyReleaseOccured(KeyEvent keyEvent) {
+        if (keyEvent.character == '\u001b') { // Escape character
+            fireCancelEditor();
+        } else if (keyEvent.character == '\t') { // tab key
+            applyEditorValueAndDeactivate();
+        }
+    }
 }

@@ -101,39 +101,39 @@ public class LinkMoverUtilities {
         OutLink out = null;
         InLink in = null;
         try {
-	        for (int i = 0; i < connectors.size(); i++) {
-	            c = (Connector) connectors.get(i);
-	            out = c.getOutput();
-	            in = c.getInput();
-	            
-	            if (verticalMove && horizontalMove) {
-	                break;
-	            }
-	            
-	            if (!(out instanceof VisibleObject) || !(in instanceof VisibleObject)) continue;        
-	            outx = ((VisibleObject)out).getRx();
-            	outy = ((VisibleObject)out).getRy();
-            	inx = ((VisibleObject)in).getRx();
+            for (int i = 0; i < connectors.size(); i++) {
+                c = (Connector) connectors.get(i);
+                out = c.getOutput();
+                in = c.getInput();
+                
+                if (verticalMove && horizontalMove) {
+                    break;
+                }
+                
+                if (!(out instanceof VisibleObject) || !(in instanceof VisibleObject)) continue;        
+                outx = ((VisibleObject)out).getRx();
+                outy = ((VisibleObject)out).getRy();
+                inx = ((VisibleObject)in).getRx();
                 iny = ((VisibleObject)in).getRy();
-	            if (c.getQueueCount() %2 == 0 && 
-	                    ((outx + LINK_AREA_WIDTH >= x && inx - LINK_AREA_WIDTH <= x) ||
-	                    (outx - LINK_AREA_WIDTH <= x && inx + LINK_AREA_WIDTH >= x)) && 
-	                    Math.abs(c.getRy() - y) <= LINK_AREA_WIDTH && !verticalMove) {
-	                returnConnectors.add(c);
-	                verticalMove = true;
-	                verticalConnector = c;
-	                continue;
-	            } 
-	            if (c.getQueueCount() %2 == 1 &&
-	                    ((outy + LINK_AREA_WIDTH >= y && iny - LINK_AREA_WIDTH<= y) ||
-	                    (outy - LINK_AREA_WIDTH <= y && iny + LINK_AREA_WIDTH >= y)) &&
-	                    Math.abs(c.getRx() - x) <= LINK_AREA_WIDTH && !horizontalMove) {
-	                returnConnectors.add(c);
-	                horizontalMove = true;
-	                horizontalConnector = c;
-	                continue;
-	            }
-	        }
+                if (c.getQueueCount() %2 == 0 && 
+                        ((outx + LINK_AREA_WIDTH >= x && inx - LINK_AREA_WIDTH <= x) ||
+                        (outx - LINK_AREA_WIDTH <= x && inx + LINK_AREA_WIDTH >= x)) && 
+                        Math.abs(c.getRy() - y) <= LINK_AREA_WIDTH && !verticalMove) {
+                    returnConnectors.add(c);
+                    verticalMove = true;
+                    verticalConnector = c;
+                    continue;
+                } 
+                if (c.getQueueCount() %2 == 1 &&
+                        ((outy + LINK_AREA_WIDTH >= y && iny - LINK_AREA_WIDTH<= y) ||
+                        (outy - LINK_AREA_WIDTH <= y && iny + LINK_AREA_WIDTH >= y)) &&
+                        Math.abs(c.getRx() - x) <= LINK_AREA_WIDTH && !horizontalMove) {
+                    returnConnectors.add(c);
+                    horizontalMove = true;
+                    horizontalConnector = c;
+                    continue;
+                }
+            }
         }catch (Exception e) {
             Console.getInstance().println(e);
         }

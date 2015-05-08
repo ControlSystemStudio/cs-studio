@@ -39,104 +39,104 @@ import org.csstudio.platform.model.pvs.IProcessVariableAddress;
  * @version $Revision$
  */
 public final class LocalChannel {
-	private ScheduledFuture _scheduledFuture;
+    private ScheduledFuture _scheduledFuture;
 
-	private AbstractDataGenerator _dataGenerator;
+    private AbstractDataGenerator _dataGenerator;
 
-	/**
-	 * The current value.
-	 */
-	private Object _currentValue;
+    /**
+     * The current value.
+     */
+    private Object _currentValue;
 
-	private List<ILocalChannelListener> _listeners;
+    private List<ILocalChannelListener> _listeners;
 
-	public LocalChannel(IProcessVariableAddress pv) {
-		assert pv != null;
-		_currentValue = null;
-		_listeners = new ArrayList<ILocalChannelListener>();
+    public LocalChannel(IProcessVariableAddress pv) {
+        assert pv != null;
+        _currentValue = null;
+        _listeners = new ArrayList<ILocalChannelListener>();
 
-		// find data generator using regular expressions
-		boolean found = false;
-		for (DataGeneratorInfos dgInfo : DataGeneratorInfos.values()) {
-			if (!found) {
-				Pattern p = dgInfo.getPattern();
-				Matcher m = p.matcher(pv.getProperty());
+        // find data generator using regular expressions
+        boolean found = false;
+        for (DataGeneratorInfos dgInfo : DataGeneratorInfos.values()) {
+            if (!found) {
+                Pattern p = dgInfo.getPattern();
+                Matcher m = p.matcher(pv.getProperty());
 
-				if (m.find()) {
-					found = true; // we apply only the first data generator
-					// that fits
+                if (m.find()) {
+                    found = true; // we apply only the first data generator
+                    // that fits
 
-					// get the options that are encoded in the name of the
-					// process variable
-					final String[] options = new String[m.groupCount()];
+                    // get the options that are encoded in the name of the
+                    // process variable
+                    final String[] options = new String[m.groupCount()];
 
-					for (int i = 0; i < m.groupCount(); i++) {
-						options[i] = m.group(i+1);
-					}
+                    for (int i = 0; i < m.groupCount(); i++) {
+                        options[i] = m.group(i+1);
+                    }
 
-					// create and init the generator
-					_dataGenerator = dgInfo.getDataGeneratorFactory()
-							.createGenerator(this, 1000, options);
+                    // create and init the generator
+                    _dataGenerator = dgInfo.getDataGeneratorFactory()
+                            .createGenerator(this, 1000, options);
 
-					// init the current value
-					_currentValue = _dataGenerator.generateNextValue();
+                    // init the current value
+                    _currentValue = _dataGenerator.generateNextValue();
 
-					schedule();
-				}
-			}
-		}
-	}
+                    schedule();
+                }
+            }
+        }
+    }
 
-	public Object getValue() {
-		return _currentValue;
-	}
+    public Object getValue() {
+        return _currentValue;
+    }
 
-	public void setValue(Object value) {
-		_currentValue = value;
-		fireValueChangeEvent();
-	}
+    public void setValue(Object value) {
+        _currentValue = value;
+        fireValueChangeEvent();
+    }
 
-	public void addListener(ILocalChannelListener listener) {
-		if (!_listeners.contains(listener)) {
-			_listeners.add(listener);
-			schedule();
-		}
-	}
+    public void addListener(ILocalChannelListener listener) {
+        if (!_listeners.contains(listener)) {
+            _listeners.add(listener);
+            schedule();
+        }
+    }
 
-	public void removeListener(ILocalChannelListener listener) {
-		boolean removed = _listeners.remove(listener);
-		if (removed) {
-			schedule();
-		}
-	}
+    public void removeListener(ILocalChannelListener listener) {
+        boolean removed = _listeners.remove(listener);
+        if (removed) {
+            schedule();
+        }
+    }
 
-	private void fireValueChangeEvent() {
-		for (ILocalChannelListener listener : _listeners) {
-			listener.valueChanged(_currentValue);
-		}
-	}
+    private void fireValueChangeEvent() {
+        for (ILocalChannelListener listener : _listeners) {
+            listener.valueChanged(_currentValue);
+        }
+    }
 
-	private void schedule() {
-		// we need a data generator
-		if (_dataGenerator != null) {
-			// if nobody listens, we do not need to generate any random data
-			if (_listeners.size() == 0) {
-				// we cancel all scheduled jobs
-				if (_scheduledFuture != null) {
-					boolean stopped = _scheduledFuture.cancel(false);
-					_scheduledFuture = null;
-				}
-			} else {
-				// we schedule the job if necessary
-				if (_scheduledFuture == null) {
-					_scheduledFuture = ExecutionService.getInstance()
-							.getScheduledExecutorService().scheduleAtFixedRate(
-									_dataGenerator, 1000,
-									_dataGenerator.getPeriod(),
-									TimeUnit.MILLISECONDS);
-				}
-			}
-		}
-	}
+    private void schedule() {
+        // we need a data generator
+        if (_dataGenerator != null) {
+            // if nobody listens, we do not need to generate any random data
+            if (_listeners.size() == 0) {
+                // we cancel all scheduled jobs
+                if (_scheduledFuture != null) {
+                    boolean stopped = _scheduledFuture.cancel(false);
+                    _scheduledFuture = null;
+                }
+            } else {
+                // we schedule the job if necessary
+                if (_scheduledFuture == null) {
+                    _scheduledFuture = ExecutionService.getInstance()
+                            .getScheduledExecutorService().scheduleAtFixedRate(
+                                    _dataGenerator, 1000,
+                                    _dataGenerator.getPeriod(),
+                                    TimeUnit.MILLISECONDS);
+                }
+            }
+        }
+    }
 
 }

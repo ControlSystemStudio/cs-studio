@@ -4,17 +4,17 @@ import java.io.Writer;
 import org.epics.vtype.io.CSVIO;
 
 public class SimpleDataTextExport implements DataExportFormat {
-	
-	private CSVIO io = new CSVIO();
+    
+    private CSVIO io = new CSVIO();
 
-	@Override
-	public void export(Object value, Writer writer) {
-		io.export(value, writer);
-	}
+    @Override
+    public void export(Object value, Writer writer) {
+        io.export(value, writer);
+    }
 
-	@Override
-	public boolean canExport(Object data) {
-		return io.canExport(data);
-	}
+    @Override
+    public boolean canExport(Object data) {
+        return io.canExport(data);
+    }
 
 }

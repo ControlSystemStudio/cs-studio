@@ -32,44 +32,44 @@ import org.eclipse.core.runtime.IAdapterFactory;
  */
 public final class SdsActivationAdapterFactory implements IAdapterFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(final Object adaptableObject, final Class adapterType) {
-		assert adaptableObject != null;
-		assert adapterType != null;
-		assert adaptableObject instanceof AbstractWidgetModel : "adaptableObject instanceof AbstractWidgetModel"; //$NON-NLS-1$
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Object getAdapter(final Object adaptableObject, final Class adapterType) {
+        assert adaptableObject != null;
+        assert adapterType != null;
+        assert adaptableObject instanceof AbstractWidgetModel : "adaptableObject instanceof AbstractWidgetModel"; //$NON-NLS-1$
 
-		if (adapterType == IActivationAdapter.class) {
-			return new SdsWidgetEnabledAdapter();
-		}
-		return null;
-	}
+        if (adapterType == IActivationAdapter.class) {
+            return new SdsWidgetEnabledAdapter();
+        }
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getAdapterList() {
-		return new Class[] { IActivationAdapter.class };
-	}
-	
-	/**
-	 * An IWidgetAdapter for AbstractWidgetModels, which sets the visibility.
-	 * @author Kai Meyer
-	 */
-	private final class SdsWidgetEnabledAdapter implements IActivationAdapter {
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getAdapterList() {
+        return new Class[] { IActivationAdapter.class };
+    }
+    
+    /**
+     * An IWidgetAdapter for AbstractWidgetModels, which sets the visibility.
+     * @author Kai Meyer
+     */
+    private final class SdsWidgetEnabledAdapter implements IActivationAdapter {
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public void activate(final Object o, final boolean activate) {
-			assert o instanceof AbstractWidgetModel : "adaptableObject instanceof AbstractWidgetModel"; //$NON-NLS-1$
-			AbstractWidgetModel model = (AbstractWidgetModel) o;
-			model.grantAccess(activate);
-		}
-		
-	}
+        /**
+         * {@inheritDoc}
+         */
+        public void activate(final Object o, final boolean activate) {
+            assert o instanceof AbstractWidgetModel : "adaptableObject instanceof AbstractWidgetModel"; //$NON-NLS-1$
+            AbstractWidgetModel model = (AbstractWidgetModel) o;
+            model.grantAccess(activate);
+        }
+        
+    }
 
 }

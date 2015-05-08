@@ -14,22 +14,22 @@ public class TreeColumnViewerLayout extends ControlAdapter{
     private int minWidth = 100;
 
     public TreeColumnViewerLayout(GridTreeViewer gridTreeViewer,
-	    GridViewerColumn gridViewerColumn, int weight, int minWidth) {
+        GridViewerColumn gridViewerColumn, int weight, int minWidth) {
 
-	this.gridViewerColumn = gridViewerColumn;
-	this.gridTreeViewer = gridTreeViewer;
-	this.weight = weight;
-	this.minWidth = minWidth;
-	this.gridTreeViewer.getGrid().addControlListener(this);
+    this.gridViewerColumn = gridViewerColumn;
+    this.gridTreeViewer = gridTreeViewer;
+    this.weight = weight;
+    this.minWidth = minWidth;
+    this.gridTreeViewer.getGrid().addControlListener(this);
     }
 
     @Override
     public void controlResized(ControlEvent e) {
-	// TODO Auto-generated method stub
-	super.controlResized(e);
-	Point newSize = gridTreeViewer.getGrid().getSize();
-	int newWidth = (newSize.x * weight) / 100;
-	gridViewerColumn.getColumn().setWidth(
-		newWidth >= minWidth ? newWidth : minWidth);
+    // TODO Auto-generated method stub
+    super.controlResized(e);
+    Point newSize = gridTreeViewer.getGrid().getSize();
+    int newWidth = (newSize.x * weight) / 100;
+    gridViewerColumn.getColumn().setWidth(
+        newWidth >= minWidth ? newWidth : minWidth);
     }
 }

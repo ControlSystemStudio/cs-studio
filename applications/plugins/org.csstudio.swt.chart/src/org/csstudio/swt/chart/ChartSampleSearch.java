@@ -32,11 +32,11 @@ public class ChartSampleSearch
             // Compare 'mid' sample with goal
             double diff = samples.get(mid).getX() - x;
             if (diff > 0.0)
-            	cmp = 1;
+                cmp = 1;
             else if (diff < 0.0)
-            	cmp = -1;
+                cmp = -1;
             else
-            	cmp = 0;
+                cmp = 0;
             // See where to look next
             if (cmp == 0)
                 return true; // key found

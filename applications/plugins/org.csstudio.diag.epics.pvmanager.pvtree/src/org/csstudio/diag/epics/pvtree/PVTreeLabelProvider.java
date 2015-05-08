@@ -27,45 +27,45 @@ import org.epics.vtype.AlarmSeverity;
  */
 class PVTreeLabelProvider extends LabelProvider implements IColorProvider, DisposeListener
 {
-	final private Map<AlarmSeverity, Image> images = new HashMap<AlarmSeverity, Image>();
-	
-	public PVTreeLabelProvider(final Control widget)
-	{
-		final Display display = widget.getDisplay();
-		images.put(AlarmSeverity.NONE,
-			createImage(display, display.getSystemColor(SWT.COLOR_GREEN)));
-		images.put(AlarmSeverity.MINOR,
-				createImage(display, display.getSystemColor(SWT.COLOR_YELLOW)));
-		images.put(AlarmSeverity.MAJOR,
-				createImage(display, display.getSystemColor(SWT.COLOR_RED)));
-		images.put(AlarmSeverity.INVALID,
-				createImage(display, display.getSystemColor(SWT.COLOR_MAGENTA)));
-		
-		// Arrange for image disposal
-		widget.addDisposeListener(this);
-	}
+    final private Map<AlarmSeverity, Image> images = new HashMap<AlarmSeverity, Image>();
+    
+    public PVTreeLabelProvider(final Control widget)
+    {
+        final Display display = widget.getDisplay();
+        images.put(AlarmSeverity.NONE,
+            createImage(display, display.getSystemColor(SWT.COLOR_GREEN)));
+        images.put(AlarmSeverity.MINOR,
+                createImage(display, display.getSystemColor(SWT.COLOR_YELLOW)));
+        images.put(AlarmSeverity.MAJOR,
+                createImage(display, display.getSystemColor(SWT.COLOR_RED)));
+        images.put(AlarmSeverity.INVALID,
+                createImage(display, display.getSystemColor(SWT.COLOR_MAGENTA)));
+        
+        // Arrange for image disposal
+        widget.addDisposeListener(this);
+    }
 
-	/** Dispose images */
-	@Override
-	public void widgetDisposed(final DisposeEvent e)
-	{
-		for (Image image : images.values())
-			image.dispose();
-		images.clear();
-	}
+    /** Dispose images */
+    @Override
+    public void widgetDisposed(final DisposeEvent e)
+    {
+        for (Image image : images.values())
+            image.dispose();
+        images.clear();
+    }
 
-	private Image createImage(final Display display, final Color color)
-	{
-		final Image image = new Image(display, 16, 16);
-		final GC gc = new GC(image);
-		gc.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
-		gc.fillRectangle(0, 0, 16, 16);
-		gc.setBackground(color);
-		gc.fillOval(0, 0, 16, 16);
-		gc.dispose();
-		return image;
-	}
-	
+    private Image createImage(final Display display, final Color color)
+    {
+        final Image image = new Image(display, 16, 16);
+        final GC gc = new GC(image);
+        gc.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
+        gc.fillRectangle(0, 0, 16, 16);
+        gc.setBackground(color);
+        gc.fillOval(0, 0, 16, 16);
+        gc.dispose();
+        return image;
+    }
+    
     @Override
     public String getText(final Object element)
     {
@@ -100,17 +100,17 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider, Dispo
         case MINOR:
             return Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW);
         default:
-        	return null;
+            return null;
         }
     }
 
     /** @param element Tree element, presumably {@link PVTreeItem}
      *  @return {@link AlarmSeverity} of that tree element
      */
-	private AlarmSeverity getSeverity(final Object element)
-	{
-		if (element instanceof PVTreeItem)
-			return ((PVTreeItem)element).getSeverity();
-		return null;
-	}
+    private AlarmSeverity getSeverity(final Object element)
+    {
+        if (element instanceof PVTreeItem)
+            return ((PVTreeItem)element).getSeverity();
+        return null;
+    }
 }

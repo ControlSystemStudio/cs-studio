@@ -137,11 +137,11 @@ public abstract class AbstractPreference<T> {
             }
         });
         TYPE_MAP.put(IPath.class, new PrefStrategy<IPath>() {
-        	@Override
-        	public IPath getResult(final String context, final String key, final IPath defaultValue) {
-        		final IPreferencesService prefs = Platform.getPreferencesService();
-        		return new Path(prefs.getString(context, key, defaultValue.toString(), null));
-        	}
+            @Override
+            public IPath getResult(final String context, final String key, final IPath defaultValue) {
+                final IPreferencesService prefs = Platform.getPreferencesService();
+                return new Path(prefs.getString(context, key, defaultValue.toString(), null));
+            }
         });
     }
     

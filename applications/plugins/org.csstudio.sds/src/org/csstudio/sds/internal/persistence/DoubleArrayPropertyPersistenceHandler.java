@@ -33,60 +33,60 @@ import org.jdom.Element;
  * 
  */
 public final class DoubleArrayPropertyPersistenceHandler extends
-		AbstractPropertyPersistenceHandler {
+        AbstractPropertyPersistenceHandler {
 
-	/**
-	 * XML tag name <code>double</code>.
-	 */
-	public static final String XML_ELEMENT_DOUBLE = "double"; //$NON-NLS-1$
+    /**
+     * XML tag name <code>double</code>.
+     */
+    public static final String XML_ELEMENT_DOUBLE = "double"; //$NON-NLS-1$
 
-	/**
-	 * XML tag name <code>doubleArray</code>.
-	 */
-	public static final String XML_ELEMENT_DOUBLE_ARRAY = "doubleArray"; //$NON-NLS-1$
+    /**
+     * XML tag name <code>doubleArray</code>.
+     */
+    public static final String XML_ELEMENT_DOUBLE_ARRAY = "doubleArray"; //$NON-NLS-1$
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void writeProperty(final Element domElement,
-			final Object propertyValue) {
-		double[] doubleArray = (double[]) propertyValue;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeProperty(final Element domElement,
+            final Object propertyValue) {
+        double[] doubleArray = (double[]) propertyValue;
 
-		Element arrayElement = new Element(XML_ELEMENT_DOUBLE_ARRAY);
+        Element arrayElement = new Element(XML_ELEMENT_DOUBLE_ARRAY);
 
-		for (double d : doubleArray) {
-			Element doubleElement = new Element(XML_ELEMENT_DOUBLE);
-			doubleElement
-					.setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, "" + d); //$NON-NLS-1$
-			arrayElement.addContent(doubleElement);
-		}
+        for (double d : doubleArray) {
+            Element doubleElement = new Element(XML_ELEMENT_DOUBLE);
+            doubleElement
+                    .setAttribute(XmlConstants.XML_ATTRIBUTE_VALUE, "" + d); //$NON-NLS-1$
+            arrayElement.addContent(doubleElement);
+        }
 
-		domElement.addContent(arrayElement);
-	}
+        domElement.addContent(arrayElement);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object readProperty(final Element domElement) {
-		ArrayList<Double> values = new ArrayList<Double>();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object readProperty(final Element domElement) {
+        ArrayList<Double> values = new ArrayList<Double>();
 
-		Element doubleArrayElement = domElement
-				.getChild(XML_ELEMENT_DOUBLE_ARRAY);
+        Element doubleArrayElement = domElement
+                .getChild(XML_ELEMENT_DOUBLE_ARRAY);
 
-		for (Object o : doubleArrayElement.getChildren(XML_ELEMENT_DOUBLE)) {
-			Element valueElement = (Element) o;
-			values.add(Double.parseDouble(valueElement
-					.getAttributeValue(XmlConstants.XML_ATTRIBUTE_VALUE)));
-		}
+        for (Object o : doubleArrayElement.getChildren(XML_ELEMENT_DOUBLE)) {
+            Element valueElement = (Element) o;
+            values.add(Double.parseDouble(valueElement
+                    .getAttributeValue(XmlConstants.XML_ATTRIBUTE_VALUE)));
+        }
 
-		double[] result = new double[values.size()];
-		int i = 0;
-		for (Double d : values) {
-			result[i] = d;
-			i++;
-		}
-		return result;
-	}
+        double[] result = new double[values.size()];
+        int i = 0;
+        for (Double d : values) {
+            result[i] = d;
+            i++;
+        }
+        return result;
+    }
 }

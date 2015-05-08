@@ -19,19 +19,19 @@ import org.eclipse.core.runtime.IPath;
  */
 public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * org.csstudio.opibuilder.util.ResourceUtilSSHelper#workspacePathToSysPath
-	 * (org.eclipse.core.runtime.IPath)
-	 */
-	@Override
-	public IPath workspacePathToSysPath(IPath path) {
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IWorkspaceRoot root = workspace.getRoot();
-		IResource resource = root.findMember(path);
-		if (resource != null) return resource.getLocation(); // existing resource
-		else return root.getFile(path).getLocation(); // for not existing resource
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.csstudio.opibuilder.util.ResourceUtilSSHelper#workspacePathToSysPath
+     * (org.eclipse.core.runtime.IPath)
+     */
+    @Override
+    public IPath workspacePathToSysPath(IPath path) {
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        IWorkspaceRoot root = workspace.getRoot();
+        IResource resource = root.findMember(path);
+        if (resource != null) return resource.getLocation(); // existing resource
+        else return root.getFile(path).getLocation(); // for not existing resource
+    }
 
 }

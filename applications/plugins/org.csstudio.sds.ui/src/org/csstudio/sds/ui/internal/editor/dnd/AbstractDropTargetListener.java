@@ -41,48 +41,48 @@ import org.eclipse.swt.dnd.TransferData;
  */
 abstract class AbstractDropTargetListener<E extends Transfer> extends AbstractTransferDropTargetListener {
 
-	AbstractDropTargetListener(final EditPartViewer viewer, E transfer) {
-		super(viewer, transfer);
-	}
+    AbstractDropTargetListener(final EditPartViewer viewer, E transfer) {
+        super(viewer, transfer);
+    }
 
-	@Override
-	protected final void updateTargetRequest() {
-		((DropPvRequest) getTargetRequest()).setLocation(getDropLocation());
-	}
+    @Override
+    protected final void updateTargetRequest() {
+        ((DropPvRequest) getTargetRequest()).setLocation(getDropLocation());
+    }
 
-	@Override
-	protected final Request createTargetRequest() {
-		final DropPvRequest request = new DropPvRequest();
-		return request;
-	}
+    @Override
+    protected final Request createTargetRequest() {
+        final DropPvRequest request = new DropPvRequest();
+        return request;
+    }
 
-	@Override
-	protected final void handleDragOver() {
-		getCurrentEvent().detail = DND.DROP_COPY;
-		super.handleDragOver();
-	}
+    @Override
+    protected final void handleDragOver() {
+        getCurrentEvent().detail = DND.DROP_COPY;
+        super.handleDragOver();
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	protected final void handleDrop() {
-		String[] droppedPvNames = translate((E) getTransfer(), this.getCurrentEvent().currentDataType);
+    @SuppressWarnings("unchecked")
+    @Override
+    protected final void handleDrop() {
+        String[] droppedPvNames = translate((E) getTransfer(), this.getCurrentEvent().currentDataType);
 
-		if (droppedPvNames != null) {
-			List<IProcessVariableAddress> pvs = new ArrayList<IProcessVariableAddress>();
+        if (droppedPvNames != null) {
+            List<IProcessVariableAddress> pvs = new ArrayList<IProcessVariableAddress>();
 
-			for (String droppedPvName : droppedPvNames) {
-				IProcessVariableAddress pv = ProcessVariableExchangeUtil.parseProcessVariableAdress(droppedPvName, true);
-				if (pv != null) {
-					pvs.add(pv);
-				}
-			}
+            for (String droppedPvName : droppedPvNames) {
+                IProcessVariableAddress pv = ProcessVariableExchangeUtil.parseProcessVariableAdress(droppedPvName, true);
+                if (pv != null) {
+                    pvs.add(pv);
+                }
+            }
 
-			if (!pvs.isEmpty()) {
-				((DropPvRequest) getTargetRequest()).setDroppedProcessVariables(pvs);
-				super.handleDrop();
-			}
-		}
-	}
+            if (!pvs.isEmpty()) {
+                ((DropPvRequest) getTargetRequest()).setDroppedProcessVariables(pvs);
+                super.handleDrop();
+            }
+        }
+    }
 
-	protected abstract String[] translate(E transfer, TransferData transferData);
+    protected abstract String[] translate(E transfer, TransferData transferData);
 }

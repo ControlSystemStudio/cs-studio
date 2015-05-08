@@ -33,18 +33,18 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  */
 public final class TextInputModelFactory implements IWidgetModelFactory {
 
-	/**
-	 * {@inheritDoc}.
-	 */
-	public AbstractWidgetModel createWidgetModel() {
-		return new TextInputModel();
-	}
+    /**
+     * {@inheritDoc}.
+     */
+    public AbstractWidgetModel createWidgetModel() {
+        return new TextInputModel();
+    }
 
-	/**
-	 * {@inheritDoc}.
-	 */
-	@SuppressWarnings("unchecked")
-	public Class getWidgetModelType() {
-		return TextInputModel.class;
-	}
+    /**
+     * {@inheritDoc}.
+     */
+    @SuppressWarnings("unchecked")
+    public Class getWidgetModelType() {
+        return TextInputModel.class;
+    }
 }

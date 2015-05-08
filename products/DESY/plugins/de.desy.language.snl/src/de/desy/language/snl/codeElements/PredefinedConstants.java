@@ -33,27 +33,27 @@ import de.desy.language.editor.core.ILanguageElements;
  * @version 0.2
  */
 public enum PredefinedConstants implements ILanguageElements {
-	ASYNC("ASYNC"), FALSE("FALSE"), SYNC("SYNC"), TRUE("TRUE");
+    ASYNC("ASYNC"), FALSE("FALSE"), SYNC("SYNC"), TRUE("TRUE");
 
-	/**
-	 * The name in the source.
-	 */
-	private String _inCodeName;
+    /**
+     * The name in the source.
+     */
+    private String _inCodeName;
 
-	/**
-	 * Initializer of the enum-values.
-	 * 
-	 * @param inCodeName
-	 *            The name in the source.
-	 */
-	PredefinedConstants(final String inCodeName) {
-		this._inCodeName = inCodeName;
-	}
+    /**
+     * Initializer of the enum-values.
+     * 
+     * @param inCodeName
+     *            The name in the source.
+     */
+    PredefinedConstants(final String inCodeName) {
+        this._inCodeName = inCodeName;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getElementName() {
-		return this._inCodeName;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getElementName() {
+        return this._inCodeName;
+    }
 }

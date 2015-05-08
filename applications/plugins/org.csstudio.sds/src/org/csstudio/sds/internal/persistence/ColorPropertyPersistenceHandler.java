@@ -33,65 +33,65 @@ import org.jdom.Element;
  */
 public final class ColorPropertyPersistenceHandler extends AbstractPropertyPersistenceHandler {
 
-	/**
-	 * XML attribute name <code>color</code>.
-	 */
-	public static final String XML_ELEMENT_COLOR = "color"; //$NON-NLS-1$
+    /**
+     * XML attribute name <code>color</code>.
+     */
+    public static final String XML_ELEMENT_COLOR = "color"; //$NON-NLS-1$
 
-	/**
-	 * XML attribute name <code>hex</code>.
-	 */
-	public static final String XML_ATTRIBUTE_HEX = "hex"; //$NON-NLS-1$
+    /**
+     * XML attribute name <code>hex</code>.
+     */
+    public static final String XML_ATTRIBUTE_HEX = "hex"; //$NON-NLS-1$
 
-	/**
-	 * XML attribute name <code>red</code>.
-	 * @deprecated keep only for compatibility reasons
-	 */
-	public static final String XML_ATTRIBUTE_RED = "red"; //$NON-NLS-1$
+    /**
+     * XML attribute name <code>red</code>.
+     * @deprecated keep only for compatibility reasons
+     */
+    public static final String XML_ATTRIBUTE_RED = "red"; //$NON-NLS-1$
 
-	/**
-	 * XML attribute name <code>green</code>.
-	 * @deprecated keep only for compatibility reasons
-	 */
-	public static final String XML_ATTRIBUTE_GREEN = "green"; //$NON-NLS-1$
+    /**
+     * XML attribute name <code>green</code>.
+     * @deprecated keep only for compatibility reasons
+     */
+    public static final String XML_ATTRIBUTE_GREEN = "green"; //$NON-NLS-1$
 
-	/**
-	 * XML attribute name <code>blue</code>.
-	 * @deprecated keep only for compatibility reasons
-	 */
-	public static final String XML_ATTRIBUTE_BLUE = "blue"; //$NON-NLS-1$	
+    /**
+     * XML attribute name <code>blue</code>.
+     * @deprecated keep only for compatibility reasons
+     */
+    public static final String XML_ATTRIBUTE_BLUE = "blue"; //$NON-NLS-1$    
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void writeProperty(final Element domElement, final Object propertyValue) {
-		assert propertyValue instanceof String;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeProperty(final Element domElement, final Object propertyValue) {
+        assert propertyValue instanceof String;
 
-		Element colorElement = new Element(XML_ELEMENT_COLOR);
-		colorElement.setAttribute(XML_ATTRIBUTE_HEX, "" + propertyValue); //$NON-NLS-1$
-		domElement.addContent(colorElement);
-	}
+        Element colorElement = new Element(XML_ELEMENT_COLOR);
+        colorElement.setAttribute(XML_ATTRIBUTE_HEX, "" + propertyValue); //$NON-NLS-1$
+        domElement.addContent(colorElement);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object readProperty(final Element domElement) {
-		Element colorElement = domElement.getChild(XML_ELEMENT_COLOR);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object readProperty(final Element domElement) {
+        Element colorElement = domElement.getChild(XML_ELEMENT_COLOR);
 
-		// .. try to get the hex value
-		String hex = colorElement.getAttributeValue(XML_ATTRIBUTE_HEX);
+        // .. try to get the hex value
+        String hex = colorElement.getAttributeValue(XML_ATTRIBUTE_HEX);
 
-		// .. if its not available, try it the old way (before SDS 2.0)
-		if (hex == null || hex.length() <= 0) {
-			String red = colorElement.getAttributeValue(XML_ATTRIBUTE_RED);
-			String green = colorElement.getAttributeValue(XML_ATTRIBUTE_GREEN);
-			String blue = colorElement.getAttributeValue(XML_ATTRIBUTE_BLUE);
-			hex = ColorAndFontUtil.toHex(Integer.parseInt(red), Integer.parseInt(green), Integer.parseInt(blue));
-		}
+        // .. if its not available, try it the old way (before SDS 2.0)
+        if (hex == null || hex.length() <= 0) {
+            String red = colorElement.getAttributeValue(XML_ATTRIBUTE_RED);
+            String green = colorElement.getAttributeValue(XML_ATTRIBUTE_GREEN);
+            String blue = colorElement.getAttributeValue(XML_ATTRIBUTE_BLUE);
+            hex = ColorAndFontUtil.toHex(Integer.parseInt(red), Integer.parseInt(green), Integer.parseInt(blue));
+        }
 
-		return hex;
-	}
+        return hex;
+    }
 
 }

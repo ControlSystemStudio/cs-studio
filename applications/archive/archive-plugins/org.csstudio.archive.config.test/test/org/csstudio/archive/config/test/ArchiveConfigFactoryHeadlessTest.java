@@ -22,9 +22,9 @@ public class ArchiveConfigFactoryHeadlessTest
     @Test
     public void testArchiveConfig() throws Exception
     {
-    	final ArchiveConfig config = ArchiveConfigFactory.getArchiveConfig();
-    	assertNotNull(config);
-    	System.out.println("Found " + config.getClass().getName());
-    	config.close();
+        final ArchiveConfig config = ArchiveConfigFactory.getArchiveConfig();
+        assertNotNull(config);
+        System.out.println("Found " + config.getClass().getName());
+        config.close();
     }
 }

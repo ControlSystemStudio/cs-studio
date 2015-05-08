@@ -17,10 +17,10 @@ import org.xml.sax.SAXException;
  */
 class XMLImportException extends SAXException
 {
-	public XMLImportException(final String message)
-	{
-		super(message);
-	}
+    public XMLImportException(final String message)
+    {
+        super(message);
+    }
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 }

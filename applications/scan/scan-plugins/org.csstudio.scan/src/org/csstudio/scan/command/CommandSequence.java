@@ -39,12 +39,12 @@ public class CommandSequence
 
     /** Initialize with a command.
      *
-     * 	<p>This constructor simplifies invocation from Matlab.
-	 *  In principle, the "ScanCommand..." constructor
-	 *  handles zero, one, many commands, i.e. all cases.
-	 *  Matlab, however, turns a single-element array into a scalar
-	 *  in a way incompatible with the var-length argument
-	 *  constructor.
+     *     <p>This constructor simplifies invocation from Matlab.
+     *  In principle, the "ScanCommand..." constructor
+     *  handles zero, one, many commands, i.e. all cases.
+     *  Matlab, however, turns a single-element array into a scalar
+     *  in a way incompatible with the var-length argument
+     *  constructor.
      *
      *  @param commands Sequence of commands
      */

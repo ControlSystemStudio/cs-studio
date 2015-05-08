@@ -33,22 +33,22 @@ import org.csstudio.dal.Timestamp;
  */
 public class PlugEvent<T> extends SystemEvent<T, PlugContext>
 {
-	private static final long serialVersionUID = 7831630805380062856L;
+    private static final long serialVersionUID = 7831630805380062856L;
 
-	/**
-	 * Creates new event object.
-	 * @param source the source that generated the event
-	 * @param value the event value
-	 * @param timestamp the timestamp of the event
-	 * @param message event message
-	 * @param error event exception
-	 * @param type the event identification tag
-	 */
-	public PlugEvent(PlugContext source, T value, Timestamp timestamp,
-	    String message, Exception error, Object type)
-	{
-		super(source, value, timestamp, message, error, type);
-	}
+    /**
+     * Creates new event object.
+     * @param source the source that generated the event
+     * @param value the event value
+     * @param timestamp the timestamp of the event
+     * @param message event message
+     * @param error event exception
+     * @param type the event identification tag
+     */
+    public PlugEvent(PlugContext source, T value, Timestamp timestamp,
+        String message, Exception error, Object type)
+    {
+        super(source, value, timestamp, message, error, type);
+    }
 }
 
 /* __oOo__ */

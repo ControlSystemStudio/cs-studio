@@ -42,109 +42,109 @@ import org.csstudio.auth.security.IActivationAdapter;
  * @author Kay Kasemir Weak Reference handling
  */
 public class ActivateableList {
-	/**
-	 * The List for the ObjectAdapterTupel.
-	 */
-	private final List<ObjectAdapterTupel> _tupel = new LinkedList<ObjectAdapterTupel>();
-	/**
-	 * The default Right.
-	 */
-	private final String _defaultRightID;
-	
-	/**
-	 * Constructor.
-	 * @param right An IRight as default value for all contained objects 
-	 */
-	public ActivateableList(final String right) {
-		_defaultRightID = right;
-	}
-	
-	/**
-	 * Adds the given object to this ActivateabletList.
-	 * @param object  The object, which should be added 
-	 * @param adapter  The IActivationAdapter for the given object 
-	 */
-	public final void addObject(final Object object, final IActivationAdapter adapter) {
-		if (object != null) {
-			_tupel.add(new ObjectAdapterTupel(object, adapter));
-		}
-	}
-	
-	/**
-	 * Removes the given object.
-	 * @param object  The object, which should be removed
-	 * @return  True if the object could be removed; false otherwise
-	 */
-	public final boolean removeObject(final Object object) {
-	    if (object == null)
-	        return false;
-	    // object is non-null, but tupel's object references might be!
-		for (int i = 0; i < _tupel.size(); i++)
-			if (object.equals(_tupel.get(i).getObject()))
-				return _tupel.remove(_tupel.get(i));
-		return false;
-	}
-	
-	/**
-	 * Delivers the size of the internal list.
-	 * @return  The size of the list
-	 */
-	public final int size() {
-		return _tupel.size();
-	}
-	
-	/**
-	 * Checks if this ActivateableList contains the given object. 
-	 * @param object  The object to look for 
-	 * @return  True if the object is contained; false otherwise
-	 */
-	public final boolean contains(final Object object) {
-	    if (object == null)
-	        return false;
+    /**
+     * The List for the ObjectAdapterTupel.
+     */
+    private final List<ObjectAdapterTupel> _tupel = new LinkedList<ObjectAdapterTupel>();
+    /**
+     * The default Right.
+     */
+    private final String _defaultRightID;
+    
+    /**
+     * Constructor.
+     * @param right An IRight as default value for all contained objects 
+     */
+    public ActivateableList(final String right) {
+        _defaultRightID = right;
+    }
+    
+    /**
+     * Adds the given object to this ActivateabletList.
+     * @param object  The object, which should be added 
+     * @param adapter  The IActivationAdapter for the given object 
+     */
+    public final void addObject(final Object object, final IActivationAdapter adapter) {
+        if (object != null) {
+            _tupel.add(new ObjectAdapterTupel(object, adapter));
+        }
+    }
+    
+    /**
+     * Removes the given object.
+     * @param object  The object, which should be removed
+     * @return  True if the object could be removed; false otherwise
+     */
+    public final boolean removeObject(final Object object) {
+        if (object == null)
+            return false;
         // object is non-null, but tupel's object references might be!
-		for (int i = 0; i < _tupel.size(); i++)
-			if (object.equals(_tupel.get(i).getObject()))
-				return true;
-		return false;
-	}
-	
-	/**
-	 * Checks if the list is empty.
-	 * @return  True if the list is empty; false otherwise
-	 */
-	public final boolean isEmpty() {
-		return _tupel.isEmpty();
-	}
-	
-	/**
-	 * Invoke the IActivationAdapter for all objects on the list
-	 * @param activate  The value for the activation
-	 */
-	public final void activate(final boolean activate)
-	{
-	    int i = 0;
-	    while (i < _tupel.size())
-	    {
-	        final ObjectAdapterTupel tupel = _tupel.get(i);
-			final Object object = tupel.getObject();
-			if (object == null)
-			{   // Referenced object has been garbage collected,
-			    // remove from list
-			    _tupel.remove(i);
-			}
-			else
-			{   // Update activation state of object, move to next list item
+        for (int i = 0; i < _tupel.size(); i++)
+            if (object.equals(_tupel.get(i).getObject()))
+                return _tupel.remove(_tupel.get(i));
+        return false;
+    }
+    
+    /**
+     * Delivers the size of the internal list.
+     * @return  The size of the list
+     */
+    public final int size() {
+        return _tupel.size();
+    }
+    
+    /**
+     * Checks if this ActivateableList contains the given object. 
+     * @param object  The object to look for 
+     * @return  True if the object is contained; false otherwise
+     */
+    public final boolean contains(final Object object) {
+        if (object == null)
+            return false;
+        // object is non-null, but tupel's object references might be!
+        for (int i = 0; i < _tupel.size(); i++)
+            if (object.equals(_tupel.get(i).getObject()))
+                return true;
+        return false;
+    }
+    
+    /**
+     * Checks if the list is empty.
+     * @return  True if the list is empty; false otherwise
+     */
+    public final boolean isEmpty() {
+        return _tupel.isEmpty();
+    }
+    
+    /**
+     * Invoke the IActivationAdapter for all objects on the list
+     * @param activate  The value for the activation
+     */
+    public final void activate(final boolean activate)
+    {
+        int i = 0;
+        while (i < _tupel.size())
+        {
+            final ObjectAdapterTupel tupel = _tupel.get(i);
+            final Object object = tupel.getObject();
+            if (object == null)
+            {   // Referenced object has been garbage collected,
+                // remove from list
+                _tupel.remove(i);
+            }
+            else
+            {   // Update activation state of object, move to next list item
                 tupel.getAdapter().activate(object, activate);
                 ++i;
-			}
-		}
-	}
-	
-	/**
-	 * Delivers the default IRight.
-	 * @return  The IRight 
-	 */
-	public final String getDefaultRight() {
-		return _defaultRightID;
-	}
+            }
+        }
+    }
+    
+    /**
+     * Delivers the default IRight.
+     * @return  The IRight 
+     */
+    public final String getDefaultRight() {
+        return _defaultRightID;
+    }
 }

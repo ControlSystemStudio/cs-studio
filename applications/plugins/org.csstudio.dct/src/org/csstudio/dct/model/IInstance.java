@@ -11,13 +11,13 @@ package org.csstudio.dct.model;
 public interface IInstance extends  IContainer {
 
 
-	/**
-	 * Returns the prototype this instances is derived from.
-	 * 
-	 * @return the prototype
-	 */
-	IPrototype getPrototype();
+    /**
+     * Returns the prototype this instances is derived from.
+     * 
+     * @return the prototype
+     */
+    IPrototype getPrototype();
 
-	
+    
 
 }

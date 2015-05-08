@@ -40,13 +40,13 @@ import com.cosylab.vdct.graphics.objects.OutLink;
  * @author 
  */
 public class DeleteConnectorAction extends ActionObject {
-	protected com.cosylab.vdct.graphics.objects.Connector object;
-	protected com.cosylab.vdct.graphics.objects.ContainerObject parent;
-	protected int x, y;
-	protected String inlinkStr;
-	protected String outlinkStr;
-	private String nullString="";
-	 
+    protected com.cosylab.vdct.graphics.objects.Connector object;
+    protected com.cosylab.vdct.graphics.objects.ContainerObject parent;
+    protected int x, y;
+    protected String inlinkStr;
+    protected String outlinkStr;
+    private String nullString="";
+     
 /**
  * Insert the method's description here.
  * Creation date: (3.5.2001 16:27:58)
@@ -55,11 +55,11 @@ public class DeleteConnectorAction extends ActionObject {
  * @param y int
  */
 public DeleteConnectorAction(com.cosylab.vdct.graphics.objects.Connector object, String inlink, String outlink) {
-	this.object=object;
-	this.x=object.getX(); this.y=object.getY();
-	this.parent=object.getParent();
-	this.inlinkStr=inlink;
-	this.outlinkStr=outlink;
+    this.object=object;
+    this.x=object.getX(); this.y=object.getY();
+    this.parent=object.getParent();
+    this.inlinkStr=inlink;
+    this.outlinkStr=outlink;
 }
 /**
  * Insert the method's description here.
@@ -67,68 +67,68 @@ public DeleteConnectorAction(com.cosylab.vdct.graphics.objects.Connector object,
  * @return java.lang.String
  */
 public String getDescription() {
-	return "DeleteConnector ["+object+"]("+x+", "+y+")";
+    return "DeleteConnector ["+object+"]("+x+", "+y+")";
 }
 /**
  * This method was created in VisualAge.
  */
 
 public Object getSubObject(String str) {
-	int pos = str.indexOf(Constants.FIELD_SEPARATOR);
-	if (str.equals(nullString)) return null;
-	
-	ContainerObject group = (ContainerObject)parent.getParent();
-	
-	Object obj=null;
-	
-	if (pos>-1) {
-		String record = str.substring(0,pos);
-		String field = str.substring(pos+1);
-			
-		obj = (group.getSubObject(record));
-		if (obj instanceof ContainerObject)
-			((ContainerObject)obj).getSubObject(field);
-	}
-	if (obj==null) obj = parent.getSubObject(str);
-	if (obj==null) obj = group.getSubObject(str);
-	
-	return obj;
+    int pos = str.indexOf(Constants.FIELD_SEPARATOR);
+    if (str.equals(nullString)) return null;
+    
+    ContainerObject group = (ContainerObject)parent.getParent();
+    
+    Object obj=null;
+    
+    if (pos>-1) {
+        String record = str.substring(0,pos);
+        String field = str.substring(pos+1);
+            
+        obj = (group.getSubObject(record));
+        if (obj instanceof ContainerObject)
+            ((ContainerObject)obj).getSubObject(field);
+    }
+    if (obj==null) obj = parent.getSubObject(str);
+    if (obj==null) obj = group.getSubObject(str);
+    
+    return obj;
 }
 
 protected void undoAction() {
-	//object.setInput(inlink);
-//	inlink.setOutput(object,null);
-	
-	InLink inlink = (InLink)getSubObject(inlinkStr);
+    //object.setInput(inlink);
+//    inlink.setOutput(object,null);
+    
+    InLink inlink = (InLink)getSubObject(inlinkStr);
 
-	Object obj = getSubObject(outlinkStr);
-	OutLink outlink;
-	if (obj instanceof OutLink)
-	    outlink = (OutLink)getSubObject(outlinkStr);
-	else {
-	    return;
-	}
-	
-	object.setInput(inlink);
-	if (inlink!=null) inlink.setOutput(object, outlink);
-	
-	object.setOutput(outlink,null);
-	if (outlink!=null) outlink.setInput(object);
-	
-	//object.setOutput(inlink, null);
-	
-	parent.addSubObject(object.getHashID(), object);
-	object.setDestroyed(false);
+    Object obj = getSubObject(outlinkStr);
+    OutLink outlink;
+    if (obj instanceof OutLink)
+        outlink = (OutLink)getSubObject(outlinkStr);
+    else {
+        return;
+    }
+    
+    object.setInput(inlink);
+    if (inlink!=null) inlink.setOutput(object, outlink);
+    
+    object.setOutput(outlink,null);
+    if (outlink!=null) outlink.setInput(object);
+    
+    //object.setOutput(inlink, null);
+    
+    parent.addSubObject(object.getHashID(), object);
+    object.setDestroyed(false);
 }
 /**
  * This method was created in VisualAge.
  */
 protected void redoAction() {
-	InLink il = object.getInput();
-	OutLink outlink = object.getOutput();
-	if (il!=null) il.setOutput(outlink, object);
-	if (outlink!=null) outlink.setInput(il);
-	
-	object.destroy();
+    InLink il = object.getInput();
+    OutLink outlink = object.getOutput();
+    if (il!=null) il.setOutput(outlink, object);
+    if (outlink!=null) outlink.setInput(il);
+    
+    object.destroy();
 }
 }

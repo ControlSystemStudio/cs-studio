@@ -62,188 +62,188 @@ import javax.naming.directory.DirContext;
  */
 public abstract class AbstractFactorySupport implements AbstractFactory
 {
-	protected AbstractApplicationContext ctx;
-	protected LinkPolicy linkPolicy;
-	private AbstractPlug plug;
-	protected LifecycleListener lifecycleListener = new LifecycleListenerImpl();
-	protected Boolean plugShared;
-	protected boolean propertiesCached=false;
+    protected AbstractApplicationContext ctx;
+    protected LinkPolicy linkPolicy;
+    private AbstractPlug plug;
+    protected LifecycleListener lifecycleListener = new LifecycleListenerImpl();
+    protected Boolean plugShared;
+    protected boolean propertiesCached=false;
 
-	private class LifecycleListenerImpl implements LifecycleListener
-	{
-		public void destroying(LifecycleEvent event)
-		{
-			destroyAll();
-			
-			try
-			{
-				if (plug != null)
-					plug.releaseInstance();
-			} catch (Throwable e) {
-				if (plug != null) {
-					plug.getLogger().log(Level.WARN, "Unable to release factory.",e);
-				} else {
-					Logger.getLogger(this.getClass()).warn("Unable to release factory.", e);
-				}
-			}
-		}
+    private class LifecycleListenerImpl implements LifecycleListener
+    {
+        public void destroying(LifecycleEvent event)
+        {
+            destroyAll();
+            
+            try
+            {
+                if (plug != null)
+                    plug.releaseInstance();
+            } catch (Throwable e) {
+                if (plug != null) {
+                    plug.getLogger().log(Level.WARN, "Unable to release factory.",e);
+                } else {
+                    Logger.getLogger(this.getClass()).warn("Unable to release factory.", e);
+                }
+            }
+        }
 
-		public void destroyed(LifecycleEvent event)
-		{
-		}
+        public void destroyed(LifecycleEvent event)
+        {
+        }
 
-		public void initialized(LifecycleEvent event)
-		{
-		}
+        public void initialized(LifecycleEvent event)
+        {
+        }
 
-		public void initializing(LifecycleEvent event)
-		{
-		}
-	}
+        public void initializing(LifecycleEvent event)
+        {
+        }
+    }
 
-	/**
-	 * Default constructor. Plug sharing option is provided with application context or default
-	 * sharing policy is used. 
-	 */
-	protected AbstractFactorySupport()
-	{
-	}
+    /**
+     * Default constructor. Plug sharing option is provided with application context or default
+     * sharing policy is used. 
+     */
+    protected AbstractFactorySupport()
+    {
+    }
 
-	/**
-	 * Constructor for those DAL implementations, which want to force from code plug factory to 
-	 * share or not share 
-	 *
-	 */
-	protected AbstractFactorySupport(boolean plugShared)
-	{
-		this.plugShared=plugShared;
-	}
+    /**
+     * Constructor for those DAL implementations, which want to force from code plug factory to 
+     * share or not share 
+     *
+     */
+    protected AbstractFactorySupport(boolean plugShared)
+    {
+        this.plugShared=plugShared;
+    }
 
-	/**
-	 * Must destroy all created objects
-	 *
-	 */
-	protected abstract void destroyAll();
+    /**
+     * Must destroy all created objects
+     *
+     */
+    protected abstract void destroyAll();
 
-	/**
-	 * Must return plug implemntation class, which extends <code>AbstractPlug</code>.
-	 * @return plug implemntation class
-	 */
-	protected abstract Class<?extends AbstractPlug> getPlugClass();
-	
-	/**
-	 * Returns instance of plug, which must be used by this factory. Plug is created if necessary.
-	 * @return instance of plug dedicated to this factory.
-	 */
-	protected synchronized AbstractPlug getPlugInstance()
-	{
-		if (plug == null) {
-			if (plugShared !=null && !plugShared)
-			try {
-				plug = (AbstractPlug)getPlugClass()
-						.getMethod("getInstance", new Class[]{ AbstractApplicationContext.class })
-						.invoke(null, new Object[]{ ctx });
-			} catch (Exception e) {
-				Logger.getLogger(this.getClass()).debug("Heuristic plug instantiation failed, another try available.", e);
-			}
-			
-			if (plug == null) {
-				try { 
-					plug = (AbstractPlug)getPlugClass()
-						.getMethod("getInstance", new Class[]{ Properties.class })
-						.invoke(null, new Object[]{ ctx.getConfiguration() });
-				} catch (Exception e) {
-					Logger.getLogger(this.getClass()).fatal("Heuristic plug instantiation failed twice.", e);
-					throw new RuntimeException("Plug '" + getPlugClass()
-					    + "' is not correctly implemented. ", e);
-				}
-			}
-		}
+    /**
+     * Must return plug implemntation class, which extends <code>AbstractPlug</code>.
+     * @return plug implemntation class
+     */
+    protected abstract Class<?extends AbstractPlug> getPlugClass();
+    
+    /**
+     * Returns instance of plug, which must be used by this factory. Plug is created if necessary.
+     * @return instance of plug dedicated to this factory.
+     */
+    protected synchronized AbstractPlug getPlugInstance()
+    {
+        if (plug == null) {
+            if (plugShared !=null && !plugShared)
+            try {
+                plug = (AbstractPlug)getPlugClass()
+                        .getMethod("getInstance", new Class[]{ AbstractApplicationContext.class })
+                        .invoke(null, new Object[]{ ctx });
+            } catch (Exception e) {
+                Logger.getLogger(this.getClass()).debug("Heuristic plug instantiation failed, another try available.", e);
+            }
+            
+            if (plug == null) {
+                try { 
+                    plug = (AbstractPlug)getPlugClass()
+                        .getMethod("getInstance", new Class[]{ Properties.class })
+                        .invoke(null, new Object[]{ ctx.getConfiguration() });
+                } catch (Exception e) {
+                    Logger.getLogger(this.getClass()).fatal("Heuristic plug instantiation failed twice.", e);
+                    throw new RuntimeException("Plug '" + getPlugClass()
+                        + "' is not correctly implemented. ", e);
+                }
+            }
+        }
 
-		return plug;
-	}
+        return plug;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.spi.DeviceFactory#getLinkPolicy()
-	 */
-	public LinkPolicy getLinkPolicy()
-	{
-		return linkPolicy;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.spi.DeviceFactory#getLinkPolicy()
+     */
+    public LinkPolicy getLinkPolicy()
+    {
+        return linkPolicy;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.spi.DeviceFactory#getApplicationContext()
-	 */
-	public AbstractApplicationContext getApplicationContext()
-	{
-		return ctx;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.spi.DeviceFactory#getApplicationContext()
+     */
+    public AbstractApplicationContext getApplicationContext()
+    {
+        return ctx;
+    }
 
-	/**
-	 * @see org.csstudio.dal.spi.DeviceFactory#initialize(org.csstudio.dal.context.AbstractApplicationContext, org.csstudio.dal.spi.LinkPolicy)
-	 */
-	public void initialize(AbstractApplicationContext ctx, LinkPolicy policy)
-	{
-		if (this.ctx!=null) {
-			throw new IllegalStateException("Factory is already initialized.");
-		}
-		this.ctx = ctx;
-		this.linkPolicy = policy;
-		ctx.addLifecycleListener(lifecycleListener);
-		
-		if (plugShared==null) {
-			String s= ctx.getConfiguration().getProperty(SHARE_PLUG);
-			if (s != null) {
-				plugShared=Boolean.valueOf(s);
-			}
-		}
-		
-		String s= ctx.getConfiguration().getProperty(Plugs.PROPERTIES_FROM_CACHE);
-		if (s !=null) {
-			
-			propertiesCached= Boolean.parseBoolean(s);
-			
-		}
-	}
+    /**
+     * @see org.csstudio.dal.spi.DeviceFactory#initialize(org.csstudio.dal.context.AbstractApplicationContext, org.csstudio.dal.spi.LinkPolicy)
+     */
+    public void initialize(AbstractApplicationContext ctx, LinkPolicy policy)
+    {
+        if (this.ctx!=null) {
+            throw new IllegalStateException("Factory is already initialized.");
+        }
+        this.ctx = ctx;
+        this.linkPolicy = policy;
+        ctx.addLifecycleListener(lifecycleListener);
+        
+        if (plugShared==null) {
+            String s= ctx.getConfiguration().getProperty(SHARE_PLUG);
+            if (s != null) {
+                plugShared=Boolean.valueOf(s);
+            }
+        }
+        
+        String s= ctx.getConfiguration().getProperty(Plugs.PROPERTIES_FROM_CACHE);
+        if (s !=null) {
+            
+            propertiesCached= Boolean.parseBoolean(s);
+            
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.spi.DeviceFactory#getPlugType()
-	 */
-	public String getPlugType()
-	{
-		return getPlugInstance().getPlugType();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.spi.DeviceFactory#getPlugType()
+     */
+    public String getPlugType()
+    {
+        return getPlugInstance().getPlugType();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.spi.DeviceFactory#getDefaultDirectory()
-	 */
-	public DirContext getDefaultDirectory()
-	{
-		return getPlugInstance().getDefaultDirectory();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.spi.DeviceFactory#getDefaultDirectory()
+     */
+    public DirContext getDefaultDirectory()
+    {
+        return getPlugInstance().getDefaultDirectory();
+    }
 
-	/**
-	 * Return plug which is used for connection. If this factory serves as facade for multiple plugs,
-	 * than default plug must be returned.
-	 *
-	 * @return plug which is used for connection
-	 */
-	public AbstractPlug getPlug()
-	{
-		return getPlugInstance();
-	}
+    /**
+     * Return plug which is used for connection. If this factory serves as facade for multiple plugs,
+     * than default plug must be returned.
+     *
+     * @return plug which is used for connection
+     */
+    public AbstractPlug getPlug()
+    {
+        return getPlugInstance();
+    }
 
-	/**
-	 * Return <code>true</code> if this factory is sharing plug instance with other factories.
-	 * Default DAL implementation is using shared plug instance if possible. This way
-	 * all connections are shared among different factories and applications within same JVM.
-	 * @return <code>true</code> if this factory is sharing plug instance with other factories
-	 */
-	public boolean isPlugShared() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
+    /**
+     * Return <code>true</code> if this factory is sharing plug instance with other factories.
+     * Default DAL implementation is using shared plug instance if possible. This way
+     * all connections are shared among different factories and applications within same JVM.
+     * @return <code>true</code> if this factory is sharing plug instance with other factories
+     */
+    public boolean isPlugShared() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+    
 }
 
 /* __oOo__ */

@@ -36,169 +36,169 @@ import com.cosylab.vdct.inspector.InspectableProperty;
  */
 public class DBMacro extends DBComment
 {
-	protected String name = null;
-	protected String description = null;
+    protected String name = null;
+    protected String description = null;
 
-	protected boolean hasVisual = false;
-	protected int x = -1;			// used for layout
-	protected int y = -1;
-	protected boolean isNamePositionNorth = true;
-	protected int mode = InLink.INPUT_MACRO_MODE;
-	protected int defaultVisibility = InspectableProperty.UNDEFINED_VISIBILITY;
-	protected java.awt.Color color = java.awt.Color.black;
-	
-	/**
-	 * Insert the method's description here.
-	 */
-	public DBMacro(String name)
-	{
-		this.name = name;
-	}
-	
-	
-	/**
-	 * Returns the name.
-	 * @return String
-	 */
-	public String getName()
-	{
-		return name;
-	}
+    protected boolean hasVisual = false;
+    protected int x = -1;            // used for layout
+    protected int y = -1;
+    protected boolean isNamePositionNorth = true;
+    protected int mode = InLink.INPUT_MACRO_MODE;
+    protected int defaultVisibility = InspectableProperty.UNDEFINED_VISIBILITY;
+    protected java.awt.Color color = java.awt.Color.black;
+    
+    /**
+     * Insert the method's description here.
+     */
+    public DBMacro(String name)
+    {
+        this.name = name;
+    }
+    
+    
+    /**
+     * Returns the name.
+     * @return String
+     */
+    public String getName()
+    {
+        return name;
+    }
 
-	/**
-	 * Sets the name.
-	 * @param name The name to set
-	 */
-	public void setName(String name)
-	{
-		this.name = name;
-	}
+    /**
+     * Sets the name.
+     * @param name The name to set
+     */
+    public void setName(String name)
+    {
+        this.name = name;
+    }
 
-	/**
-	 * Returns the description.
-	 * @return String
-	 */
-	public String getDescription()
-	{
-		return description;
-	}
+    /**
+     * Returns the description.
+     * @return String
+     */
+    public String getDescription()
+    {
+        return description;
+    }
 
-	/**
-	 * Sets the description.
-	 * @param description The description to set
-	 */
-	public void setDescription(String description)
-	{
-		this.description = description;
-	}
-	
-	/**
-	 * Returns the color.
-	 * @return java.awt.Color
-	 */
-	public java.awt.Color getColor()
-	{
-		return color;
-	}
+    /**
+     * Sets the description.
+     * @param description The description to set
+     */
+    public void setDescription(String description)
+    {
+        this.description = description;
+    }
+    
+    /**
+     * Returns the color.
+     * @return java.awt.Color
+     */
+    public java.awt.Color getColor()
+    {
+        return color;
+    }
 
-	/**
-	 * Returns the hasVisual.
-	 * @return boolean
-	 */
-	public boolean isHasVisual()
-	{
-		return hasVisual;
-	}
+    /**
+     * Returns the hasVisual.
+     * @return boolean
+     */
+    public boolean isHasVisual()
+    {
+        return hasVisual;
+    }
 
-	/**
-	 * Returns the x.
-	 * @return int
-	 */
-	public int getX()
-	{
-		return x;
-	}
+    /**
+     * Returns the x.
+     * @return int
+     */
+    public int getX()
+    {
+        return x;
+    }
 
-	/**
-	 * Returns the y.
-	 * @return int
-	 */
-	public int getY()
-	{
-		return y;
-	}
+    /**
+     * Returns the y.
+     * @return int
+     */
+    public int getY()
+    {
+        return y;
+    }
 
-	/**
-	 * Sets the color.
-	 * @param color The color to set
-	 */
-	public void setColor(java.awt.Color color)
-	{
-		this.color = color;
-	}
+    /**
+     * Sets the color.
+     * @param color The color to set
+     */
+    public void setColor(java.awt.Color color)
+    {
+        this.color = color;
+    }
 
-	/**
-	 * Sets the hasVisual.
-	 * @param hasVisual The hasVisual to set
-	 */
-	public void setHasVisual(boolean hasVisual)
-	{
-		this.hasVisual = hasVisual;
-	}
+    /**
+     * Sets the hasVisual.
+     * @param hasVisual The hasVisual to set
+     */
+    public void setHasVisual(boolean hasVisual)
+    {
+        this.hasVisual = hasVisual;
+    }
 
-	/**
-	 * Sets the x.
-	 * @param x The x to set
-	 */
-	public void setX(int x)
-	{
-		this.x = x;
-	}
+    /**
+     * Sets the x.
+     * @param x The x to set
+     */
+    public void setX(int x)
+    {
+        this.x = x;
+    }
 
-	/**
-	 * Sets the y.
-	 * @param y The y to set
-	 */
-	public void setY(int y)
-	{
-		this.y = y;
-	}
+    /**
+     * Sets the y.
+     * @param y The y to set
+     */
+    public void setY(int y)
+    {
+        this.y = y;
+    }
 
-	/**
-	 * Returns the mode.
-	 * @return int
-	 */
-	public int getMode()
-	{
-		return mode;
-	}
+    /**
+     * Returns the mode.
+     * @return int
+     */
+    public int getMode()
+    {
+        return mode;
+    }
 
-	/**
-	 * Sets the mode.
-	 * @param mode The mode to set
-	 */
-	public void setMode(int mode)
-	{
-		this.mode = mode;
-	}
+    /**
+     * Sets the mode.
+     * @param mode The mode to set
+     */
+    public void setMode(int mode)
+    {
+        this.mode = mode;
+    }
 
-	/**
-	 * Returns the defaultVisibility.
-	 * @return int
-	 */
-	public int getDefaultVisibility()
-	{
-		return defaultVisibility;
-	}
+    /**
+     * Returns the defaultVisibility.
+     * @return int
+     */
+    public int getDefaultVisibility()
+    {
+        return defaultVisibility;
+    }
 
-	/**
-	 * Sets the defaultVisibility.
-	 * @param defaultVisibility The defaultVisibility to set
-	 */
-	public void setDefaultVisibility(int defaultVisibility)
-	{
-		this.defaultVisibility = defaultVisibility;
-	}
+    /**
+     * Sets the defaultVisibility.
+     * @param defaultVisibility The defaultVisibility to set
+     */
+    public void setDefaultVisibility(int defaultVisibility)
+    {
+        this.defaultVisibility = defaultVisibility;
+    }
 
 
     /**

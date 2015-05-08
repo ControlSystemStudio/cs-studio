@@ -18,51 +18,51 @@ import org.csstudio.scan.data.ScanSample;
 @SuppressWarnings("nls")
 public class ScanDataRow
 {
-	final private Date timestamp;
+    final private Date timestamp;
 
-	final private ScanSample[] samples;
+    final private ScanSample[] samples;
 
-	/** Initialize
-	 *  @param timestamp
-	 *  @param samples
-	 */
-	public ScanDataRow(final Date timestamp, final ScanSample[] samples)
+    /** Initialize
+     *  @param timestamp
+     *  @param samples
+     */
+    public ScanDataRow(final Date timestamp, final ScanSample[] samples)
     {
-	    this.timestamp = timestamp;
-	    this.samples = samples;
+        this.timestamp = timestamp;
+        this.samples = samples;
     }
 
-	/** @return Time stamp of this row */
-	public Date getTimestamp()
+    /** @return Time stamp of this row */
+    public Date getTimestamp()
     {
-    	return timestamp;
+        return timestamp;
     }
 
-	/** @return samples in this row */
-	public ScanSample[] getSamples()
+    /** @return samples in this row */
+    public ScanSample[] getSamples()
     {
-    	return samples;
+        return samples;
     }
 
-	/** @param index Index of sample within row
-	 *  @return sample
-	 */
-	public ScanSample getSample(final int index)
+    /** @param index Index of sample within row
+     *  @return sample
+     */
+    public ScanSample getSample(final int index)
     {
-    	return samples[index];
+        return samples[index];
     }
 
-	/** @return Debug representation */
+    /** @return Debug representation */
     @Override
     public String toString()
     {
-		final StringBuilder buf = new StringBuilder();
-		buf.append(ScanSampleFormatter.format(timestamp));
-		for (ScanSample sample : samples)
-		{
-			buf.append(" ");
-			buf.append(sample);
-		}
-		return buf.toString();
+        final StringBuilder buf = new StringBuilder();
+        buf.append(ScanSampleFormatter.format(timestamp));
+        for (ScanSample sample : samples)
+        {
+            buf.append(" ");
+            buf.append(sample);
+        }
+        return buf.toString();
     }
 }

@@ -41,18 +41,18 @@ import com.cosylab.vdct.vdb.*;
  */
  
 public class Field extends VisibleObject {
-	protected VDBFieldData fieldData = null;
-	private int verticalPosition = 0;
-	
+    protected VDBFieldData fieldData = null;
+    private int verticalPosition = 0;
+    
 /**
  * Group constructor comment.
  * @param parent com.cosylab.vdct.graphics.objects.ContainerObject
  */
 public Field(ContainerObject parent, VDBFieldData fieldData) {
-	super(parent);
-	this.fieldData=fieldData;
-	setWidth(Constants.FIELD_WIDTH);
-	setHeight(Constants.FIELD_HEIGHT);
+    super(parent);
+    this.fieldData=fieldData;
+    setWidth(Constants.FIELD_WIDTH);
+    setHeight(Constants.FIELD_HEIGHT);
 }
 /**
  * Insert the method's description here.
@@ -60,7 +60,7 @@ public Field(ContainerObject parent, VDBFieldData fieldData) {
  * @param visitor com.cosylab.vdct.graphics.objects.Visitor
  */
 public void accept(Visitor visitor) {
-	visitor.visitGroup();
+    visitor.visitGroup();
 }
 /**
  * Insert the method's description here.
@@ -70,56 +70,56 @@ public void accept(Visitor visitor) {
  */
 protected void draw(Graphics g, boolean hilited) {
 
-	ViewState view = ViewState.getInstance();
-	
-	double Rscale = view.getScale();
-	boolean zoom = (Rscale < 1.0) && view.isZoomOnHilited() && view.isHilitedObject(this) && !getParent().isZoomRepaint();
-	
-	if (zoom) {
-	    zoomImage = ZoomPane.getInstance().startZooming(this,!isZoomRepaint());
-	}
-	
-	int rrx = getRx()-view.getRx();
-	int rry = getRy()-view.getRy();
-	int rwidth = getRwidth();
-	int rheight = getRheight();
-		
-//	if (!isZoomRepaint() || !getParent().isZoomRepaint()) {
-//		// clipping
-//		if ((rrx>view.getViewWidth()) || (rry>view.getViewHeight())
-//		    || ((rrx+rwidth)<0) || ((rry+rheight)<0)) return;
-//	}
-	
-	if (getParent().isZoomRepaint()) {
-	    rrx = getX() - getParent().getX() + ZoomPane.getInstance().getLeftOffset();
-	    rry = getY() - getParent().getY() + ZoomPane.VERTICAL_MARGIN;
-	} else if (isZoomRepaint()) {
+    ViewState view = ViewState.getInstance();
+    
+    double Rscale = view.getScale();
+    boolean zoom = (Rscale < 1.0) && view.isZoomOnHilited() && view.isHilitedObject(this) && !getParent().isZoomRepaint();
+    
+    if (zoom) {
+        zoomImage = ZoomPane.getInstance().startZooming(this,!isZoomRepaint());
+    }
+    
+    int rrx = getRx()-view.getRx();
+    int rry = getRy()-view.getRy();
+    int rwidth = getRwidth();
+    int rheight = getRheight();
+        
+//    if (!isZoomRepaint() || !getParent().isZoomRepaint()) {
+//        // clipping
+//        if ((rrx>view.getViewWidth()) || (rry>view.getViewHeight())
+//            || ((rrx+rwidth)<0) || ((rry+rheight)<0)) return;
+//    }
+    
+    if (getParent().isZoomRepaint()) {
+        rrx = getX() - getParent().getX() + ZoomPane.getInstance().getLeftOffset();
+        rry = getY() - getParent().getY() + ZoomPane.VERTICAL_MARGIN;
+    } else if (isZoomRepaint()) {
         rrx = ZoomPane.getInstance().getLeftOffset();
         rry = ZoomPane.VERTICAL_MARGIN;
     }
-	
-	
-	
-	if (!hilited) g.setColor(Constants.RECORD_COLOR);
-	else if (view.isPicked(this)) g.setColor(Constants.PICK_COLOR);
-	else if (view.isSelected(this) || view.isBlinking(this)) g.setColor(Constants.SELECTION_COLOR);
-	else g.setColor(Constants.RECORD_COLOR);
-		
-	g.fillRect(rrx, rry, rwidth, rheight);
-	Color color;
-	if (!hilited) color = Constants.FRAME_COLOR;
-	else color = (view.isHilitedObject(this)) ? Constants.HILITE_COLOR : Constants.FRAME_COLOR;
-	g.setColor(color);
+    
+    
+    
+    if (!hilited) g.setColor(Constants.RECORD_COLOR);
+    else if (view.isPicked(this)) g.setColor(Constants.PICK_COLOR);
+    else if (view.isSelected(this) || view.isBlinking(this)) g.setColor(Constants.SELECTION_COLOR);
+    else g.setColor(Constants.RECORD_COLOR);
+        
+    g.fillRect(rrx, rry, rwidth, rheight);
+    Color color;
+    if (!hilited) color = Constants.FRAME_COLOR;
+    else color = (view.isHilitedObject(this)) ? Constants.HILITE_COLOR : Constants.FRAME_COLOR;
+    g.setColor(color);
 
-	g.drawRect(rrx, rry, rwidth, rheight);
-	
-	if (getFont()!=null) {
-		g.setFont(getFont());
-		g.drawString(getLabel(), rrx+getRlabelX(), rry+getRlabelY());
-	}
-	
-	if (zoom && !isZoomRepaint()) {
-	    rwidth /= Rscale;
+    g.drawRect(rrx, rry, rwidth, rheight);
+    
+    if (getFont()!=null) {
+        g.setFont(getFont());
+        g.drawString(getLabel(), rrx+getRlabelX(), rry+getRlabelY());
+    }
+    
+    if (zoom && !isZoomRepaint()) {
+        rwidth /= Rscale;
         rheight /= Rscale;
         rrx -= ((rwidth - getRwidth())/2 + ZoomPane.getInstance().getLeftOffset());
         rry -= ((rheight - getRheight())/2 + ZoomPane.VERTICAL_MARGIN);
@@ -137,7 +137,7 @@ protected void draw(Graphics g, boolean hilited) {
  * @return com.cosylab.vdct.vdb.VDBFieldData
  */
 public com.cosylab.vdct.vdb.VDBFieldData getFieldData() {
-	return fieldData;
+    return fieldData;
 }
 /**
  * Insert the method's description here.
@@ -145,7 +145,7 @@ public com.cosylab.vdct.vdb.VDBFieldData getFieldData() {
  * @return java.lang.String
  */
 public java.lang.String getHashID() {
-	return getFieldData().getName();
+    return getFieldData().getName();
 }
 /**
  * Insert the method's description here.
@@ -153,9 +153,9 @@ public java.lang.String getHashID() {
  * @return int
  */
 public int getY() {
-	///!!! performance
-	getParent().forceValidation();
-	return super.getY();
+    ///!!! performance
+    getParent().forceValidation();
+    return super.getY();
 }
 /**
  * Insert the method's description here.
@@ -173,31 +173,31 @@ public void revalidatePosition() {
  * @param ny int
  */
 public void revalidatePosition(int nx, int ny, int n) {
-	setX(nx); setY(ny); verticalPosition=n;
-	revalidatePosition();
+    setX(nx); setY(ny); verticalPosition=n;
+    revalidatePosition();
 }
 
 private void validateFont(double scale, int rwidth, int rheight) {
     
 //  set appropriate font size
-    final int x0 = (int)(8*scale);		// insets
+    final int x0 = (int)(8*scale);        // insets
     final int y0 = (int)(4*scale);
 
     setLabel(fieldData.getName());
 
-  	///!!! optimize static
+      ///!!! optimize static
 
     Font font;
     if (rwidth<(2*x0)) font = null;
     else
     font = FontMetricsBuffer.getInstance().getAppropriateFont(
-  	  			Constants.DEFAULT_FONT, Font.PLAIN, 
-  	  			getLabel(), rwidth-x0, rheight-y0);
+                    Constants.DEFAULT_FONT, Font.PLAIN, 
+                    getLabel(), rwidth-x0, rheight-y0);
 
     if (font!=null) {
-  	  FontMetrics fm = FontMetricsBuffer.getInstance().getFontMetrics(font);
-  	  setRlabelX((rwidth-fm.stringWidth(getLabel()))/2);
-   	  setRlabelY((rheight-fm.getHeight())/2+fm.getAscent());
+        FontMetrics fm = FontMetricsBuffer.getInstance().getFontMetrics(font);
+        setRlabelX((rwidth-fm.stringWidth(getLabel()))/2);
+         setRlabelY((rheight-fm.getHeight())/2+fm.getAscent());
     }
     
     setFont(font);
@@ -209,7 +209,7 @@ private void validateFont(double scale, int rwidth, int rheight) {
 protected void validate() {
 
   revalidatePosition();
-	
+    
   double scale = getRscale();
   int rwidth = (int)((getX()+getWidth())*scale)-getRx();
   int rheight = (int)((getY()+getHeight())*scale)-getRy();
@@ -220,18 +220,18 @@ protected void validate() {
   
 
 }
-	/**
-	 * @return
-	 */
-	public int getVerticalPosition() {
-	    return Settings.getInstance().isWireCrossingAvoidance() ? verticalPosition : 0;
-	}
+    /**
+     * @return
+     */
+    public int getVerticalPosition() {
+        return Settings.getInstance().isWireCrossingAvoidance() ? verticalPosition : 0;
+    }
 
-	/**
-	 * @param i
-	 */
-	public void setVerticalPosition(int i) {
-		verticalPosition = i;
-	}
+    /**
+     * @param i
+     */
+    public void setVerticalPosition(int i) {
+        verticalPosition = i;
+    }
 
 }

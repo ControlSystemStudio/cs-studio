@@ -36,27 +36,27 @@ import org.eclipse.swt.widgets.Composite;
  * 
  */
 public final class FontPropertyDescriptor extends PropertyDescriptor {
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param id
-	 *            the id of the property
-	 * @param displayName
-	 *            the name to display for the property
-	 */
-	public FontPropertyDescriptor(final Object id, final String displayName, PropertyTypesEnum type) {
-		super(id, displayName, type);
-	}
+    /**
+     * Standard constructor.
+     * 
+     * @param id
+     *            the id of the property
+     * @param displayName
+     *            the name to display for the property
+     */
+    public FontPropertyDescriptor(final Object id, final String displayName, PropertyTypesEnum type) {
+        super(id, displayName, type);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CellEditor createPropertyEditor(final Composite parent) {
-		CellEditor editor = new FontCellEditor2(parent);
-		if (getValidator() != null) {
-			editor.setValidator(getValidator());
-		}
-		return editor;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CellEditor createPropertyEditor(final Composite parent) {
+        CellEditor editor = new FontCellEditor2(parent);
+        if (getValidator() != null) {
+            editor.setValidator(getValidator());
+        }
+        return editor;
+    }
 }

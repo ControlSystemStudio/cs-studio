@@ -37,23 +37,23 @@ import com.cosylab.vdct.VisualDCT;
  * @author 
  */
 public class SetUndoMenuItemState extends Command {
-	private VisualDCT visualDCT;
-	private boolean state;
+    private VisualDCT visualDCT;
+    private boolean state;
 /**
  * Insert the method's description here.
  * Creation date: (29.12.2000 12:37:58)
  */
 
 public SetUndoMenuItemState(VisualDCT visualDCT) {
-	this.visualDCT=visualDCT;
+    this.visualDCT=visualDCT;
 }
 /**
  * Insert the method's description here.
  * Creation date: (29.12.2000 12:37:43)
  */
 public void execute() {
-	visualDCT.getUndoMenuItem().setEnabled(state);
-	visualDCT.getUndoButton().setEnabled(state);
+    visualDCT.getUndoMenuItem().setEnabled(state);
+    visualDCT.getUndoButton().setEnabled(state);
 }
 /**
  * Insert the method's description here.
@@ -61,6 +61,6 @@ public void execute() {
  * @param newState boolean
  */
 public void setState(boolean newState) {
-	state = newState;
+    state = newState;
 }
 }

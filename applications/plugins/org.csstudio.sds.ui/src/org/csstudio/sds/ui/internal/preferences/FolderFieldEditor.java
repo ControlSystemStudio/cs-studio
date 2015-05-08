@@ -10,8 +10,8 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 
 public class FolderFieldEditor extends PathEditor {
-	
-	/**
+    
+    /**
      * Creates a path field editor.
      * 
      * @param name the name of the preference this field editor works on
@@ -23,14 +23,14 @@ public class FolderFieldEditor extends PathEditor {
         createControl(parent);
     }
 
-	@Override
-	protected String getNewInputObject() {
-		ResourceSelectionDialog resourceSelectionDialog = new ResourceSelectionDialog(getShell(), "Select a folder which contains rules", null);
-		if (resourceSelectionDialog.open() == Window.OK) {
-			IPath selectedResource = resourceSelectionDialog.getSelectedResource();
-			return selectedResource.toString();
-		}
-		return null;
-	}
-	
+    @Override
+    protected String getNewInputObject() {
+        ResourceSelectionDialog resourceSelectionDialog = new ResourceSelectionDialog(getShell(), "Select a folder which contains rules", null);
+        if (resourceSelectionDialog.open() == Window.OK) {
+            IPath selectedResource = resourceSelectionDialog.getSelectedResource();
+            return selectedResource.toString();
+        }
+        return null;
+    }
+    
 }

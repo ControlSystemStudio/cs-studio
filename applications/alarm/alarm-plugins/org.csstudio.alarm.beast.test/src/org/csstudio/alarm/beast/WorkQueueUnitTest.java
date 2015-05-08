@@ -109,19 +109,19 @@ public class WorkQueueUnitTest
 
         while (true)
         {
-	        for (int dup=0; dup<5; ++dup)
-		        for (int i=0; i<10; ++i)
-		        {
-			        queue.execute(new Runnable()
-			        {
-			            @Override
-			            public void run()
-			            {
-			            	// NOP
-			            }
-			        });
-		        }
-	        queue.performQueuedCommands();
+            for (int dup=0; dup<5; ++dup)
+                for (int i=0; i<10; ++i)
+                {
+                    queue.execute(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            // NOP
+                        }
+                    });
+                }
+            queue.performQueuedCommands();
         }
     }
 }

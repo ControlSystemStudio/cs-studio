@@ -73,12 +73,12 @@ public class OpenPVTree extends AbstractHandler implements IHandler
      */
     private PVTreeView openView(final ExecutionEvent event) throws Exception
     {
-    	// Use page which is related to the event
-    	// HandlerUtil.getActiveSite(event).getPage() fails because
-    	// 'activeSite' is null when there's no other view open.
-    	// 'activeWindow' is always defined
-    	final IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
-    	final IWorkbenchPage page = window.getActivePage();
+        // Use page which is related to the event
+        // HandlerUtil.getActiveSite(event).getPage() fails because
+        // 'activeSite' is null when there's no other view open.
+        // 'activeWindow' is always defined
+        final IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
+        final IWorkbenchPage page = window.getActivePage();
         return (PVTreeView) page.showView(PVTreeView.ID, PVTreeView.newInstance(), IWorkbenchPage.VIEW_ACTIVATE);
     }
 }

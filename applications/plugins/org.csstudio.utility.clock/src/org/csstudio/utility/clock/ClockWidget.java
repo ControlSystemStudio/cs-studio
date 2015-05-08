@@ -27,51 +27,51 @@ import org.eclipse.swt.widgets.Display;
  *  @author Kay Kasemir
  */
 public class ClockWidget extends Canvas implements DisposeListener,
-		PaintListener
+        PaintListener
 {
-	private static final int OVAL_WIDTH = 5;
-	private Color background, face, pointer;
+    private static final int OVAL_WIDTH = 5;
+    private Color background, face, pointer;
     /** The total hours in a day.
      *  24 gives the usual clock, but one can also use 25.
      */
     private final int hours;
 
-	/** Constructor */
-	public ClockWidget(int hours, Composite parent, int style)
-	{
-		super(parent, style);
+    /** Constructor */
+    public ClockWidget(int hours, Composite parent, int style)
+    {
+        super(parent, style);
         this.hours = hours;
-		background = new Color(null, 255, 255, 255);
-		face = new Color(null, 20, 10, 10);
-		pointer = new Color(null, 200, 0, 0);
-		addDisposeListener(this);
-		addPaintListener(this);
-	}
+        background = new Color(null, 255, 255, 255);
+        face = new Color(null, 20, 10, 10);
+        pointer = new Color(null, 200, 0, 0);
+        addDisposeListener(this);
+        addPaintListener(this);
+    }
 
-	/** @see org.eclipse.swt.widgets.Composite#computeSize(int, int, boolean) */
-	@Override
-	public Point computeSize(int wHint, int hHint, boolean changed)
-	{
-		int width, height;
-		height = 100;
-		width = 100;
-		if (wHint != SWT.DEFAULT)
-			width = wHint;
-		if (hHint != SWT.DEFAULT)
-			height = hHint;
-		return new Point(width, height);
-	}
+    /** @see org.eclipse.swt.widgets.Composite#computeSize(int, int, boolean) */
+    @Override
+    public Point computeSize(int wHint, int hHint, boolean changed)
+    {
+        int width, height;
+        height = 100;
+        width = 100;
+        if (wHint != SWT.DEFAULT)
+            width = wHint;
+        if (hHint != SWT.DEFAULT)
+            height = hHint;
+        return new Point(width, height);
+    }
 
-	/** @see org.eclipse.swt.events.DisposeListener */
-	@Override
+    /** @see org.eclipse.swt.events.DisposeListener */
+    @Override
     public void widgetDisposed(DisposeEvent e)
-	{
-		pointer.dispose();
-		face.dispose();
-		background.dispose();
-	}
+    {
+        pointer.dispose();
+        face.dispose();
+        background.dispose();
+    }
 
-	/** @see org.eclipse.swt.events.PaintListener */
+    /** @see org.eclipse.swt.events.PaintListener */
     @Override
     public void paintControl(PaintEvent e)
     {
@@ -187,20 +187,20 @@ public class ClockWidget extends Canvas implements DisposeListener,
         scheduleRedraw();
     }
 
-	/** Start a UI timer for updating the clock widget. */
-	private void scheduleRedraw()
-	{
+    /** Start a UI timer for updating the clock widget. */
+    private void scheduleRedraw()
+    {
         // Everey 30 seconds? This could be smarter!
         int delay = 30;
-		Display.getDefault().timerExec(1000 * delay, new Runnable()
-		{
-			@Override
+        Display.getDefault().timerExec(1000 * delay, new Runnable()
+        {
+            @Override
             public void run()
-			{
-				// Mark for redraw.
-				if (! isDisposed())
-					redraw();
-			}
-		});
-	}
+            {
+                // Mark for redraw.
+                if (! isDisposed())
+                    redraw();
+            }
+        });
+    }
 }

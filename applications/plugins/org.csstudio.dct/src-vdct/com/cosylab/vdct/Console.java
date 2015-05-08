@@ -35,7 +35,7 @@ package com.cosylab.vdct;
  */
 public class Console {
 
-	protected static ConsoleInterface instance = null;
+    protected static ConsoleInterface instance = null;
 
 /**
  * Insert the method's description here.
@@ -43,9 +43,9 @@ public class Console {
  * @return com.cosylab.vdct.Console
  */
 public static ConsoleInterface getInstance() {
-	if (instance==null)
-		instance = new GUIConsole();
-	return instance;
+    if (instance==null)
+        instance = new GUIConsole();
+    return instance;
 }
 /**
  * This is a small trick to replace the default console.
@@ -53,6 +53,6 @@ public static ConsoleInterface getInstance() {
  * @param instance instance that is used throughout the aplication
  */
 public static void setInstance(ConsoleInterface instance) {
-	Console.instance = instance;
+    Console.instance = instance;
 }
 }

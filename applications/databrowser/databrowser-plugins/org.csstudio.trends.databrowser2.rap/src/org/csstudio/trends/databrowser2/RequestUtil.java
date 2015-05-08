@@ -15,27 +15,27 @@ import org.eclipse.rap.rwt.RWT;
  */
 public class RequestUtil {
 
-	/**
-	 * @return the plt path specified in URL. null if no plt parameter is
-	 *         specified.
-	 */
-	public static IPath getPltPathFromRequest() {
-		HttpServletRequest request = RWT.getRequest();
-		String pltPath = request
-				.getParameter(WebDataBrowserConstants.PLT_PARAMETER); //$NON-NLS-1$
-		IPath path = null;
-		if (pltPath != null && !pltPath.isEmpty()) {
-		    path = SingleSourcePlugin.getResourceHelper().newPath(pltPath);
-			if (!path.isAbsolute()) {
-				IPath repoPath = Preferences.getPltRepository();
-				if (repoPath == null)
-					path = null;
-				else
-					path = repoPath.append(path);
-			}
-			return path;
-		}
-		return null;
-	}
+    /**
+     * @return the plt path specified in URL. null if no plt parameter is
+     *         specified.
+     */
+    public static IPath getPltPathFromRequest() {
+        HttpServletRequest request = RWT.getRequest();
+        String pltPath = request
+                .getParameter(WebDataBrowserConstants.PLT_PARAMETER); //$NON-NLS-1$
+        IPath path = null;
+        if (pltPath != null && !pltPath.isEmpty()) {
+            path = SingleSourcePlugin.getResourceHelper().newPath(pltPath);
+            if (!path.isAbsolute()) {
+                IPath repoPath = Preferences.getPltRepository();
+                if (repoPath == null)
+                    path = null;
+                else
+                    path = repoPath.append(path);
+            }
+            return path;
+        }
+        return null;
+    }
 
 }

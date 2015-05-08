@@ -310,7 +310,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     
     /** @return Count the number of traces */
     public int getTraceCount(){
-	return plot.getTraceCount();
+    return plot.getTraceCount();
     }
 
     /** @param trace Trace to move from its current Y axis

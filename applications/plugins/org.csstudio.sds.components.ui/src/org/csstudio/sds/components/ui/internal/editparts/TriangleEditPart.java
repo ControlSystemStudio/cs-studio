@@ -36,59 +36,59 @@ import org.eclipse.draw2d.IFigure;
  */
 public final class TriangleEditPart extends AbstractWidgetEditPart {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		TriangleModel model = (TriangleModel)getWidgetModel();
-		
-		RefreshableTriangleFigure figure = new RefreshableTriangleFigure();
-		figure.setTransparent(model.getTransparent());
-		figure.setFillLevel(model.getFillLevel());
-		
-		return figure;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        TriangleModel model = (TriangleModel)getWidgetModel();
+        
+        RefreshableTriangleFigure figure = new RefreshableTriangleFigure();
+        figure.setTransparent(model.getTransparent());
+        figure.setFillLevel(model.getFillLevel());
+        
+        return figure;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		// fill
-		IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableTriangleFigure rectangle = (RefreshableTriangleFigure) refreshableFigure;
-				rectangle.setFillLevel((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(TriangleModel.PROP_FILL, fillHandler);
-		//transparent
-		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableTriangleFigure rectangle = (RefreshableTriangleFigure) refreshableFigure;
-				rectangle.setTransparent((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(TriangleModel.PROP_TRANSPARENT, transparentHandler);
-		
-		// rotation
-		IWidgetPropertyChangeHandler rotationHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableTriangleFigure rectangle = (RefreshableTriangleFigure) refreshableFigure;
-				rectangle.setRotationAngle((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(TriangleModel.PROP_ROTATION, rotationHandler);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        // fill
+        IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                RefreshableTriangleFigure rectangle = (RefreshableTriangleFigure) refreshableFigure;
+                rectangle.setFillLevel((Double) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(TriangleModel.PROP_FILL, fillHandler);
+        //transparent
+        IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                RefreshableTriangleFigure rectangle = (RefreshableTriangleFigure) refreshableFigure;
+                rectangle.setTransparent((Boolean) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(TriangleModel.PROP_TRANSPARENT, transparentHandler);
+        
+        // rotation
+        IWidgetPropertyChangeHandler rotationHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                RefreshableTriangleFigure rectangle = (RefreshableTriangleFigure) refreshableFigure;
+                rectangle.setRotationAngle((Double) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(TriangleModel.PROP_ROTATION, rotationHandler);
+    }
 
 }

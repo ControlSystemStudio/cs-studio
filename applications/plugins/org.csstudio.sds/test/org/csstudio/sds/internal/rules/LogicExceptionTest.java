@@ -34,21 +34,21 @@ import org.junit.Test;
  */
 public final class LogicExceptionTest {
 
-	/**
-	 * Test method for class {@link org.csstudio.sds.internal.rules.LogicException}.
-	 */
-	@Test
-	public void testLogicExceptionString() {
-		LogicException le = new LogicException("message"); //$NON-NLS-1$
-		assertEquals("message", le.getMessage()); //$NON-NLS-1$
+    /**
+     * Test method for class {@link org.csstudio.sds.internal.rules.LogicException}.
+     */
+    @Test
+    public void testLogicExceptionString() {
+        LogicException le = new LogicException("message"); //$NON-NLS-1$
+        assertEquals("message", le.getMessage()); //$NON-NLS-1$
 
-		Exception cause = new Exception();
-		le = new LogicException(cause);
-		assertEquals(cause, le.getCause());
+        Exception cause = new Exception();
+        le = new LogicException(cause);
+        assertEquals(cause, le.getCause());
 
-		le = new LogicException("message2", cause); //$NON-NLS-1$
-		assertEquals("message2", le.getMessage()); //$NON-NLS-1$
-		assertEquals(cause, le.getCause());
-	}
+        le = new LogicException("message2", cause); //$NON-NLS-1$
+        assertEquals("message2", le.getMessage()); //$NON-NLS-1$
+        assertEquals(cause, le.getCause());
+    }
 
 }

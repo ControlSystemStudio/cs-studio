@@ -44,7 +44,7 @@ public final class PluginUIManager implements PluginListener, PropertyChangeList
  */
 protected PluginUIManager()
 {
-	PluginManager.getInstance().addPluginListener(this);
+    PluginManager.getInstance().addPluginListener(this);
 }
 /**
  * Insert the method's description here.
@@ -52,8 +52,8 @@ protected PluginUIManager()
  * @return com.cosylab.vdct.plugin.PluginUIManager
  */
 public static PluginUIManager getInstance() {
-	if (instance==null) instance = new PluginUIManager();
-	return instance;
+    if (instance==null) instance = new PluginUIManager();
+    return instance;
 }
 /**
  * Insert the method's description here.
@@ -63,8 +63,8 @@ public static PluginUIManager getInstance() {
  */
 public void pluginAdded(PluginObject plugin)
 {
-	// if right plugin instance
-	plugin.addPropertyChangeListener(this);
+    // if right plugin instance
+    plugin.addPropertyChangeListener(this);
 }
 /**
  * Insert the method's description here.
@@ -74,8 +74,8 @@ public void pluginAdded(PluginObject plugin)
  */
 public void pluginRemoved(PluginObject plugin)
 {
-	// if right plugin instance
-	plugin.removePropertyChangeListener(this);
+    // if right plugin instance
+    plugin.removePropertyChangeListener(this);
 }
 /**
  * Not implemented
@@ -85,23 +85,23 @@ public void pluginRemoved(PluginObject plugin)
  */
 public void propertyChange(PropertyChangeEvent evt)
 {
-	PluginObject plugin = (PluginObject)evt.getSource();
-	String propertyName = evt.getPropertyName();
+    PluginObject plugin = (PluginObject)evt.getSource();
+    String propertyName = evt.getPropertyName();
 
-	if (propertyName.equals("Status"))
-	{
-		if (plugin.getStatus() == PluginObject.PLUGIN_STARTED)
-		{
+    if (propertyName.equals("Status"))
+    {
+        if (plugin.getStatus() == PluginObject.PLUGIN_STARTED)
+        {
 
 com.cosylab.vdct.Console.getInstance().println(plugin.getName()+ " started.");
-			
-		}
-		else if (plugin.getStatus() == PluginObject.PLUGIN_STOPPED)
-		{
+            
+        }
+        else if (plugin.getStatus() == PluginObject.PLUGIN_STOPPED)
+        {
 
 com.cosylab.vdct.Console.getInstance().println(plugin.getName()+ " stopped.");
 
-		}
-	}
+        }
+    }
 }
 }

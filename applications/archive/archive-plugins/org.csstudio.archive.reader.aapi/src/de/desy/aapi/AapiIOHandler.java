@@ -45,10 +45,10 @@ import org.apache.log4j.Logger;
  */
 public class AapiIOHandler {
     
-	/** The logger for this class */
-	private Logger logger;
+    /** The logger for this class */
+    private Logger logger;
 
-	/** Socket object for the server connection */
+    /** Socket object for the server connection */
     private Socket socket;
 
     /** Name of host */
@@ -64,7 +64,7 @@ public class AapiIOHandler {
      */
     public AapiIOHandler(String host, int port) {
         
-		logger = AapiClient.getLogger();
+        logger = AapiClient.getLogger();
         this.socket = null;
         this.host = host;
         this.port = port;
@@ -74,33 +74,33 @@ public class AapiIOHandler {
      * 
      * @return
      */
-	public String getHost() {
-		return host;
-	}
+    public String getHost() {
+        return host;
+    }
 
-	/**
-	 * 
-	 * @param host
-	 */
-	public void setHost(String host) {
-		this.host = host;
-	}
+    /**
+     * 
+     * @param host
+     */
+    public void setHost(String host) {
+        this.host = host;
+    }
 
-	/**
-	 * 
-	 * @return
-	 */
-	public int getPort() {
-		return port;
-	}
+    /**
+     * 
+     * @return
+     */
+    public int getPort() {
+        return port;
+    }
 
-	/**
-	 * 
-	 * @param port
-	 */
-	public void setPort(int port) {
-		this.port = port;
-	}
+    /**
+     * 
+     * @param port
+     */
+    public void setPort(int port) {
+        this.port = port;
+    }
 
     /**
      * TCP/IP connction
@@ -109,7 +109,7 @@ public class AapiIOHandler {
      */
     private boolean connect() {
         
-    	try {
+        try {
             socket = new Socket(host, port);
             return true;
         } catch(Exception e) {
@@ -126,13 +126,13 @@ public class AapiIOHandler {
      */
     private boolean write(byte[] data) {
         
-    	try {
+        try {
             OutputStream to_server = socket.getOutputStream();
             to_server.write(data);
             
             return true;
         } catch(Exception e) {
-        	logger.error("AAPI-server send error: " + e.getMessage());
+            logger.error("AAPI-server send error: " + e.getMessage());
             return false;
         }
     }
@@ -144,11 +144,11 @@ public class AapiIOHandler {
      */
     private byte[] receive() {
         
-    	byte[] data;
+        byte[] data;
         
         try {
             
-        	byte[] firstLength = new byte[4];
+            byte[] firstLength = new byte[4];
             InputStream in = socket.getInputStream();
             
             int err;
@@ -160,7 +160,7 @@ public class AapiIOHandler {
             DataInputStream readStream = new DataInputStream( new ByteArrayInputStream(firstLength));
             int num = readStream.readInt();
             if(num <= 0) {
-            	logger.error("AAPI packet length is negative: " + num);
+                logger.error("AAPI packet length is negative: " + num);
                 return null;
             }
 
@@ -178,13 +178,13 @@ public class AapiIOHandler {
             int needLen=num;
             while(needLen > 0) {
                 
-            	if((err = in.read(lastByte)) <= 0) {
-            		logger.error("Read Socket Error");
+                if((err = in.read(lastByte)) <= 0) {
+                    logger.error("Read Socket Error");
                     return null;
                 }
 
                 if(err > availableBytes) {
-                	logger.error("Read Socket Error overread");
+                    logger.error("Read Socket Error overread");
                     return null;
                 }
               
@@ -197,10 +197,10 @@ public class AapiIOHandler {
             in.close();
             
             if(count != num) {
-            	logger.warn("Warn: ReadSocket incomplete? " + "SZ = " + count + ", NM = " + num);
+                logger.warn("Warn: ReadSocket incomplete? " + "SZ = " + count + ", NM = " + num);
             }
         } catch(Exception e) {
-        	logger.error("AAPI-server received error: " + e.getMessage());
+            logger.error("AAPI-server received error: " + e.getMessage());
             return null;
         }
         
@@ -227,7 +227,7 @@ public class AapiIOHandler {
                 
                 result = bout.toByteArray();
             }catch(IOException ioe) {
-            	logger.error("createConnectionAndHeader(): " + ioe.getMessage());
+                logger.error("createConnectionAndHeader(): " + ioe.getMessage());
             }
         }
 
@@ -258,9 +258,9 @@ public class AapiIOHandler {
      */
     public byte[] buildPacketFromString(String str, int cmd) {
         
-    	try {
+        try {
             
-    		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+            ByteArrayOutputStream bout = new ByteArrayOutputStream();
             DataOutputStream dout = new DataOutputStream(bout);
             
             // From AAPI-Web:
@@ -291,11 +291,11 @@ public class AapiIOHandler {
      */
     private byte[] analyzeReturnHeader(byte[] rawAnswer) {
         
-    	try {
+        try {
             
-    		DataInputStream readStream = new DataInputStream(new ByteArrayInputStream(rawAnswer));
+            DataInputStream readStream = new DataInputStream(new ByteArrayInputStream(rawAnswer));
             
-    		@SuppressWarnings("unused")
+            @SuppressWarnings("unused")
             int cmd = readStream.readInt();
             
             int err = readStream.readInt();
@@ -304,9 +304,9 @@ public class AapiIOHandler {
             int ver = readStream.readInt();
             
             if(err != 0) {
-            	
-            	String error = new String(Arrays.copyOfRange(rawAnswer, 12, rawAnswer.length));
-            	error = error.trim();
+                
+                String error = new String(Arrays.copyOfRange(rawAnswer, 12, rawAnswer.length));
+                error = error.trim();
                 logger.error(error);
                 return null;
             }

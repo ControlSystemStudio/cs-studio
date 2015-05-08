@@ -15,39 +15,39 @@ import org.eclipse.jface.text.rules.Token;
  */
 public abstract class SingleCharRule implements IRule {
 
-	/** Style token. */
-	private final IToken token;
+    /** Style token. */
+    private final IToken token;
 
-	/**
-	 * Creates new rule.
-	 * 
-	 * @param token
-	 *            Style token.
-	 */
-	public SingleCharRule(final IToken token) {
-		super();
-		this.token = token;
-	}
+    /**
+     * Creates new rule.
+     * 
+     * @param token
+     *            Style token.
+     */
+    public SingleCharRule(final IToken token) {
+        super();
+        this.token = token;
+    }
 
-	/**
-	 * @see org.eclipse.jface.text.rules.IRule#evaluate(org.eclipse.jface.text.rules.ICharacterScanner)
-	 */
-	public IToken evaluate(final ICharacterScanner scanner) {
-		final int ch = scanner.read();
+    /**
+     * @see org.eclipse.jface.text.rules.IRule#evaluate(org.eclipse.jface.text.rules.ICharacterScanner)
+     */
+    public IToken evaluate(final ICharacterScanner scanner) {
+        final int ch = scanner.read();
 
-		if (this.isRuleChar(ch)) {
-			return this.token;
-		}
-		scanner.unread();
-		return Token.UNDEFINED;
-	}
+        if (this.isRuleChar(ch)) {
+            return this.token;
+        }
+        scanner.unread();
+        return Token.UNDEFINED;
+    }
 
-	/**
-	 * Checks if char is rule char.
-	 * 
-	 * @param ch
-	 *            Char to check.
-	 * @return <b>true</b> if rule char.
-	 */
-	protected abstract boolean isRuleChar(int ch);
+    /**
+     * Checks if char is rule char.
+     * 
+     * @param ch
+     *            Char to check.
+     * @return <b>true</b> if rule char.
+     */
+    protected abstract boolean isRuleChar(int ch);
 }

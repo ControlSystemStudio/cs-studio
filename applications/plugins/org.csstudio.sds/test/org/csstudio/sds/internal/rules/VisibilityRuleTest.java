@@ -33,20 +33,20 @@ import org.junit.Test;
  * 
  */
 public final class VisibilityRuleTest {
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.internal.rules.VisibilityRule#evaluate(java.lang.Object[])}.
-	 */
-	@Test
-	public void testEvaluate() {
-		VisibilityRule rule = new VisibilityRule();
+    /**
+     * Test method for
+     * {@link org.csstudio.sds.internal.rules.VisibilityRule#evaluate(java.lang.Object[])}.
+     */
+    @Test
+    public void testEvaluate() {
+        VisibilityRule rule = new VisibilityRule();
 
-		// input argument is a double and <= 0: false. else: true
-		assertEquals(false, rule.evaluate(new Object[] { -50.01 }));
-		assertEquals(true, rule.evaluate(new Object[] { 0 }));
-		assertEquals(true, rule.evaluate(new Object[] { 49.9 }));
-		assertEquals(true, rule.evaluate(new Object[] { "test" })); //$NON-NLS-1$
-		assertEquals(true, rule.evaluate(null));
-	}
+        // input argument is a double and <= 0: false. else: true
+        assertEquals(false, rule.evaluate(new Object[] { -50.01 }));
+        assertEquals(true, rule.evaluate(new Object[] { 0 }));
+        assertEquals(true, rule.evaluate(new Object[] { 49.9 }));
+        assertEquals(true, rule.evaluate(new Object[] { "test" })); //$NON-NLS-1$
+        assertEquals(true, rule.evaluate(null));
+    }
 
 }

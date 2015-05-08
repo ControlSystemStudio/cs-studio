@@ -23,11 +23,11 @@ import org.junit.Test;
 public class MacroContextUnitTest
 {
     @Test
-	public void testMacros() throws Exception
-	{
-		final IMacroTableProvider macros = new MacroContext("x=Hello, y=Dolly");
-		assertThat(MacroUtil.replaceMacros("$(x), ${y}!", macros), equalTo("Hello, Dolly!"));
-	}
+    public void testMacros() throws Exception
+    {
+        final IMacroTableProvider macros = new MacroContext("x=Hello, y=Dolly");
+        assertThat(MacroUtil.replaceMacros("$(x), ${y}!", macros), equalTo("Hello, Dolly!"));
+    }
 
     @Test
     public void testStacking() throws Exception

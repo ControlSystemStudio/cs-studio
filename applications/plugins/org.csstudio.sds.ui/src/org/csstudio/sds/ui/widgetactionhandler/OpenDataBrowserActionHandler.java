@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OpenDataBrowserActionHandler implements IWidgetActionHandler {
-	
+    
     private static final Logger LOG = LoggerFactory.getLogger(OpenDataBrowserActionHandler.class);
 
     private static final String STRIP_TOOL_ID = "org.csstudio.platform.ui.striptool";

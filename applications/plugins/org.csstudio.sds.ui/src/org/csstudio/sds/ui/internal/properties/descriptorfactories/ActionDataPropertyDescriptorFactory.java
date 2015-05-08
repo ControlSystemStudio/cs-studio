@@ -36,18 +36,18 @@ import org.csstudio.sds.ui.properties.PropertyTypeCellEditorValidator;
  * 
  */
 public final class ActionDataPropertyDescriptorFactory implements
-		IPropertyDescriptorFactory {
+        IPropertyDescriptorFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IPropertyDescriptor createPropertyDescriptor(final Object id,
-			final WidgetProperty property) {
-		PropertyDescriptor descriptor = new ActionDataPropertyDescriptor(id,
-				property.getDescription(), PropertyTypesEnum.ACTION, property.getCategory().toString());
-		
-		// validator
-		descriptor.setValidator(new PropertyTypeCellEditorValidator(property));
-		return descriptor;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public IPropertyDescriptor createPropertyDescriptor(final Object id,
+            final WidgetProperty property) {
+        PropertyDescriptor descriptor = new ActionDataPropertyDescriptor(id,
+                property.getDescription(), PropertyTypesEnum.ACTION, property.getCategory().toString());
+        
+        // validator
+        descriptor.setValidator(new PropertyTypeCellEditorValidator(property));
+        return descriptor;
+    }
 }

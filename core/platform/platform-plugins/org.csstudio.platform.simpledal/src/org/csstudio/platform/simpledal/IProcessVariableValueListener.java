@@ -33,28 +33,28 @@ import org.csstudio.dal.Timestamp;
  *            the type of channel values expected (String, Double, etc.)
  */
 public interface IProcessVariableValueListener<E> {
-	/**
-	 * Announces a change in the value or a characteristic of a channel.
-	 * 
-	 * @param value
-	 *            the latest value or characteristic value
-	 * @param timestamp
-	 * 			  the time of value delivery
-	 */
-	void valueChanged(E value, Timestamp timestamp);
+    /**
+     * Announces a change in the value or a characteristic of a channel.
+     * 
+     * @param value
+     *            the latest value or characteristic value
+     * @param timestamp
+     *               the time of value delivery
+     */
+    void valueChanged(E value, Timestamp timestamp);
 
-	/**
-	 * Announces a change in the connection state.
-	 * 
-	 * @param connectionState
-	 *            the current connection state
-	 */
-	void connectionStateChanged(ConnectionState connectionState);
+    /**
+     * Announces a change in the connection state.
+     * 
+     * @param connectionState
+     *            the current connection state
+     */
+    void connectionStateChanged(ConnectionState connectionState);
 
-	/**
-	 * Announces an error.
-	 * 
-	 * @param error an error
-	 */
-	void errorOccured(String error);
+    /**
+     * Announces an error.
+     * 
+     * @param error an error
+     */
+    void errorOccured(String error);
 }

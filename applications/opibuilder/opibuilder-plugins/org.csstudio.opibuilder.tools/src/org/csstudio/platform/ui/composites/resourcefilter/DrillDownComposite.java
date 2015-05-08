@@ -46,87 +46,87 @@ import org.eclipse.ui.part.DrillDownAdapter;
 // TODO: Copied from org.csstudio.platform.ui.
 public class DrillDownComposite extends Composite {
 
-	/**
-	 * The ToolBarManager of this DrillDownComposite.
-	 */
-	private ToolBarManager _toolBarMgr;
+    /**
+     * The ToolBarManager of this DrillDownComposite.
+     */
+    private ToolBarManager _toolBarMgr;
 
-	/**
-	 * The Treeviewer of this DrillDownComposite.
-	 */
-	private TreeViewer _fChildTree;
+    /**
+     * The Treeviewer of this DrillDownComposite.
+     */
+    private TreeViewer _fChildTree;
 
-	/**
-	 * The DrillDownAdapter for the Tree.
-	 */
-	private DrillDownAdapter _adapter;
+    /**
+     * The DrillDownAdapter for the Tree.
+     */
+    private DrillDownAdapter _adapter;
 
-	/**
-	 * Constructs a new DrillDownTreeViewer.
-	 * 
-	 * @param parent
-	 *            the parent composite for this control
-	 * @param style
-	 *            the SWT style for this control
-	 */
-	public DrillDownComposite(final Composite parent, final int style) {
-		super(parent, style);
-		createNavigationButtons();
-	}
+    /**
+     * Constructs a new DrillDownTreeViewer.
+     * 
+     * @param parent
+     *            the parent composite for this control
+     * @param style
+     *            the SWT style for this control
+     */
+    public DrillDownComposite(final Composite parent, final int style) {
+        super(parent, style);
+        createNavigationButtons();
+    }
 
-	/**
-	 * Creates the navigation buttons for this viewer.
-	 */
-	private void createNavigationButtons() {
-		GridData gid;
-		GridLayout layout;
+    /**
+     * Creates the navigation buttons for this viewer.
+     */
+    private void createNavigationButtons() {
+        GridData gid;
+        GridLayout layout;
 
-		// Define layout.
-		layout = new GridLayout();
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		layout.horizontalSpacing = 0;
-		layout.verticalSpacing = 0;
-		setLayout(layout);
+        // Define layout.
+        layout = new GridLayout();
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        layout.horizontalSpacing = 0;
+        layout.verticalSpacing = 0;
+        setLayout(layout);
 
-		// Create a toolbar.
-		_toolBarMgr = new ToolBarManager(SWT.FLAT);
-		ToolBar toolBar = _toolBarMgr.createControl(this);
-		gid = new GridData();
-		gid.horizontalAlignment = GridData.FILL;
-		gid.verticalAlignment = GridData.BEGINNING;
-		toolBar.setLayoutData(gid);
-	}
+        // Create a toolbar.
+        _toolBarMgr = new ToolBarManager(SWT.FLAT);
+        ToolBar toolBar = _toolBarMgr.createControl(this);
+        gid = new GridData();
+        gid.horizontalAlignment = GridData.FILL;
+        gid.verticalAlignment = GridData.BEGINNING;
+        toolBar.setLayoutData(gid);
+    }
 
-	/**
-	 * Sets the child viewer. This method should only be called once, after the
-	 * viewer has been created.
-	 * 
-	 * @param aViewer
-	 *            the new child viewer
-	 */
-	public final void setChildTree(final TreeViewer aViewer) {
-		// Save viewer.
-		_fChildTree = aViewer;
+    /**
+     * Sets the child viewer. This method should only be called once, after the
+     * viewer has been created.
+     * 
+     * @param aViewer
+     *            the new child viewer
+     */
+    public final void setChildTree(final TreeViewer aViewer) {
+        // Save viewer.
+        _fChildTree = aViewer;
 
-		// Create adapter.
-		_adapter = new DrillDownAdapter(_fChildTree);
-		_adapter.addNavigationActions(_toolBarMgr);
-		_toolBarMgr.update(true);
+        // Create adapter.
+        _adapter = new DrillDownAdapter(_fChildTree);
+        _adapter.addNavigationActions(_toolBarMgr);
+        _toolBarMgr.update(true);
 
-		// Set tree layout.
-		_fChildTree.getTree().setLayoutData(
-				new GridData(SWT.FILL, SWT.FILL, true, true));
-		layout();
-	}
+        // Set tree layout.
+        _fChildTree.getTree().setLayoutData(
+                new GridData(SWT.FILL, SWT.FILL, true, true));
+        layout();
+    }
 
-	/**
-	 * Delivers the ToolBarManager of this DrillDownComposite.
-	 * 
-	 * @return ToolBarManager The ToolbarManager of this DrillDownComposite
-	 */
-	public final ToolBarManager getToolBarManager() {
-		return _toolBarMgr;
-	}
+    /**
+     * Delivers the ToolBarManager of this DrillDownComposite.
+     * 
+     * @return ToolBarManager The ToolbarManager of this DrillDownComposite
+     */
+    public final ToolBarManager getToolBarManager() {
+        return _toolBarMgr;
+    }
 
 }

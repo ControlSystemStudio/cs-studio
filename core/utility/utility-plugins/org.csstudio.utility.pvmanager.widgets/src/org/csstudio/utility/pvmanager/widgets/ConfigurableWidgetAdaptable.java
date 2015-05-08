@@ -7,5 +7,5 @@ package org.csstudio.utility.pvmanager.widgets;
  *
  */
 public interface ConfigurableWidgetAdaptable {
-	public ConfigurableWidget toConfigurableWidget();
+    public ConfigurableWidget toConfigurableWidget();
 }

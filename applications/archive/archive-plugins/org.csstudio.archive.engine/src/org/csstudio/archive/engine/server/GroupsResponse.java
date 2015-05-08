@@ -96,8 +96,8 @@ class GroupsResponse extends AbstractResponse
         }
         // 'Total' line
         final String connected = (total_channels == total_connect)
-        	? Integer.toString(total_connect)
-        	: HTMLWriter.makeRedText(Integer.toString(total_connect));
+            ? Integer.toString(total_connect)
+            : HTMLWriter.makeRedText(Integer.toString(total_connect));
         html.tableLine(new String[]
         {
             Messages.HTTP_Total,

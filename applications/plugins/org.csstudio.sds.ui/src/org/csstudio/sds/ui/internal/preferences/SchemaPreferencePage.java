@@ -42,58 +42,58 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  *
  */
 public final class SchemaPreferencePage extends FieldEditorPreferencePage implements
-		IWorkbenchPreferencePage {
+        IWorkbenchPreferencePage {
 
-	/**
-	 * The proxies that hold the schema information.
-	 */
-	private HashMap<String,ControlSystemSchemaDescriptor> _schemaDescriptors;
+    /**
+     * The proxies that hold the schema information.
+     */
+    private HashMap<String,ControlSystemSchemaDescriptor> _schemaDescriptors;
 
-	/**
-	 * Constructor.
-	 */
-	public SchemaPreferencePage() {
-		super(FieldEditorPreferencePage.GRID);
-		setMessage(Messages.getString("SchemaPreferencePage.PAGE_TITLE")); //$NON-NLS-1$
-	}
+    /**
+     * Constructor.
+     */
+    public SchemaPreferencePage() {
+        super(FieldEditorPreferencePage.GRID);
+        setMessage(Messages.getString("SchemaPreferencePage.PAGE_TITLE")); //$NON-NLS-1$
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void createFieldEditors() {
-		final Set<String> schemaIds = _schemaDescriptors.keySet();
-		
-		String[][] labelAndValues = new String[schemaIds.size()][schemaIds.size()];
-		int i = 0;
-		
-		for (String schemaId : schemaIds) {
-			String label = _schemaDescriptors.get(schemaId).getDescription();
-			labelAndValues[i++] = new String[] {label, schemaId};
-		}
-		
-		RadioGroupFieldEditor radioFields = new RadioGroupFieldEditor(WidgetInitializationService.PROP_SCHEMA,
-				Messages.getString("SchemaPreferencePage.RADIO_DESCRIPTION"), //$NON-NLS-1$
-				1, 
-				labelAndValues, 
-				getFieldEditorParent());
-		
-		addField(radioFields);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IPreferenceStore doGetPreferenceStore() {
-		return SdsUiPlugin.getCorePreferenceStore();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void createFieldEditors() {
+        final Set<String> schemaIds = _schemaDescriptors.keySet();
+        
+        String[][] labelAndValues = new String[schemaIds.size()][schemaIds.size()];
+        int i = 0;
+        
+        for (String schemaId : schemaIds) {
+            String label = _schemaDescriptors.get(schemaId).getDescription();
+            labelAndValues[i++] = new String[] {label, schemaId};
+        }
+        
+        RadioGroupFieldEditor radioFields = new RadioGroupFieldEditor(WidgetInitializationService.PROP_SCHEMA,
+                Messages.getString("SchemaPreferencePage.RADIO_DESCRIPTION"), //$NON-NLS-1$
+                1, 
+                labelAndValues, 
+                getFieldEditorParent());
+        
+        addField(radioFields);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IPreferenceStore doGetPreferenceStore() {
+        return SdsUiPlugin.getCorePreferenceStore();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void init(final IWorkbench workbench) {
-		_schemaDescriptors = WidgetInitializationService.getInstance().getInitializationSchemaDescriptors();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void init(final IWorkbench workbench) {
+        _schemaDescriptors = WidgetInitializationService.getInstance().getInitializationSchemaDescriptors();
+    }
 
 }

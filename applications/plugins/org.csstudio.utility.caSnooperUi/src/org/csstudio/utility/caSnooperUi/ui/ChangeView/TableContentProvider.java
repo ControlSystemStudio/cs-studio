@@ -14,19 +14,19 @@ import org.eclipse.jface.viewers.Viewer;
 class TableContentProvider implements IStructuredContentProvider {
 
 
-	public void dispose() {
-	}
+    public void dispose() {
+    }
 
-	public void inputChanged(final Viewer viewer, final Object oldInput,
-			final Object newInput) {
-	}
+    public void inputChanged(final Viewer viewer, final Object oldInput,
+            final Object newInput) {
+    }
 
-	public Object[] getElements(Object inputElement) {
-		TableLabelProvider.resetCount();
-		ArrayList<ChannelStructure> tmp = (ArrayList<ChannelStructure>) inputElement;
-		Object[] tmpO = new Object[tmp.size()];
-		for(int i=0;i<tmp.size();i++)
-			tmpO[i] = tmp.get(i);
-		return tmpO;
-	}
+    public Object[] getElements(Object inputElement) {
+        TableLabelProvider.resetCount();
+        ArrayList<ChannelStructure> tmp = (ArrayList<ChannelStructure>) inputElement;
+        Object[] tmpO = new Object[tmp.size()];
+        for(int i=0;i<tmp.size();i++)
+            tmpO[i] = tmp.get(i);
+        return tmpO;
+    }
 }

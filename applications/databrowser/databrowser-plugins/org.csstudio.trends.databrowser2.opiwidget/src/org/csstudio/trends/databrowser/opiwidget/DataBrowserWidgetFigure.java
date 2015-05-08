@@ -28,7 +28,7 @@ public class DataBrowserWidgetFigure extends AbstractSWTWidgetFigure<RTTimePlot>
      *  @param toolbar
      */
     public DataBrowserWidgetFigure(final AbstractBaseEditPart editPart, final boolean toolbar, final boolean legend,
-    		final String selectionValuePv, final boolean showValueLabels)
+            final String selectionValuePv, final boolean showValueLabels)
     {
         super(editPart);
 
@@ -74,9 +74,9 @@ public class DataBrowserWidgetFigure extends AbstractSWTWidgetFigure<RTTimePlot>
         plot.getPlot().showLegend(visible);
     }
 
-	/** @param showValueLabels <code>true</code> if values should be visible */
-	public void setShowValueLabels(final boolean showValueLabels)
-	{
+    /** @param showValueLabels <code>true</code> if values should be visible */
+    public void setShowValueLabels(final boolean showValueLabels)
+    {
         plot.getPlot().showCrosshair(showValueLabels);
-	}
+    }
 }

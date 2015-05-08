@@ -7,11 +7,11 @@ package org.csstudio.sds.components.ui.internal.editparts;
  * 
  */
 public interface IBoolControlListener {
-	/**
-	 * React on a boolValue change event.
-	 * 
-	 * @param newValue
-	 *            The new bool value.
-	 */
-	void valueChanged(final boolean newValue);
+    /**
+     * React on a boolValue change event.
+     * 
+     * @param newValue
+     *            The new bool value.
+     */
+    void valueChanged(final boolean newValue);
 }

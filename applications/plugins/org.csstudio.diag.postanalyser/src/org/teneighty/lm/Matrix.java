@@ -55,84 +55,84 @@ public interface Matrix
 {
 
 
-	/**
-	 * Invert this matrix.
-	 * 
-	 * @throws IllegalStateException If this matrix is singular.
-	 */
-	public void invert()
-		throws IllegalStateException;
+    /**
+     * Invert this matrix.
+     * 
+     * @throws IllegalStateException If this matrix is singular.
+     */
+    public void invert()
+        throws IllegalStateException;
 
 
-	/**
-	 * Multiply this matrix by the specified vector.
-	 * 
-	 * @param vector the vector by which to multiply.
-	 * @return double[] <code>result</code>.
-	 * @throws IllegalArgumentException If <code>vector</code> has the wrong
-	 *         length.
-	 * @throws NullPointerException If <code>vector</code> is <code>null</code>
-	 */
-	public double[] multiply( final double[] vector )
-		throws IllegalArgumentException, NullPointerException;
+    /**
+     * Multiply this matrix by the specified vector.
+     * 
+     * @param vector the vector by which to multiply.
+     * @return double[] <code>result</code>.
+     * @throws IllegalArgumentException If <code>vector</code> has the wrong
+     *         length.
+     * @throws NullPointerException If <code>vector</code> is <code>null</code>
+     */
+    public double[] multiply( final double[] vector )
+        throws IllegalArgumentException, NullPointerException;
 
 
-	/**
-	 * Multiply this matrix by the specified vector, storing it in the specified
-	 * result vector.
-	 * 
-	 * @param vector the vector by which to multiply.
-	 * @param result the place to put the results.
-	 * @return double[] <code>result</code>.
-	 * @throws IllegalArgumentException If <code>vector</code> or
-	 *         <code>result</code> have the wrong length.
-	 * @throws NullPointerException If <code>vector</code> or
-	 *         <code>result</code> are <code>null</code>.
-	 */
-	public double[] multiply( final double[] vector, final double[] result )
-		throws IllegalArgumentException, NullPointerException;
+    /**
+     * Multiply this matrix by the specified vector, storing it in the specified
+     * result vector.
+     * 
+     * @param vector the vector by which to multiply.
+     * @param result the place to put the results.
+     * @return double[] <code>result</code>.
+     * @throws IllegalArgumentException If <code>vector</code> or
+     *         <code>result</code> have the wrong length.
+     * @throws NullPointerException If <code>vector</code> or
+     *         <code>result</code> are <code>null</code>.
+     */
+    public double[] multiply( final double[] vector, final double[] result )
+        throws IllegalArgumentException, NullPointerException;
 
 
-	/**
-	 * Get row count.
-	 * 
-	 * @return int get row count.
-	 */
-	public int getRowCount();
+    /**
+     * Get row count.
+     * 
+     * @return int get row count.
+     */
+    public int getRowCount();
 
 
-	/**
-	 * Get column count.
-	 * 
-	 * @return int col count.
-	 */
-	public int getColumnCount();
+    /**
+     * Get column count.
+     * 
+     * @return int col count.
+     */
+    public int getColumnCount();
 
 
-	/**
-	 * Get the value at the specified coordinates.
-	 * 
-	 * @param row the row.
-	 * @param col the column.
-	 * @return double the value.
-	 * @throws ArrayIndexOutOfBoundsException If <code>row</code> or
-	 *         <code>col</code> are out of bounds.
-	 */
-	public double get( int row, int col )
-		throws ArrayIndexOutOfBoundsException;
+    /**
+     * Get the value at the specified coordinates.
+     * 
+     * @param row the row.
+     * @param col the column.
+     * @return double the value.
+     * @throws ArrayIndexOutOfBoundsException If <code>row</code> or
+     *         <code>col</code> are out of bounds.
+     */
+    public double get( int row, int col )
+        throws ArrayIndexOutOfBoundsException;
 
 
-	/**
-	 * Set the value at the specified coorindates.
-	 * 
-	 * @param row the row.
-	 * @param col the column.
-	 * @param value the value.
-	 * @throws ArrayIndexOutOfBoundsException If <code>row</code> or
-	 *         <code>col</code> are out of bounds.
-	 */
-	public void set( int row, int col, double value )
-		throws ArrayIndexOutOfBoundsException;
+    /**
+     * Set the value at the specified coorindates.
+     * 
+     * @param row the row.
+     * @param col the column.
+     * @param value the value.
+     * @throws ArrayIndexOutOfBoundsException If <code>row</code> or
+     *         <code>col</code> are out of bounds.
+     */
+    public void set( int row, int col, double value )
+        throws ArrayIndexOutOfBoundsException;
 
 
 }

@@ -10,22 +10,22 @@ import org.csstudio.dct.model.IProject;
  */
 public class DctGraphicalModel extends AbstractContainerNode<IProject> {
 
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param project
-	 *            the dct project that is represented graphically
-	 */
-	public DctGraphicalModel(IProject project) {
-		super(project);
-	}
+    /**
+     * Standard constructor.
+     * 
+     * @param project
+     *            the dct project that is represented graphically
+     */
+    public DctGraphicalModel(IProject project) {
+        super(project);
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected String doGetCaption(IProject project) {
-		return project.getName();
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected String doGetCaption(IProject project) {
+        return project.getName();
+    }
 
 }

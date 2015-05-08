@@ -44,27 +44,27 @@ public class LicenseTabPanel extends AboutTabPanel {
     private javax.swing.JPanel JPanel1 = null;
     private javax.swing.JPanel JPanel2 = null;
 
-   	private javax.swing.JLabel JLabelTitle = null;
-	private javax.swing.JLabel JLabelDivider = null;
+       private javax.swing.JLabel JLabelTitle = null;
+    private javax.swing.JLabel JLabelDivider = null;
 
-	private javax.swing.JScrollPane JScrollPaneLicense = null;
-	private javax.swing.JTextArea JTextAreaLicense = null;
-	
-	public String name = "License";
-	
-	/**
-	 * Constructor for LicenseTab.
-	 * @param tabModel
-	 */
-	public LicenseTabPanel(LicenseTabModel tabModel) {
-		super(tabModel);
-	}
+    private javax.swing.JScrollPane JScrollPaneLicense = null;
+    private javax.swing.JTextArea JTextAreaLicense = null;
+    
+    public String name = "License";
+    
+    /**
+     * Constructor for LicenseTab.
+     * @param tabModel
+     */
+    public LicenseTabPanel(LicenseTabModel tabModel) {
+        super(tabModel);
+    }
 
-	/**
-	 * @see com.cosylab.gui.components.about.AboutTabPanel#initializePanel()
-	 */
-	protected void initializePanel() {
-	
+    /**
+     * @see com.cosylab.gui.components.about.AboutTabPanel#initializePanel()
+     */
+    protected void initializePanel() {
+    
     try {
 
         setName("License");
@@ -93,22 +93,22 @@ public class LicenseTabPanel extends AboutTabPanel {
         e.printStackTrace();
     }
 
-	
-	}
+    
+    }
 
-	/**
-	 * @see com.cosylab.gui.components.about.AboutTabPanel#processData()
-	 */
-	protected void processData() {
+    /**
+     * @see com.cosylab.gui.components.about.AboutTabPanel#processData()
+     */
+    protected void processData() {
 
-	getJTextAreaLicense().setText(((LicenseTabModel)model).getLicense());
-	getJTextAreaLicense().setCaretPosition(0);
-	
-	}
+    getJTextAreaLicense().setText(((LicenseTabModel)model).getLicense());
+    getJTextAreaLicense().setCaretPosition(0);
+    
+    }
 
 
 
-	
+    
 
 /**
  * Insert the method's description here.
@@ -116,17 +116,17 @@ public class LicenseTabPanel extends AboutTabPanel {
  * @return javax.swing.JLabel
  */
 private javax.swing.JLabel getJLabelDivider() {
-	if (JLabelDivider == null) {
-		try {
-			JLabelDivider = new javax.swing.JLabel();
-			JLabelTitle.setName("JLabelDivider");
-			JLabelDivider.setText("  ");
+    if (JLabelDivider == null) {
+        try {
+            JLabelDivider = new javax.swing.JLabel();
+            JLabelTitle.setName("JLabelDivider");
+            JLabelDivider.setText("  ");
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	return JLabelDivider;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    return JLabelDivider;
 }
 /**
  * Insert the method's description here.
@@ -134,18 +134,18 @@ private javax.swing.JLabel getJLabelDivider() {
  * @return javax.swing.JLabel
  */
 private javax.swing.JLabel getJLabelTitle() {
-	if (JLabelTitle == null) {
-		try {
-			JLabelTitle = new javax.swing.JLabel();
-			JLabelTitle.setName("JLabelTitle");
-			JLabelTitle.setFont(new java.awt.Font("dialog", 1, 18));
-			JLabelTitle.setText("License");
+    if (JLabelTitle == null) {
+        try {
+            JLabelTitle = new javax.swing.JLabel();
+            JLabelTitle.setName("JLabelTitle");
+            JLabelTitle.setFont(new java.awt.Font("dialog", 1, 18));
+            JLabelTitle.setText("License");
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	return JLabelTitle;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    return JLabelTitle;
 }
 /**
  * Insert the method's description here.
@@ -186,24 +186,24 @@ private javax.swing.JPanel getJPanel1() {
  * @return javax.swing.JPanel
  */
 private javax.swing.JPanel getJPanel2() {
-	if (JPanel2 == null) {
-		try {
-			JPanel2 = new javax.swing.JPanel();
-			JPanel2.setName("JPanel2");
-			JPanel2.setLayout(new java.awt.GridBagLayout());
+    if (JPanel2 == null) {
+        try {
+            JPanel2 = new javax.swing.JPanel();
+            JPanel2.setName("JPanel2");
+            JPanel2.setLayout(new java.awt.GridBagLayout());
 
-			java.awt.GridBagConstraints constraintsJScrollPaneLicense = new java.awt.GridBagConstraints();
-			constraintsJScrollPaneLicense.gridx = 0; constraintsJScrollPaneLicense.gridy = 0;
-			constraintsJScrollPaneLicense.fill = java.awt.GridBagConstraints.BOTH;
-			constraintsJScrollPaneLicense.weightx = 1.0;
-			constraintsJScrollPaneLicense.weighty = 1.0;
-			constraintsJScrollPaneLicense.insets = new java.awt.Insets(4, 12, 12, 12);
-			getJPanel2().add(getJScrollPaneLicense(), constraintsJScrollPaneLicense);
+            java.awt.GridBagConstraints constraintsJScrollPaneLicense = new java.awt.GridBagConstraints();
+            constraintsJScrollPaneLicense.gridx = 0; constraintsJScrollPaneLicense.gridy = 0;
+            constraintsJScrollPaneLicense.fill = java.awt.GridBagConstraints.BOTH;
+            constraintsJScrollPaneLicense.weightx = 1.0;
+            constraintsJScrollPaneLicense.weighty = 1.0;
+            constraintsJScrollPaneLicense.insets = new java.awt.Insets(4, 12, 12, 12);
+            getJPanel2().add(getJScrollPaneLicense(), constraintsJScrollPaneLicense);
         } catch (Exception e) {
             e.printStackTrace();
         }
-	}
-	return JPanel2;
+    }
+    return JPanel2;
 }
 /**
  * Insert the method's description here.
@@ -229,29 +229,29 @@ private javax.swing.JScrollPane getJScrollPaneLicense() {
  * @return javax.swing.JTextArea
  */
 private javax.swing.JTextArea getJTextAreaLicense() {
-	if (JTextAreaLicense == null) {
-		try {
-			JTextAreaLicense = new javax.swing.JTextArea();
-			JTextAreaLicense.setName("JTextAreaLicense");
-			JTextAreaLicense.setLineWrap(true);
-			JTextAreaLicense.setWrapStyleWord(true);
-			JTextAreaLicense.setFont(new java.awt.Font("monospaced", 0, 12));
-			JTextAreaLicense.setBounds(0, 0, 160, 120);
-			JTextAreaLicense.setMargin(new java.awt.Insets(1, 3, 1, 3));
-			JTextAreaLicense.setEditable(false);
+    if (JTextAreaLicense == null) {
+        try {
+            JTextAreaLicense = new javax.swing.JTextArea();
+            JTextAreaLicense.setName("JTextAreaLicense");
+            JTextAreaLicense.setLineWrap(true);
+            JTextAreaLicense.setWrapStyleWord(true);
+            JTextAreaLicense.setFont(new java.awt.Font("monospaced", 0, 12));
+            JTextAreaLicense.setBounds(0, 0, 160, 120);
+            JTextAreaLicense.setMargin(new java.awt.Insets(1, 3, 1, 3));
+            JTextAreaLicense.setEditable(false);
         } catch (Exception e) {
             e.printStackTrace();
         }
-	}
-	return JTextAreaLicense;
+    }
+    return JTextAreaLicense;
 }
-	/**
-	 * @see com.cosylab.gui.components.about.AboutTab#getPanel()
-	 */
-	public JPanel getPanel() {
-		
-		
-		return this;
-	}
+    /**
+     * @see com.cosylab.gui.components.about.AboutTab#getPanel()
+     */
+    public JPanel getPanel() {
+        
+        
+        return this;
+    }
 
 }

@@ -32,10 +32,10 @@ import org.csstudio.dal.impl.DefaultApplicationContext;
  *
  */
 public class TINEApplicationContext extends DefaultApplicationContext {
-	protected Properties configuration;
-	
-	public TINEApplicationContext(String name) {
-		super(name);
-		PlugUtilities.configureTINEPlug(getConfiguration());
-	}
+    protected Properties configuration;
+    
+    public TINEApplicationContext(String name) {
+        super(name);
+        PlugUtilities.configureTINEPlug(getConfiguration());
+    }
 }

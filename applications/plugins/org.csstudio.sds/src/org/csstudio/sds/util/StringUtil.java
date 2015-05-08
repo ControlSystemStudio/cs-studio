@@ -25,18 +25,18 @@ import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class StringUtil {
-	public static String convertListToSingleString(List list) {
-		return convertListToSingleString(list, "\n");
-	}
+    public static String convertListToSingleString(List list) {
+        return convertListToSingleString(list, "\n");
+    }
 
-	public static String convertListToSingleString(List list, String lineEnd) {
-		StringBuffer sb = new StringBuffer();
+    public static String convertListToSingleString(List list, String lineEnd) {
+        StringBuffer sb = new StringBuffer();
 
-		for (Object o : list) {
-			sb.append(o.toString());
-			sb.append(lineEnd);
-		}
+        for (Object o : list) {
+            sb.append(o.toString());
+            sb.append(lineEnd);
+        }
 
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 }

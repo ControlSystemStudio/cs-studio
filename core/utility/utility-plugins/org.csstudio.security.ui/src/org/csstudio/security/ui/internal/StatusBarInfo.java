@@ -51,22 +51,22 @@ public class StatusBarInfo extends WorkbenchWindowControlContribution
         user_name.setToolTipText("Name of the current user");
         user_name.addSelectionListener(new SelectionAdapter()
         {
-			@Override
-			public void widgetSelected(final SelectionEvent e)
-			{
-		        final IWorkbench workbench = PlatformUI.getWorkbench();
-		        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-		        try
-		        {
-		            final IWorkbenchPage page = window.getActivePage();
-		            page.showView(SecurityInfoView.ID);
-		        }
-		        catch (Exception ex)
-		        {
-		        	Logger.getLogger(StatusBarInfo.class.getName()).log(Level.WARNING, "Cannot open view", ex);
-		        }
-			}
-		});
+            @Override
+            public void widgetSelected(final SelectionEvent e)
+            {
+                final IWorkbench workbench = PlatformUI.getWorkbench();
+                final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+                try
+                {
+                    final IWorkbenchPage page = window.getActivePage();
+                    page.showView(SecurityInfoView.ID);
+                }
+                catch (Exception ex)
+                {
+                    Logger.getLogger(StatusBarInfo.class.getName()).log(Level.WARNING, "Cannot open view", ex);
+                }
+            }
+        });
         
         // Trigger initial update
         changedSecurity(SecuritySupport.getSubject(),

@@ -16,39 +16,39 @@ import static org.csstudio.graphene.opiwidgets.ModelPropertyConstants.*;
  * 
  */
 public class LineGraph2DWidgetModel extends
-		AbstractPointDatasetGraph2DWidgetModel {
+        AbstractPointDatasetGraph2DWidgetModel {
 
-	public LineGraph2DWidgetModel() {
-		super(AbstractSelectionWidgetModelDescription.newModelFrom(LineGraph2DWidget.class));
-	}
+    public LineGraph2DWidgetModel() {
+        super(AbstractSelectionWidgetModelDescription.newModelFrom(LineGraph2DWidget.class));
+    }
 
-	public final String ID = "org.csstudio.graphene.opiwidgets.LineGraph2D"; //$NON-NLS-1$
-	
-	@Override
-	protected void configureProperties() {
-		super.configureProperties();
-		addProperty(new BooleanProperty(PROP_HIGHLIGHT_SELECTION_VALUE,
-				"Highlight Selection Value", WidgetPropertyCategory.Basic, false));
-		addProperty(new StringProperty(PROP_SELECTION_VALUE_PV,
-				"Selection Value PV (VTable)", WidgetPropertyCategory.Basic, ""));
-	}
-	
-	@Override
-	protected String getDataType() {
-		return "VTable/VNumberArray";
-	}
-	
-	public String getSelectionValuePv() {
-		return (String) getCastedPropertyValue(PROP_SELECTION_VALUE_PV);
-	}
+    public final String ID = "org.csstudio.graphene.opiwidgets.LineGraph2D"; //$NON-NLS-1$
+    
+    @Override
+    protected void configureProperties() {
+        super.configureProperties();
+        addProperty(new BooleanProperty(PROP_HIGHLIGHT_SELECTION_VALUE,
+                "Highlight Selection Value", WidgetPropertyCategory.Basic, false));
+        addProperty(new StringProperty(PROP_SELECTION_VALUE_PV,
+                "Selection Value PV (VTable)", WidgetPropertyCategory.Basic, ""));
+    }
+    
+    @Override
+    protected String getDataType() {
+        return "VTable/VNumberArray";
+    }
+    
+    public String getSelectionValuePv() {
+        return (String) getCastedPropertyValue(PROP_SELECTION_VALUE_PV);
+    }
 
-	public boolean isHighlightSelectionValue() {
-		return (Boolean) getCastedPropertyValue(PROP_HIGHLIGHT_SELECTION_VALUE);
-	}
+    public boolean isHighlightSelectionValue() {
+        return (Boolean) getCastedPropertyValue(PROP_HIGHLIGHT_SELECTION_VALUE);
+    }
 
-	@Override
-	public String getTypeID() {
-		return ID;
-	}
+    @Override
+    public String getTypeID() {
+        return ID;
+    }
 
 }

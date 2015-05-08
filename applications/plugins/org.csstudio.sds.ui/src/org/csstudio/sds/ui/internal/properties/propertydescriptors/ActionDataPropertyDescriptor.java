@@ -37,58 +37,58 @@ import org.eclipse.swt.widgets.Composite;
  * 
  */
 public final class ActionDataPropertyDescriptor extends TextPropertyDescriptor {
-	
-	/**
-	 * The name of the property.
-	 */
-	private final String _name;
+    
+    /**
+     * The name of the property.
+     */
+    private final String _name;
 
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param id
-	 *            the id of the property
-	 * @param displayName
-	 *            the name to display for the property
-	 * @param category
-	 *            the category
-	 */
-	public ActionDataPropertyDescriptor(final Object id, final String displayName, PropertyTypesEnum type, final
-			String category) {
-		super(id, displayName, type, category);
-		_name = displayName;
-		this.setLabelProvider(new ActionDataLabelProvider());
-	}
+    /**
+     * Standard constructor.
+     * 
+     * @param id
+     *            the id of the property
+     * @param displayName
+     *            the name to display for the property
+     * @param category
+     *            the category
+     */
+    public ActionDataPropertyDescriptor(final Object id, final String displayName, PropertyTypesEnum type, final
+            String category) {
+        super(id, displayName, type, category);
+        _name = displayName;
+        this.setLabelProvider(new ActionDataLabelProvider());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CellEditor createPropertyEditor(final Composite parent) {
-		CellEditor editor = new ActionDataCellEditor(parent, _name);
-		if (getValidator() != null) {
-			editor.setValidator(getValidator());
-		}
-		return editor;
-	}
-	
-	/**
-	 * A label provider for a {@link ActionData} value.
-	 * 
-	 * @author Kai Meyer
-	 * 
-	 */
-	private final class ActionDataLabelProvider extends LabelProvider {
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public String getText(final Object element) {
-			if (element instanceof ActionData) {
-				return ((ActionData)element).toString();
-			} else {
-				return element.toString();
-			}
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CellEditor createPropertyEditor(final Composite parent) {
+        CellEditor editor = new ActionDataCellEditor(parent, _name);
+        if (getValidator() != null) {
+            editor.setValidator(getValidator());
+        }
+        return editor;
+    }
+    
+    /**
+     * A label provider for a {@link ActionData} value.
+     * 
+     * @author Kai Meyer
+     * 
+     */
+    private final class ActionDataLabelProvider extends LabelProvider {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String getText(final Object element) {
+            if (element instanceof ActionData) {
+                return ((ActionData)element).toString();
+            } else {
+                return element.toString();
+            }
+        }
+    }
 }

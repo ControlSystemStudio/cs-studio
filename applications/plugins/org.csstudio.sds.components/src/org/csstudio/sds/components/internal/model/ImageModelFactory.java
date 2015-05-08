@@ -32,17 +32,17 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  */
 public final class ImageModelFactory implements IWidgetModelFactory {
 
-	/**
-	 * {@inheritDoc}.
-	 */
-	public AbstractWidgetModel createWidgetModel() {
-		return new ImageModel();
-	}
+    /**
+     * {@inheritDoc}.
+     */
+    public AbstractWidgetModel createWidgetModel() {
+        return new ImageModel();
+    }
 
-	/**
-	 * {@inheritDoc}.
-	 */
-	public Class getWidgetModelType() {
-		return ImageModel.class;
-	}
+    /**
+     * {@inheritDoc}.
+     */
+    public Class getWidgetModelType() {
+        return ImageModel.class;
+    }
 }

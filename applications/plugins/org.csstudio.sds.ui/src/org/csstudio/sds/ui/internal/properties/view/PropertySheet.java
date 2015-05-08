@@ -78,230 +78,230 @@ import org.eclipse.ui.part.PageBookView;
  * @author Sven Wende
  */
 public final class PropertySheet extends PageBookView implements
-		ISelectionListener {
-	/**
-	 * The view id.
-	 */
-	public static final String VIEW_ID = "org.csstudio.sds.ui.internal.properties.view.PropertySheet";
-	
-	/**
-	 * No longer used but preserved to avoid api change.
-	 */
-	public static final String HELP_CONTEXT_PROPERTY_SHEET_VIEW = IPropertiesHelpContextIds.PROPERTY_SHEET_VIEW;
+        ISelectionListener {
+    /**
+     * The view id.
+     */
+    public static final String VIEW_ID = "org.csstudio.sds.ui.internal.properties.view.PropertySheet";
+    
+    /**
+     * No longer used but preserved to avoid api change.
+     */
+    public static final String HELP_CONTEXT_PROPERTY_SHEET_VIEW = IPropertiesHelpContextIds.PROPERTY_SHEET_VIEW;
 
-	/**
-	 * The initial selection when the property sheet opens.
-	 */
-	private ISelection _bootstrapSelection;
+    /**
+     * The initial selection when the property sheet opens.
+     */
+    private ISelection _bootstrapSelection;
 
-	/**
-	 * Creates a property sheet view.
-	 */
-	public PropertySheet() {
-		super();
-	}
+    /**
+     * Creates a property sheet view.
+     */
+    public PropertySheet() {
+        super();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IPage createDefaultPage(final PageBook book) {
-		PropertySheetPage page = new PropertySheetPage();
-		initPage(page);
-		page.createControl(book);
-		return page;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IPage createDefaultPage(final PageBook book) {
+        PropertySheetPage page = new PropertySheetPage();
+        initPage(page);
+        page.createControl(book);
+        return page;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void createPartControl(final Composite parent) {
-		super.createPartControl(parent);
-		getSite().getPage().getWorkbenchWindow().getWorkbench().getHelpSystem()
-				.setHelp(getPageBook(),
-						IPropertiesHelpContextIds.PROPERTY_SHEET_VIEW);
-		
-		parent.getParent().layout();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void createPartControl(final Composite parent) {
+        super.createPartControl(parent);
+        getSite().getPage().getWorkbenchWindow().getWorkbench().getHelpSystem()
+                .setHelp(getPageBook(),
+                        IPropertiesHelpContextIds.PROPERTY_SHEET_VIEW);
+        
+        parent.getParent().layout();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void dispose() {
-		// run super.
-		super.dispose();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void dispose() {
+        // run super.
+        super.dispose();
 
-		// remove ourselves as a selection listener
-		getSite().getPage().removeSelectionListener(this);
-	}
+        // remove ourselves as a selection listener
+        getSite().getPage().removeSelectionListener(this);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected PageRec doCreatePage(final IWorkbenchPart part) {
-		// Try to get a custom property sheet page.
-		IPropertySheetPage page = (IPropertySheetPage) part
-				.getAdapter(IPropertySheetPage.class);
-		if (page == null) {
-			// Look for a declaratively-contributed adapter.
-			// See bug 86362 [PropertiesView] Can not access AdapterFactory,
-			// when plugin is not loaded.
-			page = (IPropertySheetPage) Platform.getAdapterManager()
-					.loadAdapter(part, IPropertySheetPage.class.getName());
-		}
-		if (page != null) {
-			if (page instanceof IPageBookViewPage) {
-				initPage((IPageBookViewPage) page);
-			}
-			page.createControl(getPageBook());
-			return new PageRec(part, page);
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected PageRec doCreatePage(final IWorkbenchPart part) {
+        // Try to get a custom property sheet page.
+        IPropertySheetPage page = (IPropertySheetPage) part
+                .getAdapter(IPropertySheetPage.class);
+        if (page == null) {
+            // Look for a declaratively-contributed adapter.
+            // See bug 86362 [PropertiesView] Can not access AdapterFactory,
+            // when plugin is not loaded.
+            page = (IPropertySheetPage) Platform.getAdapterManager()
+                    .loadAdapter(part, IPropertySheetPage.class.getName());
+        }
+        if (page != null) {
+            if (page instanceof IPageBookViewPage) {
+                initPage((IPageBookViewPage) page);
+            }
+            page.createControl(getPageBook());
+            return new PageRec(part, page);
+        }
 
-		// Use the default page
-		return null;
-	}
+        // Use the default page
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doDestroyPage(final IWorkbenchPart part, final PageRec rec) {
-		IPropertySheetPage page = (IPropertySheetPage) rec.page;
-		page.dispose();
-		rec.dispose();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doDestroyPage(final IWorkbenchPart part, final PageRec rec) {
+        IPropertySheetPage page = (IPropertySheetPage) rec.page;
+        page.dispose();
+        rec.dispose();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IWorkbenchPart getBootstrapPart() {
-		IWorkbenchPage page = getSite().getPage();
-		if (page != null) {
-			_bootstrapSelection = page.getSelection();
-			return page.getActivePart();
-		}
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IWorkbenchPart getBootstrapPart() {
+        IWorkbenchPage page = getSite().getPage();
+        if (page != null) {
+            _bootstrapSelection = page.getSelection();
+            return page.getActivePart();
+        }
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void init(final IViewSite site) throws PartInitException {
-		site.getPage().addSelectionListener(this);
-		super.init(site);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void init(final IViewSite site) throws PartInitException {
+        site.getPage().addSelectionListener(this);
+        super.init(site);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected boolean isImportant(final IWorkbenchPart part) {
-		return part instanceof DisplayEditor;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean isImportant(final IWorkbenchPart part) {
+        return part instanceof DisplayEditor;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void partActivated(final IWorkbenchPart part) {
-		IContributedContentsView view = (IContributedContentsView) part
-				.getAdapter(IContributedContentsView.class);
-		IWorkbenchPart source = null;
-		if (view != null) {
-			source = view.getContributingPart();
-		}
-		if (source != null) {
-			super.partActivated(source);
-		} else {
-			super.partActivated(part);
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void partActivated(final IWorkbenchPart part) {
+        IContributedContentsView view = (IContributedContentsView) part
+                .getAdapter(IContributedContentsView.class);
+        IWorkbenchPart source = null;
+        if (view != null) {
+            source = view.getContributingPart();
+        }
+        if (source != null) {
+            super.partActivated(source);
+        } else {
+            super.partActivated(part);
+        }
 
-		// When the view is first opened, pass the selection to the page
-		if (_bootstrapSelection != null) {
-			IPropertySheetPage page = (IPropertySheetPage) getCurrentPage();
-			if (page != null) {
-				page.selectionChanged(part, _bootstrapSelection);
-			}
-			this.setContentDescription(this.createContentDescription(_bootstrapSelection));
-			_bootstrapSelection = null;
-		}
-	}
+        // When the view is first opened, pass the selection to the page
+        if (_bootstrapSelection != null) {
+            IPropertySheetPage page = (IPropertySheetPage) getCurrentPage();
+            if (page != null) {
+                page.selectionChanged(part, _bootstrapSelection);
+            }
+            this.setContentDescription(this.createContentDescription(_bootstrapSelection));
+            _bootstrapSelection = null;
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void selectionChanged(final IWorkbenchPart part, final ISelection sel) {
-		// we ignore our own selection or null selection
-		if (part == this || sel == null) {
-			return;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public void selectionChanged(final IWorkbenchPart part, final ISelection sel) {
+        // we ignore our own selection or null selection
+        if (part == this || sel == null) {
+            return;
+        }
 
-		// pass the selection to the page
-		IPropertySheetPage page = (IPropertySheetPage) getCurrentPage();
-		if (page != null) {
-			page.selectionChanged(part, sel);
-		}
-		this.setContentDescription(this.createContentDescription(sel));
-	}
-	
-	/**
-	 * Creates and returns the content description for this View.
-	 * @param sel
-	 * 			The current selection
-	 * @return String
-	 * 			The content description
-	 */
-	private String createContentDescription(final ISelection sel) {
-		String description = "Type: ";
-		
-		if(sel instanceof IStructuredSelection) {
-			Object[] objects = ((IStructuredSelection) sel).toArray();
-			
-			if (objects.length>1) {	
-				description = description +"Multiple ("+objects.length+") Widgets selected";
-			} else if(objects.length==1){
-				if (objects[0] instanceof AbstractWidgetEditPart) {
-					description = description + WidgetModelFactoryService.getInstance().getName(
-							((AbstractWidgetEditPart)objects[0]).getWidgetModel().getTypeID() );
-				} else {
-					description = description + "Display";
-				}
-			}
-		}
-		
-		return description;
-	}
+        // pass the selection to the page
+        IPropertySheetPage page = (IPropertySheetPage) getCurrentPage();
+        if (page != null) {
+            page.selectionChanged(part, sel);
+        }
+        this.setContentDescription(this.createContentDescription(sel));
+    }
+    
+    /**
+     * Creates and returns the content description for this View.
+     * @param sel
+     *             The current selection
+     * @return String
+     *             The content description
+     */
+    private String createContentDescription(final ISelection sel) {
+        String description = "Type: ";
+        
+        if(sel instanceof IStructuredSelection) {
+            Object[] objects = ((IStructuredSelection) sel).toArray();
+            
+            if (objects.length>1) {    
+                description = description +"Multiple ("+objects.length+") Widgets selected";
+            } else if(objects.length==1){
+                if (objects[0] instanceof AbstractWidgetEditPart) {
+                    description = description + WidgetModelFactoryService.getInstance().getName(
+                            ((AbstractWidgetEditPart)objects[0]).getWidgetModel().getTypeID() );
+                } else {
+                    description = description + "Display";
+                }
+            }
+        }
+        
+        return description;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	protected Object getViewAdapter(final Class key) {
-		if (ISaveablePart.class.equals(key)) {
-			return getSaveablePart();
-		}
-		return super.getViewAdapter(key);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    protected Object getViewAdapter(final Class key) {
+        if (ISaveablePart.class.equals(key)) {
+            return getSaveablePart();
+        }
+        return super.getViewAdapter(key);
+    }
 
-	/**
-	 * Returns an <code>ISaveablePart</code> that delegates to the source part
-	 * for the current page if it implements <code>ISaveablePart</code>, or
-	 * <code>null</code> otherwise.
-	 * 
-	 * @return an <code>ISaveablePart</code> or <code>null</code>
-	 * @since 3.2
-	 */
-	protected ISaveablePart getSaveablePart() {
-		IWorkbenchPart part = getCurrentContributingPart();
-		if (part instanceof ISaveablePart) {
-			return (ISaveablePart) part;
-		}
-		return null;
-	}
+    /**
+     * Returns an <code>ISaveablePart</code> that delegates to the source part
+     * for the current page if it implements <code>ISaveablePart</code>, or
+     * <code>null</code> otherwise.
+     * 
+     * @return an <code>ISaveablePart</code> or <code>null</code>
+     * @since 3.2
+     */
+    protected ISaveablePart getSaveablePart() {
+        IWorkbenchPart part = getCurrentContributingPart();
+        if (part instanceof ISaveablePart) {
+            return (ISaveablePart) part;
+        }
+        return null;
+    }
 }

@@ -31,7 +31,7 @@ import org.csstudio.scan.data.ScanSample;
  */
 abstract public class DataLog implements Closeable
 {
-	/** Serial of last logged sample */
+    /** Serial of last logged sample */
     protected long last_serial = -1;
     
     final private List<DataLogListener> listeners = new CopyOnWriteArrayList<>();
@@ -51,7 +51,7 @@ abstract public class DataLog implements Closeable
     /** @return Next unique scan sample serial */
     public synchronized long getNextScanDataSerial()
     {
-    	return ++last_serial;
+        return ++last_serial;
     }
 
     /** Add a sample to the data log
@@ -66,19 +66,19 @@ abstract public class DataLog implements Closeable
      *  When done, call <code>flush</code>.
      *
      *  @param device Device name
-	 *  @param sample {@link ScanSample} to log
-	 *  @throws Exception on error
-	 *  @see #flush()
-	 *  @see #close()
-	 */
-	public void log(final String device, final ScanSample sample) throws Exception
-	{
-		doLog(device, sample);
-		synchronized (this)
-		{
-			last_serial  = sample.getSerial();
-		}
-	}
+     *  @param sample {@link ScanSample} to log
+     *  @throws Exception on error
+     *  @see #flush()
+     *  @see #close()
+     */
+    public void log(final String device, final ScanSample sample) throws Exception
+    {
+        doLog(device, sample);
+        synchronized (this)
+        {
+            last_serial  = sample.getSerial();
+        }
+    }
 
     /** Flush all recently <code>log</code>ed samples.
      * 
@@ -96,31 +96,31 @@ abstract public class DataLog implements Closeable
         for (DataLogListener listener : listeners)
             listener.logDataChanged(this);
     }
-	
+    
     /** Perform actual logging of a sample.
      *  @param device Device name
      *  @param sample {@link ScanSample} to log
-	 *  @throws Exception on error
-	 */
-	abstract protected void doLog(String device, ScanSample sample) throws Exception;
+     *  @throws Exception on error
+     */
+    abstract protected void doLog(String device, ScanSample sample) throws Exception;
 
-	/** @return Serial of last sample in scan data or -1 if nothing has been logged */
+    /** @return Serial of last sample in scan data or -1 if nothing has been logged */
     public synchronized long getLastScanDataSerial()
-	{
-	    return last_serial;
-	}
+    {
+        return last_serial;
+    }
 
     /** @return {@link ScanData} with copy of currently logged data or <code>null</code>
-	 *  @throws Exception on error
+     *  @throws Exception on error
      */
     abstract public ScanData getScanData() throws Exception;
 
     /** Should be called when done logging samples
      *  to allow logging mechanism to release resources.
      */
-	@Override
+    @Override
     public void close()
-	{
-		// NOP
-	}
+    {
+        // NOP
+    }
 }

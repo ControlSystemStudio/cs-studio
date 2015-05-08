@@ -31,12 +31,12 @@ import org.eclipse.draw2d.Polyline;
  */
 public final class PolygonFeedbackFactory extends AbstractPolyFeedbackFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Polyline createFeedbackFigure() {
-		return new Polygon();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Polyline createFeedbackFigure() {
+        return new Polygon();
+    }
 
 }

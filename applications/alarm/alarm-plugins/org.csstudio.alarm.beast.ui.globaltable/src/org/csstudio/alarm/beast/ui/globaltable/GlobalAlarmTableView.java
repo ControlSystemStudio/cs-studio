@@ -102,9 +102,9 @@ public class GlobalAlarmTableView extends ViewPart
     private void addContextMenu(final TableViewer table_viewer,
             final IWorkbenchPartSite site)
     {
-		final Table table = table_viewer.getTable();
-		final boolean isRcp = UI.RCP.equals(SingleSourcePlugin.getUIHelper()
-				.getUI());
+        final Table table = table_viewer.getTable();
+        final boolean isRcp = UI.RCP.equals(SingleSourcePlugin.getUIHelper()
+                .getUI());
 
         final MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);

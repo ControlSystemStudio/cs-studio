@@ -104,11 +104,11 @@ public class ActiveMQURL {
                 }
             }
         }else{
-        	ind =0;
-        	endInd = _url.indexOf('?');
-        	if(endInd<0){
-        		endInd=_url.length();
-        	}
+            ind =0;
+            endInd = _url.indexOf('?');
+            if(endInd<0){
+                endInd=_url.length();
+            }
         }
                 
         _host = _url.substring(ind,endInd);
@@ -193,16 +193,16 @@ public class ActiveMQURL {
      * @param maxReconnectAttempts The maximum amount of time we ever wait between reconnect attempts (in ms).
      */
     public final void setMaxReconnectAttempts(final String maxReconnectAttempts) {
-    	/** Soll unentlich weiter versucht werden eine Verbindung auf zu bauen muss derEintarg entfernt werden.
-    	 * In der Doku steht zwar das die zuweisung mit dem Wert 0 das gleich bewirkt doch das funktioniert nicht. 
-    	 */
-//    	int count = new Integer(maxReconnectAttempts.substring(maxReconnectAttempts.indexOf('=')+1,maxReconnectAttempts.length()));
-//    	if(count>0){
-    		_maxReconnectAttempts = maxReconnectAttempts;
-//    	}else{
-//    		_maxReconnectAttempts=null;
-//    	}
-    		
+        /** Soll unentlich weiter versucht werden eine Verbindung auf zu bauen muss derEintarg entfernt werden.
+         * In der Doku steht zwar das die zuweisung mit dem Wert 0 das gleich bewirkt doch das funktioniert nicht. 
+         */
+//        int count = new Integer(maxReconnectAttempts.substring(maxReconnectAttempts.indexOf('=')+1,maxReconnectAttempts.length()));
+//        if(count>0){
+            _maxReconnectAttempts = maxReconnectAttempts;
+//        }else{
+//            _maxReconnectAttempts=null;
+//        }
+            
     }
     /**
      * @return max Reconnect Delay.

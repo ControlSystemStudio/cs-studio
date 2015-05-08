@@ -31,53 +31,53 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator extends AbstractUIPlugin {
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "org.csstudio.utility.nameSpaceSearch"; //$NON-NLS-1$
+    // The plug-in ID
+    public static final String PLUGIN_ID = "org.csstudio.utility.nameSpaceSearch"; //$NON-NLS-1$
 
-	// The shared instance
-	private static Activator INSTANCE;
+    // The shared instance
+    private static Activator INSTANCE;
 
-	private LdapServiceTracker _ldapServiceTracker;
+    private LdapServiceTracker _ldapServiceTracker;
 
-	/**
-	 * The constructor
-	 */
-	public Activator() {
+    /**
+     * The constructor
+     */
+    public Activator() {
         if (INSTANCE != null) {
             throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
         }
         INSTANCE = this; // Antipattern is required by the framework!
     }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+     */
+    @Override
     public void start(final BundleContext context) throws Exception {
-		super.start(context);
-	    _ldapServiceTracker = new LdapServiceTracker(context);
-	    _ldapServiceTracker.open();
-	}
+        super.start(context);
+        _ldapServiceTracker = new LdapServiceTracker(context);
+        _ldapServiceTracker.open();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+     */
+    @Override
     public void stop(final BundleContext context) throws Exception {
-		super.stop(context);
-		_ldapServiceTracker.close();
-	}
+        super.stop(context);
+        _ldapServiceTracker.close();
+    }
 
-	/**
-	 * Returns the shared instance
-	 *
-	 * @return the shared instance
-	 */
-	public static Activator getDefault() {
-		return INSTANCE;
-	}
+    /**
+     * Returns the shared instance
+     *
+     * @return the shared instance
+     */
+    public static Activator getDefault() {
+        return INSTANCE;
+    }
 
     /**
      * @return the LDAP service

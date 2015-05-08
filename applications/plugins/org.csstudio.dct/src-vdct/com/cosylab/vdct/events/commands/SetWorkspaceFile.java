@@ -37,22 +37,22 @@ import com.cosylab.vdct.VisualDCT;
  * @author 
  */
 public class SetWorkspaceFile extends Command {
-	private VisualDCT visualDCT;
-	private String fileName = null;
+    private VisualDCT visualDCT;
+    private String fileName = null;
 /**
  * Insert the method's description here.
  * Creation date: (29.12.2000 12:37:58)
  */
 
 public SetWorkspaceFile(VisualDCT visualDCT) {
-	this.visualDCT=visualDCT;
+    this.visualDCT=visualDCT;
 }
 /**
  * Insert the method's description here.
  * Creation date: (29.12.2000 12:37:43)
  */
 public void execute() {
-	visualDCT.setFileInTitle(fileName);
+    visualDCT.setFileInTitle(fileName);
 }
 /**
  * Insert the method's description here.
@@ -60,6 +60,6 @@ public void execute() {
  * @param fileName java.lang.String
  */
 public void setFile(String fileName) {
-	this.fileName=fileName;
+    this.fileName=fileName;
 }
 }

@@ -38,23 +38,23 @@ import org.eclipse.ui.PartInitException;
  */
 public final class OpenScreenshotWindowAction implements IWorkbenchWindowActionDelegate
 {
-	/** A workbench window handle. */
-	private IWorkbenchWindow _window;
+    /** A workbench window handle. */
+    private IWorkbenchWindow _window;
     
-	/** {@inheritDoc} */
-	public void dispose()
+    /** {@inheritDoc} */
+    public void dispose()
     {
-		// does not need to do anything at all.
-	}
+        // does not need to do anything at all.
+    }
 
-	/** {@inheritDoc} */
-	public void init(final IWorkbenchWindow window)
+    /** {@inheritDoc} */
+    public void init(final IWorkbenchWindow window)
     {
-		_window = window;
-	}
+        _window = window;
+    }
 
-	/** {@inheritDoc} */
-	public void run(final IAction action)
+    /** {@inheritDoc} */
+    public void run(final IAction action)
     {
         // ScreenshotPlugin.getDefault().capture();
         
@@ -66,16 +66,16 @@ public final class OpenScreenshotWindowAction implements IWorkbenchWindowActionD
         {
             MessageDialog.openError(_window.getShell(), "Screenshot", "Could not open the view.");
         }
-	}
+    }
     
     public IWorkbenchWindow getWorkbenchWindow()
     {
         return _window;
     }
     
-	/** {@inheritDoc} */
-	public void selectionChanged(final IAction action, final ISelection selection)
+    /** {@inheritDoc} */
+    public void selectionChanged(final IAction action, final ISelection selection)
     {
-		// does not need to do anything at all.
-	}
+        // does not need to do anything at all.
+    }
 }

@@ -256,7 +256,7 @@ public class TimeParserUnitTest extends TestCase
         assertEquals(0.0, start_diff_sec, 10.0);
         final double error = end_diff_sec + 60.0*24.0*60*60.0;
         if (error == -60.0 * 60.0)
-        	System.out.println("Looks like we crossed daylight saving time");
+            System.out.println("Looks like we crossed daylight saving time");
         // An "error" of one hour is allowed in this test in case we cross daylight saving time
         assertEquals(-60.0*24.0*60*60.0, end_diff_sec, 10.0 + 60.0*60.0);
         

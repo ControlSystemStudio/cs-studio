@@ -38,48 +38,48 @@ import org.eclipse.swt.widgets.Display;
  */
 public final class AddLayerAction extends AbstractLayerAction {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void selectedLayerChanged(final Layer layer, final LayerSupport layerSupport, final IAction action) {
-	    // nothing to do
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void selectedLayerChanged(final Layer layer, final LayerSupport layerSupport, final IAction action) {
+        // nothing to do
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Command createCommand(final Layer selectedLayer,
-			final LayerSupport layerSupport, final IAction action) {
-		Command result = null;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Command createCommand(final Layer selectedLayer,
+            final LayerSupport layerSupport, final IAction action) {
+        Command result = null;
 
-		if (layerSupport != null) {
-			InputDialog dialog = new InputDialog(Display.getCurrent()
-					.getActiveShell(), "Create a new layer",
-					"Please enter a name for the new layer:", "",
-					new IInputValidator() {
-						public String isValid(final String newText) {
-							if (newText.length() <= 0) {
-								return "Please provide at least one char for the layer name!";
-							}
-							return null;
-						}
-					});
+        if (layerSupport != null) {
+            InputDialog dialog = new InputDialog(Display.getCurrent()
+                    .getActiveShell(), "Create a new layer",
+                    "Please enter a name for the new layer:", "",
+                    new IInputValidator() {
+                        public String isValid(final String newText) {
+                            if (newText.length() <= 0) {
+                                return "Please provide at least one char for the layer name!";
+                            }
+                            return null;
+                        }
+                    });
 
-			if (Window.OK == dialog.open()) {
-				Layer newLayer = new Layer(dialog.getValue(), dialog.getValue());
+            if (Window.OK == dialog.open()) {
+                Layer newLayer = new Layer(dialog.getValue(), dialog.getValue());
 
-				if (selectedLayer != null) {
-					result = new AddLayerCommand(layerSupport, newLayer,
-							layerSupport.getLayerIndex(selectedLayer) + 1);
-				} else {
-					result = new AddLayerCommand(layerSupport, newLayer);
-				}
-			}
-		}
+                if (selectedLayer != null) {
+                    result = new AddLayerCommand(layerSupport, newLayer,
+                            layerSupport.getLayerIndex(selectedLayer) + 1);
+                } else {
+                    result = new AddLayerCommand(layerSupport, newLayer);
+                }
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
 }

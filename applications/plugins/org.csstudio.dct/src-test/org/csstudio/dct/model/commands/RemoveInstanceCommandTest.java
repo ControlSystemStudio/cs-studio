@@ -24,81 +24,81 @@ import org.junit.Test;
  * 
  */
 public final class RemoveInstanceCommandTest extends AbstractTestCommand {
-	private IPrototype prototypeA;
-	private IPrototype prototypeB;
-	private IInstance instanceA;
-	private IFolder folder;
+    private IPrototype prototypeA;
+    private IPrototype prototypeB;
+    private IInstance instanceA;
+    private IFolder folder;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Before
-	public void doSetUp() throws Exception {
-		prototypeA = new Prototype("prototypeA", UUID.randomUUID());
+    /**
+     * {@inheritDoc}
+     */
+    @Before
+    public void doSetUp() throws Exception {
+        prototypeA = new Prototype("prototypeA", UUID.randomUUID());
 
-		new AddRecordCommand(prototypeA, RecordFactory.createRecord(getProject(), "ai", "RecordA1", UUID.randomUUID())).execute();
+        new AddRecordCommand(prototypeA, RecordFactory.createRecord(getProject(), "ai", "RecordA1", UUID.randomUUID())).execute();
 
-		instanceA = new Instance(prototypeA, UUID.randomUUID());
-		prototypeB = new Prototype("prototypeB", UUID.randomUUID());
-		folder = new Folder("folder");
-	}
+        instanceA = new Instance(prototypeA, UUID.randomUUID());
+        prototypeB = new Prototype("prototypeB", UUID.randomUUID());
+        folder = new Folder("folder");
+    }
 
-	/**
-	 * Test method for {@link RemoveInstanceCommand}.
-	 */
-	@Test
-	public void testRemoveFromFolder() {
-		// .. prepare
-		folder.addMember(instanceA);
-		instanceA.setParentFolder(folder);
+    /**
+     * Test method for {@link RemoveInstanceCommand}.
+     */
+    @Test
+    public void testRemoveFromFolder() {
+        // .. prepare
+        folder.addMember(instanceA);
+        instanceA.setParentFolder(folder);
 
-		// .. before
-		assertEquals(folder, instanceA.getParentFolder());
-		assertTrue(folder.getMembers().contains(instanceA));
-		assertNull(instanceA.getContainer());
+        // .. before
+        assertEquals(folder, instanceA.getParentFolder());
+        assertTrue(folder.getMembers().contains(instanceA));
+        assertNull(instanceA.getContainer());
 
-		// .. execute
-		RemoveInstanceCommand cmd = new RemoveInstanceCommand(instanceA);
-		cmd.execute();
+        // .. execute
+        RemoveInstanceCommand cmd = new RemoveInstanceCommand(instanceA);
+        cmd.execute();
 
-		assertNull(instanceA.getParentFolder());
-		assertFalse(folder.getMembers().contains(instanceA));
-		assertNull(instanceA.getContainer());
+        assertNull(instanceA.getParentFolder());
+        assertFalse(folder.getMembers().contains(instanceA));
+        assertNull(instanceA.getContainer());
 
-		// .. undo
-		cmd.undo();
+        // .. undo
+        cmd.undo();
 
-		assertEquals(folder, instanceA.getParentFolder());
-		assertTrue(folder.getMembers().contains(instanceA));
-		assertNull(instanceA.getContainer());
-	}
+        assertEquals(folder, instanceA.getParentFolder());
+        assertTrue(folder.getMembers().contains(instanceA));
+        assertNull(instanceA.getContainer());
+    }
 
-	/**
-	 * Test method for {@link RemoveInstanceCommand}.
-	 */
-	@Test
-	public void testRemoveFromContainer() {
-		// .. prepare
-		new AddInstanceCommand(prototypeB, instanceA).execute();
+    /**
+     * Test method for {@link RemoveInstanceCommand}.
+     */
+    @Test
+    public void testRemoveFromContainer() {
+        // .. prepare
+        new AddInstanceCommand(prototypeB, instanceA).execute();
 
-		// .. before
-		assertNull(instanceA.getParentFolder());
-		assertEquals(prototypeB, instanceA.getContainer());
-		assertTrue(prototypeB.getInstances().contains(instanceA));
+        // .. before
+        assertNull(instanceA.getParentFolder());
+        assertEquals(prototypeB, instanceA.getContainer());
+        assertTrue(prototypeB.getInstances().contains(instanceA));
 
-		// .. execute
-		RemoveInstanceCommand cmd = new RemoveInstanceCommand(instanceA);
-		cmd.execute();
+        // .. execute
+        RemoveInstanceCommand cmd = new RemoveInstanceCommand(instanceA);
+        cmd.execute();
 
-		assertNull(instanceA.getParentFolder());
-		assertNull(instanceA.getContainer());
-		assertFalse(prototypeB.getInstances().contains(instanceA));
+        assertNull(instanceA.getParentFolder());
+        assertNull(instanceA.getContainer());
+        assertFalse(prototypeB.getInstances().contains(instanceA));
 
-		// .. undo
-		cmd.undo();
+        // .. undo
+        cmd.undo();
 
-		assertNull(instanceA.getParentFolder());
-		assertEquals(prototypeB, instanceA.getContainer());
-		assertTrue(prototypeB.getInstances().contains(instanceA));
-	}
+        assertNull(instanceA.getParentFolder());
+        assertEquals(prototypeB, instanceA.getContainer());
+        assertTrue(prototypeB.getInstances().contains(instanceA));
+    }
 }

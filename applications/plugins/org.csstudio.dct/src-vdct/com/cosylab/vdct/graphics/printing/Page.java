@@ -39,23 +39,23 @@ import javax.print.attribute.PrintRequestAttributeSet;
  * @author 
  */
 public class Page {
-	public final static int TRUE_SCALE = 0; 
-	public final static int USER_SCALE = 1;
-	public final static int FIT_SCALE = 2;
+    public final static int TRUE_SCALE = 0; 
+    public final static int USER_SCALE = 1;
+    public final static int FIT_SCALE = 2;
 
-	private static int printMode = FIT_SCALE;
+    private static int printMode = FIT_SCALE;
 
-	private static PageFormat pageFormat = PrinterJob.getPrinterJob().defaultPage();
-	
-	private static PrintRequestAttributeSet printRequestAttributeSet = new HashPrintRequestAttributeSet();
+    private static PageFormat pageFormat = PrinterJob.getPrinterJob().defaultPage();
+    
+    private static PrintRequestAttributeSet printRequestAttributeSet = new HashPrintRequestAttributeSet();
 
-	private static double userScale = 1.0;
+    private static double userScale = 1.0;
 
 /**
  * Page constructor comment.
  */
 public Page() {
-	super();
+    super();
 }
 /**
  * Insert the method's description here.
@@ -63,7 +63,7 @@ public Page() {
  * @return java.awt.print.PageFormat
  */
 public static java.awt.print.PageFormat getPageFormat() {
-	return pageFormat;
+    return pageFormat;
 }
 /**
  * Insert the method's description here.
@@ -71,7 +71,7 @@ public static java.awt.print.PageFormat getPageFormat() {
  * @return int
  */
 public static int getPrintMode() {
-	return printMode;
+    return printMode;
 }
 /**
  * Insert the method's description here.
@@ -79,7 +79,7 @@ public static int getPrintMode() {
  * @return double
  */
 public static double getUserScale() {
-	return userScale;
+    return userScale;
 }
 /**
  * Insert the method's description here.
@@ -87,7 +87,7 @@ public static double getUserScale() {
  * @param newPageFormat java.awt.print.PageFormat
  */
 public static void setPageFormat(java.awt.print.PageFormat newPageFormat) {
-	pageFormat = newPageFormat;
+    pageFormat = newPageFormat;
 }
 /**
  * Insert the method's description here.
@@ -95,7 +95,7 @@ public static void setPageFormat(java.awt.print.PageFormat newPageFormat) {
  * @param newPrintMode int
  */
 public static void setPrintMode(int newPrintMode) {
-	printMode = newPrintMode;
+    printMode = newPrintMode;
 }
 /**
  * Insert the method's description here.
@@ -103,24 +103,24 @@ public static void setPrintMode(int newPrintMode) {
  * @param newUserScale double
  */
 public static void setUserScale(double newUserScale) {
-	userScale = newUserScale;
+    userScale = newUserScale;
 }
-	/**
-	 * Returns the printRequestAttributeSet.
-	 * @return PrintRequestAttributeSet
-	 */
-	public static PrintRequestAttributeSet getPrintRequestAttributeSet()
-	{
-		return printRequestAttributeSet;
-	}
+    /**
+     * Returns the printRequestAttributeSet.
+     * @return PrintRequestAttributeSet
+     */
+    public static PrintRequestAttributeSet getPrintRequestAttributeSet()
+    {
+        return printRequestAttributeSet;
+    }
 
-	/**
-	 * Sets the printRequestAttributeSet.
-	 * @param printRequestAttributeSet The printRequestAttributeSet to set
-	 */
-	public static void setPrintRequestAttributeSet(PrintRequestAttributeSet printRequestAttributeSet)
-	{
-		Page.printRequestAttributeSet = printRequestAttributeSet;
-	}
+    /**
+     * Sets the printRequestAttributeSet.
+     * @param printRequestAttributeSet The printRequestAttributeSet to set
+     */
+    public static void setPrintRequestAttributeSet(PrintRequestAttributeSet printRequestAttributeSet)
+    {
+        Page.printRequestAttributeSet = printRequestAttributeSet;
+    }
 
 }

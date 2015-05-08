@@ -33,86 +33,86 @@ import org.csstudio.scan.server.ScanServerInfo;
 @SuppressWarnings("nls")
 public class ScanDataModel implements ScanInfoModelListener
 {
-	/** ID of scan that we monitor */
-	final private long scan_id;
+    /** ID of scan that we monitor */
+    final private long scan_id;
 
-	/** Scan client */
-	final private ScanInfoModel scan_info_model;
+    /** Scan client */
+    final private ScanInfoModel scan_info_model;
 
-	/** Most recent scan data */
-	private ScanData scan_data = null;
+    /** Most recent scan data */
+    private ScanData scan_data = null;
 
-	/** Last sample serial of scan data */
-	private long last_scan_data_serial = -1;
+    /** Last sample serial of scan data */
+    private long last_scan_data_serial = -1;
 
-	/** Listener to notify about updates in the scan's data */
-	final private ScanDataModelListener listener;
+    /** Listener to notify about updates in the scan's data */
+    final private ScanDataModelListener listener;
 
-	/** Initialize
-	 *  @param scan_id ID of scan to monitor
-	 *  @param listener {@link ScanDataModelListener}
-	 *  @throws Exception on error
-	 */
-	public ScanDataModel(final long scan_id, final ScanDataModelListener listener) throws Exception
+    /** Initialize
+     *  @param scan_id ID of scan to monitor
+     *  @param listener {@link ScanDataModelListener}
+     *  @throws Exception on error
+     */
+    public ScanDataModel(final long scan_id, final ScanDataModelListener listener) throws Exception
     {
-		this.scan_id = scan_id;
-		scan_info_model = ScanInfoModel.getInstance();
-		this.listener = listener;
-		scan_info_model.addListener(this);
+        this.scan_id = scan_id;
+        scan_info_model = ScanInfoModel.getInstance();
+        this.listener = listener;
+        scan_info_model.addListener(this);
     }
 
     /** Must be called to release sources when done */
-	public void release()
-	{
-		scan_info_model.removeListener(this);
-		scan_info_model.release();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-    public void scanServerUpdate(final ScanServerInfo server_info)
+    public void release()
     {
-	    // Ignored
+        scan_info_model.removeListener(this);
+        scan_info_model.release();
     }
 
-	/** @return most recent scan data. May be <code>null</code> */
-	public synchronized ScanData getScanData()
-	{
-		return scan_data;
-	}
+    /** {@inheritDoc} */
+    @Override
+    public void scanServerUpdate(final ScanServerInfo server_info)
+    {
+        // Ignored
+    }
 
-	/** {@inheritDoc} */
+    /** @return most recent scan data. May be <code>null</code> */
+    public synchronized ScanData getScanData()
+    {
+        return scan_data;
+    }
+
+    /** {@inheritDoc} */
     @Override
     public void scanUpdate(final List<ScanInfo> infos)
     {
-		try
-		{
-			// Any change in the data?
-			final ScanClient client = scan_info_model.getScanClient();
-			final long serial = client.getLastScanDataSerial(scan_id);
-			if (serial == last_scan_data_serial)
-				return;
+        try
+        {
+            // Any change in the data?
+            final ScanClient client = scan_info_model.getScanClient();
+            final long serial = client.getLastScanDataSerial(scan_id);
+            if (serial == last_scan_data_serial)
+                return;
 
-			// Get data
-			final ScanData data = client.getScanData(scan_id);
-			synchronized (this)
-			{
-				scan_data = data;
-			}
-			last_scan_data_serial = serial;
-			// Update listener
-			listener.updateScanData(data);
-		}
-		catch (Exception ex)
-		{
-			Logger.getLogger(getClass().getName()).log(Level.WARNING, "Cannot get scan data", ex);
-		}
+            // Get data
+            final ScanData data = client.getScanData(scan_id);
+            synchronized (this)
+            {
+                scan_data = data;
+            }
+            last_scan_data_serial = serial;
+            // Update listener
+            listener.updateScanData(data);
+        }
+        catch (Exception ex)
+        {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "Cannot get scan data", ex);
+        }
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void connectionError()
     {
-		// Ignored
+        // Ignored
     }
 }

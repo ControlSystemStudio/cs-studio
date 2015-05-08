@@ -38,49 +38,49 @@ import org.eclipse.ui.model.WorkbenchAdapter;
  */
 public final class WidgetActionAdapterFactory implements IAdapterFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(final Object adaptableObject,
-			final Class adapterType) {
-		assert adaptableObject != null;
-		assert adapterType != null;
-		assert adaptableObject instanceof AbstractWidgetActionModel : "adaptableObject instanceof WidgetAction"; //$NON-NLS-1$
-		if (adapterType == IWorkbenchAdapter.class) {
-			return new WorkbenchAdapter() {
-				@Override
-				public String getLabel(final Object o) {
-					final AbstractWidgetActionModel widgetAction = (AbstractWidgetActionModel)o;
-					String result = widgetAction.getActionLabel();
-					return result;
-				}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Object getAdapter(final Object adaptableObject,
+            final Class adapterType) {
+        assert adaptableObject != null;
+        assert adapterType != null;
+        assert adaptableObject instanceof AbstractWidgetActionModel : "adaptableObject instanceof WidgetAction"; //$NON-NLS-1$
+        if (adapterType == IWorkbenchAdapter.class) {
+            return new WorkbenchAdapter() {
+                @Override
+                public String getLabel(final Object o) {
+                    final AbstractWidgetActionModel widgetAction = (AbstractWidgetActionModel)o;
+                    String result = widgetAction.getActionLabel();
+                    return result;
+                }
 
-				@Override
-				public ImageDescriptor getImageDescriptor(final Object object) {
-					ActionType type = null;
-					if (object instanceof AbstractWidgetActionModel) {
-						type = ((AbstractWidgetActionModel)object).getType(); 
-					} else if (object instanceof ActionType) {
-						type = (ActionType) object;
-					}
-					if (type!=null) {
-						return CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-								SdsUiPlugin.PLUGIN_ID,type.getIcon());	
-					}
-					return null;
-				}
-			};
-		}
-		return null;
-	}
+                @Override
+                public ImageDescriptor getImageDescriptor(final Object object) {
+                    ActionType type = null;
+                    if (object instanceof AbstractWidgetActionModel) {
+                        type = ((AbstractWidgetActionModel)object).getType(); 
+                    } else if (object instanceof ActionType) {
+                        type = (ActionType) object;
+                    }
+                    if (type!=null) {
+                        return CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
+                                SdsUiPlugin.PLUGIN_ID,type.getIcon());    
+                    }
+                    return null;
+                }
+            };
+        }
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getAdapterList() {
-		return new Class[] { IWorkbenchAdapter.class };
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getAdapterList() {
+        return new Class[] { IWorkbenchAdapter.class };
+    }
 
 }

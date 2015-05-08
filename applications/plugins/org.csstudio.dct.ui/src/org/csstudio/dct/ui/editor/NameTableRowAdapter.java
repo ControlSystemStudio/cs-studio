@@ -16,55 +16,55 @@ import org.eclipse.swt.graphics.RGB;
  */
 class NameTableRowAdapter extends AbstractTableRowAdapter<IElement> {
 
-	public NameTableRowAdapter(IElement element) {
-		super(element);
-	}
+    public NameTableRowAdapter(IElement element) {
+        super(element);
+    }
 
-	@Override
-	protected String doGetKey(IElement element) {
-		return "Name";
-	}
+    @Override
+    protected String doGetKey(IElement element) {
+        return "Name";
+    }
 
-	@Override
-	protected String doGetValue(IElement element) {
-		return AliasResolutionUtil.getNameFromHierarchy(element);
-	}
+    @Override
+    protected String doGetValue(IElement element) {
+        return AliasResolutionUtil.getNameFromHierarchy(element);
+    }
 
-	@Override
-	protected String doGetValueForDisplay(IElement element) {
-		String result =AliasResolutionUtil.getNameFromHierarchy(element);
+    @Override
+    protected String doGetValueForDisplay(IElement element) {
+        String result =AliasResolutionUtil.getNameFromHierarchy(element);
 
-		if (element.isInherited()) {
-			try {
-				result = ResolutionUtil.resolve(result, element);
-			} catch (AliasResolutionException e) {
-				setError(e.getMessage());
-			}
-		}
-		
-		return result;
-	}
+        if (element.isInherited()) {
+            try {
+                result = ResolutionUtil.resolve(result, element);
+            } catch (AliasResolutionException e) {
+                setError(e.getMessage());
+            }
+        }
+        
+        return result;
+    }
 
-	@Override
-	protected Command doSetValue(IElement element, Object value) {
-		Command result = null;
-		if (value == null || !value.equals(AliasResolutionUtil.getNameFromHierarchy(element))) {
-			String value2set = null;
-			
-			if(value!=null && value.toString().length()>0) {
-				value2set = value.toString();
-			}
-			
-			result = new ChangeBeanPropertyCommand(element, "name", value2set);
-		}
+    @Override
+    protected Command doSetValue(IElement element, Object value) {
+        Command result = null;
+        if (value == null || !value.equals(AliasResolutionUtil.getNameFromHierarchy(element))) {
+            String value2set = null;
+            
+            if(value!=null && value.toString().length()>0) {
+                value2set = value.toString();
+            }
+            
+            result = new ChangeBeanPropertyCommand(element, "name", value2set);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	@Override
-	protected RGB doGetForegroundColorForValue(IElement element) {
-		String name = element.getName();
-		return (name != null && name.length() > 0) ? ColorSettings.OVERRIDDEN_VALUE : ColorSettings.INHERITED_VALUE;
-	}
+    @Override
+    protected RGB doGetForegroundColorForValue(IElement element) {
+        String name = element.getName();
+        return (name != null && name.length() > 0) ? ColorSettings.OVERRIDDEN_VALUE : ColorSettings.INHERITED_VALUE;
+    }
 
 }

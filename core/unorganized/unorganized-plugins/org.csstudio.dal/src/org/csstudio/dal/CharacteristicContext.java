@@ -62,78 +62,78 @@ import java.util.Map;
  */
 public interface CharacteristicContext
 {
-	/** Default value when characteristic is not initialized. */
-	public static final Object UNINITIALIZED = null;
+    /** Default value when characteristic is not initialized. */
+    public static final Object UNINITIALIZED = null;
 
-	/**
-	 * Accesses the complete map of characteristics as name value pairs
-	 * for this context. This method returns a map of currently known
-	 * characteristics. If it is known that a given characteristic exists, it
-	 * has to be present in the map. If the underlying source is remote, this
-	 * method may optimize access to the characteristics, since underlying
-	 * implementations may support grouped data access requests. Primitive
-	 * types must be wrapped in <code>Object</code> wrappers.
-	 *
-	 * @param names array of characteristic names
-	 *
-	 * @return Map a map of characteristics for this context
-	 *
-	 * @exception DataExchangeException because this method communicates with
-	 *            the underlying data source, an exception may be thrown if
-	 *            the communication fails.
-	 */
-	public Map<String,Object> getCharacteristics(String[] names) throws DataExchangeException;
+    /**
+     * Accesses the complete map of characteristics as name value pairs
+     * for this context. This method returns a map of currently known
+     * characteristics. If it is known that a given characteristic exists, it
+     * has to be present in the map. If the underlying source is remote, this
+     * method may optimize access to the characteristics, since underlying
+     * implementations may support grouped data access requests. Primitive
+     * types must be wrapped in <code>Object</code> wrappers.
+     *
+     * @param names array of characteristic names
+     *
+     * @return Map a map of characteristics for this context
+     *
+     * @exception DataExchangeException because this method communicates with
+     *            the underlying data source, an exception may be thrown if
+     *            the communication fails.
+     */
+    public Map<String,Object> getCharacteristics(String[] names) throws DataExchangeException;
 
-	/**
-	 * Returns names of all characteristics for this context. Return
-	 * value will be an array of non-null characteristic names.
-	 *
-	 * @return an array of non-null characteristic names
-	 *
-	 * @throws DataExchangeException if operation fails
-	 */
-	public String[] getCharacteristicNames() throws DataExchangeException;
+    /**
+     * Returns names of all characteristics for this context. Return
+     * value will be an array of non-null characteristic names.
+     *
+     * @return an array of non-null characteristic names
+     *
+     * @throws DataExchangeException if operation fails
+     */
+    public String[] getCharacteristicNames() throws DataExchangeException;
 
-	/**
-	 * Returns the value of the characteristic. If the characteristic
-	 * with such name does not exist this method returns <code>null</code>.
-	 *
-	 * @param name the name of the characteristic, may not be <code>null</code>
-	 *        or an empty string
-	 *
-	 * @return Object the value of the characteristic or <code>null</code> if
-	 *         unknown
-	 *
-	 * @exception DataExchangeException when the query for the characteristic
-	 *            value on the data source fails
-	 */
-	public Object getCharacteristic(String name) throws DataExchangeException;
+    /**
+     * Returns the value of the characteristic. If the characteristic
+     * with such name does not exist this method returns <code>null</code>.
+     *
+     * @param name the name of the characteristic, may not be <code>null</code>
+     *        or an empty string
+     *
+     * @return Object the value of the characteristic or <code>null</code> if
+     *         unknown
+     *
+     * @exception DataExchangeException when the query for the characteristic
+     *            value on the data source fails
+     */
+    public Object getCharacteristic(String name) throws DataExchangeException;
 
-	/**
-	 * Adds a property change listener. The listeners will be notified
-	 * whenever the value  of the characteristic changes, or when a new
-	 * characteristic is added that was not present in the context before.
-	 *
-	 * @param l a listener object
-	 */
-	public void addPropertyChangeListener(PropertyChangeListener l);
+    /**
+     * Adds a property change listener. The listeners will be notified
+     * whenever the value  of the characteristic changes, or when a new
+     * characteristic is added that was not present in the context before.
+     *
+     * @param l a listener object
+     */
+    public void addPropertyChangeListener(PropertyChangeListener l);
 
-	/**
-	 * Removes a property change listener. The notifications about
-	 * characteristics will no  longer be sent.
-	 *
-	 * @param l a listener object
-	 *
-	 * @see #addPropertyChangeListener
-	 */
-	public void removePropertyChangeListener(PropertyChangeListener l);
+    /**
+     * Removes a property change listener. The notifications about
+     * characteristics will no  longer be sent.
+     *
+     * @param l a listener object
+     *
+     * @see #addPropertyChangeListener
+     */
+    public void removePropertyChangeListener(PropertyChangeListener l);
 
-	/**
-	 * By contract with JavaBean specifications.
-	 *
-	 * @return array of registered listeners
-	 */
-	public PropertyChangeListener[] getPropertyChangeListeners();
+    /**
+     * By contract with JavaBean specifications.
+     *
+     * @return array of registered listeners
+     */
+    public PropertyChangeListener[] getPropertyChangeListeners();
 }
 
 /* __oOo__ */

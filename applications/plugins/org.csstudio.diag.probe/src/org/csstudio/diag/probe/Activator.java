@@ -19,31 +19,31 @@ public class Activator extends AbstractUIPlugin
     public static final String ID = "org.csstudio.diag.probe"; //$NON-NLS-1$
 
     /** The shared instance */
-	private static Activator plugin;
-	
-	@Override
+    private static Activator plugin;
+    
+    @Override
     public void start(BundleContext context) throws Exception
     {
-	    super.start(context);
-		setPlugin(this);	
+        super.start(context);
+        setPlugin(this);    
     }
 
-	@Override
+    @Override
     public void stop(BundleContext context) throws Exception
     {
-		setPlugin(this);	
-	    super.stop(context);
+        setPlugin(this);    
+        super.stop(context);
     }
 
-	/** Static setter to avoid FindBugs warning */
-	private static void setPlugin(final Activator the_plugin)
-	{
-		plugin = the_plugin;
-	}
-
-	/** @eturn The shared instance. */
-	public static Activator getDefault()
+    /** Static setter to avoid FindBugs warning */
+    private static void setPlugin(final Activator the_plugin)
     {
-		return plugin;
-	}
+        plugin = the_plugin;
+    }
+
+    /** @eturn The shared instance. */
+    public static Activator getDefault()
+    {
+        return plugin;
+    }
 }

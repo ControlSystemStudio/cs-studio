@@ -76,11 +76,11 @@ public class ScanServerImpl implements ScanServer
     public ScanServerInfo getInfo() throws Exception
     {
         return new ScanServerInfo("V" + ScanServer.VERSION + " (" + Application.getBundleVersion() + ")",
-    			start_time,
-    			ScanSystemPreferences.getScanConfigPath(),
-    			ScanSystemPreferences.getSimulationConfigPath(),
-    			ScanSystemPreferences.getScriptPaths(),
-    			ScanSystemPreferences.getMacros());
+                start_time,
+                ScanSystemPreferences.getScanConfigPath(),
+                ScanSystemPreferences.getSimulationConfigPath(),
+                ScanSystemPreferences.getScriptPaths(),
+                ScanSystemPreferences.getMacros());
     }
 
     /** Query server for devices used by a scan
@@ -95,14 +95,14 @@ public class ScanServerImpl implements ScanServer
      */
      public Device[] getDevices(final long id) throws Exception
     {
-    	if (id >= 0)
-    	{   // Get devices for specific scan
+        if (id >= 0)
+        {   // Get devices for specific scan
             final ExecutableScan scan = scan_engine.getExecutableScan(id);
             if (scan != null)
                 return scan.getDevices();
             // else: It's a logged scan, no device info available any more
-    	}
-    	else
+        }
+        else
         {   // Get devices in context
             try
             {
@@ -115,22 +115,22 @@ public class ScanServerImpl implements ScanServer
                         "Error reading device context", ex);
             }
         }
-    	return new Device[0];
+        return new Device[0];
     }
 
     /** {@inheritDoc} */
     @Override
     public DeviceInfo[] getDeviceInfos(final long id) throws Exception
     {
-    	final Device[] devices = getDevices(id);
-    	// Turn Device[] into DeviceInfo[]
-    	final DeviceInfo[] infos = new DeviceInfo[devices.length];
-    	for (int i = 0; i < infos.length; i++)
-    	    infos[i] = devices[i];
-    	return infos;
+        final Device[] devices = getDevices(id);
+        // Turn Device[] into DeviceInfo[]
+        final DeviceInfo[] infos = new DeviceInfo[devices.length];
+        for (int i = 0; i < infos.length; i++)
+            infos[i] = devices[i];
+        return infos;
     }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     public SimulationResult simulateScan(final String commands_as_xml)
             throws Exception
@@ -154,7 +154,7 @@ public class ScanServerImpl implements ScanServer
             log_out.println("--------");
 
             // Simulate
-			final SimulationContext simulation = new SimulationContext(log_out);
+            final SimulationContext simulation = new SimulationContext(log_out);
             simulation.simulate(scan);
 
             // Close log
@@ -176,12 +176,12 @@ public class ScanServerImpl implements ScanServer
         }
     }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     public long submitScan(final String scan_name, final String commands_as_xml)
             throws Exception
     {
-    	cullScans();
+        cullScans();
 
         try
         {   // Parse received 'main' scan from XML
@@ -207,7 +207,7 @@ public class ScanServerImpl implements ScanServer
             final List<ScanCommandImpl<?>> post_impl = implementor.implement(post_commands, jython);
 
             // Get empty device context
-    		final DeviceContext devices = new DeviceContext();
+            final DeviceContext devices = new DeviceContext();
 
             // Submit scan to engine for execution
             final ExecutableScan scan = new ExecutableScan(scan_name, devices, pre_impl, main_impl, post_impl);
@@ -222,18 +222,18 @@ public class ScanServerImpl implements ScanServer
     }
 
     /** If memory consumption is high, remove (one) older scan */
-	private void cullScans() throws Exception
+    private void cullScans() throws Exception
     {
-	    final double threshold = ScanSystemPreferences.getOldScanRemovalMemoryThreshold();
-		while (getInfo().getMemoryPercentage() > threshold)
-	    {
-	    	if (! scan_engine.removeOldestCompletedScan())
-	    		return;
-	    	System.gc();
-	    }
+        final double threshold = ScanSystemPreferences.getOldScanRemovalMemoryThreshold();
+        while (getInfo().getMemoryPercentage() > threshold)
+        {
+            if (! scan_engine.removeOldestCompletedScan())
+                return;
+            System.gc();
+        }
     }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     public List<ScanInfo> getScanInfos() throws Exception
     {
@@ -297,7 +297,7 @@ public class ScanServerImpl implements ScanServer
     }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public ScanData getScanData(final long id) throws Exception
     {
         try
@@ -307,7 +307,7 @@ public class ScanServerImpl implements ScanServer
         }
         catch (Exception ex)
         {
-        	throw new Exception("Error retrieving log data", ex);
+            throw new Exception("Error retrieving log data", ex);
         }
     }
 
@@ -360,11 +360,11 @@ public class ScanServerImpl implements ScanServer
     @Override
     public void abort(final long id) throws Exception
     {
-    	if (id >= 0)
-    	{
+        if (id >= 0)
+        {
             final ExecutableScan scan = scan_engine.getExecutableScan(id);
-	        scan.abort();
-    	}
+            scan.abort();
+        }
         else
         {
             final List<ExecutableScan> scans = scan_engine.getExecutableScans();

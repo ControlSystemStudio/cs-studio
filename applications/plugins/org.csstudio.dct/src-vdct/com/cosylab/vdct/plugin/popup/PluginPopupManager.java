@@ -52,9 +52,9 @@ public final class PluginPopupManager implements PluginListener, PropertyChangeL
  */
 protected PluginPopupManager()
 {
-	list = new LinkedList();
-		
-	PluginManager.getInstance().addPluginListener(this);
+    list = new LinkedList();
+        
+    PluginManager.getInstance().addPluginListener(this);
 }
 /**
  * Insert the method's description here.
@@ -62,8 +62,8 @@ protected PluginPopupManager()
  * @return com.cosylab.vdct.plugin.PluginExportManager
  */
 public static PluginPopupManager getInstance() {
-	if (instance==null) instance = new PluginPopupManager();
-	return instance;
+    if (instance==null) instance = new PluginPopupManager();
+    return instance;
 }
 /**
  * Insert the method's description here.
@@ -73,16 +73,16 @@ public static PluginPopupManager getInstance() {
  */
 public void pluginAdded(PluginObject plugin)
 {
-	if (plugin.getPlugin() instanceof ContextPopupPlugin)
-	{
-		if (!list.contains(plugin))
-		{
-			list.add(plugin);
-			plugin.addPropertyChangeListener(this);
-			com.cosylab.vdct.Console.getInstance().println(plugin.getName()+" is registered as popup menu plugin.");
-		}
+    if (plugin.getPlugin() instanceof ContextPopupPlugin)
+    {
+        if (!list.contains(plugin))
+        {
+            list.add(plugin);
+            plugin.addPropertyChangeListener(this);
+            com.cosylab.vdct.Console.getInstance().println(plugin.getName()+" is registered as popup menu plugin.");
+        }
 
-	}
+    }
 }
 /**
  * Insert the method's description here.
@@ -92,11 +92,11 @@ public void pluginAdded(PluginObject plugin)
  */
 public void pluginRemoved(PluginObject plugin)
 {
-	if (plugin.getPlugin() instanceof ContextPopupPlugin)
-	{
-		list.remove(plugin);
-		plugin.removePropertyChangeListener(this);
-	}
+    if (plugin.getPlugin() instanceof ContextPopupPlugin)
+    {
+        list.remove(plugin);
+        plugin.removePropertyChangeListener(this);
+    }
 }
 /**
  * Not implemented
@@ -106,18 +106,18 @@ public void pluginRemoved(PluginObject plugin)
  */
 public void propertyChange(PropertyChangeEvent evt)
 {
-	PluginObject plugin = (PluginObject)evt.getSource();
-	String propertyName = evt.getPropertyName();
+    PluginObject plugin = (PluginObject)evt.getSource();
+    String propertyName = evt.getPropertyName();
 
-	if (propertyName.equals("Status"))
-	{
-		if (plugin.getStatus() == PluginObject.PLUGIN_STARTED)
-		{
-		}
-		else if (plugin.getStatus() == PluginObject.PLUGIN_STOPPED)
-		{
-		}
-	}
+    if (propertyName.equals("Status"))
+    {
+        if (plugin.getStatus() == PluginObject.PLUGIN_STARTED)
+        {
+        }
+        else if (plugin.getStatus() == PluginObject.PLUGIN_STOPPED)
+        {
+        }
+    }
 }
 
 /**
@@ -129,41 +129,41 @@ public void propertyChange(PropertyChangeEvent evt)
  */
 public Vector getAllPluginItems(Vector selectedObjects)
 {
-	ContextPopupPlugin plugin = null;
-	Vector items = new Vector();
-	
-	Iterator iter = list.iterator();
-	while (iter.hasNext())
-	{
-		PluginObject pluginObject = (PluginObject)iter.next();
-		plugin = (ContextPopupPlugin)(pluginObject).getPlugin();
-		
-		if (pluginObject.getStatus() == PluginObject.PLUGIN_STARTED)
-		{		
-			// protect yourself from buggy plugins
-			try
-			{
-				Vector pluginItems = plugin.getItems(selectedObjects);
-				if (pluginItems!=null)
-				{
-					Enumeration e = pluginItems.elements();
-					while (e.hasMoreElements())
-					{
-						Object obj = e.nextElement();
-						if (obj instanceof JMenuItem ||
-							obj instanceof JSeparator)
-							items.addElement(obj);
-					}
-				}
-			} catch (Exception e)
-			{
-				Console.getInstance().println("Exception caught when calling popup plugin '"+plugin.getName()+"'.getItems(Vector).");
-				Console.getInstance().println(e);
-			}
-		}
-	}
+    ContextPopupPlugin plugin = null;
+    Vector items = new Vector();
+    
+    Iterator iter = list.iterator();
+    while (iter.hasNext())
+    {
+        PluginObject pluginObject = (PluginObject)iter.next();
+        plugin = (ContextPopupPlugin)(pluginObject).getPlugin();
+        
+        if (pluginObject.getStatus() == PluginObject.PLUGIN_STARTED)
+        {        
+            // protect yourself from buggy plugins
+            try
+            {
+                Vector pluginItems = plugin.getItems(selectedObjects);
+                if (pluginItems!=null)
+                {
+                    Enumeration e = pluginItems.elements();
+                    while (e.hasMoreElements())
+                    {
+                        Object obj = e.nextElement();
+                        if (obj instanceof JMenuItem ||
+                            obj instanceof JSeparator)
+                            items.addElement(obj);
+                    }
+                }
+            } catch (Exception e)
+            {
+                Console.getInstance().println("Exception caught when calling popup plugin '"+plugin.getName()+"'.getItems(Vector).");
+                Console.getInstance().println(e);
+            }
+        }
+    }
 
-	return items;
+    return items;
 }
 
 }

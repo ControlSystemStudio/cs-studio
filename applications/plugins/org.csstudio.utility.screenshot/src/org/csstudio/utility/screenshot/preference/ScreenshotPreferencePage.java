@@ -35,10 +35,10 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 public class ScreenshotPreferencePage extends FieldEditorPreferencePage
-									  implements IWorkbenchPreferencePage {
+                                      implements IWorkbenchPreferencePage {
     
-	public ScreenshotPreferencePage() {
-		super(GRID);
+    public ScreenshotPreferencePage() {
+        super(GRID);
         setPreferenceStore(ScreenshotPlugin.getDefault().getPreferenceStore());
     }
 
@@ -50,10 +50,10 @@ public class ScreenshotPreferencePage extends FieldEditorPreferencePage
     @Override
     public void createFieldEditors() {
         
-    	Composite parent = getFieldEditorParent();
+        Composite parent = getFieldEditorParent();
         parent.setLayout(new GridLayout(2, true));
         parent.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
-    	
+        
         // Composite mailServer = createGroup(parent, "ScreenshotPreferencePage.GROUP_MAIL_SERVER");
         addField(new StringFieldEditor(ScreenshotPreferenceConstants.MAIL_SERVER, ScreenshotMessages.getString("ScreenshotPreferencePage.MAIL_SERVER_NAME"), parent));
 
@@ -66,7 +66,7 @@ public class ScreenshotPreferencePage extends FieldEditorPreferencePage
 
 //    private Composite createGroup(Composite composite, String label) {
 //        
-//    	Group group = new Group(composite, 0);
+//        Group group = new Group(composite, 0);
 //        group.setText(ScreenshotMessages.getString(label));
 //
 //        group.setLayout(new GridLayout(2, true));
@@ -76,6 +76,6 @@ public class ScreenshotPreferencePage extends FieldEditorPreferencePage
 //    }
     
     public void init(IWorkbench workbench) {
-    	// Can be empty
+        // Can be empty
     }
 }

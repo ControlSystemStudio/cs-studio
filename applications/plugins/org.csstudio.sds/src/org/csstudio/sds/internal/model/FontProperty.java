@@ -35,44 +35,44 @@ import org.eclipse.swt.graphics.FontData;
  */
 public final class FontProperty extends WidgetProperty {
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param description
-	 *            a description
-	 * @param category
-	 *            a category
-	 * @param defaultValue
-	 *            the default value
-	 */
-	public FontProperty(final String description,
-			final WidgetPropertyCategory category, final String defaultValue) {
-		super(PropertyTypesEnum.FONT, description, category, defaultValue,
-				null);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object checkValue(final Object value) {
-		assert value != null : "value!=null"; //$NON-NLS-1$
+    /**
+     * Constructor.
+     * 
+     * @param description
+     *            a description
+     * @param category
+     *            a category
+     * @param defaultValue
+     *            the default value
+     */
+    public FontProperty(final String description,
+            final WidgetPropertyCategory category, final String defaultValue) {
+        super(PropertyTypesEnum.FONT, description, category, defaultValue,
+                null);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object checkValue(final Object value) {
+        assert value != null : "value!=null"; //$NON-NLS-1$
 
-		Object acceptedValue = value;
+        Object acceptedValue = value;
 
-		if (!(value instanceof String)) {
-			acceptedValue = null;
-		}
-		
-		return acceptedValue;
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getCompatibleJavaTypes() {
-		return new Class[]{FontData.class};
-	}
+        if (!(value instanceof String)) {
+            acceptedValue = null;
+        }
+        
+        return acceptedValue;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getCompatibleJavaTypes() {
+        return new Class[]{FontData.class};
+    }
 }

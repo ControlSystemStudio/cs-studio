@@ -31,32 +31,32 @@ import org.eclipse.gef.commands.Command;
  * 
  */
 public class ShowPropertyCommand extends Command {
-	private AbstractWidgetModel widget;
-	private String propertyId;
-	private String masterPropertyId;
+    private AbstractWidgetModel widget;
+    private String propertyId;
+    private String masterPropertyId;
 
-	public ShowPropertyCommand(final AbstractWidgetModel property, String propertyId, final String masterPropertyId) {
-		assert property != null;
-		assert propertyId != null;
-		assert masterPropertyId != null;
-		this.widget = property;
-		this.propertyId = propertyId;
-		this.masterPropertyId = masterPropertyId;
-	}
+    public ShowPropertyCommand(final AbstractWidgetModel property, String propertyId, final String masterPropertyId) {
+        assert property != null;
+        assert propertyId != null;
+        assert masterPropertyId != null;
+        this.widget = property;
+        this.propertyId = propertyId;
+        this.masterPropertyId = masterPropertyId;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void execute() {
-		widget.showProperty(propertyId, masterPropertyId);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void execute() {
+        widget.showProperty(propertyId, masterPropertyId);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void undo() {
-		widget.hideProperty(propertyId, masterPropertyId);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void undo() {
+        widget.hideProperty(propertyId, masterPropertyId);
+    }
 }

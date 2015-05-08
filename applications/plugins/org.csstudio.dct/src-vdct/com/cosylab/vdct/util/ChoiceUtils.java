@@ -42,11 +42,11 @@ public class ChoiceUtils {
  * @param item java.lang.String
  */
 public static boolean containsItem(java.awt.Choice ch, String item) {
-	boolean found = false;
+    boolean found = false;
 
-	for (int i=0; (i<ch.getItemCount()) && !found; i++)
-		if (ch.getItem(i).equals(item)) found=true;
-	
-	return found;
+    for (int i=0; (i<ch.getItemCount()) && !found; i++)
+        if (ch.getItem(i).equals(item)) found=true;
+    
+    return found;
 }
 }

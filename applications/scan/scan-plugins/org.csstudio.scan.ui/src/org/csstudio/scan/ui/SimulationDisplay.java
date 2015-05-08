@@ -21,35 +21,35 @@ import org.eclipse.ui.handlers.IHandlerService;
 @SuppressWarnings("nls")
 public class SimulationDisplay
 {
-	/** Display result of a scan simulation
-	 *  @param simulation {@link SimulationResult}
-	 *  @throws Exception on error
-	 */
+    /** Display result of a scan simulation
+     *  @param simulation {@link SimulationResult}
+     *  @throws Exception on error
+     */
     public static void show(final SimulationResult simulation) throws Exception
-	{
-    	// Could open a text editor with the simulation result right in here,
-    	// but the necessary StringEditorInput and dependencies on IStorageEditorInput (org.eclipse.ide)
-    	// made this very difficult from a BOY script.
-    	//
-    	// By using a command with parameters this code is
-    	// decoupled from the actual implementation
-    	// in org.csstudio.scan.ui.scantree.
-    	//
-    	// Better in the long run, fewer classpath issues from scripts
+    {
+        // Could open a text editor with the simulation result right in here,
+        // but the necessary StringEditorInput and dependencies on IStorageEditorInput (org.eclipse.ide)
+        // made this very difficult from a BOY script.
+        //
+        // By using a command with parameters this code is
+        // decoupled from the actual implementation
+        // in org.csstudio.scan.ui.scantree.
+        //
+        // Better in the long run, fewer classpath issues from scripts
         final ICommandService cmd_info =
-        		(ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+                (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
         final IHandlerService handler =
-        		(IHandlerService) PlatformUI.getWorkbench().getService(IHandlerService.class);
+                (IHandlerService) PlatformUI.getWorkbench().getService(IHandlerService.class);
 
-    	final Command command = cmd_info.getCommand("org.csstudio.scan.ui.scantree.show_simulation");
+        final Command command = cmd_info.getCommand("org.csstudio.scan.ui.scantree.show_simulation");
 
-    	final ParameterizedCommand parm_command = new ParameterizedCommand(command,
-			new Parameterization[]
-			{
-    			new Parameterization(command.getParameter("org.csstudio.scan.ui.scantree.show_simulation.log"),
-    					simulation.getSimulationLog())
-			});
+        final ParameterizedCommand parm_command = new ParameterizedCommand(command,
+            new Parameterization[]
+            {
+                new Parameterization(command.getParameter("org.csstudio.scan.ui.scantree.show_simulation.log"),
+                        simulation.getSimulationLog())
+            });
 
         handler.executeCommand(parm_command, null);
-	}
+    }
 }

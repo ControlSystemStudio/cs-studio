@@ -33,54 +33,54 @@ import java.util.List;
  * 
  */
 public class ErrorMessagesTracker {
-	/**
-	 * Error messages that have been tracked.
-	 */
-	private List<String> _errorMessages;
+    /**
+     * Error messages that have been tracked.
+     */
+    private List<String> _errorMessages;
 
-	/**
-	 * Standard constructor.
-	 */
-	public ErrorMessagesTracker() {
-		resetErrorMessages();
-	}
+    /**
+     * Standard constructor.
+     */
+    public ErrorMessagesTracker() {
+        resetErrorMessages();
+    }
 
-	/**
-	 * Reset the internal error messages log.
-	 */
-	protected final void resetErrorMessages() {
-		_errorMessages = new ArrayList<String>();
-	}
+    /**
+     * Reset the internal error messages log.
+     */
+    protected final void resetErrorMessages() {
+        _errorMessages = new ArrayList<String>();
+    }
 
-	/**
-	 * Add an error message to the internal error messages log.
-	 * 
-	 * @param errorMessage
-	 *            An error message.
-	 */
-	protected final void trackErrorMessage(final String errorMessage) {
-		_errorMessages.add(errorMessage);
-	}
+    /**
+     * Add an error message to the internal error messages log.
+     * 
+     * @param errorMessage
+     *            An error message.
+     */
+    protected final void trackErrorMessage(final String errorMessage) {
+        _errorMessages.add(errorMessage);
+    }
 
-	/**
-	 * Return whether an error occurred during the last operation of this
-	 * service.
-	 * 
-	 * @return True, if an error occurred during the last operation of this
-	 *         service.
-	 */
-	public final boolean isErrorOccurred() {
-		return (_errorMessages.size() > 0);
-	}
+    /**
+     * Return whether an error occurred during the last operation of this
+     * service.
+     * 
+     * @return True, if an error occurred during the last operation of this
+     *         service.
+     */
+    public final boolean isErrorOccurred() {
+        return (_errorMessages.size() > 0);
+    }
 
-	/**
-	 * Return the internal error messages protocol of the last operation of this
-	 * service.
-	 * 
-	 * @return The internal error messages protocol of the last operation of
-	 *         this service.
-	 */
-	public final List<String> getErrorMessages() {
-		return new ArrayList<String>(_errorMessages);
-	}
+    /**
+     * Return the internal error messages protocol of the last operation of this
+     * service.
+     * 
+     * @return The internal error messages protocol of the last operation of
+     *         this service.
+     */
+    public final List<String> getErrorMessages() {
+        return new ArrayList<String>(_errorMessages);
+    }
 }

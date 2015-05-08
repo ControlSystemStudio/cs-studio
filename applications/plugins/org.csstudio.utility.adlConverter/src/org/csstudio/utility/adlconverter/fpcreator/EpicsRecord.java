@@ -79,8 +79,8 @@ public class EpicsRecord {
     }
 
     public String getNameWithoutTypeSuffix() {
-    	int lastIndexOf = _recordName.lastIndexOf("_");
-    	String recordName = _recordName.substring(0, lastIndexOf);
-		return recordName;
+        int lastIndexOf = _recordName.lastIndexOf("_");
+        String recordName = _recordName.substring(0, lastIndexOf);
+        return recordName;
     }
 }

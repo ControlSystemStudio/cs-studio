@@ -53,144 +53,144 @@ public class LdapAuthorizationReader implements IAuthorizationProvider {
     
     private static final Logger LOG = LoggerFactory.getLogger(LdapAuthorizationReader.class);
 
-	/**
-	 * Map of the rights associated with actions.
-	 */
-	private Map<String, RightSet> actionsrights;
+    /**
+     * Map of the rights associated with actions.
+     */
+    private Map<String, RightSet> actionsrights;
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.platform.internal.ldapauthorization.IAuthorizationProvider#getRights(org.csstudio.platform.security.User)
-	 */
-	@Override
+    /* (non-Javadoc)
+     * @see org.csstudio.platform.internal.ldapauthorization.IAuthorizationProvider#getRights(org.csstudio.platform.security.User)
+     */
+    @Override
     public RightSet getRights(User user) {
-		String username = user.getUsername();
-		// If the user was authenticated via Kerberos, the username may be a
-		// fully qualified name (name@EXAMPLE.COM). We only want the first
-		// part of the name.
-		if (username.contains("@")) {
-			username = username.substring(0, username.indexOf('@'));
-		}
-		
-		RightSet rights = new RightSet("LDAP Rights");
-		try {
-			DirContext ctx = new InitialDirContext(createEnvironment());
-			
-			SearchControls ctrls = new SearchControls();
-			ctrls.setReturningAttributes(new String[] {"associatedName"});
-			ctrls.setReturningObjFlag(true);
-			ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-			
-			String filter = "(associatedName=eaun=" + username + ")";
-			NamingEnumeration<SearchResult> results =
-				ctx.search("ou=Css,ou=EpicsAuthorize", filter, ctrls);
-			while (results.hasMore()) {
-				SearchResult r = results.next();
-				rights.addRight(parseSearchResult(r));
-			}
-		} catch (NamingException e) {
-			LOG.error("Error reading authorization for user: {}", user,
-					e);
-		}
-		return rights;
-	}
-	
+        String username = user.getUsername();
+        // If the user was authenticated via Kerberos, the username may be a
+        // fully qualified name (name@EXAMPLE.COM). We only want the first
+        // part of the name.
+        if (username.contains("@")) {
+            username = username.substring(0, username.indexOf('@'));
+        }
+        
+        RightSet rights = new RightSet("LDAP Rights");
+        try {
+            DirContext ctx = new InitialDirContext(createEnvironment());
+            
+            SearchControls ctrls = new SearchControls();
+            ctrls.setReturningAttributes(new String[] {"associatedName"});
+            ctrls.setReturningObjFlag(true);
+            ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+            
+            String filter = "(associatedName=eaun=" + username + ")";
+            NamingEnumeration<SearchResult> results =
+                ctx.search("ou=Css,ou=EpicsAuthorize", filter, ctrls);
+            while (results.hasMore()) {
+                SearchResult r = results.next();
+                rights.addRight(parseSearchResult(r));
+            }
+        } catch (NamingException e) {
+            LOG.error("Error reading authorization for user: {}", user,
+                    e);
+        }
+        return rights;
+    }
+    
 
-	/**
-	 * <p>Reads the rights associated with an action from a configuration file
-	 * and returns the set of rights. The configuration file is expected to be
-	 * in Java properties file format, with the action IDs as keys and the
-	 * rights associated with each action as its respective value. Sets of
-	 * rights can be specified as whitespace-separated lists of rights. Each
-	 * right is written as <code>(role, group)</code>.</p>
-	 * 
-	 * <p>The following is an example of a configuration file that grants the
-	 * right to use action1 to developers and admins in group1, and the right
-	 * to use action2 to admins in group1 and in group2:</p>
-	 * 
-	 * <pre>
-	 * action1 = (developer, group1) (admin, group1)
-	 * action2 = (admin, group1) (admin, group2)
-	 * </pre>
-	 * 
-	 * <p>Syntax errors in configuration files are ignored.</p>
-	 */
-	@Override
+    /**
+     * <p>Reads the rights associated with an action from a configuration file
+     * and returns the set of rights. The configuration file is expected to be
+     * in Java properties file format, with the action IDs as keys and the
+     * rights associated with each action as its respective value. Sets of
+     * rights can be specified as whitespace-separated lists of rights. Each
+     * right is written as <code>(role, group)</code>.</p>
+     * 
+     * <p>The following is an example of a configuration file that grants the
+     * right to use action1 to developers and admins in group1, and the right
+     * to use action2 to admins in group1 and in group2:</p>
+     * 
+     * <pre>
+     * action1 = (developer, group1) (admin, group1)
+     * action2 = (admin, group1) (admin, group2)
+     * </pre>
+     * 
+     * <p>Syntax errors in configuration files are ignored.</p>
+     */
+    @Override
     public RightSet getRights(String actionId) {
-		synchronized (this) {
-			if (actionsrights == null) {
-				loadActionRightsFromLdap();
-			}
-		}
-		return actionsrights.get(actionId);
-	}
-	
-	/**
-	 * Loads the actions' rights from LDAP.
-	 */
-	private void loadActionRightsFromLdap() {
-		actionsrights = new HashMap<String, RightSet>();
-		
-		try {
-			DirContext ctx = new InitialDirContext(createEnvironment());
-			
-			SearchControls ctrls = new SearchControls();
-			ctrls.setReturningObjFlag(false);
-			ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-			
-			String filter = "(objectClass=epicsAuthIdGR)";
-			NamingEnumeration<SearchResult> results =
-				ctx.search("ou=EpicsAuthorizeID", filter, ctrls);
-			while (results.hasMore()) {
-				SearchResult r = results.next();
-				Attributes attributes = r.getAttributes();
-				Attribute eainAttr = attributes.get("eain");
-				String authId = (String) eainAttr.get();
-				Attribute eaigAttr = attributes.get("eaig");
-				String group = (String) eaigAttr.get();
-				Attribute eairAttr = attributes.get("eair");
-				String role = (String) eairAttr.get();
-				
-				RightSet rights = actionsrights.get(authId);
-				if (rights == null) {
-					rights = new RightSet(authId);
-					actionsrights.put(authId, rights);
-				}
-				rights.addRight(new Right(role, group));
-			}
-			
-			LOG.debug("Authorization information successfully loaded from LDAP directory.");
-			
-		} catch (NamingException e) {
-			LOG.error("Error loading authorization information from LDAP directory.",
-					e);
-		}
-	}
-	
-	/**
-	 * Parses a search result into a right.
-	 * @param r the LDAP search result.
-	 */
-	private Right parseSearchResult(SearchResult r) {
-		String n = r.getName();
-		String group = n.substring(n.indexOf("ou=")+3);
-		String role = n.substring(n.indexOf("eagn=")+5, n.indexOf(",ou="));
-		return new Right(role, group);
-	}
+        synchronized (this) {
+            if (actionsrights == null) {
+                loadActionRightsFromLdap();
+            }
+        }
+        return actionsrights.get(actionId);
+    }
+    
+    /**
+     * Loads the actions' rights from LDAP.
+     */
+    private void loadActionRightsFromLdap() {
+        actionsrights = new HashMap<String, RightSet>();
+        
+        try {
+            DirContext ctx = new InitialDirContext(createEnvironment());
+            
+            SearchControls ctrls = new SearchControls();
+            ctrls.setReturningObjFlag(false);
+            ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+            
+            String filter = "(objectClass=epicsAuthIdGR)";
+            NamingEnumeration<SearchResult> results =
+                ctx.search("ou=EpicsAuthorizeID", filter, ctrls);
+            while (results.hasMore()) {
+                SearchResult r = results.next();
+                Attributes attributes = r.getAttributes();
+                Attribute eainAttr = attributes.get("eain");
+                String authId = (String) eainAttr.get();
+                Attribute eaigAttr = attributes.get("eaig");
+                String group = (String) eaigAttr.get();
+                Attribute eairAttr = attributes.get("eair");
+                String role = (String) eairAttr.get();
+                
+                RightSet rights = actionsrights.get(authId);
+                if (rights == null) {
+                    rights = new RightSet(authId);
+                    actionsrights.put(authId, rights);
+                }
+                rights.addRight(new Right(role, group));
+            }
+            
+            LOG.debug("Authorization information successfully loaded from LDAP directory.");
+            
+        } catch (NamingException e) {
+            LOG.error("Error loading authorization information from LDAP directory.",
+                    e);
+        }
+    }
+    
+    /**
+     * Parses a search result into a right.
+     * @param r the LDAP search result.
+     */
+    private Right parseSearchResult(SearchResult r) {
+        String n = r.getName();
+        String group = n.substring(n.indexOf("ou=")+3);
+        String role = n.substring(n.indexOf("eagn=")+5, n.indexOf(",ou="));
+        return new Right(role, group);
+    }
 
-	/**
-	 * Creates the environment for the LDAP connection.
-	 */
-	private Hashtable<String, String> createEnvironment() {
-		Preferences prefs = Activator.getDefault().getPluginPreferences();
-		String url = prefs.getString(PreferenceConstants.LDAP_URL);
-		String user = prefs.getString(PreferenceConstants.LDAP_USER);
-		String password = prefs.getString(PreferenceConstants.LDAP_PASSWORD);
-		
-		Hashtable<String, String> env = new Hashtable<String, String>();
+    /**
+     * Creates the environment for the LDAP connection.
+     */
+    private Hashtable<String, String> createEnvironment() {
+        Preferences prefs = Activator.getDefault().getPluginPreferences();
+        String url = prefs.getString(PreferenceConstants.LDAP_URL);
+        String user = prefs.getString(PreferenceConstants.LDAP_USER);
+        String password = prefs.getString(PreferenceConstants.LDAP_PASSWORD);
+        
+        Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-		env.put(Context.PROVIDER_URL, url);
-		env.put(Context.SECURITY_PRINCIPAL, user);
-		env.put(Context.SECURITY_CREDENTIALS, password);
-		return env;
-	}
+        env.put(Context.PROVIDER_URL, url);
+        env.put(Context.SECURITY_PRINCIPAL, user);
+        env.put(Context.SECURITY_CREDENTIALS, password);
+        return env;
+    }
 }

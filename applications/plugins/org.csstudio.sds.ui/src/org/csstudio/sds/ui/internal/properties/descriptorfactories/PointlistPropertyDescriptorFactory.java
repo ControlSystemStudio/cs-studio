@@ -36,20 +36,20 @@ import org.csstudio.sds.ui.properties.PropertyTypeCellEditorValidator;
  *
  */
 public final class PointlistPropertyDescriptorFactory implements
-		IPropertyDescriptorFactory {
+        IPropertyDescriptorFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IPropertyDescriptor createPropertyDescriptor(final Object id,
-			final WidgetProperty property) {
-		// einen sinnvolleren Descriptor zurückgeben! (swende)
-		PropertyDescriptor descriptor = new PointlistPropertyDescriptor(id,
-				property.getDescription(), PropertyTypesEnum.POINT_LIST, property.getCategory().toString());
-		
-		// validator
-		descriptor.setValidator(new PropertyTypeCellEditorValidator(property));
-		return descriptor;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public IPropertyDescriptor createPropertyDescriptor(final Object id,
+            final WidgetProperty property) {
+        // einen sinnvolleren Descriptor zurückgeben! (swende)
+        PropertyDescriptor descriptor = new PointlistPropertyDescriptor(id,
+                property.getDescription(), PropertyTypesEnum.POINT_LIST, property.getCategory().toString());
+        
+        // validator
+        descriptor.setValidator(new PropertyTypeCellEditorValidator(property));
+        return descriptor;
+    }
 
 }

@@ -39,62 +39,62 @@ import org.eclipse.gef.handles.HandleBounds;
  * @author Sven Wende
  */
 public final class PolyPointLocator implements Locator {
-	/**
-	 * The reference figure.
-	 */
-	private Polyline _referenceFigure;
+    /**
+     * The reference figure.
+     */
+    private Polyline _referenceFigure;
 
-	/**
-	 * Index of the point, the handle should be placed for.
-	 */
-	private int _pointIndex;
+    /**
+     * Index of the point, the handle should be placed for.
+     */
+    private int _pointIndex;
 
-	/**
-	 * Constructs a poly point handle locator.
-	 * @param referenceFigure the reference figure ({@link Polyline} or subclasses of it)
-	 * @param pointIndex the index of the polygon point for which a handle should be placed
-	 */
-	public PolyPointLocator(final Polyline referenceFigure, final int pointIndex) {
-		assert referenceFigure != null;
-		assert pointIndex>=0 : "pointIndex>=0"; //$NON-NLS-1$
-		assert referenceFigure.getPoints().size()>pointIndex : "referenceFigure.getPoints().size()>pointIndex"; //$NON-NLS-1$
-		_pointIndex = pointIndex;
-		_referenceFigure = referenceFigure;
-	}
+    /**
+     * Constructs a poly point handle locator.
+     * @param referenceFigure the reference figure ({@link Polyline} or subclasses of it)
+     * @param pointIndex the index of the polygon point for which a handle should be placed
+     */
+    public PolyPointLocator(final Polyline referenceFigure, final int pointIndex) {
+        assert referenceFigure != null;
+        assert pointIndex>=0 : "pointIndex>=0"; //$NON-NLS-1$
+        assert referenceFigure.getPoints().size()>pointIndex : "referenceFigure.getPoints().size()>pointIndex"; //$NON-NLS-1$
+        _pointIndex = pointIndex;
+        _referenceFigure = referenceFigure;
+    }
 
-	/**
-	 * Returns the Reference Box in the Reference Figure's coordinate system.
-	 * The returned Rectangle may be by reference, and should <b>not</b> be
-	 * modified.
-	 * 
-	 * @return the reference box
-	 * @since 2.0
-	 */
-	protected Rectangle getReferenceBox() {
-		if (_referenceFigure instanceof HandleBounds) {
-			return ((HandleBounds)_referenceFigure).getHandleBounds();
-		}
-		return _referenceFigure.getBounds();
-	}
+    /**
+     * Returns the Reference Box in the Reference Figure's coordinate system.
+     * The returned Rectangle may be by reference, and should <b>not</b> be
+     * modified.
+     * 
+     * @return the reference box
+     * @since 2.0
+     */
+    protected Rectangle getReferenceBox() {
+        if (_referenceFigure instanceof HandleBounds) {
+            return ((HandleBounds)_referenceFigure).getHandleBounds();
+        }
+        return _referenceFigure.getBounds();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void relocate(final IFigure target) {
-		Point p = _referenceFigure.getPoints().getPoint(_pointIndex);
+    /**
+     * {@inheritDoc}
+     */
+    public void relocate(final IFigure target) {
+        Point p = _referenceFigure.getPoints().getPoint(_pointIndex);
 
-		_referenceFigure.translateToAbsolute(p);
-		target.translateToRelative(p);
-		Rectangle relativeBounds = new PrecisionRectangle(getReferenceBox()
-				.getResized(-1, -1));
-		Dimension targetSize = target.getPreferredSize();
+        _referenceFigure.translateToAbsolute(p);
+        target.translateToRelative(p);
+        Rectangle relativeBounds = new PrecisionRectangle(getReferenceBox()
+                .getResized(-1, -1));
+        Dimension targetSize = target.getPreferredSize();
 
-		relativeBounds.x = p.x - ((targetSize.width + 1) / 2);
-		relativeBounds.y = p.y - ((targetSize.height + 1) / 2);
+        relativeBounds.x = p.x - ((targetSize.width + 1) / 2);
+        relativeBounds.y = p.y - ((targetSize.height + 1) / 2);
 
-		relativeBounds.setSize(targetSize);
-		target.setBounds(relativeBounds);
+        relativeBounds.setSize(targetSize);
+        target.setBounds(relativeBounds);
 
-	}
+    }
 
 }

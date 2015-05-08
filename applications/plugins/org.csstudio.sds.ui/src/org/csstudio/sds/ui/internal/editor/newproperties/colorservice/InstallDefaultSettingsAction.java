@@ -62,118 +62,118 @@ import org.slf4j.LoggerFactory;
 public class InstallDefaultSettingsAction extends Action implements ICheatSheetAction, IWorkbenchWindowActionDelegate {
 
     private static final Logger LOG = LoggerFactory.getLogger(InstallDefaultSettingsAction.class);
-	
-	public void run(String[] params, ICheatSheetManager manager) {
-		run(null);
-	}
+    
+    public void run(String[] params, ICheatSheetManager manager) {
+        run(null);
+    }
 
-	public void dispose() {
+    public void dispose() {
 
-	}
+    }
 
-	public void init(IWorkbenchWindow window) {
+    public void init(IWorkbenchWindow window) {
 
-	}
+    }
 
-	public void run(IAction action) {
-		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+    public void run(IAction action) {
+        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 
-		final String projectName = "Settings";
-		final IProject project = root.getProject(projectName);
-		boolean install = !project.exists();
-		if (!install) {
-			install = MessageDialog.openConfirm(new Shell(), "Project exists", "Project already exists!\r\nOverride?");
-			if (install) {
-				try {
-					project.create(new NullProgressMonitor());
-				} catch (CoreException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+        final String projectName = "Settings";
+        final IProject project = root.getProject(projectName);
+        boolean install = !project.exists();
+        if (!install) {
+            install = MessageDialog.openConfirm(new Shell(), "Project exists", "Project already exists!\r\nOverride?");
+            if (install) {
+                try {
+                    project.create(new NullProgressMonitor());
+                } catch (CoreException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
-		if (install) {
+        if (install) {
 
-			Job job = new Job("Import SDS Default settings") {
+            Job job = new Job("Import SDS Default settings") {
 
-				@SuppressWarnings("unchecked")
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					try {
-						// copy the sample displays
-						if (!project.exists()) {
-							project.create(monitor);
-						}
+                @SuppressWarnings("unchecked")
+                @Override
+                protected IStatus run(IProgressMonitor monitor) {
+                    try {
+                        // copy the sample displays
+                        if (!project.exists()) {
+                            project.create(monitor);
+                        }
 
-						if (!project.isOpen()) {
-							project.open(monitor);
-						}
+                        if (!project.isOpen()) {
+                            project.open(monitor);
+                        }
 
-						URL url = FileLocator.find(SdsUiPlugin.getDefault().getBundle(), new Path("defaultSettings"), new HashMap());
+                        URL url = FileLocator.find(SdsUiPlugin.getDefault().getBundle(), new Path("defaultSettings"), new HashMap());
 
-						try {
-							File directory = new File(FileLocator.toFileURL(url).getPath());
-							if (directory.isDirectory()) {
-								File[] files = directory.listFiles();
-								monitor.beginTask("Copying Files", count(files));
-								copy(files, project, monitor);
-							}
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+                        try {
+                            File directory = new File(FileLocator.toFileURL(url).getPath());
+                            if (directory.isDirectory()) {
+                                File[] files = directory.listFiles();
+                                monitor.beginTask("Copying Files", count(files));
+                                copy(files, project, monitor);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 
-					} catch (CoreException e) {
-						e.printStackTrace();
-					}
+                    } catch (CoreException e) {
+                        e.printStackTrace();
+                    }
 
-					return Status.OK_STATUS;
-				}
+                    return Status.OK_STATUS;
+                }
 
-			};
+            };
 
-			job.schedule();
-		}
-	}
+            job.schedule();
+        }
+    }
 
-	private int count(File[] files) {
-		int result = 0;
-		for (File file : files) {
-			if (file.isDirectory()) {
-				result += count(file.listFiles());
-			} else {
-				result++;
-			}
-		}
+    private int count(File[] files) {
+        int result = 0;
+        for (File file : files) {
+            if (file.isDirectory()) {
+                result += count(file.listFiles());
+            } else {
+                result++;
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	private void copy(File[] files, IContainer container, IProgressMonitor monitor) {
-		try {
-			for (File file : files) {
-				monitor.subTask("Copying " + file.getName());
-				if (file.isDirectory()) {
-					IFolder folder = container.getFolder(new Path(file.getName()));
+    private void copy(File[] files, IContainer container, IProgressMonitor monitor) {
+        try {
+            for (File file : files) {
+                monitor.subTask("Copying " + file.getName());
+                if (file.isDirectory()) {
+                    IFolder folder = container.getFolder(new Path(file.getName()));
 
-					if (!folder.exists()) {
-						folder.create(true, true, null);
-						copy(file.listFiles(), folder, monitor);
-					}
-				} else {
-					IFile pFile = container.getFile(new Path(file.getName()));
-					if (!pFile.exists()) {
-						pFile.create(new FileInputStream(file), true, new NullProgressMonitor());
-					}
-					monitor.internalWorked(1);
-				}
+                    if (!folder.exists()) {
+                        folder.create(true, true, null);
+                        copy(file.listFiles(), folder, monitor);
+                    }
+                } else {
+                    IFile pFile = container.getFile(new Path(file.getName()));
+                    if (!pFile.exists()) {
+                        pFile.create(new FileInputStream(file), true, new NullProgressMonitor());
+                    }
+                    monitor.internalWorked(1);
+                }
 
-			}
-		} catch (Exception e) {
-			LOG.error(e.toString());
-		}
-	}
+            }
+        } catch (Exception e) {
+            LOG.error(e.toString());
+        }
+    }
 
-	public void selectionChanged(IAction action, ISelection selection) {
+    public void selectionChanged(IAction action, ISelection selection) {
 
-	}
+    }
 }

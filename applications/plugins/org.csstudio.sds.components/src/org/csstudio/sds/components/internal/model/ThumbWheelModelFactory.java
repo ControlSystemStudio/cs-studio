@@ -33,18 +33,18 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  */
 public class ThumbWheelModelFactory implements IWidgetModelFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractWidgetModel createWidgetModel() {
-		return new ThumbWheelModel();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractWidgetModel createWidgetModel() {
+        return new ThumbWheelModel();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Class<?> getWidgetModelType() {
-		return ThumbWheelModel.class;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Class<?> getWidgetModelType() {
+        return ThumbWheelModel.class;
+    }
 
 }

@@ -36,14 +36,14 @@ import com.cosylab.vdct.graphics.*;
  * @author 
  */
 public class GetVDBManager extends com.cosylab.vdct.events.Command {
-	VDBInterface manager;
+    VDBInterface manager;
 /**
  * Insert the method's description here.
  * Creation date: (3.2.2001 22:08:10)
  * @param validator com.cosylab.vdct.graphics.VDBInterface
  */
 public GetVDBManager(VDBInterface manager) {
-	this.manager=manager;
+    this.manager=manager;
 }
 /**
  * Insert the method's description here.
@@ -56,6 +56,6 @@ public void execute() {}
  * @return com.cosylab.vdct.graphics.VDBInterface
  */
 public VDBInterface getManager() {
-	return manager;
+    return manager;
 }
 }

@@ -17,42 +17,42 @@ import org.junit.Test;
  * 
  */
 public final class ChangePropertyKeyCommandTest {
-	private IPropertyContainer container;
+    private IPropertyContainer container;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-		container = new Prototype("test", UUID.randomUUID());
-	}
+    /**
+     * @throws java.lang.Exception
+     */
+    @Before
+    public void setUp() throws Exception {
+        container = new Prototype("test", UUID.randomUUID());
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.dct.model.commands.ChangePropertyKeyCommand#execute()}
-	 * .
-	 */
-	@Test
-	public void testExecute() {
-		String id = "test";
-		String newId = "newId";
-		String value = "a";
+    /**
+     * Test method for
+     * {@link org.csstudio.dct.model.commands.ChangePropertyKeyCommand#execute()}
+     * .
+     */
+    @Test
+    public void testExecute() {
+        String id = "test";
+        String newId = "newId";
+        String value = "a";
 
-		// .. before
-		container.addProperty(id, value);
-		assertEquals(value, container.getProperty(id));
-		assertNull(container.getProperty(newId));
-		
-		// .. execute
-		ChangePropertyKeyCommand cmd = new ChangePropertyKeyCommand(container, id, newId);
-		cmd.execute();
-		assertNull(container.getProperty(id));
-		assertEquals(value, container.getProperty(newId));
+        // .. before
+        container.addProperty(id, value);
+        assertEquals(value, container.getProperty(id));
+        assertNull(container.getProperty(newId));
+        
+        // .. execute
+        ChangePropertyKeyCommand cmd = new ChangePropertyKeyCommand(container, id, newId);
+        cmd.execute();
+        assertNull(container.getProperty(id));
+        assertEquals(value, container.getProperty(newId));
 
-		// .. undo
-		cmd.undo();
-		assertEquals(value, container.getProperty(id));
-		assertNull(container.getProperty(newId));
+        // .. undo
+        cmd.undo();
+        assertEquals(value, container.getProperty(id));
+        assertNull(container.getProperty(newId));
 
-	}
+    }
 }

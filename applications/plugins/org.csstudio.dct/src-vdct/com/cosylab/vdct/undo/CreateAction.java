@@ -34,9 +34,9 @@ package com.cosylab.vdct.undo;
  * @author 
  */
 public class CreateAction extends ActionObject {
-	protected com.cosylab.vdct.graphics.objects.VisibleObject object;
-	protected com.cosylab.vdct.graphics.objects.ContainerObject parent;
-	protected int x, y;
+    protected com.cosylab.vdct.graphics.objects.VisibleObject object;
+    protected com.cosylab.vdct.graphics.objects.ContainerObject parent;
+    protected int x, y;
 /**
  * Insert the method's description here.
  * Creation date: (3.5.2001 16:27:58)
@@ -45,9 +45,9 @@ public class CreateAction extends ActionObject {
  * @param y int
  */
 public CreateAction(com.cosylab.vdct.graphics.objects.VisibleObject object) {
-	this.object=object;
-	this.x=object.getX(); this.y=object.getY();
-	this.parent=object.getParent();
+    this.object=object;
+    this.x=object.getX(); this.y=object.getY();
+    this.parent=object.getParent();
 }
 /**
  * Insert the method's description here.
@@ -55,19 +55,19 @@ public CreateAction(com.cosylab.vdct.graphics.objects.VisibleObject object) {
  * @return java.lang.String
  */
 public String getDescription() {
-	return "Create ["+object+"]("+x+", "+y+")";
+    return "Create ["+object+"]("+x+", "+y+")";
 }
 /**
  * This method was created in VisualAge.
  */
 protected void redoAction() {
-	parent.addSubObject(object.getHashID(), object);
-	object.setDestroyed(false);
+    parent.addSubObject(object.getHashID(), object);
+    object.setDestroyed(false);
 }
 /**
  * This method was created in VisualAge.
  */
 protected void undoAction() {
-	parent.removeObject(object.getHashID());
+    parent.removeObject(object.getHashID());
 }
 }

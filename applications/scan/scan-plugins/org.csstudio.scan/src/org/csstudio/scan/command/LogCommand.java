@@ -38,15 +38,15 @@ public class LogCommand extends ScanCommand
         this("device");
     }
 
-	/** Initialize
-	 *  @param device_names List of device names
-	 */
-	public LogCommand(final String... device_names)
+    /** Initialize
+     *  @param device_names List of device names
+     */
+    public LogCommand(final String... device_names)
     {
-		this.device_names = device_names;
+        this.device_names = device_names;
     }
 
-	/** Initialize
+    /** Initialize
      *  @param device_name Single device name
      */
     public LogCommand(final String device_name)
@@ -63,7 +63,7 @@ public class LogCommand extends ScanCommand
         super.configureProperties(properties);
     }
 
-	/** @return Names of devices to read and log */
+    /** @return Names of devices to read and log */
     public String[] getDeviceNames()
     {
         return Arrays.copyOf(device_names, device_names.length);
@@ -112,18 +112,18 @@ public class LogCommand extends ScanCommand
     }
 
     /** {@inheritDoc} */
-	@Override
-	public String toString()
-	{
-		final StringBuilder buf = new StringBuilder();
-		buf.append("Log ");
-		for (int i=0; i<device_names.length; ++i)
-		{
-			final String device_name = device_names[i];
-			if (i > 0)
-				buf.append(", ");
-			buf.append("'" + device_name + "'");
-		}
-	    return buf.toString();
-	}
+    @Override
+    public String toString()
+    {
+        final StringBuilder buf = new StringBuilder();
+        buf.append("Log ");
+        for (int i=0; i<device_names.length; ++i)
+        {
+            final String device_name = device_names[i];
+            if (i > 0)
+                buf.append(", ");
+            buf.append("'" + device_name + "'");
+        }
+        return buf.toString();
+    }
 }

@@ -30,89 +30,89 @@ import java.util.Random;
  * 
  */
 public class CountdownGenerator extends AbstractDataGenerator<Double> {
-	private double _distance;
-	private double _from;
-	private double _to;
-	private long _countdownPeriod;
-	
-	private long _startMs=-1;
-	
-	/**
-	 * Constructor.
-	 * @param localChannel the local channel
-	 * @param defaultPeriod the default period
-	 * @param options
-	 */
-	public CountdownGenerator(LocalChannel localChannel, int defaultPeriod,
-			String[] options) {
-		super(localChannel, defaultPeriod, options);
-	}
+    private double _distance;
+    private double _from;
+    private double _to;
+    private long _countdownPeriod;
+    
+    private long _startMs=-1;
+    
+    /**
+     * Constructor.
+     * @param localChannel the local channel
+     * @param defaultPeriod the default period
+     * @param options
+     */
+    public CountdownGenerator(LocalChannel localChannel, int defaultPeriod,
+            String[] options) {
+        super(localChannel, defaultPeriod, options);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void init(String[] options) {
-		try {
-			_from = Double.parseDouble(options[0]);
-		} catch (NumberFormatException nfe) {
-			_from = 0;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void init(String[] options) {
+        try {
+            _from = Double.parseDouble(options[0]);
+        } catch (NumberFormatException nfe) {
+            _from = 0;
+        }
 
-		try {
-			_to = Double.parseDouble(options[1]);
-		} catch (NumberFormatException nfe) {
-			_to = 1;
-		}
+        try {
+            _to = Double.parseDouble(options[1]);
+        } catch (NumberFormatException nfe) {
+            _to = 1;
+        }
 
-		try {
-			_countdownPeriod = Long.parseLong(options[2]);
-		} catch (NumberFormatException nfe) {
-			_to = 1000;
-		}
+        try {
+            _countdownPeriod = Long.parseLong(options[2]);
+        } catch (NumberFormatException nfe) {
+            _to = 1000;
+        }
 
-		
-		try {
-			int period = Integer.parseInt(options[3]);
-			setPeriod(period);
-		} catch (NumberFormatException nfe) {
-			// ignore
-		}
+        
+        try {
+            int period = Integer.parseInt(options[3]);
+            setPeriod(period);
+        } catch (NumberFormatException nfe) {
+            // ignore
+        }
 
-		if (_from < _to) {
-			double tmp = _from;
-			_from = _to;
-			_to = tmp;
-		}
-	
-		_distance = _from - _to;
-	}
+        if (_from < _to) {
+            double tmp = _from;
+            _from = _to;
+            _to = tmp;
+        }
+    
+        _distance = _from - _to;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Double generateNextValue() {
-		double result = -1;
-		
-		if(_startMs < 0) {
-			_startMs = System.currentTimeMillis();
-		}
-		
-		long now = System.currentTimeMillis();
-		long diff = now-_startMs;
-		
-		
-		if(diff>=_countdownPeriod) {
-			_startMs = -1;
-			result = _from;
-		} else {
-			double percent = (double) diff/_countdownPeriod;
-			result = _from - (_distance * percent);
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Double generateNextValue() {
+        double result = -1;
+        
+        if(_startMs < 0) {
+            _startMs = System.currentTimeMillis();
+        }
+        
+        long now = System.currentTimeMillis();
+        long diff = now-_startMs;
+        
+        
+        if(diff>=_countdownPeriod) {
+            _startMs = -1;
+            result = _from;
+        } else {
+            double percent = (double) diff/_countdownPeriod;
+            result = _from - (_distance * percent);
+        }
 
-		
-		return result;
-	}
+        
+        return result;
+    }
 
 }

@@ -23,35 +23,35 @@
 
 
 public abstract class AbstractDataGenerator<E> implements Runnable {
-	private LocalChannel _localChannel;
-	private int _period;
+    private LocalChannel _localChannel;
+    private int _period;
 
-	public AbstractDataGenerator(LocalChannel localChannel, int defaultPeriod,
-			String[] options) {
-		assert localChannel != null;
-		assert defaultPeriod > 0 : "defaultPeriod>0";
-		assert options != null;
-		_localChannel = localChannel;
-		_period = defaultPeriod;
+    public AbstractDataGenerator(LocalChannel localChannel, int defaultPeriod,
+            String[] options) {
+        assert localChannel != null;
+        assert defaultPeriod > 0 : "defaultPeriod>0";
+        assert options != null;
+        _localChannel = localChannel;
+        _period = defaultPeriod;
 
-		init(options);
-	}
+        init(options);
+    }
 
-	protected abstract void init(String[] options);
+    protected abstract void init(String[] options);
 
-	protected abstract E generateNextValue();
+    protected abstract E generateNextValue();
 
-	public void setPeriod(int period) {
-		_period = period;
-	}
-	
-	public int getPeriod() {
-		return _period;
-	}
+    public void setPeriod(int period) {
+        _period = period;
+    }
+    
+    public int getPeriod() {
+        return _period;
+    }
 
-	public void run() {
-		Object nextValue = generateNextValue();
-		_localChannel.setValue(nextValue);
-	}
+    public void run() {
+        Object nextValue = generateNextValue();
+        _localChannel.setValue(nextValue);
+    }
 
 }

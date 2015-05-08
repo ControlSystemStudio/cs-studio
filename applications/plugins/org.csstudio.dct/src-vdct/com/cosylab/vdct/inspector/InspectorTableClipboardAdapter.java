@@ -71,13 +71,13 @@ public class InspectorTableClipboardAdapter implements ActionListener {
      * Cut action keystroke.
      */ 
     private static final KeyStroke CUT_KEYSTROKE =
-        	KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK, false);
+            KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK, false);
     
     /**
      * Copy action keystroke.
      */ 
     private static final KeyStroke COPY_KEYSTROKE =
-        	KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK, false);
+            KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK, false);
     
     /**
      * Paste action keystroke.
@@ -119,7 +119,7 @@ public class InspectorTableClipboardAdapter implements ActionListener {
 
     /**
      * Accessor to the table on which this adapter acts.
-     * @return	managed table
+     * @return    managed table
      */
     public JTable getTable() {
         return table;
@@ -142,7 +142,7 @@ public class InspectorTableClipboardAdapter implements ActionListener {
 
     /**
      * Perform copy/cut action.
-     * @param	cut		perform cut.
+     * @param    cut        perform cut.
      */
     private void performCopy(boolean cut)
     {
@@ -178,22 +178,22 @@ public class InspectorTableClipboardAdapter implements ActionListener {
         if (!(contiguousRows && contiguousCols))
         {
             JOptionPane.showMessageDialog(null,
-                    	"Invalid copy selection, only contiguous block of cells is allowed.",
-                    	"Invalid Copy Selection",
-                    	JOptionPane.ERROR_MESSAGE);
+                        "Invalid copy selection, only contiguous block of cells is allowed.",
+                        "Invalid Copy Selection",
+                        JOptionPane.ERROR_MESSAGE);
             return;
         }
         */
         
         // undo support (to pack all into one action)
-    	try
-    	{
-    	    if (cut)
-    			UndoManager.getInstance().startMacroAction();
+        try
+        {
+            if (cut)
+                UndoManager.getInstance().startMacroAction();
 
             StringBuffer sbf = new StringBuffer();
             
-    	    // construct string
+            // construct string
             for (int i = 0; i < numRows; i++)
             {
                 for (int j = 0; j < numCols; j++)
@@ -212,12 +212,12 @@ public class InspectorTableClipboardAdapter implements ActionListener {
             stringSelection = new StringSelection(sbf.toString());
             clipboardSystem = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboardSystem.setContents(stringSelection, stringSelection);
-    	}
-   		finally
-   		{
-   		    if (cut)
-   		        UndoManager.getInstance().stopMacroAction();
-   		}
+        }
+           finally
+           {
+               if (cut)
+                   UndoManager.getInstance().stopMacroAction();
+           }
         
     }
     
@@ -263,25 +263,25 @@ public class InspectorTableClipboardAdapter implements ActionListener {
                     int columnToSet = startCol + j;
                     // inspector sets only column 2
                     if (columnToSet == 2)
-	                    if (startRow + i < tableRowCount && 
-	                        columnToSet < tableColumnCount)
-	                    {
-	                	    if (!pasted) {
-	                	        pasted = true;
-	                			UndoManager.getInstance().startMacroAction();
-	                	    }
-	                        table.setValueAt(value, startRow + i, columnToSet);
-	                    }
+                        if (startRow + i < tableRowCount && 
+                            columnToSet < tableColumnCount)
+                        {
+                            if (!pasted) {
+                                pasted = true;
+                                UndoManager.getInstance().startMacroAction();
+                            }
+                            table.setValueAt(value, startRow + i, columnToSet);
+                        }
                 }
                 
                 // clear the rest
                 // only one field - inspector case
                 if (startCol + j == 2)
                 {
-            	    if (!pasted) {
-            	        pasted = true;
-            			UndoManager.getInstance().startMacroAction();
-            	    }
+                    if (!pasted) {
+                        pasted = true;
+                        UndoManager.getInstance().startMacroAction();
+                    }
                     table.setValueAt(EMPTY_STRING, startRow + i, 2);
                 }
                 
@@ -290,12 +290,12 @@ public class InspectorTableClipboardAdapter implements ActionListener {
         } catch (Throwable th) {
             // noop
         }
-    	finally
-    	{
-    	    if (pasted)
-    	        UndoManager.getInstance().stopMacroAction();
-    	}
-    	
+        finally
+        {
+            if (pasted)
+                UndoManager.getInstance().stopMacroAction();
+        }
+        
     }
 
 }

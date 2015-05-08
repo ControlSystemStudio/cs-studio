@@ -29,21 +29,21 @@ package com.cosylab.vdct.vdb;
  */
 
 public interface Commentable {
-	/**
-	 * Returns the name.
-	 * @return String
-	 */
-	String getName();
+    /**
+     * Returns the name.
+     * @return String
+     */
+    String getName();
 
-	/**
-	 * Returns the comment.
-	 * @return String
-	 */
-	String getComment();
-	
-	/**
-	 * Sets the comment.
-	 * @param comment The comment to set
-	 */
-	void setComment(String comment);
+    /**
+     * Returns the comment.
+     * @return String
+     */
+    String getComment();
+    
+    /**
+     * Sets the comment.
+     * @param comment The comment to set
+     */
+    void setComment(String comment);
 }

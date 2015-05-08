@@ -256,7 +256,7 @@ public class ConsoleCommands implements CommandProvider
             {
                 final ScanSample[] line = sheet.getSamples();
                 for (ScanSample sample : line)
-                	intp.print(sample + "  ");
+                    intp.print(sample + "  ");
                 intp.println();
             }
             intp.println("Last sample serial: " + last_serial);

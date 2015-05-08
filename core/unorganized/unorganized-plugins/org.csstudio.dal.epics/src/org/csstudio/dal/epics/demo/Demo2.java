@@ -36,7 +36,7 @@ import com.cosylab.epics.caj.CAJChannel;
  */
 public class Demo2 {
 
-	/**
+    /**
      * Implementation of monitor listener.
      */
     private static class MonitorListenerImpl implements MonitorListener {
@@ -55,19 +55,19 @@ public class Demo2 {
     }
     
     private static class ConnectionListenerImpl implements ConnectionListener {
-		private AtomicBoolean onlyOnce = new AtomicBoolean(false);
-		public void connectionChanged(final ConnectionEvent ev) {
-			System.err.println("-----------> connection changed for " + ev.getSource() + " : " + ev.isConnected());
-			if (!onlyOnce.getAndSet(true))
-			{
-				try {
-					((Channel)ev.getSource()).addMonitor(Monitor.VALUE, new MonitorListenerImpl());
-					((CAJChannel)ev.getSource()).getContext().flushIO();
-				} catch (Throwable e) {
-					e.printStackTrace();
-				}
-			}
-		}
+        private AtomicBoolean onlyOnce = new AtomicBoolean(false);
+        public void connectionChanged(final ConnectionEvent ev) {
+            System.err.println("-----------> connection changed for " + ev.getSource() + " : " + ev.isConnected());
+            if (!onlyOnce.getAndSet(true))
+            {
+                try {
+                    ((Channel)ev.getSource()).addMonitor(Monitor.VALUE, new MonitorListenerImpl());
+                    ((CAJChannel)ev.getSource()).getContext().flushIO();
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
     
     /**
@@ -77,17 +77,17 @@ public class Demo2 {
     
     /**
      * Initialize JCA context.
-     * @throws CAException	throws on any failure.
+     * @throws CAException    throws on any failure.
      */
     private void initialize() throws CAException {
         
-		// Get the JCALibrary instance.
-		JCALibrary jca = JCALibrary.getInstance();
+        // Get the JCALibrary instance.
+        JCALibrary jca = JCALibrary.getInstance();
 
-		// Create a context with default configuration values.
-		context = jca.createContext(JCALibrary.CHANNEL_ACCESS_JAVA);
+        // Create a context with default configuration values.
+        context = jca.createContext(JCALibrary.CHANNEL_ACCESS_JAVA);
 
-		// Display basic information about the context.
+        // Display basic information about the context.
         System.out.println(context.getVersion().getVersionString());
         context.printInfo(); System.out.println();
     }
@@ -109,43 +109,43 @@ public class Demo2 {
     }
 
     
-	public void execute() {
+    public void execute() {
 
-		try {
-		    
-		    // initialize context
-		    initialize();
+        try {
+            
+            // initialize context
+            initialize();
 
-			// Create the Channel to connect to the PV.
-			/*Channel channel1 =*/ context.createChannel("manyChannel_001", new ConnectionListenerImpl());
-			/*Channel channel2 =*/ context.createChannel("nonexisting", new ConnectionListenerImpl());
-			
-			// ... forever
-			synchronized (this) {
-				this.wait();
-			}
+            // Create the Channel to connect to the PV.
+            /*Channel channel1 =*/ context.createChannel("manyChannel_001", new ConnectionListenerImpl());
+            /*Channel channel2 =*/ context.createChannel("nonexisting", new ConnectionListenerImpl());
+            
+            // ... forever
+            synchronized (this) {
+                this.wait();
+            }
 
-			System.out.println("Done.");
+            System.out.println("Done.");
 
-		} catch (Throwable th) {
-			th.printStackTrace();
-		}
-		finally {
-		    // always finalize
-		    destroy();
-		}
+        } catch (Throwable th) {
+            th.printStackTrace();
+        }
+        finally {
+            // always finalize
+            destroy();
+        }
 
-	}
-	
-	
-	/**
-	 * Program entry point. 
-	 * @param args	command-line arguments
-	 */
-	public static void main(String[] args) {
+    }
+    
+    
+    /**
+     * Program entry point. 
+     * @param args    command-line arguments
+     */
+    public static void main(String[] args) {
 
-		// execute
-		new Demo2().execute();
-	}
-	
+        // execute
+        new Demo2().execute();
+    }
+    
 }

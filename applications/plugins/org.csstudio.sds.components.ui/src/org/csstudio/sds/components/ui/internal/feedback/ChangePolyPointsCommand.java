@@ -31,50 +31,50 @@ import org.eclipse.gef.commands.Command;
  *
  */
 public final class ChangePolyPointsCommand extends Command {
-	/**
-	 * The model, whose points should be changed.
-	 */
-	private AbstractPolyModel _polyModel;
+    /**
+     * The model, whose points should be changed.
+     */
+    private AbstractPolyModel _polyModel;
 
-	/**
-	 * The old point list.
-	 */
-	private PointList _oldPoints;
+    /**
+     * The old point list.
+     */
+    private PointList _oldPoints;
 
-	/**
-	 * The new point list.
-	 */
-	private PointList _newPoints;
+    /**
+     * The new point list.
+     */
+    private PointList _newPoints;
 
-	/**
-	 * Constructor.
-	 * @param polyModel the polyline element, whose points should be changed
-	 * @param newPoints the new point list
-	 */
-	public ChangePolyPointsCommand(final AbstractPolyModel polyModel,
-			final PointList newPoints) {
-		assert polyModel != null;
-		assert newPoints != null;
-		_polyModel = polyModel;
-		_newPoints = newPoints;
-	}
+    /**
+     * Constructor.
+     * @param polyModel the polyline element, whose points should be changed
+     * @param newPoints the new point list
+     */
+    public ChangePolyPointsCommand(final AbstractPolyModel polyModel,
+            final PointList newPoints) {
+        assert polyModel != null;
+        assert newPoints != null;
+        _polyModel = polyModel;
+        _newPoints = newPoints;
+    }
 
-	/**
-	* {@inheritDoc}
-	 */
-	
-	@Override
-	public void execute() {
-		_oldPoints = _polyModel.getPoints();
-		_polyModel.setPoints(_newPoints, true);
-	}
+    /**
+    * {@inheritDoc}
+     */
+    
+    @Override
+    public void execute() {
+        _oldPoints = _polyModel.getPoints();
+        _polyModel.setPoints(_newPoints, true);
+    }
 
-	/**
-	* {@inheritDoc}
-	 */
-	@Override
-	public void undo() {
-		_polyModel.setPoints(_oldPoints, true);
-	}
+    /**
+    * {@inheritDoc}
+     */
+    @Override
+    public void undo() {
+        _polyModel.setPoints(_oldPoints, true);
+    }
 
 }

@@ -34,22 +34,22 @@ import org.w3c.dom.Element;
 /**
  */
 public class Opi_activeRectangleClass extends OpiWidget {
-	
-	private static final String typeId = "Rectangle";
+    
+    private static final String typeId = "Rectangle";
 
-	public Opi_activeRectangleClass(Edm_activeRectangleClass edmRectangle, Document document, Element parentEl) {
-		super(typeId, document, parentEl);
+    public Opi_activeRectangleClass(Edm_activeRectangleClass edmRectangle, Document document, Element parentEl) {
+        super(typeId, document, parentEl);
 /*
-		new OpiInt("x", edmRectangle.getX(), document, widget);
-		new OpiInt("y", edmRectangle.getY(), document, widget);
+        new OpiInt("x", edmRectangle.getX(), document, widget);
+        new OpiInt("y", edmRectangle.getY(), document, widget);
 
-		Element colorBackground = document.createElement("color.background");
-		new OpiColor(edmRectangle.getBgColor(), document, colorBackground);
-		widget.appendChild(colorBackground);
-		
-		Element x = document.createElement("x");
-		x.setTextContent(String.valueOf(edmRectangle.getX()));
-		widget.appendChild(x);
+        Element colorBackground = document.createElement("color.background");
+        new OpiColor(edmRectangle.getBgColor(), document, colorBackground);
+        widget.appendChild(colorBackground);
+        
+        Element x = document.createElement("x");
+        x.setTextContent(String.valueOf(edmRectangle.getX()));
+        widget.appendChild(x);
 */
-	}
+    }
 }

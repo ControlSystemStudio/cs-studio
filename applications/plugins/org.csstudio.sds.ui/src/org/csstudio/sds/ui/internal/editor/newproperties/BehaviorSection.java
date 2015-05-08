@@ -32,114 +32,114 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  */
 public class BehaviorSection extends AbstractBaseSection<BehaviorProperty> {
 
-	private ComboViewer optionViewer;
-	private ISelectionChangedListener changeListener;
+    private ComboViewer optionViewer;
+    private ISelectionChangedListener changeListener;
 
-	public BehaviorSection(String propertyId) {
-		super(propertyId);
-	}
+    public BehaviorSection(String propertyId) {
+        super(propertyId);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doCreateControls(Composite parent,
-			TabbedPropertySheetPage tabbedPropertySheetPage) {
-		parent.setLayout(new FormLayout());
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doCreateControls(Composite parent,
+            TabbedPropertySheetPage tabbedPropertySheetPage) {
+        parent.setLayout(new FormLayout());
 
-		// .. create a combo and the corresponding viewer
-		CCombo combo = getWidgetFactory().createCCombo(parent,
-				SWT.BORDER | SWT.READ_ONLY);
-		FormData fd = new FormData();
-		fd.left = new FormAttachment(0, 0);
-		fd.right = new FormAttachment(50, 0);
-		combo.setLayoutData(fd);
+        // .. create a combo and the corresponding viewer
+        CCombo combo = getWidgetFactory().createCCombo(parent,
+                SWT.BORDER | SWT.READ_ONLY);
+        FormData fd = new FormData();
+        fd.left = new FormAttachment(0, 0);
+        fd.right = new FormAttachment(50, 0);
+        combo.setLayoutData(fd);
 
-		optionViewer = new ComboViewer(combo);
-		optionViewer.setLabelProvider(new BehaviorDescriptionLabelProvider());
-		optionViewer.setContentProvider(new ArrayContentProvider());
+        optionViewer = new ComboViewer(combo);
+        optionViewer.setLabelProvider(new BehaviorDescriptionLabelProvider());
+        optionViewer.setContentProvider(new ArrayContentProvider());
 
-		// .. listen to changes
-		changeListener = new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				IBehaviorDescription behaviorDescription = (IBehaviorDescription) ((IStructuredSelection) optionViewer
-						.getSelection()).getFirstElement();
+        // .. listen to changes
+        changeListener = new ISelectionChangedListener() {
+            public void selectionChanged(SelectionChangedEvent event) {
+                IBehaviorDescription behaviorDescription = (IBehaviorDescription) ((IStructuredSelection) optionViewer
+                        .getSelection()).getFirstElement();
 
-				if (behaviorDescription != null) {
-					applyPropertyChange(behaviorDescription.getBehaviorId());
-				} else {
-					applyPropertyChange("");
-				}
-			}
-		};
-		optionViewer.addSelectionChangedListener(changeListener);
-	}
+                if (behaviorDescription != null) {
+                    applyPropertyChange(behaviorDescription.getBehaviorId());
+                } else {
+                    applyPropertyChange("");
+                }
+            }
+        };
+        optionViewer.addSelectionChangedListener(changeListener);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doRefreshControls(BehaviorProperty widgetProperty) {
-		// .. update the combobox
-		if (optionViewer.getContentProvider() != null) {
-			List<BehaviorDescriptor> behaviorDescriptors = getBehaviorDescriptors();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doRefreshControls(BehaviorProperty widgetProperty) {
+        // .. update the combobox
+        if (optionViewer.getContentProvider() != null) {
+            List<BehaviorDescriptor> behaviorDescriptors = getBehaviorDescriptors();
 
-			optionViewer.setInput(behaviorDescriptors);
+            optionViewer.setInput(behaviorDescriptors);
 
-			// .. select the current behavior
-			BehaviorDescriptor selectedBehavior = behaviorDescriptors.get(0);
+            // .. select the current behavior
+            BehaviorDescriptor selectedBehavior = behaviorDescriptors.get(0);
 
-			String currentBehaviorId = widgetProperty.getPropertyValue();
-			if (currentBehaviorId != null) {
-				for (BehaviorDescriptor d : behaviorDescriptors) {
-					if (currentBehaviorId.equals(d.getBehaviorId())) {
-						selectedBehavior = d;
-						break;
-					}
-				}
-			}
+            String currentBehaviorId = widgetProperty.getPropertyValue();
+            if (currentBehaviorId != null) {
+                for (BehaviorDescriptor d : behaviorDescriptors) {
+                    if (currentBehaviorId.equals(d.getBehaviorId())) {
+                        selectedBehavior = d;
+                        break;
+                    }
+                }
+            }
 
-			assert selectedBehavior != null;
+            assert selectedBehavior != null;
 
-			optionViewer.removeSelectionChangedListener(changeListener);
-			optionViewer
-					.setSelection(new StructuredSelection(selectedBehavior));
-			optionViewer.addSelectionChangedListener(changeListener);
+            optionViewer.removeSelectionChangedListener(changeListener);
+            optionViewer
+                    .setSelection(new StructuredSelection(selectedBehavior));
+            optionViewer.addSelectionChangedListener(changeListener);
 
-		}
-	}
+        }
+    }
 
-	@SuppressWarnings("unchecked")
-	private List<BehaviorDescriptor> getBehaviorDescriptors() {
-		List<BehaviorDescriptor> result = new ArrayList<BehaviorDescriptor>();
+    @SuppressWarnings("unchecked")
+    private List<BehaviorDescriptor> getBehaviorDescriptors() {
+        List<BehaviorDescriptor> result = new ArrayList<BehaviorDescriptor>();
 
-		// .. add empty
-		BehaviorDescriptor noneDescriptor = new BehaviorDescriptor("none", "*",
-				"None", Collections.EMPTY_SET, null);
-		result.add(noneDescriptor);
+        // .. add empty
+        BehaviorDescriptor noneDescriptor = new BehaviorDescriptor("none", "*",
+                "None", Collections.EMPTY_SET, null);
+        result.add(noneDescriptor);
 
-		// .. add real behaviors
-		if (selectedWidget != null) {
-			IBehaviorService service = SdsPlugin.getDefault()
-					.getBehaviourService();
-			result.addAll(service.getBehaviors(selectedWidget.getTypeID()));
-		}
-		return result;
-	}
+        // .. add real behaviors
+        if (selectedWidget != null) {
+            IBehaviorService service = SdsPlugin.getDefault()
+                    .getBehaviourService();
+            result.addAll(service.getBehaviors(selectedWidget.getTypeID()));
+        }
+        return result;
+    }
 
-	/**
-	 * Label provider for {@link IBehaviorDescription}.
-	 * 
-	 * @author Sven Wende
-	 * 
-	 */
-	private static final class BehaviorDescriptionLabelProvider extends
-			LabelProvider {
-		@Override
-		public String getText(Object element) {
-			BehaviorDescriptor d = (BehaviorDescriptor) element;
-			return d.getDescription();
-		}
-	}
+    /**
+     * Label provider for {@link IBehaviorDescription}.
+     * 
+     * @author Sven Wende
+     * 
+     */
+    private static final class BehaviorDescriptionLabelProvider extends
+            LabelProvider {
+        @Override
+        public String getText(Object element) {
+            BehaviorDescriptor d = (BehaviorDescriptor) element;
+            return d.getDescription();
+        }
+    }
 
 }

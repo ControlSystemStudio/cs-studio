@@ -39,12 +39,12 @@ import com.cosylab.vdct.inspector.*;
  * @author Matej Sekoranja
  */
 public class FieldInfoProperty implements InspectableProperty {
-	private VDBFieldData field;
+    private VDBFieldData field;
 /**
  * DTYPInfoProperty constructor comment.
  */
 public FieldInfoProperty(VDBFieldData field) {
-	this.field=field;
+    this.field=field;
 }
 /**
  * Insert the method's description here.
@@ -52,7 +52,7 @@ public FieldInfoProperty(VDBFieldData field) {
  * @return boolean
  */
 public boolean allowsOtherValues() {
-	return false;
+    return false;
 }
 /**
  * Insert the method's description here.
@@ -60,7 +60,7 @@ public boolean allowsOtherValues() {
  * @return java.lang.String
  */
 public String getHelp() {
-	return field.getHelp();
+    return field.getHelp();
 }
 /**
  * Insert the method's description here.
@@ -68,7 +68,7 @@ public String getHelp() {
  * @return java.lang.String
  */
 public String getName() {
-	return field.getName();
+    return field.getName();
 }
 /**
  * Insert the method's description here.
@@ -76,7 +76,7 @@ public String getName() {
  * @return java.lang.String[]
  */
 public java.lang.String[] getSelectableValues() {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -84,12 +84,12 @@ public java.lang.String[] getSelectableValues() {
  * @return java.lang.String
  */
 public String getValue() {
-/*	String value = field.getValue();
-	if (value.equals(com.cosylab.vdct.Constants.NONE) || 
-		value.indexOf(com.cosylab.vdct.Constants.MENU_DEFAULT_VALUE_INDICATOR)>=0) //!!! default value
-		return field.getDbdData().getInit_value();
-	else */
-		return field.getValue();
+/*    String value = field.getValue();
+    if (value.equals(com.cosylab.vdct.Constants.NONE) || 
+        value.indexOf(com.cosylab.vdct.Constants.MENU_DEFAULT_VALUE_INDICATOR)>=0) //!!! default value
+        return field.getDbdData().getInit_value();
+    else */
+        return field.getValue();
 }
 /**
  * Insert the method's description here.
@@ -98,7 +98,7 @@ public String getValue() {
  */
 public String getInitValue()
 {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -106,7 +106,7 @@ public String getInitValue()
  * @return boolean
  */
 public boolean isEditable() {
-	return false;
+    return false;
 }
 /**
  * Insert the method's description here.
@@ -114,7 +114,7 @@ public boolean isEditable() {
  * @return boolean
  */
 public boolean isSepatator() {
-	return false;
+    return false;
 }
 /**
  * Insert the method's description here.
@@ -129,7 +129,7 @@ public void setValue(String value) {}
  */
 public Pattern getEditPattern()
 {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -138,7 +138,7 @@ public Pattern getEditPattern()
  */
 public String getToolTipText()
 {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -147,7 +147,7 @@ public String getToolTipText()
  */
 public boolean isValid()
 {
-	return true;
+    return true;
 }
 /**
  * Insert the method's description here.
@@ -156,7 +156,7 @@ public boolean isValid()
  */
 public int getVisibility()
 {
-	return InspectableProperty.UNDEFINED_VISIBILITY;
+    return InspectableProperty.UNDEFINED_VISIBILITY;
 }
 /**
  * Insert the method's description here.

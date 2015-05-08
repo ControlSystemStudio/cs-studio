@@ -48,22 +48,22 @@ public class PlotDemo
 //        @Override
 //        public void scrollRequested(final boolean enable_scrolling)
 //        {
-//        	System.out.println("Scroll enabled: " + enable_scrolling);
-//        	scroll = enable_scrolling;
+//            System.out.println("Scroll enabled: " + enable_scrolling);
+//            scroll = enable_scrolling;
 //        }
 //
 //        @Override
 //        public void timeConfigRequested()
 //        {
-//        	System.out.println("Time Config requested");
+//            System.out.println("Time Config requested");
 //        }
 //
 //        @Override
 //        public void timeAxisChanged(final long start_ms, final long end_ms)
 //        {
-//        	start_time = TimestampHelper.fromMillisecs(start_ms);
-//        	end_time = TimestampHelper.fromMillisecs(end_ms);
-//        	System.out.println("Time axis: " + start_time + " ... " + end_time);
+//            start_time = TimestampHelper.fromMillisecs(start_ms);
+//            end_time = TimestampHelper.fromMillisecs(end_ms);
+//            System.out.println("Time axis: " + start_time + " ... " + end_time);
 //        }
 //
 //        @Override
@@ -91,89 +91,89 @@ public class PlotDemo
 //        }
 //
 //        @Override
-//		public void xyGraphConfigChanged(XYGraph newValue) {
-//			// TODO Auto-generated method stub
+//        public void xyGraphConfigChanged(XYGraph newValue) {
+//            // TODO Auto-generated method stub
 //
-//		}
+//        }
 //
-//		@Override
-//		public void removeAnnotationChanged(Annotation oldValue) {
-//			// TODO Auto-generated method stub
+//        @Override
+//        public void removeAnnotationChanged(Annotation oldValue) {
+//            // TODO Auto-generated method stub
 //
-//		}
+//        }
 //
-//		@Override
-//		public void addAnnotationChanged(Annotation newValue) {
-//			// TODO Auto-generated method stub
+//        @Override
+//        public void addAnnotationChanged(Annotation newValue) {
+//            // TODO Auto-generated method stub
 //
-//		}
+//        }
 //
-//		@Override
-//		public void backgroundColorChanged(Color newValue) {
-//			// TODO Auto-generated method stub
+//        @Override
+//        public void backgroundColorChanged(Color newValue) {
+//            // TODO Auto-generated method stub
 //
-//		}
+//        }
 //
-//		@Override
-//		public void timeAxisForegroundColorChanged(Color oldColor,
-//				Color newColor) {
-//			// TODO Auto-generated method stub
+//        @Override
+//        public void timeAxisForegroundColorChanged(Color oldColor,
+//                Color newColor) {
+//            // TODO Auto-generated method stub
 //
-//		}
+//        }
 //
-//		@Override
-//		public void valueAxisForegroundColorChanged(int index, Color oldColor,
-//				Color newColor) {
-//			// TODO Auto-generated method stub
+//        @Override
+//        public void valueAxisForegroundColorChanged(int index, Color oldColor,
+//                Color newColor) {
+//            // TODO Auto-generated method stub
 //
-//		}
+//        }
 //
-//		@Override
-//		public void valueAxisTitleChanged(int index, String oldTitle,
-//				String newTitle) {
-//			// TODO Auto-generated method stub
+//        @Override
+//        public void valueAxisTitleChanged(int index, String oldTitle,
+//                String newTitle) {
+//            // TODO Auto-generated method stub
 //
-//		}
+//        }
 //
-//		@Override
-//		public void valueAxisAutoScaleChanged(int index, boolean oldAutoScale,
-//				boolean newAutoScale) {
-//			// TODO Auto-generated method stub
+//        @Override
+//        public void valueAxisAutoScaleChanged(int index, boolean oldAutoScale,
+//                boolean newAutoScale) {
+//            // TODO Auto-generated method stub
 //
-//		}
+//        }
 //
-//		@Override
-//		public void traceNameChanged(int index, String oldName, String newName) {
-//			// TODO Auto-generated method stub
+//        @Override
+//        public void traceNameChanged(int index, String oldName, String newName) {
+//            // TODO Auto-generated method stub
 //
-//		}
+//        }
 //
-//		@Override
-//		public void traceYAxisChanged(int index, AxisConfig oldConfig,
-//				AxisConfig config) {
-//			// TODO Auto-generated method stub
+//        @Override
+//        public void traceYAxisChanged(int index, AxisConfig oldConfig,
+//                AxisConfig config) {
+//            // TODO Auto-generated method stub
 //
-//		}
+//        }
 //
-//		@Override
-//		public void traceTypeChanged(int index, TraceType old,
-//				TraceType newTraceType) {
-//			// TODO Auto-generated method stub
+//        @Override
+//        public void traceTypeChanged(int index, TraceType old,
+//                TraceType newTraceType) {
+//            // TODO Auto-generated method stub
 //
-//		}
+//        }
 //
-//		@Override
-//		public void traceColorChanged(int index, Color old, Color newColor) {
-//			// TODO Auto-generated method stub
+//        @Override
+//        public void traceColorChanged(int index, Color old, Color newColor) {
+//            // TODO Auto-generated method stub
 //
-//		}
+//        }
 //
-//		@Override
-//		public void valueAxisLogScaleChanged(int index, boolean old,
-//				boolean logScale) {
-//			// TODO Auto-generated method stub
+//        @Override
+//        public void valueAxisLogScaleChanged(int index, boolean old,
+//                boolean logScale) {
+//            // TODO Auto-generated method stub
 //
-//		}
+//        }
 //    };
 
     private void createGUI(final Composite parent)

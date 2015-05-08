@@ -39,15 +39,15 @@ import org.eclipse.core.runtime.IAdaptable;
  */
 public interface IControlSystemItem extends IAdaptable {
 
-	/**
-	 * @return Returns the name of the control system item.
-	 */
-	String getName();
+    /**
+     * @return Returns the name of the control system item.
+     */
+    String getName();
 
-	/**
-	 * Gets the type identifier for this control system item.
-	 * 
-	 * @return the type identifier
-	 */
-	String getTypeId();
+    /**
+     * Gets the type identifier for this control system item.
+     * 
+     * @return the type identifier
+     */
+    String getTypeId();
 }

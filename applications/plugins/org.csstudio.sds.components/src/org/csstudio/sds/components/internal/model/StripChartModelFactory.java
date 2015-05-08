@@ -33,18 +33,18 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  */
 public final class StripChartModelFactory implements IWidgetModelFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractWidgetModel createWidgetModel() {
-		return new StripChartModel();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractWidgetModel createWidgetModel() {
+        return new StripChartModel();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Class<StripChartModel> getWidgetModelType() {
-		return StripChartModel.class;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Class<StripChartModel> getWidgetModelType() {
+        return StripChartModel.class;
+    }
 
 }

@@ -24,37 +24,37 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * 
  */
 public class RemoveTagCommandHandler extends AbstractAdaptedHandler<Channel> {
-	
-	public RemoveTagCommandHandler() {
-		super(Channel.class);
-	}
+    
+    public RemoveTagCommandHandler() {
+        super(Channel.class);
+    }
 
-	@Override
-	protected void execute(List<Channel> channels, ExecutionEvent event) {
-		Shell shell = HandlerUtil.getActiveShell(event);
-		ElementListSelectionDialog selectTags = new ElementListSelectionDialog(
-				shell, new LabelProvider());
-		
-		selectTags.setTitle("Tag Selection");
+    @Override
+    protected void execute(List<Channel> channels, ExecutionEvent event) {
+        Shell shell = HandlerUtil.getActiveShell(event);
+        ElementListSelectionDialog selectTags = new ElementListSelectionDialog(
+                shell, new LabelProvider());
+        
+        selectTags.setTitle("Tag Selection");
 
-		selectTags.setMessage("Select the Tags to be removed (* = any string, ? = any char):");
-		selectTags.setMultipleSelection(true);
-		Collection<String> existingTagNames = ChannelUtil.getAllTagNames(channels);
-		selectTags.setElements(existingTagNames
-				.toArray(new String[existingTagNames.size()]));
-		selectTags.setBlockOnOpen(true);
-		if (selectTags.open() == Window.OK) {
-			Object[] selected = selectTags.getResult();
-			Collection<String> selectedTags = new TreeSet<String>();
-			for (int i = 0; i < selected.length; i++) {
-				selectedTags.add((String) selected[i]);
-			}
-			if (selectedTags.size() > 0) {
-				Job job = new RemoveTagsJob("removeTags", channels,
-						selectedTags);
-				job.schedule();
-			}
-		}
-	}
+        selectTags.setMessage("Select the Tags to be removed (* = any string, ? = any char):");
+        selectTags.setMultipleSelection(true);
+        Collection<String> existingTagNames = ChannelUtil.getAllTagNames(channels);
+        selectTags.setElements(existingTagNames
+                .toArray(new String[existingTagNames.size()]));
+        selectTags.setBlockOnOpen(true);
+        if (selectTags.open() == Window.OK) {
+            Object[] selected = selectTags.getResult();
+            Collection<String> selectedTags = new TreeSet<String>();
+            for (int i = 0; i < selected.length; i++) {
+                selectedTags.add((String) selected[i]);
+            }
+            if (selectedTags.size() > 0) {
+                Job job = new RemoveTagsJob("removeTags", channels,
+                        selectedTags);
+                job.schedule();
+            }
+        }
+    }
 
 }

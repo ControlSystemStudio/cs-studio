@@ -16,12 +16,12 @@ public class WebOPIConstants{
 
     public static final String STANDALONE_SERVELET_NAME = "ws";//$NON-NLS-1$
 
-	public static final String OPI_PARAMETER = "opi"; //$NON-NLS-1$	
-	
-	public static final String REGULAR_ENTRY_POINT = "webopi"; //$NON-NLS-1$
-	
-	public static final String SIMPLE_ENTRY_POINT = "webopi_s"; //$NON-NLS-1$
-	
-	
-	
+    public static final String OPI_PARAMETER = "opi"; //$NON-NLS-1$    
+    
+    public static final String REGULAR_ENTRY_POINT = "webopi"; //$NON-NLS-1$
+    
+    public static final String SIMPLE_ENTRY_POINT = "webopi_s"; //$NON-NLS-1$
+    
+    
+    
 }

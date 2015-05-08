@@ -51,103 +51,103 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  */
 public class DisplayEditorActionBarContributor extends ActionBarContributor {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected final void buildActions() {
-		addRetargetAction(new UndoRetargetAction());
-		addRetargetAction(new RedoRetargetAction());
-		addRetargetAction(new DeleteRetargetAction());
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected final void buildActions() {
+        addRetargetAction(new UndoRetargetAction());
+        addRetargetAction(new RedoRetargetAction());
+        addRetargetAction(new DeleteRetargetAction());
 
-		addRetargetAction(new ZoomInRetargetAction());
-		addRetargetAction(new ZoomOutRetargetAction());
+        addRetargetAction(new ZoomInRetargetAction());
+        addRetargetAction(new ZoomOutRetargetAction());
 
-		addRetargetAction(new MatchWidthRetargetAction());
-		addRetargetAction(new MatchHeightRetargetAction());
-		
-		addRetargetAction(new AlignmentRetargetAction(PositionConstants.TOP));
-		addRetargetAction(new AlignmentRetargetAction(PositionConstants.MIDDLE));
-		addRetargetAction(new AlignmentRetargetAction(PositionConstants.BOTTOM));
-		addRetargetAction(new AlignmentRetargetAction(PositionConstants.LEFT));
-		addRetargetAction(new AlignmentRetargetAction(PositionConstants.CENTER));
-		addRetargetAction(new AlignmentRetargetAction(PositionConstants.RIGHT));
+        addRetargetAction(new MatchWidthRetargetAction());
+        addRetargetAction(new MatchHeightRetargetAction());
+        
+        addRetargetAction(new AlignmentRetargetAction(PositionConstants.TOP));
+        addRetargetAction(new AlignmentRetargetAction(PositionConstants.MIDDLE));
+        addRetargetAction(new AlignmentRetargetAction(PositionConstants.BOTTOM));
+        addRetargetAction(new AlignmentRetargetAction(PositionConstants.LEFT));
+        addRetargetAction(new AlignmentRetargetAction(PositionConstants.CENTER));
+        addRetargetAction(new AlignmentRetargetAction(PositionConstants.RIGHT));
 
-		RetargetAction a = new RetargetAction(
-				GEFActionConstants.TOGGLE_GRID_VISIBILITY,
-				"Toggle Grid Visibility", IAction.AS_CHECK_BOX);
-		a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
-				SdsUiPlugin.PLUGIN_ID, "icons/grid.png")); //$NON-NLS-1$
-		addRetargetAction(a);
+        RetargetAction a = new RetargetAction(
+                GEFActionConstants.TOGGLE_GRID_VISIBILITY,
+                "Toggle Grid Visibility", IAction.AS_CHECK_BOX);
+        a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
+                SdsUiPlugin.PLUGIN_ID, "icons/grid.png")); //$NON-NLS-1$
+        addRetargetAction(a);
 
-		a = new RetargetAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY,
-				"Toggle Snap To Geometry", IAction.AS_CHECK_BOX);
-		a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
-				SdsUiPlugin.PLUGIN_ID, "icons/snap2geometry.png"));
-		addRetargetAction(a);
-		
-		a = new RetargetAction(GEFActionConstants.TOGGLE_RULER_VISIBILITY,
-				"Toggle Ruler Visibility", IAction.AS_CHECK_BOX);
-		a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
-				SdsUiPlugin.PLUGIN_ID, "icons/ruler.png"));
-		addRetargetAction(a);
-		
-		a = new RetargetAction(ArrangeAction.HORIZONTAL, "Arrange Horizontal");
-		a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID, "icons/arrange_hor.png"));
-		addRetargetAction(a);
-		
-		a = new RetargetAction(ArrangeAction.VERTICAL, "Arrange Vertical");
-		a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID, "icons/arrange_ver.png"));
-		addRetargetAction(a);
-	}
+        a = new RetargetAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY,
+                "Toggle Snap To Geometry", IAction.AS_CHECK_BOX);
+        a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
+                SdsUiPlugin.PLUGIN_ID, "icons/snap2geometry.png"));
+        addRetargetAction(a);
+        
+        a = new RetargetAction(GEFActionConstants.TOGGLE_RULER_VISIBILITY,
+                "Toggle Ruler Visibility", IAction.AS_CHECK_BOX);
+        a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
+                SdsUiPlugin.PLUGIN_ID, "icons/ruler.png"));
+        addRetargetAction(a);
+        
+        a = new RetargetAction(ArrangeAction.HORIZONTAL, "Arrange Horizontal");
+        a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID, "icons/arrange_hor.png"));
+        addRetargetAction(a);
+        
+        a = new RetargetAction(ArrangeAction.VERTICAL, "Arrange Vertical");
+        a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID, "icons/arrange_ver.png"));
+        addRetargetAction(a);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void contributeToToolBar(final IToolBarManager tbm) {
-		tbm.add(getAction(ActionFactory.UNDO.getId()));
-		tbm.add(getAction(ActionFactory.REDO.getId()));
-		tbm.add(getAction(ActionFactory.DELETE.getId()));
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void contributeToToolBar(final IToolBarManager tbm) {
+        tbm.add(getAction(ActionFactory.UNDO.getId()));
+        tbm.add(getAction(ActionFactory.REDO.getId()));
+        tbm.add(getAction(ActionFactory.DELETE.getId()));
 
-		tbm.add(new Separator());
-		tbm.add(getAction(GEFActionConstants.TOGGLE_GRID_VISIBILITY));
-		tbm.add(getAction(GEFActionConstants.TOGGLE_RULER_VISIBILITY));
-		tbm.add(getAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY));
-		
-		tbm.add(new Separator());
-		tbm.add(getAction(GEFActionConstants.ALIGN_LEFT));
-		tbm.add(getAction(GEFActionConstants.ALIGN_CENTER));
-		tbm.add(getAction(GEFActionConstants.ALIGN_RIGHT));
-		tbm.add(new Separator());
-		tbm.add(getAction(GEFActionConstants.ALIGN_TOP));
-		tbm.add(getAction(GEFActionConstants.ALIGN_MIDDLE));
-		tbm.add(getAction(GEFActionConstants.ALIGN_BOTTOM));
-		
-		tbm.add(new Separator());
-		tbm.add(getAction(ArrangeAction.HORIZONTAL));
-		tbm.add(getAction(ArrangeAction.VERTICAL));
+        tbm.add(new Separator());
+        tbm.add(getAction(GEFActionConstants.TOGGLE_GRID_VISIBILITY));
+        tbm.add(getAction(GEFActionConstants.TOGGLE_RULER_VISIBILITY));
+        tbm.add(getAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY));
+        
+        tbm.add(new Separator());
+        tbm.add(getAction(GEFActionConstants.ALIGN_LEFT));
+        tbm.add(getAction(GEFActionConstants.ALIGN_CENTER));
+        tbm.add(getAction(GEFActionConstants.ALIGN_RIGHT));
+        tbm.add(new Separator());
+        tbm.add(getAction(GEFActionConstants.ALIGN_TOP));
+        tbm.add(getAction(GEFActionConstants.ALIGN_MIDDLE));
+        tbm.add(getAction(GEFActionConstants.ALIGN_BOTTOM));
+        
+        tbm.add(new Separator());
+        tbm.add(getAction(ArrangeAction.HORIZONTAL));
+        tbm.add(getAction(ArrangeAction.VERTICAL));
 
-		tbm.add(new Separator());
-		tbm.add(getAction(GEFActionConstants.MATCH_WIDTH));
-		tbm.add(getAction(GEFActionConstants.MATCH_HEIGHT));
+        tbm.add(new Separator());
+        tbm.add(getAction(GEFActionConstants.MATCH_WIDTH));
+        tbm.add(getAction(GEFActionConstants.MATCH_HEIGHT));
 
-		tbm.add(new Separator());
-		tbm.add(getAction(GEFActionConstants.ZOOM_IN));
-		tbm.add(getAction(GEFActionConstants.ZOOM_OUT));
-		tbm.add(new ZoomComboContributionItem(getPage()));
-		tbm.add(new GridSpacingContributionItem());
-	}
+        tbm.add(new Separator());
+        tbm.add(getAction(GEFActionConstants.ZOOM_IN));
+        tbm.add(getAction(GEFActionConstants.ZOOM_OUT));
+        tbm.add(new ZoomComboContributionItem(getPage()));
+        tbm.add(new GridSpacingContributionItem());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected final void declareGlobalActionKeys() {
-		addGlobalActionKey(ActionFactory.PRINT.getId());
-		addGlobalActionKey(ActionFactory.SELECT_ALL.getId());
-		addGlobalActionKey(ActionFactory.PASTE.getId());
-		addGlobalActionKey(ActionFactory.DELETE.getId());
-	}
-	
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected final void declareGlobalActionKeys() {
+        addGlobalActionKey(ActionFactory.PRINT.getId());
+        addGlobalActionKey(ActionFactory.SELECT_ALL.getId());
+        addGlobalActionKey(ActionFactory.PASTE.getId());
+        addGlobalActionKey(ActionFactory.DELETE.getId());
+    }
+    
 }

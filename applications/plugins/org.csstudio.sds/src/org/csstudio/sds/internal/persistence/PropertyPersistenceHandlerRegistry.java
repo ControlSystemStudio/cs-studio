@@ -38,87 +38,87 @@ import org.eclipse.core.runtime.Platform;
  * 
  */
 public final class PropertyPersistenceHandlerRegistry {
-	/**
-	 * The singleton instance.
-	 */
-	private static PropertyPersistenceHandlerRegistry _instance;
+    /**
+     * The singleton instance.
+     */
+    private static PropertyPersistenceHandlerRegistry _instance;
 
-	/**
-	 * Contains the persistence handler descriptors.
-	 */
-	private HashMap<PropertyTypesEnum, PropertyPersistenceHandlerDescriptor> _persistenceHandlers;
+    /**
+     * Contains the persistence handler descriptors.
+     */
+    private HashMap<PropertyTypesEnum, PropertyPersistenceHandlerDescriptor> _persistenceHandlers;
 
-	/**
-	 * Private constructor.
-	 */
-	private PropertyPersistenceHandlerRegistry() {
-		lookup();
-	}
+    /**
+     * Private constructor.
+     */
+    private PropertyPersistenceHandlerRegistry() {
+        lookup();
+    }
 
-	/**
-	 * @return The singleton instance.
-	 */
-	public static PropertyPersistenceHandlerRegistry getInstance() {
-		if (_instance == null) {
-			_instance = new PropertyPersistenceHandlerRegistry();
-		}
+    /**
+     * @return The singleton instance.
+     */
+    public static PropertyPersistenceHandlerRegistry getInstance() {
+        if (_instance == null) {
+            _instance = new PropertyPersistenceHandlerRegistry();
+        }
 
-		return _instance;
-	}
+        return _instance;
+    }
 
-	/**
-	 * Internal lookup of the Eclipse extension registry.
-	 */
-	private void lookup() {
-		_persistenceHandlers = new HashMap<PropertyTypesEnum, PropertyPersistenceHandlerDescriptor>();
+    /**
+     * Internal lookup of the Eclipse extension registry.
+     */
+    private void lookup() {
+        _persistenceHandlers = new HashMap<PropertyTypesEnum, PropertyPersistenceHandlerDescriptor>();
 
-		IExtensionRegistry extReg = Platform.getExtensionRegistry();
-		String id = SdsPlugin.EXTPOINT_PROPERTY_PERSISTENCE_HANDLERS;
-		IConfigurationElement[] confElements = extReg
-				.getConfigurationElementsFor(id);
+        IExtensionRegistry extReg = Platform.getExtensionRegistry();
+        String id = SdsPlugin.EXTPOINT_PROPERTY_PERSISTENCE_HANDLERS;
+        IConfigurationElement[] confElements = extReg
+                .getConfigurationElementsFor(id);
 
-		for (IConfigurationElement element : confElements) {
-			String typeString= element.getAttribute("typeId"); //$NON-NLS-1$
+        for (IConfigurationElement element : confElements) {
+            String typeString= element.getAttribute("typeId"); //$NON-NLS-1$
 
-			
-			PropertyTypesEnum typeId;
-			try {
-				typeId = PropertyTypesEnum.createFromPortable(typeString);
-			} catch (Exception e) {
-				// apply String as default
-				typeId = PropertyTypesEnum.STRING;
-			}
-			
-			if (_persistenceHandlers.containsKey(typeId)) {
-				throw new IllegalArgumentException(
-						"Only one item factory for the type >>" + typeId //$NON-NLS-1$
-								+ "<< should be registered."); //$NON-NLS-1$
-			}
-			_persistenceHandlers.put(typeId,
-					new PropertyPersistenceHandlerDescriptor(element));
-		}
-	}
+            
+            PropertyTypesEnum typeId;
+            try {
+                typeId = PropertyTypesEnum.createFromPortable(typeString);
+            } catch (Exception e) {
+                // apply String as default
+                typeId = PropertyTypesEnum.STRING;
+            }
+            
+            if (_persistenceHandlers.containsKey(typeId)) {
+                throw new IllegalArgumentException(
+                        "Only one item factory for the type >>" + typeId //$NON-NLS-1$
+                                + "<< should be registered."); //$NON-NLS-1$
+            }
+            _persistenceHandlers.put(typeId,
+                    new PropertyPersistenceHandlerDescriptor(element));
+        }
+    }
 
-	/**
-	 * Instantiate and return the persistence handler for the given property
-	 * type.
-	 * 
-	 * @param typeId
-	 *            The property type Id.
-	 * @return The persistence handler for the given property type.
-	 */
-	public AbstractPropertyPersistenceHandler getPersistenceHandler(
-			final PropertyTypesEnum typeId) {
-		AbstractPropertyPersistenceHandler result = null;
+    /**
+     * Instantiate and return the persistence handler for the given property
+     * type.
+     * 
+     * @param typeId
+     *            The property type Id.
+     * @return The persistence handler for the given property type.
+     */
+    public AbstractPropertyPersistenceHandler getPersistenceHandler(
+            final PropertyTypesEnum typeId) {
+        AbstractPropertyPersistenceHandler result = null;
 
-		PropertyPersistenceHandlerDescriptor descriptor = _persistenceHandlers
-				.get(typeId);
+        PropertyPersistenceHandlerDescriptor descriptor = _persistenceHandlers
+                .get(typeId);
 
-		if (descriptor != null) {
-			result = descriptor.getPersistenceHandler();
-			assert result != null : "type id was valid, but no persistence handler was instantiated"; //$NON-NLS-1$
-		}
+        if (descriptor != null) {
+            result = descriptor.getPersistenceHandler();
+            assert result != null : "type id was valid, but no persistence handler was instantiated"; //$NON-NLS-1$
+        }
 
-		return result;
-	}
+        return result;
+    }
 }

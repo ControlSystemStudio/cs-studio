@@ -50,10 +50,10 @@ public class BackgroundCollectorThread extends Thread {
                     .setValue(new Double(Runtime.getRuntime().totalMemory() / MB));
             BackgroundCollector.getInstance().getMemoryUsedSystem()
                     .setValue(new Double(Runtime.getRuntime().maxMemory() / MB));
-            //		TODO: find out how to fill these!
-            //		before uncommenting: enable instanciating in BackgroundCollector!!
-            //		BackgroundCollector.getInstance().getCpuUsedApplication().setValue
-            //		BackgroundCollector.getInstance().getCpuUsedSystem().setValue
+            //        TODO: find out how to fill these!
+            //        before uncommenting: enable instanciating in BackgroundCollector!!
+            //        BackgroundCollector.getInstance().getCpuUsedApplication().setValue
+            //        BackgroundCollector.getInstance().getCpuUsedSystem().setValue
             
             try {
                 Thread.sleep(this.timeout);

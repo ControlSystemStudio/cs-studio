@@ -13,13 +13,13 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class BubbleGraph2DWidgetFigure extends AbstractPointDatasetGraph2DWidgetFigure<BubbleGraph2DWidget> {
 
-	public BubbleGraph2DWidgetFigure(AbstractBaseEditPart editpart) {
-		super(editpart);
-	}
+    public BubbleGraph2DWidgetFigure(AbstractBaseEditPart editpart) {
+        super(editpart);
+    }
 
-	@Override
-	protected BubbleGraph2DWidget createSWTWidget(Composite parent, int style) {
-		return new BubbleGraph2DWidget(parent, style);
-	}
+    @Override
+    protected BubbleGraph2DWidget createSWTWidget(Composite parent, int style) {
+        return new BubbleGraph2DWidget(parent, style);
+    }
 
 }

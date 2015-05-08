@@ -48,17 +48,17 @@ public interface ContextPopupPlugin extends Plugin {
  * given list of selected objects.
  * Creation date: (8.12.2001 12:45:31)
  * @param selectedObjects List of selected elements. All elements inhereit from
- * 						   com.cosylab.vdct.graphics.objects.Selectable interface. Typical there are objects:
+ *                            com.cosylab.vdct.graphics.objects.Selectable interface. Typical there are objects:
  * <ul>
- * 	<li><b>com.cosylab.vdct.graphics.objects.Group</b> - group
- * 	<li><b>com.cosylab.vdct.graphics.objects.Record</b> - record
- * 	<li><b>com.cosylab.vdct.graphics.objects.Template</b> - template instance
- * 	<li><b>com.cosylab.vdct.graphics.objects.Connector</b> - connector
- * 	<li><b>...</b>
+ *     <li><b>com.cosylab.vdct.graphics.objects.Group</b> - group
+ *     <li><b>com.cosylab.vdct.graphics.objects.Record</b> - record
+ *     <li><b>com.cosylab.vdct.graphics.objects.Template</b> - template instance
+ *     <li><b>com.cosylab.vdct.graphics.objects.Connector</b> - connector
+ *     <li><b>...</b>
  * </ul>
  * If list is <code>null</code>, then popup over empty workspace is issued.
  * @return java.util.Vector list of <code>javax.swing.JMenuItems</code> and/or <code>javax.swing.JMenu</code> and/or <code>javax.swing.JSeparator</code> objects
- * 							 to be added to the default list of popup items. Can also be null.
+ *                              to be added to the default list of popup items. Can also be null.
  */
 public Vector getItems(Vector selectedObjects);
 

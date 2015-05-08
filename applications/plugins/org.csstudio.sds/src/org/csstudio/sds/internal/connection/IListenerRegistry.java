@@ -20,23 +20,23 @@ import org.csstudio.dal.simple.ConnectionParameters;
  * 
  */
 public interface IListenerRegistry {
-	/**
-	 * Registers the specified {@link ChannelListener}. The listener will be
-	 * connected to the control system.
-	 * 
-	 * @param parameters
-	 *            the connection parameters
-	 * @param listener
-	 *            the listener
-	 */
-	void register(ConnectionParameters parameters, ChannelListener listener);
+    /**
+     * Registers the specified {@link ChannelListener}. The listener will be
+     * connected to the control system.
+     * 
+     * @param parameters
+     *            the connection parameters
+     * @param listener
+     *            the listener
+     */
+    void register(ConnectionParameters parameters, ChannelListener listener);
 
-	/**
-	 * Registers the specified {@link IPropertyChangeListener}. The listener
-	 * will be connected to the specified {@link WidgetProperty}.
-	 * 
-	 * @param property the property
-	 * @param listener the listener
-	 */
-	void register(WidgetProperty property, IPropertyChangeListener listener);
+    /**
+     * Registers the specified {@link IPropertyChangeListener}. The listener
+     * will be connected to the specified {@link WidgetProperty}.
+     * 
+     * @param property the property
+     * @param listener the listener
+     */
+    void register(WidgetProperty property, IPropertyChangeListener listener);
 }

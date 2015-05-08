@@ -32,46 +32,46 @@ import org.jdom.Element;
  * 
  */
 public final class ProcessVariablePropertyPersistenceHandler extends
-		AbstractPropertyPersistenceHandler {
+        AbstractPropertyPersistenceHandler {
 
-	/**
-	 * XML tag name <code>ProcessVariable</code>.
-	 */
-	public static final String XML_ELEMENT_PROCESSVARIABLE = "processvariable"; //$NON-NLS-1$
-	
-	/**
-	 * XML tag name <code>value</code>.
-	 */
-	public static final String XML_ATTRIBUTE_VALUE = "value";
+    /**
+     * XML tag name <code>ProcessVariable</code>.
+     */
+    public static final String XML_ELEMENT_PROCESSVARIABLE = "processvariable"; //$NON-NLS-1$
+    
+    /**
+     * XML tag name <code>value</code>.
+     */
+    public static final String XML_ATTRIBUTE_VALUE = "value";
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void writeProperty(final Element domElement,
-			final Object propertyValue) {
-		IProcessVariableAddress pv = (IProcessVariableAddress) propertyValue;
-		Element pvElement = new Element(XML_ELEMENT_PROCESSVARIABLE);
-		if (pv==null) {
-			pvElement.setAttribute(XML_ATTRIBUTE_VALUE, ""); //$NON-NLS-1$
-		} else {
-			pvElement.setAttribute(XML_ATTRIBUTE_VALUE, pv.getFullName()); 
-		}
-		domElement.addContent(pvElement);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeProperty(final Element domElement,
+            final Object propertyValue) {
+        IProcessVariableAddress pv = (IProcessVariableAddress) propertyValue;
+        Element pvElement = new Element(XML_ELEMENT_PROCESSVARIABLE);
+        if (pv==null) {
+            pvElement.setAttribute(XML_ATTRIBUTE_VALUE, ""); //$NON-NLS-1$
+        } else {
+            pvElement.setAttribute(XML_ATTRIBUTE_VALUE, pv.getFullName()); 
+        }
+        domElement.addContent(pvElement);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object readProperty(final Element domElement) {
-		Element pvElement = domElement.getChild(XML_ELEMENT_PROCESSVARIABLE);
-		String value = pvElement.getAttributeValue(XML_ATTRIBUTE_VALUE);
-		if (value==null || value.trim().length()==0) {
-			return null;
-		} else {
-			IProcessVariableAddress processVariable = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(value);
-			return processVariable;
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object readProperty(final Element domElement) {
+        Element pvElement = domElement.getChild(XML_ELEMENT_PROCESSVARIABLE);
+        String value = pvElement.getAttributeValue(XML_ATTRIBUTE_VALUE);
+        if (value==null || value.trim().length()==0) {
+            return null;
+        } else {
+            IProcessVariableAddress processVariable = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(value);
+            return processVariable;
+        }
+    }
 }

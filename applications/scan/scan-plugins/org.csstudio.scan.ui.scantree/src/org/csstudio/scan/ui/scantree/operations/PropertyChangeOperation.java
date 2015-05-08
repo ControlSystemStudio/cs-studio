@@ -125,7 +125,7 @@ public class PropertyChangeOperation extends AbstractOperation
                             ExceptionDetailsErrorDialog.openError(shell, Messages.Error, ex);
                         }
                     });
-                	final String operation = PropertyChangeOperation.this.toString();
+                    final String operation = PropertyChangeOperation.this.toString();
                     return new Status(IStatus.WARNING, Activator.PLUGIN_ID, operation, ex);
                 }
 

@@ -39,56 +39,56 @@ import org.eclipse.gef.EditPart;
  */
 public final class PolygonEditPart extends AbstractWidgetEditPart {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		RefreshablePolygonFigure polygon = new RefreshablePolygonFigure();
-		PolygonModel model = (PolygonModel) getWidgetModel();
-		polygon.setPoints(model.getPoints());
-		polygon.setFill(model.getFill());
-		return polygon;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        RefreshablePolygonFigure polygon = new RefreshablePolygonFigure();
+        PolygonModel model = (PolygonModel) getWidgetModel();
+        polygon.setPoints(model.getPoints());
+        polygon.setFill(model.getFill());
+        return polygon;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		// fill
-		IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshablePolygonFigure polygon = (RefreshablePolygonFigure) refreshableFigure;
-				polygon.setFill((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractPolyModel.PROP_FILL, fillHandler);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        // fill
+        IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                RefreshablePolygonFigure polygon = (RefreshablePolygonFigure) refreshableFigure;
+                polygon.setFill((Double) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(AbstractPolyModel.PROP_FILL, fillHandler);
 
-		// points
-		IWidgetPropertyChangeHandler pointsHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshablePolygonFigure polygon = (RefreshablePolygonFigure) refreshableFigure;
-				PointList points = (PointList) newValue;
-				polygon.setPoints(points);
-				
-				// deselect the widget (this refreshes the polypoint drag handles)
-				int selectionState = getSelected();
-				setSelected(EditPart.SELECTED_NONE);
+        // points
+        IWidgetPropertyChangeHandler pointsHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                RefreshablePolygonFigure polygon = (RefreshablePolygonFigure) refreshableFigure;
+                PointList points = (PointList) newValue;
+                polygon.setPoints(points);
+                
+                // deselect the widget (this refreshes the polypoint drag handles)
+                int selectionState = getSelected();
+                setSelected(EditPart.SELECTED_NONE);
 
-				doRefreshVisuals(polygon);
-				
-				// restore the selection state
-				setSelected(selectionState);
-				
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractPolyModel.PROP_POINTS, pointsHandler);
-	}
+                doRefreshVisuals(polygon);
+                
+                // restore the selection state
+                setSelected(selectionState);
+                
+                return true;
+            }
+        };
+        setPropertyChangeHandler(AbstractPolyModel.PROP_POINTS, pointsHandler);
+    }
 }

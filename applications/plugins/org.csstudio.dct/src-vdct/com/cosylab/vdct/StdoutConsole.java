@@ -35,33 +35,33 @@ package com.cosylab.vdct;
 public class StdoutConsole implements ConsoleInterface {
 
 public void flush() {
-	// can't flush stdout in the same way
-	System.out.flush();
+    // can't flush stdout in the same way
+    System.out.flush();
 }
 
 public void print(String text) {
-	System.out.print(text);
+    System.out.print(text);
 }
 
 public void println() {
-	System.out.println();
+    System.out.println();
 }
 
 public void println(String text) {
-	System.out.println(text);
+    System.out.println(text);
 }
 
 public void println(Throwable thr) {
-	System.out.println(thr.toString()+"\n");
-	
-	// some debug info in development phase
-	System.err.println();
-	thr.printStackTrace(System.err);
-	System.err.println();
+    System.out.println(thr.toString()+"\n");
+    
+    // some debug info in development phase
+    System.err.println();
+    thr.printStackTrace(System.err);
+    System.err.println();
 }
 
 public void silent(String string) {
-	System.out.print(string);
+    System.out.print(string);
 }
 
 }

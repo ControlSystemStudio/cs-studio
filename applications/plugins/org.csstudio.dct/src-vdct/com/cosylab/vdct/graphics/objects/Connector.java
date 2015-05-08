@@ -48,54 +48,54 @@ import java.awt.event.*;
  * @author Matej Sekoranja
  */
 public class Connector extends VisibleObject implements Descriptable, InLink, Movable, OutLink, Popupable, Selectable {
-	private static final String modeString = "Mode";
-	private static final String normalString = "Normal";
-	private static final String invisibleString = "Invisible";
-	private static final String inputString = "External INPUT";
-	private static final String outputString = "External OUTPUT";
+    private static final String modeString = "Mode";
+    private static final String normalString = "Normal";
+    private static final String invisibleString = "Invisible";
+    private static final String inputString = "External INPUT";
+    private static final String outputString = "External OUTPUT";
 
-	class PopupMenuHandler implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			String action = e.getActionCommand();
-			if (action.equals(descriptionString)) {
-				//setDescription();
-				com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
-			}
-			else if (action.equals(addConnectorString)) {
-				addConnector();
-				com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
-			}
-			else if (action.equals(removeConnectorString)) {
-				bypass();
-				com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
-			}
-			else if (action.equals(normalString)) {
-				setMode(OutLink.NORMAL_MODE);
-				com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
-			}
-			else if (action.equals(invisibleString)) {
-				setMode(OutLink.INVISIBLE_MODE);
-				com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
-			}
-			else if (action.equals(inputString)) {
-				setMode(OutLink.EXTERNAL_INPUT_MODE);
-				com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
-			}
-			else if (action.equals(outputString)) {
-				setMode(OutLink.EXTERNAL_OUTPUT_MODE);
-				com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
-			}
-			
-		}
-	}
-	protected InLink inlink = null;
-	protected OutLink outlink = null;
-	protected String ID;
-	protected boolean disconnected = false;
-	protected int mode = OutLink.NORMAL_MODE;
-	private static final String descriptionString = "Description";
-	private static final String addConnectorString = "Add connector";
-	private static final String removeConnectorString = "Remove connector";
+    class PopupMenuHandler implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            String action = e.getActionCommand();
+            if (action.equals(descriptionString)) {
+                //setDescription();
+                com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
+            }
+            else if (action.equals(addConnectorString)) {
+                addConnector();
+                com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
+            }
+            else if (action.equals(removeConnectorString)) {
+                bypass();
+                com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
+            }
+            else if (action.equals(normalString)) {
+                setMode(OutLink.NORMAL_MODE);
+                com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
+            }
+            else if (action.equals(invisibleString)) {
+                setMode(OutLink.INVISIBLE_MODE);
+                com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
+            }
+            else if (action.equals(inputString)) {
+                setMode(OutLink.EXTERNAL_INPUT_MODE);
+                com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
+            }
+            else if (action.equals(outputString)) {
+                setMode(OutLink.EXTERNAL_OUTPUT_MODE);
+                com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
+            }
+            
+        }
+    }
+    protected InLink inlink = null;
+    protected OutLink outlink = null;
+    protected String ID;
+    protected boolean disconnected = false;
+    protected int mode = OutLink.NORMAL_MODE;
+    private static final String descriptionString = "Description";
+    private static final String addConnectorString = "Add connector";
+    private static final String removeConnectorString = "Remove connector";
 /**
  * Insert the method's description here.
  * Creation date: (1.2.2001 17:22:29)
@@ -104,119 +104,119 @@ public class Connector extends VisibleObject implements Descriptable, InLink, Mo
  * @param inlink com.cosylab.vdct.graphics.objects.InLink
  */
 public Connector(String id, LinkManagerObject parent, OutLink outlink, InLink inlink) {
-	super(parent);
-	setID(id);
-	
-	if (outlink instanceof VisibleObject)
-		setColor(((VisibleObject)outlink).getColor());
-	else
-		setColor(Constants.FRAME_COLOR);
+    super(parent);
+    setID(id);
+    
+    if (outlink instanceof VisibleObject)
+        setColor(((VisibleObject)outlink).getColor());
+    else
+        setColor(Constants.FRAME_COLOR);
 
-	//BugFix RT#12125&12122 by jbobnar
-	boolean z = true;
-	boolean outTurn = false;
-	int outX = -1;
-	int inX = -1;
-	if (inlink != null) {
-	    if (inlink instanceof Macro) {
-	        z = inlink.isRight();
-	    } else {
-	        if (outlink != null) outX = outlink.getOutX();
-	        inX = inlink.getInX();
-	    }
-	}
-	if (outlink != null) {
-	    outTurn = outlink.isRight();
-	}
-	//end bugfix
-	
-	if (inlink!=null) inlink.setOutput(this, outlink);
-	if (outlink!=null) outlink.setInput(this);
-	
-	setInput(inlink); 
-	setOutput(outlink, null);
-	setWidth(Constants.CONNECTOR_WIDTH);
-	setHeight(Constants.CONNECTOR_HEIGHT);
+    //BugFix RT#12125&12122 by jbobnar
+    boolean z = true;
+    boolean outTurn = false;
+    int outX = -1;
+    int inX = -1;
+    if (inlink != null) {
+        if (inlink instanceof Macro) {
+            z = inlink.isRight();
+        } else {
+            if (outlink != null) outX = outlink.getOutX();
+            inX = inlink.getInX();
+        }
+    }
+    if (outlink != null) {
+        outTurn = outlink.isRight();
+    }
+    //end bugfix
+    
+    if (inlink!=null) inlink.setOutput(this, outlink);
+    if (outlink!=null) outlink.setInput(this);
+    
+    setInput(inlink); 
+    setOutput(outlink, null);
+    setWidth(Constants.CONNECTOR_WIDTH);
+    setHeight(Constants.CONNECTOR_HEIGHT);
 
-	/// !!! better initial layout
-	// out of screen
-	if ((inlink==null) && (outlink==null)) {
-		setX(parent.getX()-(3*parent.getWidth())/2);
-		setY(parent.getY()+parent.getHeight()/2);
-	}
-	else if (inlink==null) {
-		setX(outlink.getOutX()-(3*getWidth())+2);
-		setY(outlink.getOutY()+(3*getHeight())+2);
-	}
-	else if (outlink==null) {
-		setX(inlink.getInX()-(3*getWidth())+2);
-		setY(inlink.getInY()+(3*getHeight())+2);
-	}
-	else if (!inlink.getLayerID().equals(outlink.getLayerID()))
-	{
-		setX(parent.getX()-(3*parent.getWidth())/2);
-		setY(parent.getY()+parent.getHeight()/2);
-	}
-	else {
-	    // BugFix RT#12125&12122 by jbobnar
-	    boolean setY = true;
-	    int ir = inlink.getRightX();
-	    int il = inlink.getLeftX();
-	    int or = outlink.getRightX();
-	    int ol = outlink.getLeftX();
-	    int in = inlink.getInX();
-	    int out = outlink.getOutX();
+    /// !!! better initial layout
+    // out of screen
+    if ((inlink==null) && (outlink==null)) {
+        setX(parent.getX()-(3*parent.getWidth())/2);
+        setY(parent.getY()+parent.getHeight()/2);
+    }
+    else if (inlink==null) {
+        setX(outlink.getOutX()-(3*getWidth())+2);
+        setY(outlink.getOutY()+(3*getHeight())+2);
+    }
+    else if (outlink==null) {
+        setX(inlink.getInX()-(3*getWidth())+2);
+        setY(inlink.getInY()+(3*getHeight())+2);
+    }
+    else if (!inlink.getLayerID().equals(outlink.getLayerID()))
+    {
+        setX(parent.getX()-(3*parent.getWidth())/2);
+        setY(parent.getY()+parent.getHeight()/2);
+    }
+    else {
+        // BugFix RT#12125&12122 by jbobnar
+        boolean setY = true;
+        int ir = inlink.getRightX();
+        int il = inlink.getLeftX();
+        int or = outlink.getRightX();
+        int ol = outlink.getLeftX();
+        int in = inlink.getInX();
+        int out = outlink.getOutX();
 
-	    if (il > ol && ir > or && il <= or && !inlink.isRight()) {
-	        if (outTurn != outlink.isRight())
-	            setX((inX != in) ? inX : (inX < or) ? out : outX);
-	        else         
-	            setX((inX != in) || (outX != out) ? inX : out);
-//	        System.out.println("1");
-	    }
-	    else if (ir < or && il > ol ) {
-//	        System.out.println("2");
-	        setX(out);
-	    } 
-	    else if ((ol > ir)){
-//	        System.out.println("3");
-	        if (outlink instanceof Port) {
-	            setX(in + ir - il + 5);
-	        } else 
-	            setX(inX != in ? in + ir - il : in);
-	    } else {
-//	        System.out.println("4");
-	        if (!z && !(outlink instanceof TemplateEPICSMacro)) {
-	            setX(in + ir - il);
-	        } else  {
-	            if (outlink instanceof TemplateEPICSMacro && !(inlink instanceof Connector) && inlink.isRight()){
-	                setX(out);
-	            } else {
-	                setY(inlink.getInY());
-	                setY = false;
-	                setX(in);
-	            }
-	        }
+        if (il > ol && ir > or && il <= or && !inlink.isRight()) {
+            if (outTurn != outlink.isRight())
+                setX((inX != in) ? inX : (inX < or) ? out : outX);
+            else         
+                setX((inX != in) || (outX != out) ? inX : out);
+//            System.out.println("1");
+        }
+        else if (ir < or && il > ol ) {
+//            System.out.println("2");
+            setX(out);
+        } 
+        else if ((ol > ir)){
+//            System.out.println("3");
+            if (outlink instanceof Port) {
+                setX(in + ir - il + 5);
+            } else 
+                setX(inX != in ? in + ir - il : in);
+        } else {
+//            System.out.println("4");
+            if (!z && !(outlink instanceof TemplateEPICSMacro)) {
+                setX(in + ir - il);
+            } else  {
+                if (outlink instanceof TemplateEPICSMacro && !(inlink instanceof Connector) && inlink.isRight()){
+                    setX(out);
+                } else {
+                    setY(inlink.getInY());
+                    setY = false;
+                    setX(in);
+                }
+            }
 
-	    }
-	    if (setY)
-	        setY((inlink.getInY()+outlink.getOutY())/2);
-	}
+        }
+        if (setY)
+            setY((inlink.getInY()+outlink.getOutY())/2);
+    }
 
-	// boundaries check
-	if (getX() < 0)
-		setX(0);
-	else if (getX() > ViewState.getInstance().getWidth())
-		setX(ViewState.getInstance().getWidth());
-	
-	if (getY() < 0)
-		setY(0);
-	else if (getY() > ViewState.getInstance().getWidth())
-		setY(ViewState.getInstance().getHeight());
-	
-	if (Settings.getInstance().getSnapToGrid())
-		snapToGrid();
-		
+    // boundaries check
+    if (getX() < 0)
+        setX(0);
+    else if (getX() > ViewState.getInstance().getWidth())
+        setX(ViewState.getInstance().getWidth());
+    
+    if (getY() < 0)
+        setY(0);
+    else if (getY() > ViewState.getInstance().getWidth())
+        setY(ViewState.getInstance().getHeight());
+    
+    if (Settings.getInstance().getSnapToGrid())
+        snapToGrid();
+        
 }
 /**
  * Insert the method's description here.
@@ -238,40 +238,40 @@ public Connector addConnector() {
         start = (EPICSLink) EPICSLinkOut.getEndPoint(this);
     }
 
-	if (start==null) return null;
-	String id = EPICSLinkOut.generateConnectorID(start);
-	String inlinkStr = "";
-	String outlinkStr = getID();
-	if (inlink!=null) inlinkStr = inlink.getID();
-	Connector connector = new Connector(id, (LinkManagerObject)getParent(), this, getInput());
-	getParent().addSubObject(id, connector);
-	UndoManager.getInstance().addAction(new CreateConnectorAction(connector, inlinkStr, outlinkStr));
-	return connector;
+    if (start==null) return null;
+    String id = EPICSLinkOut.generateConnectorID(start);
+    String inlinkStr = "";
+    String outlinkStr = getID();
+    if (inlink!=null) inlinkStr = inlink.getID();
+    Connector connector = new Connector(id, (LinkManagerObject)getParent(), this, getInput());
+    getParent().addSubObject(id, connector);
+    UndoManager.getInstance().addAction(new CreateConnectorAction(connector, inlinkStr, outlinkStr));
+    return connector;
 }
 /**
  * Insert the method's description here.
  * Creation date: (4.2.2001 12:35:05)
  */
 public void bypass() {
-	if (!isDestroyed()) {
-		super.destroy();
+    if (!isDestroyed()) {
+        super.destroy();
 
-		String inlinkStr = "";
-		String outlinkStr = "";
-		if (inlink!=null) inlinkStr=inlink.getID();
-		if (outlink!=null) outlinkStr=outlink.getID();
+        String inlinkStr = "";
+        String outlinkStr = "";
+        if (inlink!=null) inlinkStr=inlink.getID();
+        if (outlink!=null) outlinkStr=outlink.getID();
 
-		InLink il = inlink;
-		if (inlink!=null) inlink.setOutput(outlink, this);
-		if (outlink!=null) outlink.setInput(il);
+        InLink il = inlink;
+        if (inlink!=null) inlink.setOutput(outlink, this);
+        if (outlink!=null) outlink.setInput(il);
 
-	
-		getParent().removeObject(ID);
-		setInput(null);
-		setOutput(null, outlink);
-		
-		UndoManager.getInstance().addAction(new DeleteConnectorAction(this, inlinkStr, outlinkStr));
-	}
+    
+        getParent().removeObject(ID);
+        setInput(null);
+        setOutput(null, outlink);
+        
+        UndoManager.getInstance().addAction(new DeleteConnectorAction(this, inlinkStr, outlinkStr));
+    }
 }
 /**
  * Insert the method's description here.
@@ -281,16 +281,16 @@ public void bypass() {
  * @param dy int
  */
 public boolean checkMove(int dx, int dy) {
-	ViewState view = ViewState.getInstance();
+    ViewState view = ViewState.getInstance();
 
-	if ((getX()<-dx) || (getY()<-dy) || 
-		(getX()>(view.getWidth()-getWidth()-dx)) || (getY()>(view.getHeight()-getHeight()-dy)) /*||
-		// y must be between in/out !!!
-		(((y+dy)-getOutY())*((y+dy)-getInY())>0)*/
-		)
-		return false;
-	else
-		return true;
+    if ((getX()<-dx) || (getY()<-dy) || 
+        (getX()>(view.getWidth()-getWidth()-dx)) || (getY()>(view.getHeight()-getHeight()-dy)) /*||
+        // y must be between in/out !!!
+        (((y+dy)-getOutY())*((y+dy)-getInY())>0)*/
+        )
+        return false;
+    else
+        return true;
 }
 /**
  * Insert the method's description here.
@@ -298,26 +298,26 @@ public boolean checkMove(int dx, int dy) {
  * @return com.cosylab.vdct.graphics.objects.Connector.PopupMenuHandler
  */
 private com.cosylab.vdct.graphics.objects.Connector.PopupMenuHandler createPopupmenuHandler() {
-	return new PopupMenuHandler();
+    return new PopupMenuHandler();
 }
 /**
  * Insert the method's description here.
  * Creation date: (1.2.2001 16:40:51)
  */
 public void destroy() {
-	if (!isDestroyed()) {
-		super.destroy();
-		getParent().removeObject(ID);
+    if (!isDestroyed()) {
+        super.destroy();
+        getParent().removeObject(ID);
 
-		String inlinkStr = "";
-		String outlinkStr = "";
-		if (inlink!=null) inlinkStr=inlink.getID();
-		if (outlink!=null) outlinkStr=outlink.getID();
-		UndoManager.getInstance().addAction(new DeleteConnectorAction(this, inlinkStr, outlinkStr));
-		
-		setInput(null);
-		setOutput(null, outlink);
-	}
+        String inlinkStr = "";
+        String outlinkStr = "";
+        if (inlink!=null) inlinkStr=inlink.getID();
+        if (outlink!=null) outlinkStr=outlink.getID();
+        UndoManager.getInstance().addAction(new DeleteConnectorAction(this, inlinkStr, outlinkStr));
+        
+        setInput(null);
+        setOutput(null, outlink);
+    }
 }
 
 /**
@@ -325,13 +325,13 @@ public void destroy() {
  * Creation date: (29.1.2001 20:05:51)
  */
 public void disconnect(Linkable disconnector) {
-	if (!disconnected && ((inlink==disconnector) || (outlink==disconnector))) {
-		if (disconnector==inlink) inlink=null; //setInput(null);
-		if (disconnector==outlink) outlink=null; //setOutput(null, outlink);
-		if (((inlink==null) || inlink.isDisconnected()) &&
-			((outlink==null) || outlink.isDisconnected()))
-				destroy();
-	}
+    if (!disconnected && ((inlink==disconnector) || (outlink==disconnector))) {
+        if (disconnector==inlink) inlink=null; //setInput(null);
+        if (disconnector==outlink) outlink=null; //setOutput(null, outlink);
+        if (((inlink==null) || inlink.isDisconnected()) &&
+            ((outlink==null) || outlink.isDisconnected()))
+                destroy();
+    }
 }
 /**
  * Insert the method's description here.
@@ -340,80 +340,80 @@ public void disconnect(Linkable disconnector) {
  * @param hilited boolean
  */
 protected void draw(java.awt.Graphics g, boolean hilited) {
-	if (disconnected) return;
-	
-	ViewState view = ViewState.getInstance();
+    if (disconnected) return;
+    
+    ViewState view = ViewState.getInstance();
 
-	int rwidth = getRwidth();
-	int rheight = getRheight();
-	int rrx = getRx()-view.getRx()-rwidth/2;	// position is center
-	int rry = getRy()-view.getRy()-rheight/2;
-	
+    int rwidth = getRwidth();
+    int rheight = getRheight();
+    int rrx = getRx()-view.getRx()-rwidth/2;    // position is center
+    int rry = getRy()-view.getRy()-rheight/2;
+    
     boolean zoom = (view.getScale() < 1.0) && view.isZoomOnHilited() && view.isHilitedObject(this);
-	
-	if (!DrawingSurface.getInstance().isPrinting()) {
-		// clipping
-		if ((!(rrx>view.getViewWidth()) || (rry>view.getViewHeight())
-		    || ((rrx+rwidth)<0) || ((rry+rheight)<0))) {
-	
-			// fill or not to fill ?!!
-	
-			/*
-			if (!hilited) g.setColor(getColor());
-			else g.setColor((this==view.getHilitedObject()) ? 
-							Constants.HILITE_COLOR : getColor());
-			*/
-//		    if (zoom) {
-//		        rwidth /= Rscale;
-//		        rheight /= Rscale;
-//		        rrx -= (rwidth - getRwidth())/2;
-//		        rry -= (rheight - getRheight())/2;
-//		        if (view.getRx() < 0)
-//		            rrx = rrx < 0 ? 2 : rrx;
-//		        if (view.getRy() < 0) 
-//		            rry = rry <= 0 ? 2 : rry;
-//		        Rscale = 1.0;
-//		    }
-		    
-			
-			if (view.isSelected(this))
-			{
-				g.setColor(Constants.PICK_COLOR);
-				g.fillRect(rrx, rry, rwidth, rheight);
-			}
-	
-			Color c = getVisibleColor();
-			if (hilited)
-				c = (view.isHilitedObject(this)) ? Constants.HILITE_COLOR : c;
-			g.setColor(c);
+    
+    if (!DrawingSurface.getInstance().isPrinting()) {
+        // clipping
+        if ((!(rrx>view.getViewWidth()) || (rry>view.getViewHeight())
+            || ((rrx+rwidth)<0) || ((rry+rheight)<0))) {
+    
+            // fill or not to fill ?!!
+    
+            /*
+            if (!hilited) g.setColor(getColor());
+            else g.setColor((this==view.getHilitedObject()) ? 
+                            Constants.HILITE_COLOR : getColor());
+            */
+//            if (zoom) {
+//                rwidth /= Rscale;
+//                rheight /= Rscale;
+//                rrx -= (rwidth - getRwidth())/2;
+//                rry -= (rheight - getRheight())/2;
+//                if (view.getRx() < 0)
+//                    rrx = rrx < 0 ? 2 : rrx;
+//                if (view.getRy() < 0) 
+//                    rry = rry <= 0 ? 2 : rry;
+//                Rscale = 1.0;
+//            }
+            
+            
+            if (view.isSelected(this))
+            {
+                g.setColor(Constants.PICK_COLOR);
+                g.fillRect(rrx, rry, rwidth, rheight);
+            }
+    
+            Color c = getVisibleColor();
+            if (hilited)
+                c = (view.isHilitedObject(this)) ? Constants.HILITE_COLOR : c;
+            g.setColor(c);
 
-			if (inlink!=null || hilited) 
-				g.drawRect(rrx, rry, rwidth, rheight);
-			else if (getMode()!=EXTERNAL_OUTPUT_MODE && getMode()!=EXTERNAL_INPUT_MODE)
-			{
-				g.drawLine(rrx, rry, rrx+rwidth, rry+rheight);
-				g.drawLine(rrx+rwidth, rry, rrx, rry+rheight);
-			}
-		
-		}
-	}
+            if (inlink!=null || hilited) 
+                g.drawRect(rrx, rry, rwidth, rheight);
+            else if (getMode()!=EXTERNAL_OUTPUT_MODE && getMode()!=EXTERNAL_INPUT_MODE)
+            {
+                g.drawLine(rrx, rry, rrx+rwidth, rry+rheight);
+                g.drawLine(rrx+rwidth, rry, rrx, rry+rheight);
+            }
+        
+        }
+    }
 
-	if (/*!hilited &&*/ (inlink!=null || getMode()==EXTERNAL_OUTPUT_MODE || getMode()==EXTERNAL_INPUT_MODE)) {
+    if (/*!hilited &&*/ (inlink!=null || getMode()==EXTERNAL_OUTPUT_MODE || getMode()==EXTERNAL_INPUT_MODE)) {
 
-		g.setColor(hilited && view.isHilitedObject(this) && !zoom ? Constants.HILITE_COLOR : getVisibleColor());
+        g.setColor(hilited && view.isHilitedObject(this) && !zoom ? Constants.HILITE_COLOR : getVisibleColor());
 
-	
-			if (inlink!=null){
-				LinkDrawer.drawLink(g, this, inlink, getQueueCount(), 
-									getOutX()<inlink.getInX());
-			}
-			else if (getOutput()!=null){
-				LinkDrawer.drawLink(g, this, null, getQueueCount(), 
-									getOutput().getOutX()<getX());
-			}
+    
+            if (inlink!=null){
+                LinkDrawer.drawLink(g, this, inlink, getQueueCount(), 
+                                    getOutX()<inlink.getInX());
+            }
+            else if (getOutput()!=null){
+                LinkDrawer.drawLink(g, this, null, getQueueCount(), 
+                                    getOutput().getOutX()<getX());
+            }
 
-	}  
-	
+    }  
+    
 }
 /**
  * Insert the method's description here.
@@ -421,7 +421,7 @@ protected void draw(java.awt.Graphics g, boolean hilited) {
  * @return java.lang.String
  */
 public java.lang.String getDescription() {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -429,7 +429,7 @@ public java.lang.String getDescription() {
  * @return java.lang.String
  */
 public java.lang.String getHashID() {
-	return getID();
+    return getID();
 }
 /**
  * Insert the method's description here.
@@ -437,7 +437,7 @@ public java.lang.String getHashID() {
  * @return java.lang.String
  */
 public java.lang.String getID() {
-	return ID;
+    return ID;
 }
 /**
  * Insert the method's description here.
@@ -445,7 +445,7 @@ public java.lang.String getID() {
  * @return com.cosylab.vdct.graphics.objects.InLink
  */
 public InLink getInput() {
-	return inlink;
+    return inlink;
 }
 /**
  * Insert the method's description here.
@@ -453,7 +453,7 @@ public InLink getInput() {
  * @return int
  */
 public int getInX() {
-	return getX();
+    return getX();
 }
 /**
  * Insert the method's description here.
@@ -461,7 +461,7 @@ public int getInX() {
  * @return int
  */
 public int getInY() {
-	return getY();
+    return getY();
 }
 /**
  * Insert the method's description here.
@@ -469,53 +469,53 @@ public int getInY() {
  * @return java.util.Vector
  */
 public java.util.Vector getItems() {
-	Vector items = new Vector();
+    Vector items = new Vector();
 
-	ActionListener al = createPopupmenuHandler();
+    ActionListener al = createPopupmenuHandler();
 
-	JMenuItem descItem = new JMenuItem(descriptionString);
+    JMenuItem descItem = new JMenuItem(descriptionString);
 descItem.setEnabled(false); //!!!
-	descItem.addActionListener(al);
-	items.addElement(descItem);
+    descItem.addActionListener(al);
+    items.addElement(descItem);
 
-	JMenuItem addItem = new JMenuItem(addConnectorString);
-	addItem.addActionListener(al);
-	items.addElement(addItem);
-	
-	JMenuItem removeItem = new JMenuItem(removeConnectorString);
-	removeItem.addActionListener(al);
-	items.addElement(removeItem);
-	
-	// modes
-	items.addElement(new JSeparator());
-	
-	JMenu modeMenu = new JMenu(modeString);
-	items.addElement(modeMenu);
+    JMenuItem addItem = new JMenuItem(addConnectorString);
+    addItem.addActionListener(al);
+    items.addElement(addItem);
+    
+    JMenuItem removeItem = new JMenuItem(removeConnectorString);
+    removeItem.addActionListener(al);
+    items.addElement(removeItem);
+    
+    // modes
+    items.addElement(new JSeparator());
+    
+    JMenu modeMenu = new JMenu(modeString);
+    items.addElement(modeMenu);
 
-	JRadioButtonMenuItem normalModeItem = new JRadioButtonMenuItem(normalString, getMode()==OutLink.NORMAL_MODE);
-	normalModeItem.setEnabled(getMode()!=OutLink.NORMAL_MODE);
-	normalModeItem.addActionListener(al);
-	modeMenu.add(normalModeItem);
+    JRadioButtonMenuItem normalModeItem = new JRadioButtonMenuItem(normalString, getMode()==OutLink.NORMAL_MODE);
+    normalModeItem.setEnabled(getMode()!=OutLink.NORMAL_MODE);
+    normalModeItem.addActionListener(al);
+    modeMenu.add(normalModeItem);
 
-	JRadioButtonMenuItem invisibleModeItem = new JRadioButtonMenuItem(invisibleString, getMode()==OutLink.INVISIBLE_MODE);
-	invisibleModeItem.setEnabled(getMode()!=OutLink.INVISIBLE_MODE && getInput()!=null && (getOutput()==null || getOutput().getMode()!=OutLink.INVISIBLE_MODE));
-	invisibleModeItem.addActionListener(al);
-	modeMenu.add(invisibleModeItem);
-	
-	modeMenu.add(new JSeparator());
-	
-	JRadioButtonMenuItem inputModeItem = new JRadioButtonMenuItem(inputString, getMode()==OutLink.EXTERNAL_INPUT_MODE);
-	inputModeItem.setEnabled(getMode()!=OutLink.EXTERNAL_INPUT_MODE && getInput()==null);	// if endpoint
-	inputModeItem.addActionListener(al);
-	modeMenu.add(inputModeItem);
+    JRadioButtonMenuItem invisibleModeItem = new JRadioButtonMenuItem(invisibleString, getMode()==OutLink.INVISIBLE_MODE);
+    invisibleModeItem.setEnabled(getMode()!=OutLink.INVISIBLE_MODE && getInput()!=null && (getOutput()==null || getOutput().getMode()!=OutLink.INVISIBLE_MODE));
+    invisibleModeItem.addActionListener(al);
+    modeMenu.add(invisibleModeItem);
+    
+    modeMenu.add(new JSeparator());
+    
+    JRadioButtonMenuItem inputModeItem = new JRadioButtonMenuItem(inputString, getMode()==OutLink.EXTERNAL_INPUT_MODE);
+    inputModeItem.setEnabled(getMode()!=OutLink.EXTERNAL_INPUT_MODE && getInput()==null);    // if endpoint
+    inputModeItem.addActionListener(al);
+    modeMenu.add(inputModeItem);
 
-	JRadioButtonMenuItem outputModeItem = new JRadioButtonMenuItem(outputString, getMode()==OutLink.EXTERNAL_OUTPUT_MODE);
-	outputModeItem.setEnabled(getMode()!=OutLink.EXTERNAL_OUTPUT_MODE && getInput()==null);	// if endpoint
-	outputModeItem.addActionListener(al);
-	modeMenu.add(outputModeItem);
+    JRadioButtonMenuItem outputModeItem = new JRadioButtonMenuItem(outputString, getMode()==OutLink.EXTERNAL_OUTPUT_MODE);
+    outputModeItem.setEnabled(getMode()!=OutLink.EXTERNAL_OUTPUT_MODE && getInput()==null);    // if endpoint
+    outputModeItem.addActionListener(al);
+    modeMenu.add(outputModeItem);
 
 
-	return items;
+    return items;
 }
 /**
  * Insert the method's description here.
@@ -523,7 +523,7 @@ descItem.setEnabled(false); //!!!
  * @return java.lang.String
  */
 public String getLayerID() {
-	return getParent().getParent().toString();
+    return getParent().getParent().toString();
 }
 /**
  * Insert the method's description here.
@@ -531,7 +531,7 @@ public String getLayerID() {
  * @return com.cosylab.vdct.graphics.objects.OutLink
  */
 public OutLink getOutput() {
-	return outlink;
+    return outlink;
 }
 /**
  * Insert the method's description here.
@@ -539,7 +539,7 @@ public OutLink getOutput() {
  * @return int
  */
 public int getOutX() {
-	return getX();
+    return getX();
 }
 /**
  * Insert the method's description here.
@@ -547,7 +547,7 @@ public int getOutX() {
  * @return int
  */
 public int getOutY() {
-	return getY();
+    return getY();
 }
 /**
  * Insert the method's description here.
@@ -555,10 +555,10 @@ public int getOutY() {
  * @return int
  */
 public int getQueueCount() {
-	if (!disconnected && (outlink!=null))
-		return outlink.getQueueCount()+1;
-	else
-		return 0;
+    if (!disconnected && (outlink!=null))
+        return outlink.getQueueCount()+1;
+    else
+        return 0;
 }
 /**
  * Insert the method's description here.
@@ -566,7 +566,7 @@ public int getQueueCount() {
  * @return boolean
  */
 public boolean isConnectable() {
-	return !disconnected;
+    return !disconnected;
 }
 /**
  * Insert the method's description here.
@@ -574,7 +574,7 @@ public boolean isConnectable() {
  * @return boolean
  */
 public boolean isDisconnected() {
-	return disconnected;
+    return disconnected;
 }
 /**
  * Insert the method's description here.
@@ -584,25 +584,25 @@ public boolean isDisconnected() {
  * @param dy int
  */
 public boolean move(int dx, int dy) {
-	if (checkMove(dx, dy)) {
-		x+=dx; 
-		/*
-		if ((outlink!=null) && (inlink!=null))
-			if (((y+dy)-getOutY())*((y+dy)-getInY())>0) {	// not in between
-				// fix !!!?
-			}
-			else
-				y+=dy;
-		else*/
-		y+=dy;
-		
-		revalidatePosition();
-		if (inlink instanceof Connector) ((Connector)inlink).revalidatePosition();
-		if (outlink instanceof Connector) ((Connector)outlink).revalidatePosition();
-		return true;
-	}
-	else 
-		return false;
+    if (checkMove(dx, dy)) {
+        x+=dx; 
+        /*
+        if ((outlink!=null) && (inlink!=null))
+            if (((y+dy)-getOutY())*((y+dy)-getInY())>0) {    // not in between
+                // fix !!!?
+            }
+            else
+                y+=dy;
+        else*/
+        y+=dy;
+        
+        revalidatePosition();
+        if (inlink instanceof Connector) ((Connector)inlink).revalidatePosition();
+        if (outlink instanceof Connector) ((Connector)outlink).revalidatePosition();
+        return true;
+    }
+    else 
+        return false;
 }
 /**
  * Insert the method's description here.
@@ -612,9 +612,9 @@ public void revalidatePosition() {
   if (inlink!=null && outlink!=null && mode!=INVISIBLE_MODE && outlink.getMode()!=INVISIBLE_MODE) { //order is important
     if (getQueueCount()%2==0) 
         //setX(inlink.getInX());
-		setX((inlink.getInX()+outlink.getOutX())/2);
+        setX((inlink.getInX()+outlink.getOutX())/2);
     else
-		setY((inlink.getInY()+outlink.getOutY())/2);
+        setY((inlink.getInY()+outlink.getOutY())/2);
   }
 
   double  Rscale = getRscale();
@@ -634,17 +634,17 @@ public void setDescription(java.lang.String description) {}
  * @param newID java.lang.String
  */
 public void setID(java.lang.String newID) {
-	ID = newID;
+    ID = newID;
 }
 /**
  * Insert the method's description here.
  * Creation date: (29.1.2001 20:05:52)
  */
 public void setInput(InLink input) {
-	if (inlink==input) return;
-	if (inlink!=null) inlink.disconnect(this);
-	inlink=input;
-	if ((inlink!=null) && (outlink!=null)) disconnected=false;
+    if (inlink==input) return;
+    if (inlink!=null) inlink.disconnect(this);
+    inlink=input;
+    if ((inlink!=null) && (outlink!=null)) disconnected=false;
 }
 /**
  * Insert the method's description here.
@@ -652,7 +652,7 @@ public void setInput(InLink input) {
  * @param id java.lang.String
  */
 public void setLayerID(String id) {
-	// not needed, dynamicaly retrieved via parent
+    // not needed, dynamicaly retrieved via parent
 }
 /**
  * Insert the method's description here.
@@ -661,12 +661,12 @@ public void setLayerID(String id) {
  * @param prevOutput com.cosylab.vdct.graphics.objects.OutLink
  */
 public void setOutput(OutLink output, OutLink prevOutput) {
-	if (outlink==output) return;
-	if (outlink!=null) outlink.disconnect(this);
-	outlink=output;
-	if ((inlink!=null) || (outlink!=null)) disconnected=false;
-	if (outlink instanceof VisibleObject)
-		setColor(((VisibleObject)outlink).getColor());
+    if (outlink==output) return;
+    if (outlink!=null) outlink.disconnect(this);
+    outlink=output;
+    if ((inlink!=null) || (outlink!=null)) disconnected=false;
+    if (outlink instanceof VisibleObject)
+        setColor(((VisibleObject)outlink).getColor());
 
 }
 /**
@@ -686,7 +686,7 @@ protected void validate() {
  */
 public int getMode()
 {
-	return mode;
+    return mode;
 }
 
 /**
@@ -695,7 +695,7 @@ public int getMode()
  */
 public void setMode(int mode)
 {
-	this.mode = mode;
+    this.mode = mode;
 }
 
 /**
@@ -706,17 +706,17 @@ public void setMode(int mode)
  * @param py int
  */
 public VisibleObject intersects(int px, int py) {
-	int rwidth = getRwidth();
-	int rheight = getRheight();
-	int rx = getRx()-rwidth/2;	// position is center
-	int ry = getRy()-rheight/2;
-	if ((rx<=px) && (ry<=py) && 
-			((rx+rwidth)>=px) && 
-			((ry+rheight)>=py)) return this;
-	else return null;
+    int rwidth = getRwidth();
+    int rheight = getRheight();
+    int rx = getRx()-rwidth/2;    // position is center
+    int ry = getRy()-rheight/2;
+    if ((rx<=px) && (ry<=py) && 
+            ((rx+rwidth)>=px) && 
+            ((ry+rheight)>=py)) return this;
+    else return null;
 }
 
-	/**
+    /**
  * Default impmlementation for square (must be rescaled)
  * p1 is upper-left point
  * Creation date: (19.12.2000 20:20:20)
@@ -728,14 +728,14 @@ public VisibleObject intersects(int px, int py) {
  */
 
 public VisibleObject intersects(int p1x, int p1y, int p2x, int p2y) {
-	int rwidth = getRwidth();
-	int rheight = getRheight();
-	int rx = getRx()-rwidth/2;	// position is center
-	int ry = getRy()-rheight/2;
-	if ((rx>=p1x) && (ry>=p1y) && 
-			((rx+rwidth)<=p2x) && 
-			((ry+rheight)<=p2y)) return this;
-	else return null;
+    int rwidth = getRwidth();
+    int rheight = getRheight();
+    int rx = getRx()-rwidth/2;    // position is center
+    int ry = getRy()-rheight/2;
+    if ((rx>=p1x) && (ry>=p1y) && 
+            ((rx+rwidth)<=p2x) && 
+            ((ry+rheight)<=p2y)) return this;
+    else return null;
 }
 
 /**
@@ -746,15 +746,15 @@ public void validateLink()
 }
 
 public int getLeftX() {
-	return getX();
+    return getX();
 }
 
 public int getRightX() {
-	return getX();
+    return getX();
 }
 
 public boolean isRight() {
-	return false;
+    return false;
 }
 
 //public String toString() {

@@ -39,75 +39,75 @@ import de.desy.language.libraries.utils.contract.Contract;
  * @version 0.1
  */
 public enum UIEvent {
-	/**
-	 * This Events indicates the change of one or more rules to be used in the
-	 * {@link CodeScanner} for highlighting source elements.
-	 */
-	HIGHLIGTHING_RULE_CHANGED,
+    /**
+     * This Events indicates the change of one or more rules to be used in the
+     * {@link CodeScanner} for highlighting source elements.
+     */
+    HIGHLIGTHING_RULE_CHANGED,
 
-	/**
-	 * This Events indicates the change of one or more text attributes in one
-	 * ore more rules to be used in the {@link CodeScanner} for highlighting
-	 * source elements.
-	 */
-	TEXT_ATTRIBUTE_CHANGED,
-	
-	/**
-	 * This Events indicates that a request to refresh the highlighting occurred.
-	 */
-	HIGHLIGHTING_REFRESH_REQUEST;
+    /**
+     * This Events indicates the change of one or more text attributes in one
+     * ore more rules to be used in the {@link CodeScanner} for highlighting
+     * source elements.
+     */
+    TEXT_ATTRIBUTE_CHANGED,
+    
+    /**
+     * This Events indicates that a request to refresh the highlighting occurred.
+     */
+    HIGHLIGHTING_REFRESH_REQUEST;
 
-	/**
-	 * A thread-safe set of all registered listeners.
-	 */
-	private CopyOnWriteArraySet<UIEventListener> _listenerList;
+    /**
+     * A thread-safe set of all registered listeners.
+     */
+    private CopyOnWriteArraySet<UIEventListener> _listenerList;
 
-	/**
-	 * Initiaaize the enumaeration elements.
-	 */
-	UIEvent() {
-		this._listenerList = new CopyOnWriteArraySet<UIEventListener>();
-	}
+    /**
+     * Initiaaize the enumaeration elements.
+     */
+    UIEvent() {
+        this._listenerList = new CopyOnWriteArraySet<UIEventListener>();
+    }
 
-	/**
-	 * Adds a listener to this UI event.
-	 * 
-	 * @param listener
-	 *            The listener to register, may not be null.
-	 */
-	public void addListener(final UIEventListener listener) {
-		Contract.requireNotNull("listener", listener);
+    /**
+     * Adds a listener to this UI event.
+     * 
+     * @param listener
+     *            The listener to register, may not be null.
+     */
+    public void addListener(final UIEventListener listener) {
+        Contract.requireNotNull("listener", listener);
 
-		this._listenerList.add(listener);
-	}
+        this._listenerList.add(listener);
+    }
 
-	/**
-	 * Removes a previously registered listener from this UI event. If the
-	 * listener to be removed was not registered before this request will be
-	 * ignored.
-	 * 
-	 * @param listenerToBeRemoved
-	 *            The listener to be removed, may not be null.
-	 */
-	public void removeListener(final UIEventListener listenerToBeRemoved) {
-		Contract.requireNotNull("listener", listenerToBeRemoved);
+    /**
+     * Removes a previously registered listener from this UI event. If the
+     * listener to be removed was not registered before this request will be
+     * ignored.
+     * 
+     * @param listenerToBeRemoved
+     *            The listener to be removed, may not be null.
+     */
+    public void removeListener(final UIEventListener listenerToBeRemoved) {
+        Contract.requireNotNull("listener", listenerToBeRemoved);
 
-		this._listenerList.remove(listenerToBeRemoved);
-	}
+        this._listenerList.remove(listenerToBeRemoved);
+    }
 
-	/**
-	 * Inform all listener registered to this event of its occurrence. Thrown
-	 * Exception and Errors of the listeners will be ignored and just logged in
-	 * the Java-default logger avail at {@link Logger#getLogger(String)}.
-	 */
-	public void triggerEvent() {
-		for (final UIEventListener listener : this._listenerList) {
-			try {
-				listener.eventOccourred();
-			} catch (final Throwable t) {
-				Logger.getLogger(this.getClass().getName()).log(Level.WARNING,
-						"Failed to inform listener!", t);
-			}
-		}
-	}
+    /**
+     * Inform all listener registered to this event of its occurrence. Thrown
+     * Exception and Errors of the listeners will be ignored and just logged in
+     * the Java-default logger avail at {@link Logger#getLogger(String)}.
+     */
+    public void triggerEvent() {
+        for (final UIEventListener listener : this._listenerList) {
+            try {
+                listener.eventOccourred();
+            } catch (final Throwable t) {
+                Logger.getLogger(this.getClass().getName()).log(Level.WARNING,
+                        "Failed to inform listener!", t);
+            }
+        }
+    }
 }

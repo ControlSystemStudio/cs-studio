@@ -25,12 +25,12 @@ import org.csstudio.autocomplete.ui.AutoCompleteUIPlugin;
 @SuppressWarnings("nls")
 public class UIHelper {
 
-	public SSTextLayout newTextLayout() {
-		return new SSTextLayout();
-	}
+    public SSTextLayout newTextLayout() {
+        return new SSTextLayout();
+    }
 
-	public SSStyledText newStyledText() {
-		return new SSStyledText();
-	}
+    public SSStyledText newStyledText() {
+        return new SSStyledText();
+    }
 
 }

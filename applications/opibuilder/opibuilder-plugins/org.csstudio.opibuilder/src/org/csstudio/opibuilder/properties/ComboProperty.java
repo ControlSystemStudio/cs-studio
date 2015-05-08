@@ -31,76 +31,76 @@ import org.jdom.Element;
  *
  */
 public class ComboProperty extends AbstractWidgetProperty {
-	
-	private String[] labelsArray;
+    
+    private String[] labelsArray;
 
-	/**Combo Property Constructor. The property value type is integer.
-	 * @param prop_id the property id which should be unique in a widget model.
-	 * @param description the description of the property,
-	 * which will be shown as the property name in property sheet.
-	 * @param category the category of the widget.
-	 * @param labelsArray the array of labels in combo's drop box.
-	 * @param defaultValue the default value when the widget is first created.
-	 */
-	public ComboProperty(String prop_id, String description,
-			WidgetPropertyCategory category, String[] labelsArray,
-			int defaultValue) {		
-		super(prop_id, description, category, Integer.valueOf(defaultValue));
-		this.labelsArray = labelsArray;
-		
-	}
+    /**Combo Property Constructor. The property value type is integer.
+     * @param prop_id the property id which should be unique in a widget model.
+     * @param description the description of the property,
+     * which will be shown as the property name in property sheet.
+     * @param category the category of the widget.
+     * @param labelsArray the array of labels in combo's drop box.
+     * @param defaultValue the default value when the widget is first created.
+     */
+    public ComboProperty(String prop_id, String description,
+            WidgetPropertyCategory category, String[] labelsArray,
+            int defaultValue) {        
+        super(prop_id, description, category, Integer.valueOf(defaultValue));
+        this.labelsArray = labelsArray;
+        
+    }
 
-	@Override
-	public Object checkValue(Object value) {
-		if(value == null)
-			return null;
-		Integer acceptedValue = null;
+    @Override
+    public Object checkValue(Object value) {
+        if(value == null)
+            return null;
+        Integer acceptedValue = null;
 
-		// check type
-		if (!(value instanceof Number)) {			
-			try {
-				acceptedValue = Integer.parseInt(value.toString());
-			} catch (NumberFormatException e) {
-				acceptedValue = null;
-			}
-		} else {
-			acceptedValue = ((Number) value).intValue();
-		}
+        // check type
+        if (!(value instanceof Number)) {            
+            try {
+                acceptedValue = Integer.parseInt(value.toString());
+            } catch (NumberFormatException e) {
+                acceptedValue = null;
+            }
+        } else {
+            acceptedValue = ((Number) value).intValue();
+        }
 
-		// check range
-		if (acceptedValue != null) {
-			if (acceptedValue < 0) {
-				acceptedValue = 0;
-			} else if (acceptedValue >= labelsArray.length) {
-				acceptedValue = labelsArray.length-1;
-			}
-		}
+        // check range
+        if (acceptedValue != null) {
+            if (acceptedValue < 0) {
+                acceptedValue = 0;
+            } else if (acceptedValue >= labelsArray.length) {
+                acceptedValue = labelsArray.length-1;
+            }
+        }
 
-		return acceptedValue;
-	}
+        return acceptedValue;
+    }
 
-	@Override
-	protected PropertyDescriptor createPropertyDescriptor() {		
-		return new ComboBoxPropertyDescriptor(
-				prop_id, description, labelsArray);
-	}
+    @Override
+    protected PropertyDescriptor createPropertyDescriptor() {        
+        return new ComboBoxPropertyDescriptor(
+                prop_id, description, labelsArray);
+    }
 
-	@Override
-	public void writeToXML(Element propElement) {
-		propElement.setText(getPropertyValue().toString());
-	}
-	
-	@Override
-	public Object readValueFromXML(Element propElement) {
-		 try {
-			return Integer.parseInt(propElement.getValue());
-		} catch (NumberFormatException e) {
-			return Boolean.parseBoolean(propElement.getValue())? 1 : 0;
-		}			
-	}
+    @Override
+    public void writeToXML(Element propElement) {
+        propElement.setText(getPropertyValue().toString());
+    }
+    
+    @Override
+    public Object readValueFromXML(Element propElement) {
+         try {
+            return Integer.parseInt(propElement.getValue());
+        } catch (NumberFormatException e) {
+            return Boolean.parseBoolean(propElement.getValue())? 1 : 0;
+        }            
+    }
 
-	@Override
-	public boolean configurableByRule() {
-		return true;
-	}
+    @Override
+    public boolean configurableByRule() {
+        return true;
+    }
 }

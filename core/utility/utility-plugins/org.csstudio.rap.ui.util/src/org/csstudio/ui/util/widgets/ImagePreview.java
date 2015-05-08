@@ -40,9 +40,9 @@ import org.eclipse.swt.widgets.Composite;
 public class ImagePreview extends Canvas implements DisposeListener,
         PaintListener
 {
-	private static final long serialVersionUID = -5663464409023894169L;
+    private static final long serialVersionUID = -5663464409023894169L;
 
-	/** Image or <code>null</code> */
+    /** Image or <code>null</code> */
     private Image image = null;
 
     /** Additional short message or <code>null</code> */

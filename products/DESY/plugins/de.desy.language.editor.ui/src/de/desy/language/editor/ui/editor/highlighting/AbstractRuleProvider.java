@@ -40,70 +40,70 @@ import de.desy.language.libraries.utils.contract.Contract;
  */
 public abstract class AbstractRuleProvider {
 
-//	/**
-//	 * Registered listeners.
-//	 * 
-//	 * @deprecated Not more in use.
-//	 */
-//	@Deprecated
-//	private final List<IRuleProviderListener> _listeners = new LinkedList<IRuleProviderListener>();
+//    /**
+//     * Registered listeners.
+//     * 
+//     * @deprecated Not more in use.
+//     */
+//    @Deprecated
+//    private final List<IRuleProviderListener> _listeners = new LinkedList<IRuleProviderListener>();
 
-//	/**
-//	 * Add a listener to react on events on the rule provider.
-//	 * 
-//	 * @deprecated Not more in use.
-//	 */
-//	@Deprecated
-//	final public void addIRuleProviderListener(
-//			final IRuleProviderListener listener) {
-//		if (!this._listeners.contains(listener)) {
-//			this._listeners.add(listener);
-//		}
-//	}
+//    /**
+//     * Add a listener to react on events on the rule provider.
+//     * 
+//     * @deprecated Not more in use.
+//     */
+//    @Deprecated
+//    final public void addIRuleProviderListener(
+//            final IRuleProviderListener listener) {
+//        if (!this._listeners.contains(listener)) {
+//            this._listeners.add(listener);
+//        }
+//    }
 
-	/**
-	 * Creates the list of rules for parsing the source. This list and
-	 * containing rules should be recreated any time this method is called.
-	 * Rules will be ordered in kind of requirements.
-	 * 
-	 * @return A list of rules in required order, may not null.
-	 */
-	protected abstract List<IRule> doCreateCustomRules();
+    /**
+     * Creates the list of rules for parsing the source. This list and
+     * containing rules should be recreated any time this method is called.
+     * Rules will be ordered in kind of requirements.
+     * 
+     * @return A list of rules in required order, may not null.
+     */
+    protected abstract List<IRule> doCreateCustomRules();
 
-	/**
-	 * Creates the list of rules for parsing the source. This list and
-	 * containing rules should be recreated any time this method is called.
-	 * Rules will be proceed in order given in list.
-	 * 
-	 * @return A list of rules in required order, may not null.
-	 */
-	final public List<IRule> getCustomRules() {
-		final List<IRule> createdCustomRules = this.doCreateCustomRules();
+    /**
+     * Creates the list of rules for parsing the source. This list and
+     * containing rules should be recreated any time this method is called.
+     * Rules will be proceed in order given in list.
+     * 
+     * @return A list of rules in required order, may not null.
+     */
+    final public List<IRule> getCustomRules() {
+        final List<IRule> createdCustomRules = this.doCreateCustomRules();
 
-		Contract.ensureResultNotNull(createdCustomRules);
-		return createdCustomRules;
-	}
+        Contract.ensureResultNotNull(createdCustomRules);
+        return createdCustomRules;
+    }
 
-//	/**
-//	 * Informs all registered listeners.
-//	 * 
-//	 * @deprecated Not more in use.
-//	 */
-//	@Deprecated
-//	public final void refresh() {
-//		for (final IRuleProviderListener listener : this._listeners) {
-//			listener.refreshOccurrs();
-//		}
-//	}
+//    /**
+//     * Informs all registered listeners.
+//     * 
+//     * @deprecated Not more in use.
+//     */
+//    @Deprecated
+//    public final void refresh() {
+//        for (final IRuleProviderListener listener : this._listeners) {
+//            listener.refreshOccurrs();
+//        }
+//    }
 
-//	/**
-//	 * Removes a listener to react on events on the rule provider.
-//	 * 
-//	 * @deprecated Not more in use.
-//	 */
-//	@Deprecated
-//	final public void removeIRuleProviderListener(
-//			final IRuleProviderListener listener) {
-//		this._listeners.remove(listener);
-//	}
+//    /**
+//     * Removes a listener to react on events on the rule provider.
+//     * 
+//     * @deprecated Not more in use.
+//     */
+//    @Deprecated
+//    final public void removeIRuleProviderListener(
+//            final IRuleProviderListener listener) {
+//        this._listeners.remove(listener);
+//    }
 }

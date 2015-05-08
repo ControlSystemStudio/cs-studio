@@ -19,8 +19,8 @@ public class HistogramGraph2DView extends AbstractGraph2DView<HistogramGraph2DWi
 
     @Override
     protected HistogramGraph2DWidget createAbstractGraph2DWidget(
-	    Composite parent, int style) {
-    	return new HistogramGraph2DWidget(parent, SWT.NONE);
+        Composite parent, int style) {
+        return new HistogramGraph2DWidget(parent, SWT.NONE);
     }
 
 }

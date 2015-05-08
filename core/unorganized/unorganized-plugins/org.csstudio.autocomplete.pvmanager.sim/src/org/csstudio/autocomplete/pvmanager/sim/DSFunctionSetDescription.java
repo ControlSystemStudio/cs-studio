@@ -17,33 +17,33 @@ import java.util.HashSet;
  */
 public class DSFunctionSetDescription {
 
-	String name;
-	String description;
-	Collection<DSFunction> functions = new HashSet<>();
+    String name;
+    String description;
+    Collection<DSFunction> functions = new HashSet<>();
 
-	/**
-	 * A new function set description.
-	 * 
-	 * @param name the name of the function set
-	 * @param description the description of the function set
-	 */
-	public DSFunctionSetDescription(String name, String description) {
-		this.name = name;
-		this.description = description;
-		if (!DSFunctionSet.namePattern.matcher(name).matches()) {
-			throw new IllegalArgumentException(
-					"Name must start by a letter and only consist of letters and numbers");
-		}
-	}
+    /**
+     * A new function set description.
+     * 
+     * @param name the name of the function set
+     * @param description the description of the function set
+     */
+    public DSFunctionSetDescription(String name, String description) {
+        this.name = name;
+        this.description = description;
+        if (!DSFunctionSet.namePattern.matcher(name).matches()) {
+            throw new IllegalArgumentException(
+                    "Name must start by a letter and only consist of letters and numbers");
+        }
+    }
 
-	/**
-	 * Adds a function in the set.
-	 * 
-	 * @param function the function to add
-	 * @return this description
-	 */
-	public DSFunctionSetDescription addFunction(DSFunction function) {
-		functions.add(function);
-		return this;
-	}
+    /**
+     * Adds a function in the set.
+     * 
+     * @param function the function to add
+     * @return this description
+     */
+    public DSFunctionSetDescription addFunction(DSFunction function) {
+        functions.add(function);
+        return this;
+    }
 }

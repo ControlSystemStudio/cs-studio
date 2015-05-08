@@ -41,51 +41,51 @@ import org.eclipse.gef.EditPartFactory;
  */
 public final class DctEditPartFactory implements EditPartFactory {
 
-	/**
-	 * Constructor.
-	 */
-	public DctEditPartFactory() {
-	}
+    /**
+     * Constructor.
+     */
+    public DctEditPartFactory() {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public EditPart createEditPart(final EditPart context, final Object modelElement) {
-		EditPart part = getPartForModel(modelElement);
+    /**
+     * {@inheritDoc}
+     */
+    public EditPart createEditPart(final EditPart context, final Object modelElement) {
+        EditPart part = getPartForModel(modelElement);
 
-		// .. store widget model in EditPart
-		if (part != null) {
-			part.setModel(modelElement);
-		}
+        // .. store widget model in EditPart
+        if (part != null) {
+            part.setModel(modelElement);
+        }
 
-		return part;
-	}
+        return part;
+    }
 
-	/**
-	 * Returns a controller for the specified model. If the model is unknown, no
-	 * controller is returned.
-	 * 
-	 * @param model
-	 *            the model
-	 * @return a controller for the model
-	 */
-	private EditPart getPartForModel(final Object model) {
-		assert model != null;
+    /**
+     * Returns a controller for the specified model. If the model is unknown, no
+     * controller is returned.
+     * 
+     * @param model
+     *            the model
+     * @return a controller for the model
+     */
+    private EditPart getPartForModel(final Object model) {
+        assert model != null;
 
-		EditPart result = null;
+        EditPart result = null;
 
-		if (model instanceof DctGraphicalModel) {
-			result = new GraphicalModelEditPart();
-		} else if (model instanceof InstanceNode) {
-			result = new ContainerNodeEditPart();
-		} else if (model instanceof PrototypeNode) {
-			result = new ContainerNodeEditPart();
-		} else if (model instanceof RecordNode) {
-			result = new RecordNodeEditPart();
-		} else if (model instanceof Connection) {
-			result = new ConnectionEditPart();
-		}
+        if (model instanceof DctGraphicalModel) {
+            result = new GraphicalModelEditPart();
+        } else if (model instanceof InstanceNode) {
+            result = new ContainerNodeEditPart();
+        } else if (model instanceof PrototypeNode) {
+            result = new ContainerNodeEditPart();
+        } else if (model instanceof RecordNode) {
+            result = new RecordNodeEditPart();
+        } else if (model instanceof Connection) {
+            result = new ConnectionEditPart();
+        }
 
-		return result;
-	}
+        return result;
+    }
 }

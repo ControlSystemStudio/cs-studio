@@ -33,34 +33,34 @@ import org.eclipse.jface.viewers.ICellEditorValidator;
  * 
  */
 public final class PropertyTypeCellEditorValidator implements
-		ICellEditorValidator {
-	/**
-	 * The expected property type.
-	 */
-	private WidgetProperty _property;
+        ICellEditorValidator {
+    /**
+     * The expected property type.
+     */
+    private WidgetProperty _property;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param propertyType
-	 *            the expected property type
-	 */
-	public PropertyTypeCellEditorValidator(final WidgetProperty propertyType) {
-		_property = propertyType;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param propertyType
+     *            the expected property type
+     */
+    public PropertyTypeCellEditorValidator(final WidgetProperty propertyType) {
+        _property = propertyType;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String isValid(final Object value) {
-		String error = null;
-		
-		if(value!=null) {
-			if(_property.checkValue(value)==null) {
-				error = "Value [" + value + "] cannot not be applied to cell.";
-			}
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public String isValid(final Object value) {
+        String error = null;
+        
+        if(value!=null) {
+            if(_property.checkValue(value)==null) {
+                error = "Value [" + value + "] cannot not be applied to cell.";
+            }
+        }
 
-		return error;
-	}
+        return error;
+    }
 }

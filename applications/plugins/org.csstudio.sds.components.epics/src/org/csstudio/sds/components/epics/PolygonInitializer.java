@@ -31,11 +31,11 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
  */
 public final class PolygonInitializer extends AbstractEpicsWidgetInitializer {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void initialize(final AbstractControlSystemSchema schema) {
-		initializeCommonConnectionStates();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void initialize(final AbstractControlSystemSchema schema) {
+        initializeCommonConnectionStates();
+    }
 }

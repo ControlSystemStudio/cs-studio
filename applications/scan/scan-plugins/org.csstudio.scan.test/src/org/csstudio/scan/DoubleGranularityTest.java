@@ -18,19 +18,19 @@ import org.junit.Test;
 public class DoubleGranularityTest
 {
     @Test(timeout=1000)
-	public void findDoubleGranularityLimit()
-	{
-		double limit = 0.5;
-		// Findbugs will detect FE_FLOATING_POINT_EQUALITY,
-		// which is excactly what we want to demonstrate
-		while (1.0 + limit != limit)
-			limit *= 2;
-		System.out.println("** Rought limit for +-1 **");
-		System.out.println("OK:           1 + " + limit/2 + " != " + limit/2);
-		System.out.println("Beyond Limit: 1 + " + limit + " == " + limit);
+    public void findDoubleGranularityLimit()
+    {
+        double limit = 0.5;
+        // Findbugs will detect FE_FLOATING_POINT_EQUALITY,
+        // which is excactly what we want to demonstrate
+        while (1.0 + limit != limit)
+            limit *= 2;
+        System.out.println("** Rought limit for +-1 **");
+        System.out.println("OK:           1 + " + limit/2 + " != " + limit/2);
+        System.out.println("Beyond Limit: 1 + " + limit + " == " + limit);
 
-		assertEquals(limit, 1.0 + limit, 0.5);
-		// Somewhere around 1E16
-		assertEquals(1.0, limit/1E16, 1);
-	}
+        assertEquals(limit, 1.0 + limit, 0.5);
+        // Somewhere around 1E16
+        assertEquals(1.0, limit/1E16, 1);
+    }
 }

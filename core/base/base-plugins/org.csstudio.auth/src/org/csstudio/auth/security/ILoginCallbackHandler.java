@@ -38,36 +38,36 @@
  * @author Anze Vodovnik, Jörg Rathlev
  */
 public interface ILoginCallbackHandler {
-	
-	/**
-	 * <p>Returns the username and password that will be used to authenticate
-	 * the user. Returns <code>null</code> if username and password could not
-	 * be retrieved.</p>
-	 * 
-	 * <p>Implementations of this method may prompt the user for username and
-	 * password, for example by displaying a login dialog. Such implementations
-	 * have to wait for user input before returning. Login modules calling this
-	 * method therefore should not assume that it will return quickly.</p>
-	 * 
-	 * <p>The username and password are returned in a {@link Credentials}
-	 * object. Implementations must not keep references to this object, and
-	 * callers should discard all references to the returned object as early as
-	 * possible to prevent passwords from being kept in memory unnecessarily.</p>
-	 * 
-	 * @return the username and password, or <code>null</code> if username and
-	 *         password could not be retrieved.
-	 */
-	Credentials getCredentials();
-	
-	/**
-	 * <p>Informs this callback handler that the previous login attempt has
-	 * failed. If this callback handler is interactive, it will display an error
-	 * message to the user.</p>
-	 * 
-	 * <p>If the login failed due to a wrong username/password, clients
-	 * <em>must</em> call this method before calling {@link getCredentials}
-	 * again, otherwise <code>getCredentials</code> may return the same
-	 * credentials as from the previous call.</p>
-	 */
-	void signalFailedLoginAttempt();
+    
+    /**
+     * <p>Returns the username and password that will be used to authenticate
+     * the user. Returns <code>null</code> if username and password could not
+     * be retrieved.</p>
+     * 
+     * <p>Implementations of this method may prompt the user for username and
+     * password, for example by displaying a login dialog. Such implementations
+     * have to wait for user input before returning. Login modules calling this
+     * method therefore should not assume that it will return quickly.</p>
+     * 
+     * <p>The username and password are returned in a {@link Credentials}
+     * object. Implementations must not keep references to this object, and
+     * callers should discard all references to the returned object as early as
+     * possible to prevent passwords from being kept in memory unnecessarily.</p>
+     * 
+     * @return the username and password, or <code>null</code> if username and
+     *         password could not be retrieved.
+     */
+    Credentials getCredentials();
+    
+    /**
+     * <p>Informs this callback handler that the previous login attempt has
+     * failed. If this callback handler is interactive, it will display an error
+     * message to the user.</p>
+     * 
+     * <p>If the login failed due to a wrong username/password, clients
+     * <em>must</em> call this method before calling {@link getCredentials}
+     * again, otherwise <code>getCredentials</code> may return the same
+     * credentials as from the previous call.</p>
+     */
+    void signalFailedLoginAttempt();
 }

@@ -36,151 +36,151 @@ public final class WaveformFigure extends AbstractChartFigure {
 
     private static final Logger LOG = LoggerFactory.getLogger(WaveformFigure.class);
 
-	/**
-	 * The displayed waveform data.
-	 */
-	private double[][] _data;
+    /**
+     * The displayed waveform data.
+     */
+    private double[][] _data;
 
-	/**
-	 * A double, representing the maximum value of the data.
-	 */
-	private double _max = 0;
+    /**
+     * A double, representing the maximum value of the data.
+     */
+    private double _max = 0;
 
-	/**
-	 * A double, representing the minimum value of the data.
-	 */
-	private double _min = 0;
+    /**
+     * A double, representing the minimum value of the data.
+     */
+    private double _min = 0;
 
-	/**
-	 * The length of the longest data array.
-	 */
-	private int _longestDataLength;
-	
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param dataCount
-	 *            the number of data arrays to be displayed by this figure. Must
-	 *            be a positive integer number.
-	 */
-	public WaveformFigure(final int dataCount) {
-		super(dataCount);
-		_data = new double[dataCount][0];
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void dataValues(final int index,
-			final IDataPointProcessor processor) {
-		for (int i = 0; i < _data[index].length; i++) {
-			processor.processDataPoint(i, _data[index][i]);
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected double greatestDataValue() {
-		return _max;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected double lowestDataValue() {
-		return _min;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected double xAxisMaximum() {
-		return _longestDataLength;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected double xAxisMinimum() {
-		return 0;
-	}
+    /**
+     * The length of the longest data array.
+     */
+    private int _longestDataLength;
+    
+    /**
+     * Standard constructor.
+     * 
+     * @param dataCount
+     *            the number of data arrays to be displayed by this figure. Must
+     *            be a positive integer number.
+     */
+    public WaveformFigure(final int dataCount) {
+        super(dataCount);
+        _data = new double[dataCount][0];
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void dataValues(final int index,
+            final IDataPointProcessor processor) {
+        for (int i = 0; i < _data[index].length; i++) {
+            processor.processDataPoint(i, _data[index][i]);
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected double greatestDataValue() {
+        return _max;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected double lowestDataValue() {
+        return _min;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected double xAxisMaximum() {
+        return _longestDataLength;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected double xAxisMinimum() {
+        return 0;
+    }
 
-	/**
-	 * Sets the data array with the specified index. Repaints this figure
-	 * afterwards.
-	 * 
-	 * @param index
-	 *            the index of the data to set. This must be a positive integer
-	 *            or zero, and smaller than the number of data arrays specified
-	 *            in the constructor of this figure.
-	 * @param data
-	 *            the waveform data.
-	 */
-	public void setData(final int index, final double[] data) {
-		LOG.debug("setData called with index=" + index);
-		
-		_data[index] = data;
-		if (data.length > _longestDataLength) {
-			_longestDataLength = data.length;
-		} else {
-			_longestDataLength = 0;
-			for (double[] dataArray : _data) {
-				if (dataArray.length > _longestDataLength) {
-					_longestDataLength = dataArray.length;
-				}
-			}
-		}
-		xAxisRangeChanged();
-		calculateDataRange();
-	}
+    /**
+     * Sets the data array with the specified index. Repaints this figure
+     * afterwards.
+     * 
+     * @param index
+     *            the index of the data to set. This must be a positive integer
+     *            or zero, and smaller than the number of data arrays specified
+     *            in the constructor of this figure.
+     * @param data
+     *            the waveform data.
+     */
+    public void setData(final int index, final double[] data) {
+        LOG.debug("setData called with index=" + index);
+        
+        _data[index] = data;
+        if (data.length > _longestDataLength) {
+            _longestDataLength = data.length;
+        } else {
+            _longestDataLength = 0;
+            for (double[] dataArray : _data) {
+                if (dataArray.length > _longestDataLength) {
+                    _longestDataLength = dataArray.length;
+                }
+            }
+        }
+        xAxisRangeChanged();
+        calculateDataRange();
+    }
 
-	/**
-	 * Calculates the data range.
-	 */
-	private void calculateDataRange() {
-		final double oldMin = _min;
-		final double oldMax = _max;
-		
-		// Initialize min and max with the first value from the first data
-		// array that contains values.
-		double min = 0;
-		double max = 0;
-		boolean initialized = false;
-		for (double[] data : _data) {
-			if (data.length > 0) {
-				min = data[0];
-				max = data[0];
-				initialized = true;
-				break;
-			}
-		}
-		if (!initialized) {
-			// no array contains any data
-			return;
-		}
-		
-		for (double[] data : _data) {
-			for (double value : data) {
-				if (value > max) {
-					max = value;
-				} else if (value < min) {
-					min = value;
-				}
-			}
-		}
-		
-		if (min != oldMin || max != oldMax) {
-			LOG.debug("calculated new data range: [" + min + "," + max + "]");
-			
-			_min = min;
-			_max = max;
-			dataRangeChanged();
-		}
-	}
+    /**
+     * Calculates the data range.
+     */
+    private void calculateDataRange() {
+        final double oldMin = _min;
+        final double oldMax = _max;
+        
+        // Initialize min and max with the first value from the first data
+        // array that contains values.
+        double min = 0;
+        double max = 0;
+        boolean initialized = false;
+        for (double[] data : _data) {
+            if (data.length > 0) {
+                min = data[0];
+                max = data[0];
+                initialized = true;
+                break;
+            }
+        }
+        if (!initialized) {
+            // no array contains any data
+            return;
+        }
+        
+        for (double[] data : _data) {
+            for (double value : data) {
+                if (value > max) {
+                    max = value;
+                } else if (value < min) {
+                    min = value;
+                }
+            }
+        }
+        
+        if (min != oldMin || max != oldMax) {
+            LOG.debug("calculated new data range: [" + min + "," + max + "]");
+            
+            _min = min;
+            _max = max;
+            dataRangeChanged();
+        }
+    }
 }

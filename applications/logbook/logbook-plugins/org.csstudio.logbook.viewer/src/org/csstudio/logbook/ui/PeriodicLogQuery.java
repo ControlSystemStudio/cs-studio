@@ -30,8 +30,8 @@ public class PeriodicLogQuery {
     private final int delay;
 
     private ScheduledExecutorService scheduler = Executors
-	    .newScheduledThreadPool(1,
-		    org.csstudio.logbook.ui.Executors.namedPool("LogQueryPool"));
+        .newScheduledThreadPool(1,
+            org.csstudio.logbook.ui.Executors.namedPool("LogQueryPool"));
 
     private Job currentJob;
 
@@ -45,45 +45,45 @@ public class PeriodicLogQuery {
      *
      */
     public static class LogResult {
-	public final List<LogEntry> logs;
-	public final Exception lastException;
+    public final List<LogEntry> logs;
+    public final Exception lastException;
 
-	public LogResult(List<LogEntry> result, Exception lastException) {
-	    this.logs = Collections.unmodifiableList(result);
-	    this.lastException = lastException;
-	}
+    public LogResult(List<LogEntry> result, Exception lastException) {
+        this.logs = Collections.unmodifiableList(result);
+        this.lastException = lastException;
+    }
 
-	@Override
-	public int hashCode() {
-	    final int prime = 31;
-	    int result = 1;
-	    result = prime * result
-		    + ((lastException == null) ? 0 : lastException.hashCode());
-	    result = prime * result + ((logs == null) ? 0 : logs.hashCode());
-	    return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+            + ((lastException == null) ? 0 : lastException.hashCode());
+        result = prime * result + ((logs == null) ? 0 : logs.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-	    if (this == obj)
-		return true;
-	    if (obj == null)
-		return false;
-	    if (getClass() != obj.getClass())
-		return false;
-	    LogResult other = (LogResult) obj;
-	    if (lastException == null) {
-		if (other.lastException != null)
-		    return false;
-	    } else if (!lastException.equals(other.lastException))
-		return false;
-	    if (logs == null) {
-		if (other.logs != null)
-		    return false;
-	    } else if (!logs.equals(other.logs))
-		return false;
-	    return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+        return true;
+        if (obj == null)
+        return false;
+        if (getClass() != obj.getClass())
+        return false;
+        LogResult other = (LogResult) obj;
+        if (lastException == null) {
+        if (other.lastException != null)
+            return false;
+        } else if (!lastException.equals(other.lastException))
+        return false;
+        if (logs == null) {
+        if (other.logs != null)
+            return false;
+        } else if (!logs.equals(other.logs))
+        return false;
+        return true;
+    }
 
     }
 
@@ -96,22 +96,22 @@ public class PeriodicLogQuery {
      * @param minutes
      */
     public PeriodicLogQuery(String query, LogbookClient logbookClient, int delay, TimeUnit timeUnit) {
-	this.query = query;
-	this.logbookClient = logbookClient;
-	this.delay = delay;
-	this.timeUnit = timeUnit;
+    this.query = query;
+    this.logbookClient = logbookClient;
+    this.delay = delay;
+    this.timeUnit = timeUnit;
     }
 
     public void setQuery(String query) {
-	this.query = query;
-	execute();
+    this.query = query;
+    execute();
     }
 
     public void stop() {
-	if (currentJob != null) {
-	    currentJob.cancel();
-	}
-	scheduler.shutdownNow();
+    if (currentJob != null) {
+        currentJob.cancel();
+    }
+    scheduler.shutdownNow();
     }
 
     /**
@@ -119,42 +119,42 @@ public class PeriodicLogQuery {
      * result.
      */
     public void start() {
-	scheduler.scheduleWithFixedDelay(new Runnable() {
+    scheduler.scheduleWithFixedDelay(new Runnable() {
 
-	    @Override
-	    public void run() {
-		execute();
-	    }
-	}, 0, delay, timeUnit);
+        @Override
+        public void run() {
+        execute();
+        }
+    }, 0, delay, timeUnit);
     }
 
     private LogResult lastResult = null;
 
     private void execute() {
-	try {
-	    if (currentJob != null) {
-		// If a query is running, don't schedule new jobs.
-		if(currentJob.getResult() == null || !currentJob.getResult().isOK()){
-		    return;
-		}
-//		currentJob.cancel();
-//		return;
-	    }
-	    currentJob = new LogQueryJob(query, logbookClient) {
+    try {
+        if (currentJob != null) {
+        // If a query is running, don't schedule new jobs.
+        if(currentJob.getResult() == null || !currentJob.getResult().isOK()){
+            return;
+        }
+//        currentJob.cancel();
+//        return;
+        }
+        currentJob = new LogQueryJob(query, logbookClient) {
 
-		@Override
-		void completedQuery(LogResult result) {
-		    // Only inform the listeners if the result has changed.
-		    if (result != null && !result.equals(lastResult)) {
-			lastResult = result;
-			fireGetQueryResult(result);
-		    }
-		}
-	    };
-	    currentJob.schedule();
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
+        @Override
+        void completedQuery(LogResult result) {
+            // Only inform the listeners if the result has changed.
+            if (result != null && !result.equals(lastResult)) {
+            lastResult = result;
+            fireGetQueryResult(result);
+            }
+        }
+        };
+        currentJob.schedule();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
     }
 
     /**
@@ -164,7 +164,7 @@ public class PeriodicLogQuery {
      *            a new LogQueryListener listener
      */
     public void addLogQueryListener(LogQueryListener listener) {
-	listeners.add(listener);
+    listeners.add(listener);
     }
 
     /**
@@ -174,13 +174,13 @@ public class PeriodicLogQuery {
      *            a LogQueryListener listener
      */
     public void removeLogQueryListener(LogQueryListener listener) {
-	listeners.remove(listener);
+    listeners.remove(listener);
     }
 
     private void fireGetQueryResult(LogResult result) {
-	for (LogQueryListener listener : this.listeners) {
-	    listener.queryExecuted(result);
-	}
+    for (LogQueryListener listener : this.listeners) {
+        listener.queryExecuted(result);
+    }
     }
 
 }

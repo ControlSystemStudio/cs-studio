@@ -36,7 +36,7 @@ public class EnumMetaDataHelper
      *  @throws Exception on error
      */
     public static void delete(final RDBUtil rdb, final SQL sql,
-    		final RDBWriteChannel channel) throws Exception
+            final RDBWriteChannel channel) throws Exception
     {
         // Delete any existing entries
         final Connection connection = rdb.getConnection();
@@ -61,7 +61,7 @@ public class EnumMetaDataHelper
      */
     @SuppressWarnings("nls")
     public static void insert(final RDBUtil rdb, final SQL sql, final RDBWriteChannel channel,
-    		final List<String> states) throws Exception
+            final List<String> states) throws Exception
     {
         final Connection connection = rdb.getConnection();
         // Define the new ones

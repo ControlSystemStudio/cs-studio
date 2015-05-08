@@ -19,15 +19,15 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  */
 public class StringOrDoublePropertyDescriptor extends TextPropertyDescriptor
 {
-	/** {@link LabelProvider} that decorates {@link String}s with quotes */
-	static class StringOrDoubleLabelProvider extends LabelProvider
-	{
-		@Override
-		public String getText(final Object element)
-		{
-			return StringOrDouble.quote(element);
-		}
-	}
+    /** {@link LabelProvider} that decorates {@link String}s with quotes */
+    static class StringOrDoubleLabelProvider extends LabelProvider
+    {
+        @Override
+        public String getText(final Object element)
+        {
+            return StringOrDouble.quote(element);
+        }
+    }
 
     /** Initialize
      *  @param id ID to edit
@@ -42,12 +42,12 @@ public class StringOrDoublePropertyDescriptor extends TextPropertyDescriptor
      *  {@inheritDoc}
      */
     @Override
-	public ILabelProvider getLabelProvider()
+    public ILabelProvider getLabelProvider()
     {
-    	return new StringOrDoubleLabelProvider();
-	}
+        return new StringOrDoubleLabelProvider();
+    }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     public CellEditor createPropertyEditor(final Composite parent)
     {

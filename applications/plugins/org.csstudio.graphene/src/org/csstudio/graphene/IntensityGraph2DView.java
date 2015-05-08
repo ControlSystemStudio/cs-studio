@@ -19,8 +19,8 @@ public class IntensityGraph2DView extends AbstractGraph2DView<IntensityGraph2DWi
 
     @Override
     protected IntensityGraph2DWidget createAbstractGraph2DWidget(
-	    Composite parent, int style) {
-	return new IntensityGraph2DWidget(parent, SWT.NONE);
+        Composite parent, int style) {
+    return new IntensityGraph2DWidget(parent, SWT.NONE);
     }
 
 }

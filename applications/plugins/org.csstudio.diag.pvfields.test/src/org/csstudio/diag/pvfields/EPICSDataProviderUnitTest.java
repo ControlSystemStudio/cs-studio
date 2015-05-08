@@ -19,8 +19,8 @@ public class EPICSDataProviderUnitTest
     @Test
     public void testEPICSDataProvider() throws Exception
     {
-    	final DataProvider provider = new EPICSDataProvider();
-    	final PVInfo info = provider.lookup(TestSetup.CHANNEL_NAME);
-    	System.out.println(info);
+        final DataProvider provider = new EPICSDataProvider();
+        final PVInfo info = provider.lookup(TestSetup.CHANNEL_NAME);
+        System.out.println(info);
     }
 }

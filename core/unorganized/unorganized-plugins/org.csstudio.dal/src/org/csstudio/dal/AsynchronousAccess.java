@@ -39,71 +39,71 @@ package org.csstudio.dal;
  */
 public interface AsynchronousAccess<T> extends AsynchronousContext
 {
-	/**
-	 * Gets the dynamic value in an asynchronous way. When the value is
-	 * read, the <code>ResponseListeners</code> will be delivered a
-	 * <code>ResponseEvent</code>. Use the return value of this method to
-	 * identify the correct event for this request.
-	 *
-	 * @return the request that uniquely identifies this asynchronous call
-	 *
-	 * @throws DataExchangeException if the call fails
-	 */
-	public Request<T> getAsynchronous() throws DataExchangeException;
+    /**
+     * Gets the dynamic value in an asynchronous way. When the value is
+     * read, the <code>ResponseListeners</code> will be delivered a
+     * <code>ResponseEvent</code>. Use the return value of this method to
+     * identify the correct event for this request.
+     *
+     * @return the request that uniquely identifies this asynchronous call
+     *
+     * @throws DataExchangeException if the call fails
+     */
+    public Request<T> getAsynchronous() throws DataExchangeException;
 
-	/**
-	 * Gets the dynamic value in an asynchronous way. When the value is
-	 * read, the <code>ResponseListeners</code> will be delivered a
-	 * <code>ResponseEvent</code>. Use the return value of this method to
-	 * identify the correct event for this request and the
-	 * <code>RequestUtilities</code> to  extract the value.
-	 *
-	 * @param listener a listener that will receive response only for this
-	 *        asynchronous operation and then will be released. This is
-	 *        callback style of listener.
-	 *
-	 * @return the request that uniquely identifies this asynchronous call
-	 *
-	 * @throws DataExchangeException if the call fails
-	 */
-	public Request<T> getAsynchronous(ResponseListener<T> listener)
-		throws DataExchangeException;
+    /**
+     * Gets the dynamic value in an asynchronous way. When the value is
+     * read, the <code>ResponseListeners</code> will be delivered a
+     * <code>ResponseEvent</code>. Use the return value of this method to
+     * identify the correct event for this request and the
+     * <code>RequestUtilities</code> to  extract the value.
+     *
+     * @param listener a listener that will receive response only for this
+     *        asynchronous operation and then will be released. This is
+     *        callback style of listener.
+     *
+     * @return the request that uniquely identifies this asynchronous call
+     *
+     * @throws DataExchangeException if the call fails
+     */
+    public Request<T> getAsynchronous(ResponseListener<T> listener)
+        throws DataExchangeException;
 
-	/**
-	 * Sets the dynamic value in an asynchronous way. When the value is
-	 * set, the <code>ResponseListeners</code> will be delivered a
-	 * <code>ResponseEvent</code>. Use the return value of this method to
-	 * identify the correct event for this request and the
-	 * <code>RequestUtilities</code> to  extract the completion code,
-	 * timestamp and type.
-	 *
-	 * @param value the value to set
-	 *
-	 * @return the request that uniquely identifies this asynchronous call
-	 *
-	 * @throws DataExchangeException if the call fails
-	 */
-	public Request<T> setAsynchronous(T value) throws DataExchangeException;
+    /**
+     * Sets the dynamic value in an asynchronous way. When the value is
+     * set, the <code>ResponseListeners</code> will be delivered a
+     * <code>ResponseEvent</code>. Use the return value of this method to
+     * identify the correct event for this request and the
+     * <code>RequestUtilities</code> to  extract the completion code,
+     * timestamp and type.
+     *
+     * @param value the value to set
+     *
+     * @return the request that uniquely identifies this asynchronous call
+     *
+     * @throws DataExchangeException if the call fails
+     */
+    public Request<T> setAsynchronous(T value) throws DataExchangeException;
 
-	/**
-	 * Sets the dynamic value in an asynchronous way. When the value is
-	 * set, the <code>ResponseListeners</code> will be delivered a
-	 * <code>ResponseEvent</code>. Use the return value of this method to
-	 * identify the correct event for this request and the
-	 * <code>RequestUtilities</code> to  extract the completion code,
-	 * timestamp and type.
-	 *
-	 * @param value the value to set
-	 * @param listener a listener that will receive response only for this
-	 *        asynchronous operation and then will be released. This is
-	 *        callback style of listener.
-	 *
-	 * @return the request that uniquely identifies this asynchronous call
-	 *
-	 * @throws DataExchangeException if the call fails
-	 */
-	public Request<T> setAsynchronous(T value, ResponseListener<T> listener)
-		throws DataExchangeException;
+    /**
+     * Sets the dynamic value in an asynchronous way. When the value is
+     * set, the <code>ResponseListeners</code> will be delivered a
+     * <code>ResponseEvent</code>. Use the return value of this method to
+     * identify the correct event for this request and the
+     * <code>RequestUtilities</code> to  extract the completion code,
+     * timestamp and type.
+     *
+     * @param value the value to set
+     * @param listener a listener that will receive response only for this
+     *        asynchronous operation and then will be released. This is
+     *        callback style of listener.
+     *
+     * @return the request that uniquely identifies this asynchronous call
+     *
+     * @throws DataExchangeException if the call fails
+     */
+    public Request<T> setAsynchronous(T value, ResponseListener<T> listener)
+        throws DataExchangeException;
 }
 
 /* __oOo__ */

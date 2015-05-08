@@ -34,99 +34,99 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  */
 public final class DoubleProperty extends WidgetProperty {
 
-	/**
-	 * Lower border for the property value.
-	 */
-	private double _min;
+    /**
+     * Lower border for the property value.
+     */
+    private double _min;
 
-	/**
-	 * Upper border for the property value.
-	 */
-	private double _max;
+    /**
+     * Upper border for the property value.
+     */
+    private double _max;
 
-	public DoubleProperty(final String shortDescription, String longDescription, final WidgetPropertyCategory category, final double defaultValue, double min, double max) {
-		super(PropertyTypesEnum.DOUBLE, shortDescription, longDescription, category, defaultValue, null);
-		assert min<=max;
-		_min = min;
-		_max = max;
-	}
-	/**
-	 * Constructor.
-	 * 
-	 * @param description
-	 *            a description
-	 * @param category
-	 *            a category
-	 * @param defaultValue
-	 *            the default value
-	 */
-	public DoubleProperty(final String description,
-			final WidgetPropertyCategory category, final double defaultValue) {
-		this(description, null, category, defaultValue, -Double.MAX_VALUE, Double.MAX_VALUE);
-	}
+    public DoubleProperty(final String shortDescription, String longDescription, final WidgetPropertyCategory category, final double defaultValue, double min, double max) {
+        super(PropertyTypesEnum.DOUBLE, shortDescription, longDescription, category, defaultValue, null);
+        assert min<=max;
+        _min = min;
+        _max = max;
+    }
+    /**
+     * Constructor.
+     * 
+     * @param description
+     *            a description
+     * @param category
+     *            a category
+     * @param defaultValue
+     *            the default value
+     */
+    public DoubleProperty(final String description,
+            final WidgetPropertyCategory category, final double defaultValue) {
+        this(description, null, category, defaultValue, -Double.MAX_VALUE, Double.MAX_VALUE);
+    }
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param description
-	 *            a description
-	 * @param category
-	 *            a category
-	 * @param defaultValue
-	 *            the default value
-	 * @param minValue
-	 *            the lower border for the property value
-	 * @param maxValue
-	 *            the upper border for the property value
-	 */
-	public DoubleProperty(final String description,
-			final WidgetPropertyCategory category, final double defaultValue,
-			final double minValue, final double maxValue) {
-		this(description, null, category, defaultValue, minValue, maxValue);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param description
+     *            a description
+     * @param category
+     *            a category
+     * @param defaultValue
+     *            the default value
+     * @param minValue
+     *            the lower border for the property value
+     * @param maxValue
+     *            the upper border for the property value
+     */
+    public DoubleProperty(final String description,
+            final WidgetPropertyCategory category, final double defaultValue,
+            final double minValue, final double maxValue) {
+        this(description, null, category, defaultValue, minValue, maxValue);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object checkValue(final Object value) {
-		assert value != null : "value!=null"; //$NON-NLS-1$
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object checkValue(final Object value) {
+        assert value != null : "value!=null"; //$NON-NLS-1$
 
-		Double acceptedValue = null;
+        Double acceptedValue = null;
 
-		// check type
-		if (!(value instanceof Double)) {
-			if (value instanceof Number) {
-				acceptedValue = ((Number) value).doubleValue();
-			} else {
-				try {
-					acceptedValue = Double.parseDouble(value.toString());
-				} catch (NumberFormatException e) {
-					acceptedValue = null;
-				}
-			}
-		} else {
-			acceptedValue = (Double) value;
-		}
+        // check type
+        if (!(value instanceof Double)) {
+            if (value instanceof Number) {
+                acceptedValue = ((Number) value).doubleValue();
+            } else {
+                try {
+                    acceptedValue = Double.parseDouble(value.toString());
+                } catch (NumberFormatException e) {
+                    acceptedValue = null;
+                }
+            }
+        } else {
+            acceptedValue = (Double) value;
+        }
 
-		// check borders
-		if (acceptedValue != null) {
-			if (acceptedValue > _max) {
-				acceptedValue = _max;
-			} else if (acceptedValue < _min) {
-				acceptedValue = _min;
-			}
-		}
+        // check borders
+        if (acceptedValue != null) {
+            if (acceptedValue > _max) {
+                acceptedValue = _max;
+            } else if (acceptedValue < _min) {
+                acceptedValue = _min;
+            }
+        }
 
-		return acceptedValue;
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getCompatibleJavaTypes() {
-		return new Class[]{Number.class};
-	}
+        return acceptedValue;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getCompatibleJavaTypes() {
+        return new Class[]{Number.class};
+    }
 }

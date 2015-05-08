@@ -103,7 +103,7 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
                     return;
                 }
                 Activator.getLogger().log(Level.FINE, "{0} writes {1} as {2}",
-            		new Object[] { getName(), VTypeHelper.toString(most_recent_value), TimestampHelper.format(VTypeHelper.getTimestamp(value)) });
+                    new Object[] { getName(), VTypeHelper.toString(most_recent_value), TimestampHelper.format(VTypeHelper.getTimestamp(value)) });
             }
             else
             {   // It's a new value, so we should be able to write it
@@ -132,7 +132,7 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
                 return false;
             final double v1 = ((VNumber) val1).getValue().doubleValue();
             final double v2 = ((VNumber) val2).getValue().doubleValue();
-        	if (Double.doubleToLongBits(v1) != Double.doubleToLongBits(v2))
+            if (Double.doubleToLongBits(v1) != Double.doubleToLongBits(v2))
                 return false;
         }
         else if (val1 instanceof VNumberArray)
@@ -143,10 +143,10 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
             final ListNumber n2 = ((VNumberArray) val2).getData();
             final int N = n1.size();
             if (n2.size() != N)
-            	return false;
+                return false;
             for (int i=0; i<N; ++i)
-            	if (Double.doubleToLongBits(n1.getDouble(i)) != Double.doubleToLongBits(n2.getDouble(i)))
-            		return false;
+                if (Double.doubleToLongBits(n1.getDouble(i)) != Double.doubleToLongBits(n2.getDouble(i)))
+                    return false;
         }
         else if (val1 instanceof VEnum)
         {
@@ -165,8 +165,8 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
             final String v2 = ((VString) val2).getValue();
             if (v1 == null)
             {
-            	if (v2 != null)
-            		return false;
+                if (v2 != null)
+                    return false;
             }
             else if (! v1.equals(v2))
                 return false;
@@ -175,7 +175,7 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
             return false; // Assume that unknown type differs in value
         // Compare severity, status
         if (! ((val1 instanceof Alarm)  &&  (val2 instanceof Alarm)))
-        	return false;
+            return false;
         final Alarm a1 = (Alarm)val1;
         final Alarm a2 = (Alarm)val2;
         return a1.getAlarmSeverity() == a2.getAlarmSeverity()

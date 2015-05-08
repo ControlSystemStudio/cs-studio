@@ -66,16 +66,16 @@ public class LoggedScan extends Scan
      *  @return {@link ScanData}
      *  @throws Exception on error
      */
-	public ScanData getScanData() throws Exception
-	{
-	    try
-	    (
+    public ScanData getScanData() throws Exception
+    {
+        try
+        (
             final DataLog logger = DataLogFactory.getDataLog(this);
         )
-	    {
-	        return logger.getScanData();
-	    }
-	}
+        {
+            return logger.getScanData();
+        }
+    }
 
     // Compare by ID
     @Override

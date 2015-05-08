@@ -31,82 +31,82 @@ import org.epics.css.dal.simulation.ValueProvider;
  * 
  */
 public class CountdownDoubleGenerator implements ValueProvider<Double> {
-	private double distance;
-	private double from;
-	private double to;
-	private long countdownPeriod;
-	
-	private long startMs=-1;
-	
-	/**
-	 * Constructs a new double countdown generator.
-	 * 
-	 * @param options the options (start, end, period)
-	 */
-	public CountdownDoubleGenerator(String[] options) {
-		init(options);
-	}
+    private double distance;
+    private double from;
+    private double to;
+    private long countdownPeriod;
+    
+    private long startMs=-1;
+    
+    /**
+     * Constructs a new double countdown generator.
+     * 
+     * @param options the options (start, end, period)
+     */
+    public CountdownDoubleGenerator(String[] options) {
+        init(options);
+    }
 
-	protected void init(String[] options) {
-		try {
-			from = Double.parseDouble(options[0]);
-		} catch (NumberFormatException nfe) {
-			from = 0;
-		}
+    protected void init(String[] options) {
+        try {
+            from = Double.parseDouble(options[0]);
+        } catch (NumberFormatException nfe) {
+            from = 0;
+        }
 
-		try {
-			to = Double.parseDouble(options[1]);
-		} catch (NumberFormatException nfe) {
-			to = 1;
-		}
+        try {
+            to = Double.parseDouble(options[1]);
+        } catch (NumberFormatException nfe) {
+            to = 1;
+        }
 
-		try {
-			countdownPeriod = Long.parseLong(options[2]);
-		} catch (NumberFormatException nfe) {
-			countdownPeriod = 1000;
-		}
+        try {
+            countdownPeriod = Long.parseLong(options[2]);
+        } catch (NumberFormatException nfe) {
+            countdownPeriod = 1000;
+        }
 
-		if (from < to) {
-			double tmp = from;
-			from = to;
-			to = tmp;
-		}
-	
-		distance = from - to;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.epics.css.dal.simulation.ValueProvider#get()
-	 */
-	public Double get() throws DataExchangeException {
-		double result = -1;
-		
-		if(startMs < 0) {
-			startMs = System.currentTimeMillis();
-		}
-		
-		long now = System.currentTimeMillis();
-		long diff = now-startMs;
-		
-		
-		if(diff>=countdownPeriod) {
-			startMs = -1;
-			result = from;
-		} else {
-			double percent = (double) diff/countdownPeriod;
-			result = from - (distance * percent);
-		}
-		
-		return result;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.epics.css.dal.simulation.ValueProvider#set(java.lang.Object)
-	 */
-	public void set(Double value) throws DataExchangeException {
-		//ignore; data generator		
-	}
+        if (from < to) {
+            double tmp = from;
+            from = to;
+            to = tmp;
+        }
+    
+        distance = from - to;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.epics.css.dal.simulation.ValueProvider#get()
+     */
+    public Double get() throws DataExchangeException {
+        double result = -1;
+        
+        if(startMs < 0) {
+            startMs = System.currentTimeMillis();
+        }
+        
+        long now = System.currentTimeMillis();
+        long diff = now-startMs;
+        
+        
+        if(diff>=countdownPeriod) {
+            startMs = -1;
+            result = from;
+        } else {
+            double percent = (double) diff/countdownPeriod;
+            result = from - (distance * percent);
+        }
+        
+        return result;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.epics.css.dal.simulation.ValueProvider#set(java.lang.Object)
+     */
+    public void set(Double value) throws DataExchangeException {
+        //ignore; data generator        
+    }
 
 }

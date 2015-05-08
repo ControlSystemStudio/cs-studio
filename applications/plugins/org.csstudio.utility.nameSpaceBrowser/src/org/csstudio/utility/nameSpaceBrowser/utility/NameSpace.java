@@ -34,48 +34,48 @@ import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
  */
 public abstract class NameSpace {
 
-	private String _name;
-	private String _filter;
-	private String _selection;
+    private String _name;
+    private String _filter;
+    private String _selection;
 
-	abstract public void start() throws Exception;
-	abstract public void stop();
+    abstract public void start() throws Exception;
+    abstract public void stop();
 
 
-	/**
-	 * @param name
-	 */
-	public void setName(final String name) {
-		_name = name;
-	}
+    /**
+     * @param name
+     */
+    public void setName(final String name) {
+        _name = name;
+    }
 
-	/**
-	 * @param filter
-	 */
-	public void setFilter(final String filter) {
-		_filter = filter;
-	}
+    /**
+     * @param filter
+     */
+    public void setFilter(final String filter) {
+        _filter = filter;
+    }
 
-	public abstract NameSpaceSearchResult getSearchResult();
-	
-	/**
-	 * @param selection
-	 */
-	public void setSelection(final String selection) {
-		 _selection=selection;
-	}
+    public abstract NameSpaceSearchResult getSearchResult();
+    
+    /**
+     * @param selection
+     */
+    public void setSelection(final String selection) {
+         _selection=selection;
+    }
 
-	protected String getFilter() {
-		return _filter;
-	}
+    protected String getFilter() {
+        return _filter;
+    }
 
-	protected String getName() {
-		return _name;
-	}
+    protected String getName() {
+        return _name;
+    }
 
-	protected String getSelection() {
-		return _selection;
-	}
+    protected String getSelection() {
+        return _selection;
+    }
 
     public abstract NameSpace createNew();
 

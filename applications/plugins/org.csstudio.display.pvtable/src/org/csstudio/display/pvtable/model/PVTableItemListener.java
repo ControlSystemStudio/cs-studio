@@ -15,6 +15,6 @@ public interface PVTableItemListener
     /** @param item Item that was selected or de-selected */
     void tableItemSelectionChanged(PVTableItem item);
     
-	/** @param item Item that has new value */
-	void tableItemChanged(PVTableItem item);
+    /** @param item Item that has new value */
+    void tableItemChanged(PVTableItem item);
 }

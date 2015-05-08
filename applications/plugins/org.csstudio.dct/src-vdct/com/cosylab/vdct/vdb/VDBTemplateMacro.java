@@ -43,159 +43,159 @@ import com.cosylab.vdct.inspector.InspectorManager;
  */
 public class VDBTemplateMacro extends VDBFieldData implements Descriptable, ChangableVisibility
 {
-	protected VDBMacro macro = null;
-	protected VDBTemplateInstance templateInstance = null;
+    protected VDBMacro macro = null;
+    protected VDBTemplateInstance templateInstance = null;
 
-	protected int visibility = UNDEFINED_VISIBILITY;
+    protected int visibility = UNDEFINED_VISIBILITY;
 
-	private static final String nullString = "";
+    private static final String nullString = "";
 
-	/**
-	 */
-	public VDBTemplateMacro(VDBTemplateInstance templateInstance, VDBMacro macro)
-	{
-		super();
-		this.macro = macro;
-		this.templateInstance = templateInstance;
-		this.visibility = macro.getVisibility();	// obtain default
-		this.value = nullString;
-	}
-	
+    /**
+     */
+    public VDBTemplateMacro(VDBTemplateInstance templateInstance, VDBMacro macro)
+    {
+        super();
+        this.macro = macro;
+        this.templateInstance = templateInstance;
+        this.visibility = macro.getVisibility();    // obtain default
+        this.value = nullString;
+    }
+    
 
-	/**
-	 * Insert the method's description here.
-	 * Creation date: (1.2.2001 12:11:29)
-	 * @return java.lang.String
-	 */
-	public String toString() {
-		return templateInstance.getName()+com.cosylab.vdct.Constants.FIELD_SEPARATOR+macro.getName();
-	}
+    /**
+     * Insert the method's description here.
+     * Creation date: (1.2.2001 12:11:29)
+     * @return java.lang.String
+     */
+    public String toString() {
+        return templateInstance.getName()+com.cosylab.vdct.Constants.FIELD_SEPARATOR+macro.getName();
+    }
 
-	/**
-	 * Insert the method's description here.
-	 * Creation date: (1.2.2001 12:11:29)
-	 * @return java.lang.String
-	 */
-	public String getName() {
-		return macro.getName();
-	}
-	
-	/**
-	 * Insert the method's description here.
-	 * Creation date: (1.2.2001 12:11:29)
-	 * @return java.lang.String
-	 */
-	public String getFullName() {
-		StringBuffer fullName = new StringBuffer();
-		fullName.append("$(");
-		fullName.append(getName());
-		fullName.append(")");
-		return fullName.toString();
-	}
+    /**
+     * Insert the method's description here.
+     * Creation date: (1.2.2001 12:11:29)
+     * @return java.lang.String
+     */
+    public String getName() {
+        return macro.getName();
+    }
+    
+    /**
+     * Insert the method's description here.
+     * Creation date: (1.2.2001 12:11:29)
+     * @return java.lang.String
+     */
+    public String getFullName() {
+        StringBuffer fullName = new StringBuffer();
+        fullName.append("$(");
+        fullName.append(getName());
+        fullName.append(")");
+        return fullName.toString();
+    }
 
-	/**
-	 * Insert the method's description here.
-	 * Creation date: (11.1.2001 21:30:04)
-	 * @return int
-	 */
-	public int getVisibility()
-	{
-		return visibility;
-	}
-	
-	/**
-	 * Sets the visibility.
-	 * @param visibility The visibility to set
-	 */
-	public void setVisibility(int visibility)
-	{
-		int oldValue = this.visibility;
-		this.visibility = visibility;
+    /**
+     * Insert the method's description here.
+     * Creation date: (11.1.2001 21:30:04)
+     * @return int
+     */
+    public int getVisibility()
+    {
+        return visibility;
+    }
+    
+    /**
+     * Sets the visibility.
+     * @param visibility The visibility to set
+     */
+    public void setVisibility(int visibility)
+    {
+        int oldValue = this.visibility;
+        this.visibility = visibility;
 
-		if (oldValue != visibility)
-		{
-			boolean hasDefaultValue = hasDefaultValue();
-			boolean oldVisible = (oldValue == InspectableProperty.ALWAYS_VISIBLE ||
-								 (oldValue == InspectableProperty.NON_DEFAULT_VISIBLE && !hasDefaultValue));
-			boolean newVisible = (visibility == InspectableProperty.ALWAYS_VISIBLE ||
-								 (visibility == InspectableProperty.NON_DEFAULT_VISIBLE && !hasDefaultValue));
-			if (oldVisible != newVisible)
-			{						 
-				Template visualTemplate = (Template)Group.getRoot().findObject(templateInstance.getName(), true);
-				if (visualTemplate!=null)
-					visualTemplate.fieldVisibilityChange(this, newVisible);
-			}
-		}
-			
-		updateInspector();
-	}
+        if (oldValue != visibility)
+        {
+            boolean hasDefaultValue = hasDefaultValue();
+            boolean oldVisible = (oldValue == InspectableProperty.ALWAYS_VISIBLE ||
+                                 (oldValue == InspectableProperty.NON_DEFAULT_VISIBLE && !hasDefaultValue));
+            boolean newVisible = (visibility == InspectableProperty.ALWAYS_VISIBLE ||
+                                 (visibility == InspectableProperty.NON_DEFAULT_VISIBLE && !hasDefaultValue));
+            if (oldVisible != newVisible)
+            {                         
+                Template visualTemplate = (Template)Group.getRoot().findObject(templateInstance.getName(), true);
+                if (visualTemplate!=null)
+                    visualTemplate.fieldVisibilityChange(this, newVisible);
+            }
+        }
+            
+        updateInspector();
+    }
 
-	/**
-	 * Insert the method's description here.
-	 * Creation date: (26.1.2001 15:03:07)
-	 * @return java.lang.String
-	 */
-	public java.lang.String getHelp() {
-		return macro.getDescription();
-	}
-	
-	/**
-	 * @see com.cosylab.vdct.graphics.objects.Descriptable#getDescription()
-	 */
-	public String getDescription()
-	{
-		return macro.getDescription();
-	}
+    /**
+     * Insert the method's description here.
+     * Creation date: (26.1.2001 15:03:07)
+     * @return java.lang.String
+     */
+    public java.lang.String getHelp() {
+        return macro.getDescription();
+    }
+    
+    /**
+     * @see com.cosylab.vdct.graphics.objects.Descriptable#getDescription()
+     */
+    public String getDescription()
+    {
+        return macro.getDescription();
+    }
 
-	/**
-	 * @see com.cosylab.vdct.graphics.objects.Descriptable#setDescription(String)
-	 */
-	public void setDescription(String description)
-	{
-		//macro.setDescription(description);
-	}
+    /**
+     * @see com.cosylab.vdct.graphics.objects.Descriptable#setDescription(String)
+     */
+    public void setDescription(String description)
+    {
+        //macro.setDescription(description);
+    }
 
-	/**
-	 * Returns the templateInstance.
-	 * @return VDBTemplateInstance
-	 */
-	public VDBTemplateInstance getTemplateInstance()
-	{
-		return templateInstance;
-	}
+    /**
+     * Returns the templateInstance.
+     * @return VDBTemplateInstance
+     */
+    public VDBTemplateInstance getTemplateInstance()
+    {
+        return templateInstance;
+    }
 
-	/**
-	 * Insert the method's description here.
-	 * Creation date: (9.12.2000 18:11:46)
-	 */
-	public void updateInspector()
-	{
-		Template visualTemplate = (Template)Group.getRoot().findObject(templateInstance.getName(), true);
-		if (visualTemplate==null) {
-			//com.cosylab.vdct.Console.getInstance().println("o) Internal error: no visual representation of record "+getName()+" found.");
-			return;
-		}
-	
-		InspectorManager.getInstance().updateProperty(visualTemplate, this);
-	}
+    /**
+     * Insert the method's description here.
+     * Creation date: (9.12.2000 18:11:46)
+     */
+    public void updateInspector()
+    {
+        Template visualTemplate = (Template)Group.getRoot().findObject(templateInstance.getName(), true);
+        if (visualTemplate==null) {
+            //com.cosylab.vdct.Console.getInstance().println("o) Internal error: no visual representation of record "+getName()+" found.");
+            return;
+        }
+    
+        InspectorManager.getInstance().updateProperty(visualTemplate, this);
+    }
 
-	/**
-	 * Returns the macro.
-	 * @return VDBmacro
-	 */
-	public VDBMacro getMacro()
-	{
-		return macro;
-	}
+    /**
+     * Returns the macro.
+     * @return VDBmacro
+     */
+    public VDBMacro getMacro()
+    {
+        return macro;
+    }
 
-	/**
-	 * Sets the macro.
-	 * @param macro The macro to set
-	 */
-	public void setMacro(VDBMacro macro)
-	{
-		this.macro = macro;
-	}
+    /**
+     * Sets the macro.
+     * @param macro The macro to set
+     */
+    public void setMacro(VDBMacro macro)
+    {
+        this.macro = macro;
+    }
 
 /**
  * Insert the method's description here.
@@ -203,7 +203,7 @@ public class VDBTemplateMacro extends VDBFieldData implements Descriptable, Chan
  */
 public String getToolTipText()
 {
-	return null;
+    return null;
 }
 
 /**
@@ -213,7 +213,7 @@ public String getToolTipText()
  */
 public Pattern getEditPattern()
 {
-	return null;
+    return null;
 }
 
 /**
@@ -223,7 +223,7 @@ public Pattern getEditPattern()
  */
 public boolean isValid()
 {
-	return true;
+    return true;
 }
 
 /**
@@ -232,14 +232,14 @@ public boolean isValid()
  * @return java.lang.String[]
  */
 public java.lang.String[] getSelectableValues() {
-	return null;
+    return null;
 }
 
 /**
  * @see com.cosylab.vdct.inspector.InspectableProperty#isEditable()
  */
 public boolean isEditable() {
-	return true;
+    return true;
 }
 
 /**
@@ -249,7 +249,7 @@ public boolean isEditable() {
  */
 public String getInitValue()
 {
-	return null;
+    return null;
 }
 /**
  * Insert the method's description here.
@@ -257,7 +257,7 @@ public String getInitValue()
  * @return boolean
  */
 public boolean hasDefaultValue() {
-	return getValue().length() == 0;
+    return getValue().length() == 0;
 }
 
 
@@ -268,34 +268,34 @@ public boolean hasDefaultValue() {
  */
 public void setValue(java.lang.String newValue) {
 
-	boolean oldVisible = (getVisibility() == InspectableProperty.ALWAYS_VISIBLE ||
-						 (getVisibility() == InspectableProperty.NON_DEFAULT_VISIBLE && !hasDefaultValue()));
+    boolean oldVisible = (getVisibility() == InspectableProperty.ALWAYS_VISIBLE ||
+                         (getVisibility() == InspectableProperty.NON_DEFAULT_VISIBLE && !hasDefaultValue()));
 
-	// buffer value
-	super.setValue(newValue);
+    // buffer value
+    super.setValue(newValue);
 
-	boolean newVisible = (getVisibility() == InspectableProperty.ALWAYS_VISIBLE ||
-						 (getVisibility() == InspectableProperty.NON_DEFAULT_VISIBLE && !hasDefaultValue()));
-						 
-	Template visualTemplate = null;
-	if (oldVisible != newVisible)
-	{						 
-		visualTemplate = (Template)Group.getRoot().findObject(templateInstance.getName(), true);
-		if (visualTemplate!=null)
-			visualTemplate.fieldVisibilityChange(this, newVisible);
-	}
+    boolean newVisible = (getVisibility() == InspectableProperty.ALWAYS_VISIBLE ||
+                         (getVisibility() == InspectableProperty.NON_DEFAULT_VISIBLE && !hasDefaultValue()));
+                         
+    Template visualTemplate = null;
+    if (oldVisible != newVisible)
+    {                         
+        visualTemplate = (Template)Group.getRoot().findObject(templateInstance.getName(), true);
+        if (visualTemplate!=null)
+            visualTemplate.fieldVisibilityChange(this, newVisible);
+    }
 
-	// mapping to property 
-	updateProperty();
+    // mapping to property 
+    updateProperty();
 
-	// field changed
-	if (visualTemplate==null)
-		visualTemplate = (Template)Group.getRoot().findObject(templateInstance.getName(), true);
-	if (visualTemplate!=null)
-	{
-		visualTemplate.fieldChanged(this);
-		InspectorManager.getInstance().updateProperty(visualTemplate, this);
-	}
+    // field changed
+    if (visualTemplate==null)
+        visualTemplate = (Template)Group.getRoot().findObject(templateInstance.getName(), true);
+    if (visualTemplate!=null)
+    {
+        visualTemplate.fieldChanged(this);
+        InspectorManager.getInstance().updateProperty(visualTemplate, this);
+    }
 
 }
 
@@ -306,11 +306,11 @@ public void setValue(java.lang.String newValue) {
  */
 public void setValueSilently(java.lang.String newValue) {
 
-	// buffer value
-	super.setValueSilently(newValue);
+    // buffer value
+    super.setValueSilently(newValue);
 
-	// mapping to property 
-	updateProperty();
+    // mapping to property 
+    updateProperty();
 
 }
 
@@ -319,13 +319,13 @@ public void setValueSilently(java.lang.String newValue) {
  */
 private void updateProperty() {
 
-	// mapping to properties 
-	if (hasDefaultValue())
-		templateInstance.removeProperty(macro.getName());
-	else if (!templateInstance.properties.containsKey(macro.getName()))
-		templateInstance.addProperty(macro.getName(), value);
-	else
-		templateInstance.getProperties().put(macro.getName(), value);
+    // mapping to properties 
+    if (hasDefaultValue())
+        templateInstance.removeProperty(macro.getName());
+    else if (!templateInstance.properties.containsKey(macro.getName()))
+        templateInstance.addProperty(macro.getName(), value);
+    else
+        templateInstance.getProperties().put(macro.getName(), value);
 
 }
 
@@ -335,10 +335,10 @@ private void updateProperty() {
  * @return java.lang.String
  */
 public java.lang.String getValue() {
-	if (!com.cosylab.vdct.plugin.debug.PluginDebugManager.isDebugState())
-		return value;
-	else
-		return debugValue;
+    if (!com.cosylab.vdct.plugin.debug.PluginDebugManager.isDebugState())
+        return value;
+    else
+        return debugValue;
 }
 
 /**
@@ -346,7 +346,7 @@ public java.lang.String getValue() {
  */
 public int getType()
 {
-	return DBDConstants.DBF_TEMPLATE_MACRO;
+    return DBDConstants.DBF_TEMPLATE_MACRO;
 }
 
 }

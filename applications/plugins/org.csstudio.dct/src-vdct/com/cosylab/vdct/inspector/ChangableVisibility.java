@@ -33,7 +33,7 @@ package com.cosylab.vdct.inspector;
  */
 public interface ChangableVisibility
 {
-	
+    
 /**
  * Insert the method's description here.
  * @param visibility

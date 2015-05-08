@@ -8,12 +8,12 @@ import org.epics.vtype.Alarm;
  * @author Gabriele Carcassi
  */
 public interface AlarmProvider {
-	
-	/**
-	 * Returns the alarm that should be displayed as a border.
-	 * 
-	 * @return the alarm; never null
-	 */
-	public Alarm getAlarm();
-	
+    
+    /**
+     * Returns the alarm that should be displayed as a border.
+     * 
+     * @return the alarm; never null
+     */
+    public Alarm getAlarm();
+    
 }

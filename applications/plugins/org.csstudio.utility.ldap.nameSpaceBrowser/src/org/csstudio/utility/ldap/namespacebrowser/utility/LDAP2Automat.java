@@ -45,77 +45,77 @@ import org.csstudio.utility.nameSpaceBrowser.utility.CSSViewParameter;
  */
 public class LDAP2Automat extends Automat {
 
-	// State machines parameter
-	private NameSpaceBrowserState _currentState = NameSpaceBrowserState.START;
+    // State machines parameter
+    private NameSpaceBrowserState _currentState = NameSpaceBrowserState.START;
 
-	// LDAP parameter
-	private String _storeName = "";
+    // LDAP parameter
+    private String _storeName = "";
     private String _root = "";
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.utility.nameSpaceBrowser.utility.Automat#event(org.csstudio.utility.nameSpaceBrowser.utility.Automat.Ereignis, java.lang.String)
-	 */
-	@Override
-	public CSSViewParameter goDown(final String selection) {
+    /* (non-Javadoc)
+     * @see org.csstudio.utility.nameSpaceBrowser.utility.Automat#event(org.csstudio.utility.nameSpaceBrowser.utility.Automat.Ereignis, java.lang.String)
+     */
+    @Override
+    public CSSViewParameter goDown(final String selection) {
 
-	    final CSSViewParameter parameter = new CSSViewParameter();
+        final CSSViewParameter parameter = new CSSViewParameter();
 
-	    final String[] selectionFields = selection.split(FIELD_ASSIGNMENT);
-	    final String levelIdentifier = selectionFields[0];
+        final String[] selectionFields = selection.split(FIELD_ASSIGNMENT);
+        final String levelIdentifier = selectionFields[0];
 
-	    if (_storeName.contains(levelIdentifier)) { // navigation to the same or a higher level
-	        // Delete everything from _storeName from the beginning of the string to current level
-	        final String regexp = "(.*)" + levelIdentifier + FIELD_ASSIGNMENT + "[^,]*,";
-	        _storeName = _storeName.replaceFirst(regexp, "");
-	    }
+        if (_storeName.contains(levelIdentifier)) { // navigation to the same or a higher level
+            // Delete everything from _storeName from the beginning of the string to current level
+            final String regexp = "(.*)" + levelIdentifier + FIELD_ASSIGNMENT + "[^,]*,";
+            _storeName = _storeName.replaceFirst(regexp, "");
+        }
 
 
-		if(selection.startsWith(UNIT.getNodeTypeName() + FIELD_ASSIGNMENT)){
-		    _root = selection;
+        if(selection.startsWith(UNIT.getNodeTypeName() + FIELD_ASSIGNMENT)){
+            _root = selection;
 
-		    parameter.name = _root;
-			parameter.filter = FACILITY.getNodeTypeName() + FIELD_ASSIGNMENT + FIELD_WILDCARD;
-			parameter.newCSSView = true;
+            parameter.name = _root;
+            parameter.filter = FACILITY.getNodeTypeName() + FIELD_ASSIGNMENT + FIELD_WILDCARD;
+            parameter.newCSSView = true;
 
-			_currentState = NameSpaceBrowserState.CONTROLLER;
+            _currentState = NameSpaceBrowserState.CONTROLLER;
 
-		} else if(selection.startsWith(FACILITY.getNodeTypeName() + FIELD_ASSIGNMENT)){
-		    if (selection.contains(FIELD_WILDCARD)) { // [All] efans selected
-		        parameter.name = _root;
-		    } else {                       // <efan> selected
-		        parameter.name = COMPONENT.getNodeTypeName() + FIELD_ASSIGNMENT + "EPICS-IOC" + FIELD_SEPARATOR +
-		                         selection + FIELD_SEPARATOR +
-		                         _root;
-		    }
+        } else if(selection.startsWith(FACILITY.getNodeTypeName() + FIELD_ASSIGNMENT)){
+            if (selection.contains(FIELD_WILDCARD)) { // [All] efans selected
+                parameter.name = _root;
+            } else {                       // <efan> selected
+                parameter.name = COMPONENT.getNodeTypeName() + FIELD_ASSIGNMENT + "EPICS-IOC" + FIELD_SEPARATOR +
+                                 selection + FIELD_SEPARATOR +
+                                 _root;
+            }
 
-			parameter.filter = IOC.getNodeTypeName() + FIELD_ASSIGNMENT + FIELD_WILDCARD;
-			parameter.newCSSView=true;
+            parameter.filter = IOC.getNodeTypeName() + FIELD_ASSIGNMENT + FIELD_WILDCARD;
+            parameter.newCSSView=true;
 
-			_currentState=NameSpaceBrowserState.CONTROLLER;
+            _currentState=NameSpaceBrowserState.CONTROLLER;
 
-		} else if(selection.startsWith(IOC.getNodeTypeName() + FIELD_ASSIGNMENT)){
+        } else if(selection.startsWith(IOC.getNodeTypeName() + FIELD_ASSIGNMENT)){
             if(selection.contains(FIELD_WILDCARD)){ // [All] econs selected
                 parameter.name = _storeName;
             } else{                      // <econ> selected
                 parameter.name = selection + FIELD_SEPARATOR +_storeName;
             }
-			parameter.filter = RECORD.getNodeTypeName() + FIELD_ASSIGNMENT + FIELD_WILDCARD;
-			parameter.newCSSView = false;
+            parameter.filter = RECORD.getNodeTypeName() + FIELD_ASSIGNMENT + FIELD_WILDCARD;
+            parameter.newCSSView = false;
 
-			_currentState = NameSpaceBrowserState.RECORD;
+            _currentState = NameSpaceBrowserState.RECORD;
 
-		}
-		_storeName = parameter.name;
+        }
+        _storeName = parameter.name;
 
-		return parameter;
-	}
+        return parameter;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.utility.nameSpaceBrowser.utility.Automat#getZustand()
-	 */
-	@Override
-	public NameSpaceBrowserState getState() {
-		return _currentState;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.utility.nameSpaceBrowser.utility.Automat#getZustand()
+     */
+    @Override
+    public NameSpaceBrowserState getState() {
+        return _currentState;
+    }
 
 }

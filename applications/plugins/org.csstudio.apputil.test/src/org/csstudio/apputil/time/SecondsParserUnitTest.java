@@ -68,11 +68,11 @@ public class SecondsParserUnitTest  extends TestCase
     @Test
     public void testFormat()
     {
-    	assertEquals("00:00:10", SecondsParser.formatSeconds(10.0));
-    	assertEquals("00:01:00", SecondsParser.formatSeconds(60.0));
-    	assertEquals("00:01:30", SecondsParser.formatSeconds(90.0));
-    	assertEquals("01:00:00", SecondsParser.formatSeconds(60*60.0));
-    	assertEquals("01:30:00", SecondsParser.formatSeconds(90*60.0));
+        assertEquals("00:00:10", SecondsParser.formatSeconds(10.0));
+        assertEquals("00:01:00", SecondsParser.formatSeconds(60.0));
+        assertEquals("00:01:30", SecondsParser.formatSeconds(90.0));
+        assertEquals("01:00:00", SecondsParser.formatSeconds(60*60.0));
+        assertEquals("01:30:00", SecondsParser.formatSeconds(90*60.0));
         assertEquals("00:00:00.000", SecondsParser.formatSeconds(0.0));
         assertEquals("00:00:00.500", SecondsParser.formatSeconds(0.5));
         assertEquals("-00:00:00.500", SecondsParser.formatSeconds(-0.5));

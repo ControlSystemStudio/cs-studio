@@ -32,19 +32,19 @@ import org.w3c.dom.Element;
 public class AnnotationInfo
 {
     final int item_index;
-	final private Instant time;
-	final private double value;
-	final private Point offset;
-	final private String text;
+    final private Instant time;
+    final private double value;
+    final private Point offset;
+    final private String text;
 
-	public AnnotationInfo(final int item_index, final Instant time, final double value, final Point offset, final String text)
-	{
+    public AnnotationInfo(final int item_index, final Instant time, final double value, final Point offset, final String text)
+    {
 
-	    this.item_index = item_index;
-		this.time = time;
-		this.value = value;
-		this.offset = offset;
-		this.text = text;
+        this.item_index = item_index;
+        this.time = time;
+        this.value = value;
+        this.offset = offset;
+        this.text = text;
     }
 
     /** @return Index of item */
@@ -53,13 +53,13 @@ public class AnnotationInfo
         return item_index;
     }
 
-	/** @return Time stamp */
-	public Instant getTime()
-	{
-		return time;
-	}
+    /** @return Time stamp */
+    public Instant getTime()
+    {
+        return time;
+    }
 
-	/** @return Value */
+    /** @return Value */
     public double getValue()
     {
         return value;
@@ -77,17 +77,17 @@ public class AnnotationInfo
         return text;
     }
 
-	@SuppressWarnings("nls")
+    @SuppressWarnings("nls")
     @Override
-	public String toString()
-	{
-		return "Annotation for item " + item_index + ": '" + text + "' @ " + TimeHelper.format(time) + ", " + value;
-	}
+    public String toString()
+    {
+        return "Annotation for item " + item_index + ": '" + text + "' @ " + TimeHelper.format(time) + ", " + value;
+    }
 
     /** Write XML formatted annotation configuration
      *  @param writer PrintWriter
      */
-	public void write(final PrintWriter writer)
+    public void write(final PrintWriter writer)
     {
         XMLWriter.start(writer, 2, XMLPersistence.TAG_ANNOTATION);
         writer.println();
@@ -110,22 +110,22 @@ public class AnnotationInfo
      *  @return PVItem
      *  @throws Exception on error
      */
-	public static AnnotationInfo fromDocument(final Element node) throws Exception
+    public static AnnotationInfo fromDocument(final Element node) throws Exception
     {
-	    final int item_index = DOMHelper.getSubelementInt(node, XMLPersistence.TAG_PV, -1);
+        final int item_index = DOMHelper.getSubelementInt(node, XMLPersistence.TAG_PV, -1);
         final String timetext = DOMHelper.getSubelementString(node, XMLPersistence.TAG_TIME);
         final Instant time = TimeHelper.parse(timetext);
         final double value = DOMHelper.getSubelementDouble(node, XMLPersistence.TAG_VALUE, 0.0);
-		final String text = DOMHelper.getSubelementString(node, XMLPersistence.TAG_TEXT);
+        final String text = DOMHelper.getSubelementString(node, XMLPersistence.TAG_TEXT);
 
-		int x = 20;
-		int y = 20;
-		Element offset = DOMHelper.findFirstElementNode(node.getFirstChild(), XMLPersistence.TAG_OFFSET);
-		if (offset != null)
-		{
-		    x = DOMHelper.getSubelementInt(offset, XMLPersistence.TAG_X, x);
+        int x = 20;
+        int y = 20;
+        Element offset = DOMHelper.findFirstElementNode(node.getFirstChild(), XMLPersistence.TAG_OFFSET);
+        if (offset != null)
+        {
+            x = DOMHelper.getSubelementInt(offset, XMLPersistence.TAG_X, x);
             y = DOMHelper.getSubelementInt(offset, XMLPersistence.TAG_Y, y);
-		}
-		return new AnnotationInfo(item_index, time, value, new Point(x, y), text);
+        }
+        return new AnnotationInfo(item_index, time, value, new Point(x, y), text);
     }
 }

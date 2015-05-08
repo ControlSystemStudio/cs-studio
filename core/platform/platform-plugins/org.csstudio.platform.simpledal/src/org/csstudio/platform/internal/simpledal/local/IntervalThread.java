@@ -32,62 +32,62 @@ import java.util.Date;
  */
 public final class IntervalThread extends Thread {
 
-	/**
-	 * The encapsulated <code>java.lang.Runnable</code>.
-	 */
-	private Runnable _runnable;
+    /**
+     * The encapsulated <code>java.lang.Runnable</code>.
+     */
+    private Runnable _runnable;
 
-	/**
-	 * Flag that indicates if the thread should continue its execution.
-	 */
-	private boolean _running;
+    /**
+     * Flag that indicates if the thread should continue its execution.
+     */
+    private boolean _running;
 
-	/**
-	 * The time periode that lies between two executions of the encapsulated
-	 * <code>java.lang.Runnable</code>.
-	 */
-	private int _refreshRate;
+    /**
+     * The time periode that lies between two executions of the encapsulated
+     * <code>java.lang.Runnable</code>.
+     */
+    private int _refreshRate;
 
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param runnable
-	 *            the encapsulated <code>java.lang.Runnable</code>.
-	 * @param refreshRate
-	 *            the time periode that lies between two executions of the
-	 *            encapsulated <code>java.lang.Runnable</code>.
-	 */
-	public IntervalThread(final Runnable runnable, final int refreshRate) {
-		_runnable = runnable;
-		_refreshRate = refreshRate;
-		_running = true;
-	}
+    /**
+     * Standard constructor.
+     * 
+     * @param runnable
+     *            the encapsulated <code>java.lang.Runnable</code>.
+     * @param refreshRate
+     *            the time periode that lies between two executions of the
+     *            encapsulated <code>java.lang.Runnable</code>.
+     */
+    public IntervalThread(final Runnable runnable, final int refreshRate) {
+        _runnable = runnable;
+        _refreshRate = refreshRate;
+        _running = true;
+    }
 
-	/**
-	 * {@inheritDoc}.
-	 */
-	@Override
-	public void run() {
-		while (_running) {
-			if (_runnable != null) {
-				_runnable.run();
-			}
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public void run() {
+        while (_running) {
+            if (_runnable != null) {
+                _runnable.run();
+            }
 
-			long targetMs = new Date().getTime() + _refreshRate;
+            long targetMs = new Date().getTime() + _refreshRate;
 
-			while (System.currentTimeMillis() < targetMs) {
-				yield();
-			}
-		}
-	}
+            while (System.currentTimeMillis() < targetMs) {
+                yield();
+            }
+        }
+    }
 
-	/**
-	 * Tell this thread that it should stop its execution.
-	 */
-	public void stopRunning() {
-		_runnable = null;
+    /**
+     * Tell this thread that it should stop its execution.
+     */
+    public void stopRunning() {
+        _runnable = null;
 
-		_running = false;
+        _running = false;
 
-	}
+    }
 }

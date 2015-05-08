@@ -36,20 +36,20 @@ import java.util.*;
  * @author Matej Sekoranja
  */
 public abstract class EventManager {
-	protected Hashtable subscreiber;
+    protected Hashtable subscreiber;
 
 /**
  * CommandManager constructor comment.
  */
 protected EventManager() {
-	subscreiber = new Hashtable();
+    subscreiber = new Hashtable();
 }
 /**
  * Insert the method's description here.
  * Creation date: (18.12.2000 15:32:53)
  */
 public void clear() {
-	subscreiber.clear();
+    subscreiber.clear();
 }
 /**
  * Insert the method's description here.
@@ -57,7 +57,7 @@ public void clear() {
  * @return java.util.Hashtable
  */
 public java.util.Hashtable getSubscreiber() {
-	return subscreiber;
+    return subscreiber;
 }
 /**
  * Insert the method's description here.
@@ -66,9 +66,9 @@ public java.util.Hashtable getSubscreiber() {
  * @param subscreiber java.lang.Object
  */
 public void registerSubscreiber(String id, Object newSubscreiber) {
-	if (subscreiber.containsKey(id))
-		throw new IllegalArgumentException("Error: subscreiber with id '"+id+"' already exists...");
-	else subscreiber.put(id, newSubscreiber);
+    if (subscreiber.containsKey(id))
+        throw new IllegalArgumentException("Error: subscreiber with id '"+id+"' already exists...");
+    else subscreiber.put(id, newSubscreiber);
 }
 /**
  * Insert the method's description here.
@@ -77,6 +77,6 @@ public void registerSubscreiber(String id, Object newSubscreiber) {
  * @param subscreiber java.lang.Object
  */
 public void unregisterSubscreiber(String id, Object newSubscreiber) {
-	subscreiber.remove(id);
+    subscreiber.remove(id);
 }
 }

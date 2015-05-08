@@ -13,9 +13,9 @@ import org.eclipse.swt.widgets.Composite;
  * @param <T> the widget type
  */
 public abstract class AbstractPointDatasetGraph2DWidgetFigure<T extends Composite> extends AbstractSelectionWidgetFigure<T> {
-	
-	public AbstractPointDatasetGraph2DWidgetFigure(AbstractBaseEditPart editPart) {
-		super(editPart);
-	}
-	
+    
+    public AbstractPointDatasetGraph2DWidgetFigure(AbstractBaseEditPart editPart) {
+        super(editPart);
+    }
+    
 }

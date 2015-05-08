@@ -42,62 +42,62 @@ import com.cosylab.vdct.graphics.popup.*;
  */
 public class Vertex extends VisibleObject implements Movable, Popupable
 {
-	
-	private VisibleObject owner;
-	//private static final String nullString = "";
-	private boolean hilited = false;
+    
+    private VisibleObject owner;
+    //private static final String nullString = "";
+    private boolean hilited = false;
 
 public Vertex(VisibleObject owner, int parX, int parY)
 {
-	//super(parentGroup);
-	super(null);
-	
-	//ViewState view = ViewState.getInstance();
+    //super(parentGroup);
+    super(null);
+    
+    //ViewState view = ViewState.getInstance();
 
-	setX(parX);
-	setY(parY);
-	setWidth(Constants.CONNECTOR_WIDTH);
-	setHeight(Constants.CONNECTOR_HEIGHT);
+    setX(parX);
+    setY(parY);
+    setWidth(Constants.CONNECTOR_WIDTH);
+    setHeight(Constants.CONNECTOR_HEIGHT);
 
-	this.owner = owner;
+    this.owner = owner;
 
 }
 
 public void accept(Visitor visitor)
 {
-	visitor.visitGroup();
+    visitor.visitGroup();
 }
 
 public boolean checkMove(int dx, int dy)
 {
-	ViewState view = ViewState.getInstance();
+    ViewState view = ViewState.getInstance();
 
-	if((getX() < - dx) || (getY() < - dy)
-		|| (getX() > (view.getWidth() - getWidth() - dx))
-		|| (getY() > (view.getHeight() - getHeight() - dy)))
-	{
-		return false;
-	}
-	
-	return true;
+    if((getX() < - dx) || (getY() < - dy)
+        || (getX() > (view.getWidth() - getWidth() - dx))
+        || (getY() > (view.getHeight() - getHeight() - dy)))
+    {
+        return false;
+    }
+    
+    return true;
 }
 
 protected void draw(Graphics g, boolean hilited)
 {
-	ViewState view = ViewState.getInstance();
+    ViewState view = ViewState.getInstance();
 
-	int offsetX = view.getRx();
-	int offsetY = view.getRy();
-	
-	int rwidth = getRwidth();
-	int rheight = getRheight();
-	int posX = getRx() - offsetX - rwidth/2;
-	int posY = getRy() - offsetY - rheight/2;
-	
+    int offsetX = view.getRx();
+    int offsetY = view.getRy();
+    
+    int rwidth = getRwidth();
+    int rheight = getRheight();
+    int posX = getRx() - offsetX - rwidth/2;
+    int posY = getRy() - offsetY - rheight/2;
+    
 
-	double Rscale = getRscale();
-	boolean zoom = Rscale < 1.0 && view.isZoomOnHilited() && view.isHilitedObject(this);
-	if (zoom) {
+    double Rscale = getRscale();
+    boolean zoom = Rscale < 1.0 && view.isZoomOnHilited() && view.isHilitedObject(this);
+    if (zoom) {
         rwidth /= Rscale;
         rheight /= Rscale;
         posX -= (rwidth - getRwidth())/2;
@@ -109,93 +109,93 @@ protected void draw(Graphics g, boolean hilited)
         Rscale = 1.0;
     }
 
-	if((hilited) && (!((posX > view.getViewWidth()) || (posY > view.getViewHeight())
-		|| ((posX + rwidth) < 0) || ((posY + rheight) < 0))))
-	{
-		g.setColor(Constants.HILITE_COLOR);
-		g.drawRect(posX, posY, rwidth, rheight);
-		
-		if(owner instanceof TextBox)
-			((TextBox)owner).drawDashedBorder(g, hilited);
-	}
+    if((hilited) && (!((posX > view.getViewWidth()) || (posY > view.getViewHeight())
+        || ((posX + rwidth) < 0) || ((posY + rheight) < 0))))
+    {
+        g.setColor(Constants.HILITE_COLOR);
+        g.drawRect(posX, posY, rwidth, rheight);
+        
+        if(owner instanceof TextBox)
+            ((TextBox)owner).drawDashedBorder(g, hilited);
+    }
 }
 
 public String getHashID()
 {
-	return null;
+    return null;
 }
 
 public Vector getItems()
 {
-	try
-	{
-		hilited = true;
-		if(owner instanceof Popupable)
-			return ((Popupable)owner).getItems();
-	}
-	finally
-	{
-		hilited = false;
-	}	
-	return null;
+    try
+    {
+        hilited = true;
+        if(owner instanceof Popupable)
+            return ((Popupable)owner).getItems();
+    }
+    finally
+    {
+        hilited = false;
+    }    
+    return null;
 }
 
 public boolean move(int dx, int dy)
 {
-	if(checkMove(dx, dy))
-	{
-		x+=dx;
-		y+=dy;			
+    if(checkMove(dx, dy))
+    {
+        x+=dx;
+        y+=dy;            
 
-		revalidatePosition();
-		
-		return true;
-	}
-	return false;
+        revalidatePosition();
+        
+        return true;
+    }
+    return false;
 }
 
 public void revalidatePosition()
 {
-	double rscale = getRscale();
+    double rscale = getRscale();
 
-	setRx((int)(getX() * rscale));
-	setRy((int)(getY() * rscale));
-	
+    setRx((int)(getX() * rscale));
+    setRy((int)(getY() * rscale));
+    
 }
 
 public void setX(int parX)
 {
-	super.setX(parX);
-	
-	if(owner != null)
-		owner.revalidatePosition();
+    super.setX(parX);
+    
+    if(owner != null)
+        owner.revalidatePosition();
 }
 
 public void setY(int parY)
 {
-	super.setY(parY);
-	
-	if(owner != null)
-		owner.revalidatePosition();
+    super.setY(parY);
+    
+    if(owner != null)
+        owner.revalidatePosition();
 }
 
 protected void validate()
 {
-	revalidatePosition();
-	
-	double rscale = getRscale();
+    revalidatePosition();
+    
+    double rscale = getRscale();
 
-	setRwidth((int)(getWidth() * rscale));
-	setRheight((int)(getHeight() * rscale));
+    setRwidth((int)(getWidth() * rscale));
+    setRheight((int)(getHeight() * rscale));
 }
-	
+    
 /**
  * Returns the hilited.
  * @return boolean
  */
 public boolean isHilited()
 {
-	return hilited;
+    return hilited;
 }
 
 /**
@@ -206,17 +206,17 @@ public boolean isHilited()
  * @param py int
  */
 public VisibleObject intersects(int px, int py) {
-	int rwidth = getRwidth();
-	int rheight = getRheight();
-	int rx = getRx()-rwidth/2;	// position is center
-	int ry = getRy()-rheight/2;
-	if ((rx<=px) && (ry<=py) && 
-			((rx+rwidth)>=px) && 
-			((ry+rheight)>=py)) return this;
-	else return null;
+    int rwidth = getRwidth();
+    int rheight = getRheight();
+    int rx = getRx()-rwidth/2;    // position is center
+    int ry = getRy()-rheight/2;
+    if ((rx<=px) && (ry<=py) && 
+            ((rx+rwidth)>=px) && 
+            ((ry+rheight)>=py)) return this;
+    else return null;
 }
 
-	/**
+    /**
  * Default impmlementation for square (must be rescaled)
  * p1 is upper-left point
  * Creation date: (19.12.2000 20:20:20)
@@ -228,14 +228,14 @@ public VisibleObject intersects(int px, int py) {
  */
 
 public VisibleObject intersects(int p1x, int p1y, int p2x, int p2y) {
-	int rwidth = getRwidth();
-	int rheight = getRheight();
-	int rx = getRx()-rwidth/2;	// position is center
-	int ry = getRy()-rheight/2;
-	if ((rx>=p1x) && (ry>=p1y) && 
-			((rx+rwidth)<=p2x) && 
-			((ry+rheight)<=p2y)) return this;
-	else return null;
+    int rwidth = getRwidth();
+    int rheight = getRheight();
+    int rx = getRx()-rwidth/2;    // position is center
+    int ry = getRy()-rheight/2;
+    if ((rx>=p1x) && (ry>=p1y) && 
+            ((rx+rwidth)<=p2x) && 
+            ((ry+rheight)<=p2y)) return this;
+    else return null;
 }
 
 }

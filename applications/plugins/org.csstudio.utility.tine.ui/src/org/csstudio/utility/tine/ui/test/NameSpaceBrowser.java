@@ -68,82 +68,82 @@ public class NameSpaceBrowser extends JDialog //implements ActionFrame
     JTextField selectedName;
     JButton okB, cancelB;
     ListSelection ls;
-	JPanel mainPanel;
-		
-	public NameSpaceBrowser (Component c, String title, String cols[]) {
-		super(JOptionPane.getFrameForComponent(c), title+" Browser", true);
+    JPanel mainPanel;
+        
+    public NameSpaceBrowser (Component c, String title, String cols[]) {
+        super(JOptionPane.getFrameForComponent(c), title+" Browser", true);
         setLocation(200,200);
-		setResizable(false);
-		
-		mainPanel = new JPanel();
-		mainPanel.setBorder(new BevelBorder(BevelBorder.RAISED));
-		Container cp = getContentPane();
-		cp.setLayout(new BorderLayout());
-		
-		cp.add(BorderLayout.CENTER, mainPanel);
-		
-		String[] bnames = {"OK", "Cancel"};
-//		ActionButtons buttonsPanel = new ActionButtons(bnames, this);
-//		cp.add(BorderLayout.SOUTH,buttonsPanel);
-//		okB = buttonsPanel.getButton("OK");
-//		cancelB = buttonsPanel.getButton("Cancel");
-		
-		mainPanel.setLayout(null);
-		//setTitle(title+" Browser");
-		int colNum = cols.length;
-		setSize(START_DRAW + STOP_DRAW + COL_WIDTH * colNum + 
-		        COL_SPACE * (colNum - 1), DEFAULT_HEIGHT);       
-	    
-	    
+        setResizable(false);
+        
+        mainPanel = new JPanel();
+        mainPanel.setBorder(new BevelBorder(BevelBorder.RAISED));
+        Container cp = getContentPane();
+        cp.setLayout(new BorderLayout());
+        
+        cp.add(BorderLayout.CENTER, mainPanel);
+        
+        String[] bnames = {"OK", "Cancel"};
+//        ActionButtons buttonsPanel = new ActionButtons(bnames, this);
+//        cp.add(BorderLayout.SOUTH,buttonsPanel);
+//        okB = buttonsPanel.getButton("OK");
+//        cancelB = buttonsPanel.getButton("Cancel");
+        
+        mainPanel.setLayout(null);
+        //setTitle(title+" Browser");
+        int colNum = cols.length;
+        setSize(START_DRAW + STOP_DRAW + COL_WIDTH * colNum + 
+                COL_SPACE * (colNum - 1), DEFAULT_HEIGHT);       
+        
+        
         Border etched = BorderFactory.createEtchedBorder();
         TitledBorder titled;
-	    
-	    lists = new JList[colNum];
-	    JScrollPane scrolls[] = new JScrollPane[colNum];
-	    JPanel panels[] = new JPanel[colNum];
-	    ls = new ListSelection();
-	    ListKeyListener kl = new ListKeyListener();
-	    for(int i = 0; i < colNum; i++) {
-	        lists[i] = new JList();
-	        lists[i].addListSelectionListener(ls);
-	        //lists[i].addKeyListener(kl);
-	        scrolls[i] = new JScrollPane(lists[i]);
-	        panels[i] = new JPanel();
-	        panels[i].setLayout (new BorderLayout());
-	        mainPanel.add(panels[i]);
-	        panels[i].setBounds(i * (COL_WIDTH + COL_SPACE) + START_DRAW, COL_Y, 
-	                             COL_WIDTH, COL_HEIGHT);
+        
+        lists = new JList[colNum];
+        JScrollPane scrolls[] = new JScrollPane[colNum];
+        JPanel panels[] = new JPanel[colNum];
+        ls = new ListSelection();
+        ListKeyListener kl = new ListKeyListener();
+        for(int i = 0; i < colNum; i++) {
+            lists[i] = new JList();
+            lists[i].addListSelectionListener(ls);
+            //lists[i].addKeyListener(kl);
+            scrolls[i] = new JScrollPane(lists[i]);
+            panels[i] = new JPanel();
+            panels[i].setLayout (new BorderLayout());
+            mainPanel.add(panels[i]);
+            panels[i].setBounds(i * (COL_WIDTH + COL_SPACE) + START_DRAW, COL_Y, 
+                                 COL_WIDTH, COL_HEIGHT);
             titled = BorderFactory.createTitledBorder(etched, cols[i]+":");
             panels[i].add(scrolls[i]);
             panels[i].setBorder(titled);
-	    }
-	    JPanel selectedPanel = new JPanel();
-	    selectedPanel.setLayout(new BorderLayout());
-	    selectedPanel.setBounds(START_DRAW, COL_Y + COL_HEIGHT + 10, 
-	                           colNum * COL_WIDTH + (colNum - 1) * COL_SPACE, 50);
-	    selectedName = new JTextField();
-	    selectedName.setEditable(false);
-	    selectedName.setBackground(Color.white);
+        }
+        JPanel selectedPanel = new JPanel();
+        selectedPanel.setLayout(new BorderLayout());
+        selectedPanel.setBounds(START_DRAW, COL_Y + COL_HEIGHT + 10, 
+                               colNum * COL_WIDTH + (colNum - 1) * COL_SPACE, 50);
+        selectedName = new JTextField();
+        selectedName.setEditable(false);
+        selectedName.setBackground(Color.white);
         titled = BorderFactory.createTitledBorder(etched, "Selected Device:");
-	    selectedPanel.setBorder(titled);                       
-	    selectedPanel.add(selectedName);
-	    mainPanel.add(selectedPanel);
-	    
-	    
-        int x = (Toolkit.getDefaultToolkit().getScreenSize().width - getWidth())/2;	    
-        int y = (Toolkit.getDefaultToolkit().getScreenSize().height - getHeight())/2;	    
+        selectedPanel.setBorder(titled);                       
+        selectedPanel.add(selectedName);
+        mainPanel.add(selectedPanel);
+        
+        
+        int x = (Toolkit.getDefaultToolkit().getScreenSize().width - getWidth())/2;        
+        int y = (Toolkit.getDefaultToolkit().getScreenSize().height - getHeight())/2;        
         setLocation(x, y);
-	}
-	public void buttonActs(JButton b) {
-	    if (b.equals(okB))	apply();
-		else if (b.equals(cancelB)) closeBrowser();
-	}
-	public JList[] getLists() {
-	    return lists;
-	}
-	public ListSelection getListSelectionListener() {
-	    return ls;
-	}
+    }
+    public void buttonActs(JButton b) {
+        if (b.equals(okB))    apply();
+        else if (b.equals(cancelB)) closeBrowser();
+    }
+    public JList[] getLists() {
+        return lists;
+    }
+    public ListSelection getListSelectionListener() {
+        return ls;
+    }
     public String getSelectedItemAt (int i) {
         if(i > (lists.length - 1)) return "";
         return (String)getLists()[i].getSelectedValue();
@@ -162,56 +162,56 @@ public class NameSpaceBrowser extends JDialog //implements ActionFrame
     }
     
     protected void showDateChooser() {
-//	    DateChooser dc = new DateChooser(this, null);
+//        DateChooser dc = new DateChooser(this, null);
     }
-	protected void apply() {
-//	    //if(!selectedName.getText().equals(INVALID_STRING))
-//		//    ((JTextField)this.calledFrom).setText(selectedName.getText());
+    protected void apply() {
+//        //if(!selectedName.getText().equals(INVALID_STRING))
+//        //    ((JTextField)this.calledFrom).setText(selectedName.getText());
 //        returnValue = ActionFrame.APPROVE_OPTION;
-//		this.setVisible( false);
-//		//
-//		// keep the browser for next time
-//		//this.dispose();
-	}
+//        this.setVisible( false);
+//        //
+//        // keep the browser for next time
+//        //this.dispose();
+    }
 
-	protected int getListNumber (JList list) {
-	    for(int i = 0; i < lists.length; i++)
-	        if(list.equals(lists[i]))
-	            return i;
-	    return -1;
-	}
-	protected int getListsAmount () {
-	    return lists.length;
-	}
-	
-	public String getSelectedName() {
-	    if(!selectedName.getText().equals(INVALID_STRING)) return selectedName.getText();
-	    else return "";
-	}
-	public static Vector parseName(String name) {
-	    Vector v = new Vector();
-	    StringTokenizer st = new StringTokenizer(name, getNameSeparator());
+    protected int getListNumber (JList list) {
+        for(int i = 0; i < lists.length; i++)
+            if(list.equals(lists[i]))
+                return i;
+        return -1;
+    }
+    protected int getListsAmount () {
+        return lists.length;
+    }
+    
+    public String getSelectedName() {
+        if(!selectedName.getText().equals(INVALID_STRING)) return selectedName.getText();
+        else return "";
+    }
+    public static Vector parseName(String name) {
+        Vector v = new Vector();
+        StringTokenizer st = new StringTokenizer(name, getNameSeparator());
         while (st.hasMoreTokens())  v.add(st.nextToken());
-	    return v;
-	}
-	    
-	//static int st = 0;
-	public String createName() {
-		//System.out.println((st++)+"----------------------------");
-	    String s = "";
-	    String tmp;
-		for(int k = 0; k < lists.length; k++) {
-		    tmp = (String)lists[k].getSelectedValue();
-		    if(tmp == null || tmp.equals(NA)) {
-		        s = INVALID_STRING;
-		        return s;
-		    }
-		    s += tmp + getNameSeparator();
-		}
-		s = s.substring(0,s.length()-1); //last separator should be deleted
-		return s;
-	}
-	public void setList(JList l, String[] s, ListSelectionListener lsl) {
+        return v;
+    }
+        
+    //static int st = 0;
+    public String createName() {
+        //System.out.println((st++)+"----------------------------");
+        String s = "";
+        String tmp;
+        for(int k = 0; k < lists.length; k++) {
+            tmp = (String)lists[k].getSelectedValue();
+            if(tmp == null || tmp.equals(NA)) {
+                s = INVALID_STRING;
+                return s;
+            }
+            s += tmp + getNameSeparator();
+        }
+        s = s.substring(0,s.length()-1); //last separator should be deleted
+        return s;
+    }
+    public void setList(JList l, String[] s, ListSelectionListener lsl) {
         if(s == null) {
             s = new String[1];
             s[0] = NA;
@@ -221,8 +221,8 @@ public class NameSpaceBrowser extends JDialog //implements ActionFrame
         l.setListData(s);
         if(lsl != null) l.addListSelectionListener(lsl);
         l.setSelectedValue(s[0],true);
-	}
-	public void setList(int i, String[] s) {
+    }
+    public void setList(int i, String[] s) {
         //if(s != null && s[0].equals("")) s = null;
         if(s == null) {
             s = new String[1];
@@ -232,8 +232,8 @@ public class NameSpaceBrowser extends JDialog //implements ActionFrame
         getLists()[i].setListData(sortStrings(s));
         getLists()[i].addListSelectionListener(ls);
         getLists()[i].setSelectedValue(s[0],true);
-	}
-	public void setList(int i, Vector s) {
+    }
+    public void setList(int i, Vector s) {
         //if(s != null && s[0].equals("")) s = null;
         if(s == null) {
             s = new Vector(1);
@@ -243,35 +243,35 @@ public class NameSpaceBrowser extends JDialog //implements ActionFrame
         getLists()[i].setListData(sortStrings(s));
         getLists()[i].addListSelectionListener(ls);
         getLists()[i].setSelectedValue((String)s.elementAt(0),true);
-	}
-	public static String getNameSeparator() {
-	    return DEFAULT_SEPARATOR;
-	}
-	public void setSelectedName(String name) {
-	    selectedName.setText(name);
-	}
-	public JPanel getMainPanel() {
-	    return mainPanel;
-	}
-	public void setColumn(int i) {
-	    setSelectedName(createName());
-	    return;
-	}
-	public int showBrowser() {
-	    setVisible(true);
-	    return returnValue;
-	}
+    }
+    public static String getNameSeparator() {
+        return DEFAULT_SEPARATOR;
+    }
+    public void setSelectedName(String name) {
+        selectedName.setText(name);
+    }
+    public JPanel getMainPanel() {
+        return mainPanel;
+    }
+    public void setColumn(int i) {
+        setSelectedName(createName());
+        return;
+    }
+    public int showBrowser() {
+        setVisible(true);
+        return returnValue;
+    }
     private  String[] sortStrings(String[] sin) {
         Collator defaultCollator = Collator.getInstance();
         String tmp;
         for (int i = 0; i < sin.length; i++) {
-	        for (int j = i + 1; j < sin.length; j++) { 
-	            if (defaultCollator.compare(sin[i], sin[j]) > 0) {
-		            tmp = sin[i];
-		            sin[i] = sin[j];
-		            sin[j] = tmp;
-	            }
-	        }
+            for (int j = i + 1; j < sin.length; j++) { 
+                if (defaultCollator.compare(sin[i], sin[j]) > 0) {
+                    tmp = sin[i];
+                    sin[i] = sin[j];
+                    sin[j] = tmp;
+                }
+            }
         }
         return sin;
     }
@@ -279,58 +279,58 @@ public class NameSpaceBrowser extends JDialog //implements ActionFrame
         Collator defaultCollator = Collator.getInstance();
         String tmp;
         for (int i = 0; i < sin.size(); i++) {
-	        for (int j = i + 1; j < sin.size(); j++) { 
-	            if (defaultCollator.compare(sin.elementAt(i), sin.elementAt(j)) > 0) {
-		            tmp = (String)sin.elementAt(i);
-		            sin.setElementAt((String)sin.elementAt(j), i);
-		            sin.setElementAt(tmp, j);
-	            }
-	        }
+            for (int j = i + 1; j < sin.size(); j++) { 
+                if (defaultCollator.compare(sin.elementAt(i), sin.elementAt(j)) > 0) {
+                    tmp = (String)sin.elementAt(i);
+                    sin.setElementAt((String)sin.elementAt(j), i);
+                    sin.setElementAt(tmp, j);
+                }
+            }
         }
         return sin;
     }
-	
-	class ListSelection implements ListSelectionListener {
-		public void valueChanged(ListSelectionEvent event) {
-		    
-			JList list = (JList) event.getSource();
-			int listNum = getListNumber(list);
-			//list.setEnabled(false);
-			//for(int i = 0; i < (lists.length - listNum - 1); i++) 
-			setColumn(listNum + 1);
-			    //if((listNum + 1) <= (lists.length - 1)) {
-			        //System.out.println("from col:"+listNum+"("+list.getSelectedValue()+") to col:"+(listNum+1));
-			    //    setSelectedName(createName());
-			    //}
-			//list.setEnabled(true);
-		}
-	}
-	class ListKeyListener extends KeyAdapter {
-		public void keyTyped(KeyEvent event) {
-		    selectListItem (event);
-		}
-	}
+    
+    class ListSelection implements ListSelectionListener {
+        public void valueChanged(ListSelectionEvent event) {
+            
+            JList list = (JList) event.getSource();
+            int listNum = getListNumber(list);
+            //list.setEnabled(false);
+            //for(int i = 0; i < (lists.length - listNum - 1); i++) 
+            setColumn(listNum + 1);
+                //if((listNum + 1) <= (lists.length - 1)) {
+                    //System.out.println("from col:"+listNum+"("+list.getSelectedValue()+") to col:"+(listNum+1));
+                //    setSelectedName(createName());
+                //}
+            //list.setEnabled(true);
+        }
+    }
+    class ListKeyListener extends KeyAdapter {
+        public void keyTyped(KeyEvent event) {
+            selectListItem (event);
+        }
+    }
 
-	protected void selectListItem(KeyEvent event) {
-		JList list = (JList)event.getSource();
-	    char ch = event.getKeyChar();
-	    System.out.println("typed:"+ch);
-		//list.clearSelection();
+    protected void selectListItem(KeyEvent event) {
+        JList list = (JList)event.getSource();
+        char ch = event.getKeyChar();
+        System.out.println("typed:"+ch);
+        //list.clearSelection();
         //list.removeListSelectionListener(ls);
-		int posorig = list.getSelectedIndex();
-		int pos  = posorig;
+        int posorig = list.getSelectedIndex();
+        int pos  = posorig;
         
-		for(int i = 0; i < list.getLastVisibleIndex(); i++) {
-		    list.setSelectedIndex(i);
-		    if(ch == ((String)list.getSelectedValue()).toLowerCase().charAt(0)) {
-		        pos = i;
-		        break;
-		    }
-		}
-		list.setSelectedIndex (pos);
-		if (pos != posorig)
-		    setColumn(getListNumber(list) + 1 );
-		list.requestFocus();
-	}
+        for(int i = 0; i < list.getLastVisibleIndex(); i++) {
+            list.setSelectedIndex(i);
+            if(ch == ((String)list.getSelectedValue()).toLowerCase().charAt(0)) {
+                pos = i;
+                break;
+            }
+        }
+        list.setSelectedIndex (pos);
+        if (pos != posorig)
+            setColumn(getListNumber(list) + 1 );
+        list.requestFocus();
+    }
 
 }

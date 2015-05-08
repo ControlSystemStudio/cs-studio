@@ -32,16 +32,16 @@ import org.eclipse.core.runtime.IAdapterFactory;
 @SuppressWarnings("rawtypes")
 public class AdapterFactory implements IAdapterFactory {
     @Override
-    public Class[] getAdapterList()	{
+    public Class[] getAdapterList()    {
         return new Class[] { ProcessVariable.class };
     }
 
     @Override
     public Object getAdapter(final Object adaptableObject, final Class adapterType) {
         if (adaptableObject instanceof AbstractBaseEditPart &&  adapterType == ProcessVariable.class) {
-			ProcessVariable pv = new ProcessVariable(((AbstractBaseEditPart)adaptableObject).getName());
-			return pv;
-		}
+            ProcessVariable pv = new ProcessVariable(((AbstractBaseEditPart)adaptableObject).getName());
+            return pv;
+        }
         return null;
     }
 }

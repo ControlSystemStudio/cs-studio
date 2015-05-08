@@ -42,39 +42,39 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  */
 
 public class PreferencePage extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage {
+    implements IWorkbenchPreferencePage {
 
 
-	public PreferencePage() {
-		super(FieldEditorPreferencePage.GRID);
-		setPreferenceStore(Activator.getDefault().getPreferenceStore());
-	}
+    public PreferencePage() {
+        super(FieldEditorPreferencePage.GRID);
+        setPreferenceStore(Activator.getDefault().getPreferenceStore());
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
-	 */
-	@Override
-	protected void createFieldEditors() {
-		addField(new StringFieldEditor(RECORD.getNodeTypeName(),
-		                               Messages.getString(Messages.PreferencePage_RECORD_ATTRIBUTE),
-		                               getFieldEditorParent()));
-		final StringFieldEditor searchRoot =
-		    new StringFieldEditor(UNIT.getNodeTypeName() + "=" + UNIT.getUnitTypeValue(),
-		                          Messages.getString(Messages.PreferencePage_SEARCH_ROOT),
-		                          getFieldEditorParent());
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
+     */
+    @Override
+    protected void createFieldEditors() {
+        addField(new StringFieldEditor(RECORD.getNodeTypeName(),
+                                       Messages.getString(Messages.PreferencePage_RECORD_ATTRIBUTE),
+                                       getFieldEditorParent()));
+        final StringFieldEditor searchRoot =
+            new StringFieldEditor(UNIT.getNodeTypeName() + "=" + UNIT.getUnitTypeValue(),
+                                  Messages.getString(Messages.PreferencePage_SEARCH_ROOT),
+                                  getFieldEditorParent());
 
-		searchRoot.getTextControl(getFieldEditorParent()).setToolTipText(Messages.getString(Messages.PreferencePage_SEARCH_ROOT_TOOL_TIP));
-		addField(searchRoot);
+        searchRoot.getTextControl(getFieldEditorParent()).setToolTipText(Messages.getString(Messages.PreferencePage_SEARCH_ROOT_TOOL_TIP));
+        addField(searchRoot);
 
-	}
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-	 */
-	@Override
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+     */
+    @Override
     public void init(final IWorkbench workbench) {
-	    // EMPTY
-	}
+        // EMPTY
+    }
 
 
 }

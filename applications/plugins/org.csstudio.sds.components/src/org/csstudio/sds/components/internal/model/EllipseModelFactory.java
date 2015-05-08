@@ -32,18 +32,18 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  * @version $Revision: 1.1 $
  */
 public final class EllipseModelFactory implements IWidgetModelFactory {
-	
-	/**
-	 * {@inheritDoc}.
-	 */
-	public AbstractWidgetModel createWidgetModel() {
-		return new EllipseModel();
-	}
+    
+    /**
+     * {@inheritDoc}.
+     */
+    public AbstractWidgetModel createWidgetModel() {
+        return new EllipseModel();
+    }
 
-	/**
-	 * {@inheritDoc}.
-	 */
-	public Class getWidgetModelType() {
-		return EllipseModel.class;
-	}
+    /**
+     * {@inheritDoc}.
+     */
+    public Class getWidgetModelType() {
+        return EllipseModel.class;
+    }
 }

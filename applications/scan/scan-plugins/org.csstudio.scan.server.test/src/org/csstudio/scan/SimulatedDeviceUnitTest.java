@@ -30,31 +30,31 @@ import static org.csstudio.utility.test.HamcrestMatchers.greaterThanOrEqualTo;
 @SuppressWarnings("nls")
 public class SimulatedDeviceUnitTest implements DeviceListener
 {
-	private int changes = 0;
+    private int changes = 0;
 
-	@Test
-	public void testSpreadsheet() throws Exception
-	{
-		final Device x = new SimulatedDevice("x");
-		x.addListener(this);
+    @Test
+    public void testSpreadsheet() throws Exception
+    {
+        final Device x = new SimulatedDevice("x");
+        x.addListener(this);
 
-		x.write(3.14);
-		assertThat(changes, greaterThanOrEqualTo(1));
+        x.write(3.14);
+        assertThat(changes, greaterThanOrEqualTo(1));
 
-		assertEquals(3.14, VTypeHelper.toDouble(x.read()), 0.01);
-	}
+        assertEquals(3.14, VTypeHelper.toDouble(x.read()), 0.01);
+    }
 
-	@Override
+    @Override
     public void deviceChanged(final Device device)
     {
-		try
+        try
         {
-	        System.out.println(device + " = " + device.read());
-	        ++changes;
+            System.out.println(device + " = " + device.read());
+            ++changes;
         }
         catch (Exception e)
         {
-	        e.printStackTrace();
+            e.printStackTrace();
         }
     }
 }

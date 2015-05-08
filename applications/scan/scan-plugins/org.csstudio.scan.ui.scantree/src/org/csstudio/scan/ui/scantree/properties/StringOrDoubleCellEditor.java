@@ -35,7 +35,7 @@ public class StringOrDoubleCellEditor extends DoubleCellEditor
     @Override
     protected void doSetValue(final Object value)
     {   // DoubleCellEditor can also handle String
-		super.doSetValue(StringOrDouble.quote(value));
+        super.doSetValue(StringOrDouble.quote(value));
     }
 
     /** @return Current value of the cell editor, will be Double if possible, otherwise String */

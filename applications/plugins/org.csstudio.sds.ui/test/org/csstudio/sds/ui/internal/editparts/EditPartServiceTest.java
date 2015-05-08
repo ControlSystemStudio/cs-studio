@@ -35,14 +35,14 @@ import org.junit.Test;
  * 
  */
 public final class EditPartServiceTest {
-	
-	/**
-	 * Test method for {@link EditPartService#getInstance()}.
-	 */
-	@Test
-	public void testGetEditPartService() {
-		assertNotNull(EditPartService.getInstance());
-	}
+    
+    /**
+     * Test method for {@link EditPartService#getInstance()}.
+     */
+    @Test
+    public void testGetEditPartService() {
+        assertNotNull(EditPartService.getInstance());
+    }
 
-	
+    
 }

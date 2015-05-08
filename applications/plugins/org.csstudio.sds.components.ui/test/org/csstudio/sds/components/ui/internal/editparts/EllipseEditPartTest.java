@@ -37,27 +37,27 @@ import org.junit.Test;
  */
 public final class EllipseEditPartTest {
 
-	/**
-	 * The instance to test.
-	 */
-	private EllipseEditPart _editPart;
+    /**
+     * The instance to test.
+     */
+    private EllipseEditPart _editPart;
 
-	/**
-	 * Test set up.
-	 */
-	@Before
-	public void setUp() {
-		_editPart = new EllipseEditPart();
-		_editPart.setModel(new EllipseModel());
-	}
+    /**
+     * Test set up.
+     */
+    @Before
+    public void setUp() {
+        _editPart = new EllipseEditPart();
+        _editPart.setModel(new EllipseModel());
+    }
 
-	/**
-	 * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.EllipseEditPart#doCreateFigure()}.
-	 */
-	@Test
-	public void testCreateFigure() {
-		IFigure figure = _editPart.doCreateFigure();
-		assertTrue(figure instanceof RefreshableEllipseFigure);
-	}
+    /**
+     * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.EllipseEditPart#doCreateFigure()}.
+     */
+    @Test
+    public void testCreateFigure() {
+        IFigure figure = _editPart.doCreateFigure();
+        assertTrue(figure instanceof RefreshableEllipseFigure);
+    }
 
 }

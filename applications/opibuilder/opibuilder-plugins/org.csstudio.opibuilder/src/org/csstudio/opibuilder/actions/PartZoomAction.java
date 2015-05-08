@@ -27,47 +27,47 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 abstract class PartZoomAction extends Action implements ZoomListener, Disposable {
 
-	/**
-	 * The ZoomManager used to zoom in or out
-	 */
-	protected ZoomManager zoomManager;
-	private IWorkbenchPart part;
+    /**
+     * The ZoomManager used to zoom in or out
+     */
+    protected ZoomManager zoomManager;
+    private IWorkbenchPart part;
 
-	/**
-	 * Constructor a empty ZoomAction. Its part need to be set to make this action work.
-	 * 
-	 * @param text
-	 *            the action's text, or <code>null</code> if there is no text
-	 * @param image
-	 *            the action's image, or <code>null</code> if there is no image
-	 */
-	public PartZoomAction(String text, ImageDescriptor image) {
-		super(text, image);
-	}
-	
-	/**
-	 * @param part a part which must have a ZoomManager Adapter.
-	 */
-	public void setPart(IWorkbenchPart part){
-		if(this.part == part)
-			return;
-		this.part = part;
-		if(zoomManager != null)
-			zoomManager.removeZoomListener(this);
-		ZoomManager newZoomManager = (ZoomManager)part.getAdapter(ZoomManager.class);
-		if(newZoomManager != null){
-			newZoomManager.addZoomListener(this);
-			zoomManager = newZoomManager;
-		}
-	}
-	
-	/**
-	 * @see org.eclipse.gef.Disposable#dispose()
-	 */
-	public void dispose() {
-		if(zoomManager != null)
-			zoomManager.removeZoomListener(this);
-		zoomManager = null;
-		part = null;
-	}
+    /**
+     * Constructor a empty ZoomAction. Its part need to be set to make this action work.
+     * 
+     * @param text
+     *            the action's text, or <code>null</code> if there is no text
+     * @param image
+     *            the action's image, or <code>null</code> if there is no image
+     */
+    public PartZoomAction(String text, ImageDescriptor image) {
+        super(text, image);
+    }
+    
+    /**
+     * @param part a part which must have a ZoomManager Adapter.
+     */
+    public void setPart(IWorkbenchPart part){
+        if(this.part == part)
+            return;
+        this.part = part;
+        if(zoomManager != null)
+            zoomManager.removeZoomListener(this);
+        ZoomManager newZoomManager = (ZoomManager)part.getAdapter(ZoomManager.class);
+        if(newZoomManager != null){
+            newZoomManager.addZoomListener(this);
+            zoomManager = newZoomManager;
+        }
+    }
+    
+    /**
+     * @see org.eclipse.gef.Disposable#dispose()
+     */
+    public void dispose() {
+        if(zoomManager != null)
+            zoomManager.removeZoomListener(this);
+        zoomManager = null;
+        part = null;
+    }
 }

@@ -25,9 +25,9 @@ public class ServiceMethodDialog extends Dialog{
     private final AbstractWidgetModel widgetModel;
 
     protected ServiceMethodDialog(Shell parentShell, AbstractWidgetModel widgetModel) {
-	super(parentShell);	
-	setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX);
-	this.widgetModel = widgetModel;
+    super(parentShell);    
+    setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX);
+    this.widgetModel = widgetModel;
     }
     
     @Override
@@ -53,7 +53,7 @@ public class ServiceMethodDialog extends Dialog{
      * @return the serviceMethodDescription
      */
     public ServiceMethodDescription getServiceMethodDescription() {
-	return serviceMethodWidget.getServiceMethodDescription();
+    return serviceMethodWidget.getServiceMethodDescription();
     }
 
 }

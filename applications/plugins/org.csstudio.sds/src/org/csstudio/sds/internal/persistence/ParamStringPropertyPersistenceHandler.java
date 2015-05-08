@@ -31,14 +31,14 @@ import org.jdom.Element;
  * 
  */
 public final class ParamStringPropertyPersistenceHandler extends
-		BasePropertyPersistenceHandler {
+        BasePropertyPersistenceHandler {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object readProperty(final Element domElement) {
-		return domElement.getAttributeValue(XmlConstants.XML_ATTRIBUTE_VALUE);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object readProperty(final Element domElement) {
+        return domElement.getAttributeValue(XmlConstants.XML_ATTRIBUTE_VALUE);
+    }
 
 }

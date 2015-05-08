@@ -31,9 +31,9 @@ public class Basic implements SampleSet {
      */
     @Override
     public URL getDirectoryURL() {
-	IPath path = new Path("examples/BOY Examples");
-	URL url = FileLocator.find(Activator.getDefault().getBundle(),
-	    path, Collections.EMPTY_MAP);
-	return url;
+    IPath path = new Path("examples/BOY Examples");
+    URL url = FileLocator.find(Activator.getDefault().getBundle(),
+        path, Collections.EMPTY_MAP);
+    return url;
     }
 }

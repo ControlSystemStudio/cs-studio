@@ -23,21 +23,21 @@
 
 public class ConnectionException extends Exception {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -4384828419092875594L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4384828419092875594L;
 
-	public ConnectionException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public ConnectionException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-	public ConnectionException(String message) {
-		super(message);
-	}
+    public ConnectionException(String message) {
+        super(message);
+    }
 
-	public ConnectionException(Throwable cause) {
-		super(cause);
-	}
+    public ConnectionException(Throwable cause) {
+        super(cause);
+    }
 
 }

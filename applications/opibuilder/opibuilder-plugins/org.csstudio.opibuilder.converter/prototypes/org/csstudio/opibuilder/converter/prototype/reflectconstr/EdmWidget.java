@@ -33,7 +33,7 @@ package org.csstudio.opibuilder.converter.prototype.reflectconstr;
  *
  */
 public class EdmWidget extends EdmEntity {
-	public EdmWidget(String type) {
-		super(type);
-	}
+    public EdmWidget(String type) {
+        super(type);
+    }
 }

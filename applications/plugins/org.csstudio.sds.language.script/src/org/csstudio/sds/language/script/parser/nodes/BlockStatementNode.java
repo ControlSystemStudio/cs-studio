@@ -7,8 +7,8 @@ package org.csstudio.sds.language.script.parser.nodes;
  */
 public class BlockStatementNode extends AbstractBraceBlockNode {
 
-	public BlockStatementNode(final String content, final int startOffset,
-			final int endOffset) {
-		super("statement block", "{}", content, startOffset, endOffset);
-	}
+    public BlockStatementNode(final String content, final int startOffset,
+            final int endOffset) {
+        super("statement block", "{}", content, startOffset, endOffset);
+    }
 }

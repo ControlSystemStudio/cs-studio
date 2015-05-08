@@ -85,9 +85,9 @@ class PVTreeItem
      *  @param pv_name The name of this PV entry.
      */
     public PVTreeItem(final PVTreeModel model,
-    		final PVTreeItem parent,
-    		final String info,
-    		final String pv_name)
+            final PVTreeItem parent,
+            final String info,
+            final String pv_name)
     {
         this.model = model;
         this.parent = parent;
@@ -123,22 +123,22 @@ class PVTreeItem
         // Try to read the pv
         try
         {
-        	final PVReaderListener<VType> listener = new PVReaderListener<VType>()
-    	    {
-        		@Override
-        		public void pvChanged(PVReaderEvent<VType> event) {
-        			if (event.isExceptionChanged()) {
+            final PVReaderListener<VType> listener = new PVReaderListener<VType>()
+            {
+                @Override
+                public void pvChanged(PVReaderEvent<VType> event) {
+                    if (event.isExceptionChanged()) {
                         Plugin.getLogger().log(Level.SEVERE, "PV Listener error" , event.getPvReader().lastException());
-        			}
-        			if (event.isValueChanged()) {
-	    	            final VType pv_value = pv.getValue();
-	    	            value = VTypeHelper.format(pv_value);
-	    	            severity = VTypeHelper.getSeverity(pv_value);
-	    	            model.itemUpdated(PVTreeItem.this);
-        			}
-    	        }
-    	    };
-        	pv = createPV(pv_name, listener);
+                    }
+                    if (event.isValueChanged()) {
+                        final VType pv_value = pv.getValue();
+                        value = VTypeHelper.format(pv_value);
+                        severity = VTypeHelper.getSeverity(pv_value);
+                        model.itemUpdated(PVTreeItem.this);
+                    }
+                }
+            };
+            pv = createPV(pv_name, listener);
         }
         catch (Exception e)
         {
@@ -160,24 +160,24 @@ class PVTreeItem
             Plugin.getLogger().fine("Known item, not traversing inputs (again)");
             return;
         }
-    	try
-    	{
+        try
+        {
             final PVReaderListener<VType> listener = new StringListener()
-    	    {
-				@Override
-				public void handleText(final String text)
-				{
-    	            // type should be a text.
-    	            // If it starts with a number, it's probably not an
-    	            // EPICS record type but a simulated PV
-    	            final char first_char = text.charAt(0);
-    	            if (first_char >= 'a' && first_char <= 'z')
-    	                type = text;
-    	            else
-		                type = Messages.UnknownPVType;
-    	            updateType();
-				}
-    	    };
+            {
+                @Override
+                public void handleText(final String text)
+                {
+                    // type should be a text.
+                    // If it starts with a number, it's probably not an
+                    // EPICS record type but a simulated PV
+                    final char first_char = text.charAt(0);
+                    if (first_char >= 'a' && first_char <= 'z')
+                        type = text;
+                    else
+                        type = Messages.UnknownPVType;
+                    updateType();
+                }
+            };
             type_pv = createPV(record_name + ".RTYP", listener);
         }
         catch (Exception e)
@@ -215,12 +215,12 @@ class PVTreeItem
     /** @return PV for the given name */
     private PVReader<VType> createLinkPV(final String name) throws Exception
     {
-    	final PVReaderListener<VType> listener = new StringListener()
+        final PVReaderListener<VType> listener = new StringListener()
         {
-			@Override
-			public void handleText(final String text)
-			{
-				link_value = text;
+            @Override
+            public void handleText(final String text)
+            {
+                link_value = text;
                 // The value could be
                 // a) a record name followed by "... NPP NMS". Remove that.
                 // b) a hardware input/output "@... " or "#...". Keep that.
@@ -233,9 +233,9 @@ class PVTreeItem
                         link_value = link_value.substring(0, i);
                 }
                 updateLink();
-			}
-	    };
-	    return createPV(name, listener);
+            }
+        };
+        return createPV(name, listener);
     }
 
     /** Delete the type_pv */

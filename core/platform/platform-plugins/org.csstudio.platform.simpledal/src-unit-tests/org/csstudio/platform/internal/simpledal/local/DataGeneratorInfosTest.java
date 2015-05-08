@@ -38,63 +38,63 @@ import org.junit.Test;
  */
 public class DataGeneratorInfosTest {
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
+    /**
+     * @throws java.lang.Exception
+     */
+    @Before
+    public void setUp() throws Exception {
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.platform.internal.simpledal.local.DataGeneratorInfos#getPattern()}.
-	 */
-	@Test
-	public void testGetPattern() {
-		// tests for the SYSTEM_INFO pattern
-		
-		// match without period
-		test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:userId", true,
-				new String[] { "userId", null, null });
-		test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:1111", true,
-				new String[] { "1111", null, null });
+    /**
+     * Test method for
+     * {@link org.csstudio.platform.internal.simpledal.local.DataGeneratorInfos#getPattern()}.
+     */
+    @Test
+    public void testGetPattern() {
+        // tests for the SYSTEM_INFO pattern
+        
+        // match without period
+        test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:userId", true,
+                new String[] { "userId", null, null });
+        test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:1111", true,
+                new String[] { "1111", null, null });
 
-		// match with period
-		test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:userId:1000", true,
-				new String[] { "userId", ":1000", "1000" });
-		test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:2222:1000", true,
-				new String[] { "2222", ":1000", "1000" });
-		
-		// no matches
-		test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:userId:abc:1000", false, null);
-		test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:userId:abc", false, null);
-		test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:userId:", false, null);
-		test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:", false, null);
-		test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:&1234", false, null);
-		test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:&12>4", false, null);
-		test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:a&b$c", false, null);
-		test(DataGeneratorInfos.SYSTEM_INFO, "KINFO:userId", false, null);
-		test(DataGeneratorInfos.SYSTEM_INFO, "KINFO:userId:1000", false, null);
-		test(DataGeneratorInfos.SYSTEM_INFO, "SINFO::1000", false, null);
-		
-		
-	}
+        // match with period
+        test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:userId:1000", true,
+                new String[] { "userId", ":1000", "1000" });
+        test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:2222:1000", true,
+                new String[] { "2222", ":1000", "1000" });
+        
+        // no matches
+        test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:userId:abc:1000", false, null);
+        test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:userId:abc", false, null);
+        test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:userId:", false, null);
+        test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:", false, null);
+        test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:&1234", false, null);
+        test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:&12>4", false, null);
+        test(DataGeneratorInfos.SYSTEM_INFO, "SINFO:a&b$c", false, null);
+        test(DataGeneratorInfos.SYSTEM_INFO, "KINFO:userId", false, null);
+        test(DataGeneratorInfos.SYSTEM_INFO, "KINFO:userId:1000", false, null);
+        test(DataGeneratorInfos.SYSTEM_INFO, "SINFO::1000", false, null);
+        
+        
+    }
 
-	private void test(DataGeneratorInfos descriptor, String pvName,
-			boolean shouldMatch, String[] expectedGroups) {
-		Pattern p = descriptor.getPattern();
-		Matcher m = p.matcher(pvName);
+    private void test(DataGeneratorInfos descriptor, String pvName,
+            boolean shouldMatch, String[] expectedGroups) {
+        Pattern p = descriptor.getPattern();
+        Matcher m = p.matcher(pvName);
 
-		boolean matches = m.matches();
+        boolean matches = m.matches();
 
-		assertEquals(shouldMatch, matches);
+        assertEquals(shouldMatch, matches);
 
-		if (matches) {
-			assertEquals(expectedGroups.length, m.groupCount());
+        if (matches) {
+            assertEquals(expectedGroups.length, m.groupCount());
 
-			for (int i = 0; i < m.groupCount(); i++) {
-				assertEquals(expectedGroups[i], m.group(i + 1));
-			}
-		}
-	}
+            for (int i = 0; i < m.groupCount(); i++) {
+                assertEquals(expectedGroups[i], m.group(i + 1));
+            }
+        }
+    }
 }

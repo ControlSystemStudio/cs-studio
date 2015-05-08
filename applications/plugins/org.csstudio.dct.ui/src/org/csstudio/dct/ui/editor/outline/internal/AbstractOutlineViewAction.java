@@ -13,45 +13,45 @@ import org.eclipse.ui.views.contentoutline.ContentOutline;
  * 
  */
 abstract class AbstractOutlineViewAction implements IViewActionDelegate {
-	private ContentOutline outline;
+    private ContentOutline outline;
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public final void init(IViewPart view) {
-		this.outline = (ContentOutline) view;
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public final void init(IViewPart view) {
+        this.outline = (ContentOutline) view;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void run(IAction action) {
-		OutlinePage outlinePage = null;
+    /**
+     *{@inheritDoc}
+     */
+    public void run(IAction action) {
+        OutlinePage outlinePage = null;
 
-		if (outline.getCurrentPage() instanceof OutlinePage) {
-			outlinePage = (OutlinePage) outline.getCurrentPage();
-		}
+        if (outline.getCurrentPage() instanceof OutlinePage) {
+            outlinePage = (OutlinePage) outline.getCurrentPage();
+        }
 
-		if (outlinePage != null) {
-			doRun(outlinePage, action);
-		}
-	}
+        if (outlinePage != null) {
+            doRun(outlinePage, action);
+        }
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public final void selectionChanged(IAction action, ISelection selection) {
+    /**
+     *{@inheritDoc}
+     */
+    public final void selectionChanged(IAction action, ISelection selection) {
 
-	}
+    }
 
-	/**
-	 * Performs this action.
-	 * 
-	 * @param outlinePage
-	 *            the outline page
-	 * @param action
-	 *            the action proxy that handles the presentation portion of the
-	 *            action
-	 */
-	protected abstract void doRun(OutlinePage outlinePage, IAction action);
+    /**
+     * Performs this action.
+     * 
+     * @param outlinePage
+     *            the outline page
+     * @param action
+     *            the action proxy that handles the presentation portion of the
+     *            action
+     */
+    protected abstract void doRun(OutlinePage outlinePage, IAction action);
 }

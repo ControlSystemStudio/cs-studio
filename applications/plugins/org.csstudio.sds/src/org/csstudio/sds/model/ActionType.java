@@ -34,87 +34,87 @@ import org.csstudio.sds.model.properties.actions.OpenDisplayActionModelFactory;
  * 
  */
 public enum ActionType {
-	/**
-	 * Opens a display.
-	 */
-	OPEN_DISPLAY("Open Display","icons/openshell2.gif", new OpenDisplayActionModelFactory()),
-	
-	/**
-	 * 
-	 */
-	OPEN_SHELL("Open Display (Deprecated)","icons/openshell2.gif", new OpenDisplayActionModelFactory()),
+    /**
+     * Opens a display.
+     */
+    OPEN_DISPLAY("Open Display","icons/openshell2.gif", new OpenDisplayActionModelFactory()),
+    
+    /**
+     * 
+     */
+    OPEN_SHELL("Open Display (Deprecated)","icons/openshell2.gif", new OpenDisplayActionModelFactory()),
 
-	/**
-	 * Commit a value.
-	 */
-	COMMIT_VALUE("Send Channel Value", "icons/widgetaction.gif", new CommitValueActionModelFactory()),
-	
-	/**
-	 * Executes a script.
-	 */
-	EXECUTE_SCRIPT("Execute Script", "icons/widgetaction.gif", new ExecuteScriptActionModelFactory()),
-	
-	OPEN_DATA_BROWSER("Open Data Browser", "icons/openshell2.gif", new OpenDataBrowserActionModelFactory());
+    /**
+     * Commit a value.
+     */
+    COMMIT_VALUE("Send Channel Value", "icons/widgetaction.gif", new CommitValueActionModelFactory()),
+    
+    /**
+     * Executes a script.
+     */
+    EXECUTE_SCRIPT("Execute Script", "icons/widgetaction.gif", new ExecuteScriptActionModelFactory()),
+    
+    OPEN_DATA_BROWSER("Open Data Browser", "icons/openshell2.gif", new OpenDataBrowserActionModelFactory());
 
-	/**
-	 * The title of this {@link ActionType}.
-	 */
-	private String _title;
-	/**
-	 * The {@link IActionModelFactory} of this {@link ActionType}.
-	 */
-	private IActionModelFactory _actionFactory;
+    /**
+     * The title of this {@link ActionType}.
+     */
+    private String _title;
+    /**
+     * The {@link IActionModelFactory} of this {@link ActionType}.
+     */
+    private IActionModelFactory _actionFactory;
 
-	/**
-	 * Path to an icon used for workbench representations of the action type.
-	 */
-	private String _icon;
+    /**
+     * Path to an icon used for workbench representations of the action type.
+     */
+    private String _icon;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param title
-	 *            The title of this {@link ActionType}
-	 * @param factory
-	 *            The {@link IActionModelFactory} for the WidgetAction.
-	 */
-	private ActionType(final String title, String icon,
-			final IActionModelFactory factory) {
-		assert title != null;
-		assert icon != null;
-		assert factory != null;
+    /**
+     * Constructor.
+     * 
+     * @param title
+     *            The title of this {@link ActionType}
+     * @param factory
+     *            The {@link IActionModelFactory} for the WidgetAction.
+     */
+    private ActionType(final String title, String icon,
+            final IActionModelFactory factory) {
+        assert title != null;
+        assert icon != null;
+        assert factory != null;
 
-		_title = title;
-		_icon = icon;
-		_actionFactory = factory;
-	}
+        _title = title;
+        _icon = icon;
+        _actionFactory = factory;
+    }
 
-	/**
-	 * Returns the title of the {@link ActionType}.
-	 * 
-	 * @return The title of the {@link ActionType}
-	 */
-	public String getTitle() {
-		return _title;
-	}
+    /**
+     * Returns the title of the {@link ActionType}.
+     * 
+     * @return The title of the {@link ActionType}
+     */
+    public String getTitle() {
+        return _title;
+    }
 
-	/**
-	 * Returns the {@link IActionModelFactory}.
-	 * 
-	 * @return The factory
-	 */
-	public IActionModelFactory getActionFactory() {
-		return _actionFactory;
-	}
+    /**
+     * Returns the {@link IActionModelFactory}.
+     * 
+     * @return The factory
+     */
+    public IActionModelFactory getActionFactory() {
+        return _actionFactory;
+    }
 
-	/**
-	 * Returns the path to an icon used for workbench representations of the
-	 * action type.
-	 * 
-	 * @return icon path
-	 */
-	public String getIcon() {
-		return _icon;
-	}
+    /**
+     * Returns the path to an icon used for workbench representations of the
+     * action type.
+     * 
+     * @return icon path
+     */
+    public String getIcon() {
+        return _icon;
+    }
 
 }

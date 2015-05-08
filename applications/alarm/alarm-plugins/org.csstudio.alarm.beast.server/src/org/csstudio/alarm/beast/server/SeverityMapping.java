@@ -91,7 +91,7 @@ public class SeverityMapping
             rdb.getConnection().prepareStatement(sql.insert_severity);
         try
         {
-        	rdb.getConnection().setAutoCommit(false);
+            rdb.getConnection().setAutoCommit(false);
             statement.setInt(1, id);
             statement.setString(2, name);
             statement.executeUpdate();
@@ -99,8 +99,8 @@ public class SeverityMapping
         }
         catch(Exception ex)
         {
-        	rdb.getConnection().rollback();
-        	throw new Exception("Failed to add severity '" + name + "'", ex);
+            rdb.getConnection().rollback();
+            throw new Exception("Failed to add severity '" + name + "'", ex);
         }
         finally
         {

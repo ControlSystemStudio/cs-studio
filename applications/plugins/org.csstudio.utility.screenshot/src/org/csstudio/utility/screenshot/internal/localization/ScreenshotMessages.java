@@ -35,26 +35,26 @@ import org.eclipse.osgi.util.NLS;
  * @author Alexander Will, Markus Moeller
  */
 public class ScreenshotMessages extends NLS {
-	
-	private static final String BUNDLE_NAME = "org.csstudio.utility.screenshot.internal.localization.messages"; //$NON-NLS-1$
+    
+    private static final String BUNDLE_NAME = "org.csstudio.utility.screenshot.internal.localization.messages"; //$NON-NLS-1$
 
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
-//	static {
-//		// initialize resource bundle
-//		NLS.initializeMessages(BUNDLE_NAME, ScreenshotMessages.class);
-//	}
+//    static {
+//        // initialize resource bundle
+//        NLS.initializeMessages(BUNDLE_NAME, ScreenshotMessages.class);
+//    }
 
-	/**
-	 * This constructor is private since this class only provides static
-	 * methods.
-	 */
-	private ScreenshotMessages() {
-		// Can be empty
-	}
+    /**
+     * This constructor is private since this class only provides static
+     * methods.
+     */
+    private ScreenshotMessages() {
+        // Can be empty
+    }
     
     public static String getString(String key) {
-    	try {
+        try {
             return RESOURCE_BUNDLE.getString(key);
         } catch(MissingResourceException mre) {
             return '!' + key + '!';
@@ -62,7 +62,7 @@ public class ScreenshotMessages extends NLS {
     }
 
     public static String getString(String key, Object params[]) {
-    	if(params == null) {
+        if(params == null) {
             return getString(key);
         }
         try {

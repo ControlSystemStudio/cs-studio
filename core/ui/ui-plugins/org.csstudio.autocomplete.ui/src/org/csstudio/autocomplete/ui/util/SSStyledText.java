@@ -17,29 +17,29 @@ import org.eclipse.swt.widgets.Control;
  */
 public class SSStyledText {
 
-	public Control init(Composite parent, int style, Object layoutData) {
-		return null;
-	}
+    public Control init(Composite parent, int style, Object layoutData) {
+        return null;
+    }
 
-	public void setText(String content) {
-	}
+    public void setText(String content) {
+    }
 
-	public void setStyle(Color color, int fontStyle, int start, int length) {
-	}
+    public void setStyle(Color color, int fontStyle, int start, int length) {
+    }
 
-	public Point getSize() {
-		return new Point(0, 0);
-	}
+    public Point getSize() {
+        return new Point(0, 0);
+    }
 
-	public void dispose() {
-	}
+    public void dispose() {
+    }
 
-	public boolean isValid() {
-		return false;
-	}
+    public boolean isValid() {
+        return false;
+    }
 
-	public boolean hasFocus() {
-		return false;
-	}
+    public boolean hasFocus() {
+        return false;
+    }
 
 }

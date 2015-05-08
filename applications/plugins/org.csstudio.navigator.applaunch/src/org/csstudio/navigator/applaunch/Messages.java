@@ -14,32 +14,32 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS
 {
-	private static final String BUNDLE_NAME = "org.csstudio.navigator.applaunch.messages"; //$NON-NLS-1$
-	public static String CommandLbl;
-	public static String CommandTT;
-	public static String ConfigFileErrorFmt;
-	public static String ConfigureDescr;
-	public static String CustomIconLbl;
-	public static String CustomIconTT;
-	public static String Error;
-	public static String FileWizardDescr;
-	public static String IconLbl;
-	public static String LaunchConfigTitle;
-	public static String LaunchConfigUpdateErrorFmt;
+    private static final String BUNDLE_NAME = "org.csstudio.navigator.applaunch.messages"; //$NON-NLS-1$
+    public static String CommandLbl;
+    public static String CommandTT;
+    public static String ConfigFileErrorFmt;
+    public static String ConfigureDescr;
+    public static String CustomIconLbl;
+    public static String CustomIconTT;
+    public static String Error;
+    public static String FileWizardDescr;
+    public static String IconLbl;
+    public static String LaunchConfigTitle;
+    public static String LaunchConfigUpdateErrorFmt;
     public static String LaunchErrorApp;
-	public static String LaunchErrorProgram;
-	public static String LaunchErrorCmd;
-	public static String NoProgramFoundError;
+    public static String LaunchErrorProgram;
+    public static String LaunchErrorCmd;
+    public static String NoProgramFoundError;
 
 
-	static
-	{
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
+    static
+    {
+        // initialize resource bundle
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
 
-	private Messages()
-	{
-		// Prevent instantiation
-	}
+    private Messages()
+    {
+        // Prevent instantiation
+    }
 }

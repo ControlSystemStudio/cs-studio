@@ -34,34 +34,34 @@ import de.desy.language.editor.core.ILanguageElements;
  * @version 0.2
  */
 public enum PredefinedTypes implements ILanguageElements {
-	CHAR("char"), DOUBLE("double"),	EVFLAG("evflag"),
-	FLOAT("float"), INT("int"), LONG("long"), SHORT("short"),
+    CHAR("char"), DOUBLE("double"),    EVFLAG("evflag"),
+    FLOAT("float"), INT("int"), LONG("long"), SHORT("short"),
 
-	/**
-	 * Array of maximum 40 chars.
-	 */
-	STRING("string");
+    /**
+     * Array of maximum 40 chars.
+     */
+    STRING("string");
 
-	/**
-	 * The name in the source.
-	 */
-	private String _inCodeName;
+    /**
+     * The name in the source.
+     */
+    private String _inCodeName;
 
-	/**
-	 * Initializer of the enum-values.
-	 * 
-	 * @param inCodeName
-	 *            The name in the source.
-	 */
-	PredefinedTypes(final String inCodeName) {
-		this._inCodeName = inCodeName;
-	}
+    /**
+     * Initializer of the enum-values.
+     * 
+     * @param inCodeName
+     *            The name in the source.
+     */
+    PredefinedTypes(final String inCodeName) {
+        this._inCodeName = inCodeName;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getElementName() {
-		return this._inCodeName;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getElementName() {
+        return this._inCodeName;
+    }
 
 }

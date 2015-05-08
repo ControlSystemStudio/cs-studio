@@ -34,10 +34,10 @@ package com.cosylab.vdct.undo;
  * @author 
  */
 public class PortValueChangeAction extends ActionObject {
-	private com.cosylab.vdct.vdb.VDBPort port;
-	private String oldValue;
-	private String newValue;
-	
+    private com.cosylab.vdct.vdb.VDBPort port;
+    private String oldValue;
+    private String newValue;
+    
 /**
  * Insert the method's description here.
  * Creation date: (3.5.2001 15:30:47)
@@ -46,9 +46,9 @@ public class PortValueChangeAction extends ActionObject {
  * @param newValue java.lang.String
  */
 public PortValueChangeAction(com.cosylab.vdct.vdb.VDBPort port, String oldValue, String newValue) {
-	this.port=port;
-	this.oldValue=oldValue;
-	this.newValue=newValue;
+    this.port=port;
+    this.oldValue=oldValue;
+    this.newValue=newValue;
 }
 /**
  * Insert the method's description here.
@@ -56,18 +56,18 @@ public PortValueChangeAction(com.cosylab.vdct.vdb.VDBPort port, String oldValue,
  * @return java.lang.String
  */
 public java.lang.String getDescription() {
-	return "Port value change ["+port.getFullName()+"](\""+oldValue+"\" to \""+newValue+"\")";
+    return "Port value change ["+port.getFullName()+"](\""+oldValue+"\" to \""+newValue+"\")";
 }
 /**
  * This method was created in VisualAge.
  */
 protected void redoAction() {
-	port.setValue(newValue);
+    port.setValue(newValue);
 }
 /**
  * This method was created in VisualAge.
  */
 protected void undoAction() {
-	port.setValue(oldValue);
+    port.setValue(oldValue);
 }
 }

@@ -22,7 +22,7 @@ public class Messages extends NLS
     public static String Schema;
     public static String StoredProcedure;
     public static String UseBLOB;
-	public static String User;
+    public static String User;
     
     static
     {

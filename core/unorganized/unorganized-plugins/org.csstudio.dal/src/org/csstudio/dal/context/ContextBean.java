@@ -41,32 +41,32 @@ import com.cosylab.util.CommonException;
  */
 public interface ContextBean
 {
-	/**
-	 * Returns plug type string, which is distinguishing for plug which
-	 * creates  proxies for particular communication layer.<p>For
-	 * example plug that connects to EPICS device my return string "EPICS".</p>
-	 *
-	 * @return plug destingushing type name
-	 */
-	public String getPlugType();
+    /**
+     * Returns plug type string, which is distinguishing for plug which
+     * creates  proxies for particular communication layer.<p>For
+     * example plug that connects to EPICS device my return string "EPICS".</p>
+     *
+     * @return plug destingushing type name
+     */
+    public String getPlugType();
 
-	/**
-	 * Initializes bean with application context. This method can be called only once.
-	 * After bean has been initialized all subsequent calls will throw exception.
-	 *
-	 * @param ctx parent application context
-	 *
-	 * @throws CommonException if initialization fails or bean has already been initialized.
-	 */
-	public void initialize(AbstractApplicationContext ctx)
-		throws CommonException;
+    /**
+     * Initializes bean with application context. This method can be called only once.
+     * After bean has been initialized all subsequent calls will throw exception.
+     *
+     * @param ctx parent application context
+     *
+     * @throws CommonException if initialization fails or bean has already been initialized.
+     */
+    public void initialize(AbstractApplicationContext ctx)
+        throws CommonException;
 
-	/**
-	 * Returns parent application context if bean has been initialized.
-	 *
-	 * @return application context or <code>null</code> if bean is not initialized
-	 */
-	public AbstractApplicationContext getApplicationContext();
+    /**
+     * Returns parent application context if bean has been initialized.
+     *
+     * @return application context or <code>null</code> if bean is not initialized
+     */
+    public AbstractApplicationContext getApplicationContext();
 }
 
 /* __oOo__ */

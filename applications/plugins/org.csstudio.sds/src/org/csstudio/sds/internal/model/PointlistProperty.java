@@ -35,43 +35,43 @@ import org.eclipse.draw2d.geometry.PointList;
  */
 public final class PointlistProperty extends WidgetProperty {
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param description
-	 *            a description
-	 * @param category
-	 *            a category
-	 * @param defaultValue
-	 *            the default value
-	 */
-	public PointlistProperty(final String description,
-			final WidgetPropertyCategory category, final PointList defaultValue) {
-		super(PropertyTypesEnum.POINT_LIST, description, category, defaultValue,
-				null);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object checkValue(final Object value) {
-		assert value != null : "value!=null"; //$NON-NLS-1$
+    /**
+     * Constructor.
+     * 
+     * @param description
+     *            a description
+     * @param category
+     *            a category
+     * @param defaultValue
+     *            the default value
+     */
+    public PointlistProperty(final String description,
+            final WidgetPropertyCategory category, final PointList defaultValue) {
+        super(PropertyTypesEnum.POINT_LIST, description, category, defaultValue,
+                null);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object checkValue(final Object value) {
+        assert value != null : "value!=null"; //$NON-NLS-1$
 
-		Object acceptedValue = value;
+        Object acceptedValue = value;
 
-		if (!(value instanceof PointList)) {
-			acceptedValue = null;
-		}
-		
-		return acceptedValue;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getCompatibleJavaTypes() {
-		return new Class[]{PointList.class};
-	}
+        if (!(value instanceof PointList)) {
+            acceptedValue = null;
+        }
+        
+        return acceptedValue;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getCompatibleJavaTypes() {
+        return new Class[]{PointList.class};
+    }
 }

@@ -44,47 +44,47 @@ import org.eclipse.ui.internal.ObjectPluginAction;
  * 
  */
 public abstract class ProcessVariablePopupAction implements
-		IObjectActionDelegate {
+        IObjectActionDelegate {
 
-	private List<WeakReference<IProcessVariableAdressProvider>> _pvAdressListProviders;
+    private List<WeakReference<IProcessVariableAdressProvider>> _pvAdressListProviders;
 
-	public ProcessVariablePopupAction() {
-		_pvAdressListProviders = new ArrayList<WeakReference<IProcessVariableAdressProvider>>();
-	}
+    public ProcessVariablePopupAction() {
+        _pvAdressListProviders = new ArrayList<WeakReference<IProcessVariableAdressProvider>>();
+    }
 
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 
-	}
+    }
 
-	public void run(IAction action) {
-		Set<IProcessVariableAddress> pvs = new HashSet<IProcessVariableAddress>();
+    public void run(IAction action) {
+        Set<IProcessVariableAddress> pvs = new HashSet<IProcessVariableAddress>();
 
-		for (WeakReference<IProcessVariableAdressProvider> ref : _pvAdressListProviders) {
-			IProcessVariableAdressProvider provider = ref.get();
-			if (provider != null) {
-				pvs.addAll(provider.getProcessVariableAdresses());
-			}
-		}
+        for (WeakReference<IProcessVariableAdressProvider> ref : _pvAdressListProviders) {
+            IProcessVariableAdressProvider provider = ref.get();
+            if (provider != null) {
+                pvs.addAll(provider.getProcessVariableAdresses());
+            }
+        }
 
-		handlePvs(pvs);
-	}
+        handlePvs(pvs);
+    }
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		_pvAdressListProviders.clear();
+    public void selectionChanged(IAction action, ISelection selection) {
+        _pvAdressListProviders.clear();
 
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection sel = (IStructuredSelection) selection;
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection sel = (IStructuredSelection) selection;
 
-			for (Object o : sel.toList()) {
-				if (o instanceof IProcessVariableAdressProvider) {
-					_pvAdressListProviders
-							.add(new WeakReference<IProcessVariableAdressProvider>((IProcessVariableAdressProvider) o));
-				}
-			}
-		}
+            for (Object o : sel.toList()) {
+                if (o instanceof IProcessVariableAdressProvider) {
+                    _pvAdressListProviders
+                            .add(new WeakReference<IProcessVariableAdressProvider>((IProcessVariableAdressProvider) o));
+                }
+            }
+        }
 
-	}
+    }
 
-	protected abstract void handlePvs(Set<IProcessVariableAddress> pvs);
+    protected abstract void handlePvs(Set<IProcessVariableAddress> pvs);
 
 }

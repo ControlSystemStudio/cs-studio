@@ -41,125 +41,125 @@ import org.csstudio.dal.DynamicValueState;
  * 
  */
 public final class ChannelInputProcessor {
-	
-	/**
-	 * The channel, which is managed by this processor.
-	 */
-	private ParameterDescriptor _parameter;
+    
+    /**
+     * The channel, which is managed by this processor.
+     */
+    private ParameterDescriptor _parameter;
 
-	/**
-	 * A rule engine.
-	 */
-	private RuleEngine _ruleEngine;
+    /**
+     * A rule engine.
+     */
+    private RuleEngine _ruleEngine;
 
-	/**
-	 * The managed widget property.
-	 */
-	private WidgetProperty _widgetProperty;
+    /**
+     * The managed widget property.
+     */
+    private WidgetProperty _widgetProperty;
 
-	/**
-	 * Property values, which are applied for certain connection states.
-	 */
-	private Map<ConnectionState, Object> _connectionStatePropertyValues;
+    /**
+     * Property values, which are applied for certain connection states.
+     */
+    private Map<ConnectionState, Object> _connectionStatePropertyValues;
 
-	/**
-	 * Property values, which are applied for certain condition states.
-	 */
-	private Map<DynamicValueState, Object> _conditionStatePropertyValues;
+    /**
+     * Property values, which are applied for certain condition states.
+     */
+    private Map<DynamicValueState, Object> _conditionStatePropertyValues;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param parameter
-	 *            a channel reference
-	 * @param ruleEngine
-	 *            a rule engine
-	 * @param widgetProperty
-	 *            a widget property
-	 * @param connectionStatePropertyValues
-	 *            property values, which are applied for certain connection
-	 *            states
-	 * @param conditionStatePropertyValues
-	 *            Property values, which are applied for certain condition
-	 *            states
-	 */
-	public ChannelInputProcessor(
-			final ParameterDescriptor parameter,
-			final RuleEngine ruleEngine,
-			final WidgetProperty widgetProperty,
-			final Map<ConnectionState, Object> connectionStatePropertyValues,
-			final Map<DynamicValueState, Object> conditionStatePropertyValues) {
-		assert parameter != null;
-		assert ruleEngine != null;
-		assert widgetProperty != null;
-		_parameter = parameter;
-		_ruleEngine = ruleEngine;
-		_widgetProperty = widgetProperty;
-		_connectionStatePropertyValues = connectionStatePropertyValues;
-		_conditionStatePropertyValues = conditionStatePropertyValues;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param parameter
+     *            a channel reference
+     * @param ruleEngine
+     *            a rule engine
+     * @param widgetProperty
+     *            a widget property
+     * @param connectionStatePropertyValues
+     *            property values, which are applied for certain connection
+     *            states
+     * @param conditionStatePropertyValues
+     *            Property values, which are applied for certain condition
+     *            states
+     */
+    public ChannelInputProcessor(
+            final ParameterDescriptor parameter,
+            final RuleEngine ruleEngine,
+            final WidgetProperty widgetProperty,
+            final Map<ConnectionState, Object> connectionStatePropertyValues,
+            final Map<DynamicValueState, Object> conditionStatePropertyValues) {
+        assert parameter != null;
+        assert ruleEngine != null;
+        assert widgetProperty != null;
+        _parameter = parameter;
+        _ruleEngine = ruleEngine;
+        _widgetProperty = widgetProperty;
+        _connectionStatePropertyValues = connectionStatePropertyValues;
+        _conditionStatePropertyValues = conditionStatePropertyValues;
+    }
 
-	/**
-	 * This method is called by connectors, when a
-	 * dynamic value has changed.
-	 * 
-	 * @param newValue
-	 *            the new value
-	 */
-	public void valueChanged(final Object newValue) {
-		// wenn als Value null zurückgegeben wird, dann bedeutet dies mitunter,  dass kein Wert gesetzt werden darf
-		Object value = _ruleEngine.processRule(_parameter, newValue);
-		if (value != null) {
-			applyValueToProperty(value);
-		}
-	}
+    /**
+     * This method is called by connectors, when a
+     * dynamic value has changed.
+     * 
+     * @param newValue
+     *            the new value
+     */
+    public void valueChanged(final Object newValue) {
+        // wenn als Value null zurückgegeben wird, dann bedeutet dies mitunter,  dass kein Wert gesetzt werden darf
+        Object value = _ruleEngine.processRule(_parameter, newValue);
+        if (value != null) {
+            applyValueToProperty(value);
+        }
+    }
 
-	@Deprecated
-	public void connectionStateChanged(final ConnectionState state) {
-		if (_connectionStatePropertyValues != null
-				&& _connectionStatePropertyValues.containsKey(state)) {
-			applyValueToProperty(_connectionStatePropertyValues.get(state));
-		}
-	}
+    @Deprecated
+    public void connectionStateChanged(final ConnectionState state) {
+        if (_connectionStatePropertyValues != null
+                && _connectionStatePropertyValues.containsKey(state)) {
+            applyValueToProperty(_connectionStatePropertyValues.get(state));
+        }
+    }
 
-	/**
-	 * This method is called by connectors when the
-	 * connection state changes.
-	 * 
-	 * @param state
-	 *            the current connection state
-	 */
-	public void connectionStateChanged(org.csstudio.dal.context.ConnectionState state) {
-		if (_connectionStatePropertyValues != null
-				&& _connectionStatePropertyValues.containsKey(state)) {
-			applyValueToProperty(_connectionStatePropertyValues.get(state));
-		}
-	}
+    /**
+     * This method is called by connectors when the
+     * connection state changes.
+     * 
+     * @param state
+     *            the current connection state
+     */
+    public void connectionStateChanged(org.csstudio.dal.context.ConnectionState state) {
+        if (_connectionStatePropertyValues != null
+                && _connectionStatePropertyValues.containsKey(state)) {
+            applyValueToProperty(_connectionStatePropertyValues.get(state));
+        }
+    }
 
-	/**
-	 * This method is called by connectors when the
-	 * condition state changes.
-	 * 
-	 * @param state
-	 *            the current condition state
-	 *            
-	 * // FIXME: {@link org.csstudio.platform.simpledal.ConnectionState} verwenden!
-	 */
-	public void conditionStateChanged(final DynamicValueState state) {
-		if (_conditionStatePropertyValues != null
-				&& _conditionStatePropertyValues.containsKey(state)) {
-			applyValueToProperty(_conditionStatePropertyValues.get(state));
-		}
-	}
+    /**
+     * This method is called by connectors when the
+     * condition state changes.
+     * 
+     * @param state
+     *            the current condition state
+     *            
+     * // FIXME: {@link org.csstudio.platform.simpledal.ConnectionState} verwenden!
+     */
+    public void conditionStateChanged(final DynamicValueState state) {
+        if (_conditionStatePropertyValues != null
+                && _conditionStatePropertyValues.containsKey(state)) {
+            applyValueToProperty(_conditionStatePropertyValues.get(state));
+        }
+    }
 
-	/**
-	 * Applies the specified value to the widget property.
-	 * 
-	 * @param value
-	 *            the new value
-	 */
-	private void applyValueToProperty(final Object value) {
-		_widgetProperty.setPropertyValue(value);
-	}
+    /**
+     * Applies the specified value to the widget property.
+     * 
+     * @param value
+     *            the new value
+     */
+    private void applyValueToProperty(final Object value) {
+        _widgetProperty.setPropertyValue(value);
+    }
 
 }

@@ -36,14 +36,14 @@ import com.cosylab.vdct.graphics.*;
  * @author 
  */
 public class GetGUIInterface extends com.cosylab.vdct.events.Command {
-	GUIMenuInterface guiinterface;
+    GUIMenuInterface guiinterface;
 /**
  * Insert the method's description here.
  * Creation date: (3.2.2001 22:08:10)
  * @param validator com.cosylab.vdct.graphics.GUIMenuInterface
  */
 public GetGUIInterface(GUIMenuInterface guiinterface) {
-	this.guiinterface=guiinterface;
+    this.guiinterface=guiinterface;
 }
 /**
  * Insert the method's description here.
@@ -56,6 +56,6 @@ public void execute() {}
  * @return com.cosylab.vdct.graphics.GUIMenuInterface
  */
 public GUIMenuInterface getGUIMenuInterface() {
-	return guiinterface;
+    return guiinterface;
 }
 }

@@ -51,9 +51,9 @@ public final class PluginMenuManager implements PluginListener, PropertyChangeLi
  */
 protected PluginMenuManager()
 {
-	list = new LinkedList();
-		
-	PluginManager.getInstance().addPluginListener(this);
+    list = new LinkedList();
+        
+    PluginManager.getInstance().addPluginListener(this);
 }
 /**
  * Insert the method's description here.
@@ -61,8 +61,8 @@ protected PluginMenuManager()
  * @return com.cosylab.vdct.plugin.PluginExportManager
  */
 public static PluginMenuManager getInstance() {
-	if (instance==null) instance = new PluginMenuManager();
-	return instance;
+    if (instance==null) instance = new PluginMenuManager();
+    return instance;
 }
 /**
  * Insert the method's description here.
@@ -72,15 +72,15 @@ public static PluginMenuManager getInstance() {
  */
 public void pluginAdded(PluginObject plugin)
 {
-	if (plugin.getPlugin() instanceof MenuPlugin)
-	{
-		if (!list.contains(plugin))
-		{
-			list.add(plugin);
-			plugin.addPropertyChangeListener(this);
-			com.cosylab.vdct.Console.getInstance().println(plugin.getName()+" is registered as export plugin.");
-		}
-	}
+    if (plugin.getPlugin() instanceof MenuPlugin)
+    {
+        if (!list.contains(plugin))
+        {
+            list.add(plugin);
+            plugin.addPropertyChangeListener(this);
+            com.cosylab.vdct.Console.getInstance().println(plugin.getName()+" is registered as export plugin.");
+        }
+    }
 }
 /**
  * Insert the method's description here.
@@ -90,11 +90,11 @@ public void pluginAdded(PluginObject plugin)
  */
 public void pluginRemoved(PluginObject plugin)
 {
-	if (plugin.getPlugin() instanceof MenuPlugin)
-	{
-		list.remove(plugin);
-		plugin.removePropertyChangeListener(this);
-	}
+    if (plugin.getPlugin() instanceof MenuPlugin)
+    {
+        list.remove(plugin);
+        plugin.removePropertyChangeListener(this);
+    }
 }
 /**
  * Not implemented
@@ -104,21 +104,21 @@ public void pluginRemoved(PluginObject plugin)
  */
 public void propertyChange(PropertyChangeEvent evt)
 {
-	PluginObject plugin = (PluginObject)evt.getSource();
-	String propertyName = evt.getPropertyName();
+    PluginObject plugin = (PluginObject)evt.getSource();
+    String propertyName = evt.getPropertyName();
 
-	if (propertyName.equals("Status"))
-	{
-		if (plugin.getStatus() == PluginObject.PLUGIN_STARTED)
-		{
-			JMenu menuItem = ((MenuPlugin)(plugin.getPlugin())).getMenu();
-			menuItem.setEnabled(true);
-		}
-		else if (plugin.getStatus() == PluginObject.PLUGIN_STOPPED)
-		{
-			JMenu menuItem = ((MenuPlugin)(plugin.getPlugin())).getMenu();
-			menuItem.setEnabled(false);
-		}
-	}
+    if (propertyName.equals("Status"))
+    {
+        if (plugin.getStatus() == PluginObject.PLUGIN_STARTED)
+        {
+            JMenu menuItem = ((MenuPlugin)(plugin.getPlugin())).getMenu();
+            menuItem.setEnabled(true);
+        }
+        else if (plugin.getStatus() == PluginObject.PLUGIN_STOPPED)
+        {
+            JMenu menuItem = ((MenuPlugin)(plugin.getPlugin())).getMenu();
+            menuItem.setEnabled(false);
+        }
+    }
 }
 }

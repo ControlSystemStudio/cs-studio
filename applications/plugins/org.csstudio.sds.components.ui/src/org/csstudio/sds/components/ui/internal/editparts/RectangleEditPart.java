@@ -36,60 +36,60 @@ import org.eclipse.draw2d.IFigure;
  */
 public final class RectangleEditPart extends AbstractWidgetEditPart {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		RectangleModel model = (RectangleModel) getWidgetModel();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        RectangleModel model = (RectangleModel) getWidgetModel();
 
-		RefreshableRectangleFigure rectangle = new RefreshableRectangleFigure();
-		rectangle.setOrientation(model.getOrientation());
-		rectangle.setFill(model.getFillLevel());
-		rectangle.setTransparent(model.getTransparent());
-		
-		return rectangle;
+        RefreshableRectangleFigure rectangle = new RefreshableRectangleFigure();
+        rectangle.setOrientation(model.getOrientation());
+        rectangle.setFill(model.getFillLevel());
+        rectangle.setTransparent(model.getTransparent());
+        
+        return rectangle;
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		// fill
-		IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableRectangleFigure rectangle = (RefreshableRectangleFigure) refreshableFigure;
-				rectangle.setFill((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(RectangleModel.PROP_FILL, fillHandler);		
-		//orientation
-		IWidgetPropertyChangeHandler orientationHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableRectangleFigure rectangle = (RefreshableRectangleFigure) refreshableFigure;
-				rectangle.setOrientation((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(RectangleModel.PROP_ORIENTATION, orientationHandler);
-		//transparent
-		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableRectangleFigure rectangle = (RefreshableRectangleFigure) refreshableFigure;
-				rectangle.setTransparent((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(RectangleModel.PROP_TRANSPARENT, transparentHandler);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        // fill
+        IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                RefreshableRectangleFigure rectangle = (RefreshableRectangleFigure) refreshableFigure;
+                rectangle.setFill((Double) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(RectangleModel.PROP_FILL, fillHandler);        
+        //orientation
+        IWidgetPropertyChangeHandler orientationHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                RefreshableRectangleFigure rectangle = (RefreshableRectangleFigure) refreshableFigure;
+                rectangle.setOrientation((Boolean) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(RectangleModel.PROP_ORIENTATION, orientationHandler);
+        //transparent
+        IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                RefreshableRectangleFigure rectangle = (RefreshableRectangleFigure) refreshableFigure;
+                rectangle.setTransparent((Boolean) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(RectangleModel.PROP_TRANSPARENT, transparentHandler);
+    }
 
 }

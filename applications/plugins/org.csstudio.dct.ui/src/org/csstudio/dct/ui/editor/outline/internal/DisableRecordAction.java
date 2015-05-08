@@ -15,19 +15,19 @@ import org.eclipse.gef.commands.Command;
  */
 public final class DisableRecordAction extends AbstractOutlineAction {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Command createCommand(List<IElement> selection) {
-		assert selection != null;
-		assert selection.size() == 1;
-		assert selection.get(0) instanceof IRecord;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Command createCommand(List<IElement> selection) {
+        assert selection != null;
+        assert selection.size() == 1;
+        assert selection.get(0) instanceof IRecord;
 
-		IRecord record = (IRecord) selection.get(0);
-		Command command = new ChangeBeanPropertyCommand(record, "disabled", true);
-		
-		return command;
-	}
+        IRecord record = (IRecord) selection.get(0);
+        Command command = new ChangeBeanPropertyCommand(record, "disabled", true);
+        
+        return command;
+    }
 
 }

@@ -29,18 +29,18 @@ package org.csstudio.sds.model;
  * 
  */
 public interface IWidgetModelFactory {
-	/**
-	 * Create a widget model.
-	 * 
-	 * @return a widget model
-	 */
-	AbstractWidgetModel createWidgetModel();
+    /**
+     * Create a widget model.
+     * 
+     * @return a widget model
+     */
+    AbstractWidgetModel createWidgetModel();
 
-	/**
-	 * Return the type of the models that are created by this factory.
-	 * 
-	 * @return The type of the models that are created by this factory.
-	 */
-	@SuppressWarnings("unchecked")
-	Class getWidgetModelType();
+    /**
+     * Return the type of the models that are created by this factory.
+     * 
+     * @return The type of the models that are created by this factory.
+     */
+    @SuppressWarnings("unchecked")
+    Class getWidgetModelType();
 }

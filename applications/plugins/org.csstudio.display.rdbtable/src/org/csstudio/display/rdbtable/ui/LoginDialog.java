@@ -85,20 +85,20 @@ public class LoginDialog extends Dialog
     @Override
     protected void okPressed()
     {
-    	user = txt_user.getText();
-    	password = txt_password.getText();
-    	super.okPressed();
+        user = txt_user.getText();
+        password = txt_password.getText();
+        super.okPressed();
     }
 
-	/** @return User name */
+    /** @return User name */
     public String getUser()
     {
-		return user;
-	}
+        return user;
+    }
 
     /** @return Password */
-	public String getPassword()
-	{
-		return password;
-	}
+    public String getPassword()
+    {
+        return password;
+    }
 }

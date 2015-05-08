@@ -9,5 +9,5 @@ package org.csstudio.channel.widgets;
  */
 public interface TunerSetpointTableModelListener {
 
-	public void setpointsChanged();
+    public void setpointsChanged();
 }

@@ -39,6 +39,6 @@ import java.util.Properties;
  * Window>Preferences>Java>Code Generation.
  */
 public interface SystemTabModel extends AboutTabModel {
-	
-	public abstract Properties getSystemProperties();
+    
+    public abstract Properties getSystemProperties();
 }

@@ -35,17 +35,17 @@ import java.util.List;
  */
 public interface IProcessVariableAdressProvider {
 
-	/**
-	 * Returns a single process variable address.
-	 * 
-	 * @return ProcessVariable a single process variable address
-	 */
-	IProcessVariableAddress getPVAdress();
+    /**
+     * Returns a single process variable address.
+     * 
+     * @return ProcessVariable a single process variable address
+     */
+    IProcessVariableAddress getPVAdress();
 
-	/**
-	 * Returns a list of process variable addresses.
-	 * 
-	 * @return a list of process variable addresses
-	 */
-	List<IProcessVariableAddress> getProcessVariableAdresses();
+    /**
+     * Returns a list of process variable addresses.
+     * 
+     * @return a list of process variable addresses
+     */
+    List<IProcessVariableAddress> getProcessVariableAdresses();
 }

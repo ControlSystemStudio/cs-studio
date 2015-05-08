@@ -37,36 +37,36 @@ public class DummyAuthorizationReader implements IAuthorizationProvider
     /** Every user and every action will get this dummy right */
     final private Right dummy_right = new Right("DummyRole", "DummyGroup");
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.platform.internal.ldapauthorization.IAuthorizationProvider#getRights(org.csstudio.platform.security.User)
-	 */
-	@Override
+    /* (non-Javadoc)
+     * @see org.csstudio.platform.internal.ldapauthorization.IAuthorizationProvider#getRights(org.csstudio.platform.security.User)
+     */
+    @Override
     public RightSet getRights(final User user)
-	{
-	    // Not using the user, but beware of this:
-//		String username = user.getUsername();
-//		// If the user was authenticated via Kerberos, the username may be a
-//		// fully qualified name (name@EXAMPLE.COM). We only want the first
-//		// part of the name.
-//		if (username.contains("@")) {
-//			username = username.substring(0, username.indexOf('@'));
-//		}
-	    final RightSet rights = new RightSet("Dummy Rights");
-	    rights.addRight(dummy_right);
-
-		return rights;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.csstudio.platform.security.IAuthorizationProvider#getRights(java.lang.String)
-	 */
-	@Override
-    public RightSet getRights(final String authId)
-	{
-	    final RightSet rights = new RightSet(authId);
+    {
+        // Not using the user, but beware of this:
+//        String username = user.getUsername();
+//        // If the user was authenticated via Kerberos, the username may be a
+//        // fully qualified name (name@EXAMPLE.COM). We only want the first
+//        // part of the name.
+//        if (username.contains("@")) {
+//            username = username.substring(0, username.indexOf('@'));
+//        }
+        final RightSet rights = new RightSet("Dummy Rights");
         rights.addRight(dummy_right);
 
         return rights;
-	}
+    }
+
+    /* (non-Javadoc)
+     * @see org.csstudio.platform.security.IAuthorizationProvider#getRights(java.lang.String)
+     */
+    @Override
+    public RightSet getRights(final String authId)
+    {
+        final RightSet rights = new RightSet(authId);
+        rights.addRight(dummy_right);
+
+        return rights;
+    }
 }
 

@@ -10,11 +10,11 @@ import java.util.UUID;
  */
 public final class DummySensorIdService implements ISensorIdService {
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public String getSensorId(String id, String field) {
-		return "sensor_" + UUID.randomUUID() + id + field;
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public String getSensorId(String id, String field) {
+        return "sensor_" + UUID.randomUUID() + id + field;
+    }
 
 }

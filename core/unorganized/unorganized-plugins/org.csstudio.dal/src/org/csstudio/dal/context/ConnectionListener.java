@@ -29,45 +29,45 @@ package org.csstudio.dal.context;
  */
 public interface ConnectionListener<C extends Connectable> extends LinkListener<C>
 {
-	/**
-	 * Invoked when the connection process begins. The connection
-	 * begins when  <code>connect()</code> is manually invoked. The exact
-	 * timing is specified by the <code>Connector</code>: if synchronous, it
-	 * is called just prior to <code>Connector.internalConnect</code>, if
-	 * asynchronous, it is called just prior to the <code>Connectable</code>
-	 * being added to the connection queue.
-	 *
-	 * @param e event object
-	 */
-	void connecting(ConnectionEvent<C> e);
+    /**
+     * Invoked when the connection process begins. The connection
+     * begins when  <code>connect()</code> is manually invoked. The exact
+     * timing is specified by the <code>Connector</code>: if synchronous, it
+     * is called just prior to <code>Connector.internalConnect</code>, if
+     * asynchronous, it is called just prior to the <code>Connectable</code>
+     * being added to the connection queue.
+     *
+     * @param e event object
+     */
+    void connecting(ConnectionEvent<C> e);
 
-	/**
-	 * Invoked when the disconnection process begins. The connection
-	 * begins either when the <code>Connectable</code> has switched to
-	 * <code>CONNECTABLE_DISCONNECTING</code> state.
-	 *
-	 * @param e event object
-	 */
-	void disconnecting(ConnectionEvent<C> e);
+    /**
+     * Invoked when the disconnection process begins. The connection
+     * begins either when the <code>Connectable</code> has switched to
+     * <code>CONNECTABLE_DISCONNECTING</code> state.
+     *
+     * @param e event object
+     */
+    void disconnecting(ConnectionEvent<C> e);
 
-	/**
-	 * The initial state of the connectable when it is created and also
-	 * the state entered after the connectable has cycled through error
-	 * condition states (disconnected, connection failed). The connectable
-	 * should pass through this state to be reused (for example, before
-	 * reconnect).
-	 *
-	 * @param e event object
-	 */
-	void initialState(ConnectionEvent<C> e);
+    /**
+     * The initial state of the connectable when it is created and also
+     * the state entered after the connectable has cycled through error
+     * condition states (disconnected, connection failed). The connectable
+     * should pass through this state to be reused (for example, before
+     * reconnect).
+     *
+     * @param e event object
+     */
+    void initialState(ConnectionEvent<C> e);
 
-	/**
-	 * The connectable has entered a state where it awaits the
-	 * permission to connect.
-	 *
-	 * @param e event object
-	 */
-	void ready(ConnectionEvent<C> e);
+    /**
+     * The connectable has entered a state where it awaits the
+     * permission to connect.
+     *
+     * @param e event object
+     */
+    void ready(ConnectionEvent<C> e);
 }
 
 /* __oOo__ */

@@ -53,7 +53,7 @@ public interface LogbookClient {
      * @throws Exception
      */
     public Collection<Attachment> listAttachments(Object logId)
-	    throws Exception;
+        throws Exception;
 
     /**
      * Get an inputStream to the attachment with name
@@ -65,7 +65,7 @@ public interface LogbookClient {
      * @throws Exception
      */
     public InputStream getAttachment(Object logId, String attachmentFileName)
-	    throws Exception;
+        throws Exception;
 
     /**
      * Find the logEntry with Id <tt>logId</tt>
@@ -120,7 +120,7 @@ public interface LogbookClient {
      * @throws Exception
      */
     public void updateLogEntries(Collection<LogEntry> logEntires)
-	    throws Exception;
+        throws Exception;
 
     /**
      * Attach the file to the log identified by <tt>logId</tt>
@@ -132,5 +132,5 @@ public interface LogbookClient {
      * @throws Exception
      */
     public Attachment addAttachment(Object logId, InputStream file, String name)
-	    throws Exception;
+        throws Exception;
 }

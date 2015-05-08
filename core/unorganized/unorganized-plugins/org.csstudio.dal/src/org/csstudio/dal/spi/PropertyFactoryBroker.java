@@ -9,11 +9,11 @@ package org.csstudio.dal.spi;
  *
  */
 public interface PropertyFactoryBroker extends PropertyFactory {
-	
-	public String getDefaultPlugType();
-	
-	public void setDefaultPlugType(String plugType);
-	
-	public String[] getSupportedPlugTypes();
+    
+    public String getDefaultPlugType();
+    
+    public void setDefaultPlugType(String plugType);
+    
+    public String[] getSupportedPlugTypes();
 
 }

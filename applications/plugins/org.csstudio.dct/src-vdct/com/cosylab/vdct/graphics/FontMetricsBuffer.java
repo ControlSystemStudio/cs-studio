@@ -39,31 +39,31 @@ import java.util.*;
 
 public class FontMetricsBuffer {
 
-	private class FontData {
-		private Font font;
-		private FontMetrics fontMetrics;
-		
-		public FontData(Font font, FontMetrics fontMetrics) {
-			this.font=font;
-			this.fontMetrics=fontMetrics;
-		}
-		
-		public Font getFont() { return font; }
-		public FontMetrics getFontMetrics() { return fontMetrics; }
-		
-	}
-	private final static int MIN_SIZE = 1;
-	private final static int MAX_SIZE = 72;
-	private Hashtable fonts;
-	private Graphics graphics;
-	private static FontMetricsBuffer instance = null;
+    private class FontData {
+        private Font font;
+        private FontMetrics fontMetrics;
+        
+        public FontData(Font font, FontMetrics fontMetrics) {
+            this.font=font;
+            this.fontMetrics=fontMetrics;
+        }
+        
+        public Font getFont() { return font; }
+        public FontMetrics getFontMetrics() { return fontMetrics; }
+        
+    }
+    private final static int MIN_SIZE = 1;
+    private final static int MAX_SIZE = 72;
+    private Hashtable fonts;
+    private Graphics graphics;
+    private static FontMetricsBuffer instance = null;
 /**
  * FontMetricsBuffer constructor comment.
  * @param g java.awt.Graphics
  */
 protected FontMetricsBuffer(Graphics g) {
-	this.graphics = g;
-	fonts = new Hashtable();
+    this.graphics = g;
+    fonts = new Hashtable();
 }
 /**
  * Insert the method's description here.
@@ -71,9 +71,9 @@ protected FontMetricsBuffer(Graphics g) {
  * @param g java.awt.Graphics
  */
 public static void createInstance(Graphics g) {
-	if (g!=null) 
-		if (instance==null) instance = new FontMetricsBuffer(g);
-		else instance.setGraphics(g);
+    if (g!=null) 
+        if (instance==null) instance = new FontMetricsBuffer(g);
+        else instance.setGraphics(g);
 }
 /**
  * Insert the method's description here.
@@ -86,7 +86,7 @@ public static void createInstance(Graphics g) {
  * @param maxHeight int
  */
 public Font getAppropriateFont(String fontName, int style, String str, int maxWidth, int maxHeight) {
-	return getAppropriateFont(fontName, style, str, maxWidth, maxHeight, MAX_SIZE);
+    return getAppropriateFont(fontName, style, str, maxWidth, maxHeight, MAX_SIZE);
 }
 /**
  * Insert the method's description here.
@@ -100,16 +100,16 @@ public Font getAppropriateFont(String fontName, int style, String str, int maxWi
  */
 public Font getAppropriateFont(String fontName, int style, String str, int maxWidth, int maxHeight, int maxSize) {
   if (graphics==null) return null;
-  int size = MIN_SIZE;				// find better starting point !!!
+  int size = MIN_SIZE;                // find better starting point !!!
   FontData fl = null;
   FontData fd = getFontData(fontName, size, style);
   maxSize = Math.min(MAX_SIZE, maxSize);
   while ((size<=maxSize) &&
-	  	 (fd.getFontMetrics().getHeight() < maxHeight) &&
-	  	 (fd.getFontMetrics().stringWidth(str) < maxWidth)) {
- 	size++;
- 	fl = fd;
-	fd = getFontData(fontName, size, style);
+           (fd.getFontMetrics().getHeight() < maxHeight) &&
+           (fd.getFontMetrics().stringWidth(str) < maxWidth)) {
+     size++;
+     fl = fd;
+    fd = getFontData(fontName, size, style);
   }
   if (fl==null) return null;
   else return fl.getFont();
@@ -123,15 +123,15 @@ public Font getAppropriateFont(String fontName, int style, String str, int maxWi
  * @param style int
  */
 public Font getFont(String name, int size, int style) {
-	String id = getID(name, size, style);
-	FontData fd = (FontData)(fonts.get(id));
-	if (fd==null) {
-		Font font = new Font(name, style, size);
-		if (font==null) return null;
- 		fd = new FontData(font, graphics==null?null:graphics.getFontMetrics(font));
-		fonts.put(id, fd);
-	}
-	return fd.getFont();
+    String id = getID(name, size, style);
+    FontData fd = (FontData)(fonts.get(id));
+    if (fd==null) {
+        Font font = new Font(name, style, size);
+        if (font==null) return null;
+         fd = new FontData(font, graphics==null?null:graphics.getFontMetrics(font));
+        fonts.put(id, fd);
+    }
+    return fd.getFont();
 }
 /**
  * Insert the method's description here.
@@ -142,16 +142,16 @@ public Font getFont(String name, int size, int style) {
  * @param style int
  */
 private FontData getFontData(String name, int size, int style) {
-	if (graphics==null) return null;
-	String id = getID(name, size, style);
-	FontData fd = (FontData)(fonts.get(id));
-	if (fd==null) {
-		Font font = new Font(name, style, size);
-		if (font==null) return null;
- 		fd = new FontData(font, graphics.getFontMetrics(font));
-		fonts.put(id, fd);
-	}
-	return fd;
+    if (graphics==null) return null;
+    String id = getID(name, size, style);
+    FontData fd = (FontData)(fonts.get(id));
+    if (fd==null) {
+        Font font = new Font(name, style, size);
+        if (font==null) return null;
+         fd = new FontData(font, graphics.getFontMetrics(font));
+        fonts.put(id, fd);
+    }
+    return fd;
 }
 /**
  * Insert the method's description here.
@@ -159,14 +159,14 @@ private FontData getFontData(String name, int size, int style) {
  * @return java.awt.FontMetrics
  */
 public FontMetrics getFontMetrics(Font font) {
-	if (graphics==null || font==null) return null;
-	String id = getID(font);
-	FontData fd = (FontData)(fonts.get(id));
-	if (fd==null) {
- 		fd = new FontData(font, graphics.getFontMetrics(font));
-		fonts.put(id, fd);
-	}
-	return fd.getFontMetrics();
+    if (graphics==null || font==null) return null;
+    String id = getID(font);
+    FontData fd = (FontData)(fonts.get(id));
+    if (fd==null) {
+         fd = new FontData(font, graphics.getFontMetrics(font));
+        fonts.put(id, fd);
+    }
+    return fd.getFontMetrics();
 }
 /**
  * Insert the method's description here.
@@ -175,7 +175,7 @@ public FontMetrics getFontMetrics(Font font) {
  * @param font java.awt.Font
  */
 private String getID(Font font) {
-	return getID(font.getName(), font.getSize(), font.getStyle());
+    return getID(font.getName(), font.getSize(), font.getStyle());
 }
 /**
  * Insert the method's description here.
@@ -186,7 +186,7 @@ private String getID(Font font) {
  * @param style int
  */
 private String getID(String name, int size, int style) {
-	return name+"_"+size+"_"+style;		//!!!
+    return name+"_"+size+"_"+style;        //!!!
 }
 /**
  * Must be initialized with createInstance(java.awt.Graphics)
@@ -194,8 +194,8 @@ private String getID(String name, int size, int style) {
  * @return com.cosylab.vdct.graphics.FontMetricsBuffer
  */
 public static FontMetricsBuffer getInstance() {
-	if (instance==null) instance = new FontMetricsBuffer(null);
-	return instance;
+    if (instance==null) instance = new FontMetricsBuffer(null);
+    return instance;
 }
 /**
  * Insert the method's description here.
@@ -203,11 +203,11 @@ public static FontMetricsBuffer getInstance() {
  * @param g java.awt.Graphics
  */
 private void setGraphics(Graphics g) {
-	graphics = g;
+    graphics = g;
 }
 
 public static void setInstance(FontMetricsBuffer fmb) {
-	instance = fmb;
+    instance = fmb;
 }
 
 }

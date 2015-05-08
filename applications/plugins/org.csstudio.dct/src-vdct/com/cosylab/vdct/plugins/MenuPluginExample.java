@@ -41,31 +41,31 @@ import com.cosylab.vdct.plugin.menu.*;
  * Example of simple menu plugin.
  * Add the following line to the ${user.home}/.vdctplugins.xml file:
  * <pre>
- * 		&lt;plugin class="com.cosylab.vdct.plugins.MenuPluginExample" autostart="true" /&gt;
+ *         &lt;plugin class="com.cosylab.vdct.plugins.MenuPluginExample" autostart="true" /&gt;
  * </pre>
  * Creation date: (8.12.2001 13:29:26)
  * @author Matej Sekoranja
  */
 public class MenuPluginExample implements MenuPlugin {
 
-	class MenuItemHandler implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			String action = e.getActionCommand();
-			Console.getInstance().println("MenuPluginExample action: "+action);
-		}
-	}
+    class MenuItemHandler implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            String action = e.getActionCommand();
+            Console.getInstance().println("MenuPluginExample action: "+action);
+        }
+    }
 
-	protected MenuPluginExample.MenuItemHandler menuitemHandler = null;
-	protected JMenu menu = null;
+    protected MenuPluginExample.MenuItemHandler menuitemHandler = null;
+    protected JMenu menu = null;
 /**
  * Insert the method's description here.
  * Creation date: (2.2.2001 23:00:51)
  * @return com.cosylab.vdct.graphics.objects.Connector.PopupMenuHandler
  */
 private MenuPluginExample.MenuItemHandler getMenuHandler() {
-	if (menuitemHandler==null)
-		menuitemHandler = new MenuItemHandler();
-	return menuitemHandler;
+    if (menuitemHandler==null)
+        menuitemHandler = new MenuItemHandler();
+    return menuitemHandler;
 }
 
 /**
@@ -74,29 +74,29 @@ private MenuPluginExample.MenuItemHandler getMenuHandler() {
  * @return com.cosylab.vdct.graphics.objects.Connector.PopupMenuHandler
  */
 protected JMenu getPluginMenu() {
-	if (menu==null)
-	{
-		menu = new JMenu("MenuPluginExample");
-		
-		JMenuItem item = new JMenuItem("Item 1");
-		item.addActionListener(getMenuHandler());
-		menu.add(item);
+    if (menu==null)
+    {
+        menu = new JMenu("MenuPluginExample");
+        
+        JMenuItem item = new JMenuItem("Item 1");
+        item.addActionListener(getMenuHandler());
+        menu.add(item);
 
-		item = new JMenuItem("Item 2");
-		item.addActionListener(getMenuHandler());
-		menu.add(item);
+        item = new JMenuItem("Item 2");
+        item.addActionListener(getMenuHandler());
+        menu.add(item);
 
-		JMenu subMenu = new JMenu("SubMenu");
+        JMenu subMenu = new JMenu("SubMenu");
 
-		item = new JMenuItem("Item 3");
-		item.addActionListener(getMenuHandler());
-		subMenu.add(item);
+        item = new JMenuItem("Item 3");
+        item.addActionListener(getMenuHandler());
+        subMenu.add(item);
 
-		menu.add(subMenu);
+        menu.add(subMenu);
 
 
-	}
-	return menu;
+    }
+    return menu;
 }
 
 /**
@@ -113,7 +113,7 @@ public void destroy() {}
  * @return java.lang.String
  */
 public String getAuthor() {
-	return "matej.sekoranja@cosylab.com";
+    return "matej.sekoranja@cosylab.com";
 }
 /**
  * Insert the method's description here.
@@ -121,7 +121,7 @@ public String getAuthor() {
  * @return java.lang.String
  */
 public String getDescription() {
-	return "Example of simple menu plugin.";
+    return "Example of simple menu plugin.";
 }
 /**
  * Insert the method's description here.
@@ -130,7 +130,7 @@ public String getDescription() {
  * @return
  */
 public String getName() {
-	return "Menu Example Plugin";
+    return "Menu Example Plugin";
 }
 /**
  * Insert the method's description here.
@@ -138,7 +138,7 @@ public String getName() {
  * @return java.lang.String
  */
 public String getVersion() {
-	return "0.1";
+    return "0.1";
 }
 /**
  * Insert the method's description here.
@@ -168,7 +168,7 @@ public void stop() {}
  */
 public JMenu getMenu()
 {
-	return getPluginMenu();
+    return getPluginMenu();
 }
 
 }

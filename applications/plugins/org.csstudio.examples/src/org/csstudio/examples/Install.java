@@ -58,42 +58,42 @@ public class Install extends AbstractHandler {
 
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
-	final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+    final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 
-	final Map<String, URL> urls = new HashMap<String, URL>();
-	IConfigurationElement[] config = Platform.getExtensionRegistry()
-		.getConfigurationElementsFor(SampleSet.ID);
-	if (config.length > 0) {
-	    for (IConfigurationElement iConfigurationElement : config) {
-		try {
-		    urls.put(
-			    iConfigurationElement.getAttribute("name"),
-			    ((SampleSet) iConfigurationElement
-				    .createExecutableExtension("sampleset")).getDirectoryURL()); //$NON-NLS-1$
-		} catch (InvalidRegistryObjectException | CoreException e) {
-		    e.printStackTrace();
-		}
-	    }
-	}
-	// Open Selection dialog for the projects to be installed/reinstalled
-	ListSelectionDialog listSelectionDialog = new ListSelectionDialog(
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-		urls.keySet(), new ArrayContentProvider(),
-		new ColumnLabelProvider(),
-		"Select the Examples to be installed.");
-	listSelectionDialog.setTitle("Install Examples");
-	List<String> existingProjects = new ArrayList<String>();
-	for (IProject project : root.getProjects()) {
-	    if (urls.keySet().contains(project.getName())) {
-		existingProjects.add(project.getName());
-	    }
-	}
-	listSelectionDialog.setInitialElementSelections(existingProjects);
-	listSelectionDialog.setBlockOnOpen(true);
-	if (listSelectionDialog.open() != Window.OK) {
-	    return null;
-	} else {
-	    List<Object> selectedExamples = Arrays.asList(listSelectionDialog.getResult());
+    final Map<String, URL> urls = new HashMap<String, URL>();
+    IConfigurationElement[] config = Platform.getExtensionRegistry()
+        .getConfigurationElementsFor(SampleSet.ID);
+    if (config.length > 0) {
+        for (IConfigurationElement iConfigurationElement : config) {
+        try {
+            urls.put(
+                iConfigurationElement.getAttribute("name"),
+                ((SampleSet) iConfigurationElement
+                    .createExecutableExtension("sampleset")).getDirectoryURL()); //$NON-NLS-1$
+        } catch (InvalidRegistryObjectException | CoreException e) {
+            e.printStackTrace();
+        }
+        }
+    }
+    // Open Selection dialog for the projects to be installed/reinstalled
+    ListSelectionDialog listSelectionDialog = new ListSelectionDialog(
+        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+        urls.keySet(), new ArrayContentProvider(),
+        new ColumnLabelProvider(),
+        "Select the Examples to be installed.");
+    listSelectionDialog.setTitle("Install Examples");
+    List<String> existingProjects = new ArrayList<String>();
+    for (IProject project : root.getProjects()) {
+        if (urls.keySet().contains(project.getName())) {
+        existingProjects.add(project.getName());
+        }
+    }
+    listSelectionDialog.setInitialElementSelections(existingProjects);
+    listSelectionDialog.setBlockOnOpen(true);
+    if (listSelectionDialog.open() != Window.OK) {
+        return null;
+    } else {
+        List<Object> selectedExamples = Arrays.asList(listSelectionDialog.getResult());
             selectedURLS  = urls
                     .entrySet()
                     .stream()
@@ -103,92 +103,92 @@ public class Install extends AbstractHandler {
                     .collect(
                             Collectors.toMap(url -> url.getKey(),
                                     url -> url.getValue()));
-	}
-	// check for the projects that will be overwritten and ask for
-	// confirmation.
-	Set<String> overwrite = new HashSet<String>(selectedURLS.keySet());
-	overwrite.retainAll(existingProjects);
-	if (!overwrite.isEmpty()) {
-	    String eol = System.getProperty("line.separator");
-	    StringBuffer sb = new StringBuffer(
-		    "The following example projects will be reinstalled:" + eol);
-	    sb.append(eol);
-	    for (String projectName : overwrite) {
-		sb.append(" \u2022 ");
-		sb.append(projectName);
-		sb.append(eol);
-	    }
-	    boolean result = MessageDialog.openConfirm(PlatformUI
-		    .getWorkbench().getActiveWorkbenchWindow().getShell(),
-		    "Confirm Reinstall", sb.toString());
+    }
+    // check for the projects that will be overwritten and ask for
+    // confirmation.
+    Set<String> overwrite = new HashSet<String>(selectedURLS.keySet());
+    overwrite.retainAll(existingProjects);
+    if (!overwrite.isEmpty()) {
+        String eol = System.getProperty("line.separator");
+        StringBuffer sb = new StringBuffer(
+            "The following example projects will be reinstalled:" + eol);
+        sb.append(eol);
+        for (String projectName : overwrite) {
+        sb.append(" \u2022 ");
+        sb.append(projectName);
+        sb.append(eol);
+        }
+        boolean result = MessageDialog.openConfirm(PlatformUI
+            .getWorkbench().getActiveWorkbenchWindow().getShell(),
+            "Confirm Reinstall", sb.toString());
 
-	    if (!result) {
-		return Status.CANCEL_STATUS;
-	    }
-	}
+        if (!result) {
+        return Status.CANCEL_STATUS;
+        }
+    }
 
-	Job job = new Job("Import Examples") {
+    Job job = new Job("Import Examples") {
 
-	    @Override
-	    protected IStatus run(IProgressMonitor monitor) {
-		// copy the sample displays
-		try {
-		    for (Entry<String, URL> entry : selectedURLS.entrySet()) {
-			String name = entry.getKey();
-			if (name == null) {
-			    name = "";
-			}
+        @Override
+        protected IStatus run(IProgressMonitor monitor) {
+        // copy the sample displays
+        try {
+            for (Entry<String, URL> entry : selectedURLS.entrySet()) {
+            String name = entry.getKey();
+            if (name == null) {
+                name = "";
+            }
 
-			IProject project = root.getProject(entry.getKey());
-			if (project.exists()) {
-			    project.delete(true, null);
-			}
-			project.create(new NullProgressMonitor());
-			project.open(new NullProgressMonitor());
-			File directory = new File(FileLocator.toFileURL(
-				entry.getValue()).getPath());
-			if (directory.isDirectory()) {
-			    copy(directory.listFiles(), project, monitor);
-			}
+            IProject project = root.getProject(entry.getKey());
+            if (project.exists()) {
+                project.delete(true, null);
+            }
+            project.create(new NullProgressMonitor());
+            project.open(new NullProgressMonitor());
+            File directory = new File(FileLocator.toFileURL(
+                entry.getValue()).getPath());
+            if (directory.isDirectory()) {
+                copy(directory.listFiles(), project, monitor);
+            }
 
-		    }
-		} catch (IOException | CoreException e) {
-		    e.printStackTrace();
-		}
-		return Status.OK_STATUS;
-	    }
-	};
-	job.schedule();
-	return null;
+            }
+        } catch (IOException | CoreException e) {
+            e.printStackTrace();
+        }
+        return Status.OK_STATUS;
+        }
+    };
+    job.schedule();
+    return null;
     }
 
     private void copy(File[] files, IContainer container,
-	    IProgressMonitor monitor) {
-	try {
-	    for (File file : files) {
-		monitor.subTask("Copying " + file.getName());
-		if (file.isDirectory()) {
-		    if (!file.getName().equals("CVS")) {//$NON-NLS-1$
-			IFolder folder = container.getFolder(new Path(file
-				.getName()));
-			if (!folder.exists()) {
-			    folder.create(true, true, null);
-			    copy(file.listFiles(), folder, monitor);
-			}
-		    }
-		} else {
-		    IFile pFile = container.getFile(new Path(file.getName()));
-		    if (!pFile.exists()) {
-			pFile.create(new FileInputStream(file), true,
-				new NullProgressMonitor());
-		    }
-		    monitor.internalWorked(1);
-		}
+        IProgressMonitor monitor) {
+    try {
+        for (File file : files) {
+        monitor.subTask("Copying " + file.getName());
+        if (file.isDirectory()) {
+            if (!file.getName().equals("CVS")) {//$NON-NLS-1$
+            IFolder folder = container.getFolder(new Path(file
+                .getName()));
+            if (!folder.exists()) {
+                folder.create(true, true, null);
+                copy(file.listFiles(), folder, monitor);
+            }
+            }
+        } else {
+            IFile pFile = container.getFile(new Path(file.getName()));
+            if (!pFile.exists()) {
+            pFile.create(new FileInputStream(file), true,
+                new NullProgressMonitor());
+            }
+            monitor.internalWorked(1);
+        }
 
-	    }
-	} catch (Exception e) {
-	    MessageDialog.openError(null, "Error",
-		    NLS.bind("Error happened during copy: \n{0}.", e));
-	}
+        }
+    } catch (Exception e) {
+        MessageDialog.openError(null, "Error",
+            NLS.bind("Error happened during copy: \n{0}.", e));
+    }
     }
 }

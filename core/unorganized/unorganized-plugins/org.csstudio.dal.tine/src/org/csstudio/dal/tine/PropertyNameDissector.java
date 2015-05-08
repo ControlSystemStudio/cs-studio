@@ -47,7 +47,7 @@ public class PropertyNameDissector
   {
     super();
     if (!remoteName.startsWith("TINE/")) {
-    	remoteName = "TINE/" + remoteName;
+        remoteName = "TINE/" + remoteName;
     }
     String[] s = remoteName.split("/");
     
@@ -59,14 +59,14 @@ public class PropertyNameDissector
     StringBuilder sb= new StringBuilder(128);
 
     if (s.length>3 && s[3]!=null) {
-    	sb.append(s[3]);
+        sb.append(s[3]);
     }
     for (int i = 4; i < s.length-1; i++) {
-		sb.append('/');
-		if (s[i]!=null) {
-			sb.append(s[i]);
-		}
-	}
+        sb.append('/');
+        if (s[i]!=null) {
+            sb.append(s[i]);
+        }
+    }
     
     this.deviceName = sb.toString();
   }

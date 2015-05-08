@@ -35,13 +35,13 @@
  */
 public interface IPropertySourceProvider {
 
-	/**
-	 * Returns a property source for the given object.
-	 * 
-	 * @param object
-	 *            the object
-	 * @return the property source for the object passed in (maybe
-	 *         <code>null</code>)
-	 */
-	IPropertySource getPropertySource(Object object);
+    /**
+     * Returns a property source for the given object.
+     * 
+     * @param object
+     *            the object
+     * @return the property source for the object passed in (maybe
+     *         <code>null</code>)
+     */
+    IPropertySource getPropertySource(Object object);
 }

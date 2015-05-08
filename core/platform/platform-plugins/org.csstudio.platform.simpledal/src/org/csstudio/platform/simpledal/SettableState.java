@@ -8,18 +8,18 @@ package org.csstudio.platform.simpledal;
  * 
  */
 public enum SettableState {
-	/**
-	 * Write access is permitted.
-	 */
-	SETTABLE,
+    /**
+     * Write access is permitted.
+     */
+    SETTABLE,
 
-	/**
-	 * Write access is not permitted.
-	 */
-	NOT_SETTABLE,
+    /**
+     * Write access is not permitted.
+     */
+    NOT_SETTABLE,
 
-	/**
-	 * Unknown.
-	 */
-	UNKNOWN;
+    /**
+     * Unknown.
+     */
+    UNKNOWN;
 }

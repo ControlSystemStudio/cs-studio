@@ -11,17 +11,17 @@ package org.csstudio.autocomplete.parser.engine.expr;
 
 public enum ExprType 
 {
-	Double,
-	Integer,
-	Boolean,
-	String,
-	PV,
-	Function,
-	Variable,
-	Array,
-	Expression,
-	BinaryOperation,
-	ConditionalOperation,
-	Missing,
-	Error
+    Double,
+    Integer,
+    Boolean,
+    String,
+    PV,
+    Function,
+    Variable,
+    Array,
+    Expression,
+    BinaryOperation,
+    ConditionalOperation,
+    Missing,
+    Error
 }

@@ -76,7 +76,7 @@ public class Label extends Widget {
             //
             if(row[0].equals("textix")){ //$NON-NLS-1$
 //              <property type="sds.string" id="value.text" value="CMTB" />
-            	DebugHelper.add(this, row[1]);
+                DebugHelper.add(this, row[1]);
                 String[] textit = ADLHelper.cleanString(row[1]);
                 _widget.setPropertyValue(AbstractTextTypeWidgetModel.PROP_TEXT_TYPE, TextTypeEnum.TYPE_TEXT);
                 if(textit[1].startsWith("$")&&textit.length>1){ //$NON-NLS-1$

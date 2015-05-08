@@ -36,36 +36,36 @@ import java.lang.reflect.Constructor;
  */
 public class AnnotationsPrototype {
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		String className1 = "org.csstudio.opibuilder.converter.prototype.reflectconstr.Edm_activeRectangleClass";
-		String className2 = "org.csstudio.opibuilder.converter.prototype.reflectconstr.Edm_activeGroupClass";
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        String className1 = "org.csstudio.opibuilder.converter.prototype.reflectconstr.Edm_activeRectangleClass";
+        String className2 = "org.csstudio.opibuilder.converter.prototype.reflectconstr.Edm_activeGroupClass";
 
-		try {
-			Class<? extends EdmEntity> class1 = Class.forName(className1).asSubclass(EdmEntity.class);
-			Class<? extends EdmEntity> class2 = Class.forName(className2).asSubclass(EdmEntity.class);
+        try {
+            Class<? extends EdmEntity> class1 = Class.forName(className1).asSubclass(EdmEntity.class);
+            Class<? extends EdmEntity> class2 = Class.forName(className2).asSubclass(EdmEntity.class);
 
-			Constructor<? extends EdmEntity> constructor1 = class1.getConstructor(String.class);
-			Constructor<? extends EdmEntity> constructor2 = class2.getConstructor(String.class);
+            Constructor<? extends EdmEntity> constructor1 = class1.getConstructor(String.class);
+            Constructor<? extends EdmEntity> constructor2 = class2.getConstructor(String.class);
 
-			EdmEntity entity1 = constructor1.newInstance("");
-			EdmEntity entity2 = constructor2.newInstance("");
+            EdmEntity entity1 = constructor1.newInstance("");
+            EdmEntity entity2 = constructor2.newInstance("");
 
-			if (entity1 instanceof Edm_activeRectangleClass) {
-				System.out.println("entity1 is Edm_activeRectangleClass");
-				Edm_activeRectangleClass rectangle = (Edm_activeRectangleClass)entity1;
-				System.out.println("rectangle : " + rectangle);
-			}
-			if (entity2 instanceof Edm_activeGroupClass) {
-				System.out.println("entity2 is Edm_activeGroupClass");
-				//Edm_activeGroupClass group = (Edm_activeGroupClass)entity2;
-				//System.out.println("group major: " + group.getMajor());
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+            if (entity1 instanceof Edm_activeRectangleClass) {
+                System.out.println("entity1 is Edm_activeRectangleClass");
+                Edm_activeRectangleClass rectangle = (Edm_activeRectangleClass)entity1;
+                System.out.println("rectangle : " + rectangle);
+            }
+            if (entity2 instanceof Edm_activeGroupClass) {
+                System.out.println("entity2 is Edm_activeGroupClass");
+                //Edm_activeGroupClass group = (Edm_activeGroupClass)entity2;
+                //System.out.println("group major: " + group.getMajor());
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

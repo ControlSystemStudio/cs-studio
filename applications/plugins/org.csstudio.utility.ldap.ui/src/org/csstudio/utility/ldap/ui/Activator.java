@@ -35,51 +35,51 @@ public class Activator extends AbstractUIPlugin {
     /**
      * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
      */
-	public static final String PLUGIN_ID = "org.csstudio.utility.ldap.ui"; //$NON-NLS-1$
+    public static final String PLUGIN_ID = "org.csstudio.utility.ldap.ui"; //$NON-NLS-1$
 
-	// The shared instance
-	private static Activator INSTANCE;
+    // The shared instance
+    private static Activator INSTANCE;
 
-	/**
-	 * The constructor
-	 */
-	public Activator() {
+    /**
+     * The constructor
+     */
+    public Activator() {
         if (INSTANCE != null) {
             throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
         }
         INSTANCE = this; // Antipattern is required by the framework!
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+     */
+    @Override
     public void start(final BundleContext context) throws Exception {
-		super.start(context);
-	    //
-	}
+        super.start(context);
+        //
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+     */
+    @Override
     public void stop(final BundleContext context) throws Exception {
-		super.stop(context);
-		INSTANCE = null;
-	}
+        super.stop(context);
+        INSTANCE = null;
+    }
 
-	/**
-	 * Returns the shared instance
-	 *
-	 * @return the shared instance
-	 */
-	public static Activator getDefault() {
-		return INSTANCE;
-	}
+    /**
+     * Returns the shared instance
+     *
+     * @return the shared instance
+     */
+    public static Activator getDefault() {
+        return INSTANCE;
+    }
 
-	/** Add informational message to the plugin log. */
+    /** Add informational message to the plugin log. */
     public static void logInfo(final String message)
     {
         getDefault().log(IStatus.INFO, message, null);

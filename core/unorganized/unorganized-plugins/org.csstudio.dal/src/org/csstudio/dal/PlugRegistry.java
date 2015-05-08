@@ -45,203 +45,203 @@ import org.csstudio.dal.spi.PropertyFactoryService;
  * 
  */
 public final class PlugRegistry {
-	/**
-	 * The shared instance of this class.
-	 */
-	private static PlugRegistry _instance = null;
+    /**
+     * The shared instance of this class.
+     */
+    private static PlugRegistry _instance = null;
 
-	/**
-	 * The registered DAL plugs.
-	 */
-	private Map<String, PlugDescriptor> _plugs;
+    /**
+     * The registered DAL plugs.
+     */
+    private Map<String, PlugDescriptor> _plugs;
 
-	/**
-	 * Private constructor due to the singleton pattern.
-	 */
-	private PlugRegistry() {
-		_plugs = lookupExtensions();
-	}
+    /**
+     * Private constructor due to the singleton pattern.
+     */
+    private PlugRegistry() {
+        _plugs = lookupExtensions();
+    }
 
-	/**
-	 * Return the shared instance of this class.
-	 * 
-	 * @return The shared instance of this class.
-	 */
-	public static PlugRegistry getInstance() {
-		if (_instance == null) {
-			_instance = new PlugRegistry();
-		}
+    /**
+     * Return the shared instance of this class.
+     * 
+     * @return The shared instance of this class.
+     */
+    public static PlugRegistry getInstance() {
+        if (_instance == null) {
+            _instance = new PlugRegistry();
+        }
 
-		return _instance;
-	}
+        return _instance;
+    }
 
-	/**
-	 * Configure all registered DAL plugs and store the created settings in the
-	 * given properties object.
-	 * 
-	 * @param p
-	 *            A properties object.
-	 */
-	public void configurePlugs(final Properties p) {
-		// the simulator plug should be always there!
-		Plugs.configureSimulatorPlug(p);
+    /**
+     * Configure all registered DAL plugs and store the created settings in the
+     * given properties object.
+     * 
+     * @param p
+     *            A properties object.
+     */
+    public void configurePlugs(final Properties p) {
+        // the simulator plug should be always there!
+        Plugs.configureSimulatorPlug(p);
 
-		String[] s = Plugs.getPlugNames(p);
-		Set<String> set = new HashSet<String>(Arrays.asList(s));
+        String[] s = Plugs.getPlugNames(p);
+        Set<String> set = new HashSet<String>(Arrays.asList(s));
 
-		for (PlugDescriptor d : _plugs.values()) {
-			if (!set.contains(d.getPlugId())) {
-				set.add(d.getPlugId());
+        for (PlugDescriptor d : _plugs.values()) {
+            if (!set.contains(d.getPlugId())) {
+                set.add(d.getPlugId());
 
-				StringBuffer sb = new StringBuffer();
+                StringBuffer sb = new StringBuffer();
 
-				for (Iterator<String> iter = set.iterator(); iter.hasNext();) {
-					if (sb.length() > 0) {
-						sb.append(',');
-					}
+                for (Iterator<String> iter = set.iterator(); iter.hasNext();) {
+                    if (sb.length() > 0) {
+                        sb.append(',');
+                    }
 
-					sb.append(iter.next());
-				}
+                    sb.append(iter.next());
+                }
 
-				p.put(Plugs.PLUGS, sb.toString());
-			}
+                p.put(Plugs.PLUGS, sb.toString());
+            }
 
-			p.put(Plugs.PLUG_PROPERTY_FACTORY_CLASS + d.getPlugId(), d
-					.getPropertyFactoryClass());
-		}
-	}
-	
-	public PropertyFactoryService getPropertyFactoryService(String plugId) {
-		
-		PlugDescriptor pd=null;
-		
-		if (plugId!=null) {
-			pd= _plugs.get(plugId);
-		}
-		
-		if (pd!=null) {
-			return pd.propertyFactoryService;
-		}
-		
-		return null;
-		
-	}
+            p.put(Plugs.PLUG_PROPERTY_FACTORY_CLASS + d.getPlugId(), d
+                    .getPropertyFactoryClass());
+        }
+    }
+    
+    public PropertyFactoryService getPropertyFactoryService(String plugId) {
+        
+        PlugDescriptor pd=null;
+        
+        if (plugId!=null) {
+            pd= _plugs.get(plugId);
+        }
+        
+        if (pd!=null) {
+            return pd.propertyFactoryService;
+        }
+        
+        return null;
+        
+    }
 
-	/**
-	 * Check whether the given plug name is known to this registry.
-	 * 
-	 * @param plugName
-	 *            The plug name.
-	 * @return True, if the given plug name is known to this registry.
-	 */
-	public boolean isRegistered(final String plugName) {
-		return _plugs == null ? false : _plugs.containsKey(plugName);
-	}
+    /**
+     * Check whether the given plug name is known to this registry.
+     * 
+     * @param plugName
+     *            The plug name.
+     * @return True, if the given plug name is known to this registry.
+     */
+    public boolean isRegistered(final String plugName) {
+        return _plugs == null ? false : _plugs.containsKey(plugName);
+    }
 
-	/**
-	 * Perform a lookup for plugins that provide extensions for the
-	 * <code>plugs</code> extension point.
-	 */
-	private Map<String, PlugDescriptor> lookupExtensions() {
-		Map<String, PlugDescriptor> descriptors = new HashMap<String, PlugDescriptor>();
+    /**
+     * Perform a lookup for plugins that provide extensions for the
+     * <code>plugs</code> extension point.
+     */
+    private Map<String, PlugDescriptor> lookupExtensions() {
+        Map<String, PlugDescriptor> descriptors = new HashMap<String, PlugDescriptor>();
 
-		IExtensionRegistry extReg = Platform.getExtensionRegistry();
-		String id = DalPlugin.EXTPOINT_PLUGS;
-		IConfigurationElement[] confElements = extReg
-				.getConfigurationElementsFor(id);
+        IExtensionRegistry extReg = Platform.getExtensionRegistry();
+        String id = DalPlugin.EXTPOINT_PLUGS;
+        IConfigurationElement[] confElements = extReg
+                .getConfigurationElementsFor(id);
 
-		for (IConfigurationElement element : confElements) {
-			String plugId = element.getAttribute("id"); //$NON-NLS-1$
-			String propertyFactoryClass = element
-					.getAttribute("propertyFactoryClass"); //$NON-NLS-1$
+        for (IConfigurationElement element : confElements) {
+            String plugId = element.getAttribute("id"); //$NON-NLS-1$
+            String propertyFactoryClass = element
+                    .getAttribute("propertyFactoryClass"); //$NON-NLS-1$
 
-			Object o=null;
-			try {
-				o = element.createExecutableExtension("propertyFactoryService");
-			} catch (CoreException e) {
-				e.printStackTrace();
-			}
-			
-			if (!(o instanceof PropertyFactoryService)) {
-				o=null;
-			}
-			
-			if (plugId != null) {
-				descriptors.put(plugId, 
-						new PlugDescriptor(
-								plugId,
-								propertyFactoryClass,
-								(PropertyFactoryService)o));
-			}
-			
-		}
-		
-		return descriptors;
-	}
+            Object o=null;
+            try {
+                o = element.createExecutableExtension("propertyFactoryService");
+            } catch (CoreException e) {
+                e.printStackTrace();
+            }
+            
+            if (!(o instanceof PropertyFactoryService)) {
+                o=null;
+            }
+            
+            if (plugId != null) {
+                descriptors.put(plugId, 
+                        new PlugDescriptor(
+                                plugId,
+                                propertyFactoryClass,
+                                (PropertyFactoryService)o));
+            }
+            
+        }
+        
+        return descriptors;
+    }
 
-	/**
-	 * Descriptor for extensions of the <code>plug</code> extension points.
-	 * 
-	 * @author Alexander Will, Igor Kriznar
-	 * 
-	 */
-	private class PlugDescriptor {
-		/**
-		 * The ID of the extension.
-		 */
-		private String plugId;
+    /**
+     * Descriptor for extensions of the <code>plug</code> extension points.
+     * 
+     * @author Alexander Will, Igor Kriznar
+     * 
+     */
+    private class PlugDescriptor {
+        /**
+         * The ID of the extension.
+         */
+        private String plugId;
 
-		/**
-		 * The full qualified name of the property factory class of the plug.
-		 */
-		private String propertyFactoryClass;
+        /**
+         * The full qualified name of the property factory class of the plug.
+         */
+        private String propertyFactoryClass;
 
-		/**
-		 * Class instance which plug defined trough plug-in estension point to be it's service.
-		 */
-		private PropertyFactoryService propertyFactoryService;
+        /**
+         * Class instance which plug defined trough plug-in estension point to be it's service.
+         */
+        private PropertyFactoryService propertyFactoryService;
 
-		/**
-		 * Standard constructor.
-		 * 
-		 * @param plugId
-		 *            The ID of the extension.
-		 * @param propertyFactoryClass
-		 *            The full qualified name of the property factory class of
-		 *            the plug.
-		 */
-		public PlugDescriptor(String plugId, String propertyFactoryClass, PropertyFactoryService propertyFactoryService) {
-			this.plugId = plugId;
-			this.propertyFactoryClass = propertyFactoryClass;
-			this.propertyFactoryService = propertyFactoryService;
-		}
+        /**
+         * Standard constructor.
+         * 
+         * @param plugId
+         *            The ID of the extension.
+         * @param propertyFactoryClass
+         *            The full qualified name of the property factory class of
+         *            the plug.
+         */
+        public PlugDescriptor(String plugId, String propertyFactoryClass, PropertyFactoryService propertyFactoryService) {
+            this.plugId = plugId;
+            this.propertyFactoryClass = propertyFactoryClass;
+            this.propertyFactoryService = propertyFactoryService;
+        }
 
-		/**
-		 * Return the ID of the extension.
-		 * 
-		 * @return The ID of the extension.
-		 */
-		public String getPlugId() {
-			return plugId;
-		}
+        /**
+         * Return the ID of the extension.
+         * 
+         * @return The ID of the extension.
+         */
+        public String getPlugId() {
+            return plugId;
+        }
 
-		/**
-		 * Return the full qualified name of the property factory class of the
-		 * plug.
-		 * 
-		 * @return The full qualified name of the property factory class of the
-		 *         plug.
-		 */
-		public String getPropertyFactoryClass() {
-			return propertyFactoryClass;
-		}
+        /**
+         * Return the full qualified name of the property factory class of the
+         * plug.
+         * 
+         * @return The full qualified name of the property factory class of the
+         *         plug.
+         */
+        public String getPropertyFactoryClass() {
+            return propertyFactoryClass;
+        }
 
-		/**
-		 * Returns property factory service implementation for plug-in.
-		 * @return property factory service implementation for plug-in
-		 */
-		public PropertyFactoryService getPropertyFactoryService() {
-			return propertyFactoryService;
-		}
-	}
+        /**
+         * Returns property factory service implementation for plug-in.
+         * @return property factory service implementation for plug-in
+         */
+        public PropertyFactoryService getPropertyFactoryService() {
+            return propertyFactoryService;
+        }
+    }
 }

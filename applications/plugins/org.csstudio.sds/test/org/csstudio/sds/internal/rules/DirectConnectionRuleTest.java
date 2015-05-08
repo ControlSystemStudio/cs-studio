@@ -34,25 +34,25 @@ import org.junit.Test;
  */
 public final class DirectConnectionRuleTest {
 
-	/**
-	 * Test for {@link DirectConnectionRule#evaluate(Object[])}.
-	 */
-	@Test
-	public void testEvaluate() {
-		DirectConnectionRule rule = new DirectConnectionRule();
+    /**
+     * Test for {@link DirectConnectionRule#evaluate(Object[])}.
+     */
+    @Test
+    public void testEvaluate() {
+        DirectConnectionRule rule = new DirectConnectionRule();
 
-		double testObject1 = 20.0;
-		String testObject2 = "Test Object 2"; //$NON-NLS-1$
-		Object testObject3 = new Object();
+        double testObject1 = 20.0;
+        String testObject2 = "Test Object 2"; //$NON-NLS-1$
+        Object testObject3 = new Object();
 
-		assertEquals(testObject1, rule.evaluate(new Object[] { testObject1,
-				testObject2, testObject3 }));
-		assertEquals(testObject2, rule.evaluate(new Object[] { testObject2,
-				testObject1, testObject3 }));
-		assertEquals(testObject3, rule.evaluate(new Object[] { testObject3,
-				testObject2, testObject1 }));
+        assertEquals(testObject1, rule.evaluate(new Object[] { testObject1,
+                testObject2, testObject3 }));
+        assertEquals(testObject2, rule.evaluate(new Object[] { testObject2,
+                testObject1, testObject3 }));
+        assertEquals(testObject3, rule.evaluate(new Object[] { testObject3,
+                testObject2, testObject1 }));
 
-		assertEquals(0, rule.evaluate(null));
-	}
+        assertEquals(0, rule.evaluate(null));
+    }
 
 }

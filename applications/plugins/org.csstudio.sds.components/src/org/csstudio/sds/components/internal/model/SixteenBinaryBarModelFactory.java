@@ -12,18 +12,18 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  */
 public class SixteenBinaryBarModelFactory implements IWidgetModelFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractWidgetModel createWidgetModel() {
-		return new SixteenBinaryBarModel();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractWidgetModel createWidgetModel() {
+        return new SixteenBinaryBarModel();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Class getWidgetModelType() {
-		return SixteenBinaryBarModel.class;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Class getWidgetModelType() {
+        return SixteenBinaryBarModel.class;
+    }
 
 }

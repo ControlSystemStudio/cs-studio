@@ -36,153 +36,153 @@ import org.csstudio.sds.util.ChannelReferenceValidationUtil;
  * 
  */
 public final class ParameterDescriptor {
-	/**
-	 * The name of the channel.
-	 */
-	private String _channel;
+    /**
+     * The name of the channel.
+     */
+    private String _channel;
 
-	/**
-	 * The default value.
-	 */
-	private String _value = "";
-	
-	/**
-	 * Constructs a default parameter with an empty channel name and type
-	 * Double.class.
-	 * 
-	 */
-	public ParameterDescriptor() {
-		this("", ""); //$NON-NLS-1$
-	}
+    /**
+     * The default value.
+     */
+    private String _value = "";
+    
+    /**
+     * Constructs a default parameter with an empty channel name and type
+     * Double.class.
+     * 
+     */
+    public ParameterDescriptor() {
+        this("", ""); //$NON-NLS-1$
+    }
 
 
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param channel
-	 *            The name of the channel, respectively process variable.
-	 * @param type
-	 *            The type of the expected data.
-	 * @param value
-	 * 			  The default value.
-	 */
-	public ParameterDescriptor(final String channel, final String value) {
-		assert channel != null : "channel != null";
-		assert value != null : "value != null";
-		
-		_channel = channel;
-		_value = value;
-	}
+    /**
+     * Standard constructor.
+     * 
+     * @param channel
+     *            The name of the channel, respectively process variable.
+     * @param type
+     *            The type of the expected data.
+     * @param value
+     *               The default value.
+     */
+    public ParameterDescriptor(final String channel, final String value) {
+        assert channel != null : "channel != null";
+        assert value != null : "value != null";
+        
+        _channel = channel;
+        _value = value;
+    }
 
-	public ParameterDescriptor(String channel) {
-		this(channel, "");
-	}
+    public ParameterDescriptor(String channel) {
+        this(channel, "");
+    }
 
-	/**
-	 * Return the name of the channel, respectively process variable.
-	 * 
-	 * @return The name of the channel, respectively process variable.
-	 */
-	public String getChannel() {
-		return _channel;
-	}
+    /**
+     * Return the name of the channel, respectively process variable.
+     * 
+     * @return The name of the channel, respectively process variable.
+     */
+    public String getChannel() {
+        return _channel;
+    }
 
-	private boolean isChannelSpecified() {
-		return _channel!=null && _channel.trim().length()>0;
-	}
-	
-	public IProcessVariableAddress getPv(final Map<String, String> aliases) {
-		IProcessVariableAddress result = null;
+    private boolean isChannelSpecified() {
+        return _channel!=null && _channel.trim().length()>0;
+    }
+    
+    public IProcessVariableAddress getPv(final Map<String, String> aliases) {
+        IProcessVariableAddress result = null;
 
-		if (isChannelSpecified()) {
-			try {
-				String realName = ChannelReferenceValidationUtil.createCanonicalName(getChannel(), aliases);
-				result = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(realName);
-			} catch (ChannelReferenceValidationException e) {
-				result = null;
-			}
-		}
+        if (isChannelSpecified()) {
+            try {
+                String realName = ChannelReferenceValidationUtil.createCanonicalName(getChannel(), aliases);
+                result = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(realName);
+            } catch (ChannelReferenceValidationException e) {
+                result = null;
+            }
+        }
 
-		return result;
-	}
-	
-	/**
-	 * Set the name of the channel, respectively process variable.
-	 * 
-	 * @param channel
-	 *            The name of the channel, respectively process variable.
-	 */
-	public void setChannel(final String channel) {
-		_channel = channel;
-	}
+        return result;
+    }
+    
+    /**
+     * Set the name of the channel, respectively process variable.
+     * 
+     * @param channel
+     *            The name of the channel, respectively process variable.
+     */
+    public void setChannel(final String channel) {
+        _channel = channel;
+    }
 
-	/**
-	 * Return the default value.
-	 * 
-	 * @return The default value.
-	 */
-	public String getValue() {
-		return _value;
-	}
+    /**
+     * Return the default value.
+     * 
+     * @return The default value.
+     */
+    public String getValue() {
+        return _value;
+    }
 
-	/**
-	 * Set the default value.
-	 * 
-	 * @param value
-	 *            The default value.
-	 */
-	public void setValue(final String value) {
-		assert value != null : "value != null";
-		
-		_value = value;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		return _channel;
-	}
+    /**
+     * Set the default value.
+     * 
+     * @param value
+     *            The default value.
+     */
+    public void setValue(final String value) {
+        assert value != null : "value != null";
+        
+        _value = value;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return _channel;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ParameterDescriptor clone() {
-		return new ParameterDescriptor(new String(_channel), _value);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ParameterDescriptor clone() {
+        return new ParameterDescriptor(new String(_channel), _value);
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((_channel == null) ? 0 : _channel.hashCode());
-		result = prime * result + ((_value == null) ? 0 : _value.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((_channel == null) ? 0 : _channel.hashCode());
+        result = prime * result + ((_value == null) ? 0 : _value.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ParameterDescriptor other = (ParameterDescriptor) obj;
-		if (_channel == null) {
-			if (other._channel != null)
-				return false;
-		} else if (!_channel.equals(other._channel))
-			return false;
-		if (_value == null) {
-			if (other._value != null)
-				return false;
-		} else if (!_value.equals(other._value))
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ParameterDescriptor other = (ParameterDescriptor) obj;
+        if (_channel == null) {
+            if (other._channel != null)
+                return false;
+        } else if (!_channel.equals(other._channel))
+            return false;
+        if (_value == null) {
+            if (other._value != null)
+                return false;
+        } else if (!_value.equals(other._value))
+            return false;
+        return true;
+    }
 
 }

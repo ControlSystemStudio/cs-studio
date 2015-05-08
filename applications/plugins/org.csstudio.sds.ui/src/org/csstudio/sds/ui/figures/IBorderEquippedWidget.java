@@ -31,34 +31,34 @@ import org.eclipse.swt.graphics.Color;
  * 
  */
 public interface IBorderEquippedWidget {
-	/**
-	 * Set the border width.
-	 * 
-	 * @param width
-	 *            The border width.
-	 */
-	void setBorderWidth(int width);
+    /**
+     * Set the border width.
+     * 
+     * @param width
+     *            The border width.
+     */
+    void setBorderWidth(int width);
 
-	/**
-	 * Set the border color.
-	 * 
-	 * @param color
-	 *            The border color.
-	 */
-	void setBorderColor(Color color);
+    /**
+     * Set the border color.
+     * 
+     * @param color
+     *            The border color.
+     */
+    void setBorderColor(Color color);
 
-	/**
-	 * Set the border style.
-	 * 
-	 * @param style
-	 *            The border style.
-	 */
-	void setBorderStyle(int style);
-	
-	/**
-	 * returns the text for the border.
-	 * @param borderText
-	 * 			The text for the border 
-	 */
-	void setBorderText(String borderText);
+    /**
+     * Set the border style.
+     * 
+     * @param style
+     *            The border style.
+     */
+    void setBorderStyle(int style);
+    
+    /**
+     * returns the text for the border.
+     * @param borderText
+     *             The text for the border 
+     */
+    void setBorderText(String borderText);
 }

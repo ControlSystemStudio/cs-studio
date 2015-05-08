@@ -29,58 +29,58 @@
  */
 public final class PreferenceConstants {
 
-	/**
-	 * Constant, which is used in the preference page for enable antialiasing.
-	 */
-	public static final String PROP_ANTIALIASING = "PROP_ANTIALIASING";
-	/**
-	 * The ID for the grid spacing property on the preference page.
-	 */
-	public static final String PROP_GRID_SPACING = "PROP_GRID_SPACING";
-	/**
-	 * The id for the widgets, which are used in the SDS.
-	 */
-	public static final String PROP_DESELECTED_WIDGETS = "PROP_DESELECTED_WIDGETS";
+    /**
+     * Constant, which is used in the preference page for enable antialiasing.
+     */
+    public static final String PROP_ANTIALIASING = "PROP_ANTIALIASING";
+    /**
+     * The ID for the grid spacing property on the preference page.
+     */
+    public static final String PROP_GRID_SPACING = "PROP_GRID_SPACING";
+    /**
+     * The id for the widgets, which are used in the SDS.
+     */
+    public static final String PROP_DESELECTED_WIDGETS = "PROP_DESELECTED_WIDGETS";
 
-	/**
-	 * ID for the preferred cursor selection rule.
-	 */
-	public static final String CURSOR_SELECTION_RULE = "PROP_CURSOR_SELECTION_RULE";
+    /**
+     * ID for the preferred cursor selection rule.
+     */
+    public static final String CURSOR_SELECTION_RULE = "PROP_CURSOR_SELECTION_RULE";
 
-	/**
-	 * ID for the node which contains the cursor settings.
-	 */
-	public static final String CURSOR_SETTINGS = "PROP_CURSOR_SETTINGS";
-	/**
-	 * ID for the state, if the parent display should be closed.
-	 */
-	public static final String PROP_CLOSE_PARENT_DISPLAY = "PROP_CLOSE_PARENT_DISPLAY";
+    /**
+     * ID for the node which contains the cursor settings.
+     */
+    public static final String CURSOR_SETTINGS = "PROP_CURSOR_SETTINGS";
+    /**
+     * ID for the state, if the parent display should be closed.
+     */
+    public static final String PROP_CLOSE_PARENT_DISPLAY = "PROP_CLOSE_PARENT_DISPLAY";
 
-	/**
-	 * ID for preference containing the rule folders.
-	 */
-	public static final String PROP_RULE_FOLDERS = "PROP_RULE_FOLDERS";
+    /**
+     * ID for preference containing the rule folders.
+     */
+    public static final String PROP_RULE_FOLDERS = "PROP_RULE_FOLDERS";
 
-	/**
-	 * ID for preference containing the categorization of the widgets within the palette of the SDS-Editor.
-	 */
-	public static final String PROP_WIDGET_CATEGORIZATION = "PROP_WIDGET_CATEGORIZATION";
+    /**
+     * ID for preference containing the categorization of the widgets within the palette of the SDS-Editor.
+     */
+    public static final String PROP_WIDGET_CATEGORIZATION = "PROP_WIDGET_CATEGORIZATION";
 
-	public static final String PROP_WRITE_ACCESS_DENIED = "PROP_WRITE_ACCESS_DENIED";
+    public static final String PROP_WRITE_ACCESS_DENIED = "PROP_WRITE_ACCESS_DENIED";
 
-	public static final String PROP_DEFAULT_BEHAVIOR_PREFIX = "PROP_DEFAULT_BEHAVIOR_";
+    public static final String PROP_DEFAULT_BEHAVIOR_PREFIX = "PROP_DEFAULT_BEHAVIOR_";
 
-	public static final String PROP_SELECTED_COLOR_AND_FONT_STYLE = "PROP_SELECTED_COLOR_AND_FONT_STYLE";
+    public static final String PROP_SELECTED_COLOR_AND_FONT_STYLE = "PROP_SELECTED_COLOR_AND_FONT_STYLE";
 
     public static final String PROP_CROSSED_WIDGET_COLOR = "PROP_CROSSED_WIDGET_COLOR";
 
     public static final String PROP_CROSSED_WIDGET_LINE_WIDTH = "PROP_CROSSED_WIDGET_LINE_WIDTH";
 
-	/**
-	 * Private constructor to avoid instantiation.
-	 */
-	private PreferenceConstants() {
-		//do nothing.
-	}
+    /**
+     * Private constructor to avoid instantiation.
+     */
+    private PreferenceConstants() {
+        //do nothing.
+    }
 
 }

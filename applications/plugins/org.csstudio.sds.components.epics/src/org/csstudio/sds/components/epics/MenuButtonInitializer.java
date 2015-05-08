@@ -37,24 +37,24 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
  */
 public final class MenuButtonInitializer extends AbstractEpicsWidgetInitializer {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void initialize(final AbstractControlSystemSchema schema) {
-		initializeCommonAlarmBehaviour();
-		initializeCommonConnectionStates();
-		initializeDynamicProperty(MenuButtonModel.PROP_LABEL, "$channel$", null,
-				DirectConnectionRule.TYPE_ID);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void initialize(final AbstractControlSystemSchema schema) {
+        initializeCommonAlarmBehaviour();
+        initializeCommonConnectionStates();
+        initializeDynamicProperty(MenuButtonModel.PROP_LABEL, "$channel$", null,
+                DirectConnectionRule.TYPE_ID);
 
-		initializeDynamicProperty(MenuButtonModel.PROP_ACTIONDATA,
-				"$channel$[enumDescriptions], enum", "$channel$, string", DirectConnectionRule.TYPE_ID);
+        initializeDynamicProperty(MenuButtonModel.PROP_ACTIONDATA,
+                "$channel$[enumDescriptions], enum", "$channel$, string", DirectConnectionRule.TYPE_ID);
 
-		Map<ConnectionState, Object> stringsByConnectionState = new HashMap<ConnectionState, Object>();
-		stringsByConnectionState.put(ConnectionState.CONNECTION_LOST,
-				"Connection lost");
-		stringsByConnectionState.put(ConnectionState.INITIAL, "Initialisation");
-		initializeDynamicPropertyForConnectionState(MenuButtonModel.PROP_LABEL,
-				"$channel$", stringsByConnectionState, DirectConnectionRule.TYPE_ID);
-	}
+        Map<ConnectionState, Object> stringsByConnectionState = new HashMap<ConnectionState, Object>();
+        stringsByConnectionState.put(ConnectionState.CONNECTION_LOST,
+                "Connection lost");
+        stringsByConnectionState.put(ConnectionState.INITIAL, "Initialisation");
+        initializeDynamicPropertyForConnectionState(MenuButtonModel.PROP_LABEL,
+                "$channel$", stringsByConnectionState, DirectConnectionRule.TYPE_ID);
+    }
 }

@@ -32,106 +32,106 @@ import org.jdom.Element;
  */
 public class IntegerProperty extends AbstractWidgetProperty {
 
-	/**
-	 * Lower border for the property value.
-	 */
-	private int min;
+    /**
+     * Lower border for the property value.
+     */
+    private int min;
 
-	/**
-	 * Upper border for the property value.
-	 */
-	private int max;
-	
-	/**Integer Property Constructor. The property value type is integer.
-	 * @param prop_id the property id which should be unique in a widget model.
-	 * @param description the description of the property,
-	 * which will be shown as the property name in property sheet.
-	 * @param category the category of the widget.
-	 * @param defaultValue the default value when the widget is first created.
-	 */
-	public IntegerProperty(final String prop_id, final String description,
-			final WidgetPropertyCategory category, final int defaultValue) {
-		super(prop_id, description, category, Integer.valueOf(defaultValue));
-		min = Integer.MIN_VALUE;
-		max = Integer.MAX_VALUE;
-	}
-	/**Integer Property Constructor. The property value type is integer.
-	 * @param prop_id the property id which should be unique in a widget model.
-	 * @param description the description of the property,
-	 * which will be shown as the property name in property sheet.
-	 * @param category the category of the widget.
-	 * @param defaultValue the default value when the widget is first created.
-	 * @param minValue the minimum allowed integer value.
-	 * @param maxValue the maximum allowed integer value.
-	 */
-	public IntegerProperty(final String prop_id, final String description,
-			final WidgetPropertyCategory category, final int defaultValue,
-			final int minValue, final int maxValue) {
-		super(prop_id, description, category, Integer.valueOf(defaultValue));
-		assert minValue < maxValue;
-		min = minValue;
-		max = maxValue;
-	}
-	
+    /**
+     * Upper border for the property value.
+     */
+    private int max;
+    
+    /**Integer Property Constructor. The property value type is integer.
+     * @param prop_id the property id which should be unique in a widget model.
+     * @param description the description of the property,
+     * which will be shown as the property name in property sheet.
+     * @param category the category of the widget.
+     * @param defaultValue the default value when the widget is first created.
+     */
+    public IntegerProperty(final String prop_id, final String description,
+            final WidgetPropertyCategory category, final int defaultValue) {
+        super(prop_id, description, category, Integer.valueOf(defaultValue));
+        min = Integer.MIN_VALUE;
+        max = Integer.MAX_VALUE;
+    }
+    /**Integer Property Constructor. The property value type is integer.
+     * @param prop_id the property id which should be unique in a widget model.
+     * @param description the description of the property,
+     * which will be shown as the property name in property sheet.
+     * @param category the category of the widget.
+     * @param defaultValue the default value when the widget is first created.
+     * @param minValue the minimum allowed integer value.
+     * @param maxValue the maximum allowed integer value.
+     */
+    public IntegerProperty(final String prop_id, final String description,
+            final WidgetPropertyCategory category, final int defaultValue,
+            final int minValue, final int maxValue) {
+        super(prop_id, description, category, Integer.valueOf(defaultValue));
+        assert minValue < maxValue;
+        min = minValue;
+        max = maxValue;
+    }
+    
 
-	@Override
-	public Object checkValue(final Object value) {
-		if(value == null)
-			return null;
+    @Override
+    public Object checkValue(final Object value) {
+        if(value == null)
+            return null;
 
-		Integer acceptedValue = null;
+        Integer acceptedValue = null;
 
-		// check type
-		if (!(value instanceof Integer)) {
-			if (value instanceof Number) {
-				acceptedValue = ((Number) value).intValue();
-			} else {
-				try {
-					acceptedValue = Integer.parseInt(value.toString());
-				} catch (NumberFormatException e) {
-					acceptedValue = null;
-				}
-			}
-		} else {
-			acceptedValue = (Integer) value;
-		}
+        // check type
+        if (!(value instanceof Integer)) {
+            if (value instanceof Number) {
+                acceptedValue = ((Number) value).intValue();
+            } else {
+                try {
+                    acceptedValue = Integer.parseInt(value.toString());
+                } catch (NumberFormatException e) {
+                    acceptedValue = null;
+                }
+            }
+        } else {
+            acceptedValue = (Integer) value;
+        }
 
-		// check borders
-		if (acceptedValue != null) {
-			if (acceptedValue > max) {
-				acceptedValue = max;
-			} else if (acceptedValue < min) {
-				acceptedValue = min;
-			}
-		}
+        // check borders
+        if (acceptedValue != null) {
+            if (acceptedValue > max) {
+                acceptedValue = max;
+            } else if (acceptedValue < min) {
+                acceptedValue = min;
+            }
+        }
 
-		return acceptedValue;
-	}	
+        return acceptedValue;
+    }    
 
-	@Override
-	protected PropertyDescriptor createPropertyDescriptor() {
-		if(PropertySSHelper.getIMPL() == null)
-			return null;
-		return PropertySSHelper.getIMPL().getIntegerPropertyDescriptor(prop_id, description);
-	}
+    @Override
+    protected PropertyDescriptor createPropertyDescriptor() {
+        if(PropertySSHelper.getIMPL() == null)
+            return null;
+        return PropertySSHelper.getIMPL().getIntegerPropertyDescriptor(prop_id, description);
+    }
 
-	@Override
-	public void writeToXML(Element propElement) {
-		propElement.setText(getPropertyValue().toString());
-	}
+    @Override
+    public void writeToXML(Element propElement) {
+        propElement.setText(getPropertyValue().toString());
+    }
 
-	@Override
-	public Object readValueFromXML(Element propElement) {
-		try {
-			return Integer.parseInt(propElement.getValue());
-		} catch (NumberFormatException e) {
-			return Integer.valueOf((int) Double.parseDouble(propElement.getValue()));	
-		}
-	}
+    @Override
+    public Object readValueFromXML(Element propElement) {
+        try {
+            return Integer.parseInt(propElement.getValue());
+        } catch (NumberFormatException e) {
+            return Integer.valueOf((int) Double.parseDouble(propElement.getValue()));    
+        }
+    }
 
-	@Override
-	public boolean configurableByRule() {
-		return true;
-	}
+    @Override
+    public boolean configurableByRule() {
+        return true;
+    }
 
 }

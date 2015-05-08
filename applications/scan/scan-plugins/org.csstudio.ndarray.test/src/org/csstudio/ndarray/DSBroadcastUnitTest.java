@@ -22,10 +22,10 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class DSBroadcastUnitTest
 {
-	@Test
+    @Test
     public void testBroadcastShape()
     {
-    	BroadcastIterator b = new BroadcastIterator(new NDShape(6), new NDShape(6));
+        BroadcastIterator b = new BroadcastIterator(new NDShape(6), new NDShape(6));
         assertEquals(new NDShape(6), b.getBroadcastShape());
 
         b = new BroadcastIterator(new NDShape(6, 1), new NDShape(6, 1));
@@ -44,7 +44,7 @@ public class DSBroadcastUnitTest
         }
         catch (IllegalArgumentException ex)
         {
-        	assertTrue(ex.getMessage().contains("not compatible"));
+            assertTrue(ex.getMessage().contains("not compatible"));
         }
     }
 
@@ -52,19 +52,19 @@ public class DSBroadcastUnitTest
     public void testBroadcastIterator()
     {
         NDShape a = new NDShape(2, 2);
-		NDShape b = new NDShape(2);
-		System.out.println("Broadcast " + a + " x " + b);
-		BroadcastIterator iter = new BroadcastIterator(a, b);
+        NDShape b = new NDShape(2);
+        System.out.println("Broadcast " + a + " x " + b);
+        BroadcastIterator iter = new BroadcastIterator(a, b);
 
         for (int i=0; i<2; ++i)
             for (int j=0; j<2; ++j)
             {
-            	assertTrue(iter.hasNext());
+                assertTrue(iter.hasNext());
 
                 System.out.println(
-            		Arrays.toString(iter.getPosition()) + " <- " +
-            		Arrays.toString(iter.getPosA())  +  " x " +
-            		Arrays.toString(iter.getPosB()));
+                    Arrays.toString(iter.getPosition()) + " <- " +
+                    Arrays.toString(iter.getPosA())  +  " x " +
+                    Arrays.toString(iter.getPosB()));
 
                 assertArrayEquals(new int[] { i, j }, iter.getPosition());
                 assertArrayEquals(new int[] { i, j }, iter.getPosA());
@@ -73,18 +73,18 @@ public class DSBroadcastUnitTest
 
         a = new NDShape(6);
         b = new NDShape(6, 1);
-		System.out.println("\nBroadcast " + a + " x " + b);
+        System.out.println("\nBroadcast " + a + " x " + b);
         iter = new BroadcastIterator(a, b);
 
         for (int i=0; i<6; ++i)
             for (int j=0; j<6; ++j)
             {
-            	assertTrue(iter.hasNext());
+                assertTrue(iter.hasNext());
 
                 System.out.println(
-            		Arrays.toString(iter.getPosition()) + " <- " +
-            		Arrays.toString(iter.getPosA())  +  " x " +
-            		Arrays.toString(iter.getPosB()));
+                    Arrays.toString(iter.getPosition()) + " <- " +
+                    Arrays.toString(iter.getPosA())  +  " x " +
+                    Arrays.toString(iter.getPosB()));
 
                 assertArrayEquals(new int[] { i, j }, iter.getPosition());
                 assertArrayEquals(new int[] { j }, iter.getPosA());
@@ -93,18 +93,18 @@ public class DSBroadcastUnitTest
 
         a = new NDShape(6, 1);
         b = new NDShape(6);
-		System.out.println("\nBroadcast " + a + " x " + b);
+        System.out.println("\nBroadcast " + a + " x " + b);
         iter = new BroadcastIterator(a, b);
 
         for (int i=0; i<6; ++i)
             for (int j=0; j<6; ++j)
             {
-            	assertTrue(iter.hasNext());
+                assertTrue(iter.hasNext());
 
                 System.out.println(
-            		Arrays.toString(iter.getPosition()) + " <- " +
-            		Arrays.toString(iter.getPosA())  +  " x " +
-            		Arrays.toString(iter.getPosB()));
+                    Arrays.toString(iter.getPosition()) + " <- " +
+                    Arrays.toString(iter.getPosA())  +  " x " +
+                    Arrays.toString(iter.getPosB()));
 
                 assertArrayEquals(new int[] { i, j }, iter.getPosition());
                 assertArrayEquals(new int[] { i, 0 }, iter.getPosA());
@@ -117,53 +117,53 @@ public class DSBroadcastUnitTest
      *
      *  Example results:
      *  Broadcast iteration: 3000 ms
-	 *  Shape iteration:      240 ms
-	 *  Flat iteration:         4 ms
+     *  Shape iteration:      240 ms
+     *  Flat iteration:         4 ms
      */
     @Test
     public void testBroadcastPerformance() throws Exception
     {
-    	final int size = 10000;
-		final NDShape a = new NDShape(size, size);
-		final NDShape b = new NDShape(size, size);
-		final int flat_size = a.getSize();
-		final BroadcastIterator iter = new BroadcastIterator(a, b);
+        final int size = 10000;
+        final NDShape a = new NDShape(size, size);
+        final NDShape b = new NDShape(size, size);
+        final int flat_size = a.getSize();
+        final BroadcastIterator iter = new BroadcastIterator(a, b);
 
-		// In this case broadcasting isn't necessary, but point here is to compare
-		assertEquals(a, b);
-		assertEquals(a, iter.getBroadcastShape());
-		assertEquals(size * size, flat_size);
+        // In this case broadcasting isn't necessary, but point here is to compare
+        assertEquals(a, b);
+        assertEquals(a, iter.getBroadcastShape());
+        assertEquals(size * size, flat_size);
 
-		// Measure broadcast iteration
-		long start = System.currentTimeMillis();
+        // Measure broadcast iteration
+        long start = System.currentTimeMillis();
         for (int i=0; i<size; ++i)
             for (int j=0; j<size; ++j)
             {
-	        	if (!iter.hasNext())
-	        		throw new Exception();
+                if (!iter.hasNext())
+                    throw new Exception();
             }
-    	if (iter.hasNext())
-    		throw new Exception();
-		long end = System.currentTimeMillis();
-		System.out.println("Broadcast iteration: " + (end - start) + " ms");
+        if (iter.hasNext())
+            throw new Exception();
+        long end = System.currentTimeMillis();
+        System.out.println("Broadcast iteration: " + (end - start) + " ms");
 
-		// Measure shape iterator
-		final ShapeIterator shape_iter = new ShapeIterator(a);
-		start = System.currentTimeMillis();
+        // Measure shape iterator
+        final ShapeIterator shape_iter = new ShapeIterator(a);
+        start = System.currentTimeMillis();
         for (int i=0; i<flat_size; ++i)
-        	if (!shape_iter.hasNext())
-        		throw new Exception();
+            if (!shape_iter.hasNext())
+                throw new Exception();
         if (shape_iter.hasNext())
-    		throw new Exception();
-		end = System.currentTimeMillis();
-		System.out.println("Shape iteration: " + (end - start) + " ms");
+            throw new Exception();
+        end = System.currentTimeMillis();
+        System.out.println("Shape iteration: " + (end - start) + " ms");
 
-		// Measure flat iteration of elements
-		start = System.currentTimeMillis();
+        // Measure flat iteration of elements
+        start = System.currentTimeMillis();
         for (int i=0; i<flat_size; ++i)
-        	if (i > flat_size)
-        		throw new Exception("Trouble at mill");
-		end = System.currentTimeMillis();
-		System.out.println("Flat iteration: " + (end - start) + " ms");
+            if (i > flat_size)
+                throw new Exception("Trouble at mill");
+        end = System.currentTimeMillis();
+        System.out.println("Flat iteration: " + (end - start) + " ms");
     }
 }

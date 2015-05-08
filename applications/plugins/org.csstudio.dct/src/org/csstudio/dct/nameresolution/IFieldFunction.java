@@ -16,21 +16,21 @@ import org.eclipse.jface.fieldassist.IContentProposal;
  * 
  */
 public interface IFieldFunction {
-	/**
-	 * Evaluates the function to a String.
-	 * 
-	 * @param name
-	 *            the function name
-	 * @param parameters
-	 *            the parameters
-	 * @param record
-	 *            the record which contains the field with this function
-	 * @param fieldName
-	 *            the name of the field that contains this function
-	 *            
-	 * @return the final String 
-	 */
-	String evaluate(String name, String[] parameters, IRecord record, String fieldName) throws Exception;
-	
-	List<IContentProposal> getParameterProposal (int parameterIndex, String[] knownParameters, IRecord record);
+    /**
+     * Evaluates the function to a String.
+     * 
+     * @param name
+     *            the function name
+     * @param parameters
+     *            the parameters
+     * @param record
+     *            the record which contains the field with this function
+     * @param fieldName
+     *            the name of the field that contains this function
+     *            
+     * @return the final String 
+     */
+    String evaluate(String name, String[] parameters, IRecord record, String fieldName) throws Exception;
+    
+    List<IContentProposal> getParameterProposal (int parameterIndex, String[] knownParameters, IRecord record);
 }

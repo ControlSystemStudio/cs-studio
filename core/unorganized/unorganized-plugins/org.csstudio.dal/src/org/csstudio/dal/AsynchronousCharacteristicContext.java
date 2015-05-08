@@ -40,93 +40,93 @@ package org.csstudio.dal;
  */
 public interface AsynchronousCharacteristicContext extends AsynchronousContext
 {
-	/**
-	 * Accesses asynchronously the complete map of characteristics as
-	 * name value pairs for this context. This method returns a map of
-	 * currently known characteristics via <code>ResponseListener</code> (map
-	 * could be accessed via <code>ResponseEvent.getResponse()</code>). If it
-	 * is known that a given characteristic exists, it has to be present in
-	 * the map. If the underlying source is remote, this method may optimize
-	 * access to the characteristics, since underlying  implementations may
-	 * support grouped data access requests. Primitive types must be  wrapped
-	 * in <code>Object</code> wrappers.
-	 *
-	 * @param names names of requested characteristics
-	 *
-	 * @return Request associated with returned response
-	 *
-	 * @exception DataExchangeException because this method communicates with
-	 *            the underlying data source, an exception may be thrown if
-	 *            the communication fails.
-	 */
-	public Request<? extends Object> getCharacteristicsAsynchronously(String[] names)
-		throws DataExchangeException;
+    /**
+     * Accesses asynchronously the complete map of characteristics as
+     * name value pairs for this context. This method returns a map of
+     * currently known characteristics via <code>ResponseListener</code> (map
+     * could be accessed via <code>ResponseEvent.getResponse()</code>). If it
+     * is known that a given characteristic exists, it has to be present in
+     * the map. If the underlying source is remote, this method may optimize
+     * access to the characteristics, since underlying  implementations may
+     * support grouped data access requests. Primitive types must be  wrapped
+     * in <code>Object</code> wrappers.
+     *
+     * @param names names of requested characteristics
+     *
+     * @return Request associated with returned response
+     *
+     * @exception DataExchangeException because this method communicates with
+     *            the underlying data source, an exception may be thrown if
+     *            the communication fails.
+     */
+    public Request<? extends Object> getCharacteristicsAsynchronously(String[] names)
+        throws DataExchangeException;
 
-	/**
-	 * Accesses asynchronously the complete map of characteristics as
-	 * name value pairs for this context. This method returns a map of
-	 * currently known characteristics via <code>ResponseListener</code> (map
-	 * could be accessed via <code>ResponseEvent.getResponse()</code>). If it
-	 * is known that a given characteristic exists, it has to be present in
-	 * the map. If the underlying source is remote, this method may optimize
-	 * access to the characteristics, since underlying  implementations may
-	 * support grouped data access requests. Primitive types must be  wrapped
-	 * in <code>Object</code> wrappers.
-	 *
-	 * @param names names of requested characteristics
-	 * @param listener a callback listener receiving responses only for this singe request.
-	 *
-	 * @return Request associated with returned response
-	 *
-	 * @exception DataExchangeException because this method communicates with
-	 *            the underlying data source, an exception may be thrown if
-	 *            the communication fails.
-	 */
-	public Request<? extends Object> getCharacteristicsAsynchronously(String[] names, ResponseListener<? extends Object> listener)
-		throws DataExchangeException;
+    /**
+     * Accesses asynchronously the complete map of characteristics as
+     * name value pairs for this context. This method returns a map of
+     * currently known characteristics via <code>ResponseListener</code> (map
+     * could be accessed via <code>ResponseEvent.getResponse()</code>). If it
+     * is known that a given characteristic exists, it has to be present in
+     * the map. If the underlying source is remote, this method may optimize
+     * access to the characteristics, since underlying  implementations may
+     * support grouped data access requests. Primitive types must be  wrapped
+     * in <code>Object</code> wrappers.
+     *
+     * @param names names of requested characteristics
+     * @param listener a callback listener receiving responses only for this singe request.
+     *
+     * @return Request associated with returned response
+     *
+     * @exception DataExchangeException because this method communicates with
+     *            the underlying data source, an exception may be thrown if
+     *            the communication fails.
+     */
+    public Request<? extends Object> getCharacteristicsAsynchronously(String[] names, ResponseListener<? extends Object> listener)
+        throws DataExchangeException;
 
-	/**
-	 * Accesses asynchronously the value of the characteristic. The
-	 * value of the characteristic is returned via
-	 * <code>ResponseListener</code> (characteristic value could be accessed
-	 * via <code>ResponseEvent.getResponse()</code>). If the characteristic
-	 * with such name does not exist this method returns <code>null</code>. If
-	 * the characteristic exists but the  value is unknown,
-	 * <code>UNINITIALIZED</code> is returned.
-	 *
-	 * @param name the name of the characteristic, may not be <code>null</code>
-	 *        or an empty string
-	 *
-	 * @return Object the value of the characteristic or <code>null</code> if
-	 *         unknown
-	 *
-	 * @exception DataExchangeException when the query for the characteristic
-	 *            value on the data source fails
-	 */
-	public Request<? extends Object> getCharacteristicAsynchronously(String name)
-		throws DataExchangeException;
+    /**
+     * Accesses asynchronously the value of the characteristic. The
+     * value of the characteristic is returned via
+     * <code>ResponseListener</code> (characteristic value could be accessed
+     * via <code>ResponseEvent.getResponse()</code>). If the characteristic
+     * with such name does not exist this method returns <code>null</code>. If
+     * the characteristic exists but the  value is unknown,
+     * <code>UNINITIALIZED</code> is returned.
+     *
+     * @param name the name of the characteristic, may not be <code>null</code>
+     *        or an empty string
+     *
+     * @return Object the value of the characteristic or <code>null</code> if
+     *         unknown
+     *
+     * @exception DataExchangeException when the query for the characteristic
+     *            value on the data source fails
+     */
+    public Request<? extends Object> getCharacteristicAsynchronously(String name)
+        throws DataExchangeException;
 
-	/**
-	 * Accesses asynchronously the value of the characteristic. The
-	 * value of the characteristic is returned via
-	 * <code>ResponseListener</code> (characteristic value could be accessed
-	 * via <code>ResponseEvent.getResponse()</code>). If the characteristic
-	 * with such name does not exist this method returns <code>null</code>. If
-	 * the characteristic exists but the  value is unknown,
-	 * <code>UNINITIALIZED</code> is returned.
-	 *
-	 * @param name the name of the characteristic, may not be <code>null</code>
-	 *        or an empty string
-	 * @param listener a callback listener receiving responses only for this singe request.
-	 *
-	 * @return Object the value of the characteristic or <code>null</code> if
-	 *         unknown
-	 *
-	 * @exception DataExchangeException when the query for the characteristic
-	 *            value on the data source fails
-	 */
-	public Request<?> getCharacteristicAsynchronously(String name, ResponseListener<?> listener)
-		throws DataExchangeException;
+    /**
+     * Accesses asynchronously the value of the characteristic. The
+     * value of the characteristic is returned via
+     * <code>ResponseListener</code> (characteristic value could be accessed
+     * via <code>ResponseEvent.getResponse()</code>). If the characteristic
+     * with such name does not exist this method returns <code>null</code>. If
+     * the characteristic exists but the  value is unknown,
+     * <code>UNINITIALIZED</code> is returned.
+     *
+     * @param name the name of the characteristic, may not be <code>null</code>
+     *        or an empty string
+     * @param listener a callback listener receiving responses only for this singe request.
+     *
+     * @return Object the value of the characteristic or <code>null</code> if
+     *         unknown
+     *
+     * @exception DataExchangeException when the query for the characteristic
+     *            value on the data source fails
+     */
+    public Request<?> getCharacteristicAsynchronously(String name, ResponseListener<?> listener)
+        throws DataExchangeException;
 }
 
 /* __oOo__ */

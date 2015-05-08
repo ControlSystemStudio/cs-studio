@@ -32,109 +32,109 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  *
  */
 public class EllipseModel extends AbstractWidgetModel {
-	/**
-	 * The ID of the fill level property.
-	 */
-	public static final String PROP_FILL = "fill"; //$NON-NLS-1$
+    /**
+     * The ID of the fill level property.
+     */
+    public static final String PROP_FILL = "fill"; //$NON-NLS-1$
 
-	/**
-	 * The ID of the orientation property.
-	 */
-	public static final String PROP_ORIENTATION = "orientation"; //$NON-NLS-1$
+    /**
+     * The ID of the orientation property.
+     */
+    public static final String PROP_ORIENTATION = "orientation"; //$NON-NLS-1$
 
-	/**
-	 * The ID of the transparent property.
-	 */
-	public static final String PROP_TRANSPARENT = "transparency"; //$NON-NLS-1$
+    /**
+     * The ID of the transparent property.
+     */
+    public static final String PROP_TRANSPARENT = "transparency"; //$NON-NLS-1$
 
-	/**
-	 * The ID of this widget model.
-	 */
-	public static final String ID = "org.csstudio.sds.components.Ellipse"; //$NON-NLS-1$
+    /**
+     * The ID of this widget model.
+     */
+    public static final String ID = "org.csstudio.sds.components.Ellipse"; //$NON-NLS-1$
 
-	/**
-	 * The default value of the height property.
-	 */
-	private static final int DEFAULT_HEIGHT = 10;
+    /**
+     * The default value of the height property.
+     */
+    private static final int DEFAULT_HEIGHT = 10;
 
-	/**
-	 * The default value of the width property.
-	 */
-	private static final int DEFAULT_WIDTH = 20;
+    /**
+     * The default value of the width property.
+     */
+    private static final int DEFAULT_WIDTH = 20;
 
-	/**
-	 * The default value of the fill level property.
-	 */
-	private static final double DEFAULT_FILL = 100.0;
+    /**
+     * The default value of the fill level property.
+     */
+    private static final double DEFAULT_FILL = 100.0;
 
-	/**
-	 * The default value of the orientation property.
-	 */
-	private static final boolean DEFAULT_ORIENTATION_HORIZONTAL = true;
+    /**
+     * The default value of the orientation property.
+     */
+    private static final boolean DEFAULT_ORIENTATION_HORIZONTAL = true;
 
-	/**
-	 * Standard constructor.
-	 *
-	 */
-	public EllipseModel() {
-		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-	}
+    /**
+     * Standard constructor.
+     *
+     */
+    public EllipseModel() {
+        setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTypeID() {
-		return ID;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTypeID() {
+        return ID;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void configureProperties() {
-		addDoubleProperty(PROP_FILL, "Value", WidgetPropertyCategory.DISPLAY, DEFAULT_FILL, 0.0, 100.0, true, PROP_TOOLTIP);
-		addBooleanProperty(PROP_ORIENTATION, "Horizontal Orientation", WidgetPropertyCategory.DISPLAY, DEFAULT_ORIENTATION_HORIZONTAL, false, PROP_FILL);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configureProperties() {
+        addDoubleProperty(PROP_FILL, "Value", WidgetPropertyCategory.DISPLAY, DEFAULT_FILL, 0.0, 100.0, true, PROP_TOOLTIP);
+        addBooleanProperty(PROP_ORIENTATION, "Horizontal Orientation", WidgetPropertyCategory.DISPLAY, DEFAULT_ORIENTATION_HORIZONTAL, false, PROP_FILL);
 
-		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.FORMAT, false, true, PROP_COLOR_BACKGROUND);
-	}
+        addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.FORMAT, false, true, PROP_COLOR_BACKGROUND);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String getDefaultToolTip() {
-		final StringBuffer buffer = new StringBuffer();
-		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
-		buffer.append("Value:\t");
-		buffer.append(createTooltipParameter(PROP_FILL));
-		return buffer.toString();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getDefaultToolTip() {
+        final StringBuffer buffer = new StringBuffer();
+        buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
+        buffer.append("Value:\t");
+        buffer.append(createTooltipParameter(PROP_FILL));
+        return buffer.toString();
+    }
 
-	/**
-	 * Gets the fill level.
-	 *
-	 * @return the fill level
-	 */
-	public double getFillLevel() {
-		return getDoubleProperty(PROP_FILL);
-	}
+    /**
+     * Gets the fill level.
+     *
+     * @return the fill level
+     */
+    public double getFillLevel() {
+        return getDoubleProperty(PROP_FILL);
+    }
 
-	/**
-	 * Gets the orientation.
-	 *
-	 * @return the orientation
-	 */
-	public boolean getOrientation() {
-		return getBooleanProperty(PROP_ORIENTATION);
-	}
+    /**
+     * Gets the orientation.
+     *
+     * @return the orientation
+     */
+    public boolean getOrientation() {
+        return getBooleanProperty(PROP_ORIENTATION);
+    }
 
-	/**
-	 * Returns if the background is transparent.
-	 *
-	 * @return The state of the background.
-	 */
-	public boolean getTransparent() {
-		return getBooleanProperty(PROP_TRANSPARENT);
-	}
+    /**
+     * Returns if the background is transparent.
+     *
+     * @return The state of the background.
+     */
+    public boolean getTransparent() {
+        return getBooleanProperty(PROP_TRANSPARENT);
+    }
 }

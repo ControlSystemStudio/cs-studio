@@ -35,47 +35,47 @@ import org.csstudio.sds.util.ColorAndFontUtil;
  */
 public final class ColorProperty extends WidgetProperty {
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param description
-	 *            a description
-	 * @param category
-	 *            a category
-	 * @param defaultValue
-	 *            the default value
-	 */
-	public ColorProperty(final String description,
-			final WidgetPropertyCategory category, final String defaultValue) {
-		super(PropertyTypesEnum.COLOR, description, category, defaultValue,
-				null);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object checkValue(final Object value) {
-		assert value != null : "value!=null"; //$NON-NLS-1$
+    /**
+     * Constructor.
+     * 
+     * @param description
+     *            a description
+     * @param category
+     *            a category
+     * @param defaultValue
+     *            the default value
+     */
+    public ColorProperty(final String description,
+            final WidgetPropertyCategory category, final String defaultValue) {
+        super(PropertyTypesEnum.COLOR, description, category, defaultValue,
+                null);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object checkValue(final Object value) {
+        assert value != null : "value!=null"; //$NON-NLS-1$
 
-		String acceptedValue = null;
+        String acceptedValue = null;
 
-		if (value instanceof String) {
-			String s = (String) value;
-			if(ColorAndFontUtil.isHex(s) || ColorAndFontUtil.isVariable(s)) {
-				acceptedValue = s;
-			}
-		}
-		
-		return acceptedValue;
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getCompatibleJavaTypes() {
-		return new Class[]{String.class};
-	}
+        if (value instanceof String) {
+            String s = (String) value;
+            if(ColorAndFontUtil.isHex(s) || ColorAndFontUtil.isVariable(s)) {
+                acceptedValue = s;
+            }
+        }
+        
+        return acceptedValue;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getCompatibleJavaTypes() {
+        return new Class[]{String.class};
+    }
 }

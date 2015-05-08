@@ -41,86 +41,86 @@ import org.eclipse.gef.requests.CreateRequest;
  */
 public final class CreateElementCommand extends Command {
 
-	/**
-	 * The model.
-	 */
-	private ContainerModel _container;
+    /**
+     * The model.
+     */
+    private ContainerModel _container;
 
-	/**
-	 * The create request.
-	 */
-	private CreateRequest _request;
+    /**
+     * The create request.
+     */
+    private CreateRequest _request;
 
-	/**
-	 * Bounds, which define size and location of the new widget.
-	 */
-	private Rectangle _bounds;
+    /**
+     * Bounds, which define size and location of the new widget.
+     */
+    private Rectangle _bounds;
 
-	/**
-	 * The internal {@link CompoundCommand}.
-	 */
-	private Command _compoundCommand;
+    /**
+     * The internal {@link CompoundCommand}.
+     */
+    private Command _compoundCommand;
 
-	private EditPartViewer _viewer;
+    private EditPartViewer _viewer;
 
-	/**
-	 * Constructs the command.
-	 * 
-	 * @param viewer
-	 * 
-	 * @param container
-	 *            the display model to which the widgets should get added
-	 * @param request
-	 *            the create request
-	 * @param bounds
-	 *            bounds, which define size and location of the new widget
-	 */
-	public CreateElementCommand(EditPartViewer viewer, final ContainerModel container, final CreateRequest request, final Rectangle bounds) {
-		assert viewer != null;
-		assert container != null;
-		assert request != null;
-		assert bounds != null;
-		this.setLabel("Create widget");
-		_viewer = viewer;
-		_container = container;
-		_request = request;
-		_bounds = bounds;
-	}
+    /**
+     * Constructs the command.
+     * 
+     * @param viewer
+     * 
+     * @param container
+     *            the display model to which the widgets should get added
+     * @param request
+     *            the create request
+     * @param bounds
+     *            bounds, which define size and location of the new widget
+     */
+    public CreateElementCommand(EditPartViewer viewer, final ContainerModel container, final CreateRequest request, final Rectangle bounds) {
+        assert viewer != null;
+        assert container != null;
+        assert request != null;
+        assert bounds != null;
+        this.setLabel("Create widget");
+        _viewer = viewer;
+        _container = container;
+        _request = request;
+        _bounds = bounds;
+    }
 
-	private Command createCompoundCommands() {
-		CompoundCommand comCmd = new CompoundCommand();
+    private Command createCompoundCommands() {
+        CompoundCommand comCmd = new CompoundCommand();
 
-		Object model = _request.getNewObject();
+        Object model = _request.getNewObject();
 
-		if (model != null && model instanceof AbstractWidgetModel) {
-			AbstractWidgetModel widgetModel = (AbstractWidgetModel) model;
-			IGraphicalFeedbackFactory feedbackFactory = GraphicalFeedbackContributionsService.getInstance().getGraphicalFeedbackFactory(widgetModel.getTypeID());
-			if (feedbackFactory != null) {
-				Command boundsCmd = feedbackFactory.createInitialBoundsCommand(widgetModel, _request, _bounds);
-				comCmd.add(boundsCmd);
-			}
+        if (model != null && model instanceof AbstractWidgetModel) {
+            AbstractWidgetModel widgetModel = (AbstractWidgetModel) model;
+            IGraphicalFeedbackFactory feedbackFactory = GraphicalFeedbackContributionsService.getInstance().getGraphicalFeedbackFactory(widgetModel.getTypeID());
+            if (feedbackFactory != null) {
+                Command boundsCmd = feedbackFactory.createInitialBoundsCommand(widgetModel, _request, _bounds);
+                comCmd.add(boundsCmd);
+            }
 
-			comCmd.add(new SetPropertyCommand(widgetModel, AbstractWidgetModel.PROP_LAYER, _container.getLayerSupport().getActiveLayer().getId()));
-			comCmd.add(new AddWidgetCommand(_container, widgetModel));
-			comCmd.add(new SetSelectionCommand(_viewer, widgetModel));
-		}
-		return comCmd;
-	}
+            comCmd.add(new SetPropertyCommand(widgetModel, AbstractWidgetModel.PROP_LAYER, _container.getLayerSupport().getActiveLayer().getId()));
+            comCmd.add(new AddWidgetCommand(_container, widgetModel));
+            comCmd.add(new SetSelectionCommand(_viewer, widgetModel));
+        }
+        return comCmd;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void execute() {
-		_compoundCommand = this.createCompoundCommands();
-		_compoundCommand.execute();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void execute() {
+        _compoundCommand = this.createCompoundCommands();
+        _compoundCommand.execute();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void undo() {
-		_compoundCommand.undo();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void undo() {
+        _compoundCommand.undo();
+    }
 }

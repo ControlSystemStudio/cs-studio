@@ -34,105 +34,105 @@ import org.eclipse.core.runtime.Path;
  *
  */
 public final class TimerModel extends AbstractWidgetModel {
-	/**
-	 * The ID of the script property.
-	 */
-	public static final String PROP_SCRIPT = "script"; //$NON-NLS-1$
+    /**
+     * The ID of the script property.
+     */
+    public static final String PROP_SCRIPT = "script"; //$NON-NLS-1$
 
-	/**
-	 * The ID of the delay property.
-	 */
-	public static final String PROP_DELAY = "delay"; //$NON-NLS-1$
+    /**
+     * The ID of the delay property.
+     */
+    public static final String PROP_DELAY = "delay"; //$NON-NLS-1$
 
-	/**
-	 * The ID of this widget model.
-	 */
-	public static final String ID = "org.csstudio.sds.components.Timer"; //$NON-NLS-1$
+    /**
+     * The ID of this widget model.
+     */
+    public static final String ID = "org.csstudio.sds.components.Timer"; //$NON-NLS-1$
 
-	/**
-	 * The default value of the height property.
-	 */
+    /**
+     * The default value of the height property.
+     */
 
-	private static final int DEFAULT_HEIGHT = 16;
+    private static final int DEFAULT_HEIGHT = 16;
 
-	/**
-	 * The default value of the width property.
-	 */
-	private static final int DEFAULT_WIDTH = 16;
+    /**
+     * The default value of the width property.
+     */
+    private static final int DEFAULT_WIDTH = 16;
 
-	/**
-	 * The default value of the fill grade property.
-	 */
-	private static final int DEFAULT_DELAY = 1000;
+    /**
+     * The default value of the fill grade property.
+     */
+    private static final int DEFAULT_DELAY = 1000;
 
-	/**
-	 * Standard constructor.
-	 */
-	public TimerModel() {
-		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-	}
+    /**
+     * Standard constructor.
+     */
+    public TimerModel() {
+        setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTypeID() {
-		return ID;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTypeID() {
+        return ID;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void configureProperties() {
-		addResourceProperty(PROP_SCRIPT, "Script", WidgetPropertyCategory.DISPLAY, new Path(""), new String[] { "css-sdss" }, true, PROP_TOOLTIP);
-		addIntegerProperty(PROP_DELAY, "Delay (in ms)", WidgetPropertyCategory.DISPLAY, DEFAULT_DELAY, 0, Integer.MAX_VALUE, false, PROP_SCRIPT);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configureProperties() {
+        addResourceProperty(PROP_SCRIPT, "Script", WidgetPropertyCategory.DISPLAY, new Path(""), new String[] { "css-sdss" }, true, PROP_TOOLTIP);
+        addIntegerProperty(PROP_DELAY, "Delay (in ms)", WidgetPropertyCategory.DISPLAY, DEFAULT_DELAY, 0, Integer.MAX_VALUE, false, PROP_SCRIPT);
 
-		// .. hide properties
-		hideProperty(PROP_ACTIONDATA,getTypeID());
-		hideProperty(PROP_BORDER_COLOR,getTypeID());
-		hideProperty(PROP_BORDER_STYLE,getTypeID());
-		hideProperty(PROP_BORDER_WIDTH,getTypeID());
-		hideProperty(PROP_COLOR_BACKGROUND,getTypeID());
-		hideProperty(PROP_COLOR_FOREGROUND,getTypeID());
-		hideProperty(PROP_HEIGHT,getTypeID());
-		hideProperty(PROP_POS_X,getTypeID());
-		hideProperty(PROP_POS_Y,getTypeID());
-		// hideProperty(PROP_VISIBILITY,getTypeID());
-		hideProperty(PROP_WIDTH,getTypeID());
-		hideProperty(PROP_CURSOR,getTypeID());
-	}
+        // .. hide properties
+        hideProperty(PROP_ACTIONDATA,getTypeID());
+        hideProperty(PROP_BORDER_COLOR,getTypeID());
+        hideProperty(PROP_BORDER_STYLE,getTypeID());
+        hideProperty(PROP_BORDER_WIDTH,getTypeID());
+        hideProperty(PROP_COLOR_BACKGROUND,getTypeID());
+        hideProperty(PROP_COLOR_FOREGROUND,getTypeID());
+        hideProperty(PROP_HEIGHT,getTypeID());
+        hideProperty(PROP_POS_X,getTypeID());
+        hideProperty(PROP_POS_Y,getTypeID());
+        // hideProperty(PROP_VISIBILITY,getTypeID());
+        hideProperty(PROP_WIDTH,getTypeID());
+        hideProperty(PROP_CURSOR,getTypeID());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String getDefaultToolTip() {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
-		buffer.append("Script:\t");
-		buffer.append(createTooltipParameter(PROP_SCRIPT) + "\n");
-		buffer.append("Delay:\t");
-		buffer.append(createTooltipParameter(PROP_DELAY));
-		return buffer.toString();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getDefaultToolTip() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
+        buffer.append("Script:\t");
+        buffer.append(createTooltipParameter(PROP_SCRIPT) + "\n");
+        buffer.append("Delay:\t");
+        buffer.append(createTooltipParameter(PROP_DELAY));
+        return buffer.toString();
+    }
 
-	/**
-	 * Gets the script.
-	 *
-	 * @return the script
-	 */
-	public IPath getScriptPath() {
-		return getResourceProperty(PROP_SCRIPT);
-	}
+    /**
+     * Gets the script.
+     *
+     * @return the script
+     */
+    public IPath getScriptPath() {
+        return getResourceProperty(PROP_SCRIPT);
+    }
 
-	/**
-	 * Gets the delay.
-	 *
-	 * @return the delay.
-	 */
-	public int getDelay() {
-		return getIntegerProperty(PROP_DELAY);
-	}
+    /**
+     * Gets the delay.
+     *
+     * @return the delay.
+     */
+    public int getDelay() {
+        return getIntegerProperty(PROP_DELAY);
+    }
 
 }

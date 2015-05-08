@@ -31,208 +31,208 @@ import java.util.HashMap;
  */
 public final class StatisticUtil {
 
-	/**
-	 * Stores the execution counters for categories.
-	 */
-	private HashMap<MeasureCategoriesEnum, Integer> _executionCounter;
+    /**
+     * Stores the execution counters for categories.
+     */
+    private HashMap<MeasureCategoriesEnum, Integer> _executionCounter;
 
-	/**
-	 * Stores the execution time sums for categories.
-	 */
-	private HashMap<MeasureCategoriesEnum, Long> _executionTimeSums;
+    /**
+     * Stores the execution time sums for categories.
+     */
+    private HashMap<MeasureCategoriesEnum, Long> _executionTimeSums;
 
-	/**
-	 * The starting time.
-	 */
-	private long _startTime;
+    /**
+     * The starting time.
+     */
+    private long _startTime;
 
-	/**
-	 * The shared instance of this class.
-	 */
-	private static StatisticUtil _instance;
+    /**
+     * The shared instance of this class.
+     */
+    private static StatisticUtil _instance;
 
-	/**
-	 * Private constructor, to prevent instantiation.
-	 */
-	private StatisticUtil() {
-		init();
-	}
+    /**
+     * Private constructor, to prevent instantiation.
+     */
+    private StatisticUtil() {
+        init();
+    }
 
-	/**
-	 * Return the shared instance.
-	 * 
-	 * @return The shared instance.
-	 */
-	public static StatisticUtil getInstance() {
-		if (_instance == null) {
-			_instance = new StatisticUtil();
-		}
+    /**
+     * Return the shared instance.
+     * 
+     * @return The shared instance.
+     */
+    public static StatisticUtil getInstance() {
+        if (_instance == null) {
+            _instance = new StatisticUtil();
+        }
 
-		return _instance;
-	}
+        return _instance;
+    }
 
-	/**
-	 * Tracks the execution of a runnable for the specified category.
-	 * 
-	 * @param category
-	 *            the category
-	 * @param timeNeeded
-	 *            the time it took to fully execute the runnable
-	 */
-	public synchronized void trackExecution(
-			final MeasureCategoriesEnum category, final long timeNeeded) {
-		incrementExecutionCounter(category);
-		incrementExecutionTime(category, timeNeeded);
-	}
+    /**
+     * Tracks the execution of a runnable for the specified category.
+     * 
+     * @param category
+     *            the category
+     * @param timeNeeded
+     *            the time it took to fully execute the runnable
+     */
+    public synchronized void trackExecution(
+            final MeasureCategoriesEnum category, final long timeNeeded) {
+        incrementExecutionCounter(category);
+        incrementExecutionTime(category, timeNeeded);
+    }
 
-	/**
-	 * Increments the execution counter for the specified category.
-	 * 
-	 * @param category
-	 *            the category
-	 */
-	private synchronized void incrementExecutionCounter(
-			final MeasureCategoriesEnum category) {
-		int count = 1;
-		if (_executionCounter.containsKey(category)) {
-			count = _executionCounter.get(category);
-		}
+    /**
+     * Increments the execution counter for the specified category.
+     * 
+     * @param category
+     *            the category
+     */
+    private synchronized void incrementExecutionCounter(
+            final MeasureCategoriesEnum category) {
+        int count = 1;
+        if (_executionCounter.containsKey(category)) {
+            count = _executionCounter.get(category);
+        }
 
-		count++;
+        count++;
 
-		_executionCounter.put(category, count);
-	}
+        _executionCounter.put(category, count);
+    }
 
-	/**
-	 * Increments the execution time sume for the specified category.
-	 * 
-	 * @param category
-	 *            the category
-	 * @param timeNeeded
-	 *            the time it took to fully execute the runnable
-	 * @author swende
-	 */
-	private synchronized void incrementExecutionTime(
-			final MeasureCategoriesEnum category, final long timeNeeded) {
-		long time = 1;
-		if (_executionTimeSums.containsKey(category)) {
-			time = _executionTimeSums.get(category);
-		}
+    /**
+     * Increments the execution time sume for the specified category.
+     * 
+     * @param category
+     *            the category
+     * @param timeNeeded
+     *            the time it took to fully execute the runnable
+     * @author swende
+     */
+    private synchronized void incrementExecutionTime(
+            final MeasureCategoriesEnum category, final long timeNeeded) {
+        long time = 1;
+        if (_executionTimeSums.containsKey(category)) {
+            time = _executionTimeSums.get(category);
+        }
 
-		time += timeNeeded;
+        time += timeNeeded;
 
-		_executionTimeSums.put(category, time);
-	}
+        _executionTimeSums.put(category, time);
+    }
 
-	/**
-	 * Reset the statistics.
-	 */
-	public void init() {
-		_executionCounter = new HashMap<MeasureCategoriesEnum, Integer>();
-		_executionTimeSums = new HashMap<MeasureCategoriesEnum, Long>();
-		_startTime = System.currentTimeMillis();
-	}
+    /**
+     * Reset the statistics.
+     */
+    public void init() {
+        _executionCounter = new HashMap<MeasureCategoriesEnum, Integer>();
+        _executionTimeSums = new HashMap<MeasureCategoriesEnum, Long>();
+        _startTime = System.currentTimeMillis();
+    }
 
-	/**
-	 * @return The overall running time since the last reset.
-	 */
-	public long getRunningTime() {
-		return System.currentTimeMillis() - _startTime;
-	}
+    /**
+     * @return The overall running time since the last reset.
+     */
+    public long getRunningTime() {
+        return System.currentTimeMillis() - _startTime;
+    }
 
-	/**
-	 * Return the execution count for the given category.
-	 * 
-	 * @param category
-	 *            A measure cotegory.
-	 * @return The execution count for the given category.
-	 */
-	public int getExecutionCount(final MeasureCategoriesEnum category) {
-		int result = 0;
+    /**
+     * Return the execution count for the given category.
+     * 
+     * @param category
+     *            A measure cotegory.
+     * @return The execution count for the given category.
+     */
+    public int getExecutionCount(final MeasureCategoriesEnum category) {
+        int result = 0;
 
-		if (_executionCounter.containsKey(category)) {
-			result = _executionCounter.get(category);
-		}
+        if (_executionCounter.containsKey(category)) {
+            result = _executionCounter.get(category);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * Return the execution time sum for the given category.
-	 * 
-	 * @param category
-	 *            A measure cotegory.
-	 * @return The execution time sum for the given category.
-	 */
-	public long getExecutionTimeSum(final MeasureCategoriesEnum category) {
-		long result = 0L;
+    /**
+     * Return the execution time sum for the given category.
+     * 
+     * @param category
+     *            A measure cotegory.
+     * @return The execution time sum for the given category.
+     */
+    public long getExecutionTimeSum(final MeasureCategoriesEnum category) {
+        long result = 0L;
 
-		if (_executionTimeSums.containsKey(category)) {
-			result = _executionTimeSums.get(category);
-		}
+        if (_executionTimeSums.containsKey(category)) {
+            result = _executionTimeSums.get(category);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * Return the average calls per ms for the given category.
-	 * 
-	 * @param category
-	 *            A measure cotegory.
-	 * @return The average calls per ms for the given category.
-	 */
-	public double getAverageCallsPerMs(final MeasureCategoriesEnum category) {
-		long runningTime = getRunningTime();
-		int amount = getExecutionCount(category);
+    /**
+     * Return the average calls per ms for the given category.
+     * 
+     * @param category
+     *            A measure cotegory.
+     * @return The average calls per ms for the given category.
+     */
+    public double getAverageCallsPerMs(final MeasureCategoriesEnum category) {
+        long runningTime = getRunningTime();
+        int amount = getExecutionCount(category);
 
-		double result = 0.0;
+        double result = 0.0;
 
-		if (amount > 0 && runningTime > 0) {
-			result = (double) amount / runningTime;
-		}
+        if (amount > 0 && runningTime > 0) {
+            result = (double) amount / runningTime;
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * Return the average execution time per call for the given category.
-	 * 
-	 * @param category
-	 *            A measure cotegory.
-	 * @return The average execution time per call for the given category.
-	 */
-	public double getAverageExecutionTimePerCall(
-			final MeasureCategoriesEnum category) {
-		long executionTimeSum = getExecutionTimeSum(category);
-		int count = getExecutionCount(category);
+    /**
+     * Return the average execution time per call for the given category.
+     * 
+     * @param category
+     *            A measure cotegory.
+     * @return The average execution time per call for the given category.
+     */
+    public double getAverageExecutionTimePerCall(
+            final MeasureCategoriesEnum category) {
+        long executionTimeSum = getExecutionTimeSum(category);
+        int count = getExecutionCount(category);
 
-		double result = 0.0;
+        double result = 0.0;
 
-		if (count > 0 && executionTimeSum > 0) {
-			result = (double) executionTimeSum / count;
-		}
+        if (count > 0 && executionTimeSum > 0) {
+            result = (double) executionTimeSum / count;
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * Return the average time between calls for the given category.
-	 * 
-	 * @param category
-	 *            A measure cotegory.
-	 * @return The average time between calls for the given category.
-	 */
-	public double getAverageTimeBetweenCalls(
-			final MeasureCategoriesEnum category) {
-		long runningTime = getRunningTime();
-		int count = getExecutionCount(category);
+    /**
+     * Return the average time between calls for the given category.
+     * 
+     * @param category
+     *            A measure cotegory.
+     * @return The average time between calls for the given category.
+     */
+    public double getAverageTimeBetweenCalls(
+            final MeasureCategoriesEnum category) {
+        long runningTime = getRunningTime();
+        int count = getExecutionCount(category);
 
-		double result = 0.0;
+        double result = 0.0;
 
-		if (count > 0 && runningTime > 0) {
-			result = (double) runningTime / count;
-		}
+        if (count > 0 && runningTime > 0) {
+            result = (double) runningTime / count;
+        }
 
-		return result;
-	}
+        return result;
+    }
 }

@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Shell;
 @SuppressWarnings("nls")
 public class InfoAction extends Action
 {
-	final private Shell shell;
+    final private Shell shell;
     final private AlarmClientModel model;
 
     public InfoAction(final Shell shell, final AlarmClientModel model)

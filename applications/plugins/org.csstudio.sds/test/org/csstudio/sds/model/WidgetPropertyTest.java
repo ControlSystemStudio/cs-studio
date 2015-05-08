@@ -34,71 +34,71 @@ import org.junit.Test;
  */
 public final class WidgetPropertyTest implements IPropertyChangeListener {
 
-	/**
-	 * Test method for {@link org.csstudio.sds.model.WidgetProperty}.
-	 */
-	@Test
-	public void testElementProperty() {
-		DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
+    /**
+     * Test method for {@link org.csstudio.sds.model.WidgetProperty}.
+     */
+    @Test
+    public void testElementProperty() {
+        DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
 
-		String defaultValue = "default";
-		WidgetPropertyCategory category = WidgetPropertyCategory.BEHAVIOR;
-		String name = "description";
-		PropertyTypesEnum type = PropertyTypesEnum.STRING;
+        String defaultValue = "default";
+        WidgetPropertyCategory category = WidgetPropertyCategory.BEHAVIOR;
+        String name = "description";
+        PropertyTypesEnum type = PropertyTypesEnum.STRING;
 
-		WidgetProperty ep = new WidgetProperty(type, name, category,
-				defaultValue, dynamicsDescriptor) {
-			/**
-			 * {@inheritDoc}
-			 */
-			@Override
-			public Object checkValue(final Object value) {
-				return value;
-			}
+        WidgetProperty ep = new WidgetProperty(type, name, category,
+                defaultValue, dynamicsDescriptor) {
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public Object checkValue(final Object value) {
+                return value;
+            }
 
-			/**
-			 * {@inheritDoc}
-			 */
-			@Override
-			@SuppressWarnings("unchecked")
-			public Class[] getCompatibleJavaTypes() {
-				return new Class[] {Object.class };
-			}
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            @SuppressWarnings("unchecked")
+            public Class[] getCompatibleJavaTypes() {
+                return new Class[] {Object.class };
+            }
 
-		};
+        };
 
-		assertEquals(name, ep.getDescription());
-		assertEquals(defaultValue, ep.getDefaultValue());
-		assertEquals(defaultValue, ep.getPropertyValue());
-		assertEquals(type, ep.getPropertyType());
-		assertEquals(category, ep.getCategory());
-		assertEquals(ep.getDynamicsDescriptor(), dynamicsDescriptor);
-		ep.setPropertyValue("new value"); //$NON-NLS-1$
-		assertEquals(defaultValue, ep.getDefaultValue());
-		assertEquals("new value", ep.getPropertyValue()); //$NON-NLS-1$
-	}
+        assertEquals(name, ep.getDescription());
+        assertEquals(defaultValue, ep.getDefaultValue());
+        assertEquals(defaultValue, ep.getPropertyValue());
+        assertEquals(type, ep.getPropertyType());
+        assertEquals(category, ep.getCategory());
+        assertEquals(ep.getDynamicsDescriptor(), dynamicsDescriptor);
+        ep.setPropertyValue("new value"); //$NON-NLS-1$
+        assertEquals(defaultValue, ep.getDefaultValue());
+        assertEquals("new value", ep.getPropertyValue()); //$NON-NLS-1$
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void dynamicsDescriptorChanged(
-			final DynamicsDescriptor dynamicsDescriptor) {
+    /**
+     * {@inheritDoc}
+     */
+    public void dynamicsDescriptorChanged(
+            final DynamicsDescriptor dynamicsDescriptor) {
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void propertyManualValueChanged(String propertyId, final Object manualValue) {
+    /**
+     * {@inheritDoc}
+     */
+    public void propertyManualValueChanged(String propertyId, final Object manualValue) {
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void propertyValueChanged(final Object oldValue,
-			final Object newValue) {
+    /**
+     * {@inheritDoc}
+     */
+    public void propertyValueChanged(final Object oldValue,
+            final Object newValue) {
 
-	}
+    }
 
 }

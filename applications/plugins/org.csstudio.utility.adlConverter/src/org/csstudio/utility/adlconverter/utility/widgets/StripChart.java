@@ -110,7 +110,7 @@ public class StripChart extends Widget {
              * clr=62
              */
             if(parameter.equals("chan")){
-            	DebugHelper.add(this, row[1]);
+                DebugHelper.add(this, row[1]);
                 row = ADLHelper.cleanString(row[1]);
                 if(index==0){
                     _widget.setPrimarPv(row[1]);

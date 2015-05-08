@@ -15,34 +15,34 @@ import org.junit.Before;
  * 
  */
 public abstract class AbstractTestCommand {
-	private Project project;
-	private IPersistenceService persistenceService;
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public final void setUp() throws Exception {
-		persistenceService = new PersistenceService();
-		project = ProjectFactory.createNewDCTProject();
-		persistenceService.loadDatabaseDefinition(getClass().getResource("test.dbd").getFile());
+    private Project project;
+    private IPersistenceService persistenceService;
+    /**
+     * @throws java.lang.Exception
+     */
+    @Before
+    public final void setUp() throws Exception {
+        persistenceService = new PersistenceService();
+        project = ProjectFactory.createNewDCTProject();
+        persistenceService.loadDatabaseDefinition(getClass().getResource("test.dbd").getFile());
 
-		doSetUp();
-	}
+        doSetUp();
+    }
 
-	/**
-	 * Template method. Subclasses may override for doing setup.
-	 * 
-	 * @throws Exception
-	 */
-	protected abstract void doSetUp() throws Exception;
+    /**
+     * Template method. Subclasses may override for doing setup.
+     * 
+     * @throws Exception
+     */
+    protected abstract void doSetUp() throws Exception;
 
-	/**
-	 * Returns a dummy project that is already equipped with a meta model from a
-	 * dbd file.
-	 * 
-	 * @return a dummy project that is already equipped from a dbd file
-	 */
-	public final Project getProject() {
-		return project;
-	}
+    /**
+     * Returns a dummy project that is already equipped with a meta model from a
+     * dbd file.
+     * 
+     * @return a dummy project that is already equipped from a dbd file
+     */
+    public final Project getProject() {
+        return project;
+    }
 }

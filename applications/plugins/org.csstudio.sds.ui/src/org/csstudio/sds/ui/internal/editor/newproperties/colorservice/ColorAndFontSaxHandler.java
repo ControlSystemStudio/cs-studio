@@ -38,108 +38,108 @@ import org.xml.sax.SAXException;
  * 
  */
 public final class ColorAndFontSaxHandler extends AbstractColorAndFontHandler {
-	
-	private Map<String, NamedStyle> _styles;
-	
-	private NamedStyle _currentStyle;
+    
+    private Map<String, NamedStyle> _styles;
+    
+    private NamedStyle _currentStyle;
 
-	/**
-	 * Standard constructor.
-	 */
-	public ColorAndFontSaxHandler() {
-		_styles = new HashMap<String, NamedStyle>();
-	}
-	
-	@Override
-	public void startDocument() throws SAXException {
-		super.startDocument();
-		reset();
-	}
-	
-	public void reset() {
-		_styles.clear();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void startElement(final String uri, final String localName,
-			final String qName, final Attributes attributes)
-			throws SAXException {
-		if (ColorAndFontConstants.STYLE_TAG.getIdentifier().equals(qName)) {
-			NamedStyle style = createStyle(attributes);
-			_styles.put(style.getName(), style);
-			_currentStyle = style;
-		} else if (ColorAndFontConstants.COLOR_TAG.getIdentifier().equals(qName)) {
-			if (_currentStyle != null) {
-				_currentStyle.addColor(createColor(attributes));
-			}
-		} else if (ColorAndFontConstants.FONT_TAG.getIdentifier().equals(qName)) {
-			if (_currentStyle != null) {
-				_currentStyle.addFont(createFont(attributes));
-			}
-		}
-	}
-	
-	private NamedStyle createStyle(Attributes attributes) throws SAXException {
-		try {
-			String name = attributes.getValue(ColorAndFontConstants.NAME_TAG.getIdentifier());
-			String description = attributes.getValue(ColorAndFontConstants.DESCRIPTION_TAG.getIdentifier());
-			NamedStyle result = new NamedStyle(name, description);
-			return result;
-		} catch (Exception e) {
-			throw new SAXException("Couldn't create Style", e);
-		}
-	}
-	
-	private NamedColor createColor(Attributes attributes) throws SAXException {
-		try {
-			String name = attributes.getValue(ColorAndFontConstants.NAME_TAG.getIdentifier());
-			String description = attributes.getValue(ColorAndFontConstants.DESCRIPTION_TAG.getIdentifier());
-			String hex = attributes.getValue(ColorAndFontConstants.COLOR_HEX_TAG.getIdentifier());
-			NamedColor result = new NamedColor(name, description, hex);
-			return result;
-		} catch (Exception e) {
-			throw new SAXException("Couldn't create Color", e);
-		}
-	}
-	
-	private NamedFont createFont(Attributes attributes) throws SAXException {
-		try {
-			String name = attributes.getValue(ColorAndFontConstants.NAME_TAG.getIdentifier());
-			String description = attributes.getValue(ColorAndFontConstants.DESCRIPTION_TAG.getIdentifier());
-			String fontName = attributes.getValue(ColorAndFontConstants.FONT_NAME_TAG.getIdentifier());
-			String fontSizeString = attributes.getValue(ColorAndFontConstants.FONT_SIZE_TAG.getIdentifier());
-			int fontSize = Integer.valueOf(fontSizeString);
-			String boldString = attributes.getValue(ColorAndFontConstants.FONT_BOLD_TAG.getIdentifier());
-			boolean bold = Boolean.valueOf(boldString);
-			String italicString = attributes.getValue(ColorAndFontConstants.FONT_ITALIC_TAG.getIdentifier());
-			boolean italic = Boolean.valueOf(italicString);
-			NamedFont result = new NamedFont(name, description, fontName, fontSize, bold, italic);
-			return result;
-		} catch (Exception e) {
-			throw new SAXException("Couldn't create font", e);
-		}
-	}
+    /**
+     * Standard constructor.
+     */
+    public ColorAndFontSaxHandler() {
+        _styles = new HashMap<String, NamedStyle>();
+    }
+    
+    @Override
+    public void startDocument() throws SAXException {
+        super.startDocument();
+        reset();
+    }
+    
+    public void reset() {
+        _styles.clear();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void startElement(final String uri, final String localName,
+            final String qName, final Attributes attributes)
+            throws SAXException {
+        if (ColorAndFontConstants.STYLE_TAG.getIdentifier().equals(qName)) {
+            NamedStyle style = createStyle(attributes);
+            _styles.put(style.getName(), style);
+            _currentStyle = style;
+        } else if (ColorAndFontConstants.COLOR_TAG.getIdentifier().equals(qName)) {
+            if (_currentStyle != null) {
+                _currentStyle.addColor(createColor(attributes));
+            }
+        } else if (ColorAndFontConstants.FONT_TAG.getIdentifier().equals(qName)) {
+            if (_currentStyle != null) {
+                _currentStyle.addFont(createFont(attributes));
+            }
+        }
+    }
+    
+    private NamedStyle createStyle(Attributes attributes) throws SAXException {
+        try {
+            String name = attributes.getValue(ColorAndFontConstants.NAME_TAG.getIdentifier());
+            String description = attributes.getValue(ColorAndFontConstants.DESCRIPTION_TAG.getIdentifier());
+            NamedStyle result = new NamedStyle(name, description);
+            return result;
+        } catch (Exception e) {
+            throw new SAXException("Couldn't create Style", e);
+        }
+    }
+    
+    private NamedColor createColor(Attributes attributes) throws SAXException {
+        try {
+            String name = attributes.getValue(ColorAndFontConstants.NAME_TAG.getIdentifier());
+            String description = attributes.getValue(ColorAndFontConstants.DESCRIPTION_TAG.getIdentifier());
+            String hex = attributes.getValue(ColorAndFontConstants.COLOR_HEX_TAG.getIdentifier());
+            NamedColor result = new NamedColor(name, description, hex);
+            return result;
+        } catch (Exception e) {
+            throw new SAXException("Couldn't create Color", e);
+        }
+    }
+    
+    private NamedFont createFont(Attributes attributes) throws SAXException {
+        try {
+            String name = attributes.getValue(ColorAndFontConstants.NAME_TAG.getIdentifier());
+            String description = attributes.getValue(ColorAndFontConstants.DESCRIPTION_TAG.getIdentifier());
+            String fontName = attributes.getValue(ColorAndFontConstants.FONT_NAME_TAG.getIdentifier());
+            String fontSizeString = attributes.getValue(ColorAndFontConstants.FONT_SIZE_TAG.getIdentifier());
+            int fontSize = Integer.valueOf(fontSizeString);
+            String boldString = attributes.getValue(ColorAndFontConstants.FONT_BOLD_TAG.getIdentifier());
+            boolean bold = Boolean.valueOf(boldString);
+            String italicString = attributes.getValue(ColorAndFontConstants.FONT_ITALIC_TAG.getIdentifier());
+            boolean italic = Boolean.valueOf(italicString);
+            NamedFont result = new NamedFont(name, description, fontName, fontSize, bold, italic);
+            return result;
+        } catch (Exception e) {
+            throw new SAXException("Couldn't create font", e);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void endElement(final String uri, final String localName,
-			final String qName) throws SAXException {
-		if (ColorAndFontConstants.STYLE_TAG.getIdentifier().equals(qName)) {
-			_currentStyle = null;
-		}
-	}
-	
-	public NamedStyle getStyle(String styleName) {
-		return _styles.get(styleName);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void endElement(final String uri, final String localName,
+            final String qName) throws SAXException {
+        if (ColorAndFontConstants.STYLE_TAG.getIdentifier().equals(qName)) {
+            _currentStyle = null;
+        }
+    }
+    
+    public NamedStyle getStyle(String styleName) {
+        return _styles.get(styleName);
+    }
 
-	public List<NamedStyle> getStyles() {
-		return new ArrayList<NamedStyle>(_styles.values());
-	}
+    public List<NamedStyle> getStyles() {
+        return new ArrayList<NamedStyle>(_styles.values());
+    }
 
 }

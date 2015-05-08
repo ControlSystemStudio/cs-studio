@@ -42,179 +42,179 @@ import de.desy.language.libraries.utils.contract.Contract;
  */
 public class CharacterSequence implements Iterable<Character> {
 
-	/**
-	 * Indicates if EOF has been reached.
-	 */
-	private boolean _eofReached;
+    /**
+     * Indicates if EOF has been reached.
+     */
+    private boolean _eofReached;
 
-	/**
-	 * The internal count of read chars (use for EOF a.s.o.).
-	 */
-	private long _internalReadCount = this._readCount;
+    /**
+     * The internal count of read chars (use for EOF a.s.o.).
+     */
+    private long _internalReadCount = this._readCount;
 
-	/**
-	 * The last read char.
-	 */
-	private Character _lastReadChar;
+    /**
+     * The last read char.
+     */
+    private Character _lastReadChar;
 
-	/**
-	 * Count of read chars.
-	 */
-	private long _readCount;
+    /**
+     * Count of read chars.
+     */
+    private long _readCount;
 
-	/**
-	 * The {@link ICharacterScanner} to read on.
-	 */
-	private final ICharacterScanner _source;
+    /**
+     * The {@link ICharacterScanner} to read on.
+     */
+    private final ICharacterScanner _source;
 
-	/**
-	 * Creates a new {@link CharacterSequence} instance for given source.
-	 * 
-	 * @require source != null
-	 */
-	public CharacterSequence(final ICharacterScanner source) {
-		Contract.requireNotNull("source", source);
+    /**
+     * Creates a new {@link CharacterSequence} instance for given source.
+     * 
+     * @require source != null
+     */
+    public CharacterSequence(final ICharacterScanner source) {
+        Contract.requireNotNull("source", source);
 
-		this._source = source;
-		this._readCount = 0L;
-		this._eofReached = false;
-	}
+        this._source = source;
+        this._readCount = 0L;
+        this._eofReached = false;
+    }
 
-	/**
-	 * Returns the number of read characters.
-	 * 
-	 * @ensure returnValue >= 0
-	 */
-	synchronized public long getReadCount() {
-		final long returnValue = this._readCount;
+    /**
+     * Returns the number of read characters.
+     * 
+     * @ensure returnValue >= 0
+     */
+    synchronized public long getReadCount() {
+        final long returnValue = this._readCount;
 
-		Contract.ensure(returnValue >= 0,
-				"Postcondition unresolved: returnValue >= 0");
-		return returnValue;
-	}
+        Contract.ensure(returnValue >= 0,
+                "Postcondition unresolved: returnValue >= 0");
+        return returnValue;
+    }
 
-	public boolean hasEndOfStreamBeenReached() {
-		return this._eofReached;
-	}
+    public boolean hasEndOfStreamBeenReached() {
+        return this._eofReached;
+    }
 
-	/**
-	 * Checks if more chars avail (will read and may unread one char on the
-	 * {@link ICharacterScanner}.
-	 */
-	synchronized public boolean hasMoreCharacters() {
-		if (this._lastReadChar != null) {
-			return true;
-		}
+    /**
+     * Checks if more chars avail (will read and may unread one char on the
+     * {@link ICharacterScanner}.
+     */
+    synchronized public boolean hasMoreCharacters() {
+        if (this._lastReadChar != null) {
+            return true;
+        }
 
-		if (this._eofReached) {
-			return false;
-		}
+        if (this._eofReached) {
+            return false;
+        }
 
-		final int read = this._source.read();
-		this._internalReadCount++;
+        final int read = this._source.read();
+        this._internalReadCount++;
 
-		if (read != ICharacterScanner.EOF) {
-			this._lastReadChar = Character.toChars(read)[0];
-			return true;
-		}
+        if (read != ICharacterScanner.EOF) {
+            this._lastReadChar = Character.toChars(read)[0];
+            return true;
+        }
 
-		this._source.unread();
-		this._internalReadCount--;
-		this._eofReached = true;
-		return false;
-	}
+        this._source.unread();
+        this._internalReadCount--;
+        this._eofReached = true;
+        return false;
+    }
 
-	/**
-	 * Creates an iterator over chars to be read. This iterator is not thread
-	 * safe!
-	 */
-	public Iterator<Character> iterator() {
-		final CharacterSequence cs = this;
-		return new Iterator<Character>() {
-			public boolean hasNext() {
-				return cs.hasMoreCharacters();
-			}
+    /**
+     * Creates an iterator over chars to be read. This iterator is not thread
+     * safe!
+     */
+    public Iterator<Character> iterator() {
+        final CharacterSequence cs = this;
+        return new Iterator<Character>() {
+            public boolean hasNext() {
+                return cs.hasMoreCharacters();
+            }
 
-			public Character next() {
-				return cs.readSingleCharacter();
-			}
+            public Character next() {
+                return cs.readSingleCharacter();
+            }
 
-			public void remove() {
-				throw new UnsupportedOperationException(
-						"Remove is not supported!");
-			}
-		};
-	}
+            public void remove() {
+                throw new UnsupportedOperationException(
+                        "Remove is not supported!");
+            }
+        };
+    }
 
-	/**
-	 * "Unread" all before read characters. The read-count is set to 0.
-	 * 
-	 * @ensure getReadCount() == 0
-	 */
-	synchronized public void performUnread() {
-		while (this._internalReadCount > 0) {
-			this._source.unread();
-			this._internalReadCount--;
-		}
-		;
-		this._readCount = 0;
-		this._eofReached = false;
+    /**
+     * "Unread" all before read characters. The read-count is set to 0.
+     * 
+     * @ensure getReadCount() == 0
+     */
+    synchronized public void performUnread() {
+        while (this._internalReadCount > 0) {
+            this._source.unread();
+            this._internalReadCount--;
+        }
+        ;
+        this._readCount = 0;
+        this._eofReached = false;
 
-		Contract.ensure(this.getReadCount() == 0,
-				"Postcondition unresolved: getReadCount() == 0");
-	}
+        Contract.ensure(this.getReadCount() == 0,
+                "Postcondition unresolved: getReadCount() == 0");
+    }
 
-	/**
-	 * Unread one single char.
-	 */
-	public void performUnreadOneSingleChar() {
-		this._source.unread();
-		this._internalReadCount--;
-		this._readCount--;
-		this._eofReached = false;
-	}
+    /**
+     * Unread one single char.
+     */
+    public void performUnreadOneSingleChar() {
+        this._source.unread();
+        this._internalReadCount--;
+        this._readCount--;
+        this._eofReached = false;
+    }
 
-	/**
-	 * "Unread" all chars backwards up to the number to keep. If the number of
-	 * chars to keep is greater than already readed chars, nothing will happen.
-	 * 
-	 * @ensure getReadCount() == charactersToKeepRead
-	 */
-	synchronized public void performUnreadWithKeepingGivenCharsRead(
-			final long charactersToKeepRead) {
+    /**
+     * "Unread" all chars backwards up to the number to keep. If the number of
+     * chars to keep is greater than already readed chars, nothing will happen.
+     * 
+     * @ensure getReadCount() == charactersToKeepRead
+     */
+    synchronized public void performUnreadWithKeepingGivenCharsRead(
+            final long charactersToKeepRead) {
 
-		long countOfCharsToUnread = this._readCount - charactersToKeepRead;
-		while (countOfCharsToUnread > 0) {
-			this._source.unread();
-			this._internalReadCount--;
-			this._readCount--;
-			countOfCharsToUnread--;
-			this._eofReached = false;
-		}
+        long countOfCharsToUnread = this._readCount - charactersToKeepRead;
+        while (countOfCharsToUnread > 0) {
+            this._source.unread();
+            this._internalReadCount--;
+            this._readCount--;
+            countOfCharsToUnread--;
+            this._eofReached = false;
+        }
 
-		Contract
-				.ensure(this.getReadCount() == charactersToKeepRead,
-						"Postcondition unresolved: getReadCount() == charactersToKeepRead");
-	}
+        Contract
+                .ensure(this.getReadCount() == charactersToKeepRead,
+                        "Postcondition unresolved: getReadCount() == charactersToKeepRead");
+    }
 
-	/**
-	 * Reads a single character from the source.
-	 * 
-	 * @ensure getReadCount() > §old.getReadCount()
-	 * @require hasMoreCharactes()
-	 */
-	synchronized public char readSingleCharacter() {
-		Contract.require(this.hasMoreCharacters(),
-				"Precondition unresolved: hasMoreCharactes()");
-		final long oldReadCount = this.getReadCount();
+    /**
+     * Reads a single character from the source.
+     * 
+     * @ensure getReadCount() > §old.getReadCount()
+     * @require hasMoreCharactes()
+     */
+    synchronized public char readSingleCharacter() {
+        Contract.require(this.hasMoreCharacters(),
+                "Precondition unresolved: hasMoreCharactes()");
+        final long oldReadCount = this.getReadCount();
 
-		final char returnValue = this._lastReadChar;
-		this._lastReadChar = null;
-		this._readCount++;
+        final char returnValue = this._lastReadChar;
+        this._lastReadChar = null;
+        this._readCount++;
 
-		Contract
-				.ensure(this.getReadCount() > oldReadCount,
-						"Postcondition unresolved: getReadCount() > §old.getReadCount()");
-		return returnValue;
-	}
+        Contract
+                .ensure(this.getReadCount() > oldReadCount,
+                        "Postcondition unresolved: getReadCount() > §old.getReadCount()");
+        return returnValue;
+    }
 }

@@ -12,7 +12,7 @@ import junit.framework.TestCase;
 public class EDMParserTest extends TestCase
 {
     /** Original type of message when this software was developed */
-	@Test
+    @Test
     public void testOriginalEDMMessage() throws Throwable
     {
         final EDMParser parser = new EDMParser("user=\"nypaver\" host=\"ics-srv02\" ssh=\"::ffff:160.91.234.112 56165 ::ffff:160.91.230.38 22\" unknown_extra_stuff=\"ignored\" dsp=\"localhost:14.0\" name=\"test\" old=\"11.000000\" new=\"12.000000\"");      
@@ -24,9 +24,9 @@ public class EDMParserTest extends TestCase
         assertEquals("test", parser.getPVName());
         assertEquals("12.000000", parser.getValue());
     }
-	
+    
     /** New type of EDM message seen at SNS with different network/Linux setup */
-	@Test
+    @Test
     public void testNewEDMMessage() throws Throwable
     {
         final EDMParser parser = new EDMParser("user=\"fred\" host=\"ics-srv-accl2\" ssh=\"172.31.96.16 53395 172.31.72.100 22\" dsp=\"localhost:12.0\" name=\"SCL_LLRF:FCM21b:cavAmpGoal\" old=\"11.000000\" new=\"10.000000\"");
@@ -37,7 +37,7 @@ public class EDMParserTest extends TestCase
     }
 
     /** Check error handling */
-	@Test
+    @Test
     public void testParseError()
     {
         try

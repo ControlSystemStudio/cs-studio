@@ -34,93 +34,93 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  * 
  */
 public final class ArrayOptionProperty extends WidgetProperty {
-	/**
-	 * The option values.
-	 */
-	private String[] _options;
+    /**
+     * The option values.
+     */
+    private String[] _options;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param description
-	 *            a description
-	 * @param category
-	 *            a category
-	 * @param defaultValue
-	 *            the default value
-	 * @param options
-	 *            The option values
-	 */
-	public ArrayOptionProperty(final String description,
-			final WidgetPropertyCategory category, final String[] options,
-			final int defaultValue) {
-		super(PropertyTypesEnum.ARRAYOPTION, description, category,
-				defaultValue, null);
-		_options = options;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param description
+     *            a description
+     * @param category
+     *            a category
+     * @param defaultValue
+     *            the default value
+     * @param options
+     *            The option values
+     */
+    public ArrayOptionProperty(final String description,
+            final WidgetPropertyCategory category, final String[] options,
+            final int defaultValue) {
+        super(PropertyTypesEnum.ARRAYOPTION, description, category,
+                defaultValue, null);
+        _options = options;
+    }
 
-	/**
-	 * Return the option values.
-	 * 
-	 * @return The option values.
-	 */
-	public String[] getOptions() {
-		return _options;
-	}
+    /**
+     * Return the option values.
+     * 
+     * @return The option values.
+     */
+    public String[] getOptions() {
+        return _options;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object checkValue(final Object value) {
-		assert value != null : "value!=null"; //$NON-NLS-1$
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object checkValue(final Object value) {
+        assert value != null : "value!=null"; //$NON-NLS-1$
 
-		Integer acceptedValue = null;
+        Integer acceptedValue = null;
 
-		// check type
-		if (!(value instanceof Integer)) {
-			try {
-				acceptedValue = Integer.parseInt(value.toString());
-			} catch (NumberFormatException e) {
-				acceptedValue = null;
-			}
-		} else {
-			acceptedValue = (Integer) value;
-		}
+        // check type
+        if (!(value instanceof Integer)) {
+            try {
+                acceptedValue = Integer.parseInt(value.toString());
+            } catch (NumberFormatException e) {
+                acceptedValue = null;
+            }
+        } else {
+            acceptedValue = (Integer) value;
+        }
 
-		// check range
-		if (acceptedValue != null) {
-			if (acceptedValue < 0) {
-				acceptedValue = 0;
-			} else if (acceptedValue >= _options.length) {
-				acceptedValue = _options.length;
-			}
-		}
+        // check range
+        if (acceptedValue != null) {
+            if (acceptedValue < 0) {
+                acceptedValue = 0;
+            } else if (acceptedValue >= _options.length) {
+                acceptedValue = _options.length;
+            }
+        }
 
-		return acceptedValue;
-	}
+        return acceptedValue;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTextForTooltip() {
-		String result = "-";
-		
-		int index = getPropertyValue();
-		
-		if(index>=0 && index < _options.length) {
-			result = _options[index];
-		}
-		
-		return result;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTextForTooltip() {
+        String result = "-";
+        
+        int index = getPropertyValue();
+        
+        if(index>=0 && index < _options.length) {
+            result = _options[index];
+        }
+        
+        return result;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getCompatibleJavaTypes() {
-		return new Class[] { Integer.class };
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getCompatibleJavaTypes() {
+        return new Class[] { Integer.class };
+    }
 }

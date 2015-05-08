@@ -16,10 +16,10 @@ import org.eclipse.ui.handlers.HandlerUtil;
 public class EndShiftBuilder extends AbstractAdaptedHandler<ShiftBuilder> {
 
     public EndShiftBuilder() {
-	    super(ShiftBuilder.class);
+        super(ShiftBuilder.class);
     }
 
-	@Override
+    @Override
     protected void execute(List<ShiftBuilder> data, final ExecutionEvent event) throws Exception {
         final Shell shell = HandlerUtil.getActiveShell(event);
         if (data == null || data.isEmpty()) {
@@ -33,15 +33,15 @@ public class EndShiftBuilder extends AbstractAdaptedHandler<ShiftBuilder> {
             }
         }
         if (data != null && data.size() == 1) {
-        	ShiftBuilder shift = data.iterator().next();
-        	final ShiftClient shiftClient = ShiftClientManager.getShiftClientFactory().getClient();
-        	shift = ShiftBuilder.shift(shiftClient.getShift(shift.build().getId(), shift.build().getType().getName()));
-        	if(shift.build().getEndDate() == null) {        	
-	        	final CloseShiftBuilderDialog dialog = new CloseShiftBuilderDialog(shell, shift, true);
-	                dialog.setBlockOnOpen(true);
-	                if (dialog.open() == Window.OK) {
-	                }
-        	}
+            ShiftBuilder shift = data.iterator().next();
+            final ShiftClient shiftClient = ShiftClientManager.getShiftClientFactory().getClient();
+            shift = ShiftBuilder.shift(shiftClient.getShift(shift.build().getId(), shift.build().getType().getName()));
+            if(shift.build().getEndDate() == null) {            
+                final CloseShiftBuilderDialog dialog = new CloseShiftBuilderDialog(shell, shift, true);
+                    dialog.setBlockOnOpen(true);
+                    if (dialog.open() == Window.OK) {
+                    }
+            }
         } else {
             // Throw exception
         }    

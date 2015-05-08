@@ -36,67 +36,67 @@ import org.eclipse.gef.commands.Command;
  * 
  */
 public final class AddWidgetCommand extends Command {
-	/**
-	 * The display model.
-	 */
-	private ContainerModel _container;
+    /**
+     * The display model.
+     */
+    private ContainerModel _container;
 
-	/**
-	 * The display model that should be added.
-	 */
-	private List<AbstractWidgetModel> _widgets;
+    /**
+     * The display model that should be added.
+     */
+    private List<AbstractWidgetModel> _widgets;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param container
-	 *            the display model
-	 * @param widgets
-	 *            the widgets to add
-	 * @param select
-	 *            specifies if the added widgets should be selected
-	 */
-	public AddWidgetCommand(final ContainerModel container, final List<AbstractWidgetModel> widgets) {
-		assert container != null;
-		assert widgets != null;
-		_container = container;
-		_widgets = widgets;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param container
+     *            the display model
+     * @param widgets
+     *            the widgets to add
+     * @param select
+     *            specifies if the added widgets should be selected
+     */
+    public AddWidgetCommand(final ContainerModel container, final List<AbstractWidgetModel> widgets) {
+        assert container != null;
+        assert widgets != null;
+        _container = container;
+        _widgets = widgets;
+    }
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param container
-	 *            the display model
-	 * @param widget
-	 *            the widget to add
-	 * @param select
-	 *            specifies if the added widget should be selected
-	 */
-	public AddWidgetCommand(final ContainerModel container, final AbstractWidgetModel widget) {
-		this(container, Arrays.asList(widget));
-	}
+    /**
+     * Constructor.
+     * 
+     * @param container
+     *            the display model
+     * @param widget
+     *            the widget to add
+     * @param select
+     *            specifies if the added widget should be selected
+     */
+    public AddWidgetCommand(final ContainerModel container, final AbstractWidgetModel widget) {
+        this(container, Arrays.asList(widget));
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void execute() {
-		// adjust layer
-		for (AbstractWidgetModel w : _widgets) {
-			w.setLayer(_container.getLayerSupport().getActiveLayer().getId());
-		}
-		
-		// add widgets
-		_container.addWidgets(_widgets);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void execute() {
+        // adjust layer
+        for (AbstractWidgetModel w : _widgets) {
+            w.setLayer(_container.getLayerSupport().getActiveLayer().getId());
+        }
+        
+        // add widgets
+        _container.addWidgets(_widgets);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void undo() {
-		_container.removeWidgets(_widgets);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void undo() {
+        _container.removeWidgets(_widgets);
+    }
 
 }

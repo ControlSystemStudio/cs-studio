@@ -30,10 +30,10 @@ import org.eclipse.osgi.util.NLS;
 @SuppressWarnings("nls")
 public class MessageRDB
 {
-	/** Util. for connection to RDB */
-	final private RDBUtil rdb_util;
+    /** Util. for connection to RDB */
+    final private RDBUtil rdb_util;
     
-	/** SQL statements */
+    /** SQL statements */
     final private SQL sql;
         
     /** Connect to RDB
@@ -70,7 +70,7 @@ public class MessageRDB
      *  @return Array of Messages or <code>null</code>
      */
     public Message[] getMessages(
-    		final IProgressMonitor monitor,
+            final IProgressMonitor monitor,
             final Calendar start, final Calendar end,
             final MessagePropertyFilter filters[],
             final int max_properties) throws Exception
@@ -162,9 +162,9 @@ public class MessageRDB
                 props = new HashMap<String, String>();
                 props.put(Message.TYPE, "internal");
                 props.put("TEXT",
-                		NLS.bind(Messages.ReachedMaxPropertiesFmt, max_properties));
+                        NLS.bind(Messages.ReachedMaxPropertiesFmt, max_properties));
                 final Message message = createMessage(++sequence, id, props);
-            	messages.add(message);
+                messages.add(message);
             }
         }
         finally

@@ -41,147 +41,147 @@ import org.eclipse.ui.handlers.IHandlerService;
  * @author Davy Dequidt
  */
 public class SendToElogAction extends Action {
-	final private Shell shell;
-	final private RTTimePlot graph;
+    final private Shell shell;
+    final private RTTimePlot graph;
 
-	public static final String ID = "org.csstudio.trends.databrowser2.sendToElog";
+    public static final String ID = "org.csstudio.trends.databrowser2.sendToElog";
 
-	public static final String LOGBOOK_UI_PLUGIN_ID = "org.csstudio.logbook.ui";
-	public static final String OPEN_LOGENTRY_BUILDER_DIALOG_ID = "org.csstudio.logbook.ui.OpenLogEntryBuilderDialog";
+    public static final String LOGBOOK_UI_PLUGIN_ID = "org.csstudio.logbook.ui";
+    public static final String OPEN_LOGENTRY_BUILDER_DIALOG_ID = "org.csstudio.logbook.ui.OpenLogEntryBuilderDialog";
 
-	/**
-	 * Initialize
-	 *
-	 * @param part
-	 *            Parent shell
-	 * @param graph
-	 *            Graph to print
-	 */
-	public SendToElogAction(final Shell shell, final RTTimePlot graph) {
-		this.shell = shell;
-		this.graph = graph;
-		setText("Create Log Entry");
-		setImageDescriptor(CustomMediaFactory.getInstance()
-				.getImageDescriptorFromPlugin(LOGBOOK_UI_PLUGIN_ID,
-						"icons/logentry-add-16.png"));
-		setId(ID);
-	}
+    /**
+     * Initialize
+     *
+     * @param part
+     *            Parent shell
+     * @param graph
+     *            Graph to print
+     */
+    public SendToElogAction(final Shell shell, final RTTimePlot graph) {
+        this.shell = shell;
+        this.graph = graph;
+        setText("Create Log Entry");
+        setImageDescriptor(CustomMediaFactory.getInstance()
+                .getImageDescriptorFromPlugin(LOGBOOK_UI_PLUGIN_ID,
+                        "icons/logentry-add-16.png"));
+        setId(ID);
+    }
 
-	@Override
-	public void run() {
-		UIBundlingThread.getInstance().addRunnable(shell.getDisplay(),
-				new Runnable() {
-					@Override
-					public void run() {
-						// Display dialog, create entry
-						makeLogEntry();
-					}
-				});
+    @Override
+    public void run() {
+        UIBundlingThread.getInstance().addRunnable(shell.getDisplay(),
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        // Display dialog, create entry
+                        makeLogEntry();
+                    }
+                });
 
-	}
+    }
 
-	/**
-	 * Make a logbook entry.
-	 *
-	 */
-	public void makeLogEntry() {
-		try {
-			final Attachment image_attachment = createImageAttachment();
-			final String text = Messages.LogentryDefaultTitle + "\n"
-					+ Messages.LogentryDefaultBody;
+    /**
+     * Make a logbook entry.
+     *
+     */
+    public void makeLogEntry() {
+        try {
+            final Attachment image_attachment = createImageAttachment();
+            final String text = Messages.LogentryDefaultTitle + "\n"
+                    + Messages.LogentryDefaultBody;
 
-			final LogEntryBuilder entry = LogEntryBuilder.withText(text)
-					.attach(AttachmentBuilder.attachment(image_attachment));
-			// get the command from plugin.xml
-			IWorkbenchWindow window = PlatformUI.getWorkbench()
-					.getActiveWorkbenchWindow();
+            final LogEntryBuilder entry = LogEntryBuilder.withText(text)
+                    .attach(AttachmentBuilder.attachment(image_attachment));
+            // get the command from plugin.xml
+            IWorkbenchWindow window = PlatformUI.getWorkbench()
+                    .getActiveWorkbenchWindow();
 
-			List<LogEntryBuilder> logList = new ArrayList<LogEntryBuilder>();
-			logList.add(entry);
-			Event event = new Event();
-			event.data = logList;
-			// execute the command
-			IHandlerService handlerService = (IHandlerService) window
-					.getService(IHandlerService.class);
-			handlerService.executeCommand(OPEN_LOGENTRY_BUILDER_DIALOG_ID,
-					event);
-		} catch (Exception e) {
-			MessageDialog.openError(null, "Logbook Error",
-					"Failed to make logbook entry: \n" + e.getMessage());
-		}
-	}
+            List<LogEntryBuilder> logList = new ArrayList<LogEntryBuilder>();
+            logList.add(entry);
+            Event event = new Event();
+            event.data = logList;
+            // execute the command
+            IHandlerService handlerService = (IHandlerService) window
+                    .getService(IHandlerService.class);
+            handlerService.executeCommand(OPEN_LOGENTRY_BUILDER_DIALOG_ID,
+                    event);
+        } catch (Exception e) {
+            MessageDialog.openError(null, "Logbook Error",
+                    "Failed to make logbook entry: \n" + e.getMessage());
+        }
+    }
 
-	public static boolean isElogAvailable() {
-		try {
-			if (LogbookClientManager.getLogbookClientFactory() == null)
-				return false;
+    public static boolean isElogAvailable() {
+        try {
+            if (LogbookClientManager.getLogbookClientFactory() == null)
+                return false;
 
-			// Check if logbook dialog is available
-			ICommandService commandService = (ICommandService) PlatformUI
-					.getWorkbench().getActiveWorkbenchWindow()
-					.getService(ICommandService.class);
-			Command command = commandService
-					.getCommand(OPEN_LOGENTRY_BUILDER_DIALOG_ID);
-			if (command == null) {
-				return false;
-			}
+            // Check if logbook dialog is available
+            ICommandService commandService = (ICommandService) PlatformUI
+                    .getWorkbench().getActiveWorkbenchWindow()
+                    .getService(ICommandService.class);
+            Command command = commandService
+                    .getCommand(OPEN_LOGENTRY_BUILDER_DIALOG_ID);
+            if (command == null) {
+                return false;
+            }
 
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
-	/**
-	 * @return Logbook attachment for the plot's image
-	 * @throws Exception
-	 *             on error
-	 */
-	private Attachment createImageAttachment() throws Exception {
-		// Dump image into buffer
-		ImageLoader loader = new ImageLoader();
-		Image image = graph.getImage();
-		loader.data = new ImageData[] { image.getImageData() };
-		image.dispose();
-		image = null;
+    /**
+     * @return Logbook attachment for the plot's image
+     * @throws Exception
+     *             on error
+     */
+    private Attachment createImageAttachment() throws Exception {
+        // Dump image into buffer
+        ImageLoader loader = new ImageLoader();
+        Image image = graph.getImage();
+        loader.data = new ImageData[] { image.getImageData() };
+        image.dispose();
+        image = null;
 
-		ByteArrayOutputStream buf = new ByteArrayOutputStream();
-		loader.save(buf, SWT.IMAGE_PNG);
-		buf.close();
-		final byte[] image_bits = buf.toByteArray();
-		buf = null;
-		loader = null;
+        ByteArrayOutputStream buf = new ByteArrayOutputStream();
+        loader.save(buf, SWT.IMAGE_PNG);
+        buf.close();
+        final byte[] image_bits = buf.toByteArray();
+        buf = null;
+        loader = null;
 
-		// Attachment provides input stream
-		return new Attachment() {
-			@Override
-			public Boolean getThumbnail() {
-				return true;
-			}
+        // Attachment provides input stream
+        return new Attachment() {
+            @Override
+            public Boolean getThumbnail() {
+                return true;
+            }
 
-			@Override
-			public InputStream getInputStream() {
-				try {
-					return new ByteArrayInputStream(image_bits);
-				} catch (Exception ex) {
-					return null;
-				}
-			}
+            @Override
+            public InputStream getInputStream() {
+                try {
+                    return new ByteArrayInputStream(image_bits);
+                } catch (Exception ex) {
+                    return null;
+                }
+            }
 
-			@Override
-			public Long getFileSize() {
-				return (long) image_bits.length;
-			}
+            @Override
+            public Long getFileSize() {
+                return (long) image_bits.length;
+            }
 
-			@Override
-			public String getFileName() {
-				return "plot.png";
-			}
+            @Override
+            public String getFileName() {
+                return "plot.png";
+            }
 
-			@Override
-			public String getContentType() {
-				return "image/png";
-			}
-		};
-	}
+            @Override
+            public String getContentType() {
+                return "image/png";
+            }
+        };
+    }
 }

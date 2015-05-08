@@ -36,43 +36,43 @@ package org.csstudio.remote.management;
  */
 public interface IManagementCommandService {
 
-	/**
-	 * Returns the commands supported by this service.
-	 * 
-	 * @return the commands supported by this service.
-	 */
-	public CommandDescription[] getSupportedCommands();
+    /**
+     * Returns the commands supported by this service.
+     * 
+     * @return the commands supported by this service.
+     */
+    public CommandDescription[] getSupportedCommands();
 
-	/**
-	 * Executes the specified command.
-	 * 
-	 * @param commandId
-	 *            the identifier of the command to execute.
-	 * @param parameters
-	 *            the parameters for the command. May be <code>null</code> to
-	 *            call the command without parameters.
-	 * @return the result of the command execution. If the specified command is
-	 *         not supported by this service, a command result indicating an
-	 *         error is returned. If the execution of the command fails with an
-	 *         exception, a command result of type
-	 *         {@link CommandResult#TYPE_EXCEPTION} is returned with the
-	 *         exception as its payload.
-	 */
-	public CommandResult execute(String commandId, CommandParameters parameters);
+    /**
+     * Executes the specified command.
+     * 
+     * @param commandId
+     *            the identifier of the command to execute.
+     * @param parameters
+     *            the parameters for the command. May be <code>null</code> to
+     *            call the command without parameters.
+     * @return the result of the command execution. If the specified command is
+     *         not supported by this service, a command result indicating an
+     *         error is returned. If the execution of the command fails with an
+     *         exception, a command result of type
+     *         {@link CommandResult#TYPE_EXCEPTION} is returned with the
+     *         exception as its payload.
+     */
+    public CommandResult execute(String commandId, CommandParameters parameters);
 
-	/**
-	 * Returns the dynamic enumeration values for the specified command and
-	 * parameter.
-	 * 
-	 * @param commandId
-	 *            the identifier of the command.
-	 * @param parameterId
-	 *            the identifier of the parameter.
-	 * @return an array of enumeration values. If the specified command does not
-	 *         exist, or if the command does not have the specified parameter,
-	 *         or if the parameter is not a dynamic enumeration parameter,
-	 *         returns an empty array.
-	 */
-	public CommandParameterEnumValue[] getDynamicEnumerationValues(
-			String commandId, String parameterId);
+    /**
+     * Returns the dynamic enumeration values for the specified command and
+     * parameter.
+     * 
+     * @param commandId
+     *            the identifier of the command.
+     * @param parameterId
+     *            the identifier of the parameter.
+     * @return an array of enumeration values. If the specified command does not
+     *         exist, or if the command does not have the specified parameter,
+     *         or if the parameter is not a dynamic enumeration parameter,
+     *         returns an empty array.
+     */
+    public CommandParameterEnumValue[] getDynamicEnumerationValues(
+            String commandId, String parameterId);
 }

@@ -39,60 +39,60 @@ import org.eclipse.swt.widgets.Shell;
  */
 public final class ModalWizardDialog extends WizardDialog {
 
-	/**
-	 * The unique instance of this dialog.
-	 */
-	private static ModalWizardDialog _instance = null;
+    /**
+     * The unique instance of this dialog.
+     */
+    private static ModalWizardDialog _instance = null;
 
-	/**
-	 * Private constructor due to singleton pattern.
-	 * 
-	 * @param parentShell
-	 *            the parent shell
-	 * @param newWizard
-	 *            the wizard this dialog is working on
-	 */
-	private ModalWizardDialog(final Shell parentShell,
-			final IWizard newWizard) {
-		super(parentShell, newWizard);
+    /**
+     * Private constructor due to singleton pattern.
+     * 
+     * @param parentShell
+     *            the parent shell
+     * @param newWizard
+     *            the wizard this dialog is working on
+     */
+    private ModalWizardDialog(final Shell parentShell,
+            final IWizard newWizard) {
+        super(parentShell, newWizard);
 
-		setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE
-				| SWT.BORDER | SWT.RESIZE);
-	}
+        setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE
+                | SWT.BORDER | SWT.RESIZE);
+    }
 
-	/**
-	 * Open the dialog. Ensure that there is only one opened dialog per time. If
-	 * there is alredy a dialog opened, it will be closed and replaced by one
-	 * that carries the passed in IWizard instance.
-	 * 
-	 * @param parentShell
-	 *            the parent shell
-	 * @param newWizard
-	 *            the wizard this dialog is working on
-	 * @return the return code
-	 */
-	public static int open(final Shell parentShell, final IWizard newWizard) {
-		if (_instance == null) {
-			_instance = new ModalWizardDialog(parentShell, newWizard);
-		} else {
-			final Rectangle currentBounds = _instance.getShell() == null ? null
-					: _instance.getShell().getBounds();
-			/*
-			 *  XXX: don't close the instance. Workaround for a Eclipse 3.6 Bug. Maybe make a memory leak.
-			 */
-//			_instance.close();
-			_instance = new ModalWizardDialog(parentShell, newWizard);
-			// if the dialog was previously closed, there was no old shell and
-			// no old bounds
-			if (currentBounds != null) {
-				Display.getCurrent().asyncExec(new Runnable() {
-					public void run() {
-						_instance.getShell().setBounds(currentBounds);
-					}
-				});
-			}
-		}
+    /**
+     * Open the dialog. Ensure that there is only one opened dialog per time. If
+     * there is alredy a dialog opened, it will be closed and replaced by one
+     * that carries the passed in IWizard instance.
+     * 
+     * @param parentShell
+     *            the parent shell
+     * @param newWizard
+     *            the wizard this dialog is working on
+     * @return the return code
+     */
+    public static int open(final Shell parentShell, final IWizard newWizard) {
+        if (_instance == null) {
+            _instance = new ModalWizardDialog(parentShell, newWizard);
+        } else {
+            final Rectangle currentBounds = _instance.getShell() == null ? null
+                    : _instance.getShell().getBounds();
+            /*
+             *  XXX: don't close the instance. Workaround for a Eclipse 3.6 Bug. Maybe make a memory leak.
+             */
+//            _instance.close();
+            _instance = new ModalWizardDialog(parentShell, newWizard);
+            // if the dialog was previously closed, there was no old shell and
+            // no old bounds
+            if (currentBounds != null) {
+                Display.getCurrent().asyncExec(new Runnable() {
+                    public void run() {
+                        _instance.getShell().setBounds(currentBounds);
+                    }
+                });
+            }
+        }
 
-		return _instance.open();
-	}
+        return _instance.open();
+    }
 }

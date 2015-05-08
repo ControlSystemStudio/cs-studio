@@ -33,79 +33,79 @@ import java.util.Properties;
  */
 public class TestProperties
 {
-	private static final String TEST_PROPERTIES = "test_properties"; //$NON-NLS-1$
-	final private Properties settings = new Properties();
+    private static final String TEST_PROPERTIES = "test_properties"; //$NON-NLS-1$
+    final private Properties settings = new Properties();
 
-	/** Initialize test properties
-	 *  @throws Exception on error accessing the file.
-	 *          NOT having configured a test properties file is NOT an error!
-	 */
-	public TestProperties() throws Exception
-	{
+    /** Initialize test properties
+     *  @throws Exception on error accessing the file.
+     *          NOT having configured a test properties file is NOT an error!
+     */
+    public TestProperties() throws Exception
+    {
         // Check system property for file name
-		String filename = System.getProperty(TEST_PROPERTIES);
-		// Fall back to environment variable
-		if (filename == null)
-			filename = System.getenv(TEST_PROPERTIES);
-		// _IF_ configured, load the settings
-		if (filename != null)
-		{
-	    	final FileInputStream stream = new FileInputStream(filename);
-			settings.load(stream);
-			stream.close();
-		}
-	}
-
-	/** Get test property as string
-	 *  @param key Property name
-	 *  @return String value or <code>null</code> if not set
-	 */
-	public String getString(final String key)
-    {
-		return settings.getProperty(key);
+        String filename = System.getProperty(TEST_PROPERTIES);
+        // Fall back to environment variable
+        if (filename == null)
+            filename = System.getenv(TEST_PROPERTIES);
+        // _IF_ configured, load the settings
+        if (filename != null)
+        {
+            final FileInputStream stream = new FileInputStream(filename);
+            settings.load(stream);
+            stream.close();
+        }
     }
 
-	/** Get test property as string
-	 *  @param key Property name
-	 *  @param default_value Default value to use if no setting found
-	 *  @return String value or <code>default_value</code> if not set
-	 */
-	public String getString(final String key, final String default_value)
+    /** Get test property as string
+     *  @param key Property name
+     *  @return String value or <code>null</code> if not set
+     */
+    public String getString(final String key)
     {
-		return settings.getProperty(key, default_value);
-    }
-	
-	/** Get test property as Integer
-	 *  @param key Property name
-	 *  @return Integer value or <code>null</code> if not set
-	 *  @exception NumberFormatException if the value is set but cannot be parsed as an integer
-	 */
-	public Integer getInteger(final String key)
-    {
-		final String text = getString(key);
-		if (text == null)
-			return null;
-		return Integer.valueOf(text);
+        return settings.getProperty(key);
     }
 
-	/** Get test property as Integer
-	 *  @param key Property name
-	 *  @param default_value Default value to use if no setting found
-	 *  @return Integer value or <code>default_value</code> if not set
-	 *  @exception NumberFormatException if the value is set but cannot be parsed as an integer
-	 */
-	public Integer getInteger(final String key, final int default_value)
+    /** Get test property as string
+     *  @param key Property name
+     *  @param default_value Default value to use if no setting found
+     *  @return String value or <code>default_value</code> if not set
+     */
+    public String getString(final String key, final String default_value)
     {
-		final String text = getString(key);
-		if (text == null)
-			return default_value;
-		return Integer.valueOf(text);
+        return settings.getProperty(key, default_value);
+    }
+    
+    /** Get test property as Integer
+     *  @param key Property name
+     *  @return Integer value or <code>null</code> if not set
+     *  @exception NumberFormatException if the value is set but cannot be parsed as an integer
+     */
+    public Integer getInteger(final String key)
+    {
+        final String text = getString(key);
+        if (text == null)
+            return null;
+        return Integer.valueOf(text);
     }
 
-	
-	@SuppressWarnings("unchecked")
+    /** Get test property as Integer
+     *  @param key Property name
+     *  @param default_value Default value to use if no setting found
+     *  @return Integer value or <code>default_value</code> if not set
+     *  @exception NumberFormatException if the value is set but cannot be parsed as an integer
+     */
+    public Integer getInteger(final String key, final int default_value)
+    {
+        final String text = getString(key);
+        if (text == null)
+            return default_value;
+        return Integer.valueOf(text);
+    }
+
+    
+    @SuppressWarnings("unchecked")
     public Enumeration<String> getKeys()
     {
-	    return (Enumeration<String>)settings.propertyNames();
+        return (Enumeration<String>)settings.propertyNames();
     }
 }

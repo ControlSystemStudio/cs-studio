@@ -34,14 +34,14 @@ import org.osgi.framework.Bundle;
 @SuppressWarnings("restriction")
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
 {
-	private OpenDocumentEventProcessor openDocProcessor;
+    private OpenDocumentEventProcessor openDocProcessor;
 
     public ApplicationWorkbenchAdvisor(
-			OpenDocumentEventProcessor openDocProcessor) {
-    	this.openDocProcessor = openDocProcessor;
+            OpenDocumentEventProcessor openDocProcessor) {
+        this.openDocProcessor = openDocProcessor;
     }
 
-	@Override
+    @Override
     public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
                     final IWorkbenchWindowConfigurer configurer)
     {
@@ -59,11 +59,11 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
         IDE.registerAdapters();
 
         // Declares all IDE-specific workbench images. This includes both "shared"
-    	// images (named in {@link IDE.SharedImages}) and internal images.
+        // images (named in {@link IDE.SharedImages}) and internal images.
         configurer.declareImage(IDE.SharedImages.IMG_OBJ_PROJECT,
-				Activator.getImageDescriptor("icons/project_open.png"), true);
+                Activator.getImageDescriptor("icons/project_open.png"), true);
         configurer.declareImage(IDE.SharedImages.IMG_OBJ_PROJECT_CLOSED,
-				Activator.getImageDescriptor("icons/project_close.png"), true);
+                Activator.getImageDescriptor("icons/project_close.png"), true);
         
         declareWorkbenchImages();
     }
@@ -78,20 +78,20 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
     @Override
     public void eventLoopIdle(final Display display)
     {
-    	if(openDocProcessor != null)
-    		openDocProcessor.catchUp(display);
-    	super.eventLoopIdle(display);
+        if(openDocProcessor != null)
+            openDocProcessor.catchUp(display);
+        super.eventLoopIdle(display);
     }
     
     @Override
-	public boolean preShutdown() {
-    	try {
-			ResourcesPlugin.getWorkspace().save(true, new NullProgressMonitor());
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-		return true;
-	}
+    public boolean preShutdown() {
+        try {
+            ResourcesPlugin.getWorkspace().save(true, new NullProgressMonitor());
+        } catch (CoreException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
     
     /**
      * Workaround for RCP bug: https://bugs.eclipse.org/bugs/show_bug.cgi?id=234252

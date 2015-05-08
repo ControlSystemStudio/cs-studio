@@ -38,78 +38,78 @@ import org.eclipse.swt.widgets.Display;
  */
 public final class AntialiasingUtil {
 
-	/**
-	 * Indicator for the system ability to support anti aliasing.
-	 */
-	private static boolean _advancedGraphicsPossible = false;
+    /**
+     * Indicator for the system ability to support anti aliasing.
+     */
+    private static boolean _advancedGraphicsPossible = false;
 
-	/**
-	 * The shared instance.
-	 */
-	private static AntialiasingUtil _instance;
+    /**
+     * The shared instance.
+     */
+    private static AntialiasingUtil _instance;
 
-	/**
-	 * Private constructor to avoid instantiation.
-	 */
-	private AntialiasingUtil() {
-		GC gc = new GC(Display.getCurrent());
-		gc.setAdvanced(true);
-		// gc.dispose();
+    /**
+     * Private constructor to avoid instantiation.
+     */
+    private AntialiasingUtil() {
+        GC gc = new GC(Display.getCurrent());
+        gc.setAdvanced(true);
+        // gc.dispose();
 
-		_advancedGraphicsPossible = gc.getAdvanced();
-	}
+        _advancedGraphicsPossible = gc.getAdvanced();
+    }
 
-	/**
-	 * Gets the singleton instance.
-	 * 
-	 * @return the singleton instance
-	 */
-	public static AntialiasingUtil getInstance() {
-		if (_instance == null) {
-			_instance = new AntialiasingUtil();
-		}
+    /**
+     * Gets the singleton instance.
+     * 
+     * @return the singleton instance
+     */
+    public static AntialiasingUtil getInstance() {
+        if (_instance == null) {
+            _instance = new AntialiasingUtil();
+        }
 
-		return _instance;
-	}
+        return _instance;
+    }
 
-	/**
-	 * Enables Antialiasing for the specified graphics.
-	 * 
-	 * @param graphics
-	 *            the graphics
-	 */
-	public void enableAntialiasing(final GC graphics) {
-		if (antialiasingTurnedOn() && _advancedGraphicsPossible) {
-			graphics.setAntialias(SWT.ON);
-		}
-	}
+    /**
+     * Enables Antialiasing for the specified graphics.
+     * 
+     * @param graphics
+     *            the graphics
+     */
+    public void enableAntialiasing(final GC graphics) {
+        if (antialiasingTurnedOn() && _advancedGraphicsPossible) {
+            graphics.setAntialias(SWT.ON);
+        }
+    }
 
-	/**
-	 * Enables Antialiasing for the specified graphics.
-	 * 
-	 * @param graphics
-	 *            the graphics
-	 */
-	public void enableAntialiasing(final Graphics graphics) {
-		if (antialiasingTurnedOn() && _advancedGraphicsPossible) {
-			graphics.setAntialias(SWT.ON);
-			graphics.setTextAntialias(SWT.ON);
-		}
-	}
+    /**
+     * Enables Antialiasing for the specified graphics.
+     * 
+     * @param graphics
+     *            the graphics
+     */
+    public void enableAntialiasing(final Graphics graphics) {
+        if (antialiasingTurnedOn() && _advancedGraphicsPossible) {
+            graphics.setAntialias(SWT.ON);
+            graphics.setTextAntialias(SWT.ON);
+        }
+    }
 
-	/**
-	 * Disables Antialiasing for the specified graphics.
-	 * 
-	 * @param graphics
-	 *            the graphics
-	 */
-	public void disableAntialiasing(final Graphics graphics) {
-		if (antialiasingTurnedOn()) {
-			graphics.setAntialias(SWT.OFF);
-		}
-	}
+    /**
+     * Disables Antialiasing for the specified graphics.
+     * 
+     * @param graphics
+     *            the graphics
+     */
+    public void disableAntialiasing(final Graphics graphics) {
+        if (antialiasingTurnedOn()) {
+            graphics.setAntialias(SWT.OFF);
+        }
+    }
 
-	private boolean antialiasingTurnedOn() {
-		return SdsPlugin.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.PROP_ANTIALIASING);
-	}
+    private boolean antialiasingTurnedOn() {
+        return SdsPlugin.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.PROP_ANTIALIASING);
+    }
 }

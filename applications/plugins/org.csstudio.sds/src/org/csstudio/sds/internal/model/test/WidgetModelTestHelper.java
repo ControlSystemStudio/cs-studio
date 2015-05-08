@@ -33,34 +33,34 @@ import org.csstudio.sds.model.DynamicsDescriptor;
  * 
  */
 public final class WidgetModelTestHelper {
-	/**
-	 * Hidden constructor.
-	 */
-	private WidgetModelTestHelper() {
-	}
+    /**
+     * Hidden constructor.
+     */
+    private WidgetModelTestHelper() {
+    }
 
-	/**
-	 * Counter for PV names.
-	 */
-	private static int _pvCounter = 0;
+    /**
+     * Counter for PV names.
+     */
+    private static int _pvCounter = 0;
 
-	/**
-	 * Create a new display widget model for testing.
-	 * 
-	 * @return A display widget model for testing.
-	 */
-	public static AbstractWidgetModel createWidgetModel() {
-		TestWidgetModel result = new TestWidgetModel();
+    /**
+     * Create a new display widget model for testing.
+     * 
+     * @return A display widget model for testing.
+     */
+    public static AbstractWidgetModel createWidgetModel() {
+        TestWidgetModel result = new TestWidgetModel();
 
-		DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
-		dynamicsDescriptor.addInputChannel(new ParameterDescriptor(
-				"PV" + _pvCounter //$NON-NLS-1$
-				));
-		result.getPropertyInternal(TestWidgetModel.PROP_TEST).setDynamicsDescriptor(dynamicsDescriptor);
+        DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor(
+                "PV" + _pvCounter //$NON-NLS-1$
+                ));
+        result.getPropertyInternal(TestWidgetModel.PROP_TEST).setDynamicsDescriptor(dynamicsDescriptor);
 
-		_pvCounter++;
+        _pvCounter++;
 
-		return result;
-	}
+        return result;
+    }
 
 }

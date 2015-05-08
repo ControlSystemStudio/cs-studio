@@ -36,59 +36,59 @@ import org.eclipse.draw2d.IFigure;
  */
 public final class EllipseEditPart extends AbstractWidgetEditPart {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		EllipseModel model = (EllipseModel) getWidgetModel();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        EllipseModel model = (EllipseModel) getWidgetModel();
 
-		RefreshableEllipseFigure ellipse = new RefreshableEllipseFigure();
-		ellipse.setOrientation(model.getOrientation());
-		ellipse.setFill(model.getFillLevel());
-		ellipse.setTransparent(model.getTransparent());
-		return ellipse;
+        RefreshableEllipseFigure ellipse = new RefreshableEllipseFigure();
+        ellipse.setOrientation(model.getOrientation());
+        ellipse.setFill(model.getFillLevel());
+        ellipse.setTransparent(model.getTransparent());
+        return ellipse;
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		// fill
-		IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableEllipseFigure ellipse = (RefreshableEllipseFigure) refreshableFigure;
-				ellipse.setFill((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(EllipseModel.PROP_FILL, fillHandler);
-		// orientation
-		IWidgetPropertyChangeHandler orientationHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableEllipseFigure ellipse = (RefreshableEllipseFigure) refreshableFigure;
-				ellipse.setOrientation((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(EllipseModel.PROP_ORIENTATION, orientationHandler);
-		// transparent
-		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableEllipseFigure ellipse = (RefreshableEllipseFigure) refreshableFigure;
-				ellipse.setTransparent((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(EllipseModel.PROP_TRANSPARENT, transparentHandler);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        // fill
+        IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                RefreshableEllipseFigure ellipse = (RefreshableEllipseFigure) refreshableFigure;
+                ellipse.setFill((Double) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(EllipseModel.PROP_FILL, fillHandler);
+        // orientation
+        IWidgetPropertyChangeHandler orientationHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                RefreshableEllipseFigure ellipse = (RefreshableEllipseFigure) refreshableFigure;
+                ellipse.setOrientation((Boolean) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(EllipseModel.PROP_ORIENTATION, orientationHandler);
+        // transparent
+        IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                RefreshableEllipseFigure ellipse = (RefreshableEllipseFigure) refreshableFigure;
+                ellipse.setTransparent((Boolean) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(EllipseModel.PROP_TRANSPARENT, transparentHandler);
+    }
 
 }

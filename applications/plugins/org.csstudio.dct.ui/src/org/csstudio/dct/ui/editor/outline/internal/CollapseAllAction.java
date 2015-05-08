@@ -10,11 +10,11 @@ import org.eclipse.jface.action.IAction;
  */
 public final class CollapseAllAction extends AbstractOutlineViewAction {
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected void doRun(OutlinePage outlinePage, IAction action) {
-		outlinePage.getViewer().collapseAll();
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected void doRun(OutlinePage outlinePage, IAction action) {
+        outlinePage.getViewer().collapseAll();
+    }
 }

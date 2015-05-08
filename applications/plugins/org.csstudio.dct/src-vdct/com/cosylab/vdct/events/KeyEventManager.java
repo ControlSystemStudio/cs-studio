@@ -37,16 +37,16 @@ import java.awt.event.KeyListener;
  * @author Matej Sekoranja
  */
 public class KeyEventManager extends EventManager {
-	protected static KeyEventManager instance = null;
+    protected static KeyEventManager instance = null;
 /**
  * Insert the method's description here.
  * Creation date: (18.12.2000 15:30:35)
  * @return com.cosylab.vdct.events.KeyEventManager
  */
 public static KeyEventManager getInstance() {
-	if (instance==null)
-		instance = new KeyEventManager();
-	return instance;
+    if (instance==null)
+        instance = new KeyEventManager();
+    return instance;
 }
 /**
  * Insert the method's description here.
@@ -55,7 +55,7 @@ public static KeyEventManager getInstance() {
  * @param component javax.swing.JComponent
  */
 public void registerSubscreiber(String id, JComponent component) {
-	super.registerSubscreiber(id, component);
+    super.registerSubscreiber(id, component);
 }
 /**
  * Insert the method's description here.
@@ -64,9 +64,9 @@ public void registerSubscreiber(String id, JComponent component) {
  * @param listener java.awt.KeyListener
  */
 public void subscribe(String subscriberID, KeyListener listener) {
-	JComponent comp = (JComponent)getSubscreiber().get(subscriberID);
-	if (comp!=null)
-		comp.addKeyListener(listener);
+    JComponent comp = (JComponent)getSubscreiber().get(subscriberID);
+    if (comp!=null)
+        comp.addKeyListener(listener);
 }
 /**
  * Insert the method's description here.
@@ -76,7 +76,7 @@ public void subscribe(String subscriberID, KeyListener listener) {
  */
  
 public void unregisterSubscreiber(String id, JComponent component) {
-	super.unregisterSubscreiber(id, component);
+    super.unregisterSubscreiber(id, component);
 }
 /**
  * Insert the method's description here.
@@ -85,8 +85,8 @@ public void unregisterSubscreiber(String id, JComponent component) {
  * @param listener java.awt.KeyListener
  */
 public void unsubscribe(String subscriberID, KeyListener listener) {
-	JComponent comp = (JComponent)getSubscreiber().get(subscriberID);
-	if (comp!=null)
-		comp.removeKeyListener(listener);
+    JComponent comp = (JComponent)getSubscreiber().get(subscriberID);
+    if (comp!=null)
+        comp.removeKeyListener(listener);
 }
 }

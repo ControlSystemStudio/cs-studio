@@ -39,88 +39,88 @@ import org.eclipse.gef.EditPart;
  */
 public final class PolylineEditPart extends AbstractWidgetEditPart {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		RefreshablePolylineFigure polyline = new RefreshablePolylineFigure();
-		PolylineModel model = (PolylineModel) getWidgetModel();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        RefreshablePolylineFigure polyline = new RefreshablePolylineFigure();
+        PolylineModel model = (PolylineModel) getWidgetModel();
 
-		polyline.setPoints(model.getPoints());
-		polyline.setFill(model.getFill());
-		polyline.setLineWidth(model.getLineWidth());
-		polyline.setLineStyle(model.getLineStyle());
+        polyline.setPoints(model.getPoints());
+        polyline.setFill(model.getFill());
+        polyline.setLineWidth(model.getLineWidth());
+        polyline.setLineStyle(model.getLineStyle());
 
-		return polyline;
-	}
+        return polyline;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		// line width
-		IWidgetPropertyChangeHandler lineWidthHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshablePolylineFigure polyline = (RefreshablePolylineFigure) refreshableFigure;
-				polyline.setLineWidth((Integer) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(PolylineModel.PROP_LINE_WIDTH,
-				lineWidthHandler);
-		
-		// line style
-		IWidgetPropertyChangeHandler lineStyleHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshablePolylineFigure polyline = (RefreshablePolylineFigure) refreshableFigure;
-				polyline.setLineStyle((Integer) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(PolylineModel.PROP_LINE_STYLE,
-				lineStyleHandler);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        // line width
+        IWidgetPropertyChangeHandler lineWidthHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                RefreshablePolylineFigure polyline = (RefreshablePolylineFigure) refreshableFigure;
+                polyline.setLineWidth((Integer) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(PolylineModel.PROP_LINE_WIDTH,
+                lineWidthHandler);
+        
+        // line style
+        IWidgetPropertyChangeHandler lineStyleHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                RefreshablePolylineFigure polyline = (RefreshablePolylineFigure) refreshableFigure;
+                polyline.setLineStyle((Integer) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(PolylineModel.PROP_LINE_STYLE,
+                lineStyleHandler);
 
-		// fill
-		IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshablePolylineFigure polyline = (RefreshablePolylineFigure) refreshableFigure;
-				polyline.setFill((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractPolyModel.PROP_FILL, fillHandler);
+        // fill
+        IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                RefreshablePolylineFigure polyline = (RefreshablePolylineFigure) refreshableFigure;
+                polyline.setFill((Double) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(AbstractPolyModel.PROP_FILL, fillHandler);
 
-		// points
-		IWidgetPropertyChangeHandler pointsHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshablePolylineFigure polyline = (RefreshablePolylineFigure) refreshableFigure;
+        // points
+        IWidgetPropertyChangeHandler pointsHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                RefreshablePolylineFigure polyline = (RefreshablePolylineFigure) refreshableFigure;
 
-				PointList points = (PointList) newValue;
+                PointList points = (PointList) newValue;
 
-				// deselect the widget (this refreshes the polypoint drag
-				// handles)
-				int selectionState = getSelected();
-				setSelected(EditPart.SELECTED_NONE);
+                // deselect the widget (this refreshes the polypoint drag
+                // handles)
+                int selectionState = getSelected();
+                setSelected(EditPart.SELECTED_NONE);
 
-				polyline.setPoints(points);
-				doRefreshVisuals(polyline);
+                polyline.setPoints(points);
+                doRefreshVisuals(polyline);
 
-				// restore the selection state
-				setSelected(selectionState);
-				
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractPolyModel.PROP_POINTS, pointsHandler);
-	}
+                // restore the selection state
+                setSelected(selectionState);
+                
+                return true;
+            }
+        };
+        setPropertyChangeHandler(AbstractPolyModel.PROP_POINTS, pointsHandler);
+    }
 }

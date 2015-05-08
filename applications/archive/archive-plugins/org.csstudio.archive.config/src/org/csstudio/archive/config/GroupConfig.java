@@ -13,35 +13,35 @@ package org.csstudio.archive.config;
 @SuppressWarnings("nls")
 public class GroupConfig
 {
-	final private String name;
-	protected String enabling_channel;
+    final private String name;
+    protected String enabling_channel;
 
-	/** Initialize
-	 *  @param name Group name
-	 *  @param enabling_channel Name of enabling channel or <code>null</code>
-	 */
-	public GroupConfig(final String name, final String enabling_channel)
+    /** Initialize
+     *  @param name Group name
+     *  @param enabling_channel Name of enabling channel or <code>null</code>
+     */
+    public GroupConfig(final String name, final String enabling_channel)
     {
-	    this.name = name;
-	    this.enabling_channel = enabling_channel;
+        this.name = name;
+        this.enabling_channel = enabling_channel;
     }
 
-	/** @return Channel Group name */
-	public String getName()
+    /** @return Channel Group name */
+    public String getName()
     {
-    	return name;
+        return name;
     }
 
-	/** @return Name of enabling channel or <code>null</code> */
-	public String getEnablingChannel()
+    /** @return Name of enabling channel or <code>null</code> */
+    public String getEnablingChannel()
     {
-    	return enabling_channel;
+        return enabling_channel;
     }
 
-	/** @return Debug representation */
+    /** @return Debug representation */
     @Override
     public String toString()
     {
-	    return "Group '" + name + "'";
+        return "Group '" + name + "'";
     }
 }

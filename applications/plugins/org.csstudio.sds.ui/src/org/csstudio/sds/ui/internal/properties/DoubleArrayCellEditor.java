@@ -36,122 +36,122 @@ import org.eclipse.swt.widgets.Shell;
  * @author Kai Meyer
  */
 public final class DoubleArrayCellEditor extends CellEditor {
-	/**
-	 * A shell.
-	 */
-	private Shell _shell;
+    /**
+     * A shell.
+     */
+    private Shell _shell;
 
-	/**
-	 * The current double[] value.
-	 */
-	private double[] _value;
+    /**
+     * The current double[] value.
+     */
+    private double[] _value;
 
-	/**
-	 * Creates a new double[] cell editor parented under the given control. The
-	 * cell editor value is an double[] value.
-	 * 
-	 * @param parent
-	 *            The parent table.
-	 */
-	public DoubleArrayCellEditor(final Composite parent) {
-		super(parent, SWT.NONE);
-		_shell = parent.getShell();
-	}
+    /**
+     * Creates a new double[] cell editor parented under the given control. The
+     * cell editor value is an double[] value.
+     * 
+     * @param parent
+     *            The parent table.
+     */
+    public DoubleArrayCellEditor(final Composite parent) {
+        super(parent, SWT.NONE);
+        _shell = parent.getShell();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void activate() {
-		String initValue = this.parseToString(_value);
-		InputDialog dialog = new InputDialog(_shell,"Numbers","The numbers have to be separated by a comma and a spare.\nExample: 0.5, 10.1, 2",initValue,null);
-		if (dialog.open()==Window.OK) {
-			_value = this.parseToDoubleArray(dialog.getValue());
-		}
-		if (_value != null) {
-			fireApplyEditorValue();
-		}
-	}
-	
-	/**
-	 * Parses the given double[] into a comma separated String.
-	 * @param array
-	 * 				The double[]
-	 * @return String
-	 * 				The corresponding string
-	 */
-	private String parseToString(final double[] array) {
-		StringBuffer buffer = new StringBuffer();
-		if (array.length>0) {
-			buffer.append(array[0]);
-			for (int i=1;i<array.length;i++) {
-				buffer.append(", ");
-				buffer.append(array[i]);
-			}
-		}
-		return buffer.toString();
-	}
-	
-	/**
-	 * Parses the given comma separated String into double[].
-	 * @param text	
-	 * 				The String, which contains doubles separated by comma
-	 * @return double[]
-	 * 				The corresponding double[]
-	 */
-	private double[] parseToDoubleArray(final String text) {
-		String[] strings = text.split(", ");
-		
-		// String#split in Java returns a single-element array (instead of an
-		// empty array) if the input was the empty string. But we must return
-		// an empty array in that case!
-		if (text.equals("")) {
-			return new double[0];
-		}
-		
-		double[] result = new double[strings.length]; 
-		for (int i=0;i<strings.length;i++) {
-			Double d = Double.valueOf(strings[i]);
-			if (d.isNaN()) {
-				result[i] = 0;
-			} else {
-				result[i] = d.doubleValue();
-			}
-		}
-		return result;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void activate() {
+        String initValue = this.parseToString(_value);
+        InputDialog dialog = new InputDialog(_shell,"Numbers","The numbers have to be separated by a comma and a spare.\nExample: 0.5, 10.1, 2",initValue,null);
+        if (dialog.open()==Window.OK) {
+            _value = this.parseToDoubleArray(dialog.getValue());
+        }
+        if (_value != null) {
+            fireApplyEditorValue();
+        }
+    }
+    
+    /**
+     * Parses the given double[] into a comma separated String.
+     * @param array
+     *                 The double[]
+     * @return String
+     *                 The corresponding string
+     */
+    private String parseToString(final double[] array) {
+        StringBuffer buffer = new StringBuffer();
+        if (array.length>0) {
+            buffer.append(array[0]);
+            for (int i=1;i<array.length;i++) {
+                buffer.append(", ");
+                buffer.append(array[i]);
+            }
+        }
+        return buffer.toString();
+    }
+    
+    /**
+     * Parses the given comma separated String into double[].
+     * @param text    
+     *                 The String, which contains doubles separated by comma
+     * @return double[]
+     *                 The corresponding double[]
+     */
+    private double[] parseToDoubleArray(final String text) {
+        String[] strings = text.split(", ");
+        
+        // String#split in Java returns a single-element array (instead of an
+        // empty array) if the input was the empty string. But we must return
+        // an empty array in that case!
+        if (text.equals("")) {
+            return new double[0];
+        }
+        
+        double[] result = new double[strings.length]; 
+        for (int i=0;i<strings.length;i++) {
+            Double d = Double.valueOf(strings[i]);
+            if (d.isNaN()) {
+                result[i] = 0;
+            } else {
+                result[i] = d.doubleValue();
+            }
+        }
+        return result;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Control createControl(final Composite parent) {
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Control createControl(final Composite parent) {
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Object doGetValue() {
-		return _value;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Object doGetValue() {
+        return _value;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doSetFocus() {
-		// Ignore
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doSetFocus() {
+        // Ignore
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doSetValue(final Object value) {
-		Assert.isTrue(value instanceof double[]);
-		this._value = (double[]) value;
-	}
-	
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doSetValue(final Object value) {
+        Assert.isTrue(value instanceof double[]);
+        this._value = (double[]) value;
+    }
+    
 }

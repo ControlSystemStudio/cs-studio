@@ -39,7 +39,7 @@ public class HibernatePreferencePage extends FieldEditorPreferencePage implement
         IWorkbenchPreferencePage {
 
     @SuppressWarnings("unused")
-	private final class ListEditorExtension extends ListEditor {
+    private final class ListEditorExtension extends ListEditor {
         private final String _titel;
         private final String _desc;
 

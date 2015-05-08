@@ -34,43 +34,43 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  *
  */
 public final class SelectionUtil {
-	/**
-	 * The singleton instance.
-	 */
-	private static SelectionUtil _instance;
+    /**
+     * The singleton instance.
+     */
+    private static SelectionUtil _instance;
 
-	/**
-	 * Hidden constructor.
-	 */
-	private SelectionUtil() {
-	}
+    /**
+     * Hidden constructor.
+     */
+    private SelectionUtil() {
+    }
 
-	/**
-	 * Gets the singleton instance.
-	 *
-	 * @return the singleton instance
-	 */
-	public static SelectionUtil getInstance() {
-		if (_instance == null) {
-			_instance = new SelectionUtil();
-		}
+    /**
+     * Gets the singleton instance.
+     *
+     * @return the singleton instance
+     */
+    public static SelectionUtil getInstance() {
+        if (_instance == null) {
+            _instance = new SelectionUtil();
+        }
 
-		return _instance;
-	}
+        return _instance;
+    }
 
-	public <E> List<E> getObjectsFromSelection(ISelection selection) {
-		List<E> result = new ArrayList<E>();
+    public <E> List<E> getObjectsFromSelection(ISelection selection) {
+        List<E> result = new ArrayList<E>();
 
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection ssel = (IStructuredSelection) selection;
-			Iterator<E> it = ssel.iterator();
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection ssel = (IStructuredSelection) selection;
+            Iterator<E> it = ssel.iterator();
 
-			while(it.hasNext()) {
-				result.add(it.next());
-			}
-		}
+            while(it.hasNext()) {
+                result.add(it.next());
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
 }

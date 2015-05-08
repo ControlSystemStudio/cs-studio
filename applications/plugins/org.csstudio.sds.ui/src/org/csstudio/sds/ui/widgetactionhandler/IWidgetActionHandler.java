@@ -31,13 +31,13 @@ import org.csstudio.sds.model.properties.actions.AbstractWidgetActionModel;
  * @author Kai Meyer
  */
 public interface IWidgetActionHandler {
-	
-	/**
-	 * Performs the to a {@link AbstractWidgetActionModel} belonging actions.
-	 * @param display the {@link DisplayModel}
-	 * @param widget the source widget 
-	 * @param action The {@link AbstractWidgetActionModel}, which should be executed
-	 */
-	void executeAction(final AbstractWidgetModel widget, final AbstractWidgetActionModel action);
+    
+    /**
+     * Performs the to a {@link AbstractWidgetActionModel} belonging actions.
+     * @param display the {@link DisplayModel}
+     * @param widget the source widget 
+     * @param action The {@link AbstractWidgetActionModel}, which should be executed
+     */
+    void executeAction(final AbstractWidgetModel widget, final AbstractWidgetActionModel action);
 
 }

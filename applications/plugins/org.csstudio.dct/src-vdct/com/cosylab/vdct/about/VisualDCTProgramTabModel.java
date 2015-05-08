@@ -46,122 +46,122 @@ import com.cosylab.vdct.Version;
  */
 public class VisualDCTProgramTabModel implements ProgramTabModel {
 
-	/**
-	 * Constructor for DefaultProgramTabModel.
-	 */
-	public VisualDCTProgramTabModel(Object toAbout) {
-		super();
-	}
+    /**
+     * Constructor for DefaultProgramTabModel.
+     */
+    public VisualDCTProgramTabModel(Object toAbout) {
+        super();
+    }
 
-	/**
-	 * @see com.cosylab.gui.components.about.ProgramTabModel#getProductBuild()
-	 */
-	public String getProductBuild()
-	{
-		return "build "+Version.BUILD;
-	}
+    /**
+     * @see com.cosylab.gui.components.about.ProgramTabModel#getProductBuild()
+     */
+    public String getProductBuild()
+    {
+        return "build "+Version.BUILD;
+    }
 
-	/**
-	 * @see com.cosylab.gui.components.about.ProgramTabModel#getProductBuildDate()
-	 */
-	public String getProductBuildDate()
-	{
-		return null;
-	}
+    /**
+     * @see com.cosylab.gui.components.about.ProgramTabModel#getProductBuildDate()
+     */
+    public String getProductBuildDate()
+    {
+        return null;
+    }
 
-	/**
-	 * @see com.cosylab.gui.components.about.ProgramTabModel#getProductDocsURL()
-	 */
-	public URL getProductDocsURL()
-	{
-		try
-		{
-			return new URL("http://visualdct.cosylab.com/builds/VisualDCT/");
-		} catch (MalformedURLException mue)
-		{
-			return null;
-		}
-	}
+    /**
+     * @see com.cosylab.gui.components.about.ProgramTabModel#getProductDocsURL()
+     */
+    public URL getProductDocsURL()
+    {
+        try
+        {
+            return new URL("http://visualdct.cosylab.com/builds/VisualDCT/");
+        } catch (MalformedURLException mue)
+        {
+            return null;
+        }
+    }
 
-	/**
-	 * @see com.cosylab.gui.components.about.ProgramTabModel#getProductLogoImage()
-	 */
-	public Icon getProductLogoImage()
-	{
-		try
-		{
-			return new ImageIcon(getClass().getResource("/images/cosylab.gif"));
-		} catch (Exception mue)
-		{
-			return null;
-		}
-	}
+    /**
+     * @see com.cosylab.gui.components.about.ProgramTabModel#getProductLogoImage()
+     */
+    public Icon getProductLogoImage()
+    {
+        try
+        {
+            return new ImageIcon(getClass().getResource("/images/cosylab.gif"));
+        } catch (Exception mue)
+        {
+            return null;
+        }
+    }
 
-	/**
-	 * @see com.cosylab.gui.components.about.ProgramTabModel#getProductName()
-	 */
-	public String getProductName()
-	{
-		return "Visual Database Configuration Tool";
-	}
+    /**
+     * @see com.cosylab.gui.components.about.ProgramTabModel#getProductName()
+     */
+    public String getProductName()
+    {
+        return "Visual Database Configuration Tool";
+    }
 
-	/**
-	 * @see com.cosylab.gui.components.about.ProgramTabModel#getProductURL()
-	 */
-	public URL getProductURL()
-	{
-		try
-		{
-			return new URL("http://visualdct.cosylab.com/");
-		} catch (MalformedURLException mue)
-		{
-			return null;
-		}
-	}
+    /**
+     * @see com.cosylab.gui.components.about.ProgramTabModel#getProductURL()
+     */
+    public URL getProductURL()
+    {
+        try
+        {
+            return new URL("http://visualdct.cosylab.com/");
+        } catch (MalformedURLException mue)
+        {
+            return null;
+        }
+    }
 
-	/**
-	 * @see com.cosylab.gui.components.about.ProgramTabModel#getProductVersion()
-	 */
-	public String getProductVersion()
-	{
-		return "v"+Version.VERSION;
-	}
+    /**
+     * @see com.cosylab.gui.components.about.ProgramTabModel#getProductVersion()
+     */
+    public String getProductVersion()
+    {
+        return "v"+Version.VERSION;
+    }
 
-	/**
-	 * @see com.cosylab.gui.components.about.ProgramTabModel#getVendor()
-	 */
-	public String getVendor()
-	{
-		return "by Matej Sekoranja and Ivo List, Jaka Bobnar, Cosylab, Ltd.";
-	}
+    /**
+     * @see com.cosylab.gui.components.about.ProgramTabModel#getVendor()
+     */
+    public String getVendor()
+    {
+        return "by Matej Sekoranja and Ivo List, Jaka Bobnar, Cosylab, Ltd.";
+    }
 
-	/**
-	 * @see com.cosylab.gui.components.about.ProgramTabModel#getVendorEmail()
-	 */
-	public String getVendorEmail()
-	{
-		return "info@cosylab.com";
-	}
+    /**
+     * @see com.cosylab.gui.components.about.ProgramTabModel#getVendorEmail()
+     */
+    public String getVendorEmail()
+    {
+        return "info@cosylab.com";
+    }
 
-	/**
-	 * @see com.cosylab.gui.components.about.ProgramTabModel#getVendorURL()
-	 */
-	public URL getVendorURL()
-	{
-		try
-		{
-			return new URL("http://www.cosylab.com/");
-		} catch (MalformedURLException mue)
-		{
-			return null;
-		}
-	}
+    /**
+     * @see com.cosylab.gui.components.about.ProgramTabModel#getVendorURL()
+     */
+    public URL getVendorURL()
+    {
+        try
+        {
+            return new URL("http://www.cosylab.com/");
+        } catch (MalformedURLException mue)
+        {
+            return null;
+        }
+    }
 
-	/**
-	 * @see com.cosylab.gui.components.about.AboutTabModel#aquireData()
-	 */
-	public void aquireData()
-	{
-	}
+    /**
+     * @see com.cosylab.gui.components.about.AboutTabModel#aquireData()
+     */
+    public void aquireData()
+    {
+    }
 
 }

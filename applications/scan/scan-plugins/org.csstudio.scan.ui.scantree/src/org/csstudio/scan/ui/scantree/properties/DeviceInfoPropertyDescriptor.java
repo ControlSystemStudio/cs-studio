@@ -39,15 +39,15 @@ public class DeviceInfoPropertyDescriptor extends PropertyDescriptor
     public CellEditor createPropertyEditor(final Composite parent)
     {
         CellEditor editor = null;
-		if (devices == null || devices.isEmpty()) {
-			// If no device are defined in configuration,
-			// provides a PV autocomplete cell editor
-			editor = AutoCompleteUIHelper.createAutoCompleteTextCellEditor(
-					parent, AutoCompleteTypes.PV);
-		} else {
-			// Otherwise, provides the devices list
-			editor = new DeviceInfoCellEditor(parent, devices);
-		}
+        if (devices == null || devices.isEmpty()) {
+            // If no device are defined in configuration,
+            // provides a PV autocomplete cell editor
+            editor = AutoCompleteUIHelper.createAutoCompleteTextCellEditor(
+                    parent, AutoCompleteTypes.PV);
+        } else {
+            // Otherwise, provides the devices list
+            editor = new DeviceInfoCellEditor(parent, devices);
+        }
         if (getValidator() != null)
             editor.setValidator(getValidator());
         return editor;

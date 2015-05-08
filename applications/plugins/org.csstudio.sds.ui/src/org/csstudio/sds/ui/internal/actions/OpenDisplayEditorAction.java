@@ -36,61 +36,61 @@ import org.eclipse.ui.WorkbenchException;
  * 
  */
 public final class OpenDisplayEditorAction implements
-		IWorkbenchWindowActionDelegate {
+        IWorkbenchWindowActionDelegate {
 
-	/**
-	 * A workbench window handle.
-	 */
-	private IWorkbenchWindow _window;
+    /**
+     * A workbench window handle.
+     */
+    private IWorkbenchWindow _window;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void dispose() {
+    /**
+     * {@inheritDoc}
+     */
+    public void dispose() {
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void init(final IWorkbenchWindow window) {
-		_window = window;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void init(final IWorkbenchWindow window) {
+        _window = window;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void run(final IAction action) {
-//		String query = "x."+DisplayEditor.SDS_FILE_EXTENSION; //$NON-NLS-1$
+    /**
+     * {@inheritDoc}
+     */
+    public void run(final IAction action) {
+//        String query = "x."+DisplayEditor.SDS_FILE_EXTENSION; //$NON-NLS-1$
 //
-//		// we need a dummy editor input...
-//		IEditorInput editorInput = new ControlSystemItemEditorInput(
-//				CentralItemFactory.createProcessVariable("x")); //$NON-NLS-1$
+//        // we need a dummy editor input...
+//        IEditorInput editorInput = new ControlSystemItemEditorInput(
+//                CentralItemFactory.createProcessVariable("x")); //$NON-NLS-1$
 //
-//		IEditorRegistry editorRegistry = PlatformUI.getWorkbench()
-//				.getEditorRegistry();
-//		IEditorDescriptor descriptor = editorRegistry.getDefaultEditor(query);
+//        IEditorRegistry editorRegistry = PlatformUI.getWorkbench()
+//                .getEditorRegistry();
+//        IEditorDescriptor descriptor = editorRegistry.getDefaultEditor(query);
 //
-//		if (descriptor != null && editorInput != null) {
-//			IWorkbenchPage page = _window.getActivePage();
-//			try {
-//				page.openEditor(editorInput, descriptor.getId());
-//			} catch (PartInitException e) {
-//				CentralLogger.getInstance()
-//						.error(this, "Cannot open editor", e); //$NON-NLS-1$
-//			}
-//		}
-	    try {
+//        if (descriptor != null && editorInput != null) {
+//            IWorkbenchPage page = _window.getActivePage();
+//            try {
+//                page.openEditor(editorInput, descriptor.getId());
+//            } catch (PartInitException e) {
+//                CentralLogger.getInstance()
+//                        .error(this, "Cannot open editor", e); //$NON-NLS-1$
+//            }
+//        }
+        try {
             PlatformUI.getWorkbench().showPerspective("org.csstudio.sds.ui.internal.workbench.SynopticDisplayStudioPerspective", _window);
         } catch (WorkbenchException e) {
             e.printStackTrace();
         }
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void selectionChanged(final IAction action,
-			final ISelection selection) {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void selectionChanged(final IAction action,
+            final ISelection selection) {
+    }
 }

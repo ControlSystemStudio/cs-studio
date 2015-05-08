@@ -21,42 +21,42 @@ import org.eclipse.swt.browser.Browser;
  * 
  */
 public final class WebBrowserEditPart extends AbstractBaseEditPart {
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		final WebBrowserModel model = getWidgetModel();
-		final AbstractWebBrowserFigure<?> figure = SingleSourceHelper.createWebBrowserFigure(
-				this, model.isShowToolBar());
-		figure.setUrl(model.getURL());	
-		return figure;
-	}
-	
-	@Override
-	public WebBrowserModel getWidgetModel() {
-		return (WebBrowserModel)getModel();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		
-		// URL
-		IWidgetPropertyChangeHandler urlHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				((AbstractWebBrowserFigure<?>)refreshableFigure).setUrl((String)newValue);
-				return false;
-			}
-		};
-		setPropertyChangeHandler(WebBrowserModel.PROP_URL, urlHandler);
-	}	
-	
-	public Browser getBrowser(){
-		return ((AbstractWebBrowserFigure<?>)getFigure()).getBrowser();
-	}
-	
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        final WebBrowserModel model = getWidgetModel();
+        final AbstractWebBrowserFigure<?> figure = SingleSourceHelper.createWebBrowserFigure(
+                this, model.isShowToolBar());
+        figure.setUrl(model.getURL());    
+        return figure;
+    }
+    
+    @Override
+    public WebBrowserModel getWidgetModel() {
+        return (WebBrowserModel)getModel();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        
+        // URL
+        IWidgetPropertyChangeHandler urlHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                ((AbstractWebBrowserFigure<?>)refreshableFigure).setUrl((String)newValue);
+                return false;
+            }
+        };
+        setPropertyChangeHandler(WebBrowserModel.PROP_URL, urlHandler);
+    }    
+    
+    public Browser getBrowser(){
+        return ((AbstractWebBrowserFigure<?>)getFigure()).getBrowser();
+    }
+    
 }

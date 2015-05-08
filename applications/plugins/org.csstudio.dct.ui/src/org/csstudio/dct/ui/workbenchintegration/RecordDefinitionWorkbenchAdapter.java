@@ -9,20 +9,20 @@ import org.csstudio.dct.metamodel.IRecordDefinition;
  */
 public final class RecordDefinitionWorkbenchAdapter extends BaseWorkbenchAdapter<IRecordDefinition> {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String doGetLabel(IRecordDefinition definition) {
-		return definition.getType();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String doGetLabel(IRecordDefinition definition) {
+        return definition.getType();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String doGetIcon(IRecordDefinition record) {
-		return "icons/recorddefinition.png";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String doGetIcon(IRecordDefinition record) {
+        return "icons/recorddefinition.png";
+    }
 
 }

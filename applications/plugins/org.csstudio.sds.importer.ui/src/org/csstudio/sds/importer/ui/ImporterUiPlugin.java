@@ -29,45 +29,45 @@ import org.osgi.framework.BundleContext;
  */
 public final class ImporterUiPlugin extends AbstractUIPlugin {
 
-	/**
-	 * The plug-in ID.
-	 */
-	public static final String PLUGIN_ID = "org.csstudio.sds.importer.ui"; //$NON-NLS-1$
+    /**
+     * The plug-in ID.
+     */
+    public static final String PLUGIN_ID = "org.csstudio.sds.importer.ui"; //$NON-NLS-1$
 
-	/**
-	 * The shared instance.
-	 */
-	private static ImporterUiPlugin _plugin;
+    /**
+     * The shared instance.
+     */
+    private static ImporterUiPlugin _plugin;
 
-	/**
-	 * The constructor.
-	 */
-	public ImporterUiPlugin() {
-		_plugin = this;
-	}
+    /**
+     * The constructor.
+     */
+    public ImporterUiPlugin() {
+        _plugin = this;
+    }
 
-	/**
-	 * Returns the shared instance.
-	 * 
-	 * @return the shared instance.
-	 */
-	public static ImporterUiPlugin getDefault() {
-		return _plugin;
-	}
+    /**
+     * Returns the shared instance.
+     * 
+     * @return the shared instance.
+     */
+    public static ImporterUiPlugin getDefault() {
+        return _plugin;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void start(final BundleContext context) throws Exception {
-		super.start(context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void start(final BundleContext context) throws Exception {
+        super.start(context);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void stop(final BundleContext context) throws Exception {
-		super.stop(context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void stop(final BundleContext context) throws Exception {
+        super.stop(context);
+    }
 }

@@ -37,16 +37,16 @@ import com.cosylab.vdct.graphics.objects.LinkManagerObject;
  * @author 
  */
 public class MoveFieldUpAction extends ActionObject {
-	protected com.cosylab.vdct.graphics.objects.Field field;
-	protected LinkManagerObject parentObject;
+    protected com.cosylab.vdct.graphics.objects.Field field;
+    protected LinkManagerObject parentObject;
 /**
  * Insert the method's description here.
  * Creation date: (5.5.2001 12:08:29)
  * @param field com.cosylab.vdct.graphics.objects.Field
  */
 public MoveFieldUpAction(com.cosylab.vdct.graphics.objects.Field field) {
-	this.field=field;
-	this.parentObject = (LinkManagerObject)field.getParent();
+    this.field=field;
+    this.parentObject = (LinkManagerObject)field.getParent();
 }
 /**
  * Insert the method's description here.
@@ -54,18 +54,18 @@ public MoveFieldUpAction(com.cosylab.vdct.graphics.objects.Field field) {
  * @return java.lang.String
  */
 public String getDescription() {
-	return "Move field up ["+field+"]";
+    return "Move field up ["+field+"]";
 }
 /**
  * This method was created in VisualAge.
  */
 protected void redoAction() {
-	parentObject.moveFieldUp(field);
+    parentObject.moveFieldUp(field);
 }
 /**
  * This method was created in VisualAge.
  */
 protected void undoAction() {
-	parentObject.moveFieldDown(field);
+    parentObject.moveFieldDown(field);
 }
 }

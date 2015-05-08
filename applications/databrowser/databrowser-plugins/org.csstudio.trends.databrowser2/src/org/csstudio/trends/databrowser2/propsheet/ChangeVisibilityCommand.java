@@ -40,17 +40,17 @@ public class ChangeVisibilityCommand extends UndoableAction
     @Override
     public void run()
     {
-		final AxisConfig axis = item.getAxis();
-		item.setVisible(new_visibility);
-		axis.setVisible(item.getModel().get().hasAxisActiveItems(axis));
+        final AxisConfig axis = item.getAxis();
+        item.setVisible(new_visibility);
+        axis.setVisible(item.getModel().get().hasAxisActiveItems(axis));
     }
 
     /** {@inheritDoc} */
     @Override
     public void undo()
     {
-		final AxisConfig axis = item.getAxis();
-		item.setVisible(old_visibility);
+        final AxisConfig axis = item.getAxis();
+        item.setVisible(old_visibility);
         axis.setVisible(item.getModel().get().hasAxisActiveItems(axis));
     }
 }

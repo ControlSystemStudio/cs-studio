@@ -32,30 +32,30 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  * 
  */
 public final class TestWidgetModel extends AbstractWidgetModel {
-	/**
-	 * ID for a test property.
-	 */
-	public static final String PROP_TEST = "PROP_TEST"; //$NON-NLS-1$
+    /**
+     * ID for a test property.
+     */
+    public static final String PROP_TEST = "PROP_TEST"; //$NON-NLS-1$
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void configureProperties() {
-		addDoubleProperty(PROP_TEST, "Test Property", WidgetPropertyCategory.BEHAVIOR, 1.0, false); //$NON-NLS-1$
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configureProperties() {
+        addDoubleProperty(PROP_TEST, "Test Property", WidgetPropertyCategory.BEHAVIOR, 1.0, false); //$NON-NLS-1$
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTypeID() {
-		return "element.test"; //$NON-NLS-1$
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTypeID() {
+        return "element.test"; //$NON-NLS-1$
+    }
 
-	@Override
-	protected String getDefaultToolTip() {
-		return "";
-	}
+    @Override
+    protected String getDefaultToolTip() {
+        return "";
+    }
 
 }

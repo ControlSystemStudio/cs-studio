@@ -39,81 +39,81 @@ import org.eclipse.swt.widgets.Label;
  * 
  */
 public final class FontCellEditor extends DialogCellEditor {
-	/**
-	 * The composite widget.
-	 */
-	private Composite _composite;
+    /**
+     * The composite widget.
+     */
+    private Composite _composite;
 
-	/**
-	 * The label widget showing the FontData values.
-	 */
-	private Label _fontLabel;
+    /**
+     * The label widget showing the FontData values.
+     */
+    private Label _fontLabel;
 
-	/**
-	 * Creates a new font cell editor parented under the given control. The cell
-	 * editor value is <code>null</code> initially, and has no validator.
-	 * 
-	 * @param parent
-	 *            the parent control
-	 */
-	public FontCellEditor(final Composite parent) {
-		this(parent, SWT.NONE);
-	}
+    /**
+     * Creates a new font cell editor parented under the given control. The cell
+     * editor value is <code>null</code> initially, and has no validator.
+     * 
+     * @param parent
+     *            the parent control
+     */
+    public FontCellEditor(final Composite parent) {
+        this(parent, SWT.NONE);
+    }
 
-	/**
-	 * Creates a new font cell editor parented under the given control. The cell
-	 * editor value is <code>null</code> initially, and has no validator.
-	 * 
-	 * @param parent
-	 *            the parent control
-	 * @param style
-	 *            the style bits
-	 */
-	public FontCellEditor(final Composite parent, final int style) {
-		super(parent, style);
-		doSetValue(new FontData("Arial", 8, SWT.NONE)); //$NON-NLS-1$
-	}
+    /**
+     * Creates a new font cell editor parented under the given control. The cell
+     * editor value is <code>null</code> initially, and has no validator.
+     * 
+     * @param parent
+     *            the parent control
+     * @param style
+     *            the style bits
+     */
+    public FontCellEditor(final Composite parent, final int style) {
+        super(parent, style);
+        doSetValue(new FontData("Arial", 8, SWT.NONE)); //$NON-NLS-1$
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Control createContents(final Composite cell) {
-		Color bg = cell.getBackground();
-		_composite = new Composite(cell, getStyle());
-		_composite.setBackground(bg);
-		_composite.setLayout(new FillLayout());
-		_fontLabel = new Label(_composite, SWT.LEFT);
-		_fontLabel.setBackground(bg);
-		_fontLabel.setFont(cell.getFont());
-		return _composite;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Control createContents(final Composite cell) {
+        Color bg = cell.getBackground();
+        _composite = new Composite(cell, getStyle());
+        _composite.setBackground(bg);
+        _composite.setLayout(new FillLayout());
+        _fontLabel = new Label(_composite, SWT.LEFT);
+        _fontLabel.setBackground(bg);
+        _fontLabel.setFont(cell.getFont());
+        return _composite;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Object openDialogBox(final Control cellEditorWindow) {
-		FontDialog dialog = new FontDialog(cellEditorWindow.getShell());
-		Object value = getValue();
-		if (value != null) {
-			FontData[] fontData = new FontData[] { (FontData) value };
-			dialog.setFontList(fontData);
-		}
-		value = dialog.open();
-		return dialog.getFontList()[0];
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Object openDialogBox(final Control cellEditorWindow) {
+        FontDialog dialog = new FontDialog(cellEditorWindow.getShell());
+        Object value = getValue();
+        if (value != null) {
+            FontData[] fontData = new FontData[] { (FontData) value };
+            dialog.setFontList(fontData);
+        }
+        value = dialog.open();
+        return dialog.getFontList()[0];
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void updateContents(final Object value) {
-		FontData font = (FontData) value;
-		if (font == null) {
-			font = new FontData("Arial", 8, SWT.NONE); //$NON-NLS-1$
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void updateContents(final Object value) {
+        FontData font = (FontData) value;
+        if (font == null) {
+            font = new FontData("Arial", 8, SWT.NONE); //$NON-NLS-1$
+        }
 
-		_fontLabel.setText("(" + font.getName() + "," + font.getHeight() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-	}
+        _fontLabel.setText("(" + font.getName() + "," + font.getHeight() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
 }

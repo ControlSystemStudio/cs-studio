@@ -34,151 +34,151 @@ import org.eclipse.core.runtime.Platform;
  * 
  */
 public final class RuleDescriptor implements IAdaptable {
-	/**
-	 * The ID of the rule.
-	 */
-	private String _ruleId;
+    /**
+     * The ID of the rule.
+     */
+    private String _ruleId;
 
-	/**
-	 * The textual description of the rule.
-	 */
-	private String _description;
+    /**
+     * The textual description of the rule.
+     */
+    private String _description;
 
-	/**
-	 * The textual descriptions of the expected parameters.
-	 */
-	private String[] _parameterDescriptions;
+    /**
+     * The textual descriptions of the expected parameters.
+     */
+    private String[] _parameterDescriptions;
 
-	/**
-	 * The return type of the rule output.
-	 */
-	private PropertyTypesEnum[] _returnType;
+    /**
+     * The return type of the rule output.
+     */
+    private PropertyTypesEnum[] _returnType;
 
-	/**
-	 * The described rule.
-	 */
-	private IRule _rule;
+    /**
+     * The described rule.
+     */
+    private IRule _rule;
 
-	/**
-	 * Flag that indicates if the rule is scripted (the opposite is hard-coded
-	 * in java).
-	 */
-	private boolean _isScriptedRule;
+    /**
+     * Flag that indicates if the rule is scripted (the opposite is hard-coded
+     * in java).
+     */
+    private boolean _isScriptedRule;
 
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param ruleId
-	 *            The ID of the rule.
-	 * @param description
-	 *            The textual description of the rule.
-	 * @param parameterDescriptions
-	 *            The textual descriptions of the expected parameters.
-	 * @param parameterTypes
-	 *            The types of the expected parameters.
-	 * @param compatiblePropertyTypes
-	 *            The type of the return value.
-	 * @param rule
-	 *            The described rule.
-	 * @param isScriptedRule
-	 *            Flag that indicates if the rule is scripted (the opposite is
-	 *            hard-coded in java).
-	 */
-	public RuleDescriptor(final String ruleId, final String description,
-			final String[] parameterDescriptions,
-			final PropertyTypesEnum[] compatiblePropertyTypes,
-			final IRule rule, final boolean isScriptedRule) {
-		assert ruleId != null;
-		assert description != null;
-		assert parameterDescriptions != null;
-		assert rule != null;
-		_ruleId = ruleId;
-		_description = description;
-		_parameterDescriptions = parameterDescriptions;
-		_returnType = compatiblePropertyTypes;
-		_rule = rule;
-		_isScriptedRule = isScriptedRule;
-	}
+    /**
+     * Standard constructor.
+     * 
+     * @param ruleId
+     *            The ID of the rule.
+     * @param description
+     *            The textual description of the rule.
+     * @param parameterDescriptions
+     *            The textual descriptions of the expected parameters.
+     * @param parameterTypes
+     *            The types of the expected parameters.
+     * @param compatiblePropertyTypes
+     *            The type of the return value.
+     * @param rule
+     *            The described rule.
+     * @param isScriptedRule
+     *            Flag that indicates if the rule is scripted (the opposite is
+     *            hard-coded in java).
+     */
+    public RuleDescriptor(final String ruleId, final String description,
+            final String[] parameterDescriptions,
+            final PropertyTypesEnum[] compatiblePropertyTypes,
+            final IRule rule, final boolean isScriptedRule) {
+        assert ruleId != null;
+        assert description != null;
+        assert parameterDescriptions != null;
+        assert rule != null;
+        _ruleId = ruleId;
+        _description = description;
+        _parameterDescriptions = parameterDescriptions;
+        _returnType = compatiblePropertyTypes;
+        _rule = rule;
+        _isScriptedRule = isScriptedRule;
+    }
 
-	/**
-	 * Return the textual description of the rule.
-	 * 
-	 * @return The textual description of the rule.
-	 */
-	public String getDescription() {
-		return _description;
-	}
+    /**
+     * Return the textual description of the rule.
+     * 
+     * @return The textual description of the rule.
+     */
+    public String getDescription() {
+        return _description;
+    }
 
-	/**
-	 * Return the textual descriptions of the expected parameters.
-	 * 
-	 * @return The textual descriptions of the expected parameters.
-	 */
-	public String[] getParameterDescriptions() {
-		return _parameterDescriptions;
-	}
+    /**
+     * Return the textual descriptions of the expected parameters.
+     * 
+     * @return The textual descriptions of the expected parameters.
+     */
+    public String[] getParameterDescriptions() {
+        return _parameterDescriptions;
+    }
 
-	/**
-	 * Returns the return type of the rule.
-	 * 
-	 * @return the rule´s return type
-	 */
-	public PropertyTypesEnum[] getCompatiblePropertyTypes() {
-		return _returnType;
-	}
+    /**
+     * Returns the return type of the rule.
+     * 
+     * @return the rule´s return type
+     */
+    public PropertyTypesEnum[] getCompatiblePropertyTypes() {
+        return _returnType;
+    }
 
-	/**
-	 * Return the ID of the rule.
-	 * 
-	 * @return The ID of the rule.
-	 */
-	public String getRuleId() {
-		return _ruleId;
-	}
+    /**
+     * Return the ID of the rule.
+     * 
+     * @return The ID of the rule.
+     */
+    public String getRuleId() {
+        return _ruleId;
+    }
 
-	/**
-	 * Return the described rule.
-	 * 
-	 * @return The described rule.
-	 */
-	public IRule getRule() {
-		return _rule;
-	}
+    /**
+     * Return the described rule.
+     * 
+     * @return The described rule.
+     */
+    public IRule getRule() {
+        return _rule;
+    }
 
-	/**
-	 * Return whether the rule is scripted or hard-coded in java.
-	 * 
-	 * @return True, if the rule is scripted or false if it's hard-coded in
-	 *         java.
-	 */
-	public boolean isScriptedRule() {
-		return _isScriptedRule;
-	}
+    /**
+     * Return whether the rule is scripted or hard-coded in java.
+     * 
+     * @return True, if the rule is scripted or false if it's hard-coded in
+     *         java.
+     */
+    public boolean isScriptedRule() {
+        return _isScriptedRule;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		StringBuffer sb = new StringBuffer(getDescription());
-		sb.append("\n\nExpected parameters: "); //$NON-NLS-1$
-		sb.append(_parameterDescriptions.length);
-		sb.append("\n"); //$NON-NLS-1$
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer(getDescription());
+        sb.append("\n\nExpected parameters: "); //$NON-NLS-1$
+        sb.append(_parameterDescriptions.length);
+        sb.append("\n"); //$NON-NLS-1$
 
-		for (int i = 0; i < _parameterDescriptions.length; i++) {
-			sb
-					.append("\tParameter " + i + ": " + _parameterDescriptions[i] + "\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		}
+        for (int i = 0; i < _parameterDescriptions.length; i++) {
+            sb
+                    .append("\tParameter " + i + ": " + _parameterDescriptions[i] + "\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
 
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(final Class adapter) {
-		return Platform.getAdapterManager().getAdapter(this, adapter);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Object getAdapter(final Class adapter) {
+        return Platform.getAdapterManager().getAdapter(this, adapter);
+    }
 
 }

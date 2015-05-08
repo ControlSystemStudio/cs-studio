@@ -36,18 +36,18 @@ import com.cosylab.vdct.Constants;
  * @author Matej Sekoranja 
  */
 public abstract class EPICSLink extends Field implements Descriptable, Linkable, Rotatable {
-	protected int r = Constants.LINK_RADIOUS;
-	protected boolean disconnected = false;
-	protected int rtailLen = Constants.TAIL_LENGTH;
-	private boolean right = true;
+    protected int r = Constants.LINK_RADIOUS;
+    protected boolean disconnected = false;
+    protected int rtailLen = Constants.TAIL_LENGTH;
+    private boolean right = true;
 /**
  * EPICSLink constructor comment.
  * @param parent com.cosylab.vdct.graphics.objects.ContainerObject
  * @param fieldData com.cosylab.vdct.vdb.VDBFieldData
  */
 public EPICSLink(ContainerObject parent, com.cosylab.vdct.vdb.VDBFieldData fieldData) {
-	super(parent, fieldData);
-	setColor(Constants.FRAME_COLOR);
+    super(parent, fieldData);
+    setColor(Constants.FRAME_COLOR);
 }
 
 /**
@@ -55,19 +55,19 @@ public EPICSLink(ContainerObject parent, com.cosylab.vdct.vdb.VDBFieldData field
  * Creation date: (4.2.2001 19:09:33)
  */
 public void destroy() {
-	if (!isDestroyed()) {
-		super.destroy();
-		disconnected = true;
-		if (getParent() instanceof Hub)
-			((Hub)getParent()).removeLink(this);
-	}
+    if (!isDestroyed()) {
+        super.destroy();
+        disconnected = true;
+        if (getParent() instanceof Hub)
+            ((Hub)getParent()).removeLink(this);
+    }
 }
 /**
  * Insert the method's description here.
  * Creation date: (29.1.2001 21:23:04)
  */
 public void disconnect(Linkable disconnector) {
-	disconnected=true;
+    disconnected=true;
 }
 /**
  * Insert the method's description here.
@@ -75,7 +75,7 @@ public void disconnect(Linkable disconnector) {
  * @return java.lang.String
  */
 public String getDescription() {
-	return getFieldData().getFullName();
+    return getFieldData().getFullName();
 }
 /**
  * Insert the method's description here.
@@ -83,7 +83,7 @@ public String getDescription() {
  * @return java.lang.String
  */
 public String getID() {
-	return getFieldData().getFullName();
+    return getFieldData().getFullName();
 }
 /**
  * Insert the method's description here.
@@ -91,7 +91,7 @@ public String getID() {
  * @return java.lang.String
  */
 public String getLayerID() {
-	return getParent().getParent().toString();
+    return getParent().getParent().toString();
 }
 /**
  * Insert the method's description here.
@@ -99,7 +99,7 @@ public String getLayerID() {
  * @return boolean
  */
 public boolean isConnectable() {
-	return !disconnected;
+    return !disconnected;
 }
 /**
  * Insert the method's description here.
@@ -107,7 +107,7 @@ public boolean isConnectable() {
  * @return boolean
  */
 public boolean isDisconnected() {
-	return disconnected;
+    return disconnected;
 }
 /**
  * Insert the method's description here.
@@ -115,7 +115,7 @@ public boolean isDisconnected() {
  * @return boolean
  */
 public boolean isRight() {
-	return right;
+    return right;
 }
 /**
  * Insert the method's description here.
@@ -123,7 +123,7 @@ public boolean isRight() {
  * @return boolean
  */
 public boolean isStaticRight() {
-	return right;
+    return right;
 }
 /**
  * Insert the method's description here.
@@ -142,7 +142,7 @@ public void setDescription(String description) {}
  * @param id java.lang.String
  */
 public void setLayerID(String id) {
-	// not needed, id is retrieved dynamicaly via parent	
+    // not needed, id is retrieved dynamicaly via parent    
 }
 /**
  * Insert the method's description here.
@@ -155,10 +155,10 @@ public void setRight(boolean state) { right=state; }
  * Creation date: (31.1.2001 18:49:28)
  */
 public void validate() {
-	super.validate();
-	double Rscale = getRscale();
-	r = (int)(Rscale*Constants.LINK_RADIOUS);
-	rtailLen = (int)(Rscale*Constants.TAIL_LENGTH);
+    super.validate();
+    double Rscale = getRscale();
+    r = (int)(Rscale*Constants.LINK_RADIOUS);
+    rtailLen = (int)(Rscale*Constants.TAIL_LENGTH);
 }
 
 /// Called after chaning value silently (fixLinks)

@@ -29,11 +29,11 @@
  */
 public final class OpenDisplayActionModelFactory implements IActionModelFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractWidgetActionModel createWidgetActionModel() {
-		return new OpenDisplayActionModel();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractWidgetActionModel createWidgetActionModel() {
+        return new OpenDisplayActionModel();
+    }
 
 }

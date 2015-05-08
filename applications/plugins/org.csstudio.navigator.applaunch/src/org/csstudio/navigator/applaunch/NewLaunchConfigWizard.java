@@ -18,34 +18,34 @@ import org.eclipse.ui.IWorkbench;
  */
 public class NewLaunchConfigWizard extends Wizard implements INewWizard
 {
-	private IStructuredSelection selection;
-	private LaunchConfigWizardFilePage file_page;
-	private LaunchConfigWizardContentPage config_page;
+    private IStructuredSelection selection;
+    private LaunchConfigWizardFilePage file_page;
+    private LaunchConfigWizardContentPage config_page;
 
-	/** Track current selection */
-	@Override
-	public void init(IWorkbench workbench, IStructuredSelection selection)
-	{
-		this.selection = selection;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-    public void addPages()
+    /** Track current selection */
+    @Override
+    public void init(IWorkbench workbench, IStructuredSelection selection)
     {
-		file_page = new LaunchConfigWizardFilePage(selection);
-		config_page = new LaunchConfigWizardContentPage();
-		addPage(file_page);
-		addPage(config_page);
+        this.selection = selection;
     }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean performFinish()
-	{
-		final LaunchConfig config = config_page.getConfig();
-		file_page.setConfig(config);
-		final IFile file = file_page.createNewFile();
-		return file != null;
-	}
+    /** {@inheritDoc} */
+    @Override
+    public void addPages()
+    {
+        file_page = new LaunchConfigWizardFilePage(selection);
+        config_page = new LaunchConfigWizardContentPage();
+        addPage(file_page);
+        addPage(config_page);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean performFinish()
+    {
+        final LaunchConfig config = config_page.getConfig();
+        file_page.setConfig(config);
+        final IFile file = file_page.createNewFile();
+        return file != null;
+    }
 }

@@ -98,8 +98,8 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
     @Override
     public void useAxisName(final boolean use_axis_name)
     {
-    	if (label_provider.isUsingAxisName() == use_axis_name)
-    		return;
+        if (label_provider.isUsingAxisName() == use_axis_name)
+            return;
         label_provider.useAxisName(use_axis_name);
         requestLayout();
         requestRefresh();
@@ -116,8 +116,8 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
     @Override
     public void useTraceNames(final boolean use_trace_names)
     {
-    	if (label_provider.isUsingTraceNames() == use_trace_names)
-    		return;
+        if (label_provider.isUsingTraceNames() == use_trace_names)
+            return;
         label_provider.useTraceNames(use_trace_names);
         requestLayout();
         requestRefresh();
@@ -150,8 +150,8 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
     @Override
     public void setOnRight(final boolean right)
     {
-    	if (is_right == right)
-    		return;
+        if (is_right == right)
+            return;
         is_right = right;
         requestLayout();
         requestRefresh();

@@ -70,7 +70,7 @@ public class MatFileIncrementalWriter
     private boolean headerWritten = false;
     private boolean isStillValid = false;
     private Set<String> varNames = new TreeSet<String>();
-	/**
+    /**
      * Creates a writer to a file given the filename.
      * 
      * @param fileName - name of ouput file
@@ -103,8 +103,8 @@ public class MatFileIncrementalWriter
      */
     public MatFileIncrementalWriter(WritableByteChannel chan) throws IOException
     {
-    	this.channel = chan;
-    	isStillValid = true;
+        this.channel = chan;
+        isStillValid = true;
     }
     
     public synchronized void write(MLArray data)
@@ -113,15 +113,15 @@ public class MatFileIncrementalWriter
         String vName = data.getName();
         if (varNames.contains(vName))
         {
-        	throw new IllegalArgumentException("Error: variable " + vName + " specified more than once for file input.");
+            throw new IllegalArgumentException("Error: variable " + vName + " specified more than once for file input.");
         }
         try
         {
             //write the header, but only once.
-        	if (!headerWritten)
-        	{
-        		writeHeader(channel);
-        	}
+            if (!headerWritten)
+            {
+                writeHeader(channel);
+            }
             
             //prepare buffer for MATRIX data
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -179,13 +179,13 @@ public class MatFileIncrementalWriter
             //write data
             for ( MLArray matrix : data )
             {
-            	write(matrix);
+                write(matrix);
             }
         }
         catch ( IllegalArgumentException iae)
         {
-        	isStillValid = false;
-        	throw iae;
+            isStillValid = false;
+            throw iae;
         }
         catch ( IOException e )
         {
@@ -195,7 +195,7 @@ public class MatFileIncrementalWriter
     
     public synchronized void close() throws IOException
     {
-    	channel.close();
+        channel.close();
     }
     
     /**

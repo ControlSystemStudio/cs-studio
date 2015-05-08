@@ -7,15 +7,15 @@ package org.csstudio.platform.simpledal;
  * 
  */
 public interface IProcessVariableWriteListener {
-	/**
-	 * This method is called when a value was successfully written.
-	 */
-	void success();
+    /**
+     * This method is called when a value was successfully written.
+     */
+    void success();
 
-	/**
-	 * This method is called when an error occured during the write attempt.
-	 * 
-	 * @param error optional exception
-	 */
-	void error(Exception error);
+    /**
+     * This method is called when an error occured during the write attempt.
+     * 
+     * @param error optional exception
+     */
+    void error(Exception error);
 }

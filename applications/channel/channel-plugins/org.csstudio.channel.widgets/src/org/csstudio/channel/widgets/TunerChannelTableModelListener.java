@@ -9,5 +9,5 @@ package org.csstudio.channel.widgets;
  */
 public interface TunerChannelTableModelListener {
 
-	public void dataChanged();
+    public void dataChanged();
 }

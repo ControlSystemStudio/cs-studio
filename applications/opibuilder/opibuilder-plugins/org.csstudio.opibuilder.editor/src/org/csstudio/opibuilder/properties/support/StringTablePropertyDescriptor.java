@@ -25,52 +25,52 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  * 
  */
 public final class StringTablePropertyDescriptor extends TextPropertyDescriptor {
-	
-	private String displayName;
-	private TitlesProvider columnTitles;
-	private CellEditorType[] cellEditorTypes;
-	private Object[] cellEditorDatas;
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param id
-	 *            the id of the property
-	 * @param displayName
-	 *            the name to display for the property
-	 */
-	public StringTablePropertyDescriptor(final Object id, final String displayName, 
-			final TitlesProvider tilesProvider, CellEditorType[] cellEditorTypes,  Object[] cellEditorDatas) {
-		super(id, displayName);
-		this.displayName = displayName;
-		this.columnTitles = tilesProvider;
-		this.cellEditorTypes = cellEditorTypes;
-		this.cellEditorDatas = cellEditorDatas;
-		setLabelProvider(new LabelProvider(){
-			@Override
-			public String getText(Object element) {
-				if(element == null)
-					return ""; //$NON-NLS-1$
-				else if(!(element instanceof String[][]))
-					return element.toString();
-				String[][] stringTable = (String[][])element;
-				if(stringTable.length >0)
-					return Arrays.toString(stringTable[0]) +
-							(stringTable.length > 1? "..." : ""); //$NON-NLS-1$ //$NON-NLS-2$
-				return ""; //$NON-NLS-1$
-			}
-		});
-	}
+    
+    private String displayName;
+    private TitlesProvider columnTitles;
+    private CellEditorType[] cellEditorTypes;
+    private Object[] cellEditorDatas;
+    /**
+     * Standard constructor.
+     * 
+     * @param id
+     *            the id of the property
+     * @param displayName
+     *            the name to display for the property
+     */
+    public StringTablePropertyDescriptor(final Object id, final String displayName, 
+            final TitlesProvider tilesProvider, CellEditorType[] cellEditorTypes,  Object[] cellEditorDatas) {
+        super(id, displayName);
+        this.displayName = displayName;
+        this.columnTitles = tilesProvider;
+        this.cellEditorTypes = cellEditorTypes;
+        this.cellEditorDatas = cellEditorDatas;
+        setLabelProvider(new LabelProvider(){
+            @Override
+            public String getText(Object element) {
+                if(element == null)
+                    return ""; //$NON-NLS-1$
+                else if(!(element instanceof String[][]))
+                    return element.toString();
+                String[][] stringTable = (String[][])element;
+                if(stringTable.length >0)
+                    return Arrays.toString(stringTable[0]) +
+                            (stringTable.length > 1? "..." : ""); //$NON-NLS-1$ //$NON-NLS-2$
+                return ""; //$NON-NLS-1$
+            }
+        });
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CellEditor createPropertyEditor(final Composite parent) {
-		CellEditor editor = new StringTableCellEditor(parent, "Edit " + displayName, columnTitles, cellEditorTypes, cellEditorDatas);
-		if (getValidator() != null) {
-			editor.setValidator(getValidator());
-		}
-		return editor;
-	}	
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CellEditor createPropertyEditor(final Composite parent) {
+        CellEditor editor = new StringTableCellEditor(parent, "Edit " + displayName, columnTitles, cellEditorTypes, cellEditorDatas);
+        if (getValidator() != null) {
+            editor.setValidator(getValidator());
+        }
+        return editor;
+    }    
 
 }

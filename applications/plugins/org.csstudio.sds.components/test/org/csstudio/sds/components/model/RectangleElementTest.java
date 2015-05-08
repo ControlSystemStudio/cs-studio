@@ -34,36 +34,36 @@ import org.junit.Test;
  */
 public final class RectangleElementTest {
 
-	/**
-	 * A test instance.
-	 */
-	private RectangleModel _rectangleElement;
+    /**
+     * A test instance.
+     */
+    private RectangleModel _rectangleElement;
 
-	/**
-	 * Test setup.
-	 */
-	@Before
-	public void setUp() {
-		_rectangleElement = new RectangleModel();
-	}
+    /**
+     * Test setup.
+     */
+    @Before
+    public void setUp() {
+        _rectangleElement = new RectangleModel();
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.components.model.RectangleModel#getTypeID()}.
-	 */
-	@Test
-	public void testGetTypeID() {
-		_rectangleElement.getTypeID().equals(RectangleModel.ID);
-	}
+    /**
+     * Test method for
+     * {@link org.csstudio.sds.components.model.RectangleModel#getTypeID()}.
+     */
+    @Test
+    public void testGetTypeID() {
+        _rectangleElement.getTypeID().equals(RectangleModel.ID);
+    }
 
-	/**
-	 * Tests, if all properties where properly installed.
-	 */
-	@Test
-	public void testProperties() {
-		assertTrue(_rectangleElement
-				.hasProperty(RectangleModel.PROP_FILL));
-		// Add further properties here
-	}
+    /**
+     * Tests, if all properties where properly installed.
+     */
+    @Test
+    public void testProperties() {
+        assertTrue(_rectangleElement
+                .hasProperty(RectangleModel.PROP_FILL));
+        // Add further properties here
+    }
 
 }

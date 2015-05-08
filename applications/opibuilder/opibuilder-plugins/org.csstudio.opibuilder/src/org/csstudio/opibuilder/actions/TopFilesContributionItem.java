@@ -22,23 +22,23 @@ import org.eclipse.swt.widgets.Menu;
  */
 public class TopFilesContributionItem extends ContributionItem {
 
-	public TopFilesContributionItem() {
-	}
+    public TopFilesContributionItem() {
+    }
 
-	public TopFilesContributionItem(String id) {
-		super(id);
-	}
+    public TopFilesContributionItem(String id) {
+        super(id);
+    }
 
-	@Override
-	public void fill(Menu menu, int index) {
-		Map<IPath, MacrosInput> topOPIs = OpenTopOPIsAction.loadTopOPIs();
-		if (topOPIs == null)
-			return;
-		OpenTopOPIsAction.fillMenu(topOPIs, menu);
-	}
+    @Override
+    public void fill(Menu menu, int index) {
+        Map<IPath, MacrosInput> topOPIs = OpenTopOPIsAction.loadTopOPIs();
+        if (topOPIs == null)
+            return;
+        OpenTopOPIsAction.fillMenu(topOPIs, menu);
+    }
 
-	@Override
-	public boolean isDynamic() {
-		return true;
-	}
+    @Override
+    public boolean isDynamic() {
+        return true;
+    }
 }

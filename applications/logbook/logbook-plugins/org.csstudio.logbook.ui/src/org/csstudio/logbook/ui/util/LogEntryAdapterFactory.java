@@ -119,7 +119,7 @@ public class LogEntryAdapterFactory implements IAdapterFactory {
      * @return
      */
     public Class[] getAdapterList() {
-	return new Class[] { UpdateLogEntryBuilder.class, String.class, URL.class, ProcessVariable.class, ProcessVariable[].class,
+    return new Class[] { UpdateLogEntryBuilder.class, String.class, URL.class, ProcessVariable.class, ProcessVariable[].class,
                 TimestampedPV.class, TimestampedPV[].class };
     }
 

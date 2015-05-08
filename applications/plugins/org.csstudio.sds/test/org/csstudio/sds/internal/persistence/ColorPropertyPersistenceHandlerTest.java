@@ -40,81 +40,81 @@ import org.junit.Test;
  * 
  */
 public final class ColorPropertyPersistenceHandlerTest {
-	/**
-	 * Test for the writing behaviour.
-	 */
-	@Test
-	public void testWriteProperty() {
-		ColorPropertyPersistenceHandler handler = new ColorPropertyPersistenceHandler();
-		WidgetProperty property = new ColorProperty(
-				"description", WidgetPropertyCategory.BEHAVIOR, "#ff00ff");//$NON-NLS-1$
-		property.setDynamicsDescriptor(new DynamicsDescriptor());
-		property.setPropertyValue("#ff00ff");
+    /**
+     * Test for the writing behaviour.
+     */
+    @Test
+    public void testWriteProperty() {
+        ColorPropertyPersistenceHandler handler = new ColorPropertyPersistenceHandler();
+        WidgetProperty property = new ColorProperty(
+                "description", WidgetPropertyCategory.BEHAVIOR, "#ff00ff");//$NON-NLS-1$
+        property.setDynamicsDescriptor(new DynamicsDescriptor());
+        property.setPropertyValue("#ff00ff");
 
-		Element valueTag = new Element("value"); //$NON-NLS-1$
+        Element valueTag = new Element("value"); //$NON-NLS-1$
 
-		handler.writeProperty(valueTag, property.getPropertyValue());
+        handler.writeProperty(valueTag, property.getPropertyValue());
 
-		assertEquals(1, valueTag.getChildren().size());
+        assertEquals(1, valueTag.getChildren().size());
 
-		Element colorTag = valueTag.getChild("color"); //$NON-NLS-1$
+        Element colorTag = valueTag.getChild("color"); //$NON-NLS-1$
 
-		assertNotNull(colorTag);
+        assertNotNull(colorTag);
 
-		assertEquals(1, colorTag.getAttributes().size());
+        assertEquals(1, colorTag.getAttributes().size());
 
-		String hex = colorTag.getAttributeValue(ColorPropertyPersistenceHandler.XML_ATTRIBUTE_HEX); //$NON-NLS-1$
+        String hex = colorTag.getAttributeValue(ColorPropertyPersistenceHandler.XML_ATTRIBUTE_HEX); //$NON-NLS-1$
 
-		assertEquals("#ff00ff", hex); //$NON-NLS-1$
-	}
+        assertEquals("#ff00ff", hex); //$NON-NLS-1$
+    }
 
-	/**
-	 * Test for the reading behaviour (when R/G/B attributes are set - which is the case with
-	 * all older SDS-files before SDS 2.0).
-	 */
-	@Test
-	public void testReadPropertyWithRgbAttributesSet() {
-		ColorPropertyPersistenceHandler handler = new ColorPropertyPersistenceHandler();
+    /**
+     * Test for the reading behaviour (when R/G/B attributes are set - which is the case with
+     * all older SDS-files before SDS 2.0).
+     */
+    @Test
+    public void testReadPropertyWithRgbAttributesSet() {
+        ColorPropertyPersistenceHandler handler = new ColorPropertyPersistenceHandler();
 
-		Element propertyTag = new Element("anyTag"); //$NON-NLS-1$
-		Element colorTag = new Element(
-				ColorPropertyPersistenceHandler.XML_ELEMENT_COLOR);
-		propertyTag.addContent(colorTag);
+        Element propertyTag = new Element("anyTag"); //$NON-NLS-1$
+        Element colorTag = new Element(
+                ColorPropertyPersistenceHandler.XML_ELEMENT_COLOR);
+        propertyTag.addContent(colorTag);
 
-		colorTag.setAttribute(
-				ColorPropertyPersistenceHandler.XML_ATTRIBUTE_RED, "50"); //$NON-NLS-1$
-		colorTag.setAttribute(
-				ColorPropertyPersistenceHandler.XML_ATTRIBUTE_GREEN, "100"); //$NON-NLS-1$
-		colorTag.setAttribute(
-				ColorPropertyPersistenceHandler.XML_ATTRIBUTE_BLUE, "150"); //$NON-NLS-1$
+        colorTag.setAttribute(
+                ColorPropertyPersistenceHandler.XML_ATTRIBUTE_RED, "50"); //$NON-NLS-1$
+        colorTag.setAttribute(
+                ColorPropertyPersistenceHandler.XML_ATTRIBUTE_GREEN, "100"); //$NON-NLS-1$
+        colorTag.setAttribute(
+                ColorPropertyPersistenceHandler.XML_ATTRIBUTE_BLUE, "150"); //$NON-NLS-1$
 
-		Object propertyValue = handler.readProperty(propertyTag);
+        Object propertyValue = handler.readProperty(propertyTag);
 
-		assertTrue(propertyValue instanceof String);
+        assertTrue(propertyValue instanceof String);
 
-		String hex = (String) propertyValue;
+        String hex = (String) propertyValue;
 
-		assertTrue("#326496".equalsIgnoreCase(hex));
-	}
-	
-	@Test
-	public void testReadPropertyWithHexAttributeSet() {
-		ColorPropertyPersistenceHandler handler = new ColorPropertyPersistenceHandler();
+        assertTrue("#326496".equalsIgnoreCase(hex));
+    }
+    
+    @Test
+    public void testReadPropertyWithHexAttributeSet() {
+        ColorPropertyPersistenceHandler handler = new ColorPropertyPersistenceHandler();
 
-		Element propertyTag = new Element("anyTag"); //$NON-NLS-1$
-		Element colorTag = new Element(
-				ColorPropertyPersistenceHandler.XML_ELEMENT_COLOR);
-		propertyTag.addContent(colorTag);
+        Element propertyTag = new Element("anyTag"); //$NON-NLS-1$
+        Element colorTag = new Element(
+                ColorPropertyPersistenceHandler.XML_ELEMENT_COLOR);
+        propertyTag.addContent(colorTag);
 
-		colorTag.setAttribute(
-				ColorPropertyPersistenceHandler.XML_ATTRIBUTE_HEX, "#ff12ff"); //$NON-NLS-1$
+        colorTag.setAttribute(
+                ColorPropertyPersistenceHandler.XML_ATTRIBUTE_HEX, "#ff12ff"); //$NON-NLS-1$
 
-		Object propertyValue = handler.readProperty(propertyTag);
+        Object propertyValue = handler.readProperty(propertyTag);
 
-		assertTrue(propertyValue instanceof String);
+        assertTrue(propertyValue instanceof String);
 
-		String hex = (String) propertyValue;
+        String hex = (String) propertyValue;
 
-		assertTrue("#ff12ff".equalsIgnoreCase(hex));
-	}
+        assertTrue("#ff12ff".equalsIgnoreCase(hex));
+    }
 }

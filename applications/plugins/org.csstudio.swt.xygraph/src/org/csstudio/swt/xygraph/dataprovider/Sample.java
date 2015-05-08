@@ -31,14 +31,14 @@ public class Sample implements ISample {
     final private double xMinusError;
     final private double yMinusError;
     final private String info;
-	
-	/** Initialize with x/y value
-	 *  @param xdata
-	 *  @param ydata
-	 */
-	public Sample(final double xdata, final double ydata) {
-	    this(xdata, ydata, 0, 0, 0, 0, ""); //$NON-NLS-1$
-	}
+    
+    /** Initialize with x/y value
+     *  @param xdata
+     *  @param ydata
+     */
+    public Sample(final double xdata, final double ydata) {
+        this(xdata, ydata, 0, 0, 0, 0, ""); //$NON-NLS-1$
+    }
 
    /** Initialize with value and error range
     *  @param xValue
@@ -64,111 +64,111 @@ public class Sample implements ISample {
      *  @param xMinusError
      *  @param info
      */
-	public Sample(final double xValue, final double yValue,
-	        final double yPlusError, final double yMinusError, 
-	        final double xPlusError, final double xMinusError,
-	        final String info) {
-		this.xValue = xValue;
-		this.yValue = yValue;
-		this.xPlusError = xPlusError;
-		this.yPlusError = yPlusError;
-		this.xMinusError = xMinusError;
-		this.yMinusError = yMinusError;
-		this.info = info;
-	}
+    public Sample(final double xValue, final double yValue,
+            final double yPlusError, final double yMinusError, 
+            final double xPlusError, final double xMinusError,
+            final String info) {
+        this.xValue = xValue;
+        this.yValue = yValue;
+        this.xPlusError = xPlusError;
+        this.yPlusError = yPlusError;
+        this.xMinusError = xMinusError;
+        this.yMinusError = yMinusError;
+        this.info = info;
+    }
 
-	/** @return X value */
-	public double getXValue() {
-    	return xValue;
+    /** @return X value */
+    public double getXValue() {
+        return xValue;
     }
 
     /** @return Y value */
     public double getYValue() {
-    	return yValue;
+        return yValue;
     }
 
     /** @return Negative X error. */
     public double getXMinusError() {
-		return xMinusError;
-	}
+        return xMinusError;
+    }
     
     /** @return Positive X error. */
-	public double getXPlusError() {
-		return xPlusError;
-	}
-	
+    public double getXPlusError() {
+        return xPlusError;
+    }
+    
     /** @return Negative Y error. */
-	public double getYMinusError() {
-		return yMinusError;
-	}
+    public double getYMinusError() {
+        return yMinusError;
+    }
 
     /** @return Positive Y error. */
-	public double getYPlusError() {
-		return yPlusError;
-	}
+    public double getYPlusError() {
+        return yPlusError;
+    }
 
     /** @return Sample info text. */
-	public String getInfo() {
-		return info;
-	}
-	
+    public String getInfo() {
+        return info;
+    }
+    
     @Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((info == null) ? 0 : info.hashCode());
-		long temp;
-		temp = Double.doubleToLongBits(xMinusError);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(xPlusError);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(xValue);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(yMinusError);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(yPlusError);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(yValue);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		return result;
-	}
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((info == null) ? 0 : info.hashCode());
+        long temp;
+        temp = Double.doubleToLongBits(xMinusError);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(xPlusError);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(xValue);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(yMinusError);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(yPlusError);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(yValue);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Sample other = (Sample) obj;
-		if (info == null) {
-			if (other.info != null)
-				return false;
-		} else if (!info.equals(other.info))
-			return false;
-		if (Double.doubleToLongBits(xMinusError) != Double
-				.doubleToLongBits(other.xMinusError))
-			return false;
-		if (Double.doubleToLongBits(xPlusError) != Double
-				.doubleToLongBits(other.xPlusError))
-			return false;
-		if (Double.doubleToLongBits(xValue) != Double
-				.doubleToLongBits(other.xValue))
-			return false;
-		if (Double.doubleToLongBits(yMinusError) != Double
-				.doubleToLongBits(other.yMinusError))
-			return false;
-		if (Double.doubleToLongBits(yPlusError) != Double
-				.doubleToLongBits(other.yPlusError))
-			return false;
-		if (Double.doubleToLongBits(yValue) != Double
-				.doubleToLongBits(other.yValue))
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Sample other = (Sample) obj;
+        if (info == null) {
+            if (other.info != null)
+                return false;
+        } else if (!info.equals(other.info))
+            return false;
+        if (Double.doubleToLongBits(xMinusError) != Double
+                .doubleToLongBits(other.xMinusError))
+            return false;
+        if (Double.doubleToLongBits(xPlusError) != Double
+                .doubleToLongBits(other.xPlusError))
+            return false;
+        if (Double.doubleToLongBits(xValue) != Double
+                .doubleToLongBits(other.xValue))
+            return false;
+        if (Double.doubleToLongBits(yMinusError) != Double
+                .doubleToLongBits(other.yMinusError))
+            return false;
+        if (Double.doubleToLongBits(yPlusError) != Double
+                .doubleToLongBits(other.yPlusError))
+            return false;
+        if (Double.doubleToLongBits(yValue) != Double
+                .doubleToLongBits(other.yValue))
+            return false;
+        return true;
+    }
 
-	/** @return String representation, mostly for debugging */
+    /** @return String representation, mostly for debugging */
     @SuppressWarnings("nls")
     @Override
     public String toString() {

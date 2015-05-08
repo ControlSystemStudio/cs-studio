@@ -40,125 +40,125 @@ public abstract class AbstractElementTransfer extends ByteArrayTransfer {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractElementTransfer.class);
     
-	private final ICopyAndPasteStrategy copyAndPasteStrategy;
+    private final ICopyAndPasteStrategy copyAndPasteStrategy;
 
-	/**
-	 * Type name for this transfer type.
-	 */
-	private static final String TYPENAME = "dct_record_list"; //$NON-NLS-1$
+    /**
+     * Type name for this transfer type.
+     */
+    private static final String TYPENAME = "dct_record_list"; //$NON-NLS-1$
 
-	/**
-	 * Type ID for this transfer type.
-	 */
-	private static final int TYPEID = registerType(TYPENAME);
+    /**
+     * Type ID for this transfer type.
+     */
+    private static final int TYPEID = registerType(TYPENAME);
 
-	/**
-	 * Private constructor (singleton pattern).
-	 * 
-	 */
-	AbstractElementTransfer(ICopyAndPasteStrategy strategy) {
-		assert strategy != null;
-		copyAndPasteStrategy = strategy;
-	}
+    /**
+     * Private constructor (singleton pattern).
+     * 
+     */
+    AbstractElementTransfer(ICopyAndPasteStrategy strategy) {
+        assert strategy != null;
+        copyAndPasteStrategy = strategy;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public void javaToNative(final Object object, final TransferData transferData) {
-		if (!isSupportedType(transferData) || !(checkInput(object))) {
-			DND.error(DND.ERROR_INVALID_DATA);
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public void javaToNative(final Object object, final TransferData transferData) {
+        if (!isSupportedType(transferData) || !(checkInput(object))) {
+            DND.error(DND.ERROR_INVALID_DATA);
+        }
 
-		// clean up
-		try {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        // clean up
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-			ObjectOutputStream objOut = new ObjectOutputStream(new BufferedOutputStream(bos));
-			objOut.writeObject(copyAndPasteStrategy.createCopyElements((List<IElement>) object));
-			objOut.close();
+            ObjectOutputStream objOut = new ObjectOutputStream(new BufferedOutputStream(bos));
+            objOut.writeObject(copyAndPasteStrategy.createCopyElements((List<IElement>) object));
+            objOut.close();
 
-			byte[] bytes = bos.toByteArray();
+            byte[] bytes = bos.toByteArray();
 
-			// store the byte array
-			super.javaToNative(bytes, transferData);
+            // store the byte array
+            super.javaToNative(bytes, transferData);
 
-			bos.close();
-		} catch (IOException e) {
-			LOG.debug("IO Error", e);
-		}
+            bos.close();
+        } catch (IOException e) {
+            LOG.debug("IO Error", e);
+        }
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object nativeToJava(final TransferData transferData) {
-		if (isSupportedType(transferData)) {
-			byte[] bytes = (byte[]) super.nativeToJava(transferData);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object nativeToJava(final TransferData transferData) {
+        if (isSupportedType(transferData)) {
+            byte[] bytes = (byte[]) super.nativeToJava(transferData);
 
-			try {
-				ObjectInputStream objIn = new ObjectInputStream(new ByteArrayInputStream(bytes));
-				Object result = objIn.readObject();
-				objIn.close();
+            try {
+                ObjectInputStream objIn = new ObjectInputStream(new ByteArrayInputStream(bytes));
+                Object result = objIn.readObject();
+                objIn.close();
 
-				return result;
-			} catch (Exception e) {
-				LOG.debug("Input Error", e);
-				return null;
-			}
-		}
-		return null;
-	}
+                return result;
+            } catch (Exception e) {
+                LOG.debug("Input Error", e);
+                return null;
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * Checks the provided input, which must be a non-empty list that contains
-	 * only objects of type {@link IElement}.
-	 * 
-	 * @param input
-	 *            the input to check
-	 * @return true, if the input object is valid, false otherwise
-	 */
-	private boolean checkInput(final Object input) {
-		boolean result = false;
+    /**
+     * Checks the provided input, which must be a non-empty list that contains
+     * only objects of type {@link IElement}.
+     * 
+     * @param input
+     *            the input to check
+     * @return true, if the input object is valid, false otherwise
+     */
+    private boolean checkInput(final Object input) {
+        boolean result = false;
 
-		if (input instanceof List) {
-			List list = (List) input;
+        if (input instanceof List) {
+            List list = (List) input;
 
-			if (!list.isEmpty()) {
-				result = true;
-				for (Object o : list) {
-					result &= o instanceof IElement;
-				}
+            if (!list.isEmpty()) {
+                result = true;
+                for (Object o : list) {
+                    result &= o instanceof IElement;
+                }
 
-				if (result) {
-					result &= copyAndPasteStrategy.canCopy((List<IElement>) input);
-				}
-			}
-		}
+                if (result) {
+                    result &= copyAndPasteStrategy.canCopy((List<IElement>) input);
+                }
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String[] getTypeNames() {
-		return new String[] { TYPENAME };
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String[] getTypeNames() {
+        return new String[] { TYPENAME };
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected int[] getTypeIds() {
-		return new int[] { TYPEID };
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected int[] getTypeIds() {
+        return new int[] { TYPEID };
+    }
 
-	public ICopyAndPasteStrategy getCopyAndPasteStrategy() {
-		return copyAndPasteStrategy;
-	}
+    public ICopyAndPasteStrategy getCopyAndPasteStrategy() {
+        return copyAndPasteStrategy;
+    }
 }

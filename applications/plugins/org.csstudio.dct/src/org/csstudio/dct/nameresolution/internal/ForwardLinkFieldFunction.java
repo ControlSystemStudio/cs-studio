@@ -20,32 +20,32 @@ import org.eclipse.jface.fieldassist.IContentProposal;
  */
 public final class ForwardLinkFieldFunction implements IFieldFunction {
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public String evaluate(String name, String[] parameters, IRecord record, String fieldName) throws Exception {
-		IRecord r = RecordFinder.findRecordByPath(parameters[0], record.getContainer());
+    /**
+     *{@inheritDoc}
+     */
+    public String evaluate(String name, String[] parameters, IRecord record, String fieldName) throws Exception {
+        IRecord r = RecordFinder.findRecordByPath(parameters[0], record.getContainer());
 
-		String result = null;
+        String result = null;
 
-		if (r != null) {
-			result = AliasResolutionUtil.getEpicsNameFromHierarchy(r);
-		} else {
-			result = "No Record found";
-		}
+        if (r != null) {
+            result = AliasResolutionUtil.getEpicsNameFromHierarchy(r);
+        } else {
+            result = "No Record found";
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	public List<IContentProposal> getParameterProposal(int parameterIndex, String[] knownParameters, IRecord record) {
-		List<IContentProposal> result = new ArrayList<IContentProposal>();
+    public List<IContentProposal> getParameterProposal(int parameterIndex, String[] knownParameters, IRecord record) {
+        List<IContentProposal> result = new ArrayList<IContentProposal>();
 
-		for (IRecord r : record.getContainer().getRecords()) {
-			result.add(new FieldFunctionContentProposal(AliasResolutionUtil.getNameFromHierarchy(r), AliasResolutionUtil
-					.getEpicsNameFromHierarchy(r), AliasResolutionUtil.getEpicsNameFromHierarchy(r) + " Description", 0));
+        for (IRecord r : record.getContainer().getRecords()) {
+            result.add(new FieldFunctionContentProposal(AliasResolutionUtil.getNameFromHierarchy(r), AliasResolutionUtil
+                    .getEpicsNameFromHierarchy(r), AliasResolutionUtil.getEpicsNameFromHierarchy(r) + " Description", 0));
 
-		}
+        }
 
-		return result;
-	}
+        return result;
+    }
 }

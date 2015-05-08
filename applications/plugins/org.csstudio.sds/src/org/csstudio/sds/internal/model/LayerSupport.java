@@ -95,7 +95,7 @@ public final class LayerSupport implements PropertyChangeListener {
     /**
      * Constructor.
      * @param parent
-     * 		The parent for this {@link LayerSupport}
+     *         The parent for this {@link LayerSupport}
      */
     public LayerSupport(final ContainerModel parent) {
         _parent = parent;
@@ -294,7 +294,7 @@ public final class LayerSupport implements PropertyChangeListener {
     private void doAddLayer(final Layer layer, final int index) {
         int layerIndex = index;
         if (layer.getId().equals(DEFAULT_LAYER_ID)) {
-            //	        Layer oldDefaultLayer = _defaultLayer;
+            //            Layer oldDefaultLayer = _defaultLayer;
             layerIndex = Math.max(getLayerIndex(_defaultLayer), 0);
             removeLayer(_defaultLayer);
             _defaultLayer = layer;

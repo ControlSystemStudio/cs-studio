@@ -39,63 +39,63 @@ import org.eclipse.ui.IWorkbench;
  * 
  */
 public final class NewDisplayWizard extends Wizard implements INewWizard {
-	/**
-	 * This wizard page is used to enter the file name and the target
-	 * project/folder for the new display.
-	 */
-	private NewDisplayWizardPage _sdsFilePage;
+    /**
+     * This wizard page is used to enter the file name and the target
+     * project/folder for the new display.
+     */
+    private NewDisplayWizardPage _sdsFilePage;
 
-	/**
-	 * The current selection.
-	 */
-	private IStructuredSelection _selection;
+    /**
+     * The current selection.
+     */
+    private IStructuredSelection _selection;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void addPages() {
-		_sdsFilePage = new NewDisplayWizardPage("sdsFilePage", //$NON-NLS-1$
-				_selection);
-		addPage(_sdsFilePage);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addPages() {
+        _sdsFilePage = new NewDisplayWizardPage("sdsFilePage", //$NON-NLS-1$
+                _selection);
+        addPage(_sdsFilePage);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean performFinish() {
-		boolean result = true;
-		IFile file = _sdsFilePage.createNewFile();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean performFinish() {
+        boolean result = true;
+        IFile file = _sdsFilePage.createNewFile();
 
-		if (file == null) {
-			result = false;
-		}
+        if (file == null) {
+            result = false;
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void init(final IWorkbench workbench,
-			final IStructuredSelection selection) {
-		_selection = selection;
+    /**
+     * {@inheritDoc}
+     */
+    public void init(final IWorkbench workbench,
+            final IStructuredSelection selection) {
+        _selection = selection;
 
-		setDefaultSelection();
-	}
+        setDefaultSelection();
+    }
 
-	/**
-	 * Set the active workspace project selection to the default SDS project.
-	 */
-	private void setDefaultSelection() {
-		if ((_selection == null) || (_selection.isEmpty())) {
-			IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject(
-					SdsPlugin.DEFAULT_PROJECT_NAME);
-			if (p.exists()) {
-				_selection = new StructuredSelection(p);
-			}
-		}
-	}
+    /**
+     * Set the active workspace project selection to the default SDS project.
+     */
+    private void setDefaultSelection() {
+        if ((_selection == null) || (_selection.isEmpty())) {
+            IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject(
+                    SdsPlugin.DEFAULT_PROJECT_NAME);
+            if (p.exists()) {
+                _selection = new StructuredSelection(p);
+            }
+        }
+    }
 
 }

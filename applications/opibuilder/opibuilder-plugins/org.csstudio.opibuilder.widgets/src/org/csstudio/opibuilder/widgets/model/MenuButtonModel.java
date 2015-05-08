@@ -35,94 +35,94 @@ import org.csstudio.ui.util.CustomMediaFactory;
  *
  */
 public final class MenuButtonModel extends AbstractPVWidgetModel implements ITextModel{
-	private static final boolean DEFAULT_ACTIONS_FROM_PV = false;
-	/**
-	 * The ID of the label property.
-	 */
-	public static final String PROP_LABEL = "label"; //$NON-NLS-1$
+    private static final boolean DEFAULT_ACTIONS_FROM_PV = false;
+    /**
+     * The ID of the label property.
+     */
+    public static final String PROP_LABEL = "label"; //$NON-NLS-1$
 
-	public static final String PROP_ACTIONS_FROM_PV = "actions_from_pv"; //$NON-NLS-1$
-	
-	
-	public static final String PROP_TRANSPARENT = "transparent";	//$NON-NLS-1$
+    public static final String PROP_ACTIONS_FROM_PV = "actions_from_pv"; //$NON-NLS-1$
+    
+    
+    public static final String PROP_TRANSPARENT = "transparent";    //$NON-NLS-1$
 
-	/**
-	 * The default value of the height property.
-	 */
-	private static final int DEFAULT_HEIGHT = 40;
+    /**
+     * The default value of the height property.
+     */
+    private static final int DEFAULT_HEIGHT = 40;
 
-	/**
-	 * The default value of the width property.
-	 */
-	private static final int DEFAULT_WIDTH = 100;
-	/**
-	 * The ID of this widget model.
-	 */
-	public static final String ID = "org.csstudio.opibuilder.widgets.MenuButton";
-	
-	/**
-	 * Constructor.
-	 */
-	public MenuButtonModel() {
-		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		setBorderStyle(BorderStyle.BUTTON_RAISED);
-		setForegroundColor(CustomMediaFactory.COLOR_BLACK);
-		setPropertyValue(PROP_BORDER_ALARMSENSITIVE, false);
-	}
+    /**
+     * The default value of the width property.
+     */
+    private static final int DEFAULT_WIDTH = 100;
+    /**
+     * The ID of this widget model.
+     */
+    public static final String ID = "org.csstudio.opibuilder.widgets.MenuButton";
+    
+    /**
+     * Constructor.
+     */
+    public MenuButtonModel() {
+        setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        setBorderStyle(BorderStyle.BUTTON_RAISED);
+        setForegroundColor(CustomMediaFactory.COLOR_BLACK);
+        setPropertyValue(PROP_BORDER_ALARMSENSITIVE, false);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void configureProperties() {
-		addProperty(new StringProperty(PROP_LABEL, "Label",
-				WidgetPropertyCategory.Display, "")); //$NON-NLS-1$
-		addProperty(new BooleanProperty(PROP_ACTIONS_FROM_PV, "Actions From PV", 
-				WidgetPropertyCategory.Behavior, DEFAULT_ACTIONS_FROM_PV));
-		addProperty(new BooleanProperty(PROP_TRANSPARENT, "Transparent", 
-				WidgetPropertyCategory.Display, false));
-		removeProperty(PROP_ACTIONS);		
-		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
-				WidgetPropertyCategory.Behavior, false));
-		
-		setPropertyVisible(PROP_ACTIONS, !DEFAULT_ACTIONS_FROM_PV);
-		
-	}
-	
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configureProperties() {
+        addProperty(new StringProperty(PROP_LABEL, "Label",
+                WidgetPropertyCategory.Display, "")); //$NON-NLS-1$
+        addProperty(new BooleanProperty(PROP_ACTIONS_FROM_PV, "Actions From PV", 
+                WidgetPropertyCategory.Behavior, DEFAULT_ACTIONS_FROM_PV));
+        addProperty(new BooleanProperty(PROP_TRANSPARENT, "Transparent", 
+                WidgetPropertyCategory.Display, false));
+        removeProperty(PROP_ACTIONS);        
+        addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
+                WidgetPropertyCategory.Behavior, false));
+        
+        setPropertyVisible(PROP_ACTIONS, !DEFAULT_ACTIONS_FROM_PV);
+        
+    }
+    
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTypeID() {
-		return ID;
-	}
-	/**
-	 * Return the label text.
-	 * 
-	 * @return The label text.
-	 */
-	public String getLabel() {
-		return (String) getProperty(PROP_LABEL).getPropertyValue();
-	}
-	
-	@Override
-	public String getText() {
-		return getLabel();
-	}
-	
-	@Override
-	public void setText(String text) {
-		setPropertyValue(PROP_LABEL, text);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTypeID() {
+        return ID;
+    }
+    /**
+     * Return the label text.
+     * 
+     * @return The label text.
+     */
+    public String getLabel() {
+        return (String) getProperty(PROP_LABEL).getPropertyValue();
+    }
+    
+    @Override
+    public String getText() {
+        return getLabel();
+    }
+    
+    @Override
+    public void setText(String text) {
+        setPropertyValue(PROP_LABEL, text);
+    }
 
-	public boolean isActionsFromPV(){
-		return (Boolean)getCastedPropertyValue(PROP_ACTIONS_FROM_PV);
-	}
+    public boolean isActionsFromPV(){
+        return (Boolean)getCastedPropertyValue(PROP_ACTIONS_FROM_PV);
+    }
 
-	public boolean isTransparent() {
-		return (Boolean)getPropertyValue(PROP_TRANSPARENT);
-	}
-	
+    public boolean isTransparent() {
+        return (Boolean)getPropertyValue(PROP_TRANSPARENT);
+    }
+    
 }

@@ -42,7 +42,7 @@ public class MainServlet extends AbstractServlet
 
     /** Create status page */
     @SuppressWarnings("unchecked")
-	@Override
+    @Override
     protected void fillBody(final HTMLWriter html)
     {
         html.h1(app_name);
@@ -52,35 +52,35 @@ public class MainServlet extends AbstractServlet
         final String last_error = log_client_thread.getLastError();
         if (last_error.length() > 0)
         {
-	        html.openTable(1, "Last Error");
-			html.tableLine(last_error);
-	        html.closeTable();
+            html.openTable(1, "Last Error");
+            html.tableLine(last_error);
+            html.closeTable();
         }
         final MapMessage map = log_client_thread.getLastMessage();
         if (map == null)
             return;
 
         html.openTable(2, new String [] { "Last JMS Message" });
-		try
-		{	// Dump all properties of last message
-	        Enumeration<String> props;
-			props = map.getMapNames();
-	        while (props.hasMoreElements())
-	        {
-	        	final String prop = props.nextElement();
-		        html.tableLine(new String []
-		        {
-		        		prop, map.getString(prop)
-		        });
-	        }
-		}
-		catch (JMSException e)
-		{
-	        html.tableLine(new String []
-	        {
-        		"Error", e.getMessage()
-	        });
-		}
+        try
+        {    // Dump all properties of last message
+            Enumeration<String> props;
+            props = map.getMapNames();
+            while (props.hasMoreElements())
+            {
+                final String prop = props.nextElement();
+                html.tableLine(new String []
+                {
+                        prop, map.getString(prop)
+                });
+            }
+        }
+        catch (JMSException e)
+        {
+            html.tableLine(new String []
+            {
+                "Error", e.getMessage()
+            });
+        }
         html.closeTable();
     }
 }

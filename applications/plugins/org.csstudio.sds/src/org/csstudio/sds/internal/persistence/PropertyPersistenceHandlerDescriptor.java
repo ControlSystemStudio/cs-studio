@@ -37,43 +37,43 @@ import org.slf4j.LoggerFactory;
 public final class PropertyPersistenceHandlerDescriptor {
     private static final Logger LOG = LoggerFactory.getLogger(PropertyPersistenceHandlerDescriptor.class);
 
-	/**
-	 * Reference to a configuration element of the Eclipse plugin registry.
-	 */
-	private IConfigurationElement _configurationElement;
+    /**
+     * Reference to a configuration element of the Eclipse plugin registry.
+     */
+    private IConfigurationElement _configurationElement;
 
-	/**
-	 * A lazy instantiated property persistence handler.
-	 */
-	private AbstractPropertyPersistenceHandler _persistenceHandler;
+    /**
+     * A lazy instantiated property persistence handler.
+     */
+    private AbstractPropertyPersistenceHandler _persistenceHandler;
 
-	/**
-	 * Constructs a descriptor, which is based on the specified configuration
-	 * element.
-	 * 
-	 * @param configurationElement
-	 *            the configuration element
-	 */
-	public PropertyPersistenceHandlerDescriptor(
-			final IConfigurationElement configurationElement) {
-		_configurationElement = configurationElement;
-	}
+    /**
+     * Constructs a descriptor, which is based on the specified configuration
+     * element.
+     * 
+     * @param configurationElement
+     *            the configuration element
+     */
+    public PropertyPersistenceHandlerDescriptor(
+            final IConfigurationElement configurationElement) {
+        _configurationElement = configurationElement;
+    }
 
-	/**
-	 * Instantiate and return the persistence handler.
-	 * 
-	 * @return The property persistence handler.
-	 */
-	public AbstractPropertyPersistenceHandler getPersistenceHandler() {
-		if (_persistenceHandler == null) {
-			try {
-				_persistenceHandler = (AbstractPropertyPersistenceHandler) _configurationElement
-						.createExecutableExtension("class"); //$NON-NLS-1$
-			} catch (CoreException e) {
-				LOG.error(e.toString());
-			}
-		}
+    /**
+     * Instantiate and return the persistence handler.
+     * 
+     * @return The property persistence handler.
+     */
+    public AbstractPropertyPersistenceHandler getPersistenceHandler() {
+        if (_persistenceHandler == null) {
+            try {
+                _persistenceHandler = (AbstractPropertyPersistenceHandler) _configurationElement
+                        .createExecutableExtension("class"); //$NON-NLS-1$
+            } catch (CoreException e) {
+                LOG.error(e.toString());
+            }
+        }
 
-		return _persistenceHandler;
-	}
+        return _persistenceHandler;
+    }
 }

@@ -30,11 +30,11 @@ package org.csstudio.sds.model.properties.actions;
  */
 public interface IActionModelFactory {
 
-	/**
-	 * Creates the {@link AbstractWidgetActionModel}.
-	 * 
-	 * @return The {@link AbstractWidgetActionModel}
-	 */
-	AbstractWidgetActionModel createWidgetActionModel();
+    /**
+     * Creates the {@link AbstractWidgetActionModel}.
+     * 
+     * @return The {@link AbstractWidgetActionModel}
+     */
+    AbstractWidgetActionModel createWidgetActionModel();
 
 }

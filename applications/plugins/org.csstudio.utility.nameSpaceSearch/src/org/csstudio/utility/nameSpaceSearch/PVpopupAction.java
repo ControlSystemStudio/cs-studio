@@ -49,13 +49,13 @@ public class PVpopupAction extends AbstractHandler {
         IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         IWorkbenchPage page = window.getActivePage();
         MainView view;
-		try {
-			view = (MainView) page.showView(MainView.ID);
-			view.startSearch(pvs[0].getName());
-		} catch (PartInitException e) {
-			// TODO Error handling
-			e.printStackTrace();
-		}
-		return null;
+        try {
+            view = (MainView) page.showView(MainView.ID);
+            view.startSearch(pvs[0].getName());
+        } catch (PartInitException e) {
+            // TODO Error handling
+            e.printStackTrace();
+        }
+        return null;
     }
 }

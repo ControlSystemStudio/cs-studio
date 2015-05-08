@@ -34,14 +34,14 @@ package com.cosylab.vdct.graphics.objects;
  * @author Matej Sekoranja
  */
 public interface SelectableComponents extends Movable {
-	/**
-	 * Returned value inicates change
-	 * Creation date: (21.12.2000 22:21:12)
-	 * @return boolean anyNew
-	 * @param x1 int
-	 * @param y1 int
-	 * @param x2 int
-	 * @param y2 int
-	 */
-	public boolean selectComponentsCheck(int x1, int y1, int x2, int y2);
+    /**
+     * Returned value inicates change
+     * Creation date: (21.12.2000 22:21:12)
+     * @return boolean anyNew
+     * @param x1 int
+     * @param y1 int
+     * @param x2 int
+     * @param y2 int
+     */
+    public boolean selectComponentsCheck(int x1, int y1, int x2, int y2);
 }

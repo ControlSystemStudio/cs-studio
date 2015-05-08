@@ -32,34 +32,34 @@ package org.csstudio.platform.internal.simpledal.converters;
  * 
  */
 class DoubleConverter implements IValueTypeConverter<Double> {
-	/**
-	 * {@inheritDoc}
-	 */
-	public Double convert(Object value) throws NumberFormatException {
-		Double result = 0.0;
-//	    System.out.println("Converter"+value);
-		if (value != null) {
-			if (value instanceof Double) {
-				result = (Double) value;
-			} else if (value instanceof Number) {
-				Number n = (Number) value;
-				result = n.doubleValue();
-			} else {
-				try {
-					result = Double.valueOf(value.toString());
-				} catch (NumberFormatException e) {
-	                if(value.toString().matches("[-+]?0[xX].*")) {
-	                    // if Hex
-	                    result = new Double(Long.parseLong(value.toString().replaceFirst("(\\+)?0[xX]", ""),16));
-	                }else {
-				        // if Exp
-	                    result = new Double(Long.parseLong(value.toString()));
-	                }
-				}
-			}
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public Double convert(Object value) throws NumberFormatException {
+        Double result = 0.0;
+//        System.out.println("Converter"+value);
+        if (value != null) {
+            if (value instanceof Double) {
+                result = (Double) value;
+            } else if (value instanceof Number) {
+                Number n = (Number) value;
+                result = n.doubleValue();
+            } else {
+                try {
+                    result = Double.valueOf(value.toString());
+                } catch (NumberFormatException e) {
+                    if(value.toString().matches("[-+]?0[xX].*")) {
+                        // if Hex
+                        result = new Double(Long.parseLong(value.toString().replaceFirst("(\\+)?0[xX]", ""),16));
+                    }else {
+                        // if Exp
+                        result = new Double(Long.parseLong(value.toString()));
+                    }
+                }
+            }
+        }
 
-		assert result != null;
-		return result;
-	}
+        assert result != null;
+        return result;
+    }
 }

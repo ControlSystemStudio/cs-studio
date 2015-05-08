@@ -33,30 +33,30 @@ package org.csstudio.sds.model;
  * 
  */
 public interface IPropertyChangeListener {
-	/**
-	 * Will be called, when the value of the property has changed.
-	 * 
-	 * @param oldValue
-	 *            the old property value
-	 * @param newValue
-	 *            the new property value
-	 */
-	void propertyValueChanged(Object oldValue, Object newValue);
+    /**
+     * Will be called, when the value of the property has changed.
+     * 
+     * @param oldValue
+     *            the old property value
+     * @param newValue
+     *            the new property value
+     */
+    void propertyValueChanged(Object oldValue, Object newValue);
 
-	/**
-	 * Will be called, when the manual value of a property has changed.
-	 * @param propertyId
+    /**
+     * Will be called, when the manual value of a property has changed.
+     * @param propertyId
      *  the property id
-	 * @param manualValue
-	 *            the new manual value of the property
-	 */
-	void propertyManualValueChanged(String propertyId, Object manualValue);
+     * @param manualValue
+     *            the new manual value of the property
+     */
+    void propertyManualValueChanged(String propertyId, Object manualValue);
 
-	/**
-	 * Will be called if the dynamics descriptor of a property has changed.
-	 * 
-	 * @param dynamicsDescriptor
-	 *            the new dynamics descriptor
-	 */
-	void dynamicsDescriptorChanged(DynamicsDescriptor dynamicsDescriptor);
+    /**
+     * Will be called if the dynamics descriptor of a property has changed.
+     * 
+     * @param dynamicsDescriptor
+     *            the new dynamics descriptor
+     */
+    void dynamicsDescriptorChanged(DynamicsDescriptor dynamicsDescriptor);
 }

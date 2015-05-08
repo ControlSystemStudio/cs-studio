@@ -14,18 +14,18 @@ import org.eclipse.core.commands.ExecutionEvent;
  * @author carcassi
  */
 public class OpenWaterfall extends AbstractAdaptedHandler<ProcessVariable> {
-	
-	public OpenWaterfall() {
-		super(ProcessVariable.class);
-	}
+    
+    public OpenWaterfall() {
+        super(ProcessVariable.class);
+    }
 
-	@Override
-	protected void execute(List<ProcessVariable> pvs, ExecutionEvent event)
-			throws Exception {
-		if (!pvs.isEmpty()) {
-			findView(WaterfallView.class, WaterfallView.ID)
-				.setChannelQuery(ChannelQuery.query(pvs.get(0).getName()).build());
-		}
-	}
+    @Override
+    protected void execute(List<ProcessVariable> pvs, ExecutionEvent event)
+            throws Exception {
+        if (!pvs.isEmpty()) {
+            findView(WaterfallView.class, WaterfallView.ID)
+                .setChannelQuery(ChannelQuery.query(pvs.get(0).getName()).build());
+        }
+    }
 
 }

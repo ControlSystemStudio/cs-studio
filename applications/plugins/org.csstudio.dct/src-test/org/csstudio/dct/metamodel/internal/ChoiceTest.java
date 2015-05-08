@@ -16,30 +16,30 @@ import org.junit.Test;
  */
 public final class ChoiceTest {
 
-	private Choice choice;
-	
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-		choice = new Choice("id", "description");
-	}
+    private Choice choice;
+    
+    /**
+     * @throws java.lang.Exception
+     */
+    @Before
+    public void setUp() throws Exception {
+        choice = new Choice("id", "description");
+    }
 
-	/**
-	 * Test method for {@link org.csstudio.dct.metamodel.internal.Choice#getDescription()}.
-	 */
-	@Test
-	public void testGetDescription() {
-		assertEquals("description", choice.getDescription());
-	}
+    /**
+     * Test method for {@link org.csstudio.dct.metamodel.internal.Choice#getDescription()}.
+     */
+    @Test
+    public void testGetDescription() {
+        assertEquals("description", choice.getDescription());
+    }
 
-	/**
-	 * Test method for {@link org.csstudio.dct.metamodel.internal.Choice#getId()}.
-	 */
-	@Test
-	public void testGetId() {
-		assertEquals("id", choice.getId());
-	}
+    /**
+     * Test method for {@link org.csstudio.dct.metamodel.internal.Choice#getId()}.
+     */
+    @Test
+    public void testGetId() {
+        assertEquals("id", choice.getId());
+    }
 
 }

@@ -11,39 +11,39 @@ import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
 
 public class WaterfallSelection implements ChannelQueryAdaptable, ConfigurableWidgetAdaptable {
-	
-	private final ChannelQuery channelQuery;
-	private final WaterfallWidget waterfallWidget;
-	
-	public WaterfallSelection(ChannelQuery channelQuery,
-			WaterfallWidget waterfallWidget) {
-		this.channelQuery = channelQuery;
-		this.waterfallWidget = waterfallWidget;
-	}
+    
+    private final ChannelQuery channelQuery;
+    private final WaterfallWidget waterfallWidget;
+    
+    public WaterfallSelection(ChannelQuery channelQuery,
+            WaterfallWidget waterfallWidget) {
+        this.channelQuery = channelQuery;
+        this.waterfallWidget = waterfallWidget;
+    }
 
-	@Override
-	public Collection<Channel> toChannels() {
-		return AdaptableUtilities.toChannels(toChannelQueries());
-	}
+    @Override
+    public Collection<Channel> toChannels() {
+        return AdaptableUtilities.toChannels(toChannelQueries());
+    }
 
-	@Override
-	public Collection<ProcessVariable> toProcessVariables() {
-		return AdaptableUtilities.toProcessVariables(toChannels());
-	}
+    @Override
+    public Collection<ProcessVariable> toProcessVariables() {
+        return AdaptableUtilities.toProcessVariables(toChannels());
+    }
 
-	@Override
-	public ConfigurableWidget toConfigurableWidget() {
-		return waterfallWidget;
-	}
+    @Override
+    public ConfigurableWidget toConfigurableWidget() {
+        return waterfallWidget;
+    }
 
-	@Override
-	public Collection<ChannelQuery> toChannelQueries() {
-		if (channelQuery == null)
-			return null;
-		return Collections.singleton(channelQuery);
-	}
+    @Override
+    public Collection<ChannelQuery> toChannelQueries() {
+        if (channelQuery == null)
+            return null;
+        return Collections.singleton(channelQuery);
+    }
 
-	
-	
+    
+    
 
 }

@@ -33,57 +33,57 @@ public class Environment {
 
     private static final Logger LOG = LoggerFactory.getLogger(Environment.class);
 
-	public static LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();
+    public static LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();
 
-	public static String getApplicationId() {
-		return CSSPlatformInfo.getInstance().getApplicationId();
-	}
+    public static String getApplicationId() {
+        return CSSPlatformInfo.getInstance().getApplicationId();
+    }
 
-	public static String getHostId() {
-		return CSSPlatformInfo.getInstance().getHostId();
-	}
+    public static String getHostId() {
+        return CSSPlatformInfo.getInstance().getHostId();
+    }
 
-	public static String getQualifiedHostname() {
-		return CSSPlatformInfo.getInstance().getQualifiedHostname();
-	}
+    public static String getQualifiedHostname() {
+        return CSSPlatformInfo.getInstance().getQualifiedHostname();
+    }
 
-	public static String getUserId() {
-		return CSSPlatformInfo.getInstance().getUserId();
-	}
+    public static String getUserId() {
+        return CSSPlatformInfo.getInstance().getUserId();
+    }
 
-	public static Integer getNumberOfActiveConnectors() {
-		return ProcessVariableConnectionServiceFactory.getDefault().getProcessVariableConnectionService().getNumberOfActiveConnectors();
-	}
+    public static Integer getNumberOfActiveConnectors() {
+        return ProcessVariableConnectionServiceFactory.getDefault().getProcessVariableConnectionService().getNumberOfActiveConnectors();
+    }
 
-	public static Long getMaxMemory() {
-		return Runtime.getRuntime().maxMemory();
-	}
+    public static Long getMaxMemory() {
+        return Runtime.getRuntime().maxMemory();
+    }
 
-	public static Long getFreeMemory() {
-		return Runtime.getRuntime().freeMemory();
-	}
+    public static Long getFreeMemory() {
+        return Runtime.getRuntime().freeMemory();
+    }
 
-	public static Long getTotalMemory() {
-		return Runtime.getRuntime().totalMemory();
-	}
+    public static Long getTotalMemory() {
+        return Runtime.getRuntime().totalMemory();
+    }
 
-	public static long getSystemTime() {
-		return System.currentTimeMillis();
-	}
+    public static long getSystemTime() {
+        return System.currentTimeMillis();
+    }
 
-	public static long getQueueSize() {
-		return queue.size();
-	}
+    public static long getQueueSize() {
+        return queue.size();
+    }
 
-	public static int getHighPriorityQueueSize() {
-		return ExecutionService.getInstance().getHighPriorityQueueSize();
-	}
+    public static int getHighPriorityQueueSize() {
+        return ExecutionService.getInstance().getHighPriorityQueueSize();
+    }
 
-	public static int getNormalPriorityQueueSize() {
-		return ExecutionService.getInstance().getNormalPriorityQueueSize();
-	}
+    public static int getNormalPriorityQueueSize() {
+        return ExecutionService.getInstance().getNormalPriorityQueueSize();
+    }
 
-	public static int getLowPriorityQueueSize() {
-		return ExecutionService.getInstance().getLowPriorityQueueSize();
-	}
+    public static int getLowPriorityQueueSize() {
+        return ExecutionService.getInstance().getLowPriorityQueueSize();
+    }
 }

@@ -44,7 +44,7 @@ import org.w3c.dom.*;
  
 public class PluginXMLSerializer implements PluginSerializer
 {
-	private static final String DTD_SYMBOL = "com.cosylab.vdct:plugins";
+    private static final String DTD_SYMBOL = "com.cosylab.vdct:plugins";
     private static final String DTD_URL = com.cosylab.vdct.Constants.DTD_DIR+"plugins.dtd";
 
 /**
@@ -55,28 +55,28 @@ public class PluginXMLSerializer implements PluginSerializer
 
 public void exportPlugins(String fileName, PluginManager pluginManager) throws Exception
 {
-	Document doc = XMLManager.newDocument();
-	Element root = (Element)doc.createElement("plugins");
+    Document doc = XMLManager.newDocument();
+    Element root = (Element)doc.createElement("plugins");
 
-	doc.appendChild(root);
+    doc.appendChild(root);
 
-	// save all plugins
-	Iterator plugins = pluginManager.getPlugins();
+    // save all plugins
+    Iterator plugins = pluginManager.getPlugins();
 
-	while (plugins.hasNext())
-	{
+    while (plugins.hasNext())
+    {
 
-		Element node = (Element)doc.createElement("plugin");
-		((PluginObject)plugins.next()).saveConfig(doc, node);
-		root.appendChild(node);
+        Element node = (Element)doc.createElement("plugin");
+        ((PluginObject)plugins.next()).saveConfig(doc, node);
+        root.appendChild(node);
 
-	}
+    }
 
-	root.normalize();
+    root.normalize();
 
-	XMLManager.writeDocument(fileName, doc, null, DTD_SYMBOL, null);
+    XMLManager.writeDocument(fileName, doc, null, DTD_SYMBOL, null);
 }
-	
+    
 /**
  * Insert the method's description here.
  * Creation date: (7.12.2001 14:52:16)
@@ -85,51 +85,51 @@ public void exportPlugins(String fileName, PluginManager pluginManager) throws E
 public void importPlugins(String fileName, PluginManager pluginManager) throws Exception
 {
 
-	// read from resource
-	URL dtdURL = getClass().getResource("/"+DTD_URL);
-	if (dtdURL==null)
-		throw new Exception("Failed to locate DTD file: /"+DTD_URL);
-		
-	Document doc = null;
-	try
-	{
-		// shp: importPlugins is now capable of loading xml from jar files
-		//doc = XMLManager.readFileDocument(fileName, DTD_SYMBOL, dtdURL);
-		doc = XMLManager.readResourceDocument(fileName, DTD_SYMBOL, dtdURL);
-	}
-	catch (FileNotFoundException e)
-	{
-		com.cosylab.vdct.Console.getInstance().println("Plugins configuration file '"+fileName+"' not found. Using defaults.");
-		return;
-	}
+    // read from resource
+    URL dtdURL = getClass().getResource("/"+DTD_URL);
+    if (dtdURL==null)
+        throw new Exception("Failed to locate DTD file: /"+DTD_URL);
+        
+    Document doc = null;
+    try
+    {
+        // shp: importPlugins is now capable of loading xml from jar files
+        //doc = XMLManager.readFileDocument(fileName, DTD_SYMBOL, dtdURL);
+        doc = XMLManager.readResourceDocument(fileName, DTD_SYMBOL, dtdURL);
+    }
+    catch (FileNotFoundException e)
+    {
+        com.cosylab.vdct.Console.getInstance().println("Plugins configuration file '"+fileName+"' not found. Using defaults.");
+        return;
+    }
 
-	if (doc==null)
-	{
-		com.cosylab.vdct.Console.getInstance().println("Failed to read plugins configuration file '"+fileName+"'.");
-		return;
-	}
-			
-	Node node = XMLManager.findNode(doc, "plugins").getNextSibling().getFirstChild();
+    if (doc==null)
+    {
+        com.cosylab.vdct.Console.getInstance().println("Failed to read plugins configuration file '"+fileName+"'.");
+        return;
+    }
+            
+    Node node = XMLManager.findNode(doc, "plugins").getNextSibling().getFirstChild();
 
-	while (node!=null)
-	{
-		if (node instanceof Element)
-		{
-			if (node.getNodeName().equals("plugin"))
-			{
-				try
-				{
-					PluginObject plugin = new PluginObject((Element)node);
-					pluginManager.addPlugin(plugin);
-				}
-				catch (Throwable t)
-				{
-					com.cosylab.vdct.Console.getInstance().println("Failed to load/initialize plugin: " + t.getMessage());
-					System.err.println("Failed to load/initialize plugin: " + t.getMessage());
-				}
-			}
-		}
-		node = node.getNextSibling();
-	}
+    while (node!=null)
+    {
+        if (node instanceof Element)
+        {
+            if (node.getNodeName().equals("plugin"))
+            {
+                try
+                {
+                    PluginObject plugin = new PluginObject((Element)node);
+                    pluginManager.addPlugin(plugin);
+                }
+                catch (Throwable t)
+                {
+                    com.cosylab.vdct.Console.getInstance().println("Failed to load/initialize plugin: " + t.getMessage());
+                    System.err.println("Failed to load/initialize plugin: " + t.getMessage());
+                }
+            }
+        }
+        node = node.getNextSibling();
+    }
 }
 }

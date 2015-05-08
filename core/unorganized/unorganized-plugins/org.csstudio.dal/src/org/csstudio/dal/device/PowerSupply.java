@@ -39,40 +39,40 @@ import org.csstudio.dal.RemoteException;
  */
 public interface PowerSupply extends AbstractDevice
 {
-	/**
-	 * Returns the current double property.
-	 *
-	 * @return
-	 */
-	public DoubleProperty getCurrent();
+    /**
+     * Returns the current double property.
+     *
+     * @return
+     */
+    public DoubleProperty getCurrent();
 
-	/**
-	 * Returns the readback double property.
-	 *
-	 * @return
-	 */
-	public DoubleProperty getReadback();
+    /**
+     * Returns the readback double property.
+     *
+     * @return
+     */
+    public DoubleProperty getReadback();
 
-	/**
-	 * Returns the status pattern property.
-	 *
-	 * @return
-	 */
-	public PatternProperty getStatus();
+    /**
+     * Returns the status pattern property.
+     *
+     * @return
+     */
+    public PatternProperty getStatus();
 
-	/**
-	 * Turns the PowerSupply on.
-	 *
-	 * @throws RemoteException
-	 */
-	public void on() throws RemoteException;
+    /**
+     * Turns the PowerSupply on.
+     *
+     * @throws RemoteException
+     */
+    public void on() throws RemoteException;
 
-	/**
-	 * Turns the PowerSupply off.
-	 *
-	 * @throws RemoteException
-	 */
-	public void off() throws RemoteException;
+    /**
+     * Turns the PowerSupply off.
+     *
+     * @throws RemoteException
+     */
+    public void off() throws RemoteException;
 }
 
 /* __oOo__ */

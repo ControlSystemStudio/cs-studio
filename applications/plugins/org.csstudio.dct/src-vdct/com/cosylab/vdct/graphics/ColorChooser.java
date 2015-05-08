@@ -35,23 +35,23 @@ import com.cosylab.vdct.VisualDCT;
 
 public class ColorChooser
 {
-	private static JColorChooser instance = null;
-	
-	public static JColorChooser getInstance()
-	{
-		if (instance==null)
-			instance = new JColorChooser();
-		return instance;
-	}
+    private static JColorChooser instance = null;
+    
+    public static JColorChooser getInstance()
+    {
+        if (instance==null)
+            instance = new JColorChooser();
+        return instance;
+    }
 
-	public static Color getColor(String selectTitle, Color color)
-	{
-		JColorChooser chooser = getInstance();
-		if (instance==null) return null;
+    public static Color getColor(String selectTitle, Color color)
+    {
+        JColorChooser chooser = getInstance();
+        if (instance==null) return null;
 
-		instance.setColor(color);
-		JColorChooser.createDialog(VisualDCT.getInstance(), selectTitle, true, instance, null, null).setVisible(true);
-		return chooser.getColor();
-	}
+        instance.setColor(color);
+        JColorChooser.createDialog(VisualDCT.getInstance(), selectTitle, true, instance, null, null).setVisible(true);
+        return chooser.getColor();
+    }
 
 }

@@ -43,107 +43,107 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public abstract class AbstractDisplayImportWizard extends Wizard implements
-		IImportWizard {
-	
+        IImportWizard {
+    
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDisplayImportWizard.class);
 
-	/**
-	 * This wizard page is used to enter the file name and the target
-	 * project/folder for the imported display.
-	 */
-	private NewDisplayWizardPage _sdsFilePage;
+    /**
+     * This wizard page is used to enter the file name and the target
+     * project/folder for the imported display.
+     */
+    private NewDisplayWizardPage _sdsFilePage;
 
-	/**
-	 * This wizard page is used to enter the file name and path of the file that
-	 * is to be imported.
-	 */
-	private ImportSourceSelectionWizardPage _importSourcePage;
+    /**
+     * This wizard page is used to enter the file name and path of the file that
+     * is to be imported.
+     */
+    private ImportSourceSelectionWizardPage _importSourcePage;
 
-	/**
-	 * The current selection.
-	 */
-	private IStructuredSelection _selection;
+    /**
+     * The current selection.
+     */
+    private IStructuredSelection _selection;
 
-	/**
-	 * The workbench reference.
-	 */
-	private IWorkbench _workbench;
+    /**
+     * The workbench reference.
+     */
+    private IWorkbench _workbench;
 
-	/**
-	 * The used display importer.
-	 */
-	private AbstractDisplayImporter _importer;
+    /**
+     * The used display importer.
+     */
+    private AbstractDisplayImporter _importer;
 
-	/**
-	 * Standard constructor.
-	 */
-	public AbstractDisplayImportWizard() {
-		_importer = getImporter();
-	}
+    /**
+     * Standard constructor.
+     */
+    public AbstractDisplayImportWizard() {
+        _importer = getImporter();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void addPages() {
-		_sdsFilePage = new NewDisplayWizardPage("sdsFilePage", //$NON-NLS-1$
-				_selection);
-		_importSourcePage = new ImportSourceSelectionWizardPage(
-				"importSourcePage"); //$NON-NLS-1$
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void addPages() {
+        _sdsFilePage = new NewDisplayWizardPage("sdsFilePage", //$NON-NLS-1$
+                _selection);
+        _importSourcePage = new ImportSourceSelectionWizardPage(
+                "importSourcePage"); //$NON-NLS-1$
 
-		addPage(_importSourcePage);
-		addPage(_sdsFilePage);
-	}
+        addPage(_importSourcePage);
+        addPage(_sdsFilePage);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final boolean performFinish() {
-		boolean result = false;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final boolean performFinish() {
+        boolean result = false;
 
-		try {
-			result = _importer.importDisplay(_importSourcePage
-					.getSelectedFilePath(),
-					_sdsFilePage.getContainerFullPath(), _sdsFilePage
-							.getFileName());
-		} catch (Exception e) {
-			MessageDialog.openWarning(_workbench.getDisplay().getActiveShell(),
-					"Error", "Error during import: " + e.getMessage());
-			LOG.error(e.getMessage(), e);
-		}
+        try {
+            result = _importer.importDisplay(_importSourcePage
+                    .getSelectedFilePath(),
+                    _sdsFilePage.getContainerFullPath(), _sdsFilePage
+                            .getFileName());
+        } catch (Exception e) {
+            MessageDialog.openWarning(_workbench.getDisplay().getActiveShell(),
+                    "Error", "Error during import: " + e.getMessage());
+            LOG.error(e.getMessage(), e);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public final void init(final IWorkbench workbench,
-			final IStructuredSelection selection) {
-		_workbench = workbench;
-		_selection = selection;
+    /**
+     * {@inheritDoc}
+     */
+    public final void init(final IWorkbench workbench,
+            final IStructuredSelection selection) {
+        _workbench = workbench;
+        _selection = selection;
 
-		setDefaultSelection();
-	}
+        setDefaultSelection();
+    }
 
-	/**
-	 * Return the used importer.
-	 * 
-	 * @return The used importer.
-	 */
-	protected abstract AbstractDisplayImporter getImporter();
+    /**
+     * Return the used importer.
+     * 
+     * @return The used importer.
+     */
+    protected abstract AbstractDisplayImporter getImporter();
 
-	/**
-	 * Set the active workspace project selection to the default SDS project.
-	 */
-	private void setDefaultSelection() {
-		if ((_selection == null) || (_selection.isEmpty())) {
-			IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject(
-					SdsPlugin.DEFAULT_PROJECT_NAME);
-			if (p.exists()) {
-				_selection = new StructuredSelection(p);
-			}
-		}
-	}
+    /**
+     * Set the active workspace project selection to the default SDS project.
+     */
+    private void setDefaultSelection() {
+        if ((_selection == null) || (_selection.isEmpty())) {
+            IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject(
+                    SdsPlugin.DEFAULT_PROJECT_NAME);
+            if (p.exists()) {
+                _selection = new StructuredSelection(p);
+            }
+        }
+    }
 }

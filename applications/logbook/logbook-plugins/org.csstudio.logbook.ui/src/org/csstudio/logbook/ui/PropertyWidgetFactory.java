@@ -14,6 +14,6 @@ import org.eclipse.swt.widgets.Composite;
  */
 public interface PropertyWidgetFactory {
 
-	public AbstractPropertyWidget create(Composite parent, int SWT,
-			LogEntryChangeset logEntryChangeset, boolean editable);
+    public AbstractPropertyWidget create(Composite parent, int SWT,
+            LogEntryChangeset logEntryChangeset, boolean editable);
 }

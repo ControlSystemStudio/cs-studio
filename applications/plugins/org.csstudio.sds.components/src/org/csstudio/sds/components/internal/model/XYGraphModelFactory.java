@@ -6,13 +6,13 @@ import org.csstudio.sds.model.IWidgetModelFactory;
 
 public class XYGraphModelFactory implements IWidgetModelFactory {
 
-	public AbstractWidgetModel createWidgetModel() {
-		return new XYGraphModel();
-	}
+    public AbstractWidgetModel createWidgetModel() {
+        return new XYGraphModel();
+    }
 
-	@SuppressWarnings("unchecked")
-	public Class getWidgetModelType() {
-		return XYGraphModel.class;
-	}
+    @SuppressWarnings("unchecked")
+    public Class getWidgetModelType() {
+        return XYGraphModel.class;
+    }
 
 }

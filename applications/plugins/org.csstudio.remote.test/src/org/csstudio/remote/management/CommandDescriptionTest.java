@@ -35,85 +35,85 @@ import org.junit.Test;
  *
  */
 public class CommandDescriptionTest {
-	
-	@Test
-	public void testCommandWithNoParameters() throws Exception {
-		// using null to create a command with no parameters; getParameters()
-		// must not return null but an empty array
-		CommandDescription cd = new CommandDescription("id", "label", null);
-		assertEquals("id", cd.getIdentifier());
-		assertEquals("label", cd.getLabel());
-		assertNotNull(cd.getParameters());
-		assertEquals(0, cd.getParameters().length);
-	}
-	
-	@Test
-	public void testCommandWithNoParametersEmptyArray() throws Exception {
-		// using empty array to create a command with no parameters
-		CommandDescription cd = new CommandDescription("id", "label", 
-				new CommandParameterDefinition[0]);
-		assertEquals("id", cd.getIdentifier());
-		assertEquals("label", cd.getLabel());
-		assertNotNull(cd.getParameters());
-		assertEquals(0, cd.getParameters().length);
-	}
-	
-	@Test
-	public void testCommandWithOneParameter() throws Exception {
-		CommandParameterDefinition p1 = new CommandParameterDefinition.Builder()
-				.setType(CommandParameterType.STRING)
-				.setIdentifier("p1")
-				.setLabel("p1-label")
-				.build();
-		CommandDescription cd = new CommandDescription("id", "label",
-				new CommandParameterDefinition[] { p1 });
-		assertEquals("id", cd.getIdentifier());
-		assertEquals("label", cd.getLabel());
-		assertEquals(1, cd.getParameters().length);
-		assertEquals(p1, cd.getParameters()[0]);
-	}
-	
-	@Test
-	public void testEqualityAndHashCode() throws Exception {
-		CommandDescription cd1 = new CommandDescription("id1", "label", null);
-		CommandDescription cd2 = new CommandDescription("id1", "other", null);
-		CommandDescription cd3 = new CommandDescription("id3", "label", null);
-		
-		// reflexivity: object equals itself
-		assertTrue(cd1.equals(cd1));
-		assertTrue(cd2.equals(cd2));
-		assertTrue(cd3.equals(cd3));
-		
-		// cd1 and cd2 have the same ID, should be equal and have same hash code
-		assertTrue(cd1.equals(cd2));
-		assertTrue(cd2.equals(cd1));
-		assertTrue(cd1.hashCode() == cd2.hashCode());
-		
-		// neither cd1 nor cd2 is equal to cd3 because the IDs differ
-		assertFalse(cd1.equals(cd3));
-		assertFalse(cd3.equals(cd1));
-		assertFalse(cd2.equals(cd3));
-		assertFalse(cd3.equals(cd2));
-		
-		// nothing is equal to null
-		assertFalse(cd1.equals(null));
-		assertFalse(cd2.equals(null));
-		assertFalse(cd3.equals(null));
-	}
-	
-	@Test
-	public void testToStringReturnsAString() throws Exception {
-		// the exact string is not tested because it is not specified
-		assertNotNull(new CommandDescription("id", "label", null).toString());
-	}
-	
-	@Test(expected = NullPointerException.class)
-	public void testIdMustNoBeNull() throws Exception {
-		new CommandDescription(null, "label", null);
-	}
-	
-	@Test(expected = NullPointerException.class)
-	public void testLabelMustNotBeNull() throws Exception {
-		new CommandDescription("id", null, null);
-	}
+    
+    @Test
+    public void testCommandWithNoParameters() throws Exception {
+        // using null to create a command with no parameters; getParameters()
+        // must not return null but an empty array
+        CommandDescription cd = new CommandDescription("id", "label", null);
+        assertEquals("id", cd.getIdentifier());
+        assertEquals("label", cd.getLabel());
+        assertNotNull(cd.getParameters());
+        assertEquals(0, cd.getParameters().length);
+    }
+    
+    @Test
+    public void testCommandWithNoParametersEmptyArray() throws Exception {
+        // using empty array to create a command with no parameters
+        CommandDescription cd = new CommandDescription("id", "label", 
+                new CommandParameterDefinition[0]);
+        assertEquals("id", cd.getIdentifier());
+        assertEquals("label", cd.getLabel());
+        assertNotNull(cd.getParameters());
+        assertEquals(0, cd.getParameters().length);
+    }
+    
+    @Test
+    public void testCommandWithOneParameter() throws Exception {
+        CommandParameterDefinition p1 = new CommandParameterDefinition.Builder()
+                .setType(CommandParameterType.STRING)
+                .setIdentifier("p1")
+                .setLabel("p1-label")
+                .build();
+        CommandDescription cd = new CommandDescription("id", "label",
+                new CommandParameterDefinition[] { p1 });
+        assertEquals("id", cd.getIdentifier());
+        assertEquals("label", cd.getLabel());
+        assertEquals(1, cd.getParameters().length);
+        assertEquals(p1, cd.getParameters()[0]);
+    }
+    
+    @Test
+    public void testEqualityAndHashCode() throws Exception {
+        CommandDescription cd1 = new CommandDescription("id1", "label", null);
+        CommandDescription cd2 = new CommandDescription("id1", "other", null);
+        CommandDescription cd3 = new CommandDescription("id3", "label", null);
+        
+        // reflexivity: object equals itself
+        assertTrue(cd1.equals(cd1));
+        assertTrue(cd2.equals(cd2));
+        assertTrue(cd3.equals(cd3));
+        
+        // cd1 and cd2 have the same ID, should be equal and have same hash code
+        assertTrue(cd1.equals(cd2));
+        assertTrue(cd2.equals(cd1));
+        assertTrue(cd1.hashCode() == cd2.hashCode());
+        
+        // neither cd1 nor cd2 is equal to cd3 because the IDs differ
+        assertFalse(cd1.equals(cd3));
+        assertFalse(cd3.equals(cd1));
+        assertFalse(cd2.equals(cd3));
+        assertFalse(cd3.equals(cd2));
+        
+        // nothing is equal to null
+        assertFalse(cd1.equals(null));
+        assertFalse(cd2.equals(null));
+        assertFalse(cd3.equals(null));
+    }
+    
+    @Test
+    public void testToStringReturnsAString() throws Exception {
+        // the exact string is not tested because it is not specified
+        assertNotNull(new CommandDescription("id", "label", null).toString());
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void testIdMustNoBeNull() throws Exception {
+        new CommandDescription(null, "label", null);
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void testLabelMustNotBeNull() throws Exception {
+        new CommandDescription("id", null, null);
+    }
 }

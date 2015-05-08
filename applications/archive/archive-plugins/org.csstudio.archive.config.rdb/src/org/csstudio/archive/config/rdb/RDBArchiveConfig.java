@@ -558,7 +558,7 @@ public class RDBArchiveConfig implements ArchiveConfig
                     getSampleMode(result.getInt(3), result.getDouble(4), result.getDouble(5));
                 org.epics.util.time.Timestamp last_sample_time = null;
                 if (!skip_last)
-                	 last_sample_time = getLastSampleTime(id);
+                     last_sample_time = getLastSampleTime(id);
                 channels.add(new RDBChannelConfig(id, result.getString(2),
                                                   sample_mode, last_sample_time));
             }

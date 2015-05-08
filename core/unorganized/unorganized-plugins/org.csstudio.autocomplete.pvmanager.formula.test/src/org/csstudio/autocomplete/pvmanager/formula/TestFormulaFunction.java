@@ -17,56 +17,56 @@ import org.epics.pvmanager.formula.FormulaFunction;
  */
 public class TestFormulaFunction implements FormulaFunction {
 
-	private final String name;
-	private final String description;
-	private final List<Class<?>> argumentTypes;
-	private final List<String> argumentNames;
+    private final String name;
+    private final String description;
+    private final List<Class<?>> argumentTypes;
+    private final List<String> argumentNames;
 
-	public TestFormulaFunction(String name, String description, String argName) {
-		this.name = name;
-		this.description = description;
-		this.argumentTypes = Arrays.<Class<?>> asList(Integer.class);
-		this.argumentNames = Arrays.asList(argName);
-	}
+    public TestFormulaFunction(String name, String description, String argName) {
+        this.name = name;
+        this.description = description;
+        this.argumentTypes = Arrays.<Class<?>> asList(Integer.class);
+        this.argumentNames = Arrays.asList(argName);
+    }
 
-	@Override
-	public String getName() {
-		return name;
-	}
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public String getDescription() {
-		return description;
-	}
+    @Override
+    public String getDescription() {
+        return description;
+    }
 
-	@Override
-	public boolean isPure() {
-		return true;
-	}
+    @Override
+    public boolean isPure() {
+        return true;
+    }
 
-	@Override
-	public boolean isVarArgs() {
-		return false;
-	}
+    @Override
+    public boolean isVarArgs() {
+        return false;
+    }
 
-	@Override
-	public List<Class<?>> getArgumentTypes() {
-		return argumentTypes;
-	}
+    @Override
+    public List<Class<?>> getArgumentTypes() {
+        return argumentTypes;
+    }
 
-	@Override
-	public List<String> getArgumentNames() {
-		return argumentNames;
-	}
+    @Override
+    public List<String> getArgumentNames() {
+        return argumentNames;
+    }
 
-	@Override
-	public Class<?> getReturnType() {
-		return Double.class;
-	}
+    @Override
+    public Class<?> getReturnType() {
+        return Double.class;
+    }
 
-	@Override
-	public Object calculate(List<Object> args) {
-		return null;
-	}
+    @Override
+    public Object calculate(List<Object> args) {
+        return null;
+    }
 
 }

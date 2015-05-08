@@ -45,8 +45,8 @@ abstract public class GUIUpdateThrottle extends Thread
     /** Initialize from preferences */
     public GUIUpdateThrottle()
     {
-    	this(Preferences.getGuiThrottleInitialMillis(),
-    	     Preferences.getGuiThrottleSuppressionMillis());
+        this(Preferences.getGuiThrottleInitialMillis(),
+             Preferences.getGuiThrottleSuppressionMillis());
     }
 
     

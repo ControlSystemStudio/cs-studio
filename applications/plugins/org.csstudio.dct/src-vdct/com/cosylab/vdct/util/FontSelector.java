@@ -34,13 +34,13 @@ import java.awt.event.*;
 
 public class FontSelector extends JPanel
 {
-	private static final String nullString = "";
-	private static final String exampleText = "The quick brown fox jumps over a lazy dog.";
-	private static final String plainStyleString = "Plain";
-	private static final String boldStyleString = "Bold";
-	private static final String italicStyleString = "Italic";
-	private static final String boldAndItalicStyleString = "Bold&Italic";
-	
+    private static final String nullString = "";
+    private static final String exampleText = "The quick brown fox jumps over a lazy dog.";
+    private static final String plainStyleString = "Plain";
+    private static final String boldStyleString = "Bold";
+    private static final String italicStyleString = "Italic";
+    private static final String boldAndItalicStyleString = "Bold&Italic";
+    
 
     FontDisplayPanel displayPanel;
     JComboBox fontsBox, fontStylesBox, fontSizesBox;
@@ -57,12 +57,12 @@ public class FontSelector extends JPanel
                                "36", "48", 
                                "72"};
                                
-	public FontSelector()
-	{
-		super();
-		
-		init();
-	}
+    public FontSelector()
+    {
+        super();
+        
+        init();
+    }
 
     public void init() {
 
@@ -70,7 +70,7 @@ public class FontSelector extends JPanel
 
         displayPanel = new FontDisplayPanel();
 
-		setLayout(new GridLayout(2, 1));
+        setLayout(new GridLayout(2, 1));
 
         // 3. Create a control panel with titled border
 
@@ -99,7 +99,7 @@ public class FontSelector extends JPanel
         controlPanel.add(fontSizesBox);
 
         displayPanel = new FontDisplayPanel();
-		JScrollPane scrollPane = new JScrollPane(displayPanel);
+        JScrollPane scrollPane = new JScrollPane(displayPanel);
 
         add(BorderLayout.NORTH, controlPanel);
         add(scrollPane);
@@ -176,7 +176,7 @@ public class FontSelector extends JPanel
             // 11. Create the graphics context object
 
             Graphics2D g2D = (Graphics2D) g;
-			//Graphics g2D = g;
+            //Graphics g2D = g;
 
             // 12. Prepare the current font and apply it to
             //     the display text.
@@ -188,67 +188,67 @@ public class FontSelector extends JPanel
             
             g2D.setColor(getForeground());
            
-			Dimension dimension = getSize();
-			
-			if(displayText.compareTo(nullString) == 0)
-				displayText = exampleText;
+            Dimension dimension = getSize();
+            
+            if(displayText.compareTo(nullString) == 0)
+                displayText = exampleText;
 
             g2D.drawString(displayText, 16, dimension.height - 16);
         }
         
-		public void setDisplayText(String parDisplayText)
-		{
-			displayText = parDisplayText;
-		}
+        public void setDisplayText(String parDisplayText)
+        {
+            displayText = parDisplayText;
+        }
     }
 
-	public void setFont(Font parFont)
-	{
-		super.setFont(parFont);
+    public void setFont(Font parFont)
+    {
+        super.setFont(parFont);
 
-		if(fontsBox != null)
-			fontsBox.setSelectedItem(parFont.getFamily());
+        if(fontsBox != null)
+            fontsBox.setSelectedItem(parFont.getFamily());
 
-		if(fontStylesBox != null)
-		{
-			int style = parFont.getStyle();
-			
-			if(style == Font.PLAIN)
-		    	fontStylesBox.setSelectedItem(plainStyleString);
+        if(fontStylesBox != null)
+        {
+            int style = parFont.getStyle();
+            
+            if(style == Font.PLAIN)
+                fontStylesBox.setSelectedItem(plainStyleString);
 
-			else if(style == Font.BOLD)
-		    	fontStylesBox.setSelectedItem(boldStyleString);
+            else if(style == Font.BOLD)
+                fontStylesBox.setSelectedItem(boldStyleString);
 
-			else if(style == Font.ITALIC)
-		    	fontStylesBox.setSelectedItem(italicStyleString);
+            else if(style == Font.ITALIC)
+                fontStylesBox.setSelectedItem(italicStyleString);
 
-			else if(style == BOLDITALIC)
-		    	fontStylesBox.setSelectedItem(boldAndItalicStyleString);
-		}
+            else if(style == BOLDITALIC)
+                fontStylesBox.setSelectedItem(boldAndItalicStyleString);
+        }
 
-		if(fontSizesBox != null)
-		    fontSizesBox.setSelectedItem(String.valueOf(parFont.getSize()));
-			
-		if(displayPanel != null)
-		{
-			displayPanel.currentFont = parFont;
-       	
-			displayPanel.fontFamilyName = parFont.getFamily();
-			displayPanel.fontStyle = parFont.getStyle();
-			displayPanel.fontSize = parFont.getSize();
-		}
-	}
+        if(fontSizesBox != null)
+            fontSizesBox.setSelectedItem(String.valueOf(parFont.getSize()));
+            
+        if(displayPanel != null)
+        {
+            displayPanel.currentFont = parFont;
+           
+            displayPanel.fontFamilyName = parFont.getFamily();
+            displayPanel.fontStyle = parFont.getStyle();
+            displayPanel.fontSize = parFont.getSize();
+        }
+    }
         
-	public Font getFont()
-	{
-		if(displayPanel != null)
-			return displayPanel.currentFont;
+    public Font getFont()
+    {
+        if(displayPanel != null)
+            return displayPanel.currentFont;
 
-		return super.getFont();
-	}
+        return super.getFont();
+    }
 
-	public FontDisplayPanel getDisplayPanel()
-	{
-		return displayPanel;
-	}
+    public FontDisplayPanel getDisplayPanel()
+    {
+        return displayPanel;
+    }
 }

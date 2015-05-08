@@ -55,42 +55,42 @@ import org.eclipse.swt.widgets.Text;
  */
 public class StartupDialog extends TitleAreaDialog {
 
-	/**
-	 * Text box that holds the user name.
-	 */
-	private Text _usernameText;
+    /**
+     * Text box that holds the user name.
+     */
+    private Text _usernameText;
 
-	/**
-	 * Text box that holds the password.
-	 */
-	private Text _passwordText;
-	
-	/**
-	 * Checkbox for Anonymous login
-	 */
-	private Button _loginAnonymous;
+    /**
+     * Text box that holds the password.
+     */
+    private Text _passwordText;
+    
+    /**
+     * Checkbox for Anonymous login
+     */
+    private Button _loginAnonymous;
 
-	/**
-	 * User name initially displayed in the dialog, then read from dialog.
-	 */
+    /**
+     * User name initially displayed in the dialog, then read from dialog.
+     */
     private String user_name = null;
     
-	/**
-	 * Password initially displayed in the dialog, then read from dialog.
-	 */
+    /**
+     * Password initially displayed in the dialog, then read from dialog.
+     */
     private String password = "";
 
-	/**
-	 * The dialog title.
-	 */
-	private final String _title;
+    /**
+     * The dialog title.
+     */
+    private final String _title;
 
-	/**
-	 * The message displayed in the dialog.
-	 */
-	private final String _message;
-	
-	  /** Workspace information */
+    /**
+     * The message displayed in the dialog.
+     */
+    private final String _message;
+    
+      /** Workspace information */
     final private WorkspaceInfo info;
     
     /** Include the "show again" checkbox? */
@@ -105,36 +105,36 @@ public class StartupDialog extends TitleAreaDialog {
     /** Combo with selected and recent workspaces */
     private Combo workspaces;
 
-	private Button show_dialog;
+    private Button show_dialog;
 
     /**
-	 * Creates a new login dialog.
-	 * 
-	 * @param parentShell
-	 *            the parent shell.
-	 * @param title
-	 *            the dialog title.
-	 * @param message
-	 *            the message that is displayed in the dialog.
-	 * @param defaultUser
-	 *            the initial user name.
-	 * @param defaultPassword
-	 * 			  the initial password
-	 * @param info WorkspaceInfo
+     * Creates a new login dialog.
+     * 
+     * @param parentShell
+     *            the parent shell.
+     * @param title
+     *            the dialog title.
+     * @param message
+     *            the message that is displayed in the dialog.
+     * @param defaultUser
+     *            the initial user name.
+     * @param defaultPassword
+     *               the initial password
+     * @param info WorkspaceInfo
      * @param with_show_again_option Include the "show again" checkbox?
      * @param showLogin show login section?
      * @param showWorkspace show workspace section?
-	 */
+     */
     public StartupDialog(final Shell parentShell, final String title,
-    		final String message, final String defaultUser, final String defaultPassword,
-    		final WorkspaceInfo info, final boolean with_show_again_option, 
-    		final boolean showLogin, final boolean showWorkspace) {
-    	super(parentShell);
-		_title = title;
-		_message = message;
-		this.user_name = defaultUser;
-		this.password = defaultPassword;
-		this.info = info;
+            final String message, final String defaultUser, final String defaultPassword,
+            final WorkspaceInfo info, final boolean with_show_again_option, 
+            final boolean showLogin, final boolean showWorkspace) {
+        super(parentShell);
+        _title = title;
+        _message = message;
+        this.user_name = defaultUser;
+        this.password = defaultPassword;
+        this.info = info;
         this.with_show_again_option = with_show_again_option;
         this.showLogin = showLogin;
         this.showWorkspace = showWorkspace;
@@ -147,45 +147,45 @@ public class StartupDialog extends TitleAreaDialog {
      */
     @Override
     protected void configureShell(Shell newShell) {
-    	super.configureShell(newShell);
-    	newShell.setText(_title);
+        super.configureShell(newShell);
+        newShell.setText(_title);
     }
-	
-	/**
-	 * Creates the contents of this dialog.
-	 */
-	@Override
-	protected Control createDialogArea(final Composite parent) {
-		Composite parentComposite = (Composite) super.createDialogArea(parent);
+    
+    /**
+     * Creates the contents of this dialog.
+     */
+    @Override
+    protected Control createDialogArea(final Composite parent) {
+        Composite parentComposite = (Composite) super.createDialogArea(parent);
 
-		setTitle(_title);
-		setMessage(_message);
+        setTitle(_title);
+        setMessage(_message);
 
-		// Create the layout
-		Composite contents = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout(1, false);
+        // Create the layout
+        Composite contents = new Composite(parent, SWT.NONE);
+        GridLayout layout = new GridLayout(1, false);
         layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
         layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
         layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
         layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-		contents.setLayout(layout);
-		contents.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, true));
-		contents.setFont(parent.getFont());
-		
-		if(showLogin) {
-			Group loginGroup = new Group(contents, SWT.SHADOW_ETCHED_IN);
-			loginGroup.setText(Messages.LoginDialog_Login);
-			createLoginSection(loginGroup);
-		}
-		
-		if(showWorkspace) {
-			Group workspaceGroup = new Group(contents, SWT.SHADOW_ETCHED_IN);
-			workspaceGroup.setText(Messages.StartupDialog_SelectWorkspace);		
-			createWorkspaceSection(workspaceGroup);
-		}
+        contents.setLayout(layout);
+        contents.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, true));
+        contents.setFont(parent.getFont());
         
-		return parentComposite;
-	}
+        if(showLogin) {
+            Group loginGroup = new Group(contents, SWT.SHADOW_ETCHED_IN);
+            loginGroup.setText(Messages.LoginDialog_Login);
+            createLoginSection(loginGroup);
+        }
+        
+        if(showWorkspace) {
+            Group workspaceGroup = new Group(contents, SWT.SHADOW_ETCHED_IN);
+            workspaceGroup.setText(Messages.StartupDialog_SelectWorkspace);        
+            createWorkspaceSection(workspaceGroup);
+        }
+        
+        return parentComposite;
+    }
 
     /** Add workspace selector and other GUI elements */
     private void createWorkspaceSection(final Composite group)
@@ -234,46 +234,46 @@ public class StartupDialog extends TitleAreaDialog {
         else // Always show
             info.setShowDialog(true);
     }
-	
-	private void createLoginSection(Composite group) {
-	    GridLayout layout = new GridLayout();
+    
+    private void createLoginSection(Composite group) {
+        GridLayout layout = new GridLayout();
         layout.numColumns = 2;
         group.setLayout(layout);
         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
         group.setLayoutData(gd);
-		
-		// user name
-		Label label = new Label(group, SWT.NONE);
-		label.setText(Messages.LoginDialog_UserName);
-		_usernameText = new Text(group, SWT.BORDER | SWT.FLAT);
-		_usernameText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-		
-		// password
-		label = new Label(group, SWT.NONE);
-		label.setText(Messages.LoginDialog_Password);
-		_passwordText = new Text(group, SWT.BORDER | SWT.FLAT | SWT.PASSWORD);
-		_passwordText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+        
+        // user name
+        Label label = new Label(group, SWT.NONE);
+        label.setText(Messages.LoginDialog_UserName);
+        _usernameText = new Text(group, SWT.BORDER | SWT.FLAT);
+        _usernameText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+        
+        // password
+        label = new Label(group, SWT.NONE);
+        label.setText(Messages.LoginDialog_Password);
+        _passwordText = new Text(group, SWT.BORDER | SWT.FLAT | SWT.PASSWORD);
+        _passwordText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
-		// Anonymous login?
-		_loginAnonymous = new Button(group, SWT.CHECK);
-		_loginAnonymous.setText(Messages.LoginDialog_LoginAnonymous);
-		_loginAnonymous.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
-		_loginAnonymous.addSelectionListener(new SelectionAdapter(){
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				if(_loginAnonymous.getSelection()) {
-					_usernameText.setEnabled(false);
-					_passwordText.setEnabled(false);
-				} else {
-					_usernameText.setEnabled(true);
-					_passwordText.setEnabled(true);
-					// Allow entry of user name right away
-		            _usernameText.setFocus();
-				}
-			}
-		});
+        // Anonymous login?
+        _loginAnonymous = new Button(group, SWT.CHECK);
+        _loginAnonymous.setText(Messages.LoginDialog_LoginAnonymous);
+        _loginAnonymous.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
+        _loginAnonymous.addSelectionListener(new SelectionAdapter(){
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if(_loginAnonymous.getSelection()) {
+                    _usernameText.setEnabled(false);
+                    _passwordText.setEnabled(false);
+                } else {
+                    _usernameText.setEnabled(true);
+                    _passwordText.setEnabled(true);
+                    // Allow entry of user name right away
+                    _usernameText.setFocus();
+                }
+            }
+        });
 
-		// Init. user/password  with default
+        // Init. user/password  with default
         if (user_name != null)
             _usernameText.setText(user_name);
         if (password != null)
@@ -282,47 +282,47 @@ public class StartupDialog extends TitleAreaDialog {
         // By default, the login section is actually not shown.
         // If it _is_ displayed, assume that user would start by entering a name
         _usernameText.setFocus();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected final void okPressed() {
-		if(showLogin) {
-			if(_loginAnonymous.getSelection()) { // Anonymous login
-				user_name = null;
-				password = "";
-			}
-			else {
-				user_name = this._usernameText.getText();
-				password = this._passwordText.getText();
-			}
-		}		
-		if(showWorkspace) {
-			if(!checkWorkspace())
-				return;
-			else if (with_show_again_option)
-				info.setShowDialog(show_dialog.getSelection());
-		}
-		super.okPressed();
-	}
-	
-	 /**
-	 * @return User name entered into dialog
-	 */
-	public String getUser() {
-		return user_name;
-	}
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected final void okPressed() {
+        if(showLogin) {
+            if(_loginAnonymous.getSelection()) { // Anonymous login
+                user_name = null;
+                password = "";
+            }
+            else {
+                user_name = this._usernameText.getText();
+                password = this._passwordText.getText();
+            }
+        }        
+        if(showWorkspace) {
+            if(!checkWorkspace())
+                return;
+            else if (with_show_again_option)
+                info.setShowDialog(show_dialog.getSelection());
+        }
+        super.okPressed();
+    }
+    
+     /**
+     * @return User name entered into dialog
+     */
+    public String getUser() {
+        return user_name;
+    }
 
-	/**
-	 * @return Password entered into dialog
-	 */
-	public String getPassword() {
-		return password;
-	}
+    /**
+     * @return Password entered into dialog
+     */
+    public String getPassword() {
+        return password;
+    }
 
-	/** @return Directory name close to the currently entered workspace */
+    /** @return Directory name close to the currently entered workspace */
     @SuppressWarnings("nls")
     private String getInitialBrowsePath()
     {

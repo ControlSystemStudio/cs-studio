@@ -35,7 +35,7 @@ import org.osgi.framework.BundleContext;
 public class SecuritySupportUI implements BundleActivator, SecurityListener
 {
     private static final String RUNTIME_PLATFORM = "org.csstudio.runtime.platform"; //$NON-NLS-1$
-	/** Map of authorizations and actions that require them */
+    /** Map of authorizations and actions that require them */
     final private static Map<String, Collection<WeakReference<IAction>>> authorized_actions = new HashMap<>();
 
     /** {@inheritDoc} */
@@ -44,7 +44,7 @@ public class SecuritySupportUI implements BundleActivator, SecurityListener
     {
         SecuritySupport.addListener(this);
         System.setProperty(RUNTIME_PLATFORM,
-        		SWT.getPlatform().startsWith("rap")?"rap":"rcp"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                SWT.getPlatform().startsWith("rap")?"rap":"rcp"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     }
 

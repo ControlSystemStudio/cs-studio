@@ -47,98 +47,98 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @author Sven Wende & Kai Meyer
  */
 public final class DisplayOptionsPreferencePage extends
-		FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+        FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-	/**
-	 * Constructor.
-	 */
-	public DisplayOptionsPreferencePage() {
-		super(FieldEditorPreferencePage.GRID);
-		setMessage("Set Display Options"); //$NON-NLS-1$
-	}
+    /**
+     * Constructor.
+     */
+    public DisplayOptionsPreferencePage() {
+        super(FieldEditorPreferencePage.GRID);
+        setMessage("Set Display Options"); //$NON-NLS-1$
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void createFieldEditors() {
-		FieldEditor editor;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void createFieldEditors() {
+        FieldEditor editor;
 
-		editor = new IntegerFieldEditor(PreferenceConstants.PROP_GRID_SPACING,
-				"Grid Spacing", getFieldEditorParent());
-		addField(editor);
+        editor = new IntegerFieldEditor(PreferenceConstants.PROP_GRID_SPACING,
+                "Grid Spacing", getFieldEditorParent());
+        addField(editor);
 
-		editor = new BooleanFieldEditor(PreferenceConstants.PROP_ANTIALIASING,
-				"Antialiasing", getFieldEditorParent());
-		addField(editor);
+        editor = new BooleanFieldEditor(PreferenceConstants.PROP_ANTIALIASING,
+                "Antialiasing", getFieldEditorParent());
+        addField(editor);
 
-		editor = new BooleanFieldEditor(
-				PreferenceConstants.PROP_CLOSE_PARENT_DISPLAY,
-				"Close Parent Display", getFieldEditorParent());
-		addField(editor);
+        editor = new BooleanFieldEditor(
+                PreferenceConstants.PROP_CLOSE_PARENT_DISPLAY,
+                "Close Parent Display", getFieldEditorParent());
+        addField(editor);
 
-		String[][] labelAndValues = new String[][] {
-				{ "No categorization", CategorizationType.NONE.getId() },
-				{ "Collapsible groups", CategorizationType.DRAWER.getId() },
-				{ "Stack", CategorizationType.STACK.getId() } };
-		editor = new RadioGroupFieldEditor(
-				PreferenceConstants.PROP_WIDGET_CATEGORIZATION,
-				"Categorization of SDS widgets", 1, labelAndValues,
-				getFieldEditorParent(), true);
-		addField(editor);
+        String[][] labelAndValues = new String[][] {
+                { "No categorization", CategorizationType.NONE.getId() },
+                { "Collapsible groups", CategorizationType.DRAWER.getId() },
+                { "Stack", CategorizationType.STACK.getId() } };
+        editor = new RadioGroupFieldEditor(
+                PreferenceConstants.PROP_WIDGET_CATEGORIZATION,
+                "Categorization of SDS widgets", 1, labelAndValues,
+                getFieldEditorParent(), true);
+        addField(editor);
 
-		editor = new BooleanFieldEditor(
-				PreferenceConstants.PROP_WRITE_ACCESS_DENIED,
-				"Deny Write Access for all widgets", getFieldEditorParent());
-		addField(editor);
-		
-		Group styleComposite = new Group(getFieldEditorParent(), SWT.NONE);
-		styleComposite.setText("Styles");
-		GridLayout layout = new GridLayout(2,false);
-		styleComposite.setLayout(layout);
-		styleComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		String[][] cafLabelAndValues = createLabelsAndValues();
-		if (cafLabelAndValues.length == 0) {
-			Label notFound = new Label(styleComposite, SWT.WRAP);
-			notFound.setText("No styles found");
-			notFound.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		} else {
-			addField(new RadioGroupFieldEditor(PreferenceConstants.PROP_SELECTED_COLOR_AND_FONT_STYLE, 
-				"Select the style for colors and fonts", 1, cafLabelAndValues, styleComposite));
-		}
-		Label hint = new Label(styleComposite, SWT.WRAP);
-		hint.setText("The styles are taken from file '/Settings/settings.xml'");
-		hint.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-	}
+        editor = new BooleanFieldEditor(
+                PreferenceConstants.PROP_WRITE_ACCESS_DENIED,
+                "Deny Write Access for all widgets", getFieldEditorParent());
+        addField(editor);
+        
+        Group styleComposite = new Group(getFieldEditorParent(), SWT.NONE);
+        styleComposite.setText("Styles");
+        GridLayout layout = new GridLayout(2,false);
+        styleComposite.setLayout(layout);
+        styleComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+        String[][] cafLabelAndValues = createLabelsAndValues();
+        if (cafLabelAndValues.length == 0) {
+            Label notFound = new Label(styleComposite, SWT.WRAP);
+            notFound.setText("No styles found");
+            notFound.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+        } else {
+            addField(new RadioGroupFieldEditor(PreferenceConstants.PROP_SELECTED_COLOR_AND_FONT_STYLE, 
+                "Select the style for colors and fonts", 1, cafLabelAndValues, styleComposite));
+        }
+        Label hint = new Label(styleComposite, SWT.WRAP);
+        hint.setText("The styles are taken from file '/Settings/settings.xml'");
+        hint.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+    }
 
-	private String[][] createLabelsAndValues() {
-		List<NamedStyle> styles = SdsUiPlugin.getDefault().getColorAndFontService().getStyles();
-		String[][] result = new String[styles.size()][2];
-		for (int i = 0; i < styles.size(); i++) {
-			result[i] = new String[] {styles.get(i).getDescription() + " ("+ styles.get(i).getName() +")", styles.get(i).getName()};
-		}
-		return result;
-	}
+    private String[][] createLabelsAndValues() {
+        List<NamedStyle> styles = SdsUiPlugin.getDefault().getColorAndFontService().getStyles();
+        String[][] result = new String[styles.size()][2];
+        for (int i = 0; i < styles.size(); i++) {
+            result[i] = new String[] {styles.get(i).getDescription() + " ("+ styles.get(i).getName() +")", styles.get(i).getName()};
+        }
+        return result;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IPreferenceStore doGetPreferenceStore() {
-		return SdsUiPlugin.getCorePreferenceStore();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IPreferenceStore doGetPreferenceStore() {
+        return SdsUiPlugin.getCorePreferenceStore();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void init(final IWorkbench workbench) {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void init(final IWorkbench workbench) {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void dispose() {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void dispose() {
+    }
 
 }

@@ -12,17 +12,17 @@ import org.eclipse.swt.widgets.Composite;
  * @param <T> the widget type
  */
 public abstract class AbstractChannelWidgetFigure<T extends Composite> extends AbstractSelectionWidgetFigure<T> {
-	
-	/**
-	 * Creates a new figure based on the give swt widget and the selection provider.
-	 * 
-	 * @param composite pass through
-	 * @param parentModel pass through
-	 * @param swtWidget the SWT widget
-	 * @param selectionProvider a corresponding selection provider
-	 */
-	public AbstractChannelWidgetFigure(AbstractBaseEditPart editPart) {
-		super(editPart);
-	}
-	
+    
+    /**
+     * Creates a new figure based on the give swt widget and the selection provider.
+     * 
+     * @param composite pass through
+     * @param parentModel pass through
+     * @param swtWidget the SWT widget
+     * @param selectionProvider a corresponding selection provider
+     */
+    public AbstractChannelWidgetFigure(AbstractBaseEditPart editPart) {
+        super(editPart);
+    }
+    
 }

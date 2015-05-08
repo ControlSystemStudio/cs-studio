@@ -11,21 +11,21 @@ package org.csstudio.autocomplete.parser.engine.expr;
 
 public class ExprException extends Exception {
 
-	private static final long serialVersionUID = -1998822947453924659L;
+    private static final long serialVersionUID = -1998822947453924659L;
 
-	public ExprException() {
-		super();
-	}
+    public ExprException() {
+        super();
+    }
 
-	public ExprException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public ExprException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-	public ExprException(String message) {
-		super(message);
-	}
+    public ExprException(String message) {
+        super(message);
+    }
 
-	public ExprException(Throwable cause) {
-		super(cause);
-	}
+    public ExprException(Throwable cause) {
+        super(cause);
+    }
 }

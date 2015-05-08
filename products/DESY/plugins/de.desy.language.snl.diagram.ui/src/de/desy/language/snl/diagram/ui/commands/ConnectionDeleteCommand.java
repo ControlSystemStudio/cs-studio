@@ -19,11 +19,11 @@ private final WhenConnection connection;
  * @throws IllegalArgumentException if conn is null
  */ 
 public ConnectionDeleteCommand(final WhenConnection conn) {
-	if (conn == null) {
-		throw new IllegalArgumentException();
-	}
-	setLabel("connection deletion");
-	this.connection = conn;
+    if (conn == null) {
+        throw new IllegalArgumentException();
+    }
+    setLabel("connection deletion");
+    this.connection = conn;
 }
 
 
@@ -32,7 +32,7 @@ public ConnectionDeleteCommand(final WhenConnection conn) {
  */
 @Override
 public void execute() {
-	connection.disconnect();
+    connection.disconnect();
 }
 
 /* (non-Javadoc)
@@ -40,6 +40,6 @@ public void execute() {
  */
 @Override
 public void undo() {
-	connection.reconnect();
+    connection.reconnect();
 }
 }

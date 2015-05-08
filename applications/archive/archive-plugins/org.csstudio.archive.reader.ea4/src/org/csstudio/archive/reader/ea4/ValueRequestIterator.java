@@ -42,12 +42,12 @@ public class ValueRequestIterator implements ValueIterator
      * @throws Exception on error
      */
     public ValueRequestIterator(final EA4ArchiveReader reader,
-    		final int key, 
-    	    final String name, 
-    	    final Timestamp start,
-    	    final Timestamp end, 
-    	    final boolean optimized,
-    		final int count) throws Exception {
+            final int key, 
+            final String name, 
+            final Timestamp start,
+            final Timestamp end, 
+            final boolean optimized,
+            final int count) throws Exception {
         this.reader = reader;
         this.key = key;
         this.name = name;
@@ -81,7 +81,7 @@ public class ValueRequestIterator implements ValueIterator
     /** {@inheritDoc} */
     @Override
     public VType next() throws Exception {
-    	
+        
         final VType result = samples[index];
         
         ++index;
@@ -127,8 +127,8 @@ public class ValueRequestIterator implements ValueIterator
 
         // From the end of the new samples, go backward:
         for (index=samples.length-1;  index>=0;  --index) {   
-        	
-        	// If we find the previous batch's last sample...
+            
+            // If we find the previous batch's last sample...
             if (samples[index].equals(result))
                 // Skip all the samples up to and including it
                 break;

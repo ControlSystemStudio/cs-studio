@@ -41,31 +41,31 @@ public class MySQL_RDB implements RDBImpl
     {
         final Properties props = new Properties();
 
-    	// Connect
-    	final Connection connection;
+        // Connect
+        final Connection connection;
         if (user != null  ||  password != null)
         {
-    		props.put("user", user);
-    		props.put("password", password);
+            props.put("user", user);
+            props.put("password", password);
         }
-    	// Test if the connection should use replication driver or not
-    	if (!url.startsWith("jdbc:mysql:replication"))
-    	{   // Class loader locates the plain MySQL driver
-    	    Class.forName("com.mysql.jdbc.Driver").newInstance();
-    		connection = DriverManager.getConnection(url, props);
-    	}
-    	else
-    	{   // Use ReplicationDriver
-    	    final ReplicationDriver driver = new ReplicationDriver();
+        // Test if the connection should use replication driver or not
+        if (!url.startsWith("jdbc:mysql:replication"))
+        {   // Class loader locates the plain MySQL driver
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            connection = DriverManager.getConnection(url, props);
+        }
+        else
+        {   // Use ReplicationDriver
+            final ReplicationDriver driver = new ReplicationDriver();
 
-    	    // We want this for failover on the slaves
-        	props.put("autoReconnect", "true");
+            // We want this for failover on the slaves
+            props.put("autoReconnect", "true");
 
-        	// We want to load balance between the slaves
-        	props.put("roundRobinLoadBalance", "true");
+            // We want to load balance between the slaves
+            props.put("roundRobinLoadBalance", "true");
 
-    		connection = driver.connect(url, props);
-    	}
+            connection = driver.connect(url, props);
+        }
 
         // Basic database info
         final Logger logger = Activator.getLogger();

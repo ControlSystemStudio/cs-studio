@@ -79,9 +79,9 @@ public class RingBufferUnitTest
 
     private void dump(final RingBuffer<Integer> ring)
     {
-    	final Integer[] values = ring.toArray(new Integer[0]);
-    	for (Integer i : values)
+        final Integer[] values = ring.toArray(new Integer[0]);
+        for (Integer i : values)
             System.out.print(i + " "); //$NON-NLS-1$
-    	System.out.println();
+        System.out.println();
     }
 }

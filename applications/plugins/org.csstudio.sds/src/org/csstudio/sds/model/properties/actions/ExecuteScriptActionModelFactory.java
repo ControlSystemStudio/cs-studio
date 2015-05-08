@@ -29,11 +29,11 @@
  */
 public final class ExecuteScriptActionModelFactory implements IActionModelFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractWidgetActionModel createWidgetActionModel() {
-		return new ExecuteScriptActionModel();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractWidgetActionModel createWidgetActionModel() {
+        return new ExecuteScriptActionModel();
+    }
 
 }

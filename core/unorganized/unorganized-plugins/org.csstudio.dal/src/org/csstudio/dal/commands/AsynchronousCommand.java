@@ -36,17 +36,17 @@ import org.csstudio.dal.ResponseListener;
  */
 public interface AsynchronousCommand extends Command
 {
-	/**
-	 * Executes command asyncrhonously. Thread calling this method
-	 * returns immediatelly. When command execution is finised, responsed is
-	 * returned via response listener.
-	 *
-	 * @return returned valune, <code>null</code> if non exists
-	 *
-	 * @throws RemoteException if executions fails
-	 */
-	public Request<?> executeAsync(ResponseListener<?> listener, Object... parameters)
-		throws RemoteException;
+    /**
+     * Executes command asyncrhonously. Thread calling this method
+     * returns immediatelly. When command execution is finised, responsed is
+     * returned via response listener.
+     *
+     * @return returned valune, <code>null</code> if non exists
+     *
+     * @throws RemoteException if executions fails
+     */
+    public Request<?> executeAsync(ResponseListener<?> listener, Object... parameters)
+        throws RemoteException;
 }
 
 /* __oOo__ */

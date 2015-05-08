@@ -34,35 +34,35 @@ import org.junit.Test;
  */
 public final class PolylineElementTest {
 
-	/**
-	 * A test instance.
-	 */
-	private PolylineModel _polylineElement;
-	
-	/**
-	 * Test setup.
-	 */
-	@Before
-	public void setUp() {
-		_polylineElement = new PolylineModel();
-	}
+    /**
+     * A test instance.
+     */
+    private PolylineModel _polylineElement;
+    
+    /**
+     * Test setup.
+     */
+    @Before
+    public void setUp() {
+        _polylineElement = new PolylineModel();
+    }
 
-	/**
-	 * Test method for {@link org.csstudio.sds.components.model.PolylineModel#getTypeID()}.
-	 */
-	@Test
-	public void testGetTypeID() {
-		_polylineElement.getTypeID().equals(PolylineModel.ID);
-	}
+    /**
+     * Test method for {@link org.csstudio.sds.components.model.PolylineModel#getTypeID()}.
+     */
+    @Test
+    public void testGetTypeID() {
+        _polylineElement.getTypeID().equals(PolylineModel.ID);
+    }
 
-	/**
-	 * Tests, if all properties where properly installed.
-	 */
-	@Test
-	public void testProperties () {
-		assertTrue(_polylineElement.hasProperty(AbstractPolyModel.PROP_POINTS));
-		assertTrue(_polylineElement.hasProperty(AbstractPolyModel.PROP_FILL));
-		// Add further properties here
-	}
+    /**
+     * Tests, if all properties where properly installed.
+     */
+    @Test
+    public void testProperties () {
+        assertTrue(_polylineElement.hasProperty(AbstractPolyModel.PROP_POINTS));
+        assertTrue(_polylineElement.hasProperty(AbstractPolyModel.PROP_FILL));
+        // Add further properties here
+    }
 
 }

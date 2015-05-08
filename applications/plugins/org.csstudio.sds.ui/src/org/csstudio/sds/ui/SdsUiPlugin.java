@@ -58,123 +58,123 @@ public final class SdsUiPlugin extends AbstractUIPlugin {
 
     private static final Logger LOG = LoggerFactory.getLogger(SdsUiPlugin.class);
 
-	/**
-	 * The ID of this _plugin.
-	 */
-	public static final String PLUGIN_ID = "org.csstudio.sds.ui"; //$NON-NLS-1$
+    /**
+     * The ID of this _plugin.
+     */
+    public static final String PLUGIN_ID = "org.csstudio.sds.ui"; //$NON-NLS-1$
 
-	/**
-	 * The ID of the edit parts extension point.
-	 */
-	public static final String EXTPOINT_WIDGET_EDITPARTS = PLUGIN_ID + ".widgetEditParts"; //$NON-NLS-1$
+    /**
+     * The ID of the edit parts extension point.
+     */
+    public static final String EXTPOINT_WIDGET_EDITPARTS = PLUGIN_ID + ".widgetEditParts"; //$NON-NLS-1$
 
-	/**
-	 * The ID of the graphical feedback factories extension point.
-	 */
-	public static final String EXTPOINT_GRAPHICAL_FEEDBACK_FACTORIES = PLUGIN_ID + ".graphicalFeedbackFactories"; //$NON-NLS-1$
+    /**
+     * The ID of the graphical feedback factories extension point.
+     */
+    public static final String EXTPOINT_GRAPHICAL_FEEDBACK_FACTORIES = PLUGIN_ID + ".graphicalFeedbackFactories"; //$NON-NLS-1$
 
-	/**
-	 * The ID of the property descriptors extension point.
-	 */
-	public static final String EXTPOINT_PROPERTY_DESRIPTORS_FACTORIES = PLUGIN_ID + ".propertyDescriptorFactories"; //$NON-NLS-1$
+    /**
+     * The ID of the property descriptors extension point.
+     */
+    public static final String EXTPOINT_PROPERTY_DESRIPTORS_FACTORIES = PLUGIN_ID + ".propertyDescriptorFactories"; //$NON-NLS-1$
 
-	/**
-	 * The shared instance of this _plugin activator.
-	 */
-	private static SdsUiPlugin _plugin;
+    /**
+     * The shared instance of this _plugin activator.
+     */
+    private static SdsUiPlugin _plugin;
 
-	private static IPreferenceStore _preferenceStore;
+    private static IPreferenceStore _preferenceStore;
 
-	private IColorAndFontService _colorAndFontService;
+    private IColorAndFontService _colorAndFontService;
 
-	private LibraryFolderPreferenceService libraryFolderPreferenceService;
-	private PvSearchFolderPreferenceService pvSearchFolderPreferenceService;
+    private LibraryFolderPreferenceService libraryFolderPreferenceService;
+    private PvSearchFolderPreferenceService pvSearchFolderPreferenceService;
 
-	private ProcessVariableAddressValidationServiceTracker pvAddressValidationServiceTracker;
+    private ProcessVariableAddressValidationServiceTracker pvAddressValidationServiceTracker;
 
-	/**
-	 * Standard constructor.
-	 */
-	public SdsUiPlugin() {
-		_plugin = this;
-	}
+    /**
+     * Standard constructor.
+     */
+    public SdsUiPlugin() {
+        _plugin = this;
+    }
 
-	/**
-	 * Returns the shared instance of this _plugin activator.
-	 * 
-	 * @return The shared instance of this _plugin activator.
-	 */
-	public static SdsUiPlugin getDefault() {
-		return _plugin;
-	}
+    /**
+     * Returns the shared instance of this _plugin activator.
+     * 
+     * @return The shared instance of this _plugin activator.
+     */
+    public static SdsUiPlugin getDefault() {
+        return _plugin;
+    }
 
-	/**
-	 * 
-	 * Return the preference store of the sds core plugin.
-	 * 
-	 * @return The preference store of the sds core plugin.
-	 */
-	public static IPreferenceStore getCorePreferenceStore() {
-		if (_preferenceStore == null) {
-			String qualifier = SdsPlugin.getDefault().getBundle().getSymbolicName();
-			_preferenceStore = new ScopedPreferenceStore(new InstanceScope(), qualifier);
-			_preferenceStore.addPropertyChangeListener(new IPropertyChangeListener() {
-				public void propertyChange(final PropertyChangeEvent event) {
-					LOG.info("Property [" + event.getProperty() //$NON-NLS-1$
-							+ "] changed from [" //$NON-NLS-1$
-							+ event.getOldValue() + "] to [" //$NON-NLS-1$
-							+ event.getNewValue() + "]"); //$NON-NLS-1$
-				}
-			});
-		}
-		return _preferenceStore;
-	}
+    /**
+     * 
+     * Return the preference store of the sds core plugin.
+     * 
+     * @return The preference store of the sds core plugin.
+     */
+    public static IPreferenceStore getCorePreferenceStore() {
+        if (_preferenceStore == null) {
+            String qualifier = SdsPlugin.getDefault().getBundle().getSymbolicName();
+            _preferenceStore = new ScopedPreferenceStore(new InstanceScope(), qualifier);
+            _preferenceStore.addPropertyChangeListener(new IPropertyChangeListener() {
+                public void propertyChange(final PropertyChangeEvent event) {
+                    LOG.info("Property [" + event.getProperty() //$NON-NLS-1$
+                            + "] changed from [" //$NON-NLS-1$
+                            + event.getOldValue() + "] to [" //$NON-NLS-1$
+                            + event.getNewValue() + "]"); //$NON-NLS-1$
+                }
+            });
+        }
+        return _preferenceStore;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void start(final BundleContext context) throws Exception {
-		super.start(context);
-		// if there are errors within the scripts, tell the user!
-		if (RuleService.getInstance().isErrorOccurred()) {
-			List<String> errorMessages = RuleService.getInstance().getErrorMessages();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void start(final BundleContext context) throws Exception {
+        super.start(context);
+        // if there are errors within the scripts, tell the user!
+        if (RuleService.getInstance().isErrorOccurred()) {
+            List<String> errorMessages = RuleService.getInstance().getErrorMessages();
 
-			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "SDS Scripting Errors", StringUtil
-					.convertListToSingleString(errorMessages));
-		}
-		getCorePreferenceStore().addPropertyChangeListener(new AllowWriteAccessPreferenceListener());
+            MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "SDS Scripting Errors", StringUtil
+                    .convertListToSingleString(errorMessages));
+        }
+        getCorePreferenceStore().addPropertyChangeListener(new AllowWriteAccessPreferenceListener());
 
-		IFile file = ResourcesPlugin.getWorkspace().getRoot().getProject("Settings").getFile("settings.xml");
-		_colorAndFontService = new ColorAndFontService(file, new ColorAndFontSaxHandler());
-		libraryFolderPreferenceService = new LibraryFolderPreferenceService(this.getPreferenceStore());
-		pvSearchFolderPreferenceService = new PvSearchFolderPreferenceService(this.getPreferenceStore());
-		
-		pvAddressValidationServiceTracker = new ProcessVariableAddressValidationServiceTracker(context);
-	}
+        IFile file = ResourcesPlugin.getWorkspace().getRoot().getProject("Settings").getFile("settings.xml");
+        _colorAndFontService = new ColorAndFontService(file, new ColorAndFontSaxHandler());
+        libraryFolderPreferenceService = new LibraryFolderPreferenceService(this.getPreferenceStore());
+        pvSearchFolderPreferenceService = new PvSearchFolderPreferenceService(this.getPreferenceStore());
+        
+        pvAddressValidationServiceTracker = new ProcessVariableAddressValidationServiceTracker(context);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void stop(final BundleContext context) throws Exception {
-		super.stop(context);
-		pvAddressValidationServiceTracker.close();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void stop(final BundleContext context) throws Exception {
+        super.stop(context);
+        pvAddressValidationServiceTracker.close();
+    }
 
-	public IColorAndFontService getColorAndFontService() {
-		return _colorAndFontService;
-	}
-	
-	public LibraryFolderPreferenceService getLibraryFolderPreferenceService() {
-		return libraryFolderPreferenceService;
-	}
-	
-	public PvSearchFolderPreferenceService getPvSearchFolderPreferenceService() {
-		return pvSearchFolderPreferenceService;
-	}
+    public IColorAndFontService getColorAndFontService() {
+        return _colorAndFontService;
+    }
+    
+    public LibraryFolderPreferenceService getLibraryFolderPreferenceService() {
+        return libraryFolderPreferenceService;
+    }
+    
+    public PvSearchFolderPreferenceService getPvSearchFolderPreferenceService() {
+        return pvSearchFolderPreferenceService;
+    }
 
-	public ProcessVariableAddressValidationServiceTracker getProcessVariableAddressValidationServiceTracker() {
-		return this.pvAddressValidationServiceTracker;
-	}
+    public ProcessVariableAddressValidationServiceTracker getProcessVariableAddressValidationServiceTracker() {
+        return this.pvAddressValidationServiceTracker;
+    }
 }

@@ -34,17 +34,17 @@ package com.cosylab.vdct.db;
  * @author Matej Sekoranja
  */
 public class DBComment {
-	protected String comment;
+    protected String comment;
 
-	final static String nullString = "";
-	
+    final static String nullString = "";
+    
 /**
  * Insert the method's description here.
  * Creation date: (23/8/99 14:08:34)
  * @return java.lang.String
  */
 public String getComment() {
-	return comment;
+    return comment;
 }
 /**
  * Insert the method's description here.
@@ -52,7 +52,7 @@ public String getComment() {
  * @param comment java.lang.String
  */
 public void setComment(String comment) {
-	comment = comment.trim();
-	if (!comment.equals(nullString)) this.comment=comment;
+    comment = comment.trim();
+    if (!comment.equals(nullString)) this.comment=comment;
 }
 }

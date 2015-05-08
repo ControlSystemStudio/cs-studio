@@ -33,34 +33,34 @@ import org.csstudio.dal.RemoteException;
  */
 public interface CommandContext
 {
-	/**
-	 * Returns available command names.
-	 *
-	 * @return all available command names
-	 *
-	 * @throws RemoteException if remote operation fails
-	 */
-	public String[] getCommandNames() throws RemoteException;
+    /**
+     * Returns available command names.
+     *
+     * @return all available command names
+     *
+     * @throws RemoteException if remote operation fails
+     */
+    public String[] getCommandNames() throws RemoteException;
 
-	/**
-	 * Returns available commands.
-	 *
-	 * @return all available commands
-	 *
-	 * @throws RemoteException if remote operation fails
-	 */
-	public Command[] getCommands() throws RemoteException;
+    /**
+     * Returns available commands.
+     *
+     * @return all available commands
+     *
+     * @throws RemoteException if remote operation fails
+     */
+    public Command[] getCommands() throws RemoteException;
 
-	/**
-	 * Returns specific command inside this context.
-	 *
-	 * @param name the name ov the command
-	 *
-	 * @return the command with provided name
-	 *
-	 * @throws RemoteException if remote operation fails
-	 */
-	public Command getCommand(String name) throws RemoteException;
+    /**
+     * Returns specific command inside this context.
+     *
+     * @param name the name ov the command
+     *
+     * @return the command with provided name
+     *
+     * @throws RemoteException if remote operation fails
+     */
+    public Command getCommand(String name) throws RemoteException;
 }
 
 /* __oOo__ */

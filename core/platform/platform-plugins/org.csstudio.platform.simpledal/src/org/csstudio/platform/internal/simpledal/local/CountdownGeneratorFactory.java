@@ -29,12 +29,12 @@ package org.csstudio.platform.internal.simpledal.local;
  */
 public class CountdownGeneratorFactory implements IDataGeneratorFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractDataGenerator createGenerator(LocalChannel channel,
-			int defaultPeriod, String[] options) {
-		return new CountdownGenerator(channel, defaultPeriod, options);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractDataGenerator createGenerator(LocalChannel channel,
+            int defaultPeriod, String[] options) {
+        return new CountdownGenerator(channel, defaultPeriod, options);
+    }
 
 }

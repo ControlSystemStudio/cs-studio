@@ -38,311 +38,311 @@ import org.teneighty.lm.LevenbergMarquardt;
  */
 @SuppressWarnings("nls")
 public class LMOneDimensionalPolynomialTest
-	extends AbstractLevenbergMarquardtTest
+    extends AbstractLevenbergMarquardtTest
 {
 
 
-	/**
-	 * The number of 1-dimensional polynomial tests to run.
-	 */
-	private static final int TIMES = 100;
+    /**
+     * The number of 1-dimensional polynomial tests to run.
+     */
+    private static final int TIMES = 100;
 
-	/**
-	 * Minimum 1d poly test degree.
-	 */
-	private static final int MIN_DEGREE = 1;
+    /**
+     * Minimum 1d poly test degree.
+     */
+    private static final int MIN_DEGREE = 1;
 
-	/**
-	 * Maximum 1d poly test degree.
-	 */
-	private static final int MAX_DEGREE = 8;
+    /**
+     * Maximum 1d poly test degree.
+     */
+    private static final int MAX_DEGREE = 8;
 
-	/**
-	 * Poly 1d point count.
-	 */
-	private static final int POINTS = 100;
+    /**
+     * Poly 1d point count.
+     */
+    private static final int POINTS = 100;
 
-	/**
-	 * Poly 1d coefficient magnitude.
-	 */
-	private static final int COEFFICIENT_BOUND = 100;
-
-
-	/**
-	 * Constructor.
-	 *
-	 * @param name the name.
-	 */
-	public LMOneDimensionalPolynomialTest( final String name )
-	{
-		super( name );
-	}
+    /**
+     * Poly 1d coefficient magnitude.
+     */
+    private static final int COEFFICIENT_BOUND = 100;
 
 
-	/**
-	 * Test single dimension polynomial.
-	 */
-	public void testPolynomial()
-	{
-		System.out.print( "Starting 1-dimensional polynomial test" );
-
-		int degree = 0;
-		int passed = 0;
-		int frac = TIMES / 10;
-
-		long then = System.currentTimeMillis();
-
-		for( int index = 0; index < TIMES; index++ )
-		{
-			degree = MIN_DEGREE + this.random.nextInt( MAX_DEGREE - MIN_DEGREE );
-			passed += this.runOneDimensionPolynomial( degree, POINTS ) ? 1 : 0;
-
-			if( ( index % frac ) == 0 )
-			{
-				System.out.print( '.' );
-			}
-		}
-		System.out.println();
-
-		long now = System.currentTimeMillis();
-
-		// print a report
-		System.out.println( "One Dimensional Polynomial Test" );
-		System.out.println( "-------------------------------" );
-		System.out.println( "Tests run:         " + TIMES );
-		System.out.println( "Min degree:        " + MIN_DEGREE );
-		System.out.println( "Max degree:        " + MAX_DEGREE );
-		System.out.println( "Coefficient Bound: " + COEFFICIENT_BOUND );
-		System.out.println( "Data points:       " + POINTS );
-		System.out.println( "Epsilon value:     " + EPSILON );
-		System.out.println( "Time taken:        " + ( now - then ) + " ms" );
-		System.out.println( "Percentage passed: " + (int)( 100 * passed / TIMES ) + "%" );
-		System.out.println();
-	}
+    /**
+     * Constructor.
+     *
+     * @param name the name.
+     */
+    public LMOneDimensionalPolynomialTest( final String name )
+    {
+        super( name );
+    }
 
 
-	/**
-	 * Test a single dimension polynomial, of the specified degree.
-	 *
-	 * @param deg the degree.
-	 * @param data_size the number of data points to simulate.
-	 * @return boolean true if passed.
-	 */
-	private boolean runOneDimensionPolynomial( final int deg, final int data_size )
-	{
-		// create cost function...
-		CostPolynomial cost = new CostPolynomial( deg );
+    /**
+     * Test single dimension polynomial.
+     */
+    public void testPolynomial()
+    {
+        System.out.print( "Starting 1-dimensional polynomial test" );
 
-		// create random params.
-		double[] params = this.randomDoubleArray( deg + 1, COEFFICIENT_BOUND );
+        int degree = 0;
+        int passed = 0;
+        int frac = TIMES / 10;
 
-		// make our guess as lame as possible.
-		double[] guess = new double[ ( deg + 1 ) ];
-		for( int index = 0; index < guess.length; index++ )
-		{
-			guess[ index ] = 1;
-		}
+        long then = System.currentTimeMillis();
 
-		// create new noisy polynomial.
-		NoisyPolynomial noise = new NoisyPolynomial( this.random, params );
+        for( int index = 0; index < TIMES; index++ )
+        {
+            degree = MIN_DEGREE + this.random.nextInt( MAX_DEGREE - MIN_DEGREE );
+            passed += this.runOneDimensionPolynomial( degree, POINTS ) ? 1 : 0;
 
-		// create some data points...
-		// double[][] points = this.randomDoubleArray( data_size, 1 );
-		double[][] points = new double[ data_size ][ 1 ];
-		for( int index = 0; index < data_size; index++ )
-		{
-			points[ index ][ 0 ] = index;
-		}
+            if( ( index % frac ) == 0 )
+            {
+                System.out.print( '.' );
+            }
+        }
+        System.out.println();
 
-		// fill in values
-		double[] values = new double[ data_size ];
-		for( int index = 0; index < data_size; index++ )
-		{
-			values[ index ] = noise.evaluate( points[ index ] );
-		}
+        long now = System.currentTimeMillis();
 
-		// create new LM solver.
-		LevenbergMarquardt lm = new LevenbergMarquardt( data_size, 1 );
-		lm.setPoints( points );
-		lm.setCostFunction( cost );
-		lm.setValues( values );
-		lm.setGuess( guess );
-
-		// solve it.
-		lm.solve();
-
-		// get params.
-		double[] lm_params = lm.getParameters();
-
-		// check vectors.
-		return( this.checkVectors( params, lm_params ) );
-	}
+        // print a report
+        System.out.println( "One Dimensional Polynomial Test" );
+        System.out.println( "-------------------------------" );
+        System.out.println( "Tests run:         " + TIMES );
+        System.out.println( "Min degree:        " + MIN_DEGREE );
+        System.out.println( "Max degree:        " + MAX_DEGREE );
+        System.out.println( "Coefficient Bound: " + COEFFICIENT_BOUND );
+        System.out.println( "Data points:       " + POINTS );
+        System.out.println( "Epsilon value:     " + EPSILON );
+        System.out.println( "Time taken:        " + ( now - then ) + " ms" );
+        System.out.println( "Percentage passed: " + (int)( 100 * passed / TIMES ) + "%" );
+        System.out.println();
+    }
 
 
-	/**
-	 * A cost polynomial, of the specified degree.
-	 *
-	 * @author Fran Lattanzio
-	 * @version $Revision$ $Date$
-	 */
-	static class CostPolynomial
-		extends Object
-		implements CostFunction
-	{
+    /**
+     * Test a single dimension polynomial, of the specified degree.
+     *
+     * @param deg the degree.
+     * @param data_size the number of data points to simulate.
+     * @return boolean true if passed.
+     */
+    private boolean runOneDimensionPolynomial( final int deg, final int data_size )
+    {
+        // create cost function...
+        CostPolynomial cost = new CostPolynomial( deg );
+
+        // create random params.
+        double[] params = this.randomDoubleArray( deg + 1, COEFFICIENT_BOUND );
+
+        // make our guess as lame as possible.
+        double[] guess = new double[ ( deg + 1 ) ];
+        for( int index = 0; index < guess.length; index++ )
+        {
+            guess[ index ] = 1;
+        }
+
+        // create new noisy polynomial.
+        NoisyPolynomial noise = new NoisyPolynomial( this.random, params );
+
+        // create some data points...
+        // double[][] points = this.randomDoubleArray( data_size, 1 );
+        double[][] points = new double[ data_size ][ 1 ];
+        for( int index = 0; index < data_size; index++ )
+        {
+            points[ index ][ 0 ] = index;
+        }
+
+        // fill in values
+        double[] values = new double[ data_size ];
+        for( int index = 0; index < data_size; index++ )
+        {
+            values[ index ] = noise.evaluate( points[ index ] );
+        }
+
+        // create new LM solver.
+        LevenbergMarquardt lm = new LevenbergMarquardt( data_size, 1 );
+        lm.setPoints( points );
+        lm.setCostFunction( cost );
+        lm.setValues( values );
+        lm.setGuess( guess );
+
+        // solve it.
+        lm.solve();
+
+        // get params.
+        double[] lm_params = lm.getParameters();
+
+        // check vectors.
+        return( this.checkVectors( params, lm_params ) );
+    }
 
 
-		/**
-		 * The degree of this polynomial.
-		 */
-		private int degree;
+    /**
+     * A cost polynomial, of the specified degree.
+     *
+     * @author Fran Lattanzio
+     * @version $Revision$ $Date$
+     */
+    static class CostPolynomial
+        extends Object
+        implements CostFunction
+    {
 
 
-		/**
-		 * Constructor.
-		 *
-		 * @param d the degree.
-		 */
-		public CostPolynomial( final int d )
-		{
-			super();
-
-			// store degree.
-			this.degree = d;
-		}
+        /**
+         * The degree of this polynomial.
+         */
+        private int degree;
 
 
-		/**
-		 * Evaluate the cost function at the specified tuple.
-		 *
-		 * @param values the vector of data to evaluate.
-		 * @param params vector containing the current parameters of variation.
-		 * @return double the value of this function.
-		 */
-		@Override
+        /**
+         * Constructor.
+         *
+         * @param d the degree.
+         */
+        public CostPolynomial( final int d )
+        {
+            super();
+
+            // store degree.
+            this.degree = d;
+        }
+
+
+        /**
+         * Evaluate the cost function at the specified tuple.
+         *
+         * @param values the vector of data to evaluate.
+         * @param params vector containing the current parameters of variation.
+         * @return double the value of this function.
+         */
+        @Override
         public double evaluate( double[] values, double[] params )
-		{
-			double pow = values[ 0 ];
-			double result = 0;
+        {
+            double pow = values[ 0 ];
+            double result = 0;
 
-			for( int index = 0; index < this.degree + 1; index++ )
-			{
-				if( index == 0 )
-				{
-					result += params[ ( this.degree - index ) ];
-				}
-				else
-				{
-					result += pow * params[ ( this.degree - index ) ];
-					pow *= values[ 0 ];
-				}
-			}
+            for( int index = 0; index < this.degree + 1; index++ )
+            {
+                if( index == 0 )
+                {
+                    result += params[ ( this.degree - index ) ];
+                }
+                else
+                {
+                    result += pow * params[ ( this.degree - index ) ];
+                    pow *= values[ 0 ];
+                }
+            }
 
-			return ( result );
-		}
+            return ( result );
+        }
 
 
-		/**
-		 * Returns the derivative of this function, with respect to the
-		 * <code>ith</code> <b>parameter</b>, evaluated at the specified tuple.
-		 *
-		 * @param values the vector of data to evaluate.
-		 * @param params vector containing the current parameters of variation.
-		 * @param ith the parameter (number) with respect to which the derivative is
-		 *        taken.
-		 * @return double the value of this function.
-		 */
-		@Override
+        /**
+         * Returns the derivative of this function, with respect to the
+         * <code>ith</code> <b>parameter</b>, evaluated at the specified tuple.
+         *
+         * @param values the vector of data to evaluate.
+         * @param params vector containing the current parameters of variation.
+         * @param ith the parameter (number) with respect to which the derivative is
+         *        taken.
+         * @return double the value of this function.
+         */
+        @Override
         public double derive( double[] values, double[] params, int ith )
-		{
-			if( ith == this.degree )
-			{
-				return ( 1 );
-			}
+        {
+            if( ith == this.degree )
+            {
+                return ( 1 );
+            }
 
-			return ( Math.pow( values[ 0 ], ( this.degree - ith ) ) );
-		}
+            return ( Math.pow( values[ 0 ], ( this.degree - ith ) ) );
+        }
 
 
-		/**
-		 * Get the parameter count.
-		 *
-		 * @return int the param count.
-		 */
-		@Override
+        /**
+         * Get the parameter count.
+         *
+         * @return int the param count.
+         */
+        @Override
         public int getParameterCount()
-		{
-			return ( this.degree + 1 );
-		}
+        {
+            return ( this.degree + 1 );
+        }
 
-	}
-
-
-	/**
-	 * A random, noisy polynomial that we will attempt to match...
-	 *
-	 * @author Fran Lattanzio
-	 * @version $Revision$ $Date$
-	 */
-	static class NoisyPolynomial
-		extends Object
-	{
-
-		/**
-		 * Factors.
-		 */
-		private double[] factors;
-
-		/**
-		 * Degree.
-		 */
-		private int deg;
+    }
 
 
-		/**
-		 * Constructor.
-		 *
-		 * @param rand a random.
-		 * @param factors the factors.
-		 */
-		NoisyPolynomial( final Random rand, final double[] factors )
-		{
-			super();
+    /**
+     * A random, noisy polynomial that we will attempt to match...
+     *
+     * @author Fran Lattanzio
+     * @version $Revision$ $Date$
+     */
+    static class NoisyPolynomial
+        extends Object
+    {
 
-			// store stuff.
-			this.factors = factors;
-			this.deg = factors.length - 1;
-		}
+        /**
+         * Factors.
+         */
+        private double[] factors;
 
-
-		/**
-		 * Eval, at the specified point.
-		 *
-		 * @param input the input.
-		 * @return double the value.
-		 */
-		double evaluate( double[] input )
-		{
-			double pow = input[ 0 ];
-			double val = 0;
-
-			for( int index = 0; index < this.factors.length; index++ )
-			{
-				if( index == 0 )
-				{
-					val += this.factors[ ( this.deg - index ) ];
-				}
-				else
-				{
-					val += pow * this.factors[ ( this.deg - index ) ];
-					pow *= input[ 0 ];
-				}
-			}
-
-			return ( val );
-		}
+        /**
+         * Degree.
+         */
+        private int deg;
 
 
-	}
+        /**
+         * Constructor.
+         *
+         * @param rand a random.
+         * @param factors the factors.
+         */
+        NoisyPolynomial( final Random rand, final double[] factors )
+        {
+            super();
+
+            // store stuff.
+            this.factors = factors;
+            this.deg = factors.length - 1;
+        }
+
+
+        /**
+         * Eval, at the specified point.
+         *
+         * @param input the input.
+         * @return double the value.
+         */
+        double evaluate( double[] input )
+        {
+            double pow = input[ 0 ];
+            double val = 0;
+
+            for( int index = 0; index < this.factors.length; index++ )
+            {
+                if( index == 0 )
+                {
+                    val += this.factors[ ( this.deg - index ) ];
+                }
+                else
+                {
+                    val += pow * this.factors[ ( this.deg - index ) ];
+                    pow *= input[ 0 ];
+                }
+            }
+
+            return ( val );
+        }
+
+
+    }
 
 
 }

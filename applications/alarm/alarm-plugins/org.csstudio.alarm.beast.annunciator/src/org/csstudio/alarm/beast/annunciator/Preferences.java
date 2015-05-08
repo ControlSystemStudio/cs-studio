@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class Preferences
 {
-	final public static String MESSAGE_BUFFER = "message_buffer";
+    final public static String MESSAGE_BUFFER = "message_buffer";
     final public static String THRESHOLD = "threshold";
     final public static String SEVERITIES = "jms_severity_priorities";
     final public static String TRANSLATIONS_FILE = "translations_file";
@@ -29,7 +29,7 @@ public class Preferences
     final public static String URL = "jms_url";
     
     public static final String DEFAULT_SEVERITIES =
-	    "FATAL,INVALID, ERROR, MAJOR, WARN, MINOR, INFO, OK, DEBUG" ;
+        "FATAL,INVALID, ERROR, MAJOR, WARN, MINOR, INFO, OK, DEBUG" ;
 
     public static String getURL()
     {
@@ -46,7 +46,7 @@ public class Preferences
     {
         return getString(TRANSLATIONS_FILE, "");
     }
-	
+    
     public static String getJMSSeverities()
     {
         return getString(SEVERITIES, DEFAULT_SEVERITIES);

@@ -16,18 +16,18 @@ public class OlogLogbookClientFactory implements LogbookClientFactory {
 
     @Override
     public LogbookClient getClient() throws Exception {
-	return new OlogLogbookClient(Olog.getClient());
+    return new OlogLogbookClient(Olog.getClient());
     }
 
     @Override
     public LogbookClient getClient(String username, String password)
-	    throws Exception {
-	final IPreferencesService prefs = Platform.getPreferencesService();
-	String url = prefs.getString(org.csstudio.utility.olog.Activator.PLUGIN_ID,
-			PreferenceConstants.Olog_URL,
-			"https://localhost:8181/Olog/resources", null);
-	return new OlogLogbookClient(serviceURL(url).withHTTPAuthentication(true).username(username)
-		.password(password).create());
+        throws Exception {
+    final IPreferencesService prefs = Platform.getPreferencesService();
+    String url = prefs.getString(org.csstudio.utility.olog.Activator.PLUGIN_ID,
+            PreferenceConstants.Olog_URL,
+            "https://localhost:8181/Olog/resources", null);
+    return new OlogLogbookClient(serviceURL(url).withHTTPAuthentication(true).username(username)
+        .password(password).create());
     }
 
 }

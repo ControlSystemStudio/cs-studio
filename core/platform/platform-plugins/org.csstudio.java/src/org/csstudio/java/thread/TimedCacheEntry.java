@@ -26,13 +26,13 @@ public class TimedCacheEntry<VALUETYPE>
     /** @return Value of enty */
     public VALUETYPE getValue()
     {
-    	return value;
+        return value;
     }
 
     /** @return Chache header info: Time stamp, expiration time */
     public CacheHeader getCacheHeader()
     {
-    	return header;
+        return header;
     }
 
     /** @return <code>true</code> if entry is still valid */

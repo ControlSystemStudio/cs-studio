@@ -127,9 +127,9 @@ public class PVDeviceUnitTest implements DeviceListener
         try
         {
             final VType value = device.read();
-			System.out.println(device + " = " + value);
-			if (device.isReady())
-			    synchronized (this)
+            System.out.println(device + " = " + value);
+            if (device.isReady())
+                synchronized (this)
                 {
                     ++updates;
                     notifyAll();

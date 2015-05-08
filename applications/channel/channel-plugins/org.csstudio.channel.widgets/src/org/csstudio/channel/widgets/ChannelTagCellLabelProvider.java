@@ -15,27 +15,27 @@ import org.eclipse.jface.viewers.ViewerCell;
  */
 public class ChannelTagCellLabelProvider extends CellLabelProvider {
 
-	private String tagName;
+    private String tagName;
 
-	public ChannelTagCellLabelProvider(String tagName) {
-		super();
-		this.tagName = tagName;
-	}
+    public ChannelTagCellLabelProvider(String tagName) {
+        super();
+        this.tagName = tagName;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.jface.viewers.CellLabelProvider#update(org.eclipse.jface.
-	 * viewers.ViewerCell)
-	 */
-	@Override
-	public void update(ViewerCell cell) {
-		Channel ch = (Channel) cell.getElement();
-		if(ch.getTags().contains(tag(tagName).build()))
-			cell.setText("tagged");
-		else
-			cell.setText("");
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.jface.viewers.CellLabelProvider#update(org.eclipse.jface.
+     * viewers.ViewerCell)
+     */
+    @Override
+    public void update(ViewerCell cell) {
+        Channel ch = (Channel) cell.getElement();
+        if(ch.getTags().contains(tag(tagName).build()))
+            cell.setText("tagged");
+        else
+            cell.setText("");
+    }
 
 }

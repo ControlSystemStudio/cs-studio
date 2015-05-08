@@ -39,92 +39,92 @@ import org.w3c.dom.Element;
  * @author ssah
  */
 public class Context {
-	private Document document;
-	private Element element;
-	private EdmDisplay rootDisplay;
-	private int x;
-	private int y;
-	
-	/**
-	 * Creates a context with all information.
-	 */
-	public Context(Document document, Element element, EdmDisplay rootWidget,int x, int y) {
-		super();
-		this.document = document;
-		this.element = element;
-		this.rootDisplay = rootWidget;
-		this.x = x;
-		this.y = y;
-	}
+    private Document document;
+    private Element element;
+    private EdmDisplay rootDisplay;
+    private int x;
+    private int y;
+    
+    /**
+     * Creates a context with all information.
+     */
+    public Context(Document document, Element element, EdmDisplay rootWidget,int x, int y) {
+        super();
+        this.document = document;
+        this.element = element;
+        this.rootDisplay = rootWidget;
+        this.x = x;
+        this.y = y;
+    }
 
-	/**
-	 * Returns current DOM document.
-	 */
-	public Document getDocument() {
-		return document;
-	}
+    /**
+     * Returns current DOM document.
+     */
+    public Document getDocument() {
+        return document;
+    }
 
-	/**
-	 * Sets current DOM document.
-	 */
-	public void setDocument(Document document) {
-		this.document = document;
-	}
-	
-	/**
-	 * Returns the current DOM element.
-	 */
-	public Element getElement() {
-		return element;
-	}
+    /**
+     * Sets current DOM document.
+     */
+    public void setDocument(Document document) {
+        this.document = document;
+    }
+    
+    /**
+     * Returns the current DOM element.
+     */
+    public Element getElement() {
+        return element;
+    }
 
-	/**
-	 * @return the root display.
-	 */
-	public EdmDisplay getRootDisplay() {
-		return rootDisplay;
-	}
-	
-	/**Set the root display widget
-	 * If it is not a widget, set this to null.
-	 * @param rootDisplay 
-	 */
-	public void setRootDisplay(EdmDisplay rootDisplay) {
-		this.rootDisplay = rootDisplay;
-	}
-	
-	/**
-	 * Sets current DOM element.
-	 */
-	public void setElement(Element element) {
-		this.element = element;
-	}
+    /**
+     * @return the root display.
+     */
+    public EdmDisplay getRootDisplay() {
+        return rootDisplay;
+    }
+    
+    /**Set the root display widget
+     * If it is not a widget, set this to null.
+     * @param rootDisplay 
+     */
+    public void setRootDisplay(EdmDisplay rootDisplay) {
+        this.rootDisplay = rootDisplay;
+    }
+    
+    /**
+     * Sets current DOM element.
+     */
+    public void setElement(Element element) {
+        this.element = element;
+    }
 
-	/**
-	 * Returns the element absolute x position.
-	 */
-	public int getX() {
-		return x;
-	}
+    /**
+     * Returns the element absolute x position.
+     */
+    public int getX() {
+        return x;
+    }
 
-	/**
-	 * Sets the element absolute x position.
-	 */
-	public void setX(int x) {
-		this.x = x;
-	}
+    /**
+     * Sets the element absolute x position.
+     */
+    public void setX(int x) {
+        this.x = x;
+    }
 
-	/**
-	 * Returns the element absolute y position.
-	 */
-	public int getY() {
-		return y;
-	}
+    /**
+     * Returns the element absolute y position.
+     */
+    public int getY() {
+        return y;
+    }
 
-	/**
-	 * Returns the element absolute y position.
-	 */
-	public void setY(int y) {
-		this.y = y;
-	}
+    /**
+     * Returns the element absolute y position.
+     */
+    public void setY(int y) {
+        this.y = y;
+    }
 }

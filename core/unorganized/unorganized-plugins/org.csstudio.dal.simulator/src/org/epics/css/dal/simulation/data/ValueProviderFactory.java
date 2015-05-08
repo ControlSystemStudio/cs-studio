@@ -31,14 +31,14 @@ import org.epics.css.dal.simulation.ValueProvider;
  *
  */
 public interface ValueProviderFactory {
-	
-	/**
-	 * Constructs a generator that provides values of a specific type.
-	 * 
-	 * @param <T> the type of the values 
-	 * @param type the type of the values
-	 * @param options the options for the value provider
-	 * @return the value provider
-	 */
-	<T> ValueProvider<T> createGenerator(Class<T> type, String... options);
+    
+    /**
+     * Constructs a generator that provides values of a specific type.
+     * 
+     * @param <T> the type of the values 
+     * @param type the type of the values
+     * @param options the options for the value provider
+     * @return the value provider
+     */
+    <T> ValueProvider<T> createGenerator(Class<T> type, String... options);
 }

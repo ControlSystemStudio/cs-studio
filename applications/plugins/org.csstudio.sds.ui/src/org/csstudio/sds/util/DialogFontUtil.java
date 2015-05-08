@@ -35,55 +35,55 @@ import org.eclipse.swt.widgets.Control;
  */
 public final class DialogFontUtil {
 
-	/**
-	 * A boolean, representing if the dialog font should be used.
-	 */
-	private static boolean _useDialogFont = false;
-	/**
-	 * A boolean, representing if the preference listener is initialized.
-	 */
-	private static boolean _listenerIsInitialized = false;
-	/**
-	 * The listener for the preference page.
-	 */
-	private static IPropertyChangeListener _listener;
-	
-	/**
-	 * Sets the default dialog font on the given control and its children, only
-	 * when the preference-page allows this.  
-	 * @param control The control on which the font should be set
-	 */
-	public static void setDialogFont(final Control control) {
-		if (!_listenerIsInitialized) {
-			initializeListener();
-		}
-		if (_useDialogFont) {
-//			Dialog.applyDialogFont(control);
-		}
-	}
+    /**
+     * A boolean, representing if the dialog font should be used.
+     */
+    private static boolean _useDialogFont = false;
+    /**
+     * A boolean, representing if the preference listener is initialized.
+     */
+    private static boolean _listenerIsInitialized = false;
+    /**
+     * The listener for the preference page.
+     */
+    private static IPropertyChangeListener _listener;
+    
+    /**
+     * Sets the default dialog font on the given control and its children, only
+     * when the preference-page allows this.  
+     * @param control The control on which the font should be set
+     */
+    public static void setDialogFont(final Control control) {
+        if (!_listenerIsInitialized) {
+            initializeListener();
+        }
+        if (_useDialogFont) {
+//            Dialog.applyDialogFont(control);
+        }
+    }
 
-	/**
-	 * Initializes the preference listener. 
-	 */
-	private static void initializeListener() {
-		_listener = new IPropertyChangeListener() {
-			public void propertyChange(final PropertyChangeEvent event) {
-//				if (event.getProperty().equals(PreferenceConstants.PROP_USE_DIALOG_FONT)) {
-//					_useDialogFont = (Boolean) event.getNewValue();
-//				}
-			}		
-		};
-		SdsUiPlugin.getCorePreferenceStore().addPropertyChangeListener(_listener);
-//		_useDialogFont = SdsUiPlugin.getCorePreferenceStore().getBoolean(PreferenceConstants.PROP_USE_DIALOG_FONT);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void finalize() throws Throwable {
-		SdsUiPlugin.getCorePreferenceStore().removePropertyChangeListener(_listener);
-		super.finalize();
-	}
+    /**
+     * Initializes the preference listener. 
+     */
+    private static void initializeListener() {
+        _listener = new IPropertyChangeListener() {
+            public void propertyChange(final PropertyChangeEvent event) {
+//                if (event.getProperty().equals(PreferenceConstants.PROP_USE_DIALOG_FONT)) {
+//                    _useDialogFont = (Boolean) event.getNewValue();
+//                }
+            }        
+        };
+        SdsUiPlugin.getCorePreferenceStore().addPropertyChangeListener(_listener);
+//        _useDialogFont = SdsUiPlugin.getCorePreferenceStore().getBoolean(PreferenceConstants.PROP_USE_DIALOG_FONT);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void finalize() throws Throwable {
+        SdsUiPlugin.getCorePreferenceStore().removePropertyChangeListener(_listener);
+        super.finalize();
+    }
 
 }

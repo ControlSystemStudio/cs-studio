@@ -11,21 +11,21 @@ import org.csstudio.dct.model.internal.Parameter;
  * @author Sven Wende
  */
 public class ParameterClipboard {
-	private List<Parameter> content;
+    private List<Parameter> content;
 
-	public ParameterClipboard() {
-		content = null;
-	}
+    public ParameterClipboard() {
+        content = null;
+    }
 
-	public void setContent(List<Parameter> parameters) {
-		content=new ArrayList<Parameter>(parameters);
-	}
+    public void setContent(List<Parameter> parameters) {
+        content=new ArrayList<Parameter>(parameters);
+    }
 
-	public List<Parameter> getContent() {
-		return content!=null?new ArrayList<Parameter>(content):null;
-	}
-	
-	public boolean isEmpty() {
-		return content==null;
-	}
+    public List<Parameter> getContent() {
+        return content!=null?new ArrayList<Parameter>(content):null;
+    }
+    
+    public boolean isEmpty() {
+        return content==null;
+    }
 }

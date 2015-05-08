@@ -41,7 +41,7 @@ public class DBParseException extends Exception {
  * @param s java.lang.String
  */
 public DBParseException(String s, EnhancedStreamTokenizer t, String fileName) {
-	super(s);
-	Console.getInstance().print("\nError found in file '"+fileName+"', line "+t.lineno()+": ");
+    super(s);
+    Console.getInstance().print("\nError found in file '"+fileName+"', line "+t.lineno()+": ");
 }
 }

@@ -9,16 +9,16 @@ package org.csstudio.dct.util;
  */
 public class AliasResolutionException extends Exception {
 
-	private static final long serialVersionUID = 8823855724651109333L;
+    private static final long serialVersionUID = 8823855724651109333L;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param message
-	 *            the error message
-	 */
-	public AliasResolutionException(String message) {
-		super(message);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param message
+     *            the error message
+     */
+    public AliasResolutionException(String message) {
+        super(message);
+    }
 
 }

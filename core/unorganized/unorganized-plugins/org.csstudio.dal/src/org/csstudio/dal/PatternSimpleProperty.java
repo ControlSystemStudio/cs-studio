@@ -34,49 +34,49 @@ import java.util.BitSet;
  * @author <a href="mailto:matej.sekoranja@cosylab.com">Matej Sekoranja</a>
  */
 public interface PatternSimpleProperty extends PatternAccess,
-	SimpleProperty<BitSet>, PatternPropertyCharacteristics
+    SimpleProperty<BitSet>, PatternPropertyCharacteristics
 {
-	/**
-	 * Returns an array of Strings. For each bit, this array contains a
-	 * (maximum) one line description.
-	 *
-	 * @return String[] an array of descriptions
-	 *
-	 * @throws DataExchangeException id access to remote layer fails
-	 */
-	public String[] getBitDescriptions() throws DataExchangeException;
+    /**
+     * Returns an array of Strings. For each bit, this array contains a
+     * (maximum) one line description.
+     *
+     * @return String[] an array of descriptions
+     *
+     * @throws DataExchangeException id access to remote layer fails
+     */
+    public String[] getBitDescriptions() throws DataExchangeException;
 
-	/**
-	 * Returns an array of <code>Condition</code> objects that carry
-	 * information on significance of each bit when it is cleared.
-	 *
-	 * @return BitCondition[] an array of rendering hints for cleared bits
-	 *
-	 * @throws DataExchangeException id access to remote layer fails
-	 */
-	public BitCondition[] getConditionWhenCleared()
-		throws DataExchangeException;
+    /**
+     * Returns an array of <code>Condition</code> objects that carry
+     * information on significance of each bit when it is cleared.
+     *
+     * @return BitCondition[] an array of rendering hints for cleared bits
+     *
+     * @throws DataExchangeException id access to remote layer fails
+     */
+    public BitCondition[] getConditionWhenCleared()
+        throws DataExchangeException;
 
-	/**
-	 * Returns an array of <code>Condition</code> objects that carry
-	 * information on significance of each bit when it is set.
-	 *
-	 * @return BitCondition[] an array of rendering hints for set bits
-	 *
-	 * @throws DataExchangeException id access to remote layer fails
-	 */
-	public BitCondition[] getConditionWhenSet() throws DataExchangeException;
+    /**
+     * Returns an array of <code>Condition</code> objects that carry
+     * information on significance of each bit when it is set.
+     *
+     * @return BitCondition[] an array of rendering hints for set bits
+     *
+     * @throws DataExchangeException id access to remote layer fails
+     */
+    public BitCondition[] getConditionWhenSet() throws DataExchangeException;
 
-	/**
-	 * Returns a bit mask determining which bits in the
-	 * <code>value</code> are significant. To be used by displayers not to
-	 * show unused bits.
-	 *
-	 * @return BitSet a bit mask
-	 *
-	 * @throws DataExchangeException id access to remote layer fails
-	 */
-	public BitSet getBitMask() throws DataExchangeException;
+    /**
+     * Returns a bit mask determining which bits in the
+     * <code>value</code> are significant. To be used by displayers not to
+     * show unused bits.
+     *
+     * @return BitSet a bit mask
+     *
+     * @throws DataExchangeException id access to remote layer fails
+     */
+    public BitSet getBitMask() throws DataExchangeException;
 }
 
 /* __oOo__ */

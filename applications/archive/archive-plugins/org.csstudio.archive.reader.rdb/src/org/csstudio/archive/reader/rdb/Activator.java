@@ -40,6 +40,6 @@ public class Activator extends Plugin
     /** @return Logger for plugin ID */
     public static Logger getLogger()
     {
-    	return Logger.getLogger(Activator.ID);
+        return Logger.getLogger(Activator.ID);
     }
 }

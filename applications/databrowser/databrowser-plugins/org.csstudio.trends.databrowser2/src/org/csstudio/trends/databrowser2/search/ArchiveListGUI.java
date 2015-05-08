@@ -68,7 +68,7 @@ public abstract class ArchiveListGUI
      */
     public ArchiveListGUI(final Composite parent)
     {
-    	server_urls = Preferences.getArchiveServerURLs();
+        server_urls = Preferences.getArchiveServerURLs();
 
         createGUI(parent);
 
@@ -78,9 +78,9 @@ public abstract class ArchiveListGUI
             @Override
             public void widgetDefaultSelected(final SelectionEvent e)
             {
-            	int i = urls.getSelectionIndex();
-            	if (i >= 0 && i < server_urls.length)
-            		connectToArchiveServer(server_urls[i].getURL());
+                int i = urls.getSelectionIndex();
+                if (i >= 0 && i < server_urls.length)
+                    connectToArchiveServer(server_urls[i].getURL());
             }
 
             @Override
@@ -110,9 +110,9 @@ public abstract class ArchiveListGUI
 
         // Activate the first archive server URL
         if (urls.getEnabled()) {
-        	int i = urls.getSelectionIndex();
-        	if (i >= 0 && i < server_urls.length)
-        		connectToArchiveServer(server_urls[i].getURL());
+            int i = urls.getSelectionIndex();
+            if (i >= 0 && i < server_urls.length)
+                connectToArchiveServer(server_urls[i].getURL());
         }
 
         // Archive table: Allow dragging of multiple archive data sources
@@ -151,7 +151,7 @@ public abstract class ArchiveListGUI
         urls = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
         urls.setToolTipText(Messages.Search_URL_TT);
         for (ArchiveServerURL url : server_urls)
-        	urls.add(url.getDisplayName());
+            urls.add(url.getDisplayName());
         urls.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         if (urls.getItemCount() <= 0)
         {
@@ -185,10 +185,10 @@ public abstract class ArchiveListGUI
         });
         new TableColumnSortHelper<ArchiveDataSource>(archive_table, col)
         {
-			@Override
+            @Override
             public int compare(final ArchiveDataSource item1, final ArchiveDataSource item2)
             {
-				return item1.getName().compareTo(item2.getName());
+                return item1.getName().compareTo(item2.getName());
             }
         };
         col = TableHelper.createColumn(table_layout, archive_table, Messages.ArchiveDescription, 50, 100);
@@ -203,10 +203,10 @@ public abstract class ArchiveListGUI
         });
         new TableColumnSortHelper<ArchiveDataSource>(archive_table, col)
         {
-			@Override
+            @Override
             public int compare(final ArchiveDataSource item1, final ArchiveDataSource item2)
             {
-				return item1.getDescription().compareTo(item2.getDescription());
+                return item1.getDescription().compareTo(item2.getDescription());
             }
         };
         col = TableHelper.createColumn(table_layout, archive_table, Messages.ArchiveKey, 35, 5);
@@ -221,10 +221,10 @@ public abstract class ArchiveListGUI
         });
         new TableColumnSortHelper<ArchiveDataSource>(archive_table, col)
         {
-			@Override
+            @Override
             public int compare(final ArchiveDataSource item1, final ArchiveDataSource item2)
             {
-				return item1.getKey() - item2.getKey();
+                return item1.getKey() - item2.getKey();
             }
         };
         final Table table = archive_table.getTable();

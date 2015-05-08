@@ -39,91 +39,91 @@ import org.osgi.service.prefs.Preferences;
  * @author Joerg Rathlev
  */
 public final class SystemPropertyPreferenceEntry {
-	
-	/**
-	 * The node in the preferences below which the entries are stored.
-	 */
-	private static final String PREFERENCE_NODE = "systemProperties";
-	
-	/**
-	 * The preference key.
-	 */
-	private String _key;
-	
-	/**
-	 * The preference value.
-	 */
-	private String _value;
-	
-	private static final Logger log = Logger.getLogger(SystemPropertyPreferenceEntry.class.getName());
-	
-	/**
-	 * Creates a new system property preference entry.
-	 * @param key the property key.
-	 * @param value the value.
-	 */
-	public SystemPropertyPreferenceEntry(final String key, final String value) {
-		_key = key;
-		_value = value;
-	}
-	
-	/**
-	 * Returns the preference key.
-	 * @return the preference key.
-	 */
-	public String getKey() {
-		return _key;
-	}
-	
-	/**
-	 * Returns the preference value.
-	 * @return the preference value.
-	 */
-	public String getValue() {
-		return _value;
-	}
+    
+    /**
+     * The node in the preferences below which the entries are stored.
+     */
+    private static final String PREFERENCE_NODE = "systemProperties";
+    
+    /**
+     * The preference key.
+     */
+    private String _key;
+    
+    /**
+     * The preference value.
+     */
+    private String _value;
+    
+    private static final Logger log = Logger.getLogger(SystemPropertyPreferenceEntry.class.getName());
+    
+    /**
+     * Creates a new system property preference entry.
+     * @param key the property key.
+     * @param value the value.
+     */
+    public SystemPropertyPreferenceEntry(final String key, final String value) {
+        _key = key;
+        _value = value;
+    }
+    
+    /**
+     * Returns the preference key.
+     * @return the preference key.
+     */
+    public String getKey() {
+        return _key;
+    }
+    
+    /**
+     * Returns the preference value.
+     * @return the preference value.
+     */
+    public String getValue() {
+        return _value;
+    }
 
-	/**
-	 * Sets the key.
-	 * @param key the key.
-	 */
-	public void setKey(final String key) {
-		_key = key;
-	}
-	
-	/**
-	 * Sets the value.
-	 * @param value the value.
-	 */
-	public void setValue(final String value) {
-		_value = value;
-	}
-	
-	/**
-	 * Returns a string representation of this entry.
-	 * @return a string representation of this entry.
-	 */
-	@Override
-	public String toString() {
-		return _key + "=" + _value;
-	}
-	
-	/**
-	 * Loads the system property defaults from the preferences. 
-	 * @return the system property defaults.
-	 */
-	public static Collection<SystemPropertyPreferenceEntry> loadFromPreferences() {
-		Collection<SystemPropertyPreferenceEntry> result =
-			new ArrayList<SystemPropertyPreferenceEntry>();
+    /**
+     * Sets the key.
+     * @param key the key.
+     */
+    public void setKey(final String key) {
+        _key = key;
+    }
+    
+    /**
+     * Sets the value.
+     * @param value the value.
+     */
+    public void setValue(final String value) {
+        _value = value;
+    }
+    
+    /**
+     * Returns a string representation of this entry.
+     * @return a string representation of this entry.
+     */
+    @Override
+    public String toString() {
+        return _key + "=" + _value;
+    }
+    
+    /**
+     * Loads the system property defaults from the preferences. 
+     * @return the system property defaults.
+     */
+    public static Collection<SystemPropertyPreferenceEntry> loadFromPreferences() {
+        Collection<SystemPropertyPreferenceEntry> result =
+            new ArrayList<SystemPropertyPreferenceEntry>();
         IEclipsePreferences platformPrefs = getPlatformPreferences();
         Preferences systemPropertyPrefs;
         try {
             if (platformPrefs.nodeExists(PREFERENCE_NODE)) {
-            	systemPropertyPrefs =
-            		platformPrefs.node(PREFERENCE_NODE);
+                systemPropertyPrefs =
+                    platformPrefs.node(PREFERENCE_NODE);
             } else {
-            	systemPropertyPrefs =
-            		getDefaultPlatformPreferences().node(PREFERENCE_NODE);
+                systemPropertyPrefs =
+                    getDefaultPlatformPreferences().node(PREFERENCE_NODE);
             }
             String[] keys = systemPropertyPrefs.keys();
             for (String key : keys) {
@@ -133,17 +133,17 @@ public final class SystemPropertyPreferenceEntry {
                 result.add(entry);
             }
         } catch (BackingStoreException e) {
-        	log.log(Level.SEVERE, "Error reading preferences", e);
+            log.log(Level.SEVERE, "Error reading preferences", e);
         }
         return result;
-	}
-	
+    }
+    
     /**
      * Stores the system property defaults in the preferences. Any existing
      * entries will be overwritten.
      * @param entries the entries to store.
      */
-	public static void storeToPreferences(final Collection<SystemPropertyPreferenceEntry> entries) {
+    public static void storeToPreferences(final Collection<SystemPropertyPreferenceEntry> entries) {
         IEclipsePreferences platformPrefs = getPlatformPreferences();
         Preferences systemPropertyPrefs =
             platformPrefs.node(PREFERENCE_NODE);
@@ -151,7 +151,7 @@ public final class SystemPropertyPreferenceEntry {
         try {
             systemPropertyPrefs.clear();
         } catch (BackingStoreException e) {
-        	log.log(Level.WARNING, "Error clearing preference node", e);
+            log.log(Level.WARNING, "Error clearing preference node", e);
         }
         // now write the new values into the node
         for (SystemPropertyPreferenceEntry entry : entries) {
@@ -159,10 +159,10 @@ public final class SystemPropertyPreferenceEntry {
         }
     }
 
-	/**
-	 * Returns the preferences node that contains the platform preferences.
-	 * @return the platform prefernces.
-	 */
+    /**
+     * Returns the preferences node that contains the platform preferences.
+     * @return the platform prefernces.
+     */
     private static IEclipsePreferences getPlatformPreferences() {
         return InstanceScope.INSTANCE.getNode(
                 AuthActivator.ID);
@@ -174,7 +174,7 @@ public final class SystemPropertyPreferenceEntry {
      * @return the platform preference defaults.
      */
     private static IEclipsePreferences getDefaultPlatformPreferences() {
-    	return DefaultScope.INSTANCE.getNode(
-    			AuthActivator.ID);
+        return DefaultScope.INSTANCE.getNode(
+                AuthActivator.ID);
     }
 }

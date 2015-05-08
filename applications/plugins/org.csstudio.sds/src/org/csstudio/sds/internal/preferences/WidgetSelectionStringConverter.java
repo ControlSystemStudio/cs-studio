@@ -25,29 +25,29 @@ import java.util.Arrays;
 import java.util.List;
 
 public final class WidgetSelectionStringConverter {
-	
-	private static final String SEPARATOR = "##";
+    
+    private static final String SEPARATOR = "##";
 
-	private WidgetSelectionStringConverter() {
-		// do nothing
-	}
-	
-	public static String createStringFromStringList(final List<String> items) {
-		StringBuffer resultBuffer = new StringBuffer();
-		if (!items.isEmpty()) {
-			resultBuffer.append(items.get(0));
-			for (int i=1;i<items.size();i++) {
-				resultBuffer.append(SEPARATOR);
-				resultBuffer.append(items.get(i));
-			}
-		}
-		return resultBuffer.toString();
-	}
-	
-	public static List<String> createStringListFromString(final String text) {
-		String[] strings = text.split(SEPARATOR);
-		List<String> asList = Arrays.asList(strings);
-		return asList;
-	}
+    private WidgetSelectionStringConverter() {
+        // do nothing
+    }
+    
+    public static String createStringFromStringList(final List<String> items) {
+        StringBuffer resultBuffer = new StringBuffer();
+        if (!items.isEmpty()) {
+            resultBuffer.append(items.get(0));
+            for (int i=1;i<items.size();i++) {
+                resultBuffer.append(SEPARATOR);
+                resultBuffer.append(items.get(i));
+            }
+        }
+        return resultBuffer.toString();
+    }
+    
+    public static List<String> createStringListFromString(final String text) {
+        String[] strings = text.split(SEPARATOR);
+        List<String> asList = Arrays.asList(strings);
+        return asList;
+    }
 
 }

@@ -19,24 +19,24 @@ public class Activator extends AbstractUIPlugin
     public static final String ID = "org.csstudio.alarm.beast.ui.alarmtable"; //$NON-NLS-1$
     
     /** The shared instance */
-	private static Activator plugin;
-	
-	@Override
+    private static Activator plugin;
+    
+    @Override
     public void start(BundleContext context) throws Exception
     {
-	    super.start(context);
-		setPlugin(this);	
+        super.start(context);
+        setPlugin(this);    
     }
 
-	/** Static setter to avoid FindBugs warning */
-	private static void setPlugin(final Activator the_plugin)
-	{
-		plugin = the_plugin;
-	}
-
-	/** @eturn The shared instance. */
-	public static Activator getDefault()
+    /** Static setter to avoid FindBugs warning */
+    private static void setPlugin(final Activator the_plugin)
     {
-		return plugin;
-	}
+        plugin = the_plugin;
+    }
+
+    /** @eturn The shared instance. */
+    public static Activator getDefault()
+    {
+        return plugin;
+    }
 }

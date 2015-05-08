@@ -19,7 +19,7 @@ public class LineGraph2DView extends AbstractGraph2DView<LineGraph2DWidget> {
 
     @Override
     protected LineGraph2DWidget createAbstractGraph2DWidget(Composite parent,
-	    int style) {
-	return new LineGraph2DWidget(parent, SWT.NONE);
+        int style) {
+    return new LineGraph2DWidget(parent, SWT.NONE);
     }
 }

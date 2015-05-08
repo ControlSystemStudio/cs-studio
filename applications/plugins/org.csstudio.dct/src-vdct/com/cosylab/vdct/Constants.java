@@ -47,44 +47,44 @@ public class Constants {
     public final static String MOVE_SUFFIX = "2";
 
     // default config dir
- 	public final static String VDCT_DEFAULT_CONFIG_DIR = "/etc/vdct";
- 	
- 	// JVM parameter which can override VDCT_DEFAULT_CONFIG_DIR 
- 	public final static String VDCT_CONFIG_DIR_ENV = "VDCT_CONFIG_DIR";
+     public final static String VDCT_DEFAULT_CONFIG_DIR = "/etc/vdct";
+     
+     // JVM parameter which can override VDCT_DEFAULT_CONFIG_DIR 
+     public final static String VDCT_CONFIG_DIR_ENV = "VDCT_CONFIG_DIR";
 
- 	// current config dir
- 	public final static String VDCT_CONFIG_DIR = System.getProperty(VDCT_CONFIG_DIR_ENV, VDCT_DEFAULT_CONFIG_DIR);
+     // current config dir
+     public final static String VDCT_CONFIG_DIR = System.getProperty(VDCT_CONFIG_DIR_ENV, VDCT_DEFAULT_CONFIG_DIR);
 
- 	/**
- 	 * Generate full config file path using default algoritm: override JVM property, user home, sys home.
- 	 * @param fileName	config file name (w/o path)
- 	 * @param overrideProperty	override property (JVM parameter) which overrides default config file name (full path), can be <code>null</code>. 
- 	 * @return full config file path (file might not exist).
- 	 */
- 	public static String getConfigFile(final String fileName, final String overrideProperty) {
- 	    
- 	    // first check override property, if available
- 	    if (overrideProperty != null) {
-			String overriden = System.getProperty(overrideProperty);
-			if (overriden != null)
-			    return overriden;
- 	    }
-		
-		// check user home
-		String file = System.getProperty("user.home") + "/" + fileName;
-		if (new java.io.File(file).exists())
-		    return file;
-		
-		// return sys dir
-		return VDCT_CONFIG_DIR + "/" + fileName;
- 	}
- 	
- 	public final static String VDCT_PLUGINS_FILE = "VDCT_PLUGINS_FILE";
- 	public final static String PLUGINS_FILE_NAME = ".vdctplugins.xml";
- 	
- 	public final static String TEMPLATE_FIELD_LOCATOR = "$";
+     /**
+      * Generate full config file path using default algoritm: override JVM property, user home, sys home.
+      * @param fileName    config file name (w/o path)
+      * @param overrideProperty    override property (JVM parameter) which overrides default config file name (full path), can be <code>null</code>. 
+      * @return full config file path (file might not exist).
+      */
+     public static String getConfigFile(final String fileName, final String overrideProperty) {
+         
+         // first check override property, if available
+         if (overrideProperty != null) {
+            String overriden = System.getProperty(overrideProperty);
+            if (overriden != null)
+                return overriden;
+         }
+        
+        // check user home
+        String file = System.getProperty("user.home") + "/" + fileName;
+        if (new java.io.File(file).exists())
+            return file;
+        
+        // return sys dir
+        return VDCT_CONFIG_DIR + "/" + fileName;
+     }
+     
+     public final static String VDCT_PLUGINS_FILE = "VDCT_PLUGINS_FILE";
+     public final static String PLUGINS_FILE_NAME = ".vdctplugins.xml";
+     
+     public final static String TEMPLATE_FIELD_LOCATOR = "$";
     public /*final*/ static char GROUP_SEPARATOR = '\0';
-	public final static char HIERARCHY_SEPARATOR = ':';
+    public final static char HIERARCHY_SEPARATOR = ':';
     //public /*final*/ static char GROUP_SEPARATOR = ':';
     public final static char FIELD_SEPARATOR = '.';
     public final static String HARDWARE_LINK = "#";
@@ -98,7 +98,7 @@ public class Constants {
     public final static String DTD_DIR = CONFIG_DIR + "dtd/";
 
     public final static String NONE = "<none>";
-	public final static String MENU_DEFAULT_VALUE_INDICATOR = "*";
+    public final static String MENU_DEFAULT_VALUE_INDICATOR = "*";
     public final static String CLIPBOARD_NAME = "<clipboard>";
 
 //    public final static int WARNING_RECORD_NAME_LENGTH = 40;
@@ -140,11 +140,11 @@ public class Constants {
 
     public static final int MAX_RECENT_FILES = 10;
     
-	public final static int LINK_SLOT_WIDTH = 5;
-	
-	public static final int MULTIPLE_PASTE_GAP = 10;
+    public final static int LINK_SLOT_WIDTH = 5;
+    
+    public static final int MULTIPLE_PASTE_GAP = 10;
 /*
-	// white on black color scheme
+    // white on black color scheme
     public static Color BACKGROUND_COLOR = Color.white;
     public static Color PICK_COLOR = Color.pink;
     public static Color FRAME_COLOR = Color.black;
@@ -157,7 +157,7 @@ public class Constants {
     public final static Color GRID_COLOR = Color.lightGray;
 */
 
-	// black on white color scheme
+    // black on white color scheme
     public static Color BACKGROUND_COLOR = Color.black;
     public static Color PICK_COLOR = Color.red;
     public static Color FRAME_COLOR = Color.white;

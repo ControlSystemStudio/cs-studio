@@ -60,7 +60,7 @@ public class AliasRule implements IRule {
     @Override
     public String getDescription() {
         return "Säubert eine String das nur der Channel übrig bleibt. Der channel wird dem Alias $channel$ zugewiesen." +
-        		"\nDer Channel muß an erster Stelle stehen. Getrennt wird durch ' ','.','['";
+                "\nDer Channel muß an erster Stelle stehen. Getrennt wird durch ' ','.','['";
     }
     
 }

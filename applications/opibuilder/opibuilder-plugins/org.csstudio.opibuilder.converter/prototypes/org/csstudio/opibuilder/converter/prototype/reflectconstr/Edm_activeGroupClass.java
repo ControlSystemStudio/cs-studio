@@ -35,15 +35,15 @@ package org.csstudio.opibuilder.converter.prototype.reflectconstr;
  */
 public class Edm_activeGroupClass extends EdmEntity {
 
-	public Edm_activeGroupClass(String type) {
-		super(type);
-	}
-	/*
-	@Getter
-	private int major;
-	private int minor;
-	private int release;
-	*/
+    public Edm_activeGroupClass(String type) {
+        super(type);
+    }
+    /*
+    @Getter
+    private int major;
+    private int minor;
+    private int release;
+    */
 }
 
-	
+    

@@ -30,21 +30,21 @@ import java.util.List;
  * 
  */
 public interface IDisplayModelLoadListener {
-	/**
-	 * Indicate that the the display model is completely loaded.
-	 */
-	void onDisplayModelLoaded();
+    /**
+     * Indicate that the the display model is completely loaded.
+     */
+    void onDisplayModelLoaded();
 
-	/**
-	 * Indicate that the display properties have been loaded.
-	 */
-	void onDisplayPropertiesLoaded();
+    /**
+     * Indicate that the display properties have been loaded.
+     */
+    void onDisplayPropertiesLoaded();
 
-	/**
-	 * Indicate that errors occurred during the XML processing.
-	 * 
-	 * @param errors
-	 *            The occurred errors.
-	 */
-	void onErrorsOccured(List<String> errors);
+    /**
+     * Indicate that errors occurred during the XML processing.
+     * 
+     * @param errors
+     *            The occurred errors.
+     */
+    void onErrorsOccured(List<String> errors);
 }

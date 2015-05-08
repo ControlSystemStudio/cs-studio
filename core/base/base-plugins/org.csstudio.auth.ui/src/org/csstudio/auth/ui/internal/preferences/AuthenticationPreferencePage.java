@@ -39,46 +39,46 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
  * @author Jan Hatje
  */
 public class AuthenticationPreferencePage extends FieldEditorPreferencePage
-		implements IWorkbenchPreferencePage {
+        implements IWorkbenchPreferencePage {
 
-	/**
-	 * Default constructor.
-	 */
-	public AuthenticationPreferencePage() {
-		super(SWT.NULL);
-		setMessage(Messages.AuthenticationPreferencePage_PAGE_TITLE);
-	}
+    /**
+     * Default constructor.
+     */
+    public AuthenticationPreferencePage() {
+        super(SWT.NULL);
+        setMessage(Messages.AuthenticationPreferencePage_PAGE_TITLE);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected final void createFieldEditors() {
-		addField(new BooleanFieldEditor(
-				SecurityFacade.ONSITE_LOGIN_PREFERECE,
-				Messages.AuthenticationPreferencePage_LOGIN_ON_STARTUP,
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected final void createFieldEditors() {
+        addField(new BooleanFieldEditor(
+                SecurityFacade.ONSITE_LOGIN_PREFERECE,
+                Messages.AuthenticationPreferencePage_LOGIN_ON_STARTUP,
                 getFieldEditorParent()));
-		addField(new BooleanFieldEditor(
-				SecurityFacade.OFFSITE_LOGIN_PREFERENCE,
-				Messages.AuthenticationPreferencePage_LOGIN_ON_STARTUP_OFFSITE,
-				getFieldEditorParent()));
-	}
+        addField(new BooleanFieldEditor(
+                SecurityFacade.OFFSITE_LOGIN_PREFERENCE,
+                Messages.AuthenticationPreferencePage_LOGIN_ON_STARTUP_OFFSITE,
+                getFieldEditorParent()));
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected final IPreferenceStore doGetPreferenceStore() {
-		IPreferenceStore preferenceStore = new ScopedPreferenceStore(
-				new InstanceScope(), AuthActivator.ID);
-		return preferenceStore;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected final IPreferenceStore doGetPreferenceStore() {
+        IPreferenceStore preferenceStore = new ScopedPreferenceStore(
+                new InstanceScope(), AuthActivator.ID);
+        return preferenceStore;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void init(final IWorkbench workbench)
+    /**
+     * {@inheritDoc}
+     */
+    public void init(final IWorkbench workbench)
     {
         // NOP
-	}
+    }
 }

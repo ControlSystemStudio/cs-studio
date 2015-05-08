@@ -31,54 +31,54 @@ import org.eclipse.gef.commands.Command;
  * @author Kai Meyer
  */
 public final class RenameLayerCommand extends Command {
-	
-	/**
-	 * Access object to the layer model.
-	 */
-//	private LayerSupport _layerSupport;
+    
+    /**
+     * Access object to the layer model.
+     */
+//    private LayerSupport _layerSupport;
 
-	/**
-	 * The layer that is removed.
-	 */
-	private Layer _layer;
-	
-	private String _newName;
-	private String _oldName;
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param layerSupport
-	 *            access object to the layer model
-	 * @param layer
-	 *            the layer that is about to be removed
-	 * @param newIndex
-	 * 			  the new index for the layer
-	 */
-	public RenameLayerCommand(final LayerSupport layerSupport, final Layer layer, final String newName) {
-		assert layerSupport != null;
-		assert layer != null;
-		setLabel("Rename Layer '"+layer.getDescription()+"'");
-//		_layerSupport = layerSupport;
-		_layer = layer;
-		_newName = newName;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void execute() {
-		_oldName = _layer.getDescription();
-		_layer.setDescription(_newName);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void undo() {
-	    _layer.setDescription(_oldName);
-	}
+    /**
+     * The layer that is removed.
+     */
+    private Layer _layer;
+    
+    private String _newName;
+    private String _oldName;
+    
+    /**
+     * Constructor.
+     * 
+     * @param layerSupport
+     *            access object to the layer model
+     * @param layer
+     *            the layer that is about to be removed
+     * @param newIndex
+     *               the new index for the layer
+     */
+    public RenameLayerCommand(final LayerSupport layerSupport, final Layer layer, final String newName) {
+        assert layerSupport != null;
+        assert layer != null;
+        setLabel("Rename Layer '"+layer.getDescription()+"'");
+//        _layerSupport = layerSupport;
+        _layer = layer;
+        _newName = newName;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void execute() {
+        _oldName = _layer.getDescription();
+        _layer.setDescription(_newName);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void undo() {
+        _layer.setDescription(_oldName);
+    }
 
 }

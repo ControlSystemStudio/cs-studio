@@ -17,17 +17,17 @@ import org.eclipse.core.commands.ExecutionEvent;
  * 
  */
 public class ConfigureHandler extends
-		AbstractAdaptedHandler<ConfigurableWidget> {
+        AbstractAdaptedHandler<ConfigurableWidget> {
 
-	public ConfigureHandler() {
-		super(ConfigurableWidget.class);
-	}
+    public ConfigureHandler() {
+        super(ConfigurableWidget.class);
+    }
 
-	@Override
-	protected void execute(List<ConfigurableWidget> data, ExecutionEvent event) {
-		if (!data.isEmpty()) {
-			data.get(0).openConfigurationDialog();
-		}
-	}
+    @Override
+    protected void execute(List<ConfigurableWidget> data, ExecutionEvent event) {
+        if (!data.isEmpty()) {
+            data.get(0).openConfigurationDialog();
+        }
+    }
 
 }

@@ -34,77 +34,77 @@ import org.eclipse.core.runtime.Path;
  * @author Kai Meyer
  */
 public final class ExecuteScriptActionModel extends AbstractWidgetActionModel {
-	/**
-	 * The ID for the <i>script</i> property. 
-	 */
-	public static final String PROP_SCRIPT = "script";
-	/**
-	 * The ID for the <i>keep script status</i> property. 
-	 */
-	public static final String PROP_KEEP_SCRIPT_STATUS = "keep script status";
-	/**
-	 * The ID for the <i>description</i> property. 
-	 */
-	public static final String PROP_DESCRIPTION = "description";
-	
-	/**
-	 * Constructor.
-	 */
-	public ExecuteScriptActionModel() {
-		super("EXECUTE", ActionType.EXECUTE_SCRIPT);
-	}
+    /**
+     * The ID for the <i>script</i> property. 
+     */
+    public static final String PROP_SCRIPT = "script";
+    /**
+     * The ID for the <i>keep script status</i> property. 
+     */
+    public static final String PROP_KEEP_SCRIPT_STATUS = "keep script status";
+    /**
+     * The ID for the <i>description</i> property. 
+     */
+    public static final String PROP_DESCRIPTION = "description";
+    
+    /**
+     * Constructor.
+     */
+    public ExecuteScriptActionModel() {
+        super("EXECUTE", ActionType.EXECUTE_SCRIPT);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void createProperties() {
-		addProperty(PROP_SCRIPT, new ResourceProperty("Script", WidgetPropertyCategory.BEHAVIOR, new Path(""), new String[] {"css-sdss"}));
-		addProperty(PROP_KEEP_SCRIPT_STATUS, new BooleanProperty("Keep Script Status", WidgetPropertyCategory.BEHAVIOR, false));
-		addProperty(PROP_DESCRIPTION, new StringProperty("Description", WidgetPropertyCategory.BEHAVIOR, ""));
-	}
-	
-	/**
-	 * Returns the value to commit.
-	 * @return The value
-	 */
-	public IPath getScriptPath() {
-		return getProperty(PROP_SCRIPT).getPropertyValue();
-	}
-	
-	/**
-	 * Returns the description.
-	 * @return The description
-	 */
-	public String getDescription() {
-		return getProperty(PROP_DESCRIPTION).getPropertyValue();
-	}
-	
-	/**
-	 * Returns the Keep Script Status flag.
-	 * @return The flag
-	 */
-	public boolean getKeepScriptStatus() {
-		return getProperty(PROP_KEEP_SCRIPT_STATUS).getPropertyValue();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void createProperties() {
+        addProperty(PROP_SCRIPT, new ResourceProperty("Script", WidgetPropertyCategory.BEHAVIOR, new Path(""), new String[] {"css-sdss"}));
+        addProperty(PROP_KEEP_SCRIPT_STATUS, new BooleanProperty("Keep Script Status", WidgetPropertyCategory.BEHAVIOR, false));
+        addProperty(PROP_DESCRIPTION, new StringProperty("Description", WidgetPropertyCategory.BEHAVIOR, ""));
+    }
+    
+    /**
+     * Returns the value to commit.
+     * @return The value
+     */
+    public IPath getScriptPath() {
+        return getProperty(PROP_SCRIPT).getPropertyValue();
+    }
+    
+    /**
+     * Returns the description.
+     * @return The description
+     */
+    public String getDescription() {
+        return getProperty(PROP_DESCRIPTION).getPropertyValue();
+    }
+    
+    /**
+     * Returns the Keep Script Status flag.
+     * @return The flag
+     */
+    public boolean getKeepScriptStatus() {
+        return getProperty(PROP_KEEP_SCRIPT_STATUS).getPropertyValue();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getActionLabel() {
-		if (getDescription()==null || getDescription().trim().length()==0) {
-			StringBuffer buffer = new StringBuffer(getName());
-			buffer.append(" '");
-			if (getScriptPath()==null) {
-				buffer.append("unspecified");
-			} else {
-				buffer.append(getScriptPath());
-			}
-			buffer.append("'");
-			return buffer.toString();
-		}
-		return getDescription();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getActionLabel() {
+        if (getDescription()==null || getDescription().trim().length()==0) {
+            StringBuffer buffer = new StringBuffer(getName());
+            buffer.append(" '");
+            if (getScriptPath()==null) {
+                buffer.append("unspecified");
+            } else {
+                buffer.append(getScriptPath());
+            }
+            buffer.append("'");
+            return buffer.toString();
+        }
+        return getDescription();
+    }
 
 }

@@ -49,8 +49,8 @@ public class SeverityIconProvider
         final Display display = parent.getDisplay();
 
         final  BufferedImage awtImage = new BufferedImage(ICON_SIZE, ICON_SIZE,
-        				BufferedImage.TYPE_INT_RGB);
-		Graphics g = awtImage.getGraphics();
+                        BufferedImage.TYPE_INT_RGB);
+        Graphics g = awtImage.getGraphics();
         g.setColor(new Color(255,255,255));
         g.fillRect(0, 0, ICON_SIZE, ICON_SIZE);
 
@@ -84,18 +84,18 @@ public class SeverityIconProvider
      * @param awtImage
      * @return
      */
-	private static Image makeSWTImage(final Display display, final java.awt.Image awtImage) {
-		final int width = awtImage.getWidth(null);
-		final int height = awtImage.getHeight(null);
-		final BufferedImage bufferedImage = new BufferedImage(width, height,
-				BufferedImage.TYPE_INT_RGB);
-		final Graphics2D g2d = bufferedImage.createGraphics();
-		g2d.drawImage(awtImage, 0, 0, null);
-		g2d.dispose();
+    private static Image makeSWTImage(final Display display, final java.awt.Image awtImage) {
+        final int width = awtImage.getWidth(null);
+        final int height = awtImage.getHeight(null);
+        final BufferedImage bufferedImage = new BufferedImage(width, height,
+                BufferedImage.TYPE_INT_RGB);
+        final Graphics2D g2d = bufferedImage.createGraphics();
+        g2d.drawImage(awtImage, 0, 0, null);
+        g2d.dispose();
 
-		return new Image(display,
-				AWT2SWTImageConverter.convertToSWT(bufferedImage));
-	}
+        return new Image(display,
+                AWT2SWTImageConverter.convertToSWT(bufferedImage));
+    }
 
     /** @return Array of icons */
     private Image[][][] createIcons(final Display display)
@@ -105,19 +105,19 @@ public class SeverityIconProvider
         // Use AWT to be able to draw icon in RAP version
         for (int c = 0; c < severities.length; c++)
         {
-			final Color c_col = new Color(
-					severities[c].getRed(),
-					severities[c].getGreen(),
-					severities[c].getBlue());
-			for (int s = 0; s < severities.length; s++)
-			{
-				final Color s_col = new Color(
-						severities[s].getRed(),
-						severities[s].getGreen(),
-						severities[s].getBlue());
-				final BufferedImage awtImage = new BufferedImage(ICON_SIZE,
-						ICON_SIZE, BufferedImage.TYPE_INT_RGB);
-        		final Graphics g = awtImage.getGraphics();
+            final Color c_col = new Color(
+                    severities[c].getRed(),
+                    severities[c].getGreen(),
+                    severities[c].getBlue());
+            for (int s = 0; s < severities.length; s++)
+            {
+                final Color s_col = new Color(
+                        severities[s].getRed(),
+                        severities[s].getGreen(),
+                        severities[s].getBlue());
+                final BufferedImage awtImage = new BufferedImage(ICON_SIZE,
+                        ICON_SIZE, BufferedImage.TYPE_INT_RGB);
+                final Graphics g = awtImage.getGraphics();
                 g.setColor(new Color(255,255,255));
                 g.fillRect(0, 0, ICON_SIZE, ICON_SIZE);
 

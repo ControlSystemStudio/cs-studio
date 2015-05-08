@@ -34,9 +34,9 @@ package org.csstudio.dal;
  * @see org.csstudio.dal.DynamicValueProperty
  */
 public interface StringSeqProperty extends DynamicValueProperty<String[]>,
-	StringSeqSimpleProperty
+    StringSeqSimpleProperty
 {
-	//
+    //
 }
 
 /* __oOo__ */

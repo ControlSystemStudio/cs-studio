@@ -33,19 +33,19 @@ package com.cosylab.vdct.db;
  * Used only for layout data
  */
 public class DBGroupData {
-	protected int x = -1;			// used for layout
-	protected int y = -1;
-	protected java.awt.Color color;
-	protected String description;
-	protected String name;
+    protected int x = -1;            // used for layout
+    protected int y = -1;
+    protected java.awt.Color color;
+    protected String description;
+    protected String name;
 /**
  * DBGroupData constructor comment.
  */
 public DBGroupData(String name, int x, int y, java.awt.Color color, String description) {
-	this.name=name;
-	this.x=x; this.y=y;
-	this.color=color;
-	this.description=description;
+    this.name=name;
+    this.x=x; this.y=y;
+    this.color=color;
+    this.description=description;
 }
 /**
  * Insert the method's description here.
@@ -53,7 +53,7 @@ public DBGroupData(String name, int x, int y, java.awt.Color color, String descr
  * @return java.awt.Color
  */
 public java.awt.Color getColor() {
-	return color;
+    return color;
 }
 /**
  * Insert the method's description here.
@@ -61,7 +61,7 @@ public java.awt.Color getColor() {
  * @return java.lang.String
  */
 public java.lang.String getDescription() {
-	return description;
+    return description;
 }
 /**
  * Insert the method's description here.
@@ -69,7 +69,7 @@ public java.lang.String getDescription() {
  * @return java.lang.String
  */
 public java.lang.String getName() {
-	return name;
+    return name;
 }
 /**
  * Insert the method's description here.
@@ -77,7 +77,7 @@ public java.lang.String getName() {
  * @return int
  */
 public int getX() {
-	return x;
+    return x;
 }
 /**
  * Insert the method's description here.
@@ -85,7 +85,7 @@ public int getX() {
  * @return int
  */
 public int getY() {
-	return y;
+    return y;
 }
 /**
  * Insert the method's description here.
@@ -93,7 +93,7 @@ public int getY() {
  * @param newColor java.awt.Color
  */
 public void setColor(java.awt.Color newColor) {
-	color = newColor;
+    color = newColor;
 }
 /**
  * Insert the method's description here.
@@ -101,7 +101,7 @@ public void setColor(java.awt.Color newColor) {
  * @param newDescription java.lang.String
  */
 public void setDescription(java.lang.String newDescription) {
-	description = newDescription;
+    description = newDescription;
 }
 /**
  * Insert the method's description here.
@@ -109,7 +109,7 @@ public void setDescription(java.lang.String newDescription) {
  * @param newName java.lang.String
  */
 public void setName(java.lang.String newName) {
-	name = newName;
+    name = newName;
 }
 /**
  * Insert the method's description here.
@@ -117,7 +117,7 @@ public void setName(java.lang.String newName) {
  * @param newX int
  */
 public void setX(int newX) {
-	x = newX;
+    x = newX;
 }
 /**
  * Insert the method's description here.
@@ -125,6 +125,6 @@ public void setX(int newX) {
  * @param newY int
  */
 public void setY(int newY) {
-	y = newY;
+    y = newY;
 }
 }

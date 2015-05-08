@@ -23,11 +23,11 @@ public class NewDataBrowserHandler extends AbstractHandler
         DataBrowserEditor.createInstance();
         try
         {
-        	Perspective.showPerspective();
+            Perspective.showPerspective();
         }
         catch (Exception ex)
         {
-        	// never mind
+            // never mind
         }
         return null;
     }

@@ -6,10 +6,10 @@ import org.csstudio.sds.eventhandling.AbstractBehavior;
 
 public interface IBehaviorService {
 
-	AbstractBehavior<?> getBehavior(String behaviorId, String widgetId);
-	
-	List<BehaviorDescriptor> getBehaviors(String widgetId);
+    AbstractBehavior<?> getBehavior(String behaviorId, String widgetId);
+    
+    List<BehaviorDescriptor> getBehaviors(String widgetId);
 
-	String[] getInvisiblePropertyIds(String behaviorId, String widgetId);
+    String[] getInvisiblePropertyIds(String behaviorId, String widgetId);
 
 }

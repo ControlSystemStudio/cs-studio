@@ -73,9 +73,9 @@ public class NumericMetaDataHelper
             setDoubleOrNull(insert, 7, meta.getUpperAlarmLimit());
             final NumberFormat format = meta.getFormat();
             if (format == null)
-    			insert.setInt(8, 0);
+                insert.setInt(8, 0);
             else
-            	insert.setInt(8, format.getMinimumFractionDigits());
+                insert.setInt(8, format.getMinimumFractionDigits());
             // Oracle schema has NOT NULL units...
             String units = meta.getUnits();
             if (units == null  ||  units.length() < 1)
@@ -96,12 +96,12 @@ public class NumericMetaDataHelper
      *  @param number
      *  @throws SQLException
      */
-	private static void setDoubleOrNull(final PreparedStatement statement, final int index,
+    private static void setDoubleOrNull(final PreparedStatement statement, final int index,
             final Double number) throws SQLException
     {
-		if (number == null  ||  number.isInfinite()  ||  number.isNaN())
-			statement.setNull(index, Types.DOUBLE);
-		else
-			statement.setDouble(index, number);
+        if (number == null  ||  number.isInfinite()  ||  number.isNaN())
+            statement.setNull(index, Types.DOUBLE);
+        else
+            statement.setDouble(index, number);
     }
 }

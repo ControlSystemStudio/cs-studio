@@ -25,17 +25,17 @@ public class MonitoredArchiveChannelUnitTest
 {
     private static final String PV_NAME = "loc://demo(47)";
 
-	@Test
+    @Test
     public void testHandleNewValue() throws Exception
     {
-    	PVPool.addPVFactory(new LocalPVFactory());
-    	
-    	final PV pv = PVPool.getPV(PV_NAME);
+        PVPool.addPVFactory(new LocalPVFactory());
+        
+        final PV pv = PVPool.getPV(PV_NAME);
         final MonitoredArchiveChannel channel = new MonitoredArchiveChannel(PV_NAME, Enablement.Passive, 100, null, 0.1);
         final SampleBuffer samples = channel.getSampleBuffer();
         channel.start();
 
-    	pv.write(1.0);
+        pv.write(1.0);
         pv.write(2.0);
         pv.write(2.05);
         pv.write(2.5);

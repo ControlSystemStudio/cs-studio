@@ -119,7 +119,7 @@ public class ScreenshotPlugin extends AbstractUIPlugin // implements IStartup
     
     @Override
     public void start(BundleContext context) throws Exception {
-    	super.start(context);
+        super.start(context);
         IWorkbench workbench = PlatformUI.getWorkbench();
         
         window = workbench.getActiveWorkbenchWindow(); //.getWorkbenchWindows()[0];
@@ -129,7 +129,7 @@ public class ScreenshotPlugin extends AbstractUIPlugin // implements IStartup
     
     @Override
     public void stop(BundleContext context) throws Exception {
-    	super.stop(context);
+        super.stop(context);
         plugin = null;
     }
     

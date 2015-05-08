@@ -13,37 +13,37 @@ import de.desy.language.snl.parser.nodes.OptionStatementNode;
  */
 class OptionNodeAdapterFactory implements IAdapterFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(final Object adaptableObject,
-			final Class adapterType) {
-		assert adaptableObject != null;
-		assert adapterType != null;
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Object getAdapter(final Object adaptableObject,
+            final Class adapterType) {
+        assert adaptableObject != null;
+        assert adapterType != null;
 
-		if (adaptableObject instanceof OptionStatementNode) {
-			final OptionStatementNode node = (OptionStatementNode) adaptableObject;
+        if (adaptableObject instanceof OptionStatementNode) {
+            final OptionStatementNode node = (OptionStatementNode) adaptableObject;
 
-			if (adapterType == IWorkbenchAdapter.class) {
-				return new AbstractSNLWorkbenchAdapter<OptionStatementNode>(
-						node) {
-					@Override
-					public String getImageName(final OptionStatementNode nodeToRender) {
-						return "option.gif";
-					}
-				};
-			}
-		}
-		return null;
-	}
+            if (adapterType == IWorkbenchAdapter.class) {
+                return new AbstractSNLWorkbenchAdapter<OptionStatementNode>(
+                        node) {
+                    @Override
+                    public String getImageName(final OptionStatementNode nodeToRender) {
+                        return "option.gif";
+                    }
+                };
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getAdapterList() {
-		return new Class[] { OptionStatementNode.class };
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getAdapterList() {
+        return new Class[] { OptionStatementNode.class };
+    }
 
 }

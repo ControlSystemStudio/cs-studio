@@ -32,18 +32,18 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class DeviceContextFileHeadlessTest
 {
-	@Test
-	public void testReadDeviceContextFile() throws Exception
-	{
-		final DeviceContext context = DeviceContext.getDefault();
+    @Test
+    public void testReadDeviceContextFile() throws Exception
+    {
+        final DeviceContext context = DeviceContext.getDefault();
 
-		for (Device device : context.getDevices())
-			System.out.println(device);
+        for (Device device : context.getDevices())
+            System.out.println(device);
 
-		final Device device = context.getDevice("xpos");
-		assertNotNull(device);
-		assertEquals("xpos", device.getAlias());
+        final Device device = context.getDevice("xpos");
+        assertNotNull(device);
+        assertEquals("xpos", device.getAlias());
         assertEquals("motor_x", device.getName());
-		assertEquals(PVDevice.class, device.getClass());
-	}
+        assertEquals(PVDevice.class, device.getClass());
+    }
 }

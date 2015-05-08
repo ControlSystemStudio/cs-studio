@@ -33,45 +33,45 @@ import de.desy.language.editor.core.ILanguageElements;
  * @version 0.3
  */
 public enum Keywords implements ILanguageElements {
-	ASSIGN("assign"), //$NON-NLS-1$
-	BREAK("break"), //$NON-NLS-1$
-	ELSE("else"), //$NON-NLS-1$
-	ENTRY("entry"), //$NON-NLS-1$
-	EXIT("exit"), //$NON-NLS-1$
-	FOR("for"), //$NON-NLS-1$
-	IF("if"), //$NON-NLS-1$
-	MONITOR("monitor"), //$NON-NLS-1$
-	OPTION("option"), //$NON-NLS-1$
-	PROGRAM("program"), 
-	STATE("state"), 
-	STATE_SET("ss"), //$NON-NLS-1$
-	SYNC("sync"), 
-	TO("to"), 
-	UNSIGNED("unsigned"), 
-	WHEN("when"), 
-	WHILE("while"),
-	DEFINE("define"); //$NON-NLS-1$
+    ASSIGN("assign"), //$NON-NLS-1$
+    BREAK("break"), //$NON-NLS-1$
+    ELSE("else"), //$NON-NLS-1$
+    ENTRY("entry"), //$NON-NLS-1$
+    EXIT("exit"), //$NON-NLS-1$
+    FOR("for"), //$NON-NLS-1$
+    IF("if"), //$NON-NLS-1$
+    MONITOR("monitor"), //$NON-NLS-1$
+    OPTION("option"), //$NON-NLS-1$
+    PROGRAM("program"), 
+    STATE("state"), 
+    STATE_SET("ss"), //$NON-NLS-1$
+    SYNC("sync"), 
+    TO("to"), 
+    UNSIGNED("unsigned"), 
+    WHEN("when"), 
+    WHILE("while"),
+    DEFINE("define"); //$NON-NLS-1$
 
-	/**
-	 * The name in the source.
-	 */
-	private String _elementName;
+    /**
+     * The name in the source.
+     */
+    private String _elementName;
 
-	/**
-	 * Initializer of the enum-values.
-	 * 
-	 * @param elementName
-	 *            The name in the source.
-	 */
-	private Keywords(final String elementName) {
-		this._elementName = elementName;
-	}
+    /**
+     * Initializer of the enum-values.
+     * 
+     * @param elementName
+     *            The name in the source.
+     */
+    private Keywords(final String elementName) {
+        this._elementName = elementName;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getElementName() {
-		return this._elementName;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getElementName() {
+        return this._elementName;
+    }
 
 }

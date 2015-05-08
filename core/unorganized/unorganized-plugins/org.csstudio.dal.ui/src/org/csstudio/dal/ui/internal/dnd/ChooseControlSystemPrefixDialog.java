@@ -44,70 +44,70 @@ import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 public class ChooseControlSystemPrefixDialog extends MessageDialog {
-	private ControlSystemEnum _selectedControlSystem;
-	private boolean _dontAskAgain;
+    private ControlSystemEnum _selectedControlSystem;
+    private boolean _dontAskAgain;
 
-	public ChooseControlSystemPrefixDialog(Shell parentShell) {
-		super(parentShell, "Control System Prefix", null, "Please choose the appropriate control system.",
-				MessageDialog.QUESTION, new String[] { "Ok", "Cancel" }, 0);
-	}
+    public ChooseControlSystemPrefixDialog(Shell parentShell) {
+        super(parentShell, "Control System Prefix", null, "Please choose the appropriate control system.",
+                MessageDialog.QUESTION, new String[] { "Ok", "Cancel" }, 0);
+    }
 
-	@Override
-	protected Control createCustomArea(Composite parent) {
-		TreeViewer tv = new TreeViewer(parent);
-		tv.setLabelProvider(new WorkbenchLabelProvider());
-		tv.setContentProvider(new BaseWorkbenchContentProvider() {
+    @Override
+    protected Control createCustomArea(Composite parent) {
+        TreeViewer tv = new TreeViewer(parent);
+        tv.setLabelProvider(new WorkbenchLabelProvider());
+        tv.setContentProvider(new BaseWorkbenchContentProvider() {
 
-			@Override
-			public Object[] getElements(Object element) {
-				return (Object[]) element;
-			}
+            @Override
+            public Object[] getElements(Object element) {
+                return (Object[]) element;
+            }
 
-		});
-		tv.setInput(ControlSystemEnum.valuesShown());
+        });
+        tv.setInput(ControlSystemEnum.valuesShown());
 
-		tv.addSelectionChangedListener(new ISelectionChangedListener() {
+        tv.addSelectionChangedListener(new ISelectionChangedListener() {
 
-			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection sel = (IStructuredSelection) event
-						.getSelection();
-				if (sel != null && sel.getFirstElement() != null) {
-					_selectedControlSystem = (ControlSystemEnum) sel
-							.getFirstElement();
-				}
-			}
+            public void selectionChanged(SelectionChangedEvent event) {
+                IStructuredSelection sel = (IStructuredSelection) event
+                        .getSelection();
+                if (sel != null && sel.getFirstElement() != null) {
+                    _selectedControlSystem = (ControlSystemEnum) sel
+                            .getFirstElement();
+                }
+            }
 
-		});
-		
-		tv.setSelection(new StructuredSelection(ProcessVariableAdressFactory.getInstance().getDefaultControlSystem()));
+        });
+        
+        tv.setSelection(new StructuredSelection(ProcessVariableAdressFactory.getInstance().getDefaultControlSystem()));
 
-		final Button dontAskAgainButton = new Button(parent, SWT.CHECK);
-		dontAskAgainButton.setText("Don´t ask again!");
-		dontAskAgainButton.setSelection(!ProcessVariableAdressFactory.getInstance().askForControlSystem());
-		
-		dontAskAgainButton.addSelectionListener(new SelectionListener(){
+        final Button dontAskAgainButton = new Button(parent, SWT.CHECK);
+        dontAskAgainButton.setText("Don´t ask again!");
+        dontAskAgainButton.setSelection(!ProcessVariableAdressFactory.getInstance().askForControlSystem());
+        
+        dontAskAgainButton.addSelectionListener(new SelectionListener(){
 
-			public void widgetDefaultSelected(SelectionEvent e) {
-				
-			}
+            public void widgetDefaultSelected(SelectionEvent e) {
+                
+            }
 
-			public void widgetSelected(SelectionEvent e) {
-				_dontAskAgain = dontAskAgainButton.getSelection();
-			}
-			
-		});
-		
-		Label l = new Label(parent, SWT.NONE);
-		l.setText("Note: You can change the default setting on the | > CSS Core > Control System | preference page.");
-		return parent;
-	}
+            public void widgetSelected(SelectionEvent e) {
+                _dontAskAgain = dontAskAgainButton.getSelection();
+            }
+            
+        });
+        
+        Label l = new Label(parent, SWT.NONE);
+        l.setText("Note: You can change the default setting on the | > CSS Core > Control System | preference page.");
+        return parent;
+    }
 
-	public ControlSystemEnum getSelectedControlSystem() {
-		return _selectedControlSystem;
-	}
+    public ControlSystemEnum getSelectedControlSystem() {
+        return _selectedControlSystem;
+    }
 
-	public boolean dontAskAgain() {
-		return _dontAskAgain;
-	}
+    public boolean dontAskAgain() {
+        return _dontAskAgain;
+    }
 
 }

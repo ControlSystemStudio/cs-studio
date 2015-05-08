@@ -40,119 +40,119 @@ import com.cosylab.vdct.util.StringUtils;
  */
 public class VDBTemplateInstance implements Commentable
 {
-	protected String name = null;
-	protected VDBTemplate template = null;
-	protected Vector propertiesV = null;
-	protected Hashtable properties = null;
+    protected String name = null;
+    protected VDBTemplate template = null;
+    protected Vector propertiesV = null;
+    protected Hashtable properties = null;
 
-	private String comment = null;
-	
-	/**
-	 * Constructor.
-	 */
-	public VDBTemplateInstance(String name, VDBTemplate template)
-	{
-		this.name = name;
-		this.template = template;
-	}
+    private String comment = null;
+    
+    /**
+     * Constructor.
+     */
+    public VDBTemplateInstance(String name, VDBTemplate template)
+    {
+        this.name = name;
+        this.template = template;
+    }
 
-	/**
-	 * Returns the properties.
-	 * @return Hashtable
-	 */
-	public Hashtable getProperties()
-	{
-		return properties;
-	}
+    /**
+     * Returns the properties.
+     * @return Hashtable
+     */
+    public Hashtable getProperties()
+    {
+        return properties;
+    }
 
-	/**
-	 * Returns the properties.
-	 * @return Vector
-	 */
-	public Vector getPropertiesV()
-	{
-		return propertiesV;
-	}
+    /**
+     * Returns the properties.
+     * @return Vector
+     */
+    public Vector getPropertiesV()
+    {
+        return propertiesV;
+    }
 
-	/**
-	 */
-	public void addProperty(Object key, String value)
-	{
-		if (!propertiesV.contains(key))
-		{
-			properties.put(key, value);
-			propertiesV.addElement(key);
-		}
-	}
+    /**
+     */
+    public void addProperty(Object key, String value)
+    {
+        if (!propertiesV.contains(key))
+        {
+            properties.put(key, value);
+            propertiesV.addElement(key);
+        }
+    }
 
-	/**
-	 */
-	public void removeProperty(Object key)
-	{
-		propertiesV.remove(key);
-		properties.remove(key);
-	}
+    /**
+     */
+    public void removeProperty(Object key)
+    {
+        propertiesV.remove(key);
+        properties.remove(key);
+    }
 
-	/**
-	 * Returns the template.
-	 * @return VDBTemplate
-	 */
-	public VDBTemplate getTemplate()
-	{
-		return template;
-	}
+    /**
+     * Returns the template.
+     * @return VDBTemplate
+     */
+    public VDBTemplate getTemplate()
+    {
+        return template;
+    }
 
-	/**
-	 * Sets the properties.
-	 * @param properties The properties to set
-	 */
-	public void setProperties(Hashtable properties, Vector propertiesV)
-	{
-		this.properties = properties;
-		this.propertiesV = propertiesV;
-	}
+    /**
+     * Sets the properties.
+     * @param properties The properties to set
+     */
+    public void setProperties(Hashtable properties, Vector propertiesV)
+    {
+        this.properties = properties;
+        this.propertiesV = propertiesV;
+    }
 
-	/**
-	 * Make macro substitutions on a string using properties table.
-	 * @param s The string to be applied
-	 * @param properties The properties to use
-	 * @return String  
-	 */
-	public static String applyProperties(String s, Map properties)
-	{
-		// TODO !!! algorithm is wrong, try applying macros on string $(macro1$(macro2))($macro2$(macro1)), where macro1="", macro2=""
-		Iterator e = properties.keySet().iterator();
-		while (s.indexOf('$')>=0 && e.hasNext())
-		{
-			String key = e.next().toString();
-			String val = properties.get(key).toString();
+    /**
+     * Make macro substitutions on a string using properties table.
+     * @param s The string to be applied
+     * @param properties The properties to use
+     * @return String  
+     */
+    public static String applyProperties(String s, Map properties)
+    {
+        // TODO !!! algorithm is wrong, try applying macros on string $(macro1$(macro2))($macro2$(macro1)), where macro1="", macro2=""
+        Iterator e = properties.keySet().iterator();
+        while (s.indexOf('$')>=0 && e.hasNext())
+        {
+            String key = e.next().toString();
+            String val = properties.get(key).toString();
 
-			s = StringUtils.replace(s, "$("+key+")", val);
-			s = StringUtils.replace(s, "${"+key+"}", val);
+            s = StringUtils.replace(s, "$("+key+")", val);
+            s = StringUtils.replace(s, "${"+key+"}", val);
 
-		}
-		return s;
-	}
+        }
+        return s;
+    }
 
-	/**
-	 * Make port substitutions on a string using port table.
-	 * @param s The string to be applied
-	 * @param ports The ports to use
-	 * @return String  
-	 */
-	public static String applyPorts(String value, Map ports)
-	{
-		Iterator i = ports.keySet().iterator();
-		while (value.indexOf('$')>=0 && i.hasNext())
-		{
-			String key = i.next().toString();
-			String val = ports.get(key).toString();
+    /**
+     * Make port substitutions on a string using port table.
+     * @param s The string to be applied
+     * @param ports The ports to use
+     * @return String  
+     */
+    public static String applyPorts(String value, Map ports)
+    {
+        Iterator i = ports.keySet().iterator();
+        while (value.indexOf('$')>=0 && i.hasNext())
+        {
+            String key = i.next().toString();
+            String val = ports.get(key).toString();
 
-			value = StringUtils.replace(value, key, val);
+            value = StringUtils.replace(value, key, val);
 
-		}
-		return value;
-	}
+        }
+        return value;
+    }
 
 
 
@@ -162,7 +162,7 @@ public class VDBTemplateInstance implements Commentable
  */
 public String getName()
 {
-	return name;
+    return name;
 }
 
 /**
@@ -171,34 +171,34 @@ public String getName()
  * @param newName java.lang.String
  */
 public void setName(java.lang.String newName) {
-	name = newName;
+    name = newName;
 }
 
-	/**
-	 * Returns the comment.
-	 * @return String
-	 */
-	public String getComment()
-	{
-		return comment;
-	}
+    /**
+     * Returns the comment.
+     * @return String
+     */
+    public String getComment()
+    {
+        return comment;
+    }
 
-	/**
-	 * Sets the comment.
-	 * @param comment The comment to set
-	 */
-	public void setComment(String comment)
-	{
-		this.comment = comment;
-	}
+    /**
+     * Sets the comment.
+     * @param comment The comment to set
+     */
+    public void setComment(String comment)
+    {
+        this.comment = comment;
+    }
 
-	/**
-	 * Sets the template.
-	 * @param template The template to set
-	 */
-	public void setTemplate(VDBTemplate template)
-	{
-		this.template = template;
-	}
+    /**
+     * Sets the template.
+     * @param template The template to set
+     */
+    public void setTemplate(VDBTemplate template)
+    {
+        this.template = template;
+    }
 
 }

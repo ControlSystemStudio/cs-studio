@@ -14,9 +14,9 @@ public class ReflectUtil {
      * Analogous to Class.isInstance(Object obj).
      */
     public static boolean isInstance(Object obj, String targetClass) {
-    	// TODO this does not work if targetClass is a superclass!
-    	// need to crawl all implemented interfaces and superclasses... Sigh...
-    	return obj.getClass().getName().equals(targetClass);
+        // TODO this does not work if targetClass is a superclass!
+        // need to crawl all implemented interfaces and superclasses... Sigh...
+        return obj.getClass().getName().equals(targetClass);
     }
     
     /**
@@ -26,7 +26,7 @@ public class ReflectUtil {
      * @return true if class name represents an array
      */
     public static boolean isArray(String targetClass) {
-    	return targetClass.charAt(0) == '[';
+        return targetClass.charAt(0) == '[';
     }
     
     /**
@@ -37,9 +37,9 @@ public class ReflectUtil {
      * @return the class of the array
      */
     public static String getComponentType(String targetClass) {
-    	if (!isArray(targetClass))
-    		return null;
-    	return targetClass.substring(2, targetClass.length() - 1);
+        if (!isArray(targetClass))
+            return null;
+        return targetClass.substring(2, targetClass.length() - 1);
     }
     
     /**
@@ -49,7 +49,7 @@ public class ReflectUtil {
      * @return the corresponding array class
      */
     public static String toArrayClass(String className) {
-		return "[L" + className + ";";
+        return "[L" + className + ";";
     }
 
 }

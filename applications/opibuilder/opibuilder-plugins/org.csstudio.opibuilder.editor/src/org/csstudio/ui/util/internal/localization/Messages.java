@@ -32,33 +32,33 @@ import org.eclipse.osgi.util.NLS;
  */
 //TODO: Copied from org.csstudio.platform.ui. Review is needed.
 public final class Messages extends NLS {
-	/**
-	 * The bundle name of the localization messages ressources.
-	 */
-	private static final String BUNDLE_NAME = "org.csstudio.ui.util.internal.localization.messages"; //$NON-NLS-1$
+    /**
+     * The bundle name of the localization messages ressources.
+     */
+    private static final String BUNDLE_NAME = "org.csstudio.ui.util.internal.localization.messages"; //$NON-NLS-1$
 
     public static String AuthenticationPreferencePage_LOGIN_ON_STARTUP_OFFSITE;
 
-	public static String CssWorkbenchAdvisor_LoggedInAs;
-	public static String CssWorkbenchAdvisor_NotLoggedIn;
+    public static String CssWorkbenchAdvisor_LoggedInAs;
+    public static String CssWorkbenchAdvisor_NotLoggedIn;
 
-	public static String ExportPreferencesAction_DialogTitle;
-	public static String ExportPreferencesAction_ErrorMessage;
-	public static String ExportPreferencesAction_FileTypeDescription;
-	public static String ExportPreferencesAction_IncludeDefaultsQuestion;
+    public static String ExportPreferencesAction_DialogTitle;
+    public static String ExportPreferencesAction_ErrorMessage;
+    public static String ExportPreferencesAction_FileTypeDescription;
+    public static String ExportPreferencesAction_IncludeDefaultsQuestion;
 
-	public static String WorkbenchActionBuilder_CSS_ALARM_MENU;
-	public static String WorkbenchActionBuilder_CSS_CONFIGURATION_MENU;
-	public static String WorkbenchActionBuilder_CSS_DEBUGGING_MENU;
-	public static String WorkbenchActionBuilder_CSS_DIAGNOSTICS_MENU;
-	public static String WorkbenchActionBuilder_CSS_DISPLAY_MENU;
-	public static String WorkbenchActionBuilder_CSS_EDITORS_MENU;
-	public static String WorkbenchActionBuilder_CSS_MANAGEMENT_MENU;
-	public static String WorkbenchActionBuilder_CSS_MENU;
-	public static String WorkbenchActionBuilder_CSS_OTHER_MENU;
-	public static String WorkbenchActionBuilder_CSS_TEST_MENU;
-	public static String WorkbenchActionBuilder_CSS_TRENDS_MENU;
-	public static String WorkbenchActionBuilder_CSS_UTILITIES_MENU;
+    public static String WorkbenchActionBuilder_CSS_ALARM_MENU;
+    public static String WorkbenchActionBuilder_CSS_CONFIGURATION_MENU;
+    public static String WorkbenchActionBuilder_CSS_DEBUGGING_MENU;
+    public static String WorkbenchActionBuilder_CSS_DIAGNOSTICS_MENU;
+    public static String WorkbenchActionBuilder_CSS_DISPLAY_MENU;
+    public static String WorkbenchActionBuilder_CSS_EDITORS_MENU;
+    public static String WorkbenchActionBuilder_CSS_MANAGEMENT_MENU;
+    public static String WorkbenchActionBuilder_CSS_MENU;
+    public static String WorkbenchActionBuilder_CSS_OTHER_MENU;
+    public static String WorkbenchActionBuilder_CSS_TEST_MENU;
+    public static String WorkbenchActionBuilder_CSS_TRENDS_MENU;
+    public static String WorkbenchActionBuilder_CSS_UTILITIES_MENU;
     public static String WorkbenchActionBuilder_SHOW_VIEW;
     public static String WorkbenchActionBuilder_MENU_FILE;
     public static String WorkbenchActionBuilder_MENU_FILE_NEW;
@@ -67,7 +67,7 @@ public final class Messages extends NLS {
     public static String WorkbenchActionBuilder_OPEN_PERSPECTIVE;
     public static String WorkbenchActionBuilder_MENU_WINDOW;
 
-	public static String Console_CONSOLE_TITLE;
+    public static String Console_CONSOLE_TITLE;
 
     public static String JmsAppenderPreferencePage_PAGE_TITLE;
     public static String JmsAppenderPreferencePage_LOG_LEVEL;
@@ -95,7 +95,7 @@ public final class Messages extends NLS {
     public static String AuthenticationPreferencePage_PAGE_TITLE;
     public static String AuthenticationPreferencePage_LOGIN_ON_STARTUP;
 
-	public static String AutoSizeColumnAction_Text;
+    public static String AutoSizeColumnAction_Text;
 
     public static String CssWorkbenchAdvisor_WINDOW_TITLE;
 
@@ -126,14 +126,14 @@ public final class Messages extends NLS {
     public static String SaveAsDialog_OVERWRITE_QUESTION;
     public static String SaveAsDialog_QUESTION;
 
-	public static String StringTableEditor_AddRowText;
-	public static String StringTableEditor_DefaultColumnHeader;
-	public static String StringTableEditor_DeleteToolTip;
-	public static String StringTableEditor_EditToolTip;
+    public static String StringTableEditor_AddRowText;
+    public static String StringTableEditor_DefaultColumnHeader;
+    public static String StringTableEditor_DeleteToolTip;
+    public static String StringTableEditor_EditToolTip;
     public static String StringTableEditor_MoveDownToolTip;
-	public static String StringTableEditor_MoveUpToolTip;
+    public static String StringTableEditor_MoveUpToolTip;
 
-	public static String ContainerSelectionGroup_TITLE;
+    public static String ContainerSelectionGroup_TITLE;
 
     public static String ResourceAndContainerGroup_PROBLEM_EMPTY;
     public static String ResourceAndContainerGroup_PROBLEM_DOES_NOT_EXIST;
@@ -142,7 +142,7 @@ public final class Messages extends NLS {
     public static String ResourceAndContainerGroup_PROBLEM_EMPTY_NAME;
     public static String ResourceAndContainerGroup_PROBLEM_INVALID_FILE_NAME;
 
-	public static String RowEditDialog_ShellTitle;
+    public static String RowEditDialog_ShellTitle;
 
     public static String DeleteResourceAction_QUESTION_TITLE;
     public static String DeleteResourceAction_QUESTION_MESSAGE;

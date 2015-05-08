@@ -15,7 +15,7 @@ public class ShiftViewerModel implements IEditorInput {
      * 
      */
     public ShiftViewerModel(final Shift shift) {
-    	this.shift = shift;
+        this.shift = shift;
     }
 
     /*
@@ -25,7 +25,7 @@ public class ShiftViewerModel implements IEditorInput {
      */
     @Override
     public Object getAdapter(final Class adapter) {
-    	return null;
+        return null;
     }
 
     /*
@@ -35,7 +35,7 @@ public class ShiftViewerModel implements IEditorInput {
      */
     @Override
     public boolean exists() {
-    	return false;
+        return false;
     }
 
     /*
@@ -45,7 +45,7 @@ public class ShiftViewerModel implements IEditorInput {
      */
     @Override
     public ImageDescriptor getImageDescriptor() {
-    	return null;
+        return null;
     }
 
     /*
@@ -55,11 +55,11 @@ public class ShiftViewerModel implements IEditorInput {
      */
     @Override
     public String getName() {
-    	final StringBuffer sb = new StringBuffer("Detail View for shift");
-		if (shift != null) {
-		    sb.append(": " + shift.getId());
-		}
-		return sb.toString();
+        final StringBuffer sb = new StringBuffer("Detail View for shift");
+        if (shift != null) {
+            sb.append(": " + shift.getId());
+        }
+        return sb.toString();
     }
 
     /*
@@ -69,7 +69,7 @@ public class ShiftViewerModel implements IEditorInput {
      */
     @Override
     public IPersistableElement getPersistable() {
-    	return null;
+        return null;
     }
 
     /*
@@ -79,15 +79,15 @@ public class ShiftViewerModel implements IEditorInput {
      */
     @Override
     public String getToolTipText() {
-    	final StringBuffer sb = new StringBuffer("Detail View for shift");
-		if (shift != null) {
-		    sb.append(": " + shift.getId());
-		}
-		return sb.toString();
+        final StringBuffer sb = new StringBuffer("Detail View for shift");
+        if (shift != null) {
+            sb.append(": " + shift.getId());
+        }
+        return sb.toString();
     }
 
     public Shift getShift() {
-    	return this.shift;
+        return this.shift;
     }
 
 }

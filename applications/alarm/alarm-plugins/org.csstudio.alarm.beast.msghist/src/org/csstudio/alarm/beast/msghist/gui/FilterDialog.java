@@ -60,10 +60,10 @@ public class FilterDialog extends TitleAreaDialog
     @Override
     protected boolean isResizable()
     {
-	    return true;
+        return true;
     }
 
-	/** {@inhericDoc} */
+    /** {@inhericDoc} */
     @Override
     protected Control createDialogArea(final Composite parent)
     {

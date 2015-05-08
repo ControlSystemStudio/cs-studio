@@ -31,34 +31,34 @@ import org.eclipse.gef.commands.Command;
  * 
  */
 public class HidePropertyCommand extends Command {
-	private AbstractWidgetModel widget;
-	private String propertyId;
-	private String masterPropertyId;
+    private AbstractWidgetModel widget;
+    private String propertyId;
+    private String masterPropertyId;
 
-	public HidePropertyCommand(final AbstractWidgetModel property, String propertyId, final String masterPropertyId) {
-		assert property != null;
-		assert propertyId != null;
-		assert masterPropertyId != null;
-		assert !propertyId.equals(masterPropertyId) : "Property '" + propertyId + "' can't hide itself";
-		
-		this.widget = property;
-		this.propertyId = propertyId;
-		this.masterPropertyId = masterPropertyId;
-	}
+    public HidePropertyCommand(final AbstractWidgetModel property, String propertyId, final String masterPropertyId) {
+        assert property != null;
+        assert propertyId != null;
+        assert masterPropertyId != null;
+        assert !propertyId.equals(masterPropertyId) : "Property '" + propertyId + "' can't hide itself";
+        
+        this.widget = property;
+        this.propertyId = propertyId;
+        this.masterPropertyId = masterPropertyId;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void execute() {
-		widget.hideProperty(propertyId, masterPropertyId);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void execute() {
+        widget.hideProperty(propertyId, masterPropertyId);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void undo() {
-		widget.showProperty(propertyId, masterPropertyId);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void undo() {
+        widget.showProperty(propertyId, masterPropertyId);
+    }
 }

@@ -64,7 +64,7 @@ public class Image extends Widget {
             if(row[0].equals("type")){ //$NON-NLS-1$
                 ;// not used
             }else if(row[0].equals("\"image name\"")){ //$NON-NLS-1$
-            	DebugHelper.add(this, row[1]);
+                DebugHelper.add(this, row[1]);
                 row[1] = ADLHelper.cleanString(row[1])[0];
                 IResource res = ResourcesPlugin.getWorkspace().getRoot();
                 String target = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Target);

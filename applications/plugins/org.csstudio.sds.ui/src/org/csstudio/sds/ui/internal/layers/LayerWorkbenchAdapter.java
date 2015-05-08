@@ -35,36 +35,36 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  */
 final class LayerWorkbenchAdapter implements IWorkbenchAdapter {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object[] getChildren(final Object o) {
-		return new Object[0];
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Object[] getChildren(final Object o) {
+        return new Object[0];
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public ImageDescriptor getImageDescriptor(final Object object) {
-		Layer layer = (Layer) object;
+    /**
+     * {@inheritDoc}
+     */
+    public ImageDescriptor getImageDescriptor(final Object object) {
+        Layer layer = (Layer) object;
 
-		return CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-				SdsUiPlugin.PLUGIN_ID,
-				layer.isVisible() ? "icons/layer_visible.png"
-						: "icons/layer_invisible.png");
-	}
+        return CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
+                SdsUiPlugin.PLUGIN_ID,
+                layer.isVisible() ? "icons/layer_visible.png"
+                        : "icons/layer_invisible.png");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getLabel(final Object o) {
-		return ((Layer) o).getDescription();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getLabel(final Object o) {
+        return ((Layer) o).getDescription();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object getParent(final Object o) {
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Object getParent(final Object o) {
+        return null;
+    }
 }

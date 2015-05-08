@@ -37,7 +37,7 @@ public class ADLPreferencePage extends FieldEditorPreferencePage implements
      * @param constant: ADLConverterPreferenceConstants
      */
     private void checkPreference(String constant){
-    	String defPref = getPreferenceStore().getDefaultString(constant);
+        String defPref = getPreferenceStore().getDefaultString(constant);
         String pref = getPreferenceStore().getString(constant);
         
         if(defPref.equals(pref)){
@@ -45,7 +45,7 @@ public class ADLPreferencePage extends FieldEditorPreferencePage implements
             File file1 = new File(pref);
             IFolder file2 = null;
             try{
-            	file2 = root.getFolder(new Path(pref));
+                file2 = root.getFolder(new Path(pref));
             }catch (Exception e) {}
             
             if((file1 == null || !file1.exists()) && (file2 == null || !file2.exists()))
@@ -57,16 +57,16 @@ public class ADLPreferencePage extends FieldEditorPreferencePage implements
     @Override
     protected void createFieldEditors() {
         //checkPref(ADLConverterPreferenceConstants.P_STRING_Path_Source);
-    	//checkPref(ADLConverterPreferenceConstants.P_STRING_Path_Relativ_Target);
+        //checkPref(ADLConverterPreferenceConstants.P_STRING_Path_Relativ_Target);
 //        checkPreference(ADLConverterPreferenceConstants.P_STRING_Path_Target);
 //        checkPreference(ADLConverterPreferenceConstants.P_STRING_Path_Target_Strip_Tool);
         
         DirectoryFieldEditor source = new DirectoryFieldEditor(ADLConverterPreferenceConstants.P_STRING_Path_Source,"Source Path:",getFieldEditorParent());
-    	addField(source);
-    	addField(new StringFieldEditor(ADLConverterPreferenceConstants.P_STRING_Display_Paths,"Display paths separated by commas:", getFieldEditorParent()));
+        addField(source);
+        addField(new StringFieldEditor(ADLConverterPreferenceConstants.P_STRING_Display_Paths,"Display paths separated by commas:", getFieldEditorParent()));
         
-    	Label label = new Label(getFieldEditorParent(), SWT.NONE);
-    	label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,3,1));
+        Label label = new Label(getFieldEditorParent(), SWT.NONE);
+        label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,3,1));
 
         label = new Label(getFieldEditorParent(), SWT.NONE);
         label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false,3,1));

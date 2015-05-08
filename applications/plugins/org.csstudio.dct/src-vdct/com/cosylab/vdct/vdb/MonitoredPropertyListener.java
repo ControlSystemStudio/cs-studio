@@ -31,8 +31,8 @@ package com.cosylab.vdct.vdb;
 import com.cosylab.vdct.inspector.InspectableProperty;
 
 public interface MonitoredPropertyListener {
-	void addProperty();
-	void removeProperty(InspectableProperty property);
-	void propertyChanged(InspectableProperty property);
-	void renameProperty(InspectableProperty property);
+    void addProperty();
+    void removeProperty(InspectableProperty property);
+    void propertyChanged(InspectableProperty property);
+    void renameProperty(InspectableProperty property);
 }

@@ -22,7 +22,7 @@ import org.epics.util.array.IteratorNumber;
 @SuppressWarnings("nls")
 public class NDMath
 {
-	/** @param array N-dim array
+    /** @param array N-dim array
      *  @return Sum over elements. 0 for empty array
      */
     public static double sum(final NDArray array)
@@ -34,31 +34,31 @@ public class NDMath
         return sum;
     }
 
-	/** @param array N-dim array
+    /** @param array N-dim array
      *  @return Maximum array element
      */
     public static double max(final NDArray array)
     {
-    	final IteratorNumber iter = array.getIterator();
+        final IteratorNumber iter = array.getIterator();
         if (! iter.hasNext())
-        	throw new IllegalArgumentException("Maximum not defined for empty array");
+            throw new IllegalArgumentException("Maximum not defined for empty array");
         double max = iter.nextDouble();
         while (iter.hasNext())
             max = Math.max(max, iter.nextDouble());
         return max;
     }
 
-	/** @param array N-dim array
+    /** @param array N-dim array
      *  @return Minimum array element
      */
     public static double min(final NDArray array)
     {
-    	final IteratorNumber iter = array.getIterator();
+        final IteratorNumber iter = array.getIterator();
         if (! iter.hasNext())
-        	throw new IllegalArgumentException("Minimum not defined for empty array");
+            throw new IllegalArgumentException("Minimum not defined for empty array");
         double min = iter.nextDouble();
         while (iter.hasNext())
-        	min = Math.min(min, iter.nextDouble());
+            min = Math.min(min, iter.nextDouble());
         return min;
     }
 
@@ -105,10 +105,10 @@ public class NDMath
      */
     public static NDArray abs(final NDArray array)
     {
-    	final NDArray result = new NDArray(array.getType(), array.getShape());
+        final NDArray result = new NDArray(array.getType(), array.getShape());
         final int size = array.getSize();
         for (int i=0; i<size; ++i)
-        	result.setFlatDouble(i, Math.abs(array.getFlatDouble(i)));
+            result.setFlatDouble(i, Math.abs(array.getFlatDouble(i)));
         return result;
     }
 
@@ -117,15 +117,15 @@ public class NDMath
      */
     public static NDArray sqrt(final NDArray array)
     {
-    	final NDArray result = new NDArray(NDType.FLOAT64, array.getShape());
+        final NDArray result = new NDArray(NDType.FLOAT64, array.getShape());
         final int size = array.getSize();
         for (int i=0; i<size; ++i)
         {
-        	final double val = array.getFlatDouble(i);
-        	if (val >= 0.0)
-        		result.setFlatDouble(i, Math.sqrt(val));
-        	else
-        		result.setFlatDouble(i, Double.NaN);
+            final double val = array.getFlatDouble(i);
+            if (val >= 0.0)
+                result.setFlatDouble(i, Math.sqrt(val));
+            else
+                result.setFlatDouble(i, Double.NaN);
         }
         return result;
     }
@@ -135,10 +135,10 @@ public class NDMath
      */
     public static NDArray exp(final NDArray array)
     {
-    	final NDArray result = new NDArray(NDType.FLOAT64, array.getShape());
+        final NDArray result = new NDArray(NDType.FLOAT64, array.getShape());
         final int size = array.getSize();
         for (int i=0; i<size; ++i)
-        	result.setFlatDouble(i, Math.exp(array.getFlatDouble(i)));
+            result.setFlatDouble(i, Math.exp(array.getFlatDouble(i)));
         return result;
     }
 
@@ -147,10 +147,10 @@ public class NDMath
      */
     public static NDArray log(final NDArray array)
     {
-    	final NDArray result = new NDArray(NDType.FLOAT64, array.getShape());
+        final NDArray result = new NDArray(NDType.FLOAT64, array.getShape());
         final int size = array.getSize();
         for (int i=0; i<size; ++i)
-        	result.setFlatDouble(i, Math.log(array.getFlatDouble(i)));
+            result.setFlatDouble(i, Math.log(array.getFlatDouble(i)));
         return result;
     }
 
@@ -159,52 +159,52 @@ public class NDMath
      */
     public static NDArray log10(final NDArray array)
     {
-    	final NDArray result = new NDArray(NDType.FLOAT64, array.getShape());
+        final NDArray result = new NDArray(NDType.FLOAT64, array.getShape());
         final int size = array.getSize();
         for (int i=0; i<size; ++i)
-        	result.setFlatDouble(i, Math.log10(array.getFlatDouble(i)));
+            result.setFlatDouble(i, Math.log10(array.getFlatDouble(i)));
         return result;
     }
 
     /** Binary operation */
     private interface BinaryOperation
     {
-    	/** @param a First input
-    	 *  @param b Second input
-    	 *  @return Result of operation
-    	 */
-    	double calc(double a, double b);
+        /** @param a First input
+         *  @param b Second input
+         *  @return Result of operation
+         */
+        double calc(double a, double b);
     }
 
     final private static BinaryOperation op_add = new BinaryOperation()
-	{
-		@Override
-		public double calc(final double a, final double b) 	{ return a + b;	}
-	};
+    {
+        @Override
+        public double calc(final double a, final double b)     { return a + b;    }
+    };
 
-	final private static BinaryOperation op_sub = new BinaryOperation()
-	{
-		@Override
-		public double calc(final double a, final double b)	{ return a - b;	}
-	};
+    final private static BinaryOperation op_sub = new BinaryOperation()
+    {
+        @Override
+        public double calc(final double a, final double b)    { return a - b;    }
+    };
 
-	final private static BinaryOperation op_mul = new BinaryOperation()
-	{
-		@Override
-		public double calc(final double a, final double b)	{ return a * b; }
-	};
+    final private static BinaryOperation op_mul = new BinaryOperation()
+    {
+        @Override
+        public double calc(final double a, final double b)    { return a * b; }
+    };
 
-	final private static BinaryOperation op_div = new BinaryOperation()
-	{
-		@Override
-		public double calc(final double a, final double b)	{ return a / b;	}
-	};
+    final private static BinaryOperation op_div = new BinaryOperation()
+    {
+        @Override
+        public double calc(final double a, final double b)    { return a / b;    }
+    };
 
-	final private static BinaryOperation op_pwr = new BinaryOperation()
-	{
-		@Override
-		public double calc(final double a, final double b)	{ return Math.pow(a, b); }
-	};
+    final private static BinaryOperation op_pwr = new BinaryOperation()
+    {
+        @Override
+        public double calc(final double a, final double b)    { return Math.pow(a, b); }
+    };
 
     /** Perform in-place operation on array.
      *  Use element-by-element when possible.
@@ -288,7 +288,7 @@ public class NDMath
         inplace_operation(array, other, op_div);
     }
 
-	/** Perform operation on arrays element-by-element,
+    /** Perform operation on arrays element-by-element,
      *  using the NumPy broadcast idea but switching
      *  to linear interation if possible
      *  @param a N-dim array
@@ -296,25 +296,25 @@ public class NDMath
      *  @param operation Operation to perform on the elements
      *  @return Result array
      */
-	private static NDArray binary_operation(final NDArray a, final NDArray b,
-			final BinaryOperation operation)
-	{
-    	final NDArray result;
-    	final NDType type = NDType.determineSuperType(a.getType(), b.getType());
+    private static NDArray binary_operation(final NDArray a, final NDArray b,
+            final BinaryOperation operation)
+    {
+        final NDArray result;
+        final NDType type = NDType.determineSuperType(a.getType(), b.getType());
 
-    	switch (NDCompatibility.forArrays(a, b))
-    	{
-    	case FLAT_ITERATION:
-    	    result = new NDArray(type, a.getShape());
-    	    final int size = result.getSize();
-    	    for (int i=0; i<size; ++i)
-    	    {
-    	        final double value = operation.calc(a.getFlatDouble(i),
-    	                b.getFlatDouble(i));
-    	        result.setFlatDouble(i, value);
-    	    }
-    	    break;
-    	case SHAPE_ITERATION:
+        switch (NDCompatibility.forArrays(a, b))
+        {
+        case FLAT_ITERATION:
+            result = new NDArray(type, a.getShape());
+            final int size = result.getSize();
+            for (int i=0; i<size; ++i)
+            {
+                final double value = operation.calc(a.getFlatDouble(i),
+                        b.getFlatDouble(i));
+                result.setFlatDouble(i, value);
+            }
+            break;
+        case SHAPE_ITERATION:
             result = new NDArray(type, a.getShape());
             final ShapeIterator shape = new ShapeIterator(result.getShape());
             while (shape.hasNext())
@@ -325,22 +325,22 @@ public class NDMath
                 result.setDouble(value, pos);
             }
             break;
-    	case BROADCAST_ITERATION:
-    	    final BroadcastIterator i = new BroadcastIterator(a.getShape(), b.getShape());
-    	    result = new NDArray(type, i.getBroadcastShape());
-    	    while (i.hasNext())
-    	    {
-    	        final double value = operation.calc(a.getDouble(i.getPosA()),
-    	                b.getDouble(i.getPosB()));
-    	        result.setDouble(value, i.getPosition());
-    	    }
-    	    break;
-	    default:
+        case BROADCAST_ITERATION:
+            final BroadcastIterator i = new BroadcastIterator(a.getShape(), b.getShape());
+            result = new NDArray(type, i.getBroadcastShape());
+            while (i.hasNext())
+            {
+                final double value = operation.calc(a.getDouble(i.getPosA()),
+                        b.getDouble(i.getPosB()));
+                result.setDouble(value, i.getPosition());
+            }
+            break;
+        default:
             throw new IllegalArgumentException("Cannot operate on arrays of incompatible shapes " + a +
                     " and " + b);
-    	}
+        }
 
-    	return result;
+        return result;
     }
 
     /** @param a N-dim array
@@ -349,16 +349,16 @@ public class NDMath
      */
     public static NDArray add(final NDArray a, final NDArray b)
     {
-    	return binary_operation(a, b, op_add);
+        return binary_operation(a, b, op_add);
     }
 
-	/** @param a N-dim array
+    /** @param a N-dim array
      *  @param b N-dim array
      *  @return result a - b
      */
     public static NDArray subtract(final NDArray a, final NDArray b)
     {
-    	return binary_operation(a, b, op_sub);
+        return binary_operation(a, b, op_sub);
     }
 
     /** @param a N-dim array
@@ -367,7 +367,7 @@ public class NDMath
      */
     public static NDArray multiply(final NDArray a, final NDArray b)
     {
-    	return binary_operation(a, b, op_mul);
+        return binary_operation(a, b, op_mul);
     }
 
     /** @param a N-dim array
@@ -376,7 +376,7 @@ public class NDMath
      */
     public static NDArray divide(final NDArray a, final NDArray b)
     {
-    	return binary_operation(a, b, op_div);
+        return binary_operation(a, b, op_div);
     }
 
     /** @param a N-dim array
@@ -385,6 +385,6 @@ public class NDMath
      */
     public static NDArray power(final NDArray a, final NDArray b)
     {
-    	return binary_operation(a, b, op_pwr);
+        return binary_operation(a, b, op_pwr);
     }
 }

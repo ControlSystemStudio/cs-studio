@@ -37,118 +37,118 @@ import org.eclipse.core.runtime.IPath;
  */
 public class RunModeBoxInput implements Serializable {
 
-	private static final long serialVersionUID = 6449572208586410269L;
+    private static final long serialVersionUID = 6449572208586410269L;
 
-	private transient IPath _filePath;
+    private transient IPath _filePath;
 
-	private transient Map<String, String> _aliases;
+    private transient Map<String, String> _aliases;
 
-	private RunModeType _type;
+    private RunModeType _type;
 
-	private RunModeBoxInput _predecessorBox;
+    private RunModeBoxInput _predecessorBox;
 
-	private long _timestamp;
+    private long _timestamp;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param filePath
-	 *            the path to the display
-	 * @param aliases
-	 *            the aliases
-	 * @param type
-	 *            the run mode type
-	 */
-	public RunModeBoxInput(IPath filePath, Map<String, String> aliases,
-			RunModeType type) {
-		assert filePath != null;
-		assert aliases != null;
-		assert type != null;
-		_filePath = filePath;
-		_aliases = aliases;
-		_type = type;
-		_timestamp = System.currentTimeMillis();
-	}
+    /**
+     * Constructor.
+     * 
+     * @param filePath
+     *            the path to the display
+     * @param aliases
+     *            the aliases
+     * @param type
+     *            the run mode type
+     */
+    public RunModeBoxInput(IPath filePath, Map<String, String> aliases,
+            RunModeType type) {
+        assert filePath != null;
+        assert aliases != null;
+        assert type != null;
+        _filePath = filePath;
+        _aliases = aliases;
+        _type = type;
+        _timestamp = System.currentTimeMillis();
+    }
 
-	/**
-	 * Gets the predecessor box큦 input.
-	 * 
-	 * @return the predecessor box큦 input
-	 */
-	public RunModeBoxInput getPredecessorBox() {
-		return _predecessorBox;
-	}
+    /**
+     * Gets the predecessor box큦 input.
+     * 
+     * @return the predecessor box큦 input
+     */
+    public RunModeBoxInput getPredecessorBox() {
+        return _predecessorBox;
+    }
 
-	/**
-	 * Sets the predecessor box큦 input.
-	 * 
-	 * @param input
-	 *            the input of the predecessor box
-	 */
-	public void setPredecessorBox(RunModeBoxInput input) {
-		_predecessorBox = input;
-	}
+    /**
+     * Sets the predecessor box큦 input.
+     * 
+     * @param input
+     *            the input of the predecessor box
+     */
+    public void setPredecessorBox(RunModeBoxInput input) {
+        _predecessorBox = input;
+    }
 
-	public IPath getFilePath() {
-		return _filePath;
-	}
+    public IPath getFilePath() {
+        return _filePath;
+    }
 
-	public Map<String, String> getAliases() {
-		return new HashMap<String, String>(_aliases);
-	}
+    public Map<String, String> getAliases() {
+        return new HashMap<String, String>(_aliases);
+    }
 
-	public RunModeType getType() {
-		return _type;
-	}
+    public RunModeType getType() {
+        return _type;
+    }
 
-	public long getTimestamp() {
-		return _timestamp;
-	}
+    public long getTimestamp() {
+        return _timestamp;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int hashCode() {
-		String fullpath = calculateFullPath();
-		return fullpath.hashCode();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        String fullpath = calculateFullPath();
+        return fullpath.hashCode();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		boolean result = false;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        boolean result = false;
 
-		if (obj instanceof RunModeBoxInput) {
-			RunModeBoxInput input = (RunModeBoxInput) obj;
+        if (obj instanceof RunModeBoxInput) {
+            RunModeBoxInput input = (RunModeBoxInput) obj;
 
-			result = calculateFullPath().equals(input.calculateFullPath());
-		}
+            result = calculateFullPath().equals(input.calculateFullPath());
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	public String calculateFullPath() {
-		StringBuffer sb = new StringBuffer();
-		sb.append(_filePath.toPortableString());
+    public String calculateFullPath() {
+        StringBuffer sb = new StringBuffer();
+        sb.append(_filePath.toPortableString());
 
-		if (_aliases != null && !_aliases.keySet().isEmpty()) {
-			sb.append("?");
+        if (_aliases != null && !_aliases.keySet().isEmpty()) {
+            sb.append("?");
 
-			Iterator<String> it = _aliases.keySet().iterator();
+            Iterator<String> it = _aliases.keySet().iterator();
 
-			while (it.hasNext()) {
-				String key = it.next();
-				String val = _aliases.get(key);
-				sb.append(key);
-				sb.append("=");
-				sb.append(val);
-				sb.append(it.hasNext() ? "," : "");
-			}
-		}
+            while (it.hasNext()) {
+                String key = it.next();
+                String val = _aliases.get(key);
+                sb.append(key);
+                sb.append("=");
+                sb.append(val);
+                sb.append(it.hasNext() ? "," : "");
+            }
+        }
 
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 }

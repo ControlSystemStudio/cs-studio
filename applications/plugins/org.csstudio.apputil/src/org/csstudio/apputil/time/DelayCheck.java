@@ -20,23 +20,23 @@ import java.util.concurrent.TimeUnit;
  */
 public class DelayCheck
 {
-	final private long milli_duration;
-	private long next_expiration_milli;
-	
-	public DelayCheck(long duration, TimeUnit units)
+    final private long milli_duration;
+    private long next_expiration_milli;
+    
+    public DelayCheck(long duration, TimeUnit units)
     {
-		milli_duration = units.toMillis(duration);
-		next_expiration_milli = System.currentTimeMillis() + milli_duration;
+        milli_duration = units.toMillis(duration);
+        next_expiration_milli = System.currentTimeMillis() + milli_duration;
     }
 
-	public boolean expired()
+    public boolean expired()
     {
-		final long now = System.currentTimeMillis();
-		if (now >= next_expiration_milli)
-		{
-			next_expiration_milli = now + milli_duration;
-			return true;
-		}
-	    return false;
+        final long now = System.currentTimeMillis();
+        if (now >= next_expiration_milli)
+        {
+            next_expiration_milli = now + milli_duration;
+            return true;
+        }
+        return false;
     }
 }

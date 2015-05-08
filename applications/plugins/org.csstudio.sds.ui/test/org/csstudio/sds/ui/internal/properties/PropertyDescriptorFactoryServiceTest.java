@@ -39,72 +39,72 @@ import org.junit.Test;
  */
 public class PropertyDescriptorFactoryServiceTest {
 
-	/**
-	 * The configuration elements for extension point
-	 * <code>org.csstudio.sds.ui.propertyDescriptorFactories</code>.
-	 */
-	private IConfigurationElement[] _confElements;
+    /**
+     * The configuration elements for extension point
+     * <code>org.csstudio.sds.ui.propertyDescriptorFactories</code>.
+     */
+    private IConfigurationElement[] _confElements;
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.ui.internal.properties.PropertyDescriptorFactoryService#getInstance()}.
-	 */
-	@Test
-	public final void testGetInstance() {
-		assertNotNull(PropertyDescriptorFactoryService.getInstance());
-	}
+    /**
+     * Test method for
+     * {@link org.csstudio.sds.ui.internal.properties.PropertyDescriptorFactoryService#getInstance()}.
+     */
+    @Test
+    public final void testGetInstance() {
+        assertNotNull(PropertyDescriptorFactoryService.getInstance());
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.ui.internal.properties.PropertyDescriptorFactoryService#hasPropertyDescriptorFactory(PropertyTypesEnum)}.
-	 */
-	@Test
-	public final void testHasPropertyDescriptorFactory() {
-		for (IConfigurationElement element : _confElements) {
-			String typeIdString = element.getAttribute("typeId"); //$NON-NLS-1$
-			
-			PropertyTypesEnum typeId;
-			try {
-				typeId = PropertyTypesEnum.createFromPortable(typeIdString);
-			} catch (Exception e) {
-				// apply String as default
-				typeId = PropertyTypesEnum.STRING;
-			}
+    /**
+     * Test method for
+     * {@link org.csstudio.sds.ui.internal.properties.PropertyDescriptorFactoryService#hasPropertyDescriptorFactory(PropertyTypesEnum)}.
+     */
+    @Test
+    public final void testHasPropertyDescriptorFactory() {
+        for (IConfigurationElement element : _confElements) {
+            String typeIdString = element.getAttribute("typeId"); //$NON-NLS-1$
+            
+            PropertyTypesEnum typeId;
+            try {
+                typeId = PropertyTypesEnum.createFromPortable(typeIdString);
+            } catch (Exception e) {
+                // apply String as default
+                typeId = PropertyTypesEnum.STRING;
+            }
 
-			assertTrue(PropertyDescriptorFactoryService.getInstance()
-					.hasPropertyDescriptorFactory(typeId));
-		}
-	}
+            assertTrue(PropertyDescriptorFactoryService.getInstance()
+                    .hasPropertyDescriptorFactory(typeId));
+        }
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.ui.internal.properties.PropertyDescriptorFactoryService#getPropertyDescriptorFactory(PropertyTypesEnum)}.
-	 */
-	@Test
-	public final void testGetPropertyDescriptorFactory() {
-		for (IConfigurationElement element : _confElements) {
-			String typeIdString = element.getAttribute("typeId"); //$NON-NLS-1$
-			
-			PropertyTypesEnum typeId;
-			try {
-				typeId = PropertyTypesEnum.createFromPortable(typeIdString);
-			} catch (Exception e) {
-				// apply String as default
-				typeId = PropertyTypesEnum.STRING;
-			}
-			assertNotNull(PropertyDescriptorFactoryService.getInstance()
-					.getPropertyDescriptorFactory(typeId));
-		}
-	}
+    /**
+     * Test method for
+     * {@link org.csstudio.sds.ui.internal.properties.PropertyDescriptorFactoryService#getPropertyDescriptorFactory(PropertyTypesEnum)}.
+     */
+    @Test
+    public final void testGetPropertyDescriptorFactory() {
+        for (IConfigurationElement element : _confElements) {
+            String typeIdString = element.getAttribute("typeId"); //$NON-NLS-1$
+            
+            PropertyTypesEnum typeId;
+            try {
+                typeId = PropertyTypesEnum.createFromPortable(typeIdString);
+            } catch (Exception e) {
+                // apply String as default
+                typeId = PropertyTypesEnum.STRING;
+            }
+            assertNotNull(PropertyDescriptorFactoryService.getInstance()
+                    .getPropertyDescriptorFactory(typeId));
+        }
+    }
 
-	/**
-	 * Read extension point registry.
-	 */
-	@Before
-	public final void setUp() {
-		IExtensionRegistry extReg = Platform.getExtensionRegistry();
-		String id = SdsUiPlugin.EXTPOINT_PROPERTY_DESRIPTORS_FACTORIES;
-		_confElements = extReg.getConfigurationElementsFor(id);
-	}
+    /**
+     * Read extension point registry.
+     */
+    @Before
+    public final void setUp() {
+        IExtensionRegistry extReg = Platform.getExtensionRegistry();
+        String id = SdsUiPlugin.EXTPOINT_PROPERTY_DESRIPTORS_FACTORIES;
+        _confElements = extReg.getConfigurationElementsFor(id);
+    }
 
 }

@@ -36,31 +36,31 @@ import org.csstudio.utility.jms.sharedconnection.MonitorableSharedConnection;
  * @author Markus Moeller
  */
 public class SharedSenderConnectionService {
-	
-	private final MonitorableSharedConnection _connection;
-	
-	private final String publisherUrl;
-	
-	private final String clientId;
-	
-	/**
-	 * Creates the service.
-	 */
-	public SharedSenderConnectionService(String url, String id) {
-	    clientId = id;
-	    publisherUrl = url;
-		_connection = new MonitorableSharedConnection(clientId, publisherUrl);
-	}
+    
+    private final MonitorableSharedConnection _connection;
+    
+    private final String publisherUrl;
+    
+    private final String clientId;
+    
+    /**
+     * Creates the service.
+     */
+    public SharedSenderConnectionService(String url, String id) {
+        clientId = id;
+        publisherUrl = url;
+        _connection = new MonitorableSharedConnection(clientId, publisherUrl);
+    }
 
-	/**
-	 * Returns a handle to the shared connection.
-	 * 
-	 * @return a handle to the shared connection.
-	 * @throws JMSException
-	 *             if the underlying shared connection could not be created or
-	 *             started due to an internal error.
-	 */
-	public ISharedConnectionHandle sharedConnection() throws JMSException {
-		return _connection.createHandle();
-	}
+    /**
+     * Returns a handle to the shared connection.
+     * 
+     * @return a handle to the shared connection.
+     * @throws JMSException
+     *             if the underlying shared connection could not be created or
+     *             started due to an internal error.
+     */
+    public ISharedConnectionHandle sharedConnection() throws JMSException {
+        return _connection.createHandle();
+    }
 }

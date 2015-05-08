@@ -7,8 +7,8 @@ package org.csstudio.alarm.beast.ui;
  */
 public class WebAlarmConstants {
 
-	public static final String MAIN_SERVLET_NAME = "a";//$NON-NLS-1$
+    public static final String MAIN_SERVLET_NAME = "a";//$NON-NLS-1$
 
-	public static final String REGULAR_ENTRY_POINT = "webalarm"; //$NON-NLS-1$
+    public static final String REGULAR_ENTRY_POINT = "webalarm"; //$NON-NLS-1$
 
 }

@@ -37,40 +37,40 @@ import org.eclipse.swt.widgets.Display;
  * @author Xihui Chen
  *
  */
-public abstract class AbstractScriptStore implements IScriptStore{	
-	
-	private IPath absoluteScriptPath;
+public abstract class AbstractScriptStore implements IScriptStore{    
+    
+    private IPath absoluteScriptPath;
 
-	private String errorSource;
+    private String errorSource;
 
-	private Map<IPV, IPVListener> pvListenerMap;
+    private Map<IPV, IPVListener> pvListenerMap;
 
-	private boolean errorInScript;
+    private boolean errorInScript;
 
-	volatile boolean unRegistered = false;
+    volatile boolean unRegistered = false;
 
 
-	/**
-	 * A map to see if a PV was triggered before, this is used to skip the first trigger.
-	 */
-	private Map<IPV, Boolean> pvTriggeredMap;
+    /**
+     * A map to see if a PV was triggered before, this is used to skip the first trigger.
+     */
+    private Map<IPV, Boolean> pvTriggeredMap;
 
-	private boolean triggerSuppressed = false;
-	
-	private ScriptData scriptData;
-	private AbstractBaseEditPart editPart;
-	private IPV[] pvArray;
-	
-	public AbstractScriptStore(final ScriptData scriptData, final AbstractBaseEditPart editpart,
-			final IPV[] pvArray) throws Exception {		
-		
-		this.scriptData = scriptData;
-		this.editPart = editpart;
-		this.pvArray = pvArray;
-		
-		if(!(scriptData instanceof RuleScriptData) && !scriptData.isEmbedded()){			
-			absoluteScriptPath = scriptData.getPath();
-			if(!absoluteScriptPath.isAbsolute()){
+    private boolean triggerSuppressed = false;
+    
+    private ScriptData scriptData;
+    private AbstractBaseEditPart editPart;
+    private IPV[] pvArray;
+    
+    public AbstractScriptStore(final ScriptData scriptData, final AbstractBaseEditPart editpart,
+            final IPV[] pvArray) throws Exception {        
+        
+        this.scriptData = scriptData;
+        this.editPart = editpart;
+        this.pvArray = pvArray;
+        
+        if(!(scriptData instanceof RuleScriptData) && !scriptData.isEmbedded()){            
+            absoluteScriptPath = scriptData.getPath();
+            if(!absoluteScriptPath.isAbsolute()){
                 // The following looked like this:
                 // absoluteScriptPath = ResourceUtil.buildAbsolutePath(
                 //        editpart.getWidgetModel(), absoluteScriptPath);
@@ -95,194 +95,194 @@ public abstract class AbstractScriptStore implements IScriptStore{
                     root = model.getRootDisplayModel();
                 absoluteScriptPath = root.getOpiFilePath().removeLastSegments(1).append(absoluteScriptPath);
                 // ---
-				if(!ResourceUtil.isExsitingFile(absoluteScriptPath, true)){
-					//search from OPI search path
-					absoluteScriptPath = ResourceUtil.getFileOnSearchPath(scriptData.getPath(), true);
-					if(absoluteScriptPath == null)
-						throw new FileNotFoundException(scriptData.getPath().toString());
-				}
-			}
-		}
-		
-		initScriptEngine();
-		
-		errorInScript = false;
-		errorSource =(scriptData instanceof RuleScriptData ?
-				((RuleScriptData)scriptData).getRuleData().getName() : scriptData.getPath().toString())
-				+ " on " +
-						editpart.getWidgetModel().getName() ;
-		
+                if(!ResourceUtil.isExsitingFile(absoluteScriptPath, true)){
+                    //search from OPI search path
+                    absoluteScriptPath = ResourceUtil.getFileOnSearchPath(scriptData.getPath(), true);
+                    if(absoluteScriptPath == null)
+                        throw new FileNotFoundException(scriptData.getPath().toString());
+                }
+            }
+        }
+        
+        initScriptEngine();
+        
+        errorInScript = false;
+        errorSource =(scriptData instanceof RuleScriptData ?
+                ((RuleScriptData)scriptData).getRuleData().getName() : scriptData.getPath().toString())
+                + " on " +
+                        editpart.getWidgetModel().getName() ;
+        
 
-		if(scriptData instanceof RuleScriptData){
-			compileString(((RuleScriptData)scriptData).getScriptString());
-		}else if(scriptData.isEmbedded())
-			compileString(scriptData.getScriptText());
-		else{			
-			//read file
-			InputStream inputStream = ResourceUtil.pathToInputStream(absoluteScriptPath, false);
+        if(scriptData instanceof RuleScriptData){
+            compileString(((RuleScriptData)scriptData).getScriptString());
+        }else if(scriptData.isEmbedded())
+            compileString(scriptData.getScriptText());
+        else{            
+            //read file
+            InputStream inputStream = ResourceUtil.pathToInputStream(absoluteScriptPath, false);
 
-			//compile
-			compileInputStream(inputStream);
-			inputStream.close();
-		}		
+            //compile
+            compileInputStream(inputStream);
+            inputStream.close();
+        }        
 
 
-		pvListenerMap = new HashMap<IPV, IPVListener>();
-		pvTriggeredMap = new HashMap<IPV, Boolean>();
+        pvListenerMap = new HashMap<IPV, IPVListener>();
+        pvTriggeredMap = new HashMap<IPV, Boolean>();
 
-		IPVListener suppressPVListener = new IPVListener.Stub() {
+        IPVListener suppressPVListener = new IPVListener.Stub() {
 
-			public synchronized void valueChanged(IPV pv) {
-				if (triggerSuppressed && checkPVsConnected(scriptData, pvArray)) {
-					executeScriptInUIThread(pv);
-					triggerSuppressed = false;
-				}
-			}
-			
-		};
+            public synchronized void valueChanged(IPV pv) {
+                if (triggerSuppressed && checkPVsConnected(scriptData, pvArray)) {
+                    executeScriptInUIThread(pv);
+                    triggerSuppressed = false;
+                }
+            }
+            
+        };
 
-		IPVListener triggerPVListener = new IPVListener.Stub() {
-			public synchronized void valueChanged(IPV pv) {
+        IPVListener triggerPVListener = new IPVListener.Stub() {
+            public synchronized void valueChanged(IPV pv) {
 
-				// skip the first trigger if it is needed.
-				if (scriptData.isSkipPVsFirstConnection()
-						&& !pvTriggeredMap.get(pv)) {
-					pvTriggeredMap.put(pv, true);
-					return;
-				}
+                // skip the first trigger if it is needed.
+                if (scriptData.isSkipPVsFirstConnection()
+                        && !pvTriggeredMap.get(pv)) {
+                    pvTriggeredMap.put(pv, true);
+                    return;
+                }
 
-				// execute script only if all input pvs are connected
-				if (pvArray.length > 1) {
-					if (!checkPVsConnected(scriptData, pvArray)) {
-						triggerSuppressed = true;
-						return;
+                // execute script only if all input pvs are connected
+                if (pvArray.length > 1) {
+                    if (!checkPVsConnected(scriptData, pvArray)) {
+                        triggerSuppressed = true;
+                        return;
 
-					}
-				}
+                    }
+                }
 
-				executeScriptInUIThread(pv);
-			}
-			
-		};
-		//register pv listener
-		int i=0;
-		for(IPV pv : pvArray){
-			if(pv == null)
-				continue;
-			if(!scriptData.getPVList().get(i++).trigger){
-				//execute the script if it was suppressed.
-				pv.addListener(suppressPVListener);
-				pvListenerMap.put(pv, suppressPVListener);
-				continue;
-			};
-			pvTriggeredMap.put(pv, false);
-			pv.addListener(triggerPVListener);
-			pvListenerMap.put(pv, triggerPVListener);
+                executeScriptInUIThread(pv);
+            }
+            
+        };
+        //register pv listener
+        int i=0;
+        for(IPV pv : pvArray){
+            if(pv == null)
+                continue;
+            if(!scriptData.getPVList().get(i++).trigger){
+                //execute the script if it was suppressed.
+                pv.addListener(suppressPVListener);
+                pvListenerMap.put(pv, suppressPVListener);
+                continue;
+            };
+            pvTriggeredMap.put(pv, false);
+            pv.addListener(triggerPVListener);
+            pvListenerMap.put(pv, triggerPVListener);
 
-		}
-	}
+        }
+    }
 
-	/**Initialize the script engine.
-	 * @param editpart
-	 * @param pvArray
-	 */
-	protected abstract void initScriptEngine() throws Exception ;
-	
-	/**Compile string with script engine.
-	 * @param string
-	 * @throws Exception 
-	 */
-	protected abstract void compileString(String string) throws Exception;
+    /**Initialize the script engine.
+     * @param editpart
+     * @param pvArray
+     */
+    protected abstract void initScriptEngine() throws Exception ;
+    
+    /**Compile string with script engine.
+     * @param string
+     * @throws Exception 
+     */
+    protected abstract void compileString(String string) throws Exception;
 
-	/**Compile InputStream with script engine. The stream will be closed by this method.
-	 * @param reader
-	 * @throws Exception
-	 */
-	protected abstract void compileInputStream(InputStream s) throws Exception;
-	
-	/**
-	 * Execute the script with script engine.
-	 * @param triggerPV  the PV that triggers this execution.
-	 */
-	protected abstract void execScript(final IPV triggerPV) throws Exception;
-	
-	private void executeScriptInUIThread(final IPV triggerPV) {
-		Display display = editPart.getRoot().getViewer().getControl().getDisplay();
-		UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
-			public void run() {
-				if ((!scriptData.isStopExecuteOnError() || !errorInScript) && !unRegistered) {
-					try {
-						execScript(triggerPV);
-					} catch (Exception e) {
-						errorInScript = true;
-						final String notExecuteWarning = "\nThe script or rule will not be executed afterwards. " +
-								"You can change this setting in script dialog.";
-						final String message = NLS
-								.bind("Error in {0}.{1}\n{2}",
-										new String[]{errorSource, 
-										 !scriptData.isStopExecuteOnError()? "" : notExecuteWarning, //$NON-NLS-1$
-												 e.toString()});
-						ConsoleService.getInstance().writeError(message);
-						OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
-					}
-				}
-			}
-		});
-	}
+    /**Compile InputStream with script engine. The stream will be closed by this method.
+     * @param reader
+     * @throws Exception
+     */
+    protected abstract void compileInputStream(InputStream s) throws Exception;
+    
+    /**
+     * Execute the script with script engine.
+     * @param triggerPV  the PV that triggers this execution.
+     */
+    protected abstract void execScript(final IPV triggerPV) throws Exception;
+    
+    private void executeScriptInUIThread(final IPV triggerPV) {
+        Display display = editPart.getRoot().getViewer().getControl().getDisplay();
+        UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
+            public void run() {
+                if ((!scriptData.isStopExecuteOnError() || !errorInScript) && !unRegistered) {
+                    try {
+                        execScript(triggerPV);
+                    } catch (Exception e) {
+                        errorInScript = true;
+                        final String notExecuteWarning = "\nThe script or rule will not be executed afterwards. " +
+                                "You can change this setting in script dialog.";
+                        final String message = NLS
+                                .bind("Error in {0}.{1}\n{2}",
+                                        new String[]{errorSource, 
+                                         !scriptData.isStopExecuteOnError()? "" : notExecuteWarning, //$NON-NLS-1$
+                                                 e.toString()});
+                        ConsoleService.getInstance().writeError(message);
+                        OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
+                    }
+                }
+            }
+        });
+    }
 
-	private boolean checkPVsConnected(ScriptData scriptData, IPV[] pvArray){
-		if(!scriptData.isCheckConnectivity())
-			return true;
-		for(IPV pv : pvArray){
-			if(!pv.isConnected())
-				return false;
-		}
-		return true;
+    private boolean checkPVsConnected(ScriptData scriptData, IPV[] pvArray){
+        if(!scriptData.isCheckConnectivity())
+            return true;
+        for(IPV pv : pvArray){
+            if(!pv.isConnected())
+                return false;
+        }
+        return true;
 
-	}
+    }
 
-	public void unRegister() {
-		unRegistered = true;
-		for(Entry<IPV, IPVListener> entry :  pvListenerMap.entrySet()){
-			entry.getKey().removeListener(entry.getValue());
-		}
-	}
+    public void unRegister() {
+        unRegistered = true;
+        for(Entry<IPV, IPVListener> entry :  pvListenerMap.entrySet()){
+            entry.getKey().removeListener(entry.getValue());
+        }
+    }
 
-	/**
-	 * @return the scriptData
-	 */
-	public ScriptData getScriptData() {
-		return scriptData;
-	}
+    /**
+     * @return the scriptData
+     */
+    public ScriptData getScriptData() {
+        return scriptData;
+    }
 
-	/**
-	 * @return the editPart
-	 */
-	public AbstractBaseEditPart getEditPart() {
-		return editPart;
-	}
-	
-	/**
-	 * @return the display editPart
-	 */
-	public DisplayEditpart getDisplayEditPart() {		
-		if(getEditPart().isActive())
-			return (DisplayEditpart)(getEditPart().getViewer().getContents());
-		return null;
-	}
-	
+    /**
+     * @return the editPart
+     */
+    public AbstractBaseEditPart getEditPart() {
+        return editPart;
+    }
+    
+    /**
+     * @return the display editPart
+     */
+    public DisplayEditpart getDisplayEditPart() {        
+        if(getEditPart().isActive())
+            return (DisplayEditpart)(getEditPart().getViewer().getContents());
+        return null;
+    }
+    
 
-	/**
-	 * @return the pvArray
-	 */
-	public IPV[] getPvArray() {
-		return pvArray;
-	}
+    /**
+     * @return the pvArray
+     */
+    public IPV[] getPvArray() {
+        return pvArray;
+    }
 
-	public IPath getAbsoluteScriptPath() {
-		return absoluteScriptPath;
-	}
-	
-	
-	
+    public IPath getAbsoluteScriptPath() {
+        return absoluteScriptPath;
+    }
+    
+    
+    
 }

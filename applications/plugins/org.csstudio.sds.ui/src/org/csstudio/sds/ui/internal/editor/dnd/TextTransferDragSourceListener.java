@@ -14,13 +14,13 @@ import org.eclipse.swt.dnd.TextTransfer;
  */
 public class TextTransferDragSourceListener extends AbstractDragSourceListener<String> {
 
-	public TextTransferDragSourceListener(EditPartViewer viewer) {
-		super(viewer, TextTransfer.getInstance());
-	}
+    public TextTransferDragSourceListener(EditPartViewer viewer) {
+        super(viewer, TextTransfer.getInstance());
+    }
 
-	@Override
-	protected String convert(IProcessVariableAddress mainAddress, List<IProcessVariableAddress> allAddresses) {
-		return mainAddress != null ? mainAddress.getProperty() : null;
-	}
+    @Override
+    protected String convert(IProcessVariableAddress mainAddress, List<IProcessVariableAddress> allAddresses) {
+        return mainAddress != null ? mainAddress.getProperty() : null;
+    }
 
 }

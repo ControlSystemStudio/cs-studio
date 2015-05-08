@@ -29,14 +29,14 @@ package org.csstudio.sds.model;
  *
  */
 public interface IRule {
-	/**
-	 * Evaluate by processing the given input arguments.
-	 *
-	 * @param arguments
-	 *            The input arguments.
-	 * @return The evaluation result.
-	 */
-	Object evaluate(Object[] arguments);
+    /**
+     * Evaluate by processing the given input arguments.
+     *
+     * @param arguments
+     *            The input arguments.
+     * @return The evaluation result.
+     */
+    Object evaluate(Object[] arguments);
 
-	String getDescription();
+    String getDescription();
 }

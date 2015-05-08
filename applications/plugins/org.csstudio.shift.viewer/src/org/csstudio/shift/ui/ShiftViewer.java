@@ -43,7 +43,7 @@ public class ShiftViewer extends EditorPart {
     }
 
     public static ShiftViewer createInstance() {
-	    return createInstance(new ShiftViewerModel(null));
+        return createInstance(new ShiftViewerModel(null));
     }
 
     public static ShiftViewer createInstance(final IEditorInput input) {
@@ -76,7 +76,7 @@ public class ShiftViewer extends EditorPart {
      */
     @Override
     public void doSave(IProgressMonitor monitor) {
-	// TODO Auto-generated method stub
+    // TODO Auto-generated method stub
 
     }
 
@@ -87,7 +87,7 @@ public class ShiftViewer extends EditorPart {
      */
     @Override
     public void doSaveAs() {
-	// TODO Auto-generated method stub
+    // TODO Auto-generated method stub
 
     }
 
@@ -133,8 +133,8 @@ public class ShiftViewer extends EditorPart {
      */
     @Override
     public boolean isDirty() {
-	// TODO Auto-generated method stub
-	    return false;
+    // TODO Auto-generated method stub
+        return false;
     }
 
     /*
@@ -144,8 +144,8 @@ public class ShiftViewer extends EditorPart {
      */
     @Override
     public boolean isSaveAsAllowed() {
-	// TODO Auto-generated method stub
-	    return false;
+    // TODO Auto-generated method stub
+        return false;
     }
 
     /*

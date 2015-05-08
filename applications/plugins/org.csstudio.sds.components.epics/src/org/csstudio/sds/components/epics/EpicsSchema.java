@@ -37,43 +37,43 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
  */
 public final class EpicsSchema extends AbstractControlSystemSchema {
 
-	@Override
-	protected void initializeWidget() {
-		
-	}
+    @Override
+    protected void initializeWidget() {
+        
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Set<ConnectionState> getSupportedConnectionStates() {
-		Set<ConnectionState> result = new HashSet<ConnectionState>();
-		result.add(ConnectionState.CONNECTED);
-		result.add(ConnectionState.CONNECTION_LOST);
-		result.add(ConnectionState.INITIAL);
-		result.add(ConnectionState.UNKNOWN);
-		return result;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Set<ConnectionState> getSupportedConnectionStates() {
+        Set<ConnectionState> result = new HashSet<ConnectionState>();
+        result.add(ConnectionState.CONNECTED);
+        result.add(ConnectionState.CONNECTION_LOST);
+        result.add(ConnectionState.INITIAL);
+        result.add(ConnectionState.UNKNOWN);
+        return result;
+    }
 
-	@Override
-	protected String getDefaultBackgroundColor() {
-		return "#E6E6E6";
-	}
+    @Override
+    protected String getDefaultBackgroundColor() {
+        return "#E6E6E6";
+    }
 
-	@Override
-	protected String getDefaultErrorColor() {
-		return "#ff0000";
-	}
+    @Override
+    protected String getDefaultErrorColor() {
+        return "#ff0000";
+    }
 
-	@Override
-	protected String getDefaultForegroundColor() {
-		return "#0000C0";
-	}
+    @Override
+    protected String getDefaultForegroundColor() {
+        return "#0000C0";
+    }
 
-	@Override
-	protected String getDefaultRecordAlias() {
-		return "channel";
-	}
+    @Override
+    protected String getDefaultRecordAlias() {
+        return "channel";
+    }
 
 
 

@@ -63,39 +63,39 @@ public class ArchiveClient {
         
         
         for (int i = 0; i < chNames.length; i++){
-        	
-        	Timestamp start = Timestamp.of(starts[i].getSec() + start_delta, starts[i].getNanoSec());
-          	Timestamp end = Timestamp.of(ends[i].getSec() + end_delta, ends[i].getNanoSec());
-          	
-          	int count = (int) (end.durationFrom(start).toSeconds() / secs);
+            
+            Timestamp start = Timestamp.of(starts[i].getSec() + start_delta, starts[i].getNanoSec());
+              Timestamp end = Timestamp.of(ends[i].getSec() + end_delta, ends[i].getNanoSec());
+              
+              int count = (int) (end.durationFrom(start).toSeconds() / secs);
  
-        	VType[] values = reader.getSamples(key, chNames[i], start, end, optimized, count);
+            VType[] values = reader.getSamples(key, chNames[i], start, end, optimized, count);
         
         
-        	System.out.println(chNames[i] + ", length: " + values.length);
-        	System.out.println("start: " + starts[i].toString());
-        	System.out.println("end: " + ends[i].toString());        	
+            System.out.println(chNames[i] + ", length: " + values.length);
+            System.out.println("start: " + starts[i].toString());
+            System.out.println("end: " + ends[i].toString());            
         
-        	if(values.length > 0) {
-        		if(values[0] instanceof ArchiveVNumber){
-        			System.out.println("ArchiveVNumber: " + 
-        					((ArchiveVNumber) values[0]).toString());
-        		} else if(values[0] instanceof ArchiveVNumberArray){
-        			System.out.println("ArchiveVNumberArray: " + 
-        					((ArchiveVNumberArray) values[0]).toString());
-        		} else if(values[0] instanceof ArchiveVEnum){
-        			System.out.println("ArchiveVEnum" + 
-        					((ArchiveVEnum) values[0]).toString());
-        		} else if(values[0] instanceof ArchiveVStatistics){
-        			System.out.println("ArchiveVStatistics: " +
-        					((ArchiveVStatistics) values[0]).toString());
-        		} else if(values[0] instanceof ArchiveVString){
-          			System.out.println("ArchiveVString: " +
-        					((ArchiveVString) values[0]).toString());
-        		} else {
-        			System.out.println("Unknown Type");
-        		}
-        	}
+            if(values.length > 0) {
+                if(values[0] instanceof ArchiveVNumber){
+                    System.out.println("ArchiveVNumber: " + 
+                            ((ArchiveVNumber) values[0]).toString());
+                } else if(values[0] instanceof ArchiveVNumberArray){
+                    System.out.println("ArchiveVNumberArray: " + 
+                            ((ArchiveVNumberArray) values[0]).toString());
+                } else if(values[0] instanceof ArchiveVEnum){
+                    System.out.println("ArchiveVEnum" + 
+                            ((ArchiveVEnum) values[0]).toString());
+                } else if(values[0] instanceof ArchiveVStatistics){
+                    System.out.println("ArchiveVStatistics: " +
+                            ((ArchiveVStatistics) values[0]).toString());
+                } else if(values[0] instanceof ArchiveVString){
+                      System.out.println("ArchiveVString: " +
+                            ((ArchiveVString) values[0]).toString());
+                } else {
+                    System.out.println("Unknown Type");
+                }
+            }
         }
            
         reader.close();

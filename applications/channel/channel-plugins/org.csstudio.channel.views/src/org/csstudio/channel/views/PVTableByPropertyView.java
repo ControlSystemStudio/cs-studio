@@ -9,24 +9,24 @@ import org.eclipse.ui.IMemento;
  */
 public class PVTableByPropertyView extends AbstractChannelQueryView<PVTableByPropertyWidget> {
 
-	/**
-	 * The ID of the view as specified by the extension.
-	 */
-	public static final String ID = "org.csstudio.channel.views.PVTableByPropertyView";
+    /**
+     * The ID of the view as specified by the extension.
+     */
+    public static final String ID = "org.csstudio.channel.views.PVTableByPropertyView";
 
-	@Override
-	public void saveWidgetState(PVTableByPropertyWidget widget, IMemento memento) {
-		widget.saveState(memento);
-	}
+    @Override
+    public void saveWidgetState(PVTableByPropertyWidget widget, IMemento memento) {
+        widget.saveState(memento);
+    }
 
-	@Override
-	public void loadWidgetState(PVTableByPropertyWidget widget, IMemento memento) {
-		widget.loadState(memento);
-	}
+    @Override
+    public void loadWidgetState(PVTableByPropertyWidget widget, IMemento memento) {
+        widget.loadState(memento);
+    }
 
-	@Override
-	protected PVTableByPropertyWidget createChannelQueryWidget(
-			Composite parent, int style) {
-		return new PVTableByPropertyWidget(parent, style);
-	}
+    @Override
+    protected PVTableByPropertyWidget createChannelQueryWidget(
+            Composite parent, int style) {
+        return new PVTableByPropertyWidget(parent, style);
+    }
 }

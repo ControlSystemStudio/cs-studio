@@ -12,7 +12,7 @@ package org.csstudio.alarm.beast.client;
  * @author Fred Arnaud (Sopra Group)
  */
 public class AADataStructure {
-	/** Maximum length of title used for the 'teaser' */
+    /** Maximum length of title used for the 'teaser' */
     final private static int MAX_TEASER = 30;
     
     /**The brief description of the Automated Action, 
@@ -40,60 +40,60 @@ public class AADataStructure {
         this.delay = delay;
     }
     
-	/**
-	 * @return the title
-	 */
-	public String getTitle() {
-		return title;
-	}
+    /**
+     * @return the title
+     */
+    public String getTitle() {
+        return title;
+    }
 
-	/**
-	 * Get short version of title that's suitable for action text shown in
-	 * context menu. Matches the title unless the title is too long.
-	 * 
-	 * @return Teaser string
-	 */
-	public String getTeaser() {
-		if (title.length() > MAX_TEASER)
-			return title.substring(0, MAX_TEASER) + "..."; //$NON-NLS-1$
-		return title;
-	}
+    /**
+     * Get short version of title that's suitable for action text shown in
+     * context menu. Matches the title unless the title is too long.
+     * 
+     * @return Teaser string
+     */
+    public String getTeaser() {
+        if (title.length() > MAX_TEASER)
+            return title.substring(0, MAX_TEASER) + "..."; //$NON-NLS-1$
+        return title;
+    }
     
-	/**
-	 * @return the details
-	 */
-	public String getDetails() {
-		return details;
-	}
-	
-	/**
-	 * @return the delay
-	 */
-	public int getDelay() {
-		return delay;
-	}
+    /**
+     * @return the details
+     */
+    public String getDetails() {
+        return details;
+    }
+    
+    /**
+     * @return the delay
+     */
+    public int getDelay() {
+        return delay;
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean equals(final Object obj) {
-		if (obj instanceof AADataStructure)
-			return (((AADataStructure) obj).getTitle().equals(title) && ((AADataStructure) obj)
-					.getDetails().equals(details));
-		return false;
-	}
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj instanceof AADataStructure)
+            return (((AADataStructure) obj).getTitle().equals(title) && ((AADataStructure) obj)
+                    .getDetails().equals(details));
+        return false;
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = title.hashCode();
-		result = prime * result + details.hashCode();
-		return result;
-	}
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = title.hashCode();
+        result = prime * result + details.hashCode();
+        return result;
+    }
 
-	/** @return String representation for debugging */
-	@Override
-	public String toString() {
-		return String.format("Title '%s', Details '%s', Delay %ds", title, details, delay); //$NON-NLS-1$
-	}
+    /** @return String representation for debugging */
+    @Override
+    public String toString() {
+        return String.format("Title '%s', Details '%s', Delay %ds", title, details, delay); //$NON-NLS-1$
+    }
 }

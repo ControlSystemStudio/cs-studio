@@ -41,8 +41,8 @@ import java.awt.event.*;
  */
 public class PluginsMenu extends JMenu implements PluginListener
 {
-	private class PluginMenu extends JMenu implements PropertyChangeListener
-	{
+    private class PluginMenu extends JMenu implements PropertyChangeListener
+    {
 /**
  * Insert the method's description here.
  * Creation date: (7.12.2001 17:06:52)
@@ -50,25 +50,25 @@ public class PluginsMenu extends JMenu implements PluginListener
  */
 public PluginMenu(PluginObject plugin)
 {
-	uninstallPluginAction = new JMenuItem("Uninstall");
-	uninstallPluginAction.setMnemonic('U');
-	uninstallPluginAction.addActionListener(new UninstallPluginAction());
-	
-	startPluginAction = new JMenuItem("Start");
-	startPluginAction.setMnemonic('S');
-	startPluginAction.addActionListener(new StartPluginAction());
+    uninstallPluginAction = new JMenuItem("Uninstall");
+    uninstallPluginAction.setMnemonic('U');
+    uninstallPluginAction.addActionListener(new UninstallPluginAction());
+    
+    startPluginAction = new JMenuItem("Start");
+    startPluginAction.setMnemonic('S');
+    startPluginAction.addActionListener(new StartPluginAction());
 
-	stopPluginAction = new JMenuItem("Stop");
-	stopPluginAction.setMnemonic('t');
-	stopPluginAction.addActionListener(new StopPluginAction());
+    stopPluginAction = new JMenuItem("Stop");
+    stopPluginAction.setMnemonic('t');
+    stopPluginAction.addActionListener(new StopPluginAction());
 
-	pluginInfoAction = new JMenuItem("Info");
-	pluginInfoAction.setMnemonic('I');
-	pluginInfoAction.addActionListener(new PluginInfoAction());
+    pluginInfoAction = new JMenuItem("Info");
+    pluginInfoAction.setMnemonic('I');
+    pluginInfoAction.addActionListener(new PluginInfoAction());
 
-	displayPluginDocumentationAction = new JMenuItem("Documentation");
-	displayPluginDocumentationAction.setMnemonic('D');
-	displayPluginDocumentationAction.addActionListener(new DisplayPluginDocumentationAction());
+    displayPluginDocumentationAction = new JMenuItem("Documentation");
+    displayPluginDocumentationAction.setMnemonic('D');
+    displayPluginDocumentationAction.addActionListener(new DisplayPluginDocumentationAction());
 
     add( startPluginAction );
     add( stopPluginAction );
@@ -89,16 +89,16 @@ public PluginMenu(PluginObject plugin)
  */
 public void setPlugin(PluginObject newPlugin)
 {
-	if (plugin!=null)
-		plugin.removePropertyChangeListener(this);
+    if (plugin!=null)
+        plugin.removePropertyChangeListener(this);
 
-	plugin = newPlugin;
+    plugin = newPlugin;
 
-	if (plugin!=null)
-	{
-		plugin.addPropertyChangeListener(this);
-		updateStatus();
-	}
+    if (plugin!=null)
+    {
+        plugin.addPropertyChangeListener(this);
+        updateStatus();
+    }
 }
 
 /**
@@ -108,8 +108,8 @@ public void setPlugin(PluginObject newPlugin)
  */
 public void propertyChange(PropertyChangeEvent evt)
 {
-	if (evt.getPropertyName().equals("Status"))
-		updateStatus();
+    if (evt.getPropertyName().equals("Status"))
+        updateStatus();
 }
 
 /**
@@ -120,15 +120,15 @@ public void propertyChange(PropertyChangeEvent evt)
  */
 private void updateStatus()
 {
-	if (plugin!=null)
-	{
-		startPluginAction.setEnabled(plugin.getStatus()==PluginObject.PLUGIN_INITIALIZED || plugin.getStatus()==PluginObject.PLUGIN_STOPPED );
-		stopPluginAction.setEnabled(plugin.getStatus()==PluginObject.PLUGIN_STARTED );
-		//pluginInfoAction.setEnabled(plugin.getStatus()!=PluginObject.PLUGIN_INVALID && plugin.getStatus()!=PluginObject.PLUGIN_NOT_LOADED );
-		//displayPluginDocumentationAction.setEnabled(plugin.getStatus()!=PluginObject.PLUGIN_INVALID && plugin.getStatus()!=PluginObject.PLUGIN_NOT_LOADED && plugin.getDocumentationURL()!=null);
-		pluginInfoAction.setEnabled(false);
-		displayPluginDocumentationAction.setEnabled(false);
-	}
+    if (plugin!=null)
+    {
+        startPluginAction.setEnabled(plugin.getStatus()==PluginObject.PLUGIN_INITIALIZED || plugin.getStatus()==PluginObject.PLUGIN_STOPPED );
+        stopPluginAction.setEnabled(plugin.getStatus()==PluginObject.PLUGIN_STARTED );
+        //pluginInfoAction.setEnabled(plugin.getStatus()!=PluginObject.PLUGIN_INVALID && plugin.getStatus()!=PluginObject.PLUGIN_NOT_LOADED );
+        //displayPluginDocumentationAction.setEnabled(plugin.getStatus()!=PluginObject.PLUGIN_INVALID && plugin.getStatus()!=PluginObject.PLUGIN_NOT_LOADED && plugin.getDocumentationURL()!=null);
+        pluginInfoAction.setEnabled(false);
+        displayPluginDocumentationAction.setEnabled(false);
+    }
 }
 
 /**
@@ -136,13 +136,13 @@ private void updateStatus()
  * Creation date: (7.12.2001 17:06:11)
  * @param
  * @return
- */	
+ */    
 public String getText()
 {
-	if( plugin!=null )
-		return plugin.getName();
-	else
-		return "";
+    if( plugin!=null )
+        return plugin.getName();
+    else
+        return "";
 }
 
 /**
@@ -153,73 +153,73 @@ public String getText()
  */
 public Icon getIcon()
 {
-	/*if( plugin!=null )
-		return plugin.getIcon();
-	else*/
-		return null;
+    /*if( plugin!=null )
+        return plugin.getIcon();
+    else*/
+        return null;
 }
 
-		private class UninstallPluginAction implements ActionListener
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				if (plugin!=null)
-					PluginManager.getInstance().removePlugin(plugin);
-			}
-		}
+        private class UninstallPluginAction implements ActionListener
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                if (plugin!=null)
+                    PluginManager.getInstance().removePlugin(plugin);
+            }
+        }
 
-		private class StartPluginAction implements ActionListener
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				if (plugin!=null)
-					plugin.start();
-			}
-		}
+        private class StartPluginAction implements ActionListener
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                if (plugin!=null)
+                    plugin.start();
+            }
+        }
 
-		private class StopPluginAction implements ActionListener
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				if (plugin!=null)
-					plugin.stop();
-			}
-		}
+        private class StopPluginAction implements ActionListener
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                if (plugin!=null)
+                    plugin.stop();
+            }
+        }
 
-		private class PluginInfoAction implements ActionListener
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-//				if (plugin!=null)
-			}
-		}
+        private class PluginInfoAction implements ActionListener
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+//                if (plugin!=null)
+            }
+        }
 
-		private class DisplayPluginDocumentationAction implements ActionListener
-		{
-			public void actionPerformed(ActionEvent e)
-			{
+        private class DisplayPluginDocumentationAction implements ActionListener
+        {
+            public void actionPerformed(ActionEvent e)
+            {
 
-				/*if(plugin!=null)
-				{
-					URL doc_url = plugin.getDocumentationURL();
+                /*if(plugin!=null)
+                {
+                    URL doc_url = plugin.getDocumentationURL();
 
-					if( doc_url!=null )
-						XBrowser.getBrowser().showInNewDocument( doc_url.toString() );
-				}
-				*/
-			}
-		}
+                    if( doc_url!=null )
+                        XBrowser.getBrowser().showInNewDocument( doc_url.toString() );
+                }
+                */
+            }
+        }
 
-		private PluginObject plugin = null;
+        private PluginObject plugin = null;
 
-		private JMenuItem uninstallPluginAction = null;
-		private JMenuItem startPluginAction = null;
-		private JMenuItem stopPluginAction = null;
-		private JMenuItem pluginInfoAction = null;
-		private JMenuItem displayPluginDocumentationAction = null;
-	}
+        private JMenuItem uninstallPluginAction = null;
+        private JMenuItem startPluginAction = null;
+        private JMenuItem stopPluginAction = null;
+        private JMenuItem pluginInfoAction = null;
+        private JMenuItem displayPluginDocumentationAction = null;
+    }
 
-	private Map pluginMenu = new HashMap();
+    private Map pluginMenu = new HashMap();
 /**
  * Insert the method's description here.
  * Creation date: (7.12.2001 17:08:53)
@@ -235,7 +235,7 @@ public PluginsMenu()
  */
 public void init()
 {
-	PluginManager.getInstance().addPluginListener(this);
+    PluginManager.getInstance().addPluginListener(this);
 }
 /**
  * Insert the method's description here.
@@ -244,14 +244,14 @@ public void init()
  */
 public void pluginAdded(PluginObject plugin)
 {
-	if( plugin.getStatus()==PluginObject.PLUGIN_NOT_LOADED ||
-	    plugin.getStatus()==PluginObject.PLUGIN_INVALID )
-		    return;
+    if( plugin.getStatus()==PluginObject.PLUGIN_NOT_LOADED ||
+        plugin.getStatus()==PluginObject.PLUGIN_INVALID )
+            return;
 
-	PluginMenu menu = new PluginMenu(plugin);
+    PluginMenu menu = new PluginMenu(plugin);
 
-	add(menu);
-	pluginMenu.put(plugin, menu);
+    add(menu);
+    pluginMenu.put(plugin, menu);
 }
 /**
  * Insert the method's description here.
@@ -260,12 +260,12 @@ public void pluginAdded(PluginObject plugin)
  */
 public void pluginRemoved(PluginObject plugin)
 {
-	PluginMenu menu = (PluginMenu)pluginMenu.remove(plugin);
+    PluginMenu menu = (PluginMenu)pluginMenu.remove(plugin);
 
-	if (menu!=null)
-	{
-		remove(menu);
-		menu.setPlugin(null);
-	}
+    if (menu!=null)
+    {
+        remove(menu);
+        menu.setPlugin(null);
+    }
 }
 }

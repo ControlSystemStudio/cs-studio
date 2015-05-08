@@ -38,77 +38,77 @@ import com.cosylab.vdct.inspector.InspectableProperty;
  */
 public class DBTemplateField {
 
-	protected String name;	
-	
-	protected Color color = java.awt.Color.black;
+    protected String name;    
+    
+    protected Color color = java.awt.Color.black;
 
-	protected boolean isRight = false;
+    protected boolean isRight = false;
 
-	protected int visibility = InspectableProperty.NON_DEFAULT_VISIBLE;       // = 0
-	
+    protected int visibility = InspectableProperty.NON_DEFAULT_VISIBLE;       // = 0
+    
 /**
  * FieldData constructor comment.
  */
 public DBTemplateField(String name, Color color, boolean isRight, int visibility) {
-	this.name=name;
-	this.color=color;
-	this.isRight=isRight;
-	this.visibility=visibility;
+    this.name=name;
+    this.color=color;
+    this.isRight=isRight;
+    this.visibility=visibility;
 }
-	/**
-	 * @return
-	 */
-	public Color getColor() {
-		return color;
-	}
+    /**
+     * @return
+     */
+    public Color getColor() {
+        return color;
+    }
 
-	/**
-	 * @return
-	 */
-	public boolean isRight() {
-		return isRight;
-	}
+    /**
+     * @return
+     */
+    public boolean isRight() {
+        return isRight;
+    }
 
-	/**
-	 * @return
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * @return
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @return
-	 */
-	public int getVisibility() {
-		return visibility;
-	}
+    /**
+     * @return
+     */
+    public int getVisibility() {
+        return visibility;
+    }
 
-	/**
-	 * @param color
-	 */
-	public void setColor(Color color) {
-		this.color = color;
-	}
+    /**
+     * @param color
+     */
+    public void setColor(Color color) {
+        this.color = color;
+    }
 
-	/**
-	 * @param b
-	 */
-	public void setRight(boolean b) {
-		isRight = b;
-	}
+    /**
+     * @param b
+     */
+    public void setRight(boolean b) {
+        isRight = b;
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setName(String string) {
-		name = string;
-	}
+    /**
+     * @param string
+     */
+    public void setName(String string) {
+        name = string;
+    }
 
-	/**
-	 * @param i
-	 */
-	public void setVisibility(int i) {
-		visibility = i;
-	}
+    /**
+     * @param i
+     */
+    public void setVisibility(int i) {
+        visibility = i;
+    }
 
 }

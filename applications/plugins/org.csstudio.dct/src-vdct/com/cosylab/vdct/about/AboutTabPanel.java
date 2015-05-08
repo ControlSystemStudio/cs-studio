@@ -42,33 +42,33 @@ public abstract class AboutTabPanel extends JPanel implements AboutTab {
 
 
 protected AboutTabModel model = null;
-	protected String name = "Tab";
-	
+    protected String name = "Tab";
+    
 
-	/**
-	 * Constructor for AboutTabPanel.
-	 */
-	public AboutTabPanel(AboutTabModel tabModel) {
-		super();
-		model = tabModel;
-		initializePanel();
-		model.aquireData();
-		processData();
-		
+    /**
+     * Constructor for AboutTabPanel.
+     */
+    public AboutTabPanel(AboutTabModel tabModel) {
+        super();
+        model = tabModel;
+        initializePanel();
+        model.aquireData();
+        processData();
+        
 
-	}
-	
-	protected abstract void initializePanel();
-	
-	protected abstract void processData();
+    }
+    
+    protected abstract void initializePanel();
+    
+    protected abstract void processData();
 
 
 
-	/**
-	 * @see com.cosylab.gui.components.about.AboutTab#getPanel()
-	 */
-	public JPanel getPanel() {
-		return null;
-	}
+    /**
+     * @see com.cosylab.gui.components.about.AboutTab#getPanel()
+     */
+    public JPanel getPanel() {
+        return null;
+    }
 
 }

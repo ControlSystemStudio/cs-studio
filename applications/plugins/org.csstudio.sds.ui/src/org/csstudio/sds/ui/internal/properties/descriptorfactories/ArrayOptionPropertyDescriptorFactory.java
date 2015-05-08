@@ -39,21 +39,21 @@ import org.csstudio.sds.ui.properties.PropertyTypeCellEditorValidator;
  * 
  */
 public final class ArrayOptionPropertyDescriptorFactory implements
-		IPropertyDescriptorFactory {
+        IPropertyDescriptorFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IPropertyDescriptor createPropertyDescriptor(final Object id,
-			final WidgetProperty property) {
-		final ArrayOptionProperty optionProperty = (ArrayOptionProperty) property;
-		PropertyDescriptor descriptor = new ComboBoxPropertyDescriptor(id,
-				property.getDescription(), PropertyTypesEnum.ARRAYOPTION, property.getCategory().toString(),
-				optionProperty.getOptions());
+    /**
+     * {@inheritDoc}
+     */
+    public IPropertyDescriptor createPropertyDescriptor(final Object id,
+            final WidgetProperty property) {
+        final ArrayOptionProperty optionProperty = (ArrayOptionProperty) property;
+        PropertyDescriptor descriptor = new ComboBoxPropertyDescriptor(id,
+                property.getDescription(), PropertyTypesEnum.ARRAYOPTION, property.getCategory().toString(),
+                optionProperty.getOptions());
 
-		// validator
-		descriptor.setValidator(new PropertyTypeCellEditorValidator(property));
-		return descriptor;
-	}
+        // validator
+        descriptor.setValidator(new PropertyTypeCellEditorValidator(property));
+        return descriptor;
+    }
 
 }

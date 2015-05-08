@@ -33,52 +33,52 @@ import org.epics.css.dal.simulation.ValueProvider;
  * 
  */
 public class RandomDoubleGenerator implements ValueProvider<Double> {
-	private double min;
-	private double max;
-	private Random random;
+    private double min;
+    private double max;
+    private Random random;
 
-	/**
-	 * Constructor.
-	 * @param options (min, max)
-	 */
-	public RandomDoubleGenerator(String[] options) {
-		init(options);
-		random = new Random(System.currentTimeMillis());
-	}
+    /**
+     * Constructor.
+     * @param options (min, max)
+     */
+    public RandomDoubleGenerator(String[] options) {
+        init(options);
+        random = new Random(System.currentTimeMillis());
+    }
 
-	protected void init(String[] options) {
-		try {
-			min = Double.parseDouble(options[0]);
-		} catch (NumberFormatException nfe) {
-			min = 0;
-		}
+    protected void init(String[] options) {
+        try {
+            min = Double.parseDouble(options[0]);
+        } catch (NumberFormatException nfe) {
+            min = 0;
+        }
 
-		try {
-			max = Double.parseDouble(options[1]);
-		} catch (NumberFormatException nfe) {
-			max = 1;
-		}
+        try {
+            max = Double.parseDouble(options[1]);
+        } catch (NumberFormatException nfe) {
+            max = 1;
+        }
 
-		if (min > max) {
-			double tmp = min;
-			min = max;
-			max = tmp;
-		}
-	}
+        if (min > max) {
+            double tmp = min;
+            min = max;
+            max = tmp;
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.epics.css.dal.simulation.ValueProvider#get()
-	 */
-	public Double get() throws DataExchangeException {
-		return min + ((max - min) * random.nextDouble());
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.epics.css.dal.simulation.ValueProvider#set(java.lang.Object)
-	 */
-	public void set(Double value) throws DataExchangeException {
-		//ignore; this is random number generator
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.epics.css.dal.simulation.ValueProvider#get()
+     */
+    public Double get() throws DataExchangeException {
+        return min + ((max - min) * random.nextDouble());
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.epics.css.dal.simulation.ValueProvider#set(java.lang.Object)
+     */
+    public void set(Double value) throws DataExchangeException {
+        //ignore; this is random number generator
+    }
 }

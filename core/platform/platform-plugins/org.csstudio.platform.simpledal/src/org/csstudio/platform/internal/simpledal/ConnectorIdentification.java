@@ -21,78 +21,78 @@ import org.csstudio.platform.model.pvs.ValueType;
  * 
  */
 class ConnectorIdentification {
-	private IProcessVariableAddress _processVariableAddress;
-	private ValueType _valueType;
+    private IProcessVariableAddress _processVariableAddress;
+    private ValueType _valueType;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable address
-	 * @param valueType
-	 *            the expected return type
-	 */
-	public ConnectorIdentification(
-			IProcessVariableAddress processVariableAddress, ValueType valueType) {
-		assert processVariableAddress != null;
-		assert valueType != null;
-		_processVariableAddress = processVariableAddress
-				.deriveNoCharacteristicPart();
-		_valueType = valueType;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param processVariableAddress
+     *            the process variable address
+     * @param valueType
+     *            the expected return type
+     */
+    public ConnectorIdentification(
+            IProcessVariableAddress processVariableAddress, ValueType valueType) {
+        assert processVariableAddress != null;
+        assert valueType != null;
+        _processVariableAddress = processVariableAddress
+                .deriveNoCharacteristicPart();
+        _valueType = valueType;
+    }
 
-	/**
-	 * Returns the process variable address.
-	 * 
-	 * @return the process variable address
-	 */
-	public IProcessVariableAddress getProcessVariableAddress() {
-		return _processVariableAddress;
-	}
+    /**
+     * Returns the process variable address.
+     * 
+     * @return the process variable address
+     */
+    public IProcessVariableAddress getProcessVariableAddress() {
+        return _processVariableAddress;
+    }
 
-	/**
-	 * The expected value type.
-	 * 
-	 * @return the expected value type
-	 */
-	public ValueType getValueType() {
-		return _valueType;
-	}
+    /**
+     * The expected value type.
+     * 
+     * @return the expected value type
+     */
+    public ValueType getValueType() {
+        return _valueType;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime
-				* result
-				+ ((_processVariableAddress == null) ? 0
-						: _processVariableAddress.hashCode());
-		result = prime * result
-				+ ((_valueType == null) ? 0 : _valueType.hashCode());
-		return result;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime
+                * result
+                + ((_processVariableAddress == null) ? 0
+                        : _processVariableAddress.hashCode());
+        result = prime * result
+                + ((_valueType == null) ? 0 : _valueType.hashCode());
+        return result;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		boolean result = false;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        boolean result = false;
 
-		if (obj != null && obj instanceof ConnectorIdentification) {
-			ConnectorIdentification other = (ConnectorIdentification) obj;
+        if (obj != null && obj instanceof ConnectorIdentification) {
+            ConnectorIdentification other = (ConnectorIdentification) obj;
 
-			if (other._valueType == _valueType
-					&& other._processVariableAddress
-							.equals(_processVariableAddress)) {
-				result = true;
-			}
-		}
+            if (other._valueType == _valueType
+                    && other._processVariableAddress
+                            .equals(_processVariableAddress)) {
+                result = true;
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
 }

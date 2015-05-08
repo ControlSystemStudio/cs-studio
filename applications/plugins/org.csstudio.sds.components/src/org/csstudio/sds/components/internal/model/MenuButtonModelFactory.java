@@ -27,12 +27,12 @@ import org.csstudio.sds.model.IWidgetModelFactory;
 
 public class MenuButtonModelFactory implements IWidgetModelFactory {
 
-	public AbstractWidgetModel createWidgetModel() {
-		return new MenuButtonModel();
-	}
+    public AbstractWidgetModel createWidgetModel() {
+        return new MenuButtonModel();
+    }
 
-	public Class getWidgetModelType() {
-		return MenuButtonModel.class;
-	}
+    public Class getWidgetModelType() {
+        return MenuButtonModel.class;
+    }
 
 }

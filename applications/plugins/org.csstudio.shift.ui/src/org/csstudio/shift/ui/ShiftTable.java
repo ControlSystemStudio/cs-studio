@@ -228,7 +228,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
 
             @Override
             protected Object getValue(final Object o) {
-            	final Shift shift = ((Shift) o);
+                final Shift shift = ((Shift) o);
                 return shift.getEndDate() == null ? new Date().getTime() : shift.getEndDate().getTime();
             }
         };

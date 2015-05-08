@@ -66,7 +66,7 @@ public class ConnectJob extends Job
         return Status.OK_STATUS;
     }
 
-	/** When Job is asked to cancel, interrupt the underlying thread */
+    /** When Job is asked to cancel, interrupt the underlying thread */
     @Override
     protected void canceling()
     {

@@ -32,29 +32,29 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * Preference page for the quickstart.
  */
 public class QuickstartPreferencePage
-	extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage {
+    extends FieldEditorPreferencePage
+    implements IWorkbenchPreferencePage {
 
-	/**
-	 * Creates a new quickstart preference page.
-	 */
-	public QuickstartPreferencePage() {
-		super(GRID);
-		setPreferenceStore(Activator.getDefault().getPreferenceStore());
-		setDescription("Quickstart preferences");
-	}
-	
-	/**
-	 * List of selected files in quickstart menu.
-	 */
-	public final void createFieldEditors() {
-		addField(new PreferenceTableEditor(PreferenceConstants.SDS_FILES, "&Facility names: ", getFieldEditorParent()));
-	}
+    /**
+     * Creates a new quickstart preference page.
+     */
+    public QuickstartPreferencePage() {
+        super(GRID);
+        setPreferenceStore(Activator.getDefault().getPreferenceStore());
+        setDescription("Quickstart preferences");
+    }
+    
+    /**
+     * List of selected files in quickstart menu.
+     */
+    public final void createFieldEditors() {
+        addField(new PreferenceTableEditor(PreferenceConstants.SDS_FILES, "&Facility names: ", getFieldEditorParent()));
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void init(final IWorkbench workbench) {
-	}
-	
+    /**
+     * {@inheritDoc}
+     */
+    public void init(final IWorkbench workbench) {
+    }
+    
 }

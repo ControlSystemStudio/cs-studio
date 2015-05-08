@@ -59,7 +59,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  */
 public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 
-	
+    
     /**
      * {@inheritDoc}
      */
@@ -175,12 +175,12 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
         // font
         setPropertyChangeHandler(LabelModel.PROP_FONT, new FontChangeHandler<RefreshableLabelFigure>(){
 
-			@Override
-			protected void doHandle(RefreshableLabelFigure figure, Font font) {
-				figure.setFont(font);
-			}
-			
-		});
+            @Override
+            protected void doHandle(RefreshableLabelFigure figure, Font font) {
+                figure.setFont(font);
+            }
+            
+        });
 
         // text alignment
         IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {

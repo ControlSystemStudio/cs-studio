@@ -50,10 +50,10 @@ public class Application implements IApplication
     @SuppressWarnings("nls")
     private boolean getSettings(final String args[], final IApplicationContext context)
     {
-    	// Display configuration info
+        // Display configuration info
         final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
         final String app_info = context.getBrandingName() + " " + version;
-    	
+        
         // Create the parser and run it.
         final ArgParser parser = new ArgParser();
         final BooleanOption help_opt = new BooleanOption(parser, "-help", "Display help");
@@ -90,29 +90,29 @@ public class Application implements IApplication
 
         // Check arguments
         String option = set_password_opt.get();
-		if (option != null)
-        {	// Split "plugin/key=value"
-        	final String pref, value;
-        	final int sep = option.indexOf("=");
-        	if (sep >= 0)
-        	{
-        		pref = option.substring(0, sep);
-        		value = option.substring(sep + 1);
-        	}
-        	else
-        	{
-        		pref = option;
-        		value = PasswordInput.readPassword("Value for " + pref + ":");
-        	}
-        	try
-        	{
-        		SecurePreferences.set(pref, value);
-        	}
-        	catch (Exception ex)
-        	{
-        		ex.printStackTrace();
-        	}
-        	return false;
+        if (option != null)
+        {    // Split "plugin/key=value"
+            final String pref, value;
+            final int sep = option.indexOf("=");
+            if (sep >= 0)
+            {
+                pref = option.substring(0, sep);
+                value = option.substring(sep + 1);
+            }
+            else
+            {
+                pref = option;
+                value = PasswordInput.readPassword("Value for " + pref + ":");
+            }
+            try
+            {
+                SecurePreferences.set(pref, value);
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+            return false;
         }
         
         if (engine_name_opt.get() == null)

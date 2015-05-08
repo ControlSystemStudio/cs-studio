@@ -32,11 +32,11 @@ package de.desy.language.editor.ui.eventing;
  * @see UIEvent
  */
 public interface UIEventListener {
-	/**
-	 * Called if an event occurred this listener is registered on.
-	 * 
-	 * Should not throw any error or exception, this will always be interpreted
-	 * as error.
-	 */
-	void eventOccourred();
+    /**
+     * Called if an event occurred this listener is registered on.
+     * 
+     * Should not throw any error or exception, this will always be interpreted
+     * as error.
+     */
+    void eventOccourred();
 }

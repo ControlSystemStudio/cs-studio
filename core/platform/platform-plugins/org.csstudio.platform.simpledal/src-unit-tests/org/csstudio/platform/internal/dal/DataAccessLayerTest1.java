@@ -31,19 +31,19 @@ import com.cosylab.util.CommonException;
  * 
  */
 public class DataAccessLayerTest1 extends AbstractTestBase {
-	private static final RemoteInfo ri = new RemoteInfo(RemoteInfo.DAL_TYPE_PREFIX + "EPICS", PV, null, null);
+    private static final RemoteInfo ri = new RemoteInfo(RemoteInfo.DAL_TYPE_PREFIX + "EPICS", PV, null, null);
 
-	public void testSynchronousAccess() throws InstantiationException, CommonException {
-		assertEquals(RECORD_VAL, broker.getValue(ri));
-	}
+    public void testSynchronousAccess() throws InstantiationException, CommonException {
+        assertEquals(RECORD_VAL, broker.getValue(ri));
+    }
 
-	public void testAsynchronousAccess() throws Exception {
-		receiveAsync(ri);
-	}
-	
-	public void testListenerAccess() throws Exception {
-		AnyData data = receiveViaListener(ri);
-		assertNotNull(data);
-		assertEquals(RECORD_VAL, data.doubleValue());
-	}
+    public void testAsynchronousAccess() throws Exception {
+        receiveAsync(ri);
+    }
+    
+    public void testListenerAccess() throws Exception {
+        AnyData data = receiveViaListener(ri);
+        assertNotNull(data);
+        assertEquals(RECORD_VAL, data.doubleValue());
+    }
 }

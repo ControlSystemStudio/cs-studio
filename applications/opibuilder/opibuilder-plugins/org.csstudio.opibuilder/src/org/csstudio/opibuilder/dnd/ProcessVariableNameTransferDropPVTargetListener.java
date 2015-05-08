@@ -20,19 +20,19 @@ import org.eclipse.gef.EditPartViewer;
  */
 public class ProcessVariableNameTransferDropPVTargetListener extends AbstractDropPVTargetListener {
 
-	public ProcessVariableNameTransferDropPVTargetListener(EditPartViewer viewer) {
-		super(viewer, SerializableItemTransfer.getTransfer(ProcessVariable[].class));
-	}
+    public ProcessVariableNameTransferDropPVTargetListener(EditPartViewer viewer) {
+        super(viewer, SerializableItemTransfer.getTransfer(ProcessVariable[].class));
+    }
 
-	@Override
-	protected String[] getPVNamesFromTransfer() {
-		if(getCurrentEvent().data == null)
-			return null;
-		ProcessVariable[] pvArray = (ProcessVariable[])getCurrentEvent().data;
-		List<String> pvList = new ArrayList<String>();
-		for(ProcessVariable pv : pvArray){
-			pvList.add(pv.getName());
-		}
-		return pvList.toArray(new String[pvList.size()]);
-	}
+    @Override
+    protected String[] getPVNamesFromTransfer() {
+        if(getCurrentEvent().data == null)
+            return null;
+        ProcessVariable[] pvArray = (ProcessVariable[])getCurrentEvent().data;
+        List<String> pvList = new ArrayList<String>();
+        for(ProcessVariable pv : pvArray){
+            pvList.add(pv.getName());
+        }
+        return pvList.toArray(new String[pvList.size()]);
+    }
 }

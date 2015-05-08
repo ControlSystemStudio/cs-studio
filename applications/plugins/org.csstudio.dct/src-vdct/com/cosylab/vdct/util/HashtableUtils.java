@@ -41,13 +41,13 @@ public class HashtableUtils {
  */
 public static Object[] getArray(Hashtable hash) {
 
-	int len = hash.size(); 
-	Object[] objs = new Object[len];
-	
-	Enumeration e = hash.elements();
-	for (int i=1; e.hasMoreElements(); i++)
-		objs[len-i]=e.nextElement();
+    int len = hash.size(); 
+    Object[] objs = new Object[len];
+    
+    Enumeration e = hash.elements();
+    for (int i=1; e.hasMoreElements(); i++)
+        objs[len-i]=e.nextElement();
 
-	return objs;
+    return objs;
 }
 }

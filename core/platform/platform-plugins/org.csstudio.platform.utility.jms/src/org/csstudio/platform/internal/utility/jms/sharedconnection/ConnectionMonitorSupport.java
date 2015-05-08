@@ -39,72 +39,72 @@ import org.eclipse.core.runtime.SafeRunner;
  */
 class ConnectionMonitorSupport {
 
-	private List<IConnectionMonitor> _monitors;
-	
-	/**
-	 * Creates a new <code>ConnectionMonitorSupport</code> instance.
-	 */
-	public ConnectionMonitorSupport() {
-		// A CopyOnWriteArrayList is optimized for frequent, concurrent reads
-		// and infrequent writes, which makes it a good choice for lists of
-		// listeners.
-		_monitors = new CopyOnWriteArrayList<IConnectionMonitor>();
-	}
+    private List<IConnectionMonitor> _monitors;
+    
+    /**
+     * Creates a new <code>ConnectionMonitorSupport</code> instance.
+     */
+    public ConnectionMonitorSupport() {
+        // A CopyOnWriteArrayList is optimized for frequent, concurrent reads
+        // and infrequent writes, which makes it a good choice for lists of
+        // listeners.
+        _monitors = new CopyOnWriteArrayList<IConnectionMonitor>();
+    }
 
-	/**
-	 * Adds a monitor to the list of monitors.
-	 * 
-	 * @param monitor
-	 *            a monitor.
-	 */
-	public void addMonitor(IConnectionMonitor monitor) {
-		_monitors.add(monitor);
-	}
+    /**
+     * Adds a monitor to the list of monitors.
+     * 
+     * @param monitor
+     *            a monitor.
+     */
+    public void addMonitor(IConnectionMonitor monitor) {
+        _monitors.add(monitor);
+    }
 
-	/**
-	 * Removes the specified monitor from the list of monitors.
-	 * 
-	 * @param monitor
-	 *            the monitor to remove.
-	 */
-	public void removeMonitor(IConnectionMonitor monitor) {
-		_monitors.remove(monitor);
-	}
-	
-	/**
-	 * Calls the <code>onConnected</code> method on all listeners.
-	 * 
-	 * @see IConnectionMonitor#onConnected()
-	 */
-	public void fireConnectedEvent() {
-		for (final IConnectionMonitor monitor : _monitors) {
-			SafeRunner.run(new ISafeRunnable() {
-				public void handleException(Throwable exception) {
-					// nothing to do
-				}
-				public void run() throws Exception {
-					monitor.onConnected();
-				}
-			});
-		}
-	}
-	
-	/**
-	 * Calls the <code>onDisconnected</code> method on all listeners.
-	 * 
-	 * @see IConnectionMonitor#onDisconnected()
-	 */
-	public void fireDisconnectedEvent() {
-		for (final IConnectionMonitor monitor : _monitors) {
-			SafeRunner.run(new ISafeRunnable() {
-				public void handleException(Throwable exception) {
-					// nothing to do
-				}
-				public void run() throws Exception {
-					monitor.onDisconnected();
-				}
-			});
-		}
-	}
-	
+    /**
+     * Removes the specified monitor from the list of monitors.
+     * 
+     * @param monitor
+     *            the monitor to remove.
+     */
+    public void removeMonitor(IConnectionMonitor monitor) {
+        _monitors.remove(monitor);
+    }
+    
+    /**
+     * Calls the <code>onConnected</code> method on all listeners.
+     * 
+     * @see IConnectionMonitor#onConnected()
+     */
+    public void fireConnectedEvent() {
+        for (final IConnectionMonitor monitor : _monitors) {
+            SafeRunner.run(new ISafeRunnable() {
+                public void handleException(Throwable exception) {
+                    // nothing to do
+                }
+                public void run() throws Exception {
+                    monitor.onConnected();
+                }
+            });
+        }
+    }
+    
+    /**
+     * Calls the <code>onDisconnected</code> method on all listeners.
+     * 
+     * @see IConnectionMonitor#onDisconnected()
+     */
+    public void fireDisconnectedEvent() {
+        for (final IConnectionMonitor monitor : _monitors) {
+            SafeRunner.run(new ISafeRunnable() {
+                public void handleException(Throwable exception) {
+                    // nothing to do
+                }
+                public void run() throws Exception {
+                    monitor.onDisconnected();
+                }
+            });
+        }
+    }
+    
 }

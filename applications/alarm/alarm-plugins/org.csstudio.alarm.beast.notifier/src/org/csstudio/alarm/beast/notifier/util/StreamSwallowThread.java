@@ -21,22 +21,22 @@ import java.io.InputStream;
  */
 @SuppressWarnings("nls")
 public class StreamSwallowThread extends Thread {
-	final private InputStream stream;
+    final private InputStream stream;
 
-	public StreamSwallowThread(final InputStream stream) {
-		super("StreamSwallower");
-		this.stream = stream;
-	}
+    public StreamSwallowThread(final InputStream stream) {
+        super("StreamSwallower");
+        this.stream = stream;
+    }
 
-	@Override
-	public void run() {
-		try {
-			final byte buf[] = new byte[100];
-			while (stream.read(buf) >= 0) {
-				// Ignore bytes
-			}
-		} catch (IOException e) {
-			// Ignore errors
-		}
-	}
+    @Override
+    public void run() {
+        try {
+            final byte buf[] = new byte[100];
+            while (stream.read(buf) >= 0) {
+                // Ignore bytes
+            }
+        } catch (IOException e) {
+            // Ignore errors
+        }
+    }
 }

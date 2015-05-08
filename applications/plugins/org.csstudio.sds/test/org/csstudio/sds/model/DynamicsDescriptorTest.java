@@ -35,23 +35,23 @@ import org.junit.Test;
  */
 public final class DynamicsDescriptorTest {
 
-	/**
-	 * Test method for {@link org.csstudio.sds.model.DynamicsDescriptor}.
-	 */
-	@Test
-	public void testElementConfiguration() {
-		final String descriptorId = "testId"; //$NON-NLS-1$
-		final String channel = "kryo/pump"; //$NON-NLS-1$
-		
-		DynamicsDescriptor ec = new DynamicsDescriptor(descriptorId);
-		assertEquals(descriptorId, ec.getRuleId());
+    /**
+     * Test method for {@link org.csstudio.sds.model.DynamicsDescriptor}.
+     */
+    @Test
+    public void testElementConfiguration() {
+        final String descriptorId = "testId"; //$NON-NLS-1$
+        final String channel = "kryo/pump"; //$NON-NLS-1$
+        
+        DynamicsDescriptor ec = new DynamicsDescriptor(descriptorId);
+        assertEquals(descriptorId, ec.getRuleId());
 
-		ec.addInputChannel(new ParameterDescriptor(
-				channel));
-		final ParameterDescriptor[] inputChannels = ec.getInputChannels();
-		
-		assertEquals(1, inputChannels.length);
-		assertEquals(channel, inputChannels[0].getChannel());
-	}
+        ec.addInputChannel(new ParameterDescriptor(
+                channel));
+        final ParameterDescriptor[] inputChannels = ec.getInputChannels();
+        
+        assertEquals(1, inputChannels.length);
+        assertEquals(channel, inputChannels[0].getChannel());
+    }
 
 }

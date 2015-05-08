@@ -26,10 +26,10 @@ public class Range {
      * @param end
      *            the end value of range
      */
-	public Range(final double start, final double end) {
-		lower = start;
-		upper = end;
-	}
+    public Range(final double start, final double end) {
+        lower = start;
+        upper = end;
+    }
 
     /**If a value in the range or not.
      * @param value
@@ -37,18 +37,18 @@ public class Range {
      * @return true if the value is in the range. Otherwise false.
      */
     public boolean inRange(final double value, final boolean includeBoundary){
-    	if(lower <= upper){
-	    	if(includeBoundary)
-	    		return (value >= lower && value <= upper);
-	    	else
-	    		return (value > lower && value < upper);
-    	}else {
-    		if(includeBoundary)
-	    		return (value >= upper && value <= lower);
-	    	else
-	    		return (value > upper && value < lower);
-    	}
-    		
+        if(lower <= upper){
+            if(includeBoundary)
+                return (value >= lower && value <= upper);
+            else
+                return (value > lower && value < upper);
+        }else {
+            if(includeBoundary)
+                return (value >= upper && value <= lower);
+            else
+                return (value > upper && value < lower);
+        }
+            
     }
     
     /**If a value in the range or not. The boundary is included.
@@ -56,40 +56,40 @@ public class Range {
      * @return true if the value is in the range. Otherwise false.
      */
     public boolean inRange(final double value){
-    	if(lower <= upper)
-    		return value >= lower && value <= upper;
-    	else
-    		return value >= upper && value <= lower;  			
+        if(lower <= upper)
+            return value >= lower && value <= upper;
+        else
+            return value >= upper && value <= lower;              
     }
     
     public boolean isMinBigger(){
-    	return lower>upper;
+        return lower>upper;
     }
 
-	/**
-	 * @return the lower
-	 */
-	public double getLower() {
-		return lower;
-	}
+    /**
+     * @return the lower
+     */
+    public double getLower() {
+        return lower;
+    }
 
-	/**
-	 * @return the upper
-	 */
-	public double getUpper() {
-		return upper;
-	}
+    /**
+     * @return the upper
+     */
+    public double getUpper() {
+        return upper;
+    }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public boolean equals(final Object obj)
     {   // See "Effective Java" Item 7
-	    if (this == obj)
-	        return true;
-	    if (! (obj instanceof Range))
-	        return false;
-	    final Range other = (Range) obj;
-	    return other.lower == lower  &&  other.upper == upper;
+        if (this == obj)
+            return true;
+        if (! (obj instanceof Range))
+            return false;
+        final Range other = (Range) obj;
+        return other.lower == lower  &&  other.upper == upper;
     }
 
     /** {@inheritDoc} */

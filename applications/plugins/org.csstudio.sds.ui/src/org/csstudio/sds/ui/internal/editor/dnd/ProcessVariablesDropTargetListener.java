@@ -36,24 +36,24 @@ import org.eclipse.swt.dnd.TransferData;
  */
 public final class ProcessVariablesDropTargetListener extends AbstractDropTargetListener<SerializableItemTransfer> {
 
-	private static SerializableItemTransfer TRANSFER = SerializableItemTransfer.getTransfer(ProcessVariable[].class);
+    private static SerializableItemTransfer TRANSFER = SerializableItemTransfer.getTransfer(ProcessVariable[].class);
 
-	public ProcessVariablesDropTargetListener(final EditPartViewer viewer) {
-		super(viewer, TRANSFER);
-	}
+    public ProcessVariablesDropTargetListener(final EditPartViewer viewer) {
+        super(viewer, TRANSFER);
+    }
 
-	@Override
-	protected String[] translate(SerializableItemTransfer transfer, TransferData transferData) {
-		ProcessVariable[] pvs = (ProcessVariable[]) TRANSFER.nativeToJava(transferData);
+    @Override
+    protected String[] translate(SerializableItemTransfer transfer, TransferData transferData) {
+        ProcessVariable[] pvs = (ProcessVariable[]) TRANSFER.nativeToJava(transferData);
 
-		List<String> pvNames = new ArrayList<String>();
-		if (pvs != null) {
-			for (ProcessVariable pv : pvs) {
-				pvNames.add(pv.getName());
-			}
-		}
+        List<String> pvNames = new ArrayList<String>();
+        if (pvs != null) {
+            for (ProcessVariable pv : pvs) {
+                pvNames.add(pv.getName());
+            }
+        }
 
-		return pvNames.toArray(new String[pvNames.size()]);
-	}
+        return pvNames.toArray(new String[pvNames.size()]);
+    }
 
 }

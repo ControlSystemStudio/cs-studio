@@ -21,38 +21,38 @@ import org.junit.Test;
  * 
  */
 public final class AddPrototypeCommandTest extends AbstractTestCommand {
-	private IPrototype prototype;
-	private IFolder folder;
+    private IPrototype prototype;
+    private IFolder folder;
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Before
-	public void doSetUp() throws Exception {
-		prototype = new Prototype("test", UUID.randomUUID());
-		folder = new Folder("test");
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Before
+    public void doSetUp() throws Exception {
+        prototype = new Prototype("test", UUID.randomUUID());
+        folder = new Folder("test");
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.dct.model.commands.AddPrototypeCommand#execute()} .
-	 */
-	@Test
-	public void testExecute() {
-		// .. before
-		assertNull(prototype.getParentFolder());
-		assertFalse(folder.getMembers().contains(prototype));
+    /**
+     * Test method for
+     * {@link org.csstudio.dct.model.commands.AddPrototypeCommand#execute()} .
+     */
+    @Test
+    public void testExecute() {
+        // .. before
+        assertNull(prototype.getParentFolder());
+        assertFalse(folder.getMembers().contains(prototype));
 
-		// .. execute
-		AddPrototypeCommand cmd = new AddPrototypeCommand(folder, prototype);
-		cmd.execute();
-		assertEquals(folder, prototype.getParentFolder());
-		assertTrue(folder.getMembers().contains(prototype));
+        // .. execute
+        AddPrototypeCommand cmd = new AddPrototypeCommand(folder, prototype);
+        cmd.execute();
+        assertEquals(folder, prototype.getParentFolder());
+        assertTrue(folder.getMembers().contains(prototype));
 
-		// undo
-		cmd.undo();
-		assertNull(prototype.getParentFolder());
-		assertFalse(folder.getMembers().contains(prototype));
-	}
+        // undo
+        cmd.undo();
+        assertNull(prototype.getParentFolder());
+        assertFalse(folder.getMembers().contains(prototype));
+    }
 
 }

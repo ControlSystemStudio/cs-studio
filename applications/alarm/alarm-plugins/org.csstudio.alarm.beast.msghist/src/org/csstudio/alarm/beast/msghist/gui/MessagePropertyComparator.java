@@ -42,9 +42,9 @@ public class MessagePropertyComparator extends ViewerComparator
         String prop2 = msg2.getProperty(property);
         // Property strings may be null; fix to allow comparison
         if (prop1 == null)
-        	prop1 = "";
+            prop1 = "";
         if (prop2 == null)
-        	prop2 = "";
+            prop2 = "";
         if (up)
             return prop2.compareTo(prop1);
         return prop1.compareTo(prop2);
@@ -61,6 +61,6 @@ public class MessagePropertyComparator extends ViewerComparator
         // took ~3 seconds, the sort itself was only <0.01 secs,
         // i.e. a tiny part of the problem.
 //        System.out.println("Sort time for " + property
-//        		+ " :" + timer.getSeconds() + " secs");;
+//                + " :" + timer.getSeconds() + " secs");;
     }
 }

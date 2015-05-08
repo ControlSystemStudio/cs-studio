@@ -238,14 +238,14 @@ public class RelativeTime implements Cloneable
     @Override
     public Object clone()
     {
-    	RelativeTime copy;
+        RelativeTime copy;
         try
         {
-	        copy = (RelativeTime) super.clone();
+            copy = (RelativeTime) super.clone();
         }
         catch (CloneNotSupportedException e)
         {
-        	return null;
+            return null;
         }
         for (int i=0; i<rel_time.length; ++i)
             copy.rel_time[i] = rel_time[i]; 

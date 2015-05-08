@@ -22,5 +22,5 @@
  package org.csstudio.sds.internal.runmode;
 
 public enum RunModeType {
-	VIEW, SHELL;
+    VIEW, SHELL;
 }

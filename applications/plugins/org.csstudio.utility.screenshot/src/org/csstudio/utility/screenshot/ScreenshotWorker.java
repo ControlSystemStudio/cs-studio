@@ -76,7 +76,7 @@ public class ScreenshotWorker
      * Sets the default tool item states.
      */
     public void setDefaults() {
-    	// ?
+        // ?
     }
 
     /**
@@ -144,7 +144,7 @@ public class ScreenshotWorker
      * Frees the resource bundle resources.
      */
     public void freeResources() {
-    	//TODO:
+        //TODO:
     }
     
     /**
@@ -162,7 +162,7 @@ public class ScreenshotWorker
      */
     private void init() {
         
-    	Display disp = mainComposite.getDisplay();
+        Display disp = mainComposite.getDisplay();
         
         paintColorWhite = new Color(disp, 255, 255, 255);
         paintColorBlack = new Color(disp, 0, 0, 0);
@@ -180,7 +180,7 @@ public class ScreenshotWorker
      * Sets the action field of the tools
      */
     private void initActions() {
-    	//TODO:
+        //TODO:
     }
 
     /**
@@ -188,7 +188,7 @@ public class ScreenshotWorker
      */
     
     public void initResources() {
-    	//TODO:
+        //TODO:
     }
     
     /**

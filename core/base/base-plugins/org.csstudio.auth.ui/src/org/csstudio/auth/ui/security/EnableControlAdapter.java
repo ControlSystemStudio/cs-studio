@@ -30,16 +30,16 @@ import org.eclipse.swt.widgets.Control;
  *
  */
 public class EnableControlAdapter implements IActivationAdapter {
-	
-	/**
-	 * @see IActivationAdapter#activate(java.lang.Object,boolean)
-	 * @param o The Control-Object
-	 * @param activate The value for the activation
-	 */
-	public final void activate(final Object o, final boolean activate) {
-		if (o instanceof Control) {
-			((Control) o).setEnabled(activate);
-		}
-	}
+    
+    /**
+     * @see IActivationAdapter#activate(java.lang.Object,boolean)
+     * @param o The Control-Object
+     * @param activate The value for the activation
+     */
+    public final void activate(final Object o, final boolean activate) {
+        if (o instanceof Control) {
+            ((Control) o).setEnabled(activate);
+        }
+    }
 
 }

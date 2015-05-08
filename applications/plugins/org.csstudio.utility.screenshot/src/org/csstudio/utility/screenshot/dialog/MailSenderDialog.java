@@ -56,7 +56,7 @@ import org.eclipse.swt.widgets.Text;
 
 public class MailSenderDialog extends Dialog implements SelectionListener {
     
-	private Shell parentShell = null;
+    private Shell parentShell = null;
     private MailEntry mailEntry = null;
     private Button buttonSend = null;
     private Button buttonCancel = null;
@@ -87,7 +87,7 @@ public class MailSenderDialog extends Dialog implements SelectionListener {
      */
     public MailSenderDialog(Shell shell) {
         
-    	super(shell);
+        super(shell);
         parentShell = shell;
         setBlockOnOpen(true);
     }
@@ -96,9 +96,9 @@ public class MailSenderDialog extends Dialog implements SelectionListener {
      * 
      */
     @Override
-	protected void configureShell(Shell shell) {
+    protected void configureShell(Shell shell) {
         
-    	super.configureShell(shell);
+        super.configureShell(shell);
         shell.setText(ScreenshotPlugin.getDefault().getNameAndVersion() + ScreenshotMessages.getString("MailSenderDialog.DIALOG_TITLE"));
     }
 
@@ -106,7 +106,7 @@ public class MailSenderDialog extends Dialog implements SelectionListener {
      * 
      */
     @Override
-	protected void initializeBounds()
+    protected void initializeBounds()
     {
         Rectangle rect = parentShell.getBounds();        
 
@@ -117,9 +117,9 @@ public class MailSenderDialog extends Dialog implements SelectionListener {
      * 
      */
     @Override
-	protected Control createDialogArea(Composite parent) {
+    protected Control createDialogArea(Composite parent) {
         
-    	String temp = null;
+        String temp = null;
         GridData gd = null;        
 
         GridLayout layout = new GridLayout(7, true);
@@ -171,7 +171,7 @@ public class MailSenderDialog extends Dialog implements SelectionListener {
         textFrom.setLayoutData(gd);
         if(mailEntry != null) {
             
-        	temp = mailEntry.getMailFromAddress();
+            temp = mailEntry.getMailFromAddress();
             if(temp != null) {
                 textFrom.setText(temp);
             }
@@ -248,7 +248,7 @@ public class MailSenderDialog extends Dialog implements SelectionListener {
 
         cbvAddresses.getCombo().addDisposeListener(new DisposeListener() {
             
-        	public void widgetDisposed(DisposeEvent e) {
+            public void widgetDisposed(DisposeEvent e) {
                 addressHelper.saveSettings();
             }
         });
@@ -319,9 +319,9 @@ public class MailSenderDialog extends Dialog implements SelectionListener {
      * 
      */
     @Override
-	protected Control createButtonBar(Composite parent) {
+    protected Control createButtonBar(Composite parent) {
         
-    	Label labelDummy = null;
+        Label labelDummy = null;
         GridData gd = null;
         
         labelDummy = new Label(parent, 0);
@@ -413,7 +413,7 @@ public class MailSenderDialog extends Dialog implements SelectionListener {
     
     public void widgetSelected(SelectionEvent event) {
         
-    	if(event.widget instanceof Button) {
+        if(event.widget instanceof Button) {
             Button source = (Button)event.widget;
             
             if(source.getText().compareToIgnoreCase(ScreenshotMessages.getString("MailSenderDialog.BUTTON_SEND")) == 0)

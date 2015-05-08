@@ -122,7 +122,7 @@ public class ErrorDetailDialog  extends TrayDialog
     @Override
     protected void createButtonsForButtonBar(final Composite parent)
     {
-		createButton(parent, IDialogConstants.OK_ID,
-				JFaceResources.getString( IDialogLabelKeys.OK_LABEL_KEY), true);
+        createButton(parent, IDialogConstants.OK_ID,
+                JFaceResources.getString( IDialogLabelKeys.OK_LABEL_KEY), true);
     }
 }

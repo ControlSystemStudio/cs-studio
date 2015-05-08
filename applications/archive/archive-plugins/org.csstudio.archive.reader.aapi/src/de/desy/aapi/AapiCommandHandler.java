@@ -33,62 +33,62 @@ import org.apache.log4j.Logger;
  *
  */
 public class AapiCommandHandler {
-	
-	/** The logger for this class */
-	private Logger logger;
-	
-	/** Class that handles the network IO */
-	private AapiIOHandler ioHandler;
-	
-	/** Provides methods to convert the received data to the appropriate type */
-	private AapiDataInterpreter dataInterpreter;
-	
+    
+    /** The logger for this class */
+    private Logger logger;
+    
+    /** Class that handles the network IO */
+    private AapiIOHandler ioHandler;
+    
+    /** Provides methods to convert the received data to the appropriate type */
+    private AapiDataInterpreter dataInterpreter;
+    
     /**
-	 * The one and only constructor
-	 * 
-	 * @param host
-	 * @param port
-	 */
-	public AapiCommandHandler(String host, int port) {
-		
-		logger = AapiClient.getLogger();
-		ioHandler = new AapiIOHandler(host, port);
-		dataInterpreter = new AapiDataInterpreter();
-	}
+     * The one and only constructor
+     * 
+     * @param host
+     * @param port
+     */
+    public AapiCommandHandler(String host, int port) {
+        
+        logger = AapiClient.getLogger();
+        ioHandler = new AapiIOHandler(host, port);
+        dataInterpreter = new AapiDataInterpreter();
+    }
 
     /**
      * 
      * @return
      */
-	public String getHost() {
-		return ioHandler.getHost();
-	}
+    public String getHost() {
+        return ioHandler.getHost();
+    }
 
-	/**
-	 * 
-	 * @param host
-	 */
-	public void setHost(String host) {
-		ioHandler.setHost(host);
-	}
+    /**
+     * 
+     * @param host
+     */
+    public void setHost(String host) {
+        ioHandler.setHost(host);
+    }
 
-	/**
-	 * 
-	 * @return
-	 */
-	public int getPort() {
-		return ioHandler.getPort();
-	}
+    /**
+     * 
+     * @return
+     */
+    public int getPort() {
+        return ioHandler.getPort();
+    }
 
-	/**
-	 * 
-	 * @param port
-	 */
-	public void setPort(int port) {
-		ioHandler.setPort(port);
-	}
+    /**
+     * 
+     * @param port
+     */
+    public void setPort(int port) {
+        ioHandler.setPort(port);
+    }
 
-	/**
+    /**
      * 
      * @return
      */
@@ -135,17 +135,17 @@ public class AapiCommandHandler {
         AnswerData result = null;
         
         try {
-			
-        	data = in.buildPacketFromData(cmd);
-	        
-        	answer = ioHandler.sendReceivedPacket(header, data);
-	        if(answer != null) {
-	        	result = dataInterpreter.interpretAnswerAsData(answer, cmd);
-	        }
-		} catch (AapiException aapie) {
-			logger.error(aapie.getMessage());
-			result = null;
-		}
+            
+            data = in.buildPacketFromData(cmd);
+            
+            answer = ioHandler.sendReceivedPacket(header, data);
+            if(answer != null) {
+                result = dataInterpreter.interpretAnswerAsData(answer, cmd);
+            }
+        } catch (AapiException aapie) {
+            logger.error(aapie.getMessage());
+            result = null;
+        }
         
         return result;
     }
@@ -296,7 +296,7 @@ public class AapiCommandHandler {
      * @return
      */
     public AnswerHierarchySkeleton getHierarchySkeleton() {
-    	
+        
         int cmd = AapiCommand.HIERARCHY_SKELETON_CMD.getCommandNumber();
         
         byte[] header;

@@ -38,68 +38,68 @@ import org.csstudio.dal.ResponseListener;
  */
 public class SetValueInterceptor<T> implements ResponseListener<T>
 {
-	private DataExchangeException error;
-	private boolean done = false;
+    private DataExchangeException error;
+    private boolean done = false;
 
-	/**
-	     * Constructor.
-	     */
-	public SetValueInterceptor()
-	{
-		super();
-	}
+    /**
+         * Constructor.
+         */
+    public SetValueInterceptor()
+    {
+        super();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.ResponseListener#responseReceived(org.csstudio.dal.ResponseEvent)
-	 */
-	public synchronized void responseReceived(ResponseEvent<T> event)
-	{
-		done = true;
-		notify();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.ResponseListener#responseReceived(org.csstudio.dal.ResponseEvent)
+     */
+    public synchronized void responseReceived(ResponseEvent<T> event)
+    {
+        done = true;
+        notify();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.ResponseListener#responseError(org.csstudio.dal.ResponseEvent)
-	 */
-	public synchronized void responseError(ResponseEvent<T> event)
-	{
-		error = new DataExchangeException(event.getSource(),
-			    "Remote call returned error.", event.getResponse().getError());
-		done = true;
-		notify();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.ResponseListener#responseError(org.csstudio.dal.ResponseEvent)
+     */
+    public synchronized void responseError(ResponseEvent<T> event)
+    {
+        error = new DataExchangeException(event.getSource(),
+                "Remote call returned error.", event.getResponse().getError());
+        done = true;
+        notify();
+    }
 
-	/**
-	 * Executes an asynchronous setValue method and waits for the execution to end.
-	 * If the execution times out an exception is thrown.
-	 *
-	 * @param proxy The proxy to execute the setValue on
-	 * @param value The value to set
-	 *
-	 * @throws DataExchangeException is thrown if the asynchronus setValue method times out
-	 */
-	public synchronized void executeAndWait(PropertyProxy<T,?> proxy, T value)
-		throws DataExchangeException
-	{
-		proxy.setValueAsync(value, this);
+    /**
+     * Executes an asynchronous setValue method and waits for the execution to end.
+     * If the execution times out an exception is thrown.
+     *
+     * @param proxy The proxy to execute the setValue on
+     * @param value The value to set
+     *
+     * @throws DataExchangeException is thrown if the asynchronus setValue method times out
+     */
+    public synchronized void executeAndWait(PropertyProxy<T,?> proxy, T value)
+        throws DataExchangeException
+    {
+        proxy.setValueAsync(value, this);
 
-		if (!done) {
-			try {
-				wait(GlobalPlugConfiguration.getGlobalPlugConfiguration()
-				    .getDefaultTimeout());
-			} catch (Exception e) {
-				Logger.getLogger(this.getClass()).error("Unhandled exception.", e);
-			}
-		}
+        if (!done) {
+            try {
+                wait(GlobalPlugConfiguration.getGlobalPlugConfiguration()
+                    .getDefaultTimeout());
+            } catch (Exception e) {
+                Logger.getLogger(this.getClass()).error("Unhandled exception.", e);
+            }
+        }
 
-		if (error != null) {
-			throw error;
-		}
+        if (error != null) {
+            throw error;
+        }
 
-		if (!done) {
-			throw new DataExchangeException(proxy, "Remote call in timeout.");
-		}
-	}
+        if (!done) {
+            throw new DataExchangeException(proxy, "Remote call in timeout.");
+        }
+    }
 }
 
 /* __oOo__ */

@@ -33,24 +33,24 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  */
 public class StringProperty extends AbstractStringProperty {
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param description
-	 *            a description
-	 * @param category
-	 *            a category
-	 * @param defaultValue
-	 *            the default value
-	 */
-	public StringProperty(final String description,
-			final WidgetPropertyCategory category, final String defaultValue) {
-		super(PropertyTypesEnum.STRING, description, category, defaultValue);
-	}
-	
-	public StringProperty(PropertyTypesEnum type, final String description,
-			final WidgetPropertyCategory category, final String defaultValue) {
-		super(type, description, category, defaultValue);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param description
+     *            a description
+     * @param category
+     *            a category
+     * @param defaultValue
+     *            the default value
+     */
+    public StringProperty(final String description,
+            final WidgetPropertyCategory category, final String defaultValue) {
+        super(PropertyTypesEnum.STRING, description, category, defaultValue);
+    }
+    
+    public StringProperty(PropertyTypesEnum type, final String description,
+            final WidgetPropertyCategory category, final String defaultValue) {
+        super(type, description, category, defaultValue);
+    }
 
 }

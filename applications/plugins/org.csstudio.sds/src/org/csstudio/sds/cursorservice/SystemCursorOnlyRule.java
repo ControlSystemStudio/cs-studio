@@ -31,17 +31,17 @@ import org.csstudio.sds.model.AbstractWidgetModel;
  */
 public final class SystemCursorOnlyRule extends CursorSelectionRule {
 
-	/**
-	 * Returns <code>null</code>. This rule does not define any cursor
-	 * states.
-	 * 
-	 * @param widget
-	 *            the widget.
-	 * @return <code>null</code>.
-	 */
-	@Override
-	public String determineState(final AbstractWidgetModel widget) {
-		return null;
-	}
+    /**
+     * Returns <code>null</code>. This rule does not define any cursor
+     * states.
+     * 
+     * @param widget
+     *            the widget.
+     * @return <code>null</code>.
+     */
+    @Override
+    public String determineState(final AbstractWidgetModel widget) {
+        return null;
+    }
 
 }

@@ -9,12 +9,12 @@ import org.csstudio.dct.model.IFolder;
  */
 public final class ProjectWorkbenchAdapter extends FolderWorkbenchAdapter {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String doGetIcon(IFolder folder) {
-		return "icons/project.png";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String doGetIcon(IFolder folder) {
+        return "icons/project.png";
+    }
 
 }

@@ -13,35 +13,35 @@ package org.csstudio.ui.menu.pvscript;
 @SuppressWarnings("nls")
 public class ScriptInfo
 {
-	final private String description;
-	final private String script;
+    final private String description;
+    final private String script;
 
-	/** Initialize
-	 *  @param description Description of script for menu
-	 *  @param script Actual script (may contain full path)
-	 */
-	public ScriptInfo(final String description, final String script)
-	{
-		this.description = description;
-		this.script = script;
-	}
+    /** Initialize
+     *  @param description Description of script for menu
+     *  @param script Actual script (may contain full path)
+     */
+    public ScriptInfo(final String description, final String script)
+    {
+        this.description = description;
+        this.script = script;
+    }
 
-	/** @return Description of script for menu */
-	public String getDescription()
-	{
-		return description;
-	}
+    /** @return Description of script for menu */
+    public String getDescription()
+    {
+        return description;
+    }
 
-	/** @return Actual script (may contain full path) */
-	public String getScript()
-	{
-		return script;
-	}
-	
-	/** @return Debug representation */
+    /** @return Actual script (may contain full path) */
+    public String getScript()
+    {
+        return script;
+    }
+    
+    /** @return Debug representation */
     @Override
     public String toString()
-	{
-		return description + ": Command '" + script + "'";
-	}
+    {
+        return description + ": Command '" + script + "'";
+    }
 }

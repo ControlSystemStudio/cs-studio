@@ -35,43 +35,43 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  */
 public final class ActionDataProperty extends WidgetProperty {
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param description
-	 *            a description
-	 * @param category
-	 *            a category
-	 * @param defaultValue
-	 *            the default value
-	 */
-	public ActionDataProperty(final String description,
-			final WidgetPropertyCategory category, final ActionData defaultValue) {
-		super(PropertyTypesEnum.ACTION, description, category, defaultValue,
-				null);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object checkValue(final Object value) {
-		assert value != null : "value!=null"; //$NON-NLS-1$
+    /**
+     * Constructor.
+     * 
+     * @param description
+     *            a description
+     * @param category
+     *            a category
+     * @param defaultValue
+     *            the default value
+     */
+    public ActionDataProperty(final String description,
+            final WidgetPropertyCategory category, final ActionData defaultValue) {
+        super(PropertyTypesEnum.ACTION, description, category, defaultValue,
+                null);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object checkValue(final Object value) {
+        assert value != null : "value!=null"; //$NON-NLS-1$
 
-		Object acceptedValue = value;
+        Object acceptedValue = value;
 
-		if (!(value instanceof ActionData)) {
-			acceptedValue = null;
-		}
-		
-		return acceptedValue;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getCompatibleJavaTypes() {
-		return new Class[]{ActionData.class};
-	}
+        if (!(value instanceof ActionData)) {
+            acceptedValue = null;
+        }
+        
+        return acceptedValue;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getCompatibleJavaTypes() {
+        return new Class[]{ActionData.class};
+    }
 }

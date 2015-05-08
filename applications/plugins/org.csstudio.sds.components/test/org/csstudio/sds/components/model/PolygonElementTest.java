@@ -34,36 +34,36 @@ import org.junit.Test;
  */
 public final class PolygonElementTest {
 
-	/**
-	 * A test instance.
-	 */
-	private PolygonModel _polygonElement;
-	
-	/**
-	 * Test setup.
-	 */
-	@Before
-	public void setUp() {
-		_polygonElement = new PolygonModel();
-	}
+    /**
+     * A test instance.
+     */
+    private PolygonModel _polygonElement;
+    
+    /**
+     * Test setup.
+     */
+    @Before
+    public void setUp() {
+        _polygonElement = new PolygonModel();
+    }
 
-	/**
-	 * Test method for {@link org.csstudio.sds.components.model.PolygonModel#getTypeID()}.
-	 */
-	@Test
-	public void testGetTypeID() {
-		_polygonElement.getTypeID().equals(PolygonModel.ID);
-	}
+    /**
+     * Test method for {@link org.csstudio.sds.components.model.PolygonModel#getTypeID()}.
+     */
+    @Test
+    public void testGetTypeID() {
+        _polygonElement.getTypeID().equals(PolygonModel.ID);
+    }
 
-	/**
-	 * Tests, if all properties where properly installed.
-	 */
-	@SuppressWarnings("static-access")
-	@Test
-	public void testProperties () {
-		assertTrue(_polygonElement.hasProperty(PolygonModel.PROP_POINTS));
-		assertTrue(_polygonElement.hasProperty(PolygonModel.PROP_FILL));
-		// Add further properties here
-	}
+    /**
+     * Tests, if all properties where properly installed.
+     */
+    @SuppressWarnings("static-access")
+    @Test
+    public void testProperties () {
+        assertTrue(_polygonElement.hasProperty(PolygonModel.PROP_POINTS));
+        assertTrue(_polygonElement.hasProperty(PolygonModel.PROP_FILL));
+        // Add further properties here
+    }
 
 }

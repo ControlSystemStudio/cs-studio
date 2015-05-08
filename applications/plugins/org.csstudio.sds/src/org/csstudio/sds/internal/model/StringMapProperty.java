@@ -44,73 +44,73 @@ public class StringMapProperty extends WidgetProperty {
 
     private static final Logger LOG = LoggerFactory.getLogger(StringMapProperty.class);
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param description
-	 *            a description
-	 * @param category
-	 *            a category
-	 * @param defaultValue
-	 *            the default value
-	 */
-	public StringMapProperty(final String description, final WidgetPropertyCategory category, final Map<String, String> defaultValue) {
-		super(PropertyTypesEnum.MAP, description, category, defaultValue, null);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param description
+     *            a description
+     * @param category
+     *            a category
+     * @param defaultValue
+     *            the default value
+     */
+    public StringMapProperty(final String description, final WidgetPropertyCategory category, final Map<String, String> defaultValue) {
+        super(PropertyTypesEnum.MAP, description, category, defaultValue, null);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	@SuppressWarnings("unchecked")
-	public Object checkValue(final Object value) {
-		assert value != null : "value!=null"; //$NON-NLS-1$
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public Object checkValue(final Object value) {
+        assert value != null : "value!=null"; //$NON-NLS-1$
 
-		Object acceptedValue = value;
+        Object acceptedValue = value;
 
-		if (!(value instanceof Map)) {
-			acceptedValue = null;
-		}
+        if (!(value instanceof Map)) {
+            acceptedValue = null;
+        }
 
-		return acceptedValue;
-	}
+        return acceptedValue;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getCompatibleJavaTypes() {
-		return new Class[] { Map.class };
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getCompatibleJavaTypes() {
+        return new Class[] { Map.class };
+    }
 
-	@Override
-	public String getTextForTooltip() {
-		Map<String, String> aliases = getPropertyValue();
-		StringBuilder tooltip = new StringBuilder("{");
+    @Override
+    public String getTextForTooltip() {
+        Map<String, String> aliases = getPropertyValue();
+        StringBuilder tooltip = new StringBuilder("{");
 
-		// An explicit iterator is used here so the hasNext
-		// method can
-		// be called at the end to conditionally append a comma
-		// to the
-		// resulting tool tip string.
-		for (Iterator<Map.Entry<String, String>> i = aliases.entrySet().iterator(); i.hasNext();) {
-			Entry<String, String> alias = i.next();
-			tooltip.append(alias.getKey()).append("=");
-			String value = alias.getValue();
-			String resolvedValue = "";
-			try {
-				resolvedValue = ChannelReferenceValidationUtil.createCanonicalName(value, getWidgetModel().getAllInheritedAliases());
-			} catch (ChannelReferenceValidationException e) {
-				LOG.debug("Aliases in \"" + value + "\" cannot be resolved, error message is: " + e.getMessage());
-				resolvedValue = alias.getValue();
-			}
-			tooltip.append(resolvedValue);
-			if (i.hasNext()) {
-				tooltip.append(", ");
-			}
-		}
+        // An explicit iterator is used here so the hasNext
+        // method can
+        // be called at the end to conditionally append a comma
+        // to the
+        // resulting tool tip string.
+        for (Iterator<Map.Entry<String, String>> i = aliases.entrySet().iterator(); i.hasNext();) {
+            Entry<String, String> alias = i.next();
+            tooltip.append(alias.getKey()).append("=");
+            String value = alias.getValue();
+            String resolvedValue = "";
+            try {
+                resolvedValue = ChannelReferenceValidationUtil.createCanonicalName(value, getWidgetModel().getAllInheritedAliases());
+            } catch (ChannelReferenceValidationException e) {
+                LOG.debug("Aliases in \"" + value + "\" cannot be resolved, error message is: " + e.getMessage());
+                resolvedValue = alias.getValue();
+            }
+            tooltip.append(resolvedValue);
+            if (i.hasNext()) {
+                tooltip.append(", ");
+            }
+        }
 
-		tooltip.append("}");
-		return tooltip.toString();
-	}
+        tooltip.append("}");
+        return tooltip.toString();
+    }
 }

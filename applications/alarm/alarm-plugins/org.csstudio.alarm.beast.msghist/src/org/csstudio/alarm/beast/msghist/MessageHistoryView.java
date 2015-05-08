@@ -38,12 +38,12 @@ public class MessageHistoryView extends ViewPart
             final String user =
                 SecurePreferences.get(Activator.ID, "rdb_user", null);           
             final String password =
-            		SecurePreferences.get(Activator.ID, "rdb_password", null);          
+                    SecurePreferences.get(Activator.ID, "rdb_password", null);          
             final String schema =
                 service.getString(Activator.ID, "rdb_schema", null, null);
             
-			final Model model = new Model(url, user, password, schema,
-					Preferences.getMaxProperties(), getSite().getShell());
+            final Model model = new Model(url, user, password, schema,
+                    Preferences.getMaxProperties(), getSite().getShell());
             final GUI gui = new GUI(getSite(), parent, model);
 
             // Trigger update

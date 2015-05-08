@@ -42,175 +42,175 @@ import org.csstudio.sds.ui.properties.PropertyDescriptor;
  * 
  */
 public final class WidgetPropertySourceAdapter implements IPropertySource {
-	/**
-	 * The encapsulated display widget model.
-	 */
-	private AbstractWidgetModel _widgetModel;
+    /**
+     * The encapsulated display widget model.
+     */
+    private AbstractWidgetModel _widgetModel;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param widgetModel
-	 *            a display widget model
-	 */
-	public WidgetPropertySourceAdapter(final AbstractWidgetModel widgetModel) {
-		_widgetModel = widgetModel;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param widgetModel
+     *            a display widget model
+     */
+    public WidgetPropertySourceAdapter(final AbstractWidgetModel widgetModel) {
+        _widgetModel = widgetModel;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object getEditableValue() {
-		return "Properties of display widget model"; //$NON-NLS-1$
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Object getEditableValue() {
+        return "Properties of display widget model"; //$NON-NLS-1$
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IPropertyDescriptor[] getPropertyDescriptors() {
-		Set<String> visiblePropertyIds = _widgetModel.getVisiblePropertyIds();
-		
-		IPropertyDescriptor[] result = new IPropertyDescriptor[visiblePropertyIds
-				.size()];
+    /**
+     * {@inheritDoc}
+     */
+    public IPropertyDescriptor[] getPropertyDescriptors() {
+        Set<String> visiblePropertyIds = _widgetModel.getVisiblePropertyIds();
+        
+        IPropertyDescriptor[] result = new IPropertyDescriptor[visiblePropertyIds
+                .size()];
 
-		PropertyDescriptorFactoryService service = PropertyDescriptorFactoryService
-				.getInstance();
+        PropertyDescriptorFactoryService service = PropertyDescriptorFactoryService
+                .getInstance();
 
-		int i = 0;
+        int i = 0;
 
-		for (String propertyId : visiblePropertyIds) {
-			WidgetProperty widgetProperty = _widgetModel
-					.getPropertyInternal(propertyId);
+        for (String propertyId : visiblePropertyIds) {
+            WidgetProperty widgetProperty = _widgetModel
+                    .getPropertyInternal(propertyId);
 
-			IPropertyDescriptor descriptor = null;
+            IPropertyDescriptor descriptor = null;
 
-			// get a property descriptor for the current property´s type
-			if (service.hasPropertyDescriptorFactory(widgetProperty
-					.getPropertyType())) {
-				final IPropertyDescriptorFactory factory = service
-						.getPropertyDescriptorFactory(widgetProperty
-								.getPropertyType());
+            // get a property descriptor for the current property´s type
+            if (service.hasPropertyDescriptorFactory(widgetProperty
+                    .getPropertyType())) {
+                final IPropertyDescriptorFactory factory = service
+                        .getPropertyDescriptorFactory(widgetProperty
+                                .getPropertyType());
 
-				descriptor = factory.createPropertyDescriptor(propertyId,
-						widgetProperty);
+                descriptor = factory.createPropertyDescriptor(propertyId,
+                        widgetProperty);
 
-				if (descriptor instanceof PropertyDescriptor) {
-					PropertyDescriptor pDescriptor = (PropertyDescriptor) descriptor;
+                if (descriptor instanceof PropertyDescriptor) {
+                    PropertyDescriptor pDescriptor = (PropertyDescriptor) descriptor;
 
-					pDescriptor.setCategory(widgetProperty.getCategory()
-							.toString());
-				}
+                    pDescriptor.setCategory(widgetProperty.getCategory()
+                            .toString());
+                }
 
-			}
+            }
 
-			if (descriptor == null) {
-				throw new IllegalArgumentException(
-						"Could not create property descriptor for property "
-								+ widgetProperty.getDescription() + " of type "
-								+ widgetProperty.getPropertyType());
-			}
-			result[i] = descriptor;
+            if (descriptor == null) {
+                throw new IllegalArgumentException(
+                        "Could not create property descriptor for property "
+                                + widgetProperty.getDescription() + " of type "
+                                + widgetProperty.getPropertyType());
+            }
+            result[i] = descriptor;
 
-			i++;
-		}
+            i++;
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object getPropertyValue(final Object id) {
-		assert id != null;
-		Object result = null;
+    /**
+     * {@inheritDoc}
+     */
+    public Object getPropertyValue(final Object id) {
+        assert id != null;
+        Object result = null;
 
-		String propertyId = id.toString();
+        String propertyId = id.toString();
 
-		if (_widgetModel.hasProperty(propertyId)) {
-			result = _widgetModel.getPropertyInternal(propertyId).getPropertyValue();
-		}
+        if (_widgetModel.hasProperty(propertyId)) {
+            result = _widgetModel.getPropertyInternal(propertyId).getPropertyValue();
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isPropertySet(final Object id) {
-		String propertyId = id.toString();
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isPropertySet(final Object id) {
+        String propertyId = id.toString();
 
-		if (!_widgetModel.hasProperty(propertyId)) {
-			return false;
-		}
+        if (!_widgetModel.hasProperty(propertyId)) {
+            return false;
+        }
 
-		final Object defaultValue = _widgetModel.getPropertyInternal(propertyId)
-				.getDefaultValue();
-		final Object currentValue = _widgetModel.getPropertyInternal(propertyId)
-				.getPropertyValue();
+        final Object defaultValue = _widgetModel.getPropertyInternal(propertyId)
+                .getDefaultValue();
+        final Object currentValue = _widgetModel.getPropertyInternal(propertyId)
+                .getPropertyValue();
 
-		final boolean hasDefaultValue = (defaultValue != null);
-		final boolean hasCurrentValue = (currentValue != null);
+        final boolean hasDefaultValue = (defaultValue != null);
+        final boolean hasCurrentValue = (currentValue != null);
 
-		return (hasDefaultValue && !defaultValue.equals(currentValue))
-				|| (!hasDefaultValue && hasCurrentValue);
-	}
+        return (hasDefaultValue && !defaultValue.equals(currentValue))
+                || (!hasDefaultValue && hasCurrentValue);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void resetPropertyValue(final Object id) {
-		String propertyId = id.toString();
+    /**
+     * {@inheritDoc}
+     */
+    public void resetPropertyValue(final Object id) {
+        String propertyId = id.toString();
 
-		if (isPropertySet(propertyId)) {
-			final Object defaultValue = _widgetModel.getPropertyInternal((String) id)
-					.getDefaultValue();
-			_widgetModel.setPropertyValue(propertyId, defaultValue);
-		}
-	}
+        if (isPropertySet(propertyId)) {
+            final Object defaultValue = _widgetModel.getPropertyInternal((String) id)
+                    .getDefaultValue();
+            _widgetModel.setPropertyValue(propertyId, defaultValue);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setPropertyValue(final Object id, final Object value) {
-		String propertyId = id.toString();
+    /**
+     * {@inheritDoc}
+     */
+    public void setPropertyValue(final Object id, final Object value) {
+        String propertyId = id.toString();
 
-		if (_widgetModel.hasProperty(propertyId)) {
-			_widgetModel.setPropertyValue(propertyId, value);
-		}
-	}
+        if (_widgetModel.hasProperty(propertyId)) {
+            _widgetModel.setPropertyValue(propertyId, value);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public DynamicsDescriptor getDynamicsDescriptor(final Object id) {
-		String propertyId = id.toString();
+    /**
+     * {@inheritDoc}
+     */
+    public DynamicsDescriptor getDynamicsDescriptor(final Object id) {
+        String propertyId = id.toString();
 
-		if (_widgetModel.hasProperty(propertyId)) {
-			return _widgetModel.getDynamicsDescriptor(propertyId);
-		}
+        if (_widgetModel.hasProperty(propertyId)) {
+            return _widgetModel.getDynamicsDescriptor(propertyId);
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setDynamicsDescriptor(final Object id,
-			final DynamicsDescriptor dynamicsDescriptor) {
-		String propertyId = id.toString();
+    /**
+     * {@inheritDoc}
+     */
+    public void setDynamicsDescriptor(final Object id,
+            final DynamicsDescriptor dynamicsDescriptor) {
+        String propertyId = id.toString();
 
-		if (_widgetModel.hasProperty(propertyId)) {
-			DynamicsDescriptor newDescriptor = dynamicsDescriptor != null ? dynamicsDescriptor
-					.clone()
-					: null;
-			_widgetModel.setDynamicsDescriptor(propertyId, newDescriptor);
-		}
-	}
+        if (_widgetModel.hasProperty(propertyId)) {
+            DynamicsDescriptor newDescriptor = dynamicsDescriptor != null ? dynamicsDescriptor
+                    .clone()
+                    : null;
+            _widgetModel.setDynamicsDescriptor(propertyId, newDescriptor);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Map<String, String> getAliases() {
-		return _widgetModel.getAllInheritedAliases();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Map<String, String> getAliases() {
+        return _widgetModel.getAllInheritedAliases();
+    }
 }

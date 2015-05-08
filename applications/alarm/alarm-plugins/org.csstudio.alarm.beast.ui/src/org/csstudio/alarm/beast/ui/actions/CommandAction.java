@@ -34,9 +34,9 @@ public class CommandAction extends AbstractExecuteAction
               command.getTeaser(),
               command.getDetails());
         
-		// Related display action are disabled in RAP version
-		if (SingleSourcePlugin.getUIHelper().getUI().equals(UI.RAP)) {
-			setEnabled(false);
-		}
+        // Related display action are disabled in RAP version
+        if (SingleSourcePlugin.getUIHelper().getUI().equals(UI.RAP)) {
+            setEnabled(false);
+        }
     }
 }

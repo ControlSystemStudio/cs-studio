@@ -41,59 +41,59 @@ import org.junit.Test;
  * 
  */
 public final class FontPropertyPersistenceHandlerTest {
-	/**
-	 * Test for the writing behaviour.
-	 */
-	@Test
-	public void testWriteProperty() {
-		FontPropertyPersistenceHandler handler = new FontPropertyPersistenceHandler();
-		WidgetProperty property = new FontProperty(
-				"description", WidgetPropertyCategory.BEHAVIOR, ColorAndFontUtil.toFontString("Arial", 11)); //$NON-NLS-1$ //$NON-NLS-2$
-		property.setDynamicsDescriptor(new DynamicsDescriptor());
-		property.setPropertyValue("Arial 8"); //$NON-NLS-1$
+    /**
+     * Test for the writing behaviour.
+     */
+    @Test
+    public void testWriteProperty() {
+        FontPropertyPersistenceHandler handler = new FontPropertyPersistenceHandler();
+        WidgetProperty property = new FontProperty(
+                "description", WidgetPropertyCategory.BEHAVIOR, ColorAndFontUtil.toFontString("Arial", 11)); //$NON-NLS-1$ //$NON-NLS-2$
+        property.setDynamicsDescriptor(new DynamicsDescriptor());
+        property.setPropertyValue("Arial 8"); //$NON-NLS-1$
 
-		Element valueTag = new Element("value"); //$NON-NLS-1$
+        Element valueTag = new Element("value"); //$NON-NLS-1$
 
-		handler.writeProperty(valueTag, property.getPropertyValue());
+        handler.writeProperty(valueTag, property.getPropertyValue());
 
-		assertEquals(1, valueTag.getChildren().size());
+        assertEquals(1, valueTag.getChildren().size());
 
-		Element fontTag = valueTag.getChild("font"); //$NON-NLS-1$
+        Element fontTag = valueTag.getChild("font"); //$NON-NLS-1$
 
-		assertNotNull(fontTag);
+        assertNotNull(fontTag);
 
-		assertEquals(1, fontTag.getAttributes().size());
+        assertEquals(1, fontTag.getAttributes().size());
 
-		String fontName = fontTag.getAttributeValue("font"); //$NON-NLS-1$
+        String fontName = fontTag.getAttributeValue("font"); //$NON-NLS-1$
 
-		assertEquals("Arial 8", fontName); //$NON-NLS-1$
-	}
+        assertEquals("Arial 8", fontName); //$NON-NLS-1$
+    }
 
-	/**
-	 * Test for the reading behaviour.
-	 */
-	@Test
-	public void testReadProperty() {
-		FontPropertyPersistenceHandler handler = new FontPropertyPersistenceHandler();
+    /**
+     * Test for the reading behaviour.
+     */
+    @Test
+    public void testReadProperty() {
+        FontPropertyPersistenceHandler handler = new FontPropertyPersistenceHandler();
 
-		Element propertyTag = new Element("anyTag"); //$NON-NLS-1$
-		Element colorTag = new Element(
-				FontPropertyPersistenceHandler.XML_ELEMENT_FONT);
-		propertyTag.addContent(colorTag);
+        Element propertyTag = new Element("anyTag"); //$NON-NLS-1$
+        Element colorTag = new Element(
+                FontPropertyPersistenceHandler.XML_ELEMENT_FONT);
+        propertyTag.addContent(colorTag);
 
-		colorTag
-				.setAttribute(
-						FontPropertyPersistenceHandler.XML_ATTRIBUTE_FONT_NAME,
-						"Arial"); //$NON-NLS-1$
-		colorTag.setAttribute(
-				FontPropertyPersistenceHandler.XML_ATTRIBUTE_FONT_STYLE, "0"); //$NON-NLS-1$
-		colorTag.setAttribute(
-				FontPropertyPersistenceHandler.XML_ATTRIBUTE_FONT_HEIGHT, "8"); //$NON-NLS-1$
+        colorTag
+                .setAttribute(
+                        FontPropertyPersistenceHandler.XML_ATTRIBUTE_FONT_NAME,
+                        "Arial"); //$NON-NLS-1$
+        colorTag.setAttribute(
+                FontPropertyPersistenceHandler.XML_ATTRIBUTE_FONT_STYLE, "0"); //$NON-NLS-1$
+        colorTag.setAttribute(
+                FontPropertyPersistenceHandler.XML_ATTRIBUTE_FONT_HEIGHT, "8"); //$NON-NLS-1$
 
-		Object propertyValue = handler.readProperty(propertyTag);
+        Object propertyValue = handler.readProperty(propertyTag);
 
-		assertTrue(propertyValue instanceof String);
+        assertTrue(propertyValue instanceof String);
 
-		assertEquals("Arial, 8", propertyValue); //$NON-NLS-1$
-	}
+        assertEquals("Arial, 8", propertyValue); //$NON-NLS-1$
+    }
 }

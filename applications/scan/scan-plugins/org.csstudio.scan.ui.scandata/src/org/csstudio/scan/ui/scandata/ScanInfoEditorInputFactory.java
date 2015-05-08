@@ -17,14 +17,14 @@ import org.eclipse.ui.IMemento;
 @SuppressWarnings("nls")
 public class ScanInfoEditorInputFactory implements IElementFactory
 {
-	/** Factory ID registered in plugin.xml */
+    /** Factory ID registered in plugin.xml */
     final public static String ID = "org.csstudio.scan.ui.scandata.inputfactory";
 
-	@Override
+    @Override
     public IAdaptable createElement(final IMemento memento)
     {
-		final long id = Long.valueOf(memento.getString(ScanInfoEditorInput.TAG_ID));
-		final String name = memento.getString(ScanInfoEditorInput.TAG_NAME);
-	    return new ScanInfoEditorInput(id, name);
+        final long id = Long.valueOf(memento.getString(ScanInfoEditorInput.TAG_ID));
+        final String name = memento.getString(ScanInfoEditorInput.TAG_NAME);
+        return new ScanInfoEditorInput(id, name);
     }
 }

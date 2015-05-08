@@ -65,7 +65,7 @@ public class Textinput extends Widget {
                 throw new WrongADLFormatException(Messages.Textinput_WrongADLFormatException_Parameter_Begin+row[0]);
             }
             if(row[0].equals("clrmod")){ //$NON-NLS-1$
-            	DebugHelper.add(this, row[1]);
+                DebugHelper.add(this, row[1]);
                 String[] clrmod = ADLHelper.cleanString(row[1]);
                 if(clrmod[0].equals("discrete")&&getControl()!=null){ //$NON-NLS-1$
                     getControl().setConnectionState(true);

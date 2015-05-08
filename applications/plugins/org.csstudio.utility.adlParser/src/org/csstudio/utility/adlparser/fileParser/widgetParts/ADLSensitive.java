@@ -40,7 +40,7 @@ import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
  * @since 08.11.2007
  */
 public class ADLSensitive extends WidgetPart {
-	//TODO Strip out old code lines that refer to SDS implementations
+    //TODO Strip out old code lines that refer to SDS implementations
     /**
      * The channel.
      */
@@ -66,7 +66,7 @@ public class ADLSensitive extends WidgetPart {
     }
 
     public ADLSensitive(){
-    	super();
+        super();
     }
     
 //**    /**
@@ -117,7 +117,7 @@ public class ADLSensitive extends WidgetPart {
 //            }
             if(FileLine.argEquals(row[0], "chan")){ //$NON-NLS-1$
 //**                _chan=ADLHelper.cleanString(row[1]);
-        	    _chan=FileLine.getTrimmedValue(row[1]);
+                _chan=FileLine.getTrimmedValue(row[1]);
             }else if(FileLine.argEquals(row[0], "sensitive_mode")){ //$NON-NLS-1$
                 _sensitiveMode = FileLine.getTrimmedValue(row[1]);
             }else {
@@ -134,11 +134,11 @@ public class ADLSensitive extends WidgetPart {
         return _postfix;
     }
 
-	@Override
-	public Object[] getChildren() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Object[] getChildren() {
+        // TODO Auto-generated method stub
+        return null;
+    }
     
     
 

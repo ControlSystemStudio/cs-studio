@@ -29,38 +29,38 @@ package org.csstudio.sds.internal.rules;
  * 
  */
 public final class LogicException extends Exception {
-	/**
-	 * The serrial version UID.
-	 */
-	private static final long serialVersionUID = 2805644303329427637L;
+    /**
+     * The serrial version UID.
+     */
+    private static final long serialVersionUID = 2805644303329427637L;
 
-	/**
-	 * @see Exception#Exception(String)
-	 * @param message
-	 *            A detail message.
-	 */
-	public LogicException(final String message) {
-		super(message);
-	}
+    /**
+     * @see Exception#Exception(String)
+     * @param message
+     *            A detail message.
+     */
+    public LogicException(final String message) {
+        super(message);
+    }
 
-	/**
-	 * @see Exception#Exception(Throwable)
-	 * @param cause
-	 *            The exception's cause.
-	 */
-	public LogicException(final Throwable cause) {
-		super(cause);
-	}
+    /**
+     * @see Exception#Exception(Throwable)
+     * @param cause
+     *            The exception's cause.
+     */
+    public LogicException(final Throwable cause) {
+        super(cause);
+    }
 
-	/**
-	 * @see Exception#Exception(String, Throwable)
-	 * @param message
-	 *            A detail message.
-	 * @param cause
-	 *            The exception's cause.
-	 */
-	public LogicException(final String message, final Throwable cause) {
-		super(message, cause);
-	}
+    /**
+     * @see Exception#Exception(String, Throwable)
+     * @param message
+     *            A detail message.
+     * @param cause
+     *            The exception's cause.
+     */
+    public LogicException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 
 }

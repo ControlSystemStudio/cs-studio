@@ -21,70 +21,70 @@ import org.eclipse.swt.widgets.Display;
  */
 public class WidgetIgnorableUITask {
 
-	/**
-	 * The widget property.
-	 */
-	final private Object identifyObject;
-	
-	/**
-	 * The task to be executed.
-	 */
-	final private Runnable runnableTask;
-	
-	final private Display display;
+    /**
+     * The widget property.
+     */
+    final private Object identifyObject;
+    
+    /**
+     * The task to be executed.
+     */
+    final private Runnable runnableTask;
+    
+    final private Display display;
 
-	/**Constructor.
-	 * @param identifyObject the object that identifies this task. If the task associated
-	 * with the same identifyObject has not been executed, it will be ignored.
-	 * @param runnableTask the task to be executed.
-	 * @param display Associated Display.
-	 */
-	public WidgetIgnorableUITask(final Object identifyObject, final Runnable runnableTask,
-			final Display display){
-		this.identifyObject = identifyObject;
-		this.runnableTask = runnableTask;
-		this.display = display;
-	}
-	
-	
-	public Display getDisplay() {
-		return display;
-	}
+    /**Constructor.
+     * @param identifyObject the object that identifies this task. If the task associated
+     * with the same identifyObject has not been executed, it will be ignored.
+     * @param runnableTask the task to be executed.
+     * @param display Associated Display.
+     */
+    public WidgetIgnorableUITask(final Object identifyObject, final Runnable runnableTask,
+            final Display display){
+        this.identifyObject = identifyObject;
+        this.runnableTask = runnableTask;
+        this.display = display;
+    }
+    
+    
+    public Display getDisplay() {
+        return display;
+    }
 
-		/**
-	 * @return the identify object
-	 */
-	public Object getIdentifyObject() {
-		return identifyObject;
-	}
+        /**
+     * @return the identify object
+     */
+    public Object getIdentifyObject() {
+        return identifyObject;
+    }
 
-	/**
-	 * @return the runnableTask
-	 */
-	public Runnable getRunnableTask() {
-		return runnableTask;
-	}
-	
-	/** @param obj Possible other {@link WidgetIgnorableUITask}
-	 *  @return <code>true</code> if other {@link WidgetIgnorableUITask}
-	 *          refers to the same {@link AbstractWidgetProperty}
-	 */
-	@Override
-	public boolean equals(final Object obj) {
-		if(obj instanceof WidgetIgnorableUITask)
-			return identifyObject ==((WidgetIgnorableUITask)obj).getIdentifyObject();
-		else 
-			return false;
-	}
-	
-	@Override
-	public String toString() {
-		return identifyObject.toString();
-	}
-	
-	@Override
-	public int hashCode() {
-		return identifyObject.hashCode();
-	}
-	
+    /**
+     * @return the runnableTask
+     */
+    public Runnable getRunnableTask() {
+        return runnableTask;
+    }
+    
+    /** @param obj Possible other {@link WidgetIgnorableUITask}
+     *  @return <code>true</code> if other {@link WidgetIgnorableUITask}
+     *          refers to the same {@link AbstractWidgetProperty}
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        if(obj instanceof WidgetIgnorableUITask)
+            return identifyObject ==((WidgetIgnorableUITask)obj).getIdentifyObject();
+        else 
+            return false;
+    }
+    
+    @Override
+    public String toString() {
+        return identifyObject.toString();
+    }
+    
+    @Override
+    public int hashCode() {
+        return identifyObject.hashCode();
+    }
+    
 }

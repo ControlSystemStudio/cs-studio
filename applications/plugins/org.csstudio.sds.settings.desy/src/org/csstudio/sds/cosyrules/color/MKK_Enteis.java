@@ -31,80 +31,80 @@ import org.csstudio.sds.util.ColorAndFontUtil;
  *
  */
 public final class MKK_Enteis implements IRule {
-	/**
-	 * The ID for this rule.
-	 */
-	public static final String TYPE_ID = "cosyrules.color.mkk-enteis";
+    /**
+     * The ID for this rule.
+     */
+    public static final String TYPE_ID = "cosyrules.color.mkk-enteis";
 
-	/**
-	 * Standard constructor.
-	 */
-	public MKK_Enteis() {
-	}
+    /**
+     * Standard constructor.
+     */
+    public MKK_Enteis() {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object evaluate(final Object[] arguments) {
-		if ((arguments != null) && (arguments.length > 0)) {
-		    double d = 0.0;
+    /**
+     * {@inheritDoc}
+     */
+    public Object evaluate(final Object[] arguments) {
+        if ((arguments != null) && (arguments.length > 0)) {
+            double d = 0.0;
             if (arguments[0] instanceof Double) {
                  d = (Double) arguments[0];
             }else if (arguments[0] instanceof Long) {
                 d = ((Long)  arguments[0]).doubleValue();
             }
-    		if (Math.abs(d-0.00)<0.00001) {
-    			return ColorAndFontUtil.toHex(253,0,0);
-    		}
-    		if (Math.abs(d-1.00)<0.00001) {
-    			return ColorAndFontUtil.toHex(0,216,0);
-    		}
-    		if (Math.abs(d-2.00)<0.00001) {
-    			return ColorAndFontUtil.toHex(253,0,0);
-    		}
-    		if (Math.abs(d-3.00)<0.00001) {
-    			return ColorAndFontUtil.toHex(255,255,255);
-    		}
-    		if (Math.abs(d-4.00)<0.00001) {
-    			return ColorAndFontUtil.toHex(255,176,255);
-    		}
-    		if (Math.abs(d-5.00)<0.00001) {
-    			return ColorAndFontUtil.toHex(40,147,21);
-    		}
-    		if (Math.abs(d-6.00)<0.00001) {
-    			return ColorAndFontUtil.toHex(164,170,255);
-    		}
-    		if (Math.abs(d-7.00)<0.00001) {
-    			return ColorAndFontUtil.toHex(205,97,0);
-    		}
-    		if (Math.abs(d-8.00)<0.00001) {
-    			return ColorAndFontUtil.toHex(251,243,74);
-    		}
-    		if (Math.abs(d-9.00)<0.00001) {
-    			return ColorAndFontUtil.toHex(238,182,43);
-    		}
-    		if (Math.abs(d-10.00)<0.00001) {
-    			return ColorAndFontUtil.toHex(251,243,74);
-    		}
-    		if (Math.abs(d-11.00)<0.00001) {
-    			return ColorAndFontUtil.toHex(238,182,43);
-    		}
-    		if (Math.abs(d-12.00)<0.00001) {
-    			return ColorAndFontUtil.toHex(251,243,74);
-    		}
-    		if (Math.abs(d-13.00)<0.00001) {
-    			return ColorAndFontUtil.toHex(238,182,43);
-    		}
-    		if (Math.abs(d-14.00)<0.00001) {
-    			return ColorAndFontUtil.toHex(251,243,74);
-    		}
-    		if (Math.abs(d-15.00)<0.00001) {
-    			return ColorAndFontUtil.toHex(238,182,43);
-    		}
-		}
+            if (Math.abs(d-0.00)<0.00001) {
+                return ColorAndFontUtil.toHex(253,0,0);
+            }
+            if (Math.abs(d-1.00)<0.00001) {
+                return ColorAndFontUtil.toHex(0,216,0);
+            }
+            if (Math.abs(d-2.00)<0.00001) {
+                return ColorAndFontUtil.toHex(253,0,0);
+            }
+            if (Math.abs(d-3.00)<0.00001) {
+                return ColorAndFontUtil.toHex(255,255,255);
+            }
+            if (Math.abs(d-4.00)<0.00001) {
+                return ColorAndFontUtil.toHex(255,176,255);
+            }
+            if (Math.abs(d-5.00)<0.00001) {
+                return ColorAndFontUtil.toHex(40,147,21);
+            }
+            if (Math.abs(d-6.00)<0.00001) {
+                return ColorAndFontUtil.toHex(164,170,255);
+            }
+            if (Math.abs(d-7.00)<0.00001) {
+                return ColorAndFontUtil.toHex(205,97,0);
+            }
+            if (Math.abs(d-8.00)<0.00001) {
+                return ColorAndFontUtil.toHex(251,243,74);
+            }
+            if (Math.abs(d-9.00)<0.00001) {
+                return ColorAndFontUtil.toHex(238,182,43);
+            }
+            if (Math.abs(d-10.00)<0.00001) {
+                return ColorAndFontUtil.toHex(251,243,74);
+            }
+            if (Math.abs(d-11.00)<0.00001) {
+                return ColorAndFontUtil.toHex(238,182,43);
+            }
+            if (Math.abs(d-12.00)<0.00001) {
+                return ColorAndFontUtil.toHex(251,243,74);
+            }
+            if (Math.abs(d-13.00)<0.00001) {
+                return ColorAndFontUtil.toHex(238,182,43);
+            }
+            if (Math.abs(d-14.00)<0.00001) {
+                return ColorAndFontUtil.toHex(251,243,74);
+            }
+            if (Math.abs(d-15.00)<0.00001) {
+                return ColorAndFontUtil.toHex(238,182,43);
+            }
+        }
 
-		return ColorAndFontUtil.toHex(0,0,0);
-	}
+        return ColorAndFontUtil.toHex(0,0,0);
+    }
 
     /**
      * {@inheritDoc}

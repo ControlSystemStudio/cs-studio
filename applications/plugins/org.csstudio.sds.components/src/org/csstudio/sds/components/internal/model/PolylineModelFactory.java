@@ -34,26 +34,26 @@ import org.eclipse.draw2d.geometry.PointList;
  * 
  */
 public final class PolylineModelFactory implements IWidgetModelFactory {
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractWidgetModel createWidgetModel() {
-		PolylineModel polylineElement = new PolylineModel();
-		PointList points = new PointList();
-		points.addPoint(15, 1);
-		points.addPoint(30, 15);
-		points.addPoint(30, 30);
-		points.addPoint(15, 45);
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractWidgetModel createWidgetModel() {
+        PolylineModel polylineElement = new PolylineModel();
+        PointList points = new PointList();
+        points.addPoint(15, 1);
+        points.addPoint(30, 15);
+        points.addPoint(30, 30);
+        points.addPoint(15, 45);
 
-		polylineElement.setPoints(points, true);
+        polylineElement.setPoints(points, true);
 
-		return polylineElement;
-	}
+        return polylineElement;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Class getWidgetModelType() {
-		return PolylineModel.class;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Class getWidgetModelType() {
+        return PolylineModel.class;
+    }
 }

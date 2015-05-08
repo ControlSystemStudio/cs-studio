@@ -32,72 +32,72 @@ import java.net.UnknownHostException;
  */
 
 public final class CSSPlatformInfo {
-	/** Holds the host name. */
-	private String hostID = null;
-	
-	/** Holds the qualified host name. */
-	private String qualifiedHostName = null;
+    /** Holds the host name. */
+    private String hostID = null;
+    
+    /** Holds the qualified host name. */
+    private String qualifiedHostName = null;
 
-	/** Holds the user name. */
-	private String userID = null;
+    /** Holds the user name. */
+    private String userID = null;
 
-	/** Holds the css application id */
-	private String applicationID = null;
+    /** Holds the css application id */
+    private String applicationID = null;
 
-	/** Holds the only one instance of this class. */
-	private static CSSPlatformInfo _instance = null;
-	
-	private CSSPlatformInfo() {
-		init();
-	}
+    /** Holds the only one instance of this class. */
+    private static CSSPlatformInfo _instance = null;
+    
+    private CSSPlatformInfo() {
+        init();
+    }
 
-	private void init() {
-		userID = System.getProperty("user.name");
+    private void init() {
+        userID = System.getProperty("user.name");
 
-		try {
-			InetAddress localhost = InetAddress.getLocalHost();
+        try {
+            InetAddress localhost = InetAddress.getLocalHost();
 
-			hostID = localhost.getHostName();
-			qualifiedHostName = localhost.getCanonicalHostName();
-		} catch (UnknownHostException uhe) {
-			hostID = "NA";
-			qualifiedHostName = "";
-		}
+            hostID = localhost.getHostName();
+            qualifiedHostName = localhost.getCanonicalHostName();
+        } catch (UnknownHostException uhe) {
+            hostID = "NA";
+            qualifiedHostName = "";
+        }
 
-		applicationID = "CSS";
-	}
-	
-	/**
-	 * Return the only one instance of this class.
-	 * 
-	 * @return The only one instance of this class.
-	 */
-	public static synchronized CSSPlatformInfo getInstance() {
-		if (_instance == null) {
-			_instance = new CSSPlatformInfo();
-		}
+        applicationID = "CSS";
+    }
+    
+    /**
+     * Return the only one instance of this class.
+     * 
+     * @return The only one instance of this class.
+     */
+    public static synchronized CSSPlatformInfo getInstance() {
+        if (_instance == null) {
+            _instance = new CSSPlatformInfo();
+        }
 
-		return _instance;
-	}
-	
-	/**
-	 * Returns the qualified hostname of the host this CSS instance runs on.
-	 * If the hostname is unknown, returns the empty string.
-	 * @return the qualified hostname of the host this CSS instance runs on.
-	 */
-	public String getQualifiedHostname() {
-		return qualifiedHostName;
-	}
+        return _instance;
+    }
+    
+    /**
+     * Returns the qualified hostname of the host this CSS instance runs on.
+     * If the hostname is unknown, returns the empty string.
+     * @return the qualified hostname of the host this CSS instance runs on.
+     */
+    public String getQualifiedHostname() {
+        return qualifiedHostName;
+    }
 
-	public String getHostId() {
-		return hostID;
-	}
+    public String getHostId() {
+        return hostID;
+    }
 
-	public String getUserId() {
-		return userID;
-	}
+    public String getUserId() {
+        return userID;
+    }
 
-	public String getApplicationId() {
-		return applicationID;
-	}
+    public String getApplicationId() {
+        return applicationID;
+    }
 }

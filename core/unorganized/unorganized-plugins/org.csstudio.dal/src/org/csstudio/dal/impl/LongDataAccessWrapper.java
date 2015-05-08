@@ -27,74 +27,74 @@ import org.csstudio.dal.LongAccess;
 
 
 public class LongDataAccessWrapper extends AbstractDataAccessWrapper<Long>
-	implements LongAccess
+    implements LongAccess
 {
-	private static final int DOUBLE_TO_LONG = 1;
-	private static final int NUMBER_TO_LONG = 2;
+    private static final int DOUBLE_TO_LONG = 1;
+    private static final int NUMBER_TO_LONG = 2;
 
-	public LongDataAccessWrapper(DataAccess sourceDA)
-	{
-		super(Long.class, sourceDA);
-	}
+    public LongDataAccessWrapper(DataAccess sourceDA)
+    {
+        super(Long.class, sourceDA);
+    }
 
-	protected int getConversion()
-	{
-		if (valClass.equals(Long.class)) {
-			if (sourceDA.getDataType().equals(Double.class)) {
-				return DOUBLE_TO_LONG;
-			} else if (sourceDA.getDataType().equals(Number.class)) {
-				return NUMBER_TO_LONG;
-			}
-		}
+    protected int getConversion()
+    {
+        if (valClass.equals(Long.class)) {
+            if (sourceDA.getDataType().equals(Double.class)) {
+                return DOUBLE_TO_LONG;
+            } else if (sourceDA.getDataType().equals(Number.class)) {
+                return NUMBER_TO_LONG;
+            }
+        }
 
-		return UNKNOWN;
-	}
+        return UNKNOWN;
+    }
 
-	@Override
-	protected Object convertToOriginal(Long value, DataAccess dataAccess)
-	{
-		if (value == null) {
-			return null;
-		}
+    @Override
+    protected Object convertToOriginal(Long value, DataAccess dataAccess)
+    {
+        if (value == null) {
+            return null;
+        }
 
-		switch (conversion) {
-		case DOUBLE_TO_LONG: {
-			Double doubleVal = value.doubleValue();
+        switch (conversion) {
+        case DOUBLE_TO_LONG: {
+            Double doubleVal = value.doubleValue();
 
-			return doubleVal;
-		}
+            return doubleVal;
+        }
 
-		case NUMBER_TO_LONG: {
-			return value;
-		}
-		}
+        case NUMBER_TO_LONG: {
+            return value;
+        }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	protected Long convertFromOriginal(Object value, DataAccess dataAccess)
-	{
-		if (value == null) {
-			return null;
-		}
+    @Override
+    protected Long convertFromOriginal(Object value, DataAccess dataAccess)
+    {
+        if (value == null) {
+            return null;
+        }
 
-		switch (conversion) {
-		case DOUBLE_TO_LONG: {
-			Long longVal = new Long(((Double)value).longValue());
+        switch (conversion) {
+        case DOUBLE_TO_LONG: {
+            Long longVal = new Long(((Double)value).longValue());
 
-			return longVal;
-		}
+            return longVal;
+        }
 
-		case NUMBER_TO_LONG: {
-			Long longVal = new Long(((Number)value).longValue());
+        case NUMBER_TO_LONG: {
+            Long longVal = new Long(((Number)value).longValue());
 
-			return longVal;
-		}
-		}
+            return longVal;
+        }
+        }
 
-		return null;
-	}
+        return null;
+    }
 }
 
 /* __oOo__ */

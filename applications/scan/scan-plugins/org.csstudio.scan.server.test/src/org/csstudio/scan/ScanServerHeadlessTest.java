@@ -81,7 +81,7 @@ public class ScanServerHeadlessTest implements Runnable
 
             // Connect to scan server
             final ScanServerInfo server_info = server.getInfo();
-			System.out.println("Thread using " + server_info);
+            System.out.println("Thread using " + server_info);
 
             // Submit two scans, holding on to the second one
             final CommandSequence commands = createCommands();
@@ -220,12 +220,12 @@ public class ScanServerHeadlessTest implements Runnable
         }
         catch (Exception ex)
         {
-        	if (ex.getMessage().startsWith("Cannot start"))
-        	{
-        		System.out.println("Server probably alreay running, skipping ScanServerHeadlessTest:");
-        		ex.printStackTrace();
-        		return;
-        	}
+            if (ex.getMessage().startsWith("Cannot start"))
+            {
+                System.out.println("Server probably alreay running, skipping ScanServerHeadlessTest:");
+                ex.printStackTrace();
+                return;
+            }
         }
         System.out.println("Scan Server running...");
         server = server_impl;

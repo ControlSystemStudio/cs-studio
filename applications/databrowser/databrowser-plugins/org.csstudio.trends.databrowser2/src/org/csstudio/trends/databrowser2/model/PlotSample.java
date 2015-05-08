@@ -97,7 +97,7 @@ public class PlotSample implements PlotDataItem<Instant>
     /** @param index Waveform index to plot */
     void setWaveformIndex(final AtomicInteger index)
     {
-    	this.waveform_index = index;
+        this.waveform_index = index;
     }
 
     /** @return Source of the data */

@@ -18,35 +18,35 @@ import org.csstudio.dal.spi.DeviceFactory;
  * @param <T>
  */
 public class SynchronizedDeviceFamilyImpl<T extends AbstractDevice>
-	extends DeviceFamilyImpl<T> implements DeviceFamily<T> {
+    extends DeviceFamilyImpl<T> implements DeviceFamily<T> {
 
-	/**
-	 * Constructs a new DeviceFamily, which uses a synchronized collection
-	 * to store the devices.
-	 * 
-	 * @param df the device factory, which ownes this family
-	 */
-	public SynchronizedDeviceFamilyImpl(DeviceFactory df) {
-		super(df);
-		devices = Collections.synchronizedMap(devices);
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.device.DeviceCollectionMap#remove(org.csstudio.dal.device.AbstractDevice)
-	 */
-	@Override
-	protected synchronized void remove(T device) {
-		super.remove(device);
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.impl.DeviceFamilyImpl#add(org.csstudio.dal.device.AbstractDevice)
-	 */
-	@Override
-	public synchronized void add(T object) {
-		super.add(object);
-	}
+    /**
+     * Constructs a new DeviceFamily, which uses a synchronized collection
+     * to store the devices.
+     * 
+     * @param df the device factory, which ownes this family
+     */
+    public SynchronizedDeviceFamilyImpl(DeviceFactory df) {
+        super(df);
+        devices = Collections.synchronizedMap(devices);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.device.DeviceCollectionMap#remove(org.csstudio.dal.device.AbstractDevice)
+     */
+    @Override
+    protected synchronized void remove(T device) {
+        super.remove(device);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.impl.DeviceFamilyImpl#add(org.csstudio.dal.device.AbstractDevice)
+     */
+    @Override
+    public synchronized void add(T object) {
+        super.add(object);
+    }
 
 }

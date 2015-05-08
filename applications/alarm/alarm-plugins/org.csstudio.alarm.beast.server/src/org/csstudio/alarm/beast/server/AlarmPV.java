@@ -76,8 +76,8 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
      *  @throws Exception on error
      */
     public AlarmPV(final AlarmServer server,
-    		final TreeItem parent,
-    		final int id, final String name,
+            final TreeItem parent,
+            final int id, final String name,
             final String description,
             final boolean enabled,
             final boolean latching,
@@ -93,9 +93,9 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
             final String value,
             final Timestamp timestamp) throws Exception
     {
-    	super(parent, name, id);
+        super(parent, name, id);
 
-    	logic = new AlarmLogic(this, latching, annunciating, min_alarm_delay, count,
+        logic = new AlarmLogic(this, latching, annunciating, min_alarm_delay, count,
               new AlarmState(current_severity, current_message, "", timestamp),
               new AlarmState(severity, message, value, timestamp), global_delay);
         this.server = server;
@@ -109,7 +109,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
         return logic;
     }
 
-	/** @return Alarm description */
+    /** @return Alarm description */
     public String getDescription()
     {
         return description;
@@ -172,9 +172,9 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
             connection_timeout_task.cancel();
             connection_timeout_task = null;
         }
-    	if (filter != null)
-    		filter.stop();
-    	pv.removeListener(this);
+        if (filter != null)
+            filter.stop();
+        pv.removeListener(this);
         PVPool.releasePV(pv);
         pv = null;
         is_connected = false;
@@ -190,11 +190,11 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
     @Override
     public void filterChanged(final double value)
     {
-    	final boolean new_enable_state = value > 0.0;
-    	Activator.getLogger().log(Level.FINE, "{0} filter changed to {1}",
-    	        new Object[] { getName(), new_enable_state });
+        final boolean new_enable_state = value > 0.0;
+        Activator.getLogger().log(Level.FINE, "{0} filter changed to {1}",
+                new Object[] { getName(), new_enable_state });
         logic.setEnabled(new_enable_state);
-	}
+    }
 
     /** Invoked by <code>connection_timer</code> when PV fails to connect
      *  after <code>start()</code>
@@ -235,14 +235,14 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
         logic.computeNewState(received);
     }
 
-	/** AlarmLogicListener: {@inheritDoc} */
+    /** AlarmLogicListener: {@inheritDoc} */
     @Override
     public void alarmEnablementChanged(final boolean is_enabled)
     {
         server.sendEnablementUpdate(this, is_enabled);
     }
 
-	/** AlarmLogicListener: {@inheritDoc} */
+    /** AlarmLogicListener: {@inheritDoc} */
     @Override
     public void alarmStateChanged(final AlarmState current, final AlarmState alarm)
     {
@@ -255,7 +255,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
                     alarm.getValue(), alarm.getTime());
     }
 
-	/** AlarmLogicListener: {@inheritDoc} */
+    /** AlarmLogicListener: {@inheritDoc} */
     @Override
     public void annunciateAlarm(final SeverityLevel level)
     {
@@ -266,7 +266,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
             server.sendAnnunciation(level, message);
     }
 
-	/** AlarmLogicListener: {@inheritDoc} */
+    /** AlarmLogicListener: {@inheritDoc} */
     @Override
     public void globalStateChanged(final AlarmState alarm)
     {
@@ -280,7 +280,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
 
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     protected void dump_item(final PrintStream out, final String indent)
     {
         out.println(indent + "* " + toString());
@@ -295,10 +295,10 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
         buf.append(" [").append(description).append("] - ");
         if (pv != null)
         {
-	        if (is_connected)
-	            buf.append("connected - ");
-	        else
-	            buf.append("disconnected - ");
+            if (is_connected)
+                buf.append("connected - ");
+            else
+                buf.append("disconnected - ");
         }
         if (! logic.isEnabled())
             buf.append("disabled - ");

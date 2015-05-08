@@ -29,12 +29,12 @@ import org.eclipse.osgi.util.NLS;
  * @author Alexander Will
  */
 public class Messages extends NLS {
-	/**
-	 * The bundle name of the localization messages ressources.
-	 */
-	private static final String BUNDLE_NAME = "org.csstudio.platform.libs.epics.ui.messages"; //$NON-NLS-1$
+    /**
+     * The bundle name of the localization messages ressources.
+     */
+    private static final String BUNDLE_NAME = "org.csstudio.platform.libs.epics.ui.messages"; //$NON-NLS-1$
 
-	public static String EpicsPreferencePage_RESTART_MESSAGE;
+    public static String EpicsPreferencePage_RESTART_MESSAGE;
     public static String EpicsPreferencePage_CONTEXT;
     public static String EpicsPreferencePage_CONTEXT_CAJ;
     public static String EpicsPreferencePage_CONTEXT_JNI;
@@ -51,17 +51,17 @@ public class Messages extends NLS {
     public static String EpicsPreferencePage_VAR_ARRAY_SUPPORT_DISABLED;
     
 
-	static {
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
+    static {
+        // initialize resource bundle
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
 
-	/**
-	 * This constructor is private since this class only provides static
-	 * methods.
-	 */
-	private Messages()
-	{
-	    // Prevent instantiation
-	}
+    /**
+     * This constructor is private since this class only provides static
+     * methods.
+     */
+    private Messages()
+    {
+        // Prevent instantiation
+    }
 }

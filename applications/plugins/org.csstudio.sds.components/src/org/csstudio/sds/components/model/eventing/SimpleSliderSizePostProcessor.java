@@ -15,34 +15,34 @@ import org.eclipse.gef.commands.CompoundCommand;
  */
 public class SimpleSliderSizePostProcessor extends AbstractWidgetPropertyPostProcessor<SimpleSliderModel> {
 
-	@Override
-	protected Command doCreateCommand(SimpleSliderModel widget) {
-		assert widget != null : "widget != null";
-		return new EnsureInvariantsCommand(widget);
-	}
+    @Override
+    protected Command doCreateCommand(SimpleSliderModel widget) {
+        assert widget != null : "widget != null";
+        return new EnsureInvariantsCommand(widget);
+    }
 
-	private static final class EnsureInvariantsCommand extends Command {
-		private final SimpleSliderModel widget;
-		private CompoundCommand chain;
+    private static final class EnsureInvariantsCommand extends Command {
+        private final SimpleSliderModel widget;
+        private CompoundCommand chain;
 
-		private EnsureInvariantsCommand(SimpleSliderModel widget) {
-			this.widget = widget;
-		}
+        private EnsureInvariantsCommand(SimpleSliderModel widget) {
+            this.widget = widget;
+        }
 
-		@Override
-		public void execute() {
-			if (chain == null) {
-				chain = new CompoundCommand();
-				chain.add(new SetPropertyCommand(widget, SimpleSliderModel.PROP_ORIENTATION, widget.getWidth()>=widget.getHeight()));
-			}
+        @Override
+        public void execute() {
+            if (chain == null) {
+                chain = new CompoundCommand();
+                chain.add(new SetPropertyCommand(widget, SimpleSliderModel.PROP_ORIENTATION, widget.getWidth()>=widget.getHeight()));
+            }
 
-			chain.execute();
-		}
+            chain.execute();
+        }
 
-		@Override
-		public void undo() {
-			chain.undo();
-		}
-	}
+        @Override
+        public void undo() {
+            chain.undo();
+        }
+    }
 
 }

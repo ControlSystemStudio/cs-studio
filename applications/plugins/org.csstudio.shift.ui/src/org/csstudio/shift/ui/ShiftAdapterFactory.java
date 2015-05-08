@@ -31,7 +31,7 @@ public class ShiftAdapterFactory implements IAdapterFactory {
      */
     @Override
     public Class[] getAdapterList() {
-	    return new Class[] { ShiftBuilder.class };
+        return new Class[] { ShiftBuilder.class };
     }
 
 }

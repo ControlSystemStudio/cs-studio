@@ -13,36 +13,36 @@ import de.desy.language.snl.parser.nodes.WhenNode;
  */
 class WhenNodeAdapterFactory implements IAdapterFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(final Object adaptableObject,
-			final Class adapterType) {
-		assert adaptableObject != null;
-		assert adapterType != null;
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Object getAdapter(final Object adaptableObject,
+            final Class adapterType) {
+        assert adaptableObject != null;
+        assert adapterType != null;
 
-		if (adaptableObject instanceof WhenNode) {
-			final WhenNode node = (WhenNode) adaptableObject;
+        if (adaptableObject instanceof WhenNode) {
+            final WhenNode node = (WhenNode) adaptableObject;
 
-			if (adapterType == IWorkbenchAdapter.class) {
-				return new AbstractSNLWorkbenchAdapter<WhenNode>(node) {
-					@Override
-					public String getImageName(final WhenNode nodeToRender) {
-						return "when.gif";
-					}
-				};
-			}
-		}
-		return null;
-	}
+            if (adapterType == IWorkbenchAdapter.class) {
+                return new AbstractSNLWorkbenchAdapter<WhenNode>(node) {
+                    @Override
+                    public String getImageName(final WhenNode nodeToRender) {
+                        return "when.gif";
+                    }
+                };
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getAdapterList() {
-		return new Class[] { WhenNode.class };
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getAdapterList() {
+        return new Class[] { WhenNode.class };
+    }
 
 }

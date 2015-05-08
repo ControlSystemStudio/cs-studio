@@ -61,13 +61,13 @@ final class CopyPropertyAction extends PropertySheetAction {
      * Performs this action.
      */
     @Override
-	public void run() {
+    public void run() {
         // Get the selected property
         IStructuredSelection selection = (IStructuredSelection) getPropertySheet()
                 .getSelection();
         if (selection.isEmpty()) {
-			return;
-		}
+            return;
+        }
         // Assume single selection
         IPropertySheetEntry entry = (IPropertySheetEntry) selection
                 .getFirstElement();
@@ -102,13 +102,13 @@ final class CopyPropertyAction extends PropertySheetAction {
             _clipboard.setContents(data, transferTypes);
         } catch (SWTError e) {
             if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD) {
-				throw e;
-			}
+                throw e;
+            }
             if (MessageDialog.openQuestion(getPropertySheet().getControl()
                     .getShell(), Messages.CopyToClipboardProblemDialog_title,
                     Messages.CopyToClipboardProblemDialog_message)) {
-				setClipboard(text);
-			}
+                setClipboard(text);
+            }
         }
     }
 }

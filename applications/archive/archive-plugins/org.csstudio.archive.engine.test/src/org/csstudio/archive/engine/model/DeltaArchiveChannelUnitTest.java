@@ -30,8 +30,8 @@ public class DeltaArchiveChannelUnitTest
     public void testHandleNewValue() throws Exception
     {
         PVPool.addPVFactory(new LocalPVFactory());
-    	
-    	final PV pv = PVPool.getPV(PV_NAME);
+        
+        final PV pv = PVPool.getPV(PV_NAME);
 
         final DeltaArchiveChannel channel = new DeltaArchiveChannel(PV_NAME, Enablement.Passive, 100, null, 1.01, 0.1);
         final SampleBuffer samples = channel.getSampleBuffer();

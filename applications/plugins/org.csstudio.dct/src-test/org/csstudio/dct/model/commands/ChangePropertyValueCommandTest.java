@@ -16,39 +16,39 @@ import org.junit.Test;
  * 
  */
 public final class ChangePropertyValueCommandTest {
-	private IPropertyContainer container;
+    private IPropertyContainer container;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-		container = new Prototype("test", UUID.randomUUID());
-	}
+    /**
+     * @throws java.lang.Exception
+     */
+    @Before
+    public void setUp() throws Exception {
+        container = new Prototype("test", UUID.randomUUID());
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.dct.model.commands.ChangePropertyValueCommand#execute()}
-	 * .
-	 */
-	@Test
-	public void testExecute() {
-		String id = "test";
-		String value = "value";
-		String newValue = "newvalue";
+    /**
+     * Test method for
+     * {@link org.csstudio.dct.model.commands.ChangePropertyValueCommand#execute()}
+     * .
+     */
+    @Test
+    public void testExecute() {
+        String id = "test";
+        String value = "value";
+        String newValue = "newvalue";
 
-		// .. before
-		container.addProperty(id, value);
-		assertEquals(value, container.getProperty(id));
+        // .. before
+        container.addProperty(id, value);
+        assertEquals(value, container.getProperty(id));
 
-		// .. execute
-		ChangePropertyValueCommand cmd = new ChangePropertyValueCommand(container, id, newValue);
-		cmd.execute();
-		assertEquals(newValue, container.getProperty(id));
+        // .. execute
+        ChangePropertyValueCommand cmd = new ChangePropertyValueCommand(container, id, newValue);
+        cmd.execute();
+        assertEquals(newValue, container.getProperty(id));
 
-		// .. undo
-		cmd.undo();
-		assertEquals(value, container.getProperty(id));
+        // .. undo
+        cmd.undo();
+        assertEquals(value, container.getProperty(id));
 
-	}
+    }
 }

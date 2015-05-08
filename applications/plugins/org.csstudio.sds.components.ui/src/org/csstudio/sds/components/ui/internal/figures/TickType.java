@@ -29,15 +29,15 @@ package org.csstudio.sds.components.ui.internal.figures;
  */
 enum TickType {
 
-	/**
-	 * Major tick type. Ticks of this type are usually displayed as labelled
-	 * ticks.
-	 */
-	MAJOR,
-	
-	/**
-	 * Minor tick type. Ticks of this type are usually displayed without a
-	 * label.
-	 */
-	MINOR;
+    /**
+     * Major tick type. Ticks of this type are usually displayed as labelled
+     * ticks.
+     */
+    MAJOR,
+    
+    /**
+     * Minor tick type. Ticks of this type are usually displayed without a
+     * label.
+     */
+    MINOR;
 }

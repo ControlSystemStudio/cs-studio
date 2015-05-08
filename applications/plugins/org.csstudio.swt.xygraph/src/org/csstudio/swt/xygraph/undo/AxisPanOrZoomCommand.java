@@ -17,31 +17,31 @@ import org.csstudio.swt.xygraph.linearscale.Range;
 public class AxisPanOrZoomCommand extends SaveStateCommand
 {
     final private Axis axis;
-	
-	final private Range beforeRange;
-	
-	private Range afterRange;
-	
-	public AxisPanOrZoomCommand(final String name, final Axis axis)
-	{
-	    super(name);
-		this.axis = axis;
+    
+    final private Range beforeRange;
+    
+    private Range afterRange;
+    
+    public AxisPanOrZoomCommand(final String name, final Axis axis)
+    {
+        super(name);
+        this.axis = axis;
         beforeRange = axis.getRange();
-	}
+    }
 
-	public void redo()
-	{
-		axis.setRange(afterRange);
-	}
+    public void redo()
+    {
+        axis.setRange(afterRange);
+    }
 
-	public void undo()
-	{
-		axis.setRange(beforeRange);
-	}
-	
-	@Override
+    public void undo()
+    {
+        axis.setRange(beforeRange);
+    }
+    
+    @Override
     public void saveState()
-	{
-		afterRange = axis.getRange();
-	}
+    {
+        afterRange = axis.getRange();
+    }
 }

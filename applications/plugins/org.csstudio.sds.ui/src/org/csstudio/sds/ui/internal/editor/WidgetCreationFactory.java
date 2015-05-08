@@ -34,46 +34,46 @@ import org.eclipse.gef.requests.CreationFactory;
  */
 public final class WidgetCreationFactory implements CreationFactory {
 
-	private String _widgetType = null;
-	private final KeyListenerAdapter _keyAdapter;
+    private String _widgetType = null;
+    private final KeyListenerAdapter _keyAdapter;
 
-	public WidgetCreationFactory(final String widgetType) {
-		this(widgetType, null);
-	}
+    public WidgetCreationFactory(final String widgetType) {
+        this(widgetType, null);
+    }
 
-	public WidgetCreationFactory(final String widgetType, final KeyListenerAdapter keyAdapter) {
-		_widgetType = widgetType;
-		_keyAdapter = keyAdapter;
-	}
+    public WidgetCreationFactory(final String widgetType, final KeyListenerAdapter keyAdapter) {
+        _widgetType = widgetType;
+        _keyAdapter = keyAdapter;
+    }
 
-	private boolean skipPreconfiguration() {
-		return _keyAdapter != null && _keyAdapter.getPressedKeys().size() == 1 && _keyAdapter.getPressedKeys().get(0) == 'b';
-	}
+    private boolean skipPreconfiguration() {
+        return _keyAdapter != null && _keyAdapter.getPressedKeys().size() == 1 && _keyAdapter.getPressedKeys().get(0) == 'b';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object getNewObject() {
-		AbstractWidgetModel widgetModel = null;
+    /**
+     * {@inheritDoc}
+     */
+    public Object getNewObject() {
+        AbstractWidgetModel widgetModel = null;
 
-		if (skipPreconfiguration()) {
-			widgetModel = WidgetCreationUtil.createWidgetHeadlessly(_widgetType, false);
-			SdsPlugin.getDefault().getWidgetPropertyPostProcessingService().applyForAllProperties(widgetModel, EventType.ON_MANUAL_CHANGE);
-		} else {
-			widgetModel = WidgetCreationUtil.createAndPreconfigureWidget(_widgetType, null);
-		}
+        if (skipPreconfiguration()) {
+            widgetModel = WidgetCreationUtil.createWidgetHeadlessly(_widgetType, false);
+            SdsPlugin.getDefault().getWidgetPropertyPostProcessingService().applyForAllProperties(widgetModel, EventType.ON_MANUAL_CHANGE);
+        } else {
+            widgetModel = WidgetCreationUtil.createAndPreconfigureWidget(_widgetType, null);
+        }
 
-		// Note: In case there is no widget (user may have cancelled the dialog)
-		// we have to return a dummy object to prevent the configuration dialog
-		// from popping up again.
-		return widgetModel != null ? widgetModel : new Object();
-	}
+        // Note: In case there is no widget (user may have cancelled the dialog)
+        // we have to return a dummy object to prevent the configuration dialog
+        // from popping up again.
+        return widgetModel != null ? widgetModel : new Object();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object getObjectType() {
-		return WidgetModelFactoryService.getInstance().getWidgetModelType(_widgetType);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Object getObjectType() {
+        return WidgetModelFactoryService.getInstance().getWidgetModelType(_widgetType);
+    }
 
 }
