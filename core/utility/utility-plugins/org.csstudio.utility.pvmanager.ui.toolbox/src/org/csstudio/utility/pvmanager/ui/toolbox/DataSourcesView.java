@@ -379,7 +379,7 @@ public class DataSourcesView extends ViewPart {
 			});
 		}
 		{
-			refreshAction = new Action("Refresh data") {				@Override
+			refreshAction = new Action("Refresh data") {				@Override
 				public void run() {
 					tableViewer.refresh();
 					summaryTableViewer.refresh();
