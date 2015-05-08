@@ -20,25 +20,25 @@ public class SQL
 {
     // 'channel' table
     final String channel_sel_by_name;
-    
+
     // 'enum_metadata' table
     final public String enum_delete_by_channel;
     final public String enum_insert_channel_num_val;
-    
+
     // 'num_metadata' table
     final public String numeric_meta_insert;
     final public String numeric_meta_delete_by_channel;
-    
+
     // 'severity' table
     final public String severity_table;
     final public String severity_id_column;
     final public String severity_name_column;
-    
+
     // 'status' table
     final public String status_table;
     final public String status_id_column;
     final public String status_name_column;
-    
+
     // 'sample' table
     final public String sample_insert_double_blob;
     final public String sample_insert_double;
@@ -62,7 +62,7 @@ public class SQL
         enum_delete_by_channel = "DELETE FROM " + schema + "enum_metadata WHERE channel_id=?";
         enum_insert_channel_num_val = "INSERT INTO " + schema
             + "enum_metadata(channel_id,enum_nbr, enum_val) VALUES(?,?,?)";
-        
+
         // 'num_metadata' table
         numeric_meta_insert = "INSERT INTO " + schema + "num_metadata " +
                 "(channel_id, low_disp_rng, high_disp_rng," +
@@ -71,7 +71,7 @@ public class SQL
                 " prec, unit) VALUES (?,?,?,?,?,?,?,?,?)";
         numeric_meta_delete_by_channel = "DELETE FROM "
             + schema + "num_metadata WHERE channel_id=?";
-        
+
         // 'severity' table
         severity_table = schema + "severity";
         severity_id_column = "severity_id";
@@ -81,7 +81,7 @@ public class SQL
         status_table = schema + "status";
         status_name_column = "name";
         status_id_column = "status_id";
-        
+
         // 'sample' table
         final String sample = Preferences.getWriteSampleTable();
         Logger.getLogger(getClass().getName()).fine("Writing to table '" + sample + "'");
@@ -159,7 +159,7 @@ public class SQL
                 "(channel_id, smpl_time, severity_id, status_id, str_val, nanosecs)" +
                 " VALUES (?,?,?,?,?,?)";
             break;
-         
+
         default:
              throw new Error("Unknown RDB Dialect " + dialect);
         }

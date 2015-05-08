@@ -1519,7 +1519,7 @@ public class PSGr extends java.awt.Graphics {
             emitThis("90 rotate");
             emitThis(Page_MarginX + " " + (-Page_MarginY) + " translate");
         }
-            
+
 //        emitThis (angle + " rotate");
 
 
@@ -1603,7 +1603,7 @@ public class PSGr extends java.awt.Graphics {
 
         emitThis (xyScale+" "+xyScale+" scale");
     }
-    
+
 
 }
 /* <IMG SRC="/cgi-bin/counter">*/

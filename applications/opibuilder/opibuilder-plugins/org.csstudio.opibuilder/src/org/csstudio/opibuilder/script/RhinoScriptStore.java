@@ -21,7 +21,7 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
 /**
- * This is the implementation of {@link AbstractScriptStore} for Rhino script engine. 
+ * This is the implementation of {@link AbstractScriptStore} for Rhino script engine.
  * @author Xihui Chen
  *
  */
@@ -37,9 +37,9 @@ public class RhinoScriptStore extends AbstractScriptStore{
 
 
     public RhinoScriptStore(final ScriptData scriptData, final AbstractBaseEditPart editpart,
-            final IPV[] pvArray) throws Exception {        
-        super(scriptData, editpart, pvArray);        
-        
+            final IPV[] pvArray) throws Exception {
+        super(scriptData, editpart, pvArray);
+
     }
 
     protected void initScriptEngine() throws Exception {
@@ -48,20 +48,20 @@ public class RhinoScriptStore extends AbstractScriptStore{
         Object widgetController = Context.javaToJS(getEditPart(), scriptScope);
         Object pvArrayObject = Context.javaToJS(getPvArray(), scriptScope);
         Object displayObject = Context.javaToJS(getDisplayEditPart(), scriptScope);
-        
+
         ScriptableObject.putProperty(scriptScope, ScriptService.WIDGET, widgetController);
         ScriptableObject.putProperty(scriptScope, ScriptService.PVS, pvArrayObject);
-        ScriptableObject.putProperty(scriptScope, ScriptService.DISPLAY, displayObject);        
-        ScriptableObject.putProperty(scriptScope, 
+        ScriptableObject.putProperty(scriptScope, ScriptService.DISPLAY, displayObject);
+        ScriptableObject.putProperty(scriptScope,
                 ScriptService.WIDGET_CONTROLLER_DEPRECIATED, widgetController);
-        ScriptableObject.putProperty(scriptScope, 
+        ScriptableObject.putProperty(scriptScope,
                 ScriptService.PV_ARRAY_DEPRECIATED, pvArrayObject);
     }
 
-    
+
     @Override
     protected void compileString(String string) throws Exception{
-        script = scriptContext.compileString(string, "rule", 1, null);        
+        script = scriptContext.compileString(string, "rule", 1, null);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class RhinoScriptStore extends AbstractScriptStore{
 
     @Override
     protected void execScript(final IPV triggerPV) throws Exception {
-        ScriptableObject.putProperty(scriptScope, 
+        ScriptableObject.putProperty(scriptScope,
                 ScriptService.TRIGGER_PV, Context.javaToJS(triggerPV, scriptScope));
         script.exec(scriptContext, scriptScope);
     }

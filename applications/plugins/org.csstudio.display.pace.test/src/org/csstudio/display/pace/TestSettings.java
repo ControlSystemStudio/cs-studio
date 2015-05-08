@@ -33,7 +33,7 @@ public class TestSettings
     {
         System.setProperty("gov.aps.jca.jni.JNIContext.addr_list", CA_ADDR_LIST);
         System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", CA_ADDR_LIST);
-        
+
         final CompositeDataSource sources = new CompositeDataSource();
         sources.putDataSource("loc", new LocalDataSource());
         sources.putDataSource("ca", new JCADataSource());

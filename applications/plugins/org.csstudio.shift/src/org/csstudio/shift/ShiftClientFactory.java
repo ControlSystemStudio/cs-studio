@@ -9,19 +9,19 @@ public interface ShiftClientFactory {
 
     /**
      * Get an instance of the client object used to make shift entries
-     * 
+     *
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     ShiftClient getClient() throws Exception;
 
     /**
      * Get an instance of the shiftClient with the usercredentails.
-     * 
+     *
      * @param username
      * @param password
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     ShiftClient getClient(final String username, final String password) throws Exception;
 

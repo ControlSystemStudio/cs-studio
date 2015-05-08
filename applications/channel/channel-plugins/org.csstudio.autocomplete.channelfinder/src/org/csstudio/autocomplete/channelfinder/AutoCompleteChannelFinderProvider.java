@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.autocomplete.channelfinder;
 
@@ -20,9 +20,9 @@ import org.csstudio.autocomplete.proposals.ProposalStyle;
 
 /**
  * Autocomplete support using the Channelfinder directory service
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class AutoCompleteChannelFinderProvider implements IAutoCompleteProvider {
 

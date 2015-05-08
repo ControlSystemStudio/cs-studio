@@ -20,15 +20,15 @@ import org.eclipse.swt.widgets.Shell;
 public class OPIFontCellEditor extends AbstractDialogCellEditor {
 
     private OPIFont opiFont;
-    
-    
+
+
     public OPIFontCellEditor(Composite parent, String title) {
         super(parent, title);
     }
 
     @Override
     protected void openDialog(Shell parentShell, String dialogTitle) {
-        OPIFontDialog dialog = 
+        OPIFontDialog dialog =
             new OPIFontDialog(parentShell, opiFont, dialogTitle);
         if(dialog.open() == Window.OK)
             opiFont = dialog.getOutput();

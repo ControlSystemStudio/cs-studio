@@ -57,7 +57,7 @@ public class MainView extends ViewPart {
     private static String _DEFAULT_PV_FILTER = ""; //$NON-NLS-1$
     private CSSView cssview;
     private LDAP2Automat _automat;
-    
+
     @Override
     public void createPartControl(final Composite parent) {
         _automat = new LDAP2Automat();
@@ -69,7 +69,7 @@ public class MainView extends ViewPart {
         c.setLayout(new GridLayout(1, false));
         PlatformUI.getWorkbench().getHelpSystem()
                 .setHelp(parent.getShell(), Activator.PLUGIN_ID + ".nsB");
-        
+
         c.getShell().addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(final KeyEvent e) {
@@ -80,7 +80,7 @@ public class MainView extends ViewPart {
         });
         final String[] headlines = {Messages.getString("CSSView_Facility"),
                 Messages.getString("CSSView_Controller"), Messages.getString("CSSView_Record")};
-        
+
         try {
             cssview = new CSSView(c,
                                   _automat,
@@ -98,19 +98,19 @@ public class MainView extends ViewPart {
                                                                         e.toString());
             errorDetailDialog.open();
         }
-        
+
     }
-    
+
     @Override
     public void setFocus() {
         // EMPTY
     }
-    
+
     public void setDefaultPVFilter(final String defaultFilter) {
         _DEFAULT_PV_FILTER = defaultFilter;
         cssview.setDefaultFilter(_DEFAULT_PV_FILTER);
     }
-    
+
     @Override
     public void dispose() {
         _automat = null;

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.model.commands;
 
@@ -14,14 +14,14 @@ import org.junit.Test;
 
 /**
  * Test class for {@link ChangeFieldValueCommand}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ChangeFieldValueCommandTest extends AbstractTestCommand{
     private IRecord record;
 
-    /**    
+    /**
      * @throws java.lang.Exception
      */
     @Before

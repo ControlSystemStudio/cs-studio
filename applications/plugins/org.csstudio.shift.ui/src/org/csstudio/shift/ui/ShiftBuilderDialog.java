@@ -95,9 +95,9 @@ public class ShiftBuilderDialog extends Dialog {
     @Override
     protected void okPressed() {
         final Cursor originalCursor = getShell().getCursor();
-        
+
         getButton(IDialogConstants.OK_ID).setEnabled(false);
-        
+
         try {
             final ShiftClient shiftClient;
             if (authenticate) {
@@ -105,9 +105,9 @@ public class ShiftBuilderDialog extends Dialog {
                         .getClient(userCredentialWidget.getUsername(), userCredentialWidget.getPassword());
             } else {
                 shiftClient = ShiftClientManager.getShiftClientFactory().getClient();
-            }            
+            }
 
-            getShell().setCursor(Display.getDefault().getSystemCursor(SWT.CURSOR_WAIT));            
+            getShell().setCursor(Display.getDefault().getSystemCursor(SWT.CURSOR_WAIT));
             shiftBuilder = shift(shiftWidget.getShift());
             if (shiftWidget.getShift().getOwner().isEmpty()) {
                 shiftBuilder = shiftBuilder.setOwner(userCredentialWidget.getUsername());
@@ -151,11 +151,11 @@ public class ShiftBuilderDialog extends Dialog {
                     }
                 }
             });
-            job.schedule();            
+            job.schedule();
         } catch (Exception ex) {
             getShell().setCursor(originalCursor);
             getButton(IDialogConstants.OK_ID).setEnabled(true);
             errorBar.setException(ex);
-        }            
+        }
     }
 }

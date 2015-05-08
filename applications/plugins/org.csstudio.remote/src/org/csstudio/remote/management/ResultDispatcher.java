@@ -35,7 +35,7 @@ import org.eclipse.core.runtime.Platform;
  * Dispatches the results returned by management commands to receivers that can
  * process them.
  * </p>
- * 
+ *
  * <p>
  * When a result is dispatched, the dispatcher first tries to dispatch it to one
  * of the preset receivers. Thus, the preset receivers can be used by
@@ -46,21 +46,21 @@ import org.eclipse.core.runtime.Platform;
  * extension; and finally, if none of the extensions can handle the result, will
  * dispatch it to a default receiver.
  * </p>
- * 
+ *
  * @author Joerg Rathlev
  */
 public class ResultDispatcher {
 
-    private static final String EXTENSION_POINT_ID = 
+    private static final String EXTENSION_POINT_ID =
         "org.csstudio.remote.managementCommandResultReceivers";
-    
+
     private final Map<String, IResultReceiver> _presetReceivers;
     private final Map<String, IResultReceiver> _extensionReceivers;
     private final IResultReceiver _defaultReceiver;
 
     /**
      * Creates a new result dispatcher.
-     * 
+     *
      * @param defaultReceiver
      *            the default receiver. Results for which no preset of extension
      *            receiver is found will be dispatched to the default receiver.
@@ -69,7 +69,7 @@ public class ResultDispatcher {
         if (defaultReceiver == null) {
             throw new NullPointerException("defaultReceiver must not be null");
         }
-        
+
         _presetReceivers = new HashMap<String, IResultReceiver>();
         _extensionReceivers = new HashMap<String, IResultReceiver>();
         _defaultReceiver = defaultReceiver;
@@ -78,7 +78,7 @@ public class ResultDispatcher {
 
     /**
      * Adds a preset receiver to this dispatcher.
-     * 
+     *
      * @param resultType
      *            the type of results that this dispatcher will dispatch to the
      *            receiver.
@@ -89,13 +89,13 @@ public class ResultDispatcher {
         if (resultType == null || receiver == null) {
             throw new NullPointerException("resultType and receiver must not be null");
         }
-        
+
         _presetReceivers.put(resultType, receiver);
     }
 
     /**
      * Dispatches a command result to a receiver.
-     * 
+     *
      * @param result
      *            a command result.
      */
@@ -106,7 +106,7 @@ public class ResultDispatcher {
 
     /**
      * Returns the receiver for the specified result type.
-     * 
+     *
      * @param resultType
      *            the result type.
      * @return the receiver.
@@ -144,7 +144,7 @@ public class ResultDispatcher {
 
     /**
      * Reads a single receiver configuration element.
-     * 
+     *
      * @param configElement
      *            the configuration element.
      */

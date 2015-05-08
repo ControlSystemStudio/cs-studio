@@ -24,7 +24,7 @@ public class WhenParser extends AbstractDefaultStatementParser<WhenNode> {
         final Matcher preMatcher = prePattern.matcher(input);
         final Pattern pattern = Pattern.compile(getPatternString());
         final Matcher matcher = pattern.matcher(input);
-        
+
         int localStart = startIndex;
         while (preMatcher.find(localStart)) {
             final String conditionWithBraces = this.determineCondition(input,

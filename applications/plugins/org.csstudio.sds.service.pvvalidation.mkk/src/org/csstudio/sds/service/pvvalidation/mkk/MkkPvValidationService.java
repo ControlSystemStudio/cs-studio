@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class MkkPvValidationService implements IProcessVariableAddressValidationService {
 
     private static ExecutorService executor = Executors.newSingleThreadExecutor();
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(MkkPvValidationService.class);
 
     @Override
@@ -39,18 +39,18 @@ public class MkkPvValidationService implements IProcessVariableAddressValidation
         LOG.debug("MKK pv validation service, number of records: " + pvAddresses.size());
 
         final Future<?> submittedValidation = executor.submit(new ValidationRunnable(pvAddresses, callback));
-        
+
         return new IValidationProcess() {
-            
+
             @Override
             public void cancel() {
                     submittedValidation.cancel(true);
             }
         };
     }
-    
+
     private class ValidationRunnable implements Runnable {
-        
+
         private IProcessVariableAddressValidationCallback _callback;
         private List<IProcessVariableAddress> _pvAdresses;
 

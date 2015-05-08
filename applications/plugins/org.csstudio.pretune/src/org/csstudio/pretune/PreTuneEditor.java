@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.pretune;
 
@@ -74,7 +74,7 @@ import com.google.common.collect.Lists;
 
 /**
  * @author Kunal Shroff
- * 
+ *
  */
 public class PreTuneEditor extends EditorPart implements
         PropertyChangeListener, ISelectionProvider {
@@ -150,7 +150,7 @@ public class PreTuneEditor extends EditorPart implements
     public PreTuneEditor() {
         System.out.println("constructor");
     }
-    
+
 
     @Override
     public void init(IEditorSite site, IEditorInput input)
@@ -158,7 +158,7 @@ public class PreTuneEditor extends EditorPart implements
        setSite(site);
        setInput(input);
     }
-    
+
     @Override
     public void createPartControl(Composite parent) {
         parent.setLayout(new FormLayout());
@@ -463,7 +463,7 @@ public class PreTuneEditor extends EditorPart implements
         // get the complete table which makes sense for log entries.
         PopupMenuUtil.installPopupForView(tableDisplay, getEditorSite(), this);
         PopupMenuUtil.installPopupForView(widget, getEditorSite(), widget);
-        
+
         IEditorInput input = getEditorInput();
         if(input instanceof IPathEditorInput){
             String path = ((IPathEditorInput) input).getPath().toString();
@@ -805,7 +805,7 @@ public class PreTuneEditor extends EditorPart implements
         }
 
     };
-   
+
     private List<ISelectionChangedListener> selectionChangedListeners = new ArrayList<ISelectionChangedListener>();
 
     @Override

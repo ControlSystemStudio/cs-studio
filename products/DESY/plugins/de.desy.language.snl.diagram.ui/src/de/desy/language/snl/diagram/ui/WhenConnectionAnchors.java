@@ -5,7 +5,7 @@ import org.eclipse.draw2d.ConnectionAnchor;
 import de.desy.language.snl.diagram.model.SNLModel;
 
 public class WhenConnectionAnchors {
-    
+
     /**
      * The source {@link ConnectionAnchor}.
      */
@@ -14,17 +14,17 @@ public class WhenConnectionAnchors {
      * The target {@link ConnectionAnchor}.
      */
     private final SNLModel _target;
-    
+
     private int _count;
 
     /**
      * Constructor.
-     * 
+     *
      * @param source
      *            The source {@link ConnectionAnchor}
      * @param target
      *            The Target {@link ConnectionAnchor}
-     * 
+     *
      * @requires source != null
      * @requires target != null
      */
@@ -41,7 +41,7 @@ public class WhenConnectionAnchors {
     public SNLModel getTarget() {
         return _target;
     }
-    
+
     public SNLModel getSource() {
         return _source;
     }
@@ -49,11 +49,11 @@ public class WhenConnectionAnchors {
     public void increseCount() {
         _count++;
     }
-    
+
     public int getCount() {
         return _count;
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;

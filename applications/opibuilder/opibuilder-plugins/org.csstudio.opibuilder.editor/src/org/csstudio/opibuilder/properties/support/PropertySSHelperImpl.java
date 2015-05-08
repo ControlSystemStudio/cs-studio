@@ -113,7 +113,7 @@ public class PropertySSHelperImpl extends PropertySSHelper {
         return new PVNamePropertyDescriptor(prop_id, description, detaileDescription);
     }
 
-    
+
     @Override
     public PropertyDescriptor getStringTablePropertyDescriptor(String prop_id,
             String description, TitlesProvider tilesProvider,
@@ -139,6 +139,6 @@ public class PropertySSHelperImpl extends PropertySSHelper {
         return null;
     }
 
-    
+
 
 }

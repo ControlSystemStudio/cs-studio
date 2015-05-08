@@ -40,11 +40,11 @@ import org.csstudio.remote.management.IManagementCommand;
  * extension point. Instances of this class contain a description of the command
  * and a reference to its implementation.
  * </p>
- * 
+ *
  * <p>
  * Instances of this class are created using the Builder pattern.
  * </p>
- * 
+ *
  * @author Joerg Rathlev
  */
 final class CommandContribution {
@@ -63,7 +63,7 @@ final class CommandContribution {
 
     /**
      * Private constructor which is called only by the {@link Builder}.
-     * 
+     *
      * @param builder
      *            the builder.
      */
@@ -87,7 +87,7 @@ final class CommandContribution {
 
     /**
      * Returns the description of the command.
-     * 
+     *
      * @return the description of the command.
      */
     CommandDescription getDescription() {
@@ -96,7 +96,7 @@ final class CommandContribution {
 
     /**
      * Returns the implementation of the command.
-     * 
+     *
      * @return the implementation of the command.
      */
     IManagementCommand getCommandImplementation() {
@@ -105,7 +105,7 @@ final class CommandContribution {
 
     /**
      * Returns the dynamic enumeration values for the specified parameter.
-     * 
+     *
      * @param parameterId
      *            the parameter identifier.
      * @return an array of enumeration values.
@@ -121,7 +121,7 @@ final class CommandContribution {
                     " is not a dynamic enumeration parameter");
         }
     }
-    
+
     /**
      * Instances of this class are responsible for associating a parameter
      * definition with the relevant {@link IDynamicParameterValues}.
@@ -132,7 +132,7 @@ final class CommandContribution {
 
         /**
          * Creates a new parameter contribution.
-         * 
+         *
          * @param definition
          *            the parameter definition.
          * @param dynamicValues
@@ -146,7 +146,7 @@ final class CommandContribution {
             _dynamicValues = dynamicValues;
         }
     }
-    
+
     /**
      * Builder for {@link CommandContribution} objects.
      */
@@ -155,7 +155,7 @@ final class CommandContribution {
         private String _label;
         private IManagementCommand _implementation;
         private List<ParameterContribution> _parameters;
-        
+
         /**
          * Creates a new {@link CommandContribution} builder.
          */
@@ -165,7 +165,7 @@ final class CommandContribution {
 
         /**
          * Sets the identifier of the command.
-         * 
+         *
          * @param id
          *            the identifier.
          * @return this builder.
@@ -177,7 +177,7 @@ final class CommandContribution {
 
         /**
          * Sets the label of the command.
-         * 
+         *
          * @param label
          *            the label.
          * @return this builder.
@@ -189,7 +189,7 @@ final class CommandContribution {
 
         /**
          * Sets the implementation of the management command.
-         * 
+         *
          * @param implementation
          *            the implementation.
          * @return this builder.
@@ -201,7 +201,7 @@ final class CommandContribution {
 
         /**
          * Adds a parameter to the management command.
-         * 
+         *
          * @param definition
          *            the parameter definition.
          * @param dynamicValues
@@ -231,7 +231,7 @@ final class CommandContribution {
         /**
          * Creates the command contribution based on the settings of this
          * builder.
-         * 
+         *
          * @return the command contribution.
          * @throws IllegalStateException
          *             if not all settings required to build a

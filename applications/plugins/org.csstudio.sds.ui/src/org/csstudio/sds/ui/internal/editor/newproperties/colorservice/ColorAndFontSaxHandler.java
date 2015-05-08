@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.ui.internal.editor.newproperties.colorservice;
@@ -30,17 +30,17 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**
- * 
+ *
  * SAX handler for colors and fonts. <br>
- * 
+ *
  * @author Kai Meyer (C1 WPS)
  * @version $Revision: 1.2 $
- * 
+ *
  */
 public final class ColorAndFontSaxHandler extends AbstractColorAndFontHandler {
-    
+
     private Map<String, NamedStyle> _styles;
-    
+
     private NamedStyle _currentStyle;
 
     /**
@@ -49,17 +49,17 @@ public final class ColorAndFontSaxHandler extends AbstractColorAndFontHandler {
     public ColorAndFontSaxHandler() {
         _styles = new HashMap<String, NamedStyle>();
     }
-    
+
     @Override
     public void startDocument() throws SAXException {
         super.startDocument();
         reset();
     }
-    
+
     public void reset() {
         _styles.clear();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -81,7 +81,7 @@ public final class ColorAndFontSaxHandler extends AbstractColorAndFontHandler {
             }
         }
     }
-    
+
     private NamedStyle createStyle(Attributes attributes) throws SAXException {
         try {
             String name = attributes.getValue(ColorAndFontConstants.NAME_TAG.getIdentifier());
@@ -92,7 +92,7 @@ public final class ColorAndFontSaxHandler extends AbstractColorAndFontHandler {
             throw new SAXException("Couldn't create Style", e);
         }
     }
-    
+
     private NamedColor createColor(Attributes attributes) throws SAXException {
         try {
             String name = attributes.getValue(ColorAndFontConstants.NAME_TAG.getIdentifier());
@@ -104,7 +104,7 @@ public final class ColorAndFontSaxHandler extends AbstractColorAndFontHandler {
             throw new SAXException("Couldn't create Color", e);
         }
     }
-    
+
     private NamedFont createFont(Attributes attributes) throws SAXException {
         try {
             String name = attributes.getValue(ColorAndFontConstants.NAME_TAG.getIdentifier());
@@ -133,7 +133,7 @@ public final class ColorAndFontSaxHandler extends AbstractColorAndFontHandler {
             _currentStyle = null;
         }
     }
-    
+
     public NamedStyle getStyle(String styleName) {
         return _styles.get(styleName);
     }

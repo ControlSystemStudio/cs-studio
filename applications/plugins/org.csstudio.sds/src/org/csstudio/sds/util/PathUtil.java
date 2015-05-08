@@ -5,9 +5,9 @@ import org.eclipse.core.runtime.Path;
 
 /**
  * Utility to deal with relative paths.
- * 
+ *
  * @author Kai Meyer (C1 WPS)
- * 
+ *
  */
 public final class PathUtil {
 
@@ -26,12 +26,12 @@ public final class PathUtil {
     /**
      * Creates a new relativ {@link IPath} based on the given path, but relative
      * to the anchorPath.
-     * 
+     *
      * If the parameters are
      * "C:/Program/Development/SDS/Scripts/Script.css-sdss" as path and
      * "C:/Program/Development/SDS/Display.css-sds" as anchorPath the result
      * will be "/Scripts/Script.css-sdss".
-     * 
+     *
      * @param path
      *            The path to convert
      * @param anchorPath
@@ -76,7 +76,7 @@ public final class PathUtil {
 
     /**
      * Returns the device of the given path.
-     * 
+     *
      * @param path
      *            The {@link IPath}
      * @return The device (ending with ':') or <code>null</code> if no device
@@ -93,7 +93,7 @@ public final class PathUtil {
 
     /**
      * Removes the device of the given path.
-     * 
+     *
      * @param path
      *            The {@link IPath}
      * @return The path without the device
@@ -110,11 +110,11 @@ public final class PathUtil {
     /**
      * Creates a new absolute {@link IPath} based on the relativePath and the
      * anchorPath.
-     * 
+     *
      * If the parameters are "/Scripts/Script.css-sdss" as path and
      * "C:/Program/Development/SDS/Display.css-sds" as anchorPath the result
      * will be "C:/Program/Development/SDS/Scripts/Script.css-sdss".
-     * 
+     *
      * @param relativePath
      *            The path to convert
      * @param anchorPath

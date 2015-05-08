@@ -24,14 +24,14 @@ public class BoolSwitchEditPart extends AbstractBoolControlEditPart{
         final BoolSwitchModel model = getWidgetModel();
 
         BoolSwitchFigure boolSwitch = new BoolSwitchFigure();
-        
-        initializeCommonFigureProperties(boolSwitch, model);            
+
+        initializeCommonFigureProperties(boolSwitch, model);
         boolSwitch.setEffect3D(model.isEffect3D());
         return boolSwitch;
-        
-        
+
+
     }
-    
+
     @Override
     public BoolSwitchModel getWidgetModel() {
         return (BoolSwitchModel)getModel();
@@ -40,7 +40,7 @@ public class BoolSwitchEditPart extends AbstractBoolControlEditPart{
     @Override
     protected void registerPropertyChangeHandlers() {
         registerCommonPropertyChangeHandlers();
-        
+
         //effect 3D
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -51,9 +51,9 @@ public class BoolSwitchEditPart extends AbstractBoolControlEditPart{
                 return true;
             }
         };
-        setPropertyChangeHandler(BoolSwitchModel.PROP_EFFECT3D, handler);    
-        
-        
+        setPropertyChangeHandler(BoolSwitchModel.PROP_EFFECT3D, handler);
+
+
     }
 
 }

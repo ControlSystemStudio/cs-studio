@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.shift.ui;
 
@@ -35,7 +35,7 @@ public class ShiftWidgetTest extends ApplicationWindow {
 
     /**
      * Create contents of the application window.
-     * 
+     *
      * @param parent
      */
     @Override
@@ -44,7 +44,7 @@ public class ShiftWidgetTest extends ApplicationWindow {
         container.setLayout(new GridLayout(5, false));
         final ShiftWidget shiftWidget = new ShiftWidget(container, SWT.WRAP, false, false);
         shiftWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 5, 1));
-    
+
         Button btnNewButton = new Button(container, SWT.NONE);
         btnNewButton.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -60,7 +60,7 @@ public class ShiftWidgetTest extends ApplicationWindow {
             }
         });
         btnNewButton.setText("test shift");
-    
+
         Button btnNewButton_1 = new Button(container, SWT.NONE);
         btnNewButton_1.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -81,7 +81,7 @@ public class ShiftWidgetTest extends ApplicationWindow {
 
     /**
      * Launch the application.
-     * 
+     *
      * @param args
      */
     public static void main(String args[]) {
@@ -97,7 +97,7 @@ public class ShiftWidgetTest extends ApplicationWindow {
 
     /**
      * Configure the shell.
-     * 
+     *
      * @param newShell
      */
     @Override

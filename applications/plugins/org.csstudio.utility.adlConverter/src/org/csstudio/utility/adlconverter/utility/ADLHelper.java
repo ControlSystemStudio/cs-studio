@@ -49,9 +49,9 @@ import org.slf4j.LoggerFactory;
  * @since 05.09.2007
  */
 public final class ADLHelper {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(ADLHelper.class);
-    
+
     /**
      * The minimum font size that can calculated.
      */

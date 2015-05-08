@@ -16,15 +16,15 @@ import org.eclipse.jface.action.IAction;
  *
  */
 public class ClearXYGraphAction extends AbstractWidgetTargetAction {
-    
+
     public void run(IAction action) {
         getSelectedXYGraph().clearGraph();
-        
+
     }
-    
+
     /**
      * Gets the widget models of all currently selected EditParts.
-     * 
+     *
      * @return a list with all widget models that are currently selected
      */
     protected final XYGraphEditPart getSelectedXYGraph() {

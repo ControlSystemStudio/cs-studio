@@ -11,18 +11,18 @@ import org.eclipse.swt.widgets.Composite;
  * Represents a table row being used in a {@link ConvenienceTableWrapper}. This
  * interface allows for an easy adaption of domain objects to be displayed and
  * edited in a table.
- * 
+ *
  * All aspects of the table representation (colors, fonts etc.) and the editing
  * behaviour (editing allowed, celleditor) can be controlled via this interface.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public interface ITableRow extends Comparable<ITableRow> {
 
     /**
      * Returns the value which is displayed in the specified column.
-     * 
+     *
      * @param column
      *            the column index
      * @return the value for the specified column
@@ -32,17 +32,17 @@ public interface ITableRow extends Comparable<ITableRow> {
     /**
      * Returns the editing value which is displayed in the specified column when
      * it switches to edit mode.
-     * 
+     *
      * @param column
      *            the column index
-     * 
+     *
      * @return the editing value for the specified column
      */
     String getEditingValue(int column);
 
     /**
      * Returns true, if the value in the specified column can be edited.
-     * 
+     *
      * @param column
      *            the column index
      * @return true, if the value in the specified column can be edited
@@ -51,7 +51,7 @@ public interface ITableRow extends Comparable<ITableRow> {
 
     /**
      * Returns the cell editor for the specified column.
-     * 
+     *
      * @param column
      *            the column index
      * @param parent
@@ -62,7 +62,7 @@ public interface ITableRow extends Comparable<ITableRow> {
 
     /**
      * This method is called, when the value in the specified column was edited.
-     * 
+     *
      * @param column
      *            the column index
      * @param value
@@ -74,7 +74,7 @@ public interface ITableRow extends Comparable<ITableRow> {
 
     /**
      * Returns the background color for the specified column.
-     * 
+     *
      * @param column
      *            the column index
      * @return the background color for the specified column
@@ -83,7 +83,7 @@ public interface ITableRow extends Comparable<ITableRow> {
 
     /**
      * Returns the foreground color for the specified column.
-     * 
+     *
      * @param column
      *            the column index
      * @return the foreground color for the specified column
@@ -92,7 +92,7 @@ public interface ITableRow extends Comparable<ITableRow> {
 
     /**
      * Returns the font for the specified column.
-     * 
+     *
      * @param column
      *            the column index
      * @return the font for the specified column
@@ -101,7 +101,7 @@ public interface ITableRow extends Comparable<ITableRow> {
 
     /**
      * Returns the image for the specified column.
-     * 
+     *
      * @param column
      *            the column index
      * @return the image for the specified column
@@ -110,7 +110,7 @@ public interface ITableRow extends Comparable<ITableRow> {
 
     /**
      * Returns a tool tip for this row.
-     * 
+     *
      * @return a tool tip
      */
     String getTooltip();

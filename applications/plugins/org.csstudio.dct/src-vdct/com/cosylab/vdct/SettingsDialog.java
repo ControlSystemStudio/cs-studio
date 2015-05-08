@@ -34,7 +34,7 @@ import com.cosylab.vdct.util.UniversalFileFilter;
  * @author  ilist
  */
 public class SettingsDialog extends javax.swing.JDialog {
-    
+
     /** Creates new form SettingsDialog */
     public SettingsDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -42,9 +42,9 @@ public class SettingsDialog extends javax.swing.JDialog {
         initModel();
         loadSettings();
     }
-    
+
     /**
-     * 
+     *
      */
     private void initModel() {
         jSliderDoubleClickSmudge.setModel(new DefaultBoundedRangeModel(){
@@ -60,7 +60,7 @@ public class SettingsDialog extends javax.swing.JDialog {
                 DoubleClickProxy.setAwt_multiclick_smudge(newValue);
             }
         });
-        
+
         jSliderDoubleClickSpeed.setModel(new DefaultBoundedRangeModel(){
                 public int getMaximum() {
                     return 1000;
@@ -74,10 +74,10 @@ public class SettingsDialog extends javax.swing.JDialog {
                     DoubleClickProxy.setAwt_multiclick_time(newValue);
                 }
         });
-        
+
         DoubleClickProxy proxy = new DoubleClickProxy(new MouseInputAdapter() {
             public void mouseClicked(MouseEvent e) {
-                jLabelTest.setText(new Integer(e.getClickCount()).toString());                
+                jLabelTest.setText(new Integer(e.getClickCount()).toString());
             }
         });
         jPanelTesting.addMouseListener(proxy);
@@ -91,25 +91,25 @@ public class SettingsDialog extends javax.swing.JDialog {
                     }
         });
 
-        jCheckBoxEnableGrouping.setModel(new JToggleButton.ToggleButtonModel(){    
+        jCheckBoxEnableGrouping.setModel(new JToggleButton.ToggleButtonModel(){
                     public void setSelected(boolean b) {
                         super.setSelected(b);
-                        
+
                         jLabelGroupingSeparator.setEnabled(b);
                         jTextFieldGroupingSeparator.setEnabled(b);
-                    }            
+                    }
         });
-        
-        jCheckBoxDisplayNavigator.setModel(new JToggleButton.ToggleButtonModel(){    
+
+        jCheckBoxDisplayNavigator.setModel(new JToggleButton.ToggleButtonModel(){
             public void setSelected(boolean b) {
                 super.setSelected(b);
                 jLabel13.setEnabled(b);
                 jLabel14.setEnabled(b);
                 jSpinnerNavigatorWidth.setEnabled(b);
                 jSpinnerNavigatorHeight.setEnabled(b);
-            }            
+            }
     });
-        
+
         jTextFieldLogo.getDocument().addDocumentListener(new DocumentListener() {
                     public void changedUpdate(DocumentEvent e) {
                         // we won't ever get this with a PlainDocument
@@ -122,9 +122,9 @@ public class SettingsDialog extends javax.swing.JDialog {
                     public void removeUpdate(DocumentEvent e) {
                         update(e);
                     }
-            
+
                     private void update(DocumentEvent e) {
-                        File f = new File(jTextFieldLogo.getText());            
+                        File f = new File(jTextFieldLogo.getText());
                         boolean ok = f.canRead();
                         jLabelWarning.setVisible(!ok);
 
@@ -132,14 +132,14 @@ public class SettingsDialog extends javax.swing.JDialog {
                         jPanelLegend.repaint();
                         /*if (ok) jLabelImage.setText("<html><img src=\"file://"+f.getPath()+"\"></img>");
                         else jLabelImage.setText("");*/
-                    }                        
+                    }
                 });
-                
+
         JPanel mypanel = new JPanel() {
             Image img = null;
             String currImage = "";
             int logoWidth, logoHeight;
-            
+
             private Image getImage() {
                 if (img == null || !currImage.equals(jTextFieldLogo.getText())) {
                                         img = Toolkit.getDefaultToolkit().getImage(jTextFieldLogo.getText());
@@ -152,18 +152,18 @@ public class SettingsDialog extends javax.swing.JDialog {
                                         catch (InterruptedException ie)
                                         {
                                         }
-                    
+
                                         logoWidth = img.getWidth(null); logoHeight = img.getHeight(null);
                                         int maxLogo =Math.max(logoWidth,logoHeight);
-                                        if (maxLogo > 200) {     
-                                            logoHeight = logoHeight * 200 / maxLogo; 
-                                            logoWidth = logoWidth * 200 / maxLogo; 
+                                        if (maxLogo > 200) {
+                                            logoHeight = logoHeight * 200 / maxLogo;
+                                            logoWidth = logoWidth * 200 / maxLogo;
                                         }
                 }
                 return img;
             }
-            
-            public void paint(Graphics g) {                                    
+
+            public void paint(Graphics g) {
                     g.drawImage(getImage(), 0, 0, logoWidth, logoHeight, null);
             }
         };
@@ -173,29 +173,29 @@ public class SettingsDialog extends javax.swing.JDialog {
     }
 
     /**
-     * 
+     *
      */
     private void loadSettings() {
         Settings s = Settings.getInstance();
         jSpinnerRecordNameLength.setValue(new Integer(s.getRecordLength()));
-        
+
         jCheckBoxEnableGrouping.setSelected(s.getGrouping());
         if (Constants.GROUP_SEPARATOR=='\0')
                 jTextFieldGroupingSeparator.setText("");
             else
                 jTextFieldGroupingSeparator.setText(String.valueOf((char)Constants.GROUP_SEPARATOR));
-    
-        
+
+
         jCheckBoxGlobalMacros.setSelected(s.getGlobalMacros());
         jCheckBoxCapFast.setSelected(s.getHierarhicalNames());
-        
+
         jSpinnerWidth.setValue(new Integer(s.getCanvasWidth()));
         jSpinnerHeight.setValue(new Integer(s.getCanvasHeight()));
-        
+
         // double click is global
         DoubleClickProxy.update();
         jCheckBoxSilhouetteMoving.setSelected(s.getFastMove());
-        
+
         jCheckBoxDefaultVisiblity.setSelected(s.isDefaultVisibility());
         jCheckBoxLinksVisibility.setSelected(s.isHideLinks());
 
@@ -218,38 +218,38 @@ public class SettingsDialog extends javax.swing.JDialog {
         jSpinnerNavigatorWidth.setValue(new Integer(s.getLegendNavigatorWidth()));
         jSpinnerNavigatorHeight.setValue(new Integer(s.getLegendNavigatorHeight()));
     }
-    
+
     private void saveSettings() {
         Settings s = Settings.getInstance();
 
         s.setRecordLength(((Number)jSpinnerRecordNameLength.getValue()).intValue());
-        
+
         s.setGrouping(jCheckBoxEnableGrouping.isSelected());
-        if (jTextFieldGroupingSeparator.getText().length()>0) 
+        if (jTextFieldGroupingSeparator.getText().length()>0)
             s.setGroupSeparator(jTextFieldGroupingSeparator.getText().charAt(0));
-        else 
+        else
             s.setGroupSeparator('\0');
-                    
+
         s.setGlobalMacros(jCheckBoxGlobalMacros.isSelected());
         s.setHierarhicalNames(jCheckBoxCapFast.isSelected());
-        
+
         s.setCanvasWidth(((Number)jSpinnerWidth.getValue()).intValue());
         s.setCanvasHeight(((Number)jSpinnerHeight.getValue()).intValue());
         DrawingSurface.getInstance().reset();
-        
+
         // double click is global
         s.setDoubleClickSpeed(jSliderDoubleClickSpeed.getValue());
         s.setDoubleClickSmudge(jSliderDoubleClickSmudge.getValue());
         DoubleClickProxy.update();
-        
+
         s.setFastMove(jCheckBoxSilhouetteMoving.isSelected());
-        
+
         s.setDefaultVisibility(jCheckBoxDefaultVisiblity.isSelected());
         s.setHideLinks(jCheckBoxLinksVisibility.isSelected());
         Group.getRoot().updateFields();
-        
+
         s.setWireCrossingAvoidance(jCheckBoxWireCrossingAvoidance.isSelected());
-        
+
         // legend
         s.setLegendLogo(jTextFieldLogo.getText());
         s.setLegendVisibility(Integer.parseInt(buttonGroupVisibility.getSelection().getActionCommand()));
@@ -906,7 +906,7 @@ public class SettingsDialog extends javax.swing.JDialog {
 
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int retval = chooser.showOpenDialog(this);
-        if(retval == JFileChooser.APPROVE_OPTION) {            
+        if(retval == JFileChooser.APPROVE_OPTION) {
             File theFile = chooser.getSelectedFile();
             jTextFieldLogo.setText(theFile.getPath());
         }
@@ -921,14 +921,14 @@ public class SettingsDialog extends javax.swing.JDialog {
         saveSettings();
         dispose();
     }//GEN-LAST:event_jButtonOkActionPerformed
-    
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
         new SettingsDialog(new javax.swing.JFrame(), true).setVisible(true);
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroupLocation;
     private javax.swing.ButtonGroup buttonGroupVisibility;
@@ -996,5 +996,5 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.JToggleButton jToggleButtonTL;
     private javax.swing.JToggleButton jToggleButtonTR;
     // End of variables declaration//GEN-END:variables
-    
+
 }

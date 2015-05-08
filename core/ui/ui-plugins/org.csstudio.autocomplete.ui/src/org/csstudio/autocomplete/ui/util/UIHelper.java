@@ -11,15 +11,15 @@ import org.csstudio.autocomplete.ui.AutoCompleteUIPlugin;
 
 /**
  * Helper for accessing UI.
- * 
+ *
  * <p>
  * This implementation provides the common support. Derived classes can add
  * support that is specific to RCP or RAP.
- * 
+ *
  * <p>
  * Client code should obtain a {@link UIHelper} via the
  * {@link AutoCompleteUIPlugin}
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 @SuppressWarnings("nls")

@@ -5,7 +5,7 @@ import org.csstudio.utility.adlparser.IImageKeys;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 
 /**
- * 
+ *
  * @author hammonds
  *
  */

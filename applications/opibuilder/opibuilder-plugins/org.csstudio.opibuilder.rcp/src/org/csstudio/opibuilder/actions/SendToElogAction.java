@@ -32,19 +32,19 @@ import org.eclipse.ui.handlers.IHandlerService;
 
 /**
  * Action to send image of plot to logbook.
- * 
+ *
  * @author Kay Kasemir, Xihui Chen
  */
 public class SendToElogAction extends Action {
     final private IOPIRuntime opiRuntime;
-    
+
     public static final String ID = "org.csstudio.opibuilder.actions.sendToElog";
-    
+
     public static final String OPEN_LOGENTRY_BUILDER_DIALOG_ID = "org.csstudio.logbook.ui.OpenLogEntryBuilderDialog";
-    
+
     /**
      * Initialize
-     * 
+     *
      * @param part
      *            Parent shell
      * @param graph
@@ -93,7 +93,7 @@ public class SendToElogAction extends Action {
 
     /**
      * Make a logbook entry.
-     * 
+     *
      * @param text text of the log.
      * @param filename
      *            the local file system file path.
@@ -108,10 +108,10 @@ public class SendToElogAction extends Action {
                 log.attach(AttachmentBuilder.attachment(filename).inputStream(
                         new FileInputStream(filename)));
             }
-            
+
             //get the command from plugin.xml
             IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-            
+
             List<LogEntryBuilder> logList = new ArrayList<LogEntryBuilder>();
             logList.add(log);
             Event event = new Event();

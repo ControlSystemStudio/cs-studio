@@ -9,13 +9,13 @@ import de.desy.language.snl.diagram.model.SNLDiagram;
 
 /**
  * Factory that maps model elements to edit parts.
- * 
+ *
  */
 public class ShapesEditPartFactory implements EditPartFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.gef.EditPartFactory#createEditPart(org.eclipse.gef.EditPart,
      * java.lang.Object)
@@ -31,7 +31,7 @@ public class ShapesEditPartFactory implements EditPartFactory {
 
     /**
      * Maps an object to an EditPart.
-     * 
+     *
      * @throws RuntimeException
      *             if no match was found (programming error)
      */

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene.opiwidgets;
 
@@ -9,7 +9,7 @@ import static org.csstudio.graphene.opiwidgets.ModelPropertyConstants.*;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class LineGraph2DWidgetEditpart extends AbstractPointDatasetGraph2DWidgetEditpart<LineGraph2DWidgetFigure, LineGraph2DWidgetModel> {
 
@@ -19,7 +19,7 @@ public class LineGraph2DWidgetEditpart extends AbstractPointDatasetGraph2DWidget
         configure(figure, getWidgetModel());
         return figure;
     }
-    
+
     @Override
     protected void configure(LineGraph2DWidgetFigure figure, LineGraph2DWidgetModel model) {
         super.configure(figure, model);

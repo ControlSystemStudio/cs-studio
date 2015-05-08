@@ -17,11 +17,11 @@ import org.eclipse.gef.commands.Command;
  */
 public class ChangeOrientationCommand extends Command {
 
-    private AbstractWidgetModel widgetModel;    
-    
+    private AbstractWidgetModel widgetModel;
+
     private OrientationType orientationType;
-    
-    public ChangeOrientationCommand(AbstractWidgetModel widgetModel, 
+
+    public ChangeOrientationCommand(AbstractWidgetModel widgetModel,
             OrientationType orientationType) {
         this.widgetModel = widgetModel;
         this.orientationType = orientationType;
@@ -45,9 +45,9 @@ public class ChangeOrientationCommand extends Command {
         default:
             break;
         }
-        
+
     }
-    
+
     @Override
     public void undo() {
         switch (orientationType) {
@@ -66,5 +66,5 @@ public class ChangeOrientationCommand extends Command {
         default:
             break;
         }    }
-    
+
 }

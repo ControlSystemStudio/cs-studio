@@ -23,13 +23,13 @@ import org.eclipse.swt.widgets.Composite;
  *  @author Kay Kasemir
  */
 public class AlarmTableLabelProvider extends CellLabelProvider
-{    
+{
     /** Mapping of severities to colors */
     final private SeverityColorProvider color_provider;
 
     /** Column handled by this label provider */
     final private ColumnInfo column;
-    
+
     /** Initialize
      *  @param parent Parent widget (for dispose listener)
      *  @param color_provider Color provider for severity values
@@ -64,7 +64,7 @@ public class AlarmTableLabelProvider extends CellLabelProvider
         switch (column)
         {
         case ACK:
-            cell.setImage(alarm.getSeverity().isActive() 
+            cell.setImage(alarm.getSeverity().isActive()
                     ? CheckBoxImages.getInstance(cell.getControl()).getImage(false)
                     : CheckBoxImages.getInstance(cell.getControl()).getImage(true));
             break;
@@ -127,11 +127,11 @@ public class AlarmTableLabelProvider extends CellLabelProvider
             break;
         }
     }
-    
+
     /** Returns an icon representing the severity/state of the given alarm.
      *  There are 7 different icons: one for disconnected alarms, and two (major/minor) icons
      *  for each of the following: alarm, alarm acknowledged, alarm cleared but not acknowledged.
-     * 
+     *
      *  @param pv the alarm for which the icon should be returned
      *  @return the icon representing the alarm severity
      */
@@ -142,24 +142,24 @@ public class AlarmTableLabelProvider extends CellLabelProvider
         final AlarmIcons icons = AlarmIcons.getInstance();
         switch(severity)
         {
-            case UNDEFINED_ACK: 
+            case UNDEFINED_ACK:
             case INVALID_ACK:
                 return icons.getInvalidAcknowledged();
-            case UNDEFINED: 
+            case UNDEFINED:
             case INVALID:
                 return currentSeverity == SeverityLevel.OK ?
-                       icons.getInvalidClearedNotAcknowledged() : icons.getInvalidNotAcknowledged(); 
+                       icons.getInvalidClearedNotAcknowledged() : icons.getInvalidNotAcknowledged();
             case MAJOR:
                 return currentSeverity == SeverityLevel.OK ?
                        icons.getMajorClearedNotAcknowledged() : icons.getMajorNotAcknowledged();
             case MAJOR_ACK:
                 return icons.getMajorAcknowledged();
             case MINOR:
-                return currentSeverity == SeverityLevel.OK ? 
+                return currentSeverity == SeverityLevel.OK ?
                        icons.getMinorClearedNotAcknowledged() : icons.getMinorNotAcknowledged();
             case MINOR_ACK:
-                return icons.getMinorAcknowledged(); 
-            case OK: 
+                return icons.getMinorAcknowledged();
+            case OK:
             default:
                 return null;
         }

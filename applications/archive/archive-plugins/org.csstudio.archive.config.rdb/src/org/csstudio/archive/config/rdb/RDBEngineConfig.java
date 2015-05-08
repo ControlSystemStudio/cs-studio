@@ -16,7 +16,7 @@ import org.csstudio.archive.config.EngineConfig;
 public class RDBEngineConfig extends EngineConfig
 {
     final private int id;
-    
+
     /** Initialize
      *  @param id
      *  @param name

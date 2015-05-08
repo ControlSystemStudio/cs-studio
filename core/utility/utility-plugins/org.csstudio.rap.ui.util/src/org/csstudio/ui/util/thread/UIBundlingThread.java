@@ -11,17 +11,17 @@ import org.eclipse.swt.widgets.Display;
 
 
 /**
- * 
+ *
  * A singleton back thread which will help to execute tasks in UI thread.
  * This way we avoid slow downs, that occur on several
  * operating systems, when Display.asyncExec() is called very often from
  * background threads.
- * 
+ *
  * This thread sleeps for a time, which is below the processing capacity of
  * human eyes and brain - so the user will not feel any delay.
- * 
+ *
  * @author Sven Wende, Xihui Chen
- * 
+ *
  */
 public final class UIBundlingThread implements Runnable {
     /**
@@ -34,7 +34,7 @@ public final class UIBundlingThread implements Runnable {
      * during the last SLEEP_TIME milliseconds.
      */
     private Queue<DisplayRunnable> tasksQueue;
-    
+
 
     /**
      * Standard constructor.
@@ -48,7 +48,7 @@ public final class UIBundlingThread implements Runnable {
 
     /**
      * Gets the singleton instance.
-     * 
+     *
      * @return the singleton instance
      */
     public static synchronized UIBundlingThread getInstance() {
@@ -61,7 +61,7 @@ public final class UIBundlingThread implements Runnable {
     /**
      * {@inheritDoc}.
      */
-    public void run() {        
+    public void run() {
         if(!tasksQueue.isEmpty())
             processQueue();
     }
@@ -75,22 +75,22 @@ public final class UIBundlingThread implements Runnable {
             taskArray = tasksQueue.toArray();
             tasksQueue.clear();
         }
-        DisplayRunnable r;        
-        for(Object o: taskArray){    
+        DisplayRunnable r;
+        for(Object o: taskArray){
             try {
                 r=(DisplayRunnable)o;
-                if(!r.display.isDisposed() && 
+                if(!r.display.isDisposed() &&
                         DisplayManager.getInstance().isDisplayAlive(r.display))
                     r.display.asyncExec(r.runnable);
-            } catch (Exception e) {                
+            } catch (Exception e) {
             }
         }
-    
+
     }
 
     /**
      * Adds the specified runnable to the queue. It must be called in UI thread.
-     * 
+     *
      * @param runnable
      *            the runnable
      */
@@ -100,11 +100,11 @@ public final class UIBundlingThread implements Runnable {
             throw new RuntimeException("This method must be called in UI thread!");
         tasksQueue.add(new DisplayRunnable(runnable, display));
     }
-    
-    
+
+
     /**
      * Adds the specified runnable to the queue.
-     * 
+     *
      * @param display the display to run the runnable.
      * @param runnable
      *            the runnable
@@ -112,8 +112,8 @@ public final class UIBundlingThread implements Runnable {
     public synchronized void addRunnable(final Display display, final Runnable runnable) {
         tasksQueue.add(new DisplayRunnable(runnable, display));
     }
-    
-    
+
+
     class DisplayRunnable {
         private Runnable runnable;
         private Display display;
@@ -121,7 +121,7 @@ public final class UIBundlingThread implements Runnable {
             this.runnable = runnable;
             this.display = display;
         }
-        
+
     }
 
 }

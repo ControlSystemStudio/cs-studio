@@ -35,7 +35,7 @@ public class ScanSampleFormatter
     final public static String TIME_FORMAT = "HH:mm:ss";
     final private static DateFormat time_format = new SimpleDateFormat(TIME_FORMAT);
 
-    
+
     /** Extract double from sample
      *  @param sample ScanSample
      *  @return Double or NaN if there is no number to extract
@@ -76,7 +76,7 @@ public class ScanSampleFormatter
             return date_format.format(timestamp);
         }
     }
-    
+
     /** Parse a time stamp
      *  @param timestamp Time stamp as returned by <code>format()</code>
      *  @return {@link Date}
@@ -106,7 +106,7 @@ public class ScanSampleFormatter
     }
 
     /** Format date and time in a 'compact' way.
-     * 
+     *
      *  <p>If the time stamp falls within today, only hours .. seconds are displayed.
      *  For a time stamp on a different day from today, the date and time without seconds shown.
      *  @param timestamp {@link Date}
@@ -116,11 +116,11 @@ public class ScanSampleFormatter
     {
         if (timestamp == null)
             return "?";
-        
+
         final Calendar cal = Calendar.getInstance();
         final int year = cal.get(Calendar.YEAR);
         final int day = cal.get(Calendar.DAY_OF_YEAR);
-        
+
         cal.setTime(timestamp);
         if (year == cal.get(Calendar.YEAR)  &&
             day  == cal.get(Calendar.DAY_OF_YEAR))

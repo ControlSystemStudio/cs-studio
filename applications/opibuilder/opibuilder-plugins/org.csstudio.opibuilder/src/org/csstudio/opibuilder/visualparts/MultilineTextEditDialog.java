@@ -22,8 +22,8 @@ import org.eclipse.swt.widgets.Text;
  *
  */
 public class MultilineTextEditDialog extends Dialog {
-    
-    private String title;    
+
+    private String title;
     private String contents;
     private Text text;
 
@@ -50,27 +50,27 @@ public class MultilineTextEditDialog extends Dialog {
         text.setSelection(0, contents.length());
         text.setLayoutData(gridData);
         text.addKeyListener(new KeyListener() {
-            
+
             public void keyReleased(KeyEvent e) {}
-            
-            public void keyPressed(KeyEvent e) {        
-                if (e.character == '\r') { // Return key                
+
+            public void keyPressed(KeyEvent e) {
+                if (e.character == '\r') { // Return key
                     if ((e.stateMask & SWT.CTRL) != 0) {
                         okPressed();
                     }
                 }
-                return;    
+                return;
             }
         });
         return container;
     }
-    
+
     @Override
     protected void okPressed() {
         contents = text.getText();
         super.okPressed();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -83,7 +83,7 @@ public class MultilineTextEditDialog extends Dialog {
     }
 
     public String getResult() {
-            
+
         return contents;
     }
 }

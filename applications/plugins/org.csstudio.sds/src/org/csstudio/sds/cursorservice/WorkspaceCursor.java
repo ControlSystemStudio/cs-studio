@@ -25,7 +25,7 @@ package org.csstudio.sds.cursorservice;
 
 /**
  * A cursor defined by an image file in the workspace.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class WorkspaceCursor extends AbstractCursor {
@@ -37,7 +37,7 @@ public final class WorkspaceCursor extends AbstractCursor {
 
     /**
      * Creates a new workspace cursor.
-     * 
+     *
      * @param id
      *            the id of this cursor.
      * @param title
@@ -50,10 +50,10 @@ public final class WorkspaceCursor extends AbstractCursor {
         assert path != null;
         _path = path;
     }
-    
+
     /**
      * Returns the name of the graphics file for this cursor.
-     * 
+     *
      * @return the name of the graphics file for this cursor.
      */
     public String getGraphicsFile() {

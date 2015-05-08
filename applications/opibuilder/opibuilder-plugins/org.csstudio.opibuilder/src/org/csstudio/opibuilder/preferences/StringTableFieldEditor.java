@@ -30,11 +30,11 @@ public class StringTableFieldEditor extends FieldEditor {
 
     private static final String DECODE_ERROR_MESSAGE = "Failed to decode string table. No quotes are allowed in string table.\n";
 
-    private static final char ROW_SEPARATOR = '|'; 
+    private static final char ROW_SEPARATOR = '|';
 
-    private static final char ITEM_SEPARATOR = ','; 
+    private static final char ITEM_SEPARATOR = ',';
 
-    private static final char QUOTE = '\"'; 
+    private static final char QUOTE = '\"';
 
     protected StringTableEditor tableEditor;
 

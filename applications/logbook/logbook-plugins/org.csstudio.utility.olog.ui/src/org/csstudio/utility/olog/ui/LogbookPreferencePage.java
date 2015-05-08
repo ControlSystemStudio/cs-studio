@@ -32,9 +32,9 @@ public class LogbookPreferencePage extends PreferencePage implements
     private BooleanFieldEditor useAuthenticationField;
     private StringFieldEditor usernameField;
     private PasswordFieldEditor passwordField;
-    
+
     private final IPreferencesService service = Platform.getPreferencesService();
-    
+
     private ScopedPreferenceStore store;
     private Button promptForAuthentication;
     private IEclipsePreferences prefs;
@@ -47,19 +47,19 @@ public class LogbookPreferencePage extends PreferencePage implements
             org.csstudio.utility.olog.Activator.PLUGIN_ID);
         prefs = InstanceScope.INSTANCE.getNode("org.csstudio.logbook.ui");
     }
-    
+
     @Override
     protected Control createContents(Composite parent) {
         final Composite container = new Composite(parent, SWT.LEFT);
         container.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         container.setLayout(new GridLayout());
-        
+
         urlField = new StringFieldEditor(PreferenceConstants.Olog_URL,
             "Olog Service URL:", container);
         urlField.setPage(this);
         urlField.setPreferenceStore(store);
         urlField.load();
-        
+
         useAuthenticationField = new BooleanFieldEditor(
             PreferenceConstants.Use_authentication, "use authentication",
             container);
@@ -76,14 +76,14 @@ public class LogbookPreferencePage extends PreferencePage implements
         useAuthenticationField.setPage(this);
         useAuthenticationField.setPreferenceStore(store);
         useAuthenticationField.load();
-                
+
         usernameField = new StringFieldEditor(PreferenceConstants.Username,
             "username:", container);
         usernameField.setEnabled(useAuthenticationField.getBooleanValue(), container);
         usernameField.setPage(this);
         usernameField.setPreferenceStore(store);
         usernameField.load();
-        
+
         passwordField = new PasswordFieldEditor(org.csstudio.utility.olog.Activator.PLUGIN_ID,
             PreferenceConstants.Password,
             "user password:", container);
@@ -91,35 +91,35 @@ public class LogbookPreferencePage extends PreferencePage implements
         passwordField.setPage(this);
         passwordField.setPreferenceStore(store);
         passwordField.load();
-        
+
         promptForAuthentication = new Button(container, SWT.CHECK);
         promptForAuthentication.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
         promptForAuthentication.setText("Prompt User for authentication with each log entry creation");
         promptForAuthentication.setSelection(service.getBoolean("org.csstudio.logbook.ui","Autenticate.user", false, null));
-            
+
         Label labelDefaultLogbook = new Label(container, SWT.NONE);
         labelDefaultLogbook.setText("Default logbook:");
-        
+
         defaultLogbook = new Text(container, SWT.BORDER);
         defaultLogbook.setText(service.getString("org.csstudio.logbook.ui","Default.logbook", "", null));
         defaultLogbook.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        
+
         Label labelPageSize = new Label(container, SWT.NONE);
         labelPageSize.setText("Page Size:");
-        
+
         pageSize = new Text(container, SWT.BORDER);
         pageSize.setText(String.valueOf(service.getInt("org.csstudio.logbook.ui","Result.size", 100, null)));
         pageSize.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        
-        return container;        
+
+        return container;
     }
-    
+
         @Override
         public boolean performOk() {
             urlField.store();
             useAuthenticationField.store();
             usernameField.store();
-            passwordField.store();           
+            passwordField.store();
             try {
             prefs.put("Autenticate.user", promptForAuthentication.getSelection()? "true":"false");
             prefs.put("Default.logbook", defaultLogbook.getText());
@@ -128,10 +128,10 @@ public class LogbookPreferencePage extends PreferencePage implements
         } catch (BackingStoreException e) {
         e.printStackTrace();
         }
-            return super.performOk();    
-            
+            return super.performOk();
+
         }
-    
+
     @Override
     protected void performDefaults() {
         urlField.loadDefault();

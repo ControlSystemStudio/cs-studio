@@ -34,14 +34,14 @@ public class VTableDisplayEditPart extends AbstractSelectionWidgetEditpart<VTabl
                 final PVWriter<Object> pvWriter = PVManager.write(channel(model.getSelectionPv()))
                         .async();
                 widget.addDisposeListener(new DisposeListener() {
-                    
+
                     @Override
                     public void widgetDisposed(DisposeEvent e) {
                         pvWriter.close();
                     }
                 });
                 widget.addPropertyChangeListener(new PropertyChangeListener() {
-                    
+
                     @Override
                     public void propertyChange(PropertyChangeEvent evt) {
                         if ("selectionValue".equals(evt.getPropertyName())) {

@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 public class Preferences
 {
     final public static String DEFAULT_LOGBOOK = "default_logbook";
-    
+
     /** @return Name of default logbook
      */
     public static String getDefaultLogbook()

@@ -9,7 +9,7 @@ import org.epics.archiverappliance.retrieval.client.GenMsgIterator;
 
 /**
  * Dummy {@code DataRetrieval} implementation.
- * 
+ *
  * @author Miha Novak <miha.novak@cosylab.com>
  */
 public class TestDataRetrieval implements DataRetrieval{
@@ -19,7 +19,7 @@ public class TestDataRetrieval implements DataRetrieval{
      */
     @Override
     public GenMsgIterator getDataForPV(String name, Timestamp start, Timestamp end) {
-        if (name.startsWith(ApplianceArchiveReaderConstants.OP_MEAN) || name.startsWith(ApplianceArchiveReaderConstants.OP_STD) || 
+        if (name.startsWith(ApplianceArchiveReaderConstants.OP_MEAN) || name.startsWith(ApplianceArchiveReaderConstants.OP_STD) ||
                 name.startsWith(ApplianceArchiveReaderConstants.OP_MIN) || name.startsWith(ApplianceArchiveReaderConstants.OP_MAX) ||
                 name.startsWith(ApplianceArchiveReaderConstants.OP_COUNT) || name.startsWith(ApplianceArchiveReaderConstants.OP_NCOUNT)) {
             return new TestGenMsgIteratorOptimized(name, start, end);
@@ -29,7 +29,7 @@ public class TestDataRetrieval implements DataRetrieval{
             } else {
                 return new TestGenMsgIteratorRaw(name,start,end);
             }
-        } 
+        }
     }
 
     /* (non-Javadoc)

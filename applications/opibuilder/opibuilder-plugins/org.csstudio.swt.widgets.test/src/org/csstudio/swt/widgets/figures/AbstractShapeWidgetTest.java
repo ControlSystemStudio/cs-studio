@@ -20,7 +20,7 @@ public abstract class AbstractShapeWidgetTest extends AbstractWidgetTest {
 
     @Override
     public String[] getPropertyNames() {
-        String[] superProps =  super.getPropertyNames();    
+        String[] superProps =  super.getPropertyNames();
         String[] shapeProps = new String[]{
                 "alpha",
                 "lineCap",
@@ -29,12 +29,12 @@ public abstract class AbstractShapeWidgetTest extends AbstractWidgetTest {
         };
         return concatenateStringArrays(superProps, shapeProps);
     }
-    
-    
+
+
     @Override
-    public Object generateTestData(PropertyDescriptor pd, Object seed) {                
+    public Object generateTestData(PropertyDescriptor pd, Object seed) {
         if(pd.getName().equals("lineCap")){
-                if(seed !=null && seed instanceof Integer){    
+                if(seed !=null && seed instanceof Integer){
                     if(((Integer)seed)%3 == 0)
                         return SWT.CAP_FLAT;
                     else if((((Integer)seed)%3 == 1))
@@ -44,16 +44,16 @@ public abstract class AbstractShapeWidgetTest extends AbstractWidgetTest {
                 }else
                     return SWT.CAP_FLAT;
         }else if(pd.getName().equals("lineStyle")){
-            if(seed !=null && seed instanceof Integer){    
-                return (Integer)seed%5+1;        
+            if(seed !=null && seed instanceof Integer){
+                return (Integer)seed%5+1;
             }else
                 return SWT.LINE_SOLID;
         }else if(pd.getName().equals("lineWidth")){
-            if(seed !=null && seed instanceof Integer){    
-                return (Integer)seed%20;        
+            if(seed !=null && seed instanceof Integer){
+                return (Integer)seed%20;
             }
         }
-        
+
         return super.generateTestData(pd, seed);
     }
 }

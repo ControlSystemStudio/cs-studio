@@ -13,9 +13,9 @@ import org.csstudio.dal.simple.SimpleDALBroker;
  * interface:
  * {@link SimpleDALBroker#registerListener(ConnectionParameters, ChannelListener)}
  * .
- * 
+ *
  * The record under test is:
- * 
+ *
  * <pre>
  * record(ai,'Chiller:Pressure:1') {
  *             field(DESC,'DEMO')
@@ -33,16 +33,16 @@ import org.csstudio.dal.simple.SimpleDALBroker;
  *             field(LSV,'NO_ALARM')
  *     }
  * </pre>
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class DataAccessLayerTest3 extends AbstractTestBase {
     private RemoteInfo ri = new RemoteInfo(RemoteInfo.DAL_TYPE_PREFIX + "EPICS", PV, null, null);
 
     public void testAnyData() throws Exception {
         doTestAnyData();
-        
+
         // .. we do this twice to ensure, that additional listeners that
         // are registered for the same channel get correct information, too
         Thread.sleep(1000);

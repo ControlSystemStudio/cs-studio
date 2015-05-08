@@ -37,7 +37,7 @@ public class ExecuteJavaScriptRhinoAction extends AbstractExecuteScriptAction {
     private Script script;
     private ImporterTopLevel scriptScope;
     private Context scriptContext;
-    
+
     @Override
     public ActionType getActionType() {
         return ActionType.EXECUTE_JAVASCRIPT;
@@ -58,59 +58,59 @@ public class ExecuteJavaScriptRhinoAction extends AbstractExecuteScriptAction {
                 Object obj = viewer.getEditPartRegistry().get(getWidgetModel());
                 if(obj != null && obj instanceof AbstractBaseEditPart){
                     Object displayObject = Context.javaToJS(viewer.getContents(), scriptScope);
-                    Object widgetObject = Context.javaToJS(obj, scriptScope);                        
-                    ScriptableObject.putProperty(scriptScope, 
+                    Object widgetObject = Context.javaToJS(obj, scriptScope);
+                    ScriptableObject.putProperty(scriptScope,
                             ScriptService.DISPLAY, displayObject);
-                    ScriptableObject.putProperty(scriptScope, 
+                    ScriptableObject.putProperty(scriptScope,
                             ScriptService.WIDGET, widgetObject);
                 }
-            }            
+            }
         }
         Job job = new Job("Execute JavaScript") {
 
             @Override
             protected IStatus run(IProgressMonitor monitor) {
-                String taskName = isEmbedded()?"Execute JavaScript" : 
+                String taskName = isEmbedded()?"Execute JavaScript" :
                 "Connecting to " + getAbsolutePath();
                 monitor.beginTask(taskName,
-                        IProgressMonitor.UNKNOWN);                
+                        IProgressMonitor.UNKNOWN);
                 runTask();
                 monitor.done();
                 return Status.OK_STATUS;
             }
         };
         job.setUser(true);
-        job.schedule();    
+        job.schedule();
     }
-    
+
     private void runTask() {
         Display display = getWidgetModel().getRootDisplayModel().getViewer().getControl().getDisplay();
 
         try {
             if(script == null){
-                //read file                
-                if(!isEmbedded()) 
-                    getReader();                
-                
+                //read file
+                if(!isEmbedded())
+                    getReader();
+
                 //compile
                 UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
-                    
+
                     public void run() {
                         try {
                             if(isEmbedded())
                                 script = scriptContext.compileString(getScriptText(), "script", 1, null);
-                            else{                                
+                            else{
                                 script = scriptContext.compileReader(getReader(), "script", 1, null);
                             }
                         } catch (Exception e) {
                             final String message = "Failed to compile JavaScript: " + getAbsolutePath();
                             OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
                             ConsoleService.getInstance().writeError(message + "\n" + e.getMessage()); //$NON-NLS-1$
-                        } 
-                        closeReader();    
+                        }
+                        closeReader();
                     }
                 });
-                
+
             }
 
 

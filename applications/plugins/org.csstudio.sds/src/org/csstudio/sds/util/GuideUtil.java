@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.util;
@@ -28,8 +28,8 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.GuideModel;
 
 /**
- * A class, which contains the information which {@link AbstractWidgetModel} is attached 
- * to which vertical and horizontal Guide. 
+ * A class, which contains the information which {@link AbstractWidgetModel} is attached
+ * to which vertical and horizontal Guide.
  * @author Kai Meyer
  *
  */
@@ -42,19 +42,19 @@ public final class GuideUtil {
      * A Map which contains the horizontal guide of the AbstractWidgetModels.
      */
     private Map<AbstractWidgetModel, GuideModel> _horizontalGuides = new HashMap<AbstractWidgetModel, GuideModel>();
-    
+
     /**
      * The instance of the GuideUtil.
      */
     private static GuideUtil _instance;
-    
+
     /**
      * Constructor.
      */
     private GuideUtil() {
         //nothing to do yet
     }
-    
+
     /**
      * Returns the instance of the GuideUtil.
      * @return GuideUtil
@@ -66,7 +66,7 @@ public final class GuideUtil {
         }
         return _instance;
     }
-    
+
     /**
      * Sets the Guide for the given {@link AbstractWidgetModel}.
      * Regarding if the guide is vertical or horizontal
@@ -78,7 +78,7 @@ public final class GuideUtil {
     public void setGuide(final AbstractWidgetModel model, final GuideModel guide) {
         assert guide!=null;
         if (guide.isHorizontal()) {
-            // if the is already attached to another guide, cancel this connection 
+            // if the is already attached to another guide, cancel this connection
             if (_horizontalGuides.containsKey(model)) {
                 if (guide!=_horizontalGuides.get(model)) {
                     _horizontalGuides.get(model).detachPart(model);
@@ -95,7 +95,7 @@ public final class GuideUtil {
             _verticalGuides.put(model, guide);
         }
     }
-    
+
     /**
      * Removes the vertical or the horizontal Guide of a {@link AbstractWidgetModel}
      * depending on the boolean flag.
@@ -111,9 +111,9 @@ public final class GuideUtil {
             _verticalGuides.remove(model);
         }
     }
-    
+
     /**
-     * Returns the guide to which the given {@link AbstractWidgetModel} is attached 
+     * Returns the guide to which the given {@link AbstractWidgetModel} is attached
      * in the given orientation.
      * @param model
      *             The AbstractWidgetModel, which is attached to the guide

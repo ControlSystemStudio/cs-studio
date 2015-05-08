@@ -46,13 +46,13 @@ import org.csstudio.platform.utility.jms.JMSConnectionFactory;
  * connection, session, and the message consumers. A <code>JmsConnection</code>
  * monitors the state of its underlying JMS connection and reports changes to
  * the <code>JmsConnector</code> from which it was created.</p>
- * 
+ *
  * <p>This class is intended to be used only by a <code>JmsConnector</code>.</p>
- * 
+ *
  * @author Joerg Rathlev
  */
 final class JmsConnection implements TransportListener {
-    
+
     /**
      * The initial context factory used for JNDI.
      */
@@ -86,7 +86,7 @@ final class JmsConnection implements TransportListener {
      * The JMS connection.
      */
     private Connection _connection;
-    
+
     /**
      * The JMS connector to which this connection belongs.
      */
@@ -99,7 +99,7 @@ final class JmsConnection implements TransportListener {
 
     /**
      * Creates a new JMS connection.
-     * 
+     *
      * @param connector
      *            the <code>JmsConnector</code> to which this connection
      *            belongs.
@@ -124,7 +124,7 @@ final class JmsConnection implements TransportListener {
      * established successfully. Note that this does not guarantee that the
      * connection is available when this method returns; the connection might
      * fail after it was established but before this method returns.
-     * 
+     *
      * @throws JmsConnectionException
      *             when an error occurs that prevents this connection from
      *             connecting to the JMS broker.
@@ -139,9 +139,9 @@ final class JmsConnection implements TransportListener {
             // transport
             Session session = _connection.createSession(false,
                     Session.AUTO_ACKNOWLEDGE);
-            
+
             createMessageConsumers(session);
-            
+
 //            _log.debug(this, "Starting connection.");
             _connection.start();
 //            _log.debug(this, "Connection started.");
@@ -151,7 +151,7 @@ final class JmsConnection implements TransportListener {
             throw new JmsConnectionException("Error connecting to broker", e);
         }
     }
-    
+
     /**
      * Closes this connection.
      */
@@ -167,14 +167,14 @@ final class JmsConnection implements TransportListener {
 //                _log.warn(this, "Error while closing JMS connection.", e);
             }
         }
-        
+
         // Allow garbage collection to do its work
         _connection = null;
     }
 
     /**
      * Creates the <code>MessageConsumers</code> for the topics.
-     * 
+     *
      * @param session
      *            the session to use.
      * @throws JMSException
@@ -192,7 +192,7 @@ final class JmsConnection implements TransportListener {
 
     /**
      * Looks up the JMS connection factory via JNDI.
-     * 
+     *
      * @return the connection factory.
      * @throws JmsConnectionException
      *             if the connection factory cannot be looked up.
@@ -215,7 +215,7 @@ final class JmsConnection implements TransportListener {
     /**
      * Returns whether this connection is connected. A connection is connected
      * if it is started and its transport is not interrupted.
-     * 
+     *
      * @return <code>true</code> if this connection is connected,
      *         <code>false</code> otherwise.
      */
@@ -235,7 +235,7 @@ final class JmsConnection implements TransportListener {
     /**
      * Called when an unrecoverable exception has occurred on the underlying JMS
      * connection.
-     * 
+     *
      * @param e
      *            the exception.
      */

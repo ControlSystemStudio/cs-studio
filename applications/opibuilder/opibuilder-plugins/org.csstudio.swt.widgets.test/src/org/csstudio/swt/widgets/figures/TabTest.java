@@ -18,24 +18,24 @@ public class TabTest extends AbstractWidgetTest{
         tabFigure.addTab("Tab 1");
         tabFigure.addTab("Tab 2");
         tabFigure.addTab("Tab 3");
-        
+
         return tabFigure;
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
         String[] myProps = new String[]{
-                "activeTabIndex"                
+                "activeTabIndex"
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
     @Override
     public boolean isAutoTest() {
         return true;
-    }        
-    
+    }
+
 }

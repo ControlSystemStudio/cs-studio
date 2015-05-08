@@ -15,21 +15,21 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * Widget that can display a formula that returns a VTable.
- * 
+ *
  * @author carcassi
  */
 public abstract class SelectionBeanComposite extends BeanComposite implements ISelectionProvider {
 
     /**
      * Creates a new display.
-     * 
+     *
      * @param parent
      */
     public SelectionBeanComposite(Composite parent, int style) {
         super(parent, style);
     }
-    
-    
+
+
     private List<ISelectionChangedListener> selectionChangedListeners = new ArrayList<ISelectionChangedListener>();
 
     @Override
@@ -41,7 +41,7 @@ public abstract class SelectionBeanComposite extends BeanComposite implements IS
     public ISelection getSelection() {
         return new StructuredSelection(createSelection());
     }
-    
+
     protected abstract Object createSelection();
 
     @Override
@@ -54,16 +54,16 @@ public abstract class SelectionBeanComposite extends BeanComposite implements IS
     public void setSelection(ISelection selection) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
-    
+
     private void fireSelectionChangedListener() {
         for (ISelectionChangedListener listener : selectionChangedListeners) {
             listener.selectionChanged(new SelectionChangedEvent(this, getSelection()));
         }
     }
-    
+
     protected void forwardPropertyChangeToSelection(String propertyName) {
         addPropertyChangeListener(new PropertyChangeListener() {
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent arg0) {
                 fireSelectionChangedListener();

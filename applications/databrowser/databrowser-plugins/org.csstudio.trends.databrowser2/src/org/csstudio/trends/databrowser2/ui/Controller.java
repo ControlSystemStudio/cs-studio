@@ -370,7 +370,7 @@ public class Controller
                 model.setLegendVisible(visible);
             }
         });
-        
+
 
         model_listener = new ModelListenerAdapter()
         {

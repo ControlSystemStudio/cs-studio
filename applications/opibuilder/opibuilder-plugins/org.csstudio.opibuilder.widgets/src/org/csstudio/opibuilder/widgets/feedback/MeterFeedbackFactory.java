@@ -21,7 +21,7 @@ public class MeterFeedbackFactory extends AbstractFixRatioSizeFeedbackFactory {
     public int getMinimumWidth() {
         return MeterModel.MINIMUM_WIDTH;
     }
-    
+
     @Override
     public int getHeightFromWidth(int width, AbstractWidgetModel widgetModel) {
         return (int) (MeterFigure.HW_RATIO * (width));
@@ -31,5 +31,5 @@ public class MeterFeedbackFactory extends AbstractFixRatioSizeFeedbackFactory {
     public int getWidthFromHeight(int height, AbstractWidgetModel widgetModel) {
         return (int) (height/MeterFigure.HW_RATIO );
     }
-    
+
 }

@@ -41,8 +41,8 @@ public class Activator
             final Bundle bundle = Platform.getBundle(ID);
             final URL image_url = bundle.getEntry(path);
             return ImageDescriptor.createFromURL(image_url);
-            
-//            return AbstractUIPlugin.imageDescriptorFromPlugin(ID, path);                
+
+//            return AbstractUIPlugin.imageDescriptorFromPlugin(ID, path);
         }
         catch (Throwable ex)
         {   // ... otherwise, this is an SWT-only test without the plugin.

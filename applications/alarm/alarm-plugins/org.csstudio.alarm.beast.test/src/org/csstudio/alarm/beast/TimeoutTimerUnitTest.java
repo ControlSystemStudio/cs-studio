@@ -36,7 +36,7 @@ public class TimeoutTimerUnitTest
         timeout.reset();
         Thread.sleep(500);
         assertEquals(0, timed_out);
-        
+
         Thread.sleep(1000);
         // At this point, ~1500 ms should have elapsed, > 1000
         assertEquals(1, timed_out);
@@ -44,7 +44,7 @@ public class TimeoutTimerUnitTest
         // No more timeouts after we've once timed out
         Thread.sleep(2000);
         assertEquals(1, timed_out);
-        
+
         System.out.println("No more timeouts.... Resetting");
 
         // Restart
@@ -55,7 +55,7 @@ public class TimeoutTimerUnitTest
         Thread.sleep(1000);
         // At this point, ~1500 ms should have elapsed, > 1000
         assertEquals(2, timed_out);
-        
+
         // Stop
         timeout.reset();
         timeout.cancel();

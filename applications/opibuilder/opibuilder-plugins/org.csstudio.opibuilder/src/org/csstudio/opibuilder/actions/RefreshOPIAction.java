@@ -19,12 +19,12 @@ import org.eclipse.ui.actions.ActionFactory;
 
 /**
  * Refresh the OPI just like the OPI is reopened.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class RefreshOPIAction extends Action {
-    
+
     final private IOPIRuntime opiRuntime;
 
     public RefreshOPIAction(IOPIRuntime opiRuntime) {
@@ -35,8 +35,8 @@ public class RefreshOPIAction extends Action {
         setImageDescriptor(
                 CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
                         OPIBuilderPlugin.PLUGIN_ID, "icons/refresh.gif")); //$NON-NLS-1$
-    }  
-    
+    }
+
     @Override
     public void run() {
         try {
@@ -45,7 +45,7 @@ public class RefreshOPIAction extends Action {
         } catch (PartInitException e) {
             ErrorHandlerUtil.handleError("Failed to refresh OPI", e);
         }
-    }   
+    }
 
-    
+
 }

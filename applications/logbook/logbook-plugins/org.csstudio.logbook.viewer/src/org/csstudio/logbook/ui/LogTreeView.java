@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -49,9 +49,9 @@ import org.eclipse.wb.swt.ResourceManager;
 
 /**
  * A view to search for logEntries and then display them in a Tree form
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class LogTreeView extends ViewPart {
 
@@ -253,9 +253,9 @@ public class LogTreeView extends ViewPart {
             LogViewConfigurationDialog dialog = new LogViewConfigurationDialog(
                                         parent.getShell(),
                                         logEntryTree.isExpanded(),
-                                        logEntryTree.getLogEntryOrder(), 
+                                        logEntryTree.getLogEntryOrder(),
                                         logEntryTree.getRowSize());
-            
+
             dialog.setBlockOnOpen(true);
             if (dialog.open() == IDialogConstants.OK_ID) {
                 logEntryTree.setLogEntryOrder(dialog.getOrder());
@@ -354,7 +354,7 @@ public class LogTreeView extends ViewPart {
         if (showHistory) {
             query.append(" history:true");
         }
-        int delay = preferenceService.getInt("org.csstudio.logbook.viewer", "auto.refresh.rate", 3, null);        
+        int delay = preferenceService.getInt("org.csstudio.logbook.viewer", "auto.refresh.rate", 3, null);
         logQuery = new PeriodicLogQuery(query.toString(), logbookClient, delay>0?delay:1, TimeUnit.MINUTES);
         logQuery.addLogQueryListener(listener);
         logQuery.start();

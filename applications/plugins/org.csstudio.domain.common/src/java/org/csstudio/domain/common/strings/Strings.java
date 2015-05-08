@@ -177,7 +177,7 @@ public final class Strings {
                                                          final String qIgn) {
         return "([^" + qSep + qIgn + "]+)";
     }
-    
+
     /**
      * Checks if a String is whitespace, empty ("") or null.
        <code>

@@ -43,7 +43,7 @@ public class GenerateFlatDatabase
         String javaVersion = (String)System.getProperties().get("java.version");
         if (javaVersion!=null && javaVersion.compareTo(Version.JAVA_VERSION_REQUIRED) == -1)
             System.out.println("WARNING: Java "+javaVersion+" detected. VisualDCT requires Java "+Version.JAVA_VERSION_REQUIRED+" or newer!\n");
-        
+
         if (!parseCommandLine(args)) {
             return;
         }
@@ -51,16 +51,16 @@ public class GenerateFlatDatabase
         if (!semanticCheck()) {
             return;
         }
-        
+
         Console.setInstance(new StdoutConsole());
-        
+
         /* Set default directory */
         String dir = System.getProperty("VDCT_DIR");
         if (dir!=null && new java.io.File(dir).exists())
             Settings.setDefaultDir(dir);
         else
             Settings.setDefaultDir(".");
-                    
+
         flatDatabase();
     }
 
@@ -73,13 +73,13 @@ public class GenerateFlatDatabase
             System.out.println("Global macro evaluation: "+(Settings.getInstance().getGlobalMacros()?"enabled":"disabled"));
             System.out.println("Produce hierarhical names like CapFast: "+(Settings.getInstance().getHierarhicalNames()?"enabled":"disabled"));
             System.out.println();
-                        
+
             DrawingSurface drawingSurface = new DrawingSurface();
 
             for (int i=0; i<dbdEntries.size(); i++)
                 drawingSurface.openDBD(((DBDEntry)dbdEntries.get(i)).getFile(),
-                    com.cosylab.vdct.DataProvider.getInstance().getDbdDB() != null);                    
-            
+                    com.cosylab.vdct.DataProvider.getInstance().getDbdDB() != null);
+
             System.out.println();
             System.out.println("Loading VDB files.");
             if (!drawingSurface.open(vdbFile)) {
@@ -88,7 +88,7 @@ public class GenerateFlatDatabase
                 else
                     System.err.println("The file(s) could not be loaded.");
                 return;
-            } 
+            }
             System.out.println("Generating flat database.\n");
             Group.save(Group.getRoot(), dbFile, true);
             System.out.println("Done.");
@@ -146,13 +146,13 @@ public class GenerateFlatDatabase
                         Settings.getInstance().setGlobalMacrosTemp(true);
                         continue;
                     } else if (args[i].equals("--disable-global-macros")) {
-                        Settings.getInstance().setGlobalMacrosTemp(false);    
-                        continue;                                    
+                        Settings.getInstance().setGlobalMacrosTemp(false);
+                        continue;
                     } else if (args[i].equals("-h") || args[i].equals("--help")) {
                         printHelp();
 
                         return false;
-                        
+
                     } else if (args[i].equals("-v")
                         || args[i].equals("--version")) {
                         printVersion();
@@ -161,7 +161,7 @@ public class GenerateFlatDatabase
                     } else {
                         System.err.println("Invalid parameter: " + args[i]+"\n");
                         printHelp();
-                        
+
                         return false;
                     }
                 }
@@ -190,7 +190,7 @@ public class GenerateFlatDatabase
         if (state != 3) {
             System.err.println("Missing parameters.\n");
             printHelp();
-            
+
             return false;
         }
 
@@ -253,20 +253,20 @@ public class GenerateFlatDatabase
     public static void printHelp()
     {
         System.out.println("Usage: flatdb [OPTION]... input.vdb output.db\n");
-        
+
         System.out.println("Options:");
         System.out.println(" -d or --dbd-file input.dbd");
         System.out.println("   loads a specific .dbd file before generating flat database\n");
-        
+
         System.out.println(" --enable-global-macros and --disable-global-macros");
         System.out.println("   enables or disables global macro evaluation\n");
-        
+
         System.out.println(" --enable-capfast and --disable-capfast");
         System.out.println("   enables or disables production of hierarhical names like CapFast\n");
-        
+
         System.out.println(" -h or --help");
         System.out.println("   displays these lines here\n");
-        
+
         System.out.println(" -v or --version");
         System.out.println("   display version of this tool");
     }

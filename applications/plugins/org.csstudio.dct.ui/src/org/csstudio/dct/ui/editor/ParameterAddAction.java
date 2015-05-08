@@ -6,16 +6,16 @@ import org.eclipse.jface.action.Action;
 
 /**
  * Popup menu action for the parameter table that adds a new parameter.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ParameterAddAction extends Action {
     private PrototypeForm form;
 
     /**
      * Constructor.
-     * 
+     *
      * @param form
      *            the prototype form
      */

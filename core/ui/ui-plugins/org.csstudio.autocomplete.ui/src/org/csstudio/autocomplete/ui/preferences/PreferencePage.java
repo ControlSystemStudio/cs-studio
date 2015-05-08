@@ -29,7 +29,7 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
  * Preference Page, registered in plugin.xml
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
  */
 public class PreferencePage extends FieldEditorPreferencePage implements

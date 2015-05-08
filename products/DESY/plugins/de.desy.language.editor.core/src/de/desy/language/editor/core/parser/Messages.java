@@ -1,13 +1,13 @@
 /*
- * 
+ *
  */
 package de.desy.language.editor.core.parser;
 
 import org.eclipse.osgi.util.NLS;
 
 /**
- * TODO (valett) : 
- * 
+ * TODO (valett) :
+ *
  * @author valett
  * @author $Author$
  * @version $Revision$
@@ -34,7 +34,7 @@ public class Messages extends NLS {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
-    
+
     private Messages() {
     }
 }

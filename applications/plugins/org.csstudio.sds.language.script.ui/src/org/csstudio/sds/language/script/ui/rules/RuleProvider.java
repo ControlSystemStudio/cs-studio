@@ -29,7 +29,7 @@ public class RuleProvider extends AbstractRuleProvider {
     @Override
     public List<IRule> doCreateCustomRules() {
         final List<IRule> rules = new LinkedList<IRule>();
-        
+
         // Rule of MultiLineComments.
         final IToken multiLineCommentToken = this
                 .createTokenForCodeElementType(ScriptCodeElementTextAttributeConstants.SCRIPT_MULTI_LINE_COMMENT);
@@ -65,7 +65,7 @@ public class RuleProvider extends AbstractRuleProvider {
         final ScriptCodeElementRule variableRule = new ScriptCodeElementRule(
                 PredefinedVariables.class, variableToken);
         rules.add(variableRule);
-        
+
         // Rule of predefined keywords:
         final IToken keywordToken = this
                 .createTokenForCodeElementType(ScriptCodeElementTextAttributeConstants.SCRIPT_KEYWORD);
@@ -99,7 +99,7 @@ public class RuleProvider extends AbstractRuleProvider {
     /**
      * Creates a Token from a given element of
      * {@link ScriptCodeElementTextAttributeConstants}.
-     * 
+     *
      * @param element
      *            The element, not null.
      * @return A token, not null.
@@ -112,7 +112,7 @@ public class RuleProvider extends AbstractRuleProvider {
 
     /**
      * Creates a color for given rgb.
-     * 
+     *
      * @param rgb
      *            the rgb value.
      */

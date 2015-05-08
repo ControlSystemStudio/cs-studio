@@ -10,14 +10,14 @@ import org.csstudio.platform.libs.jms.IJmsProducer;
 import org.csstudio.platform.libs.jms.JmsRedundantProducer.ProducerId;
 
 /**
- * 
+ *
  * @author Goesta Steen
  */
 public class DummyJmsProducer implements IJmsProducer {
 
     private boolean isClosed = false;
     private HashMap<ProducerId, String> producerToDestination = new HashMap<ProducerId, String>();
-    
+
     public void closeAll() {
         producerToDestination = null;
         isClosed = true;
@@ -57,7 +57,7 @@ public class DummyJmsProducer implements IJmsProducer {
 
     public String[] send(ProducerId id, String topicName, Message message)
             throws RuntimeException {
-        //TODO 
+        //TODO
         System.out.println(topicName + " " + message.toString());
         return new String[]{"DummyJmsProducer"};
     }

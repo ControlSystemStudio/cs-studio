@@ -8,22 +8,22 @@ package com.cosylab.vdct.vdb;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -62,7 +62,7 @@ public VDBData() {
 }
 /**
  * This method was created in VisualAge.
- * @param 
+ * @param
  */
 public void addRecord(VDBRecordData rd) {
     if (rd!=null)
@@ -77,7 +77,7 @@ public void addRecord(VDBRecordData rd) {
 
 /**
  * This method was created in VisualAge.
- * @param 
+ * @param
  */
 public void addEntry(DBEntry ed) {
     if (!structure.contains(ed))
@@ -86,7 +86,7 @@ public void addEntry(DBEntry ed) {
 
 /**
  * This method was created in VisualAge.
- * @param 
+ * @param
  */
 public static void addTemplate(VDBTemplate templ) {
     if (templ!=null)
@@ -96,7 +96,7 @@ public static void addTemplate(VDBTemplate templ) {
 
 /**
  * This method was created in VisualAge.
- * @param 
+ * @param
  */
 public void addTemplateInstance(VDBTemplateInstance ti) {
     if (ti!=null)
@@ -169,7 +169,7 @@ public static VDBRecordData copyVDBRecordData(VDBRecordData source) {
     vdbRecord.setName(source.getName());
     //vdbRecord.setDTYP_type(source.getDTYP_type());;
 
-    
+
     Enumeration e = source.getFieldsV().elements();
     while (e.hasMoreElements()) {
         sourceField = (VDBFieldData)(e.nextElement());
@@ -183,24 +183,24 @@ public static VDBRecordData copyVDBRecordData(VDBRecordData source) {
 
 /**
  * Creates a copy of the VDBMacro object.
- * 
+ *
  * @param source the VDBMacro to be copied
  * @return a copy of the source
  */
 public static VDBMacro copyVDBMacro(VDBMacro source) {
-    
+
     VDBMacro vdbMacro = new VDBMacro(source.getTemplate(), source.getName(), source.getDescription());
     vdbMacro.setVisibility(source.getVisibility());
     return vdbMacro;
-        
+
 }
 
 public static VDBPort copyVDBPort(VDBPort source) {
-    
+
     VDBPort vdbPort = new VDBPort(source.getTemplate(), source.getName(), source.getTarget(), source.getDescription());
     vdbPort.setVisibility(source.getVisibility());
     return vdbPort;
-        
+
 }
 
 /**
@@ -210,7 +210,7 @@ public static VDBPort copyVDBPort(VDBPort source) {
  * @param db com.cosylab.vdct.db.DBData
  */
 public static VDBData generateVDBData(DBDData dbd, DBData db) {
-    
+
 
     if (dbd!=null && db!=null) {
 
@@ -230,14 +230,14 @@ public static VDBData generateVDBData(DBDData dbd, DBData db) {
  * @param db com.cosylab.vdct.db.DBData
  */
 private static VDBData generateVDBDataInternal(DBDData dbd, DBData db) throws DBException {
-    
+
     VDBData vdb = new VDBData();
 
     if (dbd!=null && db!=null) {
 
         // extract templates
         extractTemplates(dbd, db, vdb);
-        
+
         // add records, template instances and entries
         Enumeration e = db.getStructure().elements();
         while (e.hasMoreElements())
@@ -257,18 +257,18 @@ private static VDBData generateVDBDataInternal(DBDData dbd, DBData db) throws DB
             }
             else if (obj instanceof DBEntry)
             {
-                vdb.addEntry((DBEntry)obj);    
+                vdb.addEntry((DBEntry)obj);
             }
-            
+
         }
 
     }
-        
+
     return vdb;
 }
 
 /**
- * 
+ *
  */
 public static void generateRecords(DBDData dbd, DBData db, VDBData vdb) throws DBException
 {
@@ -282,7 +282,7 @@ public static void generateRecords(DBDData dbd, DBData db, VDBData vdb) throws D
 }
 
 /**
- * 
+ *
  */
 public static void generateTemplateInstances(DBData db, VDBData vdb)
 {
@@ -299,7 +299,7 @@ public static void generateTemplateInstances(DBData db, VDBData vdb)
 
 
 /**
- * 
+ *
  */
 public static VDBTemplateInstance generateVDBTemplateInstance(DBTemplateInstance dbTemplateInstance)
 {
@@ -313,26 +313,26 @@ public static VDBTemplateInstance generateVDBTemplateInstance(DBTemplateInstance
         return null;
     }
     VDBTemplateInstance vti = new VDBTemplateInstance(dbTemplateInstance.getTemplateInstanceId(), t);
-    vti.setComment(dbTemplateInstance.getComment());    
+    vti.setComment(dbTemplateInstance.getComment());
 
     vti.setProperties(dbTemplateInstance.getProperties(), dbTemplateInstance.getPropertiesV());
-    
+
     return vti;
 }
 
 /**
- * 
+ *
  */
 public static VDBTemplateInstance generateNewVDBTemplateInstance(String name, VDBTemplate t)
 {
     VDBTemplateInstance vti = new VDBTemplateInstance(name, t);
     vti.setProperties(new Hashtable(), new Vector());        // empty properties
-        
+
     return vti;
 }
 
 /**
- * 
+ *
  */
 public static void extractTemplates(DBDData dbd, DBData db, VDBData vdb)
 {
@@ -348,7 +348,7 @@ public static void extractTemplates(DBDData dbd, DBData db, VDBData vdb)
             Console.getInstance().println("Template with id '"+dbTemplate.getId()+"' ('"+t.getFileName()+"') already exists in repository. Skipping template from file '"+dbTemplate.getFileName()+"'...");
             continue;
         }
-        
+
         generateTemplate(dbd, dbTemplate);
     }
 
@@ -356,26 +356,26 @@ public static void extractTemplates(DBDData dbd, DBData db, VDBData vdb)
 }
 
 /**
- * 
+ *
  */
 private static VDBData generateTemplate(DBDData dbd, DBTemplate dbTemplate)
 {
     VDBTemplate vt = new VDBTemplate(dbTemplate.getId(), dbTemplate.getFileName());
-    vt.setComment(dbTemplate.getComment());    
+    vt.setComment(dbTemplate.getComment());
     vt.setDescription(dbTemplate.getDescription());
-    
+
     // generate vt.group / VDB data
     Group root = Group.getRoot();
-    
+
     try
     {
-    
+
         vt.setGroup(new Group(null));
         vt.getGroup().setAbsoluteName("");
         vt.getGroup().setLookupTable(new Hashtable());
-    
+
         Group.setRoot(vt.getGroup());
-    
+
         VDBData vdbData = VDBData.generateVDBDataInternal(dbd, dbTemplate.getData());
         DrawingSurface.applyVisualData(false, vt.getGroup(), dbTemplate.getData(), vdbData);
         vt.getGroup().unconditionalValidateSubObjects(false);
@@ -393,7 +393,7 @@ private static VDBData generateTemplate(DBDData dbd, DBTemplate dbTemplate)
         addPortsAndMacros(dbTemplate, vt, vdbData);
 
         VDBData.addTemplate(vt);
-        
+
         return vdbData;
     }
     catch (Exception ex)
@@ -408,9 +408,9 @@ private static VDBData generateTemplate(DBDData dbd, DBTemplate dbTemplate)
         // validate all links
         Group.getRoot().manageLinks(true);
         Group.getRoot().updateFields();
-        Group.setRoot(root); 
+        Group.setRoot(root);
     }
-    
+
     return null;
 }
 /**
@@ -429,31 +429,31 @@ public static void addPortsAndMacros(DBTemplate dbTemplate, VDBTemplate vt, VDBD
 }
 
 public static void addPortsAndMacros(DBTemplate dbTemplate, VDBTemplate vt, VDBData vdbData, HashMap importedList) {
-    
+
     // noop (importing into DB w/o editing template data)
     if (importedList != null && Group.getEditingTemplateData() == null)
         return;
-    
+
     Hashtable ports = vt.getPorts();
     Vector portsV = vt.getPortsV();
-    
+
     Hashtable macros = vt.getMacros();
     Vector macrosV = vt.getMacrosV();
-    
+
     Enumeration keys = dbTemplate.getPorts().keys();
     while (keys.hasMoreElements())
     {
         Object key = keys.nextElement();
         DBPort port = (DBPort)dbTemplate.getPorts().get(key);
-        VDBPort vdbPort = new VDBPort(vt, port);    
-        
+        VDBPort vdbPort = new VDBPort(vt, port);
+
         // skip
         if (Group.getRoot().getSubObject(vdbPort.getName())!= null)
         {
             Console.getInstance().println("WARNING: port with name '" + vdbPort.getName() + "' already exists, skipping its redefinition...");
             continue;
         }
-        
+
         // has visual
         if (port.isHasVisual())
         {
@@ -465,7 +465,7 @@ public static void addPortsAndMacros(DBTemplate dbTemplate, VDBTemplate vt, VDBD
 
             // delegate defaultVisibility
             vdbPort.setVisibility(port.getDefaultVisibility());
-            
+
             Group.getRoot().addSubObject(vdbPort.getName(), visualPort);
             if (importedList != null) importedList.put(vdbPort.getName(), visualPort);
         }
@@ -480,7 +480,7 @@ public static void addPortsAndMacros(DBTemplate dbTemplate, VDBTemplate vt, VDBD
     {
         Object key = keys.nextElement();
         DBMacro macro = (DBMacro)dbTemplate.getMacros().get(key);
-        VDBMacro vdbMacro = new VDBMacro(vt, macro);    
+        VDBMacro vdbMacro = new VDBMacro(vt, macro);
 
         // skip
         if (Group.getRoot().getSubObject(vdbMacro.getName())!= null)
@@ -497,17 +497,17 @@ public static void addPortsAndMacros(DBTemplate dbTemplate, VDBTemplate vt, VDBD
             visualMacro.setColor(macro.getColor());
             visualMacro.setMode(macro.getMode());
             visualMacro.setTextPositionNorth(macro.isNamePositionNorth());
-            
+
             // delegate defaultVisibility
             vdbMacro.setVisibility(macro.getDefaultVisibility());
-            
+
             Group.getRoot().addSubObject(vdbMacro.getName(), visualMacro);
             if (importedList != null) importedList.put(vdbMacro.getName(), visualMacro);
         }
 
         macros.put(key, vdbMacro);
         macrosV.addElement(vdbMacro);
-        
+
     }
 
     DrawingSurface.applyPortAndMacroConnectors(dbTemplate.getData(), vdbData);
@@ -544,36 +544,36 @@ public static VDBFieldData generateVDBFieldData(DBDData dbd, DBRecordData dbReco
 
     final String nullString = "";
 
-    if (vdbField.value.equals(nullString) || vdbField.value.equals(dbdField.getInit_value())) 
+    if (vdbField.value.equals(nullString) || vdbField.value.equals(dbdField.getInit_value()))
      if (dbdField.getField_type()==DBDConstants.DBF_MENU) {
          // gets first element
      /*         DBDMenuData md = (DBDMenuData)(dbd.getDBDMenuData(dbdField.getMenu_name()));
          if (md!=null) vdbField.setValue(md.getChoices().elements().nextElement().toString());
          else {
-           System.out.println("Menu '"+dbdField.getMenu_name()+"' not defined in DBD file...");     
+           System.out.println("Menu '"+dbdField.getMenu_name()+"' not defined in DBD file...");
            return null;
-         }  */ 
+         }  */
              //vdbField.setValue(com.cosylab.vdct.Constants.NONE);
              if (!dbdField.getInit_value().equals(nullString))
                  vdbField.setValue(dbdField.getInit_value()+com.cosylab.vdct.Constants.MENU_DEFAULT_VALUE_INDICATOR);
             else
                  vdbField.setValue(com.cosylab.vdct.Constants.NONE);
-             
+
      }
      else if (dbdField.getField_type()==DBDConstants.DBF_DEVICE)
 /*      if (vdbRecord!=null) {
          Enumeration e = dbd.getDevices().elements();
          DBDDeviceData dev;
-         
+
          while (e.hasMoreElements()) {
              dev = (DBDDeviceData)(e.nextElement());
              if (dev.getRecord_type().equals(vdbRecord.record_type)) {
                  vdbField.setValue(dev.getChoice_string());
                  break;
-             }    
+             }
          }
-         
-     }*/ 
+
+     }*/
             //vdbField.setValue(com.cosylab.vdct.Constants.NONE);
              if (!dbdField.getInit_value().equals(nullString))
                  vdbField.setValue(dbdField.getInit_value()+com.cosylab.vdct.Constants.MENU_DEFAULT_VALUE_INDICATOR);
@@ -583,7 +583,7 @@ public static VDBFieldData generateVDBFieldData(DBDData dbd, DBRecordData dbReco
     vdbField.setRecord(vdbRecord);
 
     com.cosylab.vdct.undo.UndoManager.getInstance().setMonitor(monitor);
-    
+
     return vdbField;
 }
 /**
@@ -663,7 +663,7 @@ public static VDBRecordData getNewVDBRecordData(DBDData dbd, String recordType, 
     }
 
     //vdbRecord.updateDTYP(dbd);
-    
+
     return vdbRecord;
 }
 /**
@@ -684,7 +684,7 @@ public static VDBRecordData morphVDBRecordData(DBDData dbd, VDBRecordData source
 
     VDBRecordData vdbRecord = getNewVDBRecordData(dbd, recordType, recordName);
     if (vdbRecord==null) return null;
-    
+
     VDBFieldData sourceField;
     VDBFieldData targetField;
 
@@ -704,7 +704,7 @@ public static VDBRecordData morphVDBRecordData(DBDData dbd, VDBRecordData source
           if (targetField.getType()==DBDConstants.DBF_MENU) {
               menuName = dbd.getDBDRecordData(recordType).getDBDFieldData(targetField.getName()).getMenu_name();
               menu = dbd.getDBDMenuData(menuName);
-              if (menu.containsValue(sourceField.getValue())) 
+              if (menu.containsValue(sourceField.getValue()))
                       copyVDBFieldData(sourceField, targetField);
           }
           else if (targetField.getType()==DBDConstants.DBF_DEVICE) {
@@ -721,16 +721,16 @@ public static VDBRecordData morphVDBRecordData(DBDData dbd, VDBRecordData source
 }
 
 public static VDBTemplateInstance morphVDBTemplateInstance(VDBTemplateInstance templateData, String templateType, String templateName) {
-    
+
     VDBTemplate template = (VDBTemplate)VDBData.getTemplates().get(templateType);
     if (template==null) return null;
-    
+
     VDBTemplateInstance ti = generateNewVDBTemplateInstance(templateName, template);
 
     // copy properties
     ti.getProperties().putAll(templateData.getProperties());
     ti.getPropertiesV().addAll(templateData.getPropertiesV());
-    
+
     return ti;
 }
 

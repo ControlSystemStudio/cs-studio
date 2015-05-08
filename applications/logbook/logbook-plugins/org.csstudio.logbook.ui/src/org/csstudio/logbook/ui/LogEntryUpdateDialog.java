@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class LogEntryUpdateDialog extends Dialog {
     private LogEntry logEntry;
@@ -39,14 +39,14 @@ public class LogEntryUpdateDialog extends Dialog {
     private UserCredentialsWidget userCredentialWidget;
 
     private final IPreferencesService service = Platform.getPreferencesService();
-    private boolean authenticate = true;    
+    private boolean authenticate = true;
     private ErrorBar errorBar;
-    
+
     /** The listeners. */
     final private CopyOnWriteArrayList<LogEntryBuilderListener> listeners =
     new CopyOnWriteArrayList<LogEntryBuilderListener>();
-    
-    
+
+
     public LogEntryUpdateDialog(Shell parentShell, LogEntry logEntryBuilder) {
     super(parentShell);
     setBlockOnOpen(false);
@@ -173,7 +173,7 @@ public class LogEntryUpdateDialog extends Dialog {
                     }
                 }
             });
-            job.schedule();            
+            job.schedule();
         } catch (Exception ex) {
             getShell().setCursor(originalCursor);
             getButton(IDialogConstants.OK_ID).setEnabled(true);
@@ -183,8 +183,8 @@ public class LogEntryUpdateDialog extends Dialog {
             fireCancelSave();
         }
     }
-    
-    
+
+
     /**
      * @param listener
      *                 Listener to add
@@ -193,9 +193,9 @@ public class LogEntryUpdateDialog extends Dialog {
         listeners.add(listener);
     }
 
-    /** 
-     * @param listener 
-     *                 Listener to remove 
+    /**
+     * @param listener
+     *                 Listener to remove
      * */
     public void removeListener(final LogEntryBuilderListener listener) {
         listeners.remove(listener);
@@ -210,16 +210,16 @@ public class LogEntryUpdateDialog extends Dialog {
         for (LogEntryBuilderListener listener : listeners)
             listener.initializeSaveAction(userName);
     }
-    
+
     /**
      * Fire start save.
-     * @throws Exception 
+     * @throws Exception
      */
     void fireStartSave() throws Exception {
         for (LogEntryBuilderListener listener : listeners)
             listener.saveProcessStatus(LogEntryBuilderEnum.START_SAVE);
     }
-    
+
     /**
      * Fire cancel save.
      */
@@ -229,13 +229,13 @@ public class LogEntryUpdateDialog extends Dialog {
                 listener.saveProcessStatus(LogEntryBuilderEnum.CANCEL_SAVE);
             } catch (Exception e) {
                 continue;
-            };    
+            };
         }
     }
-    
+
     /**
      * Fire finish save.
-     * @throws Exception 
+     * @throws Exception
      */
     void fireStopSave() throws Exception {
         for (LogEntryBuilderListener listener : listeners)

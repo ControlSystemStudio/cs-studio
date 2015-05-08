@@ -11,17 +11,17 @@ import org.eclipse.ui.PlatformUI;
 
 
 /**
- * 
+ *
  * A singleton back thread which will help to execute tasks in UI thread.
  * This way we avoid slow downs, that occur on several
  * operating systems, when Display.asyncExec() is called very often from
  * background threads.
- * 
+ *
  * This thread sleeps for a time, which is below the processing capacity of
  * human eyes and brain - so the user will not feel any delay.
- * 
+ *
  * @author Sven Wende, Xihui Chen
- * 
+ *
  */
 public final class UIBundlingThread implements Runnable {
     /**
@@ -51,18 +51,18 @@ public final class UIBundlingThread implements Runnable {
         }
         Executors.newScheduledThreadPool(1)
                 .scheduleAtFixedRate(this, 100, 20, TimeUnit.MILLISECONDS);
-        
-    
+
+
     }
 
     /**
      * Gets the singleton instance.
-     * 
+     *
      * @return the singleton instance
      */
     public static synchronized UIBundlingThread getInstance() {
         if (instance == null) {
-            instance = new UIBundlingThread();            
+            instance = new UIBundlingThread();
         }
 
         return instance;
@@ -79,27 +79,27 @@ public final class UIBundlingThread implements Runnable {
     /**
      * Process the complete queue.
      */
-    private synchronized void processQueue() {        
+    private synchronized void processQueue() {
         Runnable r;
-        while( (r=tasksQueue.poll()) != null){    
+        while( (r=tasksQueue.poll()) != null){
             display.asyncExec(r);
         }
-    
+
     }
 
     /**
      * Adds the specified runnable to the queue. Should not be used for RAP.
-     * 
+     *
      * @param runnable
      *            the runnable
      */
     public synchronized void addRunnable(final Runnable runnable) {
         tasksQueue.add(runnable);
     }
-    
+
     /**
      * Adds the specified runnable to the queue. Fake method for adapting RAP.
-     * 
+     *
      * @param runnable
      *            the runnable
      */

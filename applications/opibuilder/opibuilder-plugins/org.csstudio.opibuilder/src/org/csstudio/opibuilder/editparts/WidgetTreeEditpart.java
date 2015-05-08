@@ -30,38 +30,38 @@ import org.eclipse.swt.widgets.Tree;
  *
  */
 public class WidgetTreeEditpart extends AbstractTreeEditPart {
-    
-    
+
+
     @Override
     protected void createEditPolicies() {
         super.createEditPolicies();
-        
-        installEditPolicy(EditPolicy.COMPONENT_ROLE, new WidgetComponentEditPolicy());    
+
+        installEditPolicy(EditPolicy.COMPONENT_ROLE, new WidgetComponentEditPolicy());
         installEditPolicy(EditPolicy.PRIMARY_DRAG_ROLE, new WidgetTreeEditPolicy());
     }
-    
+
     @Override
     public void activate() {
         super.activate();
         PropertyChangeListener visualListener = new PropertyChangeListener() {
-                
+
                 public void propertyChange(PropertyChangeEvent evt) {
                     refreshVisuals();
                 }
         };
-        AbstractWidgetProperty nameProperty = 
+        AbstractWidgetProperty nameProperty =
             getWidgetModel().getProperty(AbstractWidgetModel.PROP_NAME);
-        if(nameProperty != null){            
+        if(nameProperty != null){
             nameProperty.addPropertyChangeListener(visualListener);
         }
-        AbstractWidgetProperty pvNameProperty = 
+        AbstractWidgetProperty pvNameProperty =
             getWidgetModel().getProperty(AbstractPVWidgetModel.PROP_PVNAME);
-        if(pvNameProperty != null){            
+        if(pvNameProperty != null){
             pvNameProperty.addPropertyChangeListener(visualListener);
         }
-        
+
     }
-    
+
     public WidgetTreeEditpart(AbstractWidgetModel model) {
         super(model);
     }
@@ -69,19 +69,19 @@ public class WidgetTreeEditpart extends AbstractTreeEditPart {
     public AbstractWidgetModel getWidgetModel(){
         return (AbstractWidgetModel)getModel();
     }
-    
+
     @Override
     protected Image getImage() {
         if(getWidgetModel() instanceof DisplayModel)
             return super.getImage();
         String typeID = getWidgetModel().getTypeID();
-        WidgetDescriptor widgetDescriptor = 
+        WidgetDescriptor widgetDescriptor =
             WidgetsService.getInstance().getWidgetDescriptor(typeID);
         Image image = CustomMediaFactory.getInstance().getImageFromPlugin(
                 widgetDescriptor.getPluginId(), widgetDescriptor.getIconPath());
         return image;
     }
-    
+
     @Override
     protected String getText() {
 
@@ -103,13 +103,13 @@ public class WidgetTreeEditpart extends AbstractTreeEditPart {
         }
         return sb.toString();
     }
-    
+
     @Override
     protected void refreshVisuals() {
         if(getWidget() instanceof Tree)
             return;
         super.refreshVisuals();
     }
-    
+
 
 }

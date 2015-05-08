@@ -24,7 +24,7 @@ public class FunctionParser extends
         typeBuffer.append("|([a-zA-Z][0-9a-zA-Z]*)");
         return "("+Keywords.FUNCTION.getElementName()+"\\s+)(" + typeBuffer.toString() + ")(\\s*\\()";
     }
-    
+
     @Override
     protected String getPrePatternString() {
         throw new UnsupportedOperationException(
@@ -41,7 +41,7 @@ public class FunctionParser extends
         }
         return null;
     }
-    
+
     @Override
     protected void doFindNext(final CharSequence input, final int startIndex) {
         this._found = false;
@@ -65,12 +65,12 @@ public class FunctionParser extends
                             this.getStartOffsetLastFound(),
                             this.getEndOffsetLastFound()).toString();
                     String functioName = preMatcher.group(2);
-                    this._node = new FunctionNode(functioName, this.findPredefinedFunction(functioName), 
+                    this._node = new FunctionNode(functioName, this.findPredefinedFunction(functioName),
                             this.getStartOffsetLastFound(), this.getEndOffsetLastFound());
                     break;
                 }
-                
-            }    
+
+            }
             localStart = end;
             if (localStart > input.length()) {
                 this._found = false;

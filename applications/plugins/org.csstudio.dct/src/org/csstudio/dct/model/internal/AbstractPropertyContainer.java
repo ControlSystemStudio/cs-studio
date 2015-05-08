@@ -9,7 +9,7 @@ import org.csstudio.dct.model.IPropertyContainer;
 
 /**
  * Standard implementation of {@link IPropertyContainer}.
- * 
+ *
  * @author Sven Wende
  */
 public abstract class AbstractPropertyContainer extends AbstractElement implements IPropertyContainer {
@@ -22,7 +22,7 @@ public abstract class AbstractPropertyContainer extends AbstractElement implemen
 
     /**
      * Constructor.
-     * 
+     *
      * @param name
      *            the name
      * @param id

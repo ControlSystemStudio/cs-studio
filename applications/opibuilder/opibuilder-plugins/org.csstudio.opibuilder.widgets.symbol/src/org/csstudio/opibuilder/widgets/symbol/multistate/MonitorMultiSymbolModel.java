@@ -22,5 +22,5 @@ public class MonitorMultiSymbolModel extends CommonMultiSymbolModel {
     public String getTypeID() {
         return ID;
     }
-    
+
 }

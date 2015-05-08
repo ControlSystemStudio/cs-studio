@@ -10,9 +10,9 @@ package org.csstudio.swt.xygraph.dataprovider;
 import org.csstudio.swt.xygraph.linearscale.Range;
 
 /**
- * Interface for the data provider of trace. This gives the possibilities to implement 
+ * Interface for the data provider of trace. This gives the possibilities to implement
  * different data provider, which could have different data source or data storage structure.
- * For example: the data source could be from user input, database, files, etc,. 
+ * For example: the data source could be from user input, database, files, etc,.
  * The storage structure could be array, queue, circular buffer, bucket buffer, etc,.
  * <p>
  * An API like
@@ -44,7 +44,7 @@ import org.csstudio.swt.xygraph.linearscale.Range;
  * Implementations of the <code>IDataProvider</code> should likewise synchronize
  * on it whenever the data is changed, and other methods like
  * <code>getXDataMinMax</code> should probably be synchronized implementations.
- * 
+ *
  * @author Xihui Chen
  * @author Kay Kasemir (synchronization)
  */
@@ -58,7 +58,7 @@ public interface IDataProvider {
 
     /**Get sample by index
      * <p>
-     * <b>Synchronization:</b> 
+     * <b>Synchronization:</b>
      * Since the data might change dynamically, <code>synchronize</code> on the
      * <code>IDataProvider</code> around calls to <code>getSize()</code>
      * and <code>getSample()</code>.
@@ -69,7 +69,7 @@ public interface IDataProvider {
     public ISample getSample(int index);
 
     /**Get the minimum and maximum xdata.
-     * @return a range includes the min and max as lower and upper. 
+     * @return a range includes the min and max as lower and upper.
      * return null if there is no data.
      */
     public Range getXDataMinMax();
@@ -81,7 +81,7 @@ public interface IDataProvider {
     public Range getYDataMinMax();
 
     /**
-     * @return true if data is ascending sorted on X axis; false otherwise 
+     * @return true if data is ascending sorted on X axis; false otherwise
      */
     public boolean isChronological();
 
@@ -93,6 +93,6 @@ public interface IDataProvider {
      *  @return <code>true</code> if listener was known and removed
      */
     public boolean removeDataProviderListener(
-            final IDataProviderListener listener);    
+            final IDataProviderListener listener);
 
 }

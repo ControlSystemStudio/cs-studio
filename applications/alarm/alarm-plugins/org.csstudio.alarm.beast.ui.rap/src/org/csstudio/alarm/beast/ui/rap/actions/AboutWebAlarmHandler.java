@@ -21,9 +21,9 @@ import org.eclipse.ui.internal.UIPlugin;
 
 /**
  * The action to pop up an About WebAlarm Dialog.
- * 
+ *
  * @author Davy Dequidt <davy.dequidt@iter.org>
- * 
+ *
  */
 public class AboutWebAlarmHandler extends AbstractHandler {
 
@@ -37,7 +37,7 @@ public class AboutWebAlarmHandler extends AbstractHandler {
 
         /**
          * Create the dialog.
-         * 
+         *
          * @param parentShell
          */
         public AboutDialog(Shell parentShell) {
@@ -47,7 +47,7 @@ public class AboutWebAlarmHandler extends AbstractHandler {
 
         /**
          * Create contents of the dialog.
-         * 
+         *
          * @param parent
          */
         @SuppressWarnings({ "restriction" })

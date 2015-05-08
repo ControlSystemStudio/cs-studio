@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.TreeItem;
 public class ExpandTreeAction extends Action
 {
     final private Tree tree;
-    
+
     public ExpandTreeAction(final Tree tree)
     {
         super(Messages.ExpandAll,
@@ -26,17 +26,17 @@ public class ExpandTreeAction extends Action
         setToolTipText(Messages.ExpandAllTT);
         this.tree = tree;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void run()
     {
         tree.setRedraw(false);
-     
+
         final TreeItem[] items = tree.getItems();
         for (TreeItem item : items)
             expand(item);
-        
+
         tree.setRedraw(true);
     }
 

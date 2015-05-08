@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -17,12 +17,12 @@ public class PropertyTreeContentProvider implements ITreeContentProvider {
 
     private List<Property> properties;
 
-   
+
     @Override
     public void dispose() {
     }
 
-   
+
     @SuppressWarnings("unchecked")
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
@@ -51,8 +51,8 @@ public class PropertyTreeContentProvider implements ITreeContentProvider {
     public boolean hasChildren(Object element) {
     if (element instanceof Property) {
         return !((Property) element).getAttributes().isEmpty();
-    } 
+    }
     return false;
     }
-   
+
 }

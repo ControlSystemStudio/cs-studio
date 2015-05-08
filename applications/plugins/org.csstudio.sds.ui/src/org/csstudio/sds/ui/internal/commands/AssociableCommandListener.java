@@ -7,19 +7,19 @@ import org.eclipse.gef.commands.CommandStackEventListener;
 
 /**
  * Has to be registered at the CommandStack to handle AccosiableCommands.
- * 
+ *
  * @see AssociableCommand
- * 
+ *
  * @author Christian Zoller
  */
 public class AssociableCommandListener implements CommandStackEventListener {
-    
+
     private final CommandStack _commandStack;
-    
+
     public AssociableCommandListener(CommandStack commandStack) {
         _commandStack = commandStack;
     }
-    
+
     @Override
     public void stackChanged(CommandStackEvent event) {
         if (event.getCommand() instanceof AssociableCommand) {
@@ -34,40 +34,40 @@ public class AssociableCommandListener implements CommandStackEventListener {
             }
         }
     }
-    
+
     private void skipUndoWhenAssociated(AssociableCommand associable) {
         Command predecessor = _commandStack.getUndoCommand();
         if (associated(associable, predecessor)) {
             associable.skipNextStackAction();
         }
     }
-    
+
     private void skipRedoWhenAssociated(AssociableCommand associable) {
         Command successor = _commandStack.getRedoCommand();
         if (associated(associable, successor)) {
             associable.skipNextStackAction();
         }
     }
-    
+
     private void undoAssociatedCommands(AssociableCommand associable) {
         Command predecessor = _commandStack.getUndoCommand();
         if (associated(associable, predecessor)) {
             _commandStack.undo();
         }
     }
-    
+
     private void redoAssociatedCommands(AssociableCommand associable) {
         Command successor = _commandStack.getRedoCommand();
         if (associated(associable, successor)) {
             _commandStack.redo();
         }
     }
-    
+
     private boolean associated(AssociableCommand associable, Command command) {
         if (!(command instanceof AssociableCommand)) {
             return false;
         }
-        
+
         AssociableCommand associable2 = (AssociableCommand) command;
         return associable.isAssociated(associable2);
     }

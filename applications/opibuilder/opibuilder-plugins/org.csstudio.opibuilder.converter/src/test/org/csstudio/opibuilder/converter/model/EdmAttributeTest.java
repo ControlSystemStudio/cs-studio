@@ -68,7 +68,7 @@ public class EdmAttributeTest extends TestCase {
         testAttribute.appendValue(val2);
         testAttribute.appendValue(val3);
         testAttribute.appendValue(val4);
-        
+
         String concatenatedString = testVal + " " + val2 + " " + val3 + " " + val4;
 
         assertEquals(concatenatedString, testAttribute.toString());
@@ -77,7 +77,7 @@ public class EdmAttributeTest extends TestCase {
     public void testCopyConstructor() {
 
         setupAttribute();
-        
+
         try {
             EdmAttribute attribute = new EdmAttribute(testAttribute);
             int valCount = testAttribute.getValueCount();

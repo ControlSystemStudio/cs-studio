@@ -21,21 +21,21 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 /** Preference editor for 'passwords'
- * 
+ *
  *  <p>If no secure preference is set, read the 'normal' preference.
  *  The 'default' value is also fetched from the normal preference store,
  *  to allow setting a default in plugin_custommization.ini etc.
  *  Entered passwords, however, are always writes to the secure preference store.
- *  
- *  <p>Corollary: You should use {@link SecurePreferences} resp. 
+ *
+ *  <p>Corollary: You should use {@link SecurePreferences} resp.
  *  {@link ISecurePreferences} to read preferences,
  *  falling back to the normal preference store when
  *  nothing found in the secure store.
- *  
+ *
  *  <p>Hides the actual text, uses secure preference store.
- *  
+ *
  *  TODO Check on Linux if copy/paste allows users to peek passwords.
- *  
+ *
  *  @author Kay Kasemir
  *  @author Xihui Chen - Original org.csstudio.auth.ui.security.PasswordFieldEditor
  */
@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Text;
 public class PasswordFieldEditor extends FieldEditor
 {
     // Based on Eclipse 3.7.2 StringFieldEditor
-    
+
     private ISecurePreferences preferences;
 
     private Text textField;

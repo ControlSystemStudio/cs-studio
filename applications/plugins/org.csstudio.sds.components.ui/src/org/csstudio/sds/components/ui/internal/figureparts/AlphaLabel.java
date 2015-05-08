@@ -4,20 +4,20 @@ import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Label;
 
 /**
- * A label whose background could be set with alpha. 
+ * A label whose background could be set with alpha.
  * Alpha may range from 0 to 255. A value of 0 is completely transparent
  * @author Xihui Chen
  *
  */
 public class AlphaLabel extends Label {
 
-    private int alpha = 100;    
+    private int alpha = 100;
 
     @Override
-    public boolean isOpaque() {        
+    public boolean isOpaque() {
         return false;
     }
-    
+
     @Override
     protected void paintFigure(Graphics graphics) {
         graphics.pushState();
@@ -26,7 +26,7 @@ public class AlphaLabel extends Label {
         graphics.popState();
         super.paintFigure(graphics);
     }
-    
+
     /**
      * @param alpha the alpha to set
      */

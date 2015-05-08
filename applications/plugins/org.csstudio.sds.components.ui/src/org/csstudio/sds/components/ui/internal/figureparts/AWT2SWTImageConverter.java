@@ -11,13 +11,13 @@ import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
 
 /**
- * A converter between AWT BufferedImage and SWT ImageData. 
- * By taking use of this converter, it is possible to use Java2D in SWT or Draw2D.  
+ * A converter between AWT BufferedImage and SWT ImageData.
+ * By taking use of this converter, it is possible to use Java2D in SWT or Draw2D.
  * @author Xihui Chen
  *
  */
 public class AWT2SWTImageConverter {
-    
+
     static BufferedImage convertToAWT(ImageData data) {
         ColorModel colorModel = null;
         PaletteData palette = data.palette;
@@ -47,7 +47,7 @@ public class AWT2SWTImageConverter {
                 colorModel = new IndexColorModel(data.depth, rgbs.length, red, green, blue, data.transparentPixel);
             } else {
                 colorModel = new IndexColorModel(data.depth, rgbs.length, red, green, blue);
-            }        
+            }
             BufferedImage bufferedImage = new BufferedImage(colorModel, colorModel.createCompatibleWritableRaster(data.width, data.height), false, null);
             WritableRaster raster = bufferedImage.getRaster();
             int[] pixelArray = new int[1];
@@ -70,11 +70,11 @@ public class AWT2SWTImageConverter {
             for (int y = 0; y < data.height; y++) {
                 for (int x = 0; x < data.width; x++) {
                     int rgb = bufferedImage.getRGB(x, y);
-                    int pixel = palette.getPixel(new RGB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF)); 
+                    int pixel = palette.getPixel(new RGB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF));
                     data.setPixel(x, y, pixel);
                 }
-            }        
-            return data;        
+            }
+            return data;
         } else if (bufferedImage.getColorModel() instanceof IndexColorModel) {
             IndexColorModel colorModel = (IndexColorModel)bufferedImage.getColorModel();
             int size = colorModel.getMapSize();

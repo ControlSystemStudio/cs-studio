@@ -202,7 +202,7 @@ public class StartupParameters implements StartupParametersExtPoint
                     System.exit(0);
                 }
                 System.out.println("Setting plugin " + path_key[0] + " setting " + path_key[1]);
-                
+
                 final ISecurePreferences sec_prefs = SecurePreferences.getSecurePreferences();
                 sec_prefs.node(path_key[0]).put(path_key[1], password, true);
                 sec_prefs.flush();

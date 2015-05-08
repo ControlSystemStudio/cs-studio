@@ -44,8 +44,8 @@ public class Polygon extends Widget{
 
     /**
      * @param polygon The ADL String for a Polygon
-     * @param storedDynamicAttribute 
-     * @param storedBasicAttribute 
+     * @param storedDynamicAttribute
+     * @param storedBasicAttribute
      */
     public Polygon(final ADLWidget polygon, AbstractWidgetModel abstractWidgetModel, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute){
         super(polygon, storedBasicAttribute, storedDynamicAttribute);
@@ -64,9 +64,9 @@ public class Polygon extends Widget{
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel(PolygonModel.ID); 
+        _widget = createWidgetModel(PolygonModel.ID);
     }
-    
+
     /**
      * {@inheritDoc}
      */

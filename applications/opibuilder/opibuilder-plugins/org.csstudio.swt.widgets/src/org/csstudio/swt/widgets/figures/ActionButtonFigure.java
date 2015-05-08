@@ -148,7 +148,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 
         if(runMode){
             hookEventHandler(new ButtonEventHandler());
-            label.setCursor(Cursors.HAND);    
+            label.setCursor(Cursors.HAND);
         }
     }
 
@@ -334,7 +334,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
     public void setImagePath(final IPath path){
         dispose();
         AbstractInputStreamRunnable uiTask = new AbstractInputStreamRunnable() {
-            
+
             @Override
             public void runWithInputStream(InputStream stream) {
                 image = new Image(null, stream);
@@ -358,13 +358,13 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
         if(path != null && !path.isEmpty()){
             this.imagePath = path;
             ResourceUtil.pathToInputStreamInJob(path, uiTask, "Load Action Button Icon...", new IJobErrorHandler() {
-                
+
                 public void handleError(Exception exception) {
                     image = null;
                     Activator.getLogger().log(Level.WARNING,
                         "Failed to load image from path" + path, exception);
                 }
-            });            
+            });
         }
 
         if(label.isEnabled())
@@ -438,33 +438,33 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
             label.setTextAlignment(alignments[alignment]);
         }
     }
-    
-    public void calculateTextPosition() {        
+
+    public void calculateTextPosition() {
         calculateTextPosition(getClientArea().width(), getClientArea().height());
     }
-    
-    public void calculateTextPosition(int width, int height) {        
+
+    public void calculateTextPosition(int width, int height) {
         if (image != null) {
             Dimension textDimension = Draw2dSingletonUtil.getTextUtilities().getTextExtents(getText(), getFont());
             // Calculate available space in height and width
             double hratio = ((double) height - image.getBounds().height) / textDimension.height;
             double wratio = ((double) width - image.getBounds().width) / textDimension.width;
             // Put the label where we have the most space (highest ratio)
-            if (wratio > hratio) {                
+            if (wratio > hratio) {
                 // Space for text on the right of the icon
                 label.setTextPlacement(PositionConstants.EAST);
-                label.setTextAlignment(PositionConstants.LEFT);    
+                label.setTextAlignment(PositionConstants.LEFT);
             } else {
                 // Text goes under the icon
                 label.setTextPlacement(PositionConstants.SOUTH);
-                label.setTextAlignment(PositionConstants.CENTER);    
+                label.setTextAlignment(PositionConstants.CENTER);
             }
         } else {
             // Center text
             label.setTextAlignment(PositionConstants.CENTER);
         }
     }
-    
+
     public void setToggled(boolean toggled) {
         this.toggled = toggled;
         setSelected(toggled);
@@ -478,7 +478,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
           toggleStyle = style;
 
     }
-    
+
     // Need this as label has repaint bug so it doesn't always change colour when its parent does
     public void setBackgroundColor(Color bg) {
         label.setBackgroundColor(bg);
@@ -768,7 +768,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 
             me.consume();
         }
-        
+
         @Override
         public void mouseEntered(MouseEvent me) {
                 Color backColor = getBackgroundColor();
@@ -781,7 +781,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
         @Override
         public void mouseExited(MouseEvent me) {
                 label.setBackgroundColor(getBackgroundColor());
-            
+
         }
 
     }

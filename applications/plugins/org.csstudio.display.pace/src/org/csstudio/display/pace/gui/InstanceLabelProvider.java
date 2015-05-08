@@ -21,10 +21,10 @@ import org.eclipse.swt.widgets.Display;
  *  Gets called by the TableViewer with a rows (Instances) of the Model
  *  and a cell of the table; has to populate that cell with the appropriate
  *  info from the Instance.
- *  
+ *
  *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
- *  
+ *
  *    reviewed by Delphy 01/29/09
  */
 public class InstanceLabelProvider extends CellLabelProvider
@@ -43,9 +43,9 @@ public class InstanceLabelProvider extends CellLabelProvider
       *  Meaning:
       *  <ul>
       *  <li>GUI Column 0 = Model's Instance name for each row
-      *  <li>GUI Column 1 = Model's Column 0 
+      *  <li>GUI Column 1 = Model's Column 0
       *  <li>GUI Column 2 = Model's Column 1
-      *  <li>... 
+      *  <li>...
       *  </ul>
       *  @param column Column of the model that this label provider handles.
       */

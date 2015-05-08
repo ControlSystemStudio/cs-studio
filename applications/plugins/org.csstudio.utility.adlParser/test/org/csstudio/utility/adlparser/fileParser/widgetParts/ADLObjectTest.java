@@ -45,7 +45,7 @@ public class ADLObjectTest extends TestCase {
         setupADLWidget();
         try {
             adlObject = new ADLObject(setupADLWidget());
-            
+
         } catch (WrongADLFormatException e) {
             fail("This object should work");
             e.printStackTrace();
@@ -58,17 +58,17 @@ public class ADLObjectTest extends TestCase {
         try {
             adlObject = new ADLObject(setupBadADLWidget1());
             fail("BadADLWidget1 should fail");
-            
+
         } catch (WrongADLFormatException e) {
             //OK
         }
-        
+
     }
 
     public void testGetName() {
         try {
             adlObject = new ADLObject(setupADLWidget());
-            
+
         } catch (WrongADLFormatException e) {
             fail("This object should work");
             e.printStackTrace();

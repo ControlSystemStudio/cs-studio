@@ -20,31 +20,31 @@ import org.eclipse.ui.IWorkbenchPage;
 public abstract class SingleSourceHelper {
 
     private static final SingleSourceHelper IMPL;
-    
+
     static {
         IMPL = (SingleSourceHelper)ImplementationLoader.newInstance(
                 SingleSourceHelper.class);
     }
-    
+
     public static GC getImageGC(final Image image){
         if(IMPL == null)
             return null;
         return IMPL.iGetImageGC(image);
     }
-    
+
     protected abstract GC iGetImageGC(final Image image);
-    
-    
+
+
     public static void openFileActionRun(OpenFileAction openFileAction){
-        if(IMPL != null)            
+        if(IMPL != null)
             IMPL.iOpenFileActionRun(openFileAction);
         else {
-            MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Not Implemented", 
+            MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Not Implemented",
                     "Sorry, open File action is not implemented for WebOPI!");
         }
     }
-    
-    protected abstract void iOpenFileActionRun(OpenFileAction openFileAction);    
+
+    protected abstract void iOpenFileActionRun(OpenFileAction openFileAction);
 
     public static void addPaintListener(final Control control, PaintListener paintListener){
         if(IMPL != null)
@@ -53,7 +53,7 @@ public abstract class SingleSourceHelper {
 
     protected abstract void iAddPaintListener(Control control,
             PaintListener paintListener);
-    
+
     public static void removePaintListener(final Control control, PaintListener paintListener){
         if(IMPL != null)
             IMPL.iRemovePaintListener(control, paintListener);
@@ -61,7 +61,7 @@ public abstract class SingleSourceHelper {
 
     protected abstract void iRemovePaintListener(Control control,
             PaintListener paintListener);
-    
+
     public static void registerRCPRuntimeActions(
             ActionRegistry actionRegistry, IOPIRuntime opiRuntime){
         if(IMPL != null)
@@ -70,7 +70,7 @@ public abstract class SingleSourceHelper {
 
     protected abstract void iRegisterRCPRuntimeActions(
             ActionRegistry actionRegistry, IOPIRuntime opiRuntime);
-    
+
     public static void appendRCPRuntimeActionsToMenu(
             ActionRegistry actionRegistry, IMenuManager menu){
         if(IMPL != null)
@@ -79,39 +79,39 @@ public abstract class SingleSourceHelper {
 
     protected abstract void iappendRCPRuntimeActionsToMenu(
             ActionRegistry actionRegistry, IMenuManager menu);
-    
-    
+
+
     public static IPath rcpGetPathFromWorkspaceFileDialog(
             IPath startPath, String[] extensions){
         if(IMPL != null)
             return IMPL.iRcpGetPathFromWorkspaceFileDialog(startPath, extensions);
         return null;
     }
-    
+
     protected abstract IPath iRcpGetPathFromWorkspaceFileDialog(
             IPath startPath, String[] extensions);
-    
+
     public static void rapActivateBaseEditPart(AbstractBaseEditPart editPart){
         if(IMPL != null)
             IMPL.iRapActivatebaseEditPart(editPart);
     }
 
     protected abstract void iRapActivatebaseEditPart(AbstractBaseEditPart editPart);
-    
+
     public static void rapDeactivateBaseEditPart(AbstractBaseEditPart editPart){
         if(IMPL != null)
             IMPL.iRapDeactivatebaseEditPart(editPart);
     }
 
     protected abstract void iRapDeactivatebaseEditPart(AbstractBaseEditPart editPart);
-    
+
     public static void rapOpenOPIInNewWindow(IPath path){
         if(IMPL != null)
             IMPL.iRapOpenOPIInNewWindow(path);
     }
 
     protected abstract void iRapOpenOPIInNewWindow(IPath path);
-    
+
     public static void rapAddDisplayDisposeListener(Display display, Runnable runnable){
         if(IMPL != null)
             IMPL.iRapAddDisplayDisposeListener(display, runnable);
@@ -133,7 +133,7 @@ public abstract class SingleSourceHelper {
     }
 
     protected abstract void iRapOPIViewCreatePartControl(OPIView opiView, Composite parent);
-    
+
     /**
      * Plugin Startup code for WebOPI.
      */
@@ -146,11 +146,11 @@ public abstract class SingleSourceHelper {
 
     public static void rapOpenWebPage(String hyperLink) {
         if(IMPL != null)
-            IMPL.iRapOpenWebPage(hyperLink);        
+            IMPL.iRapOpenWebPage(hyperLink);
     }
 
     protected abstract void iRapOpenWebPage(String hyperLink);
-    
+
     /**Authenticate user with the registered login module. This method must be called
      * in UI thread.
      * @param display display of the session.
@@ -160,19 +160,19 @@ public abstract class SingleSourceHelper {
     public static boolean rapAuthenticate(Display display){
         if(IMPL != null)
             return IMPL.iRapAuthenticate(display);
-        return false;        
+        return false;
     }
-        
+
     protected abstract boolean iRapAuthenticate(Display display);
-    
+
     public static boolean rapIsLoggedIn(Display display){
         if(IMPL != null)
             return IMPL.iRapIsLoggedIn(display);
-        return false;        
+        return false;
     }
 
     protected abstract boolean iRapIsLoggedIn(Display display);
-    
+
     public static void openEditor(final IWorkbenchPage page, IPath path)
             throws Exception {
         if (IMPL != null)
@@ -181,5 +181,5 @@ public abstract class SingleSourceHelper {
 
     protected abstract void iOpenEditor(final IWorkbenchPage page, IPath path)
             throws Exception;
-    
+
 }

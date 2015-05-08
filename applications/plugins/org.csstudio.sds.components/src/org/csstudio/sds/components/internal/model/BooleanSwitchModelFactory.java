@@ -5,7 +5,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.IWidgetModelFactory;
 
 /**
- * 
+ *
  * @author Kai Meyer (C1 WPS)
  *
  */

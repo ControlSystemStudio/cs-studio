@@ -45,9 +45,9 @@ import org.epics.vtype.VType;
 
 /**
  * The editpart for text input widget.)
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class TextInputEditpart extends TextUpdateEditPart {
 
@@ -55,7 +55,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
     private static DecimalFormat DECIMAL_FORMAT = new DecimalFormat();
     private IPVListener pvLoadLimitsListener;
     private org.epics.vtype.Display meta = null;
-    
+
     private ITextInputEditPartDelegate delegate;
 
     @Override
@@ -64,22 +64,22 @@ public class TextInputEditpart extends TextUpdateEditPart {
     }
 
     @Override
-    protected IFigure doCreateFigure() {    
+    protected IFigure doCreateFigure() {
         initFields();
-        
+
         if(shouldBeTextInputFigure()){
             TextInputFigure textInputFigure = (TextInputFigure) createTextFigure();
             initTextFigure(textInputFigure);
             delegate = new Draw2DTextInputEditpartDelegate(
                     this, getWidgetModel(), textInputFigure);
-            
-        }else{            
+
+        }else{
             delegate = new NativeTextEditpartDelegate(this, getWidgetModel());
-        }    
-        
+        }
+
         getPVWidgetEditpartDelegate().setUpdateSuppressTime(-1);
         updatePropSheet();
-        
+
         return delegate.doCreateFigure();
     }
 
@@ -99,8 +99,8 @@ public class TextInputEditpart extends TextUpdateEditPart {
         }
         return true;
     }
-    
-    
+
+
     @Override
     protected TextFigure createTextFigure() {
         return new TextInputFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
@@ -151,7 +151,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
                                                 meta.getLowerDisplayLimit());
                                     }
                                 }
-                            }                            
+                            }
                         };
                     pv.addListener(pvLoadLimitsListener);
                 }
@@ -168,7 +168,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
                     "\nNew Value: "+ text+ "\n\n"+
                     getWidgetModel().getConfirmMessage()))
                 return;
-        try {            
+        try {
             Object result;
             if(getWidgetModel().getFormat() != FormatEnum.STRING
                     && text.trim().indexOf(SPACE)!=-1){
@@ -187,7 +187,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
             ConsoleService.getInstance().writeError(msg);
         }
     }
-    
+
     @Override
     protected void registerPropertyChangeHandlers() {
         super.registerPropertyChangeHandlers();
@@ -197,7 +197,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
                 public boolean handleChange(Object oldValue, Object newValue,
                         final IFigure figure) {
                     String text = (String) newValue;
-                    
+
                     if(getPV() == null){
                      setFigureText(text);
                      if(getWidgetModel().isAutoSize()){
@@ -211,7 +211,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
                     //Output pv value even if pv name is empty, so setPVValuelistener can be triggered.
                     outputPVValue(text);
                     return false;
-                }            
+                }
             };
             setPropertyChangeHandler(LabelModel.PROP_TEXT, handler);
         }
@@ -226,7 +226,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
         };
         setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME,
                 pvNameHandler);
-    
+
         PropertyChangeListener updatePropSheetListener = new PropertyChangeListener() {
 
             @Override
@@ -236,11 +236,11 @@ public class TextInputEditpart extends TextUpdateEditPart {
         };
         getWidgetModel().getProperty(TextInputModel.PROP_LIMITS_FROM_PV)
             .addPropertyChangeListener(updatePropSheetListener);
-        
+
         getWidgetModel().getProperty(TextInputModel.PROP_SELECTOR_TYPE)
                 .addPropertyChangeListener(updatePropSheetListener);
-        
-        PropertyChangeListener reCreateWidgetListener = new PropertyChangeListener() {            
+
+        PropertyChangeListener reCreateWidgetListener = new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 reCreateWidget();
@@ -250,10 +250,10 @@ public class TextInputEditpart extends TextUpdateEditPart {
         getWidgetModel().getProperty(TextInputModel.PROP_STYLE)
                 .addPropertyChangeListener(reCreateWidgetListener);
 
-        
+
         delegate.registerPropertyChangeHandlers();
     }
-    
+
     private void reCreateWidget(){
         TextInputModel model = getWidgetModel();
         AbstractContainerModel parent = model.getParent();
@@ -261,11 +261,11 @@ public class TextInputEditpart extends TextUpdateEditPart {
         parent.addChild(model);
         parent.selectWidget(model, true);
     }
-    
+
     public DragTracker getDragTracker(Request request) {
-        if (getExecutionMode() == ExecutionMode.RUN_MODE && 
+        if (getExecutionMode() == ExecutionMode.RUN_MODE &&
                 delegate instanceof Draw2DTextInputEditpartDelegate) {
-            return new SelectEditPartTracker(this) {                
+            return new SelectEditPartTracker(this) {
                 @Override
                 protected boolean handleButtonUp(int button) {
                     if (button == 1) {
@@ -292,14 +292,14 @@ public class TextInputEditpart extends TextUpdateEditPart {
         new TextEditManager(this, new LabelCellEditorLocator(
                 (Figure) getFigure()), getWidgetModel().isMultilineInput()).show();
     }
-    
+
     /**If the text has spaces in the string and the PV is numeric array type,
-     * it will return an array of numeric values. 
+     * it will return an array of numeric values.
      * @param text
      * @return
      * @throws ParseException
      */
-    private Object parseStringArray(final String text) throws ParseException{    
+    private Object parseStringArray(final String text) throws ParseException{
         String[] texts = text.split(" +"); //$NON-NLS-1$
         VType pvValue = getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
         if(pvValue instanceof VNumberArray){
@@ -313,13 +313,13 @@ public class TextInputEditpart extends TextUpdateEditPart {
             }
             return result;
         }
-        
+
         return parseString(text);
     }
 
     /**
      * Parse string to a value according PV value type and format
-     * 
+     *
      * @param text
      * @return value
      * @throws ParseException
@@ -327,16 +327,16 @@ public class TextInputEditpart extends TextUpdateEditPart {
     private Object parseString(final String text) throws ParseException {
         VType pvValue = getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
         FormatEnum formatEnum = getWidgetModel().getFormat();
-        
+
         if(pvValue == null)
             return text;
-        
-        
+
+
         return parseStringForPVManagerPV(formatEnum, text, pvValue);
-        
+
 
     }
-    
+
     private Object parseStringForPVManagerPV(FormatEnum formatEnum,
             final String text, VType pvValue) throws ParseException {
         if(pvValue instanceof Scalar){
@@ -382,15 +382,15 @@ public class TextInputEditpart extends TextUpdateEditPart {
                     }
                 }else
                     return text;
-            }            
+            }
         }else if(pvValue instanceof Array){
             if(pvValue instanceof VNumberArray){
                 switch (formatEnum) {
                 case HEX:
                 case HEX64:
                     return parseHEX(text, true);
-                case STRING:                    
-                    return parseCharArray(text, ((VNumberArray)pvValue).getData().size());                    
+                case STRING:
+                    return parseCharArray(text, ((VNumberArray)pvValue).getData().size());
                 case DECIMAL:
                 case EXP:
                 case COMPACT:
@@ -410,7 +410,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
         return text;
     }
 
-    
+
     private int[] parseCharArray(final String text, int currentLength) {
         int[] iString = new int[currentLength];
         char[] textChars = text.toCharArray();
@@ -425,7 +425,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
     }
 
     private double parseDouble(final String text, final boolean coerce)
-            throws ParseException {    
+            throws ParseException {
         if(text.contains("\n")&&!text.endsWith("\n"))
             throw new ParseException(NLS.bind("{0} cannot be parsed to double", text),text.indexOf("\n"));
         double value = DECIMAL_FORMAT.parse(text.replace('e', 'E')).doubleValue(); //$NON-NLS-1$ //$NON-NLS-2$
@@ -471,7 +471,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
         return text;
 
     }
-    
+
     /**
      * @param newValue
      */
@@ -481,7 +481,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
                 TextInputModel.PROP_MAX, !getWidgetModel().isLimitsFromPV());
         model.setPropertyVisible(
                 TextInputModel.PROP_MIN, !getWidgetModel().isLimitsFromPV());
-        
+
         //set native text related properties visibility
         boolean isNative = delegate instanceof NativeTextEditpartDelegate;
         model.setPropertyVisible(TextInputModel.PROP_SHOW_NATIVE_BORDER,
@@ -492,16 +492,16 @@ public class TextInputEditpart extends TextUpdateEditPart {
         model.setPropertyVisible(TextInputModel.PROP_SHOW_V_SCROLL, isNative);
         model.setPropertyVisible(TextInputModel.PROP_NEXT_FOCUS, isNative);
         model.setPropertyVisible(TextInputModel.PROP_WRAP_WORDS, isNative);
-        
-        
+
+
         //set classic text figure related properties visibility
         model.setPropertyVisible(TextInputModel.PROP_TRANSPARENT, !isNative);
         model.setPropertyVisible(TextInputModel.PROP_ROTATION, !isNative);
-        model.setPropertyVisible(TextInputModel.PROP_SELECTOR_TYPE, !isNative);                
-        
+        model.setPropertyVisible(TextInputModel.PROP_SELECTOR_TYPE, !isNative);
+
         delegate.updatePropSheet();
     }
-    
+
     @Override
     protected void setFigureText(String text) {
         if(delegate instanceof NativeTextEditpartDelegate)
@@ -509,7 +509,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
         else
             super.setFigureText(text);
     }
-    
+
     @Override
     protected void performAutoSize() {
         if(delegate instanceof NativeTextEditpartDelegate)
@@ -517,7 +517,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
         else
             super.performAutoSize();
     }
-    
+
     @Override
     public String getValue() {
         if(delegate instanceof NativeTextEditpartDelegate)

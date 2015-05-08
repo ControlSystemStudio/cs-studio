@@ -33,11 +33,11 @@ import org.eclipse.swt.widgets.Text;
 /**
  * This class represents a Dialog to choose a file (applying or not filters) in
  * the workspace. There is an option to return or not relative path.
- * 
+ *
  * @author SOPRA Group
  */
 public final class FilePathDialogWithFilter extends Dialog implements Listener {
-    
+
     /**
      * The default value for the file extensions.
      */
@@ -67,13 +67,13 @@ public final class FilePathDialogWithFilter extends Dialog implements Listener {
     private IPath refPath;
 
     private Text resourcePathText;
-    
+
     private Label imgOverview;
 
     private boolean relative;
 
     private boolean filtered;
-    
+
     private static final int MAX_ICON_WIDTH = 100;
     private static final int MAX_ICON_HEIGHT = 100;
     private static final String PNG_EXT = "png";
@@ -86,7 +86,7 @@ public final class FilePathDialogWithFilter extends Dialog implements Listener {
      * <p>
      * Note that the <code>open</code> method blocks for input dialogs.
      * </p>
-     * 
+     *
      * @param parentShell
      *            the parent shell, or <code>null</code> to create a top-level
      *            shell
@@ -112,7 +112,7 @@ public final class FilePathDialogWithFilter extends Dialog implements Listener {
     /**
      * Sets the initially selected resource. Must be called before the dialog is
      * displayed.
-     * 
+     *
      * @param path
      *            the path to the initially selected resource.
      */
@@ -153,15 +153,15 @@ public final class FilePathDialogWithFilter extends Dialog implements Listener {
         boolean showNewContainerActions = (filters == null || filters.length == 0);
         resourceSelectionGroup = new ResourceSelectionGroup(composite, this,
                 filters, showNewContainerActions);
-        
+
         Group wrapper = new Group(composite, SWT.NONE);
         wrapper.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         GridLayout gridLayout = new GridLayout(2, false);
         wrapper.setLayout(gridLayout);
-        
+
         Label text = new Label(wrapper, SWT.NONE);
         text.setText("Resource Path:");
-        
+
         // Image overview
         imgOverview = new Label(wrapper, SWT.NONE);
         GridData gridData = new GridData();
@@ -172,7 +172,7 @@ public final class FilePathDialogWithFilter extends Dialog implements Listener {
         gridData.horizontalAlignment = GridData.HORIZONTAL_ALIGN_CENTER;
         gridData.grabExcessHorizontalSpace = false;
         imgOverview.setLayoutData(gridData);
-        
+
         resourcePathText = new Text(wrapper, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
         resourcePathText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         if (path != null && !path.isEmpty()) {
@@ -185,7 +185,7 @@ public final class FilePathDialogWithFilter extends Dialog implements Listener {
                 }
             }
         }
-        
+
         // the check box for relative path
         final Button checkBox = new Button(wrapper, SWT.CHECK);
         checkBox.setSelection(relative);
@@ -203,7 +203,7 @@ public final class FilePathDialogWithFilter extends Dialog implements Listener {
                 }
             }
         });
-        
+
         // the check box for name filter
         final Button filterCheckBox = new Button(wrapper, SWT.CHECK);
         filterCheckBox.setSelection(filtered);
@@ -220,7 +220,7 @@ public final class FilePathDialogWithFilter extends Dialog implements Listener {
                 }
             }
         });
-        
+
         return composite;
     }
 
@@ -239,7 +239,7 @@ public final class FilePathDialogWithFilter extends Dialog implements Listener {
 
     /**
      * Returns the path to the selected resource.
-     * 
+     *
      * @return the path to the selected resource, or <code>null</code> if no
      *         resource was selected.
      */
@@ -261,19 +261,19 @@ public final class FilePathDialogWithFilter extends Dialog implements Listener {
         }
         displayOverview(widget.getFullPath());
     }
-    
+
     private void displayOverview(IPath imgPath) {
         if (imgPath == null || imgPath.isEmpty())
             return;
         try {
             ImageData data = null;
             if (GIF_EXT.equalsIgnoreCase(imgPath.getFileExtension())
-                    || PNG_EXT.equalsIgnoreCase(imgPath.getFileExtension())) 
+                    || PNG_EXT.equalsIgnoreCase(imgPath.getFileExtension()))
             {
                 final InputStream inputStream = ResourceUtil
                         .pathToInputStream(imgPath);
                 ImageData tmpData = new ImageData(inputStream);
-                
+
                 float ratio = (float) tmpData.width / tmpData.height;
                 if (ratio >= 1 && tmpData.width > MAX_ICON_WIDTH) {
                     float ratio2 = (float) MAX_ICON_WIDTH / tmpData.width;

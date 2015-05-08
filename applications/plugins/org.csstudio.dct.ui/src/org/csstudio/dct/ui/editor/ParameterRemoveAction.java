@@ -6,16 +6,16 @@ import org.eclipse.jface.action.Action;
 
 /**
  * Popup menu action for the parameter table that removes a selected parameter.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ParameterRemoveAction extends Action {
     private PrototypeForm form;
 
     /**
      * Constructor.
-     * 
+     *
      * @param form
      *            the prototype form
      */

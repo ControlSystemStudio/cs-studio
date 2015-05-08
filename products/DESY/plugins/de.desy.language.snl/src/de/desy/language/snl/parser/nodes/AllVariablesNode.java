@@ -2,7 +2,7 @@ package de.desy.language.snl.parser.nodes;
 
 /**
  * The outline node of an SNL variable.
- * 
+ *
  * @author C1 WPS / KM, MZ
  */
 public class AllVariablesNode extends AbstractSNLNode {

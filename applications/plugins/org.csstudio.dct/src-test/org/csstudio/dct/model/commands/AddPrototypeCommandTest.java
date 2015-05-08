@@ -16,9 +16,9 @@ import org.junit.Test;
 
 /**
  * Test class for {@link AddPrototypeCommand}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class AddPrototypeCommandTest extends AbstractTestCommand {
     private IPrototype prototype;

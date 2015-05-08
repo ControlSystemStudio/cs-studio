@@ -10,14 +10,14 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 
 public class RenameLayerAction extends AbstractLayerAction {
-    
+
     public RenameLayerAction() {
     }
-    
+
     @Override
     protected Command createCommand(Layer selectedLayer, LayerSupport layerSupport, IAction action) {
         Command result = null;
-        
+
         if (layerSupport != null) {
             InputDialog dialog = new InputDialog(Display.getCurrent().getActiveShell(),
                                                  "Rename",
@@ -31,18 +31,18 @@ public class RenameLayerAction extends AbstractLayerAction {
                                                          return null;
                                                      }
                                                  });
-            
+
             if (Window.OK == dialog.open()) {
                 result = new RenameLayerCommand(layerSupport, selectedLayer, dialog.getValue());
             }
         }
-        
+
         return result;
     }
-    
+
     @Override
     protected void selectedLayerChanged(Layer layer, LayerSupport layerSupport, IAction action) {
         action.setEnabled(layer != null);
     }
-    
+
 }

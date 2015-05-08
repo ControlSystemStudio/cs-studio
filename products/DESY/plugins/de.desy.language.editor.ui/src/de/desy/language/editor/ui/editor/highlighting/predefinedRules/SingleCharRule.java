@@ -7,9 +7,9 @@ import org.eclipse.jface.text.rules.Token;
 
 /**
  * Checks for single char.
- * 
+ *
  * @author P.Tomaszewski
- * 
+ *
  * TODO Move this class and its Test to
  * de.desy.snl.editor.draft.ui.extension.predefinedRules
  */
@@ -20,7 +20,7 @@ public abstract class SingleCharRule implements IRule {
 
     /**
      * Creates new rule.
-     * 
+     *
      * @param token
      *            Style token.
      */
@@ -44,7 +44,7 @@ public abstract class SingleCharRule implements IRule {
 
     /**
      * Checks if char is rule char.
-     * 
+     *
      * @param ch
      *            Char to check.
      * @return <b>true</b> if rule char.

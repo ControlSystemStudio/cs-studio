@@ -29,12 +29,12 @@ public class EdmParser {
 
     private String fileName;
     private EdmEntity root;
-    
+
     protected StringBuilder edmData;
     protected boolean robust;
 
     /**
-     * Constructs an EdmParser instance. 
+     * Constructs an EdmParser instance.
      * Reads data from file and stores it in object.
      *
      * @param fileName EDL file to parse.
@@ -80,7 +80,7 @@ public class EdmParser {
                         if (pieces.length > 0)
                             sb.append(pieces[0].trim() + "\r");
                     }
-                    
+
 //                    String appStr = line.substring(0, line.indexOf("#"));
 //                    if (appStr.trim().length() != 0)
 //                        sb.append(appStr + "\r");

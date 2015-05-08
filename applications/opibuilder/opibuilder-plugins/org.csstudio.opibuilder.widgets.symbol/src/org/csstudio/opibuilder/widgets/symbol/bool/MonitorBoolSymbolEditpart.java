@@ -12,9 +12,9 @@ import org.eclipse.draw2d.IFigure;
 /**
  * Edit part controller Monitor Boolean Symbol Image widget based on
  * {@link MonitorBoolSymbolModel}.
- * 
+ *
  * @author SOPRA Group
- * 
+ *
  */
 public class MonitorBoolSymbolEditpart extends CommonBoolSymbolEditpart {
 
@@ -27,7 +27,7 @@ public class MonitorBoolSymbolEditpart extends CommonBoolSymbolEditpart {
 
     /**
      * Get the monitor widget model.
-     * 
+     *
      * @return the monitor widget model.
      */
     @Override

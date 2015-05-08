@@ -23,8 +23,8 @@ public class ProcessVariableAddressValidationMock implements
     public ProcessVariableAddressValidationMock(String serviceName) {
         this.serviceName = serviceName;
         assert serviceName != null : "Precondition failed: serviceName != null";
-        
-        
+
+
     }
 
     @Override

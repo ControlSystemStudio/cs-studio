@@ -21,14 +21,14 @@ public class Preferences
     final public static String
         PREV_INDIVIDUAL = "run_individual_scripts",
         PREF_SCRIPTS = "scripts";
-    
+
     /** @return <code>true</code> when scripts should run for each PV */
     public static boolean getRunIndividualScripts()
     {
         final IPreferencesService prefs = Platform.getPreferencesService();
         return prefs.getBoolean(Activator.ID, PREV_INDIVIDUAL, true, null);
     }
-    
+
     /** Get {@link ScriptInfo} entries from preferences
      *  @return ScriptInfo array
      *  @throws Exception on error
@@ -39,7 +39,7 @@ public class Preferences
         final String script_list = prefs.getString(Activator.ID, PREF_SCRIPTS, "", null);
         return decode(script_list);
     }
-    
+
     /** @param infos Array of {@link ScriptInfo}
      *  @return Script infos encoded into one string, suitable for storing as preference
      */
@@ -56,7 +56,7 @@ public class Preferences
         }
         return buf.toString();
     }
-    
+
     /** @param script_list Encoded script infos, as read from preferences
      *  @return ScriptInfo array
      *  @throws Exception on error

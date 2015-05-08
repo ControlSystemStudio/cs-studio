@@ -159,7 +159,7 @@ public class ResponseImpl<T> implements Response<T>
     {
         return timestamp;
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb= new StringBuilder(256);
@@ -172,7 +172,7 @@ public class ResponseImpl<T> implements Response<T>
         sb.append(',');
         sb.append(timestamp);
         sb.append('}');
-        
+
         return sb.toString();
     }
 }

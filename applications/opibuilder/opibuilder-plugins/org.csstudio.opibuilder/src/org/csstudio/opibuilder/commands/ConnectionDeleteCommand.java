@@ -12,7 +12,7 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * A command to disconnect (remove) a connection from its endpoints.
- * 
+ *
  * @author Xihui Chen
  */
 public class ConnectionDeleteCommand extends Command {
@@ -22,7 +22,7 @@ public class ConnectionDeleteCommand extends Command {
 
     /**
      * Create a command that will disconnect a connection from its endpoints.
-     * 
+     *
      * @param conn
      *            the connection model (non-null)
      * @throws IllegalArgumentException

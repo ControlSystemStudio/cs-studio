@@ -13,5 +13,5 @@ public class Comparer implements Comparator<ChannelStructure>{
             return -1;
         return 0;
     }
-    
+
 }

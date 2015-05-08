@@ -5,9 +5,9 @@ import java.util.Arrays;
 import org.csstudio.dal.DynamicValueProperty;
 
 public final class StringSeqAnyDataImpl extends AbstractAnyDataImpl<String[]> {
-    
+
     public static final String[] UNINITIALIZED_VALUE = new String[]{""};
-    
+
     public StringSeqAnyDataImpl(DynamicValueProperty<String[]> property, long beamID) {
         super(property, beamID);
     }

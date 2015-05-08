@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Control;
  * A proxy for an {@link EditPartViewer}. The class is only used in a
  * workarround to ensure that the wrapped EditPartViewer gets garbage
  * collected when the shell is disposed.
- * 
+ *
  * @author Sven Wende
  */
 public class EditPartViewerProxy implements EditPartViewer {

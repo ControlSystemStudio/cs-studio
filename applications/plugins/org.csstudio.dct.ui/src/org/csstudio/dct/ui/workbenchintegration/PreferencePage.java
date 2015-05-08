@@ -34,9 +34,9 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Preference Page for the DCT.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class PreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
@@ -76,8 +76,8 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
             addField(new ComboFieldEditor(IO_NAME_SERVICE_ID.name(), IO_NAME_SERVICE_ID.getLabel(),
                     resolveEntryAndNames(new ArrayList<ServiceExtension>(ioNameServiceExtensions.values())), getFieldEditorParent()));
         }
-        
-        
+
+
     }
 
     /**

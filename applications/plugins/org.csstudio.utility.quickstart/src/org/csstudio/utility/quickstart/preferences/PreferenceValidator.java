@@ -46,12 +46,12 @@ import org.slf4j.LoggerFactory;
  * @since 05.08.2010
  */
 public class PreferenceValidator {
- 
+
     private static final Logger LOG = LoggerFactory.getLogger(PreferenceValidator.class);
-    
+
     /**
      * Check if there are all preference entries present and valid.
-     * 
+     *
      * @param tableRowFromPreferences
      * @return
      */
@@ -96,5 +96,5 @@ public class PreferenceValidator {
         }
         return newPreferencePart;
     }
-    
+
 }

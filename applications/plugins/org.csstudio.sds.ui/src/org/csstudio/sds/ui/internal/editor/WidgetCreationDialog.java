@@ -39,7 +39,7 @@ import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 /**
  * Dialog that allows for choosing the main process variable and widget behavior
  * as well as the widget type (optional).
- * 
+ *
  * @author Sven Wende, Kai Meyer
  */
 final class WidgetCreationDialog extends Dialog {

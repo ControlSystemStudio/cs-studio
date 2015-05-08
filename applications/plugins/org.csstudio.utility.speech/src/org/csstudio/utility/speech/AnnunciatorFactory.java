@@ -26,7 +26,7 @@ public class AnnunciatorFactory
         final IPreferencesService prefs = Platform.getPreferencesService();
         if (prefs == null)
             return new FreeTTS_JSAPI_Annunciator("kevin");
-        
+
         final String type = prefs.getString(Plugin.ID, "annunciator", "JSAPI", null);
         final String voice = prefs.getString(Plugin.ID, "voice", "kevin", null);
 

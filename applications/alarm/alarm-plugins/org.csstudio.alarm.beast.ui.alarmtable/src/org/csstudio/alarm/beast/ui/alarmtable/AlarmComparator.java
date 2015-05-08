@@ -19,7 +19,7 @@ import org.epics.util.time.Timestamp;
 public class AlarmComparator implements Comparator<AlarmTreePV>
 {
     /** Create comparator for AlarmTreePV entries
-     * 
+     *
      *  @param col_info What to use for the comparison
      *  @param up Up or downward sort?
      *  @return Comparator<AlarmTreePV>
@@ -94,7 +94,7 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
                 }
             };
         case ACK:
-            return new AlarmComparator(up) 
+            return new AlarmComparator(up)
             {
                 @Override
                 protected int doCompare(AlarmTreePV pv1, AlarmTreePV pv2) {
@@ -112,7 +112,7 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
     }
 
     final private boolean up;
-    
+
     /** Initialize
      *  @param up Sort 'up' or 'down'?
      */
@@ -132,7 +132,7 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
     }
 
     /** Compare PVs in 'up' order
-     * 
+     *
      *  Default compares by name, derived class can override.
      *  @param pv1
      *  @param pv2

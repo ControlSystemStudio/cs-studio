@@ -13,7 +13,7 @@ import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.simplepv.IPV;
 
 /**
- * This is the implementation of {@link AbstractScriptStore} for the default javascript script engine embedded in Java. 
+ * This is the implementation of {@link AbstractScriptStore} for the default javascript script engine embedded in Java.
  * The default javascript engine is Rhino for Java 7, Nashorn for Java 8.
  */
 public class JavaScriptStore extends AbstractScriptStore {
@@ -23,11 +23,11 @@ public class JavaScriptStore extends AbstractScriptStore {
     private CompiledScript script;
 
     public JavaScriptStore(final ScriptData scriptData, final AbstractBaseEditPart editpart,
-            final IPV[] pvArray) throws Exception {        
-        super(scriptData, editpart, pvArray);        
-        
+            final IPV[] pvArray) throws Exception {
+        super(scriptData, editpart, pvArray);
+
     }
-    
+
     @Override
     protected void initScriptEngine() throws Exception {
         engine = ScriptStoreFactory.getJavaScriptEngine();
@@ -49,7 +49,7 @@ public class JavaScriptStore extends AbstractScriptStore {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(s))) {
             script = ((Compilable) engine).compile(reader);
         }
-        
+
     }
 
     @Override

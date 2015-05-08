@@ -24,7 +24,7 @@ import org.junit.Before;
 
 /**
  * @author hammonds
- * 
+ *
  */
 public class AbstractADL2ModelUiPluginTest extends TestCase {
     TestDisp2Model dispModel;
@@ -111,7 +111,7 @@ public class AbstractADL2ModelUiPluginTest extends TestCase {
         assertEquals("Foreground Color Name", ADLTestObjects.getColorName(2),
                 frgd.getColorName());
     }
-    
+
     public void testADLModelColorsWithTable(){
         initialilzeDisplay(ADLTestObjects.setupBasicDisplay());
         testWidgetModel = new TestWidget2Model(ADLTestObjects.makeColorMap());
@@ -140,7 +140,7 @@ public class AbstractADL2ModelUiPluginTest extends TestCase {
             System.out.println("Trouble creating basic attributes");
             e.printStackTrace();
         }
-        
+
         DisplayModel d = (DisplayModel) (dispModel.getWidgetModel());
         d.addChild(testWidgetModel.getWidgetModel());
         ADLWidget oval = ADLTestObjects.setupBasicOval1();
@@ -165,7 +165,7 @@ public class AbstractADL2ModelUiPluginTest extends TestCase {
             System.out.println("Trouble creating basic attributes");
             e.printStackTrace();
         }
-        
+
         DisplayModel d = (DisplayModel) (dispModel.getWidgetModel());
         d.addChild(testWidgetModel.getWidgetModel());
         ADLWidget oval = ADLTestObjects.setupBasicOval1();

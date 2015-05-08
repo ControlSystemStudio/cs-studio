@@ -9,7 +9,7 @@ package org.csstudio.scan.util;
 
 /** Helper for handling {@link Object}s that are
  *  either a {@link String} or a {@link Double}
- * 
+ *
  *  @author Kay Kasemir
  */
 public class StringOrDouble
@@ -23,7 +23,7 @@ public class StringOrDouble
             return '"' + (String) value + '"';
         return value.toString();
     }
-    
+
     /** @param text Text that contains quoted string or a number
      *  @return {@link String} or {@link Double}
      *  @throws NumberFormatException if number cannot be parsed, so needs to be handled as {@link String}

@@ -20,17 +20,17 @@ import org.csstudio.opibuilder.properties.ActionsProperty;
 public class ActionsInput {
 
     private LinkedList<AbstractWidgetAction> actionsList;
-    
+
     private boolean hookUpFirstActionToWidget = false;
-    
+
     private boolean hookUpAllActionsToWidget = false;
-    
+
     private AbstractWidgetModel widgetModel;
-    
+
     public ActionsInput(LinkedList<AbstractWidgetAction> actionsList) {
         this.actionsList = actionsList;
     }
-    
+
     public ActionsInput() {
         actionsList = new LinkedList<AbstractWidgetAction>();
     }
@@ -41,12 +41,12 @@ public class ActionsInput {
     public LinkedList<AbstractWidgetAction> getActionsList() {
         return actionsList;
     }
-    
+
     public void addAction(AbstractWidgetAction action){
         actionsList.add(action);
         action.setWidgetModel(widgetModel);
     }
-    
+
     /**
      * @return a total contents copy of this ScriptsInput.
      */
@@ -75,7 +75,7 @@ public class ActionsInput {
     public boolean isFirstActionHookedUpToWidget() {
         return hookUpFirstActionToWidget;
     }
-    
+
     @Override
     public String toString() {
         if(actionsList.size() ==0){
@@ -110,6 +110,6 @@ public class ActionsInput {
     public void setHookUpAllActionsToWidget(boolean hookUpAllActionsToWidget) {
         this.hookUpAllActionsToWidget = hookUpAllActionsToWidget;
     }
-    
-    
+
+
 }

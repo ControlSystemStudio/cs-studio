@@ -28,6 +28,6 @@ public class AxisRangePropertyDescriptor extends PropertyDescriptor {
         }
         return editor;
     }
-    
-    
+
+
 }

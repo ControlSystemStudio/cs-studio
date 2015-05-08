@@ -37,7 +37,7 @@ public class SeverityImpl
     {
         return text;
     }
-    
+
     public boolean hasValue()
     {
         return has_value;

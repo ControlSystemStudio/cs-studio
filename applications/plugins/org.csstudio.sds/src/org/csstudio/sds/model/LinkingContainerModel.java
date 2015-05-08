@@ -59,7 +59,7 @@ public final class LinkingContainerModel extends ContainerModel {
     private static final int DEFAULT_WIDTH = 100;
 
     private boolean isResourceLoaded = false;
-    
+
     /**
      * Standard constructor.
      */
@@ -116,11 +116,11 @@ public final class LinkingContainerModel extends ContainerModel {
     public boolean isAutoZoom() {
         return getBooleanProperty(PROP_AUTOZOOM);
     }
-    
+
     public boolean isResourceLoaded() {
         return isResourceLoaded;
     }
-    
+
     public void setResourceLoaded(boolean isResourceLoaded) {
         this.isResourceLoaded = isResourceLoaded;
     }

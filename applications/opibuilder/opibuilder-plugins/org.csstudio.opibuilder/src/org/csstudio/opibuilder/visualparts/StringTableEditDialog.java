@@ -25,16 +25,16 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 public class StringTableEditDialog extends Dialog {
-    
-    private String title;    
+
+    private String title;
     private String[] columnTitles;
     private List<String[]> contents;
-    
+
     private StringTableEditor tableEditor;
     private Object[] cellEditorDatas;
     private CellEditorType[] cellEditorTypes;
 
-    public StringTableEditDialog(Shell parentShell, List<String[]> inputData, 
+    public StringTableEditDialog(Shell parentShell, List<String[]> inputData,
             String dialogTitle, String[] columnTitles, CellEditorType[] cellEditorTypes, Object[] cellEditorDatas) {
         super(parentShell);
         this.title = dialogTitle;
@@ -59,13 +59,13 @@ public class StringTableEditDialog extends Dialog {
         Arrays.fill(columnWidths, 80);
         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
         gd.heightHint=200;
-        tableEditor = new StringTableEditor(container,columnTitles, 
+        tableEditor = new StringTableEditor(container,columnTitles,
                 null, contents, null, columnWidths, cellEditorTypes, cellEditorDatas);
-        tableEditor.setLayoutData(gd);    
-    
+        tableEditor.setLayoutData(gd);
+
         return container;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -77,10 +77,10 @@ public class StringTableEditDialog extends Dialog {
         }
     }
 
-    public List<String[]> getResult() {        
+    public List<String[]> getResult() {
         return contents;
     }
-    
+
     @Override
     protected void okPressed() {
         tableEditor.forceFocus();

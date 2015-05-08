@@ -24,9 +24,9 @@ import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 /**
  * Fake {@link AlarmClientModel} for test purpose. Instantiate a basic AlarmTree
  * and fake model behavior.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
- * 
+ *
  */
 public class MockAlarmRDBHandler implements IAlarmRDBHandler {
 
@@ -81,7 +81,7 @@ public class MockAlarmRDBHandler implements IAlarmRDBHandler {
             boolean parent_changed) {
         notifier.handleAlarmUpdate(pv);
     }
-    
+
     public void updatePV(final String name,
             final SeverityLevel current_severity,
             final SeverityLevel alarm_severity) {
@@ -106,7 +106,7 @@ public class MockAlarmRDBHandler implements IAlarmRDBHandler {
 
     /**
      * Locate PV by name
-     * 
+     *
      * @param name Name of PV to locate. May be <code>null</code>.
      * @return PV or <code>null</code> when not found
      */

@@ -18,7 +18,7 @@ import org.csstudio.opibuilder.converter.model.Edm_xyGraphClass;
 
 /**
  * XML conversion class for Edm_activeRectangleClass
- * 
+ *
  * @author Lei Hu, Xihui Chen
  */
 public class Opi_xyGraphClass extends OpiWidget {
@@ -91,22 +91,22 @@ public class Opi_xyGraphClass extends OpiWidget {
         new OpiBoolean(widgetContext, "axis_0_visible", r.isShowXAxis());
         new OpiBoolean(widgetContext, "axis_1_visible", r.isShowYAxis());
         new OpiBoolean(widgetContext, "axis_2_visible", r.isShowY2Axis());
-        
+
         new OpiDouble(widgetContext, "axis_0_minimum", r.getxMin());
         new OpiDouble(widgetContext, "axis_1_minimum", r.getyMin());
         new OpiDouble(widgetContext, "axis_2_minimum", r.getY2Min());
-        
+
         new OpiDouble(widgetContext, "axis_0_maximum", r.getxMax());
         new OpiDouble(widgetContext, "axis_1_maximum", r.getyMax());
         new OpiDouble(widgetContext, "axis_2_maximum", r.getY2Max());
-        
+
         new OpiBoolean(widgetContext, "axis_0_show_grid", r.isxShowMajorGrid());
         new OpiBoolean(widgetContext, "axis_1_show_grid", r.isyShowMajorGrid());
         new OpiBoolean(widgetContext, "axis_2_show_grid", r.isY2ShowMajorGrid());
-        
+
         // There is no legend on EDM xygraphs.
         new OpiBoolean(widgetContext, "show_legend", false);
-        
+
         // All fonts on EDM graphs are the same
         if (r.getFont().isExistInEDL()) {
             if (r.getGraphTitle() != null) {
@@ -137,7 +137,7 @@ public class Opi_xyGraphClass extends OpiWidget {
 
         new OpiInt(widgetContext, "axis_1_time_format", 0);
         new OpiInt(widgetContext, "axis_2_time_format", 0);
-        
+
         if (r.getTriggerPv() != null)
             new OpiString(widgetContext, "trigger_pv", r.getTriggerPv());
 
@@ -159,26 +159,26 @@ public class Opi_xyGraphClass extends OpiWidget {
 
         if(r.getY2AxisSrc()!=null && r.getY2AxisSrc().equals("AutoScale"))
             new OpiBoolean(widgetContext, "axis_2_auto_scale",    true);
-        
+
         if(r.getxAxisStyle()!=null && r.getxAxisStyle().equals("log10"))
             new OpiBoolean(widgetContext, "axis_0_log_scale", true);
 
         if(r.getyAxisStyle()!=null && r.getyAxisStyle().equals("log10"))
             new OpiBoolean(widgetContext, "axis_1_log_scale", true);
-        
+
         // trace properties
-        new OpiInt(widgetContext, "trace_count", r.getNumTraces()); 
-            
-        
-        
+        new OpiInt(widgetContext, "trace_count", r.getNumTraces());
+
+
+
         // PV X,Y
         if (r.getXPv().isExistInEDL()) {
             for (Entry<String, EdmString>  entry: r.getXPv().getEdmAttributesMap().entrySet()) {
                 new OpiString(widgetContext, "trace_" + entry.getKey()+ "_x_pv", entry.getValue());
             }
-            
+
         }
-        for(int i=0; i<r.getNumTraces(); i++){            
+        for(int i=0; i<r.getNumTraces(); i++){
             //give it a big buffer if it is waveform, edm will show all waveform values regardless nPts.
             new OpiInt(widgetContext, "trace_"+i+"_buffer_size", r.getnPts());
             new OpiInt(widgetContext, "trace_"+i+"_update_delay", r.getUpdateTimerMs());
@@ -187,8 +187,8 @@ public class Opi_xyGraphClass extends OpiWidget {
                 new OpiInt(widgetContext, "trace_"+i+"_buffer_size", 5000);
             }
         }
-        
-        
+
+
         if (r.getYPv().isExistInEDL()) {
             for (Entry<String, EdmString> entry : r.getYPv().getEdmAttributesMap().entrySet()) {
                 new OpiString(widgetContext, "trace_" + entry.getKey() + "_y_pv", entry.getValue());
@@ -201,7 +201,7 @@ public class Opi_xyGraphClass extends OpiWidget {
                         entry.getValue(), r);
             }
         }
-        
+
         if(r.getPlotStyle().isExistInEDL()){
             for (Entry<String, EdmString> entry : r.getPlotStyle().getEdmAttributesMap().entrySet()) {
                 if(entry.getValue().get().equals("needle")){
@@ -219,12 +219,12 @@ public class Opi_xyGraphClass extends OpiWidget {
                 }
             }
         }
-                
+
         if(r.getLineThickness().isExistInEDL()){
             for (Entry<String, EdmInt> entry : r.getLineThickness().getEdmAttributesMap().entrySet())
-                new OpiInt(widgetContext, "trace_"+entry.getKey() + "_line_width", entry.getValue().get());                
+                new OpiInt(widgetContext, "trace_"+entry.getKey() + "_line_width", entry.getValue().get());
         }
-        
+
         if (r.getLineStyle().isExistInEDL()) {
             for (Entry<String, EdmString> entry : r.getLineStyle().getEdmAttributesMap().entrySet()) {
                 if (entry.getValue().get().equals("dash")) {
@@ -241,23 +241,23 @@ public class Opi_xyGraphClass extends OpiWidget {
                     m=5;
                 }else if (entry.getValue().get().equals("diamond")) {
                     m=7;
-                }                
-                new OpiInt(widgetContext, "trace_" + entry.getKey() + "_point_style", m);                
+                }
+                new OpiInt(widgetContext, "trace_" + entry.getKey() + "_point_style", m);
             }
         }
-        
+
         if(r.getOpMode().isExistInEDL()){
             for (Entry<String, EdmString> entry : r.getOpMode().getEdmAttributesMap().entrySet()) {
                 //EDM will sort the data in this mode where BOY cannot, so plot it as points
-                if (entry.getValue().get().equals("plot")) { 
+                if (entry.getValue().get().equals("plot")) {
                     new OpiInt(widgetContext, "trace_" + entry.getKey() + "_trace_type", 2);
                     if(!r.getPlotSymbolType().getEdmAttributesMap().containsKey(entry.getKey()))
-                        new OpiInt(widgetContext, "trace_" + entry.getKey() + "_point_style", 1);    
-                    new OpiInt(widgetContext, "trace_" + entry.getKey() + "_point_size", 2);    
+                        new OpiInt(widgetContext, "trace_" + entry.getKey() + "_point_style", 1);
+                    new OpiInt(widgetContext, "trace_" + entry.getKey() + "_point_size", 2);
                 }
             }
         }
-        
+
         if(r.getPlotUpdateMode().isExistInEDL()){
             for (Entry<String, EdmString> entry : r.getPlotUpdateMode().getEdmAttributesMap().entrySet()) {
                 int m = 1;
@@ -267,22 +267,22 @@ public class Opi_xyGraphClass extends OpiWidget {
                     m=2;
                 }else if (entry.getValue().get().equals("y")) {
                     m=3;
-                }else if (entry.getValue().get().equals("trigger")) 
-                    m=4;                
-                new OpiInt(widgetContext, "trace_" + entry.getKey() + "_update_mode", m);                
+                }else if (entry.getValue().get().equals("trigger"))
+                    m=4;
+                new OpiInt(widgetContext, "trace_" + entry.getKey() + "_update_mode", m);
             }
         }
-        
-    
+
+
         if(r.getUseY2Axis().isExistInEDL()){
             for (Entry<String, EdmBoolean> entry : r.getUseY2Axis().getEdmAttributesMap().entrySet()) {
                 if(entry.getValue().is())
                     new OpiInt(widgetContext, "trace_"+entry.getKey()+"_y_axis_index", 2);
             }
         }
-        
-    
-        
+
+
+
         log.debug("Edm_xyGraphClass written.");
 
     }

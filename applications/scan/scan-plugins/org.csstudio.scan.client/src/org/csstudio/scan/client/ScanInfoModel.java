@@ -49,10 +49,10 @@ public class ScanInfoModel
 
     /** Has poller received anything in last request to server? */
     private volatile boolean is_connected = false;
-    
+
     /** Most recent server info from <code>server</code> */
     private volatile ScanServerInfo server_info = null;
-    
+
     /** Most recent infos from <code>server</code> */
     private volatile List<ScanInfo> infos = Collections.emptyList();
 

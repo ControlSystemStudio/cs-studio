@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.metamodel.internal;
 
@@ -15,7 +15,7 @@ import org.junit.Test;
 
 /**
  * Test class for {@link MenuDefinition}.
- * 
+ *
  * @author Sven Wende
  *
  */
@@ -24,7 +24,7 @@ public final class MenuDefinitionTest {
     private MenuDefinition menuDefinition;
     private IChoice yesChoice;
     private IChoice noChoice;
-    
+
     /**
      * @throws java.lang.Exception
      */

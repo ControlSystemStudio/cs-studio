@@ -7,7 +7,7 @@ public class AbstractSelectionWidgetModelDescription {
 
     private boolean enableConfigurableProperty = false;
     private boolean enableBorderAlarmSensitiveProperty = false;
-    
+
     private AbstractSelectionWidgetModelDescription() {
         // Prevent instances
     }
@@ -34,15 +34,15 @@ public class AbstractSelectionWidgetModelDescription {
         }
         return model;
     }
-    
+
     public AbstractSelectionWidgetModelDescription enableConfigurableProperty() {
         enableConfigurableProperty = true;
         return this;
     }
-    
+
     public AbstractSelectionWidgetModelDescription enableBorderAlarmSensitiveProperty() {
         enableBorderAlarmSensitiveProperty = true;
         return this;
     }
-    
+
 }

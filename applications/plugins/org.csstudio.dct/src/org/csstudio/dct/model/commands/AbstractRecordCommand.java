@@ -11,15 +11,15 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * Base class for {@link AddRecordCommand} and {@link RemoveRecordCommand}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 abstract class AbstractRecordCommand extends Command {
 
     /**
      * Adds a record to a container.
-     * 
+     *
      * @param container
      *            the container
      * @param record
@@ -46,7 +46,7 @@ abstract class AbstractRecordCommand extends Command {
 
     /**
      * Removes a record from a container.
-     * 
+     *
      * @param container
      *            the container
      * @param record

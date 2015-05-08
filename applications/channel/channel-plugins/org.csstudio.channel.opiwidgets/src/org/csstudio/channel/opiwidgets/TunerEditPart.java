@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.channel.opiwidgets;
 
@@ -9,14 +9,14 @@ import org.eclipse.draw2d.IFigure;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class TunerEditPart extends
         AbstractChannelWidgetEditPart<TunerFigure, TunerModel> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.csstudio.channel.opiwidgets.AbstractChannelWidgetEditPart#doCreateFigure
      * ()
@@ -39,12 +39,12 @@ public class TunerEditPart extends
             tunerWidget.setChannelQuery(tunerModel.getChannelQuery());
         }
         tunerWidget.setConfigurable(tunerModel.isConfigurable());
-        
+
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.csstudio.opibuilder.editparts.AbstractBaseEditPart#
      * registerPropertyChangeHandlers()
      */

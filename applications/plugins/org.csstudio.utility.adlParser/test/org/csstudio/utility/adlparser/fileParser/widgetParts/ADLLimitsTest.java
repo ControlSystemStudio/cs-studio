@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
@@ -80,7 +80,7 @@ public class ADLLimitsTest extends TestCase {
         object.addBody(new FileLine("hoprdefault=3.0", 6));
         object.addBody(new FileLine("loprdefault=1.0", 7));
         object.addBody(new FileLine("precdefault=2", 8));
-        
+
 
         return object;
     }

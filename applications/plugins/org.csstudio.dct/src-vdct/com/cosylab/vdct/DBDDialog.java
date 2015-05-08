@@ -8,22 +8,22 @@ package com.cosylab.vdct;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -57,15 +57,15 @@ import com.cosylab.vdct.util.UniversalFileFilter;
 /**
  * Insert the type's description here.
  * Creation date: (7/17/2002 3:21:44 PM)
- * @author: 
+ * @author:
  */
 public class DBDDialog extends JDialog {
 
 class CellRenderer extends DefaultTableCellRenderer {
-    
+
     public Component getTableCellRendererComponent(JTable table, Object value,
                       boolean isSelected, boolean hasFocus, int row, int column) {
-                          
+
         Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         java.io.File file = (java.io.File)value;
         ((JLabel)component).setText(file.getAbsolutePath());
@@ -85,7 +85,7 @@ public class TableModel extends AbstractTableModel {
 
     // table classes
     private final Class[] columnClasses = { String.class, java.io.File.class, Boolean.class, Boolean.class};
-        
+
     /**
      * Insert the method's description here.
      * Creation date: (14.11.1999 15:22:35)
@@ -95,27 +95,27 @@ public class TableModel extends AbstractTableModel {
     public Class getColumnClass(int col) {
         return columnClasses[col];
     }
-    
+
     /**
      * getColumnCount method comment.
      */
     public int getColumnCount() {
         return columnClasses.length;
     }
-    
+
     public String getColumnName(int column) {
         return columnNames[column];
     }
-    
+
     /**
      * getRowCount method comment.
      * @return the number of rows in the model.
      */
-    
+
     public int getRowCount() {
         return DataProvider.getInstance().getCurrentDBDs().size();
     }
-    
+
     /**
      * Returns an attribute value for the cell at <I>row</I>
      * and <I>column</I>.
@@ -124,7 +124,7 @@ public class TableModel extends AbstractTableModel {
      * @param   column          the column whose value is to be looked up
      * @return                  the value Object at the specified cell
      */
-     
+
     public Object getValueAt(int row, int column) {
         DBDEntry entry = (DBDEntry)DataProvider.getInstance().getCurrentDBDs().get(row);
         switch (column) {
@@ -136,7 +136,7 @@ public class TableModel extends AbstractTableModel {
                 return null;
         }
     }
-    
+
     /**
      * Insert the method's description here.
      * Creation date: (14.11.1999 15:23:25)
@@ -147,7 +147,7 @@ public class TableModel extends AbstractTableModel {
     public boolean isCellEditable(int row, int col) {
         return col!=1;
     }
-    
+
     /**
      * Sets the object value for the cell at <I>column</I> and
      * <I>row</I>.  <I>aValue</I> is the new value.  This method
@@ -162,17 +162,17 @@ public class TableModel extends AbstractTableModel {
     public void setValueAt(Object aValue, int row, int column) {
         Vector dbds = DataProvider.getInstance().getCurrentDBDs();
         DBDEntry entry = (DBDEntry)dbds.get(row);
-    
+
         switch (column) {
             case 2:
                 entry.setRelative(((Boolean)aValue).booleanValue());
                 fireTableCellUpdated(row, 0);
                 break;
-                
+
             case 3:
                 entry.setSavesToFile(((Boolean)aValue).booleanValue());
                 break;
-                
+
             case 0:
                 if (aValue==null)
                 {
@@ -180,10 +180,10 @@ public class TableModel extends AbstractTableModel {
                     //update entire table
                     getScrollPaneTable().tableChanged(new TableModelEvent(getScrollPaneTable().getModel()));
                     return;
-                }    
-                
+                }
+
                 entry.setValue(aValue.toString());
-            
+
                 File f = entry.getFile();
                 if (f.exists())
                 {
@@ -196,9 +196,9 @@ public class TableModel extends AbstractTableModel {
                         Console.getInstance().println(e);
                     }
                 }
-        
+
         }
-        
+
         // generate notification
         fireTableCellUpdated(row, column);
     }
@@ -218,14 +218,14 @@ public class TableModel extends AbstractTableModel {
 
 class IvjEventHandler implements java.awt.event.ActionListener {
         public void actionPerformed(java.awt.event.ActionEvent e) {
-            if (e.getSource() == DBDDialog.this.getCloseButton()) 
+            if (e.getSource() == DBDDialog.this.getCloseButton())
                 connEtoM1(e);
-            if (e.getSource() == DBDDialog.this.getRemoveDBDButton()) 
+            if (e.getSource() == DBDDialog.this.getRemoveDBDButton())
                 connEtoC1(e);
-            if (e.getSource() == DBDDialog.this.getAddDBDButton()) 
+            if (e.getSource() == DBDDialog.this.getAddDBDButton())
                 connEtoC2(e);
-            if (e.getSource() == DBDDialog.this.getAddStringButton()) 
-                connEtoC3(e);                
+            if (e.getSource() == DBDDialog.this.getAddStringButton())
+                connEtoC3(e);
         };
     };
 /**
@@ -287,20 +287,20 @@ public void addDBDButton_ActionPerformed(java.awt.event.ActionEvent actionEvent)
         java.io.File theFile = chooser.getSelectedFile();
         if(theFile != null) {
             theFile = theFile.getAbsoluteFile();
-                        
+
             GetGUIInterface cmd = (GetGUIInterface)CommandManager.getInstance().getCommand("GetGUIMenuInterface");
             try {
-                
+
                 DBDEntry entry = new DBDEntry(theFile.getPath());
                 entry.setRelative(!chooser.getJCheckBoxAbsoluteDBD().isSelected());
-                
+
                 Vector dbds = DataProvider.getInstance().getCurrentDBDs();
                 //    replace
                 if (dbds.contains(entry)) dbds.remove(entry);
                 dbds.addElement(entry);
-                
+
                 getScrollPaneTable().tableChanged(new TableModelEvent(getScrollPaneTable().getModel()));
-                
+
                    cmd.getGUIMenuInterface().importDBD(entry.getFile());
             } catch (java.io.IOException e) {
                 Console.getInstance().println();
@@ -317,16 +317,16 @@ public void addStringButton_ActionPerformed(java.awt.event.ActionEvent actionEve
     if (str!=null) {
                     GetGUIInterface cmd = (GetGUIInterface)CommandManager.getInstance().getCommand("GetGUIMenuInterface");
                     try {
-                
+
                         DBDEntry entry = new DBDEntry(str);
-                
+
                         Vector dbds = DataProvider.getInstance().getCurrentDBDs();
                         //    replace
                         if (dbds.contains(entry)) dbds.remove(entry);
                         dbds.addElement(entry);
-                                        
+
                         getScrollPaneTable().tableChanged(new TableModelEvent(getScrollPaneTable().getModel()));
-                
+
                         cmd.getGUIMenuInterface().importDBD(entry.getFile());
                     } catch (java.io.IOException e) {
                         Console.getInstance().println();
@@ -719,10 +719,10 @@ public void removeDBDButton_ActionPerformed(java.awt.event.ActionEvent actionEve
     Object[] objs = new Object[selected.length];
     for (int i=0; i < selected.length; i++)
         objs[i] = dbds.get(selected[i]);
-        
+
     for (int i=0; i < objs.length; i++)
         dbds.removeElement(objs[i]);
-        
+
     getScrollPaneTable().tableChanged(new TableModelEvent(getScrollPaneTable().getModel()));
 }
 }

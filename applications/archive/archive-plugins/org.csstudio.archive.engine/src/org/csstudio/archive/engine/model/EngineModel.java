@@ -387,7 +387,7 @@ public class EngineModel
      *  @param config {@link ArchiveConfig}
      *  @param name Name of engine in config
      *  @param port Current HTTPD port
-     *  @param skip_last Skip reading last sample time 
+     *  @param skip_last Skip reading last sample time
      */
     @SuppressWarnings("nls")
     public void readConfig(final ArchiveConfig config, final String name, final int port, final boolean skip_last) throws Exception

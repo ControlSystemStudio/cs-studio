@@ -25,11 +25,11 @@ public class CreateTestDB
     final private static int COUNT = 50000;
     final private static int GROUPSIZE = 200;
     final private static boolean latch = false;
-    
+
     public static void main(String[] args) throws Exception
     {
         PrintStream out = new PrintStream("demo.db");
-        
+
         for (int i=0; i<COUNT; ++i)
         {
             final String num = String.format("%05d", i);
@@ -63,7 +63,7 @@ public class CreateTestDB
             out.println();
         }
         out.close();
-        
+
         out = new PrintStream("demo.xml");
         out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
         out.println("<config name=\"demo\">");

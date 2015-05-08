@@ -20,9 +20,9 @@ import org.eclipse.ui.PlatformUI;
  *
  */
 public class ScriptsInputCellEditor extends AbstractDialogCellEditor {
-    
+
     private ScriptsInput scriptsInput;
-    
+
     private AbstractWidgetModel widgetModel;
 
     public ScriptsInputCellEditor(Composite parent,final AbstractWidgetModel widgetModel, String title) {
@@ -36,8 +36,8 @@ public class ScriptsInputCellEditor extends AbstractDialogCellEditor {
         "org.eclipse.help.ui.HelpView") !=null) //$NON-NLS-1$
             PlatformUI.getWorkbench().getHelpSystem().displayHelp(
                     OPIBuilderPlugin.PLUGIN_ID + ".script"); //$NON-NLS-1$
-        ScriptsInputDialog dialog = 
-            new ScriptsInputDialog(parentShell, scriptsInput,                     
+        ScriptsInputDialog dialog =
+            new ScriptsInputDialog(parentShell, scriptsInput,
                     dialogTitle, widgetModel);
         if(dialog.open() == Window.OK){
             scriptsInput = new ScriptsInput(dialog.getScriptDataList());
@@ -61,7 +61,7 @@ public class ScriptsInputCellEditor extends AbstractDialogCellEditor {
             scriptsInput = new ScriptsInput();
         else
             scriptsInput = (ScriptsInput)value;
-            
+
     }
 
 }

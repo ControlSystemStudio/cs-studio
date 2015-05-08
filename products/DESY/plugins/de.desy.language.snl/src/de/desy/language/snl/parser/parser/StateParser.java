@@ -16,11 +16,11 @@ public class StateParser extends AbstractOptimizedStatementParser<StateNode> {
         final Matcher postMatcher = postPattern.matcher(input);
         final Pattern pattern = Pattern.compile(this.getPatternString());
         final Matcher matcher = pattern.matcher(input);
-        
+
         int localStart = startIndex;
         while (preMatcher.find(localStart)) {
             localStart = preMatcher.end();
-            
+
             while (postMatcher.find(localStart + 1)) {
                 final int end = postMatcher.end();
                 matcher.region(startIndex, end);
@@ -48,7 +48,7 @@ public class StateParser extends AbstractOptimizedStatementParser<StateNode> {
                     return;
                 }
             }
-            
+
             if (localStart > input.length()) {
                 this._found = false;
                 return;

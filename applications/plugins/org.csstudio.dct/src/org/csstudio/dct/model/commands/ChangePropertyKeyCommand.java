@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.model.commands;
 
@@ -9,7 +9,7 @@ import org.eclipse.gef.commands.Command;
 /**
  * Undoable command that changes the key of a property of a
  * {@link IPropertyContainer}.
- * 
+ *
  * @author Sven Wende
  */
 public final class ChangePropertyKeyCommand extends Command {

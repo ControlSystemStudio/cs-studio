@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.model.internal;
 
@@ -11,7 +11,7 @@ import org.junit.Test;
 
 /**
  * Testcases for {@link Parameter}.
- * 
+ *
  * @author Sven Wende
  *
  */
@@ -19,7 +19,7 @@ public final class ParameterTest {
     private Parameter parameter;
     private String name;
     private String defaultValue;
-    
+
     /**
      * @throws java.lang.Exception
      */

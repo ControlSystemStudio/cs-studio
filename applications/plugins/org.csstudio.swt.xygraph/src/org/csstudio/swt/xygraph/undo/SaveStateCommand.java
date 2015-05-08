@@ -14,7 +14,7 @@ abstract public class SaveStateCommand implements IUndoableCommand
 {
     /** Name of the command, shown in undo/redo GUI */
     final private String name;
-    
+
     /** Initialize
      *  Derived class should save the 'original' state.
      *   */
@@ -28,7 +28,7 @@ abstract public class SaveStateCommand implements IUndoableCommand
      *  and the state saved on the last call would be the 'redo' state.
      */
     abstract public void saveState();
-        
+
     /** @return Name of the command, shown in undo/redo GUI */
     @Override
     public String toString()

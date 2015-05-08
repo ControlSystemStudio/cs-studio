@@ -23,18 +23,18 @@ import org.eclipse.swt.widgets.Display;
 public abstract class SingleSourceHelper {
 
     private static final SingleSourceHelper IMPL;
-    
+
     static {
         IMPL = (SingleSourceHelper)ImplementationLoader.newInstance(
                 SingleSourceHelper.class);
     }
-    
+
     public static GC getImageGC(final Image image){
         if(IMPL == null)
             return null;
         return IMPL.internalGetImageGC(image);
     }
-    
+
     protected abstract GC internalGetImageGC(final Image image);
 
     public static InputStream workspaceFileToInputStream(IPath path){
@@ -48,15 +48,15 @@ public abstract class SingleSourceHelper {
     }
 
     protected abstract InputStream internalWorkspaceFileToInputStream(IPath path) throws Exception;
-    
-    
+
+
     public static Cursor createCursor(
             Display display, ImageData imageData, int width, int height, int backUpSWTCursorStyle){
         if(IMPL == null)
             return null;
         return IMPL.createInternalCursor(display, imageData, width, height, backUpSWTCursorStyle);
     }
-    
+
     protected abstract Cursor createInternalCursor(
             Display display, ImageData imageData, int width, int height,int backUpSWTCursorStyle);
 
@@ -68,11 +68,11 @@ public abstract class SingleSourceHelper {
     }
 
     protected abstract void internalSetGCTransform(GC gc, Transform transform);
-    
+
     public static void handleTextInputFigureFileSelector(TextInputFigure textInput){
         if(IMPL==null){
             if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
-                MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Not Applicable", 
+                MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Not Applicable",
                     "File Selector does not work for RAP because there is no file system!");
             return;
         }
@@ -80,5 +80,5 @@ public abstract class SingleSourceHelper {
     }
 
     protected abstract void internalHandleTextInputFigureFileSelector(TextInputFigure textInput);
-    
+
 }

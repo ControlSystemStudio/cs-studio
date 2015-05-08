@@ -52,7 +52,7 @@ public class SwitchConnectionBehavior extends AbstractDesyConnectionBehavior<Swi
     protected void doInitialize(SwitchModel widget) {
         _defTransparent = widget.getBooleanProperty(SwitchModel.PROP_TRANSPARENT);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -62,7 +62,7 @@ public class SwitchConnectionBehavior extends AbstractDesyConnectionBehavior<Swi
         long value = anyData.longValue();
         model.setPropertyValue(SwitchModel.PROP_STATE, value);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -73,7 +73,7 @@ public class SwitchConnectionBehavior extends AbstractDesyConnectionBehavior<Swi
         widget.setPropertyValue(SwitchModel.PROP_TRANSPARENT, isTransparent);
 
     }
-    
+
     @Override
     protected void doProcessMetaDataChange(final SwitchModel widget, final MetaData metaData) {
         // do noting

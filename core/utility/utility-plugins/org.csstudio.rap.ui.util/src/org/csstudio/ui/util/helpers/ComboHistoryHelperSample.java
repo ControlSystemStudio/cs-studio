@@ -22,10 +22,10 @@ public class ComboHistoryHelperSample {
         shell.setSize(450, 300);
         shell.setText("SWT Application");
 
-        
+
         text = new Text(shell, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
         text.setBounds(10, 44, 412, 201);
-        
+
         comboViewer = new ComboViewer(shell, SWT.NONE);
         combo = comboViewer.getCombo();
         combo.setBounds(10, 10, 412, 28);
@@ -36,9 +36,9 @@ public class ComboHistoryHelperSample {
                 // Need to use \r\n. Unbelievable!!!
                 String newText = text.getText() + pvName + "\r\n";
                 text.setText(newText);
-                
+
             }
-        };        
+        };
         shell.open();
         shell.layout();
         while (!shell.isDisposed()) {

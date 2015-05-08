@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.TreeColumn;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class PropertyTree extends BeanComposite {
 

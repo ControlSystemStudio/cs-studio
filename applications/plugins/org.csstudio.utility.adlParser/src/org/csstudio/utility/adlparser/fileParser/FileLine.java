@@ -35,12 +35,12 @@ public class FileLine {
     private static String _file;
     private String _line;
     private int _lineNumber;
-    
+
     public FileLine(String line, int lineNumber){
         setLine(line);
         setLineNumber(lineNumber);
     }
-    
+
     public final String getLine() {
         if(_line==null){
             _line="";
@@ -65,8 +65,8 @@ public class FileLine {
         _file = file;
     }
 
-    /** method used in parseWidgetPart methods to check the parameter string 
-     * 
+    /** method used in parseWidgetPart methods to check the parameter string
+     *
      * @param arg
      * @param toCompare
      * @return
@@ -79,7 +79,7 @@ public class FileLine {
             return false;
         }
     }
-    /** 
+    /**
      * Method used in parseWidgetPart to get the value with quotes and leading and trailing spaces removed
      * @param input
      * @return
@@ -87,7 +87,7 @@ public class FileLine {
     public static String getTrimmedValue(String input){
         return input.replaceAll( "\"", "" ).trim();
     }
-    
+
     /**
      * Method used in parseWidgetPart to convert the string value into an integer
      * @param input
@@ -96,7 +96,7 @@ public class FileLine {
     public static int getIntValue(String input) throws NumberFormatException{
         return Integer.parseInt(FileLine.getTrimmedValue(input));
     }
-    
+
     /**
      * Method used in parseWidgetPart to convert the string value into an integer
      * @param input
@@ -105,7 +105,7 @@ public class FileLine {
     public static float getFloatValue(String input) throws NumberFormatException {
         return Float.parseFloat(FileLine.getTrimmedValue(input));
     }
-    
+
     /**
      * Method used in parseWidgetPart to convert the string value into an integer
      * @param input
@@ -114,7 +114,7 @@ public class FileLine {
     public static boolean getBooleanValue(String input) {
         return Boolean.parseBoolean(FileLine.getTrimmedValue(input));
     }
-    
+
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */

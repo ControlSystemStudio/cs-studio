@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui.extra;
 
@@ -47,7 +47,7 @@ import com.google.common.collect.Collections2;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class LogEntryTable extends Composite implements ISelectionProvider {
 
@@ -88,7 +88,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
             break;
         case "expanded":
             //TODO shroffk fix the refresh
-            FontMetrics fm = new GC(Display.getCurrent()).getFontMetrics();    
+            FontMetrics fm = new GC(Display.getCurrent()).getFontMetrics();
             grid.setItemHeight(fm.getHeight() * rowSize);
             gridTableViewer.getGrid().setAutoHeight(expanded);
             gridTableViewer.setInput(logEntries.toArray(new LogEntry[logEntries.size()]));
@@ -101,7 +101,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 
     errorBar = new ErrorBar(this, SWT.NONE);
     errorBar.setMarginBottom(5);
-    
+
     gridTableViewer = new GridTableViewer(this, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL
         | SWT.DOUBLE_BUFFERED);
     selectionProvider = new AbstractSelectionProviderWrapper(
@@ -111,7 +111,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
         protected ISelection transform(IStructuredSelection selection) {
         return selection;
         }
-        
+
         protected ISelection reverseTransform(IStructuredSelection selection) {
         return selection;
         }
@@ -120,7 +120,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 
     grid = gridTableViewer.getGrid();
     grid.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-    FontMetrics fm = new GC(Display.getCurrent()).getFontMetrics();    
+    FontMetrics fm = new GC(Display.getCurrent()).getFontMetrics();
     grid.setItemHeight(fm.getHeight() * rowSize);
     grid.setAutoHeight(expanded);
     grid.setRowsResizeable(true);
@@ -215,7 +215,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
             ((LogEntry) e2).getOwner());
         }
     };
-    
+
     // Forth column lists the logbooks
     GridViewerColumn gridViewerColumnLogbooks = new GridViewerColumn(
         gridTableViewer, SWT.MULTI | SWT.DOUBLE_BUFFERED);
@@ -231,8 +231,8 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
             @Override
             public String apply(Logbook logbook) {
                 return logbook.getName();
-            }            
-            });            
+            }
+            });
             return Joiner.on(System.getProperty("line.separator")).join(logbookNames);
         }
         }
@@ -257,8 +257,8 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
             @Override
             public String apply(Tag tag) {
                 return tag.getName();
-            }            
-            });            
+            }
+            });
             return Joiner.on(System.getProperty("line.separator")).join(tagNames);
         }
         }
@@ -342,7 +342,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
     super.setMenu(menu);
     gridTableViewer.getGrid().setMenu(menu);
     }
-    
+
     /**
      * @return the expanded
      */
@@ -354,14 +354,14 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
      * @param expanded the expanded to set
      */
     public void setExpanded(boolean expanded) {
-    boolean oldValue = this.expanded;    
+    boolean oldValue = this.expanded;
         this.expanded = expanded;
         changeSupport.firePropertyChange("expanded", oldValue, this.expanded);
     }
-    
-    
+
+
     /**
-     * 
+     *
      * @return
      */
     public int getRowSize() {
@@ -369,7 +369,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
     }
 
     /**
-     * 
+     *
      * @param rowSize
      */
     public void setRowSize(int rowSize) {

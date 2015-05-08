@@ -11,7 +11,7 @@ import org.eclipse.ui.IPerspectiveFactory;
 public class StandaloneRuntimePerspective implements IPerspectiveFactory {
 
     public final static String ID = "org.csstudio.webopi.standaloneRuntime"; //$NON-NLS-1$
-    
+
     public void createInitialLayout(IPageLayout layout) {
         String editorArea = layout.getEditorArea();
         layout.setEditorAreaVisible(false);

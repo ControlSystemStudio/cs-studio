@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.shift;
 
@@ -22,7 +22,7 @@ public class ShiftSearchUtilTest {
     searchString = "Hello";
     expectedSearchMap.put(ShiftSearchUtil.SEARCH_KEYWORD_TEXT, "Hello");
     Assert.assertEquals("Failed to parse search String: " + searchString, expectedSearchMap, parseSearchString(searchString));
-    expectedSearchMap.put("shift", "12"); 
+    expectedSearchMap.put("shift", "12");
     searchString = "Hello shift:12";
     Assert.assertEquals("Failed to parse search String: " + searchString,
         expectedSearchMap, parseSearchString(searchString));

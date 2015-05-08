@@ -22,15 +22,15 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 public class DisplayInfoService {
-    
+
     private SdsThumbnailCreator thumbnailCreator;
     private SdsDisplayValueCache cache;
-    
+
 
     public DisplayInfoService() {
         thumbnailCreator = new SdsThumbnailCreator();
         cache = new SdsDisplayValueCache();
-        
+
         final Display display = Display.getCurrent();
         display.addListener(SWT.Dispose, new Listener() {
             @Override
@@ -41,7 +41,7 @@ public class DisplayInfoService {
         });
 
     }
-    
+
     public ImageData getImage(File file) {
         return getCachedValue(file).getImage();
     }
@@ -49,25 +49,25 @@ public class DisplayInfoService {
     public Set<IProcessVariableAddress> getProcessVariableAddresses(File file) {
         return getCachedValue(file).getProcessVariableAddresses();
     }
-    
+
     private DisplayCacheValue getCachedValue(File file) {
         DisplayCacheValue cacheValue = cache.getCacheValue(file);
-        
+
         if(cacheValue == null) {
             cacheValue = createDisplayCacheValue(file);
             cache.cacheValueForFile(file, cacheValue);
         }
         return cacheValue;
     }
-    
+
     private DisplayCacheValue createDisplayCacheValue(File file) {
-        // Get DisplayModel for file 
+        // Get DisplayModel for file
         DisplayModel model = new DisplayModel();
         FileInputStream fip = null;
         try {
             fip = new FileInputStream(file);
             PersistenceUtil.syncFillModel(model, fip);
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -77,15 +77,15 @@ public class DisplayInfoService {
                 e.printStackTrace();
             }
         }
-        
+
         ImageData imageData = thumbnailCreator.createImage(model, 100, Display.getDefault());
-        
+
         HashSet<IProcessVariableAddress> allProcessVariableAddresses = new HashSet<IProcessVariableAddress>();
         findAllPVsInModel(model, allProcessVariableAddresses);
-        
+
         return new DisplayCacheValue(file, imageData, allProcessVariableAddresses);
     }
-    
+
     private void findAllPVsInModel(AbstractWidgetModel model,
             Set<IProcessVariableAddress> processVariables) {
         List<IProcessVariableAddress> allPvAdresses = model

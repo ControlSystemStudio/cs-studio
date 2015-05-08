@@ -17,10 +17,10 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  *
  */
 public class UnchangableStringProperty extends StringProperty {
-    
-    
+
+
     /**String Property Constructor. The property value type is {@link String}. This
-     * String property is not editable in property sheet. It is used for information 
+     * String property is not editable in property sheet. It is used for information
      * display purpose only.
      * @param prop_id the property id which should be unique in a widget model.
      * @param description the description of the property,
@@ -30,12 +30,12 @@ public class UnchangableStringProperty extends StringProperty {
      */
     public UnchangableStringProperty(String prop_id, String description,
             WidgetPropertyCategory category, String defaultValue) {
-        super(prop_id, description, category, defaultValue);        
+        super(prop_id, description, category, defaultValue);
     }
 
 
     @Override
-    protected PropertyDescriptor createPropertyDescriptor() {        
+    protected PropertyDescriptor createPropertyDescriptor() {
         return new TextPropertyDescriptor(prop_id, description){
             @Override
             public CellEditor createPropertyEditor(Composite parent) {
@@ -43,11 +43,11 @@ public class UnchangableStringProperty extends StringProperty {
             }
         };
     }
-    
+
     @Override
     public boolean configurableByRule() {
         return false;
     }
-    
+
 
 }

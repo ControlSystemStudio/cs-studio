@@ -17,8 +17,8 @@ public class BoolButtonTest extends AbstractBoolControlFigureTest{
         boolButton.setRunMode(true);
         return boolButton;
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -27,14 +27,14 @@ public class BoolButtonTest extends AbstractBoolControlFigureTest{
                 "showLED",
                 "squareButton"
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
     @Override
     public boolean isAutoTest() {
         return true;
     }
 
-        
+
 }

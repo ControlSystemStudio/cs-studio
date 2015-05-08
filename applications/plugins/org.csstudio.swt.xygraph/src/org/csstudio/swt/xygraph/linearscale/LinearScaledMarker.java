@@ -25,84 +25,84 @@ import org.eclipse.swt.graphics.RGB;
 
 
 /**
- * A linear scale related marker, whose orientation, range, mark position etc. are 
- * determined by the scale. It must have the same length and bounds.x(for horizontal) 
+ * A linear scale related marker, whose orientation, range, mark position etc. are
+ * determined by the scale. It must have the same length and bounds.x(for horizontal)
  * or bounds.y(for vertical) with the scale.
- * 
+ *
  * @author Xihui Chen
  */
 public class LinearScaledMarker extends Figure {
-    
+
     private Map<String, MarkerProperties> markersMap= new LinkedHashMap<String, MarkerProperties>();
-    
+
     private static final RGB DEFAULT_MARKER_COLOR = XYGraphMediaFactory.COLOR_RED;
-    
+
     private String[] labels;
-    
-    private double[] markerValues;    
-    private Dimension[] markerLabelDimensions;    
+
+    private double[] markerValues;
+    private Dimension[] markerLabelDimensions;
     private List<Color> markerColorsList = new ArrayList<Color>();
-    
+
     private LinearScale scale;
-    
+
     private LabelSide makerLablesPosition = LabelSide.Secondary;
-    
+
     private boolean markerLineVisible = false;
-    
+
     private boolean markerLableVisible = true;
 
     private int tickLabelMaxLength;
-    
+
     private boolean dirty = true;
 
     private int[] markerPositions;
-    
+
     private final static int TICK_LENGTH = 10;
     private final static int TICK_LINE_WIDTH = 2;
     private final static int GAP_BTW_MARK_LABEL = 3;
-    
-    
+
+
     public LinearScaledMarker(LinearScale scale) {
         this.scale = scale;
         setFont(XYGraphMediaFactory.getInstance().getFont(XYGraphMediaFactory.FONT_TAHOMA));
     }
-    
+
     /**
      * @param dirty the dirty to set
      */
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }
-    
+
     /**
      * If the marker exists, set its value.
-     * @param label the label of the marker element, it must be unique. 
+     * @param label the label of the marker element, it must be unique.
      * @param value the value to be set
      */
     public void setMarkerElementValue(String label, double value) {
         if(markersMap.containsKey(label)) {
             markersMap.get(label).value = value;
             dirty =true;
-        }            
+        }
     }
-    
-    
+
+
     /**
      * If the marker exists, set its color.
-     * @param label the label of the marker element, it must be unique. 
+     * @param label the label of the marker element, it must be unique.
      * @param color the color to be set
      */
     public void setMarkerElementColor(String label, RGB color) {
         if(markersMap.containsKey(label)) {
             markersMap.get(label).color = color;
             dirty =true;
-        }            
+        }
     }
-    
-    
+
+
     /**
      * Add (if the marker does not exist) or change a marker element.
-     * @param label the label of the marker element, it must be unique. 
+     * @param label the label of the marker element, it must be unique.
      * @param value the value of the marker element
      * @param color the color of the marker element
      */
@@ -111,37 +111,37 @@ public class LinearScaledMarker extends Figure {
             markersMap.get(label).value = value;
             markersMap.get(label).color = color;
         }else
-            markersMap.put(label, new MarkerProperties(value, color));        
+            markersMap.put(label, new MarkerProperties(value, color));
         dirty =true;
-    }    
-    
+    }
+
     /**
      * Add (if the marker does not exist) or change a marker element.
-     * @param label the label of the marker element, it must be unique. 
+     * @param label the label of the marker element, it must be unique.
      * @param value the value of the marker element
      */
     public void addMarkerElement(String label, double value) {
         if(markersMap.containsKey(label))
             markersMap.get(label).value = value;
         else
-            markersMap.put(label, new MarkerProperties(value, DEFAULT_MARKER_COLOR));        
+            markersMap.put(label, new MarkerProperties(value, DEFAULT_MARKER_COLOR));
         dirty =true;
     }
-    
+
     public void removeMarkerElement(String label) {
         markersMap.remove(label);
         dirty =true;
-    }    
-    
+    }
+
     @Override
-    protected void paintClientArea(Graphics graphics) {    
+    protected void paintClientArea(Graphics graphics) {
         //use relative coordinate
         graphics.translate(bounds.x, bounds.y);
         updateTick();
-        drawMarkerTick(graphics);        
+        drawMarkerTick(graphics);
         super.paintClientArea(graphics);
     }
-    
+
     private void drawMarkerTick(Graphics graphics) {
         graphics.setLineWidth(TICK_LINE_WIDTH);
         if(scale.isHorizontal()) {
@@ -152,71 +152,71 @@ public class LinearScaledMarker extends Figure {
                     graphics.drawLine(markerPos, 0, markerPos, TICK_LENGTH);
                     //draw labels
                     if(isMarkerLableVisible()) {
-                        graphics.drawText(labels[i], 
-                                markerPos-markerLabelDimensions[i].width/2, 
+                        graphics.drawText(labels[i],
+                                markerPos-markerLabelDimensions[i].width/2,
                                 TICK_LENGTH + GAP_BTW_MARK_LABEL);
-                    }                    
+                    }
                     i++;
                 }
             } else {
                 int i = 0;
                 for(int markerPos : markerPositions) {
                     graphics.setForegroundColor(markerColorsList.get(i));
-                    graphics.drawLine(markerPos, bounds.height, 
+                    graphics.drawLine(markerPos, bounds.height,
                             markerPos, bounds.height - TICK_LENGTH);
                     //draw labels
                     if(isMarkerLableVisible()) {
-                        graphics.drawText(labels[i], 
-                                markerPos-markerLabelDimensions[i].width/2, 
+                        graphics.drawText(labels[i],
+                                markerPos-markerLabelDimensions[i].width/2,
                                 bounds.height - TICK_LENGTH - GAP_BTW_MARK_LABEL
                                 - markerLabelDimensions[i].height);
                     }
                     i++;
                 }
-            }        
+            }
         } else {
             if(makerLablesPosition == LabelSide.Primary) {
-                
+
                 for(int i = 0; i < markerPositions.length; i++) {
                     graphics.setForegroundColor(markerColorsList.get(i));
-                    graphics.drawLine(bounds.width, markerPositions[i], 
+                    graphics.drawLine(bounds.width, markerPositions[i],
                             bounds.width - TICK_LENGTH, markerPositions[i]);
                     //draw labels
                     if(isMarkerLableVisible()) {
-                        graphics.drawText(labels[i], 
+                        graphics.drawText(labels[i],
                                 bounds.width - TICK_LENGTH - GAP_BTW_MARK_LABEL
                                 - markerLabelDimensions[i].width,
                                 markerPositions[i] - markerLabelDimensions[i].height/2);
-                    }                    
+                    }
                 }
             } else {
                 int i = 0;
                 for(int markerPos : markerPositions) {
                     graphics.setForegroundColor(markerColorsList.get(i));
-                    graphics.drawLine(0, markerPos, 
+                    graphics.drawLine(0, markerPos,
                             TICK_LENGTH, markerPos);
-                    
+
                     //draw labels
                     if(isMarkerLableVisible()) {
-                        graphics.drawText(labels[i], 
+                        graphics.drawText(labels[i],
                                 TICK_LENGTH + GAP_BTW_MARK_LABEL,
                                 markerPos-markerLabelDimensions[i].height/2
                                 );
-                    }                    
+                    }
                     i++;
                 }
             }
-        }            
-    }    
-    
+        }
+    }
+
     @Override
     public void setBounds(Rectangle rect) {
         if(!bounds.equals(rect))
             dirty = true;
         super.setBounds(rect);
-        
+
     }
-    
+
     /**
      * Updates the tick, recalculate all inner parameters
      */
@@ -225,22 +225,22 @@ public class LinearScaledMarker extends Figure {
             updateMarkerElments();
             updateTickLabelMaxLength();
         }
-        dirty = false;        
+        dirty = false;
     }
-    
+
     /**
      * Gets max length of tick label.
      */
     private void updateTickLabelMaxLength() {
         int maxLength = 0;
-        
+
         for (int i = 0; i < labels.length; i++) {
                 Dimension p = FigureUtilities.getTextExtents(labels[i], scale.getFont());
                 if (p.width > maxLength) {
                     maxLength = p.width;
                 }
             }
-        
+
         tickLabelMaxLength = maxLength;
     }
 
@@ -339,31 +339,31 @@ public class LinearScaledMarker extends Figure {
     public boolean isMarkerLableVisible() {
         return markerLableVisible;
     }
-    
+
     @Override
     public Dimension getPreferredSize(int wHint, int hHint) {
         updateTick();
         Dimension size = new Dimension(wHint, hHint);
-        
+
         if(scale.isHorizontal()) {
             size.width = scale.getSize().width;
             size.height = FigureUtilities.getTextExtents("dummy", getFont()).height
                             + GAP_BTW_MARK_LABEL + TICK_LENGTH;
         } else {
             updateTickLabelMaxLength();
-            size.width = (int)tickLabelMaxLength + GAP_BTW_MARK_LABEL + TICK_LENGTH;    
+            size.width = (int)tickLabelMaxLength + GAP_BTW_MARK_LABEL + TICK_LENGTH;
             size.height = scale.getSize().height;
-        }            
+        }
         return size;
-        
+
     }
-    
-    private static class MarkerProperties {        
+
+    private static class MarkerProperties {
 
         private double value;
 
         private RGB color;
-        
+
         /**
          * @param value
          * @param color
@@ -371,8 +371,8 @@ public class LinearScaledMarker extends Figure {
         public MarkerProperties(double value, RGB color) {
             this.value = value;
             this.color = color;
-        }        
+        }
     }
-    
+
 
 }

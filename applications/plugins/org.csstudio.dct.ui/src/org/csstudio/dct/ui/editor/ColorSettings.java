@@ -4,9 +4,9 @@ import org.eclipse.swt.graphics.RGB;
 
 /**
  * Contains constants for colors and fonts in the DCT application.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ColorSettings {
     private ColorSettings() {

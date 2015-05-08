@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene;
 
@@ -10,7 +10,7 @@ import org.eclipse.swt.SWT;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public abstract class AbstractGraph2DConfigurationDialog<T extends AbstractGraph2DWidget<?, ?>, S extends AbstractGraph2DConfigurationPanel>
         extends

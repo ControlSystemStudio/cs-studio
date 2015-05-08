@@ -36,7 +36,7 @@ import org.eclipse.swt.dnd.TransferData;
 /**
  * Base class for drop target listeners that are registered for a SDS display
  * editor.
- * 
+ *
  * @author Sven Wende
  */
 abstract class AbstractDropTargetListener<E extends Transfer> extends AbstractTransferDropTargetListener {

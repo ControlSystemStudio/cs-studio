@@ -7,9 +7,9 @@ import de.desy.language.snl.parser.nodes.AllVariablesNode;
 
 /**
  * The specialized {@link IAdapterFactory} for {@link AllVariableNode}s.
- * 
+ *
  * @author C1 WPS / KM, MZ
- * 
+ *
  */
 class AllVariablesNodeAdapterFactory implements IAdapterFactory {
 

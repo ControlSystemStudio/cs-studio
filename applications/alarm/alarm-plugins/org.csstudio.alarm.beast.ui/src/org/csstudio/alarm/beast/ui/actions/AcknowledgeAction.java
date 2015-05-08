@@ -32,7 +32,7 @@ public class AcknowledgeAction extends Action
     private Viewer viewer = null;
     private ISelectionProvider selection_provider;
     private List<AlarmTreeItem> alarms;
-    
+
     /** Initialize action
      *  @param acknowledge Acknowledge, or un-acknowledge?
      *  @param selection_provider Selection provider that must give
@@ -59,7 +59,7 @@ public class AcknowledgeAction extends Action
                 else
                     setEnabled(false);
             }
-        });        
+        });
         SecuritySupportUI.registerAction(this, AuthIDs.ACKNOWLEDGE);
     }
 

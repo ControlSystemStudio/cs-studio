@@ -19,8 +19,8 @@ public class MeterIntrospector extends ScaleWidgetIntrospector {
     };
     @Override
     public String[] getNonProperties() {
-    
+
         return concatenateStringArrays(super.getNonProperties(), METER_WIDGET_NON_PROPERTIES);
     }
-    
+
 }

@@ -12,7 +12,7 @@ package org.csstudio.opibuilder.converter.model;
  *
  */
 public class Edm_activeSliderClass extends EdmWidget {
-    
+
     @EdmAttributeAn @EdmOptionalAn private String controlPv;
     @EdmAttributeAn @EdmOptionalAn private EdmColor controlColor;
     @EdmAttributeAn @EdmOptionalAn private boolean controlAlarm;
@@ -24,11 +24,11 @@ public class Edm_activeSliderClass extends EdmWidget {
     @EdmAttributeAn @EdmOptionalAn private int precision;
     @EdmAttributeAn @EdmOptionalAn private double scaleMin;
     @EdmAttributeAn @EdmOptionalAn private double scaleMax;
-    @EdmAttributeAn @EdmOptionalAn private String displayFormat;    
+    @EdmAttributeAn @EdmOptionalAn private String displayFormat;
     @EdmAttributeAn @EdmOptionalAn private boolean limitsFromDb;
-    
-    
-    
+
+
+
 
     public Edm_activeSliderClass(EdmEntity genericEntity) throws EdmException {
         super(genericEntity);
@@ -109,8 +109,8 @@ public class Edm_activeSliderClass extends EdmWidget {
 
     public String getDisplayFormat() {
         return displayFormat;
-    }    
+    }
 
-    
-    
+
+
 }

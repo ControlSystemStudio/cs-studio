@@ -7,9 +7,9 @@ import de.desy.language.snl.parser.nodes.StateSetNode;
 
 /**
  * The specialized {@link IAdapterFactory} for {@link StateSetNode}s.
- * 
+ *
  * @author C1 WPS / KM, MZ
- * 
+ *
  */
 class StateSetNodeAdapterFactory implements IAdapterFactory {
 

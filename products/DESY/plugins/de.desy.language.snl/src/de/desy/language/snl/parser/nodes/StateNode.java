@@ -2,7 +2,7 @@ package de.desy.language.snl.parser.nodes;
 
 /**
  * The outline node of an SNL state.
- * 
+ *
  * @author C1 WPS / KM, MZ
  */
 public class StateNode extends AbstractSNLNode {

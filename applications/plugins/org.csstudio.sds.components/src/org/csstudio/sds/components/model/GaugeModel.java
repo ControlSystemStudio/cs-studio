@@ -5,13 +5,13 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
 
 /**
  * This class defines a gauge widget model.
- * 
+ *
  * @author Xihui Chen
  */
 public class GaugeModel extends AbstractMarkedWidgetModel {
 
     /** The ID of the fill color property. */
-    public static final String PROP_NEEDLE_COLOR = "needle_color"; //$NON-NLS-1$    
+    public static final String PROP_NEEDLE_COLOR = "needle_color"; //$NON-NLS-1$
 
     /** The ID of the effect 3D property. */
     public static final String PROP_EFFECT3D = "effect3D"; //$NON-NLS-1$
@@ -31,7 +31,7 @@ public class GaugeModel extends AbstractMarkedWidgetModel {
     /**
      * The ID of this widget model.
      */
-    public static final String ID = "org.csstudio.sds.components.Gauge"; //$NON-NLS-1$    
+    public static final String ID = "org.csstudio.sds.components.Gauge"; //$NON-NLS-1$
 
     public GaugeModel() {
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);

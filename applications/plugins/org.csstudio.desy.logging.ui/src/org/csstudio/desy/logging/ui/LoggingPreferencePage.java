@@ -32,18 +32,18 @@ import org.osgi.framework.Bundle;
 /**
  * Allows editing the log4j properties file. The file is retrieved from a known location, it is found in a fragment
  * of org.apache.log4j.
- * 
+ *
  * @author jpenning
  */
 public class LoggingPreferencePage extends FieldEditorPreferencePage implements
         IWorkbenchPreferencePage {
-    
+
     private String filePath = null;
-    
+
     public LoggingPreferencePage() {
         super(GRID);
     }
-    
+
     @Override
     public void init(IWorkbench workbench) {
         setDescription("Logging Preferences for Log4J");
@@ -71,7 +71,7 @@ public class LoggingPreferencePage extends FieldEditorPreferencePage implements
                                                                  defaultProperties);
         addField(stringAreaEditor);
     }
-    
+
     private String getFilePath() {
         if (filePath == null) {
             // actually the log4j properties are found inside the org.apache.log4j fragment
@@ -86,33 +86,33 @@ public class LoggingPreferencePage extends FieldEditorPreferencePage implements
         }
         return filePath;
     }
- 
+
     private final String defaultProperties =
-            "# Configuration of the root logger. Log levels are named: trace, debug, info, warn, error, fatal.\n" + 
-            "log4j.rootLogger=trace, console, file\n" + 
-            "\n" + 
-            "# Configuration of module-related log levels - expert stuff!\n" + 
-            "# Do not remove entries, change log level properly instead. \n" + 
-            "log4j.logger.org.csstudio=info\n" + 
-            "log4j.logger.DAL.EPICS=warn\n" + 
-            "# example for module related log level\n" + 
-            "#log4j.logger.org.csstudio.alarm.service=trace\n" + 
-            "\n" + 
-            "# Configuration of the console appender\n" + 
-            "log4j.appender.console=org.apache.log4j.ConsoleAppender\n" + 
-            "log4j.appender.console.Threshold=trace\n" + 
-            "log4j.appender.console.layout=org.apache.log4j.PatternLayout\n" + 
-            "log4j.appender.console.layout.ConversionPattern=%d{ISO8601} %-5p [%t] %c\\: %m%n\n" + 
-            "\n" + 
-            "# Configuration of the file appender\n" + 
-            "log4j.appender.file=org.apache.log4j.RollingFileAppender\n" + 
-            "log4j.appender.file.Threshold=info\n" + 
-            "log4j.appender.file.File=logs/loggingdemo.log\n" + 
-            "log4j.appender.file.Append=true\n" + 
-            "log4j.appender.file.MaxBackupIndex=10\n" + 
-            "log4j.appender.file.MaxFileSize=500KB\n" + 
-            "log4j.appender.file.layout=org.apache.log4j.PatternLayout\n" + 
+            "# Configuration of the root logger. Log levels are named: trace, debug, info, warn, error, fatal.\n" +
+            "log4j.rootLogger=trace, console, file\n" +
+            "\n" +
+            "# Configuration of module-related log levels - expert stuff!\n" +
+            "# Do not remove entries, change log level properly instead. \n" +
+            "log4j.logger.org.csstudio=info\n" +
+            "log4j.logger.DAL.EPICS=warn\n" +
+            "# example for module related log level\n" +
+            "#log4j.logger.org.csstudio.alarm.service=trace\n" +
+            "\n" +
+            "# Configuration of the console appender\n" +
+            "log4j.appender.console=org.apache.log4j.ConsoleAppender\n" +
+            "log4j.appender.console.Threshold=trace\n" +
+            "log4j.appender.console.layout=org.apache.log4j.PatternLayout\n" +
+            "log4j.appender.console.layout.ConversionPattern=%d{ISO8601} %-5p [%t] %c\\: %m%n\n" +
+            "\n" +
+            "# Configuration of the file appender\n" +
+            "log4j.appender.file=org.apache.log4j.RollingFileAppender\n" +
+            "log4j.appender.file.Threshold=info\n" +
+            "log4j.appender.file.File=logs/loggingdemo.log\n" +
+            "log4j.appender.file.Append=true\n" +
+            "log4j.appender.file.MaxBackupIndex=10\n" +
+            "log4j.appender.file.MaxFileSize=500KB\n" +
+            "log4j.appender.file.layout=org.apache.log4j.PatternLayout\n" +
             "log4j.appender.file.layout.ConversionPattern=%d{ISO8601} %-5p [%t] %c\\: %m%n\n";
 
-    
+
 }

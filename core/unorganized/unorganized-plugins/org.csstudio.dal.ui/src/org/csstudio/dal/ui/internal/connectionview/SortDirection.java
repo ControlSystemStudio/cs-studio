@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dal.ui.internal.connectionview;
 

@@ -32,7 +32,7 @@ public class ImageBoolButtonModel extends AbstractBoolControlModel {
      * Image on the button when it is off.
      */
     public static final String PROP_OFF_IMAGE = "off_image";
-    
+
     /**
      * True if the image should be stretched to the button size.
      */
@@ -59,14 +59,14 @@ public class ImageBoolButtonModel extends AbstractBoolControlModel {
     public ImageBoolButtonModel() {
         setForegroundColor(CustomMediaFactory.COLOR_BLACK);
     }
-    
+
     @Override
     protected void configureProperties() {
         super.configureProperties();
-        addProperty( new FilePathProperty(PROP_ON_IMAGE,"On Image", 
+        addProperty( new FilePathProperty(PROP_ON_IMAGE,"On Image",
                 WidgetPropertyCategory.Image, new Path(""), FILE_EXTENSIONS));
-        addProperty( new FilePathProperty(PROP_OFF_IMAGE,"Off Image", 
-                WidgetPropertyCategory.Image, new Path(""), FILE_EXTENSIONS));        
+        addProperty( new FilePathProperty(PROP_OFF_IMAGE,"Off Image",
+                WidgetPropertyCategory.Image, new Path(""), FILE_EXTENSIONS));
         addProperty(new BooleanProperty(PROP_STRETCH, "Stretch to Fit",
                 WidgetPropertyCategory.Image,false));
         addProperty(new BooleanProperty(PROP_AUTOSIZE, "Auto Size",
@@ -75,26 +75,26 @@ public class ImageBoolButtonModel extends AbstractBoolControlModel {
                 WidgetPropertyCategory.Image, false));
         addProperty(new BooleanProperty(PROP_ALIGN_TO_NEAREST_SECOND, "Animation aligned to the nearest second",
                 WidgetPropertyCategory.Image, false));
-        
-        removeProperty(PROP_ACTIONS);        
-        addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
+
+        removeProperty(PROP_ACTIONS);
+        addProperty(new ActionsProperty(PROP_ACTIONS, "Actions",
                 WidgetPropertyCategory.Behavior, false));
         setPropertyVisible(PROP_ON_COLOR, false);
         setPropertyVisible(PROP_OFF_COLOR, false);
 
-        
+
     }
     /**
      * The ID of this widget model.
      */
-    public static final String ID = "org.csstudio.opibuilder.widgets.ImageBoolButton"; //$NON-NLS-1$    
-    
+    public static final String ID = "org.csstudio.opibuilder.widgets.ImageBoolButton"; //$NON-NLS-1$
+
     @Override
     public String getTypeID() {
         return ID;
     }
-    
-    
+
+
     /**
      * Returns if the image should be stretched.
      * @return True is it should be stretched, false otherwise
@@ -102,14 +102,14 @@ public class ImageBoolButtonModel extends AbstractBoolControlModel {
     public boolean isStretch() {
         return (Boolean) getProperty(PROP_STRETCH).getPropertyValue();
     }
-    
+
     /**
      *  @return True if the widget should be auto sized according the image size.
      */
     public boolean isAutoSize() {
         return (Boolean) getProperty(PROP_AUTOSIZE).getPropertyValue();
     }
-    
+
     /**
      *  @return the path of the on image.
      */

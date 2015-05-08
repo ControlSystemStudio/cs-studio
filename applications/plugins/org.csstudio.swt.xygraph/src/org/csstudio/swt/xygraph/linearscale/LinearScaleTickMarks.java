@@ -16,7 +16,7 @@ import org.eclipse.draw2d.Graphics;
 
 /**
  * Linear scale tick marks.
- * 
+ *
  * @author Xihui Chen
  */
 public class LinearScaleTickMarks extends Figure {
@@ -38,7 +38,7 @@ public class LinearScaleTickMarks extends Figure {
 
     /**
      * Constructor.
-     * 
+     *
      * @param scale
      *            the scale
      */
@@ -51,7 +51,7 @@ public class LinearScaleTickMarks extends Figure {
 
     /**
      * Gets the associated scale.
-     * 
+     *
      * @return the scale
      */
     public LinearScale getAxis() {
@@ -104,7 +104,7 @@ public class LinearScaleTickMarks extends Figure {
 
     /**
      * Draw the X tick marks.
-     * 
+     *
      * @param tickLabelPositions
      *            the tick label positions
      * @param tickLabelSide
@@ -207,7 +207,7 @@ public class LinearScaleTickMarks extends Figure {
 
     /**
      * Draw the Y tick marks.
-     * 
+     *
      * @param tickLabelPositions
      *            the tick label positions
      * @param tickLabelSide

@@ -4,7 +4,7 @@ import de.desy.language.snl.codeElements.PredefinedTypes;
 
 /**
  * The outline node of an SNL variable.
- * 
+ *
  * @author C1 WPS / KM, MZ
  */
 public class VariableNode extends AbstractSNLNode {
@@ -23,7 +23,7 @@ public class VariableNode extends AbstractSNLNode {
         _assignNode = null;
         _monitorNode = null;
         _isArray = isArray;
-        
+
         this.setStatementOffsets(statementsStartOffsetInSource,
                 statementsEndOffsetInSource);
     }
@@ -80,7 +80,7 @@ public class VariableNode extends AbstractSNLNode {
     public boolean isMonitored() {
         return this._monitorNode != null;
     }
-    
+
     public boolean isArray() {
         return _isArray;
     }

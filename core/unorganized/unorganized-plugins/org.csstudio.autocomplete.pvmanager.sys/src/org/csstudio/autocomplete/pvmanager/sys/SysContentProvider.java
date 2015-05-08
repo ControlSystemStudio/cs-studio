@@ -26,7 +26,7 @@ import org.csstudio.autocomplete.proposals.TopProposalFinder;
 /**
  * System Data Source content provider
  * Provides all available system functions & system properties.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class SysContentProvider implements IAutoCompleteProvider {
@@ -64,7 +64,7 @@ public class SysContentProvider implements IAutoCompleteProvider {
 
         return result;
     }
-    
+
     private AutoCompleteResult provideFunctions(
             final SysContentDescriptor sysDesc, final int limit) {
         AutoCompleteResult result = new AutoCompleteResult();
@@ -112,11 +112,11 @@ public class SysContentProvider implements IAutoCompleteProvider {
         result.setCount(count);
         return result;
     }
-    
+
     private AutoCompleteResult provideSystemProperties(final SysContentDescriptor sysDesc, final int limit) {
         AutoCompleteResult result = new AutoCompleteResult();
         int count = 0;
-        
+
         int dotIndex = sysDesc.getValue().indexOf(SYSTEM_SEPARATOR);
         String propValue = sysDesc.getValue().substring(dotIndex + 1);
         String regex = propValue.replaceAll("\\.", "\\\\.");;
@@ -128,7 +128,7 @@ public class SysContentProvider implements IAutoCompleteProvider {
         } catch (Exception e) {
             return result; // empty result
         }
-        
+
         List<String> matchingProperties = new ArrayList<String>();
         Properties systemProperties = System.getProperties();
         Enumeration<?> enuProp = systemProperties.propertyNames();
@@ -165,7 +165,7 @@ public class SysContentProvider implements IAutoCompleteProvider {
             proposal.setInsertionPos(sysDesc.getStartIndex());
             result.addTopProposal(proposal);
         }
-        
+
         result.setCount(count);
         return result;
     }

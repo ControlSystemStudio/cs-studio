@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class WhenParserUtil {
-    
+
     public static List<WhenModel> getWhens(String whens) {
         List<WhenModel> list = new LinkedList<WhenModel>();
         if (whens.contains(",")) {
@@ -21,10 +21,10 @@ public class WhenParserUtil {
                 list.add(model);
             }
         }
-        
+
         return list;
     }
-    
+
     private static WhenModel getWhen(String whenString) {
         if (whenString.contains(":")) {
             String[] whenParts = whenString.split(":");

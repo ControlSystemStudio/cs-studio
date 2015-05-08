@@ -20,7 +20,7 @@ import org.w3c.dom.Element;
 public class Opi_activeGroupClassTest extends TestCase {
 
     private static final int groupAttributesCount = 4;
-    
+
     public void testOpi_activeGroupClass() throws EdmException {
 
         // Prepare DOM model.
@@ -49,7 +49,7 @@ public class Opi_activeGroupClassTest extends TestCase {
 
         // Get objects in various places in the group hierarchy.
         Element subElement0 = (Element)root.getFirstChild();
-        
+
 
         assertEquals("org.csstudio.opibuilder.widgets.groupingContainer", subElement0.getAttribute("typeId"));
         assertEquals("1.0", subElement0.getAttribute("version"));
@@ -76,7 +76,7 @@ public class Opi_activeGroupClassTest extends TestCase {
             XMLFileHandler.isElementEqual("true", "auto_size", subElement00);
             XMLFileHandler.isElementEqual("0", "border_style", subElement00);
             XMLFileHandler.isElementEqual("false", "transparency", subElement00);
-            
+
             Element subElement01 = (Element)subElement0.getChildNodes().item(groupAttributesCount + 1);
 
             assertEquals("org.csstudio.opibuilder.widgets.groupingContainer", subElement01.getAttribute("typeId"));

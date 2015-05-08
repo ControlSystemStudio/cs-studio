@@ -39,14 +39,14 @@ import com.cosylab.vdct.dbd.DBDResolver;
 
 /**
  * Default persistence service implementation.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class PersistenceService implements IPersistenceService {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(PersistenceService.class);
-    
+
     /**
      *{@inheritDoc}
      */
@@ -70,9 +70,9 @@ public final class PersistenceService implements IPersistenceService {
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         outp.output(doc, bos);
-        
+
         return new ByteArrayInputStream(bos.toByteArray());
-        
+
     }
 
     /**
@@ -122,7 +122,7 @@ public final class PersistenceService implements IPersistenceService {
     /**
      * Loads a database definition from a dbd file using an API of the VDCT
      * software.
-     * 
+     *
      * @param path
      *            the absolute path to the dbd file
      * @return the database definition (meta model)
@@ -149,7 +149,7 @@ public final class PersistenceService implements IPersistenceService {
             public void println(String text) {
                 LOG.info(text);
             }
-            
+
             public void println(Throwable thr) {
                 LOG.error("",thr);
             }

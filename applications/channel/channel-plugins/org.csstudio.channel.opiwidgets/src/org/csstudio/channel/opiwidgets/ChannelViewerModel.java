@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.channel.opiwidgets;
 
@@ -9,10 +9,10 @@ import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescrip
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ChannelViewerModel extends AbstractChannelWidgetModel {
-    
+
     public ChannelViewerModel() {
         super(AbstractSelectionWidgetModelDescription.newModelFrom(ChannelViewerWidget.class));
     }

@@ -102,7 +102,7 @@ public class CloseShiftBuilderDialog extends Dialog {
             }
 
             final Shift shift = shiftWidget.getShift();
-            
+
             getShell().setCursor(Display.getDefault().getSystemCursor(SWT.CURSOR_WAIT));
 
             Job job = new Job("Create new Entry") {
@@ -147,11 +147,11 @@ public class CloseShiftBuilderDialog extends Dialog {
                     }
                 }
             });
-            job.schedule();            
+            job.schedule();
         } catch (Exception ex) {
             getShell().setCursor(originalCursor);
             getButton(IDialogConstants.OK_ID).setEnabled(true);
             errorBar.setException(ex);
-        }   
+        }
     }
 }

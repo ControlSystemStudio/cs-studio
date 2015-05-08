@@ -40,15 +40,15 @@ public static final String PAGE_DOWN  = "page_down";  //$NON-NLS-1$
 IFigure up, down, thumb, pageUp, pageDown;
 
 /**
- * Transposes values if the ScrollBar is horizontally oriented. When used properly, the 
+ * Transposes values if the ScrollBar is horizontally oriented. When used properly, the
  * layout manager just needs to code for one case: vertical orientation.
  */
 protected final Transposer transposer;
 
 /**
- * Constructs a ScrollBarLayout. If the given Transposer is enabled, the Scrollbar will 
+ * Constructs a ScrollBarLayout. If the given Transposer is enabled, the Scrollbar will
  * be horizontally oriented. Otherwise, the ScrollBar will be vertically oriented.
- * 
+ *
  * @param t the Transposer
  * @since 2.0
  */
@@ -122,7 +122,7 @@ public void layout(IFigure parent) {
         thumbY=trackBounds.y;
     }
     else
-        thumbY = (int) (trackBounds.y + (trackBounds.height - thumbHeight) 
+        thumbY = (int) (trackBounds.y + (trackBounds.height - thumbHeight)
                     * (scrollBar.getCoercedValue() - min) / valueRange);
 
     Rectangle thumbBounds =  new Rectangle(
@@ -151,12 +151,12 @@ public void layout(IFigure parent) {
 
 /**
  * Places the buttons and returns the Rectangle into which the track should be placed.
- * The track consists of the pageup, pagedown, and thumb figures. The Rectangle returned 
- * should be transposed correctly, that is, it should be vertically oriented.  Users of 
+ * The track consists of the pageup, pagedown, and thumb figures. The Rectangle returned
+ * should be transposed correctly, that is, it should be vertically oriented.  Users of
  * the rectangle will re-transpose it for horizontal use.
- * 
+ *
  * @param scrollBar the scrollbar whose buttons are being layed out
- * @return the Rectangle into which the track should be placed 
+ * @return the Rectangle into which the track should be placed
  * @since 2.0
  */
 protected Rectangle layoutButtons(ScrollbarFigure scrollBar) {

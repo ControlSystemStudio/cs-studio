@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.cursorservice;
@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Service for using mouse cursors in SDS displays.
- * 
+ *
  * @author Sven Wende, Joerg Rathlev
  */
 public final class CursorService implements ICursorService {
@@ -65,7 +65,7 @@ public final class CursorService implements ICursorService {
      * The default cursor selection rule.
      */
     private static final CursorSelectionRule DEFAULT_RULE = new SystemCursorOnlyRule();
-    
+
     /**
      * Descriptor for the default rule.
      */
@@ -79,7 +79,7 @@ public final class CursorService implements ICursorService {
         SUPPORTED_FILE_EXTENSIONS.add("jpg");
         SUPPORTED_FILE_EXTENSIONS.add("png");
     }
-    
+
     /**
      * The singleton instance.
      */
@@ -94,7 +94,7 @@ public final class CursorService implements ICursorService {
      * The cursor strategy descriptors.
      */
     private List<RuleDescriptor> _ruleDescriptors;
-    
+
     /**
      * The current cursor preferences.
      */
@@ -104,7 +104,7 @@ public final class CursorService implements ICursorService {
 
     /**
      * Returns the singleton instance.
-     * 
+     *
      * @return the singleton instance
      */
     public static synchronized ICursorService getInstance() {
@@ -126,13 +126,13 @@ public final class CursorService implements ICursorService {
         _ruleDescriptors = new ArrayList<RuleDescriptor>();
         addDefaultCursorSelectionRule();
         addExtensionCursorSelectionRules();
-        
+
         loadPreferences();
     }
 
     /**
      * Returns a list of the available cursors.
-     * 
+     *
      * @return a list of the available cursors.
      */
     public List<AbstractCursor> availableCursors() {
@@ -144,18 +144,18 @@ public final class CursorService implements ICursorService {
 
     /**
      * Returns an unmodifiable list of the available cursor selection rules.
-     * 
+     *
      * @return an unmodifiable list of rule descriptors for the available cursor
      *         selection rules.
      */
     public List<RuleDescriptor> availableRules() {
         return Collections.unmodifiableList(_ruleDescriptors);
     }
-    
+
     /**
      * Applies the cursor to the given widget based on the selection rule
      * configured by the user.
-     * 
+     *
      * @param widget
      *            the widget.
      */
@@ -168,10 +168,10 @@ public final class CursorService implements ICursorService {
             widget.setCursorId(cursorId);
         }
     }
-    
+
     /**
      * Returns the executable rule described by the specified descriptor.
-     * 
+     *
      * @param ruleDesc
      *            the rule descriptor.
      * @return the executable rule. If an executable rule for the specified
@@ -196,7 +196,7 @@ public final class CursorService implements ICursorService {
 
     /**
      * Determines the cursor id from the given cursor state.
-     * 
+     *
      * @param rule
      *            the cursor selection rule.
      * @param stateId
@@ -216,10 +216,10 @@ public final class CursorService implements ICursorService {
         }
         return cursorId;
     }
-    
+
     /**
      * Returns the preferred rule.
-     * 
+     *
      * @return a descriptor of the preferred rule.
      */
     public RuleDescriptor getPreferredRule() {
@@ -237,7 +237,7 @@ public final class CursorService implements ICursorService {
     /**
      * Sets the preferred cursor selection rule. The preferred rule is stored in
      * the preference store.
-     * 
+     *
      * @param rule
      *            the preferred rule.
      */
@@ -248,7 +248,7 @@ public final class CursorService implements ICursorService {
 
     /**
      * Finds the rule with the specified id.
-     * 
+     *
      * @param id
      *            the id
      * @return the rule descriptor. If the rule was not found, returns the
@@ -271,7 +271,7 @@ public final class CursorService implements ICursorService {
 
     /**
      * Returns a descriptor for the default cursor selection rule.
-     * 
+     *
      * @return a descriptor for the default cursor selection rule.
      */
     private RuleDescriptor defaultRuleDescriptor() {
@@ -280,7 +280,7 @@ public final class CursorService implements ICursorService {
 
     /**
      * Find the cursor with the specified id.
-     * 
+     *
      * @param id
      *            the id.
      * @return a cursor, or <code>null</code> if none was found for that id.
@@ -299,22 +299,22 @@ public final class CursorService implements ICursorService {
         return result;
     }
 
-    
+
     /**
      * Returns the current cursor preferences. Changes in the returned object
      * are not immediately reflected in the preference store. Use the
      * {@link #setPreferences(CursorSettings)} method to change the stored
      * preferences.
-     * 
+     *
      * @return the current cursor settings from the preferences.
      */
     public CursorSettings getPreferences() {
         return new CursorSettings(_preferences);
     }
-    
+
     /**
      * Sets the cursor preferences to the specified settings.
-     * 
+     *
      * @param settings
      *            the settings.
      */
@@ -322,25 +322,25 @@ public final class CursorService implements ICursorService {
         if (settings == null) {
             throw new NullPointerException();
         }
-        
+
         _preferences = new CursorSettings(settings);
         storePreferences();
     }
-    
+
     /**
      * Loads the cursor settings from the preference store.
      */
     private void loadPreferences() {
         _preferences = new CursorSettings(_ruleDescriptors);
-        
+
         /*
          * The structure of the preferences: there is a node for the cursor
          * preferences. Below that node, there is one node for each cursor
          * selection rule, and below that node, one preference for each cursor
          * state.
-         * 
+         *
          * Example:
-         * 
+         *
          * <SdsPlugin.PLUGIN_ID>
          *   + <PreferenceConstants.CURSOR_SETTINGS>
          *       + de.desy.DesyCursorStrategy
@@ -375,7 +375,7 @@ public final class CursorService implements ICursorService {
             }
         }
     }
-    
+
     /**
      * Stores the cursor settings in the preference store.
      */
@@ -412,7 +412,7 @@ public final class CursorService implements ICursorService {
             _cursors.add(new ContributedCursor(id, name, bundle, image));
         }
     }
-    
+
     /**
      * Adds the cursor selection rules contributed via the
      * {@code cursorSelectionRules} extension point to the list of available
@@ -433,10 +433,10 @@ public final class CursorService implements ICursorService {
             _ruleDescriptors.add(rule);
         }
     }
-    
+
     /**
      * Reads the cursor states of a rule from the extension registry.
-     * 
+     *
      * @param rule
      *            the configuration element which declares the rule.
      * @return a collection of the cursor states declared for the rule.
@@ -464,7 +464,7 @@ public final class CursorService implements ICursorService {
     }
 
     /**
-     * Adds the system cursors to the list of available cursors. 
+     * Adds the system cursors to the list of available cursors.
      */
     private void addSystemCursors() {
         _cursors.add(SYSTEM_DEFAULT_CURSOR);
@@ -493,7 +493,7 @@ public final class CursorService implements ICursorService {
 
     /**
      * Lookup cursors in the workspace.
-     * 
+     *
      * @return a list of cursors found in the workspace.
      */
     private List<AbstractCursor> getWorkSpaceCursors() {

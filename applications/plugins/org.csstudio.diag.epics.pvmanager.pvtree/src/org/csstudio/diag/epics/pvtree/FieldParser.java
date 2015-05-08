@@ -20,7 +20,7 @@ public class FieldParser
     /** Parse preference string like
      *   "ai(INP,FLNK) ; ao (DOL, SIML , FLNK )"
      *  into list of fields to follow for each record type.
-     *  
+     *
      * @param field_configuration Format "record_type (field1, field2) ; record_type (...)"
      * @return HashMap od record types to list of field names
      * @throws Exception on parse error
@@ -36,10 +36,10 @@ public class FieldParser
             // Get record type
             final int i1 = rec_config.indexOf('(');
             if (i1 < 0)
-                throw new Exception("Missing start of field list in '" + rec_config + "'"); 
+                throw new Exception("Missing start of field list in '" + rec_config + "'");
             final String rec_type = rec_config.substring(0, i1).trim();
             if (rec_type.length() <= 0)
-                throw new Exception("Missing record type in '" + rec_config + "'"); 
+                throw new Exception("Missing record type in '" + rec_config + "'");
             final int i2 = rec_config.indexOf(')', i1);
             if (i2 < 0)
                 throw new Exception("Missing end of field list in '" + rec_config + "'");

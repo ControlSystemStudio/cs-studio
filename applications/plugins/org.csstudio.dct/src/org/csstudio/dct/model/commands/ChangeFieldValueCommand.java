@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.model.commands;
 
@@ -8,7 +8,7 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * Undoable command that changes to value of a record field.
- * 
+ *
  * @author Sven Wende
  */
 public final class ChangeFieldValueCommand extends Command {

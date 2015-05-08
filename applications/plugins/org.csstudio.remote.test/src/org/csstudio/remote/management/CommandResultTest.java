@@ -41,35 +41,35 @@ public class CommandResultTest {
         assertNull(r.getValue());
         assertEquals(CommandResult.TYPE_VOID, r.getType());
     }
-    
+
     @Test
     public void testSuccessWithReturnValue() throws Exception {
         CommandResult r = CommandResult.createSuccessResult("foo", "test");
         assertEquals("foo", r.getValue());
         assertEquals("test", r.getType());
     }
-    
+
     @Test
     public void testMessage() throws Exception {
         CommandResult r = CommandResult.createMessageResult("foo");
         assertEquals("foo", r.getValue());
         assertEquals(CommandResult.TYPE_MESSAGE, r.getType());
     }
-    
+
     @Test
     public void testFailureWithoutMessageOrException() throws Exception {
         CommandResult r = CommandResult.createFailureResult();
         assertNull(r.getValue());
         assertEquals(CommandResult.TYPE_ERROR, r.getType());
     }
-    
+
     @Test
     public void testFailureWithErrorMessage() throws Exception {
         CommandResult r = CommandResult.createFailureResult("message");
         assertEquals("message", r.getValue());
         assertEquals(CommandResult.TYPE_ERROR_MESSAGE, r.getType());
     }
-    
+
     @Test
     public void testFailureWithException() throws Exception {
         Exception e = new RuntimeException();
@@ -77,18 +77,18 @@ public class CommandResultTest {
         assertEquals(e, r.getValue());
         assertEquals(CommandResult.TYPE_EXCEPTION, r.getType());
     }
-    
+
     @Test
     public void testToStringReturnsAString() throws Exception {
         CommandResult r = CommandResult.createSuccessResult();
         assertNotNull(r.toString());
     }
-    
+
     @Test(expected = NullPointerException.class)
     public void testInvalidReturnValue() throws Exception {
         CommandResult.createSuccessResult(null, CommandResult.TYPE_VOID);
     }
-    
+
     @Test(expected = NullPointerException.class)
     public void testInvalidReturnType() throws Exception {
         CommandResult.createSuccessResult("foo", null);

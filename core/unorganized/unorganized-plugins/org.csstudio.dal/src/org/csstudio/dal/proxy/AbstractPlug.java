@@ -59,7 +59,7 @@ public abstract class AbstractPlug implements PlugContext
      * By default caching of proxy references is enabled.
      */
     private static final boolean DEFAULT_CACHING_ENABLED=true;
-    
+
     static class AbstractProxyHolder {
         int count;
         protected String id;
@@ -67,7 +67,7 @@ public abstract class AbstractPlug implements PlugContext
             count = 1;
             this.id=id;
         }
-        
+
         static String toID(Proxy<?> p) {
             return toID(p.getUniqueName(),p.getClass());
         }
@@ -75,7 +75,7 @@ public abstract class AbstractPlug implements PlugContext
             return name+"::"+type.getName();
         }
     }
-    
+
     class PropertyProxyHolder extends AbstractProxyHolder
     {
         PropertyProxyHolder(PropertyProxy<?,?> p)
@@ -131,15 +131,15 @@ public abstract class AbstractPlug implements PlugContext
 
     /**
      * Constructs a new plug instance which is associated with one specific
-     * application context. 
-     * 
+     * application context.
+     *
      * @param applicationContext
      */
     protected AbstractPlug(AbstractApplicationContext applicationContext) {
         this(applicationContext.getConfiguration());
         this.applicationContext = applicationContext;
     }
-    
+
     /**
      * Creates new plug instance with proxy caching enabled.
      */
@@ -166,7 +166,7 @@ public abstract class AbstractPlug implements PlugContext
         } else {
             this.configuration = (Properties)configuration.clone();
         }
-        
+
         getLogger().info("'"+getPlugType()+"' started.");
     }
 
@@ -241,26 +241,26 @@ public abstract class AbstractPlug implements PlugContext
      */
     public abstract String getPlugType();
 
-    
+
     /**
      * Returns property implementation class
-     *  
+     *
      * @param uniquePropertyName property name
      * @return property implementation class
      * @throws RemoteException if remote request was issued and did not sucseede
      */
     protected abstract Class<?extends SimpleProperty<?>>  getPropertyImplementationClass (String uniquePropertyName) throws RemoteException;
-    
+
     /**
      * Returns property proxy implementation class
-     * 
+     *
      * @param uniquePropertyName property name
      * @return property proxy  implementation class
      * @throws RemoteException if remote request was issued and was not successfull
      */
     protected abstract Class<?extends PropertyProxy<?,?>> getPropertyProxyImplementationClass(String uniquePropertyName) throws RemoteException;
-    
-    
+
+
     /**
      * Returns proxy object for unique name.  Object is obtained by
      * procedure in following order:
@@ -290,14 +290,14 @@ public abstract class AbstractPlug implements PlugContext
             throw new NullPointerException("uniqueName");
         }
         try {
-    
+
             PropertyProxy<?,?> p;
             if (PropertyProxy.class.equals(type)) {
                 p= getPropertyProxyFromCache(uniqueName);
             } else {
                 p= getPropertyProxyFromCache(uniqueName,type);
             }
-            
+
             if (p != null) {
                 if (!type.isInstance(p)) {
                     throw new ConnectionException(this,
@@ -305,13 +305,13 @@ public abstract class AbstractPlug implements PlugContext
                         + "' is of type '" + p.getClass().getName()
                         + "' and not of expected type '" + type.getName() + "'.");
                 }
-    
+
                 getLogger().debug("'"+uniqueName+"' reused    (c:"+p.getConnectionInfo()+" t:"+type.getName()+").");
                 return type.cast(p);
             }
-        
+
             TT pp = createNewPropertyProxy(uniqueName, type);
-            
+
             getLogger().debug("'"+uniqueName+"' created   (c:"+pp.getConnectionInfo()+" t:"+type.getName()+").");
 
             putPropertyProxyToCache(pp);
@@ -413,7 +413,7 @@ public abstract class AbstractPlug implements PlugContext
             if (proxy instanceof PropertyProxy) {
                 canDestroy &= releasePropertyProxyFromCache((PropertyProxy<?,?>)proxy);
             }
-            
+
             if (proxy instanceof DeviceProxy) {
                 canDestroy &=releaseDeviceProxyFromCache((DeviceProxy<?>)proxy);
             }
@@ -678,9 +678,9 @@ public abstract class AbstractPlug implements PlugContext
             throw new NullPointerException("uniqueName");
         }
 
-        
+
         DeviceProxy<?> p;
-        
+
         if (DeviceProxy.class.equals(type)) {
             p= getDeviceProxyFromCache(uniqueName);
         } else {
@@ -812,7 +812,7 @@ public abstract class AbstractPlug implements PlugContext
      *
      * @param type property type (can be null)
      * @param propertyName property name
-     * 
+     *
      * @return implementor of given interface
      * @throws RemoteException if remote request was issued and did not succeed
      */
@@ -821,7 +821,7 @@ public abstract class AbstractPlug implements PlugContext
     {
         Class<?extends SimpleProperty<?>> propImplClass = null;
         if (type !=null)
-        {    
+        {
             /*
              * Try first with internal override for implementations
              */
@@ -852,7 +852,7 @@ public abstract class AbstractPlug implements PlugContext
         }
         return propImplClass;
     }
-    
+
     /**
      * Returns the class that implements device interface given as parameter.
      *
@@ -886,7 +886,7 @@ public abstract class AbstractPlug implements PlugContext
 
     /**
      * Returns device implementation class
-     *  
+     *
      * @param uniqueDeviceName device name
      * @return device implementation class
      */
@@ -896,21 +896,21 @@ public abstract class AbstractPlug implements PlugContext
      * Returns the class that implements property proxy that can be connected to the given
      * interface of a property.
      *
-     * By default is lookup done first by type if it's not <code>null</code> then by property name. 
+     * By default is lookup done first by type if it's not <code>null</code> then by property name.
      *
      *
      * @param type property type (can be <code>null</code>)
      * @param implementationType property implementation type (can be <code>null</code>)
      * @param uniquePropertyName name
-     *  
-     * @return property proxy for the given property 
+     *
+     * @return property proxy for the given property
      * @throws RemoteException if remote request was issued and was not successfull
      */
     public Class<?extends PropertyProxy<?,?>> getPropertyProxyImplementationClass(
         Class<?extends SimpleProperty<?>> type, Class<?extends SimpleProperty<?>> implementationType, String uniquePropertyName) throws RemoteException
     {
         Class<? extends PropertyProxy<?,?>> proxyImplType = null;
-        
+
         if (type !=null) {
             proxyImplType = propertyProxiesImplementationClasses.get(type);
         }
@@ -923,7 +923,7 @@ public abstract class AbstractPlug implements PlugContext
         }
         return proxyImplType;
     }
-    
+
     /**
      * Returns the class that implements device proxy that can be connected to the given
      * interface of an abstrac device.
@@ -939,7 +939,7 @@ public abstract class AbstractPlug implements PlugContext
         Class<?extends AbstractDevice> type, Class<?extends AbstractDevice> implementationType, String uniqueDeviceName) throws RemoteException
     {
         Class<? extends DeviceProxy<?>> proxyImplType = null;
-        
+
         if (type !=null) {
             proxyImplType = deviceProxiesImplementationClasses.get(type);
         }
@@ -955,7 +955,7 @@ public abstract class AbstractPlug implements PlugContext
 
     /**
      * Returns device proxy implementation class
-     * 
+     *
      * @param uniqueDeviceName device name
      * @return device proxy  implementation class
      * @throws RemoteException if remote request was issued and was not successfull
@@ -1137,9 +1137,9 @@ public abstract class AbstractPlug implements PlugContext
     }
 
     /**
-     * <p>This method <b>MUST</b> be implemented by plug implementation if plug want to support 
+     * <p>This method <b>MUST</b> be implemented by plug implementation if plug want to support
      * default behavior with shared plug instance</p>.
-     * 
+     *
      * <p>This method is used by default DAL factories to access plug instances. Implementation may
      * choose one of the following strategies how this method is implemented:
      * </p>
@@ -1148,11 +1148,11 @@ public abstract class AbstractPlug implements PlugContext
      *   <li><b>Singleton plug:</b> This method always returns the same instance, thus singleton.
      *   This means that this particular DAL implementation will always use same plug.</li>
      *   <li><b>Multiple plugs:</b> Implementation may decide to return different plug instance.
-     *   In this case it may be wiser to declare in AbstractFactorySupport this plug to be 
+     *   In this case it may be wiser to declare in AbstractFactorySupport this plug to be
      *   non-shared.</li>
      * </ul>
      *
-     * <p> Which strategy will be used could be hard-coded in AbstractFactorySupport or dynamically 
+     * <p> Which strategy will be used could be hard-coded in AbstractFactorySupport or dynamically
      * decided from application context configuration with AbstractFactory.SHARE_PLUG property.</p>
      *
      *
@@ -1160,7 +1160,7 @@ public abstract class AbstractPlug implements PlugContext
      * which initiated plug construction.
      * @return new or reused plug instance, depends on plug implementation strategy
      * @throws Exception if construction fails.
-     * 
+     *
      * @see AbstractFactorySupport
      * @see AbstractFactory#SHARE_PLUG
      * @see AbstractFactory#isPlugShared()
@@ -1172,37 +1172,37 @@ public abstract class AbstractPlug implements PlugContext
         throw new Exception(
             "This method MUST be implemented by this plug class, if plug instance is shared.");
     }
-    
+
     /**
-     * <p>This method <b>MUST</b> be implemented <b>ONLY</b> by plug implementation, which 
+     * <p>This method <b>MUST</b> be implemented <b>ONLY</b> by plug implementation, which
      * does not want to share plug instance. See for more detail AbstractFactorySupport class.</p>
-     * 
+     *
      * <p>Purpose of this method is to provide own plug instance for each application context.
      * This is required if for example plug need application context to access user or application
-     * specific resources in order to start remote protocol and this resources can not be shared 
-     * among several applications.</p> 
-     * 
+     * specific resources in order to start remote protocol and this resources can not be shared
+     * among several applications.</p>
+     *
      * <p>Default DAL factory implementation (see AbstractFactorySupport) will try to create
-     * plug instance trough this method <b>only</p> if factory has declared in 
+     * plug instance trough this method <b>only</p> if factory has declared in
      * AbstractFactorySupport constructor that plug should be created only in non-shared mode or
-     * dynamically decided from application context configuration with AbstractFactory.SHARE_PLUG 
+     * dynamically decided from application context configuration with AbstractFactory.SHARE_PLUG
      * property set to <code>true</code>.</p>
-     * 
+     *
      * <p>Plug, which is created with this method, will not be used any more after application
-     * context signals end-of-life-cycle with destroy event. For this reason plug must listen to 
+     * context signals end-of-life-cycle with destroy event. For this reason plug must listen to
      * context life-cycle events and perform cleanup of any allocated resources once application
      * context has been destroyed.</p>
-     * 
+     *
      * @param context Application context which initiates plug construction
      * @return new plug instance created specially for provided application context
      * @throws Exception if construction fails.
-     * 
+     *
      * @see AbstractPlug#getInstance(Properties)
       * @see AbstractFactorySupport
      * @see AbstractFactory#SHARE_PLUG
      * @see AbstractFactory#isPlugShared()
      */
-    public static AbstractPlug getInstance(AbstractApplicationContext context) 
+    public static AbstractPlug getInstance(AbstractApplicationContext context)
         throws Exception
     {
         throw new Exception(
@@ -1230,7 +1230,7 @@ public abstract class AbstractPlug implements PlugContext
     {
         return configuration;
     }
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.dal.EventSystemContext#addEventSystemListener(org.csstudio.dal.EventSystemListener)
      */
@@ -1316,9 +1316,9 @@ public abstract class AbstractPlug implements PlugContext
             plugListeners.remove(l);
         }
     }
-    
+
     /**
-     * Returns the Logger used by this plug. This logger logs all exceptions and 
+     * Returns the Logger used by this plug. This logger logs all exceptions and
      * printouts within the DAL implementation.
      * @return
      */
@@ -1328,7 +1328,7 @@ public abstract class AbstractPlug implements PlugContext
         }
         return logger;
     }
-    
+
     /**
      * Returns an array of all PropertyProxies, which are held in the cache of
      * this plug.
@@ -1342,7 +1342,7 @@ public abstract class AbstractPlug implements PlugContext
         }
         return proxies;
     }
-    
+
     /**
      * Returns an array of all DeviceProxies, which are held in the cache of
      * this plug.
@@ -1356,7 +1356,7 @@ public abstract class AbstractPlug implements PlugContext
         }
         return proxies;
     }
-    
+
     /**
      * Returns an array of all DirectoryProxies, which are held in the cache of
      * this plug.
@@ -1370,7 +1370,7 @@ public abstract class AbstractPlug implements PlugContext
         }
         return proxies;
     }
-    
+
     /**
      * Returns an iterator over the cached PropertyProxies. This iterator does
      * not support remove of elements.
@@ -1390,7 +1390,7 @@ public abstract class AbstractPlug implements PlugContext
             }
         };
     }
-    
+
     /**
      * Returns an iterator over the cached DeviceProxies. This iterator does
      * not support remove of elements.
@@ -1410,7 +1410,7 @@ public abstract class AbstractPlug implements PlugContext
             }
         };
     }
-    
+
     /**
      * Returns an iterator over the cached DirectoryProxies. This iterator does
      * not support remove of elements.

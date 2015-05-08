@@ -9,9 +9,9 @@ package org.csstudio.opibuilder.widgets.symbol.bool;
 
 /**
  * Monitor model for a Boolean Symbol Image widget.
- * 
+ *
  * @author SOPRA Group
- * 
+ *
  */
 public class MonitorBoolSymbolModel extends CommonBoolSymbolModel {
 

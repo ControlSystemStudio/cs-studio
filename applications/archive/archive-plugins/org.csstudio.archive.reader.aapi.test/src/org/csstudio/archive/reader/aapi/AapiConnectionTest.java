@@ -40,10 +40,10 @@ public class AapiConnectionTest {
         printoutRaw(data);
     }
 
-    
+
     private void printoutRaw(AnswerData data) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Test
@@ -55,7 +55,7 @@ public class AapiConnectionTest {
         _requestData.setConversionMethod(AapiReductionMethod.MIN_MAX_AVERAGE_METHOD);
         AnswerData data = _aapiClient.getData(_requestData);
         assertNotNull(data);
-        //assert fourth sample 
+        //assert fourth sample
         //time
         assertEquals(1267351500, data.getTime()[9]);
         //min
@@ -66,7 +66,7 @@ public class AapiConnectionTest {
         assertEquals(4.279712, data.getData()[11], 0.0000001);
         printoutMinMax(data);
     }
-    
+
     private void printoutMinMax(AnswerData data) {
         int j = 0;
         for (int i = 0; i+2 < data.getData().length; i = i+3) {

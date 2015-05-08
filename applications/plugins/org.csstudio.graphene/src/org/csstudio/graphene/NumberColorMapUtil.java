@@ -16,21 +16,21 @@ public class NumberColorMapUtil {
         Collections.sort(colorMapNames);
         return colorMapNames.toArray(new String[colorMapNames.size()]);
     }
-    
+
     public static String colorMapName(NumberColorMap colorMap) {
         String key = null;
-        for (Map.Entry<String, NumberColorMap> entry : NumberColorMaps.getRegisteredColorSchemes().entrySet()) { 
+        for (Map.Entry<String, NumberColorMap> entry : NumberColorMaps.getRegisteredColorSchemes().entrySet()) {
             if (entry.getValue().equals(colorMap)) {
                 key = entry.getKey();
             }
         }
-        
+
         return key;
     }
-    
+
     public static int colorMapIndex(NumberColorMap colorMap) {
         String key = colorMapName(colorMap);
-        
+
         if (key == null) {
             return -1;
         }
@@ -38,11 +38,11 @@ public class NumberColorMapUtil {
         int index = Arrays.asList(colorMapNames()).indexOf(key);
         return index;
     }
-    
+
     public static NumberColorMap colorMap(int index) {
         if (index == -1)
             return null;
-        
+
         return NumberColorMaps.getRegisteredColorSchemes().get(colorMapNames()[index]);
     }
 

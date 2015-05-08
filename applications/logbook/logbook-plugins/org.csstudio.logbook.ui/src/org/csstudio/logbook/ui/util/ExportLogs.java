@@ -32,20 +32,20 @@ public class ExportLogs extends AbstractHandler {
         final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
         IAdapterManager adapterManager = Platform.getAdapterManager();
         final List<LogEntry> data = new ArrayList<LogEntry>();
-        
+
         if (selection instanceof IStructuredSelection) {
             IStructuredSelection strucSelection = (IStructuredSelection) selection;
 
             for (Object iterable_element : strucSelection.toList()) {
                 data.add((LogEntry) adapterManager.getAdapter(iterable_element, LogEntry.class));
             }
-           
+
         }
-        
+
         if (data == null || data.isEmpty()) {
-            ErrorDialog.openError(HandlerUtil.getActiveWorkbenchWindow(event).getShell(),                  
+            ErrorDialog.openError(HandlerUtil.getActiveWorkbenchWindow(event).getShell(),
                     "Error",
-                    "No log Entries selected to be export", 
+                    "No log Entries selected to be export",
                     new Status(IStatus.ERROR, ID, null));
         } else {
             try {

@@ -36,9 +36,9 @@ import org.eclipse.swt.graphics.Font;
 
 /**
  * Controller for the ThumbWheel.
- * 
+ *
  * @author Alen Vrecko
- * 
+ *
  */
 public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 
@@ -156,7 +156,7 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
             protected void doHandle(RefreshableThumbWheelFigure figure, Font font) {
                 figure.setWheelFonts(font);
             }
-            
+
         });
 
         // border color
@@ -272,7 +272,7 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
         };
         return handler;
     }
-    
+
     /**
      * Thumb wheel widgets are always disabled in edit mode.
      * @return true as always disabled.
@@ -286,14 +286,14 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
      * Represents the "brain" behind the ThumbWheel. It represents the wheel and
      * its values. Integer wheels are indexed from right to left. Decimal wheels
      * are indexed left to right from the decimal point.
-     * 
+     *
      * <p>
      * Note the inherent precision of value double is 15 decimal places
      * therefore you cannot have more than 15 wheels.
      * <p>
-     * 
+     *
      * @author Alen Vrecko
-     * 
+     *
      */
     private static class ThumbWheelLogic {
 
@@ -321,7 +321,7 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
          * Increments the integer digit on a specific index. E.g. on 567.12
          * calling increment for - 0 will set the value to 568.12, with index -
          * 2 will result in 667.12. Will not set beyond max value.
-         * 
+         *
          * @param index
          * @param val
          */
@@ -333,7 +333,7 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
          * Increments the decimal digit on a specific index. E.g. on 567.12
          * calling increment for - 0 will set the value to 567.22, with index -
          * 1 will result in 567.11. Will not go bellow max value.
-         * 
+         *
          * @param index
          * @param val
          */
@@ -406,7 +406,7 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
          * Decrements the integer digit on a specific index. E.g. on 567.12
          * calling increment for - 0 will set the value to 468.12, with index -
          * 2 will result in 467.12. Will not go below min value.
-         * 
+         *
          * @param index
          * @param val
          */
@@ -418,7 +418,7 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
          * Decrements the decimal digit on a specific index. E.g. on 567.12
          * calling increment for - 0 will set the value to 568.02, with index -
          * 1 will result in 567.11. Will not go bellow min value.
-         * 
+         *
          * @param index
          * @param val
          */
@@ -472,7 +472,7 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
          * Returns a digit in the specified index. E.g. for 324.23 getting index
          * 0,1,2 would return 4,2,3. If the number is beyond max in will return
          * proper digit of max. Same goes for min.
-         * 
+         *
          * @param index
          * @return
          */
@@ -503,7 +503,7 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
         /**
          * Returns a digit in the specified index. E.g. for 324.23 getting index
          * 0,1 would return 2,3.
-         * 
+         *
          * @param index
          * @return
          */
@@ -529,7 +529,7 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 
         /**
          * Returns true if the value is bigger than the wheels can represent.
-         * 
+         *
          * @return
          */
         public boolean beyondDisplayLimit() {

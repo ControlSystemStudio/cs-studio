@@ -30,8 +30,8 @@ public class LinkingContainerModel extends AbstractLinkingContainerModel {
     /**
      * The ID of this widget model.
      */
-    public static final String ID = "org.csstudio.opibuilder.widgets.linkingContainer"; //$NON-NLS-1$    
-    
+    public static final String ID = "org.csstudio.opibuilder.widgets.linkingContainer"; //$NON-NLS-1$
+
     /**
      * Versions before this didn't have an updated resize behaviour.
      */
@@ -64,13 +64,13 @@ public class LinkingContainerModel extends AbstractLinkingContainerModel {
      */
     @Deprecated
     public static final String PROP_ZOOMTOFITALL = "zoom_to_fit"; //$NON-NLS-1$
-    
+
     /**
      *  The ID of the auto scale property.
      */
     @Deprecated
     public static final String PROP_AUTO_SIZE = "auto_size"; //$NON-NLS-1$
-    
+
     /**
      * How the widget should behave when the contents is not the same size as the widget.
      */
@@ -90,15 +90,15 @@ public class LinkingContainerModel extends AbstractLinkingContainerModel {
      * The geographical size of the children.
      */
     private Dimension childrenGeoSize = null;
-    
+
     public LinkingContainerModel() {
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         setBorderStyle(BorderStyle.LOWERED);
     }
-    
+
     @Override
     protected void configureProperties() {
-        
+
         addProperty(new BooleanProperty(PROP_ZOOMTOFITALL, "Zoom to Fit", WidgetPropertyCategory.Display, true));
         setPropertyVisibleAndSavable(PROP_ZOOMTOFITALL, false, false);
 
@@ -143,7 +143,7 @@ public class LinkingContainerModel extends AbstractLinkingContainerModel {
     public boolean isAutoFit() {
         return (int)getProperty(PROP_RESIZE_BEHAVIOUR).getPropertyValue() == ResizeBehaviour.SIZE_OPI_TO_CONTAINER.ordinal();
     }
-    
+
     public boolean isAutoSize() {
         return (int)getProperty(PROP_RESIZE_BEHAVIOUR).getPropertyValue() == ResizeBehaviour.SIZE_CONTAINER_TO_OPI.ordinal();
     }
@@ -151,18 +151,18 @@ public class LinkingContainerModel extends AbstractLinkingContainerModel {
     public boolean isShowScrollBars() {
         return (int)getProperty(PROP_RESIZE_BEHAVIOUR).getPropertyValue() == ResizeBehaviour.SCROLL_OPI.ordinal();
     }
-    
+
     @Override
     public boolean isChildrenOperationAllowable() {
         return false;
     }
-    
+
     @Override
     public void scale(double widthRatio, double heightRatio) {
         super.scale(widthRatio, heightRatio);
         if(!isAutoFit())
             scaleChildren();
-        
+
     }
 
     @Override
@@ -181,17 +181,17 @@ public class LinkingContainerModel extends AbstractLinkingContainerModel {
     };
 
     /**
-     * Scale its children. 
+     * Scale its children.
      */
     public void scaleChildren() {
         if(isAutoFit())
             return;
-        //The linking container model doesn't hold its children actually, so it 
+        //The linking container model doesn't hold its children actually, so it
         // has to ask editpart to get its children.
         GraphicalViewer viewer = getRootDisplayModel().getViewer();
         if(viewer == null)
             return;
-        LinkingContainerEditpart editpart = 
+        LinkingContainerEditpart editpart =
                 (LinkingContainerEditpart) viewer.
                 getEditPartRegistry().
                 get(this);
@@ -219,21 +219,21 @@ public class LinkingContainerModel extends AbstractLinkingContainerModel {
                     newHeightRatio = minHeight
                             / (double) getOriginSize().height;
             }
-            
+
         }
         if(allowScale)
             for(Object child : editpart.getChildren())
                 ((AbstractBaseEditPart)child).getWidgetModel().scale(newWidthRatio, newHeightRatio);
     }
-    
+
     @Override
     public Dimension getOriginSize() {
-        if(childrenGeoSize == null)            
+        if(childrenGeoSize == null)
             return super.getOriginSize();
         else
             return childrenGeoSize;
     }
-    
+
     public void setChildrenGeoSize(Dimension childrenGeoSize) {
         this.childrenGeoSize = childrenGeoSize;
     }

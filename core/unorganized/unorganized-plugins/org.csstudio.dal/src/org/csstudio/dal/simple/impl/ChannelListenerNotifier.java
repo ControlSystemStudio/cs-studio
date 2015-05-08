@@ -13,14 +13,14 @@ import org.csstudio.dal.simple.AnyDataChannel;
 import org.csstudio.dal.simple.ChannelListener;
 
 public class ChannelListenerNotifier {
-    
+
     private final ConcurrentHashMap<Integer, ChannelListener> listeners = new ConcurrentHashMap<Integer, ChannelListener>();
     private AnyDataChannel channel;
-    
+
     private DynamicValueCondition lastCondition = null;
     private boolean initialStateUpdate = false;
     private boolean initialDataUpdate = false;
-    
+
     private final LinkListener<DynamicValueProperty<?>> linkListener = new LinkListener<DynamicValueProperty<?>>() {
         @Override
         public void connected(ConnectionEvent<DynamicValueProperty<?>> e) {
@@ -63,7 +63,7 @@ public class ChannelListenerNotifier {
         }
     };
     private final DynamicValueListener dvListener = new DynamicValueAdapter() {
-        
+
         @Override
         public void conditionChange(DynamicValueEvent event) {
             DynamicValueCondition cond = event.getCondition();
@@ -87,29 +87,29 @@ public class ChannelListenerNotifier {
 //                fireChannelDataUpdate();
 //        };
 //    };
-    
+
     public ChannelListenerNotifier(AnyDataChannel channel) {
         this.channel = channel;
     }
-    
+
     public synchronized void addChannelListener(ChannelListener listener) {
         listeners.put(listener.hashCode(), listener);
-        
+
         if (initialStateUpdate) listener.channelStateUpdate(channel);
         if (initialDataUpdate) listener.channelDataUpdate(channel);
-        
+
         if (listeners.size() == 1) subscribe(channel);
     }
-    
+
     public synchronized void removeChannelListener(ChannelListener listener) {
         listeners.remove(listener.hashCode());
         if (listeners.size() == 0) unsubscribe();
     }
-    
+
     public synchronized ChannelListener[] getChannelListeners() {
         return (ChannelListener[]) listeners.values().toArray(new ChannelListener[listeners.size()]);
     }
-    
+
     public void subscribe(AnyDataChannel channel) {
         if (this.channel != channel) unsubscribe();
         this.channel = channel;
@@ -118,7 +118,7 @@ public class ChannelListenerNotifier {
         channel.getProperty().addDynamicValueListener(dvListener);
 //        channel.getProperty().addPropertyChangeListener(pcListener);
     }
-    
+
     public void unsubscribe() {
         if (channel == null) return;
 //        channel.getProperty().removePropertyChangeListener(pcListener);
@@ -127,19 +127,19 @@ public class ChannelListenerNotifier {
         initialStateUpdate = false;
         initialDataUpdate = false;
     }
-    
+
     private void fireChannelStateUpdate() {
         for (ChannelListener listener : getChannelListenerArray()) {
             listener.channelStateUpdate(channel);
         }
     }
-    
+
     private void fireChannelDataUpdate() {
         for (ChannelListener listener : getChannelListenerArray()) {
             listener.channelDataUpdate(channel);
         }
     }
-    
+
     private ChannelListener[] getChannelListenerArray() {
         return (ChannelListener[]) listeners.values().toArray(new ChannelListener[listeners.size()]);
     }

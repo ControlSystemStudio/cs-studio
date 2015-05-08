@@ -20,13 +20,13 @@ import org.eclipse.swt.graphics.Color;
  */
 public class RoundRectangleBackgroundBorder extends AbstractBackground {
 
-    
+
     private static final int ARC_SIZE = 8;
 
     private int lineWidth;
-    
+
     private Color backgroundColor;
-    
+
     /**
      *
      * @param borderColor the border color
@@ -36,17 +36,17 @@ public class RoundRectangleBackgroundBorder extends AbstractBackground {
         this.backgroundColor=backgroundColor;
         this.lineWidth = lineWidth;
     }
-    
+
     @Override
     public Insets getInsets(IFigure figure) {
         return new Insets(lineWidth >0? 2*lineWidth : 2);
     }
-    
+
     @Override
     public boolean isOpaque() {
         return false;
     }
-    
+
     /**
      * @see org.eclipse.draw2d.Border#paint(IFigure, Graphics, Insets)
      */
@@ -66,7 +66,7 @@ public class RoundRectangleBackgroundBorder extends AbstractBackground {
         graphics.drawRoundRectangle(tempRect, ARC_SIZE, ARC_SIZE);
         graphics.popState();
     }
-    
+
     @Override
     public void paintBackground(IFigure figure, Graphics graphics, Insets insets) {
         super.paintBackground(figure, graphics, insets);
@@ -79,6 +79,6 @@ public class RoundRectangleBackgroundBorder extends AbstractBackground {
         graphics.fillRoundRectangle(tempRect, ARC_SIZE, ARC_SIZE);
         graphics.popState();
     }
-    
-    
+
+
 }

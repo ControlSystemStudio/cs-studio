@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.model.commands;
 
@@ -8,16 +8,16 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * Command that changes a named bean property.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ChangeBeanPropertyCommand extends Command {
     private Object delegate;
     private String propertyName;
     private Object value;
     private Object oldValue;
-    
+
     /**
      * Constructor.
      * @param delegate the object

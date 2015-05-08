@@ -34,13 +34,13 @@ public class HistogramGraph2DWidget
         implements ISelectionProvider {
 
     private PVWriter<Object> selectionValueWriter;
-    
+
     private boolean highlightSelectionValue = false;
-    
+
     private static final String MEMENTO_HIGHLIGHT_SELECTION_VALUE = "highlightSelectionValue"; //$NON-NLS-1$
 
     private MouseMoveListener hoverSelection = new MouseMoveListener() {
-        
+
         @Override
         public void mouseMove(MouseEvent e) {
             if (isHighlightSelectionValue() && getGraph() != null) {
@@ -50,7 +50,7 @@ public class HistogramGraph2DWidget
     };
 
     private ClickSelectionMethodListener clickSelection = new ClickSelectionMethodListener();
-    
+
     private class ClickSelectionMethodListener implements MouseListener, MouseMoveListener {
 
         @Override
@@ -60,7 +60,7 @@ public class HistogramGraph2DWidget
                     getGraph().update(getGraph().newUpdate().focusPixel(e.x));
                 }
             }
-            
+
         }
 
         @Override
@@ -77,13 +77,13 @@ public class HistogramGraph2DWidget
         @Override
         public void mouseUp(MouseEvent e) {
         }
-        
+
     }
-    
-    
+
+
     /**
      * Creates a new widget.
-     * 
+     *
      * @param parent
      *            the parent
      * @param style
@@ -92,19 +92,19 @@ public class HistogramGraph2DWidget
     public HistogramGraph2DWidget(Composite parent, int style) {
         super(parent, style);
         addPropertyChangeListener(new PropertyChangeListener() {
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("highlightSelectionValue") && getGraph() != null) {
                     getGraph().update(getGraph().newUpdate().highlightFocusValue((Boolean) evt.getNewValue()));
                 }
-                
+
             }
         });
         getImageDisplay().addMouseMoveListener(hoverSelection);
-        
+
         addPropertyChangeListener(new PropertyChangeListener() {
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("selectionValuePv") && getGraph() != null) {
@@ -112,11 +112,11 @@ public class HistogramGraph2DWidget
                         selectionValueWriter.close();
                         selectionValueWriter = null;
                     }
-                    
+
                     if (getSelectionValuePv() == null || getSelectionValuePv().trim().isEmpty()) {
                         return;
                     }
-                    
+
                     selectionValueWriter = PVManager.write(formula(getSelectionValuePv()))
                             .writeListener(new PVWriterListener<Object>() {
                                 @Override
@@ -132,13 +132,13 @@ public class HistogramGraph2DWidget
                     if (getSelectionValue() != null) {
                         selectionValueWriter.write(getSelectionValue());
                     }
-                            
+
                 }
-                
+
             }
         });
         addPropertyChangeListener(new PropertyChangeListener() {
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("selectionValue") && selectionValueWriter != null) {
@@ -146,21 +146,21 @@ public class HistogramGraph2DWidget
                         selectionValueWriter.write(getSelectionValue());
                     }
                 }
-                
+
             }
         });
     }
-    
+
     protected HistogramGraph2DExpression createGraph() {
         HistogramGraph2DExpression graph = histogramGraphOf(formula(getDataFormula()));
         graph.update(graph.newUpdate().highlightFocusValue(isHighlightSelectionValue()));
         return graph;
     }
-    
+
     public boolean isHighlightSelectionValue() {
         return highlightSelectionValue;
     }
-    
+
     public void setHighlightSelectionValue(boolean highlightSelectionValue) {
         boolean oldValue = this.highlightSelectionValue;
         this.highlightSelectionValue = highlightSelectionValue;
@@ -180,25 +180,25 @@ public class HistogramGraph2DWidget
             }
         }
     }
-    
+
     private VNumberArray selectionValue;
     private String selectionValuePv;
     private MouseSelectionMethod mouseSelectionMethod = MouseSelectionMethod.HOVER;
-    
+
     public String getSelectionValuePv() {
         return selectionValuePv;
     }
-    
+
     public void setSelectionValuePv(String selectionValuePv) {
         String oldValue = this.selectionValuePv;
         this.selectionValuePv = selectionValuePv;
         changeSupport.firePropertyChange("selectionValuePv", oldValue, this.selectionValuePv);
     }
-    
+
     public VNumberArray getSelectionValue() {
         return selectionValue;
     }
-    
+
     private void setSelectionValue(VNumberArray selectionValue) {
         VNumberArray oldValue = this.selectionValue;
         this.selectionValue = selectionValue;
@@ -206,11 +206,11 @@ public class HistogramGraph2DWidget
             changeSupport.firePropertyChange("selectionValue", oldValue, this.selectionValue);
         }
     }
-    
+
     public MouseSelectionMethod getMouseSelectionMethod() {
         return mouseSelectionMethod;
     }
-    
+
     public void setMouseSelectionMethod(
             MouseSelectionMethod mouseSelectionMethod) {
         MouseSelectionMethod oldValue = this.mouseSelectionMethod;
@@ -243,13 +243,13 @@ public class HistogramGraph2DWidget
             changeSupport.firePropertyChange("mouseSelectionMethod", oldValue, this.mouseSelectionMethod);
         }
     }
-    
+
     @Override
     protected void processInit() {
         super.processInit();
         processValue();
     }
-    
+
     @Override
     protected void processValue() {
         Graph2DResult result = getCurrentResult();

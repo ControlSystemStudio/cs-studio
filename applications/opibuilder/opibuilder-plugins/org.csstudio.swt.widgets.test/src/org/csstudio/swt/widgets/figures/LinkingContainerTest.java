@@ -15,18 +15,18 @@ public class LinkingContainerTest extends AbstractWidgetTest{
     public Figure createTestWidget() {
         return new LinkingContainerFigure();
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
         String[] myProps = new String[]{
                 "zoomToFitAll"
-                
+
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
-            
+
+
 }

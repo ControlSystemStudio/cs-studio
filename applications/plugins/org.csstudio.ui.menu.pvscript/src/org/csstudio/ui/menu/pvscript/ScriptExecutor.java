@@ -26,10 +26,10 @@ public class ScriptExecutor
         command[0] = script;
         for (int i=0; i<pv.length; ++i)
             command[i+1] = pv[i].getName();
-        
+
         // Simply running the command is easy:
         Runtime.getRuntime().exec(command);
-        
+
         // It would be much more complicated to monitor the
         // error output, check the return code,
         // maybe react if the command does not _stop_

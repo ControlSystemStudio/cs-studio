@@ -24,7 +24,7 @@ public class AxisRangePropertyDialog extends HelpTrayDialog {
         this.axisRange = axisRange;
         this.dialogTitle = dialogTitle;
     }
-    
+
     @Override
     protected void configureShell(final Shell shell) {
         super.configureShell(shell);
@@ -38,7 +38,7 @@ public class AxisRangePropertyDialog extends HelpTrayDialog {
         // TODO Auto-generated method stub
         return null;
     }
-    
+
     @Override
     protected Control createDialogArea(Composite parent) {
         editor = new AxisRangeEditorComposite(parent, getShellStyle());
@@ -47,7 +47,7 @@ public class AxisRangePropertyDialog extends HelpTrayDialog {
         }
         return editor;
     }
-    
+
     public AxisRange getAxisRange() {
         return editor.getAxisRange();
     }

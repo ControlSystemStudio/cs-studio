@@ -16,11 +16,11 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
 /** Utility for Hamcrest-based file comparison
- * 
+ *
  *  <p>Example usage:
- *  <code> 
+ *  <code>
  *  assertThat(linesInFile("file1.txt"), matchLinesIn(linesInFile("file1.txt")));
- *  </code> 
+ *  </code>
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -49,7 +49,7 @@ public class FileTestUtil
         return new TypeSafeMatcher<String[]>()
         {
             final private StringBuilder diffs = new StringBuilder();
-            
+
             @Override
             public void describeTo(Description desc)
             {

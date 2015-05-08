@@ -13,7 +13,7 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.RelatedDisplayItem;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
- * 
+ *
  * @author hammonds
  *
  */
@@ -27,7 +27,7 @@ public abstract class ADLAbstractWidget {
     protected ADLDynamicAttribute _adlDynamicAttribute = null;
     protected ADLLimits _adlLimits = null;
     protected ADLPlotcom _adlPlotcom = null;
-    
+
     protected boolean _hasBasicAttribute = false;
     protected boolean _hasObject = false;
     protected boolean _hasControl = false;
@@ -37,14 +37,14 @@ public abstract class ADLAbstractWidget {
     protected boolean _hasDynamicAttribute = false;
     protected boolean _hasLimits = false;
     protected boolean _hasPlotcom = false;
-    
+
     protected ImageDescriptor descriptor = null;
     protected String name = new String();
 
     public ADLAbstractWidget(final ADLWidget adlWidget){
-        
+
     }
-    
+
     public final ImageDescriptor getImageDescriptor(){
         return descriptor;
     }
@@ -52,11 +52,11 @@ public abstract class ADLAbstractWidget {
         return name;
     }
     abstract public Object[] getChildren();
-    
+
     public boolean hasADLObject(){
         return _hasObject;
     }
-    
+
     public boolean hasADLBasicAttribute(){
         return _hasBasicAttribute;
     }
@@ -64,31 +64,31 @@ public abstract class ADLAbstractWidget {
     public boolean hasADLControl(){
         return _hasControl;
     }
-    
+
     public boolean hasADLMonitor(){
         return _hasMonitor;
     }
-    
+
     public boolean hasADLPoints(){
         return _hasPoints;
     }
-    
+
     public boolean hasRelatedDisplayItem(){
         return _hasRelatedDisplayItem;
     }
-    
+
     public boolean hasADLDynamicAttribute(){
         return _hasDynamicAttribute;
     }
-    
+
     public boolean hasADLLimits(){
         return _hasLimits;
     }
-    
+
     public boolean hasADLPlotcom(){
         return _hasPlotcom;
     }
-    
+
 
     /**
      * @return ADLObject
@@ -162,4 +162,4 @@ public abstract class ADLAbstractWidget {
         _adlDynamicAttribute = dynAttr;
         _hasDynamicAttribute = true;
     }
-}    
+}

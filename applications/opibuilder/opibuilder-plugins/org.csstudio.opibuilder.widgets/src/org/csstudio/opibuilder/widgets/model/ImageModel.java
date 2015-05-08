@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
@@ -38,14 +38,14 @@ import org.eclipse.core.runtime.Path;
  * An image widget model.
  * @author jbercic (original author)
  * @author Xihui Chen (import from SDS since 2009/09)
- * 
+ *
  */
 public final class ImageModel extends AbstractWidgetModel {
     /**
      * Unique identifier.
      */
     public static final String ID = "org.csstudio.opibuilder.widgets.Image";
-    
+
     /**
      * File path of the image.
      */
@@ -69,12 +69,12 @@ public final class ImageModel extends AbstractWidgetModel {
     /**
      * True if the image should be stretched to the widget size.
      */
-    public static final String PROP_STRETCH = "stretch_to_fit";    
+    public static final String PROP_STRETCH = "stretch_to_fit";
     /**
      * True if the widget size is automatically adjusted to the size of the image.
      */
-    public static final String PROP_AUTOSIZE= "auto_size";    
-    
+    public static final String PROP_AUTOSIZE= "auto_size";
+
     /**
      * True if the widget doesn't show animation even it is a animated image file.
      */
@@ -90,7 +90,7 @@ public final class ImageModel extends AbstractWidgetModel {
      * The default value for the file extensions.
      */
     private static final String[] FILE_EXTENSIONS = new String[] {"jpg", "jpeg", "gif", "bmp", "png", "svg"};
-    
+
     /**
      * Degree value of the image.
      */
@@ -103,14 +103,14 @@ public final class ImageModel extends AbstractWidgetModel {
      * Vertical flip applied on the image.
      */
     public static final String PROP_FLIP_VERTICAL = "flip_vertical";
-    
+
     /**
      * Image disposition (permutation matrix)
      */
     public static final String PERMUTATION_MATRIX = "permutation_matrix";
-    
+
     private static final String[] allowedDegrees = new String[] { "0", "90", "180", "270" };
-    
+
     /**
      * {@inheritDoc}
      */
@@ -124,7 +124,7 @@ public final class ImageModel extends AbstractWidgetModel {
      */
     @Override
     protected void configureProperties() {
-        addProperty( new FilePathProperty(PROP_IMAGE_FILE,"Image File", 
+        addProperty( new FilePathProperty(PROP_IMAGE_FILE,"Image File",
                 WidgetPropertyCategory.Basic, new Path(""), FILE_EXTENSIONS));
         addProperty(new IntegerProperty(PROP_TOPCROP, "Crop Top",
                 WidgetPropertyCategory.Image,0));
@@ -153,7 +153,7 @@ public final class ImageModel extends AbstractWidgetModel {
                 PermutationMatrix.generateIdentityMatrix().getMatrix()));
         setPropertyVisibleAndSavable(PERMUTATION_MATRIX, false, true);
     }
-    
+
     /**
      * Returns the path to the specified file.
      * @return The path to the specified file
@@ -164,7 +164,7 @@ public final class ImageModel extends AbstractWidgetModel {
             absolutePath = ResourceUtil.buildAbsolutePath(this, absolutePath);
         return absolutePath;
     }
-    
+
     /**
      * Returns the amount of pixels, which should be cropped from the top edge of the image.
      * @return The amount of pixels
@@ -172,7 +172,7 @@ public final class ImageModel extends AbstractWidgetModel {
     public int getTopCrop() {
         return (Integer) getProperty(PROP_TOPCROP).getPropertyValue();
     }
-    
+
     /**
      * Returns the amount of pixels, which should be cropped from the bottom edge of the image.
      * @return The amount of pixels
@@ -180,7 +180,7 @@ public final class ImageModel extends AbstractWidgetModel {
     public int getBottomCrop() {
         return (Integer) getProperty(PROP_BOTTOMCROP).getPropertyValue();
     }
-    
+
     /**
      * Returns the amount of pixels, which should be cropped from the left edge of the image.
      * @return The amount of pixels
@@ -188,7 +188,7 @@ public final class ImageModel extends AbstractWidgetModel {
     public int getLeftCrop() {
         return (Integer) getProperty(PROP_LEFTCROP).getPropertyValue();
     }
-    
+
     /**
      * Returns the amount of pixels, which should be cropped from the right edge of the image.
      * @return The amount of pixels
@@ -196,7 +196,7 @@ public final class ImageModel extends AbstractWidgetModel {
     public int getRightCrop() {
         return (Integer) getProperty(PROP_RIGHTCROP).getPropertyValue();
     }
-    
+
     /**
      * Returns if the image should be stretched.
      * @return True is it should be stretched, false otherwise
@@ -204,14 +204,14 @@ public final class ImageModel extends AbstractWidgetModel {
     public boolean getStretch() {
         return (Boolean) getProperty(PROP_STRETCH).getPropertyValue();
     }
-    
+
     /**
      *  @return True if the widget should be auto sized according the image size.
      */
     public boolean isAutoSize() {
         return (Boolean) getProperty(PROP_AUTOSIZE).getPropertyValue();
     }
-    
+
     /**
      * @return True if the animation is stopped.
      */
@@ -231,11 +231,11 @@ public final class ImageModel extends AbstractWidgetModel {
         return new PermutationMatrix((double[][]) getProperty(
                 PERMUTATION_MATRIX).getPropertyValue());
     }
-    
+
     public int getDegree(int index) {
         return Integer.valueOf(allowedDegrees[index]);
     }
-    
+
     @Override
     public void rotate90(boolean clockwise) {
         int index = (Integer) getPropertyValue(ImageModel.PROP_DEGREE);

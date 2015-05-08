@@ -37,14 +37,14 @@ public class AutomatedAction extends Action
     final private Shell shell;
     final private AlarmTreeItem item;
     final private AADataStructure auto_action;
-    
+
 
     /** Initialize
      *  @param shell Shell to use for displayed dialog
      *  @param tree_position Origin of this command in alarm tree
      *  @param auto_action Automated action description
      */
-    public AutomatedAction(final Shell shell, 
+    public AutomatedAction(final Shell shell,
             final AlarmTreeItem tree_item,
             final AADataStructure auto_action)
     {
@@ -54,13 +54,13 @@ public class AutomatedAction extends Action
         setText(auto_action.getTeaser());
         setImageDescriptor(AlarmTreeActionIcon.createIcon("icons/command.gif", //$NON-NLS-1$
                 tree_item.getPosition()));
-        
+
         // automated actions are disabled in RAP version
         if (SingleSourcePlugin.getUIHelper().getUI().equals(UI.RAP)) {
             setEnabled(false);
         }
     }
-    
+
     /** {@inheritDoc} */
     @SuppressWarnings("nls")
     @Override
@@ -95,7 +95,7 @@ public class AutomatedAction extends Action
                             auto_action, "-", ex.getMessage() }));
         }
     }
-    
+
     private void findPVs(AlarmTreeItem item, List<PVSnapshot> snapshots) {
         if (item instanceof AlarmTreePV) {
             PVSnapshot snapshot = PVSnapshot.fromPVItem((AlarmTreePV) item);
@@ -105,9 +105,9 @@ public class AutomatedAction extends Action
                 findPVs(item.getChild(index), snapshots);
         }
     }
-    
+
     private String getInfos() {
         return item.getName() + ": " + auto_action.getTitle();
     }
-    
+
 }

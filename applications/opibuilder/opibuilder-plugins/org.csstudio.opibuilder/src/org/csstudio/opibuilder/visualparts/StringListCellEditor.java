@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 public class StringListCellEditor extends AbstractDialogCellEditor {
-    
+
     private List<String> data;
 
     public StringListCellEditor(Composite parent, String title) {
@@ -28,11 +28,11 @@ public class StringListCellEditor extends AbstractDialogCellEditor {
 
     @Override
     protected void openDialog(Shell parentShell, String dialogTitle) {
-            
-        StringListEditDialog dialog = 
+
+        StringListEditDialog dialog =
             new StringListEditDialog(parentShell, data, dialogTitle);
         if(dialog.open() == Window.OK){
-            data = dialog.getResult();            
+            data = dialog.getResult();
         }
     }
 
@@ -53,7 +53,7 @@ public class StringListCellEditor extends AbstractDialogCellEditor {
             data = new ArrayList<String>();
         else
             data = (List<String>)value;
-            
+
     }
 
 }

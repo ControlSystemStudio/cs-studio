@@ -13,9 +13,9 @@ import org.csstudio.autocomplete.AutoCompleteService;
  * Common interface for auto-completed fields content parsers. Used by
  * {@link AutoCompleteService} to parse field content and select providers. Each
  * parser is defined via OSGI services.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
- * 
+ *
  */
 public interface IContentParser {
 

@@ -15,7 +15,7 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * A command to reconnect a connection to a different start point or end point.
- * 
+ *
  * @author Xihui Chen
  */
 public class ConnectionReconnectCommand extends Command {
@@ -29,7 +29,7 @@ public class ConnectionReconnectCommand extends Command {
 
     /**
      * Instantiate a command that can create a connection between two widgets.
-     * 
+     *
      * @param source
      *            the source endpoint
      * @param terminal
@@ -51,7 +51,7 @@ public class ConnectionReconnectCommand extends Command {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.commands.Command#canExecute()
      */
     public boolean canExecute() {
@@ -62,7 +62,7 @@ public class ConnectionReconnectCommand extends Command {
         }
         return false;
     }
-    
+
     /**
      * Return true, if reconnecting the connection-instance to newSource is allowed.
      */
@@ -70,29 +70,29 @@ public class ConnectionReconnectCommand extends Command {
         // connection endpoints must be different widgets
         if (newSource.equals(oldTarget)) {
             return false;
-        }        
+        }
         return true;
     }
-    
+
     /**
-     * Return true, if reconnecting the connection-instance to newTarget is allowed. 
+     * Return true, if reconnecting the connection-instance to newTarget is allowed.
      */
     private boolean checkTargetReconnection() {
         // connection endpoints must be different widgets
         if (newTarget.equals(oldSource)) {
             return false;
-        }        
+        }
         return true;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.commands.Command#execute()
      */
     public void execute() {
         if(newSource != null && newSourceTerminal != null){
-            connection.connect(newSource, newSourceTerminal, 
+            connection.connect(newSource, newSourceTerminal,
                     oldTarget, oldTargetTerminal);
         }else if(newTarget != null && newTargetTerminal != null){
             connection.connect(oldSource, oldSourceTerminal, newTarget, newTargetTerminal);
@@ -100,20 +100,20 @@ public class ConnectionReconnectCommand extends Command {
             throw new IllegalStateException("Connection requirement is not met");
         }
     }
-    
+
     public void setNewSource(AbstractWidgetModel newSource) {
         if(newSource == null){
             throw new IllegalArgumentException();
         }
         this.newSource = newSource;
         newTarget = null;
-    }    
-    
+    }
+
     public void setNewSourceTerminal(String newSourceTerminal) {
         this.newSourceTerminal = newSourceTerminal;
         newTargetTerminal = null;
     }
-    
+
     public void setNewTarget(AbstractWidgetModel newTarget) {
         if(newTarget == null){
             throw new IllegalArgumentException();
@@ -121,7 +121,7 @@ public class ConnectionReconnectCommand extends Command {
         this.newTarget = newTarget;
         newSource = null;
     }
-    
+
     public void setNewTargetTerminal(String newTargetTerminal) {
         this.newTargetTerminal = newTargetTerminal;
         newSourceTerminal = null;

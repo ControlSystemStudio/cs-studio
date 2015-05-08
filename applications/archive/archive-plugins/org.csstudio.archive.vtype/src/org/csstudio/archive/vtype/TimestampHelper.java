@@ -26,7 +26,7 @@ public class TimestampHelper
 
     /** Time stamp format */
     final private static Format time_format = new TimestampFormat(TimestampHelper.FORMAT_FULL);
-    
+
     /** @param timestamp {@link Timestamp}, may be <code>null</code>
      *  @return Time stamp formatted as string
      */
@@ -39,7 +39,7 @@ public class TimestampHelper
             return time_format.format(timestamp);
         }
     }
-    
+
     /** @param timestamp EPICS Timestamp
      *  @return SQL Timestamp
      */
@@ -65,7 +65,7 @@ public class TimestampHelper
         final int nanoseconds = sql_time.getNanos();
         return Timestamp.of(seconds,  nanoseconds);
     }
-    
+
     /** @param millisecs Milliseconds since 1970 epoch
      *  @return EPICS Timestamp
      */
@@ -82,7 +82,7 @@ public class TimestampHelper
         }
         return Timestamp.of(seconds,  nanoseconds);
     }
-    
+
     /** @param calendar Calendar
      *  @return EPICS Timestamp
      */
@@ -112,7 +112,7 @@ public class TimestampHelper
     final public static long SECS_PER_HOUR = TimeUnit.HOURS.toSeconds(1);
     final public static long SECS_PER_MINUTE = TimeUnit.MINUTES.toSeconds(1);
     final public static long SECS_PER_DAY = TimeUnit.DAYS.toSeconds(1);
-    
+
     /** Round time to next multiple of given seconds
      *  @param time Original time stamp
      *  @param seconds Seconds to use for rounding
@@ -122,7 +122,7 @@ public class TimestampHelper
     {
         if (seconds <= 0)
             return time;
-        
+
         // Directly round seconds within an hour
         if (seconds <= SECS_PER_HOUR)
         {

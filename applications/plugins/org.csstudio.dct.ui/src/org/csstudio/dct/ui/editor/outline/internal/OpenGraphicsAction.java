@@ -12,16 +12,16 @@ import org.eclipse.gef.commands.Command;
 /**
  * Popup menu action for the outline view that opens a graphical representation
  * of a prototype.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class OpenGraphicsAction extends AbstractOutlineAction {
 
     public final void doRun(List<IElement> selection) {
         assert selection != null;
         assert selection.size() == 1;
-        //        
+        //
         // String secondaryId = "" + System.currentTimeMillis();
         // final IWorkbenchPage page = PlatformUI.getWorkbench()
         // .getActiveWorkbenchWindow().getActivePage();
@@ -40,7 +40,7 @@ public final class OpenGraphicsAction extends AbstractOutlineAction {
         // }
 
         GraphicalViewer viewer = GraphicalRepresentationUtil.openShell(50, 50, 809, 800, "DCT Graphical Representation");
-    
+
         if (selection.get(0) instanceof IPrototype) {
             viewer.setContents(GraphicalRepresentationUtil.createGraphicalModel(getProject(), (IPrototype) selection.get(0)));
         } else if (selection.get(0) instanceof IInstance) {

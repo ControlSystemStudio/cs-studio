@@ -196,7 +196,7 @@ abstract public class ArchiveChannel extends PVListenerAdapter
     {
         is_running = true;
         need_first_sample = true;
-        
+
         final PV pv = PVPool.getPV(name);
         pv.addListener(this);
         synchronized (this)
@@ -255,7 +255,7 @@ abstract public class ArchiveChannel extends PVListenerAdapter
             trouble_sample_log.log("'" + getName() + "': Received no time information for " + value);
        return value;
     }
-    
+
     /** Stop archiving this channel */
     final void stop()
     {

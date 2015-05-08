@@ -7,9 +7,9 @@ import de.desy.language.snl.parser.nodes.AssignStatementNode;
 
 /**
  * The specialized {@link IAdapterFactory} for {@link AssignStatementNode}s.
- * 
+ *
  * @author C1 WPS / KM, MZ
- * 
+ *
  */
 class AssignNodeAdapterFactory implements IAdapterFactory {
 

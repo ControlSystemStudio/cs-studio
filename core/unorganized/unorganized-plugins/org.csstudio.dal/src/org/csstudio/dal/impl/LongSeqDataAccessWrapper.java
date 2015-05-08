@@ -57,11 +57,11 @@ public class LongSeqDataAccessWrapper extends AbstractDataAccessWrapper<long[]>
         }
 
         double[] l= new double[value.length];
-        
+
         for (int i = 0; i < l.length; i++) {
             l[i]=(double)value[i];
         }
-        
+
         return l;
     }
 
@@ -71,12 +71,12 @@ public class LongSeqDataAccessWrapper extends AbstractDataAccessWrapper<long[]>
         if (value == null) {
             return null;
         }
-        
+
         if (value instanceof double[]) {
             double[] l= (double[])value;
-            
+
             long[] d= new long[l.length];
-            
+
             for (int i = 0; i < l.length; i++) {
                 d[i]=(long)l[i];
             }
@@ -85,7 +85,7 @@ public class LongSeqDataAccessWrapper extends AbstractDataAccessWrapper<long[]>
 
         return null;
     }
-    
+
     public int getSequenceLength() throws DataExchangeException {
         return ((SequenceAccess<?>)sourceDA).getSequenceLength();
     }

@@ -16,7 +16,7 @@ public class KnobTest extends AbstractRoundRampedWidgetTest{
     public Figure createTestWidget() {
         KnobFigure knob = new KnobFigure();
         knob.addManualValueChangeListener(new IManualValueChangeListener() {
-            
+
             public void manualValueChanged(double newValue) {
                 System.out.println("Knob Dragged: " + newValue);
             }
@@ -24,15 +24,15 @@ public class KnobTest extends AbstractRoundRampedWidgetTest{
         return knob;
     }
 
-    
-    
-    
+
+
+
     @Override
     public boolean isAutoTest() {
         return true;
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -41,7 +41,7 @@ public class KnobTest extends AbstractRoundRampedWidgetTest{
                 "thumbColor",
                 "increment"
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
 }

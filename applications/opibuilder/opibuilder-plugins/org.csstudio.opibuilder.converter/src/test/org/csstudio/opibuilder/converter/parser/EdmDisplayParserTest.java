@@ -15,14 +15,14 @@ import org.csstudio.opibuilder.converter.model.EdmException;
 
 public class EdmDisplayParserTest extends TestCase {
 
-    private String edlFile = "src/test/resources/EDMDisplayParser_example.edl"; 
+    private String edlFile = "src/test/resources/EDMDisplayParser_example.edl";
     private String braceFile = "src/test/resources/brace_example.edl";
     private String groupFile = "src/test/resources/group_example.edl";
     private String braceErrorFile = "src/test/resources/brace_error.edl";
     private String groupErrorFile = "src/test/resources/group_error.edl";
     private String error1 = "src/test/resources/EDM_error01.edl";
-    
-    public void testEdmDisplayParser() throws EdmException {    
+
+    public void testEdmDisplayParser() throws EdmException {
 
         EdmDisplayParser p = new EdmDisplayParser(edlFile);
 
@@ -254,7 +254,7 @@ public class EdmDisplayParserTest extends TestCase {
         assertEquals("1", subE.getAttribute("numDsps").getValue(0));
         assertEquals("0 sin_motorMore.edl", subE.getAttribute("displayFileName").getValue(0));
         assertEquals("0 DEVICE=$(DEVICE),MRN=$(MRN)", subE.getAttribute("symbols").getValue(0));
-                
+
         subE = p.getRoot().getSubEntity(1);
         assertEquals("menuMuxClass", subE.getType());
         assertEquals("4", subE.getAttribute("major").getValue(0));
@@ -290,12 +290,12 @@ public class EdmDisplayParserTest extends TestCase {
         assertEquals("6 MRN", subE.getAttribute("symbol0").getValue(6));
         assertEquals("7 MRN", subE.getAttribute("symbol0").getValue(7));
     }
-    
+
     public void testGroupNesting() throws EdmException {
         EdmDisplayParser p = new EdmDisplayParser(groupFile);
-        
+
         assertEquals("subentity_count", 2, p.getRoot().getSubEntityCount());
-        
+
         EdmEntity subE = p.getRoot().getSubEntity(0);
         EdmEntity subE2;
         EdmEntity subE3;
@@ -326,7 +326,7 @@ public class EdmDisplayParserTest extends TestCase {
             assertEquals("index 3", subE2.getAttribute("bgColor").getValue(0));
             assertEquals("Homed", subE2.getAttribute("value").getValue(0));
             assertNotNull(subE2.getAttribute("autoSize"));
-            
+
             subE2 = subE.getSubEntity(1);
             assertEquals("activeGroupClass", subE.getType());
             assertEquals("attribute_count", 7, subE.getAttributeCount());
@@ -353,7 +353,7 @@ public class EdmDisplayParserTest extends TestCase {
                 assertEquals("index 3", subE3.getAttribute("bgColor").getValue(0));
                 assertEquals("Homed", subE3.getAttribute("value").getValue(0));
                 assertNotNull(subE3.getAttribute("autoSize"));
-                
+
                 subE3 = subE2.getSubEntity(1);
                 assertEquals("activeGroupClass", subE3.getType());
                 assertEquals("attribute_count", 10, subE3.getAttributeCount());
@@ -383,7 +383,7 @@ public class EdmDisplayParserTest extends TestCase {
                     assertEquals("index 3", subE4.getAttribute("bgColor").getValue(0));
                     assertEquals("Homed", subE4.getAttribute("value").getValue(0));
                     assertNotNull(subE4.getAttribute("autoSize"));
-                    
+
                     subE4 = subE3.getSubEntity(1);
                     assertEquals("ByteClass2X", subE4.getType());
                     assertEquals("attribute_count", 13, subE4.getAttributeCount());
@@ -401,7 +401,7 @@ public class EdmDisplayParserTest extends TestCase {
                     assertEquals("2", subE4.getAttribute("lineWidth").getValue(0));
                     assertEquals("1", subE4.getAttribute("numBits").getValue(0));
                 }
-            
+
                 subE3 = subE2.getSubEntity(2);
                 assertEquals("activeGroupClass", subE3.getType());
                 assertEquals("attribute_count", 7, subE3.getAttributeCount());
@@ -444,9 +444,9 @@ public class EdmDisplayParserTest extends TestCase {
                     assertEquals("index 15", subE4.getAttribute("onColor").getValue(0));
                     assertEquals("index 8", subE4.getAttribute("offColor").getValue(0));
                     assertEquals("2", subE4.getAttribute("lineWidth").getValue(0));
-                    assertEquals("1", subE4.getAttribute("numBits").getValue(0));    
+                    assertEquals("1", subE4.getAttribute("numBits").getValue(0));
                 }
-                
+
                 subE3 = subE2.getSubEntity(3);
                 assertEquals("ByteClass1", subE3.getType());
                 assertEquals("attribute_count", 13, subE3.getAttributeCount());
@@ -464,7 +464,7 @@ public class EdmDisplayParserTest extends TestCase {
                 assertEquals("2", subE3.getAttribute("lineWidth").getValue(0));
                 assertEquals("1", subE3.getAttribute("numBits").getValue(0));
             }
-        
+
             subE2 = subE.getSubEntity(2);
             assertEquals("ByteClass0", subE2.getType());
             assertEquals("attribute_count", 13, subE2.getAttributeCount());
@@ -482,7 +482,7 @@ public class EdmDisplayParserTest extends TestCase {
             assertEquals("2", subE2.getAttribute("lineWidth").getValue(0));
             assertEquals("1", subE2.getAttribute("numBits").getValue(0));
         }
-            
+
         subE = p.getRoot().getSubEntity(1);
         assertEquals("activeGroupClass", subE.getType());
         assertEquals("attribute_count", 7, subE.getAttributeCount());
@@ -495,7 +495,7 @@ public class EdmDisplayParserTest extends TestCase {
         assertEquals("11", subE.getAttribute("h").getValue(0));
         {
             assertEquals(2, subE.getSubEntityCount());
-            
+
             subE2 = subE.getSubEntity(0);
             assertEquals("activeXTextClassX", subE2.getType());
             assertEquals("attribute_count", 12, subE2.getAttributeCount());
@@ -511,7 +511,7 @@ public class EdmDisplayParserTest extends TestCase {
             assertEquals("index 3", subE2.getAttribute("bgColor").getValue(0));
             assertEquals("Homed", subE2.getAttribute("value").getValue(0));
             assertNotNull(subE2.getAttribute("autoSize"));
-        
+
             subE2 = subE.getSubEntity(1);
             assertEquals("ByteClassX", subE2.getType());
             assertEquals("attribute_count", 13, subE2.getAttributeCount());
@@ -530,7 +530,7 @@ public class EdmDisplayParserTest extends TestCase {
             assertEquals("1", subE2.getAttribute("numBits").getValue(0));
         }
     }
-    
+
     public void testBraceError() {
         try {
             new EdmDisplayParser(braceErrorFile);
@@ -550,7 +550,7 @@ public class EdmDisplayParserTest extends TestCase {
         }
     }
 
-    public void testObjectRobustness() throws EdmException {    
+    public void testObjectRobustness() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "true");
         EdmDisplayParser p = new EdmDisplayParser(error1);

@@ -17,7 +17,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableElement;
 
-/**The editor input for OPI Runner. 
+/**The editor input for OPI Runner.
  * @author Xihui Chen
  *
  */
@@ -26,18 +26,18 @@ public class RunnerInput implements IRunnerInput{
     private DisplayOpenManager displayOpenManager;
     private MacrosInput macrosInput;
     private IPath path;
-    
-    public RunnerInput(IPath path, DisplayOpenManager displayOpenManager, 
+
+    public RunnerInput(IPath path, DisplayOpenManager displayOpenManager,
             MacrosInput macrosInput){
         this.path = path;
         this.setDisplayOpenManager(displayOpenManager);
         this.macrosInput = macrosInput;
     }
-    
+
     public RunnerInput(IPath path, DisplayOpenManager displayOpenManager){
         this(path, displayOpenManager, null);
     }
-    
+
 
     /* (non-Javadoc)
      * @see org.csstudio.opibuilder.runmode.IRunnerInput#setDisplayOpenManager(org.csstudio.opibuilder.runmode.DisplayOpenManager)
@@ -52,7 +52,7 @@ public class RunnerInput implements IRunnerInput{
     public DisplayOpenManager getDisplayOpenManager() {
         return displayOpenManager;
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -84,7 +84,7 @@ public class RunnerInput implements IRunnerInput{
             return false;
         return true;
     }
-    
+
 //    @Override
 //    public boolean equals(Object obj) {
 //        if (this == obj) {
@@ -100,8 +100,8 @@ public class RunnerInput implements IRunnerInput{
 //        }else if(macrosInput == null && other.getMacrosInput() == null)
 //            macroSame = true;
 //        return getPath().equals(other.getPath()) && macroSame;
-//    //        displayOpenManager == other.getDisplayOpenManager()  && 
-//            
+//    //        displayOpenManager == other.getDisplayOpenManager()  &&
+//
 //    }
 
 
@@ -111,11 +111,11 @@ public class RunnerInput implements IRunnerInput{
     public MacrosInput getMacrosInput() {
         return macrosInput;
     }
-    
+
     public void saveState(IMemento memento) {
         RunnerInputFactory.saveState(memento, this);
     }
-    
+
     public String getFactoryId() {
         return RunnerInputFactory.getFactoryId();
     }
@@ -150,7 +150,7 @@ public class RunnerInput implements IRunnerInput{
         return path.toString();
     }
 
-    
+
 
     public InputStream getInputStream() throws Exception {
         return ResourceUtil.pathToInputStream(getPath(), false);
@@ -159,10 +159,10 @@ public class RunnerInput implements IRunnerInput{
     public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
         return null;
     }
-    
+
     @Override
     public String toString() {
         return getPath().toString();
     }
-    
+
 }

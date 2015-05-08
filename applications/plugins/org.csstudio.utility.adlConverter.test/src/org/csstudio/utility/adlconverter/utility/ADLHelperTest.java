@@ -43,7 +43,7 @@ public class ADLHelperTest {
             "colors {"+"\r\n"+
             "010203,"+"\r\n"+
             "ececec,"+"\r\n"+
-            "dadada,"+"\r\n"+ 
+            "dadada,"+"\r\n"+
             "c8c8c8,"+"\r\n"+
             "99Ffc7,"+"\r\n"+
       "}",null,0);
@@ -67,7 +67,7 @@ public class ADLHelperTest {
         }catch (Exception e){
             fail("Dislike the font property settings");
         }
-        
+
         try{
             font = "gibt es nicht";
             text = "°!\"§$%&/()=?`´\\ß^+*~#',.-;:_@€<>|";
@@ -98,22 +98,22 @@ public class ADLHelperTest {
             maxHigh = 0;
             maxWidth = 0;
             style = "0";
-            
+
             Assert.assertTrue(ADLHelper.getFontSize(font, text, maxHigh, maxWidth, style)>0);
         }catch (Exception e){
             fail("Dislike the font property settings");
         }
 
     }
-    
+
     @Test
     public void testGetRGB(){
-        
+
     }
-    
+
     @Test
     public void testSetChan(){
-        
+
     }
 
     /**
@@ -138,21 +138,21 @@ public class ADLHelperTest {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //            fail("Dislike the Colorstring");
-//        }   
+//        }
     }
-    
+
     @Test
     public void testSetConnectionState(){
-        
+
     }
-    
+
     @Test
     public void testCheckAndSetLayer(){
-        
+
     }
-    
+
     @Test
     public void testCleanString(){
-        
+
     }
 }

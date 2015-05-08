@@ -18,7 +18,7 @@ import org.w3c.dom.Element;
 
 /**
  * XML conversion class for Edm_activeExitButtonClass
- * 
+ *
  * @author Xihui Chen
  */
 public class Opi_relatedDisplayClass extends OpiWidget {
@@ -51,7 +51,7 @@ public class Opi_relatedDisplayClass extends OpiWidget {
         }
         setName(name);
         setVersion(version);
-        
+
         for (int i = 0; i < r.getNumDsps(); i++) {
             // path
             Element pathNode = widgetContext.getDocument().createElement("path");
@@ -83,7 +83,7 @@ public class Opi_relatedDisplayClass extends OpiWidget {
                                 m.setTextContent(rs[1]);
                                 macrosNode.appendChild(m);
                             } catch (Exception e) {
-                                ErrorHandlerUtil.handleError("Parse Macros Error on: "+s + 
+                                ErrorHandlerUtil.handleError("Parse Macros Error on: "+s +
                                         "(Macro name cannot be number in BOY)", e);
                             }
                         }

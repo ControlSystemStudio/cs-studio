@@ -12,24 +12,24 @@ import javax.swing.JFileChooser;
  * @author  ilist
  */
 public class ComboBoxFileChooserDialog extends javax.swing.JDialog {
-        
+
     /** Creates new form ComboBoxFileChooser */
     public ComboBoxFileChooserDialog(java.awt.Frame parent, JFileChooser jfc) {
         super(parent, true);
         jFileChooser = jfc;
-        initComponents();    
+        initComponents();
         if(jfc.getDialogType() ==JFileChooser. OPEN_DIALOG)
             jButtonDefault.setText("Open");
-        else if (jfc.getDialogType() == JFileChooser.SAVE_DIALOG)         
+        else if (jfc.getDialogType() == JFileChooser.SAVE_DIALOG)
             jButtonDefault.setText("Save");
-        
-        
+
+
         //getRootPane().setDefaultButton(jButtonDefault);
         //getRootPane().setWindowDecorationStyle(JRootPane.FILE_CHOOSER_DIALOG);
-        //final File blankFile = new File(""); 
+        //final File blankFile = new File("");
         //jFileChooser.setSelectedFile(blankFile);
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -45,7 +45,7 @@ public class ComboBoxFileChooserDialog extends javax.swing.JDialog {
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
-   
+
         jFileChooser.setControlButtonsAreShown(false);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -103,7 +103,7 @@ public class ComboBoxFileChooserDialog extends javax.swing.JDialog {
         //jFileChooser.getActionMap().get("cancelSelection").actionPerformed(evt);
     }//GEN-LAST:event_jButtonCancelActionPerformed
 
-    private void jButtonDefaultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDefaultActionPerformed     
+    private void jButtonDefaultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDefaultActionPerformed
         if (jFileChooser.getActionMap().get("approveSelection")!=null) {
             jFileChooser.getActionMap().get("approveSelection").actionPerformed(evt);
         } else {
@@ -112,14 +112,14 @@ public class ComboBoxFileChooserDialog extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_jButtonDefaultActionPerformed
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonCancel;
     private javax.swing.JButton jButtonDefault;
     private javax.swing.JCheckBox jCheckBoxAbsoluteDBD;
     private javax.swing.JFileChooser jFileChooser;
     // End of variables declaration//GEN-END:variables
-    
+
     /**
      * @return
      */

@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.dal;
@@ -39,10 +39,10 @@ import org.csstudio.dal.spi.PropertyFactoryService;
 /**
  * This registry provides access to the DAL plugs that are registered using the
  * <code>plugs</code> extension point.
- * 
+ *
  * @author Alexander Will, Igor Kriznar
  * @version $Revision: 1.1 $
- * 
+ *
  */
 public final class PlugRegistry {
     /**
@@ -64,7 +64,7 @@ public final class PlugRegistry {
 
     /**
      * Return the shared instance of this class.
-     * 
+     *
      * @return The shared instance of this class.
      */
     public static PlugRegistry getInstance() {
@@ -78,7 +78,7 @@ public final class PlugRegistry {
     /**
      * Configure all registered DAL plugs and store the created settings in the
      * given properties object.
-     * 
+     *
      * @param p
      *            A properties object.
      */
@@ -110,26 +110,26 @@ public final class PlugRegistry {
                     .getPropertyFactoryClass());
         }
     }
-    
+
     public PropertyFactoryService getPropertyFactoryService(String plugId) {
-        
+
         PlugDescriptor pd=null;
-        
+
         if (plugId!=null) {
             pd= _plugs.get(plugId);
         }
-        
+
         if (pd!=null) {
             return pd.propertyFactoryService;
         }
-        
+
         return null;
-        
+
     }
 
     /**
      * Check whether the given plug name is known to this registry.
-     * 
+     *
      * @param plugName
      *            The plug name.
      * @return True, if the given plug name is known to this registry.
@@ -161,29 +161,29 @@ public final class PlugRegistry {
             } catch (CoreException e) {
                 e.printStackTrace();
             }
-            
+
             if (!(o instanceof PropertyFactoryService)) {
                 o=null;
             }
-            
+
             if (plugId != null) {
-                descriptors.put(plugId, 
+                descriptors.put(plugId,
                         new PlugDescriptor(
                                 plugId,
                                 propertyFactoryClass,
                                 (PropertyFactoryService)o));
             }
-            
+
         }
-        
+
         return descriptors;
     }
 
     /**
      * Descriptor for extensions of the <code>plug</code> extension points.
-     * 
+     *
      * @author Alexander Will, Igor Kriznar
-     * 
+     *
      */
     private class PlugDescriptor {
         /**
@@ -203,7 +203,7 @@ public final class PlugRegistry {
 
         /**
          * Standard constructor.
-         * 
+         *
          * @param plugId
          *            The ID of the extension.
          * @param propertyFactoryClass
@@ -218,7 +218,7 @@ public final class PlugRegistry {
 
         /**
          * Return the ID of the extension.
-         * 
+         *
          * @return The ID of the extension.
          */
         public String getPlugId() {
@@ -228,7 +228,7 @@ public final class PlugRegistry {
         /**
          * Return the full qualified name of the property factory class of the
          * plug.
-         * 
+         *
          * @return The full qualified name of the property factory class of the
          *         plug.
          */

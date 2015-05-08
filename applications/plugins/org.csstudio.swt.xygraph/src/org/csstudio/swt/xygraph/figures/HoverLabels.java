@@ -35,9 +35,9 @@ import org.eclipse.swt.graphics.Font;
 
 /**
  * The hover label layer in the plot area.
- * 
+ *
  * @author Davy Dequidt
- * 
+ *
  */
 public class HoverLabels extends Figure implements MouseMotionListener, MouseListener {
 
@@ -78,7 +78,7 @@ public class HoverLabels extends Figure implements MouseMotionListener, MouseLis
 
     /**
      * Describe a label
-     * 
+     *
      */
     private class HoverLabel implements Comparable<HoverLabel> {
 
@@ -371,7 +371,7 @@ public class HoverLabels extends Figure implements MouseMotionListener, MouseLis
 
     /**
      * Add a trace.
-     * 
+     *
      * @param trace
      *            the trace to be added.
      */
@@ -381,7 +381,7 @@ public class HoverLabels extends Figure implements MouseMotionListener, MouseLis
 
     /**
      * Remove a trace.
-     * 
+     *
      * @param trace
      * @return true if contains the specified trace
      */

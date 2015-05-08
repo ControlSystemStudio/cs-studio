@@ -21,12 +21,12 @@ import org.jdom.Element;
  *
  */
 public class MacrosProperty extends AbstractWidgetProperty {
-    
+
     /**
      * XML ELEMENT name <code>INCLUDE_PARENT_MACROS</code>.
      */
     public static final String XML_ELEMENT_INCLUDE_PARENT_MACROS = "include_parent_macros"; //$NON-NLS-1$
-    
+
     /**Macros Property Constructor. The property value type is {@link MacrosInput}.
      * @param prop_id the property id which should be unique in a widget model.
      * @param description the description of the property,
@@ -37,7 +37,7 @@ public class MacrosProperty extends AbstractWidgetProperty {
     public MacrosProperty(String prop_id, String description,
             WidgetPropertyCategory category, MacrosInput default_macros) {
         super(prop_id, description, category, default_macros);
-        
+
     }
 
     @Override
@@ -46,13 +46,13 @@ public class MacrosProperty extends AbstractWidgetProperty {
             return null;
         MacrosInput acceptableValue = null;
         if(value instanceof MacrosInput){
-            acceptableValue = (MacrosInput)value;            
+            acceptableValue = (MacrosInput)value;
         }
-        
+
         return acceptableValue;
     }
 
-    
+
     @Override
     public Object getPropertyValue() {
         if(executionMode == ExecutionMode.RUN_MODE && widgetModel !=null){
@@ -62,13 +62,13 @@ public class MacrosProperty extends AbstractWidgetProperty {
                     if(!newS.equals(value.getMacrosMap().get(key))){
                         value.getMacrosMap().put(key, newS);
                     }
-                }            
+                }
             return value;
         }else
             return super.getPropertyValue();
     }
-    
-    
+
+
     @Override
     protected PropertyDescriptor createPropertyDescriptor() {
         if(PropertySSHelper.getIMPL() == null)
@@ -86,9 +86,9 @@ public class MacrosProperty extends AbstractWidgetProperty {
                 b = Boolean.parseBoolean(se.getText());
             else
                 macros.put(se.getName(), se.getText());
-        }        
+        }
         return new MacrosInput(macros, b);
-        
+
     }
 
     @Override

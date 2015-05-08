@@ -36,7 +36,7 @@ import org.csstudio.utility.adlconverter.utility.widgetparts.ADLMenuItem;
 import org.eclipse.core.runtime.IPath;
 
 /**
- * 
+ *
  * @author hrickens
  * @author $Author$
  * @version $Revision$
@@ -45,15 +45,15 @@ import org.eclipse.core.runtime.IPath;
 public class GroupingContainer extends Widget {
 
     /**
-     * The Object that contain the ADLChildren. 
+     * The Object that contain the ADLChildren.
      */
     private ADLChildren _children;
 
     /**
      * @param groupingContainer ADLWidget that describe the groupingContainer.
-     * @param storedDynamicAttribute 
-     * @param storedBasicAttribute 
-     * @param targetPath 
+     * @param storedDynamicAttribute
+     * @param storedBasicAttribute
+     * @param targetPath
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
     public GroupingContainer(final ADLWidget groupingContainer, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute, IPath targetPath) throws WrongADLFormatException {
@@ -69,7 +69,7 @@ public class GroupingContainer extends Widget {
 
     /**
      * @param objects the Object to handle
-     * @param targetPath 
+     * @param targetPath
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
     private void handleObject(final ArrayList<ADLWidget> objects, IPath targetPath) throws WrongADLFormatException {
@@ -85,7 +85,7 @@ public class GroupingContainer extends Widget {
             }
         }
     }
-    
+
     /**
      * @param arrayList the body elements to handle
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
@@ -100,14 +100,14 @@ public class GroupingContainer extends Widget {
             if(row[0].equals("vis")){ //$NON-NLS-1$
                 //TODO: GroupingContainer-->vis
             }else if(row[0].equals("\"composite name\"")){ //$NON-NLS-1$
-                //TODO: GroupingContainer-->composite name 
+                //TODO: GroupingContainer-->composite name
             }else if(row[0].equals("chan")){ //$NON-NLS-1$
-                //TODO: GroupingContainer-->chan 
-            }else{                
+                //TODO: GroupingContainer-->chan
+            }else{
                 throw new WrongADLFormatException(Messages.GroupingContainer_WrongADLFormatException+row[0]); //$NON-NLS-1$
-            } 
+            }
         }
-        
+
     }
 
     /**

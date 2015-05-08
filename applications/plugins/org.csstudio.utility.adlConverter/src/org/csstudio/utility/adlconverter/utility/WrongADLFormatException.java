@@ -33,12 +33,12 @@ package org.csstudio.utility.adlconverter.utility;
 public class WrongADLFormatException extends Exception {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 5596172648041390624L;
-    
+
     /**
-     * 
+     *
      * @param errorString the Error String.
      */
     public WrongADLFormatException(final String errorString){

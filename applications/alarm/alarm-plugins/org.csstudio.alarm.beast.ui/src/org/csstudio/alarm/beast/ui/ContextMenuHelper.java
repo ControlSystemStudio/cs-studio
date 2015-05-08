@@ -111,7 +111,7 @@ public class ContextMenuHelper
             if (EMailSender.isEmailSupported())
                 manager.add(new SendEMailAction(shell, alarm_pvs));
         }
-        
+
         if (allow_write)
         {
             if (alarms.size() > 0)
@@ -211,7 +211,7 @@ public class ContextMenuHelper
              }
         }
     }
-    
+
     /** Recursively add automated actions
      *  @param manager Menu to which to add related display action
      *  @param shell Shell to use

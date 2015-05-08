@@ -13,46 +13,46 @@ import org.csstudio.dal.spi.PropertyFactoryBroker;
  *  Locates the one and only expected implementation of the IPVFactory
  *  via an extension to the pvfactory extension point
  *  and creates the PV through it.
- *  
+ *
  */
 public class ChannelFactoryImpl implements ChannelFactory
 {
-    
+
     public static void main(String[] args) {
-        
+
         try {
-        
+
             ChannelFactory cf= ChannelFactoryImpl.getInstance();
-            
+
             AnyDataChannel ch;
             ch = cf.createChannel("sfgfs");
             AnyData data= ch.getData();
 
             ch.addListener(new ChannelListener() {
-                
+
                 public void channelStateUpdate(AnyDataChannel channel) {
                     // TODO Auto-generated method stub
-                    
+
                 }
-                
+
                 public void channelDataUpdate(AnyDataChannel channel) {
                     // TODO Auto-generated method stub
-                    
+
                 }
             });
-            
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
-        
-        
+
+
+
     }
     private static ChannelFactory channelFactory;
 
     private final PropertyFactoryBroker propertyFactoryManager;
-    
+
     /**
      * Returns a default implementation of <code>ChannelFactory</code>.
      * @return default <code>ChannelFactory</code>
@@ -63,14 +63,14 @@ public class ChannelFactoryImpl implements ChannelFactory
         }
         return channelFactory;
     }
-    
+
     private ChannelFactoryImpl(PropertyFactoryBroker commonFactory) {
         this.propertyFactoryManager = commonFactory;
     }
 
     /** {@inheritDoc} */
     final public String[] getSupportedConnectionTypes() throws Exception
-    {    
+    {
         String[] s= propertyFactoryManager.getSupportedPlugTypes();
         String[] ss= new String[s.length];
         for (int i = 0; i < ss.length; i++) {
@@ -84,10 +84,10 @@ public class ChannelFactoryImpl implements ChannelFactory
     {
         return propertyFactoryManager.getProperty(name);
     }
-    
+
     /** {@inheritDoc} */
     final public AnyDataChannel createChannel(final RemoteInfo remoteInfo) throws Exception {
         return propertyFactoryManager.getProperty(remoteInfo);
     }
-    
+
 }

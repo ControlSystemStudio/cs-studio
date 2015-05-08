@@ -13,11 +13,11 @@ package org.csstudio.swt.xygraph.dataprovider;
  *
  */
 public interface IDataProviderListener {
-    
+
     /**
      * This method will be notified by data provider whenever the data changed in data provider
      */
     public void dataChanged(IDataProvider dataProvider);
-    
-        
+
+
 }

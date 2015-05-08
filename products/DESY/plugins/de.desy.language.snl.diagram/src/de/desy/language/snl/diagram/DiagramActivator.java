@@ -13,7 +13,7 @@ public class DiagramActivator extends Plugin {
 
     // The shared instance
     private static DiagramActivator plugin;
-    
+
     /**
      * The constructor
      */

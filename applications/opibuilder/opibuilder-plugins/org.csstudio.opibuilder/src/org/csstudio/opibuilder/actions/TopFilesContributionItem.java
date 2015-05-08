@@ -16,9 +16,9 @@ import org.eclipse.swt.widgets.Menu;
 
 /**
  * The contribution item that creates the <code>File/Top Files</code> submenu.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class TopFilesContributionItem extends ContributionItem {
 

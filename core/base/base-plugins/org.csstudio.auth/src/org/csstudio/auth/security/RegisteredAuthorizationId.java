@@ -31,7 +31,7 @@ import java.util.Collections;
  * only be used by authorized users. Instances of this class provide information
  * about authorization IDs that are registered via the {@code authorizationId}
  * extension point. Instances of this class are immutable.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class RegisteredAuthorizationId {
@@ -43,7 +43,7 @@ public final class RegisteredAuthorizationId {
 
     /**
      * Creates a new authorization ID information.
-     * 
+     *
      * @param id
      *            the authorization ID.
      * @param description
@@ -60,28 +60,28 @@ public final class RegisteredAuthorizationId {
         // Create a copy of the collection to keep this object immutable
         _usage = new ArrayList<AuthorizationIdUsage>(usage);
     }
-    
+
     /**
      * Returns the authorization ID described by this object.
-     * 
+     *
      * @return the authorization ID described by this object.
      */
     public String getId() {
         return _id;
     }
-    
+
     /**
      * Returns the description of the authorization ID.
-     * 
+     *
      * @return the description of the authorization ID.
      */
     public String getDescription() {
         return _description;
     }
-    
+
     /**
      * Returns the name of the contributor. This is usually the id of the plugin, where the authorization id has been registered.
-     * 
+     *
      * @return the name of the contributor
      */
     public String getContributor() {
@@ -91,7 +91,7 @@ public final class RegisteredAuthorizationId {
     /**
      * Returns an unmodifiable collection of descriptions of the places where
      * the authorization ID described by this object is used.
-     * 
+     *
      * @return an unmodifiable collection of descriptions of the places where
      *         the authorization ID is used.
      */

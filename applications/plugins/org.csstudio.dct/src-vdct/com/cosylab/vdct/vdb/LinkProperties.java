@@ -8,22 +8,22 @@ package com.cosylab.vdct.vdb;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -39,15 +39,15 @@ import com.cosylab.vdct.graphics.objects.LinkSource;
  * Creation date: (1.2.2001 22:24:28)
  * @author Matej Sekoranja
  */
- 
+
 public final class LinkProperties {
     private static final String tokenizerSettings    = " .\t";
-    
+
     private static final String nullString         = "";
     private static final String spaceString     = " ";
-    
+
     private static final String defaultVarName    = "VAL";        // defaults
-    private static final String defaultProcess    = "NPP";            
+    private static final String defaultProcess    = "NPP";
     private static final String defaultMaximize    = "NMS";
 
     public final static int NOT_VALID = -1;
@@ -64,7 +64,7 @@ public final class LinkProperties {
     private String maximize;
     private String record;
     private boolean isInterGroupLink;
-    
+
 /**
  * Insert the method's description here.
  * Creation date: (30.1.2001 9:53:33)
@@ -141,7 +141,7 @@ public static String getOptions(LinkSource fd) {
 
     String value = fd.getValue();
     if (value == null || value.length() == 0 || //value.equals(nullString) ||
-        // check all tokenizer separators 
+        // check all tokenizer separators
         value.charAt(0) == ' ' || value.charAt(0) == '.' || value.charAt(0) == '\t')
         return null;
 
@@ -149,16 +149,16 @@ public static String getOptions(LinkSource fd) {
 
     String process = defaultProcess;
     String maximize = defaultMaximize;
-    
-    if (tokenizer.hasMoreTokens()) tokenizer.nextToken();        // read record name 
-    if (value.indexOf(Constants.FIELD_SEPARATOR) > -1) 
+
+    if (tokenizer.hasMoreTokens()) tokenizer.nextToken();        // read record name
+    if (value.indexOf(Constants.FIELD_SEPARATOR) > -1)
         if (tokenizer.hasMoreTokens()) tokenizer.nextToken(); // read var variable
 
     if (tokenizer.hasMoreTokens()) process=tokenizer.nextToken(); // read var variable process
     if (tokenizer.hasMoreTokens()) maximize=tokenizer.nextToken(); // read var variable maxmimize
     else {
         // checks if process variable is actually maximize variable?!
-        if (process.equals("NMS") || 
+        if (process.equals("NMS") ||
             process.equals("MS")) {
             maximize=process;
             process=defaultProcess;
@@ -190,18 +190,18 @@ public java.lang.String getRecord() {
  * @param fd com.cosylab.vdct.vdb.VDBFieldData
  */
 public static String getTarget(LinkSource fd) {
-    
+
     String target = nullString;
     String value = fd.getValue();
 
     if (value == null || value.length() == 0 || //value.equals(nullString) ||
-        // check all tokenizer separators 
+        // check all tokenizer separators
         value.charAt(0) == ' ' || value.charAt(0) == '.' || value.charAt(0) == '\t')
         return null;
 
     StringTokenizer tokenizer = new StringTokenizer(value, tokenizerSettings);
 
-    if (tokenizer.hasMoreTokens()) target=tokenizer.nextToken();        // read record name 
+    if (tokenizer.hasMoreTokens()) target=tokenizer.nextToken();        // read record name
     if (value.indexOf(Constants.FIELD_SEPARATOR) > -1) {
         if (tokenizer.hasMoreTokens()) {
             String var = tokenizer.nextToken();                 // read var variable
@@ -218,9 +218,9 @@ public static String getTarget(LinkSource fd) {
  * @param value java.lang.String
  */
 public static String getTargetFromString(String value) {
-    
+
     if (value == null || value.length() == 0 || //value.equals(nullString) ||
-        // check all tokenizer separators 
+        // check all tokenizer separators
         value.charAt(0) == ' ' || value.charAt(0) == '.' || value.charAt(0) == '\t')
         return null;
 
@@ -229,7 +229,7 @@ public static String getTargetFromString(String value) {
 
     StringTokenizer tokenizer = new StringTokenizer(value, tokenizerSettings);
 
-    if (tokenizer.hasMoreTokens()) target=tokenizer.nextToken();        // read record name 
+    if (tokenizer.hasMoreTokens()) target=tokenizer.nextToken();        // read record name
     if (value.indexOf(Constants.FIELD_SEPARATOR) > -1) {
         if (tokenizer.hasMoreTokens()) {
             String var = tokenizer.nextToken();                 // read var variable
@@ -241,9 +241,9 @@ public static String getTargetFromString(String value) {
 }
 
 public static String getRecordFromString(String value) {
-    
+
     if (value == null || value.length() == 0 || //value.equals(nullString) ||
-        // check all tokenizer separators 
+        // check all tokenizer separators
         value.charAt(0) == ' ' || value.charAt(0) == '.' || value.charAt(0) == '\t')
         return null;
 
@@ -252,8 +252,8 @@ public static String getRecordFromString(String value) {
 
     StringTokenizer tokenizer = new StringTokenizer(value, tokenizerSettings);
 
-    if (tokenizer.hasMoreTokens()) record=tokenizer.nextToken();        // read record name 
-    
+    if (tokenizer.hasMoreTokens()) record=tokenizer.nextToken();        // read record name
+
     return record;
 }
 /**
@@ -342,19 +342,19 @@ private void setProperties(LinkSource fd) {
     String value = fd.getValue();
 
     if (value == null || value.length() == 0 || //value.equals(nullString) ||
-        // check all tokenizer separators 
+        // check all tokenizer separators
         value.charAt(0) == ' ' || value.charAt(0) == '.' || value.charAt(0) == '\t')
     {
         setType(NOT_VALID);
         setRecord(null);
         return;
     }
-    
+
     setType(getType(fd));
 
     StringTokenizer tokenizer = new StringTokenizer(value, tokenizerSettings);
 
-    if (tokenizer.hasMoreTokens()) setRecord(tokenizer.nextToken());    // read record name 
+    if (tokenizer.hasMoreTokens()) setRecord(tokenizer.nextToken());    // read record name
     if (value.indexOf(Constants.FIELD_SEPARATOR) > -1) {
         if (tokenizer.hasMoreTokens()) {
             setVarName(tokenizer.nextToken()); // read var variable
@@ -365,7 +365,7 @@ private void setProperties(LinkSource fd) {
     if (tokenizer.hasMoreTokens()) setMaximize(tokenizer.nextToken()); // read var variable maxmimize
     else {
         // checks if process variable is actually maximize variable?!
-        if (getProcess().equals("NMS") || 
+        if (getProcess().equals("NMS") ||
             getProcess().equals("MS")) {
             setMaximize(getProcess());
             setProcess(defaultProcess);
@@ -384,7 +384,7 @@ private void setProperties(LinkSource fd) {
         setIsInterGroupLink(false);
     else
         setIsInterGroupLink(true);
-    
+
 }
 /**
  * Insert the method's description here.

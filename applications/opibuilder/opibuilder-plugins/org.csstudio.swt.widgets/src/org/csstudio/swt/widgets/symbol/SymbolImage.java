@@ -18,7 +18,7 @@ import org.eclipse.swt.graphics.ImageData;
 
 /**
  * Main interface for Symbol Image display.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
  */
 public interface SymbolImage {
@@ -56,7 +56,7 @@ public interface SymbolImage {
 
     /**
      * The main drawing routine.
-     * 
+     *
      * @param gfx The {@link Graphics} to use
      */
     public void paintFigure(final Graphics gfx);
@@ -73,21 +73,21 @@ public interface SymbolImage {
     /**
      * Automatically adjust the widget bounds to fit the size of the static
      * image
-     * 
+     *
      * @param autoSize
      */
     public void setAutoSize(final boolean autoSize);
 
     /**
      * Set the stretch state for the image.
-     * 
+     *
      * @param newval true, if it should be stretched, false otherwise)
      */
     public void setStretch(final boolean newval);
 
     /**
      * Get the auto sized widget dimension according to the static image size.
-     * 
+     *
      * @return The auto sized widget dimension.
      */
     public Dimension getAutoSizedDimension();

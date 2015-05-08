@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class LogViewConfigurationDialog extends Dialog {
 
@@ -48,13 +48,13 @@ public class LogViewConfigurationDialog extends Dialog {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public int getRowSize(){
     return rowSize;
     }
-    
+
     /**
      * @return the order
      */
@@ -66,7 +66,7 @@ public class LogViewConfigurationDialog extends Dialog {
     private boolean expandable;
     private int order;
     private int rowSize;
-    
+
     // GUI
     private Text text;
     private Label lblRowSize;
@@ -89,11 +89,11 @@ public class LogViewConfigurationDialog extends Dialog {
     getShell().setText("Configuration Options");
     Composite container = (Composite) super.createDialogArea(parent);
     container.setLayout(new GridLayout(2, false));
-    
+
     errorBar = new ErrorBar(container, SWT.NONE);
     errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
     errorBar.setMarginBottom(5);
-    
+
     btnConfirm = new Button(container, SWT.CHECK);
     btnConfirm.setText("Expanded");
     btnConfirm.setSelection(expandable);
@@ -109,13 +109,13 @@ public class LogViewConfigurationDialog extends Dialog {
             lblRowSize.setEnabled(!expandable);
         }
     });
-    
+
     lblRowSize = new Label(container, SWT.NONE);
     lblRowSize.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
     lblRowSize.setText("Row Size:");
-    lblRowSize.setEnabled(!expandable);    
-    
-    text = new Text(container, SWT.BORDER);    
+    lblRowSize.setEnabled(!expandable);
+
+    text = new Text(container, SWT.BORDER);
     text.addKeyListener(new KeyAdapter() {
         @Override
         public void keyReleased(KeyEvent e) {
@@ -130,10 +130,10 @@ public class LogViewConfigurationDialog extends Dialog {
     text.setText(String.valueOf(rowSize));
     text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
     text.setEnabled(!expandable);
-    
+
     // if the order is set to < 0 do not show the configuration option for log Entry order
     // this option should be used by viewer which do not support history
-    
+
     if (order > 0) {
         label = new Label(container, SWT.NONE);
         label.setText("Edited logEntry order:");
@@ -160,7 +160,7 @@ public class LogViewConfigurationDialog extends Dialog {
         }
         });
     }
-    
+
     return container;
 
     }

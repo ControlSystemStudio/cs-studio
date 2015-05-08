@@ -139,7 +139,7 @@ public class FindPanel extends JPanel
         add(pathPanel = new FindTitle(), BorderLayout.NORTH);
         add(searchTabs = new FindTabs(), BorderLayout.CENTER);
         add(controlPanel = new FindControls(actionStart, actionStop, true), BorderLayout.SOUTH);
-        
+
     }
 
     /**
@@ -246,7 +246,7 @@ public class FindPanel extends JPanel
      * @exception InterruptedException
      *                if thread is interrupted
      */
-    // TODO only recursive record search implemented 
+    // TODO only recursive record search implemented
     protected void runFind(Group base, FindFilter[] filters)
             throws InterruptedException
     {
@@ -259,26 +259,26 @@ public class FindPanel extends JPanel
             if (obj instanceof Record)
             {
                 total++;
-                
+
                 if (accept(obj, filters))
                 {
                     matches++;
                     searchTabs.addMatch(obj);
                 }
-            
+
                 updateProgress();
                 if (killFind)
                     return;
                 Thread.yield();
             }
-            
-            
+
+
             // recursive
             if (obj instanceof Group) runFind((Group)obj, filters);
 
             if ((maxMatches > 0) && (matches >= maxMatches))
                 return; // stopgap measure so that we don't overload
-            
+
         }
     }
 
@@ -295,7 +295,7 @@ public class FindPanel extends JPanel
     {
         if (candidate == null || filters == null)
             return false;
-        
+
         for (int i = 0; i < filters.length; i++)
         {
             if (!filters[i].accept(candidate, this))
@@ -500,7 +500,7 @@ public class FindPanel extends JPanel
         protected String NAME = "Name";
 
         protected String TYPE = "Type";
-        
+
         protected String TAB_CRITERIA = "Criteria";
         protected String TAB_RESULTS = "Results";
 
@@ -525,7 +525,7 @@ public class FindPanel extends JPanel
 //
 //            // Add search-by-type panel
 //            addTab(TYPE, new FindByType(FindPanel.this));
-            
+
             //all criteria on one tab
             addTab(TAB_CRITERIA, getCriteriaPanel());
 //             TODO add panels here...
@@ -542,25 +542,25 @@ public class FindPanel extends JPanel
 
         private JPanel getCriteriaPanel() {
             criteriaPanel = new JPanel(new GridBagLayout());
-            
+
             criteriaPanel.add(new JLabel(NAME),new GridBagConstraints(0,0,1,1,1,0.2,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0,0,0,0), 1,1));
-            
+
             FindByName namePanel = new FindByName(FindPanel.this);
             components.add(namePanel);
-            criteriaPanel.add(namePanel, 
-                    new GridBagConstraints(0,1,1,1,1,1, GridBagConstraints.CENTER, 
+            criteriaPanel.add(namePanel,
+                    new GridBagConstraints(0,1,1,1,1,1, GridBagConstraints.CENTER,
                             GridBagConstraints.BOTH, new Insets(0,0,0,0), 1,1));
-                        
+
             criteriaPanel.add(new JLabel(TYPE),new GridBagConstraints(0,2,1,1,1,0.2,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0,0,0,0), 1,1));
-            
+
             FindByType typePanel = new FindByType(FindPanel.this);
             components.add(typePanel);
-            criteriaPanel.add(typePanel, 
-                    new GridBagConstraints(0,3,1,1,1,1, GridBagConstraints.CENTER, 
+            criteriaPanel.add(typePanel,
+                    new GridBagConstraints(0,3,1,1,1,1, GridBagConstraints.CENTER,
                             GridBagConstraints.BOTH, new Insets(0,0,0,0), 1,1));
-            
+
             return criteriaPanel;
         }
         /**
@@ -583,7 +583,7 @@ public class FindPanel extends JPanel
             if (resultsScroller != null)
                 setSelectedComponent(resultsScroller);
         }
-        
+
         private FindFilterFactory getFilterAt(int index) {
             return (FindFilterFactory) components.get(index);
         }
@@ -646,7 +646,7 @@ public class FindPanel extends JPanel
         protected JList fileList = null;
 
         /**
-         * Construct a search results pane with a scrollable list of files. 
+         * Construct a search results pane with a scrollable list of files.
          */
         FindResults() {
             super();
@@ -673,7 +673,7 @@ public class FindPanel extends JPanel
                         }
                     });
             menu.add(item);
-            
+
             // mouse listener
             MouseListener mouseListener = new MouseAdapter() {
                 public void mouseClicked(MouseEvent e)
@@ -822,7 +822,7 @@ class FindByName extends JPanel implements FindFilterFactory {
         nameField = new JTextField(12);
         nameField.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-               parent.start();                
+               parent.start();
             }
         });
         //nameField.setFont(new Font("Helvetica", Font.PLAIN, 10));
@@ -972,7 +972,7 @@ class FindByType extends JPanel implements FindFilterFactory {
     protected JCheckBox ignoreCaseCheck = null;
 
     private FindPanel parent;
-    
+
     FindByType(FindPanel pan) {
         super();
         this.parent = pan;
@@ -991,13 +991,13 @@ class FindByType extends JPanel implements FindFilterFactory {
         nameField = new JTextField(12);
         nameField.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-               parent.start();                
+               parent.start();
             }
         });
-        
+
         //nameField.setFont(new Font("Helvetica", Font.PLAIN, 10));
         p.add(nameField);
-        
+
         // ignore case
         p.add(new JLabel("", SwingConstants.RIGHT));
 
@@ -1005,7 +1005,7 @@ class FindByType extends JPanel implements FindFilterFactory {
         ignoreCaseCheck.setForeground(Color.black);
         //ignoreCaseCheck.setFont(new Font("Helvetica", Font.PLAIN, 10));
         p.add(ignoreCaseCheck);
-        
+
         add(p, BorderLayout.NORTH);
     }
 
@@ -1014,8 +1014,8 @@ class FindByType extends JPanel implements FindFilterFactory {
         return new TypeFilter(nameField.getText(), combo.getSelectedIndex(),
                 ignoreCaseCheck.isSelected());
     }
-    
-    
+
+
 
     /**
      * Filter object for selecting files by name.

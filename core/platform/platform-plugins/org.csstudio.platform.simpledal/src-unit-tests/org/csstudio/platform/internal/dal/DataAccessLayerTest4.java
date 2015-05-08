@@ -18,12 +18,12 @@ import org.csstudio.dal.simple.SimpleDALBroker;
 
 /**
  * Test class for a connection problem with initially unavailable channels.
- * 
+ *
  * To reproduce the problem, start the test WITHOUT a running SOFT-IOC and start
  * the SOFT-IOC, when the test is running. Take a look at the console then!!
- * 
+ *
  * @author swende
- * 
+ *
  */
 public final class DataAccessLayerTest4 extends TestCase {
     private static final ConnectionParameters TYPED_PARAMETERS = new ConnectionParameters(

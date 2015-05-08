@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.ui.internal.properties.view;
@@ -67,10 +67,10 @@ import org.eclipse.swt.widgets.TableItem;
  * A wizard, which enables users to configure dynamic settings for a property.
  * This includes the binding of channels and/or macro scripts (e.g. color rules)
  * to properties.
- * 
+ *
  * @author Sven Wende, Stefan Hofer, Kai Meyer
  * @version $Revision: 1.55 $
- * 
+ *
  */
 public final class DynamicAspectsWizard extends Wizard {
 
@@ -99,11 +99,11 @@ public final class DynamicAspectsWizard extends Wizard {
     private StatePage _statePage;
 
     private Object _initValue;
-    
+
     /**
      * Constructs a dynamic aspects wizard for the specified property sheet
      * entry.
-     * 
+     *
      * @param entry
      *            the property sheet entry
      * @param dynamicsDescriptor
@@ -136,7 +136,7 @@ public final class DynamicAspectsWizard extends Wizard {
 
     /**
      * Returns the prepared {@link DynamicsDescriptor}.
-     * 
+     *
      * @return the {@link DynamicsDescriptor}
      */
     public DynamicsDescriptor getDynamicsDescriptor() {
@@ -158,7 +158,7 @@ public final class DynamicAspectsWizard extends Wizard {
 
     /**
      * The page for configuring the states.
-     * 
+     *
      * @author Kai Meyer
      */
     private final class StatePage extends WizardPage {
@@ -187,7 +187,7 @@ public final class DynamicAspectsWizard extends Wizard {
 
         /**
          * Constructor.
-         * 
+         *
          * @param pageName
          *            the name of the page
          */
@@ -203,7 +203,7 @@ public final class DynamicAspectsWizard extends Wizard {
 
         /**
          * Creates a new cell editor listener.
-         * 
+         *
          * @param composite
          *            The StateComposite where the CellEditorListener is
          *            registered
@@ -276,7 +276,7 @@ public final class DynamicAspectsWizard extends Wizard {
 
         /**
          * A Composite, which contains a Table to configure states.
-         * 
+         *
          * @author Kai Meyer
          */
         @SuppressWarnings("unchecked")
@@ -305,10 +305,10 @@ public final class DynamicAspectsWizard extends Wizard {
              * All possible states.
              */
             private final Enum[] _allStates;
-            
+
             /**
              * Constructor.
-             * 
+             *
              * @param parent
              *            The parent of this Composite
              * @param style
@@ -339,7 +339,7 @@ public final class DynamicAspectsWizard extends Wizard {
 
             /**
              * Creates the TableViewer for connection states.
-             * 
+             *
              * @param parent
              *            The parent Composite for the table
              * @return The TableViewer for the connection states
@@ -351,7 +351,7 @@ public final class DynamicAspectsWizard extends Wizard {
                 group.setLayoutData(LayoutUtil.createGridDataForFillingCell());
 
                 // define column names
-                String[] columnNames = new String[] { "FIRST", "PROP_NAME", "PROP_TYPE" }; //$NON-NLS-1$ //$NON-NLS-2$ 
+                String[] columnNames = new String[] { "FIRST", "PROP_NAME", "PROP_TYPE" }; //$NON-NLS-1$ //$NON-NLS-2$
 
                 // create table
                 final Table table = new Table(group, SWT.FULL_SELECTION | SWT.SCROLL_PAGE);
@@ -445,14 +445,14 @@ public final class DynamicAspectsWizard extends Wizard {
 
             /**
              * returns the Map od states.
-             * 
+             *
              * @return HashMap The Map od states
              */
             protected abstract Map<ETYPE, Object> getStateMap();
 
             /**
              * Returns all possible states.
-             * 
+             *
              * @return All possible States
              */
             public Enum[] getAllStates() {
@@ -461,7 +461,7 @@ public final class DynamicAspectsWizard extends Wizard {
 
             /**
              * Generates a Enum[], which entries are not in the Table yet.
-             * 
+             *
              * @param states
              *            Possible Enums
              * @return A Enum[], which entries are not in the Table yet
@@ -479,7 +479,7 @@ public final class DynamicAspectsWizard extends Wizard {
 
             /**
              * Returns an error message or null.
-             * 
+             *
              * @return The error Message or null
              */
             public String getErrorMessage() {
@@ -489,7 +489,7 @@ public final class DynamicAspectsWizard extends Wizard {
             /**
              * Adds the given ICellEditorListener to the CellEditor of the
              * table.
-             * 
+             *
              * @param listener
              *            The ICellEditorListener for the table
              */
@@ -510,13 +510,13 @@ public final class DynamicAspectsWizard extends Wizard {
 
             /**
              * An action, which adds a state to the configuration.
-             * 
+             *
              * @author Kai Meyer
              */
             protected final class AddStateAction extends Action {
                 /**
                  * Constructor.
-                 * 
+                 *
                  * @param stateName
                  *            The Name of the states
                  */
@@ -535,13 +535,13 @@ public final class DynamicAspectsWizard extends Wizard {
 
             /**
              * An action, which removes a state to the configuration.
-             * 
+             *
              * @author Kai Meyer
              */
             protected final class RemoveStateAction extends Action {
                 /**
                  * Constructor.
-                 * 
+                 *
                  * @param stateName
                  *            The Name of the states
                  */
@@ -561,7 +561,7 @@ public final class DynamicAspectsWizard extends Wizard {
             /**
              * A Dialog, which allows to choose the state, which should be
              * created.
-             * 
+             *
              * @author Kai Meyer
              */
             private final class StateDialog extends TitleAreaDialog {
@@ -585,7 +585,7 @@ public final class DynamicAspectsWizard extends Wizard {
 
                 /**
                  * Constructor.
-                 * 
+                 *
                  * @param parentShell
                  *            The parent Shell for this Dialog
                  * @param message
@@ -631,7 +631,7 @@ public final class DynamicAspectsWizard extends Wizard {
 
                 /**
                  * Creates a Radiobutton for every State.
-                 * 
+                 *
                  * @param parent
                  *            The parent composite for the Buttons
                  */
@@ -646,7 +646,7 @@ public final class DynamicAspectsWizard extends Wizard {
 
                 /**
                  * Gets the selected state.
-                 * 
+                 *
                  * @return String The selected state
                  */
                 public Enum[] getSelectedStates() {
@@ -670,7 +670,7 @@ public final class DynamicAspectsWizard extends Wizard {
 
             /**
              * The CellModifier for States.
-             * 
+             *
              * @author Kai Meyer
              */
             private final class StateCellModifier implements ICellModifier {
@@ -711,9 +711,9 @@ public final class DynamicAspectsWizard extends Wizard {
 
             /**
              * A TableLabelProvider for states.
-             * 
+             *
              * @author Kai Meyer
-             * 
+             *
              */
             private final class StateTableLabelProvider extends LabelProvider implements ITableLabelProvider {
                 /**

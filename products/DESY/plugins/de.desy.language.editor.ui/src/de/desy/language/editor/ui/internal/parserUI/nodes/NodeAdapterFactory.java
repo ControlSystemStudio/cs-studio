@@ -12,7 +12,7 @@ public class NodeAdapterFactory implements IAdapterFactory {
         assert adaptableObject != null;
         assert adapterType != null;
         assert adaptableObject instanceof RootNode : "adaptableObject instanceof RootNode"; //$NON-NLS-1$
-        
+
         final RootNode adaptedNode = (RootNode) adaptableObject;
         return new WorkbenchAdapter() {
             @Override

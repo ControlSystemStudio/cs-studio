@@ -33,7 +33,7 @@ public class CreateShiftView extends ViewPart {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
      */
     @Override

@@ -66,15 +66,15 @@ public class RunModeService {
         return runWorkbenchWindow;
     }
 //
-//    
-//    
+//
+//
 //
 //    public void replaceActiveEditorContent(IRunnerInput input) throws PartInitException{
 //        IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().
 //            getActivePage().getActiveEditor();
 //        activeEditor.init(activeEditor.getEditorSite(),input);
 //    }
-    
+
     public static void replaceOPIRuntimeContent(
             final IOPIRuntime opiRuntime, final IEditorInput input) throws PartInitException{
         opiRuntime.setOPIInput(input);
@@ -164,7 +164,7 @@ public class RunModeService {
                         if(shell.getMinimized())
                             shell.setMinimized(false);
                         targetWindow.getShell().forceActive();
-                        targetWindow.getShell().forceFocus();    
+                        targetWindow.getShell().forceFocus();
                         targetWindow.getActivePage().openEditor(
                                 runnerInput, OPIRunner.ID); //$NON-NLS-1$
                         if(!SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
@@ -180,12 +180,12 @@ public class RunModeService {
     }
 
 
-    public static void runOPIInView(final IPath path, 
+    public static void runOPIInView(final IPath path,
             final DisplayOpenManager displayOpenManager, final MacrosInput macrosInput, final Position position){
         OPIView.setOpenedByUser(true);
         final RunnerInput runnerInput = new RunnerInput(path, displayOpenManager, macrosInput);
         UIBundlingThread.getInstance().addRunnable(new Runnable() {
-            
+
             public void run() {
                 final IWorkbench workbench = PlatformUI.getWorkbench();
                 final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
@@ -202,7 +202,7 @@ public class RunModeService {
                                 if (runnerInput.equals(opi_view.getOPIInput()))
                                 {
                                     page.showView(OPIView.ID, viewReference.getSecondaryId(), IWorkbenchPage.VIEW_ACTIVATE);
-                                    return;                                
+                                    return;
                                 }
                             }
                             else
@@ -212,14 +212,14 @@ public class RunModeService {
                             }
                         }
                     }
-                    
-                    // Open a new view                    
+
+                    // Open a new view
                     if(position != Position.DETACHED && position != Position.DEFAULT_VIEW &&
                             !(page.getPerspective().getId().equals(OPIRunnerPerspective.ID))){
                         if(!OPIBuilderPlugin.isRAP()) {
                             if(PreferencesHelper.isShowOpiRuntimePerspectiveDialog()) {
-                                TipDialog dialog = new TipDialog(window.getShell(), MessageDialog.QUESTION, 
-                                        "Switch to OPI Runtime Perspective", 
+                                TipDialog dialog = new TipDialog(window.getShell(), MessageDialog.QUESTION,
+                                        "Switch to OPI Runtime Perspective",
                                         "To open the OPI View in expected position, you need to switch to OPI Runtime perspective."+
                                         "\nDo you want to switch to it now?");
                                 PreferencesHelper.setSwitchToOpiRuntimePerspective(dialog.open() == Window.OK);
@@ -238,7 +238,7 @@ public class RunModeService {
                     // TODO Opening in selected location does not work this way
                     //      See https://bugs.eclipse.org/bugs/show_bug.cgi?id=408891, https://github.com/ControlSystemStudio/cs-studio/issues/142
                     final String secondID =  OPIView.createSecondaryID() + position.name();
-                    final IViewPart view = page.showView(OPIView.ID, secondID, IWorkbenchPage.VIEW_ACTIVATE);                    
+                    final IViewPart view = page.showView(OPIView.ID, secondID, IWorkbenchPage.VIEW_ACTIVATE);
                     if (! (view instanceof OPIView))
                         throw new PartInitException("Expected OPIView, got " + view);
                     final OPIView opiView = (OPIView)view;
@@ -253,8 +253,8 @@ public class RunModeService {
             }
         });
     }
-    
-    
+
+
     /**
      * @param windowBounds
      */

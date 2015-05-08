@@ -22,19 +22,19 @@ import org.jdom.Element;
 
 /**
  * A property that can hold data with multiple properties.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class ComplexDataProperty extends AbstractWidgetProperty {
 
     public static final String XML_ATTRIBUTE_TYPE = "type"; //$NON-NLS-1$
-    
+
     private String dialogTitle;
 
     /**
      * Widget Property Constructor
-     * 
+     *
      * @param prop_id
      *            the property id which should be unique in a widget model.
      * @param description
@@ -44,7 +44,7 @@ public class ComplexDataProperty extends AbstractWidgetProperty {
      *            the category of the widget.
      * @param defaultData
      *            default value. It cannot be null.
-     * @param dialogTitle 
+     * @param dialogTitle
      *               title of the dialog for editing the complex data.
      */
     public ComplexDataProperty(String prop_id, String description,

@@ -102,12 +102,12 @@ public class Device extends DeviceInfo
     }
 
     /** Read a value from the device.
-     * 
+     *
      *  <p>In contrast to <code>read()</code>, this
      *  will actively perform a read request to assert
      *  that we have the current value, not the last
      *  value that was received over the network.
-     *  
+     *
      *  @param timeout Timeout for awaiting the callback, <code>null</code> to wait "forever"
      *  @return Current value of the device
      *  @throws Exception on error: Cannot read, ...
@@ -116,7 +116,7 @@ public class Device extends DeviceInfo
     {
         throw new Exception("Device '" + getName() + "' does not support active reading");
     }
-    
+
     /** Write a value to the device
      *  @param value Value to write (Double, String)
      *  @throws Exception on error: Cannot write, ...

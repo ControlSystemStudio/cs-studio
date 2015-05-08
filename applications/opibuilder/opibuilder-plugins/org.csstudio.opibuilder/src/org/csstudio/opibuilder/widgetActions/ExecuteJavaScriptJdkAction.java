@@ -59,16 +59,16 @@ class ExecuteJavaScriptJdkAction extends AbstractExecuteScriptAction {
                     scriptScope.put(ScriptService.DISPLAY, viewer.getContents());
                     scriptScope.put(ScriptService.WIDGET, obj);
                 }
-            }            
+            }
         }
         Job job = new Job("Execute JavaScript") {
 
             @Override
             protected IStatus run(IProgressMonitor monitor) {
-                String taskName = isEmbedded()?"Execute JavaScript" : 
+                String taskName = isEmbedded()?"Execute JavaScript" :
                     "Connecting to " + getAbsolutePath();
                 monitor.beginTask(taskName,
-                        IProgressMonitor.UNKNOWN);                
+                        IProgressMonitor.UNKNOWN);
                 runTask();
                 monitor.done();
                 return Status.OK_STATUS;
@@ -83,9 +83,9 @@ class ExecuteJavaScriptJdkAction extends AbstractExecuteScriptAction {
 
         try {
             if(script == null){
-                //read file                
-                if(!isEmbedded()) 
-                    getReader();                
+                //read file
+                if(!isEmbedded())
+                    getReader();
 
                 //compile
                 UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
@@ -94,15 +94,15 @@ class ExecuteJavaScriptJdkAction extends AbstractExecuteScriptAction {
                         try {
                             if(isEmbedded())
                                 script = ((Compilable) scriptEngine).compile(getScriptText());
-                            else{                                
+                            else{
                                 script = ((Compilable) scriptEngine).compile(getReader());
                             }
                         } catch (Exception e) {
                             final String message = "Failed to compile JavaScript: " + getAbsolutePath();
                             OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
                             ConsoleService.getInstance().writeError(message + "\n" + e.getMessage()); //$NON-NLS-1$
-                        } 
-                        closeReader();    
+                        }
+                        closeReader();
                     }
                 });
 

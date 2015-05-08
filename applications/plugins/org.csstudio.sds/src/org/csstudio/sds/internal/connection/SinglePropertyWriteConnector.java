@@ -30,7 +30,7 @@ public class SinglePropertyWriteConnector implements IPropertyChangeListener {
 
     public void propertyManualValueChanged(String propertyId, Object manualValue) {
         // FIXME: 24.03.2010: swende: Was machen wir mit dem ValueType? Einbeziehen oder entfernen weil unwichtig?
-        
+
         String cs = RemoteInfo.DAL_TYPE_PREFIX + pv.getControlSystem().getResponsibleDalPlugId();
         String property = pv.getProperty();
         RemoteInfo rinfo = new RemoteInfo(cs, property, null, null);

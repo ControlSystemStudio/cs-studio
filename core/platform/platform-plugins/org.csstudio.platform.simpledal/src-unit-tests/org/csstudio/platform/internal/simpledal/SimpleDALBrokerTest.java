@@ -14,18 +14,18 @@ import org.csstudio.dal.simple.ConnectionParameters;
 import org.csstudio.dal.simple.RemoteInfo;
 
 public class SimpleDALBrokerTest extends TestCase {
-    
+
     private DalPlugin dalPlugin;
-    
+
     @Override
     protected void setUp() throws Exception {
         dalPlugin = new DalPlugin();
     }
-    
+
     public void testBasic() {
         RemoteInfo ri = new RemoteInfo(RemoteInfo.DAL_TYPE_PREFIX+"EPICS", "PV_AI_01", null, null);
         ConnectionParameters cp = new ConnectionParameters(ri, Double.class);
-        
+
         double result = Double.NaN;
         try {
             result = (Double) dalPlugin.getSimpleDALBroker().getValue(ri);
@@ -34,15 +34,15 @@ public class SimpleDALBrokerTest extends TestCase {
             fail();
         }
         System.out.println("Result is = "+result);
-        
+
         assertTrue(true);
     }
-    
+
     public void testDoubleChannel() {
         RemoteInfo ri = new RemoteInfo(RemoteInfo.DAL_TYPE_PREFIX+"EPICS", "PV_AI_01", null, null);
         ConnectionParameters cp = new ConnectionParameters(ri, Double.class);
         double addValue = 5.0;
-        
+
         double initialValue = Double.NaN;
         try {
             initialValue = (Double) dalPlugin.getSimpleDALBroker().getValue(cp);
@@ -50,31 +50,31 @@ public class SimpleDALBrokerTest extends TestCase {
             fail();
         }
         assertTrue(initialValue != Double.NaN);
-        
+
         try {
             dalPlugin.getSimpleDALBroker().setValue(ri, new Double(initialValue+addValue));
         } catch (Exception e) {
             fail();
         }
-        
+
         double newValue = Double.NaN;
         try {
             newValue = (Double) dalPlugin.getSimpleDALBroker().getValue(ri);
         } catch (Exception e) {
             fail();
         }
-        
+
         assertEquals(initialValue+addValue, newValue);
-        
+
         newValue = Double.NaN;
         try {
             newValue = (Double) dalPlugin.getSimpleDALBroker().getValue(ri, Double.class);
         } catch (Exception e) {
             fail();
         }
-        
+
         assertEquals(initialValue+addValue, newValue);
-        
+
         Request<Double> request = null;
         try {
             request = dalPlugin.getSimpleDALBroker().setValueAsync(cp, new Double(initialValue+2*addValue), new ResponseListener<Double>() {
@@ -86,17 +86,17 @@ public class SimpleDALBrokerTest extends TestCase {
                 public void responseReceived(ResponseEvent<Double> event) {
                     System.out.println(">>> testDoubleProperty/setValueAsync/responseReceived");
                 }
-                
+
             });
         } catch (Exception e) {
             fail();
         }
-        
+
         while(!request.isCompleted()) {
             System.out.println(">>> WAITING...");
             Thread.yield();
         }
-        
+
         request = null;
         newValue = Double.NaN;
         try {
@@ -109,28 +109,28 @@ public class SimpleDALBrokerTest extends TestCase {
                 public void responseReceived(ResponseEvent<Double> event) {
                     System.out.println(">>> testDoubleProperty/getValueAsync/responseReceived");
                 }
-                
+
             });
         } catch (Exception e) {
             fail();
         }
-        
+
         while(!request.isCompleted()) {
             System.out.println(">>> WAITING...");
             Thread.yield();
         }
-        
+
         newValue = request.getLastResponse().getValue();
-        
+
         assertEquals(initialValue+2*addValue, newValue);
     }
-    
+
     @SuppressWarnings("unchecked")
     public void testChannelListener() {
         RemoteInfo ri = new RemoteInfo(RemoteInfo.DAL_TYPE_PREFIX+"Simulator", "DoubleProperty", null, null);
         ConnectionParameters cp = new ConnectionParameters(ri, Double.class);
         double addValue = 5.0;
-        
+
         try {
             dalPlugin.getSimpleDALBroker().registerListener(cp, new ChannelListener() {
 
@@ -141,13 +141,13 @@ public class SimpleDALBrokerTest extends TestCase {
                 public void channelStateUpdate(AnyDataChannel channel) {
                     System.out.println(">>> testChannelListener/ChannelListener/channelStateUpdate");
                 }
-                
+
             });
         } catch (Exception e) {
             e.printStackTrace();
             fail();
         }
-        
+
         try {
             dalPlugin.getSimpleDALBroker().registerListener(cp, new DynamicValueListener() {
 
@@ -157,7 +157,7 @@ public class SimpleDALBrokerTest extends TestCase {
 
                 public void errorResponse(DynamicValueEvent event) {
                     System.out.println(">>> testChannelListener/DynamicValueListener/errorResponse");
-                    
+
                 }
 
                 public void timelagStarts(DynamicValueEvent event) {
@@ -183,12 +183,12 @@ public class SimpleDALBrokerTest extends TestCase {
                 public void valueUpdated(DynamicValueEvent event) {
                     System.out.println(">>> testChannelListener/DynamicValueListener/valueUpdated");
                 }
-                
+
             });
         } catch (Exception e1) {
             fail();
         }
-        
+
         double initialValue = Double.NaN;
         try {
             initialValue = (Double) dalPlugin.getSimpleDALBroker().getValue(cp);
@@ -196,29 +196,29 @@ public class SimpleDALBrokerTest extends TestCase {
             fail();
         }
         assertTrue(initialValue != Double.NaN);
-        
+
         System.out.println(">>>>>> SYNC SET");
         try {
             dalPlugin.getSimpleDALBroker().setValue(ri, new Double(initialValue+addValue));
         } catch (Exception e) {
             fail();
         }
-        
+
         double newValue = Double.NaN;
         try {
             newValue = (Double) dalPlugin.getSimpleDALBroker().getValue(ri);
         } catch (Exception e) {
             fail();
         }
-        
+
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e1) {
             e1.printStackTrace();
         }
-        
+
         assertEquals(initialValue+addValue, newValue);
-        
+
         System.out.println(">>>>>> ASYNC SET");
         Request<Double> request = null;
         try {
@@ -231,23 +231,23 @@ public class SimpleDALBrokerTest extends TestCase {
                 public void responseReceived(ResponseEvent<Double> event) {
                     System.out.println(">>> testChannelListener/setValueAsync/responseReceived");
                 }
-                
+
             });
         } catch (Exception e) {
             fail();
         }
-        
+
         while(!request.isCompleted()) {
             System.out.println(">>> WAITING...");
             Thread.yield();
         }
-        
+
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e1) {
             e1.printStackTrace();
         }
-        
+
         System.out.println(">>>>>> ASYNC GET");
         request = null;
         newValue = Double.NaN;
@@ -261,19 +261,19 @@ public class SimpleDALBrokerTest extends TestCase {
                 public void responseReceived(ResponseEvent<Double> event) {
                     System.out.println(">>> testChannelListener/getValueAsync/responseReceived");
                 }
-                
+
             });
         } catch (Exception e) {
             fail();
         }
-        
+
         while(!request.isCompleted()) {
             System.out.println(">>> WAITING...");
             Thread.yield();
         }
-        
+
         newValue = request.getLastResponse().getValue();
-        
+
         assertEquals(initialValue+2*addValue, newValue);
     }
 

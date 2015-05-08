@@ -9,7 +9,7 @@ package org.csstudio.archive.engine;
 
 /** Messages. Not really externalized, but at least some of them
  *  are centralized.
- * 
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")

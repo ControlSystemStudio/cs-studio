@@ -10,7 +10,7 @@ import org.eclipse.draw2d.geometry.Point;
  * Abstract prototype of a shape. Has a size (width and height), a location (x
  * and y position) and a list of incoming and outgoing connections. Use
  * subclasses to instantiate a specific shape.
- * 
+ *
  * @see de.desy.language.snl.diagram.model.RectangularShape
  * @see de.desy.language.snl.diagram.model.StateModel
  */
@@ -30,7 +30,7 @@ public abstract class SNLModel extends SNLElement {
     public static final String SOURCE_CONNECTIONS_PROP = "Shape.SourceConn";
     /** Property ID to use when the list of incoming connections is modified. */
     public static final String TARGET_CONNECTIONS_PROP = "Shape.TargetConn";
-    
+
     /**
      * ID for the Width property value (used for by the corresponding property
      * descriptor).
@@ -59,7 +59,7 @@ public abstract class SNLModel extends SNLElement {
 
     /**
      * Add an incoming or outgoing connection to this shape.
-     * 
+     *
      * @param conn
      *            a non-null connection instance
      * @throws IllegalArgumentException
@@ -82,7 +82,7 @@ public abstract class SNLModel extends SNLElement {
 
     /**
      * Return the Location of this shape.
-     * 
+     *
      * @return a non-null location instance
      */
     public Point getLocation() {
@@ -95,7 +95,7 @@ public abstract class SNLModel extends SNLElement {
      * The property view uses the IDs from the IPropertyDescriptors array to
      * obtain the value of the corresponding properties.
      * </p>
-     * 
+     *
      * @see #descriptors
      * @see #getPropertyDescriptors()
      */
@@ -117,7 +117,7 @@ public abstract class SNLModel extends SNLElement {
 
     /**
      * Return the Size of this shape.
-     * 
+     *
      * @return a non-null Dimension instance
      */
     public Dimension getSize() {
@@ -140,7 +140,7 @@ public abstract class SNLModel extends SNLElement {
 
     /**
      * Remove an incoming or outgoing connection from this shape.
-     * 
+     *
      * @param conn
      *            a non-null connection instance
      * @throws IllegalArgumentException
@@ -161,7 +161,7 @@ public abstract class SNLModel extends SNLElement {
 
     /**
      * Set the Location of this shape.
-     * 
+     *
      * @param newLocation
      *            a non-null Point instance
      * @throws IllegalArgumentException
@@ -182,7 +182,7 @@ public abstract class SNLModel extends SNLElement {
      * The property view uses the IDs from the IPropertyDescriptors array to set
      * the values of the corresponding properties.
      * </p>
-     * 
+     *
      * @see #descriptors
      * @see #getPropertyDescriptors()
      */
@@ -206,7 +206,7 @@ public abstract class SNLModel extends SNLElement {
 
     /**
      * Set the Size of this shape. Will not modify the size if newSize is null.
-     * 
+     *
      * @param newSize
      *            a non-null Dimension instance or null
      */
@@ -216,5 +216,5 @@ public abstract class SNLModel extends SNLElement {
             firePropertyChange(SIZE_PROP, null, size);
         }
     }
-    
+
 }

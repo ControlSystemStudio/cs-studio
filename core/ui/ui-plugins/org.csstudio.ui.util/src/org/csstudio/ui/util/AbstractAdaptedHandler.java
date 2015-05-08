@@ -18,21 +18,21 @@ import org.eclipse.ui.handlers.HandlerUtil;
 /**
  * Abstract class for all commands that use AdapterUtil for conversion
  * and displays the exception in a suitable dialog.
- * 
+ *
  * @author carcassi
  *
  */
 public abstract class AbstractAdaptedHandler<T> extends AbstractHandler {
 
     private final Class<T> clazz;
-    
+
     public AbstractAdaptedHandler(Class<T> dataType) {
         this.clazz = dataType;
     }
-    
+
     /**
      * Searches for the view of the given class with the given view id.
-     * 
+     *
      * @param clazz the view class
      * @param viewId the view id
      * @return the view
@@ -45,7 +45,7 @@ public abstract class AbstractAdaptedHandler<T> extends AbstractHandler {
         IWorkbenchPage page = window.getActivePage();
         return clazz.cast(page.showView(viewId));
     }
-    
+
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
         ISelection selection = HandlerUtil.getActiveMenuSelection(event);
@@ -60,12 +60,12 @@ public abstract class AbstractAdaptedHandler<T> extends AbstractHandler {
 
     /**
      * Implements the command. The selection is already converted to the target class.
-     * 
+     *
      * @param data data in the selection
      * @param event event of the command
      */
     protected abstract void execute(List<T> data, ExecutionEvent event)
     throws Exception;
-    
+
 
 }

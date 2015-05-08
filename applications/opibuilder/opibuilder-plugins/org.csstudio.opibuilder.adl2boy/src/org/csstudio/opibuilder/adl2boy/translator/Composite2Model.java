@@ -17,7 +17,7 @@ import org.eclipse.swt.graphics.RGB;
 public class Composite2Model extends AbstractADL2Model {
 //    AbstractContainerModel containerModel;
     AbstractContainerModel parentModel;
-    
+
     public Composite2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
         super(adlWidget, colorMap, parentModel);
     }
@@ -53,7 +53,7 @@ public class Composite2Model extends AbstractADL2Model {
             String[] compositeFile = compositeWidget.get_compositeFile().replaceAll("\"", "").split(";");
             if (compositeFile.length > 0){
                 widgetModel.setPropertyValue(LinkingContainerModel.PROP_OPI_FILE, compositeFile[0].replace(".adl", ".opi"));
-                
+
                 if (compositeFile[1].length() > 0){
                     widgetModel.setPropertyValue(AbstractContainerModel.PROP_MACROS, makeMacros(compositeFile[1]));
                 }
@@ -72,7 +72,7 @@ public class Composite2Model extends AbstractADL2Model {
     private void FixChildPositions() {
         int compositeX = widgetModel.getX();
         int compositeY = widgetModel.getY();
-        
+
         for (AbstractWidgetModel model : ((AbstractContainerModel)widgetModel).getChildren()){
             model.setX(model.getX() - compositeX);
             model.setY(model.getY() - compositeY);

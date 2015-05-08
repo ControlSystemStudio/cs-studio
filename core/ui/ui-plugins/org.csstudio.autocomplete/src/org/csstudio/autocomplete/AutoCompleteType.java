@@ -12,7 +12,7 @@ import org.csstudio.autocomplete.parser.IContentParser;
 /**
  * Common types for auto-completed fields, used by {@link IContentParser} to
  * determine if the field has to be parsed.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class AutoCompleteType {

@@ -4,7 +4,7 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.csstudio.utility.channel.actions.messages"; //$NON-NLS-1$
-        
+
     public static String channelEditDialogTitle;
     public static String channelEditDialogMessage;
     public static String treeDialogTitle;

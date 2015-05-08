@@ -22,7 +22,7 @@ import org.csstudio.autocomplete.tooltips.TooltipData;
 /**
  * Simulation Data Source content provider.
  * Provides all available functions & theirs tooltips.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class SimContentProvider implements IAutoCompleteProvider {
@@ -62,7 +62,7 @@ public class SimContentProvider implements IAutoCompleteProvider {
             } catch (Exception e) {
                 return result; // empty result
             }
-            
+
             Proposal topProposal = null;
             DSFunction closestMatchingFunction = null;
             int offset = SimContentParser.SIM_SOURCE.length();
@@ -101,7 +101,7 @@ public class SimContentProvider implements IAutoCompleteProvider {
                 result.addTopProposal(topProposal);
         }
         result.setCount(count);
-        
+
         // handle tooltip
         if (!functionDesc.isComplete()) {
             for (DSFunction function : set.findFunctions(functionName)) {

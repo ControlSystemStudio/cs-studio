@@ -31,5 +31,5 @@ public class JDBCSampleService extends JDBCService {
             e.printStackTrace();
         }
     }
-    
+
 }

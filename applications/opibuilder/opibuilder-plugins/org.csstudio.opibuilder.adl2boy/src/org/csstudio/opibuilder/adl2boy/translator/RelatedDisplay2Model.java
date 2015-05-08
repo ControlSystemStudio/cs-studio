@@ -20,9 +20,9 @@ import org.eclipse.swt.graphics.RGB;
 
 /**
  * Convert MEDMs related display to BOYs MenuButton
- * 
+ *
  * @author John Hammonds, Argonne National Laboratory
- * 
+ *
  */
 public class RelatedDisplay2Model extends AbstractADL2Model {
     // MenuButtonModel menuModel = new MenuButtonModel();
@@ -40,7 +40,7 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
         widgetModel = new MenuButtonModel();
         parentModel.addChild(widgetModel, true);
     }
-    
+
     /**
      * @param adlWidget
      */

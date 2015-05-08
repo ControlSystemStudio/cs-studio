@@ -50,7 +50,7 @@ public class Application implements IApplication
         // Display configuration info
         final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
         final String app_info = context.getBrandingName() + " " + version;
-        
+
         // Create parser for arguments and run it.
         final String args[] =
             (String []) context.getArguments().get("application.args");
@@ -77,7 +77,7 @@ public class Application implements IApplication
             System.out.println(app_info + "\n\n" + parser.getHelp());
             return IApplication.EXIT_OK;
         }
-        if (version_opt.get()) 
+        if (version_opt.get())
         {
             System.out.println(app_info);
             return IApplication.EXIT_OK;
@@ -101,7 +101,7 @@ public class Application implements IApplication
             SecurePreferences.set(pref, value);
             return IApplication.EXIT_OK;
         }
-        
+
         // Initialize logging
         LogConfigurator.configureFromPreferences();
 
@@ -122,7 +122,7 @@ public class Application implements IApplication
         {
             // Create alarm server
             final AlarmServer alarm_server = new AlarmServer(work_queue, config_name.get());
-            
+
             // Enable console commands
             ConsoleCommands commands = new ConsoleCommands(alarm_server);
             final BundleContext bundle_context = context.getBrandingBundle().getBundleContext();

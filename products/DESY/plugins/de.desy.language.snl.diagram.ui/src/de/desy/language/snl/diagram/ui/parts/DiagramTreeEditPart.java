@@ -20,14 +20,14 @@ import de.desy.language.snl.diagram.model.SNLDiagram;
  * This edit part must implement the PropertyChangeListener interface, so it can
  * be notified of property changes in the corresponding model element.
  * </p>
- * 
+ *
  */
 class DiagramTreeEditPart extends AbstractTreeEditPart implements
         PropertyChangeListener {
 
     /**
      * Create a new instance of this edit part using the given model element.
-     * 
+     *
      * @param model
      *            a non-null ShapesDiagram instance
      */
@@ -49,7 +49,7 @@ class DiagramTreeEditPart extends AbstractTreeEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.gef.examples.shapes.parts.ShapeTreeEditPart#createEditPolicies
      * ()
@@ -83,7 +83,7 @@ class DiagramTreeEditPart extends AbstractTreeEditPart implements
     /**
      * Convenience method that returns the EditPart corresponding to a given
      * child.
-     * 
+     *
      * @param child
      *            a model element instance
      * @return the corresponding EditPart or null
@@ -94,7 +94,7 @@ class DiagramTreeEditPart extends AbstractTreeEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
      */
     @Override
@@ -104,7 +104,7 @@ class DiagramTreeEditPart extends AbstractTreeEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @seejava.beans.PropertyChangeListener#propertyChange(java.beans.
      * PropertyChangeEvent)
      */

@@ -50,7 +50,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  *
  * Example:
  * {@code}static final Preference<Integer> TIME = new Preference<Integer>("Time", 3600);
- * 
+ *
  * Supported explicit types:<br/>
  * <li> java.util.String </li>
  * <li> java.util.Integer </li>
@@ -144,8 +144,8 @@ public abstract class AbstractPreference<T> {
             }
         });
     }
-    
-    
+
+
     private final String _keyAsString;
     private final T _defaultValue;
     private final Class<T> _type;
@@ -171,8 +171,8 @@ public abstract class AbstractPreference<T> {
         return _keyAsString;
     }
 
-    
-    
+
+
     /**
      * @return the correctly typed value
      */

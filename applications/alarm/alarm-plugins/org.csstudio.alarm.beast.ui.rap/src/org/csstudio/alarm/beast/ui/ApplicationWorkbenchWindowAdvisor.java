@@ -41,7 +41,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         try {
             // Forec reload to handle new alarm tree
             AlarmClientModel.getInstance().readConfig(null);
-            
+
             // Force reload default tree root
             treeRoot = Preferences.getAlarmTreeRoot();
             AlarmClientModel.getInstance().setConfigurationName(treeRoot, null);

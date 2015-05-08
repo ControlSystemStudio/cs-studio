@@ -44,9 +44,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * This class represents a Dialog to choose a file in the workspace. 
+ * This class represents a Dialog to choose a file in the workspace.
  * There is an option to return relative path.
- * 
+ *
  * @author Kai Meyer, Joerg Rathlev, Xihui Chen
  */
 public final class RelativePathSelectionDialog extends Dialog implements Listener {
@@ -54,26 +54,26 @@ public final class RelativePathSelectionDialog extends Dialog implements Listene
      * The message to display, or <code>null</code> if none.
      */
     private String _message;
-    
+
     /**
      * The {@link WorkspaceTreeComposite} for this dialog.
      */
     private ResourceSelectionGroup _resourceSelectionGroup;
-    
+
     /**
      * The file extensions of files that will be shown for selection.
      */
     private String[] _fileExtensions;
-    
+
     /**
      * The path of the selected resource.
      */
     private IPath _path;
-    
+
     private IPath refPath;
-    
+
     private Text _resourcePathText;
-    
+
     private boolean relative;
 
     /**
@@ -82,11 +82,11 @@ public final class RelativePathSelectionDialog extends Dialog implements Listene
      * <p>
      * Note that the <code>open</code> method blocks for input dialogs.
      * </p>
-     * 
+     *
      * @param parentShell
      *            the parent shell, or <code>null</code> to create a top-level
      *            shell
-     * @param refPath 
+     * @param refPath
      *               the reference path which doesn't include the file name.
      * @param dialogMessage
      *            the dialog message, or <code>null</code> if none
@@ -105,16 +105,16 @@ public final class RelativePathSelectionDialog extends Dialog implements Listene
         relative = true;
         _fileExtensions = fileExtensions;
     }
-    
+
     /**
      * Sets the initially selected resource. Must be called before the dialog is
      * displayed.
-     * 
+     *
      * @param path
      *            the path to the initially selected resource.
      */
     public void setSelectedResource(final IPath path) {
-        _path = path;        
+        _path = path;
         relative = !path.isAbsolute();
     }
 
@@ -144,18 +144,18 @@ public final class RelativePathSelectionDialog extends Dialog implements Listene
             data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
             label.setLayoutData(data);
         }
-        
+
         // The New Project and New Folder actions will be shown if there are
         // no file extensions, i.e. if the dialog is opened to select a folder.
-        boolean showNewContainerActions = (_fileExtensions == null 
+        boolean showNewContainerActions = (_fileExtensions == null
                 || _fileExtensions.length == 0);
-        
+
         _resourceSelectionGroup = new ResourceSelectionGroup(composite, this,
                 _fileExtensions, showNewContainerActions);
         new Label(composite, SWT.NONE).setText("Resource Path:");
         _resourcePathText = new Text(composite, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
         _resourcePathText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-        if (_path != null && !_path.isEmpty()) {            
+        if (_path != null && !_path.isEmpty()) {
                 _resourcePathText.setText(_path.toString());
             if(!(_path instanceof URLPath)){
                 if(relative)
@@ -180,7 +180,7 @@ public final class RelativePathSelectionDialog extends Dialog implements Listene
                     _resourcePathText.setText(_path.toString());
             }
         });
-        
+
         return composite;
     }
 
@@ -198,7 +198,7 @@ public final class RelativePathSelectionDialog extends Dialog implements Listene
 
     /**
      * Returns the path to the selected resource.
-     * 
+     *
      * @return the path to the selected resource, or <code>null</code> if no
      *         resource was selected.
      */

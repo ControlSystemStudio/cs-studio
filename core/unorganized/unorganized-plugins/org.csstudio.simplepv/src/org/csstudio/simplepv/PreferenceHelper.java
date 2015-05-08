@@ -15,10 +15,10 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  *
  */
 public class PreferenceHelper {
-    
+
     final public static String DEFAULT_PVFACTORY="default_pvfactory"; //$NON-NLS-1$
-    
-    
+
+
      /** @param preferenceName Preference identifier
      *  @return String from preference system, or <code>null</code>
      */
@@ -27,7 +27,7 @@ public class PreferenceHelper {
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getString(SimplePVPlugin.PLUGIN_ID, preferenceName, null, null);
     }
-    
+
     public static String getDefaultPVFactoryID(){
         return getString(DEFAULT_PVFACTORY);
     }

@@ -19,19 +19,19 @@ import org.eclipse.jface.action.IAction;
  */
 public class ReloadOPIAction extends AbstractWidgetTargetAction {
 
-    
+
 
     public void run(IAction action) {
-        AbstractWidgetProperty property = 
+        AbstractWidgetProperty property =
             getSelectedContianerWidget().getWidgetModel().getProperty(
                     LinkingContainerModel.PROP_OPI_FILE);
         property.setPropertyValue(property.getPropertyValue(), true);
     }
 
-    
+
     /**
      * Gets the widget models of all currently selected EditParts.
-     * 
+     *
      * @return a list with all widget models that are currently selected
      */
     protected final LinkingContainerEditpart getSelectedContianerWidget() {

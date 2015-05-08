@@ -24,14 +24,14 @@ package org.csstudio.remote.management;
 
 /**
  * Receiver for the results returned by management commands.
- * 
+ *
  * @author Joerg Rathlev
  */
 public interface IResultReceiver {
 
     /**
      * Processes the specified result.
-     * 
+     *
      * @param result
      *            a result returned by a management command.
      */

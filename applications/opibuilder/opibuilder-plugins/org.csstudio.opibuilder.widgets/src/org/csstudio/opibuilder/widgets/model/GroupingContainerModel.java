@@ -22,28 +22,28 @@ public class GroupingContainerModel extends AbstractContainerModel {
     /**
      * The ID of this widget model.
      */
-    public static final String ID = "org.csstudio.opibuilder.widgets.groupingContainer"; //$NON-NLS-1$    
-    
+    public static final String ID = "org.csstudio.opibuilder.widgets.groupingContainer"; //$NON-NLS-1$
+
     /**True if the background color is transparent. */
     public static final String PROP_TRANSPARENT = "transparent";    //$NON-NLS-1$
-    
+
     /** True if children widgets are not selectable.*/
     public static final String PROP_LOCK_CHILDREN = "lock_children";//$NON-NLS-1$
     /**
-     * True if scrollbar is visible when children widgets are out of range. 
+     * True if scrollbar is visible when children widgets are out of range.
      */
     public static final String PROP_SHOW_SCROLLBAR = "show_scrollbar";//$NON-NLS-1$
-    
+
 
     /**Forward background and foreground color properties change to children. */
     public static final String PROP_FORWARD_COLORS = "fc";    //$NON-NLS-1$
-    
-    
+
+
     public GroupingContainerModel() {
         setSize(200, 200);
         //setBorderStyle(BorderStyle.GROUP_BOX);
     }
-    
+
     @Override
     protected void configureProperties() {
         addProperty(new BooleanProperty(PROP_TRANSPARENT, "Transparent Background",
@@ -54,7 +54,7 @@ public class GroupingContainerModel extends AbstractContainerModel {
                 WidgetPropertyCategory.Behavior, true));
         addProperty(new BooleanProperty(PROP_FORWARD_COLORS, "Forward Colors",
                 WidgetPropertyCategory.Behavior, false));
-    
+
     }
 
     @Override
@@ -62,7 +62,7 @@ public class GroupingContainerModel extends AbstractContainerModel {
         return ID;
     }
 
-    
+
     /**
      * Returns, if this widget should have a transparent background.
      * @return boolean
@@ -71,7 +71,7 @@ public class GroupingContainerModel extends AbstractContainerModel {
     public boolean isTransparent() {
         return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
     }
-    
+
     /**
     * @return boolean
     *                 True, if the children should be locked, false otherwise
@@ -79,7 +79,7 @@ public class GroupingContainerModel extends AbstractContainerModel {
     public boolean isLocked() {
         return (Boolean) getProperty(PROP_LOCK_CHILDREN).getPropertyValue();
     }
-    
+
     /**
     * @return boolean
     *                 True, if scrollbar should be shown when necessary, false otherwise.
@@ -87,11 +87,11 @@ public class GroupingContainerModel extends AbstractContainerModel {
     public boolean isShowScrollbar() {
         return (Boolean) getProperty(PROP_SHOW_SCROLLBAR).getPropertyValue();
     }
-    
+
     public boolean isForwardColors(){
         return (Boolean)getPropertyValue(PROP_FORWARD_COLORS);
     }
-    
+
 
 
     @Override
@@ -101,7 +101,7 @@ public class GroupingContainerModel extends AbstractContainerModel {
             abstractWidgetModel.flipVertically(centerY);
         }
     }
-    
+
     @Override
     public void flipHorizontally() {
         int centerX = getWidth()/2;
@@ -109,7 +109,7 @@ public class GroupingContainerModel extends AbstractContainerModel {
             abstractWidgetModel.flipHorizontally(centerX);
         }
     }
-    
+
     @Override
     public void rotate90(boolean clockwise) {
         boolean oldLock = isLocked();
@@ -121,7 +121,7 @@ public class GroupingContainerModel extends AbstractContainerModel {
         Point oldLoc = getLocation();
         super.rotate90(clockwise);
         Point newLoc = getLocation();
-        
+
         int dx = newLoc.x - oldLoc.x;
         int dy = newLoc.y - oldLoc.y;
         //move back
@@ -131,7 +131,7 @@ public class GroupingContainerModel extends AbstractContainerModel {
         }
         setPropertyValue(PROP_LOCK_CHILDREN, oldLock);
     }
-    
 
-    
+
+
 }

@@ -12,7 +12,7 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.CommandItem;
 import org.csstudio.utility.adlparser.internationalization.Messages;
 
 /**
- * 
+ *
  * @author hammonds
  *
  */
@@ -35,7 +35,7 @@ public class ShellCommand extends ADLAbstractWidget implements IWidgetWithColors
                     if (_adlObject != null){
                         _hasObject = true;
                     }
-                    
+
                 }
             }
             for (FileLine fileLine : adlWidget.getBody()){
@@ -61,7 +61,7 @@ public class ShellCommand extends ADLAbstractWidget implements IWidgetWithColors
             }
         }
         catch (WrongADLFormatException ex) {
-            
+
         }
     }
 

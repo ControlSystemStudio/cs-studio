@@ -30,11 +30,11 @@ public class LaunchConfigUI
     final private static String[] icon_names = new String[]
     {
         "run",
-        "text", 
-        "console", 
-        "edit", 
-        "work", 
-        "clipboard", 
+        "text",
+        "console",
+        "edit",
+        "work",
+        "clipboard",
     };
 
     final private LaunchConfig config;
@@ -43,28 +43,28 @@ public class LaunchConfigUI
     private Button[] icons;
     private Image[] icon_images;
     private Text custom_icon;
-    
+
     public LaunchConfigUI(final LaunchConfig config)
     {
         this.config = config;
     }
-    
+
     public Composite createControl(final Composite parent)
     {
         final Composite box = new Composite(parent, 0);
         box.setLayout(new GridLayout(2, false));
         box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        
+
         // Command: __command__
         Label l = new Label(box, 0);
         l.setText(Messages.CommandLbl);
         l.setLayoutData(new GridData());
-        
+
         command = new Text(box, SWT.BORDER);
         command.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         command.setToolTipText(Messages.CommandTT);
         command.setText(config.getCommand());
-        
+
         // Icon:   (*) run
         //         ( ) edit
         //         ( ) custom
@@ -72,7 +72,7 @@ public class LaunchConfigUI
         l = new Label(box, 0);
         l.setText(Messages.IconLbl);
         l.setLayoutData(new GridData(0, SWT.TOP, false, true, 1, icon_names.length+2));
-        
+
         icons = new Button[icon_names.length+1];
         icon_images = new Image[icon_names.length];
         final String icon_name = config.getIconName();
@@ -117,7 +117,7 @@ public class LaunchConfigUI
         for (Button icon : icons)
             icon.addSelectionListener(enablement);
         enablement.widgetSelected(null);
-        
+
         parent.addDisposeListener(new DisposeListener()
         {
             @Override
@@ -128,10 +128,10 @@ public class LaunchConfigUI
                 icon_images = null;
             }
         });
-        
+
         return box;
     }
-    
+
     /** @return Icon that the user selected or entered for custom icon */
     private String getIconName()
     {

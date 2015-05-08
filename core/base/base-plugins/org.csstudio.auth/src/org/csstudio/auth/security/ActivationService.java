@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.auth.security;
@@ -38,7 +38,7 @@ import org.eclipse.core.runtime.Platform;
 /**
  * This class (de-)activates the registered objects if the current user has the
  * permission for the id of the object.
- * 
+ *
  * Memory complication:
  * This is used by for example the AbstractUserDependentAction to automatically
  * enable/disable an action based on changing authorization of the user.
@@ -51,8 +51,8 @@ import org.eclipse.core.runtime.Platform;
  * has a reference to the action.
  * For this reason, the ActivateableList must only keep week references to
  * registered objects.
- * 
- * 
+ *
+ *
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  * @author Kay Kasemir Weak Reference handling
  */
@@ -61,7 +61,7 @@ public final class ActivationService implements IUserManagementListener,
 
     /**
      * A HashMap which contains a ActivateableList under an ID.
-     * 
+     *
      * Contains entries like
      *   "alarm_ack" -> ActivateableList { object, adapter }
      * for all the items that need to be enabled/disabled based on
@@ -97,11 +97,11 @@ public final class ActivationService implements IUserManagementListener,
 
     /**
      * Registers the given object with the given ID.
-     * It is necessary that an {@link IActivationAdapter} is registered by the 
+     * It is necessary that an {@link IActivationAdapter} is registered by the
      * AdapterManager of the Platform or the object is an {@link IAdaptable} and
      * delivers an {@link IActivationAdapter}.
      * If no IActivationAdapter is found the registration is denied.
-     * 
+     *
      * @param id
      *            The ID for the object
      * @param defaultRight
@@ -120,7 +120,7 @@ public final class ActivationService implements IUserManagementListener,
             this.registerWidget(id, defaultRight, object, standard);
         }
     }
-    
+
     /**
      * Returns a IActivationAdapter for the object or null.
      * @param object
@@ -139,7 +139,7 @@ public final class ActivationService implements IUserManagementListener,
         }
         return adapter;
     }
-    
+
     /**
      * Registers the given object.
      * Calls <i>registerOject(String, String, Object)</i>
@@ -155,7 +155,7 @@ public final class ActivationService implements IUserManagementListener,
     /**
      * Registers the given object with the given ID and the given
      * {@link IActivationAdapter}.
-     * 
+     *
      * @param id
      *            The ID for the object
      * @param defaultRight
@@ -184,13 +184,13 @@ public final class ActivationService implements IUserManagementListener,
                 _activatesMap.put(id, liste);
                 adapter.activate(object, SecurityFacade.getInstance()
                         .canExecute(id));
-            }    
+            }
         }
     }
 
     /**
      * Unregisters the given object.
-     * 
+     *
      * @param id
      *            The ID, which was used to register the widget
      * @param object
@@ -211,7 +211,7 @@ public final class ActivationService implements IUserManagementListener,
 
     /**
      * Unregisters the given object.
-     * 
+     *
      * @param object
      *            The object, which should be unregistered
      * @return True if the object could be unregistered; false otherwise
@@ -233,7 +233,7 @@ public final class ActivationService implements IUserManagementListener,
 
     /**
      * Disposes the current {@link ActivationService}. All registered objects
-     * are removed and unregisters this {@link ActivationService} as 
+     * are removed and unregisters this {@link ActivationService} as
      * UserManagementListener and RightsManagementListener
      */
     public void dispose() {

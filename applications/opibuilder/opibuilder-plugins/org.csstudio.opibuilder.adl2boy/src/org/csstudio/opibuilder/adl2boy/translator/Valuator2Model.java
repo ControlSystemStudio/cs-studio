@@ -13,9 +13,9 @@ import org.csstudio.utility.adlparser.fileParser.widgets.Valuator;
 import org.eclipse.swt.graphics.RGB;
 
 /**
- * 
+ *
  * @author John Hammonds, Argonne National Laboratory
- * 
+ *
  */
 public class Valuator2Model extends AbstractADL2Model {
 

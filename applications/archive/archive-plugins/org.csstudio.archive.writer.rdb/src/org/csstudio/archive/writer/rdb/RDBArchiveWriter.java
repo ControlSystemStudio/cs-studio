@@ -196,7 +196,7 @@ public class RDBArchiveWriter implements ArchiveWriter
             final Display display = (Display)sample;
             if (MetaDataHelper.equals(display, channel.getMetadata()))
                 return;
-            
+
             // Clear enumerated meta data, replace numeric
             EnumMetaDataHelper.delete(rdb, sql, channel);
             NumericMetaDataHelper.delete(rdb, sql, channel);
@@ -218,12 +218,12 @@ public class RDBArchiveWriter implements ArchiveWriter
             channel.setMetaData(labels);
         }
     }
-    
+
     /**
      * Create a new prepared statement. For PostgreSQL connections, this method
      * create a PGCopyPreparedStatement to improve insert speed using COPY
      * insetad of INSERT.
-     * 
+     *
      * @param sqlQuery
      * @return
      * @throws SQLException

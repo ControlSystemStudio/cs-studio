@@ -30,9 +30,9 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * The editpart delegate for native text input widget.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
 
@@ -40,8 +40,8 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
     private TextInputEditpart editpart;
     private TextInputModel model;
     private Text text;
-    
-    
+
+
 
     public NativeTextEditpartDelegate(TextInputEditpart editpart,
             TextInputModel model) {
@@ -51,7 +51,7 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
 
     @Override
     public IFigure doCreateFigure() {
-        
+
         int style=SWT.NONE;
         if(model.isShowNativeBorder())
             style |= SWT.BORDER;
@@ -81,8 +81,8 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
             style |= SWT.RIGHT;
         default:
             break;
-        }        
-        
+        }
+
         final NativeTextFigure figure = new NativeTextFigure(editpart, style);
         text = figure.getSWTWidget();
 
@@ -91,7 +91,7 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
                 text.addKeyListener(new KeyAdapter() {
                     @Override
                     public void keyPressed(KeyEvent keyEvent) {
-                        if (keyEvent.character == '\r') { // Return key                
+                        if (keyEvent.character == '\r') { // Return key
                             if (text != null && !text.isDisposed()
                                     && (text.getStyle() & SWT.MULTI) != 0) {
                                 if ((keyEvent.stateMask & SWT.CTRL) != 0) {
@@ -100,7 +100,7 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
                                   text.getShell().setFocus();
                                 }
                             }
-                            
+
                         }
                     }
                 });
@@ -121,7 +121,7 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
                         case KEEP:
                         default:
                             break;
-                        }                        
+                        }
                     }
                 });
             }
@@ -137,7 +137,7 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
             text.addFocusListener(new FocusAdapter() {
                 @Override
                 public void focusLost(FocusEvent e) {
-                    //On mobile, lost focus should output text since there is not enter hit or ctrl key. 
+                    //On mobile, lost focus should output text since there is not enter hit or ctrl key.
                     if(editpart.getPV() != null && !OPIBuilderPlugin.isMobile(text.getDisplay()))
                         text.setText(model.getText());
                     else if(figure.isEnabled())
@@ -147,27 +147,27 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
         }
         return figure;
     }
-    
+
     protected void outputText(String newValue) {
         if(editpart.getPV() == null){
             editpart.setPropertyValue(TextInputModel.PROP_TEXT, newValue);
             editpart.outputPVValue(newValue);
         }
-        else{ 
-            //PV may not be changed instantly, so recover it to old text first.    
-            text.setText(model.getText());    
+        else{
+            //PV may not be changed instantly, so recover it to old text first.
+            text.setText(model.getText());
             //Write PV and update the text with new PV value if writing succeed.
             editpart.outputPVValue(newValue);
         }
     }
-    
+
     @Override
     public void updatePropSheet() {
         boolean isMulti = model.isMultilineInput();
         model.setPropertyVisible(TextInputModel.PROP_SHOW_H_SCROLL, isMulti);
         model.setPropertyVisible(TextInputModel.PROP_SHOW_V_SCROLL, isMulti);
         model.setPropertyVisible(TextInputModel.PROP_WRAP_WORDS, isMulti);
-        model.setPropertyVisible(TextInputModel.PROP_PASSWORD_INPUT, !isMulti);    
+        model.setPropertyVisible(TextInputModel.PROP_PASSWORD_INPUT, !isMulti);
     }
 
 
@@ -177,7 +177,7 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
             editpart.installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,    null);
     }
 
-    
+
     public void setFigureText(String text) {
         this.text.setText(text);
     }
@@ -185,20 +185,20 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
     @Override
     public void registerPropertyChangeHandlers() {
         editpart.removeAllPropertyChangeHandlers(TextInputModel.PROP_ALIGN_H);
-        
+
         PropertyChangeListener updatePropSheetListener = new PropertyChangeListener() {
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 updatePropSheet();
             }
         };
-        
+
         model.getProperty(TextInputModel.PROP_MULTILINE_INPUT)
             .addPropertyChangeListener(updatePropSheetListener);
-        
+
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 AbstractContainerModel parent = model.getParent();
@@ -215,15 +215,15 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
         editpart.setPropertyChangeHandler(TextInputModel.PROP_SHOW_V_SCROLL, handler);
         editpart.setPropertyChangeHandler(TextInputModel.PROP_PASSWORD_INPUT, handler);
         editpart.setPropertyChangeHandler(TextInputModel.PROP_ALIGN_H, handler);
-        
-    }    
 
-    
+    }
+
+
     public void performAutoSize() {
         model.setSize(((NativeTextFigure)editpart.getFigure()).
                 getAutoSizeDimension());
     }
-    
+
     public String getValue() {
         return text.getText();
     }

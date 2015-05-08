@@ -3,9 +3,9 @@ package org.csstudio.dal.simple.impl;
 import org.csstudio.dal.DynamicValueProperty;
 
 public final class DoubleAnyDataImpl extends AbstractAnyDataImpl<Double> {
-    
+
     public static final Double UNINITIALIZED_DOUBLE_VALUE = Double.NaN;
-    
+
     public DoubleAnyDataImpl(DynamicValueProperty<Double> property) {
         super(property,Long.MIN_VALUE);
     }
@@ -56,7 +56,7 @@ public final class DoubleAnyDataImpl extends AbstractAnyDataImpl<Double> {
     public String stringValue() {
         return response.getNumber().toString();
     }
-    
+
     @Override
     protected Double confirmValue(Double value) {
         if (value != null) return value;

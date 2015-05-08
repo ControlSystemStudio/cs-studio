@@ -7,9 +7,9 @@ import de.desy.language.snl.parser.nodes.AllDefineStatementsNode;
 
 /**
  * The specialized {@link IAdapterFactory} for {@link AllDefineStatementsNode}s.
- * 
+ *
  * @author C1 WPS / KM, MZ
- * 
+ *
  */
 class AllDefinesNodeAdapterFactory implements IAdapterFactory {
 

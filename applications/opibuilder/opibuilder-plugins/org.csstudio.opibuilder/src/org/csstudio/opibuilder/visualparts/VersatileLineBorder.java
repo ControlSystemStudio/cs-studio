@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.Color;
 public class VersatileLineBorder extends LineBorder {
 
     private int lineStyle;
-    
+
     /**
      *
      * @param borderColor the border color
@@ -35,7 +35,7 @@ public class VersatileLineBorder extends LineBorder {
         super(borderColor, lineWidth);
         this.lineStyle = lineStyle;
     }
-    
+
     /**
      * @see org.eclipse.draw2d.Border#paint(IFigure, Graphics, Insets)
      */
@@ -52,6 +52,6 @@ public class VersatileLineBorder extends LineBorder {
             graphics.setForegroundColor(getColor());
         graphics.drawRectangle(tempRect);
     }
-    
-    
+
+
 }

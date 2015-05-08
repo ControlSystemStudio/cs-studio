@@ -13,14 +13,14 @@ import java.util.TimerTask;
  *
  */
 public class ChannelCollector implements Runnable{
-    
+
     private SnooperServer server;
     private boolean started,first;
     private Timer timer = new Timer();
     private Channel firstList,secondList;
     private boolean dataReady;
     private int delay;
-    
+
     public ChannelCollector(){
         server = new SnooperServer();
         Thread t = new Thread(new Runnable(){
@@ -33,7 +33,7 @@ public class ChannelCollector implements Runnable{
 
     /**
      * Adds new message to the map
-     *  
+     *
      * @param aliasName
      * @param clientAddress
      */
@@ -45,19 +45,19 @@ public class ChannelCollector implements Runnable{
             if(secondList!=null){
                 secondList.addChannel(aliasName, clientAddress, delay);
             }
-        
+
     }
-    
+
     /**
      * Returns snoops received as ArrayList<DataStructure>
-     * 
+     *
      * @return Arraylist of received snoops
      */
     public ArrayList<ChannelStructure> getSnoops(){
         dataReady = false;
         if(first)
             return secondList.getData();
-        else 
+        else
             return firstList.getData();
     }
 
@@ -67,7 +67,7 @@ public class ChannelCollector implements Runnable{
 
     /**
      * Start the snooping with given interval
-     * 
+     *
      * @param time the time interval
      */
     public void start(int time){
@@ -79,7 +79,7 @@ public class ChannelCollector implements Runnable{
         timer = new Timer();
         timer.scheduleAtFixedRate(new captureData(), 0, time * 1000);
     }
-    
+
     /**
      * Stops the snooping
      */
@@ -90,7 +90,7 @@ public class ChannelCollector implements Runnable{
 
     /**
      * Creates the statistics and returns them as String
-     * 
+     *
      * @param entries as ArrayList<DataStructure>
      * @return String
      */
@@ -108,10 +108,10 @@ public class ChannelCollector implements Runnable{
             avarageFrequency = avarageFrequency + tmp.getFrequency();
             listOfAllChannels.add(tmp.getAliasName());
         }
-        
+
         avarageFrequency = avarageFrequency/entries.size();
         avarageFrequency = ((int)(avarageFrequency*1000))/1000.0;
-        
+
         statistics = "There were "+numberOfRequests+" requests for "+listOfAllChannels.size()+" different PVs.\n";
         statistics = statistics+"Max frequency: "+maximumFrequency+"Hz\n";
         statistics = statistics+"Average frequency: "+avarageFrequency+"Hz\n";
@@ -121,13 +121,13 @@ public class ChannelCollector implements Runnable{
     public void run() {
         server.execute();
     }
-    
+
     /**
      * Timer class for changing between maps
      *
      */
     private class captureData extends TimerTask {
-        
+
         @Override
         public void run() {
             if(!started){

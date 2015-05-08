@@ -46,7 +46,7 @@ import de.desy.tine.definitions.TFormat;
 
 /**
  * Implementation of DAL plugin for TINE.
- * 
+ *
  * @author Jaka Bobnar, Cosylab
  *
  */
@@ -54,13 +54,13 @@ public class TINEPlug extends AbstractPlug {
 
     /** Plug type string */
     public static final String PLUG_TYPE = "TINE";
-    
+
     /** Default authority */
     public static final String DEFAULT_AUTHORITY = "DEFAULT";
-    
+
     /** Singleton instance of plug */
     private static TINEPlug instance;
-    
+
     private static Map<String, Map<String,Object>> characteristicsMap;
 
     /**
@@ -73,7 +73,7 @@ public class TINEPlug extends AbstractPlug {
     }
 
     /**
-     * Returns the instance of this plug with specified configuration 
+     * Returns the instance of this plug with specified configuration
      * @param conf configuration properties
      * @return
      */
@@ -86,9 +86,9 @@ public class TINEPlug extends AbstractPlug {
 
         return TINEPlug.instance;
     }
-    
+
     /**
-     * Returns the instance of this plug with specified configuration 
+     * Returns the instance of this plug with specified configuration
      * @param conf configuration properties
      * @return
      */
@@ -96,27 +96,27 @@ public class TINEPlug extends AbstractPlug {
     {
         return new TINEPlug(ctx);
     }
-    
+
     /**
      * Singleton object.
-     * 
+     *
      * @param configuration
      */
     private TINEPlug(Properties configuration) {
         super(configuration);
         initialize();
     }
-    
+
     /**
      * Singleton object.
-     * 
+     *
      * @param configuration
      */
     private TINEPlug(AbstractApplicationContext ctx) {
         super(ctx);
         initialize();
     }
-    
+
     private void initialize() {
         getConfiguration().putAll(System.getProperties());
     }
@@ -161,7 +161,7 @@ public class TINEPlug extends AbstractPlug {
             if (p instanceof DirectoryProxy) {
                 putDirectoryProxyToCache((DirectoryProxy<?>)p);
             }
-            
+
             return type.cast(p);
         } catch (Exception e) {
             throw new ConnectionException(this,"Failed to instantitate property proxy '"+uniqueName+"' for type '"+type.getName()+"'.",e);
@@ -203,7 +203,7 @@ public class TINEPlug extends AbstractPlug {
     protected Class<? extends PropertyProxy<?,?>> getPropertyProxyImplementationClass(String uniquePropertyName) {
         return PropertyProxyUtilities.getPropertyProxyImplementationClass(uniquePropertyName);
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.csstudio.dal.proxy.AbstractPlug#getPropertyImplementationClass(java.lang.Class)
@@ -215,15 +215,15 @@ public class TINEPlug extends AbstractPlug {
             return PropertyUtilities.getImplementationClass(type);
         } else {
             return getPropertyImplementationClass(propertyName);
-        } 
+        }
     }
-    
+
     @Override
     public Class<?extends PropertyProxy<?,?>> getPropertyProxyImplementationClass(
             Class<?extends SimpleProperty<?>> type, Class<?extends SimpleProperty<?>> implementationType, String uniquePropertyName) throws RemoteException
     {
-        Class<? extends PropertyProxy<?,?>> impl = PropertyProxyUtilities.getPropertyProxyImplementationClass(uniquePropertyName, type); 
-            
+        Class<? extends PropertyProxy<?,?>> impl = PropertyProxyUtilities.getPropertyProxyImplementationClass(uniquePropertyName, type);
+
         if (impl == null) {
             impl = super.getPropertyProxyImplementationClass(type,implementationType, uniquePropertyName);
         }
@@ -240,7 +240,7 @@ public class TINEPlug extends AbstractPlug {
      */
     @Override
     public void releaseInstance() throws Exception {
-        //        
+        //
     }
 
     /*
@@ -250,7 +250,7 @@ public class TINEPlug extends AbstractPlug {
     public RemoteInfo createRemoteInfo(String uniqueName) throws NamingException {
         return new RemoteInfo(TINEPlug.PLUG_TYPE, uniqueName, null, null);
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.csstudio.dal.context.PlugContext#getDefaultDirectory()
@@ -258,19 +258,19 @@ public class TINEPlug extends AbstractPlug {
     public DirContext getDefaultDirectory() {
         return null;
     }
-    
+
     /**
-     * Checks if the plug already contains characteristics for the given property name. 
-     * @param name the full name of device and property 
+     * Checks if the plug already contains characteristics for the given property name.
+     * @param name the full name of device and property
      * @return
      */
     public boolean containsName(String name) {
         return TINEPlug.characteristicsMap.containsKey(name);
     }
-    
+
     /**
      * Returns the characteristics for the given property name.
-     * 
+     *
      * @param uniqueName the name of the property
      * @return map of all characteristics
      * @throws ConnectionFailed
@@ -278,12 +278,12 @@ public class TINEPlug extends AbstractPlug {
     public Map<String,Object> getCharacteristics(String uniqueName) throws ConnectionFailed {
         return getCharacteristics(uniqueName, Double.class);
     }
-    
+
     /**
-     * Returns the characteristics for the given property name. The numberType parameter 
-     * specifies the type of numeric characteristics (eg. if numberType is Long.class 
+     * Returns the characteristics for the given property name. The numberType parameter
+     * specifies the type of numeric characteristics (eg. if numberType is Long.class
      * numeric characteristics will be returned as longs).
-     * 
+     *
      * @param uniqueName the name of the property
      * @param numberType type of numeric properties
      * @return map of all characteristics
@@ -296,12 +296,12 @@ public class TINEPlug extends AbstractPlug {
         Map<String,Object> entry = PropertyProxyUtilities.getCharacteristics(new PropertyNameDissector(uniqueName), numberType);
         TINEPlug.characteristicsMap.put(uniqueName, entry);
         return entry;
-        
+
     }
-    
+
     /**
      * Returns the TFormat characteristic of the given property.
-     * 
+     *
      * @param uniqueName the name of the property
      * @return
      */
@@ -311,20 +311,20 @@ public class TINEPlug extends AbstractPlug {
         }
         return null;
     }
-    
+
     /**
      * Returns the TFormat for the given property dissector.
-     * 
+     *
      * @param dissector
      * @return
      */
     public TFormat getTFormat(PropertyNameDissector dissector) {
         return getTFormat(dissector.getRemoteName());
     }
-    
+
     /**
      * Returns the sequence length of the given property.
-     * 
+     *
      * @param uniqueName the name of the property
      * @return
      */
@@ -335,10 +335,10 @@ public class TINEPlug extends AbstractPlug {
         }
         return 0;
     }
-    
+
     /**
      * Returns the sequence length of the given property dissector.
-     * 
+     *
      * @param dissector
      * @return
      */

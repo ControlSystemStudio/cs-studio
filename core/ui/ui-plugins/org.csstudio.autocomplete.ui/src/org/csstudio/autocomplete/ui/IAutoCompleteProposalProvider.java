@@ -12,7 +12,7 @@ import org.csstudio.autocomplete.ui.content.IContentProposalSearchHandler;
 
 /**
  * Provides auto-completion results to {@link ContentProposalAdapter}.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public interface IAutoCompleteProposalProvider {
@@ -20,7 +20,7 @@ public interface IAutoCompleteProposalProvider {
     /**
      * Requests providers for proposals and notify the handler each time a
      * provider answers.
-     * 
+     *
      * @param contents the content to complete.
      * @param handler see {@link IContentProposalSearchHandler}.
      */

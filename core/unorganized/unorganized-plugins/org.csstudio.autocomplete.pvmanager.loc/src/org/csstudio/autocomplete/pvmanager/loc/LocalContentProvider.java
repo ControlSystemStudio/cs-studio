@@ -17,8 +17,8 @@ import org.csstudio.autocomplete.tooltips.TooltipData;
 
 /**
  * Local Data Source content provider.
- * Provides all available VType & content syntax assistance. 
- * 
+ * Provides all available VType & content syntax assistance.
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class LocalContentProvider implements IAutoCompleteProvider {

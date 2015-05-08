@@ -8,22 +8,22 @@ package com.cosylab.vdct.graphics.objects;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -73,7 +73,7 @@ public TemplateEPICSPort(ContainerObject parent, VDBFieldData fieldData) {
         mode = visiblePort.getMode();
 
     super.setRight(mode==OutLink.OUTPUT_PORT_MODE);
-    
+
     drawOnlyOneSided = true;
 }
 
@@ -86,11 +86,11 @@ public void updateTemplateLink()
 {
     if (lastUpdatedFullName!=null && getFieldData().getFullName().equals(lastUpdatedFullName))
         return;
-        
-    // remove old one        
+
+    // remove old one
     if (lastUpdatedFullName!=null)
         Group.getRoot().getLookupTable().remove(lastUpdatedFullName);
-    
+
     // ups, we already got this registered
     if (Group.getRoot().getLookupTable().containsKey(getFieldData().getFullName()))
     {
@@ -150,14 +150,14 @@ protected void draw(Graphics g, boolean hilited) {
         return;
 
     com.cosylab.vdct.graphics.ViewState view = com.cosylab.vdct.graphics.ViewState.getInstance();
-    
+
     double Rscale = view.getScale();
     boolean zoom = (Rscale < 1.0) && view.isZoomOnHilited() && view.isHilitedObject(this);
-    
+
     if (zoom) {
         zoomImage = ZoomPane.getInstance().startZooming(this,!isZoomRepaint());
     }
-    
+
     boolean isRightSide = isRight();
 
     int rrx;            // rrx, rry is center
@@ -165,9 +165,9 @@ protected void draw(Graphics g, boolean hilited) {
         rrx = getRx()+getRwidth()-view.getRx();
     else
         rrx = getRx()-view.getRx();
-    
+
     int rry = (int)(getRscale()*getInY()- view.getRy());
-    
+
     ZoomPane pane = ZoomPane.getInstance();
     if (getParent().isZoomRepaint()) {
         if (isRightSide) {
@@ -183,11 +183,11 @@ protected void draw(Graphics g, boolean hilited) {
         } else {
             rrx = pane.getLeftOffset();
         }
-        rry = pane.getTopOffset() + getHeight()/2; 
-    }    
-    
+        rry = pane.getTopOffset() + getHeight()/2;
+    }
+
     if (!hilited) g.setColor(Constants.FRAME_COLOR);
-    else g.setColor((view.isHilitedObject(this)) ? 
+    else g.setColor((view.isHilitedObject(this)) ?
                     Constants.HILITE_COLOR : Constants.FRAME_COLOR);
 
 
@@ -195,7 +195,7 @@ protected void draw(Graphics g, boolean hilited) {
     Port visiblePort = ((VDBTemplatePort)getFieldData()).getPort().getVisibleObject();
     if (visiblePort!=null)
         mode = visiblePort.getMode();
-    
+
     if (mode == OutLink.INPUT_PORT_MODE)
     {
         // input link
@@ -207,8 +207,8 @@ protected void draw(Graphics g, boolean hilited) {
         // draw arrow
         g.drawLine(rrx, rry-r, rrx+arrowLength, rry-r);
         g.drawLine(rrx, rry+r, rrx+arrowLength, rry+r);
-        
-        int dr=-r; 
+
+        int dr=-r;
         if (isRightSide) {
             dr=-dr;
             rrx+=arrowLength;
@@ -218,7 +218,7 @@ protected void draw(Graphics g, boolean hilited) {
     }
     else if (mode == OutLink.OUTPUT_PORT_MODE)
     {
-        // output link    
+        // output link
         int arrowLength = 3*r;
 
         if (!isRightSide)
@@ -227,8 +227,8 @@ protected void draw(Graphics g, boolean hilited) {
         // draw arrow
         g.drawLine(rrx, rry-r, rrx+arrowLength, rry-r);
         g.drawLine(rrx, rry+r, rrx+arrowLength, rry+r);
-        
-        int dr=r; 
+
+        int dr=r;
         if (isRightSide) {
             dr=-dr;
             rrx+=arrowLength;
@@ -236,7 +236,7 @@ protected void draw(Graphics g, boolean hilited) {
         g.drawLine(rrx, rry-r, rrx+dr, rry);
         g.drawLine(rrx, rry+r, rrx+dr, rry);
     }
-    //else     
+    //else
         // constant (none)
 
 
@@ -247,14 +247,14 @@ protected void draw(Graphics g, boolean hilited) {
         rry = getRy()-view.getRy();
         int rwidth = getRwidth();
         int rheight = getRheight();
-            
+
         g.setColor(Color.red);
 
         g.drawLine(rrx, rry, rrx+rwidth, rry+rheight);
         g.drawLine(rrx+rwidth, rry, rrx, rry+rheight);
     }
     super.draw(g, hilited);
-    
+
 //    if (zoom) {
 //        int rwidth = getRwidth();
 //        int rheight = getRheight();
@@ -262,13 +262,13 @@ protected void draw(Graphics g, boolean hilited) {
 //        rry -= (rheight/Rscale - rheight)/2;
 //        if (view.getRx() < 0)
 //            rrx = rrx < 0 ? 2 : rrx;
-//        if (view.getRy() < 0) 
+//        if (view.getRy() < 0)
 //            rry = rry <= 0 ? 2 : rry;
 //        Rscale = 1.0;
 //        r = (int)(Constants.LINK_RADIOUS);
 //        rtailLen = (int)(Constants.TAIL_LENGTH);
 //    }
-    
+
 }
 
 /**
@@ -427,7 +427,7 @@ public void setRight(boolean isRight)
 public boolean checkMove(int dx, int dy) {
     // this method is called only on selection move
     // and this object is not selectable
-    return false; 
+    return false;
 }
 
 /**
@@ -460,7 +460,7 @@ public boolean move(int dx, int dy) {
         }
     }
 
-    LinkManagerObject lmo = (LinkManagerObject)getParent(); 
+    LinkManagerObject lmo = (LinkManagerObject)getParent();
     if (dy > 0 && !lmo.isLastField(this))
     {
         if ((y+dy) > (getRy()+getRheight()))
@@ -483,7 +483,7 @@ public boolean move(int dx, int dy) {
         DrawingSurface.getInstance().resetDraggedPosition();
 
     return moved;
-        
+
 }
 
     /* (non-Javadoc)

@@ -65,9 +65,9 @@ import org.epics.vtype.VType;
 
 /**
  * Editpart for array widget.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidgetEditpart {
 
@@ -88,7 +88,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
     private static List<String> NONE_SYNCABLE_PROPIDS = Arrays.asList(
             AbstractWidgetModel.PROP_XPOS, AbstractWidgetModel.PROP_YPOS,
             IPVWidgetModel.PROP_PVVALUE, AbstractWidgetModel.PROP_TOOLTIP);
-    
+
     private static List<String> INVISIBLE_CHILD_PROPIDS = Arrays.asList(
             AbstractWidgetModel.PROP_XPOS, AbstractWidgetModel.PROP_YPOS,
             AbstractWidgetModel.PROP_SCALE_OPTIONS, IPVWidgetModel.PROP_PVNAME,
@@ -111,7 +111,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
     public ArrayEditPart() {
         delegate = new PVWidgetEditpartDelegate(this);
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     protected void doActivate() {
@@ -142,7 +142,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
             }
             registerLoadPVDataTypeListener();
         }
-        
+
     }
 
     @Override
@@ -203,7 +203,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
                     && ((short[]) valueArray).length == length)
                 break;
             valueArray = new short[length];
-            break;        
+            break;
         default:
             break;
         }
@@ -219,13 +219,13 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
                         public void valueChanged(IPV pv) {
                             VType value = pv.getValue();
                             if (value != null) {
-                                
+
                                         model.setArrayLength(VTypeHelper.getSize(value));
                                         BasicDataType dataType = VTypeHelper.getBasicDataType(value);
-                                        model.setPropertyValue(ArrayModel.PROP_DATA_TYPE, 
+                                        model.setPropertyValue(ArrayModel.PROP_DATA_TYPE,
                                                 mapBasicDataTypeToArrayType(dataType));
-                                
-                                
+
+
                             }
                         }
                     };
@@ -251,16 +251,16 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
             child.getProperty(propId).addPropertyChangeListener(syncPropertiesListener);
         final EditPart result = super.createChild(model);
         UIBundlingThread.getInstance().addRunnable(getViewer().getControl().getDisplay(), new Runnable() {
-            
+
             @Override
             public void run() {
-                hookChild(result, getChildren().indexOf(result), true);    
+                hookChild(result, getChildren().indexOf(result), true);
             }
         });
-            
+
         return result;
     }
-    
+
     @Override
     protected void removeChild(EditPart child) {
         super.removeChild(child);
@@ -295,14 +295,14 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
             }
             try {
                 childModel.setScaleOptions(false, false, false);
-                childModel.setPropertyValue(IPVWidgetModel.PROP_PVNAME, ""); //$NON-NLS-1$                
-                childModel.setPropertyValue(IPVWidgetModel.PROP_BORDER_ALARMSENSITIVE, false);                
+                childModel.setPropertyValue(IPVWidgetModel.PROP_PVNAME, ""); //$NON-NLS-1$
+                childModel.setPropertyValue(IPVWidgetModel.PROP_BORDER_ALARMSENSITIVE, false);
             } catch (NonExistPropertyException e) {
             }
         }
-        
-        
-        if (getExecutionMode() == ExecutionMode.RUN_MODE && editPart instanceof IPVWidgetEditpart) {            
+
+
+        if (getExecutionMode() == ExecutionMode.RUN_MODE && editPart instanceof IPVWidgetEditpart) {
             ((IPVWidgetEditpart) editPart).addSetPVValueListener(new ISetPVValueListener() {
                 // Capture set PV value event on children and write to the PV on
                 // the array widget
@@ -332,7 +332,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
                                 byteValue = Byte.valueOf(value.toString());
                             }
                             ((byte[]) valueArray)[index] = byteValue;
-                            break;    
+                            break;
                         case INT_ARRAY:
                             int intValue;
                             if (value instanceof Number)
@@ -369,7 +369,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
                             }
                             ((long[]) valueArray)[index] = longValue;
                             break;
-                        case STRING_ARRAY:                            
+                        case STRING_ARRAY:
                             ((String[]) valueArray)[index] = value.toString();
                             break;
                         default:
@@ -378,12 +378,12 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
                         if(getPV() != null)
                             //TODO this code is a patch for utility pv, because it will convert a int[] and short[] to long[],
                             //but EPICS PV doesn't support write long[]. should be removed after switched to pv manager
-                            if(valueArray instanceof long[]){ 
+                            if(valueArray instanceof long[]){
                                 int[] temp = new int[((long[])valueArray).length];
                                 for(int i=0; i<((long[])valueArray).length; i++)
                                     temp[i]=(int) ((long[])valueArray)[i];
                                 setPVValue(ArrayModel.PROP_PVNAME, temp);
-                            }else                                    
+                            }else
                                 setPVValue(ArrayModel.PROP_PVNAME, valueArray);
                     } catch (NumberFormatException e) {
                         String msg = NLS
@@ -509,7 +509,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
                     if (((GraphicalEditPart)getRoot()).getFigure().findFigureAt(me.x, me.y) == getArrayFigure().getSpinner()
                             .getLabelFigure())
                         super.mouseUp(me, viewer);
-                }                
+                }
             };
         } else
             return super.getDragTracker(request);
@@ -530,7 +530,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
     /**
      * Get the PV corresponding to the <code>PV Name</code> property. It is same
      * as calling <code>getPV("pv_name")</code>.
-     * 
+     *
      * @return the PV corresponding to the <code>PV Name</code> property. null
      *         if PV Name is not configured for this widget.
      */
@@ -540,7 +540,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 
     /**
      * Get the pv by PV property id.
-     * 
+     *
      * @param pvPropId
      *            the PV property id.
      * @return the corresponding pv for the pvPropId. null if the pv doesn't
@@ -559,7 +559,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 
     /**
      * Get value from one of the attached PVs.
-     * 
+     *
      * @param pvPropId
      *            the property id of the PV. It is "pv_name" for the main PV.
      * @return the value of the PV.
@@ -572,10 +572,10 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
     public ArrayModel getWidgetModel() {
         return (ArrayModel) super.getWidgetModel();
     }
-    
+
     /**Get the array index on the child widget.
      * @param child
-     * @return the array index on the child widget. -1 if the 
+     * @return the array index on the child widget. -1 if the
      * child is not an array element or it is not a child of the array widget.
      */
     public int getIndex(AbstractBaseEditPart child){
@@ -624,8 +624,8 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 VType value = (VType) newValue;
-                
-                        
+
+
                         if (value instanceof VNumberArray) {
                             Object wrappedArray = VTypeHelper.getWrappedArray(((VNumberArray)value));
                             if(wrappedArray!=null)
@@ -633,16 +633,16 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
                             else
                                 setValue(VTypeHelper.getDoubleArray(value));
                         } else{
-                            if(value instanceof VEnum)                        
+                            if(value instanceof VEnum)
                                 setValue(new String[]{((VEnum)value).getValue()});
-                            else if(value instanceof VString)                        
+                            else if(value instanceof VString)
                                 setValue(new String[]{((VString)value).getValue()});
                             else if(value instanceof VStringArray)
                                 setValue(((VStringArray)value).getData().toArray());
                             else
                                 setValue(VTypeHelper.getDoubleArray(value));
-                        
-                
+
+
                 }
                 return false;
             }
@@ -658,9 +658,9 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
                         updatePropSheet();
                     }
                 });
-        
+
         handler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 registerLoadPVDataTypeListener();
@@ -803,7 +803,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
     /**
      * Set PV to given value. Should accept Double, Double[], Integer, String,
      * maybe more.
-     * 
+     *
      * @param pvPropId
      * @param value
      */
@@ -819,10 +819,10 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
     @Override
     public void setValue(Object value) {
         if (value == null)
-            return;        
-        if (value.getClass().isArray()) {    
+            return;
+        if (value.getClass().isArray()) {
             int index = getArrayFigure().getIndex();
-            this.valueArray = value;    
+            this.valueArray = value;
             if (value instanceof String[]) {
                 String[] a = (String[])value;
                 setChildrenValue(index, Arrays.asList(a), ArrayDataType.STRING_ARRAY);
@@ -841,9 +841,9 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
                 setChildrenValue(index,new ShortArrayWrapper((short[])value), ArrayDataType.SHORT_ARRAY);
             } else if (value instanceof int[]) {
                 setChildrenValue(index, new IntArrayWrapper((int[])value), ArrayDataType.INT_ARRAY);
-            }            
+            }
             return;
-        }        
+        }
         super.setValue(value);
     }
 
@@ -856,15 +856,15 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
         boolean w = false;
         if(dataList instanceof IPrimaryArrayWrapper)
             w= true;
-            
+
         int arrayLength = w?((IPrimaryArrayWrapper)dataList).getSize() : ((List<?>)dataList).size();
         getWidgetModel().setArrayLength(arrayLength);
         getWidgetModel().setDataType(arrayDataType);
         for (Object child : getChildren()) {
             if (index < arrayLength){
-                Object o = 
+                Object o =
                             w?((IPrimaryArrayWrapper)dataList).get(index++) : ((List<?>)dataList).get(index++);
-                try {                    
+                try {
                     ((AbstractBaseEditPart) child).setValue(o);
                     ((AbstractBaseEditPart) child).getWidgetModel().setTooltip(o.toString());
                 } catch (Exception e2) {
@@ -874,7 +874,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
             else
                 try {
                     ((AbstractBaseEditPart) child).getWidgetModel().setTooltip(EMPTY_STRING);
-                    ((AbstractBaseEditPart) child).setValue(EMPTY_STRING);                    
+                    ((AbstractBaseEditPart) child).setValue(EMPTY_STRING);
                 } catch (Exception e) {
                     try {
                         ((AbstractBaseEditPart) child).setValue(0);
@@ -915,7 +915,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
     public void addSetPVValueListener(ISetPVValueListener listener) {
         delegate.addSetPVValueListener(listener);
     }
-    
+
     @Override
     public boolean isPVControlWidget() {
         return delegate.isPVControlWidget();

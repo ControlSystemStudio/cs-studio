@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.model.commands;
 
@@ -12,9 +12,9 @@ import org.eclipse.gef.commands.Command;
 /**
  * Undoable command that changes the database definition (dbd) reference of a
  * {@link IProject}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ChangeDbdFileCommand extends Command {
     private IProject project;

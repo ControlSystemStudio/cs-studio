@@ -46,7 +46,7 @@ import org.eclipse.osgi.util.NLS;
  * @author Xihui Chen, Sven Wende (class of same name in SDS)
  *
  */
-public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {    
+public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 
     private PropertyChangeListener childrenPropertyChangeListener;
     private PropertyChangeListener selectionPropertyChangeListener;
@@ -55,17 +55,17 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
     @Override
     protected void createEditPolicies() {
         super.createEditPolicies();
-        
+
         installEditPolicy(EditPolicy.CONTAINER_ROLE, new WidgetContainerEditPolicy());
-        installEditPolicy(EditPolicy.LAYOUT_ROLE, 
+        installEditPolicy(EditPolicy.LAYOUT_ROLE,
                 getExecutionMode() == ExecutionMode.EDIT_MODE ? new WidgetXYLayoutEditPolicy() : null);
-        
+
         //the snap feedback effect
         installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
         if(getExecutionMode() == ExecutionMode.EDIT_MODE)
             installEditPolicy(DropPVtoPVWidgetEditPolicy.DROP_PV_ROLE, new DropPVtoContainerEditPolicy());
     }
-    
+
     /**Get a child of this container by name.
      * @param name the name of the child widget
      * @return the widgetController of the child. null if the child doesn't exist.
@@ -80,8 +80,8 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
         }
         return null;
     }
-    
-    /**Get the widget which is a descendant of the container by name. 
+
+    /**Get the widget which is a descendant of the container by name.
      * @param name the name of the widget.
      * @return the widget controller.
      * @throws Exception If widget with this name doesn't exist
@@ -93,7 +93,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
         else
             return widget;
     }
-    
+
     /**Recursively search the widget
      * @param name
      * @return
@@ -102,7 +102,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
         AbstractBaseEditPart child = getChild(name);
         if(child != null)
             return child;
-        else {            
+        else {
             for(Object obj : getChildren()){
                 if(obj instanceof AbstractContainerEditpart){
                     AbstractContainerEditpart containerChild = (AbstractContainerEditpart)obj;
@@ -113,8 +113,8 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
             }
         }
         return null;
-    }    
-    
+    }
+
     /**
      * @return all pv names attached to this container and its children at runtime.
      */
@@ -134,17 +134,17 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
         }
         return result;
     }
-    
+
     /**Add a child widget to the container.
-     * @param widgetModel model of the widget to be added. 
+     * @param widgetModel model of the widget to be added.
      * @see WidgetUtil#createWidgetModel(String)
      */
     public void addChild(AbstractWidgetModel widgetModel){
         getWidgetModel().addChild(widgetModel);
     }
-    
+
     /**Add a child widget to the right of the container.
-     * @param widgetModel model of the widget to be added. 
+     * @param widgetModel model of the widget to be added.
      * @see WidgetUtil#createWidgetModel(String)
      */
     public void addChildToRight(AbstractWidgetModel widgetModel){
@@ -152,9 +152,9 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
         widgetModel.setX(range.x + range.width);
         addChild(widgetModel);
     }
-    
+
     /**Add a child widget to the bottom of the container.
-     * @param widgetModel model of the widget to be added. 
+     * @param widgetModel model of the widget to be added.
      * @see WidgetUtil#createWidgetModel(String)
      */
     public void addChildToBottom(AbstractWidgetModel widgetModel){
@@ -162,7 +162,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
         widgetModel.setY(range.y + range.height);
         addChild(widgetModel);
     }
-    
+
     /**Remove a child widget by its name.
      * @param widgetName name of the widget.
      * @throws RuntimeException if the widget name does not exist.
@@ -175,28 +175,28 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
              throw new RuntimeException(NLS.bind(
                      "Widget with name {0} doesn't exist!", widgetName));
     }
-    
+
     /**Remove a child widget.
      * @param child the child widget.
      */
     public void removeChild(AbstractBaseEditPart child){
         getWidgetModel().removeChild(child.getWidgetModel());
     }
-    
+
     /**Remove the child at index.
      * @param index index of the child.
      */
     public void removeChild(int index){
         removeChild((AbstractBaseEditPart) getChildren().get(index));
     }
-    
+
     /**
      * Remove all children.
      */
     public void removeAllChildren(){
         getWidgetModel().removeAllChildren();
     }
-    
+
     @Override
     public void setModel(Object model) {
         super.setModel(model);
@@ -206,12 +206,12 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
             if(getWidgetModel().getMacrosInput().isInclude_parent_macros()){
                 macrosMap.putAll(getWidgetModel().getParentMacroMap());
             }
-            macrosMap.putAll(getWidgetModel().getMacrosInput().getMacrosMap());        
+            macrosMap.putAll(getWidgetModel().getMacrosInput().getMacrosMap());
             getWidgetModel().setMacroMap(macrosMap);
         }
-        
-    }    
-    
+
+    }
+
     @Override
     protected void registerBasePropertyChangeHandlers() {
         super.registerBasePropertyChangeHandlers();
@@ -219,41 +219,41 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 MacrosInput macrosInput = (MacrosInput)newValue;
-                
+
                 LinkedHashMap<String, String> macrosMap = new LinkedHashMap<String, String>();
-                if(macrosInput.isInclude_parent_macros()){    
-                    macrosMap.putAll(getWidgetModel().getParentMacroMap());                    
-                }        
+                if(macrosInput.isInclude_parent_macros()){
+                    macrosMap.putAll(getWidgetModel().getParentMacroMap());
+                }
                 macrosMap.putAll(macrosInput.getMacrosMap());
                 getWidgetModel().setMacroMap(macrosMap);
                 return false;
             }
         };
-        setPropertyChangeHandler(AbstractContainerModel.PROP_MACROS, handler);        
-        
+        setPropertyChangeHandler(AbstractContainerModel.PROP_MACROS, handler);
+
         layout();
-        
-        childrenPropertyChangeListener = new PropertyChangeListener() {                    
+
+        childrenPropertyChangeListener = new PropertyChangeListener() {
                     public void propertyChange(PropertyChangeEvent evt) {
-                        
+
                         if(evt.getOldValue() instanceof Integer){
                             addChild(createChild(evt.getNewValue()), ((Integer)evt
                                     .getOldValue()).intValue());
                             layout();
                         }else if (evt.getOldValue() instanceof AbstractWidgetModel){
                             EditPart child = (EditPart)getViewer().getEditPartRegistry().get(
-                                    evt.getOldValue());                        
+                                    evt.getOldValue());
                             if(child != null){
                                 removeChild(child);
                                 layout();
-                            }    
-                        }else                            
-                            refreshChildren();                        
+                            }
+                        }else
+                            refreshChildren();
                     }
                 };
         getWidgetModel().getChildrenProperty().
             addPropertyChangeListener(childrenPropertyChangeListener);
-        
+
         if(getExecutionMode() == ExecutionMode.EDIT_MODE){
             selectionPropertyChangeListener = new PropertyChangeListener(){
                 @SuppressWarnings("unchecked")
@@ -265,24 +265,24 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
                         if(e != null)
                             widgetEditparts.add(e);
                     }
-                    
+
                     if(!(Boolean)evt.getOldValue()){ //append
                         getViewer().deselectAll();
-                    }                    
+                    }
                     for(EditPart editpart : widgetEditparts){
                         if(editpart.isSelectable())
                             getViewer().appendSelection(editpart);
                     }
                 }
             };
-            
+
             getWidgetModel().getSelectionProperty().addPropertyChangeListener(
                     selectionPropertyChangeListener);
         }
-        
+
     }
-    
-    
+
+
     @Override
     public void deactivate() {
         super.deactivate();
@@ -292,7 +292,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
         getWidgetModel().getSelectionProperty().removeAllPropertyChangeListeners();
         selectionPropertyChangeListener = null;
     }
-    
+
     @Override
     protected List<AbstractWidgetModel> getModelChildren() {
         return ((AbstractContainerModel)getModel()).getChildren();
@@ -302,7 +302,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
     public AbstractContainerModel getWidgetModel() {
         return (AbstractContainerModel)getModel();
     }
-    
+
     public AbstractLayoutEditpart getLayoutWidget(){
         for(Object child : getChildren()){
             if(child instanceof AbstractLayoutEditpart){
@@ -311,14 +311,14 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
         }
         return null;
     }
-    
+
     @Override
     protected void refreshChildren() {
         super.refreshChildren();
         if(isActive())
             layout();
     }
-    
+
     public void layout(){
         if(getExecutionMode() != ExecutionMode.RUN_MODE)
             return;
@@ -330,29 +330,29 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
             layoutter.layout(modelChildren, getFigure().getClientArea());
         }
     }
-    
+
     /**
-     * Automatically set the container size according its children's geography size.  
+     * Automatically set the container size according its children's geography size.
      */
     public void performAutosize(){
         Rectangle childrenRange = GeometryUtil.getChildrenRange(this);
         Point tranlateSize = new Point(childrenRange.x, childrenRange.y);
-        
+
         getWidgetModel().setSize(new Dimension(
                         childrenRange.width + figure.getInsets().left + figure.getInsets().right,
                         childrenRange.height + figure.getInsets().top + figure.getInsets().bottom));
-        
+
 
         for(Object editpart : getChildren()){
             AbstractWidgetModel widget = ((AbstractBaseEditPart)editpart).getWidgetModel();
             widget.setLocation(widget.getLocation().translate(tranlateSize.getNegated()));
-        }    
+        }
     }
-    
+
     /**
      *By default, it returns an Object Array of its children's value.
-     *If {@link #setValue(Object)} was called with a non Object[] input value, it 
-     *will return the value of its first child. 
+     *If {@link #setValue(Object)} was called with a non Object[] input value, it
+     *will return the value of its first child.
      *
      */
     @Override
@@ -371,11 +371,11 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
     /**
      * If input value is instance of Object[] and its length is equal or larger than children size,
      * it will write each element of value to each child according children's order. Otherwise,
-     * it will write the input value as an whole Object to every child. 
-     *  
+     * it will write the input value as an whole Object to every child.
+     *
      */
     @Override
-    public void setValue(Object value) {    
+    public void setValue(Object value) {
         //Write array to a container will write every child
         if (value instanceof Object[]) {
             Object[] a = (Object[]) value;
@@ -395,8 +395,8 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
             }
         }
     }
-    
-    
+
+
 
     /**
      * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
@@ -414,7 +414,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
             val = (Boolean)getViewer().getProperty(SnapToGrid.PROPERTY_GRID_ENABLED);
             if (val != null && val.booleanValue())
                 snapStrategies.add(new SnapToGrid(this));
-            
+
             if (snapStrategies.size() == 0)
                 return null;
             if (snapStrategies.size() == 1)

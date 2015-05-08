@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.model.commands;
 
@@ -20,7 +20,7 @@ import org.junit.Test;
 
 /**
  * Test class for {@link AddRecordCommand}.
- * 
+ *
  * @author Sven Wende
  *
  */
@@ -29,7 +29,7 @@ public final class AddRecordCommandTest extends AbstractTestCommand {
     private IInstance instance;
     private IRecord record;
     private AddRecordCommand command;
-    
+
     /**
      * @throws java.lang.Exception
      */
@@ -53,7 +53,7 @@ public final class AddRecordCommandTest extends AbstractTestCommand {
         command.undo();
         verifyBeforeCommandExecution();
     }
-    
+
 
     private void verifyAfterCommandExecution() {
         assertEquals(1, prototype.getRecords().size());
@@ -72,7 +72,7 @@ public final class AddRecordCommandTest extends AbstractTestCommand {
     }
 
 
-    
-    
+
+
 
 }

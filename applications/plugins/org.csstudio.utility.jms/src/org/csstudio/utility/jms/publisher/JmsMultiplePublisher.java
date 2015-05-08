@@ -45,7 +45,7 @@ import org.csstudio.utility.jms.sharedconnection.ISharedConnectionHandle;
  * @since 17.04.2012
  */
 public class JmsMultiplePublisher {
-    
+
     private ISharedConnectionHandle connectionHandle;
     private Hashtable<String, MessageProducer> producer;
     private SimpleDateFormat dateFormater;
@@ -61,39 +61,39 @@ public class JmsMultiplePublisher {
             closeAll();
         }
     }
-    
+
     public boolean addMessageProducer(String producerName, String topicName) {
-        
+
         boolean success = false;
-        
+
         if (producer.containsKey(producerName)) {
             return false;
         }
-        
+
         try {
 
             Topic topic = session.createTopic(topicName);
-            
+
             // Create a message producer
             MessageProducer p = session.createProducer(topic);
             producer.put(producerName, p);
             success = true;
-            
+
         } catch (JMSException jmse) {
             // Can be ignored
         }
 
         return success;
     }
-    
+
     /**
-     * 
+     *
      * @return The fresh MapMessage
      */
     public MapMessage createMapMessage() {
-        
+
         MapMessage message = null;
-        
+
         if(session != null) {
             try {
                 message = session.createMapMessage();
@@ -101,30 +101,30 @@ public class JmsMultiplePublisher {
                 // Can be ignored
             }
         }
-        
+
         return message;
     }
 
     /**
-     * 
+     *
      * @param message
      * @return True if the message has been sent, otherwise false
      */
     public boolean sendMessage(String producerName, Message message) {
-        
+
         boolean success = false;
-        
+
         if (producer.containsKey(producerName) == false) {
             return false;
         }
-        
+
         try {
             producer.get(producerName).send(message);
             success = true;
         } catch (JMSException jmse) {
             // Can be ignored
         }
-        
+
         return success;
     }
 
@@ -135,7 +135,7 @@ public class JmsMultiplePublisher {
     public boolean isConnected() {
         return connectionHandle.isActive();
     }
-    
+
     public void closeAll() {
         Enumeration<String> keys = producer.keys();
         while (keys.hasMoreElements()) {

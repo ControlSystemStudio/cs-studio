@@ -34,10 +34,10 @@ import org.epics.pvmanager.PVReaderListener;
 import org.epics.vtype.VType;
 
 /** Data provider based on PVManager and assumptions about EPICS channels
- * 
+ *
  *  <p>Fetches basic channel information from PVManager
  *  and picks a default set of fields.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class EPICSDataProvider implements DataProvider
@@ -62,10 +62,10 @@ public class EPICSDataProvider implements DataProvider
                     // Done (with no data)
                     done.countDown();
                 }
-            
+
                 // No error:
                 final String full_name;
-                
+
                 if (name.indexOf("://") > 0)
                     full_name = name;
                 else
@@ -85,7 +85,7 @@ public class EPICSDataProvider implements DataProvider
                 done.countDown();
             }
         };
-        
+
         pv = PVManager.read(latestValueOf(vType(name))).timeout(ofMillis(Preferences.getTimeout())).readListener(pv_listener).maxRate(ofSeconds(0.5));
         // Wait for value from reader
         done.await();
@@ -97,7 +97,7 @@ public class EPICSDataProvider implements DataProvider
             new PVField(name + ".SCAN"),
             new PVField(name + ".VAL")
         );
-        
+
         final PVInfo info = new PVInfo(properties, fields);
         Logger.getLogger(getClass().getName()).log(Level.FINE, "EPICS Info for {0}: {1}", new Object[] { name, info });
         return info;

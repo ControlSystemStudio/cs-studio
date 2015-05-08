@@ -14,7 +14,7 @@ public class ADL2BOYPlugin extends AbstractUIPlugin {
 
     // The shared instance
     private static ADL2BOYPlugin plugin;
-    
+
     /**
      * The constructor
      */

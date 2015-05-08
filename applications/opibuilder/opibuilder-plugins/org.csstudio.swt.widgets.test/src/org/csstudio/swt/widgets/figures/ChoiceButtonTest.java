@@ -15,11 +15,11 @@ public class ChoiceButtonTest extends AbstractChoiceFigureTest{
     public Figure createTestWidget() {
         return new ChoiceButtonFigure(true);
     }
-    
-    
-    
+
+
+
     @Override
     public boolean isAutoTest() {
         return true;
-    }        
+    }
 }

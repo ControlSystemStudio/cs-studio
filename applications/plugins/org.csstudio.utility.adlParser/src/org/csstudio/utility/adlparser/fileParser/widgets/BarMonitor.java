@@ -14,7 +14,7 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.internationalization.Messages;
 
 /**
- * 
+ *
  * @author hammonds
  *
  */
@@ -41,7 +41,7 @@ public class BarMonitor extends ADLAbstractWidget {
                     if (_adlObject != null){
                         _hasObject = true;
                     }
-                    
+
                 }
                 else if (childWidget.getType().equals("limits")){
                     _adlLimits = new ADLLimits(childWidget);
@@ -71,7 +71,7 @@ public class BarMonitor extends ADLAbstractWidget {
             }
         }
         catch (WrongADLFormatException ex) {
-            
+
         }
 
 

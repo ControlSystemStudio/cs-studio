@@ -20,11 +20,11 @@ public class ChoiceButtonModel extends AbstractChoiceModel {
     public ChoiceButtonModel() {
         setBackgroundColor(new RGB(240,240,240));
     }
-    
+
     @Override
     public String getTypeID() {
         return ID;
     }
-    
+
 
 }

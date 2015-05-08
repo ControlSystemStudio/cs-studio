@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.model.commands;
 
@@ -9,7 +9,7 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * Undoable command that removes a parameter of a {@link IPrototype}.
- * 
+ *
  * @author Sven Wende
  */
 public final class RemoveParameterCommand extends Command {

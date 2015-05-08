@@ -14,9 +14,9 @@ import org.junit.Test;
 /**
  * Unit test for {@link EMailCommandValidator}. Parses "mailto" automated action
  * command and validate its format.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
- * 
+ *
  */
 public class EMailCommandValidatorUnitTest {
 

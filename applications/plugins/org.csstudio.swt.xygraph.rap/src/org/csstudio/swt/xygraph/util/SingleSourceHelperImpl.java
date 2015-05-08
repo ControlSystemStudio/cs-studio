@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Display;
 
 public class SingleSourceHelperImpl extends SingleSourceHelper {
 
-    private static final String NOT_IMPLEMENTED = 
+    private static final String NOT_IMPLEMENTED =
             "This method has not been implemented yet for RAP";
 
     @Override
@@ -28,7 +28,7 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
     @Override
     protected Image createInternalVerticalTextImage(String text, Font font, RGB color,
             boolean upToDown) {
-          org.eclipse.draw2d.geometry.Dimension titleSize = 
+          org.eclipse.draw2d.geometry.Dimension titleSize =
                   FigureUtilities.getTextExtents(text,    font);
          int w = titleSize.height;
          int h = titleSize.width;
@@ -38,17 +38,17 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
             h = 1;
         BufferedImage image = new BufferedImage( w, h, BufferedImage.TYPE_INT_ARGB );
         Graphics2D gr2d = image.createGraphics();
-        
+
         gr2d.setColor(new Color(240,240,240));
         gr2d.fillRect(0, 0, w, h);
-        
+
         gr2d.setColor( new java.awt.Color( color.red, color.green, color.blue) );
         FontData fd = font.getFontData()[0];
         gr2d.setFont(new java.awt.Font(fd.getName(), fd.getStyle(), fd.getHeight()));
 
         AffineTransform at = new AffineTransform();
         at.setToRotation(-Math.PI/2.0);
-        
+
         gr2d.setTransform(at);
         gr2d.drawString(text, -h, w-w/3);
         ImageData imageData =  AWT2SWTImageConverter.convertToSWT(image);
@@ -57,12 +57,12 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
         Image swtImage = new Image(Display.getCurrent(), imageData);
         return swtImage;
     }
-    
+
     @Override
     protected Image getInternalXYGraphSnapShot(XYGraph xyGraph) {
         throw new RuntimeException(NOT_IMPLEMENTED);
     }
-    
+
     @Override
     protected String getInternalImageSavePath() {
         throw new RuntimeException(NOT_IMPLEMENTED);

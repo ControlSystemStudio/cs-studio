@@ -9,7 +9,7 @@ public class DeviceAndAPV implements Serializable
 {
     /** @see Serializable */
     final private static long serialVersionUID = 1L;
-    
+
     private final Device device;
     private final ProcessVariable pv;
 

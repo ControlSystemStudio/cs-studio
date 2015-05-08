@@ -46,7 +46,7 @@ import org.csstudio.dal.spi.PropertyFactory;
  * are stored within a {@link HashMap}. Note that HashMap is not synchronized
  * and therefore if multiple threads add or remove properties to this family
  * the calls should be synchronized externally.
- * 
+ *
  * @author ikriznar
  *
  */
@@ -55,7 +55,7 @@ public class PropertyFamilyImpl
 {
     PropertyFactory pf;
     static final Class<?> c = DynamicValueProperty.class;
-    
+
     /**
      * Constructs a new PropertyFamilyImpl that belongs to the given {@link PropertyFactory}.
      */
@@ -63,7 +63,7 @@ public class PropertyFamilyImpl
     public PropertyFamilyImpl(PropertyFactory pf)
     {
         super((Class<DynamicValueProperty<?>>) c);
-        
+
         this.pf = pf;
     }
 
@@ -100,7 +100,7 @@ public class PropertyFamilyImpl
     public void destroy(DynamicValueProperty<?> prop)
     {
         if (prop==null || !contains(prop)) return;
-        this.remove((DynamicValueProperty<?>) prop); 
+        this.remove((DynamicValueProperty<?>) prop);
         AbstractPlug plug = (AbstractPlug)pf.getPlug();
         Proxy<?>[] proxy = ((DataAccessImpl<?>)prop).releaseProxy(true);
         if (proxy!=null && proxy[0]!=null) {
@@ -151,9 +151,9 @@ public class PropertyFamilyImpl
 
     /**
      * Returns true if context contains property.
-     * 
+     *
      * @param property the property to check
-     * 
+     *
      * @see org.csstudio.dal.context.PropertyContext#containsProperty(java.lang.Object)
      */
     public boolean containsProperty(Object property) {
@@ -165,9 +165,9 @@ public class PropertyFamilyImpl
      * <p>
      * <b>Note!</b> there could be multiple property instances with same name in family.
      * </p>
-     * 
+     *
      * @param name the property name to check for
-     * 
+     *
      * @see org.csstudio.dal.context.PropertyContext#containsProperty(java.lang.String)
      */
     public boolean containsProperty(String name) {
@@ -175,26 +175,26 @@ public class PropertyFamilyImpl
     }
 
     /**
-     * Returns first property it finds with provided name. 
+     * Returns first property it finds with provided name.
      * There is no specific order in which multiple properties are held in the family.
-     * 
+     *
      * <p>
      * <b>Note!</b> there could be multiple property instances with same name in family.
      * </p>
-     * 
+     *
      * <p>
      * This method calls <code>getFirst(String)</code>.
      * </p>
-     * 
+     *
      * @param name the property name to check for
-     * 
+     *
      * @see org.csstudio.dal.context.PropertyContext#getProperty(java.lang.String)
      * @see PropertyCollectionMap#getFirst(String);
      */
     public DynamicValueProperty<?> getProperty(String name) {
         return getFirst(name);
     }
-    
+
     /**
      * Returns plug type string, which is distinguishing for plug which
      * creates  proxies for particular communication layer.<p>For

@@ -11,7 +11,7 @@ import org.eclipse.swt.SWT;
 
 /**
  * Used to define a SWT StyleRange on proposal display.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class ProposalStyle {

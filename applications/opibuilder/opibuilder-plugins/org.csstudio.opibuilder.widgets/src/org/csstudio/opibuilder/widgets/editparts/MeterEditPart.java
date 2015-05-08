@@ -16,9 +16,9 @@ import org.eclipse.draw2d.IFigure;
 /**
  * EditPart controller for the Gauge widget. The controller mediates between
  * {@link MeterModel} and {@link MeterFigure}.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public final class MeterEditPart extends AbstractMarkedWidgetEditPart {
 

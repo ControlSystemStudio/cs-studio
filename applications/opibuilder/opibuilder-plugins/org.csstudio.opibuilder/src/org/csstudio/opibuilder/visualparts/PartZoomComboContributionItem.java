@@ -24,7 +24,7 @@ import org.eclipse.ui.IWorkbenchPart;
 /**Tweak {@link ZoomComboContributionItem} to dedicate to a part.
  * A ControlContribution that uses a {@link org.eclipse.swt.widgets.Combo} as
  * its control
- * 
+ *
  * @author Eric Bordeau, Xihui Chen
  */
 public class PartZoomComboContributionItem extends ContributionItem implements
@@ -41,7 +41,7 @@ public class PartZoomComboContributionItem extends ContributionItem implements
 
     /**
      * Constructor for ComboToolItem.
-     * 
+     *
      * @param partService
      *            used to add a PartListener
      */
@@ -51,7 +51,7 @@ public class PartZoomComboContributionItem extends ContributionItem implements
 
     /**
      * Constructor for ComboToolItem.
-     * 
+     *
      * @param partService
      *            used to add a PartListener
      * @param initString
@@ -63,7 +63,7 @@ public class PartZoomComboContributionItem extends ContributionItem implements
 
     /**
      * Constructor for ComboToolItem.
-     * 
+     *
      * @param partService
      *            used to add a PartListener
      * @param initStrings
@@ -74,7 +74,7 @@ public class PartZoomComboContributionItem extends ContributionItem implements
         super(GEFActionConstants.ZOOM_TOOLBAR_WIDGET);
         this.initStrings = initStrings;
         service = partService;
-        Assert.isNotNull(partService);        
+        Assert.isNotNull(partService);
     }
 
     private void refresh(boolean repopulateCombo) {
@@ -104,7 +104,7 @@ public class PartZoomComboContributionItem extends ContributionItem implements
 
     /**
      * Computes the width required by control
-     * 
+     *
      * @param control
      *            The control to compute width
      * @return int The width required
@@ -116,7 +116,7 @@ public class PartZoomComboContributionItem extends ContributionItem implements
     /**
      * Creates and returns the control for this contribution item under the
      * given parent composite.
-     * 
+     *
      * @param parent
      *            the parent composite
      * @return the new control
@@ -167,7 +167,7 @@ public class PartZoomComboContributionItem extends ContributionItem implements
      * method calls the <code>createControl</code> framework method. Subclasses
      * must implement <code>createControl</code> rather than overriding this
      * method.
-     * 
+     *
      * @param parent
      *            The parent of the control to fill
      */
@@ -178,7 +178,7 @@ public class PartZoomComboContributionItem extends ContributionItem implements
     /**
      * The control item implementation of this <code>IContributionItem</code>
      * method throws an exception since controls cannot be added to menus.
-     * 
+     *
      * @param parent
      *            The menu
      * @param index
@@ -194,7 +194,7 @@ public class PartZoomComboContributionItem extends ContributionItem implements
      * control under the given parent, and then creates a new tool item to hold
      * it. Subclasses must implement <code>createControl</code> rather than
      * overriding this method.
-     * 
+     *
      * @param parent
      *            The ToolBar to add the new control to
      * @param index
@@ -208,7 +208,7 @@ public class PartZoomComboContributionItem extends ContributionItem implements
 
     /**
      * Returns the zoomManager.
-     * 
+     *
      * @return ZoomManager
      */
     public ZoomManager getZoomManager() {
@@ -217,7 +217,7 @@ public class PartZoomComboContributionItem extends ContributionItem implements
 
     /**
      * Sets the ZoomManager
-     * 
+     *
      * @param zm
      *            The ZoomManager
      */
@@ -273,14 +273,14 @@ public class PartZoomComboContributionItem extends ContributionItem implements
     public void zoomChanged(double zoom) {
         refresh(false);
     }
-    
+
     /**
      * @param part a part which must have a ZoomManager Adapter.
      */
     public void setPart(IWorkbenchPart part){
         if(this.part == part)
             return;
-        this.part = part;        
+        this.part = part;
         ZoomManager newZoomManager = (ZoomManager)part.getAdapter(ZoomManager.class);
         if(newZoomManager != null){
             setZoomManager(newZoomManager);

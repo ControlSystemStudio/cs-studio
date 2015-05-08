@@ -44,24 +44,24 @@ import org.slf4j.LoggerFactory;
 public class ADLDisplay extends Widget{
 
     private static final Logger LOG = LoggerFactory.getLogger(ADLDisplay.class);
-    
-    /** 
+
+    /**
      * The Color of (front?) Object.
      */
     private String _clr;
-    
+
     /**
      * The background color of the Display.
      */
     private String _bclr;
-    
+
     /**
-     * The string from ADL File with the Colormap. 
+     * The string from ADL File with the Colormap.
      */
     private String _cmap;
 
     /**
-     * 
+     *
      * @param display ADLWidget that describe the Display.
      * @param root Root Model for the Display.
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
@@ -74,7 +74,7 @@ public class ADLDisplay extends Widget{
                     object.setHeight(object.getHeight());
             }else {
                 throw new WrongADLFormatException(Messages.Display_WrongADLFormatException_Parameter_Begin+widget.getType()+Messages.Display_WrongADLFormatException_Parameter_End);
-            } 
+            }
         }
         for (FileLine fileLine : display.getBody()) {
             String parameter = fileLine.getLine();
@@ -110,7 +110,7 @@ public class ADLDisplay extends Widget{
     }
 
     /**
-     * 
+     *
      */
     private void makeElemnet() {
         setDefaults();
@@ -136,7 +136,7 @@ public class ADLDisplay extends Widget{
         }
     }
     /**
-     * 
+     *
      */
     private void setDefaults() {
         String[] id= new String[]{AbstractWidgetModel.PROP_PRIMARY_PV,
@@ -158,7 +158,7 @@ public class ADLDisplay extends Widget{
      */
     @Override
     final void setWidgetType() {
-//        _widget = createWidgetModel(DisplayModel.ID);    
-    } 
+//        _widget = createWidgetModel(DisplayModel.ID);
+    }
 
 }

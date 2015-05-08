@@ -60,10 +60,10 @@ public class ProcessVariablePopupTestView extends ViewPart {
      * existing objects in adapters or simply return
      * objects as-is. These objects may be sensitive
      * to the current input of the view, or ignore
-     * it and always show the same content 
+     * it and always show the same content
      * (like Task List, for example).
      */
-     
+
     class ViewContentProvider implements IStructuredContentProvider {
         public void inputChanged(Viewer v, Object oldInput, Object newInput) {
         }
@@ -113,10 +113,10 @@ public class ProcessVariablePopupTestView extends ViewPart {
      */
     public void createPartControl(Composite parent) {
         parent.setLayout(new GridLayout(2, false));
-        
+
         Label lblProcessVariables = new Label(parent, SWT.NONE);
         lblProcessVariables.setText("ProcessVariable:");
-        
+
         Label lblAdaptableToProcessvariable = new Label(parent, SWT.NONE);
         lblAdaptableToProcessvariable.setText("Adaptable to ProcessVariable:");
         pvViewer = new TableViewer(parent, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
@@ -126,7 +126,7 @@ public class ProcessVariablePopupTestView extends ViewPart {
         pvViewer.setLabelProvider(new ViewLabelProvider());
         pvViewer.setSorter(new NameSorter());
         pvViewer.setInput(getViewSite());
-        
+
         TableViewer toPvViewer = new TableViewer(parent, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         toPvTable = toPvViewer.getTable();
         toPvTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -137,7 +137,7 @@ public class ProcessVariablePopupTestView extends ViewPart {
         MenuManager menuMgr = new MenuManager();
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener() {
-            
+
             @Override
             public void menuAboutToShow(IMenuManager manager) {
                 // After a right click command changes the active view,
@@ -146,7 +146,7 @@ public class ProcessVariablePopupTestView extends ViewPart {
                 try {
                     getSite().getPage().showView(ID);
                 } catch(Exception ed) {
-                    
+
                 }
                 ProcessVariablePopupTestView.this.fillContextMenu(manager);
             }
@@ -154,7 +154,7 @@ public class ProcessVariablePopupTestView extends ViewPart {
         Menu menu = menuMgr.createContextMenu(toPvViewer.getControl());
         toPvViewer.getControl().setMenu(menu);
         getSite().registerContextMenu(menuMgr, toPvViewer);
-        
+
         hookContextMenu();
     }
 
@@ -162,7 +162,7 @@ public class ProcessVariablePopupTestView extends ViewPart {
         MenuManager menuMgr = new MenuManager("#PopupMenu");
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener() {
-            
+
             @Override
             public void menuAboutToShow(IMenuManager manager) {
                 // After a right click command changes the active view,
@@ -171,7 +171,7 @@ public class ProcessVariablePopupTestView extends ViewPart {
                 try {
                     getSite().getPage().showView(ID);
                 } catch(Exception ed) {
-                    
+
                 }
                 ProcessVariablePopupTestView.this.fillContextMenu(manager);
             }

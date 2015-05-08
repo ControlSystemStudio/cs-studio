@@ -32,9 +32,9 @@ import org.eclipse.gef.requests.CreateRequest;
 /**
  * The EditPolicy for array widget. It can only be used for
  * {@link ArrayEditPart}
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class ArrayLayoutEditPolicy extends WidgetXYLayoutEditPolicy {
 
@@ -106,12 +106,12 @@ public class ArrayLayoutEditPolicy extends WidgetXYLayoutEditPolicy {
         return result;
     }
 
-    
-    
-    
+
+
+
     /**
      *The behavior of resizing children in an array will be determined by its editpart.
-     * 
+     *
      * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#
      * getResizeChildrenCommand(org.eclipse.gef.requests.ChangeBoundsRequest)
      */
@@ -133,7 +133,7 @@ public class ArrayLayoutEditPolicy extends WidgetXYLayoutEditPolicy {
 
         return resize.unwrap();
     }
-    
+
     /* Override super method because array widget only allows adding one child.
      * (non-Javadoc)
      * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#getAddCommand(org.eclipse.gef.Request)

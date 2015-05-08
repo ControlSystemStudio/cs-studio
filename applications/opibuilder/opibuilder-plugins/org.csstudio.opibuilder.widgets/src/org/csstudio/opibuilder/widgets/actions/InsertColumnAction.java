@@ -35,7 +35,7 @@ import org.eclipse.ui.IWorkbenchPart;
  *
  */
 public class InsertColumnAction implements IObjectActionDelegate {
-    
+
     private class InsertColumnDialog extends Dialog {
         private boolean isBefore;
         private String columnTitle;
@@ -56,7 +56,7 @@ public class InsertColumnAction implements IObjectActionDelegate {
         protected Control createDialogArea(Composite parent) {
             getShell().setText("Insert Column");
             Composite container = (Composite) super.createDialogArea(parent);
-            
+
             Group grpPosition = new Group(container, SWT.NONE);
             grpPosition.setText("Insert");
             GridData gd_grpPosition = new GridData(SWT.CENTER, SWT.CENTER, true, false, 1, 1);
@@ -66,22 +66,22 @@ public class InsertColumnAction implements IObjectActionDelegate {
             fillLayout.marginWidth = 5;
             fillLayout.spacing = 5;
             grpPosition.setLayout(fillLayout);
-            
+
             final Button beforeRadio = new Button(grpPosition, SWT.RADIO);
             beforeRadio.setText("Before this column");
             beforeRadio.setSelection(true);
             isBefore = true;
-            
+
             beforeRadio.addSelectionListener(new SelectionAdapter() {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     isBefore = beforeRadio.getSelection();
                 }
             });
-            
+
             Button afterRadio = new Button(grpPosition, SWT.RADIO);
             afterRadio.setText("After this column");
-            
+
             Label title = new Label(grpPosition, SWT.None);
             title.setText("Header");
             if (allowedHeaders == null) {
@@ -103,14 +103,14 @@ public class InsertColumnAction implements IObjectActionDelegate {
                     }
                 });
             }
-            
+
             return container;
         }
 
         public boolean isBefore(){
             return isBefore;
         }
-        
+
         public String getColumnTitle() {
             return columnTitle;
         }
@@ -119,7 +119,7 @@ public class InsertColumnAction implements IObjectActionDelegate {
     private IStructuredSelection selection;
     private IWorkbenchPart targetPart;
     private String[] allowedHeaders;
-    
+
     public InsertColumnAction() {
     }
 
@@ -134,14 +134,14 @@ public class InsertColumnAction implements IObjectActionDelegate {
         if (dialog.open() == Dialog.OK){
             boolean before = dialog.isBefore();
             int index =0;
-            if(!tableEditPart.getTable().isEmpty())    
+            if(!tableEditPart.getTable().isEmpty())
                 index = tableEditPart.getMenuTriggeredCell().y + (before? 0:1);
             tableEditPart.getTable().insertColumn(index);
             if(dialog.getColumnTitle() != null && !dialog.getColumnTitle().isEmpty()){
                 tableEditPart.getTable().setColumnHeader(index, dialog.getColumnTitle());
             }
         }
-        
+
     }
 
     public void selectionChanged(IAction action, ISelection selection) {
@@ -149,8 +149,8 @@ public class InsertColumnAction implements IObjectActionDelegate {
             this.selection = (IStructuredSelection) selection;
         }
     }
-    
-    private TableEditPart getSelectedWidget(){ 
+
+    private TableEditPart getSelectedWidget(){
         if(selection.getFirstElement() instanceof TableEditPart){
             return (TableEditPart)selection.getFirstElement();
         }else

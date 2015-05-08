@@ -33,28 +33,28 @@ import org.junit.Test;
 
 
 /**
- * TODO (hrickens) : 
- * 
+ * TODO (hrickens) :
+ *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
  * @since 22.06.2011
  */
 public class AliasRuleJunitTest {
-    
+
     @Test
     public void testEvaluate() throws Exception {
         AliasRule aliasRule = new AliasRule();
         assertNotNull(aliasRule.getDescription());
         assertTrue(aliasRule.getDescription().length()>0);
-        
+
         Object out = aliasRule.evaluate(new String[] {"MyChannel"});
         assertTrue(out instanceof Map);
         Map outMap = (Map) out;
         String outChannel = (String) outMap.get("channel");
         assertNotNull(outChannel);
         assertEquals("MyChannel", outChannel);
-        
+
         out = aliasRule.evaluate(new String[] {"MyChannel[AlarmMax]"});
         assertTrue(out instanceof Map);
         outMap = (Map) out;
@@ -75,7 +75,7 @@ public class AliasRuleJunitTest {
         outChannel = (String) outMap.get("channel");
         assertNotNull(outChannel);
         assertEquals("MyChannel", outChannel);
-        
+
         out = aliasRule.evaluate(new String[] {"MyChannel.EGU MNS PP"});
         assertTrue(out instanceof Map);
         outMap = (Map) out;

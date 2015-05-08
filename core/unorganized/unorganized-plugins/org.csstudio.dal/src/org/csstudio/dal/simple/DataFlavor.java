@@ -15,8 +15,8 @@ import org.csstudio.dal.StringProperty;
 import org.csstudio.dal.StringSeqProperty;
 
 /**
- * Enumeration for data types supported by DAL and this broker. 
- * 
+ * Enumeration for data types supported by DAL and this broker.
+ *
  * @author ikriznar
  *
  */
@@ -32,7 +32,7 @@ public enum DataFlavor {
     PATTERN(BitSet.class,PatternProperty.class),
     ENUM(Long.class,EnumProperty.class),
     ANYDATA(AnyData.class,null);
-    
+
     private Class<? extends DynamicValueProperty<?>> dalType;
     private Class<?> javaType;
 
@@ -44,7 +44,7 @@ public enum DataFlavor {
     public Class<? extends DynamicValueProperty<?>> getDALType() {
         return dalType;
     }
-    
+
     public Class<?> getJavaType() {
         return javaType;
     }
@@ -59,7 +59,7 @@ public enum DataFlavor {
         }
         return null;
     }
-    
+
     /**
      * Converts Java data type to one of DAL supported Java data types,
      * such as <code>Double</code>, <code>Long</code>, <code>String</code> and similar.
@@ -67,26 +67,26 @@ public enum DataFlavor {
      * @return DAL supported Java data type
      */
     public static Class<?> toDALDataType(Class<?> type) {
-        
+
         if (type==null) {
             return null;
         }
-        
-        if (type == Double.class 
+
+        if (type == Double.class
                 || type == Float.class
                 || type == double.class
                 || type == float.class) {
             return Double.class;
         }
-        
-        if (type == Double[].class 
+
+        if (type == Double[].class
                 || type == Float[].class
                 || type == double[].class
                 || type == float[].class) {
             return double[].class;
         }
 
-        if (type == Long.class 
+        if (type == Long.class
                 || type == Integer.class
                 || type == Short.class
                 || type == long.class
@@ -95,8 +95,8 @@ public enum DataFlavor {
                 || type == char.class) {
             return Long.class;
         }
-        
-        if (type == Long[].class 
+
+        if (type == Long[].class
                 || type == Integer[].class
                 || type == Short[].class
                 || type == long[].class
@@ -105,8 +105,8 @@ public enum DataFlavor {
                 || type == char[].class) {
             return long[].class;
         }
-        
-        if (type == String.class 
+
+        if (type == String.class
                 || type == String[].class
                 || type == Object.class
                 || type == Object[].class
@@ -114,18 +114,18 @@ public enum DataFlavor {
                 || type == AnyData.class) {
             return type;
         }
-        
+
         return null;
 
     }
-    
+
     public static Class<? extends DynamicValueProperty<?>> toDALPropertyType(Class<?> javaType) {
         Class<?> t= toDALDataType(javaType);
-        
+
         if (t == Double.class) {
             return DoubleProperty.class;
         }
-        
+
         if (t == double[].class) {
             return DoubleSeqProperty.class;
         }
@@ -137,7 +137,7 @@ public enum DataFlavor {
         if (t == long[].class) {
             return LongSeqProperty.class;
         }
- 
+
         if (t == String.class) {
             return LongProperty.class;
         }
@@ -145,7 +145,7 @@ public enum DataFlavor {
         if (t == String[].class) {
             return LongSeqProperty.class;
         }
-        
+
         if (t == Object.class) {
             return ObjectProperty.class;
         }

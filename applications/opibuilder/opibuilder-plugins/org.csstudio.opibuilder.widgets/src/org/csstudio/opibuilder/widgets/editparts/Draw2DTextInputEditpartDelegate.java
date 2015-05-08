@@ -20,9 +20,9 @@ import org.eclipse.gef.EditPolicy;
 
 /**
  * The editpart delegate for draw2d text input widget.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class Draw2DTextInputEditpartDelegate implements ITextInputEditPartDelegate {
 
@@ -30,8 +30,8 @@ public class Draw2DTextInputEditpartDelegate implements ITextInputEditPartDelega
     private TextInputEditpart editpart;
     private TextInputModel model;
     private TextInputFigure textInputFigure;
-    
-    
+
+
 
     /**
      * @param editpart
@@ -42,7 +42,7 @@ public class Draw2DTextInputEditpartDelegate implements ITextInputEditPartDelega
             TextInputModel model, TextInputFigure superFigure) {
         this.editpart = editpart;
         this.model = model;
-        this.textInputFigure =superFigure; 
+        this.textInputFigure =superFigure;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class Draw2DTextInputEditpartDelegate implements ITextInputEditPartDelega
                         outputText(newValue);
                     }
 
-                    
+
                 });
 
         return textInputFigure;
@@ -89,21 +89,21 @@ public class Draw2DTextInputEditpartDelegate implements ITextInputEditPartDelega
         editpart.installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
                 new TextUpdateDirectEditPolicy());
     }
-    
+
     @Override
-    public void registerPropertyChangeHandlers() {        
-        
+    public void registerPropertyChangeHandlers() {
+
         IWidgetPropertyChangeHandler selectorTypeHandler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 ((TextInputFigure)figure).setSelectorType(model.getSelectorType());
                 return false;
             }
         };
-        
+
         editpart.setPropertyChangeHandler(TextInputModel.PROP_SELECTOR_TYPE, selectorTypeHandler);
-        
+
         IWidgetPropertyChangeHandler dateTimeFormatHandler = new IWidgetPropertyChangeHandler() {
 
             public boolean handleChange(Object oldValue, Object newValue,
@@ -137,8 +137,8 @@ public class Draw2DTextInputEditpartDelegate implements ITextInputEditPartDelega
             }
         };
         editpart.setPropertyChangeHandler(TextInputModel.PROP_FILE_RETURN_PART,
-                fileReturnPartHandler);    
-    }    
+                fileReturnPartHandler);
+    }
 
 
     /**
@@ -165,9 +165,9 @@ public class Draw2DTextInputEditpartDelegate implements ITextInputEditPartDelega
         default:
             break;
         }
-        
+
     }
-    
+
 
 
 }

@@ -26,7 +26,7 @@ public class XMLWriterUnitTest
         // Write into string
         final StringWriter sw = new StringWriter();
         final PrintWriter out = new PrintWriter(sw);
-        
+
         // Create some XML
         XMLWriter.header(out);
         XMLWriter.start(out, 0, "content");
@@ -35,11 +35,11 @@ public class XMLWriterUnitTest
         // Code point 246 is o-umlaut
         XMLWriter.XML(out, 1, "umlaut", "Hall\u00f6?");
         XMLWriter.end(out, 0, "content");
-        
+
         // Get the XML as string
         out.flush();
         final String xml = sw.toString();
-        
+
         // Check XML
         System.out.println(xml);
         assertTrue("Header", xml.startsWith("<?xml"));

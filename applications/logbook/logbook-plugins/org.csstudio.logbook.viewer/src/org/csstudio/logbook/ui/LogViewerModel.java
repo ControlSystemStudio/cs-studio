@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -10,14 +10,14 @@ import org.eclipse.ui.IPersistableElement;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class LogViewerModel implements IEditorInput {
 
     private LogEntry logEntry;
 
     /**
-     * 
+     *
      */
     public LogViewerModel(LogEntry logEntry) {
     this.logEntry = logEntry;
@@ -25,7 +25,7 @@ public class LogViewerModel implements IEditorInput {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
      */
     @SuppressWarnings("rawtypes")
@@ -36,7 +36,7 @@ public class LogViewerModel implements IEditorInput {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.IEditorInput#exists()
      */
     @Override
@@ -46,7 +46,7 @@ public class LogViewerModel implements IEditorInput {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
      */
     @Override
@@ -56,7 +56,7 @@ public class LogViewerModel implements IEditorInput {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.IEditorInput#getName()
      */
     @Override
@@ -70,7 +70,7 @@ public class LogViewerModel implements IEditorInput {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.IEditorInput#getPersistable()
      */
     @Override
@@ -80,7 +80,7 @@ public class LogViewerModel implements IEditorInput {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.IEditorInput#getToolTipText()
      */
     @Override

@@ -19,7 +19,7 @@ import org.osgi.service.http.HttpService;
 public class ScanWebServer
 {
     final private int port;
-    
+
     public ScanWebServer(final BundleContext context,
             final ScanServer scan_server, final int port) throws Exception
     {

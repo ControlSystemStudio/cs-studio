@@ -10,9 +10,9 @@ import org.eclipse.swt.graphics.Color;
 /**
  * EditPart controller for the scaled slider widget. The controller mediates
  * between {@link ScaledSliderModel} and {@link ScaledSliderFigure}.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 

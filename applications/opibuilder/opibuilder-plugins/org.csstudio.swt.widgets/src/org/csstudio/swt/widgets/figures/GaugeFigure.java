@@ -43,69 +43,69 @@ import org.eclipse.swt.widgets.Display;
 public class GaugeFigure extends AbstractRoundRampedFigure {
 
     private final Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
-            CustomMediaFactory.COLOR_WHITE); 
+            CustomMediaFactory.COLOR_WHITE);
     private final Color BORDER_COLOR = CustomMediaFactory.getInstance().getColor(
-            new RGB(100, 100, 100)); 
+            new RGB(100, 100, 100));
     private final Color GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
-            CustomMediaFactory.COLOR_GRAY); 
+            CustomMediaFactory.COLOR_GRAY);
     private final Color DEFAULT_NEEDLE_COLOR = CustomMediaFactory.getInstance().getColor(
             CustomMediaFactory.COLOR_RED);
     private final Font DEFAULT_LABEL_FONT = CustomMediaFactory.getInstance().getFont(
             new FontData("Arial", 12, SWT.BOLD));
     private final static int BORDER_WIDTH = 2;
-    
+
     private boolean effect3D = true;
-    
+
     private NeedleCenter needleCenter;
-    
+
     private Needle needle;
-    
+
     private Label valueLabel;
     private Boolean support3D;
-    
+
     public GaugeFigure() {
         super();
         transparent = true;
         scale.setScaleLineVisible(false);
         scale.setTickLableSide(LabelSide.Secondary);
         ramp.setRampWidth(10);
-        
-        valueLabel = new Label();    
+
+        valueLabel = new Label();
         valueLabel.setFont(DEFAULT_LABEL_FONT);
-        
+
         needle = new Needle();
         needle.setFill(true);
         needle.setOutline(false);
-        
+
         needleCenter = new NeedleCenter();
         needleCenter.setOutline(false);
-        
+
         setLayoutManager(new GaugeLayout());
         add(ramp, GaugeLayout.RAMP);
-        add(scale, GaugeLayout.SCALE);        
+        add(scale, GaugeLayout.SCALE);
         add(valueLabel, GaugeLayout.VALUE_LABEL);
         add(needle, GaugeLayout.NEEDLE);
-        add(needleCenter, GaugeLayout.NEEDLE_CENTER);        
-        addFigureListener(new FigureListener() {            
+        add(needleCenter, GaugeLayout.NEEDLE_CENTER);
+        addFigureListener(new FigureListener() {
             public void figureMoved(IFigure source) {
                 ramp.setDirty(true);
-                revalidate();    
+                revalidate();
             }
-        });    
-        
+        });
+
     }
     @Override
     public void setBounds(Rectangle rect) {
-        
+
         super.setBounds(rect);
     }
-    
+
     @Override
     public void setValue(double value) {
         super.setValue(value);
-        valueLabel.setText(getValueText());            
+        valueLabel.setText(getValueText());
     }
-    
+
     @Override
     protected void paintClientArea(Graphics graphics) {
         graphics.setAntialias(SWT.ON);
@@ -117,26 +117,26 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
         graphics.setBackgroundColor(GRAY_COLOR);
         if(support3D == null)
             support3D = GraphicsUtil.testPatternSupported(graphics);
-        if(effect3D && support3D) {        
+        if(effect3D && support3D) {
             //add this to eliminate the repaint bug on Mac
             //Who added this? this will cause problem in zoom.
 //            graphics.fillOval(new Rectangle());
-            pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), area.x, area.y, 
+            pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), area.x, area.y,
                 area.x+area.width, area.y + area.height, BORDER_COLOR, WHITE_COLOR);
-            graphics.setBackgroundPattern(pattern);                
-        }    
-        graphics.fillOval(area);        
-        if(effect3D && support3D){    
+            graphics.setBackgroundPattern(pattern);
+        }
+        graphics.fillOval(area);
+        if(effect3D && support3D){
             pattern.dispose();
             area.shrink(BORDER_WIDTH, BORDER_WIDTH);
         }else
             area.shrink(1, 1);
         graphics.popState();
-        
+
         graphics.fillOval(area);
-        
+
         super.paintClientArea(graphics);
-        
+
             //glossy effect
         if(effect3D && support3D) {
             graphics.pushState();
@@ -151,7 +151,7 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 
 //            graphics.fillOval(new Rectangle());
 
-            Pattern glossyPattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), 
+            Pattern glossyPattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
                     area.x + area.width/2, (float)(area.y + area.height/2 - R * UD_FILL_PART),
                     area.x + area.width/2, (float) (area.y + area.height/2 + R * UP_DOWN_RATIO),
                     WHITE_COLOR, 90, WHITE_COLOR, 0);
@@ -159,11 +159,11 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
             Rectangle rectangle = new Rectangle(
                     (int)(area.x + area.width/2 - R * LR_FILL_PART *Math.cos(UP_ANGLE)),
                     (int)(area.y + area.height/2 - R * UD_FILL_PART),
-                    (int)(2*R* LR_FILL_PART*Math.cos(UP_ANGLE)), (int)(R*UD_FILL_PART + R*UP_DOWN_RATIO));            
+                    (int)(2*R* LR_FILL_PART*Math.cos(UP_ANGLE)), (int)(R*UD_FILL_PART + R*UP_DOWN_RATIO));
             graphics.fillOval(rectangle);
             glossyPattern.dispose();
-            
-            glossyPattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), 
+
+            glossyPattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
                     area.x + area.width/2, (float)(area.y + area.height/2 + R * UP_DOWN_RATIO -1),
                     area.x + area.width/2, (float) (area.y + area.height/2 + R * UD_FILL_PART + 1),
                     WHITE_COLOR, 0, WHITE_COLOR, 40);
@@ -171,23 +171,23 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
             rectangle = new Rectangle(
                     (int)(area.x + area.width/2 - R*LR_FILL_PART*Math.sin(DOWN_ANGLE)),
                     (int)Math.ceil(area.y + area.height/2 + R * UP_DOWN_RATIO),
-                    (int)(2*R*LR_FILL_PART*Math.sin(DOWN_ANGLE)), 
-                    (int)Math.ceil(R*UD_FILL_PART - R*UP_DOWN_RATIO));    
+                    (int)(2*R*LR_FILL_PART*Math.sin(DOWN_ANGLE)),
+                    (int)Math.ceil(R*UD_FILL_PART - R*UP_DOWN_RATIO));
             graphics.fillOval(rectangle);
             glossyPattern.dispose();
-            graphics.popState();            
+            graphics.popState();
         }
-        
-        
+
+
     }
-    
+
     /**
      * @param needleColor the needleColor to set
      */
     public void setNeedleColor(Color needleColor) {
         needle.setBackgroundColor(needleColor);
     }
-    
+
     public Color getNeedleColor(){
         return needle.getBackgroundColor();
     }
@@ -208,7 +208,7 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
     public boolean isEffect3D() {
         return effect3D;
     }
-    
+
     class Needle extends Polygon {
         public Needle() {
             setBackgroundColor(DEFAULT_NEEDLE_COLOR);
@@ -221,9 +221,9 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
     }
 
     class NeedleCenter extends Ellipse {
-        
+
         public static final int DIAMETER = 16;
-    
+
         @Override
         protected void fillShape(Graphics graphics) {
             graphics.setAntialias(SWT.ON);
@@ -231,25 +231,25 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
             graphics.setBackgroundColor(GRAY_COLOR);
             if(support3D == null)
                 support3D = GraphicsUtil.testPatternSupported(graphics);
-            if(effect3D && support3D){        
+            if(effect3D && support3D){
                 //add this to eliminate the repaint bug on Mac
 //                graphics.fillOval(new Rectangle());
 
                     pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), bounds.x, bounds.y,
                             bounds.x + bounds.width, bounds.y + bounds.height, WHITE_COLOR, BORDER_COLOR);
-                    graphics.setBackgroundPattern(pattern);                            
-            }            
+                    graphics.setBackgroundPattern(pattern);
+            }
             super.fillShape(graphics);
             if(effect3D && support3D)
-                pattern.dispose();            
-        }        
+                pattern.dispose();
+        }
     }
-    
+
 
     class GaugeLayout extends AbstractLayout {
-        
+
         private static final int GAP_BTW_NEEDLE_SCALE = -1;
-        
+
         /** Used as a constraint for the scale. */
         public static final String SCALE = "scale";   //$NON-NLS-1$
         /** Used as a constraint for the Needle. */
@@ -260,15 +260,15 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
         public static final String NEEDLE_CENTER = "needleCenter";      //$NON-NLS-1$
         /** Used as a constraint for the value label*/
         public static final String VALUE_LABEL = "valueLabel";      //$NON-NLS-1$
-        
+
         private RoundScale scale;
         private RoundScaledRamp ramp;
         private Polygon needle;
         private NeedleCenter needleCenter;
         private Label valueLabel;
         private PointList needlePoints = new PointList(new int[] {0,0,0,0,0,0});
-        
-        
+
+
         @Override
         public void setConstraint(IFigure child, Object constraint) {
             if(constraint.equals(SCALE))
@@ -296,29 +296,29 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 
         public void layout(IFigure container) {
             Rectangle area = container.getClientArea();
-            
+
             area.width = Math.min(area.width, area.height);
             area.height = area.width;
             area.shrink(BORDER_WIDTH, BORDER_WIDTH);
-            
-            Point center = area.getCenter();            
-            
-            if(scale != null) {                
+
+            Point center = area.getCenter();
+
+            if(scale != null) {
                 scale.setBounds(area);
             }
-            
+
             if(ramp != null && ramp.isVisible()) {
                 Rectangle rampBounds = area.getCopy();
                 ramp.setBounds(rampBounds.shrink(area.width/4, area.height/4));
             }
-            
+
             if(valueLabel != null) {
                 Dimension labelSize = valueLabel.getPreferredSize();
                 valueLabel.setBounds(new Rectangle(area.x + area.width/2 - labelSize.width/2,
                         area.y + area.height * 7/8 - labelSize.height/2,
                         labelSize.width, labelSize.height));
             }
-            
+
             if(needle != null && scale != null) {
                 needlePoints.setPoint (
                         new Point(center.x, center.y - NeedleCenter.DIAMETER/2 + 3), 0);
@@ -328,7 +328,7 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
                         - GAP_BTW_NEEDLE_SCALE, center.y), 1);
                 needlePoints.setPoint(
                         new Point(center.x, center.y + NeedleCenter.DIAMETER/2 - 3), 2);
-    
+
                 double valuePosition = 360 - scale.getValuePosition(getCoercedValue(), false);
                 if(maximum > minimum){
                     if(value > maximum)
@@ -346,18 +346,18 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
                 needlePoints.setPoint(
                         PointsUtil.rotate(needlePoints.getPoint(1), valuePosition, center), 1);
                 needlePoints.setPoint(
-                        PointsUtil.rotate(needlePoints.getPoint(2), valuePosition, center),2);                
-                needle.setPoints(needlePoints);            
-                
+                        PointsUtil.rotate(needlePoints.getPoint(2), valuePosition, center),2);
+                needle.setPoints(needlePoints);
+
             }
-            
+
             if(needleCenter != null){
                 needleCenter.setBounds(new Rectangle(center.x - NeedleCenter.DIAMETER/2,
                         center.y - NeedleCenter.DIAMETER/2,
                         NeedleCenter.DIAMETER, NeedleCenter.DIAMETER));
-            }        
-                        
-        }        
+            }
+
+        }
     }
-    
+
 }

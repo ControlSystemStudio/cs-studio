@@ -38,16 +38,16 @@ public class DeviceValueConditionHeadlessTest
 {
     @SuppressWarnings("unused")
     private long updates = 0;
-    
+
     private PVDevice getDemoDevice() throws Exception
     {
         final PVDevice device = new PVDevice(new DeviceInfo("loc://my_pv(0)", "demo"));
-        
+
         // Register listener that notifies device so test code can wait for a device update
         device.addListener(new DeviceListener()
         {
             @Override
-            public void deviceChanged(final Device device) 
+            public void deviceChanged(final Device device)
             {
                 synchronized (device)
                 {
@@ -178,7 +178,7 @@ public class DeviceValueConditionHeadlessTest
         device.stop();
     }
 
-    
+
     @Test(timeout=5000)
     public void testStaticTextConditions() throws Exception
     {
@@ -186,7 +186,7 @@ public class DeviceValueConditionHeadlessTest
         final PVDevice device = getDemoDevice();
         device.start();
         device.write("Hello");
-        
+
         do
         {
             synchronized (device) { device.wait(500); }
@@ -210,10 +210,10 @@ public class DeviceValueConditionHeadlessTest
             synchronized (device) { device.wait(500); }
             assertThat(equals.isConditionMet(), equalTo(true));
         }
-        
+
         device.stop();
     }
-    
+
 
     @Test(timeout=5000)
     public void testIncreasedByConditionWithRampPV() throws Exception

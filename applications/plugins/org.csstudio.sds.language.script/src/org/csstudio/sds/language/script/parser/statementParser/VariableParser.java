@@ -38,7 +38,7 @@ public class VariableParser extends
         this._endOffSet = preMatcher.end() - 1;
         final String varName = mainMatcher.group(2);
         this._found = true;
-        this._node = new VariableNode(varName, this.findPredefinedVariable(varName), 
+        this._node = new VariableNode(varName, this.findPredefinedVariable(varName),
                 this.getStartOffsetLastFound(), this.getEndOffsetLastFound());
     }
 

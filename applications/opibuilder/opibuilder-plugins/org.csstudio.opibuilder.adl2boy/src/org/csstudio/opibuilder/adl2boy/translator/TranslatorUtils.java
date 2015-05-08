@@ -27,14 +27,14 @@ import org.eclipse.swt.graphics.RGB;
 
 /**
  * Utilities to aid in translating ADL files to OPI files.
- * 
+ *
  * @author John Hammonds, Argonne National Laboratory
  *
  */
 public class TranslatorUtils {
     private static ADLBasicAttribute defaultBasicAttribute = new ADLBasicAttribute();
     private static ADLDynamicAttribute defaultDynamicAttribute = new ADLDynamicAttribute();
-    
+
     public static void ConvertChildren(ArrayList<ADLWidget> childWidgets, AbstractContainerModel parentModel, RGB colorMap[]){
 
         for (ADLWidget adlWidget : childWidgets){
@@ -47,7 +47,7 @@ public class TranslatorUtils {
                 else if (widgetType.equals("bar")){
                     new Bar2Model(adlWidget, colorMap, parentModel);
                     printNotCompletelyHandledMessage(widgetType);
-                
+
                 }
                 else if (widgetType.equals("byte")){
                     new Byte2Model(adlWidget, colorMap,parentModel);
@@ -55,7 +55,7 @@ public class TranslatorUtils {
                 else if (widgetType.equals("cartesian plot")){
                     new CartesianPlot2Model(adlWidget, colorMap,parentModel);
                     printNotCompletelyHandledMessage(widgetType);
-                    
+
                 }
                 else if (widgetType.equals("choice button")){
                     new ChoiceButton2Model(adlWidget, colorMap,parentModel);
@@ -143,7 +143,7 @@ public class TranslatorUtils {
             }
         }
 //        Class classToMove = RectangleModel.class;
-        
+
         lowerWidgetType(parentModel, AbstractContainerModel.class);
         lowerWidgetType(parentModel, RectangleModel.class);
         lowerWidgetType(parentModel, ImageModel.class);
@@ -166,7 +166,7 @@ public class TranslatorUtils {
                 parentModel.changeChildOrder(iter.next(), numMoved);
                 numMoved++;
             }
-            
+
         }
     }
 
@@ -182,7 +182,7 @@ public class TranslatorUtils {
         }
     }
 
-    /** 
+    /**
      * Print message that a given ADL file structure is not handled.
      */
     private static void printNotHandledMessage(String type) {
@@ -193,13 +193,13 @@ public class TranslatorUtils {
     }
 
     /**
-     * 
+     *
      * @param type
      */
     private static void printHandlingMessage(String type) {
         System.out.println("Handling: " + type);
     }
-    
+
     public static void printNotHandledWarning(String translator, String message){
         System.out.println("---Warning - " + translator + ": " + message + " is not handled" );
     }
@@ -210,7 +210,7 @@ public class TranslatorUtils {
     public static ADLDynamicAttribute getDefaultDynamicAttribute(){
         return TranslatorUtils.defaultDynamicAttribute;
     }
-    
+
     public static void initDefaultBasicAttribute(){
         TranslatorUtils.defaultBasicAttribute = new ADLBasicAttribute();
     }
@@ -272,7 +272,7 @@ public class TranslatorUtils {
     protected static DisplayModel initializeDisplayModel(ADLWidget root,
             RGB[] colorMap) {
         DisplayModel displayModel = new DisplayModel();
-        
+
         for (ADLWidget adlWidget : root.getObjects()){
             String widgetType = adlWidget.getType();
             if (widgetType.equals("display")){

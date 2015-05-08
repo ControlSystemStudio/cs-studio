@@ -17,7 +17,7 @@ public class LibraryElementDropTargetListener extends
     public LibraryElementDropTargetListener(EditPartViewer viewer) {
         super(viewer, WidgetModelTransfer.getInstance());
     }
-    
+
     List<AbstractWidgetModel> widgets;
 
     @Override
@@ -36,7 +36,7 @@ public class LibraryElementDropTargetListener extends
             }
         };
         request.setFactory(creationFactory);
-        
+
         return request;
 
     }

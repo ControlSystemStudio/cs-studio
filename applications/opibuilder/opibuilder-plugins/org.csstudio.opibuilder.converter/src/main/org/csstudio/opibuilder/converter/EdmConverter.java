@@ -20,19 +20,19 @@ import org.csstudio.opibuilder.converter.writer.OpiWriter;
 public class EdmConverter {
 
     private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.EdmConverter");
-    
+
     private static boolean displayHelp = false;
     private static boolean robustParsing = false;
     private static boolean colorDefOutput = false;
     private static String edlFileName = null;
     private static String opiFileName = null;
-    
+
     private static final String edlExtension = ".edl";
     private static final String opiExtension = ".opi";
 
     private static final String defaultColorsFileName = "colors.list";
     private static final String defaultColorsOutputName = "color.def";
-    
+
     public static void main(String[] args) throws EdmException {
 
         // Default options
@@ -41,26 +41,26 @@ public class EdmConverter {
         colorDefOutput = false;
         edlFileName = null;
         opiFileName = null;
-        
+
         parseArguments(args);
-        
+
         if (displayHelp) {
             printHelp();
             System.exit(0);
         }
-        
+
         validateEdlFileName();
         validateOpiFileName();
-        
+
         validateEdmFiles();
         validateColorsFile();
         validateColorsOutput();
         validateRobustParsing();
-        
+
         OpiWriter writer = OpiWriter.getInstance();
-        
+
         writer.writeDisplayFile(edlFileName, opiFileName);
-        
+
         if (colorDefOutput) {
             writer.writeColorDef(System.getProperty("edm2xml.colorsOutput"));
         }
@@ -68,9 +68,9 @@ public class EdmConverter {
 
     public static void parseArguments(String[] args) throws EdmException {
         for (int argIndex = 0; argIndex < args.length; argIndex++) {
-            
+
             String argument = args[argIndex].trim();
-            
+
             if (argument.startsWith("-")) {
                 String option = argument.substring(1);
                 parseOption(option);
@@ -88,7 +88,7 @@ public class EdmConverter {
             }
         }
     }
-    
+
     public static void parseOption(String option) throws EdmException {
         if (option.equals("help")) {
             displayHelp = true;
@@ -103,7 +103,7 @@ public class EdmConverter {
             System.err.println("Error: " + errorMessage);
             System.out.println("Type " + EdmConverter.class.getSimpleName()
                     + " -help for command arguments.");
-                    
+
             System.exit(1);
         }
     }
@@ -144,14 +144,14 @@ public class EdmConverter {
             System.setProperty("edm2xml.edmFiles", edmFilesName);
         }
     }
-    
+
     private static void validateColorsFile() {
 
         String colorsFileName = System.getProperty("edm2xml.colorsFile");
 
         // Use default name if the name is not specified.
         if (colorsFileName == null) {
-            colorsFileName = defaultColorsFileName; 
+            colorsFileName = defaultColorsFileName;
 
             // Append directory if specified.
             String edmFilesName = System.getProperty("edm2xml.edmFiles");
@@ -159,14 +159,14 @@ public class EdmConverter {
                 colorsFileName = edmFilesName + File.separator + colorsFileName;
             }
         }
-        
+
         File colorsFile = new File(colorsFileName);
-        
+
         if (colorsFile.isDirectory()) {
             colorsFileName = colorsFileName + File.separator + defaultColorsFileName;
             colorsFile = new File(colorsFileName);
         }
-        
+
         if (!colorsFile.exists()) {
             String errorMessage = "File " + colorsFileName + " does not exist.";
             log.error(errorMessage);
@@ -177,7 +177,7 @@ public class EdmConverter {
     }
 
     private static void validateColorsOutput() {
-        
+
         String colorsOutputName = System.getProperty("edm2xml.colorsOutput");
 
         /* By default the color output definition is placed at the same place as output
@@ -188,24 +188,24 @@ public class EdmConverter {
 
             String opiDirectoryName = (new File(opiFileName)).getParent();
             if (opiDirectoryName != null) {
-                colorsOutputName = opiDirectoryName + File.separator + colorsOutputName;   
+                colorsOutputName = opiDirectoryName + File.separator + colorsOutputName;
             }
         }
-        
+
         File colorsOutputFile = new File(colorsOutputName);
-        
+
         if (colorsOutputFile.isDirectory()) {
             colorsOutputName = colorsOutputName + File.separator + defaultColorsOutputName;
             colorsOutputFile = new File(colorsOutputName);
         }
-        
+
         System.setProperty("edm2xml.colorsOutput", colorsOutputName);
     }
-    
+
     private static void validateRobustParsing() {
         System.setProperty("edm2xml.robustParsing", String.valueOf(robustParsing));
     }
-    
+
     private static void printHelp() {
         System.out.println("Usage: EdmConverter [-r] [-help] EDL_FILE [OPI_FILE]");
         System.out.println();

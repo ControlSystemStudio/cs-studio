@@ -15,7 +15,7 @@ import org.csstudio.autocomplete.IAutoCompleteProvider;
 /**
  * Descriptor used in {@link IContentParser} and {@link IAutoCompleteProvider}
  * to describe a content matching a function.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class FunctionDescriptor extends ContentDescriptor {

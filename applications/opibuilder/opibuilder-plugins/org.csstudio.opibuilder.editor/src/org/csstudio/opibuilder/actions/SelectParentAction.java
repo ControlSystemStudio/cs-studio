@@ -20,10 +20,10 @@ public class SelectParentAction extends AbstractWidgetTargetAction{
 
 
     public void run(IAction action) {
-        
+
         AbstractContainerEditpart containerEditpart = getParentContainerEditpart();
-        containerEditpart.getViewer().select(containerEditpart);    
-    
+        containerEditpart.getViewer().select(containerEditpart);
+
     }
 
 
@@ -31,5 +31,5 @@ public class SelectParentAction extends AbstractWidgetTargetAction{
         return (AbstractContainerEditpart) (
                 (AbstractBaseEditPart)selection.getFirstElement()).getParent();
     }
-        
+
 }

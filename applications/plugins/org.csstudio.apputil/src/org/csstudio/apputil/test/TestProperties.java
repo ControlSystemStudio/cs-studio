@@ -19,16 +19,16 @@ import java.util.Properties;
  *  <li>System property "test_properties".
  *  <li>Environment variable "test_properties".
  *  </ul>
- *  
+ *
  *  The system property is conveniently set via Eclipse
  *  "Preferences", "Java", "Installed JREs", select the one you use, "Edit",
  *  add "Default VM Arguments" like
  *  "-Dtest_properties=/Eclipse/CustomizationFiles/tests.ini"
- *  
+ *
  *  Test code should be written such that it handles missing properties.
- *  
+ *
  *  @see TestPropertiesUnitTest
- *  
+ *
  *  @author Kay Kasemir
  */
 public class TestProperties
@@ -74,7 +74,7 @@ public class TestProperties
     {
         return settings.getProperty(key, default_value);
     }
-    
+
     /** Get test property as Integer
      *  @param key Property name
      *  @return Integer value or <code>null</code> if not set
@@ -102,7 +102,7 @@ public class TestProperties
         return Integer.valueOf(text);
     }
 
-    
+
     @SuppressWarnings("unchecked")
     public Enumeration<String> getKeys()
     {

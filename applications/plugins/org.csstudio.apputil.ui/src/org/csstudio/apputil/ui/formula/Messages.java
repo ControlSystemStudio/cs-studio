@@ -12,7 +12,7 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.apputil.ui.formula.messages"; //$NON-NLS-1$
-    
+
     public static String Formula_EmptyFormulaError;
     public static String Formula_ParsedFormulaFmt;
     public static String Formula_Title;
@@ -67,7 +67,7 @@ public class Messages extends NLS
     public static String Formula_Sub_TT;
     public static String InputName;
     public static String VariableName;
-    
+
     static
     {
         // initialize resource bundle

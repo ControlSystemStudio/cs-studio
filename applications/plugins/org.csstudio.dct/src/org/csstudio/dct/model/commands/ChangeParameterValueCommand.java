@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.model.commands;
 
@@ -9,7 +9,7 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * Undoable command that changes a parameter value of an {@link IInstance}.
- * 
+ *
  * @author Sven Wende
  */
 public final class ChangeParameterValueCommand extends Command {
@@ -39,9 +39,9 @@ public final class ChangeParameterValueCommand extends Command {
     @Override
     public void execute() {
         oldValue = instance.getParameterValue(key);
-        
+
         Object parentValue = instance.getParent() != null ? instance.getParent().getParameterValue(key) : "";
-        
+
         if (value == null || "".equals(value) || value.equals(parentValue)) {
             instance.setParameterValue(key, null);
         } else {

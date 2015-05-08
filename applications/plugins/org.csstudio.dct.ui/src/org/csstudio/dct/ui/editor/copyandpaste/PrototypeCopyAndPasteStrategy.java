@@ -20,9 +20,9 @@ import org.eclipse.gef.commands.CompoundCommand;
 
 /**
  * Copy & Paste strategy for prototypes.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class PrototypeCopyAndPasteStrategy extends BaseCopyAndPasteStrategy {
 

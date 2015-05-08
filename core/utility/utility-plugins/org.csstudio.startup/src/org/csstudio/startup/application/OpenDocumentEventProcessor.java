@@ -84,7 +84,7 @@ public class OpenDocumentEventProcessor implements Listener {
     public void catchUp(Display display) {
         if (filesToOpen.isEmpty())
             return;
-        
+
         // Eclipse Bug 386995 - --launcher.openFile doesn't work in multiuser environment
         updatePermissions();
 
@@ -98,7 +98,7 @@ public class OpenDocumentEventProcessor implements Listener {
             openFile(display, filePaths[i]);
         }
     }
-    
+
     // Grant 777 access rights to UISynchronizer semaphores
     private void updatePermissions() {
         if (!isUnix())
@@ -149,7 +149,7 @@ public class OpenDocumentEventProcessor implements Listener {
             }
         }
     }
-    
+
     private boolean isUnix() {
         return System.getProperty("os.name").equals("Linux");
     }
@@ -235,10 +235,10 @@ public class OpenDocumentEventProcessor implements Listener {
             }
         });
     }
-    
-    /**Replace ascii code with its characters in a string. The ascii code in the string must 
+
+    /**Replace ascii code with its characters in a string. The ascii code in the string must
      * follow this format <code>[\ascii]</code>. For example: <code>abc[\58]def</code> will be replaced with <code>abc:def</code>.
-     * @param input the input string 
+     * @param input the input string
      */
     private static String replaceAsciiCode(final String input){
         String output = input;

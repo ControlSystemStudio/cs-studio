@@ -16,26 +16,26 @@ import org.eclipse.draw2d.geometry.PointList;
 public class FixedPointsConnectionRouter extends AbstractRouter {
 
     private Map<Connection, Object> constraints = new HashMap<Connection, Object>(2);
-    
+
     public FixedPointsConnectionRouter() {
     }
 
     public Object getConstraint(Connection connection) {
         return constraints.get(connection);
     }
-    
+
     public void remove(Connection connection) {
         constraints.remove(connection);
     }
-    
+
     public void setConstraint(Connection connection, Object constraint) {
         constraints.put(connection, constraint);
     }
-    
-    
+
+
     @Override
-    public void route(Connection conn) {        
-        PointList connPoints = conn.getPoints().getCopy();    
+    public void route(Connection conn) {
+        PointList connPoints = conn.getPoints().getCopy();
         PointList newPoints = (PointList) getConstraint(conn);
         connPoints.removeAllPoints();
         Point startPoint = getStartPoint(conn);

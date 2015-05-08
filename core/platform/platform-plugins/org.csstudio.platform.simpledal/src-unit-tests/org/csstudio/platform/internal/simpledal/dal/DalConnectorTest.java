@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.platform.internal.simpledal.dal;
 
@@ -29,9 +29,9 @@ import org.junit.Test;
 
 /**
  * Test class for {@link DalConnector}.
- * 
+ *
  * To run the tests, put the following records on your IOC:
- * 
+ *
  * <pre>
  *  record(ai,&quot;unittest:ai&quot;) {
  *  field(DESC,&quot;read only&quot;)
@@ -48,7 +48,7 @@ import org.junit.Test;
  *  field(HSV,&quot;NO_ALARM&quot;)
  *  field(LSV,&quot;NO_ALARM&quot;)
  *  }
- * 
+ *
  *  record(ai,&quot;unittest:ai:write&quot;) {
  *  field(DESC,&quot;read+write&quot;)
  *  field(SCAN,&quot;.1 second&quot;)
@@ -65,9 +65,9 @@ import org.junit.Test;
  *  field(LSV,&quot;NO_ALARM&quot;)
  *  }
  * </pre>
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class DalConnectorTest {
 
@@ -101,7 +101,7 @@ public class DalConnectorTest {
     /**
      * Test method for
      * {@link org.csstudio.platform.internal.simpledal.dal.DalConnector#doDispose()}.
-     * 
+     *
      * @throws Exception
      */
     @Test

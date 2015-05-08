@@ -26,8 +26,8 @@ public class AutoNavigateAction extends Action {
 
     private IWorkbenchPart part;
     private int pointer;
-    private List<OPIRunner> opiRunners; 
-    
+    private List<OPIRunner> opiRunners;
+
     public AutoNavigateAction() {
         super("Auto Navigate", AS_CHECK_BOX);
         opiRunners = new ArrayList<OPIRunner>();
@@ -35,21 +35,21 @@ public class AutoNavigateAction extends Action {
         setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
                 OPIBuilderPlugin.PLUGIN_ID, "icons/auto_navigate.png"));
     }
-    
+
     public void setPart(IWorkbenchPart part) {
         this.part = part;
     }
-    
+
     @Override
     public void run() {
         if(!isChecked()){
             return;
-        }        
-        
-        Runnable activateTask = new Runnable() {            
+        }
+
+        Runnable activateTask = new Runnable() {
             public void run() {
-                
-                IEditorReference[] refs = 
+
+                IEditorReference[] refs =
                     part.getSite().getWorkbenchWindow().getActivePage().getEditorReferences();
                 opiRunners.clear();
                 for(IEditorReference e : refs){
@@ -67,14 +67,14 @@ public class AutoNavigateAction extends Action {
                 System.out.println(opi);
                 if(opi != null){
                     part.getSite().getWorkbenchWindow().getActivePage().activate(opi);
-                }                
+                }
                 if(isChecked())
                     Display.getDefault().timerExec(1000, this);
             }
-        };        
-        Display.getDefault().asyncExec(activateTask);        
-        
+        };
+        Display.getDefault().asyncExec(activateTask);
+
     }
-    
-    
+
+
 }

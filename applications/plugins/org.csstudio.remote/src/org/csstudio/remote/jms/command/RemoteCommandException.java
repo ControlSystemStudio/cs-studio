@@ -25,14 +25,14 @@ package org.csstudio.remote.jms.command;
 /**
  * This exception may be thrown from the implementation of the IRemoteCommandService.
  * Usually the root cause is specific to the underlying technology and should be provided.
- * 
+ *
  * @author jpenning
  * @since 18.01.2012
  */
 public class RemoteCommandException extends Exception {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * Constructor.
      * @param message
@@ -40,7 +40,7 @@ public class RemoteCommandException extends Exception {
     public RemoteCommandException(final String message) {
         super(message);
     }
-    
+
     /**
      * Constructor.
      * @param message

@@ -7,18 +7,18 @@ import org.eclipse.jface.action.Action;
 
 /**
  * Action that removes a property.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class PropertyRemoveAction extends Action {
-    
+
     @SuppressWarnings("unchecked")
     private AbstractPropertyContainerForm form;
 
     /**
      * Constructor.
-     * 
+     *
      * @param form
      *            a component that provides access to a property container
      */

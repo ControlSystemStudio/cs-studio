@@ -47,14 +47,14 @@ import org.eclipse.ui.ide.IDE;
 
 
 /** Helper for accessing RCP UI.
- * 
+ *
  *  @author Kay Kasemir
  *  @author Xihui Chen - Similar code in BOY/WebOPI
  */
 public class RCPUIHelper extends UIHelper
 {
-    
-    /** {@inheritDoc} 
+
+    /** {@inheritDoc}
      * @throws Exception */
     @Override
     public void openEditor(final IWorkbenchPage page, IPath path) throws Exception {
@@ -68,14 +68,14 @@ public class RCPUIHelper extends UIHelper
             IDE.openEditorOnFileStore(page, fileStore);
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public IPath openSaveDialog(final Shell shell, final IPath original, final String extension)
     {
         final SaveAsDialog dlg = new SaveAsDialog(shell);
         dlg.setBlockOnOpen(true);
-        
+
         final IFile orig_file = RCPResourceHelper.getFileForPath(original);
         if (orig_file != null)
             dlg.setOriginalFile(orig_file);
@@ -106,10 +106,10 @@ public class RCPUIHelper extends UIHelper
                 new ResourceSelectionDialog(shell, title, new String[] { extension });
         if (res.open() != Window.OK)
             return null;
-        
+
         return res.getSelectedResource();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String openOutsideWorkspaceDialog(final Shell shell,
@@ -117,7 +117,7 @@ public class RCPUIHelper extends UIHelper
         final FileDialog dlg = new FileDialog(shell, style);
         if (extension != null)
             dlg.setFilterExtensions(new String[] { extension });
-        
+
         final IFile orig_file = RCPResourceHelper.getFileForPath(original);
         if (orig_file != null)
             dlg.setFileName(orig_file.toString());
@@ -156,7 +156,7 @@ public class RCPUIHelper extends UIHelper
      *  <p>
      *  Code based on
      *  http://wiki.eclipse.org/FAQ_How_do_I_write_to_the_console_from_a_plug-in%3F
-     * @param imageDescriptor 
+     * @param imageDescriptor
      *
      *  @return MessageConsole, newly created or one that already existed.
      */
@@ -200,7 +200,7 @@ public class RCPUIHelper extends UIHelper
     /** {@inheritDoc} */
     public void enableClose(IWorkbenchPartSite site, boolean enable_close) {
         // TODO Improve implementation
-        
+
         // Configure the E4 model element.
         // Issue 1:
         // When opening the display for the first time,
@@ -223,7 +223,7 @@ public class RCPUIHelper extends UIHelper
 //            tabFolder.getSelection().setShowClose(false);
 //        }
     }
-    
+
     /** {@inheritDoc} */
     public void detachView(final IViewPart view) {
         // TODO Use more generic IWorkbenchPart?, getPartSite()?

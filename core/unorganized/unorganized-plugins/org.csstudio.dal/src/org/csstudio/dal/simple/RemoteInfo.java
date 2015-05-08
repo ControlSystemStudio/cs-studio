@@ -36,7 +36,7 @@ package org.csstudio.dal.simple;
  * but leaves to plug implementation to handle the remote name as pleased.</li>
  * <li>type (connection or plug), by URI notation schema, part before :// sequence.</li>
  * <li>characteristic, by URI notation a fragment, end part of URI divided by # from rest of URI.</li>
- * <li>query, same as by URI notation, used for addressing commands on device. 
+ * <li>query, same as by URI notation, used for addressing commands on device.
  * End part of URI divided by ? from rest of URI.</li>
  * </ul>
  *
@@ -58,8 +58,8 @@ public final class RemoteInfo
      * Separator betwean URI schema part and rest of remote name.
      */
     public static final String TYPE_SEPARATOR = "://";
-    
-    
+
+
     /**
      * If string is URI formated, like connectionType://remoteName#characteristic?query or DAL-plugType://remoteName#characteristic?query,
      * then it is properly parsed into RemoteInfo.
@@ -131,7 +131,7 @@ public final class RemoteInfo
         return new RemoteInfo(type, remoteName, characteristic, query);
     }
 
-    
+
 
     private final String connectionType;
 
@@ -175,8 +175,8 @@ public final class RemoteInfo
     {
         this(connectionType,remoteName,null,null);
     }
-    
-    
+
+
     /**
      * Returns the remote name part of this remote info.
      *
@@ -201,7 +201,7 @@ public final class RemoteInfo
      * Returns the DAL plug name of this RemoteInfo.
      * DAL Plug type is defined trough connection type, which begins with 'DAL-'.
      * Plug type corresponds to connection type stripped of the 'DAL-' part.
-     * If connection type does not begins with 'DAL-', then plus type is same as connection type. 
+     * If connection type does not begins with 'DAL-', then plus type is same as connection type.
      *
      * @return the DAL plug name of this RemoteInfo, or <code>null</code> if type is <code>null</code> or does not conform to DAL plug type declaration
      */

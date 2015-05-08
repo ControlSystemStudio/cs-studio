@@ -17,7 +17,7 @@ public class ArchiveGroup
 {
     /** Name of this group */
     final private String name;
-    
+
     /** All the channels in this group
      *  <p>
      *  Using thread-safe array to allow HTTPD as well as main
@@ -25,28 +25,28 @@ public class ArchiveGroup
      */
     final private CopyOnWriteArrayList<ArchiveChannel> channels =
                                 new CopyOnWriteArrayList<ArchiveChannel>();
-    
+
     /** (At most) one of the channels might be 'enabling' or 'disabling' */
     private ArchiveChannel enabling_channel = null;
-        
+
     /** Is the group currently enabled? */
     private boolean enabled = true;
-    
+
     /** Set to <code>true</code> while running. */
     private boolean is_running = false;
-    
+
     public ArchiveGroup(final String name)
     {
         this.name = name;
     }
-    
+
     /** @return Name of this group */
     final public String getName()
     {
         return name;
     }
-    
-    /** Add channel to group 
+
+    /** Add channel to group
      *  @param channel Channel to add
      *  @exception When trying to add multiple enabling channels
      */
@@ -79,7 +79,7 @@ public class ArchiveGroup
         if (enabling_channel == channel)
             enabling_channel = null;
     }
-    
+
     /** @return Number of channels in group
      *  @see #getChannel(int)
      */
@@ -87,7 +87,7 @@ public class ArchiveGroup
     {
         return channels.size();
     }
-    
+
     /** @return Channel
      *  @param i Channel index
      *  @see #getChannelCount()
@@ -98,7 +98,7 @@ public class ArchiveGroup
     }
 
     /** Locate a channel by name.
-     *  
+     *
      *  @param channel_name
      *  @return Channel or <code>null</code>s
      */

@@ -11,7 +11,7 @@ import org.csstudio.autocomplete.preferences.Preferences;
 
 /**
  * A provider as defined via OSGI services and preferences.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class ProviderSettings implements Comparable<ProviderSettings> {

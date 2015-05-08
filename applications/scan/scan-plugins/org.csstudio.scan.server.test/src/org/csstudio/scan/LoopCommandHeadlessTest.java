@@ -64,7 +64,7 @@ public class LoopCommandHeadlessTest
                 throw new TimeoutException();
         }
     }
-    
+
     @Test(timeout=5000)
     public void testLoopCommand() throws Throwable
     {

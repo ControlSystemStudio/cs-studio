@@ -41,7 +41,7 @@ public class LoggedScan extends Scan
     {
         return new ScanInfo(this, getScanState());
     }
-    
+
     /** Get serial of last logged sample.
      *
      *  <p>Can be used to determine if there are new samples

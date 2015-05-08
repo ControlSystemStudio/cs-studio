@@ -18,7 +18,7 @@ public class ActionID {
 
     private final String itemPath;
     private final String aaTitle;
-    
+
     public ActionID(final String itemPath, final String aaTitle) {
         this.itemPath = itemPath;
         this.aaTitle = aaTitle;
@@ -61,5 +61,5 @@ public class ActionID {
     public String getAaTitle() {
         return aaTitle;
     }
-    
+
 }

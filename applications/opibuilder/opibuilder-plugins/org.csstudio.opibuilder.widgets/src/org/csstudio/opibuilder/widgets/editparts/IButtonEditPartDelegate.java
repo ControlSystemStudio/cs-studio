@@ -15,7 +15,7 @@ public interface IButtonEditPartDelegate {
     public abstract void setValue(Object value);
 
     public abstract Object getValue();
-    
+
     public abstract boolean isSelected();
 
 }

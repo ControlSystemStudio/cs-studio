@@ -4,7 +4,7 @@ import de.desy.language.snl.parser.nodes.StateSetNode;
 
 /**
  * An elliptical shape.
- * 
+ *
  */
 public class StateSetModel extends SNLModel {
 
@@ -23,11 +23,11 @@ public class StateSetModel extends SNLModel {
     public String getIdentifier() {
         return _stateSetNode.getSourceIdentifier();
     }
-    
+
     public void setStateSetNode(StateSetNode node) {
         _stateSetNode = node;
     }
-    
+
     public StateSetNode getStateSetNode() {
         return _stateSetNode;
     }
@@ -36,5 +36,5 @@ public class StateSetModel extends SNLModel {
     protected boolean canHaveChildren() {
         return true;
     }
-    
+
 }

@@ -7,7 +7,7 @@ import org.csstudio.sds.model.ActionData;
 import org.eclipse.gef.commands.Command;
 
 /**
- * 
+ *
  * @author Kai Meyer (C1 WPS)
  *
  */
@@ -17,13 +17,13 @@ public class ActionButtonDataPostProcessor extends
     @Override
     protected Command doCreateCommand(ActionButtonModel widget) {
         assert widget != null : "widget != null";
-        
+
         return new AbstractEnsureInvariantsCommand<ActionButtonModel>(widget, ActionButtonModel.PROP_ACTIONDATA) {
 
             @Override
             protected boolean shouldHideProperties(ActionButtonModel widget,
                     String propertyId) {
-                ActionData data = widget.getActionDataProperty(propertyId);        
+                ActionData data = widget.getActionDataProperty(propertyId);
                 return data.getWidgetActions().isEmpty();
             }
 
@@ -33,9 +33,9 @@ public class ActionButtonDataPostProcessor extends
                         ActionButtonModel.PROP_ACTION_PRESSED_INDEX,
                         ActionButtonModel.PROP_ACTION_RELEASED_INDEX };
             }
-            
+
         };
-        
+
     }
 
 }

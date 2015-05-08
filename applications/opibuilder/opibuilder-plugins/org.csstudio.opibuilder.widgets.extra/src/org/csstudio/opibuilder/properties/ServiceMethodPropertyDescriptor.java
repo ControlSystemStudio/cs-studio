@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 public class ServiceMethodPropertyDescriptor extends TextPropertyDescriptor {
-    
+
     private final AbstractWidgetModel widgetModel;
 
     public ServiceMethodPropertyDescriptor(final Object id, final String displayName, final AbstractWidgetModel widgetModel) {
@@ -40,7 +40,7 @@ public class ServiceMethodPropertyDescriptor extends TextPropertyDescriptor {
         ServiceMethodDialog serviceMethodDialog = new ServiceMethodDialog(
             parentShell, widgetModel);
         serviceMethodDialog.setBlockOnOpen(true);
-        if (serviceMethodDialog.open() == Window.OK) {            
+        if (serviceMethodDialog.open() == Window.OK) {
             serviceMethodDescription = serviceMethodDialog
                 .getServiceMethodDescription();
         }

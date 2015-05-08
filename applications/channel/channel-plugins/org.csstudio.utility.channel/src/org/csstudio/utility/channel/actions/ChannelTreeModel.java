@@ -19,7 +19,7 @@ public class ChannelTreeModel {
         this.parent = parent;
         this.counter= counter;
     }
-    
+
     public ChannelTreeModel getParent() {
         return parent;
     }

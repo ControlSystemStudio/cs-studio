@@ -35,7 +35,7 @@ public class Bar2Model extends AbstractADL2Model {
         if ( label.equals("none")){
             widgetModel.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_MARKERS, false);
             widgetModel.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_SCALE, false);
-            
+
         }
         if ( label.equals("no decorations")){
             widgetModel.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_MARKERS, false);

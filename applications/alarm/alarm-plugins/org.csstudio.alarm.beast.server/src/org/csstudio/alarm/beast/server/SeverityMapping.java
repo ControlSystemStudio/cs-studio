@@ -26,7 +26,7 @@ public class SeverityMapping
      *  severity_ids[SeverityLevel.ordinal] = severity ID in RDB
      */
     final private int severity_ids[];
-    
+
     public SeverityMapping(final RDBUtil rdb, final SQL sql) throws Exception
     {
         final PreparedStatement statement =
@@ -63,7 +63,7 @@ public class SeverityMapping
     }
 
     /** Map severity ID in RDB to SeverityLevel
-     *  @param id ID in RDB 
+     *  @param id ID in RDB
      *  @return SeverityLevel
      *  @throws Exception on error
      */

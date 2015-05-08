@@ -28,11 +28,11 @@ public class PreferencesHelper {
      */
     private static String getString(final String preferenceName)
     {
-        final IPreferencesService service = Platform.getPreferencesService();        
+        final IPreferencesService service = Platform.getPreferencesService();
         return service.getString(EDM2OPIConverterPlugin.PLUGIN_ID, preferenceName, null, null);
     }
-    
-    
+
+
     /**Get the EDM colors.list file path from preference store.
      * @return the colors.list file path. null if not specified.
      */
@@ -41,7 +41,7 @@ public class PreferencesHelper {
             return new Path(getString(EDM_COLORLIST_FILE));
         return null;
     }
-    
+
     /**Get the output opi color definition file path from preference store.
      * @return the opi color definition file path. null if not specified.
      */
@@ -49,11 +49,11 @@ public class PreferencesHelper {
         if(getString(OUTPUT_OPICOLOR_FILE) != null)
             return new Path(getString(OUTPUT_OPICOLOR_FILE));
         return null;
-    }   
-    
+    }
+
     public static boolean isRobustParsing(){
         final IPreferencesService service = Platform.getPreferencesService();
         return !service.getBoolean(EDM2OPIConverterPlugin.PLUGIN_ID, FAIL_FAST, false, null);
     }
-        
+
 }

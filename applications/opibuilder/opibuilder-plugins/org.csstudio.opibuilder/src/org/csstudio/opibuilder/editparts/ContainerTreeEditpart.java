@@ -32,7 +32,7 @@ public class ContainerTreeEditpart extends WidgetTreeEditpart {
         super(model);
     }
 
-    
+
     @Override
     protected void createEditPolicies() {
         super.createEditPolicies();
@@ -48,20 +48,20 @@ public class ContainerTreeEditpart extends WidgetTreeEditpart {
     @Override
     public void activate() {
         super.activate();
-        
-        childrenPropertyChangeListener = new PropertyChangeListener() {                    
+
+        childrenPropertyChangeListener = new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
-                
+
                 if(evt.getOldValue() instanceof Integer){
                     addChild(createChild(evt.getNewValue()), ((Integer)evt
                             .getOldValue()).intValue());
                 }else if (evt.getOldValue() instanceof AbstractWidgetModel){
                     EditPart child = (EditPart)getViewer().getEditPartRegistry().get(
-                            evt.getOldValue());                        
+                            evt.getOldValue());
                     if(child != null)
                         removeChild(child);
-                }else                            
-                    refreshChildren();            
+                }else
+                    refreshChildren();
                 refreshVisuals();
             }
         };
@@ -69,24 +69,24 @@ public class ContainerTreeEditpart extends WidgetTreeEditpart {
             addPropertyChangeListener(childrenPropertyChangeListener);
 
     }
-    
+
     @Override
     public void deactivate() {
         super.deactivate();
         getWidgetModel().getChildrenProperty().
             removePropertyChangeListener(childrenPropertyChangeListener);
     }
-    
-    
+
+
     public AbstractContainerModel getWidgetModel(){
         return (AbstractContainerModel)getModel();
     }
-    
+
     @Override
     protected List<AbstractWidgetModel> getModelChildren() {
         return getWidgetModel().getChildren();
     }
-    
+
     @Override
     protected void refreshVisuals() {
         super.refreshVisuals();
@@ -95,5 +95,5 @@ public class ContainerTreeEditpart extends WidgetTreeEditpart {
                 ((WidgetTreeEditpart)child).refreshVisuals();
         }
     }
-    
+
 }

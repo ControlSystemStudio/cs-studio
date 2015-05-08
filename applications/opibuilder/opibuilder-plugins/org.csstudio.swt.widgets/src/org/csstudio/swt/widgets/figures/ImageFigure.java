@@ -68,9 +68,9 @@ import org.w3c.dom.Document;
 
 /**
  * An image figure.
- * 
+ *
  * @author jbercic, Xihui Chen
- * 
+ *
  */
 
 public final class ImageFigure extends Figure implements Introspectable {
@@ -160,14 +160,14 @@ public final class ImageFigure extends Figure implements Introspectable {
     private ScheduledFuture<?> scheduledFuture;
 
     private boolean startAnimationRequested = false;
-    
+
     private volatile boolean loadingImage;
     private IImageLoadedListener imageLoadedListener;
 
     private PermutationMatrix oldPermutationMatrix = null;
     private PermutationMatrix permutationMatrix = PermutationMatrix
             .generateIdentityMatrix();
-    
+
     // SVG attributes
     private boolean workingWithSVG = false;
     private boolean failedToLoadDocument;
@@ -212,7 +212,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
     /**
      * Returns the amount of pixels, which are cropped from the top.
-     * 
+     *
      * @return The amount of pixels
      */
     public int getBottomCrop() {
@@ -221,7 +221,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
     /**
      * Returns the path to the image.
-     * 
+     *
      * @return The path to the image
      */
     public IPath getFilePath() {
@@ -230,7 +230,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
     /**
      * Returns the amount of pixels, which are cropped from the top.
-     * 
+     *
      * @return The amount of pixels
      */
     public int getLeftCrop() {
@@ -239,7 +239,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
     /**
      * Returns the amount of pixels, which are cropped from the top.
-     * 
+     *
      * @return The amount of pixels
      */
     public int getRightCrop() {
@@ -248,7 +248,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
     /**
      * Returns the stretch state for the image.
-     * 
+     *
      * @return True, if it should be stretched, false otherwise
      */
     public boolean getStretch() {
@@ -257,7 +257,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
     /**
      * Returns the amount of pixels, which are cropped from the top.
-     * 
+     *
      * @return The amount of pixels
      */
     public int getTopCrop() {
@@ -282,9 +282,9 @@ public final class ImageFigure extends Figure implements Introspectable {
     private void fireImageLoadedListeners() {
         imageLoadedListener.imageLoaded(this);
     }
-    
+
     private void loadImage(IPath path,
-            IJobErrorHandler errorHandler) {        
+            IJobErrorHandler errorHandler) {
         AbstractInputStreamRunnable uiTask = new AbstractInputStreamRunnable() {
 
             @Override
@@ -295,13 +295,13 @@ public final class ImageFigure extends Figure implements Introspectable {
                         temp = new Image(null, stream);
                         originalStaticImageData = temp.getImageData();
                         imgWidth = originalStaticImageData.width;
-                        imgHeight = originalStaticImageData.height;                        
+                        imgHeight = originalStaticImageData.height;
                     } finally {
                         if (temp != null && !temp.isDisposed())
                             temp.dispose();
                         try {
                             stream.close();
-                        } catch (IOException e) {                        
+                        } catch (IOException e) {
                         }
                     }
                 }
@@ -358,7 +358,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
     /**
      * The main drawing routine.
-     * 
+     *
      * @param gfx
      *            The {@link Graphics} to use
      */
@@ -379,7 +379,7 @@ public final class ImageFigure extends Figure implements Introspectable {
             if (!filePath.isEmpty()) {
                 /*
                  * Font f=gfx.getFont(); FontData fd=f.getFontData()[0];
-                 * 
+                 *
                  * if (bound.width>=20*30) { fd.setHeight(30); } else { if
                  * (bound.width/20+1<7) { fd.setHeight(7); } else {
                  * fd.setHeight(bound.width/20+1); } } f=new
@@ -404,7 +404,7 @@ public final class ImageFigure extends Figure implements Introspectable {
             // Apply rotation / flip
             if (permutationMatrix != null
                     && !permutationMatrix.equals(oldPermutationMatrix)
-                    && !permutationMatrix.equals(PermutationMatrix.generateIdentityMatrix()) 
+                    && !permutationMatrix.equals(PermutationMatrix.generateIdentityMatrix())
                     && !animated) {
                 staticImageData = ImageUtils.applyMatrix(originalStaticImageData, permutationMatrix);
                 imageData = staticImageData;
@@ -577,7 +577,7 @@ public final class ImageFigure extends Figure implements Introspectable {
     /**
      * Automatically make the widget bounds be adjusted to the size of the
      * static image
-     * 
+     *
      * @param autoSize
      */
     public void setAutoSize(final boolean autoSize) {
@@ -598,7 +598,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
     /**
      * Sets the amount of pixels, which are cropped from the bottom.
-     * 
+     *
      * @param newval
      *            The amount of pixels
      */
@@ -612,7 +612,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
     /**
      * Sets the path to the image.
-     * 
+     *
      * @param newval
      *            The path to the image
      */
@@ -646,7 +646,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
     /**
      * Sets the amount of pixels, which are cropped from the left.
-     * 
+     *
      * @param newval
      *            The amount of pixels
      */
@@ -660,7 +660,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
     /**
      * Sets the amount of pixels, which are cropped from the right.
-     * 
+     *
      * @param newval
      *            The amount of pixels
      */
@@ -685,7 +685,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
     /**
      * Sets the stretch state for the image.
-     * 
+     *
      * @param newval
      *            The new state (true, if it should be stretched, false
      *            otherwise)
@@ -707,7 +707,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
     /**
      * Sets the amount of pixels, which are cropped from the top.
-     * 
+     *
      * @param newval
      *            The amount of pixels
      */
@@ -725,7 +725,7 @@ public final class ImageFigure extends Figure implements Introspectable {
         super.setBorder(border);
         resizeImage();
     }
-    
+
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
@@ -843,7 +843,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
     /**
      * We want to have local coordinates here.
-     * 
+     *
      * @return True if here should used local coordinates
      */
     @Override
@@ -854,12 +854,12 @@ public final class ImageFigure extends Figure implements Introspectable {
     public BeanInfo getBeanInfo() throws IntrospectionException {
         return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
     }
-    
+
     public void setPermutationMatrix(final PermutationMatrix permutationMatrix) {
         this.oldPermutationMatrix = this.permutationMatrix;
         this.permutationMatrix = permutationMatrix;
         staticImageData = null; // Reset data
-        if ((oldPermutationMatrix != null && oldPermutationMatrix.equals(permutationMatrix)) 
+        if ((oldPermutationMatrix != null && oldPermutationMatrix.equals(permutationMatrix))
                 || permutationMatrix == null || animated)
             return;
         dispose();

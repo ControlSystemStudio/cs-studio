@@ -44,7 +44,7 @@ import org.eclipse.swt.widgets.Text;
  * <p>
  * Taken from http://rubenlaguna.com/wp/2007/07/25/eclipse-error-reporting-exception-stacktrace-details/
  * and modified.
- * 
+ *
  * @see org.eclipse.core.runtime.IStatus
  */
 public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
@@ -108,7 +108,7 @@ public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
      * displayed contains child items <it>and </it> you need to specify a mask
      * which will be used to filter the displaying of these children.
      * </p>
-     * 
+     *
      * @param parentShell
      *            the shell under which to create this dialog
      * @param dialogTitle
@@ -181,7 +181,7 @@ public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
 
     /**
      * Create the details button if it should be included.
-     * 
+     *
      * @param parent
      *            the parent composite
      * @since 3.2
@@ -233,7 +233,7 @@ public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.dialogs.IconAndMessageDialog#getImage()
      */
     protected Image getImage() {
@@ -251,7 +251,7 @@ public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
 
     /**
      * Create this dialog's drop-down list component.
-     * 
+     *
      * @param parent
      *            the parent composite
      * @return the drop-down list component
@@ -269,7 +269,7 @@ public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
         data.horizontalSpan = 2;
         text.setEditable(false);
         text.setLayoutData(data);
-        text.setFont(parent.getFont());        
+        text.setFont(parent.getFont());
         text.setSelection(0);
         listCreated = true;
         return text;
@@ -296,7 +296,7 @@ public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
      * Opens an error dialog to display the given error. Use this method if the
      * error object being displayed does not contain child items, or if you wish
      * to display all such items without filtering.
-     * 
+     *
      * @param parent
      *            the parent shell of the dialog, or <code>null</code> if none
      * @param dialogTitle
@@ -325,7 +325,7 @@ public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
      * to specify a mask which will be used to filter the displaying of these
      * children. The error dialog will only be displayed if there is at least
      * one child status matching the mask.
-     * 
+     *
      * @param parentShell
      *            the parent shell of the dialog, or <code>null</code> if none
      * @param title
@@ -358,7 +358,7 @@ public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
      * the child static of the status object and displays them in a list. The
      * format for each entry is status_path : status_message If the status's
      * path was null then it (and the colon) are omitted.
-     * 
+     *
      * @param listToPopulate
      *            The list to fill.
      */
@@ -371,7 +371,7 @@ public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
      * Populate the list with the messages from the given status. Traverse the
      * children of the status deeply and also traverse CoreExceptions that
      * appear in the status.
-     * 
+     *
      * @param listToPopulate
      *            the list to populate
      * @param buildingStatus
@@ -450,7 +450,7 @@ public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
 
     /**
      * Returns whether the given status object should be displayed.
-     * 
+     *
      * @param status
      *            a status object
      * @param mask
@@ -499,7 +499,7 @@ public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
 
     /**
      * Put the details of the status of the error onto the stream.
-     * 
+     *
      * @param buildingStatus
      * @param buffer
      * @param nesting
@@ -532,10 +532,10 @@ public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.window.Window#close()
      */
-    public boolean close() {    
+    public boolean close() {
         return super.close();
     }
 
@@ -546,7 +546,7 @@ public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
      * method has been invoked and has returned the control for the content area
      * of the dialog. Invoking the method before the content area has been set
      * or after the dialog has been disposed will have no effect.
-     * 
+     *
      * @since 3.1
      */
     protected final void showDetailsArea() {
@@ -564,7 +564,7 @@ public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
      * only included if the status used when creating the dialog was a
      * multi-status or if the status contains an exception. Subclasses may
      * override.
-     * 
+     *
      * @return whether the Details button should be included
      * @since 3.1
      */
@@ -576,7 +576,7 @@ public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
      * Set the status displayed by this error dialog to the given status. This
      * only affects the status displayed by the Details list. The message, image
      * and title should be updated by the subclass, if desired.
-     * 
+     *
      * @param status
      *            the status to be displayed in the details list
      * @since 3.1
@@ -600,11 +600,11 @@ public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
             populateList(text);
         }
     }
-    
+
     public static int openError(Shell shell, String title, Exception ex) {
         IStatus status = new Status(IStatus.ERROR, Activator.ID, ex.getLocalizedMessage(), ex);
         return ExceptionDetailsErrorDialog.openError(shell,
-                title, null, 
+                title, null,
                 status);
     }
 

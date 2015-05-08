@@ -23,7 +23,7 @@ public class ShapeCreateCommand extends Command {
 
     /**
      * Create a command that will add a new Shape to a ShapesDiagram.
-     * 
+     *
      * @param newShape
      *            the new Shape that is to be added
      * @param parent
@@ -45,7 +45,7 @@ public class ShapeCreateCommand extends Command {
 
     /**
      * Can execute if all the necessary information has been provided.
-     * 
+     *
      * @see org.eclipse.gef.commands.Command#canExecute()
      */
     @Override
@@ -55,7 +55,7 @@ public class ShapeCreateCommand extends Command {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.commands.Command#execute()
      */
     @Override
@@ -69,7 +69,7 @@ public class ShapeCreateCommand extends Command {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.commands.Command#redo()
      */
     @Override
@@ -79,7 +79,7 @@ public class ShapeCreateCommand extends Command {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.commands.Command#undo()
      */
     @Override

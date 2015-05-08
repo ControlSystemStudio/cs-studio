@@ -52,7 +52,7 @@ public class ScanSampleFactory
             throw new IllegalArgumentException("Missing values");
         return new StringScanSample(timestamp, serial, values);
     }
-    
+
     /** Create ScanSample for plain number or text value
      *  @param timestamp Time stamp
      *  @param serial Serial to identify when the sample was taken

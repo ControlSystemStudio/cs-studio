@@ -94,7 +94,7 @@ private boolean checkSourceReconnection() {
 }
 
 /**
- * Return true, if reconnecting the connection-instance to newTarget is allowed. 
+ * Return true, if reconnecting the connection-instance to newTarget is allowed.
  */
 private boolean checkTargetReconnection() {
     // connection endpoints must be different Shapes
@@ -134,7 +134,7 @@ public void execute() {
  * to the supplied Shape instance.
  * <p>
  * Note: Calling this method, deactivates reconnection of the <i>target</i> endpoint.
- * A single instance of this command can only reconnect either the source or the target 
+ * A single instance of this command can only reconnect either the source or the target
  * endpoint.
  * </p>
  * @param connectionSource a non-null Shape instance, to be used as a new source endpoint
@@ -155,7 +155,7 @@ public void setNewSource(final SNLModel connectionSource) {
  * to the supplied Shape instance.
  * <p>
  * Note: Calling this method, deactivates reconnection of the <i>source</i> endpoint.
- * A single instance of this command can only reconnect either the source or the target 
+ * A single instance of this command can only reconnect either the source or the target
  * endpoint.
  * </p>
  * @param connectionTarget a non-null Shape instance, to be used as a new target endpoint
@@ -177,5 +177,5 @@ public void setNewTarget(final SNLModel connectionTarget) {
 public void undo() {
     connection.reconnect(oldSource, oldTarget);
 }
-    
+
 }

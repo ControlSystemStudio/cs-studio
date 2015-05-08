@@ -44,17 +44,17 @@ public class AutomatedActionFactory {
 
     /** Pattern for automated action command scheme */
     final private static Pattern SchemePattern = Pattern.compile("^([_A-Za-z0-9]+):.*");
-    
+
     /** Pattern for {@link String} */
-    final private static String StringPattern = 
+    final private static String StringPattern =
             "\"((?:[^\\\\\"]+|\\\\(?:[btnfr\"'\\\\]|[0-3]?[0-7]{1,2}|u[0-9a-fA-F]{4}))*)\"";
 
     /** Pattern for automated action command sequence scheme */
     final private static char SequenceToken = ';';
     final private static Pattern SequencePattern = Pattern
             .compile(StringPattern + "(?:\\ *" + SequenceToken + "\\ *" + StringPattern + ")+");
-    
-    
+
+
     public static AutomatedActionFactory getInstance() throws Exception {
         synchronized (AutomatedActionFactory.class) {
             if (instance == null)

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.model.internal;
 
@@ -17,7 +17,7 @@ import org.junit.Test;
 
 /**
  * Test cases for {@link Prototype}.
- * 
+ *
  * @author Sven Wende
  *
  */
@@ -26,7 +26,7 @@ public final class PrototypeTest {
     private Parameter parameter1;
     private Parameter parameter2;
     private Parameter parameter3;
-    
+
     /**
      * @throws java.lang.Exception
      */
@@ -36,11 +36,11 @@ public final class PrototypeTest {
         parameter1 = new Parameter("p1", "1");
         parameter2 = new Parameter("p2", "2");
         parameter3 = new Parameter("p3", "3");
-        
+
         prototype.addParameter(parameter1);
         prototype.addParameter(parameter2);
     }
-    
+
     /**
      * Test method for {@link org.csstudio.dct.model.internal.Prototype#equals()}.
      */
@@ -49,42 +49,42 @@ public final class PrototypeTest {
         UUID uid = UUID.randomUUID();
         Prototype p1 = new Prototype("p", uid);
         Prototype p2 = new Prototype("p", uid);
-        
+
         // .. parent
         assertEquals(p1, p2);
-        
+
         // .. parameters
         p1.addParameter(new Parameter("p1", "v1"));
         assertNotSame(p1, p2);
         p2.addParameter(new Parameter("p1", "v1"));
         assertEquals(p1, p2);
-        
+
         // .. name
         p1.setName("A");
         assertNotSame(p1, p2);
         p2.setName("A");
         assertEquals(p1, p2);
-        
+
         // .. properties
         p1.addProperty("a","a");
         assertNotSame(p1, p2);
         p2.addProperty("a","a");
         assertEquals(p1, p2);
-        
+
         // .. records
         Record record = new Record("r", "ai", uid);
         p1.addRecord(record);
         assertNotSame(p1, p2);
         p2.addRecord(record);
         assertEquals(p1, p2);
-        
+
         // .. instances
         Instance instance = new Instance(prototype, uid);
         p1.addInstance(instance);
         assertNotSame(p1, p2);
         p2.addInstance(instance);
         assertEquals(p1, p2);
-        
+
     }
 
     /**
@@ -156,7 +156,7 @@ public final class PrototypeTest {
     @Test
     public void testGetParameterValues() {
         Map<String, String> values = prototype.getParameterValues();
-        
+
         assertEquals(2, values.size());
         assertEquals("1", values.get("p1"));
         assertEquals("2", values.get("p2"));

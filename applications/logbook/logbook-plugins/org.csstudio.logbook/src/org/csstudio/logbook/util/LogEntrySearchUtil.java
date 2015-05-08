@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.util;
 
@@ -12,7 +12,7 @@ import java.util.Map;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class LogEntrySearchUtil {
 
@@ -23,7 +23,7 @@ public class LogEntrySearchUtil {
     public static final String SEARCH_KEYWORD_START = Messages.from;
     public static final String SEARCH_KEYWORD_END = Messages.to;
     public static final String SEARCH_KEYWORD_OWNER = Messages.owner;
-    
+
     public static final String SEARCH_KEYWORD_HISTORY = Messages.history;
     public static final String SEARCH_KEYWORD_PAGE = Messages.page;
     public static final String SEARCH_KEYWORD_COUNT = Messages.count;

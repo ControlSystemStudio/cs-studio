@@ -23,23 +23,23 @@ public class Opi_activeCircleClass extends OpiWidget {
     private static final String version = "1.0";
 
     /**
-     * Converts the Edm_activeCircleClasss to OPI Rectangle widget XML.  
+     * Converts the Edm_activeCircleClasss to OPI Rectangle widget XML.
      */
     public Opi_activeCircleClass(Context con, Edm_activeCircleClass r) {
         super(con, r);
         setTypeId(typeId);
 
         widgetContext.getElement().setAttribute("version", version);
-        
+
         new OpiString(widgetContext, "name", name);
         new OpiColor(widgetContext, "line_color", r.getLineColor(), r);
-        
+
         new OpiBoolean(widgetContext, "transparent", !r.isFill());
-        
+
         if (r.getFillColor().isExistInEDL()) {
             new OpiColor(widgetContext, "background_color", r.getFillColor(), r);
         }
-        
+
         if (r.getAlarmPv() != null) {
             // line color alarm rule.
             if (r.isLineAlarm())
@@ -49,7 +49,7 @@ public class Opi_activeCircleClass extends OpiWidget {
                 createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "background_color",
                         "backColorAlarmRule", false);
         }
-                
+
         int line_width = 1;
         if(r.getAttribute("lineWidth").isExistInEDL() && (r.getLineWidth() != 0 || r.isFill()))
             line_width = r.getLineWidth();
@@ -69,14 +69,14 @@ public class Opi_activeCircleClass extends OpiWidget {
 
         }
         new OpiInt(widgetContext, "line_style", lineStyle);
-        
+
 
         log.debug("Edm_activeCircleClass written.");
 
     }
-    
+
     protected void setDefaultPropertyValue(){
-        super.setDefaultPropertyValue();        
+        super.setDefaultPropertyValue();
         new OpiBoolean(widgetContext, "transparent", true);
     }
 

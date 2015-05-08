@@ -12,7 +12,7 @@ public class ExitParser extends
     protected String getPatternString() {
         return "(exit\\s+\\{)";
     }
-    
+
     @Override
     protected String getPrePatternString() {
         throw new UnsupportedOperationException(

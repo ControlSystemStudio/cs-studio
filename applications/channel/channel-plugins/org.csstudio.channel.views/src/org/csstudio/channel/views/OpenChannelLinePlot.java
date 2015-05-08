@@ -13,7 +13,7 @@ public class OpenChannelLinePlot extends AbstractAdaptedHandler<ChannelQuery> {
     public OpenChannelLinePlot() {
         super(ChannelQuery.class);
     }
-    
+
     @Override
     protected void execute(List<ChannelQuery> queries, ExecutionEvent event) throws PartInitException {
         if (!queries.isEmpty()) {

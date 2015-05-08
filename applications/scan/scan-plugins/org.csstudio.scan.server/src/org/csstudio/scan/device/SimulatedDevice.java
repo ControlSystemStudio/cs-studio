@@ -74,7 +74,7 @@ public class SimulatedDevice extends Device
             this.value = ValueFactory.newVDouble( ((Number) value).doubleValue() );
         fireDeviceUpdate();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void write(final Object value, final TimeDuration timeout) throws Exception

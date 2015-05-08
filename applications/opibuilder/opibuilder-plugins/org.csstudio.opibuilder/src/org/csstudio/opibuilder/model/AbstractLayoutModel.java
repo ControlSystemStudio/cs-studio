@@ -19,7 +19,7 @@ public abstract class AbstractLayoutModel extends AbstractWidgetModel {
         setLocation(0,0);
         setSize(FIXED_WIDTH, FIXED_WIDTH);
     }
-    
+
     @Override
     protected void configureBaseProperties() {
         super.configureBaseProperties();
@@ -40,14 +40,14 @@ public abstract class AbstractLayoutModel extends AbstractWidgetModel {
         setPropertyVisible(PROP_RULES,false);
         setPropertyVisible(PROP_SCALE_OPTIONS, false);
     }
-    
+
     @Override
     public void setPropertyValue(Object id, Object value) {
         if(((id.equals(PROP_XPOS) || id.equals(PROP_YPOS)) && ((Integer)value)!=0)||
                 ((id.equals(PROP_WIDTH) || id.equals(PROP_HEIGHT)) && ((Integer)value)!=FIXED_WIDTH)
         )
             return;
-        
+
         super.setPropertyValue(id, value);
     }
 }

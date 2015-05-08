@@ -74,7 +74,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             //write access
 //            if(isControlPV)
 //                updateWritable(widgetModel, pv);
-            
+
             if (pv.getValue() != null) {
                 if (ignoreOldPVValue) {
                     widgetModel.getPVMap()
@@ -85,7 +85,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                             .get(widgetModel.getProperty(pvPropID))
                             .setPropertyValue(pv.getValue());
             }
-            
+
         }
 
         @Override
@@ -105,7 +105,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
         public void paint(IFigure figure, Graphics graphics, Insets insets) {
         }
     };
-    
+
     private int updateSuppressTime = 1000;
     private String controlPVPropId = null;
 
@@ -137,30 +137,30 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
     protected OPITimer updateSuppressTimer;
     private IPVWidgetModel widgetModel;
     private boolean isAllValuesBuffered;
-    
+
     private ListenerList setPVValueListeners;
     private ListenerList alarmSeverityListeners;
     private boolean isAlarmPulsing = false;
     private ScheduledFuture<?> scheduledFuture;
-    
+
     /**
-     * @param editpart the editpart to be delegated. 
+     * @param editpart the editpart to be delegated.
      * It must implemented {@link IPVWidgetEditpart}
      */
     public PVWidgetEditpartDelegate(AbstractBaseEditPart editpart) {
-        this.editpart = editpart;        
-        
+        this.editpart = editpart;
+
 
     }
-    
+
     public IPVWidgetModel getWidgetModel() {
         if(widgetModel == null)
             widgetModel = (IPVWidgetModel) editpart.getWidgetModel();
         return widgetModel;
     }
-    
+
     public void doActivate(){
-        saveFigureOKStatus(editpart.getFigure());        
+        saveFigureOKStatus(editpart.getFigure());
         if(editpart.getExecutionMode() == ExecutionMode.RUN_MODE){
                 pvMap.clear();
                 final Map<StringProperty, PVValueProperty> pvPropertyMap = editpart.getWidgetModel().getPVMap();
@@ -172,7 +172,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                         continue;
 
                     try {
-                        IPV pv = BOYPVFactory.createPV((String) sp.getPropertyValue(), 
+                        IPV pv = BOYPVFactory.createPV((String) sp.getPropertyValue(),
                                 isAllValuesBuffered);
                         pvMap.put(sp.getPropertyID(), pv);
                         editpart.addToConnectionHandler((String) sp.getPropertyValue(), pv);
@@ -202,7 +202,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             }
         }
     }
-    
+
     public void doDeActivate() {
             for(IPV pv : pvMap.values())
                 pv.stop();
@@ -212,20 +212,20 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             }
 
             pvMap.clear();
-            pvListenerMap.clear();    
+            pvListenerMap.clear();
             stopPulsing();
     }
-    
+
     public IPV getControlPV(){
         if(controlPVPropId != null)
             return pvMap.get(controlPVPropId);
         return null;
     }
-    
-    
-    /**Get the PV corresponding to the <code>PV Name</code> property. 
+
+
+    /**Get the PV corresponding to the <code>PV Name</code> property.
      * It is same as calling <code>getPV("pv_name")</code>.
-     * @return the PV corresponding to the <code>PV Name</code> property. 
+     * @return the PV corresponding to the <code>PV Name</code> property.
      * null if PV Name is not configured for this widget.
      */
     public IPV getPV(){
@@ -251,7 +251,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
         }
         return null;
     }
-    
+
     /**
      * @return the time needed to suppress reading back from PV after writing.
      * No need to suppress if returned value <=0
@@ -259,7 +259,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
     public int getUpdateSuppressTime(){
         return updateSuppressTime;
     }
-    
+
     /**Set the time needed to suppress reading back from PV after writing.
      * No need to suppress if returned value <=0
      * @param updateSuppressTime
@@ -267,8 +267,8 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
     public void setUpdateSuppressTime(int updateSuppressTime) {
         this.updateSuppressTime = updateSuppressTime;
     }
-    
-    public void initFigure(IFigure figure){        
+
+    public void initFigure(IFigure figure){
         //initialize frequent used variables
         isBorderAlarmSensitive = getWidgetModel().isBorderAlarmSensitve();
         isBackColorAlarmSensitive = getWidgetModel().isBackColorAlarmSensitve();
@@ -280,7 +280,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             editpart.setFigureBorder(BORDER_NO_ALARM);
         }
     }
-    
+
     /**
      * Initialize the updateSuppressTimer
      */
@@ -304,7 +304,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                 }
             };
     }
-    
+
     /**For PV Control widgets, mark this PV as control PV.
      * @param pvPropId the propId of the PV.
      */
@@ -313,11 +313,11 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
         controlPVValuePropId = pvValuePropId;
         initUpdateSuppressTimer();
     }
-    
+
     public boolean isPVControlWidget(){
         return controlPVPropId!=null;
     }
-    
+
     public void registerBasePropertyChangeHandlers() {
         IWidgetPropertyChangeHandler borderHandler = new IWidgetPropertyChangeHandler(){
             public boolean handleChange(Object oldValue, Object newValue,
@@ -328,8 +328,8 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
         };
 
         editpart.setPropertyChangeHandler(IPVWidgetModel.PROP_BORDER_ALARMSENSITIVE, borderHandler);
-    
-        
+
+
         // value
         IWidgetPropertyChangeHandler valueHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -338,11 +338,11 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                 // No valid value is given. Do nothing.
                 if (newValue == null || !(newValue instanceof VType))
                     return false;
-                
+
                 AlarmSeverity newSeverity = VTypeHelper.getAlarmSeverity((VType) newValue);
                 if(newSeverity == null)
-                    return false;            
-                
+                    return false;
+
                 if (newSeverity != alarmSeverity) {
                     alarmSeverity = newSeverity;
                     fireAlarmSeverityChanged(newSeverity, figure);
@@ -351,19 +351,19 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             }
         };
         editpart.setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, valueHandler);
-        
+
         // Border Alarm Sensitive
         addAlarmSeverityListener(new AlarmSeverityListener() {
             @Override
             public boolean severityChanged(AlarmSeverity severity, IFigure figure) {
                 if (!isBorderAlarmSensitive)
                     return false;
-                
+
                 editpart.setFigureBorder(editpart.calculateBorder());
                 return true;
             }
         });
-        
+
         // BackColor Alarm Sensitive
         addAlarmSeverityListener(new AlarmSeverityListener() {
             @Override
@@ -374,7 +374,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                 return true;
             }
         });
-        
+
         // ForeColor Alarm Sensitive
         addAlarmSeverityListener(new AlarmSeverityListener() {
             @Override
@@ -399,8 +399,8 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                 }
                 return true;
             }
-        });        
-        
+        });
+
         class PVNamePropertyChangeHandler implements IWidgetPropertyChangeHandler{
             private String pvNamePropID;
             public PVNamePropertyChangeHandler(String pvNamePropID) {
@@ -415,14 +415,14 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                     oldPV.removeListener(pvListenerMap.get(pvNamePropID));
                 }
                 pvMap.remove(pvNamePropID);
-                String newPVName = ((String)newValue).trim();    
+                String newPVName = ((String)newValue).trim();
                 if(newPVName.length() <= 0)
                     return false;
                 try {
                     lastWriteAccess = null;
-                    IPV newPV = BOYPVFactory.createPV(newPVName, isAllValuesBuffered);                    
+                    IPV newPV = BOYPVFactory.createPV(newPVName, isAllValuesBuffered);
                     WidgetPVListener pvListener = new WidgetPVListener(pvNamePropID);
-                    newPV.addListener(pvListener);                    
+                    newPV.addListener(pvListener);
                     pvMap.put(pvNamePropID, newPV);
                     editpart.addToConnectionHandler(newPVName, newPV);
                     pvListenerMap.put(pvNamePropID, pvListener);
@@ -443,36 +443,36 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                 editpart.setPropertyChangeHandler(pvNameProperty.getPropertyID(),
                     new PVNamePropertyChangeHandler(pvNameProperty.getPropertyID()));
         }
-        
+
         if(editpart.getExecutionMode() ==  ExecutionMode.EDIT_MODE)
             editpart.getWidgetModel().getProperty(IPVWidgetModel.PROP_PVNAME).addPropertyChangeListener(new PropertyChangeListener() {
-                
+
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     //reselect the widget to update feedback.
-                    int selected = editpart.getSelected();        
+                    int selected = editpart.getSelected();
                     if(selected != EditPart.SELECTED_NONE){
                         editpart.setSelected(EditPart.SELECTED_NONE);
                         editpart.setSelected(selected);
-                    }                    
+                    }
                 }
             });
-        
+
         IWidgetPropertyChangeHandler backColorHandler = new IWidgetPropertyChangeHandler(){
-            public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {        
+            public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 saveBackColor = ((OPIColor)newValue).getSWTColor();
                 return false;
             }
-        };        
-        editpart.setPropertyChangeHandler(AbstractWidgetModel.PROP_COLOR_BACKGROUND, backColorHandler);        
+        };
+        editpart.setPropertyChangeHandler(AbstractWidgetModel.PROP_COLOR_BACKGROUND, backColorHandler);
 
         IWidgetPropertyChangeHandler foreColorHandler = new IWidgetPropertyChangeHandler(){
-            public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {        
+            public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 saveForeColor = ((OPIColor)newValue).getSWTColor();
                 return false;
             }
-        };        
-        editpart.setPropertyChangeHandler(AbstractWidgetModel.PROP_COLOR_FOREGROUND, foreColorHandler);            
+        };
+        editpart.setPropertyChangeHandler(AbstractWidgetModel.PROP_COLOR_FOREGROUND, foreColorHandler);
 
         IWidgetPropertyChangeHandler backColorAlarmSensitiveHandler = new IWidgetPropertyChangeHandler() {
 
@@ -506,10 +506,10 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
         };
 
         editpart.setPropertyChangeHandler(AbstractPVWidgetModel.PROP_ALARM_PULSING, alarmPulsingHandler);
-        
-        
+
+
     }
-    
+
     public synchronized void stopPulsing() {
         if (scheduledFuture != null) {
             // stop the pulsing runnable
@@ -517,8 +517,8 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             scheduledFuture = null;
         }
     }
-    
-    public synchronized void startPulsing() {            
+
+    public synchronized void startPulsing() {
         stopPulsing();
         Runnable pulsingTask = new Runnable() {
             public void run() {
@@ -540,14 +540,14 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                 .getInstance()
                 .getScheduledExecutorService()
                 .scheduleAtFixedRate(pulsingTask, PreferencesHelper.getGUIRefreshCycle(), PreferencesHelper.getGUIRefreshCycle(),
-                        TimeUnit.MILLISECONDS);    
-    }    
+                        TimeUnit.MILLISECONDS);
+    }
 
     private void saveFigureOKStatus(IFigure figure) {
         saveForeColor = figure.getForegroundColor();
         saveBackColor = figure.getBackgroundColor();
     }
-    
+
     /**
      * Start the updateSuppressTimer. All property change listeners of PV_Value property will
      * temporarily removed until timer is due.
@@ -559,7 +559,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
         pvValueProperty.removeAllPropertyChangeListeners();
         updateSuppressTimer.start(timerTask, getUpdateSuppressTime());
     }
-    
+
     public Border calculateBorder(){
         isBorderAlarmSensitive = getWidgetModel().isBorderAlarmSensitve();
         if(!isBorderAlarmSensitive)
@@ -570,7 +570,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             case NONE:
                 if(editpart.getWidgetModel().getBorderStyle()== BorderStyle.NONE)
                     alarmBorder = BORDER_NO_ALARM;
-                else 
+                else
                     alarmBorder = BorderFactory.createBorder(
                             editpart.getWidgetModel().getBorderStyle(),
                             editpart.getWidgetModel().getBorderWidth(),
@@ -588,20 +588,20 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             default:
                 alarmBorder = AlarmRepresentationScheme.getInvalidBorder(editpart.getWidgetModel().getBorderStyle());
                 break;
-            }    
-            
+            }
+
             return alarmBorder;
         }
     }
-    
+
     public Color calculateBackColor() {
         return calculateAlarmColor(isBackColorAlarmSensitive, saveBackColor);
     }
-    
+
     public Color calculateForeColor() {
         return calculateAlarmColor(isForeColorAlarmSensitive, saveForeColor);
     }
-    
+
     public Color calculateAlarmColor(boolean isSensitive, Color saveColor) {
         if (!isSensitive) {
             return saveColor;
@@ -609,8 +609,8 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             RGB alarmColor = AlarmRepresentationScheme.getAlarmColor(alarmSeverity);
             if (alarmColor != null) {
                 // Alarm severity is either "Major", "Minor" or "Invalid.
-                if (isAlarmPulsing && 
-                        (alarmSeverity == AlarmSeverity.MINOR || alarmSeverity == AlarmSeverity.MAJOR)) {                    
+                if (isAlarmPulsing &&
+                        (alarmSeverity == AlarmSeverity.MINOR || alarmSeverity == AlarmSeverity.MAJOR)) {
                     double alpha = 0.3;
                     int period;
                     if (alarmSeverity == AlarmSeverity.MINOR) {
@@ -664,7 +664,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             }
         }
     }
-    
+
     public void setIgnoreOldPVValue(boolean ignoreOldValue) {
         this.ignoreOldPVValue = ignoreOldValue;
     }
@@ -696,9 +696,9 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
         if(setPVValueListeners == null){
             setPVValueListeners = new ListenerList();
         }
-        setPVValueListeners.add(listener);        
+        setPVValueListeners.add(listener);
     }
-    
+
     protected void fireSetPVValue(String pvPropId, Object value){
         if(setPVValueListeners == null)
             return;
@@ -727,7 +727,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                         IFigure figure = editpart.getFigure();
                         if(figure.getCursor() == Cursors.NO)
                             figure.setCursor(savedCursor);
-                        figure.setEnabled(widgetModel.isEnabled());    
+                        figure.setEnabled(widgetModel.isEnabled());
                         figure.repaint();
                     }
                 });
@@ -739,7 +739,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                         if(figure.getCursor() != Cursors.NO)
                             savedCursor = figure.getCursor();
                         figure.setEnabled(false);
-                        figure.setCursor(Cursors.NO);        
+                        figure.setCursor(Cursors.NO);
                         figure.repaint();
                     }
                 });
@@ -752,9 +752,9 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
         if(alarmSeverityListeners == null){
             alarmSeverityListeners = new ListenerList();
         }
-        alarmSeverityListeners.add(listener);        
+        alarmSeverityListeners.add(listener);
     }
-    
+
     private void fireAlarmSeverityChanged(AlarmSeverity severity, IFigure figure) {
         if(alarmSeverityListeners == null)
             return;

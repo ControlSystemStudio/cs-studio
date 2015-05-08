@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The registry to add functions that will be used by the auto-complete.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class DSFunctionRegistry {
@@ -24,7 +24,7 @@ public class DSFunctionRegistry {
 
     /**
      * Returns the default data source function registry.
-     * 
+     *
      * @return the default registry
      */
     public static DSFunctionRegistry getDefault() {
@@ -35,7 +35,7 @@ public class DSFunctionRegistry {
 
     /**
      * Registers a formula set.
-     * 
+     *
      * @param functionSet a formula set
      */
     public void registerDSFunctionSet(DSFunctionSet functionSet) {
@@ -44,7 +44,7 @@ public class DSFunctionRegistry {
 
     /**
      * Returns the names of all the registered function sets.
-     * 
+     *
      * @return the names of the registered function sets
      */
     public Set<String> listFunctionSets() {
@@ -54,7 +54,7 @@ public class DSFunctionRegistry {
 
     /**
      * Returns the registered function set with the given name.
-     * 
+     *
      * @param name the function set name
      * @return the set or null
      */

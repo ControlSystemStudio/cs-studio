@@ -24,15 +24,15 @@ package org.csstudio.utility.adlconverter.fpcreator;
 import org.csstudio.sds.model.DisplayModel;
 
 /**
- * TODO (jhatje) : 
- * 
+ * TODO (jhatje) :
+ *
  * @author jhatje
  * @since 01.06.2012
  */
 public class Creator {
-    
+
     /**
-     * 
+     *
      */
     public static void createDisplays() {
         ConfigReader reader = new ConfigReader();
@@ -40,7 +40,7 @@ public class Creator {
         reader.readConfig(config);
         DisplayBuilder builder = new DisplayBuilder();
         DisplayModel[] model = builder.buildDisplayModel(config);
-        
+
         SdsFileWriter writer = new SdsFileWriter();
         writer.writeSdsFile(model);
     }

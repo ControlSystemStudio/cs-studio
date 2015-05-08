@@ -11,22 +11,22 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /** Access to preference settings.
- * 
+ *
  *  See preferences.ini for details on the available settings
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class Preferences
 {
-    
+
     public final static String PROHIBIT_ADVANCED_GRAPHICS = "org.csstudio.swt.widget.prohibit_advanced_graphics";
-    
+
     public final static String URL_FILE_LOAD_TIMEOUT = "org.csstudio.swt.widget.url_file_load_timeout";
 
-    
+
     // useAdvancedGraphics() is called from many drawing operations, so
     // only determine it once
-    private static boolean use_advanced_graphics;    
+    private static boolean use_advanced_graphics;
 
     static
     {
@@ -41,7 +41,7 @@ public class Preferences
     {
         return use_advanced_graphics;
     }
-    
+
     public static int getURLFileLoadTimeout(){
          final IPreferencesService prefs = Platform.getPreferencesService();
          if (prefs == null)

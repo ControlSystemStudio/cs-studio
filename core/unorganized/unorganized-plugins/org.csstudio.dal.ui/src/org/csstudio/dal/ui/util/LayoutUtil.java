@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.dal.ui.util;
@@ -32,9 +32,9 @@ import org.eclipse.swt.widgets.Group;
 /**
  * This class provides som useful static convinience methods for standard SWT
  * layout tasks.
- * 
+ *
  * @deprecated Use {@link GridDataFactory} instead - its much more convenient.
- * 
+ *
  * @author Sven Wende
  */
 public final class LayoutUtil {
@@ -46,7 +46,7 @@ public final class LayoutUtil {
 
     /**
      * Creates a GridLayout.
-     * 
+     *
      * @param columns
      *            number of columns
      * @param margin
@@ -76,7 +76,7 @@ public final class LayoutUtil {
 
     /**
      * Creates a GridLayout.
-     * 
+     *
      * @param columns
      *            number of columns
      * @param leftMargin
@@ -114,7 +114,7 @@ public final class LayoutUtil {
     /**
      * Creates a GridData, which will fill the current cell horizontally and
      * vertically.
-     * 
+     *
      * @return a GridData
      */
     public static GridData createGridData() {
@@ -130,12 +130,12 @@ public final class LayoutUtil {
     /**
      * Creates a GridData, which will fill the current cell horizontally and
      * grab the specified width and height.
-     * 
+     *
      * @param width
      *            width hint
      * @param height
      *            height hint
-     * 
+     *
      * @return a GridData
      */
     public static GridData createGridData(final int width, final int height) {
@@ -155,7 +155,7 @@ public final class LayoutUtil {
     /**
      * Creates a GridData, which will fill the current cell horizontally and
      * grab the specified width.
-     * 
+     *
      * @param width
      *            width hint
      * @return a GridData
@@ -175,7 +175,7 @@ public final class LayoutUtil {
     /**
      * Creates a GridData, which will fill the current cell horizontally and
      * fully grab the available space.
-     * 
+     *
      * @return a GridData
      */
     public static GridData createGridDataForFillingCell() {
@@ -192,7 +192,7 @@ public final class LayoutUtil {
 
     /**
      * Creates a GridData, which will grab the specified space.
-     * 
+     *
      * @param width
      *            preferred width
      * @param height
@@ -212,7 +212,7 @@ public final class LayoutUtil {
 
     /**
      * Creates a GridData, which will grab the available horizontal space.
-     * 
+     *
      * @return a GridData
      */
     public static GridData createGridDataForHorizontalFillingCell() {
@@ -226,7 +226,7 @@ public final class LayoutUtil {
 
     /**
      * Creates a GridData, which will grab the available vertical space.
-     * 
+     *
      * @return a GridData
      */
     public static GridData createGridDataForVerticalFillingCell() {
@@ -241,10 +241,10 @@ public final class LayoutUtil {
     /**
      * Creates a GridData, which will grab the available horizontal space and
      * use the specified heigth.
-     * 
+     *
      * @param height
      *            the preferred height
-     * 
+     *
      * @return a GridData
      */
     public static GridData createGridDataForHorizontalFillingCell(
@@ -263,10 +263,10 @@ public final class LayoutUtil {
     /**
      * Creates a GridData, which will grab the available vertical space and use
      * the specified width.
-     * 
+     *
      * @param width
      *            the preferred width
-     * 
+     *
      * @return a GridData
      */
     public static GridData createGridDataForVerticalFillingCell(final int width) {
@@ -283,7 +283,7 @@ public final class LayoutUtil {
 
     /**
      * Creates a simple group with a FillLayout.
-     * 
+     *
      * @param parent
      *            the parent composite
      * @param text

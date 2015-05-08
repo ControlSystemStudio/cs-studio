@@ -12,17 +12,17 @@ import java.util.Map;
 
 
 /** Information about a PV
- * 
+ *
  *  <p>Properties are static name/value pairs.
  *  <p>PVFields represent fields of the PV that change.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class PVInfo
 {
     final private Map<String, String> properties;
     final private List<PVField> fields;
-    
+
     public PVInfo(Map<String, String> properties, List<PVField> fields)
     {
         this.properties = properties;

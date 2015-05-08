@@ -26,9 +26,9 @@ import org.eclipse.ui.IWorkbenchPart;
  * @author Xihui Chen
  *
  */
-public class ChangeOrientationAction extends SelectionAction {    
-    
-    public enum OrientationType{        
+public class ChangeOrientationAction extends SelectionAction {
+
+    public enum OrientationType{
         FLIP_HORIZONTAL("Flip Horizontal", "icons/flip_horizontal.png"), //$NON-NLS-2$
         FLIP_VERTICAL("Flip Vertical", "icons/flip_vertical.png"), //$NON-NLS-2$
         ROTATE_CLOCKWISE("Rotate Right " + "90\u00b0", "icons/rotate_clockwise.png"), //$NON-NLS-2$ //$NON-NLS-3$
@@ -39,20 +39,20 @@ public class ChangeOrientationAction extends SelectionAction {
             this.label = label;
             this.iconPath = iconPath;
         }
-        
+
         public String getLabel(){
             return label;
         }
-        
+
         public String getActionID(){
             return "org.csstudio.opibuilder.actions." + toString(); //$NON-NLS-1$
         }
-        
+
         public ImageDescriptor getImageDescriptor(){
             return CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
                     OPIBuilderPlugin.PLUGIN_ID, iconPath);
         }
-        
+
     }
 
     private OrientationType orientationType;
@@ -74,12 +74,12 @@ public class ChangeOrientationAction extends SelectionAction {
             }
                 execute(compoundCommand);
     }
-    
+
     protected final List<AbstractWidgetModel> getSelectedWidgetModels() {
         List<?> selection = getSelectedObjects();
-    
+
         List<AbstractWidgetModel> selectedWidgetModels = new ArrayList<AbstractWidgetModel>();
-    
+
         for (Object o : selection) {
             if (o instanceof AbstractBaseEditPart) {
                 selectedWidgetModels.add(

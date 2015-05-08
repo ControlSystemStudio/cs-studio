@@ -29,13 +29,13 @@ import org.eclipse.swt.widgets.Text;
  *
  */
 public class EmbeddedScriptEditDialog extends HelpTrayDialog {
-    
+
     private ScriptData scriptData;
-    
+
     private Text nameText, scriptText;
-    
+
     private Combo scriptTypeCombo;
-    
+
 
     /**Constructor.
      * @param parentShell
@@ -43,12 +43,12 @@ public class EmbeddedScriptEditDialog extends HelpTrayDialog {
      */
     public EmbeddedScriptEditDialog(Shell parentShell, ScriptData scriptData) {
         super(parentShell);
-        setShellStyle(getShellStyle() | SWT.RESIZE);        
+        setShellStyle(getShellStyle() | SWT.RESIZE);
         if(scriptData != null)
             this.scriptData = scriptData.getCopy();
     }
-    
-    
+
+
     @Override
     protected void okPressed() {
         if(nameText.getText().trim().isEmpty()){
@@ -57,21 +57,21 @@ public class EmbeddedScriptEditDialog extends HelpTrayDialog {
         }
         if(scriptData == null)
             scriptData = new ScriptData();
-                
+
         scriptData.setEmbedded(true);
         scriptData.setScriptName(nameText.getText());
         scriptData.setScriptText(scriptText.getText());
         scriptData.setScriptType(ScriptType.values()[scriptTypeCombo.getSelectionIndex()]);
         super.okPressed();
     }
-    
+
     @Override
     protected String getHelpResourcePath() {
         return "/" + OPIBuilderPlugin.PLUGIN_ID + "/html/Script.html"; //$NON-NLS-1$; //$NON-NLS-2$
     }
-    
+
     public ScriptData getResult(){
-        
+
         return scriptData;
     }
 
@@ -80,13 +80,13 @@ public class EmbeddedScriptEditDialog extends HelpTrayDialog {
      */
     @Override
     protected void configureShell(final Shell shell) {
-        super.configureShell(shell);        
-        shell.setText("Edit Script");        
+        super.configureShell(shell);
+        shell.setText("Edit Script");
     }
-    
+
     /**
      * Creates 'wrapping' label with the given text.
-     * 
+     *
      * @param parent
      *            The parent for the label
      * @param text
@@ -97,7 +97,7 @@ public class EmbeddedScriptEditDialog extends HelpTrayDialog {
         label.setText(text);
         label.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
     }
-    
+
     @Override
     protected Control createDialogArea(Composite parent) {
         final Composite dialogArea = (Composite) super.createDialogArea(parent);
@@ -130,7 +130,7 @@ public class EmbeddedScriptEditDialog extends HelpTrayDialog {
                         scriptText.getText().trim().equals(ScriptService.DEFAULT_JS_HEADER.trim()))
                         scriptText.setText(ScriptService.DEFAULT_PYTHONSCRIPT_HEADER);
                 }
-                
+
             }
         });
         scriptTypeCombo.setLayoutData(gd);

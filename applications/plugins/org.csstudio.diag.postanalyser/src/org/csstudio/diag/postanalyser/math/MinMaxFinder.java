@@ -9,7 +9,7 @@ public class MinMaxFinder
 {
     private double max_position;
     private double min, max;
-    
+
     /** Locate maximum of an (x,y) series.
      *  @param x Array of positions
      *  @param y Array of values

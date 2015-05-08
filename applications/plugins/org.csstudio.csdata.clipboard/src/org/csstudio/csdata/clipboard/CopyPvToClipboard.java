@@ -33,7 +33,7 @@ public class CopyPvToClipboard extends AbstractHandler
     {
         final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
         final ProcessVariable[] pv_names = AdapterUtil.convert(selection, ProcessVariable.class);
-        
+
         // Create string with "PV" or "PV1, PV2, PV3"
         final StringBuilder pvs = new StringBuilder();
         for (ProcessVariable pv : pv_names)
@@ -42,7 +42,7 @@ public class CopyPvToClipboard extends AbstractHandler
                 pvs.append(", ");
             pvs.append(pv.getName());
         }
-        
+
         if(pvs.length() ==0){
             MessageDialog.openError(null, "Empty PV Name", "PV name is empty! Nothing will be copied.");
             return null;

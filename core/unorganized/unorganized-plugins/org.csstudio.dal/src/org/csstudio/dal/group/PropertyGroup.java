@@ -33,7 +33,7 @@ import org.csstudio.dal.DynamicValueProperty;
 public interface PropertyGroup<P extends DynamicValueProperty<?>>
     extends PropertyCollection<P>, GroupDataAccessProvider
 {
-    //    
+    //
 } /* __oOo__ */
 
 

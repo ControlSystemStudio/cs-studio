@@ -6,9 +6,9 @@ import org.csstudio.sds.model.IWidgetModelFactory;
 
 /**
  * This class defines a widget model factory for tank widget models.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public final class TankModelFactory implements IWidgetModelFactory {
 

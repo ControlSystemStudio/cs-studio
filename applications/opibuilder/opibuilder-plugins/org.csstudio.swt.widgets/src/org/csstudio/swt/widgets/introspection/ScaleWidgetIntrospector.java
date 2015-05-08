@@ -20,8 +20,8 @@ public class ScaleWidgetIntrospector extends DefaultWidgetIntrospector {
     };
     @Override
     public String[] getNonProperties() {
-    
+
         return concatenateStringArrays(super.getNonProperties(), SCALE_WIDGET_NON_PROPERTIES);
     }
-    
+
 }

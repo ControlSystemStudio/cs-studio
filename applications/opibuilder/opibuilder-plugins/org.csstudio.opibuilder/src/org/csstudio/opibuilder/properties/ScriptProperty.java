@@ -24,7 +24,7 @@ import org.jdom.Element;
  *
  */
 public class ScriptProperty extends AbstractWidgetProperty {
-    
+
     /**
      * XML ELEMENT name <code>PATH</code>.
      */
@@ -34,16 +34,16 @@ public class ScriptProperty extends AbstractWidgetProperty {
      * XML ATTRIBUTE name <code>PATHSTRING</code>.
      */
     public static final String XML_ATTRIBUTE_PATHSTRING = "pathString"; //$NON-NLS-1$
-    
+
     public static final String XML_ATTRIBUTE_CHECKCONNECT = "checkConnect"; //$NON-NLS-1$
-    
+
     public static final String XML_ATTRIBUTE_SKIP_FIRST_EXECUTION = "sfe"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_STOP_EXECUTE_ON_ERROR = "seoe"; //$NON-NLS-1$
-    
+
     public static final String EMBEDDEDJS = "EmbeddedJs"; ////$NON-NLS-1$
     public static final String EMBEDDEDPY = "EmbeddedPy"; ////$NON-NLS-1$
-    
-    
+
+
     /**
      * XML Element name <code>PV</code>.
      */
@@ -64,7 +64,7 @@ public class ScriptProperty extends AbstractWidgetProperty {
     public ScriptProperty(String prop_id, String description,
             WidgetPropertyCategory category) {
         super(prop_id, description, category, new ScriptsInput());
-        
+
     }
 
     @Override
@@ -73,13 +73,13 @@ public class ScriptProperty extends AbstractWidgetProperty {
             return null;
         ScriptsInput acceptableValue = null;
         if(value instanceof ScriptsInput){
-            acceptableValue = (ScriptsInput)value;            
+            acceptableValue = (ScriptsInput)value;
         }
-        
+
         return acceptableValue;
     }
 
-    
+
     @Override
     public Object getPropertyValue() {
         if(executionMode == ExecutionMode.RUN_MODE && widgetModel !=null){
@@ -98,8 +98,8 @@ public class ScriptProperty extends AbstractWidgetProperty {
             return value;
         }else
             return super.getPropertyValue();
-    }    
-    
+    }
+
     @Override
     protected PropertyDescriptor createPropertyDescriptor() {
         if(PropertySSHelper.getIMPL() == null)
@@ -123,7 +123,7 @@ public class ScriptProperty extends AbstractWidgetProperty {
                 sd.setScriptType(ScriptType.PYTHON);
                 sd.setScriptText(se.getChildText(XML_ELEMENT_SCRIPT_TEXT));
                 sd.setScriptName(se.getChildText(XML_ELEMENT_SCRIPT_NAME));
-            }else                
+            }else
                 sd = new ScriptData(new Path(se.getAttributeValue(XML_ATTRIBUTE_PATHSTRING)));
             if(se.getAttributeValue(XML_ATTRIBUTE_CHECKCONNECT) != null)
                 sd.setCheckConnectivity(
@@ -141,8 +141,8 @@ public class ScriptProperty extends AbstractWidgetProperty {
                     trig = Boolean.parseBoolean(pve.getAttributeValue(XML_ATTRIBUTE_TRIGGER));
                 sd.addPV(new PVTuple(pve.getText(), trig));
             }
-            result.getScriptList().add(sd);            
-        }        
+            result.getScriptList().add(sd);
+        }
         return result;
     }
 
@@ -164,7 +164,7 @@ public class ScriptProperty extends AbstractWidgetProperty {
                     pathElement.addContent(scriptTextElement);
                 }else
                     pathString = scriptData.getPath().toPortableString();
-                pathElement.setAttribute(XML_ATTRIBUTE_PATHSTRING, 
+                pathElement.setAttribute(XML_ATTRIBUTE_PATHSTRING,
                         pathString);
                 pathElement.setAttribute(XML_ATTRIBUTE_CHECKCONNECT,
                         Boolean.toString(scriptData.isCheckConnectivity()));
@@ -179,7 +179,7 @@ public class ScriptProperty extends AbstractWidgetProperty {
                     pathElement.addContent(pvElement);
                 }
                 propElement.addContent(pathElement);
-        }        
+        }
     }
 
 }

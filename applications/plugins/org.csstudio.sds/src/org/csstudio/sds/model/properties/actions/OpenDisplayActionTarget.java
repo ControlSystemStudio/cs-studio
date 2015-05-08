@@ -4,9 +4,9 @@ import org.csstudio.sds.model.IOption;
 
 /**
  * Targets for actions that open displays in run mode.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public enum OpenDisplayActionTarget implements IOption {
 

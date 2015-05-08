@@ -28,11 +28,11 @@ public class EdmMultiColors extends AbstractEdmMultiAttributes<EdmColor> {
         super(genericEntity, required);
 
     }
-    
+
     @Override
     protected EdmColor createEdmAttribute(EdmAttribute genericEntity) throws EdmException{
         return new EdmColor(genericEntity, false);
     }
 
-    
+
 }

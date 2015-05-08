@@ -23,18 +23,18 @@ public class OpiPointsList extends OpiAttribute {
     public OpiPointsList(Context con, String name, EdmPointsList xPoints, EdmPointsList yPoints) {
         this(con, name, xPoints.get(), yPoints.get());
     }
-    
+
     /**
      * Creates an element <name>intValue</name> with the given int value.
      */
     public OpiPointsList(Context con, String name, int[] x, int[] y) {
         super(con, name);
-        
+
         for(int i=0; i<Math.min(x.length, y.length); i++){
             Element pointElement = propertyContext.getDocument().createElement("point");
             pointElement.setAttribute("x", ""+(x[i]-propertyContext.getX()));
             pointElement.setAttribute("y", ""+(y[i]-propertyContext.getY()));
-            propertyContext.getElement().appendChild(pointElement);            
+            propertyContext.getElement().appendChild(pointElement);
         }
     }
 }

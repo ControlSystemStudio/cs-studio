@@ -4,7 +4,7 @@ import org.csstudio.dal.DataExchangeException;
 import org.epics.css.dal.simulation.ValueProvider;
 
 /**
- * 
+ *
  * <code>CountdownLongGenerator</code> is a countdown generator for long values.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
@@ -15,12 +15,12 @@ public class CountdownLongGenerator implements ValueProvider<Long> {
     private long from;
     private long to;
     private long countdownPeriod;
-    
+
     private long startMs=-1;
-    
+
     /**
      * Constructs a new countdown long generator.
-     * 
+     *
      * @param options the options (start, end, period)
      */
     public CountdownLongGenerator(String[] options) {
@@ -51,25 +51,25 @@ public class CountdownLongGenerator implements ValueProvider<Long> {
             from = to;
             to = tmp;
         }
-    
+
         distance = from - to;
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.epics.css.dal.simulation.ValueProvider#get()
      */
     public Long get() throws DataExchangeException {
         long result = -1;
-        
+
         if(startMs < 0) {
             startMs = System.currentTimeMillis();
         }
-        
+
         long now = System.currentTimeMillis();
         long diff = now-startMs;
-        
-        
+
+
         if(diff>=countdownPeriod) {
             startMs = -1;
             result = from;
@@ -77,15 +77,15 @@ public class CountdownLongGenerator implements ValueProvider<Long> {
             double percent = (double) diff/countdownPeriod;
             result = (long)(from - (distance * percent));
         }
-        
+
         return result;
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.epics.css.dal.simulation.ValueProvider#set(java.lang.Object)
      */
     public void set(Long value) throws DataExchangeException {
-        //ignore; data generator        
+        //ignore; data generator
     }
 }

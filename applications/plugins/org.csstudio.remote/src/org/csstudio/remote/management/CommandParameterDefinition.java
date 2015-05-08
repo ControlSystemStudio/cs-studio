@@ -28,13 +28,13 @@ import java.util.List;
 
 /**
  * Definition of a parameter accepted by a management command.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class CommandParameterDefinition implements Serializable {
 
     private static final long serialVersionUID = 2L;
-    
+
     private final CommandParameterType _type;
     private final String _id;
     private final String _label;
@@ -44,7 +44,7 @@ public final class CommandParameterDefinition implements Serializable {
 
     /**
      * Private constructor, called only by the {@link Builder}.
-     * 
+     *
      * @param builder
      *            the builder.
      */
@@ -52,11 +52,11 @@ public final class CommandParameterDefinition implements Serializable {
         if (builder._id == null || builder._label == null) {
             throw new IllegalArgumentException("id and label must not be null");
         }
-        
+
         _id = builder._id;
         _label = builder._label;
         _type = builder._type;
-        
+
         switch (builder._type) {
         case STRING:
         case DYNAMIC_ENUMERATION:
@@ -88,7 +88,7 @@ public final class CommandParameterDefinition implements Serializable {
 
     /**
      * Returns the identifier of this parameter.
-     * 
+     *
      * @return the identifier of this parameter.
      */
     public String getIdentifier() {
@@ -97,7 +97,7 @@ public final class CommandParameterDefinition implements Serializable {
 
     /**
      * Returns the type of this parameter.
-     * 
+     *
      * @return the type of this parameter.
      */
     public CommandParameterType getType() {
@@ -106,7 +106,7 @@ public final class CommandParameterDefinition implements Serializable {
 
     /**
      * Returns the label.
-     * 
+     *
      * @return the label.
      */
     public String getLabel() {
@@ -116,17 +116,17 @@ public final class CommandParameterDefinition implements Serializable {
     /**
      * Returns the minimum value. If this parameter is not of type
      * {@link CommandParameterType#INTEGER}, the returned value is meaningless.
-     * 
+     *
      * @return the minimum value.
      */
     public int getMinimum() {
         return _minimum;
     }
-    
+
     /**
      * Returns the maximum value. If this parameter is not of type
      * {@link CommandParameterType#INTEGER}, the returned value is meaningless.
-     * 
+     *
      * @return the maximum value.
      */
     public int getMaximum() {
@@ -138,7 +138,7 @@ public final class CommandParameterDefinition implements Serializable {
      * {@link CommandParameterType#ENUMERATION}, returns <code>null</code>. For
      * a dynamic enumeration parameter, the enumeration values must be queried
      * from the management service.
-     * 
+     *
      * @return the enumeration values, or <code>null</code> if this parameter is
      *         not of an enumeration type.
      */
@@ -146,7 +146,7 @@ public final class CommandParameterDefinition implements Serializable {
         if (_enumValues == null) {
             return null;
         }
-        
+
         CommandParameterEnumValue[] result =
             new CommandParameterEnumValue[_enumValues.length];
         System.arraycopy(_enumValues, 0, result, 0, _enumValues.length);
@@ -159,25 +159,25 @@ public final class CommandParameterDefinition implements Serializable {
      * defined by this definition. What constitutes a legal parameter value
      * depends on the type of the parameter.
      * </p>
-     * 
+     *
      * <ul>
      * <li>For a parameter of type {@link CommandParameterType#STRING}, the
      * object must be of type {@link String}.</li>
-     * 
+     *
      * <li>For a parameter of type {@link CommandParameterType#INTEGER}, the
      * object must be of type {@link Integer} and the integer value must be
      * within the range specified by the minimum and maximum values of this
      * parameter definition.</li>
-     * 
+     *
      * <li>For a parameter of type {@link CommandParameterType#ENUMERATION}, the
      * object must be of type {@link String} and must be the value of one of the
      * enumeration values defined by this parameter definition.</li>
-     * 
+     *
      * <li>For a parameter of type
      * {@link CommandParameterType#DYNAMIC_ENUMERATION}, the object must be of
      * type {@link String}.</li>
      * </ul>
-     * 
+     *
      * @param value
      *            the parameter value.
      * @return <code>true</code> if the specified object is a legal parameter
@@ -202,7 +202,7 @@ public final class CommandParameterDefinition implements Serializable {
     /**
      * Checks whether the given integer value is within the minimum, maximum
      * range of this parameter definition.
-     * 
+     *
      * @param value
      *            the value.
      * @return <code>true</code> if the value is within the range,
@@ -216,7 +216,7 @@ public final class CommandParameterDefinition implements Serializable {
     /**
      * Checks whether the given enumeration value is one of the values defined
      * by this parameter definition.
-     * 
+     *
      * @param value
      *            the value.
      * @return <code>true</code> if the value is a defined enumeration value,
@@ -260,7 +260,7 @@ public final class CommandParameterDefinition implements Serializable {
 
         /**
          * Sets the parameter type.
-         * 
+         *
          * @param type
          *            the type.
          * @return this builder.
@@ -272,7 +272,7 @@ public final class CommandParameterDefinition implements Serializable {
 
         /**
          * Sets the parameter name.
-         * 
+         *
          * @param id
          *            the identifier.
          * @return this builder.
@@ -284,7 +284,7 @@ public final class CommandParameterDefinition implements Serializable {
 
         /**
          * Sets the label of the parameter.
-         * 
+         *
          * @param label
          *            the label.
          * @return this builder.
@@ -298,7 +298,7 @@ public final class CommandParameterDefinition implements Serializable {
          * Sets the minimum parameter value for a parameter of type
          * {@link CommandParameterType#INTEGER}. For parameters of other types,
          * calling this method has no effect.
-         * 
+         *
          * @param minimum
          *            the minimum.
          * @return this builder.
@@ -312,7 +312,7 @@ public final class CommandParameterDefinition implements Serializable {
          * Sets the maximum parameter value for a parameter of type
          * {@link CommandParameterType#INTEGER}. For parameters of other types,
          * calling this method has no effect.
-         * 
+         *
          * @param maximum
          *            the maximum.
          * @return this builder.
@@ -327,7 +327,7 @@ public final class CommandParameterDefinition implements Serializable {
          * called for parameters of type
          * {@link CommandParameterType#ENUMERATION}. Calling it for parameters
          * of other types has no effect.
-         * 
+         *
          * @param value
          *            the enumeration value.
          * @return this builder.
@@ -340,7 +340,7 @@ public final class CommandParameterDefinition implements Serializable {
         /**
          * Builds the parameter definition based on the settings of this
          * builder.
-         * 
+         *
          * @return the parameter definition.
          */
         public CommandParameterDefinition build() {

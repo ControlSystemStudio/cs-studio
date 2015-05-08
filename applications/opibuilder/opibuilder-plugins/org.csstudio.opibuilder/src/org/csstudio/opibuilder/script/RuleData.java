@@ -32,29 +32,29 @@ public class RuleData implements IAdaptable{
      * The name of the rule.
      */
     private String name;
-    
+
     /**
-     * Id of the property which the rule will apply to. 
+     * Id of the property which the rule will apply to.
      */
-    private String propId;    
-    
+    private String propId;
+
     private AbstractWidgetModel widgetModel;
-    
+
     /**
      * Output expression value.
      */
     private boolean outputExpValue;
-    
+
     /**
      * List of expressions.
      */
     private List<Expression> expressionList;
-        
+
     /**
      * The input PVs of the rule. Which can be accessed in the rule and trigger the rule execution.
      */
     private List<PVTuple> pvList;
-    
+
     public RuleData(AbstractWidgetModel widgetModel) {
         this.widgetModel = widgetModel;
         expressionList = new ArrayList<Expression>();
@@ -62,7 +62,7 @@ public class RuleData implements IAdaptable{
         name = "Rule";
         propId = "name"; //$NON-NLS-1$
     }
-        
+
     /**
      * @return the name
      */
@@ -83,54 +83,54 @@ public class RuleData implements IAdaptable{
     public final String getPropId() {
         return propId;
     }
-    
+
     /**
      * @param propId the propId to set
      */
     public final void setPropId(String propId) {
         this.propId = propId;
     }
-    
+
     public void setOutputExpValue(boolean outputExpValue) {
         this.outputExpValue = outputExpValue;
     }
-    
+
     public boolean isOutputExpValue() {
         return outputExpValue;
     }
-    
+
 
     public List<Expression> getExpressionList(){
         return expressionList;
     }
-    
+
     public void addExpression(Expression exp){
         if(!expressionList.contains(exp))
             expressionList.add(exp);
     }
-    
+
     public void removeExpression(Expression exp){
         expressionList.remove(exp);
     }
-    
-    /**Get the input PVs of the script 
+
+    /**Get the input PVs of the script
      * @return
      */
     public List<PVTuple> getPVList() {
         return pvList;
     }
-    
+
     public void addPV(PVTuple pvTuple){
         if(!pvList.contains(pvTuple)){
             pvList.add(pvTuple);
-        }            
+        }
     }
-    
+
     public void removePV(PVTuple pvTuple){
         pvList.remove(pvTuple);
-    }    
-    
-    /**Generate the Javascript string for this rule. 
+    }
+
+    /**Generate the Javascript string for this rule.
      * @return the script string
      */
     public String generateScript(){
@@ -138,7 +138,7 @@ public class RuleData implements IAdaptable{
             return ""; //$NON-NLS-1$
         StringBuilder sb = new StringBuilder(
                 "importPackage(Packages.org.csstudio.opibuilder.scriptUtil); \n"); //$NON-NLS-1$
-        
+
         AbstractWidgetProperty property = widgetModel.getProperty(propId);
         boolean needDbl = false, needInt = false, needStr = false, needSev=false;
         for(Expression exp : expressionList){
@@ -163,7 +163,7 @@ public class RuleData implements IAdaptable{
                 if(outputExpValue && exp.getValue().toString().contains("pvSev")) //$NON-NLS-1$
                     needSev = true;
             }
-                
+
         }
         for(int i=0; i<pvList.size(); i++){
             if(needDbl)
@@ -180,16 +180,16 @@ public class RuleData implements IAdaptable{
             sb.append(i == 0 ? "if(" : "else if(");    //$NON-NLS-1$ //$NON-NLS-2$
             sb.append(expressionList.get(i++).getBooleanExpression());
             sb.append(")\n");//$NON-NLS-1$
-            
+
             sb.append("\twidget.setPropertyValue(\"" + propId + "\","); //$NON-NLS-1$ //$NON-NLS-2$
-            
+
             String propValue = generatePropValueString(property, exp);
-            sb.append(propValue + ");\n"); //$NON-NLS-1$            
+            sb.append(propValue + ");\n"); //$NON-NLS-1$
         }
         sb.append("else\n"); //$NON-NLS-1$
         sb.append("\twidget.setPropertyValue(\"" + propId + "\"," + //$NON-NLS-1$ //$NON-NLS-2$
                 generatePropValueString(property, null)+");\n"); //$NON-NLS-1$
-        
+
         return sb.toString();
     }
 
@@ -206,7 +206,7 @@ public class RuleData implements IAdaptable{
         }
         return result;
     }
-    
+
     /**
      * @param property
      * @param exp
@@ -226,22 +226,22 @@ public class RuleData implements IAdaptable{
                 value = exp.getValue();
             else
                 value = property.getPropertyValue();
-            
+
             if(value == null)
-                return "null"; //$NON-NLS-1$            
-            
-            propValue = property.toStringInRuleScript(value);        
+                return "null"; //$NON-NLS-1$
+
+            propValue = property.toStringInRuleScript(value);
         }
-    
-        
+
+
         return propValue;
     }
 
     public AbstractWidgetProperty getProperty() {
         return widgetModel.getProperty(propId);
     }
-    
-    /**Convert this {@link RuleData} to {@link RuleScriptData} so 
+
+    /**Convert this {@link RuleData} to {@link RuleScriptData} so
      * that the scriptEngine code can be reused for running rules.
      * @return
      */
@@ -251,36 +251,36 @@ public class RuleData implements IAdaptable{
         ruleScriptData.setScriptString(generateScript());
         return ruleScriptData;
     }
-    
+
     public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
         if(adapter == IWorkbenchAdapter.class)
             return new IWorkbenchAdapter() {
-                
+
                 public Object getParent(Object o) {
                     return null;
                 }
-                
+
                 public String getLabel(Object o) {
                     return name;
                 }
-                
+
                 public ImageDescriptor getImageDescriptor(Object object) {
                     return CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
                             OPIBuilderPlugin.PLUGIN_ID, "icons/js.gif");
                 }
-                
+
                 public Object[] getChildren(Object o) {
                     return new Object[0];
                 }
             };
-        
+
         return null;
     }
 
     public AbstractWidgetModel getWidgetModel() {
         return widgetModel;
     }
-    
+
     /**If a String contains the regular expression.
      * @param source the source string.
      * @param regex the regular expression.

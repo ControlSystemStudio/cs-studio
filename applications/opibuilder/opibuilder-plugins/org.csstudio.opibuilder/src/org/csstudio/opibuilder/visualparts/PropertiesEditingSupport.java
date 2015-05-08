@@ -16,9 +16,9 @@ import org.eclipse.swt.widgets.Table;
 
 /**
      * The {@link EditingSupport} for the value columns of the property table.
-     * 
+     *
      * @author Xihui Chen
-     * 
+     *
      */
 public class PropertiesEditingSupport extends EditingSupport {
 
@@ -26,11 +26,11 @@ public class PropertiesEditingSupport extends EditingSupport {
          * The {@link Table} where this {@link EditingSupport} is embedded.
          */
         private final Table table;
-        
+
 
         /**
          * Constructor.
-         * 
+         *
          * @param viewer
          *            The {@link ColumnViewer} for this
          *            {@link EditingSupport}.
@@ -59,7 +59,7 @@ public class PropertiesEditingSupport extends EditingSupport {
             AbstractWidgetProperty property;
             if((property = getSelectedProperty()) != null){
                 return property.getPropertyDescriptor().createPropertyEditor(table);
-            }            
+            }
             return null;
         }
 
@@ -73,17 +73,17 @@ public class PropertiesEditingSupport extends EditingSupport {
             }
             return null;
         }
-        
-        
+
+
         /**
          * {@inheritDoc}
          */
         @Override
         protected Object getValue(final Object element) {
-            if (element instanceof AbstractWidgetProperty) {            
+            if (element instanceof AbstractWidgetProperty) {
                     return ((AbstractWidgetProperty)element).getPropertyValue();
                 }
-            
+
             return null;
         }
 
@@ -99,6 +99,6 @@ public class PropertiesEditingSupport extends EditingSupport {
                     getViewer().refresh();
                 }
             }
-        }    
-    
+        }
+
 }

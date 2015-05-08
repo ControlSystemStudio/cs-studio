@@ -51,7 +51,7 @@ public class ServerServlet extends HttpServlet
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
             return;
         }
-        
+
         try
         {
             final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();

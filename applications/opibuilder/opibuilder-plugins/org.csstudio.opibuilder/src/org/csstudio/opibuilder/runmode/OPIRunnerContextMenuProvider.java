@@ -38,17 +38,17 @@ import org.eclipse.ui.actions.ActionFactory;
 
 /**
  * ContextMenuProvider implementation for the OPI Runner.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
-    
+
     private IOPIRuntime opiRuntime;
 
     /**
      * Constructor.
-     * 
+     *
      * @param viewer
      *            the graphical viewer
      */
@@ -66,40 +66,40 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
             addSettingPropertiesAction(menu);
         addWidgetActionToMenu(menu);
         GEFActionConstants.addStandardActionGroups(menu);
-        
+
         ActionRegistry actionRegistry =
                 (ActionRegistry) opiRuntime.getAdapter(ActionRegistry.class);
         IAction action = actionRegistry.getAction(ActionFactory.REFRESH.getId());
         if (action != null)
             menu.appendToGroup(GEFActionConstants.GROUP_PRINT, action);
-        
+
         IWorkbenchWindow activeWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-                
+
         if(!OPIBuilderPlugin.isRAP()){ //$NON-NLS-1$
-            menu.appendToGroup(GEFActionConstants.GROUP_EDIT, 
+            menu.appendToGroup(GEFActionConstants.GROUP_EDIT,
                 WorkbenchWindowService.getInstance().getFullScreenAction(activeWindow));
-            menu.appendToGroup(GEFActionConstants.GROUP_EDIT, 
+            menu.appendToGroup(GEFActionConstants.GROUP_EDIT,
                 WorkbenchWindowService.getInstance().getCompactModeAction(activeWindow));
         }
-        
-        
-        
+
+
+
         //actionRegistry.getAction(CompactModeAction.ID));
 
         // ELog and EMail actions may not be available
         SingleSourceHelper.appendRCPRuntimeActionsToMenu(actionRegistry, menu);
-        
+
         if(OPIBuilderPlugin.isRAP()){
             menu.add(new Separator("additions")); //$NON-NLS-1$
             menu.add(new AboutWebOPIAction());
         }
-            
+
 
 //        MenuManager cssMenu = new MenuManager("CSS", "css");
 //        cssMenu.add(new Separator("additions")); //$NON-NLS-1$
-//        menu.add(cssMenu);        
+//        menu.add(cssMenu);
     }
-    
+
     /**
      * Adds the defined {@link AbstractWidgetAction}s to the given {@link IMenuManager}.
      * @param menu The {@link IMenuManager}
@@ -110,7 +110,7 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
             if (selectedEditParts.get(0) instanceof AbstractBaseEditPart) {
                 AbstractBaseEditPart editPart = (AbstractBaseEditPart) selectedEditParts.get(0);
                 AbstractWidgetModel widget = editPart.getWidgetModel();
-                
+
                 //add menu Open, Open in New Tab and Open in New Window
                 List<AbstractWidgetAction> hookedActions = editPart.getHookedActions();
 
@@ -122,11 +122,11 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
                         menu.add(new OpenRelatedDisplayAction(
                                 (AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.TAB));
                         menu.add(new OpenRelatedDisplayAction(
-                                (AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.NEW_WINDOW));                    
+                                (AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.NEW_WINDOW));
                     }
                 }
-                    
-                
+
+
                 ActionsInput ai = widget.getActionsInput();
                 if(ai != null){
                     List<AbstractWidgetAction> widgetActions = ai.getActionsList();
@@ -141,7 +141,7 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
             }
         }
     }
-    
+
     private void addSettingPropertiesAction(final IMenuManager menu){
         List<?> selectedEditParts = ((IStructuredSelection)getViewer().getSelection()).toList();
         if (selectedEditParts.size()==1) {

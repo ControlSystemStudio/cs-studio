@@ -31,9 +31,9 @@ import org.eclipse.swt.graphics.Cursor;
 
 /**
  * The figure for array widget.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class ArrayFigure extends Figure implements Introspectable {
 
@@ -78,7 +78,7 @@ public class ArrayFigure extends Figure implements Introspectable {
                 return;
             int grayElementsCount = getIndex() + elementsCount
                     - getArrayLength();
-            if (grayElementsCount > 0) {                
+            if (grayElementsCount > 0) {
                 Rectangle clientArea = getClientArea();
                 graphics.pushState();
                 if (useLocalCoordinates())
@@ -122,13 +122,13 @@ public class ArrayFigure extends Figure implements Introspectable {
             scrollbar.setPageIncrement(getVisibleElementsCount());
             enabilityDirty = true;
         }
-        
+
         @Override
         protected boolean useLocalCoordinates() {
             return true;
         }
     }
-    
+
     private static final int SCROLLBAR_WIDTH = 16;
 
     private static final int SPINNER_HEIGHT = 25;
@@ -153,7 +153,7 @@ public class ArrayFigure extends Figure implements Introspectable {
 
     private boolean enabilityDirty;
     private ListenerList listeners;
-    
+
     public ArrayFigure() {
         listeners = new ListenerList();
         pane = new ArrayPane();
@@ -203,14 +203,14 @@ public class ArrayFigure extends Figure implements Introspectable {
 
     /**
      * Add an index change listener.
-     * 
+     *
      * @param listener
      *            The listener to add.
      */
     public void addIndexChangeListener(final IManualValueChangeListener listener) {
         listeners.add(listener);
     }
-    
+
     protected void fireIndexChanged(int newIndex){
         for(Object listener:listeners.getListeners()){
             ((IManualValueChangeListener)listener).manualValueChanged(newIndex);
@@ -226,7 +226,7 @@ public class ArrayFigure extends Figure implements Introspectable {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.csstudio.swt.widgets.introspection.Introspectable#getBeanInfo()
      */
     public BeanInfo getBeanInfo() throws IntrospectionException {
@@ -250,7 +250,7 @@ public class ArrayFigure extends Figure implements Introspectable {
     public SpinnerFigure getSpinner() {
         return spinner;
     }
-    
+
     /**
      * @return the spinnerWidth
      */
@@ -264,7 +264,7 @@ public class ArrayFigure extends Figure implements Introspectable {
      * number of elements. The client should call
      * {@link #calcWidgetSizeForElements(int, Dimension)} to get the proposed
      * size this number of elements.
-     * 
+     *
      * @param elementSize
      *            size of element.
      * @return
@@ -286,7 +286,7 @@ public class ArrayFigure extends Figure implements Introspectable {
     /**
      * Calculate the proposed widget size for the proposed visible elements
      * count.
-     * 
+     *
      * @param visibleElementsCount
      *            number of visible elements.
      * @param elementSize
@@ -354,7 +354,7 @@ public class ArrayFigure extends Figure implements Introspectable {
 
     /**
      * Calculate the preferred size based current layout and elements' size.
-     * 
+     *
      * @see org.eclipse.draw2d.XYLayout#calculatePreferredSize(org.eclipse.draw2d.IFigure,
      *      int, int)
      */
@@ -434,18 +434,18 @@ public class ArrayFigure extends Figure implements Introspectable {
         updateElementsEnability();
     }
 
-    
+
     @Override
     public void setCursor(Cursor cursor) {
         pane.setCursor(cursor);
     }
-    
+
     @Override
     public void setEnabled(boolean value) {
         pane.setEnabled(value);
         enabilityDirty=true;
         updateElementsEnability();
-        
+
     }
 
     /**
@@ -483,7 +483,7 @@ public class ArrayFigure extends Figure implements Introspectable {
                 ((IFigure)child).setEnabled(false);
             return;
         }
-            
+
         int elementsCount = pane.getChildren().size();
         if (elementsCount <= 0)
             return;

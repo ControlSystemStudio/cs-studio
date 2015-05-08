@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.model;
@@ -29,9 +29,9 @@ import org.eclipse.core.runtime.IAdaptable;
 
 /**
  * @author Sven Wende
- * 
+ *
  * @version $Revision: 1.27 $
- * 
+ *
  */
 public abstract class ContainerModel extends AbstractWidgetModel implements
         IAdaptable {
@@ -102,7 +102,7 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 
     /**
      * Constructor.
-     * 
+     *
      * @param parentChecksEnabled
      *            true if this container should check and maintain parent
      *            relationships for contained widgets
@@ -113,7 +113,7 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 
     /**
      * Standard constructor.
-     * 
+     *
      * @param parentChecksEnabled
      *            true if this container should check and maintain parent
      *            relationships for contained widgets
@@ -128,7 +128,7 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 
     /**
      * Adds multiple widgets to the container.
-     * 
+     *
      * @param indices
      *            the indices for the added images
      * @param widget
@@ -153,7 +153,7 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 
     /**
      * Adds multiple widgets to the container.
-     * 
+     *
      * @param widget
      *            A widget model that is to be added.
      */
@@ -171,7 +171,7 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 
     /**
      * Add a widget model to the model.
-     * 
+     *
      * @param widget
      *            A widget model that is to be added.
      */
@@ -183,7 +183,7 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 
     /**
      * Add a widget model at the given index to the model.
-     * 
+     *
      * @param index
      *            The index where to insert the widget. Must be >= 0 and <=
      *            {@link #getWidgets()}.size()
@@ -207,7 +207,7 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 
     /**
      * Adds a widget model at the given index to the model.
-     * 
+     *
      * @param index
      *            the index
      * @param widget
@@ -236,7 +236,7 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 
     /**
      * Return the widgets of this model.
-     * 
+     *
      * @return The widgets of this model.
      */
     public final synchronized List<AbstractWidgetModel> getWidgets() {
@@ -245,7 +245,7 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 
     /**
      * Remove widgets from the container.
-     * 
+     *
      * @param widget
      *            The widget model that is to be removed.
      */
@@ -263,7 +263,7 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 
     /**
      * Remove a widget model from the model.
-     * 
+     *
      * @param widget
      *            The widget model that is to be removed.
      */
@@ -287,7 +287,7 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 
     /**
      * Gets the index of the specified widget model.
-     * 
+     *
      * @param widget
      *            a widget model
      * @return the index of the specified widget model and -1 if the specified
@@ -319,7 +319,7 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 
     /**
      * Sets the connection state for this model.
-     * 
+     *
      * @param isLive
      *            true, if the model is connected to the control system, false
      *            otherwise
@@ -335,7 +335,7 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 
     /**
      * Returns the loading state of this model.
-     * 
+     *
      * @return true, if the model is currently being loaded, false otherwise
      */
     public final boolean isLoading() {
@@ -344,7 +344,7 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 
     /**
      * Set the loading state of the model.
-     * 
+     *
      * @param loading
      *            true, if the model is currently being loaded, false otherwise
      */
@@ -355,7 +355,7 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
     /**
      * Returns the index for the front depending on the given
      * {@link AbstractWidgetModel}.
-     * 
+     *
      * @param child
      *            The AbstractWidgetModel
      * @return int The index for the front
@@ -372,7 +372,7 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 
     /**
      * Returns the index for the back.
-     * 
+     *
      * @return int The index for the back
      */
     public final int getBackIndex(final AbstractWidgetModel child) {
@@ -386,7 +386,7 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 
     /**
      * Sets the given AbstractWidgetModel to the given index in the List.
-     * 
+     *
      * @param child
      *            The AbstractWidgetModel, which index should be changed
      * @param newIndex
@@ -416,7 +416,7 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
     /**
      * Returns the object that encapsulates all layer information for this
      * container.
-     * 
+     *
      * @return the object that encapsulates all layer information for this
      *         container
      */
@@ -426,7 +426,7 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 
     /**
      * Selects the specified widgets.
-     * 
+     *
      * @param widgetModel
      *            the widget
      */

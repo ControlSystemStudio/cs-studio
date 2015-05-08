@@ -7,7 +7,7 @@ import org.eclipse.draw2d.IFigure;
 
 public class PVTableByPropertyEditPart
 extends AbstractChannelWidgetEditPart<PVTableByPropertyFigure, PVTableByPropertyModel> {
-    
+
     /**
      * Create and initialize figure.
      */
@@ -17,9 +17,9 @@ extends AbstractChannelWidgetEditPart<PVTableByPropertyFigure, PVTableByProperty
         configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
         return figure;
     }
-    
+
     private ChannelSelectionNotification notification;
-    
+
     private void configure(PVTableByPropertyWidget widget, PVTableByPropertyModel model, boolean runMode) {
         if (runMode) {
             widget.setChannelQuery(model.getChannelQuery());
@@ -29,7 +29,7 @@ extends AbstractChannelWidgetEditPart<PVTableByPropertyFigure, PVTableByProperty
             }
             if (model.getSelectionPv() != null && !model.getSelectionPv().isEmpty()) {
                 notification = new ChannelSelectionNotification(model.getSelectionPv(), model.getSelectionExpression(), widget) {
-                    
+
                     @Override
                     protected String notificationFor(Object selection) {
                         return getNotificationExpression().notification(((PVTableByPropertyCell) selection).getChannels());
@@ -60,5 +60,5 @@ extends AbstractChannelWidgetEditPart<PVTableByPropertyFigure, PVTableByProperty
         setPropertyChangeHandler(PVTableByPropertyModel.SELECTION_EXPRESSION, reconfigure);
         setPropertyChangeHandler(PVTableByPropertyModel.SELECTION_PV, reconfigure);
     }
-    
+
 }

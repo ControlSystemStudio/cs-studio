@@ -19,9 +19,9 @@ import org.junit.Test;
 
 /**
  * Test class for {@link RecordFinder}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class RecordFinderTest {
     private IInstance car;
@@ -37,7 +37,7 @@ public final class RecordFinderTest {
 
     /**
      * Setup.
-     * 
+     *
      * @throws Exception
      */
     @Before
@@ -78,7 +78,7 @@ public final class RecordFinderTest {
     /**
      * Test method for
      * {@link RecordFinder#findRecordByPath(String, org.csstudio.dct.model.IContainer)}.
-     * 
+     *
      * @throws Exception
      */
     @Test

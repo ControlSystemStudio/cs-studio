@@ -16,11 +16,11 @@ public class CreateTagDialog extends TitleAreaDialog {
     private String tagOwner;
     private Text textTagName;
     private Text textTagOwner;
-    
+
 
     /**
      * Create a dialog with the an initial tag name <tt>tagName</tt>
-     * 
+     *
      * @param parentShell
      * @param tagName
      */
@@ -31,7 +31,7 @@ public class CreateTagDialog extends TitleAreaDialog {
 
     /**
      * Creates the dialog's contents
-     * 
+     *
      * @param parent
      *            the parent composite
      * @return Control
@@ -50,7 +50,7 @@ public class CreateTagDialog extends TitleAreaDialog {
 
     /**
      * Creates the gray area
-     * 
+     *
      * @param parent
      *            the parent composite
      * @return Control
@@ -60,34 +60,34 @@ public class CreateTagDialog extends TitleAreaDialog {
         composite.setLayoutData(new GridData(GridData.FILL_BOTH));
         composite.setFont(parent.getFont());
         composite.setLayout(new GridLayout(2, false));
-        
+
         Label lblTagName = new Label(composite, SWT.NONE);
         lblTagName.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         lblTagName.setText("Tag Name: ");
-        
+
         textTagName = new Text(composite, SWT.BORDER);
         textTagName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         textTagName.setText(tagName);
-        
+
         Label lblTagOwner = new Label(composite, SWT.NONE);
         lblTagOwner.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         lblTagOwner.setText("Tag Owner: ");
-        
+
         textTagOwner = new Text(composite, SWT.BORDER);
         textTagOwner.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        return composite;    
+        return composite;
     }
-    
+
     protected void okPressed() {
         tagName = textTagName.getText();
         tagOwner = textTagOwner.getText();
         super.okPressed();
     }
-    
+
     public String getTagName(){
         return this.tagName;
     }
-    
+
     public String getTagOwner(){
         return this.tagOwner;
     }

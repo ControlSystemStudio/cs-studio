@@ -77,7 +77,7 @@ public class ConnectionEvent<C extends Linkable> extends EventObject
      */
     @SuppressWarnings("unchecked")
     public C getConnectable()
-    {    
+    {
         return (C)getSource();
     }
 
@@ -101,7 +101,7 @@ public class ConnectionEvent<C extends Linkable> extends EventObject
     {
         return state;
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb= new StringBuilder(128);

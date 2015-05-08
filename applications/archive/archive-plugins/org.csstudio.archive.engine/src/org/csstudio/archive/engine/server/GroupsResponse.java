@@ -29,7 +29,7 @@ class GroupsResponse extends AbstractResponse
     {
         super(model);
     }
-    
+
     @Override
     protected void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
@@ -77,11 +77,11 @@ class GroupsResponse extends AbstractResponse
             total_channels += channel_count;
             total_connect += connect_count;
             total_received_values += received_values;
-            
+
             final String connected = (channel_count == connect_count)
                 ? Integer.toString(connect_count)
                 : HTMLWriter.makeRedText(Integer.toString(connect_count));
-                
+
             html.tableLine(new String[]
             {
                 HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()),
@@ -109,7 +109,7 @@ class GroupsResponse extends AbstractResponse
             "",
         });
         html.closeTable();
-            
+
         html.close();
     }
 }

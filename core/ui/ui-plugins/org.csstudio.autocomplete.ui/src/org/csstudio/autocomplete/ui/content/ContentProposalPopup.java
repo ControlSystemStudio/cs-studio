@@ -59,7 +59,7 @@ import org.eclipse.swt.widgets.Text;
  * additional information exists for a proposal, then selecting that
  * proposal will result in the information being displayed in a secondary
  * popup.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class ContentProposalPopup extends PopupDialog {
@@ -151,7 +151,7 @@ public class ContentProposalPopup extends PopupDialog {
                 scrollbarClicked = true;
                 return;
             }
-            
+
             if (e.type == SWT.Resize) {
                 // Do not close popup on resize for web version.
                 // RAP raise too many resize event
@@ -527,7 +527,7 @@ public class ContentProposalPopup extends PopupDialog {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.eclipse.jface.dialogs.PopupDialog#getForeground()
          */
         protected Color getForeground() {
@@ -537,7 +537,7 @@ public class ContentProposalPopup extends PopupDialog {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.eclipse.jface.dialogs.PopupDialog#getBackground()
          */
         protected Color getBackground() {
@@ -635,7 +635,7 @@ public class ContentProposalPopup extends PopupDialog {
     private boolean handleTopProposals = false;
 
     private ContentProposalAdapter adapter;
-    
+
     private Image partialContentImage;
     private Image partialContentImageSelected;
     private Image functionContentImage;
@@ -653,7 +653,7 @@ public class ContentProposalPopup extends PopupDialog {
      * Constructs a new instance of this popup, specifying the control for which
      * this popup is showing content, and how the proposals should be obtained
      * and displayed.
-     * 
+     *
      * @param infoText Text to be shown in a lower info area, or
      *        <code>null</code> if there is no info area.
      */
@@ -670,7 +670,7 @@ public class ContentProposalPopup extends PopupDialog {
                 false, false, false, false, null, infoText);
         this.adapter = adapter;
         this.control = adapter.getControl();
-        
+
         // this.labelProvider = adapter.getLabelProvider();
         this.partialContentImage = AutoCompleteUIPlugin.getDefault()
                 .getImageFromPlugin(AutoCompleteUIPlugin.PLUGIN_ID,
@@ -695,7 +695,7 @@ public class ContentProposalPopup extends PopupDialog {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.dialogs.PopupDialog#getForeground()
      */
     protected Color getForeground() {
@@ -705,7 +705,7 @@ public class ContentProposalPopup extends PopupDialog {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.dialogs.PopupDialog#getBackground()
      */
     protected Color getBackground() {
@@ -717,7 +717,7 @@ public class ContentProposalPopup extends PopupDialog {
      * Creates the content area for the proposal popup. This creates a table and
      * places it inside the composite. The table will contain a list of all the
      * proposals.
-     * 
+     *
      * @param parent The parent composite to contain the dialog area; must not
      * be <code>null</code>.
      */
@@ -736,7 +736,7 @@ public class ContentProposalPopup extends PopupDialog {
                 }
             };
             proposalTable.addListener(SWT.SetData, listener);
-            
+
             /*
              * NOTE: MeasureItem, PaintItem and EraseItem are called repeatedly.
              * Therefore, it is critical for performance that these methods be
@@ -841,7 +841,7 @@ public class ContentProposalPopup extends PopupDialog {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.dialogs.PopupDialog.adjustBounds()
      */
     protected void adjustBounds() {
@@ -875,7 +875,7 @@ public class ContentProposalPopup extends PopupDialog {
         data.widthHint = Math.max(maxItemWidth,
                 Math.max(control.getSize().x, POPUP_MINIMUM_WIDTH));
         proposalTable.setLayoutData(data);
-        
+
         getShell().pack();
         popupSize = getShell().getSize();
         int scrollBarWitdh = proposalTable.getVerticalBar().getSize().x;
@@ -1102,7 +1102,7 @@ public class ContentProposalPopup extends PopupDialog {
             }
         }
         footer.setText("");
-        
+
         if (handleTopProposals) {
             adapter.handleTopProposals(newProposalList);
             // First to respond win otherwise if all reponded,
@@ -1197,7 +1197,7 @@ public class ContentProposalPopup extends PopupDialog {
         }
         return false;
     }
-    
+
     /*
      * Return the current selected proposal.
      */
@@ -1229,7 +1229,7 @@ public class ContentProposalPopup extends PopupDialog {
         }
         return null;
     }
-    
+
     /*
      * Select the proposal at the given index.
      */
@@ -1248,9 +1248,9 @@ public class ContentProposalPopup extends PopupDialog {
      * Opens this ContentProposalPopup. This method is extended in order to add
      * the control listener when the popup is opened and to invoke the secondary
      * popup if applicable.
-     * 
+     *
      * @return the return code
-     * 
+     *
      * @see org.eclipse.jface.window.Window#open()
      */
     public int open() {
@@ -1269,7 +1269,7 @@ public class ContentProposalPopup extends PopupDialog {
     /**
      * Closes this popup. This method is extended to remove the control
      * listener.
-     * 
+     *
      * @return <code>true</code> if the window is (or was already) closed, and
      *         <code>false</code> if it is still open
      */

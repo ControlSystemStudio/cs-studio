@@ -3,9 +3,9 @@ package org.csstudio.platform.simpledal;
 /**
  * Enumeration that contain the possible write access levels for control system
  * channels.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public enum SettableState {
     /**

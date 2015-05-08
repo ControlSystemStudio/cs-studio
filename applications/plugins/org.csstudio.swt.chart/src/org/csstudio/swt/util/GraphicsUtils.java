@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.swt.util;
 
-// Found this at 
+// Found this at
 // http://www.java2s.com/Code/Java/SWT-JFace-Eclipse/Utilitymethodsfordrawinggraphics.htm
 
 //Send questions, comments, bug reports, etc. to the authors:
@@ -30,7 +30,7 @@ public class GraphicsUtils
      * <dt><b>Styles: </b></dt>
      * <dd>UP, DOWN</dd>
      * </dl>
-     * 
+     *
      * @param string the text to draw
      * @param x the x coordinate of the top left corner of the drawing rectangle
      * @param y the y coordinate of the top left corner of the drawing rectangle
@@ -68,7 +68,7 @@ public class GraphicsUtils
 
         // Draw the image vertically onto the original GC
         drawVerticalImage(stringImage, x, y, gc, style);
-        
+
 
         // Dispose the new GC
         stringGc.dispose();
@@ -84,7 +84,7 @@ public class GraphicsUtils
      * <dt><b>Styles: </b></dt>
      * <dd>UP, DOWN</dd>
      * </dl>
-     * 
+     *
      * @param string the text to draw
      * @param x the x coordinate of the top left corner of the drawing rectangle
      * @param y the y coordinate of the top left corner of the drawing rectangle
@@ -99,14 +99,14 @@ public class GraphicsUtils
     {
         drawVerticalText(string, x, y, gc, style, false);
     }
-    
+
     /**
      * Draws an image vertically (rotates plus or minus 90 degrees)
      * <dl>
      * <dt><b>Styles: </b></dt>
      * <dd>UP, DOWN</dd>
      * </dl>
-     * 
+     *
      * @param image the image to draw
      * @param x the x coordinate of the top left corner of the drawing rectangle
      * @param y the y coordinate of the top left corner of the drawing rectangle
@@ -163,7 +163,7 @@ public class GraphicsUtils
      * <dt><b>Styles: </b></dt>
      * <dd>UP, DOWN</dd>
      * </dl>
-     * 
+     *
      * @param text the text to rotate
      * @param font the font to use
      * @param foreground the color for the text
@@ -223,7 +223,7 @@ public class GraphicsUtils
      * <dt><b>Styles: </b></dt>
      * <dd>UP, DOWN</dd>
      * </dl>
-     * 
+     *
      * @param image the image to rotate
      * @param style direction to rotate (up or down)
      * @return Image

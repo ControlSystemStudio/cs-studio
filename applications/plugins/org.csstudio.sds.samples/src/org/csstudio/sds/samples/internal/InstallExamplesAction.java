@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
 public class InstallExamplesAction extends Action implements ICheatSheetAction, IWorkbenchWindowActionDelegate {
 
     private static final Logger LOG = LoggerFactory.getLogger(InstallExamplesAction.class);
-    
+
     public void run(final String[] params, final ICheatSheetManager manager) {
         run(null);
     }

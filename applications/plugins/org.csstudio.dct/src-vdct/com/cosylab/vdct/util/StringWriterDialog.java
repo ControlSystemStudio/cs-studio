@@ -22,7 +22,7 @@ import javax.swing.event.ListDataListener;
 public class StringWriterDialog extends javax.swing.JDialog {
 
     private String returnValue = null;
-    
+
     /** Creates new form StringWriterDialog */
     public StringWriterDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -31,9 +31,9 @@ public class StringWriterDialog extends javax.swing.JDialog {
         pack();
            setLocationRelativeTo(parent);
     }
-    
+
     /**
-     * 
+     *
      */
     private void init() {
         jTextField.getDocument().addDocumentListener(new DocumentListener() {
@@ -41,7 +41,7 @@ public class StringWriterDialog extends javax.swing.JDialog {
 
             public void changedUpdate(DocumentEvent e) {
                 // we won't ever get this with a PlainDocument
-                
+
             }
 
             public void insertUpdate(DocumentEvent e) {
@@ -51,9 +51,9 @@ public class StringWriterDialog extends javax.swing.JDialog {
             public void removeUpdate(DocumentEvent e) {
                 update(e);
             }
-            
+
             private void update(DocumentEvent e) {
-                entry.setValue(jTextField.getText());                
+                entry.setValue(jTextField.getText());
                 jLabelValue.setText(DBDEntry.matchAndReplace(jTextField.getText()));
                 boolean ok = entry.getFile().canRead() && entry.getFile().isFile();
                 jLabelWarning.setVisible(!ok);
@@ -64,7 +64,7 @@ public class StringWriterDialog extends javax.swing.JDialog {
         jComboBoxMacros.setModel(new ComboBoxModel() {
             Vector elements = null;
             Object selectedItem;
-        
+
             public Object getSelectedItem() {
                 if (elements==null) loadElements();
                 return selectedItem;
@@ -95,16 +95,16 @@ public class StringWriterDialog extends javax.swing.JDialog {
             }
 
             public void addListDataListener(ListDataListener l) {
-                
+
             }
 
             public void removeListDataListener(ListDataListener l) {
-                
+
             }
-            
-        });    
-        
-        jButtonDefault.setEnabled(false);    
+
+        });
+
+        jButtonDefault.setEnabled(false);
     }
 
     /** This method is called from within the constructor to
@@ -284,22 +284,22 @@ public class StringWriterDialog extends javax.swing.JDialog {
     private void jButtonAppendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAppendActionPerformed
         jTextField.setText(jTextField.getText()+"$("+jComboBoxMacros.getSelectedItem()+")");
     }//GEN-LAST:event_jButtonAppendActionPerformed
-    
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
         new StringWriterDialog(new javax.swing.JFrame(), true).setVisible(true);
     }
-    
+
     public String showDialog() {
-        returnValue = null;        
+        returnValue = null;
         setModal(true);
         setVisible(true);
-        
+
         return returnValue;
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAppend;
     private javax.swing.JButton jButtonCancel;
@@ -315,5 +315,5 @@ public class StringWriterDialog extends javax.swing.JDialog {
     private javax.swing.JPanel jPanelSeparator2;
     private javax.swing.JTextField jTextField;
     // End of variables declaration//GEN-END:variables
-    
+
 }

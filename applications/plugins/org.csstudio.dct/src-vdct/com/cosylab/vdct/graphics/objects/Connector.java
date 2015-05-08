@@ -8,22 +8,22 @@ package com.cosylab.vdct.graphics.objects;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -85,7 +85,7 @@ public class Connector extends VisibleObject implements Descriptable, InLink, Mo
                 setMode(OutLink.EXTERNAL_OUTPUT_MODE);
                 com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
             }
-            
+
         }
     }
     protected InLink inlink = null;
@@ -106,7 +106,7 @@ public class Connector extends VisibleObject implements Descriptable, InLink, Mo
 public Connector(String id, LinkManagerObject parent, OutLink outlink, InLink inlink) {
     super(parent);
     setID(id);
-    
+
     if (outlink instanceof VisibleObject)
         setColor(((VisibleObject)outlink).getColor());
     else
@@ -129,11 +129,11 @@ public Connector(String id, LinkManagerObject parent, OutLink outlink, InLink in
         outTurn = outlink.isRight();
     }
     //end bugfix
-    
+
     if (inlink!=null) inlink.setOutput(this, outlink);
     if (outlink!=null) outlink.setInput(this);
-    
-    setInput(inlink); 
+
+    setInput(inlink);
     setOutput(outlink, null);
     setWidth(Constants.CONNECTOR_WIDTH);
     setHeight(Constants.CONNECTOR_HEIGHT);
@@ -170,19 +170,19 @@ public Connector(String id, LinkManagerObject parent, OutLink outlink, InLink in
         if (il > ol && ir > or && il <= or && !inlink.isRight()) {
             if (outTurn != outlink.isRight())
                 setX((inX != in) ? inX : (inX < or) ? out : outX);
-            else         
+            else
                 setX((inX != in) || (outX != out) ? inX : out);
 //            System.out.println("1");
         }
         else if (ir < or && il > ol ) {
 //            System.out.println("2");
             setX(out);
-        } 
+        }
         else if ((ol > ir)){
 //            System.out.println("3");
             if (outlink instanceof Port) {
                 setX(in + ir - il + 5);
-            } else 
+            } else
                 setX(inX != in ? in + ir - il : in);
         } else {
 //            System.out.println("4");
@@ -208,15 +208,15 @@ public Connector(String id, LinkManagerObject parent, OutLink outlink, InLink in
         setX(0);
     else if (getX() > ViewState.getInstance().getWidth())
         setX(ViewState.getInstance().getWidth());
-    
+
     if (getY() < 0)
         setY(0);
     else if (getY() > ViewState.getInstance().getWidth())
         setY(ViewState.getInstance().getHeight());
-    
+
     if (Settings.getInstance().getSnapToGrid())
         snapToGrid();
-        
+
 }
 /**
  * Insert the method's description here.
@@ -230,7 +230,7 @@ public void accept(Visitor visitor) {}
  */
 public Connector addConnector() {
     EPICSLink start = null;
-    try { 
+    try {
         start = (EPICSLink)EPICSLinkOut.getStartPoint(this);
     } catch (ClassCastException e) {
         //bugfix RT #12130 by jbobnar
@@ -265,11 +265,11 @@ public void bypass() {
         if (inlink!=null) inlink.setOutput(outlink, this);
         if (outlink!=null) outlink.setInput(il);
 
-    
+
         getParent().removeObject(ID);
         setInput(null);
         setOutput(null, outlink);
-        
+
         UndoManager.getInstance().addAction(new DeleteConnectorAction(this, inlinkStr, outlinkStr));
     }
 }
@@ -283,7 +283,7 @@ public void bypass() {
 public boolean checkMove(int dx, int dy) {
     ViewState view = ViewState.getInstance();
 
-    if ((getX()<-dx) || (getY()<-dy) || 
+    if ((getX()<-dx) || (getY()<-dy) ||
         (getX()>(view.getWidth()-getWidth()-dx)) || (getY()>(view.getHeight()-getHeight()-dy)) /*||
         // y must be between in/out !!!
         (((y+dy)-getOutY())*((y+dy)-getInY())>0)*/
@@ -314,7 +314,7 @@ public void destroy() {
         if (inlink!=null) inlinkStr=inlink.getID();
         if (outlink!=null) outlinkStr=outlink.getID();
         UndoManager.getInstance().addAction(new DeleteConnectorAction(this, inlinkStr, outlinkStr));
-        
+
         setInput(null);
         setOutput(null, outlink);
     }
@@ -341,26 +341,26 @@ public void disconnect(Linkable disconnector) {
  */
 protected void draw(java.awt.Graphics g, boolean hilited) {
     if (disconnected) return;
-    
+
     ViewState view = ViewState.getInstance();
 
     int rwidth = getRwidth();
     int rheight = getRheight();
     int rrx = getRx()-view.getRx()-rwidth/2;    // position is center
     int rry = getRy()-view.getRy()-rheight/2;
-    
+
     boolean zoom = (view.getScale() < 1.0) && view.isZoomOnHilited() && view.isHilitedObject(this);
-    
+
     if (!DrawingSurface.getInstance().isPrinting()) {
         // clipping
         if ((!(rrx>view.getViewWidth()) || (rry>view.getViewHeight())
             || ((rrx+rwidth)<0) || ((rry+rheight)<0))) {
-    
+
             // fill or not to fill ?!!
-    
+
             /*
             if (!hilited) g.setColor(getColor());
-            else g.setColor((this==view.getHilitedObject()) ? 
+            else g.setColor((this==view.getHilitedObject()) ?
                             Constants.HILITE_COLOR : getColor());
             */
 //            if (zoom) {
@@ -370,31 +370,31 @@ protected void draw(java.awt.Graphics g, boolean hilited) {
 //                rry -= (rheight - getRheight())/2;
 //                if (view.getRx() < 0)
 //                    rrx = rrx < 0 ? 2 : rrx;
-//                if (view.getRy() < 0) 
+//                if (view.getRy() < 0)
 //                    rry = rry <= 0 ? 2 : rry;
 //                Rscale = 1.0;
 //            }
-            
-            
+
+
             if (view.isSelected(this))
             {
                 g.setColor(Constants.PICK_COLOR);
                 g.fillRect(rrx, rry, rwidth, rheight);
             }
-    
+
             Color c = getVisibleColor();
             if (hilited)
                 c = (view.isHilitedObject(this)) ? Constants.HILITE_COLOR : c;
             g.setColor(c);
 
-            if (inlink!=null || hilited) 
+            if (inlink!=null || hilited)
                 g.drawRect(rrx, rry, rwidth, rheight);
             else if (getMode()!=EXTERNAL_OUTPUT_MODE && getMode()!=EXTERNAL_INPUT_MODE)
             {
                 g.drawLine(rrx, rry, rrx+rwidth, rry+rheight);
                 g.drawLine(rrx+rwidth, rry, rrx, rry+rheight);
             }
-        
+
         }
     }
 
@@ -402,18 +402,18 @@ protected void draw(java.awt.Graphics g, boolean hilited) {
 
         g.setColor(hilited && view.isHilitedObject(this) && !zoom ? Constants.HILITE_COLOR : getVisibleColor());
 
-    
+
             if (inlink!=null){
-                LinkDrawer.drawLink(g, this, inlink, getQueueCount(), 
+                LinkDrawer.drawLink(g, this, inlink, getQueueCount(),
                                     getOutX()<inlink.getInX());
             }
             else if (getOutput()!=null){
-                LinkDrawer.drawLink(g, this, null, getQueueCount(), 
+                LinkDrawer.drawLink(g, this, null, getQueueCount(),
                                     getOutput().getOutX()<getX());
             }
 
-    }  
-    
+    }
+
 }
 /**
  * Insert the method's description here.
@@ -481,14 +481,14 @@ descItem.setEnabled(false); //!!!
     JMenuItem addItem = new JMenuItem(addConnectorString);
     addItem.addActionListener(al);
     items.addElement(addItem);
-    
+
     JMenuItem removeItem = new JMenuItem(removeConnectorString);
     removeItem.addActionListener(al);
     items.addElement(removeItem);
-    
+
     // modes
     items.addElement(new JSeparator());
-    
+
     JMenu modeMenu = new JMenu(modeString);
     items.addElement(modeMenu);
 
@@ -501,9 +501,9 @@ descItem.setEnabled(false); //!!!
     invisibleModeItem.setEnabled(getMode()!=OutLink.INVISIBLE_MODE && getInput()!=null && (getOutput()==null || getOutput().getMode()!=OutLink.INVISIBLE_MODE));
     invisibleModeItem.addActionListener(al);
     modeMenu.add(invisibleModeItem);
-    
+
     modeMenu.add(new JSeparator());
-    
+
     JRadioButtonMenuItem inputModeItem = new JRadioButtonMenuItem(inputString, getMode()==OutLink.EXTERNAL_INPUT_MODE);
     inputModeItem.setEnabled(getMode()!=OutLink.EXTERNAL_INPUT_MODE && getInput()==null);    // if endpoint
     inputModeItem.addActionListener(al);
@@ -585,7 +585,7 @@ public boolean isDisconnected() {
  */
 public boolean move(int dx, int dy) {
     if (checkMove(dx, dy)) {
-        x+=dx; 
+        x+=dx;
         /*
         if ((outlink!=null) && (inlink!=null))
             if (((y+dy)-getOutY())*((y+dy)-getInY())>0) {    // not in between
@@ -595,13 +595,13 @@ public boolean move(int dx, int dy) {
                 y+=dy;
         else*/
         y+=dy;
-        
+
         revalidatePosition();
         if (inlink instanceof Connector) ((Connector)inlink).revalidatePosition();
         if (outlink instanceof Connector) ((Connector)outlink).revalidatePosition();
         return true;
     }
-    else 
+    else
         return false;
 }
 /**
@@ -610,7 +610,7 @@ public boolean move(int dx, int dy) {
  */
 public void revalidatePosition() {
   if (inlink!=null && outlink!=null && mode!=INVISIBLE_MODE && outlink.getMode()!=INVISIBLE_MODE) { //order is important
-    if (getQueueCount()%2==0) 
+    if (getQueueCount()%2==0)
         //setX(inlink.getInX());
         setX((inlink.getInX()+outlink.getOutX())/2);
     else
@@ -620,7 +620,7 @@ public void revalidatePosition() {
   double  Rscale = getRscale();
   setRx((int)(getX()*Rscale));
   setRy((int)(getY()*Rscale));
-  
+
 }
 /**
  * Insert the method's description here.
@@ -675,7 +675,7 @@ public void setOutput(OutLink output, OutLink prevOutput) {
  */
 protected void validate() {
   revalidatePosition();
-  
+
   double Rscale = getRscale();
   setRwidth((int)(getWidth()*Rscale));
   setRheight((int)(getHeight()*Rscale));
@@ -710,8 +710,8 @@ public VisibleObject intersects(int px, int py) {
     int rheight = getRheight();
     int rx = getRx()-rwidth/2;    // position is center
     int ry = getRy()-rheight/2;
-    if ((rx<=px) && (ry<=py) && 
-            ((rx+rwidth)>=px) && 
+    if ((rx<=px) && (ry<=py) &&
+            ((rx+rwidth)>=px) &&
             ((ry+rheight)>=py)) return this;
     else return null;
 }
@@ -732,8 +732,8 @@ public VisibleObject intersects(int p1x, int p1y, int p2x, int p2y) {
     int rheight = getRheight();
     int rx = getRx()-rwidth/2;    // position is center
     int ry = getRy()-rheight/2;
-    if ((rx>=p1x) && (ry>=p1y) && 
-            ((rx+rwidth)<=p2x) && 
+    if ((rx>=p1x) && (ry>=p1y) &&
+            ((rx+rwidth)<=p2x) &&
             ((ry+rheight)<=p2y)) return this;
     else return null;
 }

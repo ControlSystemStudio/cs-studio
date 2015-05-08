@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
@@ -15,7 +15,7 @@ import junit.framework.TestCase;
  */
 public class RelatedDisplayItemTest extends TestCase {
     RelatedDisplayItem rdItem = new RelatedDisplayItem();
-    
+
     /**
      * Test method for {@link org.csstudio.utility.adlparser.fileParser.widgetParts.RelatedDisplayItem#RelatedDisplayItem(org.csstudio.utility.adlparser.fileParser.ADLWidget)}.
      */

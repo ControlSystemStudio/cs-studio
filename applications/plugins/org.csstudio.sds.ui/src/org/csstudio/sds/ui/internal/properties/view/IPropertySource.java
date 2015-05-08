@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.sds.ui.internal.properties.view;
@@ -41,12 +41,12 @@ import org.csstudio.sds.ui.properties.IPropertyDescriptor;
  * will also need to register a suitable adapter factory with the platform's
  * adapter manager (<code>Platform.getAdapterManager</code>).
  * </p>
- * 
+ *
  * @see org.eclipse.core.runtime.IAdaptable
  * @see org.eclipse.core.runtime.Platform#getAdapterManager()
  * @see org.csstudio.sds.ui.internal.properties.view.PropertySheetPage
  * @see org.csstudio.sds.ui.internal.properties.view.IPropertySource2
- * 
+ *
  * @author Sven Wende
  */
 public interface IPropertySource {
@@ -87,7 +87,7 @@ public interface IPropertySource {
      * editable value and using it to update the state of the original property
      * source object, one is able to edit several property source objects at
      * once (multiple selection).
-     * 
+     *
      * @return a value that can be edited
      */
     Object getEditableValue();
@@ -102,7 +102,7 @@ public interface IPropertySource {
      * descriptors with any edit/update. Since descriptors provide cell editors,
      * returning the same descriptors if possible allows for efficient updating.
      * </p>
-     * 
+     *
      * @return the property descriptors
      */
     IPropertyDescriptor[] getPropertyDescriptors();
@@ -111,7 +111,7 @@ public interface IPropertySource {
      * Returns the value of the property with the given id if it has one.
      * Returns <code>null</code> if the property's value is <code>null</code>
      * value or if this source does not have the specified property.
-     * 
+     *
      * @see #setPropertyValue
      * @param id
      *            the id of the property being set
@@ -127,7 +127,7 @@ public interface IPropertySource {
      * If the notion of default value is not meaningful for the specified
      * property then <code>false</code> is returned.
      * </p>
-     * 
+     *
      * @param id
      *            the id of the property
      * @return <code>true</code> if the value of the specified property has
@@ -153,7 +153,7 @@ public interface IPropertySource {
      * <code>IPropertySource2#isPropertyResettable(Object)</code> returns
      * <code>true</code> for the property with the given id.
      * </p>
-     * 
+     *
      * @param id
      *            the id of the property being reset
      * @see #isPropertySet(Object)
@@ -197,7 +197,7 @@ public interface IPropertySource {
      * <code>getEditableValue</code>. It is this editable value that will be
      * passed back via this method when it has been editted
      * </p>
-     * 
+     *
      * @see #getPropertyValue
      * @see #getEditableValue
      * @param id
@@ -212,13 +212,13 @@ public interface IPropertySource {
      * has one. Returns <code>null</code> if the property's dynamics
      * descriptor is <code>null</code> or if this source does not have the
      * specified property.
-     * 
+     *
      * @param propertId
      *            the id of the property being set
      * @return the dynamics descriptor of the property, or <code>null</code>
      */
     DynamicsDescriptor getDynamicsDescriptor(Object propertId);
-    
+
     /**
      * Sets the dynamics descriptor for the property with the given id if
      * possible. Does nothing if the property's dynamics descriptor cannot be
@@ -234,14 +234,14 @@ public interface IPropertySource {
      * sources. Thus to avoid a situation where all of the property sources
      * reference the same dynamics descriptor they should use clone.
      * </p>
-     * 
+     *
      * @param propertId
      *            the id of the property being set
      * @param descriptor
      *            the new dynamics descriptor
      */
     void setDynamicsDescriptor(Object propertId, DynamicsDescriptor descriptor);
-    
-    
+
+
     Map<String, String> getAliases();
 }

@@ -1,7 +1,7 @@
 package org.csstudio.sds.language.script.parser.nodes;
 
 public class RuleNode extends AbstractScriptNode {
-    
+
     private String _ruleName;
 
     public RuleNode(final String ruleName,

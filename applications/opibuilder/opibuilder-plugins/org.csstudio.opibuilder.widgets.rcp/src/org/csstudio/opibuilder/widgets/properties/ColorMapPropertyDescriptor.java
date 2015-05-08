@@ -19,13 +19,13 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  *
  */
 public class ColorMapPropertyDescriptor extends TextPropertyDescriptor {
-    
-    
+
+
     private IntensityGraphModel intensityGraphModel;
-    
+
     /**
      * Creates an property descriptor with the given id and display name.
-     * 
+     *
      * @param id
      *            the id of the property
      * @param displayName
@@ -47,5 +47,5 @@ public class ColorMapPropertyDescriptor extends TextPropertyDescriptor {
         }
         return editor;
     }
-    
+
 }

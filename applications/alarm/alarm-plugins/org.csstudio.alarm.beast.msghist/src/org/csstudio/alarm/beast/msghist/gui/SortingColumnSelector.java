@@ -38,7 +38,7 @@ abstract public class SortingColumnSelector extends SelectionAdapter
     public void widgetSelected(final SelectionEvent e)
     {
         final Table table = table_viewer.getTable();
-        
+
         // Initial sort for newly selected columns: up
         boolean up = true;
         // Was this column already used for sorting?

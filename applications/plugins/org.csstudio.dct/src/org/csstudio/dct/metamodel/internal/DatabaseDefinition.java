@@ -11,9 +11,9 @@ import org.csstudio.dct.metamodel.IRecordDefinition;
 
 /**
  * Standard implementation of {@link IDatabaseDefinition}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class DatabaseDefinition implements IDatabaseDefinition {
     private Map<String, IRecordDefinition> recordDefinitions;
@@ -21,7 +21,7 @@ public final class DatabaseDefinition implements IDatabaseDefinition {
 
     /**
      * Constructor.
-     * 
+     *
      * @param dbdVersion
      *            the dbd version
      */

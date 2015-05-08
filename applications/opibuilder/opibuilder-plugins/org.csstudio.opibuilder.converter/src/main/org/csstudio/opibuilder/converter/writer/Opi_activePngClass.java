@@ -22,7 +22,7 @@ public class Opi_activePngClass extends OpiWidget {
     private static final String version = "1.0";
 
     /**
-     * Converts the Edm_activePngClass to OPI Rectangle widget XML.  
+     * Converts the Edm_activePngClass to OPI Rectangle widget XML.
      */
     public Opi_activePngClass(Context con, Edm_activePngClass r) {
         super(con, r);

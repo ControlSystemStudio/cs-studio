@@ -32,11 +32,11 @@ import org.junit.Test;
 
 
 /**
- * 
+ *
  * @author Joerg Rathlev
  */
 public class LinearAxisTest {
-    
+
     @Test
     public void testSimpleMapping() {
         IAxis axis = new LinearAxis(0.0, 9.0, 10);
@@ -44,14 +44,14 @@ public class LinearAxisTest {
         assertEquals(1, axis.valueToCoordinate(1.0));
         assertEquals(9, axis.valueToCoordinate(9.0));
     }
-    
+
     @Test
     public void valuesOutsideDataRange() throws Exception {
         IAxis axis = new LinearAxis(0.0, 9.0, 10);
         assertEquals(20, axis.valueToCoordinate(20.0));
         assertEquals(-10, axis.valueToCoordinate(-10.0));
     }
-    
+
     @Test
     public void testRounding() throws Exception {
         LinearAxis axis = new LinearAxis(0.0, 9.0, 10);
@@ -61,13 +61,13 @@ public class LinearAxisTest {
         assertEquals(1, axis.valueToCoordinate(0.9));
         assertEquals(1, axis.valueToCoordinate(1.49));
         assertEquals(2, axis.valueToCoordinate(1.5));
-        
+
         // negative values
         assertEquals(0, axis.valueToCoordinate(-0.1));
         assertEquals(0, axis.valueToCoordinate(-0.5));
         assertEquals(-1, axis.valueToCoordinate(-0.51));
     }
-    
+
     @Test
     public void testScaling() throws Exception {
         IAxis axis = new LinearAxis(0.0, 1.0, 101);
@@ -76,7 +76,7 @@ public class LinearAxisTest {
         assertEquals(50, axis.valueToCoordinate(0.5));
         assertEquals(1, axis.valueToCoordinate(0.01));
     }
-    
+
     @Test
     public void testSetDataRange() throws Exception {
         IAxis axis = new LinearAxis(0.0, 9.0, 10);
@@ -84,7 +84,7 @@ public class LinearAxisTest {
         axis.setDataRange(-9.0, 9.0);
         assertEquals(5, axis.valueToCoordinate(0.0));
     }
-    
+
     @Test
     public void testSetDisplaySize() throws Exception {
         IAxis axis = new LinearAxis(0.0, 10.0, 10);
@@ -92,7 +92,7 @@ public class LinearAxisTest {
         axis.setDisplaySize(20);
         assertEquals(10, axis.valueToCoordinate(5.0));
     }
-    
+
     @Test
     public void testInvalidDataRange() throws Exception {
         // This test simply checks that an axis can be created with an invalid
@@ -100,7 +100,7 @@ public class LinearAxisTest {
         IAxis axis = new LinearAxis(0.0, -10.0, 10);
         axis.setDataRange(10.0, 0.0);
     }
-    
+
     @Test
     public void testExtrema() throws Exception {
         IAxis axis = new LinearAxis(0.0, 9.0, 10);
@@ -111,7 +111,7 @@ public class LinearAxisTest {
         // note: Double.MIN_VALUE is smallest *positive* nonzero value!
         assertEquals(0, axis.valueToCoordinate(Double.MIN_VALUE));
     }
-    
+
     @Test
     public void testLegalValues() throws Exception {
         IAxis axis = new LinearAxis(0.0, 9.0, 10);
@@ -120,10 +120,10 @@ public class LinearAxisTest {
         assertTrue(axis.isLegalValue(Double.POSITIVE_INFINITY));
         assertTrue(axis.isLegalValue(Double.MAX_VALUE));
         assertTrue(axis.isLegalValue(-Double.MAX_VALUE));
-        
+
         assertFalse(axis.isLegalValue(Double.NaN));
     }
-    
+
     @Test
     public void testCalculateTicks() throws Exception {
         IAxis axis = new LinearAxis(0.0, 9.0, 1000);
@@ -135,7 +135,7 @@ public class LinearAxisTest {
             assertEquals(i, ticks.get(i).value(), 0.001);
         }
     }
-    
+
     @Test
     public void testCalculateIntegerTicks() throws Exception {
         IAxis axis = new LinearAxis(0.0, 2.0, 1000);

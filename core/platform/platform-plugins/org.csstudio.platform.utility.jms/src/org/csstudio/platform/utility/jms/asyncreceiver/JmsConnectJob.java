@@ -10,7 +10,7 @@ import org.eclipse.core.runtime.jobs.Job;
 
 public class JmsConnectJob {
 
-    
+
     private MessageListener _listener;
     private IConnectionMonitor _connectionMonitor;
     private String[] _topics;
@@ -36,7 +36,7 @@ public class JmsConnectJob {
         _url1 = url1;
         _url2 = url2;
     }
-    
+
     /**
      * Starts the JMS connection.
      */
@@ -47,7 +47,7 @@ public class JmsConnectJob {
             _jmsConnector.disconnect();
 //            _log.warn(this, "There was an active JMS connection when starting a new connection");
         }
-        
+
         Job jmsConnectionJob = new Job("Connecting to JMS brokers") {
             @Override
             protected IStatus run(final IProgressMonitor monitor) {

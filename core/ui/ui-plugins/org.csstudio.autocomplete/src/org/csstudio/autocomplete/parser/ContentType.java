@@ -13,7 +13,7 @@ import org.csstudio.autocomplete.IAutoCompleteProvider;
  * Common content types, can be extended to define specific content types.
  * Used by {@link IContentParser} & {@link IAutoCompleteProvider} to filter
  * content.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class ContentType {

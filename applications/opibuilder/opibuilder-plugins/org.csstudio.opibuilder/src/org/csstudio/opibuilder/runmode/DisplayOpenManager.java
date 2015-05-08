@@ -178,7 +178,7 @@ public class DisplayOpenManager {
     public Object[] getForwardStackEntries(){
         return  forwardStack.toArray();
     }
-    
+
     /**
      * Dispose of all resources allocated by this manager.
      */

@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.ui.internal.actions;
@@ -42,9 +42,9 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * An Action to create a group surrounding the selected Widgets.
- * 
+ *
  * @author Kai Meyer &  Sven Wende
- * 
+ *
  */
 public final class CreateGroupAction extends AbstractWidgetSelectionAction {
 
@@ -84,13 +84,13 @@ public final class CreateGroupAction extends AbstractWidgetSelectionAction {
         container.setWidth(bounds.width);
         container.setHeight(bounds.height);
         container.setLayer(parentContainer.getLayerSupport().getActiveLayer().getId());
-        
+
         // add new container
         cmd.add(new AddWidgetCommand(parentContainer, container));
 
         // select new container
         cmd.add(new SetSelectionCommand(getGraphicalViewer(), container));
-        
+
         // remove widgets from surrounding container
         cmd.add(new DeleteWidgetsCommand(null, parentContainer, widgets));
 
@@ -111,7 +111,7 @@ public final class CreateGroupAction extends AbstractWidgetSelectionAction {
     /**
      * Determines the common ancestor for all given {@link AbstractWidgetModel}
      * s.
-     * 
+     *
      * @param widgets
      *            The {@link AbstractWidgetModel}s
      * @return The {@link ContainerModel}, which is the ancestor for all
@@ -140,7 +140,7 @@ public final class CreateGroupAction extends AbstractWidgetSelectionAction {
     /**
      * Determines if the given {@link ContainerModel} is an ancestor of this
      * model.
-     * 
+     *
      * @param ancestor
      *            The probably ancestor
      * @param widget
@@ -162,7 +162,7 @@ public final class CreateGroupAction extends AbstractWidgetSelectionAction {
     /**
      * Determines the bounds for the container, which surrounds for all selected
      * widgets.
-     * 
+     *
      * @param widgets
      *            The widgets, which should be added to a container
      * @return The bounds for the new container

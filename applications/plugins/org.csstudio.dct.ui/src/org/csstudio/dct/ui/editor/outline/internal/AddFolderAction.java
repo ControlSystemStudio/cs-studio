@@ -14,9 +14,9 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Action that adds a folder.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class AddFolderAction extends AbstractOutlineAction {
 

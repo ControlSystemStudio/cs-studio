@@ -52,7 +52,7 @@ public class Messages extends NLS
     public static String S_Timestamp;
     public static String S_Value;
     public static String S_Waiting;
-    
+
     static
     {
         // initialize resource bundle

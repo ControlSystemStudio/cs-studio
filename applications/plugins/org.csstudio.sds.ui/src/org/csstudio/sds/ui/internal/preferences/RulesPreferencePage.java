@@ -12,7 +12,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class RulesPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage {
     /**
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -23,7 +23,7 @@ public class RulesPreferencePage extends PreferencePage implements
     }
 
     /**
-     * 
+     *
      * {@inheritDoc}
      */
     public void init(final IWorkbench workbench) {

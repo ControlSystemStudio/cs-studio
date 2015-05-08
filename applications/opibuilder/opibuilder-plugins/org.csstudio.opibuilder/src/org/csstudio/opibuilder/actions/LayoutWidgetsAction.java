@@ -20,13 +20,13 @@ public class LayoutWidgetsAction extends AbstractWidgetTargetAction {
     public void run(IAction action) {
 
         AbstractLayoutEditpart layoutWidget = getLayoutWidget();
-        
+
         LayoutWidgetsImp.run(layoutWidget, getCommandStack());
-        
+
     }
 
     protected AbstractLayoutEditpart getLayoutWidget(){
         return (AbstractLayoutEditpart)selection.getFirstElement();
     }
-    
+
 }

@@ -23,12 +23,12 @@ public class GlobalSettingsPreferencePage extends FieldEditorPreferencePage
     @Override
     protected void createFieldEditors() {
         FieldEditor editor;
-        
+
         editor = new BooleanFieldEditor(PreferenceConstants.CURSOR_LINE_ENABLE.getPreferenceStoreId(), "Enables current line highlighting", getFieldEditorParent());
         this.addField(editor);
         editor = new ColorFieldEditor(PreferenceConstants.CURSOR_LINE_COLOR.getPreferenceStoreId(), "Color for line highlighting", getFieldEditorParent());
         this.addField(editor);
-        
+
         editor = new BooleanFieldEditor(PreferenceConstants.MATCHING_CHARACTER_ENABLE.getPreferenceStoreId(), "Enables matching character highlighting", getFieldEditorParent());
         this.addField(editor);
         editor = new ColorFieldEditor(PreferenceConstants.MATCHING_CHARACTER_COLOR.getPreferenceStoreId(), "Color matching character highlighting", getFieldEditorParent());

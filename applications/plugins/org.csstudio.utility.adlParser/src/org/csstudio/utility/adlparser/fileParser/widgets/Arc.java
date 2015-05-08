@@ -14,7 +14,7 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.internationalization.Messages;
 
 /**
- * 
+ *
  * @author hammonds
  *
  */
@@ -40,7 +40,7 @@ public class Arc extends ADLAbstractWidget {
                     if (_adlObject != null){
                         _hasObject = true;
                     }
-                    
+
                 }
                 else if (childWidget.getType().equals("dynamic attribute")){
                     _adlDynamicAttribute = new ADLDynamicAttribute(childWidget);
@@ -69,7 +69,7 @@ public class Arc extends ADLAbstractWidget {
             }
         }
         catch (WrongADLFormatException ex) {
-            
+
         }
     }
 

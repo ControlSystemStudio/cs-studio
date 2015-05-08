@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.channel.widgets;
 
@@ -22,7 +22,7 @@ import com.google.common.collect.Collections2;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class TunerChannelTableModel {
     private Map<String, Channel> channels;

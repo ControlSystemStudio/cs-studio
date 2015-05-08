@@ -22,14 +22,14 @@ public class Opi_activeMenuButtonClass extends OpiWidget {
     private static final String version = "1.0";
 
     /**
-     * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.  
+     * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.
      */
     public Opi_activeMenuButtonClass(Context con, Edm_activeMenuButtonClass r) {
         super(con, r);
         setTypeId(typeId);
         setName(name);
         setVersion(version);
-        
+
         if(r.getControlPv()!=null)
         {
             new OpiString(widgetContext, "pv_name", convertPVName(r.getControlPv()));

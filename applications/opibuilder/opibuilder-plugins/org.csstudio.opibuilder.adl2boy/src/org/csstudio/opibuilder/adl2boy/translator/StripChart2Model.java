@@ -19,14 +19,14 @@ public class StripChart2Model extends AbstractADL2Model {
     @Override
     public void processWidget(ADLWidget adlWidget) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void makeModel(ADLWidget adlWidget,
             AbstractContainerModel parentModel) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

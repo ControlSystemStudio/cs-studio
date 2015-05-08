@@ -164,7 +164,7 @@ public enum LdapEpicsAlarmcfgConfiguration implements ILdapTreeNodeConfiguration
     public LdapEpicsAlarmcfgConfiguration getRoot() {
         return UNIT;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -221,7 +221,7 @@ public enum LdapEpicsAlarmcfgConfiguration implements ILdapTreeNodeConfiguration
     public ImmutableSet<String> getAttributes() {
         return _attributes;
     }
-    
+
     public static String getDtdFilePath() throws IOException {
         return TreeConfigurationActivator.getResourceFromBundle("./res/dtd/epicsAlarmCfg.dtd");
     }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene.opiwidgets;
 
@@ -13,7 +13,7 @@ import static org.csstudio.graphene.opiwidgets.ModelPropertyConstants.*;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class LineGraph2DWidgetModel extends
         AbstractPointDatasetGraph2DWidgetModel {
@@ -23,7 +23,7 @@ public class LineGraph2DWidgetModel extends
     }
 
     public final String ID = "org.csstudio.graphene.opiwidgets.LineGraph2D"; //$NON-NLS-1$
-    
+
     @Override
     protected void configureProperties() {
         super.configureProperties();
@@ -32,12 +32,12 @@ public class LineGraph2DWidgetModel extends
         addProperty(new StringProperty(PROP_SELECTION_VALUE_PV,
                 "Selection Value PV (VTable)", WidgetPropertyCategory.Basic, ""));
     }
-    
+
     @Override
     protected String getDataType() {
         return "VTable/VNumberArray";
     }
-    
+
     public String getSelectionValuePv() {
         return (String) getCastedPropertyValue(PROP_SELECTION_VALUE_PV);
     }

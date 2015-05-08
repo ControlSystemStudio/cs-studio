@@ -11,7 +11,7 @@ import org.osgi.framework.Version;
 
 
 
-/**The abstract widget model for all PV related widgets. 
+/**The abstract widget model for all PV related widgets.
  * @author Xihui Chen
  *
  */
@@ -19,44 +19,44 @@ public abstract class AbstractPVWidgetModel extends AbstractWidgetModel implemen
 
 
     private PVWidgetModelDelegate delegate;
-    
+
     public AbstractPVWidgetModel() {
     }
-    
+
     public PVWidgetModelDelegate getDelegate(){
         if(delegate == null)
             delegate = new PVWidgetModelDelegate(this);
         return delegate;
     }
-    
+
     @Override
     protected void configureBaseProperties() {
-        super.configureBaseProperties();        
+        super.configureBaseProperties();
         getDelegate().configureBaseProperties();
     }
-    
+
     @Override
     public void processVersionDifference(Version boyVersionOnFile) {
         super.processVersionDifference(boyVersionOnFile);
-        delegate.processVersionDifference(boyVersionOnFile);        
+        delegate.processVersionDifference(boyVersionOnFile);
     }
 
     public boolean isBorderAlarmSensitve(){
         return getDelegate().isBorderAlarmSensitve();
     }
-    
+
     public boolean isForeColorAlarmSensitve(){
         return getDelegate().isForeColorAlarmSensitve();
     }
-    
+
     public boolean isBackColorAlarmSensitve(){
         return getDelegate().isBackColorAlarmSensitve();
     }
-    
+
     public boolean isAlarmPulsing(){
         return getDelegate().isAlarmPulsing();
-    }    
-    
+    }
+
     public String getPVName(){
         return getDelegate().getPVName();
     }

@@ -26,20 +26,20 @@ import java.io.Serializable;
 
 /**
  * Describes a remote management command.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class CommandDescription implements Serializable {
 
     private static final long serialVersionUID = 2L;
-    
+
     private final String _id;
     private final String _label;
     private final CommandParameterDefinition[] _parameters;
 
     /**
      * Creates a new command description.
-     * 
+     *
      * @param id
      *            the ID of the command.
      * @param label
@@ -54,7 +54,7 @@ public final class CommandDescription implements Serializable {
         if (id == null || label == null) {
             throw new NullPointerException("id and label must not be null");
         }
-        
+
         _id = id;
         _label = label;
         if (parameters == null) {
@@ -64,19 +64,19 @@ public final class CommandDescription implements Serializable {
             System.arraycopy(parameters, 0, _parameters, 0, parameters.length);
         }
     }
-    
+
     /**
      * Returns the identifier of the command.
-     * 
+     *
      * @return the identifier of the command.
      */
     public String getIdentifier() {
         return _id;
     }
-    
+
     /**
      * Returns the label which is used for the command in the user interface.
-     * 
+     *
      * @return the label for the command.
      */
     public String getLabel() {
@@ -85,7 +85,7 @@ public final class CommandDescription implements Serializable {
 
     /**
      * Returns the parameters required by this command.
-     * 
+     *
      * @return the parameters required by this command. If this command does not
      *         require any parameters, returns an empty array (not
      *         <code>null</code>).
@@ -109,7 +109,7 @@ public final class CommandDescription implements Serializable {
         }
         return false;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -117,7 +117,7 @@ public final class CommandDescription implements Serializable {
     public int hashCode() {
         return _id.hashCode();
     }
-    
+
     /**
      * {@inheritDoc}
      */

@@ -8,22 +8,22 @@ package com.cosylab.vdct.dbd;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -116,7 +116,7 @@ public static String getFieldType(int type) {
         case DBDConstants.DBF_NOACCESS:    return "DBF_NOACCESS";
         default:
             return "UNKNOWN";
-    }        
+    }
 }
 
 /**
@@ -194,7 +194,7 @@ public static EnhancedStreamTokenizer getEnhancedStreamTokenizer(String fileName
 
     FileInputStream fi = null;
     EnhancedStreamTokenizer tokenizer = null;
-    
+
     try    {
         fi = new FileInputStream(fileName);
         tokenizer = new EnhancedStreamTokenizer(new BufferedReader(new InputStreamReader(fi)));
@@ -228,7 +228,7 @@ public static void initializeTokenizer(EnhancedStreamTokenizer tokenizer) {
  * @param tokenizer java.io.EnhancedStreamTokenizer
  */
 public static void processDBD(DBDData data, EnhancedStreamTokenizer tokenizer, String fileName, PathSpecification paths) throws Exception {
-    
+
     DBDRecordData rd;
     DBDMenuData md;
     DBDDeviceData dd;
@@ -237,10 +237,10 @@ public static void processDBD(DBDData data, EnhancedStreamTokenizer tokenizer, S
     String include_filename;
     EnhancedStreamTokenizer inctokenizer = null;
 
-    if (data!=null) 
-    
+    if (data!=null)
+
     try    {
-        
+
         while (tokenizer.nextToken() != EnhancedStreamTokenizer.TT_EOF)
             if (tokenizer.ttype == EnhancedStreamTokenizer.TT_WORD)
 
@@ -258,7 +258,7 @@ public static void processDBD(DBDData data, EnhancedStreamTokenizer tokenizer, S
                     processFields(rd, tokenizer, fileName, paths);
                     data.addRecord(rd);
                 }
-                
+
                 /******************* menus *********************/
 
                 else if (tokenizer.sval.equalsIgnoreCase(MENU)) {
@@ -273,7 +273,7 @@ public static void processDBD(DBDData data, EnhancedStreamTokenizer tokenizer, S
                     processMenuChoices(md, tokenizer, fileName, paths);
                     data.addMenu(md);
                 }
-                
+
                 /******************* devices *********************/
 
                 else if (tokenizer.sval.equalsIgnoreCase(DEVICE)) {
@@ -304,7 +304,7 @@ public static void processDBD(DBDData data, EnhancedStreamTokenizer tokenizer, S
 
                     data.addDevice(dd);
                 }
-                
+
                 /****************** include ********************/
 
                 else if (tokenizer.sval.equalsIgnoreCase(INCLUDE)) {
@@ -332,7 +332,7 @@ public static void processDBD(DBDData data, EnhancedStreamTokenizer tokenizer, S
                     paths.setPath(str);
                     //Console.getInstance().println("Warning: 'path' command is not yet supported...");
                   }
-                
+
                 /****************** addpath ********************/
 
                 else if (tokenizer.sval.equalsIgnoreCase(ADDPATH))
@@ -351,8 +351,8 @@ public static void processDBD(DBDData data, EnhancedStreamTokenizer tokenizer, S
     } catch (Exception e) {
         Console.getInstance().println("\n"+e);
         throw e;
-    }    
-    
+    }
+
 }
 /**
  * This method was created in VisualAge.
@@ -364,13 +364,13 @@ public static void processFields(DBDRecordData rd, EnhancedStreamTokenizer token
 
     String include_filename;
     EnhancedStreamTokenizer inctokenizer = null;
-    
+
     if (rd!=null)
 
     /********************** fields area *************************/
-                    
-    while (tokenizer.nextToken() != EnhancedStreamTokenizer.TT_EOF) 
-        if (tokenizer.ttype == EnhancedStreamTokenizer.TT_WORD) 
+
+    while (tokenizer.nextToken() != EnhancedStreamTokenizer.TT_EOF)
+        if (tokenizer.ttype == EnhancedStreamTokenizer.TT_WORD)
             if (tokenizer.sval.equals(ENDSTR))    break;
             else if (tokenizer.sval.equalsIgnoreCase(FIELD)) {
                 fd = new DBDFieldData();
@@ -380,7 +380,7 @@ public static void processFields(DBDRecordData rd, EnhancedStreamTokenizer token
                 if ((tokenizer.ttype == EnhancedStreamTokenizer.TT_WORD) ||
                     (tokenizer.ttype == DBDConstants.quoteChar)) fd.setName(tokenizer.sval);
                 else throw (new DBDParseException("Invalid field_name...", tokenizer, fileName));
-                    
+
                 // read field_type
                 tokenizer.nextToken();
                 if ((tokenizer.ttype == EnhancedStreamTokenizer.TT_WORD) ||
@@ -389,37 +389,37 @@ public static void processFields(DBDRecordData rd, EnhancedStreamTokenizer token
                 if (fd.field_type == DBDConstants.NOT_DEFINED) throw (new DBDParseException("Invalid field_type...", tokenizer, fileName));
 
                 /****************** field def. ********************/
-                                
+
                 while (tokenizer.nextToken() != EnhancedStreamTokenizer.TT_EOF)
-                    if (tokenizer.ttype == EnhancedStreamTokenizer.TT_WORD) 
+                    if (tokenizer.ttype == EnhancedStreamTokenizer.TT_WORD)
                         if (tokenizer.sval.equals(ENDSTR))    break;
-                        
+
                         else if (tokenizer.sval.equalsIgnoreCase(INITIAL)) {
                             tokenizer.nextToken();
                             if (tokenizer.ttype == DBDConstants.quoteChar) fd.setInit_value(tokenizer.sval);
                             else throw (new DBDParseException("Invalid init_value...", tokenizer, fileName));
                         }
-                        
+
                         else if (tokenizer.sval.equalsIgnoreCase(BASE)) {
                             tokenizer.nextToken();
                             if (tokenizer.ttype == EnhancedStreamTokenizer.TT_WORD) fd.setBase_type(getBaseType(tokenizer.sval));
                             else throw (new DBDParseException("Invalid base_type...", tokenizer, fileName));
                         }
-                        
+
                         else if (tokenizer.sval.equalsIgnoreCase(SIZE)) {
                             tokenizer.nextToken();
                             /*if (tokenizer.ttype == DBDConstants.quoteChar) fd.setSize_value(Integer.parseInt(tokenizer.sval));
                             else*/ if (tokenizer.ttype == EnhancedStreamTokenizer.TT_NUMBER) fd.setSize_value((int)tokenizer.nval);
                             else throw (new DBDParseException("Invalid size_value...", tokenizer, fileName));
                         }
-                        
+
                         else if (tokenizer.sval.equalsIgnoreCase(MENU)) {
                             tokenizer.nextToken();
                             if ((tokenizer.ttype == DBDConstants.quoteChar) ||
                                 (tokenizer.ttype == EnhancedStreamTokenizer.TT_WORD)) fd.setMenu_name(tokenizer.sval);
                             else throw (new DBDParseException("Invalid menu_name...", tokenizer, fileName));
                         }
-                        
+
                         else if (tokenizer.sval.equalsIgnoreCase(PROMPT)) {
                             tokenizer.nextToken();
                             if (tokenizer.ttype == DBDConstants.quoteChar) fd.setPrompt_value(tokenizer.sval);
@@ -433,7 +433,7 @@ public static void processFields(DBDRecordData rd, EnhancedStreamTokenizer token
                         }
 
                         else tokenizer.nextToken();            // "read"/skip data
-                                
+
                     /**************************************************/
 
                     rd.addField(fd);
@@ -450,8 +450,8 @@ public static void processFields(DBDRecordData rd, EnhancedStreamTokenizer token
                 inctokenizer = getEnhancedStreamTokenizer(file.getAbsolutePath());
                 if (inctokenizer!=null) processFields(rd, inctokenizer, include_filename, new PathSpecification(file.getParentFile().getAbsolutePath(), paths));
 
-            }    
-                        
+            }
+
     /***********************************************************/
 
 }
@@ -470,20 +470,20 @@ public static void processMenuChoices(DBDMenuData md, EnhancedStreamTokenizer to
     EnhancedStreamTokenizer inctokenizer = null;
 
     if (md!=null)
-    
+
     /********************** choices area *************************/
-                    
-    while (tokenizer.nextToken() != EnhancedStreamTokenizer.TT_EOF) 
-        if (tokenizer.ttype == EnhancedStreamTokenizer.TT_WORD) 
+
+    while (tokenizer.nextToken() != EnhancedStreamTokenizer.TT_EOF)
+        if (tokenizer.ttype == EnhancedStreamTokenizer.TT_WORD)
             if (tokenizer.sval.equals(ENDSTR)) break;
             else if (tokenizer.sval.equalsIgnoreCase(CHOICE)) {
-                
+
                 // read choice_name
                 tokenizer.nextToken();
                 if ((tokenizer.ttype == EnhancedStreamTokenizer.TT_WORD) ||
                     (tokenizer.ttype == DBDConstants.quoteChar)) choice_name=tokenizer.sval;
                 else throw (new DBDParseException("Invalid choice_name...", tokenizer, fileName));
-                    
+
                 // read choice_value
                 tokenizer.nextToken();
                 if (tokenizer.ttype == DBDConstants.quoteChar) choice_value=tokenizer.sval;
@@ -492,19 +492,19 @@ public static void processMenuChoices(DBDMenuData md, EnhancedStreamTokenizer to
                 md.addMenuChoice(choice_name, choice_value);
 
             }
-            
+
             else if (tokenizer.sval.equalsIgnoreCase(INCLUDE)) {
 
                 // read incude_filename
                 tokenizer.nextToken();
                 if (tokenizer.ttype == DBDConstants.quoteChar) include_filename=tokenizer.sval;
                 else throw (new DBDParseException("Invalid include_filename...", tokenizer, fileName));
-    
+
                 File file = paths.search4File(include_filename);
                 inctokenizer = getEnhancedStreamTokenizer(file.getAbsolutePath());
                 if (inctokenizer!=null) processMenuChoices(md, inctokenizer, include_filename, new PathSpecification(file.getParentFile().getAbsolutePath(), paths));
-            }    
-                        
+            }
+
     /***********************************************************/
 
 }
@@ -514,11 +514,11 @@ public static void processMenuChoices(DBDMenuData md, EnhancedStreamTokenizer to
  * @param fileName java.lang.String
  */
 public static DBDData resolveDBD(DBDData data, String fileName) {
-    
+
     if (data==null) data = new DBDData();
 
     EnhancedStreamTokenizer tokenizer = getEnhancedStreamTokenizer(fileName);
-    if (tokenizer!=null) 
+    if (tokenizer!=null)
     {
         try
         {
@@ -537,7 +537,7 @@ public static DBDData resolveDBD(DBDData data, String fileName) {
         }
     }
     else return null;
-    
+
     return data;
 }
 /**
@@ -546,12 +546,12 @@ public static DBDData resolveDBD(DBDData data, String fileName) {
  * @param fileName java.lang.String
  */
 public static DBDData resolveDBDasURL(DBDData data, java.net.URL url) {
-    
+
     if (data==null) data = new DBDData();
 
     InputStream fi = null;
     EnhancedStreamTokenizer tokenizer = null;
-    
+
     try    {
         fi = url.openStream();
         tokenizer = new EnhancedStreamTokenizer(new BufferedReader(new InputStreamReader(fi)));
@@ -581,7 +581,7 @@ public static DBDData resolveDBDasURL(DBDData data, java.net.URL url) {
         }
     }
     else return null;
-    
+
     return data;
 }
 }

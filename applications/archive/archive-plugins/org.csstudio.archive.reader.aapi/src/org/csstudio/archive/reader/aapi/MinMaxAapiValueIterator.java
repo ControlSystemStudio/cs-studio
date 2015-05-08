@@ -31,7 +31,7 @@ public class MinMaxAapiValueIterator extends AapiValueIterator {
                 answerData.getHighWarning(), answerData.getLowAlarm(),
                 answerData.getHighAlarm(), answerData.getPrecision(), answerData.getEgu());
         for (int i = 0; i+2 < answerData.getData().length; i = i+3) {
-            
+
             ITimestamp time = TimestampFactory.createTimestamp(
                     answerData.getTime()[i],
                     answerData.getUTime()[i]);
@@ -44,7 +44,7 @@ public class MinMaxAapiValueIterator extends AapiValueIterator {
             result.add(ValueFactory.createMinMaxDoubleValue(time, sevr, stat,
                     (INumericMetaData) meta, IValue.Quality.Interpolated,
                     value, min, max));
-        }    
+        }
     }
-    
+
 }

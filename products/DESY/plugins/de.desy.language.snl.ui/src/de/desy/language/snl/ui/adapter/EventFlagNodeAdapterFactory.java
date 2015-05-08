@@ -7,9 +7,9 @@ import de.desy.language.snl.parser.nodes.EventFlagNode;
 
 /**
  * The specialized {@link IAdapterFactory} for {@link EventFlagNode}s.
- * 
+ *
  * @author C1 WPS / KM, MZ
- * 
+ *
  */
 class EventFlagNodeAdapterFactory implements IAdapterFactory {
 

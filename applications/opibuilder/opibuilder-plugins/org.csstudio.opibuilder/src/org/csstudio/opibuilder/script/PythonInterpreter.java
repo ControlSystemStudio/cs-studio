@@ -12,8 +12,8 @@ import org.python.core.PySystemState;
 
 /**
  * This implementation of PythonInterpreter inherits org.python.util.PythonInterpreter
- * to allow compilation from InputStream. 
- * 
+ * to allow compilation from InputStream.
+ *
  * @author Takashi Nakamoto (Cosylab)
  */
 public class PythonInterpreter extends org.python.util.PythonInterpreter {
@@ -36,7 +36,7 @@ public class PythonInterpreter extends org.python.util.PythonInterpreter {
 
     /**
      * Compile Python source from InputStream.
-     * 
+     *
      * @param s InputStream of Python source code
      * @return PyCode
      */

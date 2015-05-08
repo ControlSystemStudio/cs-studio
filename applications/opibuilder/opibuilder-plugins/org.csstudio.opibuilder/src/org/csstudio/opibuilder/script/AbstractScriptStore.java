@@ -32,13 +32,13 @@ import org.eclipse.swt.widgets.Display;
 /**
  * The script store help to store the compiled script for afterward executions.
  * This is the abstract script store implementation for BOY script execution. All script stores
- * in BOY should implement this abstract class with a specific script engine. 
+ * in BOY should implement this abstract class with a specific script engine.
  * The store must be disposed manually when it is not needed.
  * @author Xihui Chen
  *
  */
-public abstract class AbstractScriptStore implements IScriptStore{    
-    
+public abstract class AbstractScriptStore implements IScriptStore{
+
     private IPath absoluteScriptPath;
 
     private String errorSource;
@@ -56,19 +56,19 @@ public abstract class AbstractScriptStore implements IScriptStore{
     private Map<IPV, Boolean> pvTriggeredMap;
 
     private boolean triggerSuppressed = false;
-    
+
     private ScriptData scriptData;
     private AbstractBaseEditPart editPart;
     private IPV[] pvArray;
-    
+
     public AbstractScriptStore(final ScriptData scriptData, final AbstractBaseEditPart editpart,
-            final IPV[] pvArray) throws Exception {        
-        
+            final IPV[] pvArray) throws Exception {
+
         this.scriptData = scriptData;
         this.editPart = editpart;
         this.pvArray = pvArray;
-        
-        if(!(scriptData instanceof RuleScriptData) && !scriptData.isEmbedded()){            
+
+        if(!(scriptData instanceof RuleScriptData) && !scriptData.isEmbedded()){
             absoluteScriptPath = scriptData.getPath();
             if(!absoluteScriptPath.isAbsolute()){
                 // The following looked like this:
@@ -103,28 +103,28 @@ public abstract class AbstractScriptStore implements IScriptStore{
                 }
             }
         }
-        
+
         initScriptEngine();
-        
+
         errorInScript = false;
         errorSource =(scriptData instanceof RuleScriptData ?
                 ((RuleScriptData)scriptData).getRuleData().getName() : scriptData.getPath().toString())
                 + " on " +
                         editpart.getWidgetModel().getName() ;
-        
+
 
         if(scriptData instanceof RuleScriptData){
             compileString(((RuleScriptData)scriptData).getScriptString());
         }else if(scriptData.isEmbedded())
             compileString(scriptData.getScriptText());
-        else{            
+        else{
             //read file
             InputStream inputStream = ResourceUtil.pathToInputStream(absoluteScriptPath, false);
 
             //compile
             compileInputStream(inputStream);
             inputStream.close();
-        }        
+        }
 
 
         pvListenerMap = new HashMap<IPV, IPVListener>();
@@ -138,7 +138,7 @@ public abstract class AbstractScriptStore implements IScriptStore{
                     triggerSuppressed = false;
                 }
             }
-            
+
         };
 
         IPVListener triggerPVListener = new IPVListener.Stub() {
@@ -162,7 +162,7 @@ public abstract class AbstractScriptStore implements IScriptStore{
 
                 executeScriptInUIThread(pv);
             }
-            
+
         };
         //register pv listener
         int i=0;
@@ -187,10 +187,10 @@ public abstract class AbstractScriptStore implements IScriptStore{
      * @param pvArray
      */
     protected abstract void initScriptEngine() throws Exception ;
-    
+
     /**Compile string with script engine.
      * @param string
-     * @throws Exception 
+     * @throws Exception
      */
     protected abstract void compileString(String string) throws Exception;
 
@@ -199,13 +199,13 @@ public abstract class AbstractScriptStore implements IScriptStore{
      * @throws Exception
      */
     protected abstract void compileInputStream(InputStream s) throws Exception;
-    
+
     /**
      * Execute the script with script engine.
      * @param triggerPV  the PV that triggers this execution.
      */
     protected abstract void execScript(final IPV triggerPV) throws Exception;
-    
+
     private void executeScriptInUIThread(final IPV triggerPV) {
         Display display = editPart.getRoot().getViewer().getControl().getDisplay();
         UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
@@ -219,7 +219,7 @@ public abstract class AbstractScriptStore implements IScriptStore{
                                 "You can change this setting in script dialog.";
                         final String message = NLS
                                 .bind("Error in {0}.{1}\n{2}",
-                                        new String[]{errorSource, 
+                                        new String[]{errorSource,
                                          !scriptData.isStopExecuteOnError()? "" : notExecuteWarning, //$NON-NLS-1$
                                                  e.toString()});
                         ConsoleService.getInstance().writeError(message);
@@ -261,16 +261,16 @@ public abstract class AbstractScriptStore implements IScriptStore{
     public AbstractBaseEditPart getEditPart() {
         return editPart;
     }
-    
+
     /**
      * @return the display editPart
      */
-    public DisplayEditpart getDisplayEditPart() {        
+    public DisplayEditpart getDisplayEditPart() {
         if(getEditPart().isActive())
             return (DisplayEditpart)(getEditPart().getViewer().getContents());
         return null;
     }
-    
+
 
     /**
      * @return the pvArray
@@ -282,7 +282,7 @@ public abstract class AbstractScriptStore implements IScriptStore{
     public IPath getAbsoluteScriptPath() {
         return absoluteScriptPath;
     }
-    
-    
-    
+
+
+
 }

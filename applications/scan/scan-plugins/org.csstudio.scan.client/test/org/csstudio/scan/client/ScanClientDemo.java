@@ -60,7 +60,7 @@ public class ScanClientDemo
         assertThat(info.getMemoryPercentage(), greaterThan(0.0));
     }
 
-    
+
     @Test(timeout=10000)
     public void listScanInfos() throws Exception
     {
@@ -68,14 +68,14 @@ public class ScanClientDemo
         final List<ScanInfo> infos = client.getScanInfos();
         for (ScanInfo info : infos)
             System.out.println(info + " @ " + info.getCurrentCommand() + " (" + info.getCurrentAddress() + ")");
-        
+
         assertThat(infos.size(), greaterThan(0));
         final ScanInfo other = client.getScanInfo(infos.get(0).getId());
         assertThat(other.getId(), equalTo(infos.get(0).getId()));
         assertThat(other.getName(), equalTo(infos.get(0).getName()));
         assertThat(other, not(sameInstance(infos.get(0))));
     }
-    
+
 
     @Test(timeout=10000)
     public void getScanCommands() throws Exception
@@ -108,27 +108,27 @@ public class ScanClientDemo
 
         final ScanData data = client.getScanData(infos.get(0).getId());
         System.out.println(Arrays.toString(data.getDevices()));
-        
+
         final ScanDataIterator iterator = new ScanDataIterator(data);
         iterator.printTable(System.out);
     }
 
-    
+
     @Test(timeout=10000)
     public void submitScan() throws Exception
     {
         final ScanClient client = getScanClient();
-        
+
         final CommandSequence commands = new CommandSequence(
             new DelayCommand(1.0));
         final long id = client.submitScan("SubmitDemo", commands.getXML());
-        
+
         ScanInfo info = client.getScanInfo(id);
         System.out.println(info);
-        
+
         assertThat(info.getName(), equalTo("SubmitDemo"));
         assertThat(info.getId(), equalTo(id));
-        
+
         // Wait for scan to finish
         while (!info.getState().isDone())
         {
@@ -137,19 +137,19 @@ public class ScanClientDemo
             System.out.println(info);
         }
     }
-    
-    
+
+
     @Test(timeout=10000)
     public void controlScan() throws Exception
     {
         final ScanClient client = getScanClient();
-        
+
         final CommandSequence commands = new CommandSequence(
             new LoopCommand("loc://x", 1, 1000, 1,
                 new DelayCommand(1.0)
             ));
         final long id = client.submitScan("ControlDemo", commands.getXML());
-        
+
         ScanInfo info = client.getScanInfo(id);
         System.out.println(info);
         assertThat(info.getName(), equalTo("ControlDemo"));
@@ -161,7 +161,7 @@ public class ScanClientDemo
             info = client.getScanInfo(id);
             System.out.println(info);
         }
-        
+
         client.pauseScan(id);
         info = client.getScanInfo(id);
         System.out.println(info);

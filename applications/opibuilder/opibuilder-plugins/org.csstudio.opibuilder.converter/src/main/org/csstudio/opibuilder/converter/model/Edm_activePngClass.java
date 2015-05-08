@@ -19,7 +19,7 @@ public class Edm_activePngClass extends EdmWidget {
     @EdmAttributeAn @EdmOptionalAn private boolean uniformSize;
     @EdmAttributeAn @EdmOptionalAn private boolean fastErase;
     @EdmAttributeAn @EdmOptionalAn private boolean noErase;
-    
+
 
     public Edm_activePngClass(EdmEntity genericEntity) throws EdmException {
         super(genericEntity);
@@ -45,8 +45,8 @@ public class Edm_activePngClass extends EdmWidget {
         return noErase;
     }
 
-    
-    
+
+
 
 }
 

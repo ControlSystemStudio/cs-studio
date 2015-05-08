@@ -58,7 +58,7 @@ public class NewSNLProjectWizard extends BasicNewProjectResourceWizard {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.wizard.IWizard#performFinish()
      */
     @Override
@@ -199,7 +199,7 @@ public class NewSNLProjectWizard extends BasicNewProjectResourceWizard {
             }
         } else {
             status = new Status(IStatus.ERROR, SNLUiActivator.PLUGIN_ID, -1,
-                    "Internal Error: ", t); //$NON-NLS-1$    
+                    "Internal Error: ", t); //$NON-NLS-1$
         }
         ErrorDialog.openError(shell, title, message, status);
     }
@@ -220,7 +220,7 @@ public class NewSNLProjectWizard extends BasicNewProjectResourceWizard {
      * successfully created; subsequent invocations of this method will answer
      * the same project resource without attempting to create it again.
      * </p>
-     * 
+     *
      * @return the created project resource, or <code>null</code> if the
      *         project was not created
      */
@@ -265,14 +265,14 @@ public class NewSNLProjectWizard extends BasicNewProjectResourceWizard {
 
     /**
      * Creates a SNL project resource given the project handle and description.
-     * 
+     *
      * @param description
      *            the project description to create a project resource for
      * @param projectHandle
      *            the project handle to create a project resource for
      * @param monitor
      *            the progress monitor to show visual progress with
-     * 
+     *
      * @exception CoreException
      *                if the operation fails
      * @exception OperationCanceledException

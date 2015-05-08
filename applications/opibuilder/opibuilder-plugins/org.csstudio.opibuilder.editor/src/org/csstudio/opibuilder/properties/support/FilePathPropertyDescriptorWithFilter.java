@@ -7,9 +7,9 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * File path property descriptor with filters on image resource name.
- * 
+ *
  * @author SOPRA Group
- * 
+ *
  */
 public class FilePathPropertyDescriptorWithFilter extends
         FilePathPropertyDescriptor {

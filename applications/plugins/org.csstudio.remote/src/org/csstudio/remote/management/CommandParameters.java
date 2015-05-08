@@ -30,26 +30,26 @@ import java.util.Set;
 
 /**
  * Contains the actual parameters passed to a management command.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class CommandParameters implements Serializable {
-    
+
     private static final long serialVersionUID = 2L;
-    
+
     private final Map<String, Serializable> _values;
-    
+
     /**
      * Creates a new <code>CommandParameters</code> object.
      */
     public CommandParameters() {
         _values = new HashMap<String, Serializable>();
     }
-    
+
     /**
      * Sets a parameter value. The caller is responsible for ensuring that the
      * value is a legal value for the specified parameter.
-     * 
+     *
      * @param parameterId
      *            the identifier of the parameter.
      * @param value
@@ -60,13 +60,13 @@ public final class CommandParameters implements Serializable {
         if ((parameterId == null) || (value == null)) {
             throw new NullPointerException("parameterId and value must not be null");
         }
-        
+
         _values.put(parameterId, value);
     }
-    
+
     /**
      * Returns a parameter value.
-     * 
+     *
      * @param parameterId
      *            the identifier of the parameter.
      * @return the parameter value, or <code>null</code> if no value has been
@@ -76,19 +76,19 @@ public final class CommandParameters implements Serializable {
         if (parameterId == null) {
             throw new NullPointerException("parameterId must not be null");
         }
-        
+
         return _values.get(parameterId);
     }
-    
+
     /**
      * Returns the parameter identifiers of the parameters that are set.
-     * 
+     *
      * @return an unmodifiable set containing the parameter identifiers.
      */
     public Set<String> identifiers() {
         return Collections.unmodifiableSet(_values.keySet());
     }
-    
+
     /**
      * {@inheritDoc}
      */

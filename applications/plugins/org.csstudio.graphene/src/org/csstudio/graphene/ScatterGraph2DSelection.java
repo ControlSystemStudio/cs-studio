@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene;
 
@@ -11,7 +11,7 @@ import org.epics.vtype.VType;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ScatterGraph2DSelection implements VTypeAdaptable,
         ConfigurableWidgetAdaptable {

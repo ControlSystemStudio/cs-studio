@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /** Thread that reads input stream into a string.
- *  
+ *
  *  Can be used to capture the output of a background tasks
  *  @see StreamSwallowThread
  *  @author Kay Kasemir
@@ -23,13 +23,13 @@ class StreamStringReaderThread extends Thread
 {
     final private InputStream stream;
     final private StringBuilder buf = new StringBuilder();
-    
+
     public StreamStringReaderThread(final InputStream stream)
     {
         super("StreamStringReader");
         this.stream = stream;
     }
-    
+
     /** @return Text that has been read so far */
     public String getText()
     {
@@ -38,7 +38,7 @@ class StreamStringReaderThread extends Thread
             return buf.toString();
         }
     }
-    
+
     @Override
     public void run()
     {

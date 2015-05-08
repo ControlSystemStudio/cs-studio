@@ -15,7 +15,7 @@ import org.csstudio.opibuilder.converter.model.EdmWidget;
 import org.w3c.dom.Element;
 /**
  * General class for outputting widgets.
- * 
+ *
  * @author Matevz, Xihui Chen
  */
 public class OpiWidget {
@@ -77,7 +77,7 @@ public class OpiWidget {
     /**
      * Sets the attribute typeId of the OPI widget with
      * 'org.csstudio.opibuilder.widgets.' prefix.
-     * 
+     *
      * @param typeId
      */
     protected void setTypeId(String typeId) {
@@ -96,7 +96,7 @@ public class OpiWidget {
     protected void setDefaultPropertyValue() {
         new OpiBoolean(widgetContext, "border_alarm_sensitive", false);
     }
-    
+
     public static  String convertFileExtention(String originPath) {
         if (originPath.endsWith(".edl")) {
             originPath = originPath.replace(".edl", ".opi");
@@ -104,7 +104,7 @@ public class OpiWidget {
             originPath = originPath + ".opi";
         return originPath;
     }
-    
+
     /**Create a rule that directly output PV's value to an opi property.
      * @param edmWidgetClass
      * @param pvName
@@ -118,12 +118,12 @@ public class OpiWidget {
         Element valueNode = widgetContext.getDocument().createElement("value");
         valueNode.setTextContent(outputExpression);
         expressions.put("true", valueNode);
-        new OpiRule(widgetContext, ruleName, opiPropId, true, Arrays.asList(pvName), expressions);        
+        new OpiRule(widgetContext, ruleName, opiPropId, true, Arrays.asList(pvName), expressions);
     }
-    
+
     /**
      * Create a rule that make a color property alarm sensitive.
-     * 
+     *
      * @param edmWidgetClass
      * @param edmAlarmAttr
      * @param edmAlarmPVAttr
@@ -133,7 +133,7 @@ public class OpiWidget {
     protected void createColorAlarmRule(EdmWidget edmWidgetClass, String alarmPVName,
             String opiProperty, String ruleName, boolean greenOnOK) {
         LinkedHashMap<String, Element> expressions = new LinkedHashMap<String, Element>();
-        Element valueNode; 
+        Element valueNode;
         Element colorNode;
         if (greenOnOK) {
             valueNode = widgetContext.getDocument().createElement("value");

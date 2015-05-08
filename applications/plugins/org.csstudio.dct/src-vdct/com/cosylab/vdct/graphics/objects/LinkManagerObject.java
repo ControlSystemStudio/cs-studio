@@ -8,22 +8,22 @@ package com.cosylab.vdct.graphics.objects;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -110,12 +110,12 @@ public abstract void fieldChanged(VDBFieldData field);
  */
 public void fixEPICSOutLinks(Enumeration e, String prevGroup, String group) {
     if (prevGroup.equals(group)) return;
-    
+
     String prefix;
     if (group.equals(nullString)) prefix=nullString;
     else prefix=group+Constants.GROUP_SEPARATOR;
 
-    String old; 
+    String old;
     int type; VDBFieldData field;
     while (e.hasMoreElements()) {
         field = (VDBFieldData)e.nextElement();
@@ -144,12 +144,12 @@ public void fixEPICSOutLinks(Enumeration e, String prevGroup, String group) {
 public void fixLinks() {
 
     Object unknownField;
-    
+
     Enumeration e = getSubObjectsV().elements();
     while (e.hasMoreElements())
     {
             unknownField = e.nextElement();
-            
+
             // go and find source
             if (unknownField instanceof EPICSVarLink)
             {
@@ -161,7 +161,7 @@ public void fixLinks() {
             }
 
     }
-    
+
 }
 
 
@@ -169,12 +169,12 @@ public void fixLinks_() {
 
     Object unknownField;
     EPICSVarLink varlink;
-    
+
     Enumeration e = getSubObjectsV().elements();
     while (e.hasMoreElements())
     {
             unknownField = e.nextElement();
-            
+
             // go and find source
             if (unknownField instanceof EPICSVarLink)
             {
@@ -205,21 +205,21 @@ public void fixLinks_() {
             }
 
 */
-            
+
     }
-    
+
 }
 
 public static void fixLink(EPICSVarLink varlink)
 {
     LinkSource data = null;
     String targetName = varlink.getFieldData().getFullName();
-    
+
     Enumeration e2 = varlink.getStartPoints().elements();
     while (e2.hasMoreElements())
     {
         Object unknownField = e2.nextElement();
-        if (unknownField instanceof OutLink) 
+        if (unknownField instanceof OutLink)
         {
             if (unknownField instanceof EPICSLink)
                 data = ((EPICSLink)unknownField).getFieldData();
@@ -228,7 +228,7 @@ public static void fixLink(EPICSVarLink varlink)
         }
         else
             continue;    // nothing to fix
-    
+
         // now I got source and target, compare values
         String oldTarget = LinkProperties.getTarget(data);
         if (!oldTarget.equals(targetName))
@@ -238,7 +238,7 @@ public static void fixLink(EPICSVarLink varlink)
             // value = targetName + link properties
             value = targetName + com.cosylab.vdct.util.StringUtils.removeBegining(value, oldTarget);
             data.setValueSilently(value);
-            
+
             // !!!!
             if (unknownField instanceof EPICSLink)
                 ((EPICSLink)unknownField).fixLinkProperties();
@@ -256,12 +256,12 @@ public static void fixMacroLink(Macro macro)
 {
     LinkSource data = null;
     String targetName = macro.getData().getFullName();
-    
+
     Enumeration e2 = macro.getStartPoints().elements();
     while (e2.hasMoreElements())
     {
         Object unknownField = e2.nextElement();
-        if (unknownField instanceof OutLink) 
+        if (unknownField instanceof OutLink)
         {
             if (unknownField instanceof EPICSLink)
                 data = ((EPICSLink)unknownField).getFieldData();
@@ -270,7 +270,7 @@ public static void fixMacroLink(Macro macro)
         }
         else
             continue;    // nothing to fix
-    
+
         // now I got source and target, compare values
         String oldTarget = LinkProperties.getTarget(data);
         if (!oldTarget.equals(targetName))
@@ -280,7 +280,7 @@ public static void fixMacroLink(Macro macro)
             // value = targetName + link properties
             value = targetName + com.cosylab.vdct.util.StringUtils.removeBegining(value, oldTarget);
             data.setValueSilently(value);
-            
+
             // !!!!
             if (unknownField instanceof EPICSLink)
                 ((EPICSLink)unknownField).fixLinkProperties();
@@ -294,12 +294,12 @@ public static void fixLink(EPICSLinkOutIn linkoutin)
 {
     LinkSource data = null;
     String targetName = linkoutin.getFieldData().getFullName();
-    
+
     Enumeration e2 = linkoutin.getStartPoints().elements();
     while (e2.hasMoreElements())
     {
         Object unknownField = e2.nextElement();
-        if (unknownField instanceof OutLink) 
+        if (unknownField instanceof OutLink)
         {
             if (unknownField instanceof EPICSLink)
                 data = ((EPICSLink)unknownField).getFieldData();
@@ -308,7 +308,7 @@ public static void fixLink(EPICSLinkOutIn linkoutin)
         }
         else
             continue;    // nothing to fix
-    
+
         // now I got source and target, compare values
         String oldTarget = LinkProperties.getTarget(data);
         if (!oldTarget.equals(targetName))
@@ -318,7 +318,7 @@ public static void fixLink(EPICSLinkOutIn linkoutin)
             // value = targetName + link properties
             value = targetName + com.cosylab.vdct.util.StringUtils.removeBegining(value, oldTarget);
             data.setValueSilently(value);
-            
+
             // !!!!
             if (unknownField instanceof EPICSLink)
                 ((EPICSLink)unknownField).fixLinkProperties();
@@ -332,16 +332,16 @@ public static void fixLink_(EPICSVarLink varlink)
 {
     EPICSLinkOut source;
     String targetName = varlink.getFieldData().getFullName();
-    
+
     Enumeration e2 = varlink.getStartPoints().elements();
     while (e2.hasMoreElements())
     {
         Object unknownField = e2.nextElement();
-        if (unknownField instanceof EPICSLinkOut) 
-            source = (EPICSLinkOut)unknownField;  
+        if (unknownField instanceof EPICSLinkOut)
+            source = (EPICSLinkOut)unknownField;
         else
             continue;    // nothing to fix
-    
+
         // now I got source and target, compare values
         String oldTarget = LinkProperties.getTarget(source.getFieldData());
         if (!oldTarget.equals(targetName))
@@ -368,8 +368,8 @@ public static boolean isSoftwareLink(VDBFieldData field)
         field.getValue().startsWith("@") ||    // !!!?? INST_IO
         field.getValue().equals(nullString) /*||
         Character.isDigit(field.getValue().charAt(0))
-        to be checked outside (there can be a record starting with a digit) */) 
-        return false;     
+        to be checked outside (there can be a record starting with a digit) */)
+        return false;
     else
         return true;
 }
@@ -389,22 +389,22 @@ public boolean manageLink(VDBFieldData field) {
 
 //        EPICSVarOutLink link = null;
         OutLink link = null;
-        
+
         if (this.containsObject(field.getName()))
 //            link = (EPICSVarOutLink)getSubObject(field.getName());
             link = (OutLink)getSubObject(field.getName());
-        
+
         if (link!=null && link.getInput()!=null)
         {
             link.validateLink();
             return true;
         }
-        
-        
+
+
         // check new VAR->PORT/macro link
         LinkProperties properties = new LinkProperties(field);
         InLink portLink = EPICSLinkOut.getTarget(properties, false, true);
-        
+
         if (portLink==null || (!(portLink instanceof TemplateEPICSPort) && !(portLink instanceof Macro)))
         {
             if (link!=null)
@@ -415,8 +415,8 @@ public boolean manageLink(VDBFieldData field) {
             else
                 return false;
         }
-        
-        // create a new one    
+
+        // create a new one
         if (link==null)
         {
             link = new EPICSVarOutLink(this, field);
@@ -428,13 +428,13 @@ public boolean manageLink(VDBFieldData field) {
 
         if (link!=null)
             link.validateLink();
-            
+
         return true;
 
-    }    
+    }
     else
     {
-        
+
         if (this.containsObject(field.getName()))
         {
             // existing link
@@ -442,13 +442,13 @@ public boolean manageLink(VDBFieldData field) {
             link.valueChanged();
             link.setDestroyed(false);
             return true;
-            
+
         }
         else if (type!=LinkProperties.TEMPLATE_MACRO)
         {
             if (!LinkManagerObject.isSoftwareLink(field))
                 return false;
-                
+
             // new link
             LinkProperties properties = new LinkProperties(field);
             InLink varlink = EPICSLinkOut.getTarget(properties);
@@ -456,21 +456,21 @@ public boolean manageLink(VDBFieldData field) {
 
             // assume constant (this is not perfect but handles almost all the cases)
             char firstChar = field.getValue().charAt(0);     // length > 0 already checked...
-            if (varlink == null && 
+            if (varlink == null &&
                     (Character.isDigit(firstChar) || firstChar == '.' ||
                      firstChar == '-' || firstChar == '+')
                 )
                 return false;
 
             EPICSLinkOut outlink = null;
-            
+
             if (type==LinkProperties.INLINK_FIELD)
                 outlink = new EPICSInLink(this, field);
             else if (type==LinkProperties.OUTLINK_FIELD)
                 outlink = new EPICSOutLink(this, field);
             else /*if (type==LinkProperties.FWDLINK_FIELD)*/
                 outlink = new EPICSFwdLink(this, field);
-        
+
             addLink(outlink);
 
             if (varlink!=null) varlink.setOutput(outlink, null);
@@ -498,13 +498,13 @@ public boolean manageLink_(VDBFieldData field) {
         {
             EPICSVarLink link = (EPICSVarLink)getSubObject(field.getName());
             link.validateLink();
-            return true;            
+            return true;
         }
         return false;
-    }    
+    }
     else
     {
-        
+
         if (this.containsObject(field.getName()))
         {
             // existing link
@@ -512,27 +512,27 @@ public boolean manageLink_(VDBFieldData field) {
             link.valueChanged();
             link.setDestroyed(false);
             return true;
-            
+
         }
         else
         {
             if (!LinkManagerObject.isSoftwareLink(field))
                 return false;
-                
+
             // new link
             LinkProperties properties = new LinkProperties(field);
             InLink varlink = EPICSLinkOut.getTarget(properties);
             // can point to null? OK, cross will be showed
 
             EPICSLinkOut outlink = null;
-            
+
             if (type==LinkProperties.INLINK_FIELD)
                 outlink = new EPICSInLink(this, field);
             else if (type==LinkProperties.OUTLINK_FIELD)
                 outlink = new EPICSOutLink(this, field);
             else /*if (type==LinkProperties.FWDLINK_FIELD)*/
                 outlink = new EPICSFwdLink(this, field);
-        
+
             addLink(outlink);
             /*if (!properties.isIsInterGroupLink())
             {
@@ -563,7 +563,7 @@ public boolean manageLink_(VDBFieldData field) {
  * @param dy int
  */
 public void moveConnectors(int dx, int dy) {
-    
+
   ViewState view = ViewState.getInstance();
   Enumeration e = subObjectsV.elements();
   Connector con; Object obj;
@@ -572,7 +572,7 @@ public void moveConnectors(int dx, int dy) {
     if (obj instanceof Connector) {
         con = (Connector)obj;
         con.revalidatePosition();
-        
+
         if (view.isSelected(con))
             continue;    // will move by itself
         InLink endpoint = EPICSLinkOut.getEndPoint(con);
@@ -604,7 +604,7 @@ public void postDraw(Graphics g, boolean hilited) {
         if (vo instanceof Connector)
             vo.paint(g, hilited);
     }
-    
+
 }
 
 /**
@@ -620,9 +620,9 @@ public Vector getLinkMenus(Enumeration vdbFields) {
 
     boolean portOrTemplateMacro2All = (getTargetLink() instanceof VDBPort) ||
                                       (getTargetLink() instanceof VDBTemplateMacro);
-    
+
     if (getTargetLink()==null || portOrTemplateMacro2All) {
-        
+
         JMenu inlinks = new JMenu(inlinkString);
         JMenu outlinks = new JMenu(outlinkString);
         JMenu fwdlinks = new JMenu(fwdlinkString);
@@ -630,17 +630,17 @@ public Vector getLinkMenus(Enumeration vdbFields) {
         if (portOrTemplateMacro2All)
             varlinks = new JMenu(varlinkString);
         else
-            varlinks = new JMenu(varlinkPortString); 
-        
-        JMenu inMenu = inlinks;    
-        JMenu outMenu = outlinks;    
-        JMenu fwdMenu = fwdlinks;    
-        JMenu varMenu = varlinks;    
-        
+            varlinks = new JMenu(varlinkPortString);
+
+        JMenu inMenu = inlinks;
+        JMenu outMenu = outlinks;
+        JMenu fwdMenu = fwdlinks;
+        JMenu varMenu = varlinks;
+
         int inpItems, outItems, fwdItems;
         int varItems;
         inpItems=outItems=fwdItems=0;
-        varItems=0; 
+        varItems=0;
 
         while (vdbFields.hasMoreElements()) {
             field = (VDBFieldData)(vdbFields.nextElement());
@@ -650,19 +650,19 @@ public Vector getLinkMenus(Enumeration vdbFields) {
                     case DBDConstants.DBF_INLINK:
                          menuitem = new JMenuItem(field.getName());
                          menuitem.addActionListener(l);
-                         inlinks = PopUpMenu.addItem(menuitem, inlinks, inpItems); 
+                         inlinks = PopUpMenu.addItem(menuitem, inlinks, inpItems);
                          inpItems++;
                          break;
-                    case DBDConstants.DBF_OUTLINK: 
+                    case DBDConstants.DBF_OUTLINK:
                          menuitem = new JMenuItem(field.getName());
                          menuitem.addActionListener(l);
-                         outlinks = PopUpMenu.addItem(menuitem, outlinks, outItems); 
+                         outlinks = PopUpMenu.addItem(menuitem, outlinks, outItems);
                          outItems++;
                          break;
                     case DBDConstants.DBF_FWDLINK:
                          menuitem = new JMenuItem(field.getName());
                          menuitem.addActionListener(l);
-                         fwdlinks = PopUpMenu.addItem(menuitem, fwdlinks, fwdItems); 
+                         fwdlinks = PopUpMenu.addItem(menuitem, fwdlinks, fwdItems);
                          fwdItems++;
                          break;
                     default:
@@ -675,10 +675,10 @@ public Vector getLinkMenus(Enumeration vdbFields) {
 
                          menuitem = new JMenuItem(field.getName());
                          menuitem.addActionListener(l);
-                         varlinks = PopUpMenu.addItem(menuitem, varlinks, varItems); 
+                         varlinks = PopUpMenu.addItem(menuitem, varlinks, varItems);
                          varItems++;
                          break;
-                    
+
                 }
             }
         }
@@ -699,27 +699,27 @@ public Vector getLinkMenus(Enumeration vdbFields) {
         int count = 0;
         JMenu varlinkItem = new JMenu(varlinkString);
         JMenu menu = varlinkItem;
-        
+
         while (vdbFields.hasMoreElements()) {
             field = (VDBFieldData)(vdbFields.nextElement());
 /*            switch (field.getType()) {
-                case DBDConstants.DBF_CHAR: 
-                case DBDConstants.DBF_UCHAR: 
-                case DBDConstants.DBF_SHORT: 
-                case DBDConstants.DBF_USHORT: 
-                case DBDConstants.DBF_LONG: 
-                case DBDConstants.DBF_ULONG: 
-                case DBDConstants.DBF_FLOAT: 
-                case DBDConstants.DBF_DOUBLE: 
+                case DBDConstants.DBF_CHAR:
+                case DBDConstants.DBF_UCHAR:
+                case DBDConstants.DBF_SHORT:
+                case DBDConstants.DBF_USHORT:
+                case DBDConstants.DBF_LONG:
+                case DBDConstants.DBF_ULONG:
+                case DBDConstants.DBF_FLOAT:
+                case DBDConstants.DBF_DOUBLE:
                 case DBDConstants.DBF_STRING:
-                case DBDConstants.DBF_NOACCESS:    
+                case DBDConstants.DBF_NOACCESS:
                 case DBDConstants.DBF_ENUM:
                 case DBDConstants.DBF_MENU:
                 case DBDConstants.DBF_DEVICE:  // ?
                   menuitem = new JMenuItem(field.getName());
                   menuitem.addActionListener(l);
                   menu = PopUpMenu.addItem(menuitem, menu, count);
-                  count++; 
+                  count++;
             }
 */
             if (field.getType()!=DBDConstants.DBF_INLINK &&
@@ -729,14 +729,14 @@ public Vector getLinkMenus(Enumeration vdbFields) {
                   menuitem = new JMenuItem(field.getName());
                   menuitem.addActionListener(l);
                   menu = PopUpMenu.addItem(menuitem, menu, count);
-                  count++; 
+                  count++;
             }
 
         }
         if (count > 0) items.addElement(varlinkItem);
-        
+
     }
-        
+
     return items;
 }
 
@@ -759,7 +759,7 @@ protected void destroyFields() {
     subObjectsV.copyInto(objs);
     for (int i=0; i < objs.length; i++)
         ((VisibleObject)objs[i]).destroy();
-    
+
 }
 
 
@@ -797,19 +797,19 @@ public static void checkIfMacroCandidate(VDBFieldData field, HashMap macros) {
         // search string is 2 chars long and this will not cause out of bounds error
         // if match is at very end of the string
         startMacroPos++;
-        
+
         // find end of macro reference
         int endMacroPos = value.indexOf(')', startMacroPos);
-        
+
         // invalid reference
         if (endMacroPos == -1 || endMacroPos == startMacroPos+1)
             continue;
-         
+
         // check if not port
         int dotPos = value.indexOf('.', startMacroPos);
         if (dotPos != -1 && dotPos < endMacroPos)
             continue;
-            
+
         // "composed macros" are not supported !!!
         dotPos = value.indexOf('$', startMacroPos);
         if (dotPos != -1 && dotPos < endMacroPos)
@@ -819,7 +819,7 @@ public static void checkIfMacroCandidate(VDBFieldData field, HashMap macros) {
         String macroName = value.substring(startMacroPos-1, endMacroPos+1);
         if (Group.getRoot().getLookupTable().get(macroName)!=null)
             continue;
-        
+
         // we have got undefined macro, add it to the list
         ArrayList list = (ArrayList)macros.get(macroName);
         if (list == null)
@@ -829,7 +829,7 @@ public static void checkIfMacroCandidate(VDBFieldData field, HashMap macros) {
         }
         if (!list.contains(field))
             list.add(field);
-            
+
     }
 
 }
@@ -842,7 +842,7 @@ public static void checkIfMacroCandidate(VDBFieldData field, HashMap macros) {
  */
 public boolean isFirstField(Field field) {
     // find first field and compare
-        
+
     Enumeration e = subObjectsV.elements();
     Object obj;
     while (e.hasMoreElements()) {
@@ -853,7 +853,7 @@ public boolean isFirstField(Field field) {
             else
                 return false;
     }
-    
+
     return false;
 }
 /**
@@ -869,7 +869,7 @@ public boolean isLastField(Field field) {
             else
                 return false;
     return false;
-    
+
 }
 
 /**
@@ -912,7 +912,7 @@ public void moveFieldUp(Field field) {
         fields.insertElementAt(field, pos);
         revalidateFieldsPosition();
     }
-    
+
     com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
     com.cosylab.vdct.undo.UndoManager.getInstance().addAction(new com.cosylab.vdct.undo.MoveFieldUpAction(field));
 }

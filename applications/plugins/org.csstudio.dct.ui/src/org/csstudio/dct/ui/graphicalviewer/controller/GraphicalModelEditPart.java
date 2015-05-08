@@ -19,7 +19,7 @@ import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
 
 /**
  * Controller for a {@link DctGraphicalModel}.
- * 
+ *
  * @author Sven Wende
  * @version $Revision$
  */

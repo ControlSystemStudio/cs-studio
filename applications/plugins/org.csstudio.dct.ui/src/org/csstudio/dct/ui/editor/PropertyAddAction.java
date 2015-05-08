@@ -7,7 +7,7 @@ import org.eclipse.jface.action.Action;
 
 /**
  * Action that adds a property to a {@link IPropertyContainer}.
- * 
+ *
  * @author Sven Wende
  */
 public class PropertyAddAction extends Action {
@@ -16,7 +16,7 @@ public class PropertyAddAction extends Action {
 
     /**
      * Constructor.
-     * 
+     *
      * @param form
      *            a component that provides access to a property container
      */

@@ -16,7 +16,7 @@ import java.beans.SimpleBeanInfo;
 
 /**
  * Mostly this is used as a placeholder for the descriptors.
- * 
+ *
  */
 
 class GenericBeanInfo extends SimpleBeanInfo {
@@ -41,7 +41,7 @@ class GenericBeanInfo extends SimpleBeanInfo {
     this.methods = methods;
     this.targetBeanInfo = targetBeanInfo;
     }
-    
+
     public PropertyDescriptor[] getPropertyDescriptors() {
     return properties;
     }

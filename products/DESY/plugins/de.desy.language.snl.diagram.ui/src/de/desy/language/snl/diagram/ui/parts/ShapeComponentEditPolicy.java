@@ -10,7 +10,7 @@ import de.desy.language.snl.diagram.ui.commands.ShapeDeleteCommand;
 
 /**
  * This edit policy enables the removal of a Shapes instance from its container.
- * 
+ *
  * @see ShapeEditPart#createEditPolicies()
  * @see ShapeTreeEditPart#createEditPolicies()
  */
@@ -18,7 +18,7 @@ class ShapeComponentEditPolicy extends ComponentEditPolicy {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.gef.editpolicies.ComponentEditPolicy#createDeleteCommand(
      * org.eclipse.gef.requests.GroupRequest)

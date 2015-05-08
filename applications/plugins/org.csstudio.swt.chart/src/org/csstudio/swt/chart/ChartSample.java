@@ -10,10 +10,10 @@ package org.csstudio.swt.chart;
 /** Interface for one sample, i.e. one "point" on the chart.
  *  <p>
  *  The user of the chart must provide each sample via this interface.
- *  
+ *
  *  @see ChartSampleContainer
  *  @see ChartSampleSequence
- *  
+ *
  *  @author Kay Kasemir
  */
 public interface ChartSample
@@ -22,7 +22,7 @@ public interface ChartSample
     {
         /** A normal sample, plot it together with the rest. */
         Normal,
-        
+
         /** A gap, terminating a "line", displayed as a single point.
          *  <p>
          *  Can be used with <code>y == Double.NEGATIVE_INFINITY</code>
@@ -30,10 +30,10 @@ public interface ChartSample
          */
         Point
     }
-    
+
     /** @return One of the Type values. */
     public Type getType();
-    
+
     /** @return The x value. */
     public double getX();
 
@@ -43,7 +43,7 @@ public interface ChartSample
      *  a value that should be on the horizontal axis,
      *  typically used together with a <code>Point</code> type
      *  and some Info to describe the sample.
-     *  
+     *
      *  @return The y value.
      */
     public double getY();
@@ -53,7 +53,7 @@ public interface ChartSample
      *  @see #getMaxY()
      */
     public boolean haveMinMax();
-    
+
     /** @return Minimum y value in case there is an Y error (range).
      *  @see #haveMinMax()
      */

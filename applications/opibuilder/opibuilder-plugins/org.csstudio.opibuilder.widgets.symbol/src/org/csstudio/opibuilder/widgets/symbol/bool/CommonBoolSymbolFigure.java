@@ -41,9 +41,9 @@ import org.eclipse.swt.widgets.Display;
 /**
  * This class defines a common figure for Boolean Symbol Image widget based on
  * {@link CommonBoolSymbolModel}.
- * 
+ *
  * @author SOPRA Group
- * 
+ *
  */
 public abstract class CommonBoolSymbolFigure extends AbstractBoolFigure
         implements SymbolImageListener {
@@ -150,19 +150,19 @@ public abstract class CommonBoolSymbolFigure extends AbstractBoolFigure
     protected boolean isEditMode() {
         return ExecutionMode.EDIT_MODE.equals(executionMode);
     }
-    
+
     public void setExecutionMode(ExecutionMode executionMode) {
         this.executionMode = executionMode;
     }
-    
+
     public void setSymbolProperties(SymbolImageProperties symbolProperties) {
         this.symbolProperties = symbolProperties;
     }
-    
+
     // ************************************************************
     // Image loading
     // ************************************************************
-    
+
     public boolean isLoadingImage() {
         return remainingImagesToLoad > 0;
     }
@@ -189,7 +189,7 @@ public abstract class CommonBoolSymbolFigure extends AbstractBoolFigure
      * If the image selected is off, then search on image. <br>
      * If one or both is not found, the image path selected is the same for
      * both.
-     * 
+     *
      * @param model
      * @param imagePath The path to the selected image (on or off or other)
      */
@@ -375,7 +375,7 @@ public abstract class CommonBoolSymbolFigure extends AbstractBoolFigure
 
     /**
      * The main drawing routine.
-     * 
+     *
      * @param gfx The {@link Graphics} to use
      */
     @Override
@@ -473,12 +473,12 @@ public abstract class CommonBoolSymbolFigure extends AbstractBoolFigure
     }
 
     // ************************************************************
-    // Override Figure class methods 
+    // Override Figure class methods
     // ************************************************************
 
     /**
      * We want to have local coordinates here.
-     * 
+     *
      * @return True if here should used local coordinates
      */
     @Override

@@ -42,9 +42,9 @@ import org.epics.vtype.VType;
 
 /**
  * An implementation of {@link IPV} using PVManager.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class PVManagerPV implements IPV {
 
@@ -71,7 +71,7 @@ public class PVManagerPV implements IPV {
 
     /**
      * Construct a PVManger PV.
-     * 
+     *
      * @param name
      *            name of the PV. Must not be null.
      * @param readOnly
@@ -87,7 +87,7 @@ public class PVManagerPV implements IPV {
      *            the handler to handle all exceptions happened in pv connection
      *            layer. If this is null, pv read listener or pv write listener
      *            will be notified on read or write exceptions respectively.
-     * 
+     *
      */
     public PVManagerPV(final String name, final boolean readOnly,
             final long minUpdatePeriodInMs,    final boolean bufferAllValues, final Executor notificationThread,
@@ -96,10 +96,10 @@ public class PVManagerPV implements IPV {
         this.name = name;
         this.valueBuffered = bufferAllValues;
         this.minUpdatePeriod = (int) minUpdatePeriodInMs;
-    
-        
+
+
         this.readOnly = readOnly;
-        listeners = new CopyOnWriteArrayList<>();        
+        listeners = new CopyOnWriteArrayList<>();
 
         this.notificationThread = notificationThread;
         if (exceptionHandler != null) {
@@ -146,7 +146,7 @@ public class PVManagerPV implements IPV {
                     listener.writePermissionChanged(PVManagerPV.this);
                 }
             });
-        }        
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -206,7 +206,7 @@ public class PVManagerPV implements IPV {
      */
     private synchronized void internalStart() {
         if(debug){
-            System.out.println("Start: " + counter.incrementAndGet());            
+            System.out.println("Start: " + counter.incrementAndGet());
         }
         final PVReaderListener<Object> pvReaderListener = new PVReaderListener<Object>() {
 
@@ -222,10 +222,10 @@ public class PVManagerPV implements IPV {
                     }
                     if (event == null || event.isValueChanged())
                         l.valueChanged(PVManagerPV.this);
-                }                
+                }
             }
         };
-        
+
         if (valueBuffered) {
             PVReaderConfiguration<List<VType>> pvReaderConfiguration = PVManager.read(
                     newValuesOf(channel(name, VType.class, VType.class))).notifyOn(notificationThread);
@@ -272,7 +272,7 @@ public class PVManagerPV implements IPV {
                                 l.writeFinished(PVManagerPV.this, event.isWriteSucceeded());
                             }
                         }
-                    }                    
+                    }
                 }
             };
             PVWriterConfiguration<Object> writerConfiguration = PVManager.write(channel(name));
@@ -282,7 +282,7 @@ public class PVManagerPV implements IPV {
             //        if(exceptionHandler != null)
             //                writerConfiguration.routeExceptionsTo(exceptionHandler);
             pvWriter = writerConfiguration.writeListener(pvWriterListener).notifyOn(notificationThread).async();
-            
+
         }
 
     }
@@ -324,7 +324,7 @@ public class PVManagerPV implements IPV {
     public synchronized void removeListener(IPVListener listener) {
         listeners.remove(listener);
     }
-    
+
     public static void setDebug(boolean debug) {
         PVManagerPV.debug = debug;
     }
@@ -366,13 +366,13 @@ public class PVManagerPV implements IPV {
     @Override
     public void stop() {
         if(!startFlag.get()){
-            Activator.getLogger().log(Level.WARNING, 
+            Activator.getLogger().log(Level.WARNING,
                     NLS.bind("PV {0} has already been stopped or was not started yet.", getName()));
             return;
-        }        
+        }
         if(starting.get()){
             notificationThread.execute(new Runnable() {
-                
+
                 @Override
                 public void run() {
                     stop();
@@ -382,7 +382,7 @@ public class PVManagerPV implements IPV {
         if (pvReader != null){
             pvReader.close();
             if(debug){
-                System.out.println("Stop: " + counter.decrementAndGet());            
+                System.out.println("Stop: " + counter.decrementAndGet());
             }
         }
         if (pvWriter != null)
@@ -400,13 +400,13 @@ public class PVManagerPV implements IPV {
                 .timeout(TimeDuration.ofSeconds(timeout)).writeListener(
                         new PVWriterListener<Object>() {
                             @Override
-                            public void pvChanged(PVWriterEvent<Object> event) {                                
+                            public void pvChanged(PVWriterEvent<Object> event) {
                                 latch.countDown();
                                 if(event.isWriteFailed()){
                                     result.set(false);
                                 }
                                 if(event.isWriteSucceeded())
-                                    result.set(true);                                    
+                                    result.set(true);
                             }
                         }).sync();
         try {
@@ -416,8 +416,8 @@ public class PVManagerPV implements IPV {
                 throw new Exception(NLS.bind("Failed to connect to the PV in {0} seconds.", timeout));
         }finally{
             pvWriter.close();
-        }        
-        return result.get();                
+        }
+        return result.get();
     }
 
 }

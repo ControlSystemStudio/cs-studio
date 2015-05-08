@@ -50,7 +50,7 @@ public abstract class AbstractWidgetTargetAction  implements IObjectActionDelega
 
     /**
      * Returns the editor's command stack. This is done by asking the workbench part for its
-     * CommandStack via 
+     * CommandStack via
      * {@link org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)}.
      * @return the command stack
      */
@@ -63,7 +63,7 @@ public abstract class AbstractWidgetTargetAction  implements IObjectActionDelega
             this.selection = (IStructuredSelection) selection;
         }
     }
-    
+
     protected IStructuredSelection getSelection(){
         if(selection !=null)
             return selection;

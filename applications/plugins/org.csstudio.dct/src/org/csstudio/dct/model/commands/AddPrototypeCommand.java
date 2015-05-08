@@ -6,9 +6,9 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * Undoable command that adds a {@link IPrototype} to a {@link IFolder}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class AddPrototypeCommand extends Command {
     private int index = -1;
@@ -17,7 +17,7 @@ public final class AddPrototypeCommand extends Command {
 
     /**
      * Constructor.
-     * 
+     *
      * @param folder
      *            the folder
      * @param prototype
@@ -30,7 +30,7 @@ public final class AddPrototypeCommand extends Command {
 
     /**
      * Constructor.
-     * 
+     *
      * @param folder
      *            the folder
      * @param prototype

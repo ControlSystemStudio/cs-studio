@@ -14,7 +14,7 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.internationalization.Messages;
 
 /**
- * 
+ *
  * @author hammonds
  *
  */
@@ -34,7 +34,7 @@ public class TextUpdateWidget extends ADLAbstractWidget implements ITextWidget {
                     if (_adlObject != null){
                         _hasObject = true;
                     }
-                    
+
                 }
                 else if (childWidget.getType().equals("monitor")){
                     _adlMonitor = new ADLMonitor(childWidget);
@@ -70,7 +70,7 @@ public class TextUpdateWidget extends ADLAbstractWidget implements ITextWidget {
         catch (WrongADLFormatException ex) {
             ex.printStackTrace();
         }
-        
+
     }
 
     /**

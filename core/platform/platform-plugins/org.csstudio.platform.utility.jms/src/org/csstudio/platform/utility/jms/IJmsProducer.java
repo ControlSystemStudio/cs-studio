@@ -9,14 +9,14 @@ public interface IJmsProducer {
 
     /**
      * Closes all sessions/connections. The producer can not be used afterwards.
-     * 
+     *
      * @require !isClosed()
      */
     public abstract void closeAll();
 
     /**
      * Creates a MessageProducer with given topic-destination.
-     * 
+     *
      * @param topicName
      *            Name of the destination topic (could be null)
      * @return The Id for the created Producer.
@@ -30,7 +30,7 @@ public interface IJmsProducer {
 
     /**
      * Determines if producers on id have an initial destination topic.
-     * 
+     *
      * @param id
      *            The id of the producers
      * @return {@code true}, if the producers on the id have an initial
@@ -46,7 +46,7 @@ public interface IJmsProducer {
 
     /**
      * Checks if this RedundantProducer knows the specified producer.
-     * 
+     *
      * @param id
      *            Id of producer to check
      * @return {@code true} if producer is known, {@code false} otherwise.
@@ -55,7 +55,7 @@ public interface IJmsProducer {
 
     /**
      * Determines if the producer has been closed.
-     * 
+     *
      * @return {@code true} if producers is closed, {@code false} otherwise.
      */
     public abstract boolean isClosed();
@@ -64,7 +64,7 @@ public interface IJmsProducer {
      * Sends the given message to the producers specified by the id. Should only
      * be called if the producers have an initial topic (see
      * {@link #hasProducerDestiantion(org.csstudio.platform.utility.jms.JmsRedundantProducer.ProducerId)}).
-     * 
+     *
      * @param id
      *            The id of the producer
      * @param message
@@ -81,7 +81,7 @@ public interface IJmsProducer {
 
     /**
      * Sends the given message to the producers specified by the id.
-     * 
+     *
      * @param id
      *            The id of the producer
      * @param topicName
@@ -100,6 +100,6 @@ public interface IJmsProducer {
     public abstract String[] send(ProducerId id, String topicName,
             Message message) throws RuntimeException;
 
-    
+
     public abstract MapMessage createMapMessage() throws RuntimeException;
 }

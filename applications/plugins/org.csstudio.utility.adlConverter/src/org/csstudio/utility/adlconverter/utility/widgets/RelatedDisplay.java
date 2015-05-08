@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 public class RelatedDisplay extends Widget {
 
     private static final Logger LOG = LoggerFactory.getLogger(RelatedDisplay.class);
-    
+
     /**
      * If MenuButton used as Menu, control contain the dynamics Descriptor for the actionData
      * with the Rule=rule.actionData.
@@ -57,8 +57,8 @@ public class RelatedDisplay extends Widget {
 
     /**
      * @param relatedDisplay ADLWidget that describe the RelatedDisplay.
-     * @param storedDynamicAttribute 
-     * @param storedBasicAttribute 
+     * @param storedDynamicAttribute
+     * @param storedBasicAttribute
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
     public RelatedDisplay(final ADLWidget relatedDisplay, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
@@ -80,13 +80,13 @@ public class RelatedDisplay extends Widget {
             }
         }
         if(getControl()!=null){
-            
-//          <property type="sds.action" id="actionData">                                        
-//          <actionData />                                                                    
-//          <dynamicsDescriptor ruleId="rule.actionData">                                     
+
+//          <property type="sds.action" id="actionData">
+//          <actionData />
+//          <dynamicsDescriptor ruleId="rule.actionData">
 //            <inputChannel name="$channel$[enumDescriptions], enum" type="java.lang.Object" />
-//            <outputChannel name="local://out" type="java.lang.Object" />                    
-//          </dynamicsDescriptor>                                                             
+//            <outputChannel name="local://out" type="java.lang.Object" />
+//          </dynamicsDescriptor>
 //          </property>
             _control = new DynamicsDescriptor("rule.actionData"); //$NON-NLS-1$
             _control.addInputChannel(new ParameterDescriptor("$channel$[enumDescriptions], enum", "")); //$NON-NLS-1$
@@ -95,7 +95,7 @@ public class RelatedDisplay extends Widget {
 
             // Der ConnectionState wird an die Acrtion Data gesetzt das macht nun überhaupt kein sinn!
 //            HashMap<ConnectionState, Object> values = new HashMap<ConnectionState, Object>();
-//            
+//
 //            CommitValueWidgetAction action = (CommitValueWidgetAction) ActionType.COMMIT_VALUE
 //            .getActionFactory().createWidgetAction();
 //
@@ -104,16 +104,16 @@ public class RelatedDisplay extends Widget {
 //            ActionData actionData = new ActionData();
 //            actionData .addAction(action);
 //
-//           
+//
 //            values.put(ConnectionState.INITIAL, actionData);//ColorConstants.white.getRGB());
 //            _control.setConnectionStateDependentPropertyValues(values);
         }
-        
+
         if(n<2) {
             label=". . .";
         }
         if(getControl()!=null||n>1){ // if Label text Dyn?
-            // <dynamicsDescriptor ruleId="directConnection">               
+            // <dynamicsDescriptor ruleId="directConnection">
             //   <inputChannel name="local://out" type="java.lang.Object" />
             // </dynamicsDescriptor>
             DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
@@ -137,21 +137,21 @@ public class RelatedDisplay extends Widget {
             }else if(row[0].equals("label")){ //$NON-NLS-1$
                 label=row[1].replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
             }else if(row[0].equals("visual")){ //$NON-NLS-1$
-//              TODO: RelatedDisplay-->visual  
+//              TODO: RelatedDisplay-->visual
 //                LOG.info(this, "Unsupported Property: "+fileLine);
             }else if(row[0].equals("clrmod")){ //$NON-NLS-1$
-//              TODO: RelatedDisplay-->clrmod  
+//              TODO: RelatedDisplay-->clrmod
                 LOG.info("Unsupported Property: {}",fileLine);
             }else if(row[0].equals("selfkill")){ //$NON-NLS-1$
-//              TODO: RelatedDisplay-->selfkill  
+//              TODO: RelatedDisplay-->selfkill
                 LOG.info("MEDM TODO: {}",fileLine);
             }else if(row[0].equals("menu_title")){ //$NON-NLS-1$
-//              TODO: RelatedDisplay-->menu_title  
+//              TODO: RelatedDisplay-->menu_title
                 LOG.info("MEDM TODO: {}",fileLine);
             }else if(row[0].equals("decorate")){ //$NON-NLS-1$
-//              TODO: RelatedDisplay-->decorate  
+//              TODO: RelatedDisplay-->decorate
                 LOG.info("MEDM TODO: {}",fileLine);
-            }else{                
+            }else{
                 throw new WrongADLFormatException(Messages.RelatedDisplay_WrongADLFormatException_Parameter_Begin+fileLine);
             }
         }
@@ -162,7 +162,7 @@ public class RelatedDisplay extends Widget {
             _widget.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, ADLHelper.getRGB(bclr));
         }
         _widget.setPropertyValue(MenuButtonModel.PROP_LABEL, label);
-        
+
         // <property type="sds.integer" id="border.width" value="1" />
         _widget.setPropertyValue(MenuButtonModel.PROP_BORDER_WIDTH, 1);
         // <property type="sds.option" id="border.style">

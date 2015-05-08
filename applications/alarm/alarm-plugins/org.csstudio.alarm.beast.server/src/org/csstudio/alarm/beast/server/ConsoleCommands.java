@@ -39,7 +39,7 @@ public class ConsoleCommands implements CommandProvider
 {
     final private AlarmServer server;
     private String pwd = AlarmTreePath.PATH_SEP;
-    
+
     /** Initialize
      *  @param server {@link AlarmServer}
      */
@@ -133,14 +133,14 @@ public class ConsoleCommands implements CommandProvider
         intp.println("Path: '" + pwd + "'");
         return null;
     }
-    
+
     /** 'cd' command */
     public Object _cd(final CommandInterpreter intp)
     {
         pwd = AlarmTreePath.update(pwd, intp.nextArgument());
         return _pwd(intp);
     }
-    
+
     /** 'lsa' command */
     public Object _lsa(final CommandInterpreter intp)
     {

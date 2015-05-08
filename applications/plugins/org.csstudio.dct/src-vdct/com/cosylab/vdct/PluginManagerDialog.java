@@ -31,7 +31,7 @@ public void actionPerformed(java.awt.event.ActionEvent event)
     if(event.getSource() == installButton)
         installButtonActionPerformed();
     else if(event.getSource() == closeButton)
-        dispose();        
+        dispose();
     else if(event.getSource() == startButton)
         startButtonActionPerformed();
     else if(event.getSource() == stopButton)
@@ -56,10 +56,10 @@ private void installButtonActionPerformed()
         System.err.println("Failed to translate the file to URL.");
         return;
     }
-        
+
     URL[] listOfURLs = new URL[1];
     listOfURLs[0] = jarURL;
-        
+
     URLClassLoader pluginClassLoader = new URLClassLoader(listOfURLs, null);
 
     URL xml = pluginClassLoader.getResource(Constants.PLUGINS_FILE_NAME);
@@ -135,7 +135,7 @@ private void uninstallButtonActionPerformed()
 
     int rowCounter = 0;
     pluginIterator = PluginManager.getInstance().getPlugins();
-        
+
     while(pluginIterator.hasNext())
     {
         plugins[rowCounter] = (PluginObject)(pluginIterator.next());
@@ -158,7 +158,7 @@ private final static String INVALID_PLUGIN = "Invalid";
 private final static String INITIALIZED_PLUGIN = "Initialized";
 private final static String STARTED_PLUGIN = "Started";
 private final static String STOPPED_PLUGIN = "Stopped";
-    
+
 // shp: unused
 //private final static String AUTOSTART_PLUGIN = "Auto";
 //private final static String NO_AUTOSTART_PLUGIN = "Manual";
@@ -222,7 +222,7 @@ public Object getValueAt(int row, int column)
         case(5):
             return plugin.getAuthor();
     }
-    
+
     return null;
 }
 
@@ -286,14 +286,14 @@ public void mouseReleased(MouseEvent event)
     validateButtons();
 
     Point point = event.getPoint();
-    
+
     int row = table.rowAtPoint(point);
-    
+
     if(row == -1)
         return;
 
     int column = table.columnAtPoint(point);
-        
+
     if(column == 0)
     {
         PluginObject plugin = pluginTableModel.getPluginAtRow(row);
@@ -313,7 +313,7 @@ public void keyTyped(KeyEvent event)
 public void keyReleased(KeyEvent event)
 {
 }
-    
+
 };
 
 private class PluginCellRenderer extends DefaultTableCellRenderer
@@ -394,8 +394,8 @@ public PluginManagerDialog(Frame owner)
 
     tablePane = new JScrollPane(table);
 
-    buttonEventHandler = new ButtonEventHandler();    
-    
+    buttonEventHandler = new ButtonEventHandler();
+
     installButton = new JButton();
     installButton.setText("Install...");
     installButton.addActionListener(buttonEventHandler);
@@ -404,7 +404,7 @@ public PluginManagerDialog(Frame owner)
     uninstallButton.setEnabled(false);
     uninstallButton.setText("Uninstall");
     uninstallButton.addActionListener(buttonEventHandler);
-    
+
     startButton = new JButton();
     startButton.setEnabled(false);
     startButton.setText("Start");
@@ -434,10 +434,10 @@ public PluginManagerDialog(Frame owner)
     buttonPanel.setLayout(new GridLayout(1, 2, 64, 0));
     buttonPanel.add(leftButtonPanel);
     buttonPanel.add(rightButtonPanel);
-    
+
     contentPane = new JPanel();
     contentPane.setLayout(new GridBagLayout());
-    
+
     GridBagConstraints tablePaneConstraints = new GridBagConstraints();
     tablePaneConstraints.gridx = 0;
     tablePaneConstraints.gridy = 0;
@@ -450,7 +450,7 @@ public PluginManagerDialog(Frame owner)
     buttonPanelConstraints.gridy = 1;
     buttonPanelConstraints.weightx = 800;
     buttonPanelConstraints.weighty = 32;
-    
+
     contentPane.add(tablePane, tablePaneConstraints);
     contentPane.add(buttonPanel, buttonPanelConstraints);
 
@@ -493,7 +493,7 @@ private void validateButtons()
 
             if(plugin.getStatus() == PluginObject.PLUGIN_STARTED)
                 oneStoppablePlugin = true;
-            
+
             if(!(plugin.getStatus() == PluginObject.PLUGIN_NOT_LOADED))
                 oneUninstallablePlugin = true;
         }
@@ -526,5 +526,5 @@ public void propertyChange(PropertyChangeEvent event)
     table.tableChanged(new TableModelEvent(pluginTableModel, row));
     validateButtons();
 }
-    
+
 }

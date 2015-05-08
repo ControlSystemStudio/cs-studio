@@ -19,7 +19,7 @@ import org.eclipse.swt.dnd.Transfer;
  *
  */
 public abstract class AbstractDropPVTargetListener extends AbstractTransferDropTargetListener {
-    
+
 
     public AbstractDropPVTargetListener(EditPartViewer viewer, Transfer xfer) {
         super(viewer, xfer);
@@ -29,7 +29,7 @@ public abstract class AbstractDropPVTargetListener extends AbstractTransferDropT
     protected void updateTargetRequest() {
         ((DropPVRequest)getTargetRequest()).setLocation(getDropLocation());
     }
-    
+
     @Override
     protected void updateTargetEditPart() {
         super.updateTargetEditPart();
@@ -38,18 +38,18 @@ public abstract class AbstractDropPVTargetListener extends AbstractTransferDropT
                     (AbstractBaseEditPart) getTargetEditPart());
 
     }
-    
+
     @Override
-    protected Request createTargetRequest() {        
+    protected Request createTargetRequest() {
         return new DropPVRequest();
     }
-    
+
     @Override
     protected void handleDragOver() {
         getCurrentEvent().detail = DND.DROP_COPY;
         super.handleDragOver();
     }
-    
+
     @Override
     protected void handleDrop() {
         String[] pvNames = getPVNamesFromTransfer();
@@ -58,7 +58,7 @@ public abstract class AbstractDropPVTargetListener extends AbstractTransferDropT
         ((DropPVRequest)getTargetRequest()).setPvNames(pvNames);
         super.handleDrop();
     }
-    
+
     /**
      * @return the PV Name array from transfer.
      */

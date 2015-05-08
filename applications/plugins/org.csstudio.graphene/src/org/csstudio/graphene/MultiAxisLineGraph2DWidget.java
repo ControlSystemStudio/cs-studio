@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene;
 
@@ -25,15 +25,15 @@ import org.epics.pvmanager.graphene.MultiAxisLineGraph2DExpression;
 
 /**
  * A simple Line 2D plot which can handle both waveforms and a list of PVs
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class MultiAxisLineGraph2DWidget
         extends
         AbstractPointDatasetGraph2DWidget<MultiAxisLineGraph2DRendererUpdate, MultiAxisLineGraph2DExpression>
         implements ConfigurableWidget, ISelectionProvider {
-    
+
     private InterpolationScheme interpolation = MultiAxisLineGraph2DRenderer.DEFAULT_INTERPOLATION_SCHEME;
     private boolean separateAreas = false;
 
@@ -41,7 +41,7 @@ public class MultiAxisLineGraph2DWidget
         super(parent, style);
         setResizableAxis(false);
     }
-    
+
     @Override
     protected MultiAxisLineGraph2DRendererUpdate createUpdate() {
         return getGraph().newUpdate()
@@ -55,7 +55,7 @@ public class MultiAxisLineGraph2DWidget
                 formulaArg(getYColumnFormula()));
         return graph;
     }
-    
+
     @Override
     public void loadState(IMemento memento) {
         super.loadState(memento);
@@ -68,11 +68,11 @@ public class MultiAxisLineGraph2DWidget
             }
         }
     }
-    
+
     public InterpolationScheme getInterpolation() {
         return interpolation;
     }
-    
+
     public void setInterpolation(InterpolationScheme interpolation) {
         InterpolationScheme oldValue = this.interpolation;
         this.interpolation = interpolation;
@@ -81,11 +81,11 @@ public class MultiAxisLineGraph2DWidget
             changeSupport.firePropertyChange("interpolation", oldValue, interpolation);
         }
     }
-    
+
     public boolean isSeparateAreas() {
         return separateAreas;
     }
-    
+
     public void setSeparateAreas(boolean separateAreas) {
         boolean oldValue = this.separateAreas;
         this.separateAreas = separateAreas;
@@ -94,20 +94,20 @@ public class MultiAxisLineGraph2DWidget
             changeSupport.firePropertyChange("separateAreas", oldValue, separateAreas);
         }
     }
-    
+
     @Override
     public void saveState(IMemento memento) {
         super.saveState(memento);
         memento.putString(PROP_INTERPOLATION_SCHEME, getInterpolation().toString());
         memento.putBoolean(PROP_SEPARATE_AREAS, isSeparateAreas());
     }
-    
+
     @Override
     protected void processInit() {
         super.processInit();
         processValue();
     }
-    
+
     @Override
     protected void processValue() {
         Graph2DResult result = getCurrentResult();

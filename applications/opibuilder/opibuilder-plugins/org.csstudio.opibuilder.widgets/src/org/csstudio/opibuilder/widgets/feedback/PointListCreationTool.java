@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.opibuilder.widgets.feedback;
@@ -40,9 +40,9 @@ import org.eclipse.gef.tools.TargetingTool;
 /**
  * A custom creation tool for PointList dependend widgets. The tool produces a
  * point list, by interpreting each left click as location for a new point.
- * 
+ *
  * @author Sven Wende, Xihui Chen
- * 
+ *
  */
 
 public final class PointListCreationTool extends TargetingTool {
@@ -62,7 +62,7 @@ public final class PointListCreationTool extends TargetingTool {
      * The point list, which is manipulated by this tool.
      */
     private PointList _points = new PointList();
-    
+
     /**
      * List of common EditPart.
      *
@@ -71,7 +71,7 @@ public final class PointListCreationTool extends TargetingTool {
      * list is the descendant EditPart where all points belong
      * to. The second element is the parent of the first, and
      * the third element is the parent of the second, and so
-     * on. The last element of this list is the root EditPart. 
+     * on. The last element of this list is the root EditPart.
      */
     private ArrayList<EditPart> commonEditParts = null;
 
@@ -131,7 +131,7 @@ public final class PointListCreationTool extends TargetingTool {
 
     /**
      * Cast the target request to a CreateRequest and returns it.
-     * 
+     *
      * @return the target request as a CreateRequest
      * @see TargetingTool#getTargetRequest()
      */
@@ -150,7 +150,7 @@ public final class PointListCreationTool extends TargetingTool {
 
     /**
      * Returns the creation factory used to create the new EditParts.
-     * 
+     *
      * @return the creation factory
      */
     protected CreationFactory getFactory() {
@@ -182,7 +182,7 @@ public final class PointListCreationTool extends TargetingTool {
         setCurrentCommand(getCommand());
         return true;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -203,7 +203,7 @@ public final class PointListCreationTool extends TargetingTool {
         setState(STATE_DRAG_IN_PROGRESS);
 
             // handle clicks
-        
+
             Point p = getSnapedLocation();
             if (_points.size() == 0) {
                 // add a new point
@@ -216,7 +216,7 @@ public final class PointListCreationTool extends TargetingTool {
             // add an additional point, which is just for previewing the next
             // axis in the graphical feedback
             _points.addPoint(p);
-            
+
             if (commonEditParts == null) {
                 // This is the first point. Register all ancestors to the list.
                 commonEditParts = new ArrayList<EditPart>();
@@ -322,7 +322,7 @@ public final class PointListCreationTool extends TargetingTool {
 
     /**
      * Gets the "snapped" location based on the current location of the mouse.
-     * 
+     *
      * @return the point of the snapped location
      */
     private PrecisionPoint getSnapedLocation() {
@@ -343,7 +343,7 @@ public final class PointListCreationTool extends TargetingTool {
      * button that was released to cause this creation is passed in, but since
      * {@link #handleButtonDown(int)} goes into the invalid state if the button
      * pressed is not button 1, this will always be button 1.
-     * 
+     *
      * @param button
      *            the button that was pressed
      */
@@ -355,7 +355,7 @@ public final class PointListCreationTool extends TargetingTool {
 
     /**
      * Add the newly created object to the viewer's selected objects.
-     * 
+     *
      * @param viewer
      *            the EditPartViewer
      */
@@ -375,7 +375,7 @@ public final class PointListCreationTool extends TargetingTool {
 
     /**
      * Sets the creation factory used to create the new edit parts.
-     * 
+     *
      * @param factory
      *            the factory
      */
@@ -413,7 +413,7 @@ public final class PointListCreationTool extends TargetingTool {
             req.setLocation(getLocation());
         }
     }
-    
+
     @Override
     protected EditPartViewer.Conditional getTargetingConditional() {
         return new EditPartViewer.Conditional() {
@@ -421,8 +421,8 @@ public final class PointListCreationTool extends TargetingTool {
                 EditPart targetEditPart = editpart.getTargetEditPart(getTargetRequest());
                 if (targetEditPart == null)
                     return false;
-                
-                // If there is no point, the EditPart under the mouse is the target. 
+
+                // If there is no point, the EditPart under the mouse is the target.
                 if (commonEditParts == null)
                     return true;
 

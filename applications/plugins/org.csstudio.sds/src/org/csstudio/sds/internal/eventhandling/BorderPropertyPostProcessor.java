@@ -13,9 +13,9 @@ import org.eclipse.gef.commands.CompoundCommand;
  * {@link AbstractWidgetModel#PROP_BORDER_WIDTH} when
  * {@link AbstractWidgetModel#PROP_BORDER_STYLE} is set to
  * {@link BorderStyleEnum#NONE}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class BorderPropertyPostProcessor extends AbstractWidgetPropertyPostProcessor<AbstractWidgetModel> {
 
@@ -43,7 +43,7 @@ public class BorderPropertyPostProcessor extends AbstractWidgetPropertyPostProce
                 // .. determine the selected border style
                 int optionIndex = widget.getArrayOptionProperty(AbstractWidgetModel.PROP_BORDER_STYLE);
 
-                if (BorderStyleEnum.NONE.getIndex() == optionIndex || 
+                if (BorderStyleEnum.NONE.getIndex() == optionIndex ||
                         BorderStyleEnum.RAISED.getIndex() == optionIndex ||
                         BorderStyleEnum.LOWERED.getIndex() == optionIndex) {
                     // .. hide color and width properties, when no border style

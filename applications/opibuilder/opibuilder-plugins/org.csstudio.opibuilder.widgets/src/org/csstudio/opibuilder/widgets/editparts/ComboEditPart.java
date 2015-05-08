@@ -52,7 +52,7 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
         updatePropSheet(model.isItemsFromPV());
         ComboFigure comboFigure = new ComboFigure(this);
         combo = comboFigure.getSWTWidget();
-        
+
         List<String> items = getWidgetModel().getItems();
 
         updateCombo(items);
@@ -114,11 +114,11 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
                             public void valueChanged(IPV pv) {
                                 VType value = pv.getValue();
                                 if (value != null && value instanceof VEnum){
-                                    List<String> items = ((VEnum)value).getLabels();                                    
+                                    List<String> items = ((VEnum)value).getLabels();
                                         getWidgetModel().setPropertyValue(
                                                 ComboModel.PROP_ITEMS, items);
-                                    }                                
-                            }                            
+                                    }
+                            }
                         };
                     pv.addListener(loadItemsFromPVListener);
                 }
@@ -164,7 +164,7 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
                         combo.setText(stringValue);
                     else
                         combo.deselectAll();
-//                    
+//
 //                    if(getWidgetModel().isBorderAlarmSensitve())
 //                            autoSizeWidget((ComboFigure) refreshableFigure);
                 }

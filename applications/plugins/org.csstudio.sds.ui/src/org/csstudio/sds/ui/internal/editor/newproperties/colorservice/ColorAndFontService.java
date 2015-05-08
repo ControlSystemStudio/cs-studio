@@ -24,9 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author Sven Wende (C1 WPS), Kai Meyer (C1 WPS)
- * 
+ *
  */
 public class ColorAndFontService implements IColorAndFontService {
     private static final Logger LOG = LoggerFactory.getLogger(ColorAndFontService.class);
@@ -41,7 +41,7 @@ public class ColorAndFontService implements IColorAndFontService {
     public ColorAndFontService(IFile file, AbstractColorAndFontHandler handler) {
         assert file != null : "file != null";
         assert handler != null : "handler != null";
-        
+
         _file = file;
         _colorAndFontSaxHandler = handler;
     }

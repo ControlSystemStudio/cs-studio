@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * Main class for Symbol Image display.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
  */
 public abstract class AbstractSymbolImage implements SymbolImage {

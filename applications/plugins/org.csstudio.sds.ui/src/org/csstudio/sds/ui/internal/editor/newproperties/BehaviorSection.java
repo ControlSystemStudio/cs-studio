@@ -26,9 +26,9 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 /**
  * Section for {@link BehaviorProperty}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class BehaviorSection extends AbstractBaseSection<BehaviorProperty> {
 
@@ -129,9 +129,9 @@ public class BehaviorSection extends AbstractBaseSection<BehaviorProperty> {
 
     /**
      * Label provider for {@link IBehaviorDescription}.
-     * 
+     *
      * @author Sven Wende
-     * 
+     *
      */
     private static final class BehaviorDescriptionLabelProvider extends
             LabelProvider {

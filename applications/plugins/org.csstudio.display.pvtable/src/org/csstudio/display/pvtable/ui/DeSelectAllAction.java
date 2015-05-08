@@ -23,7 +23,7 @@ public class DeSelectAllAction extends PVTableAction
         super(Messages.UncheckAll, "icons/unchecked.gif", viewer); //$NON-NLS-1$
         setToolTipText(Messages.CheckAll_TT);
     }
-    
+
     public void run()
     {
         final PVTableModel model = (PVTableModel) viewer.getInput();

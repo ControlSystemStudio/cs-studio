@@ -102,7 +102,7 @@ public class ComboHistoryHelper {
     }
 
     private boolean changing_combo = false;
-    
+
     public void changeSelection(final String entry) {
         int index = combo.indexOf(entry);
         if (index != -1) {
@@ -149,20 +149,20 @@ public class ComboHistoryHelper {
             changing_combo = false;
         }
     }
-    
+
     private String oldSelection = null;
-    
+
     /** Invoked whenever an item is selected.
      *  <p>Default implementation will compare
      *  with previous selection, and only invoke
      *  <code>newSelection</code>
      *  when the selection changed.
-     *  
+     *
      *  <p>Override this method to be notified
      *  of any selection, including the case where the
      *  user re-selects the same entry, or presses 'Return'
      *  in the combo's text field without changing its content.
-     *  
+     *
      *  @param selection Selected item, may be <code>null</code>
      */
     public void itemSelected(final String selection)
@@ -174,7 +174,7 @@ public class ComboHistoryHelper {
         } else if (oldSelection.equals(selection)) {
             return;
         }
-        
+
         oldSelection = selection;
         newSelection(selection);
     }

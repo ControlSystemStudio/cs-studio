@@ -13,9 +13,9 @@ import org.junit.Test;
 /**
  * Unit test for {@link SmsCommandValidator}. Parses "sms" automated action
  * command and validate its format.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
- * 
+ *
  */
 public class SMSCommandValidatorUnitTest {
 

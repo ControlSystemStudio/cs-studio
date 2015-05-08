@@ -22,8 +22,8 @@ import org.eclipse.swt.graphics.RGB;
  *  <p>
  *  Specifically, it draws a 'staircase' type line from one sample to the next:
  *  The 'y' value of a previous sample is considered valid until the next sample.
- * 
- *  @author Blaz Lipuscek 
+ *
+ *  @author Blaz Lipuscek
  *  @author Kay Kasemir
  *  @author Xihu Chen found the 'alpha' support for transparency
  */
@@ -35,10 +35,10 @@ public class TracePainter
     final private int marker_type = Preferences.getMarkerType();
 
     final private int marker_size = Preferences.getMarkerSize();
-    
+
     final private float saturation = Preferences.getAreaSaturation();
 
-    /** Paint a trace over given X axis. 
+    /** Paint a trace over given X axis.
      *  @return <code>true</code> if it enabled advanced graphics
      */
     public boolean paint(final GC gc, final Trace trace, final XAxis xaxis)
@@ -86,7 +86,7 @@ public class TracePainter
             System.out.println("Tracepainter done."); //$NON-NLS-1$
         return used_advanced_graphics;
     }
-    
+
     /** Show the average data with staircase lines.
      *  For samples with min/max info,
      *  show min/max outline as area or lines.
@@ -119,7 +119,7 @@ public class TracePainter
         final ArrayList<Integer> pos = new ArrayList<Integer>();
         final ArrayList<Integer> avg = new ArrayList<Integer>();
         final ArrayList<Integer> min = new ArrayList<Integer>();
-        final ArrayList<Integer> max = new ArrayList<Integer>();        
+        final ArrayList<Integer> max = new ArrayList<Integer>();
         for (int i = i0; i <= i1; ++i)
         {
             final ChartSample sample = samples.get(i);
@@ -164,7 +164,7 @@ public class TracePainter
                         fillArea(gc, pos, min, max);
                         gc.setAlpha(255);
                         used_advanced_graphics = true;
-                    }                        
+                    }
                     else
                     {
                         gc.setBackground(lighter);
@@ -176,7 +176,7 @@ public class TracePainter
                 {
                     gc.setForeground(lighter);
                     drawStaircaseLine(gc, pos, min);
-                    drawStaircaseLine(gc, pos, max);                    
+                    drawStaircaseLine(gc, pos, max);
                     gc.setForeground(old_back);
                 }
                 drawStaircaseLine(gc, pos, avg);
@@ -197,7 +197,7 @@ public class TracePainter
                 fillArea(gc, pos, min, max);
                 gc.setAlpha(255);
                 used_advanced_graphics = true;
-            }                        
+            }
             else
             {
                 gc.setBackground(lighter);
@@ -209,13 +209,13 @@ public class TracePainter
         {
             gc.setForeground(lighter);
             drawStaircaseLine(gc, pos, min);
-            drawStaircaseLine(gc, pos, max);                    
+            drawStaircaseLine(gc, pos, max);
             gc.setForeground(old_back);
         }
         drawStaircaseLine(gc, pos, avg);
-        
+
         lighter.dispose();
-        
+
         return used_advanced_graphics;
     }
 
@@ -344,7 +344,7 @@ public class TracePainter
             final boolean plottable = !Double.isInfinite(y)  &&  !Double.isNaN(y);
             int y0;
             if (plottable)
-            {            
+            {
                 y0 = yaxis.getScreenCoord(y);
                 gc.drawRectangle(x0 - half, y0 - half,
                                 point_size, point_size);
@@ -362,7 +362,7 @@ public class TracePainter
                 markPoint(gc, x0, y0);
         }
     }
-    
+
     /** Draw given sample range with bars. */
     private void drawBars(final GC gc,
                                  final XAxis xaxis,
@@ -391,7 +391,7 @@ public class TracePainter
                 markPoint(gc, x0, y0);
         }
     }
-    
+
     /** Mark given point. */
     private void markPoint(final GC gc, final int x0, final int y0)
     {

@@ -28,7 +28,7 @@ public class NamingContext {
     String addedPrefix;
     String removedPrefix;
     boolean export;
-    
+
     /**
      * Used by createNamingContextFor
      * @param parent
@@ -41,7 +41,7 @@ public class NamingContext {
         this.addedPrefix=addedPrefix;
         this.export=export;
     }
-    
+
     /**
      * This constructor should be used for the topmost template, which doesn't have
      * template instance
@@ -70,7 +70,7 @@ public class NamingContext {
     public VDBTemplateInstance getTemplateInstance() {
         return templateInstance;
     }
-    
+
     /**
      * Returns template
      * @return
@@ -86,7 +86,7 @@ public class NamingContext {
     public Map getMap() {
         return map;
     }
-    
+
     /**
      * Returns only mapping of macros
      * @return
@@ -103,17 +103,17 @@ public class NamingContext {
      */
     public String resolveMacro(String name, String value) {
         //DebugSystem.out.println("resolve macro "+name+"="+value);
-                    
-        // only macros/ports on previous level can have influence    
+
+        // only macros/ports on previous level can have influence
         if (getParent()!=null) {
-            /* try with a record first 
+            /* try with a record first
              * if there are some macros in the target, we suppose the same macros
               * are in the record name, therefore they are substituted later
              */
             value = getParent().resolveLink(value);
             value = getParent().matchAndReplace(value);
         }
-            
+
         return value;
     }
 
@@ -126,16 +126,16 @@ public class NamingContext {
      */
     public NamingContext createNamingContextFor(VDBTemplateInstance instance) {
         //DebugSystem.out.println("create record namer for " +instance);
-        
+
         NamingContext rn=(NamingContext)namingContextCache.get(instance);
         if (rn==null) {
             //handle added and removed prefixes
             String addedPrefix=this.addedPrefix;
             String removedPrefix=this.removedPrefix;
-            if (Settings.getInstance().getHierarhicalNames() && export) { 
+            if (Settings.getInstance().getHierarhicalNames() && export) {
                 addedPrefix=addedPrefix+instance.getName()+Constants.HIERARCHY_SEPARATOR;
             }
-            
+
             rn=new NamingContext(this, instance, addedPrefix, removedPrefix, export);
             namingContextCache.put(instance, rn);
         }
@@ -149,24 +149,24 @@ public class NamingContext {
      */
     public String resolvePort(VDBPort port) {
         //DebugSystem.out.println("resolve port "+port);
-        
+
         String target = port.getTarget();
 
-        /* try with a record first 
+        /* try with a record first
          * if there are some macros in the target, we suppose the same macros
          * are in the record name, therefore they are substituted later
          */
-        
-        LinkProperties lp = new LinkProperties(port);                                
+
+        LinkProperties lp = new LinkProperties(port);
         Object rec = template.getGroup().findObject(lp.getRecord(), true);
         if (rec !=null && rec instanceof Record) {
             /*lp.setRecord(getResolvedName(((Record)rec).getRecordData()));
             target = lp.getFull();*/
             target=getResolvedName(target);
         }
-        
+
         target = matchAndReplace(target);
-        
+
         return target;
     }
 
@@ -179,21 +179,21 @@ public class NamingContext {
      */
 /*    public String getResolvedName(VDBRecordData data) {
         System.out.println("get res name "+data);
-        
+
         return data.getName();
     }*/
-    
+
     /**
      * Used in write VDCT data
      * Should handle exporting single Group
      * @param name
      * @return
-     */ 
+     */
     public String getResolvedName(String name) {
         if (removedPrefix!=null)
-            name = StringUtils.removeBegining(name, removedPrefix); 
+            name = StringUtils.removeBegining(name, removedPrefix);
         if (addedPrefix!=null)
-            name = addedPrefix + name;        
+            name = addedPrefix + name;
         return name;
     }
 
@@ -228,15 +228,15 @@ public class NamingContext {
     public String resolveLink(String target) {
         //DebugSystem.out.println("resolve link "+target);
         //TODO
-        
+
         String record=LinkProperties.getRecordFromString(target);
-        Object rec=null;                                
-        
+        Object rec=null;
+
         if (record!=null && template !=null) rec=template.getGroup().findObject(record, true);
         if (rec !=null && rec instanceof Record) {
             target=getResolvedName(target);
         }
-        
+
         return target;
     }
 
@@ -250,36 +250,36 @@ public class NamingContext {
      */
     public String findAndResolveMacro(String name) {
         //DebugSystem.out.println("find and resolve macro "+name);
-        
+
         String value = "$("+name+")";
-        
+
         if (macroMap.containsKey(name)) {
             if (macroMap.get(name) == cycleFlag) {
                 Console.getInstance().println("Warning: cyclic reference made by macro '"+value+"'.");
-                
+
                 addMacro(name, value);
             }
             return (String)macroMap.get(name);
         }
-        
+
         macroMap.put(name, cycleFlag); // flag visited
-                
+
         if (templateInstance!=null) {
             String val = (String)templateInstance.getProperties().get(name);
             if (val!=null) value = resolveMacro(name, val);
             else {
-                if (Settings.getInstance().getGlobalMacros() && getParent()!=null) 
-                            value = getParent().findAndResolveMacro(name);        
+                if (Settings.getInstance().getGlobalMacros() && getParent()!=null)
+                            value = getParent().findAndResolveMacro(name);
             }
         }
-        
-        
-                
+
+
+
         addMacro(name, value);
-                
+
         return value;
     }
-    
+
     /**
      * Searches for port in the specific template.
      * Notice that port has to be resolved in inner template, but added in outer one.
@@ -289,10 +289,10 @@ public class NamingContext {
      */
     public String findAndResolvePort(String temp, String name) {
         //DebugSystem.out.println("find and resolve port: "+temp+"."+name);
-        
+
         String portname=temp+"."+name;
         String target="$("+portname+")";
-        
+
         if (portMap.containsKey(portname)) {
             if (portMap.get(portname) == cycleFlag) {
                 Console.getInstance().println("Warning: cyclic reference made by port '"+portname+"'.");
@@ -300,22 +300,22 @@ public class NamingContext {
             }
             return (String)portMap.get(portname);
         }
-        
-        portMap.put(portname, cycleFlag); // flag visited    
-        
-        
-        
+
+        portMap.put(portname, cycleFlag); // flag visited
+
+
+
         Object obj=template.getGroup().findObject(temp, true);
         if (obj!=null && obj instanceof Template) {
             Template t=(Template)obj;
             NamingContext newNamer = createNamingContextFor(t.getTemplateData());
 
             VDBPort port=(VDBPort)t.getTemplateData().getTemplate().getPorts().get(name);
-            if (port!=null) target=newNamer.resolvePort(port);        
+            if (port!=null) target=newNamer.resolvePort(port);
         }
-        
+
         addPort(portname, target);
-        
+
         return target;
     }
 
@@ -323,22 +323,22 @@ public class NamingContext {
      * Finds $() and $(.) in strings and replaces them.
      * TODO currently it doesn't handle something like $($()) very well.
      * I don't think this is a simple problem, which could be done with regex.
-     * Hierarchy prevents it. 
+     * Hierarchy prevents it.
      * @param value
      * @return
      */
     public String matchAndReplace(String value) {
         if (value==null || value.indexOf('$')<0) return value;
-        
+
         //DebugSystem.out.println("matchandreplace "+value);
-        
+
         // by definition from ebnfg - \0 is bad character, but occurs in groups
         //Pattern macrop = Pattern.compile("$\\(([a-zA-Z0-9_:-]+)\\)");
         //Pattern portp = Pattern.compile("$\\(([a-zA-Z0-9_:-]+)\\.([a-zA-Z0-9_:-]+)\\)");
         Pattern macrop = Pattern.compile("\\$\\(([^\\.\\$\\)]+)\\)");
         //Pattern portp = Pattern.compile("\\$\\(([^\\.\\$]+)\\.([^\\.\\$]+)\\)");
         Pattern portp = Pattern.compile("\\$\\(([^\\.\\)]+)\\.([^\\.\\)]+)\\)");
-        
+
         Matcher port = portp.matcher(value);
         StringBuffer result = new StringBuffer();
         while (port.find()) {
@@ -346,7 +346,7 @@ public class NamingContext {
             port.appendReplacement(result, findAndResolvePort(portt, portn).replaceAll("\\$","\\\\\\$"));
         }
         port.appendTail(result);
-        
+
         Matcher macro = macrop.matcher(result.toString());
         result=new StringBuffer();
         while (macro.find()) {
@@ -354,7 +354,7 @@ public class NamingContext {
             macro.appendReplacement(result, findAndResolveMacro(macron).replaceAll("\\$","\\\\\\$"));
         }
         macro.appendTail(result);
-        
+
         return result.toString();
     }
 

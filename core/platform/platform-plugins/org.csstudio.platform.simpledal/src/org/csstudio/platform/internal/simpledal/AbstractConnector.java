@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.platform.internal.simpledal;
@@ -43,19 +43,19 @@ import org.slf4j.LoggerFactory;
 /**
  * Base class for connectors. A connector encapsulates all program logic that is
  * needed to use a certain application layer that accesses process variables.
- * 
+ *
  * A connector can be used for one-time-action, e.g. getting or setting a
  * process variable´s value as well for permanent-action which means to register
  * listeners for updates of process variables values.
- * 
+ *
  * For convenience the {@link IProcessVariableValueListener}s are only weakly
  * referenced. The connector tracks for {@link IProcessVariableValueListener}s
  * that have been garbage collected and removes those references from its
  * internal list. This way {@link IProcessVariableValueListener}s don´t have to
  * be removed from the connector explicitly.
- * 
+ *
  * @author Sven Wende, Xihui Chen
- * 
+ *
  */
 @SuppressWarnings("unchecked")
 public abstract class AbstractConnector implements IConnector, IProcessVariableAdressProvider {// TODO jhatje , IProcessVariable {
@@ -107,7 +107,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 
     /**
      * Constructor.
-     * 
+     *
      * @param pvAddress
      *            the address of the process variable this connector is for
      * @param valueType
@@ -165,7 +165,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 
     /**
      * Forwards the specified connection state to all registered listeners.
-     * 
+     *
      * @param connectionState
      *            the connection state
      */
@@ -175,7 +175,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 
     /**
      * Forwards the specified value to all registered listeners.
-     * 
+     *
      * @param value
      *            the value
      */
@@ -185,7 +185,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 
     /**
      * Forwards the specified value to all registered listeners.
-     * 
+     *
      * @param value
      *            the value
      */
@@ -197,10 +197,10 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * Adds a value listener. When a characteristic is provided, the specified
      * listener is only informed of changes in that characteristic.
-     * 
+     *
      * @param listener
      *            a value listener (has to be !=null)
-     * 
+     *
      * @param characteristicId
      *            the id of a characteristic (can be null)
      */
@@ -240,7 +240,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
      * reference its listeners weak by design. This way connectors that are no
      * longer referenced outside of the connector will get garbage collected
      * anyway.
-     * 
+     *
      * @param listener
      *            the value listener to be removed from the connector
      */
@@ -262,7 +262,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * Determines, whether this connector can get disposed. This is, when no
      * value listeners for the connector live in the JVM anymore.
-     * 
+     *
      * @return true, if this connector can be disposed, false otherwise
      */
     public final boolean isDisposable() {
@@ -290,7 +290,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * Determines whether it is possible to write values to the underlying
      * process variable.
-     * 
+     *
      * @return a state that defines whether write access is possible in a
      *         yes/no/unknown manner
      */
@@ -327,10 +327,10 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * Queries the current value using a synchronous call that will block the
      * current thread.
-     * 
+     *
      * @param <E>
      *            return type
-     * 
+     *
      * @return the current value or null
      * @throws Exception
      */
@@ -346,7 +346,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * Queries the current value using an asynchronous call. The result will be
      * reported by calling the valueChanged() method on the specified listener.
-     * 
+     *
      * @param <E>
      *            return type
      */
@@ -362,14 +362,14 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
      * Queries the specified characteristic using a synchronous call.The result
      * will be reported by calling the valueChanged() method on the specified
      * listener.
-     * 
+     *
      * @param <E>
      *            return type
      * @param characteristicId
      *            the characteristic id
      * @param valueType
      *            the type of the expected value
-     * 
+     *
      * @return the current value or null
      * @throws Exception
      */
@@ -385,14 +385,14 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * Queries the specified characteristic using an asynchronous call that will
      * block the current thread.
-     * 
+     *
      * @param <E>
      *            return type
      * @param characteristicId
      *            the characteristic id
      * @param valueType
      *            the type of the expected value
-     * 
+     *
      * @return the current value or null
      */
     public final void getCharacteristicAsynchronously(final String characteristicId, final ValueType valueType,
@@ -406,7 +406,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 
     /**
      * Sets the specified value using an asynchronous call.
-     * 
+     *
      * @param value
      *            the value to be set
      * @param listener
@@ -421,7 +421,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     }
 
     /**
-     * 
+     *
      * @param value
      * @return
      */
@@ -434,7 +434,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * Template method. Subclasses should determine whether write access to the
      * underlying process variable is possible.
-     * 
+     *
      * @return a state that defines whether write access is possible in a
      *         yes/no/unknown manner
      * @throws Exception
@@ -445,27 +445,27 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * Template method. Subclasses should initialize the physical connection
      * here.
-     * 
+     *
      * @throws Exception
      *             an arbitrary exception
-     * 
+     *
      */
     protected abstract void doInit() throws Exception;
 
     /**
      * Template method. Subclasses should shut down all physical connections
      * here.
-     * 
+     *
      * @throws Exception
      *             an arbitrary exception
-     * 
+     *
      */
     protected abstract void doDispose() throws Exception;
 
     /**
      * Template method. Subclasses should implement asynchronous access logic
      * for characteristics here.
-     * 
+     *
      * @param characteristicId
      *            the characteristic id
      * @param valueType
@@ -481,14 +481,14 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * Template method. Subclasses should implement synchronous access logic for
      * characteristics here.
-     * 
+     *
      * @param characteristicId
      *            the characteristic id
      * @param valueType
      *            the expected value type
-     * 
+     *
      * @return the characteristic value or null
-     * 
+     *
      * @throws Exception
      *             an arbitrary exception
      */
@@ -497,9 +497,9 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * Template method. Subclasses should implement synchronous access logic for
      * the value here.
-     * 
+     *
      * @return the current value or null
-     * 
+     *
      * @throws Exception
      *             an arbitrary exception
      */
@@ -508,7 +508,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * Template method. Subclasses should implement asynchronous access logic
      * for the value here.
-     * 
+     *
      * @param listener
      *            the listener that has to be informed in a call-back style *
      * @throws Exception
@@ -519,10 +519,10 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * Template method. Subclasses should implement synchronous logic for
      * setting a value here.
-     * 
+     *
      * @param value
      *            the value to be set
-     * 
+     *
      * @return true on success, false otherwise
      * @throws Exception
      *             an arbitrary exception
@@ -532,12 +532,12 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * Template method. Subclasses should implement asynchronous logic for
      * setting a value here.
-     * 
+     *
      * @param value
      *            the value to be set
      * @param listener
      *            an optional call-back listener
-     * 
+     *
      * @throws Exception
      *             an arbitrary exception
      */
@@ -545,7 +545,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 
     /**
      * Forward the specified connection event to the value listeners.
-     * 
+     *
      * @param event
      *            the DAL connection event
      */
@@ -568,7 +568,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 
     /**
      * Forward the current value with its time stamp.
-     * 
+     *
      * @param value
      *            the value
      * @param timestamp
@@ -600,7 +600,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * Forwards the specified characteristic value to all listeners registered
      * for that characteristic.
-     * 
+     *
      * @param characteristicValue
      *            the characteristic value
      * @param timestamp
@@ -632,7 +632,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 
     /**
      * Forward the current value.
-     * 
+     *
      * @param event
      *            the DAL connection event
      */
@@ -650,9 +650,9 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 
     /**
      * Updates all listeners that are connected to a characteristic.
-     * 
+     *
      * Characteristics are requested asynchronously.
-     * 
+     *
      * FIXME: This is a only workaround. DAL should deliver propertyChange()
      * Events for characteristics whenever a DalProperty switches to "connected"
      * state. The same already works for valueChanged() updates.
@@ -672,7 +672,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * Logs a debug message that is prefixed with common connector information
      * (e.g. the name of the process variable).
-     * 
+     *
      * @param message
      *            the message
      */
@@ -687,10 +687,10 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 
     /**
      * Executes the specified runnable for all existing value listeners.
-     * 
+     *
      * Only for valid listeners that still live in the JVM the hook method
      * {@link IInternalRunnable#doRun(IProcessVariableValueListener)} is called.
-     * 
+     *
      * @param runnable
      *            the runnable
      */
@@ -795,16 +795,16 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * Runnable which is used to forward events to process variable value
      * listeners.
-     * 
+     *
      * @author Sven Wende
-     * 
+     *
      */
     interface IInternalRunnable {
         /**
          * Hook which is called only for valid value listeners, which still live
          * in the JVM and have not already been garbage collected AND that is
          * registered for a specific characteristic id.
-         * 
+         *
          * @param valueListener
          *            a value listener instance (it is ensured, that this is not
          *            null)
@@ -817,7 +817,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
         /**
          * Hook which is called only for valid value listeners, which still live
          * in the JVM and have not already been garbage collected.
-         * 
+         *
          * @param valueListener
          *            a value listener instance (we ensure, that this is not
          *            null)
@@ -829,12 +829,12 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
      * Keeps a weak reference to a listener. Because of its weakness this
      * reference does not prevent the listener from getting garbage collected
      * when its not references elsewhere.
-     * 
+     *
      * A listener could have been registered for a specific characteristic id,
      * which is a special case, as several characteristics can be delivered via
      * the same connection and can be reported as a reaction to certain system
      * events.
-     * 
+     *
      * @author Sven Wende
      */
     static class ListenerReference {

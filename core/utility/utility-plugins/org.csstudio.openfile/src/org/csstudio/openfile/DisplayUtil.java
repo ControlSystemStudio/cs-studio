@@ -31,7 +31,7 @@ import org.eclipse.osgi.util.NLS;
 public class DisplayUtil
 {
     private static final Logger log = Logger.getLogger(DisplayUtil.class.getName());
-    
+
     /** Singleton instance */
     final private static DisplayUtil instance = new DisplayUtil();
 
@@ -61,7 +61,7 @@ public class DisplayUtil
             }
         }
     }
-    
+
     public boolean isExtensionSupported(String ext){
         return actions.containsKey(ext);
     }

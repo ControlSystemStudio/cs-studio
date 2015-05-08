@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.opibuilder.examples;
 
@@ -12,21 +12,21 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
 /**
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class Basic implements SampleSet {
 
     /**
-     * 
+     *
      */
     public Basic() {
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.csstudio.opibuilder.samples.SampleSet#getDirectory()
      */
     @Override

@@ -33,8 +33,8 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 
 /** Eclipse EditorPart for the PACE Model and GUI
- * 
- *  
+ *
+ *
  *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
  */
@@ -43,7 +43,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
 {
     private Model model;
     private boolean is_dirty = false;
-    
+
     private String changes = "";
     // Display ELog entry dialog
     private Shell shell = null;
@@ -194,7 +194,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
     /**
      * "Save" means create elog entry about changes, then write user values to
      * PVs.
-     * 
+     *
      * @see org.eclipse.ui.part.EditorPart#doSave(IProgressMonitor)
      */
     @Override
@@ -202,7 +202,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
         this.changes = createElogText();
         // Display ELog entry dialog
         this.shell = getSite().getShell();
-      
+
         // "Normal" case with ELog support
         try {
             final String title = NLS.bind(Messages.ELogTitleFmt,
@@ -276,7 +276,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
 
     /**
      * {@inheritDoc}
-     * @throws Exception 
+     * @throws Exception
      */
     @Override
     public void saveProcessStatus(LogEntryBuilderEnum state) throws Exception {
@@ -294,7 +294,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
             break;
         }
     }
-    
+
     /**
      * Rever oginal values.
      */
@@ -306,17 +306,17 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
                   NLS.bind(Messages.SaveErrorFmt, save_ex.getMessage()));
         }
     }
-    
+
     /**
      * Finalize save.
      */
     private void finalizeSave() {
         model.clearUserValues();
     }
-    
+
     /**
      * Save user values.
-     * @throws Exception 
+     * @throws Exception
      */
     private void saveUserValues() throws Exception {
         // The whole elog-and-pv-update should be handled

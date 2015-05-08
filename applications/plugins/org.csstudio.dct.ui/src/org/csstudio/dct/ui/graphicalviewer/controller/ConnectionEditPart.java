@@ -16,7 +16,7 @@ import org.eclipse.swt.graphics.RGB;
 
 /**
  * Controller for a {@link Connection} between records.
- * 
+ *
  * @version $Revision$
  */
 public class ConnectionEditPart extends AbstractConnectionEditPart implements PropertyChangeListener {
@@ -86,7 +86,7 @@ public class ConnectionEditPart extends AbstractConnectionEditPart implements Pr
 
         RGB rgb = getCastedModel().getCaption().startsWith("datalink") ? new RGB(128, 128, 255) : new RGB(128,0,128);
         figure.setForegroundColor(CustomMediaFactory.getInstance().getColor(rgb));
-        
+
          ConnectionLocator locator = new ConnectionLocator(figure,
          ConnectionLocator.MIDDLE);
          locator.setGap(10);

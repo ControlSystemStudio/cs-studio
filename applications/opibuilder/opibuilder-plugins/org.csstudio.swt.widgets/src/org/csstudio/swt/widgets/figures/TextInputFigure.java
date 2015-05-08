@@ -30,25 +30,25 @@ import org.eclipse.swt.widgets.Display;
 
 public class TextInputFigure extends TextFigure {
 
-    public enum SelectorType {        
+    public enum SelectorType {
         NONE("None", null),
         FILE("File", openFileImg),
         DATETIME("Datetime", calendarImg);
-        
+
         public String description;
-        
+
         public Image icon;
-        
+
         private SelectorType(String description, Image icon) {
             this.description = description;
             this.icon = icon;
         }
-        
+
         @Override
         public String toString() {
             return description;
         }
-        
+
         public static String[] stringValues(){
             String[] sv = new String[values().length];
             int i=0;
@@ -57,17 +57,17 @@ public class TextInputFigure extends TextFigure {
             return sv;
         }
     }
-    
-    public enum FileSource{        
+
+    public enum FileSource{
         WORKSPACE("Workspace"),
         LOCAL("Local File System");
-        
+
         public String description;
-        
+
         private FileSource(String description) {
             this.description = description;
-        }        
-        
+        }
+
         @Override
         public String toString() {
             return description;
@@ -80,24 +80,24 @@ public class TextInputFigure extends TextFigure {
             return sv;
         }
     }
-    
-    public enum FileReturnPart{        
+
+    public enum FileReturnPart{
         FULL_PATH("Full Path"),
         NAME_EXT("Name & Extension"),
         NAME_ONLY("Name Only"),
         DIRECTORY("Directory");
-        
+
         public String description;
-        
+
         private FileReturnPart(String description) {
             this.description = description;
         }
-        
+
         @Override
         public String toString() {
             return description;
         }
-        
+
         public static String[] stringValues(){
             String[] sv = new String[values().length];
             int i=0;
@@ -106,68 +106,68 @@ public class TextInputFigure extends TextFigure {
             return sv;
         }
     }
-    
-    
+
+
     private static final Image
     openFileImg = createImage("icons/openFile.png"), //$NON-NLS-1$
     calendarImg = createImage("icons/calendar.gif"); //$NON-NLS-1$
-    
-    private static final int SELECTOR_WIDTH = 25; 
-    
-    
+
+    private static final int SELECTOR_WIDTH = 25;
+
+
     private String dateTimeFormat = "yyyy-MM-dd HH:mm:ss"; //$NON-NLS-1$
-    
+
     private Date dateTime;
-    
+
     private Button selector;
-    
+
     private SelectorType  selectorType = SelectorType.NONE;
     private FileSource fileSource = FileSource.WORKSPACE;
-    private FileReturnPart fileReturnPart = FileReturnPart.FULL_PATH;    
+    private FileReturnPart fileReturnPart = FileReturnPart.FULL_PATH;
     private List<IManualStringValueChangeListener> selectorListeners;
-    
+
     private String startPath;
-    
+
     private String currentPath;
 
     public TextInputFigure() {
         this(false);
     }
-    
+
     public TextInputFigure(boolean runMode) {
-        super(runMode);            
+        super(runMode);
         selectorListeners = new ArrayList<IManualStringValueChangeListener>(1);
     }
-    
-    
+
+
     @Override
     protected void layout() {
         super.layout();
         if(selector != null && selector.isVisible()){
             Rectangle clientArea = getClientArea();
-            selector.setBounds(new Rectangle(clientArea.x + clientArea.width - SELECTOR_WIDTH, 
-                    clientArea.y, SELECTOR_WIDTH, clientArea.height));            
+            selector.setBounds(new Rectangle(clientArea.x + clientArea.width - SELECTOR_WIDTH,
+                    clientArea.y, SELECTOR_WIDTH, clientArea.height));
         }
     }
-    
+
     public void addManualValueChangeListener(IManualStringValueChangeListener listener){
         if(listener != null)
             selectorListeners.add(listener);
     }
-    
+
     /**
      * Inform all slider listeners, that the manual value has changed.
-     * 
+     *
      * @param newManualValue
      *            the new manual value
      */
-    public void fireManualValueChange(final String newManualValue) {        
-        
+    public void fireManualValueChange(final String newManualValue) {
+
             for (IManualStringValueChangeListener l : selectorListeners) {
                 l.manualValueChanged(newManualValue);
             }
     }
-    
+
 
     /**
      * @return the dateTimeFormat
@@ -182,7 +182,7 @@ public class TextInputFigure extends TextFigure {
     public void setDateTimeFormat(String dateTimeFormat) {
         this.dateTimeFormat = dateTimeFormat;
     }
-    
+
     /**
      * @return the startPath
      */
@@ -194,14 +194,14 @@ public class TextInputFigure extends TextFigure {
     protected Rectangle getTextArea() {
         Rectangle textArea;
         if(selector != null && selector.isVisible()){
-            Rectangle clientArea = getClientArea();            
-            textArea = new Rectangle(clientArea.x, clientArea.y, 
+            Rectangle clientArea = getClientArea();
+            textArea = new Rectangle(clientArea.x, clientArea.y,
                     clientArea.width-SELECTOR_WIDTH, clientArea.height);
         }else
             textArea = getClientArea();
         return textArea;
     }
-    
+
     /**
      * @param startPath the startPath to set
      */
@@ -224,11 +224,11 @@ public class TextInputFigure extends TextFigure {
         if(selectorType != SelectorType.NONE){
             if(selector != null){
                 remove(selector);
-            }    
+            }
             selector = new Button(selectorType.icon);
             selectorListeners = new ArrayList<IManualStringValueChangeListener>();
             selector.addActionListener(new SelectorListener());
-            add(selector);            
+            add(selector);
         }else{
             if(selector != null){
                 remove(selector);
@@ -268,18 +268,18 @@ public class TextInputFigure extends TextFigure {
         }
         return superSize;
     }
-    
+
     /**
      * @param fileReturnPart the fileReturnPart to set
      */
     public void setFileReturnPart(FileReturnPart fileReturnPart) {
         this.fileReturnPart = fileReturnPart;
     }
-    
+
     public String getCurrentPath() {
         return currentPath;
     }
-    
+
     public void setCurrentPath(String currentPath) {
         this.currentPath = currentPath;
     }
@@ -296,7 +296,7 @@ public class TextInputFigure extends TextFigure {
 
     private final class SelectorListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            switch (getSelectorType()) {                        
+            switch (getSelectorType()) {
             case FILE:
                 SingleSourceHelper.handleTextInputFigureFileSelector(TextInputFigure.this);
                 break;
@@ -324,9 +324,9 @@ public class TextInputFigure extends TextFigure {
             }
         }
     }
-    
-    
-    
-    
-    
+
+
+
+
+
 }

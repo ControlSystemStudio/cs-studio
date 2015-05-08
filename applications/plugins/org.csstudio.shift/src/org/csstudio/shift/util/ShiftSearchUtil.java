@@ -22,7 +22,7 @@ public class ShiftSearchUtil {
 
     private static final List<String> keywords = new ArrayList<String>(
         Arrays.asList(SEARCH_KEYWORD_TEXT, SEARCH_KEYWORD_SHIFTS,
-            SEARCH_KEYWORD_START, SEARCH_KEYWORD_END, SEARCH_KEYWORD_OWNER, SEARCH_KEYWORD_LEADOPERATOR, 
+            SEARCH_KEYWORD_START, SEARCH_KEYWORD_END, SEARCH_KEYWORD_OWNER, SEARCH_KEYWORD_LEADOPERATOR,
             SEARCH_KEYWORD_CLOSEUSER, SEARCH_KEYWORD_TYPE, SEARCH_KEYWORD_STATUS));
 
     public static Map<String, String> parseSearchString(final String search) {

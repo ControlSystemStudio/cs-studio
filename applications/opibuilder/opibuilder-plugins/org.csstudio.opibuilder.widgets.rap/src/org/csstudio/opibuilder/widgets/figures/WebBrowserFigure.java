@@ -18,12 +18,12 @@ import org.eclipse.swt.widgets.Composite;
  *
  */
 public class WebBrowserFigure extends AbstractWebBrowserFigure<Browser> {
-    
+
     private Browser browser;
 
-    
+
     public WebBrowserFigure(AbstractBaseEditPart editPart) {
-        super(editPart, SWT.None);                
+        super(editPart, SWT.None);
     }
 
     public void setUrl(String url){
@@ -33,16 +33,16 @@ public class WebBrowserFigure extends AbstractWebBrowserFigure<Browser> {
             browser.setUrl(url);
         }
     }
-    
+
     @Override
     protected Browser createSWTWidget(Composite parent, int style) {
         browser = new Browser(parent, SWT.None);
         return browser;
     }
-    
-        
+
+
     public Browser getBrowser() {
         return browser;
     }
-    
+
 }

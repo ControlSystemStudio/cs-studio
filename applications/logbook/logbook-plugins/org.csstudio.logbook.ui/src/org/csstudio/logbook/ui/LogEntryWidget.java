@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -91,7 +91,7 @@ import com.google.common.collect.Lists;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class LogEntryWidget extends Composite {
 
@@ -571,7 +571,7 @@ public class LogEntryWidget extends Composite {
     btnClipboard.setLayoutData(fd_btnClipboard);
     btnClipboard.setText("Clipboard Image");
     btnClipboard.setToolTipText("Add the image from the current clipboard");
-    
+
     imageStackWidget = new ImageStackWidget(tbtmImgAttachmentsComposite,
         SWT.NONE);
     imageStackWidget.setEditable(editable);
@@ -913,7 +913,7 @@ public class LogEntryWidget extends Composite {
         propertyWidgetFactories = Collections.emptyMap();
         setLastException(e);
     }
-    
+
     }
 
     private void init() {
@@ -926,7 +926,7 @@ public class LogEntryWidget extends Composite {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 //attachments are still flying in, but we have already closed this widget
-                if (isDisposed()) return; 
+                if (isDisposed()) return;
                 getDisplay().asyncExec(new Runnable() {
 
                 @Override
@@ -988,7 +988,7 @@ public class LogEntryWidget extends Composite {
                     }
                 }
             }
-        
+
         }
     } catch (Exception ex) {
         // Failed to get a client to the logbook
@@ -1080,7 +1080,7 @@ public class LogEntryWidget extends Composite {
         imageStackWidget.setSelectedImageName(null);
         linkTable.setFiles(Collections.<Attachment> emptyList());
     }
-    
+
     for (CTabItem cTabItem : tabFolder.getItems()) {
             if (!cTabItem.equals(tbtmAttachments)
                     && !cTabItem.equals(tbtmFileAttachments)

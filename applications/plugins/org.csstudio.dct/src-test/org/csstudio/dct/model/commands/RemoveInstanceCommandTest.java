@@ -19,9 +19,9 @@ import org.junit.Test;
 
 /**
  * Test class for {@link RemoveInstanceCommand}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class RemoveInstanceCommandTest extends AbstractTestCommand {
     private IPrototype prototypeA;

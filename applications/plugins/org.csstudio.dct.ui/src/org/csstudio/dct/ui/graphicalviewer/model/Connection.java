@@ -4,9 +4,9 @@ import org.eclipse.draw2d.Graphics;
 
 /**
  * Represent a connection between two different nodes.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class Connection extends AbstractBase {
     private static final long serialVersionUID = 1;
@@ -21,7 +21,7 @@ public class Connection extends AbstractBase {
 
     /**
      * Constructor.
-     * 
+     *
      * @param sourceNode
      *            source node
      * @param targetNode
@@ -38,7 +38,7 @@ public class Connection extends AbstractBase {
 
     /**
      * Returns the line style (a constant of {@link Graphics}).
-     * 
+     *
      * @return the line style
      */
     public int getLineStyle() {
@@ -47,7 +47,7 @@ public class Connection extends AbstractBase {
 
     /**
      * Returns the source node.
-     * 
+     *
      * @return the source node
      */
     public AbstractNode getSourceNode() {
@@ -56,7 +56,7 @@ public class Connection extends AbstractBase {
 
     /**
      * Returns the target node.
-     * 
+     *
      * @return the target node
      */
     public AbstractNode getTargetNode() {
@@ -92,7 +92,7 @@ public class Connection extends AbstractBase {
 
     /**
      * Sets the caption.
-     * 
+     *
      * @param details
      */
     public void setCaption(String details) {

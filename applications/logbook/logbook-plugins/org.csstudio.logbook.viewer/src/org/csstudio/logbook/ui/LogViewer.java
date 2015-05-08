@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -29,7 +29,7 @@ import org.eclipse.ui.part.EditorPart;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class LogViewer extends EditorPart {
 
@@ -40,7 +40,7 @@ public class LogViewer extends EditorPart {
     private static LogViewer editor;
 
     /**
-     * 
+     *
      */
     public LogViewer() {
     }
@@ -79,7 +79,7 @@ public class LogViewer extends EditorPart {
 
     }
 
-   
+
     @Override
     public void doSaveAs() {
     // TODO Auto-generated method stub
@@ -131,7 +131,7 @@ public class LogViewer extends EditorPart {
     return false;
     }
 
-   
+
     @Override
     public void createPartControl(Composite parent) {
     logEntryWidget = new LogEntryWidget(parent, SWT.NONE, false, false);

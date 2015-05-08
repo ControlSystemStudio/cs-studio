@@ -8,22 +8,22 @@ package com.cosylab.vdct.inspector;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -62,7 +62,7 @@ public class Inspector extends JDialog implements InspectableObjectsListener, In
     private JScrollPane ivjCommentScrollPane = null;
     private JComboBox ivjObjectComboBox = null;
     private JButton centerOnScreen;
-    
+
     // inspector components
     private InspectorTableModel tableModel;
     private Inspectable inspectedObject = null;
@@ -79,7 +79,7 @@ public class Inspector extends JDialog implements InspectableObjectsListener, In
 
 class IvjEventHandler implements java.awt.event.ItemListener {
         public void itemStateChanged(java.awt.event.ItemEvent e) {
-            if (e.getSource() == Inspector.this.getObjectComboBox()) 
+            if (e.getSource() == Inspector.this.getObjectComboBox())
                 connEtoC1(e);
         };
     };
@@ -276,7 +276,7 @@ private javax.swing.JLabel getHelpLabel() {
 }
 
 /**
- * TabbedPane listener 
+ * TabbedPane listener
  */
 public void stateChanged(ChangeEvent e)
 {
@@ -285,7 +285,7 @@ public void stateChanged(ChangeEvent e)
     // close all editors and refresh
     closeCellEditors(true);
     tableModel.setDataObject(tableModel.getDataObject());
-} 
+}
 
 /**
  * Return the ViewTabbedPane property value.
@@ -299,11 +299,11 @@ private javax.swing.JTabbedPane getViewTabbedPane() {
             ivjViewTabbedPane.setName("ViewTabbedPane");
             ivjViewTabbedPane.setTabPlacement(javax.swing.JTabbedPane.TOP);
             // user code begin {1}
-            ivjViewTabbedPane.addTab(defaultString, null);        
+            ivjViewTabbedPane.addTab(defaultString, null);
         //    ivjViewTabbedPane.addTab("Group", null);
         //    ivjViewTabbedPane.addTab("Alphabetical", null);
         //    ivjViewTabbedPane.addTab("DBD Order", null);
-            
+
             //show only tabbs
             getViewTabbedPane().setMinimumSize(new Dimension(1, 24));
             getViewTabbedPane().setMaximumSize(new Dimension(1000, 24));
@@ -398,7 +398,7 @@ private javax.swing.JPanel getJDialogContentPane() {
             getJDialogContentPane().add(getCenterOnScreenButton(), new GridBagConstraints(
                     0,6,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE,
                     new Insets(4,4,4,4),0,0));
-            
+
             // user code begin {1}
             // user code end
         } catch (java.lang.Throwable ivjExc) {
@@ -425,13 +425,13 @@ private JButton getCenterOnScreenButton() {
                         }
                     }
                 }
-                
+
             });
         } catch (Throwable e) {
             handleException(e);
         }
     }
-    
+
     return centerOnScreen;
 }
 
@@ -469,20 +469,20 @@ private javax.swing.JTable getScrollPaneTable() {
             ivjScrollPaneTable.setName("ScrollPaneTable");
             getTableScrollPane().setColumnHeaderView(ivjScrollPaneTable.getTableHeader());
             // this caused visibility icon problems when scrooling
-            //getTableScrollPane().getViewport().setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE); 
+            //getTableScrollPane().getViewport().setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
             ivjScrollPaneTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
             ivjScrollPaneTable.setBackground(new java.awt.Color(204,204,204));
             ivjScrollPaneTable.setShowVerticalLines(true);
             ivjScrollPaneTable.setGridColor(java.awt.Color.black);
             ivjScrollPaneTable.setBounds(0, 0, 200, 200);
             ivjScrollPaneTable.setRowHeight(17);
-            
+
             // enable clipboard actions
             new InspectorTableClipboardAdapter(ivjScrollPaneTable);
             ivjScrollPaneTable.setRowSelectionAllowed(true);
             // note: selection is possible only on name column
             ivjScrollPaneTable.setColumnSelectionAllowed(false);
-            
+
             // user code begin {1}
             tableModel = new InspectorTableModel(this);
             ivjScrollPaneTable.setModel(tableModel);
@@ -495,9 +495,9 @@ private javax.swing.JTable getScrollPaneTable() {
                         java.awt.Point pnt = evt.getPoint();
                         int popupAtRow = ivjScrollPaneTable.rowAtPoint(pnt);
                         int popupAtCol = -1;
-                        if ((popupAtRow != -1) && 
+                        if ((popupAtRow != -1) &&
                             ((popupAtCol=ivjScrollPaneTable.columnAtPoint(pnt)) != -1)) {
-                                mouseEvent(evt, popupAtRow, popupAtCol); 
+                                mouseEvent(evt, popupAtRow, popupAtCol);
                             }
                     }
             });
@@ -652,13 +652,13 @@ public void inspectObject(Inspectable object, boolean raise) {
     boolean isOutsider = !objs.contains(object);
     if (isOutsider)
         getObjectComboBox().addItem(object);
-        
+
     // !!! object must be in list !!!
     getObjectComboBox().setSelectedItem(object);
 
     if (isOutsider)
         toRemove = object;
-    
+
     //com.cosylab.vdct.Console.getInstance().println("Inspecting: "+object);
 
     setTitle("Inspector - "+inspectedObject.getName());
@@ -669,9 +669,9 @@ public void inspectObject(Inspectable object, boolean raise) {
 
     // setup tabs
     initializeTabs(object.getModeNames());
-    
+
     if (raise) setVisible(true);
-    
+
     if (!updatingList)
     {
         if (object instanceof VisibleObject) {
@@ -729,11 +729,11 @@ public void reinitialize() {}
  * Insert the method's description here.
  * Creation date: (8.1.2001 17:50:20)
  */
-public void updateObject() { 
+public void updateObject() {
     Inspectable ins = inspectedObject;
     inspectedObject=null;
     inspectObject(ins);
-    // name/type might change, do the repaint to force the change 
+    // name/type might change, do the repaint to force the change
     getObjectComboBox().repaint();
 }
 /**
@@ -817,8 +817,8 @@ public void windowActivated(java.awt.event.WindowEvent e) {
 public void windowClosed(java.awt.event.WindowEvent e) {}
     /**
      * Invoked when the user attempts to close the window
-     * from the window's system menu.  If the program does not 
-     * explicitly hide or dispose the window while processing 
+     * from the window's system menu.  If the program does not
+     * explicitly hide or dispose the window while processing
      * this event, the window close operation will be cancelled.
      */
 public void windowClosing(java.awt.event.WindowEvent e) {}
@@ -842,8 +842,8 @@ public void windowDeactivated(java.awt.event.WindowEvent e) {
 public void windowDeiconified(java.awt.event.WindowEvent e) {}
     /**
      * Invoked when a window is changed from a normal to a
-     * minimized state. For many platforms, a minimized window 
-     * is displayed as the icon specified in the window's 
+     * minimized state. For many platforms, a minimized window
+     * is displayed as the icon specified in the window's
      * iconImage property.
      * @see Frame#setIconImage
      */
@@ -876,14 +876,14 @@ public void setMode(int mode)
 private void mouseEvent(MouseEvent event, int row, int col)
 {
     boolean popupTrigger = event.getButton() == MouseEvent.BUTTON3;
-    // event.isPopupTrigger() does not work on my instalation of Linux (RH7.2, GNOME 1.4) 
-    
+    // event.isPopupTrigger() does not work on my instalation of Linux (RH7.2, GNOME 1.4)
+
     InspectableProperty property = (InspectableProperty)tableModel.getPropertyAt(row);
 
     // change visibility
     if (col==0)
     {
-        if (property!=null && property instanceof ChangableVisibility)  
+        if (property!=null && property instanceof ChangableVisibility)
         {
             int visibility = property.getVisibility();
             visibility = (visibility+1) % 3;                        /// !!! who said there are only three modes?!
@@ -908,15 +908,15 @@ private void initializeTabs(ArrayList tabs)
     if (tabs!=currentTabs)            // is object is using flyweight pattern, this is a good optimization
     {
         currentTabs = tabs;
-        
+
         getViewTabbedPane().removeAll();
         if (currentTabs==null)
-            getViewTabbedPane().addTab(defaultString, null);        
+            getViewTabbedPane().addTab(defaultString, null);
         else
         {
             Iterator i = currentTabs.iterator();
             while (i.hasNext())
-                getViewTabbedPane().addTab(i.next().toString(), null);        
+                getViewTabbedPane().addTab(i.next().toString(), null);
         }
         // TBD: set the last mode of the object (now it will always switch to the first one) !!!
     }

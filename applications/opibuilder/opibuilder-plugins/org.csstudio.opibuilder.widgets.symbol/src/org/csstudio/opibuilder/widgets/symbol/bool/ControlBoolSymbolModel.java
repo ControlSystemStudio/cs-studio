@@ -29,9 +29,9 @@ import org.eclipse.swt.graphics.RGB;
 
 /**
  * Control model for Boolean Symbol Image widget.
- * 
+ *
  * @author SOPRA Group
- * 
+ *
  */
 public class ControlBoolSymbolModel extends AbstractBoolControlModel {
 
@@ -96,7 +96,7 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
     private static final RGB DEFAULT_ON_COLOR = new RGB(0, 255, 0);
     /** The default color of the off color property. */
     private static final RGB DEFAULT_OFF_COLOR = new RGB(255, 0, 0);
-    
+
     /**
      * True if the widget doesn't show animation even it is a animated image
      * file.
@@ -136,7 +136,7 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
         addProperty(new FilePathPropertyWithFilter(PROP_SYMBOL_IMAGE_FILE,
                 "Symbol Image", WidgetPropertyCategory.Display, new Path(""),
                 SymbolUtils.IMAGE_EXTENSIONS));
-        
+
         addProperty(new IntegerProperty(PROP_TOPCROP, "Crop Top",
                 WidgetPropertyCategory.Image, 0));
         addProperty(new IntegerProperty(PROP_BOTTOMCROP, "Crop Bottom",
@@ -163,7 +163,7 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
 //        setPropertyVisibleAndSavable(PROP_DEGREE, false, true);
 //        setPropertyVisibleAndSavable(PROP_FLIP_HORIZONTAL, false, true);
 //        setPropertyVisibleAndSavable(PROP_FLIP_VERTICAL, false, true);
-        
+
         addProperty(new MatrixProperty(PERMUTATION_MATRIX,
                 "Permutation Matrix", WidgetPropertyCategory.Image,
                 PermutationMatrix.generateIdentityMatrix().getMatrix()));
@@ -180,7 +180,7 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
 
     /**
      * Get the path to the specified file.
-     * 
+     *
      * @return The path to the specified file
      */
     public IPath getSymbolImagePath() {
@@ -195,7 +195,7 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
     /**
      * Get the amount of pixels, which should be cropped from the top edge of
      * the image.
-     * 
+     *
      * @return The amount of pixels
      */
     public int getTopCrop() {
@@ -205,7 +205,7 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
     /**
      * Get the amount of pixels, which should be cropped from the bottom edge of
      * the image.
-     * 
+     *
      * @return The amount of pixels
      */
     public int getBottomCrop() {
@@ -215,7 +215,7 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
     /**
      * Get the amount of pixels, which should be cropped from the left edge of
      * the image.
-     * 
+     *
      * @return The amount of pixels
      */
     public int getLeftCrop() {
@@ -225,7 +225,7 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
     /**
      * Get the amount of pixels, which should be cropped from the right edge of
      * the image.
-     * 
+     *
      * @return The amount of pixels
      */
     public int getRightCrop() {
@@ -234,7 +234,7 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
 
     /**
      * Check if the image should be stretched.
-     * 
+     *
      * @return True if stretched, false otherwise
      */
     public boolean getStretch() {
@@ -243,7 +243,7 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
 
     /**
      * Check if the widget should be auto sized according the image size.
-     * 
+     *
      * @return True if auto sized, false otherwise
      */
     public boolean isAutoSize() {
@@ -252,7 +252,7 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
 
     /**
      * Get the current degree of the image.
-     * 
+     *
      * @return The degree value
      */
     public int getDegree() {
@@ -261,7 +261,7 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
 
     /**
      * Check if an horizontal flip was applied.
-     * 
+     *
      * @return True if horizontal flip, false otherwise
      */
     public boolean isFlipHorizontal() {
@@ -270,16 +270,16 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
 
     /**
      * Check if an vertical flip was applied.
-     * 
+     *
      * @return True if vertical flip, false otherwise
      */
     public boolean isFlipVertical() {
         return (Boolean) getProperty(PROP_FLIP_VERTICAL).getPropertyValue();
     }
-    
+
     /**
      * Get the current disposition of the image.
-     * 
+     *
      * @return The permutation matrix
      */
     public PermutationMatrix getPermutationMatrix() {
@@ -321,7 +321,7 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
         boolean oldValue = (Boolean) getPropertyValue(MonitorBoolSymbolModel.PROP_FLIP_VERTICAL);
         setPropertyValue(MonitorBoolSymbolModel.PROP_FLIP_VERTICAL, !oldValue);
     }
-    
+
     @Override
     public void setPropertyValue(Object id, Object value) {
         // Override obsolete properties

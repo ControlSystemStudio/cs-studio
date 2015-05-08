@@ -43,8 +43,8 @@ public class WidgetTreeContainerEditPolicy extends TreeContainerEditPolicy {
             }else{
                 AbstractWidgetModel childModel = (AbstractWidgetModel) child.getModel();
                 cmd.add(createCreateCommand(
-                        childModel, 
-                        new Rectangle(new Point(), childModel.getSize()), 
+                        childModel,
+                        new Rectangle(new Point(), childModel.getSize()),
                         index, "Reparent Widgets"));
             }
         }
@@ -70,7 +70,7 @@ public class WidgetTreeContainerEditPolicy extends TreeContainerEditPolicy {
 
         for(int i = 0; i < editparts.size(); i++){
             EditPart child = (EditPart)editparts.get(editparts.size()-1-i);
-            
+
             int oldIndex = children.indexOf(child);
             if(oldIndex == tempIndex || oldIndex + 1 == tempIndex){
                 command.add(UnexecutableCommand.INSTANCE);
@@ -78,25 +78,25 @@ public class WidgetTreeContainerEditPolicy extends TreeContainerEditPolicy {
             } else if(oldIndex <= tempIndex){
                 tempIndex--;
             }
-            
-            command.add(new ChangeOrderCommand(tempIndex, 
-                    (AbstractContainerModel)getHost().getModel(), 
+
+            command.add(new ChangeOrderCommand(tempIndex,
+                    (AbstractContainerModel)getHost().getModel(),
                     (AbstractWidgetModel) child.getModel()));
         }
         return command;
     }
 
-    protected Command createCreateCommand(AbstractWidgetModel widgetModel, 
+    protected Command createCreateCommand(AbstractWidgetModel widgetModel,
             Rectangle r, int index, String label){
-        
+
         WidgetCreateCommand cmd = new WidgetCreateCommand(
                 widgetModel, (AbstractContainerModel) getHost().getModel(), r, false, true);
         cmd.setLabel(label);
         cmd.setIndex(index);
         return cmd;
-        
+
     }
-    
+
     protected boolean isAncestor(EditPart source, EditPart target){
         if(source == target)
             return true;
@@ -104,5 +104,5 @@ public class WidgetTreeContainerEditPolicy extends TreeContainerEditPolicy {
             return isAncestor(source, target.getParent());
         return false;
     }
-    
+
 }

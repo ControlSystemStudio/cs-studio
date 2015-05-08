@@ -19,7 +19,7 @@ public class Edm_cfcf6c8a_dbeb_11d2_8a97_00104b8742df extends EdmWidget {
     @EdmAttributeAn @EdmOptionalAn private boolean uniformSize;
     @EdmAttributeAn @EdmOptionalAn private boolean fastErase;
     @EdmAttributeAn @EdmOptionalAn private boolean noErase;
-    
+
 
     public Edm_cfcf6c8a_dbeb_11d2_8a97_00104b8742df(EdmEntity genericEntity) throws EdmException {
         super(genericEntity);
@@ -48,8 +48,8 @@ public class Edm_cfcf6c8a_dbeb_11d2_8a97_00104b8742df extends EdmWidget {
         return noErase;
     }
 
-    
-    
+
+
 
 }
 

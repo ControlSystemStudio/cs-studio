@@ -22,12 +22,12 @@ public abstract class HelpTrayDialog extends TrayDialog {
         super(parentShell);
         setHelpAvailable(true);
     }
-    
+
     protected HelpTrayDialog(Shell shell) {
         super(shell);
         setHelpAvailable(true);
     }
-    
+
     @Override
     protected Control createHelpControl(Composite parent) {
         Control control = super.createHelpControl(parent);
@@ -46,19 +46,19 @@ public abstract class HelpTrayDialog extends TrayDialog {
                 }
             });
         }
-    
+
         return control;
     }
-    
+
     protected void openHelp(){
         if(getHelpResourcePath() != null)
             PlatformUI.getWorkbench().getHelpSystem().displayHelpResource(getHelpResourcePath());
     }
-    
+
     /**@see IWorkbenchHelpSystem#displayHelpResource(String)
      * @return the help resource path. Return null or empty string will not open the help window.
      */
     protected abstract String getHelpResourcePath();
-    
+
 
 }

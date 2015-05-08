@@ -37,7 +37,7 @@ import javax.jms.Session;
 /**
  * Builder for JMS-Messages.
  * The current implementation will only build a command message.
- * 
+ *
  * @author jpenning
  * @since 17.01.2012
  */
@@ -50,11 +50,11 @@ public class JmsMessageBuilder {
     private final static String EVENTTIME = "EVENTTIME";
     private final static String SEVERITY = "SEVERITY";
     private final static String STATUS = "STATUS";
-    
-    
+
+
     // intermediate store for the key-value-pairs inside the builder
     private Map<String, String> _propertyStore = new HashMap<String, String>();
-    
+
     // create a message builder with several standard keys
     public JmsMessageBuilder() {
         _propertyStore.put(TYPE, "command");
@@ -75,10 +75,10 @@ public class JmsMessageBuilder {
             _propertyStore.put(HOST, "");
         }
     }
-    
+
     /**
      * add value for GROUP property
-     * 
+     *
      * @param group value for the GROUP property
      * @return the builder
      */
@@ -86,10 +86,10 @@ public class JmsMessageBuilder {
         _propertyStore.put(GROUP, group.toString());
         return this;
     }
-    
+
     /**
      * add value for NAME property
-     * 
+     *
      * @param command this value is actually stored in the NAME property
      * @return the builder
      */
@@ -97,11 +97,11 @@ public class JmsMessageBuilder {
         _propertyStore.put(NAME, command);
         return this;
     }
-    
+
     /**
      * add property with key and value
-     * CAREFUL: The caller is especially responsible for the key, this must not interfere with the standard keys. 
-     * 
+     * CAREFUL: The caller is especially responsible for the key, this must not interfere with the standard keys.
+     *
      * @param key
      * @param value
      * @return the builder
@@ -110,10 +110,10 @@ public class JmsMessageBuilder {
         _propertyStore.put(key, value);
         return this;
     }
-    
+
     /**
      * Eventually build the message in the given session
-     * 
+     *
      * @param session
      * @return the newly built message
      * @throws JMSException
@@ -125,16 +125,16 @@ public class JmsMessageBuilder {
         }
         return message;
     }
-    
+
     /**
      * creates date and time for the JMS message.
      * HINT: SimpleDateFormat is not thread-safe
-     * 
+     *
      * @return time as string usable for jms messages times
      */
     private synchronized String createTimeString() {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         return format.format(Calendar.getInstance().getTime());
     }
-    
+
 }

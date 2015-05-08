@@ -24,8 +24,8 @@ public class LabelWidgetIntrospector extends DefaultWidgetIntrospector {
     };
     @Override
     public String[] getNonProperties() {
-    
+
         return concatenateStringArrays(super.getNonProperties(), LABEL_WIDGET_NON_PROPERTIES);
     }
-    
+
 }

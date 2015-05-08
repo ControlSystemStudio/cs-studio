@@ -26,9 +26,9 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * The abstract action opening an OPI file. It can be subclassed to be opened in view or editor.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public abstract class AbstractOpenOPIAction extends AbstractWidgetAction {
 
@@ -53,7 +53,7 @@ public abstract class AbstractOpenOPIAction extends AbstractWidgetAction {
         IPath absolutePath = getPath();
         if (!absolutePath.isAbsolute()) {
             absolutePath = ResourceUtil.buildAbsolutePath(getWidgetModel(),
-                    getPath());        
+                    getPath());
             if(!ResourceUtil.isExsitingFile(absolutePath, true)){
                 //search from OPI search path
                 absolutePath = ResourceUtil.getFileOnSearchPath(getPath(), true);
@@ -112,7 +112,7 @@ public abstract class AbstractOpenOPIAction extends AbstractWidgetAction {
     public final void setShiftPressed(boolean shiftPressed) {
         this.shiftPressed = shiftPressed;
     }
-    
+
 
     @Override
     public String getDefaultDescription() {

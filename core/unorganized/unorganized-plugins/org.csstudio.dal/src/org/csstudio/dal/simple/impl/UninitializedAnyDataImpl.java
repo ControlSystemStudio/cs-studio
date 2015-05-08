@@ -4,7 +4,7 @@ import org.csstudio.dal.DynamicValueProperty;
 import org.csstudio.dal.simple.Severity;
 
 public class UninitializedAnyDataImpl<T> extends AbstractAnyDataImpl<T> {
-    
+
     private Severity severity = new Severity() {
 
         public boolean hasValue() {
@@ -111,9 +111,9 @@ public class UninitializedAnyDataImpl<T> extends AbstractAnyDataImpl<T> {
     public String stringValue() {
         return null;
     }
-    
+
     @Override
-    protected T confirmValue(T value) { 
+    protected T confirmValue(T value) {
         return value;
     }
 

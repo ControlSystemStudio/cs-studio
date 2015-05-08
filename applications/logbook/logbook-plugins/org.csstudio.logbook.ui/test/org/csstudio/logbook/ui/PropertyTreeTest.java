@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class PropertyTreeTest extends ApplicationWindow {
 
@@ -47,13 +47,13 @@ public class PropertyTreeTest extends ApplicationWindow {
 
     /**
      * Create contents of the application window.
-     * 
+     *
      * @param parent
      */
     @Override
     protected Control createContents(Composite parent) {
     Composite container = new Composite(parent, SWT.NONE);
-    
+
     container.setLayout(new GridLayout(1, false));
     propertyTree = new PropertyTree(container, SWT.NONE);
     GridData gd_propertyTree = new GridData(SWT.FILL, SWT.FILL, true, true,
@@ -102,7 +102,7 @@ public class PropertyTreeTest extends ApplicationWindow {
 
     /**
      * Launch the application.
-     * 
+     *
      * @param args
      */
     public static void main(String args[]) {
@@ -118,7 +118,7 @@ public class PropertyTreeTest extends ApplicationWindow {
 
     /**
      * Configure the shell.
-     * 
+     *
      * @param newShell
      */
     @Override

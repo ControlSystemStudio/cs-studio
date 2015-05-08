@@ -12,7 +12,7 @@ public class EntryParser extends
     protected String getPatternString() {
         return "(entry\\s+\\{)";
     }
-    
+
     @Override
     protected String getPrePatternString() {
         throw new UnsupportedOperationException(

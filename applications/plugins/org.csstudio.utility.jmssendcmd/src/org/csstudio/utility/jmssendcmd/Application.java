@@ -45,7 +45,7 @@ public class Application implements IApplication
         // Display configuration info
         final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
         final String app_info = context.getBrandingName() + " " + version;
-        
+
         // Create parser for arguments and run it.
         final String args[] =
             (String []) context.getArguments().get("application.args");

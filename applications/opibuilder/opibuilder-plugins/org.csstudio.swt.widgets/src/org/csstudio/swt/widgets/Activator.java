@@ -26,7 +26,7 @@ public class Activator extends AbstractUIPlugin {
     final private static Logger logger = Logger.getLogger(PLUGIN_ID);
 
     private static boolean isRAP = SWT.getPlatform().startsWith("rap"); //$NON-NLS-1$;
-    
+
     /*
      * (non-Javadoc)
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
@@ -50,7 +50,7 @@ public class Activator extends AbstractUIPlugin {
     public static boolean isRAP(){
         return isRAP;
     }
-    
+
     /**
      * Returns the shared instance
      *

@@ -55,7 +55,7 @@ public class ADLControlTest extends TestCase {
 
     /**
      * Setup a normal control
-     * 
+     *
      * @return
      */
     private ADLWidget setupControl() {
@@ -70,7 +70,7 @@ public class ADLControlTest extends TestCase {
     /**
      * Setup a older style where control channel is denoted with "ctrl" instead
      * of "chan"
-     * 
+     *
      * @return
      */
     private ADLWidget setupControlWithCtrl() {
@@ -83,7 +83,7 @@ public class ADLControlTest extends TestCase {
     }
 
     /**
-     * 
+     *
      * @return
      */
     private ADLWidget setupNotControl() {

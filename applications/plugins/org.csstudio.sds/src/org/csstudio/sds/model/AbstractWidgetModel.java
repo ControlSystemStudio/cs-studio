@@ -1431,10 +1431,10 @@ public abstract class AbstractWidgetModel implements IAdaptable {
     public synchronized void setPrimarPv(final String rawName) {
         setPropertyValue(PROP_PRIMARY_PV, rawName);
     }
-    
+
     /**
      * Sets the behaviour id.
-     * 
+     *
      * @param behaviourId the behaviour id
      */
     public synchronized void setBehavior(final String behaviourId) {

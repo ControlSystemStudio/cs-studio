@@ -8,7 +8,7 @@ import org.epics.vtype.VType;
 
 public class VImageWidgetSelection implements VTypeAdaptable, ProcessVariableAdaptable {
     private final VImageWidget vImageWidget;
-    
+
     public VImageWidgetSelection(VImageWidget vImageWidget) {
         this.vImageWidget = vImageWidget;
     }

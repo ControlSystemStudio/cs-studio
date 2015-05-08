@@ -147,7 +147,7 @@ public class ContentProposalAdapter {
      * History used to remenber validated control contents.
      */
     private AutoCompleteHistory history;
-    
+
     /*
      * Control contents input helper.
      */
@@ -160,7 +160,7 @@ public class ContentProposalAdapter {
     /**
      * Construct a content proposal adapter that can assist the user with
      * choosing content for the field.
-     * 
+     *
      * @param control the control for which the adapter is providing content
      *            assist. May not be <code>null</code>.
      * @param controlContentAdapter the <code>IControlContentAdapter</code> used
@@ -263,7 +263,7 @@ public class ContentProposalAdapter {
                     if (e.type == SWT.Traverse) {
                         return;
                     }
-                    
+
                     if (e.keyCode == SWT.ARROW_RIGHT) {
                         int pos = getControlContentAdapter().
                                 getCursorPosition(getControl());
@@ -491,13 +491,13 @@ public class ContentProposalAdapter {
             popup.close();
         }
     }
-    
+
     /**
      * Open the proposal popup and display the proposals provided by the
      * proposal provider. If there are no proposals to be shown, do not show the
      * popup. This method returns immediately. That is, it does not wait for the
      * popup to open or a proposal to be selected.
-     * 
+     *
      * @param autoActivated a boolean indicating whether the popup was
      *            autoactivated. If false, a beep will sound when no proposals
      *            can be shown.
@@ -507,7 +507,7 @@ public class ContentProposalAdapter {
             if (popup == null) {
                 // Check whether there are any proposals to be shown.
                 getProposals(new IContentProposalSearchHandler() {
-                    
+
                     @Override
                     public void handleResult(
                             final ContentProposalList proposalList) {
@@ -599,7 +599,7 @@ public class ContentProposalAdapter {
 
     /**
      * Handle hightlight of the appended control contents.
-     * 
+     *
      * @param proposalList the list of proposals.
      */
     public void handleTopProposals(final ContentProposalList proposalList) {
@@ -613,7 +613,7 @@ public class ContentProposalAdapter {
 
     /**
      * Check if the control content is completed by a top proposal.
-     * 
+     *
      * @return <code>true</code> if the control content is completed by a top
      *         proposal.
      */
@@ -636,7 +636,7 @@ public class ContentProposalAdapter {
     /**
      * A content proposal has been accepted. Update the control contents
      * accordingly and notify any listeners.
-     * 
+     *
      * @param proposal the accepted proposal
      */
     public void proposalAccepted(final Proposal proposal,
@@ -681,7 +681,7 @@ public class ContentProposalAdapter {
     /**
      * A content proposal has been selected. Update the control contents
      * accordingly without notify listeners.
-     * 
+     *
      * @param proposal the selected proposal
      */
     public void proposalSelected(final Proposal proposal) {
@@ -708,12 +708,12 @@ public class ContentProposalAdapter {
                 after = content.substring(insertionRange.y);
             int insertionLength = value.length();
             this.insertionRange.y = insertionPos + insertionLength;
-            
+
             if ((!after.isEmpty() && !accepted) || hasSelectedTopProposal)
                 this.selectionRange = new Point(this.insertionRange.x,
                         this.insertionRange.y);
             else this.selectionRange = new Point(-1, -1);
-            
+
             String text = before + value + after;
             controlContentAdapter.setControlContents(control, text, insertionRange.y);
             if (controlContentAdapter instanceof IControlContentAdapter2
@@ -817,7 +817,7 @@ public class ContentProposalAdapter {
     /**
      * Returns whether the content proposal popup has the focus. This includes
      * both the primary popup and any secondary info popup that may have focus.
-     * 
+     *
      * @return <code>true</code> if the proposal popup or its secondary info
      *         popup has the focus
      */
@@ -837,7 +837,7 @@ public class ContentProposalAdapter {
 
     /**
      * Answers a boolean indicating whether the main proposal popup is open.
-     * 
+     *
      * @return <code>true</code> if the proposal popup is open, and
      *         <code>false</code> if it is not.
      */
@@ -849,7 +849,7 @@ public class ContentProposalAdapter {
 
     /**
      * Return a boolean indicating whether the receiver is enabled.
-     * 
+     *
      * @return <code>true</code> if the adapter is enabled, and
      *         <code>false</code> if it is not.
      */
@@ -859,7 +859,7 @@ public class ContentProposalAdapter {
 
     /**
      * Set the boolean flag that determines whether the adapter is enabled.
-     * 
+     *
      * @param enabled <code>true</code> if the adapter is enabled and responding
      *            to user input, <code>false</code> if it is ignoring user
      *            input.
@@ -877,7 +877,7 @@ public class ContentProposalAdapter {
 
     /**
      * Get the control on which the content proposal adapter is installed.
-     * 
+     *
      * @return the control on which the proposal adapter is installed.
      */
     public Control getControl() {
@@ -886,7 +886,7 @@ public class ContentProposalAdapter {
 
     /**
      * Get the label provider that is used to show proposals.
-     * 
+     *
      * @return the {@link ILabelProvider} used to show proposals, or
      *         <code>null</code> if one has not been installed.
      */
@@ -898,7 +898,7 @@ public class ContentProposalAdapter {
      * Set the label provider that is used to show proposals. The lifecycle of
      * the specified label provider is not managed by this adapter. Clients must
      * dispose the label provider when it is no longer needed.
-     * 
+     *
      * @param labelProvider the (@link ILabelProvider} used to show proposals.
      */
     public void setLabelProvider(ILabelProvider labelProvider) {
@@ -907,7 +907,7 @@ public class ContentProposalAdapter {
 
     /**
      * Return the array of characters on which the popup is autoactivated.
-     * 
+     *
      * @return An array of characters that trigger auto-activation of content
      *         proposal. If specified, these characters will trigger
      *         auto-activation of the proposal popup, regardless of whether an
@@ -927,7 +927,7 @@ public class ContentProposalAdapter {
     /**
      * Set the array of characters that will trigger autoactivation of the
      * popup.
-     * 
+     *
      * @param autoActivationCharacters An array of characters that trigger
      *            auto-activation of content proposal. If specified, these
      *            characters will trigger auto-activation of the proposal popup,
@@ -937,7 +937,7 @@ public class ContentProposalAdapter {
      *            parameter is <code>null</code> and the keyStroke value is
      *            <code>null</code> , then all alphanumeric characters will
      *            auto-activate content proposal.
-     * 
+     *
      */
     public void setAutoActivationCharacters(char[] autoActivationCharacters) {
         if (autoActivationCharacters == null) {
@@ -950,7 +950,7 @@ public class ContentProposalAdapter {
     /**
      * Set the delay, in milliseconds, used before any autoactivation is
      * triggered.
-     * 
+     *
      * @return the time in milliseconds that will pass before a popup is
      *         automatically opened
      */
@@ -961,7 +961,7 @@ public class ContentProposalAdapter {
 
     /**
      * Set the delay, in milliseconds, used before autoactivation is triggered.
-     * 
+     *
      * @param delay the time in milliseconds that will pass before a popup is
      *            automatically opened
      */
@@ -975,7 +975,7 @@ public class ContentProposalAdapter {
      * auto-activation characters) received by the content proposal popup should
      * also be propagated to the adapted control when the proposal popup is
      * open.
-     * 
+     *
      * @return a boolean that indicates whether key events (including
      *         auto-activation characters) should be propagated to the adapted
      *         control when the proposal popup is open. Default value is
@@ -990,7 +990,7 @@ public class ContentProposalAdapter {
      * auto-activation characters) received by the content proposal popup should
      * also be propagated to the adapted control when the proposal popup is
      * open.
-     * 
+     *
      * @param propagateKeys a boolean that indicates whether key events
      *            (including auto-activation characters) should be propagated to
      *            the adapted control when the proposal popup is open.
@@ -998,10 +998,10 @@ public class ContentProposalAdapter {
     public void setPropagateKeys(boolean propagateKeys) {
         this.propagateKeys = propagateKeys;
     }
-    
+
     /**
      * Return the size, in pixels, of the content proposal popup.
-     * 
+     *
      * @return a Point specifying the last width and height, in pixels, of the
      *         content proposal popup.
      */
@@ -1012,7 +1012,7 @@ public class ContentProposalAdapter {
     /**
      * Set the size, in pixels, of the content proposal popup. This size will be
      * used the next time the content proposal popup is opened.
-     * 
+     *
      * @param size a Point specifying the desired width and height, in pixels,
      *            of the content proposal popup.
      */
@@ -1025,7 +1025,7 @@ public class ContentProposalAdapter {
      * from the adapter's control. This method is used when a client, such as a
      * content proposal listener, needs to update the control's contents
      * manually.
-     * 
+     *
      * @return the {@link IControlContentAdapter} which can update the control
      *         text.
      */
@@ -1036,12 +1036,12 @@ public class ContentProposalAdapter {
     /**
      * Add the specified listener to the list of content proposal listeners that
      * are notified when content proposals are chosen. </p>
-     * 
+     *
      * @param listener the IContentProposalListener to be added as a listener.
      *            Must not be <code>null</code>. If an attempt is made to
      *            register an instance which is already registered with this
      *            instance, this method has no effect.
-     * 
+     *
      * @see org.eclipse.jface.fieldassist.IContentProposalListener
      */
     public void addContentProposalListener(IContentProposalListener listener) {
@@ -1051,11 +1051,11 @@ public class ContentProposalAdapter {
     /**
      * Removes the specified listener from the list of content proposal
      * listeners that are notified when content proposals are chosen. </p>
-     * 
+     *
      * @param listener the IContentProposalListener to be removed as a listener.
      *            Must not be <code>null</code>. If the listener has not already
      *            been registered, this method has no effect.
-     * 
+     *
      * @since 3.3
      * @see org.eclipse.jface.fieldassist.IContentProposalListener
      */
@@ -1066,12 +1066,12 @@ public class ContentProposalAdapter {
     /**
      * Add the specified listener to the list of content proposal listeners that
      * are notified when a content proposal popup is opened or closed. </p>
-     * 
+     *
      * @param listener the IContentProposalListener2 to be added as a listener.
      *            Must not be <code>null</code>. If an attempt is made to
      *            register an instance which is already registered with this
      *            instance, this method has no effect.
-     * 
+     *
      * @since 3.3
      * @see org.eclipse.jface.fieldassist.IContentProposalListener2
      */
@@ -1082,11 +1082,11 @@ public class ContentProposalAdapter {
     /**
      * Remove the specified listener from the list of content proposal listeners
      * that are notified when a content proposal popup is opened or closed. </p>
-     * 
+     *
      * @param listener the IContentProposalListener2 to be removed as a
      *            listener. Must not be <code>null</code>. If the listener has
      *            not already been registered, this method has no effect.
-     * 
+     *
      * @since 3.3
      * @see org.eclipse.jface.fieldassist.IContentProposalListener2
      */

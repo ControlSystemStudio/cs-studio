@@ -161,24 +161,24 @@ public abstract class DataAccessImpl<T> implements DataAccess<T>
     }
 
     /**
-     * Returns the PropertyProxy which represents the remote connection of this 
+     * Returns the PropertyProxy which represents the remote connection of this
      * DataAccess.
-     * 
+     *
      * @return the property proxy
      */
     public PropertyProxy<T,?> getProxy()
     {
         return proxy;
     }
-    
+
     /**
      * Releases the PropertyProxy which represents remote connection of this
      * DataAccess and disconnects all listeners and monitors. But it does not call destroy on proxy itself
-     * 
-     *  @param boolean if <code>true</code> then if possible property should do also final 
-     *  cleanup and destroy for internal structure, if <code>false</code> only proxies are release and 
+     *
+     *  @param boolean if <code>true</code> then if possible property should do also final
+     *  cleanup and destroy for internal structure, if <code>false</code> only proxies are release and
      *  property is prepared for connection to new proxy.
-     * 
+     *
      * @return the property proxy
      */
     public Proxy<?>[] releaseProxy(boolean destroy) {
@@ -201,7 +201,7 @@ public abstract class DataAccessImpl<T> implements DataAccess<T>
         }
         return dvListeners;
     }
-    
+
     public boolean hasDynamicValueListeners() {
         return dvListeners!=null && dvListeners.size()>0;
     }

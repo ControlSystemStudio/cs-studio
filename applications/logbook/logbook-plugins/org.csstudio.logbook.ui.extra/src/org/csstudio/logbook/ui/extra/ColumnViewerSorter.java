@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui.extra;
 
@@ -13,7 +13,7 @@ import org.eclipse.swt.events.SelectionEvent;
 
 /**
  * @author shroffk
- * 
+ *
  */
 
 public abstract class ColumnViewerSorter extends ViewerComparator {

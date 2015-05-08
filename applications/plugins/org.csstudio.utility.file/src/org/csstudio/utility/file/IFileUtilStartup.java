@@ -21,13 +21,13 @@ public class IFileUtilStartup implements IWorkbenchWindowAdvisorExtPoint{
     @Override
     public void postWindowRestore() {
 
-        
+
     }
 
     @Override
     public void postWindowCreate() {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -38,7 +38,7 @@ public class IFileUtilStartup implements IWorkbenchWindowAdvisorExtPoint{
     @Override
     public void postWindowClose() {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -49,7 +49,7 @@ public class IFileUtilStartup implements IWorkbenchWindowAdvisorExtPoint{
 
     @Override
     public IStatus restoreState(IMemento memento) {
-        IFileUtil.getInstance().restoreState(memento);    
+        IFileUtil.getInstance().restoreState(memento);
         return Status.OK_STATUS;
     }
 

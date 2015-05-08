@@ -36,9 +36,9 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * Base class for selection dependent actions.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public abstract class AbstractWidgetSelectionAction extends SelectionAction {
 
@@ -75,7 +75,7 @@ public abstract class AbstractWidgetSelectionAction extends SelectionAction {
     protected EditPartViewer getGraphicalViewer() {
         return ((DisplayEditor) getWorkbenchPart()).getGraphicalViewer();
     }
-    
+
     private final List<AbstractWidgetModel> getSelectedWidgetModels() {
         List<AbstractWidgetModel> selectedWidgetModels = new ArrayList<AbstractWidgetModel>();
         for (Object o : getSelectedObjects()) {
@@ -83,7 +83,7 @@ public abstract class AbstractWidgetSelectionAction extends SelectionAction {
                 selectedWidgetModels.add(((AbstractBaseEditPart) o).getWidgetModel());
             }
         }
-        
+
         return selectedWidgetModels;
     }
 

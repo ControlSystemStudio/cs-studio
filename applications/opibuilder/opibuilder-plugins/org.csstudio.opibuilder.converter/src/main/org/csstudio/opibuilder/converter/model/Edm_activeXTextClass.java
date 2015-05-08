@@ -23,7 +23,7 @@ public class Edm_activeXTextClass extends EdmWidget {
     @EdmAttributeAn @EdmOptionalAn private boolean useDisplayBg;
     @EdmAttributeAn @EdmOptionalAn private String fontAlign;
 
-        
+
     public Edm_activeXTextClass(EdmEntity genericEntity) throws EdmException {
         super(genericEntity);
     }
@@ -37,7 +37,7 @@ public class Edm_activeXTextClass extends EdmWidget {
     public String getFontAlign() {
         return fontAlign;
     }
-    
+
     public boolean isAutoSize() {
         return autoSize;
     }

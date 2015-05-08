@@ -4,14 +4,14 @@ import org.eclipse.core.runtime.Assert;
 
 /**
  * A very simple contract-class.
- * 
+ *
  * @author C1 WPS mbH / KM, MZ
  */
 public class Contract {
 
     /**
      * Checks if given object is not null.
-     * 
+     *
      * @param valueName
      *            The name of the checked value, should not be null.
      * @param obj
@@ -26,7 +26,7 @@ public class Contract {
 
     /**
      * Checks if given condition is true.
-     * 
+     *
      * @param condition
      *            The condition to be checked.
      * @param description
@@ -40,7 +40,7 @@ public class Contract {
 
     /**
      * Checks if given condition is true.
-     * 
+     *
      * @param condition
      *            The condition to be checked.
      * @param description
@@ -54,7 +54,7 @@ public class Contract {
 
     /**
      * Checks given result is not null.
-     * 
+     *
      * @param object
      *            The result not to be null.
      */

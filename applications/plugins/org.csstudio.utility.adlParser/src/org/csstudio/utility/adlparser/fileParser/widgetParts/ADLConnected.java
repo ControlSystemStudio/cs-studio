@@ -35,7 +35,7 @@ public abstract class ADLConnected extends WidgetPart {
     protected final void parseWidgetPart(final ADLWidget adlWidget)
             throws WrongADLFormatException {
                 assert adlWidget.isType(name) : assertBeginMsg+adlWidget.getType()+assertEndMsg; //$NON-NLS-1$
-            
+
                 for (FileLine fileLine : adlWidget.getBody()) {
                     String parameter = fileLine.getLine();
                     if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
@@ -73,14 +73,14 @@ public abstract class ADLConnected extends WidgetPart {
         return ret;
     }
 
-    /** 
+    /**
      * @return background Color
      */
     public int getBackgroundColor() {
         return _bclr;
     }
 
-    /** 
+    /**
      * @return background Color
      */
     public int getForegroundColor() {

@@ -21,17 +21,17 @@ public class Opi_activeMotifSliderClass extends Opi_activeSliderClass {
     private static final String version = "1.0";
 
     /**
-     * Converts the Edm_activeMotifSliderClasss to OPI Rectangle widget XML.  
+     * Converts the Edm_activeMotifSliderClasss to OPI Rectangle widget XML.
      */
     public Opi_activeMotifSliderClass(Context con, Edm_activeMotifSliderClass r) {
         super(con, r);
         setVersion(version);
         setName(name);
-        
-        new OpiBoolean(widgetContext, "horizontal", 
+
+        new OpiBoolean(widgetContext, "horizontal",
                 !(r.getOrientation() !=null && r.getOrientation().equals("vertical")));
-        
-        
+
+
 
         log.debug("Edm_activeMotifSliderClass written.");
 

@@ -3,10 +3,10 @@ package org.csstudio.dal.simple.impl;
 import org.csstudio.dal.DynamicValueProperty;
 
 public final class StringAnyDataImpl extends AbstractAnyDataImpl<String> {
-    
+
     public static final String UNINITIALIZED_STRING_VALUE = "";
     public static final Double UNINITIALIZED_DOUBLE_VALUE = Double.NaN;
-    
+
     public StringAnyDataImpl(DynamicValueProperty<String> property, long beamID) {
         super(property,beamID);
     }

@@ -10,7 +10,7 @@ public class ChannelOrchestratorView extends AbstractChannelQueryView<TunerWidge
      * The ID of the view as specified by the extension.
      */
     public static final String ID = "org.csstudio.channel.views.ChannelOrchestratorView";
-    
+
     @Override
     public void saveWidgetState(TunerWidget widget, IMemento memento) {
         // TODO Auto-generated method stub

@@ -18,14 +18,14 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /** Handler for the "runscript" command.
- * 
+ *
  *  Runs a script with received PVs.
- *  
+ *
  *  <p>The script name is a command parameter.
  *
  *  <p>Receives the PVs with the {@link ExecutionEvent}
  *  from the context menu invocation.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -49,7 +49,7 @@ public class RunScriptHandler extends AbstractHandler
         // Get PVs from event (context menu invocation)
         final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
         final ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
-        
+
         if (Preferences.getRunIndividualScripts())
         {   // Execute script for each received PV
             for (ProcessVariable pv : pvs)

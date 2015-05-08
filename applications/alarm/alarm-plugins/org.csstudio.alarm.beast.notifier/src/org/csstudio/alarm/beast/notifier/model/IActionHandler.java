@@ -8,7 +8,7 @@
 package org.csstudio.alarm.beast.notifier.model;
 
 /**
- * Automated action details handler interface. 
+ * Automated action details handler interface.
  * @author Fred Arnaud (Sopra Group)
  *
  */

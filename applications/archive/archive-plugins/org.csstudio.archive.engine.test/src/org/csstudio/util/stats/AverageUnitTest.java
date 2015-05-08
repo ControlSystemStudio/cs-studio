@@ -22,7 +22,7 @@ public class AverageUnitTest
     {
         Average average = new Average();
         assertEquals(0.0, average.get(), EPS);
-        
+
         average.update(100.0);
         assertEquals(100.0, average.get(), EPS);
 

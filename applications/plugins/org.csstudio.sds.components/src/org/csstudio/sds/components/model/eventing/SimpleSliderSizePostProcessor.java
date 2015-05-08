@@ -9,9 +9,9 @@ import org.eclipse.gef.commands.CompoundCommand;
 /**
  * Post Processor that switches {@link SimpleSliderModel#PROP_ORIENTATION} depending
  * on widget size.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class SimpleSliderSizePostProcessor extends AbstractWidgetPropertyPostProcessor<SimpleSliderModel> {
 

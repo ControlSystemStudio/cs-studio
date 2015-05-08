@@ -14,7 +14,7 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.internationalization.Messages;
 
 /**
- * 
+ *
  * @author hammonds
  *
  */
@@ -23,7 +23,7 @@ public class TextWidget extends ADLAbstractWidget implements ITextWidget{
     private String alignment = new String();
     private String color_mode = new String();
     private String format = new String();
-    
+
     public TextWidget(ADLWidget adlWidget) {
         super(adlWidget);
         name = new String("text");
@@ -41,7 +41,7 @@ public class TextWidget extends ADLAbstractWidget implements ITextWidget{
                     if (_adlObject != null){
                         _hasObject = true;
                     }
-                    
+
                 }
                 else if (childWidget.getType().equals("dynamic attribute")){
                     _adlDynamicAttribute = new ADLDynamicAttribute(childWidget);
@@ -139,5 +139,5 @@ public class TextWidget extends ADLAbstractWidget implements ITextWidget{
         if (!(textix.equals(""))) ret.add(new ADLResource(ADLResource.TEXT_TEXTIX, textix));
         return ret.toArray();
     }
-    
+
 }

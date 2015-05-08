@@ -50,12 +50,12 @@ public class LongSeqPropertyImpl extends NumericPropertyImpl<long[],Long>
         addDataAccessType(DoubleSeqAccess.class, DoubleSeqDataAccessWrapper.class);
     }
 
-    
+
     private void readCharacteristics() throws DataExchangeException
     {
         if (chInitialized)
             return;
-    
+
         Integer length = null;
         length = (Integer)getCharacteristic(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH);
         sequenceLength = length.intValue();
@@ -74,7 +74,7 @@ public class LongSeqPropertyImpl extends NumericPropertyImpl<long[],Long>
             readCharacteristics();
         return sequenceLength;
     }
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.dal.NumericSimpleProperty#getMinimum()
      */

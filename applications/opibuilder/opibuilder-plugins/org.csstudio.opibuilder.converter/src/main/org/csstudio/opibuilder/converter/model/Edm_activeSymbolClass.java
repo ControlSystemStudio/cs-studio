@@ -14,21 +14,21 @@ package org.csstudio.opibuilder.converter.model;
  *
  */
 public class Edm_activeSymbolClass extends EdmWidget {
-    
-    
+
+
     @EdmAttributeAn @EdmOptionalAn private String file;
     @EdmAttributeAn @EdmOptionalAn private boolean truthTable;
     @EdmAttributeAn @EdmOptionalAn private int numStates;
     @EdmAttributeAn @EdmOptionalAn private int numPvs;
-    
+
     @EdmAttributeAn @EdmOptionalAn private EdmMultiDoubles minValues;
     @EdmAttributeAn @EdmOptionalAn private EdmMultiDoubles maxValues;
     @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings controlPvs;
-    
+
     @EdmAttributeAn @EdmOptionalAn private EdmMultiInts andMask;
     @EdmAttributeAn @EdmOptionalAn private EdmMultiInts xorMask;
     @EdmAttributeAn @EdmOptionalAn private EdmMultiInts shiftCount;
-    
+
     public Edm_activeSymbolClass(EdmEntity genericEntity) throws EdmException {
         super(genericEntity);
     }

@@ -10,5 +10,5 @@ public class MathService  extends Service {
             .addServiceMethod(new AddServiceMethod())
             .addServiceMethod(new MultiplyServiceMethod()));
     }
-    
+
 }

@@ -43,7 +43,7 @@ import de.desy.language.snl.diagram.ui.commands.ShapeSetConstraintCommand;
  * This edit part must implement the PropertyChangeListener interface, so it can
  * be notified of property changes in the corresponding model element.
  * </p>
- * 
+ *
  */
 class DiagramEditPart extends AbstractGraphicalEditPart implements
         PropertyChangeListener {
@@ -62,7 +62,7 @@ class DiagramEditPart extends AbstractGraphicalEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
      */
     @Override
@@ -79,7 +79,7 @@ class DiagramEditPart extends AbstractGraphicalEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
      */
     @Override
@@ -113,7 +113,7 @@ class DiagramEditPart extends AbstractGraphicalEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
      */
     @Override
@@ -123,7 +123,7 @@ class DiagramEditPart extends AbstractGraphicalEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * java.beans.PropertyChangeListener#propertyChange(PropertyChangeEvent)
      */
@@ -141,13 +141,13 @@ class DiagramEditPart extends AbstractGraphicalEditPart implements
     /**
      * EditPolicy for the Figure used by this edit part. Children of
      * XYLayoutEditPolicy can be used in Figures with XYLayout.
-     * 
+     *
      */
     private static class ShapesXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @seeConstrainedLayoutEditPolicy#createChangeConstraintCommand(
          * ChangeBoundsRequest, EditPart, Object)
          */
@@ -167,7 +167,7 @@ class DiagramEditPart extends AbstractGraphicalEditPart implements
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see
          * ConstrainedLayoutEditPolicy#createChangeConstraintCommand(EditPart,
          * Object)
@@ -181,7 +181,7 @@ class DiagramEditPart extends AbstractGraphicalEditPart implements
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see LayoutEditPolicy#getCreateCommand(CreateRequest)
          */
         @Override

@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-/**This will help to create the necessary widgets 
+/**This will help to create the necessary widgets
  * to configure an annotation's properties.
  * @author Xihui Chen
  *
@@ -46,29 +46,29 @@ public class GraphConfigPage {
         this.xyGraph = xyGraph;
         titleFont = xyGraph.getTitleFont();
     }
-    
+
     public void createPage(final Composite composite){
         composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         composite.setLayout(new GridLayout(3, false));
         GridData gd;
-        GridData labelGd = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);        
-        
+        GridData labelGd = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+
         final Label titleLabel = new Label(composite, 0);
         titleLabel.setText("Title: ");
         titleLabel.setLayoutData(labelGd);
-        
+
         titleText = new Text(composite, SWT.BORDER | SWT.SINGLE);
         titleText.setText(xyGraph.getTitle());
         gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
         titleText.setLayoutData(gd);
-        
+
         final Label fontLabel = new Label(composite, 0);
         fontLabel.setText("Title Font: " + (titleFont==null? "System Default" : titleFont.getFontData()[0].getName()));
         fontLabel.setFont(titleFont);
         fontLabel.setForeground(xyGraph.getTitleColor());
-        labelGd = new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1);    
+        labelGd = new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1);
         fontLabel.setLayoutData(labelGd);
-        
+
         final Button fontButton = new Button(composite, SWT.PUSH);
         fontButton.setText("Change...");
         gd = new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 1, 1);
@@ -88,13 +88,13 @@ public class GraphConfigPage {
                 }
             }
         });
-            
-        
+
+
         final Label colorLabel = new Label(composite, 0);
-        colorLabel.setText("Title Color:");        
-        labelGd = new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1);    
+        colorLabel.setText("Title Color:");
+        labelGd = new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1);
         colorLabel.setLayoutData(labelGd);
-        
+
         titleColorSelector = new ColorSelector(composite);
         gd = new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 1, 1);
         titleColorSelector.getButton().setLayoutData(gd);
@@ -106,41 +106,41 @@ public class GraphConfigPage {
             }
         });
         final Label plotAreaColorLabel = new Label(composite, 0);
-        plotAreaColorLabel.setText("Plot Area Background Color:");        
-        labelGd = new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1);    
+        plotAreaColorLabel.setText("Plot Area Background Color:");
+        labelGd = new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1);
         plotAreaColorLabel.setLayoutData(labelGd);
-        
+
         plotAreaColorSelector = new ColorSelector(composite);
         gd = new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 1, 1);
         plotAreaColorSelector.getButton().setLayoutData(gd);
         plotAreaColorSelector.setColorValue(
                 xyGraph.getPlotArea().getBackgroundColor().getRGB());
-        
+
         showTitle = new Button(composite, SWT.CHECK);
         showTitle.setSelection(xyGraph.isShowTitle());
         showTitle.setText("Show Title");
         gd = new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 3, 1);
         showTitle.setLayoutData(gd);
-        
+
         showLegend = new Button(composite, SWT.CHECK);
         showLegend.setSelection(xyGraph.isShowLegend());
         showLegend.setText("Show Legend");
         gd = new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 3, 1);
         showLegend.setLayoutData(gd);
-        
+
         showPlotAreaBorder = new Button(composite, SWT.CHECK);
         showPlotAreaBorder.setSelection(xyGraph.getPlotArea().isShowBorder());
         showPlotAreaBorder.setText("Show Plot Area Border");
         gd = new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 3, 1);
         showPlotAreaBorder.setLayoutData(gd);
-        
+
         transparent = new Button(composite, SWT.CHECK);
         transparent.setSelection(xyGraph.isTransparent());
         transparent.setText("Transparent");
         gd = new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 3, 1);
         transparent.setLayoutData(gd);
     }
-    
+
     public void applyChanges(){
         xyGraph.setTitle(titleText.getText());
         xyGraph.setTitleFont(titleFont);
@@ -161,6 +161,6 @@ public class GraphConfigPage {
     public XYGraph getXYGraph() {
         return xyGraph;
     }
-    
-    
+
+
 }

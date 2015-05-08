@@ -11,7 +11,7 @@ public class SyncStatemantParser extends
     public SyncStatemantParser(Interval[] exclusions) {
         super(exclusions);
     }
-    
+
     @Override
     protected String getPatternString() {
         return getPrePatternString() + "([a-zA-Z][0-9a-zA-Z_]*)(\\s+to\\s+)([a-zA-Z][0-9a-zA-Z_]*)"

@@ -13,7 +13,7 @@ import org.csstudio.autocomplete.IAutoCompleteProvider;
 /**
  * Descriptor used in {@link IContentParser} and {@link IAutoCompleteProvider}
  * to describe the current auto-completed content.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class ContentDescriptor {

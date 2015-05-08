@@ -54,17 +54,17 @@ abstract public class ScanCommandImpl<C extends ScanCommand>
     final protected JythonSupport jython;
 
     private ScanErrorHandler error_handler;
-    
+
     /** Initialize
      *  @param command Command that is implemented
-     *  @param jython Jython interpreter, may be <code>null</code> 
+     *  @param jython Jython interpreter, may be <code>null</code>
      *  @throws Exception on error
      */
     public ScanCommandImpl(final C command, final JythonSupport jython) throws Exception
     {
         this.command = command;
         this.jython = jython;
-        
+
         // Implement error handler?
         final String error_handler_class = command.getErrorHandler();
         if (error_handler_class.isEmpty()  ||  jython == null)
@@ -111,7 +111,7 @@ abstract public class ScanCommandImpl<C extends ScanCommand>
         return 1;
     }
 
-    /** Determine which devices are required by this command      
+    /** Determine which devices are required by this command
      *  @param macros {@link MacroContext} for resolving macros
      *  @return Device (alias) names used by the command
      *  @throws Exception on macro error
@@ -145,11 +145,11 @@ abstract public class ScanCommandImpl<C extends ScanCommand>
      *  @see ScanContext#workPerformed(int)
      */
     abstract public void execute(ScanContext context) throws Exception;
-    
+
     /** Invoke the command's error handler
-     * 
+     *
      *  <p>If command has no custom error handler, 'Abort' will be returned.
-     *  
+     *
      *  @param context {@link ScanContext}
      *  @param error Error from call to <code>execute</code>
      *  @return How to proceed

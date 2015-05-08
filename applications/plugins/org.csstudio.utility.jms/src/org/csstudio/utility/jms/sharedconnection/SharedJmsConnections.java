@@ -42,7 +42,7 @@ public final class SharedJmsConnections {
 
     private static String publisherUrl = null;
     private static String publisherClientId = null;
-    
+
     private static String consumerUrl1 = null;
     private static String consumerUrl2 = null;
     private static String consumerClientId = null;
@@ -55,7 +55,7 @@ public final class SharedJmsConnections {
     /**
      * Sets the URL and the client id for the shared publisher connection.
      * The client id may be null.
-     * 
+     *
      * @param url - URL of the JMS server
      * @param id - The client id that is used for the connection. May be null!
      */
@@ -67,20 +67,20 @@ public final class SharedJmsConnections {
             publisherClientId = id;
         }
     }
-    
+
     /**
      * Sets the URL for the shared publisher connection.
-     * 
+     *
      * @param url - URL of the JMS server
      */
     public static void staticInjectPublisherUrl(String url) {
         staticInjectPublisherUrlAndClientId(url, null);
     }
-    
+
     /**
      * Sets the URL and the client id for the shared receiver connection.
      * The client id may be null.
-     * 
+     *
      * @param url1 - URL of the first JMS server.
      * @param url2 - URL of the second JMS server.
      * @param id - The client id that is used for the connection. May be null!
@@ -96,17 +96,17 @@ public final class SharedJmsConnections {
             consumerClientId = id;
         }
     }
-    
+
     /**
      * Sets the URL for the shared receiver connection.
-     * 
+     *
      * @param url1 - URL of the first JMS server.
      * @param url2 - URL of the second JMS server.
      */
     public static void staticInjectConsumerUrl(String url1, String url2) {
         staticInjectConsumerUrlAndClientId(url1, url2, null);
     }
-    
+
     /**
      * Returns a handle to a shared JMS connection for sending JMS messages. If
      * the shared connection has not been created yet, this method will create
@@ -119,16 +119,16 @@ public final class SharedJmsConnections {
      */
     public static synchronized ISharedConnectionHandle sharedSenderConnection()
             throws JMSException, JmsUtilityException {
-        
+
         if (publisherUrl == null) {
             throw new JmsUtilityException("The publisher URL is null. Call static method staticInjectPublisherUrlAndClientId() before you try to get a connection handle.");
         }
-        
+
         if (senderConnectionService == null) {
             senderConnectionService =
                     new SharedSenderConnectionService(publisherUrl, publisherClientId);
         }
-        
+
         return senderConnectionService.sharedConnection();
     }
 
@@ -144,7 +144,7 @@ public final class SharedJmsConnections {
      */
     public static synchronized ISharedConnectionHandle[] sharedReceiverConnections()
             throws JMSException, JmsUtilityException {
-        
+
         if ((consumerUrl1 == null) || (consumerUrl2 == null)) {
             throw new JmsUtilityException("At least one consumer URL is null. Call static method staticInjectConsumerUrlAndClientId() before you try to get a connection handle.");
         }
@@ -153,7 +153,7 @@ public final class SharedJmsConnections {
             receiverConnectionService =
                     new SharedReceiverConnectionService(consumerUrl1, consumerUrl2, consumerClientId);
         }
-        
+
         return receiverConnectionService.sharedConnections();
     }
 

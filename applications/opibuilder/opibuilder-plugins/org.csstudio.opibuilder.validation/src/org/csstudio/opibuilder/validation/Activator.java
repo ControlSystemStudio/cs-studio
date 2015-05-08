@@ -21,7 +21,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
- * 
+ *
  * <code>Activator</code> handles the lifecycle of this plugin.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
@@ -31,7 +31,7 @@ public class Activator extends AbstractUIPlugin {
 
     /** The ID of this plugin */
     public static final String ID = "org.csstudio.opibuilder.validation";
-    
+
     /** Preference if backup of the file should be made before quick fix is applied */
     public static final String PREF_DO_BACKUP = "doBackup";
     /** Preference if user should be asked if she wants to make backup of the quick fixed file */
@@ -48,21 +48,21 @@ public class Activator extends AbstractUIPlugin {
     public static final String PREF_SHOW_MARKERS_IN_DEFAULT_EDITOR = "showMarkersInDefaultEditor";
     /** Preference if resource should be saved before validating it */
     public static final String PREF_SAVE_BEFORE_VALIDATION = "saveResourcesBeforeValidation";
-    
-    private static Activator instance; 
-    
+
+    private static Activator instance;
+
     private Image quickFixImage;
-    
+
     /*
      * (non-Javadoc)
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
      */
     @Override
-    public void start(BundleContext context) throws Exception {        
+    public void start(BundleContext context) throws Exception {
         instance = this;
         super.start(context);
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
@@ -75,10 +75,10 @@ public class Activator extends AbstractUIPlugin {
         }
         super.stop(context);
     }
-    
+
     /**
      * Constructs and returns the shared image used by the quick fix dialog.
-     * 
+     *
      * @return the shared quick fix image
      */
     public Image getQuickFixImage() {
@@ -88,35 +88,35 @@ public class Activator extends AbstractUIPlugin {
         }
         return quickFixImage;
     }
-    
+
     /**
      * @return the shared instance of this activator
      */
     public static Activator getInstance() {
         return instance;
     }
-    
+
     /**
      * @return true if the backup of the files should be created or false otherwise
      */
     public boolean isDoBackup() {
         return getPreferenceStore().getBoolean(PREF_DO_BACKUP);
     }
-    
+
     /**
      * @return true if the dialog to ask for backup should be shown or false otherwise
      */
     public boolean isShowBackupDialog() {
         return getPreferenceStore().getBoolean(PREF_SHOW_BACKUP_DIALOG);
     }
-    
+
     /**
      * @return true if the summary dialog should be displayed at the end of validation
      */
     public boolean isShowSummaryDialog() {
         return getPreferenceStore().getBoolean(PREF_SHOW_SUMMARY);
     }
-    
+
     /**
      * @return the path to the file that contains the rules settings
      */
@@ -127,21 +127,21 @@ public class Activator extends AbstractUIPlugin {
         }
         return getExistFileInRepoAndSearchPath(s);
     }
-    
+
     /**
      * @return true if the markers in the problems view should be nested or false otherwise
      */
     public boolean isNestMarkers() {
         return getPreferenceStore().getBoolean(PREF_NEST_MARKERS);
     }
-    
+
     /**
      * @return true if all markers are cleared before each validation run
      */
     public boolean isClearMarkers() {
         return getPreferenceStore().getBoolean(PREF_CLEAR_MARKERS);
     }
-    
+
     /**
      * @return true if the markers are displayed in the default editor (e.g. OPI editor) or false if the markers
      *          are displayed in the text editor
@@ -149,14 +149,14 @@ public class Activator extends AbstractUIPlugin {
     public boolean isShowMarkersInDefaultEditor() {
         return getPreferenceStore().getBoolean(PREF_SHOW_MARKERS_IN_DEFAULT_EDITOR);
     }
-    
+
     /**
      * @return true if dirty resources are automatically saved before being validated
      */
     public boolean isSaveBeforeValidation() {
         return getPreferenceStore().getBoolean(PREF_SAVE_BEFORE_VALIDATION);
     }
-    
+
     private static IPath getExistFileInRepoAndSearchPath(String pathString){
         IPath originPath = ResourceUtil.getPathFromString(pathString);
         if(originPath == null) {
@@ -173,6 +173,6 @@ public class Activator extends AbstractUIPlugin {
             }
         }
         return null;
-        
+
     }
 }

@@ -5,37 +5,37 @@ import org.eclipse.swt.graphics.Color;
 
 /**
  * Base figure for a widget based on {@link AbstractMarkedWidgetModel}.
- * 
+ *
  * @author Xihui Chen
  *
  */
 public abstract class AbstractMarkedWidgetFigure extends AbstractScaledWidgetFigure {
 
     protected boolean showMarkers;
-    
+
     protected double loloLevel;
-    
+
     protected double loLevel;
-    
+
     protected double hiLevel;
-    
+
     protected double hihiLevel;
-    
+
     protected boolean showLolo;
-    
+
     protected boolean showLo;
-    
+
     protected boolean showHi;
-    
+
     protected boolean showHihi;
-    
+
     protected Color loloColor;
-    
+
     protected Color loColor;
-    
+
     protected Color hiColor;
-    
-    protected Color hihiColor;    
+
+    protected Color hihiColor;
 
     /**
      * @param showMarkers the showMarkers to set
@@ -44,7 +44,7 @@ public abstract class AbstractMarkedWidgetFigure extends AbstractScaledWidgetFig
         this.showMarkers = showMarkers;
     }
 
-    
+
 
     /**
      * @param loloLevel the loloLevel to set
@@ -73,7 +73,7 @@ public abstract class AbstractMarkedWidgetFigure extends AbstractScaledWidgetFig
     public void setHihiLevel(final double hihiLevel) {
         this.hihiLevel = hihiLevel;
     }
-    
+
     /**
      * @param showLolo the showLolo to set
      */
@@ -98,7 +98,7 @@ public abstract class AbstractMarkedWidgetFigure extends AbstractScaledWidgetFig
     /**
      * @param showHihi the showHihi to set
      */
-    public void setShowHihi(boolean showHihi) {        
+    public void setShowHihi(boolean showHihi) {
         this.showHihi = showHihi;
     }
 

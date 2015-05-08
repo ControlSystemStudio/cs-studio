@@ -39,7 +39,7 @@ public class MailEntry
     private String  mailSubject     = null;
     private String  mailText        = null;
     private boolean copyToSender    = false;
-    
+
     public MailEntry(String from, String to, String subject, String text, boolean copy)
     {
         mailFrom     = from;
@@ -48,12 +48,12 @@ public class MailEntry
         mailText     = text;
         copyToSender = copy;
     }
-    
+
     public String getMailFromAddress()
     {
         return mailFrom.trim();
     }
-    
+
     public String getMailToAddress()
     {
         return mailTo.trim();
@@ -68,7 +68,7 @@ public class MailEntry
     {
         return mailText.trim();
     }
-    
+
     public boolean copyToSender()
     {
         return copyToSender;

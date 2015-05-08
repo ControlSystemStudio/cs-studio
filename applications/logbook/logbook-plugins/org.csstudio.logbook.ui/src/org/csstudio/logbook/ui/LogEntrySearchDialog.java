@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -37,14 +37,14 @@ import org.eclipse.swt.widgets.Text;
 import com.google.common.base.Joiner;
 /**
  * @author shroffk
- * 
+ *
  */
 public class LogEntrySearchDialog extends Dialog {
 
     private static final String timeFormatt = "\"now\", \"last min\", \"last hour\", \"last day\", \"last week\" \n" +
         "\"last 5 mins\", \"last 5 hours\", \"last 5 days\", \"last 5 weeks\" \n" +
         "\"5 mins ago\", \"5 hours ago\", \"5 days ago\", \"5 weeks ago\"";
-    
+
     protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
         this);
 
@@ -157,7 +157,7 @@ public class LogEntrySearchDialog extends Dialog {
 
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
-        searchParameters.put(SEARCH_KEYWORD_LOGBOOKS, 
+        searchParameters.put(SEARCH_KEYWORD_LOGBOOKS,
             Joiner.on(",").join(logbookCombo.getSelection()));
         updateSearch();
         }
@@ -220,7 +220,7 @@ public class LogEntrySearchDialog extends Dialog {
         notificator.delayedExec(textTo, new Runnable() {
 
             @Override
-            public void run() {        
+            public void run() {
             searchParameters.put(SEARCH_KEYWORD_END, textTo.getText().trim());
             updateSearch();
             }
@@ -239,7 +239,7 @@ public class LogEntrySearchDialog extends Dialog {
     for (String keyword : searchParameters.keySet()) {
         if (SEARCH_KEYWORD_TEXT.equals(keyword)) {
         text.setText(searchParameters.get(keyword));
-        } 
+        }
         if (SEARCH_KEYWORD_LOGBOOKS.equals(keyword)) {
         logbookCombo.setSelection(searchParameters.get(keyword));
         }

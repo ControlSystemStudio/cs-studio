@@ -8,22 +8,22 @@ package com.cosylab.vdct.graphics.printing;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -62,24 +62,24 @@ public class PrintPreview extends javax.swing.JDialog {
 
 class IvjEventHandler implements java.awt.event.ActionListener, java.awt.event.ItemListener, java.awt.event.WindowListener {
         public void actionPerformed(java.awt.event.ActionEvent e) {
-            if (e.getSource() == PrintPreview.this.getPrintToolBarButton()) 
+            if (e.getSource() == PrintPreview.this.getPrintToolBarButton())
                 connEtoC1();
-            if (e.getSource() == PrintPreview.this.getScaleComboBox()) 
+            if (e.getSource() == PrintPreview.this.getScaleComboBox())
                 connEtoC2(e);
-            if (e.getSource() == PrintPreview.this.getPrintToolBarButton1()) 
+            if (e.getSource() == PrintPreview.this.getPrintToolBarButton1())
                 connEtoC3(e);
-            if (e.getSource() == PrintPreview.this.getJToolBarButton1()) 
+            if (e.getSource() == PrintPreview.this.getJToolBarButton1())
                 connEtoC5();
-            if (e.getSource() == PrintPreview.this.getUserScaleTextField()) 
+            if (e.getSource() == PrintPreview.this.getUserScaleTextField())
                 connEtoC6(e);
         };
         public void itemStateChanged(java.awt.event.ItemEvent e) {
-            if (e.getSource() == PrintPreview.this.getModeComboBox()) 
+            if (e.getSource() == PrintPreview.this.getModeComboBox())
                 connEtoC7(e);
         };
         public void windowActivated(java.awt.event.WindowEvent e) {};
         public void windowClosed(java.awt.event.WindowEvent e) {
-            if (e.getSource() == PrintPreview.this) 
+            if (e.getSource() == PrintPreview.this)
                 connEtoC4(e);
         };
         public void windowClosing(java.awt.event.WindowEvent e) {};
@@ -351,7 +351,7 @@ private javax.swing.JComboBox getModeComboBox() {
             ivjModeComboBox.addItem("Using scale:");
             ivjModeComboBox.addItem("Fit to paper");
             ivjModeComboBox.setSelectedIndex(Page.getPrintMode());
-            
+
             if (Page.getPrintMode()!=Page.USER_SCALE)
             {
                 getUserScaleTextField().setVisible(false);
@@ -672,14 +672,14 @@ public void jTextField1_ActionPerformed(java.awt.event.ActionEvent actionEvent) 
     try {
         double scale = Double.parseDouble(getUserScaleTextField().getText());
         Page.setUserScale(scale/100.0);
-        
+
         loadingPreviews = false;
         new Thread() {
-            public void run() {    
+            public void run() {
                 loadPreview();
             }
         }.start();
-        
+
     }
     catch (Exception e) {}
 }
@@ -700,10 +700,10 @@ public void loadPreview() {
     getPreviewContainer().repaint();
     getPreviewContainer().getParent().getParent().validate();
     Thread.yield();
-    
+
     System.gc();
 
-    
+
     // render pages
     PageFormat pageFormat = Page.getPageFormat();
     if (pageFormat.getHeight()==0 ||
@@ -711,7 +711,7 @@ public void loadPreview() {
         com.cosylab.vdct.Console.getInstance().println("Unable to determine default page size");
         return;
     }
-        
+
     pageWidth = (int)(pageFormat.getWidth());
     pageHeight = (int)(pageFormat.getHeight());
 
@@ -728,7 +728,7 @@ public void loadPreview() {
     }
 
     double ratioFix = 1; //getToolkit().getScreenResolution()/(double)72;    // so that 100% is real A4 on the screen
-    
+
     final int w = (int)(ratioFix*pageWidth*scale/100);
     final int h = (int)(ratioFix*pageHeight*scale/100);
 
@@ -746,14 +746,14 @@ public void loadPreview() {
         while (loadingPreviews && pageIndex<pages)
         {
             getStatusLabel().setText("Rendering page "+(pageIndex+1)+" of "+pages+"...");
-            
-            final BufferedImage img = 
+
+            final BufferedImage img =
                 new BufferedImage(pageWidth, pageHeight, BufferedImage.TYPE_INT_RGB);
             Graphics g = img.getGraphics();
-            
+
             g.setColor(Color.white);
             g.fillRect(0, 0, pageWidth, pageHeight);
-            
+
             if (target.getPrintable(pageIndex).print(g, target.getPageFormat(pageIndex), pageIndex)!=Printable.PAGE_EXISTS)
                 break;
 
@@ -767,7 +767,7 @@ public void loadPreview() {
                     getPreviewContainer().getParent().getParent().validate();
                 }
             });
-                
+
             pageIndex++;
             getStatusLabel().setText("Rendering page "+pageIndex+" of "+pages+"... Done.");
             Thread.yield();
@@ -813,7 +813,7 @@ public static void main(java.lang.String[] args) {
 public void modeComboBox_ItemStateChanged(java.awt.event.ItemEvent itemEvent) {
     if (Page.getPrintMode()==getModeComboBox().getSelectedIndex())
         return;
-    
+
     if (getModeComboBox().getSelectedIndex()!=Page.USER_SCALE)
     {
         getUserScaleTextField().setVisible(false);
@@ -828,7 +828,7 @@ public void modeComboBox_ItemStateChanged(java.awt.event.ItemEvent itemEvent) {
 
     loadingPreviews = false;
     new Thread() {
-        public void run() {    
+        public void run() {
             loadPreview();
         }
     }.start();
@@ -894,10 +894,10 @@ public void scaleComboBox_ActionPerformed(java.awt.event.ActionEvent actionEvent
 
                 getStatusLabel().setText("Rendering page "+pageIndex+"...");
                 Thread.yield();
-                    
+
                 PagePreview pp = (PagePreview) comps[k];
                 pp.setScaledSize(w, h);
-                
+
                 getStatusLabel().setText("Rendering page "+(pageIndex++)+"...Done.");
                 Thread.yield();
             }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class LogEntryWidgetTest extends ApplicationWindow {
 
@@ -39,7 +39,7 @@ public class LogEntryWidgetTest extends ApplicationWindow {
 
     /**
      * Create contents of the application window.
-     * 
+     *
      * @param parent
      */
     @Override
@@ -101,7 +101,7 @@ public class LogEntryWidgetTest extends ApplicationWindow {
 
     /**
      * Launch the application.
-     * 
+     *
      * @param args
      */
     public static void main(String args[]) {
@@ -117,7 +117,7 @@ public class LogEntryWidgetTest extends ApplicationWindow {
 
     /**
      * Configure the shell.
-     * 
+     *
      * @param newShell
      */
     @Override

@@ -1,24 +1,24 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
  * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT
  * LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR
- * PURPOSE AND  NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+ * PURPOSE AND  NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, 
+ * IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING,
  * REPAIR OR CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL
- * PART OF THIS LICENSE. NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER 
+ * PART OF THIS LICENSE. NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER
  * EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, 
- * ENHANCEMENTS, OR MODIFICATIONS. THE FULL LICENSE SPECIFYING FOR THE 
- * SOFTWARE THE REDISTRIBUTION, MODIFICATION, USAGE AND OTHER RIGHTS AND 
- * OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES,
+ * ENHANCEMENTS, OR MODIFICATIONS. THE FULL LICENSE SPECIFYING FOR THE
+ * SOFTWARE THE REDISTRIBUTION, MODIFICATION, USAGE AND OTHER RIGHTS AND
+ * OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU
  * MAY FIND A COPY AT {@link http://www.desy.de/legal/license.htm}
  */
 package de.desy.language.snl.ui.editor;
@@ -79,7 +79,7 @@ import de.desy.language.snl.ui.SNLUiActivator;
 
 /**
  * This class provides a SNL specific {@link TextEditor}.
- * 
+ *
  * @author <a href="mailto:kmeyer@c1-wps.de">Kai Meyer</a>
  * @author <a href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * @version 0.1
@@ -97,7 +97,7 @@ public class SNLEditor extends LanguageEditor {
     /**
      * Code Based on example from Berthold Daum Title: Java-Entwicklung mit Eclipse 3.3 Publisher:
      * dpunkt verlag ISBN: 978-3-89864-504-1
-     * 
+     *
      * @author hrickens
      * @author $Author$
      * @version $Revision$
@@ -107,7 +107,7 @@ public class SNLEditor extends LanguageEditor {
 
         /**
          * Stellt ein CompletionProposal-Array zusammen
-         * 
+         *
          * @param viewer
          *            - der Viewer, von dem diese Methode aufgerufen wird
          * @param documentOffset
@@ -133,7 +133,7 @@ public class SNLEditor extends LanguageEditor {
 
         /**
          * Standardimplementierung für Kontextanzeige
-         * 
+         *
          * @return null
          */
         public IContextInformation[] computeContextInformation(ITextViewer viewer,
@@ -152,7 +152,7 @@ public class SNLEditor extends LanguageEditor {
 
         /**
          * Stellt Vorschläge für HTML-Markup bereit
-         * 
+         *
          * @param documentOffset
          *            - die aktuelle Cursorposition im Text
          * @param selectedText
@@ -201,7 +201,7 @@ public class SNLEditor extends LanguageEditor {
 
         /**
          * Ermittelt bisher eingegebene signifikante Zeichen
-         * 
+         *
          * @param docu
          *            - das Dokument, mit dem wir arbeiten
          * @param documentOffset
@@ -251,7 +251,7 @@ public class SNLEditor extends LanguageEditor {
 
         /**
          * Ermittelt bisher eingegebene signifikante Zeichen
-         * 
+         *
          * @param docu
          *            - das Dokument, mit dem wir arbeiten
          * @param documentOffset
@@ -304,9 +304,9 @@ public class SNLEditor extends LanguageEditor {
         }
 
         /**
-         * 
+         *
          * Stellt Schlüsselwort-Vorschläge zusammen
-         * 
+         *
          * @param docu
          *            - Anfang eines Schlüsselwortes zur Eingrenzung der Vorschläge
          * @param documentOffset
@@ -469,7 +469,7 @@ public class SNLEditor extends LanguageEditor {
 
         /**
          * Standardimplementierung für Kontextaktivierung
-         * 
+         *
          * @return null
          */
         public char[] getContextInformationAutoActivationCharacters() {
@@ -478,7 +478,7 @@ public class SNLEditor extends LanguageEditor {
 
         /**
          * Standardimplementierung für die Kontextvalidierung
-         * 
+         *
          * @return null
          */
         public IContextInformationValidator getContextInformationValidator() {
@@ -487,7 +487,7 @@ public class SNLEditor extends LanguageEditor {
 
         /**
          * Standardimplementierung für Fehlermeldungen
-         * 
+         *
          * @return null
          */
         public String getErrorMessage() {
@@ -682,7 +682,7 @@ public class SNLEditor extends LanguageEditor {
             }
         }
     }
-    
+
     private void createDirs(IContainer parent, IProgressMonitor monitor) throws CoreException {
         if (parent != null && !parent.exists()) {
             createDirs(parent.getParent(), monitor);

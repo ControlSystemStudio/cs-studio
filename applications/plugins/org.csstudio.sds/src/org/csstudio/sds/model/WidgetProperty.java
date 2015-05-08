@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.model;
@@ -29,10 +29,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This class defines a property for SDS widget models.
- * 
+ *
  * @author Alexander Will
  * @version $Revision: 1.15 $
- * 
+ *
  */
 public abstract class WidgetProperty {
 
@@ -40,17 +40,17 @@ public abstract class WidgetProperty {
      * ID of the property.
      */
     private String _id;
-    
+
     private AbstractWidgetModel _widgetModel;
-    
-    private Set<String> _hiddenBy; 
-    
+
+    private Set<String> _hiddenBy;
+
     /**
      * Indicates, whether this property can be used to display dynamic values
      * from a control system.
      */
     private boolean _dynamicWriteAllowed;
-    
+
     /**
      * The registered property change listeners.
      */
@@ -60,7 +60,7 @@ public abstract class WidgetProperty {
      * A textual description of this property.
      */
     private String _description;
-    
+
     private String _longDescription;
 
     /**
@@ -95,7 +95,7 @@ public abstract class WidgetProperty {
 
     /**
      * Standard constructor.
-     * 
+     *
      * @param description
      *            A textual description of this property.
      * @param category
@@ -126,7 +126,7 @@ public abstract class WidgetProperty {
             _changeListeners = new CopyOnWriteArrayList<IPropertyChangeListener>();
             _dynamicWriteAllowed = true;
             _hiddenBy = new HashSet<String>();
-            
+
     }
     public WidgetProperty(final PropertyTypesEnum propertyType,
             final String description, final WidgetPropertyCategory category,
@@ -134,24 +134,24 @@ public abstract class WidgetProperty {
             final DynamicsDescriptor dynamicsDescriptor) {
         this(propertyType, description, null, category, defaultValue, dynamicsDescriptor);
     }
-    
+
     public String getId() {
         return _id;
     }
-    
+
     public void setId(String id) {
         _id = id;
     }
-    
+
     public AbstractWidgetModel getWidgetModel() {
         return _widgetModel;
     }
-    
+
     public void setWidgetModel(AbstractWidgetModel widgetModel) {
         _widgetModel = widgetModel;
     }
-    
-    
+
+
     public void hide(String masterId) {
         _hiddenBy.add(masterId);
     }
@@ -159,15 +159,15 @@ public abstract class WidgetProperty {
     public void show(String masterId) {
         _hiddenBy.remove(masterId);
     }
-    
+
     public boolean isVisible() {
         return _hiddenBy.isEmpty();
     }
-    
+
     /**
      * Returns a text representation for tooltips. Should be overridden by
      * subclasses to implement customized tooltip texts.
-     * 
+     *
      * @return a text representation for tooltips
      */
     public String getTextForTooltip() {
@@ -178,7 +178,7 @@ public abstract class WidgetProperty {
     /**
      * Returns all Java types to which the value of this {@link WidgetProperty}
      * is compatible to.
-     * 
+     *
      * @return an array which contains all Java types, the property value is
      *         compatible too
      */
@@ -188,10 +188,10 @@ public abstract class WidgetProperty {
     /**
      * Subclasses should check the specified value and should as far as possible
      * convert it to a value, which can be applied as property value.
-     * 
+     *
      * If a conversion is not possible, this method should return null to
      * indicate, that the specified value is incompatible.
-     * 
+     *
      * @param value
      *            the value to check
      * @return the original value, a converted value or null, if the original
@@ -201,7 +201,7 @@ public abstract class WidgetProperty {
 
     /**
      * Return the current value of this property.
-     * 
+     *
      * @return The current value of this property.
      */
     @SuppressWarnings("unchecked")
@@ -211,7 +211,7 @@ public abstract class WidgetProperty {
 
     /**
      * Set the current value of this property.
-     * 
+     *
      * @param requestedNewValue
      *            The current value of this property.
      */
@@ -229,7 +229,7 @@ public abstract class WidgetProperty {
 
     /**
      * Set the manual value of this property.
-     * 
+     *
      * @param manualValue
      *            The current value of this property.
      */
@@ -243,30 +243,30 @@ public abstract class WidgetProperty {
         }
     }
 
-    
+
     /**
      * set the textual description of this property.
      */
     public final void setDescription(String description) {
         this._description = description;
     }
-    
+
     /**
      * Return the textual description of this property.
-     * 
+     *
      * @return The textual description of this property.
      */
     public final String getDescription() {
         return _description;
     }
-    
+
     public String getLongDescription() {
         return _longDescription;
     }
 
     /**
      * Return the data type of this property.
-     * 
+     *
      * @return The data type of this property.
      */
     public final PropertyTypesEnum getPropertyType() {
@@ -275,7 +275,7 @@ public abstract class WidgetProperty {
 
     /**
      * Return the default value of this property.
-     * 
+     *
      * @return The default value of this property.
      */
     public final Object getDefaultValue() {
@@ -284,7 +284,7 @@ public abstract class WidgetProperty {
 
     /**
      * Gets the dynamics descriptor.
-     * 
+     *
      * @return The dynamics descriptor.
      */
     public final DynamicsDescriptor getDynamicsDescriptor() {
@@ -293,7 +293,7 @@ public abstract class WidgetProperty {
 
     /**
      * Sets the dynamics descriptor.
-     * 
+     *
      * @param dynamicsDescriptor
      *            The dynamics descriptor.
      */
@@ -306,7 +306,7 @@ public abstract class WidgetProperty {
 
     /**
      * Returns the category for this property.
-     * 
+     *
      * @return the category for this property
      */
     public final WidgetPropertyCategory getCategory() {
@@ -315,7 +315,7 @@ public abstract class WidgetProperty {
 
     /**
      * Add a property change listener.
-     * 
+     *
      * @param listener
      *            A property change listener.
      */
@@ -326,7 +326,7 @@ public abstract class WidgetProperty {
 
     /**
      * Remove a property change listener.
-     * 
+     *
      * @param listener
      *            A property change listener.
      */
@@ -346,7 +346,7 @@ public abstract class WidgetProperty {
 
     /**
      * Notify all registered property change listeners.
-     * 
+     *
      * @param oldValue
      *            The old value of the property.
      * @param newValue

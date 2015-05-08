@@ -8,22 +8,22 @@ package com.cosylab.vdct.vdb;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -60,7 +60,7 @@ public class VDBTemplateMacro extends VDBFieldData implements Descriptable, Chan
         this.visibility = macro.getVisibility();    // obtain default
         this.value = nullString;
     }
-    
+
 
     /**
      * Insert the method's description here.
@@ -79,7 +79,7 @@ public class VDBTemplateMacro extends VDBFieldData implements Descriptable, Chan
     public String getName() {
         return macro.getName();
     }
-    
+
     /**
      * Insert the method's description here.
      * Creation date: (1.2.2001 12:11:29)
@@ -102,7 +102,7 @@ public class VDBTemplateMacro extends VDBFieldData implements Descriptable, Chan
     {
         return visibility;
     }
-    
+
     /**
      * Sets the visibility.
      * @param visibility The visibility to set
@@ -120,13 +120,13 @@ public class VDBTemplateMacro extends VDBFieldData implements Descriptable, Chan
             boolean newVisible = (visibility == InspectableProperty.ALWAYS_VISIBLE ||
                                  (visibility == InspectableProperty.NON_DEFAULT_VISIBLE && !hasDefaultValue));
             if (oldVisible != newVisible)
-            {                         
+            {
                 Template visualTemplate = (Template)Group.getRoot().findObject(templateInstance.getName(), true);
                 if (visualTemplate!=null)
                     visualTemplate.fieldVisibilityChange(this, newVisible);
             }
         }
-            
+
         updateInspector();
     }
 
@@ -138,7 +138,7 @@ public class VDBTemplateMacro extends VDBFieldData implements Descriptable, Chan
     public java.lang.String getHelp() {
         return macro.getDescription();
     }
-    
+
     /**
      * @see com.cosylab.vdct.graphics.objects.Descriptable#getDescription()
      */
@@ -175,7 +175,7 @@ public class VDBTemplateMacro extends VDBFieldData implements Descriptable, Chan
             //com.cosylab.vdct.Console.getInstance().println("o) Internal error: no visual representation of record "+getName()+" found.");
             return;
         }
-    
+
         InspectorManager.getInstance().updateProperty(visualTemplate, this);
     }
 
@@ -276,16 +276,16 @@ public void setValue(java.lang.String newValue) {
 
     boolean newVisible = (getVisibility() == InspectableProperty.ALWAYS_VISIBLE ||
                          (getVisibility() == InspectableProperty.NON_DEFAULT_VISIBLE && !hasDefaultValue()));
-                         
+
     Template visualTemplate = null;
     if (oldVisible != newVisible)
-    {                         
+    {
         visualTemplate = (Template)Group.getRoot().findObject(templateInstance.getName(), true);
         if (visualTemplate!=null)
             visualTemplate.fieldVisibilityChange(this, newVisible);
     }
 
-    // mapping to property 
+    // mapping to property
     updateProperty();
 
     // field changed
@@ -309,7 +309,7 @@ public void setValueSilently(java.lang.String newValue) {
     // buffer value
     super.setValueSilently(newValue);
 
-    // mapping to property 
+    // mapping to property
     updateProperty();
 
 }
@@ -319,7 +319,7 @@ public void setValueSilently(java.lang.String newValue) {
  */
 private void updateProperty() {
 
-    // mapping to properties 
+    // mapping to properties
     if (hasDefaultValue())
         templateInstance.removeProperty(macro.getName());
     else if (!templateInstance.properties.containsKey(macro.getName()))

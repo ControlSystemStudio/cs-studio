@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene.opiwidgets;
 
@@ -10,13 +10,13 @@ import org.eclipse.draw2d.IFigure;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class HistogramGraph2DWidgetEditPart extends AbstractGraph2DWidgetEditpart<HistogramGraph2DWidgetFigure, HistogramGraph2DWidgetModel> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.csstudio.opibuilder.editparts.AbstractBaseEditPart#doCreateFigure()
      */
@@ -26,7 +26,7 @@ public class HistogramGraph2DWidgetEditPart extends AbstractGraph2DWidgetEditpar
         configure(figure, getWidgetModel());
         return figure;
     }
-    
+
     @Override
     protected void configure(HistogramGraph2DWidgetFigure figure, HistogramGraph2DWidgetModel model) {
         super.configure(figure, model);

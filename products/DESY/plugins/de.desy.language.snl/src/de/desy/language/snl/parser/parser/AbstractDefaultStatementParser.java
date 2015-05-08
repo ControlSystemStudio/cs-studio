@@ -15,16 +15,16 @@ public abstract class AbstractDefaultStatementParser<N extends AbstractSNLNode>
     protected int _endOffSet;
     protected N _node;
     private Matcher _matcher;
-    
+
     private final Interval[] _exclusions;
-    
+
     public AbstractDefaultStatementParser() {
         _exclusions = new Interval[0];
     }
-    
+
     public AbstractDefaultStatementParser(Interval[] exclusions) {
         assert exclusions != null : "exclusions != null";
-        
+
         _exclusions = exclusions;
     }
 
@@ -38,7 +38,7 @@ public abstract class AbstractDefaultStatementParser<N extends AbstractSNLNode>
         while (preMatcher.find(localStart)) {
             final Pattern pattern = Pattern.compile(this.getPatternString());
             this._matcher = pattern.matcher(input);
-            final int end = preMatcher.end();            
+            final int end = preMatcher.end();
             this._matcher.region(startIndex, end);
             if (this._matcher.find()) {
                 this.matchFound(preMatcher, this._matcher);
@@ -51,7 +51,7 @@ public abstract class AbstractDefaultStatementParser<N extends AbstractSNLNode>
             }
         }
     }
-    
+
     protected int determineStartPosition(int pos) {
         for (Interval current : _exclusions) {
             if (current.contains(pos)) {
@@ -68,7 +68,7 @@ public abstract class AbstractDefaultStatementParser<N extends AbstractSNLNode>
     /**
      * Will be called if the pre-matcher and the matcher has found a possible
      * matching element.
-     * 
+     *
      * @param preMatcher
      * @param mainMatcher
      */

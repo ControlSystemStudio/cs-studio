@@ -69,7 +69,7 @@ public class VTypeHelper
         return alarm.getAlarmSeverity().toString()
                 + "/" + alarm.getAlarmName();
     }
-    
+
     /** Format value as string for display
      *  @param value {@link VType}
      *  @return String representation

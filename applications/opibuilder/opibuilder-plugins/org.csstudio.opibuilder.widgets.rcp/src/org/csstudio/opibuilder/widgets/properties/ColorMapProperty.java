@@ -23,7 +23,7 @@ import org.jdom.Element;
  *
  */
 public class ColorMapProperty extends AbstractWidgetProperty {
-    
+
     /**
      * XML ELEMENT name <code>PREDEFINEDCOLOR</code>.
      */
@@ -40,7 +40,7 @@ public class ColorMapProperty extends AbstractWidgetProperty {
      * XML Element name <code>AUTOSCALE</code>.
      */
     public static final String XML_ELEMENT_AUTOSCALE = "autoscale"; //$NON-NLS-1$
-    
+
     /**
      * XML attribute name <code>red</code>.
      */
@@ -54,14 +54,14 @@ public class ColorMapProperty extends AbstractWidgetProperty {
     /**
      * XML attribute name <code>blue</code>.
      */
-    public static final String XML_ATTRIBUTE_BLUE = "blue"; //$NON-NLS-1$    
-    
-    
+    public static final String XML_ATTRIBUTE_BLUE = "blue"; //$NON-NLS-1$
+
+
 
     public ColorMapProperty(String prop_id, String description,
             WidgetPropertyCategory category, ColorMap defaultValue) {
         super(prop_id, description, category, defaultValue);
-        
+
     }
 
     @Override
@@ -71,7 +71,7 @@ public class ColorMapProperty extends AbstractWidgetProperty {
         ColorMap acceptableValue = null;
         if(value instanceof ColorMap){
             if(((ColorMap)value).getMap().size() >=2)
-                acceptableValue = (ColorMap)value;            
+                acceptableValue = (ColorMap)value;
         }else if (value instanceof String){
             for(PredefinedColorMap map : ColorMap.PredefinedColorMap.values()){
                 if(map.toString().equals(value)){
@@ -81,13 +81,13 @@ public class ColorMapProperty extends AbstractWidgetProperty {
             }
 
         }
-        
+
         return acceptableValue;
     }
 
-    
-    
-    
+
+
+
     @Override
     protected PropertyDescriptor createPropertyDescriptor() {
         return new ColorMapPropertyDescriptor(prop_id, description, (IntensityGraphModel) widgetModel);
@@ -108,14 +108,14 @@ public class ColorMapProperty extends AbstractWidgetProperty {
             LinkedHashMap<Double, RGB> map = new LinkedHashMap<Double, RGB>();
             for(Object o : propElement.getChild(XML_ELEMENT_MAP).getChildren()){
                 Element e = (Element)o;
-                map.put(Double.parseDouble(e.getValue()), 
+                map.put(Double.parseDouble(e.getValue()),
                         new RGB(Integer.parseInt(e.getAttributeValue(XML_ATTRIBUTE_RED)),
                                 Integer.parseInt(e.getAttributeValue(XML_ATTRIBUTE_GREEN)),
                                 Integer.parseInt(e.getAttributeValue(XML_ATTRIBUTE_BLUE))));
             }
             result.setColorMap(map);
         }
-        
+
         return result;
     }
 
@@ -126,8 +126,8 @@ public class ColorMapProperty extends AbstractWidgetProperty {
         interpolateElement.setText(Boolean.toString(colorMap.isInterpolate()));
         Element autoScaleElement = new Element(XML_ELEMENT_AUTOSCALE);
         autoScaleElement.setText(Boolean.toString(colorMap.isAutoScale()));
-        
-        Element preDefinedElement = new Element(XML_ELEMENT_MAP);        
+
+        Element preDefinedElement = new Element(XML_ELEMENT_MAP);
         if(colorMap.getPredefinedColorMap() == PredefinedColorMap.None){
             for(Double k : colorMap.getMap().keySet()){
                 Element colorElement = new Element(XML_ELEMENT_E);
@@ -137,7 +137,7 @@ public class ColorMapProperty extends AbstractWidgetProperty {
                 colorElement.setAttribute(XML_ATTRIBUTE_GREEN, "" + color.green); //$NON-NLS-1$
                 colorElement.setAttribute(XML_ATTRIBUTE_BLUE, "" + color.blue); //$NON-NLS-1$
                 preDefinedElement.addContent(colorElement);
-            }            
+            }
         }else{
             preDefinedElement.setText(Integer.toString(
                 PredefinedColorMap.toIndex(colorMap.getPredefinedColorMap()))); //$NON-NLS-1$
@@ -147,15 +147,15 @@ public class ColorMapProperty extends AbstractWidgetProperty {
         propElement.addContent(preDefinedElement);
     }
 
-    
+
     @Override
     public boolean configurableByRule() {
         return true;
     }
-    
+
     @Override
     public boolean onlyAcceptExpressionInRule() {
         return true;
     }
-    
+
 }

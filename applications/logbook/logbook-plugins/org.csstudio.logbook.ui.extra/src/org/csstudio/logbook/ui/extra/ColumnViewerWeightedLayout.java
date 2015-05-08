@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui.extra;
 
@@ -11,7 +11,7 @@ import org.eclipse.swt.graphics.Point;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ColumnViewerWeightedLayout extends ControlAdapter {
 

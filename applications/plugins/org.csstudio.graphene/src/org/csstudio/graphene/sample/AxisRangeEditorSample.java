@@ -58,14 +58,14 @@ public class AxisRangeEditorSample {
         shell.setSize(636, 552);
         shell.setText("SWT Application");
         shell.setLayout(new FormLayout());
-        
+
         axisRangeEditorComposite = new AxisRangeEditorComposite(shell, SWT.NONE);
         FormData fd_axisRangeEditorComposite = new FormData();
         fd_axisRangeEditorComposite.top = new FormAttachment(0);
         fd_axisRangeEditorComposite.left = new FormAttachment(0);
         axisRangeEditorComposite.setLayoutData(fd_axisRangeEditorComposite);
         axisRangeEditorComposite.addSelectionChangedListener(new ISelectionChangedListener() {
-            
+
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 String text = txtEvents.getText();
@@ -77,7 +77,7 @@ public class AxisRangeEditorSample {
                 txtEvents.setText(text);
             }
         });
-        
+
         txtEvents = new Text(shell, SWT.BORDER | SWT.WRAP | SWT.H_SCROLL | SWT.CANCEL);
         FormData fd_txtEvents = new FormData();
         fd_txtEvents.top = new FormAttachment(0, 10);
@@ -85,7 +85,7 @@ public class AxisRangeEditorSample {
         fd_txtEvents.left = new FormAttachment(axisRangeEditorComposite, 6);
         fd_txtEvents.right = new FormAttachment(100, -10);
         txtEvents.setLayoutData(fd_txtEvents);
-        
+
         Composite composite = new Composite(shell, SWT.NONE);
         FormData fd_composite = new FormData();
         fd_composite.right = new FormAttachment(axisRangeEditorComposite, 0, SWT.RIGHT);
@@ -93,7 +93,7 @@ public class AxisRangeEditorSample {
         fd_composite.left = new FormAttachment(0, 10);
         fd_composite.top = new FormAttachment(100, -125);
         composite.setLayoutData(fd_composite);
-        
+
         Button btnNull = new Button(composite, SWT.NONE);
         btnNull.setBounds(0, 85, 90, 30);
         btnNull.addSelectionListener(new SelectionAdapter() {
@@ -103,7 +103,7 @@ public class AxisRangeEditorSample {
             }
         });
         btnNull.setText("Null");
-        
+
         Button btnDisplay = new Button(composite, SWT.NONE);
         btnDisplay.setBounds(0, 49, 90, 30);
         btnDisplay.addSelectionListener(new SelectionAdapter() {
@@ -113,7 +113,7 @@ public class AxisRangeEditorSample {
             }
         });
         btnDisplay.setText("Display");
-        
+
         Button btnData = new Button(composite, SWT.NONE);
         btnData.setBounds(0, 13, 90, 30);
         btnData.addSelectionListener(new SelectionAdapter() {
@@ -123,7 +123,7 @@ public class AxisRangeEditorSample {
             }
         });
         btnData.setText("Data");
-        
+
         Button btnAbsolute1 = new Button(composite, SWT.NONE);
         btnAbsolute1.setBounds(96, 85, 128, 30);
         btnAbsolute1.addSelectionListener(new SelectionAdapter() {
@@ -133,7 +133,7 @@ public class AxisRangeEditorSample {
             }
         });
         btnAbsolute1.setText("Fixed -10/10");
-        
+
         Button btnIntegrated = new Button(composite, SWT.NONE);
         btnIntegrated.setBounds(230, 85, 105, 30);
         btnIntegrated.addSelectionListener(new SelectionAdapter() {
@@ -143,7 +143,7 @@ public class AxisRangeEditorSample {
             }
         });
         btnIntegrated.setText("Auto");
-        
+
         Button btnAbsolute2 = new Button(composite, SWT.NONE);
         btnAbsolute2.setBounds(96, 49, 128, 30);
         btnAbsolute2.addSelectionListener(new SelectionAdapter() {
@@ -153,7 +153,7 @@ public class AxisRangeEditorSample {
             }
         });
         btnAbsolute2.setText("Fixed 0/25");
-        
+
         Button btnIntegrated50 = new Button(composite, SWT.NONE);
         btnIntegrated50.setBounds(230, 49, 105, 30);
         btnIntegrated50.addSelectionListener(new SelectionAdapter() {

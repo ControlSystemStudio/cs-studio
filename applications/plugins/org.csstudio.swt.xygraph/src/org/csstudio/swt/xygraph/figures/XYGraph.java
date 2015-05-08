@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Display;
  * @author Laurent PHILIPPE (property change support)
  */
 public class XYGraph extends Figure{
-        
+
     public void fireConfigChanged() {
         firePropertyChange("config", null, this);
     }
@@ -54,7 +54,7 @@ public class XYGraph extends Figure{
      * @author L.PHILIPPE (GANIL)
      */
     private XYGraphMemento xyGraphMem;
-    
+
     public XYGraphMemento getXyGraphMem() {
         return xyGraphMem;
     }
@@ -63,7 +63,7 @@ public class XYGraph extends Figure{
         XYGraphMemento old = this.xyGraphMem;
         this.xyGraphMem = xyGraphMem;
         firePropertyChange("xyGraphMem", old, this.xyGraphMem);
-    
+
         System.out.println("**** XYGraph.setXyGraphMem() ****");
     }
 
@@ -114,8 +114,8 @@ public class XYGraph extends Figure{
 
     //ADD BECAUSE OF SWT invalid Thread acess on getTitleColor()
     private FontData titleFontData;
-    private RGB titleColorRgb; 
-    
+    private RGB titleColorRgb;
+
     private List<Axis> xAxisList;
     private List<Axis> yAxisList;
     private PlotArea plotArea;
@@ -135,7 +135,7 @@ public class XYGraph extends Figure{
         setOpaque(!transparent);
         legendMap = new LinkedHashMap<Axis, Legend>();
         titleLabel = new Label();
-        String sysFontName = 
+        String sysFontName =
                 Display.getCurrent().getSystemFont().getFontData()[0].getName();
         setTitleFont(XYGraphMediaFactory.getInstance().getFont(
                 new FontData(sysFontName, 12, SWT.BOLD)));
@@ -469,8 +469,8 @@ public class XYGraph extends Figure{
     public Font getTitleFont(){
         return titleLabel.getFont();
     }
-    
-    
+
+
 
     public FontData getTitleFontData() {
         return titleFontData;
@@ -494,7 +494,7 @@ public class XYGraph extends Figure{
         }
         super.paintFigure(graphics);
     }
-    
+
     /**
      * @param transparent the transparent to set
      */
@@ -511,10 +511,10 @@ public class XYGraph extends Figure{
     public boolean isTransparent() {
         return transparent;
     }
-    
+
     /**
      * Shows or hides the hover value labels.
-     * 
+     *
      * @param show true to show, false to hide
      */
     public void setShowValueLabels(boolean show) {
@@ -526,17 +526,17 @@ public class XYGraph extends Figure{
         }
         firePropertyChange("showValueLabels", old, showValueLabels);
     }
-    
+
     /**
      * @return true if the hover value labels are shown or false otherwise
      */
     public boolean isShowValueLabels() {
         return showValueLabels;
     }
-    
+
     /**
      * Shows or hides the axis traces.
-     * 
+     *
      * @param show true to show, false to hide
      */
     public void setShowAxisTrace(boolean show) {
@@ -545,7 +545,7 @@ public class XYGraph extends Figure{
         getPlotArea().setShowAxisTrace(show);
         firePropertyChange("showAxisTrace", old, showAxisTrace);
     }
-    
+
     /**
      * @return true if the axis traces are shown or false otherwise
      */
@@ -577,8 +577,8 @@ public class XYGraph extends Figure{
             return getForegroundColor();
         return titleColor;
     }
-    
-    
+
+
     public RGB getTitleColorRgb() {
         return titleColorRgb;
     }

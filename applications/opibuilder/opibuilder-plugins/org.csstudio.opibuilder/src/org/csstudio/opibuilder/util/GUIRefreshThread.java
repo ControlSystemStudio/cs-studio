@@ -36,7 +36,7 @@ public final class GUIRefreshThread implements Runnable {
      * The singleton instance for Editing, whose GUI refresh cycle is fixed 100 ms.
      */
     private static GUIRefreshThread editingInstance;
-    
+
     /**
      * A LinkedHashset, which contains {@link WidgetIgnorableUITask}.
      * It will be processed by this thread periodically. Use hashset
@@ -55,7 +55,7 @@ public final class GUIRefreshThread implements Runnable {
     private Runnable resetAsyncEmpty;
 
     private Display rcpDisplay;
-    
+
     private boolean isRuntime;
 
     /**
@@ -65,7 +65,7 @@ public final class GUIRefreshThread implements Runnable {
         this.isRuntime = isRuntime;
         //tasksQueue = new ConcurrentLinkedQueue<WidgetIgnorableUITask>();
         if(!OPIBuilderPlugin.isRAP()){
-            rcpDisplay = DisplayUtils.getDisplay();            
+            rcpDisplay = DisplayUtils.getDisplay();
         }
         tasksQueue = new LinkedHashSet<WidgetIgnorableUITask>();
         resetAsyncEmpty = new Runnable() {
@@ -88,12 +88,12 @@ public final class GUIRefreshThread implements Runnable {
         if (isRuntime){
             if(runTimeInstance == null)
                 runTimeInstance = new GUIRefreshThread(isRuntime);
-            return runTimeInstance;    
+            return runTimeInstance;
         }else {
-            if(editingInstance == null) 
-                editingInstance = new GUIRefreshThread(isRuntime);            
+            if(editingInstance == null)
+                editingInstance = new GUIRefreshThread(isRuntime);
             return editingInstance;
-        }    
+        }
     }
 
     /**
@@ -103,15 +103,15 @@ public final class GUIRefreshThread implements Runnable {
         if(isRuntime)
             guiRefreshCycle = PreferencesHelper.getGUIRefreshCycle();
     }
-    
-    /**Set GUI Refresh Cycle. This should be temporarily used only. It must be 
+
+    /**Set GUI Refresh Cycle. This should be temporarily used only. It must be
      * reset by calling {@link #reLoadGUIRefreshCycle()} to ensure consistency.
      * @param guiRefreshCycle
      */
     public void setGUIRefreshCycle(int guiRefreshCycle) {
         this.guiRefreshCycle = guiRefreshCycle;
-    }    
-    
+    }
+
     public int getGUIRefreshCycle() {
         return guiRefreshCycle;
     }
@@ -131,7 +131,7 @@ public final class GUIRefreshThread implements Runnable {
                         rapProcessQueue();
                     else
                         rcpProcessQueue();
-                    
+
                 try {
                     long current = System.currentTimeMillis();
                     if(current - start < guiRefreshCycle)
@@ -153,10 +153,10 @@ public final class GUIRefreshThread implements Runnable {
      * Process the complete queue in RCP.
      */
     private void rcpProcessQueue() {
-        //avoid add too many stuff to Display async queue.        
+        //avoid add too many stuff to Display async queue.
         if(!asyncEmpty)
             return;
-        asyncEmpty = false;        
+        asyncEmpty = false;
         Object[] tasksArray;
         //copy the tasks queue.
         synchronized (this) {
@@ -176,7 +176,7 @@ public final class GUIRefreshThread implements Runnable {
         }
         rcpDisplay.asyncExec(resetAsyncEmpty);
     }
-    
+
     /**
      * Process the complete queue in RAP.
      */

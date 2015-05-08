@@ -6,7 +6,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 
 /**
  * Class for sorting columns in a table
- * 
+ *
  * @author rkosir
  *
  */
@@ -14,7 +14,7 @@ public class SnooperSorter extends ViewerSorter{
 
     private int sortIndex;
     private int order = -1;
-    
+
     public SnooperSorter(int index, boolean sort) {
         super();
         if(sort)
@@ -30,7 +30,7 @@ public class SnooperSorter extends ViewerSorter{
 //        System.out.println(sortIndex);
         switch (sortIndex){
         case 0:
-        case 3:            
+        case 3:
             return order * (chan1.getId()-chan2.getId());
         case 1:
             return order * (chan1.getClientAddress().compareToIgnoreCase(chan2.getClientAddress()));

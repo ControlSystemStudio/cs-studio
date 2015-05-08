@@ -8,9 +8,9 @@ import org.eclipse.jface.action.IAction;
 /**
  * Base class for actions that deal with the command stack of a DCT editor
  * (Undo/Redo).
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public abstract class AbstractCommandStackAction extends AbstractDctEditorAction implements CommandStackEventListener {
     private CommandStack commandStack;
@@ -46,7 +46,7 @@ public abstract class AbstractCommandStackAction extends AbstractDctEditorAction
 
     /**
      * Template method which is called when the action is executed.
-     * 
+     *
      * @param commandStack
      *            the command stack
      */
@@ -55,7 +55,7 @@ public abstract class AbstractCommandStackAction extends AbstractDctEditorAction
     /**
      * Template method. Inheriting classes must return the action enabled
      * state.
-     * 
+     *
      * @param commandStack
      *            the command stack
      * @return true, if the action is enabled, false otherwise

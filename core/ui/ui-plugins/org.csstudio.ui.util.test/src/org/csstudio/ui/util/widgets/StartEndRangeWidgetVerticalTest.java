@@ -32,7 +32,7 @@ public class StartEndRangeWidgetVerticalTest extends ApplicationWindow {
 
     /**
      * Create contents of the application window.
-     * 
+     *
      * @param parent
      */
     @Override
@@ -118,12 +118,12 @@ public class StartEndRangeWidgetVerticalTest extends ApplicationWindow {
     btnRange5.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
         false, 1, 1));
     btnRange5.setText("[-10 - 10]");
-    
+
         Label lblSelectedmin = new Label(container, SWT.NONE);
         lblSelectedmin.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
             false, 1, 1));
         lblSelectedmin.setText("selectedMin:");
-    
+
         text_selectedMin = new Text(container, SWT.BORDER);
         text_selectedMin.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
             false, false, 1, 1));
@@ -134,12 +134,12 @@ public class StartEndRangeWidgetVerticalTest extends ApplicationWindow {
                 .valueOf(text_selectedMin.getText()));
             }
         });
-    
+
         Label lblSelectedmax = new Label(container, SWT.NONE);
         lblSelectedmax.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
             false, 1, 1));
         lblSelectedmax.setText("selectedMax:");
-    
+
         text_selectedMax = new Text(container, SWT.BORDER);
         text_selectedMax.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
             false, false, 1, 1));
@@ -151,14 +151,14 @@ public class StartEndRangeWidgetVerticalTest extends ApplicationWindow {
             }
         });
         new Label(container, SWT.NONE);
-    
+
         Label lblNewLabel = new Label(container, SWT.NONE);
         lblNewLabel.setText("Event log:");
     new Label(container, SWT.NONE);
     new Label(container, SWT.NONE);
     new Label(container, SWT.NONE);
     new Label(container, SWT.NONE);
-    
+
         textLog = new Text(container, SWT.BORDER | SWT.WRAP | SWT.H_SCROLL
             | SWT.V_SCROLL | SWT.CANCEL);
         textLog.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 5, 1));
@@ -168,7 +168,7 @@ public class StartEndRangeWidgetVerticalTest extends ApplicationWindow {
 
     /**
      * Create the menu manager.
-     * 
+     *
      * @return the menu manager
      */
     @Override
@@ -179,7 +179,7 @@ public class StartEndRangeWidgetVerticalTest extends ApplicationWindow {
 
     /**
      * Create the status line manager.
-     * 
+     *
      * @return the status line manager
      */
     @Override
@@ -190,7 +190,7 @@ public class StartEndRangeWidgetVerticalTest extends ApplicationWindow {
 
     /**
      * Launch the application.
-     * 
+     *
      * @param args
      */
     public static void main(String args[]) {
@@ -206,7 +206,7 @@ public class StartEndRangeWidgetVerticalTest extends ApplicationWindow {
 
     /**
      * Configure the shell.
-     * 
+     *
      * @param newShell
      */
     @Override

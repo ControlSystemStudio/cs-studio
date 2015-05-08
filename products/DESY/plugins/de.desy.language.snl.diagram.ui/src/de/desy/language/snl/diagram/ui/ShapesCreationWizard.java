@@ -31,7 +31,7 @@ public class ShapesCreationWizard extends Wizard implements INewWizard {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.wizard.IWizard#addPages()
      */
     @Override
@@ -42,7 +42,7 @@ public class ShapesCreationWizard extends Wizard implements INewWizard {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
      * org.eclipse.jface.viewers.IStructuredSelection)
      */
@@ -54,7 +54,7 @@ public class ShapesCreationWizard extends Wizard implements INewWizard {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.wizard.IWizard#performFinish()
      */
     @Override
@@ -71,7 +71,7 @@ public class ShapesCreationWizard extends Wizard implements INewWizard {
 
         /**
          * Create a new wizard page instance.
-         * 
+         *
          * @param workbench
          *            the current workbench
          * @param selection
@@ -88,7 +88,7 @@ public class ShapesCreationWizard extends Wizard implements INewWizard {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see
          * org.eclipse.ui.dialogs.WizardNewFileCreationPage#createControl(org
          * .eclipse.swt.widgets.Composite)
@@ -107,7 +107,7 @@ public class ShapesCreationWizard extends Wizard implements INewWizard {
 
         /**
          * This method will be invoked, when the "Finish" button is pressed.
-         * 
+         *
          * @see ShapesCreationWizard#performFinish()
          */
         boolean finish() {
@@ -131,7 +131,7 @@ public class ShapesCreationWizard extends Wizard implements INewWizard {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see
          * org.eclipse.ui.dialogs.WizardNewFileCreationPage#getInitialContents()
          */
@@ -167,7 +167,7 @@ public class ShapesCreationWizard extends Wizard implements INewWizard {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.eclipse.ui.dialogs.WizardNewFileCreationPage#validatePage()
          */
         @Override

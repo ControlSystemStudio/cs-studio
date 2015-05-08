@@ -14,12 +14,12 @@ import org.csstudio.utility.adlparser.fileParser.widgets.ADLDisplay;
 import org.eclipse.swt.graphics.RGB;
 
 /**
- * 
+ *
  * @author John Hammonds, Argonne National Laboratory
  *
  */
 public class Display2Model extends AbstractADL2Model {
-    
+
     public Display2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
         super(adlWidget, colorMap, parentModel);
     }
@@ -32,11 +32,11 @@ public class Display2Model extends AbstractADL2Model {
     public void makeModel(ADLWidget adlWidget, AbstractContainerModel parentModel){
         widgetModel = new DisplayModel();
     }
-    
+
     @Override
     public void processWidget(ADLWidget adlWidget) {
         ADLDisplay adlDisp = new ADLDisplay(adlWidget);
-    
+
         setDisplayColors(adlDisp);
         setShowGrid(adlDisp);
         setSnapGeometry(adlDisp);
@@ -52,7 +52,7 @@ public class Display2Model extends AbstractADL2Model {
             setColor(adlDisp.getBackgroundColor(), AbstractWidgetModel.PROP_COLOR_BACKGROUND);
 
             setColor(adlDisp.getForegroundColor(), AbstractWidgetModel.PROP_COLOR_FOREGROUND);
-            
+
         }
     }
 

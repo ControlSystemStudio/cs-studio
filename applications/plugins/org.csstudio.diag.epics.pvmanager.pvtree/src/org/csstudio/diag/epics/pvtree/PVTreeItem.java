@@ -144,7 +144,7 @@ class PVTreeItem
         {
             Plugin.getLogger().log(Level.SEVERE, "PV creation error" , e);
         }
-        
+
         // Avoid loops.
         // If the model already contains an entry with this name,
         // we simply display this new item, but we won't
@@ -281,7 +281,7 @@ class PVTreeItem
             return links.get(0);
         return null;
     }
-    
+
     /** @return Returns the all links. */
     public PVTreeItem[] getLinks()
     {

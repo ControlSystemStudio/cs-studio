@@ -20,7 +20,7 @@ public class WidgetCreationFactory implements CreationFactory {
 
     private final WidgetDescriptor widgetDescriptor;
     private AbstractWidgetModel widgetModel = null;
-    
+
     public WidgetCreationFactory(WidgetDescriptor widgetDescriptor) {
         this.widgetDescriptor = widgetDescriptor;
     }

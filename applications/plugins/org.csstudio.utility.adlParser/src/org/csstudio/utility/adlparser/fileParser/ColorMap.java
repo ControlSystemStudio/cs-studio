@@ -8,10 +8,10 @@ import org.eclipse.swt.graphics.RGB;
 public class ColorMap {
     private RGB[] colors = new RGB[0];
     private int numColors;
-    
+
     public ColorMap(ADLWidget colorMap) throws WrongADLFormatException {
         // find out the number of colors
-        
+
         for (FileLine fileLine : colorMap.getBody()){
             String bodyPart = fileLine.getLine();
             String[] row = bodyPart.trim().split("=");
@@ -23,7 +23,7 @@ public class ColorMap {
             }
             colors = new RGB[numColors];
         }
-            
+
 
         ADLWidget colorsWidget = colorMap.getObjects().get(0);
         if (colorsWidget.getType().equals("colors")){
@@ -38,13 +38,13 @@ public class ColorMap {
                     }
                     catch (NumberFormatException ex){
                         ex.printStackTrace();
-                        throw new WrongADLFormatException("One of the colors in the color map cannot be decoded " 
+                        throw new WrongADLFormatException("One of the colors in the color map cannot be decoded "
                                 + color);
                     }
                     colorCounter++;
                 }
             }
-            
+
         }
         else if ( colorsWidget.getType().equals("dl_color")){
             ArrayList<ADLWidget> colorList = colorMap.getObjects();
@@ -89,7 +89,7 @@ public class ColorMap {
         }
     }
 
-    /** 
+    /**
      * @return Object[] colors
      */
     public RGB[] getColors() {
@@ -101,10 +101,10 @@ public class ColorMap {
     }
 
     /**
-     * 
+     *
      * throws IlleagalArgumentException if the string is not 6 characters long
-     * throws NumberFormatException if the each pair cannot be transformed as a 
-     *        hexdecimal to integer 
+     * throws NumberFormatException if the each pair cannot be transformed as a
+     *        hexdecimal to integer
      * @param inColor
      * @return
      */
@@ -112,7 +112,7 @@ public class ColorMap {
         if ( inColor.length() < 6 || inColor.length() >6 ) {
             throw new IllegalArgumentException("RGB string is Hex representation of the color triad.  It should "
                     + "have 6 characters");
-        }    
+        }
         String redStr = "#".concat(inColor.substring(0, 2));
         String greenStr = "#".concat(inColor.substring(2, 4));
         String blueStr = "#".concat(inColor.substring(4, 6));

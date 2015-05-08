@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook;
 
@@ -11,11 +11,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- * 
+ *
  * A builder for a default implementation of the {@link Property} interface.
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class PropertyBuilder {
 
@@ -36,7 +36,7 @@ public class PropertyBuilder {
 
     /**
      * Create a PropertyBuilder initialized using the _property_
-     * 
+     *
      * @param property
      * @return PropertyBuilder
      */

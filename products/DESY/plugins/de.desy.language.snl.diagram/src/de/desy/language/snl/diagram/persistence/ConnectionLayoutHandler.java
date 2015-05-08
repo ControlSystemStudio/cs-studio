@@ -12,9 +12,9 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * XML handler to load the stored bend-points for the connections of the SNL
  * diagram associated with the current file.
- * 
+ *
  * @author Kai Meyer, Sebastian Middeke (C1 WPS)
- * 
+ *
  */
 public class ConnectionLayoutHandler extends DefaultHandler {
 
@@ -23,7 +23,7 @@ public class ConnectionLayoutHandler extends DefaultHandler {
 
     /**
      * Constructor.
-     * 
+     *
      * @param connectionLayoutMap
      *            the map for the stored connection layout data
      * @require connectionLayoutMap != null
@@ -52,7 +52,7 @@ public class ConnectionLayoutHandler extends DefaultHandler {
      * inserts the point into the list contained in the
      * <code>connectionLayoutMap</code> associated with the
      * <code>currentConnectionKey</code>
-     * 
+     *
      * @param attributes
      *            The attributes of the XML-point-entry
      * @require _currentConnectionKey != null
@@ -74,7 +74,7 @@ public class ConnectionLayoutHandler extends DefaultHandler {
      * <code>connectionLayoutMap</code> with the
      * <code>currentConnectionKey</code> as key loaded from the attributes of the
      * connection.
-     * 
+     *
      * @param attributes
      *            The attributes of the XML-connection-entry
      * @require _currentConnectionKey == null

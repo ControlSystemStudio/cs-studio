@@ -19,8 +19,8 @@ public class EllipseFigureTest extends AbstractShapeWidgetTest{
     public Figure createTestWidget() {
         return new EllipseFigure();
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -31,12 +31,12 @@ public class EllipseFigureTest extends AbstractShapeWidgetTest{
                 "fill",
                 "transparent"
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
     @Override
     public boolean isAutoTest() {
         return true;
-    }        
+    }
 }

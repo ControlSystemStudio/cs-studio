@@ -36,7 +36,7 @@ public class AssignStatementNode extends AbstractSNLNode {
     protected String doGetContent() {
         return this._channel;
     }
-    
+
     public boolean isArray() {
         return _isArray;
     }

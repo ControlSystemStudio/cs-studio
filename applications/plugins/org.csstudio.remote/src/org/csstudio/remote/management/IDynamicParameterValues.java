@@ -25,14 +25,14 @@ package org.csstudio.remote.management;
 /**
  * Provides the enumeration values for a
  * <code>dynamicEnumerationParameter</code>.
- * 
+ *
  * @author Joerg Rathlev
  */
 public interface IDynamicParameterValues {
 
     /**
      * Returns the enumeration values for the dynamic enumeration parameter.
-     * 
+     *
      * @return the enumeration values.
      */
     public CommandParameterEnumValue[] getEnumerationValues();

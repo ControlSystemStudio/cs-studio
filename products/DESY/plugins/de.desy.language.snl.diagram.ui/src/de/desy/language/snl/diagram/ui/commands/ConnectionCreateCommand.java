@@ -17,7 +17,7 @@ import de.desy.language.snl.diagram.model.SNLModel;
  * </p>
  * <ol>
  * <li>Create a subclass of GraphicalNodeEditPolicy.</li>
- * <li>Override the <tt>getConnectionCreateCommand(...)</tt> method, 
+ * <li>Override the <tt>getConnectionCreateCommand(...)</tt> method,
  * to create a new instance of this class and put it into the CreateConnectionRequest.</li>
  * <li>Override the <tt>getConnectionCompleteCommand(...)</tt>  method,
  * to obtain the Command from the ConnectionRequest, call setTarget(...) to set the

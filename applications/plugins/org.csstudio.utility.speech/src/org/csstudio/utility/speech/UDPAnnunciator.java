@@ -14,14 +14,14 @@ import java.net.InetAddress;
 /** Annnuciator implementation that sends
  *  text to a UDP server, which then
  *  performs the annunciations.
- *  
+ *
  *  <p>This can be tested with 'netcat',
  *  listening on a port for UDP messages
  *  and printing them out:
  *  <pre>
  *   nc -l -p 6543 -u
  *  </pre>
- *  
+ *
  *  @author Kay Kasemir
  */
 public class UDPAnnunciator extends BaseAnnunciator
@@ -47,7 +47,7 @@ public class UDPAnnunciator extends BaseAnnunciator
     public void say(final String something) throws Exception
     {
         final String text = applyTranslations(something + "\n"); //$NON-NLS-1$
-        
+
         final byte[] bytes = text.getBytes();
         DatagramPacket packet = new DatagramPacket(
                 bytes, bytes.length,

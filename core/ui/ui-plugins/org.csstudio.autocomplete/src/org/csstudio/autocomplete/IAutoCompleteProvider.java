@@ -14,7 +14,7 @@ import org.csstudio.autocomplete.parser.ContentType;
  * Interface for auto-complete providers. Each parser is provided via OSGI
  * services. The listResult method is executed by {@link AutoCompleteService} in
  * a dedicated thread.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public interface IAutoCompleteProvider {

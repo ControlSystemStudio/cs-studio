@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 public class MultiLineTextCellEditor extends AbstractDialogCellEditor {
-    
+
     private String stringValue;
 
     public MultiLineTextCellEditor(Composite parent, String title) {
@@ -25,7 +25,7 @@ public class MultiLineTextCellEditor extends AbstractDialogCellEditor {
 
     @Override
     protected void openDialog(Shell parentShell, String dialogTitle) {
-        MultilineTextEditDialog dialog = 
+        MultilineTextEditDialog dialog =
             new MultilineTextEditDialog(parentShell, stringValue,dialogTitle);
         if(dialog.open() == Window.OK){
             stringValue = dialog.getResult();
@@ -49,7 +49,7 @@ public class MultiLineTextCellEditor extends AbstractDialogCellEditor {
             stringValue =  "";  //$NON-NLS-1$
         else
             stringValue = value.toString();
-            
+
     }
 
 }

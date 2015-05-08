@@ -12,7 +12,7 @@ public class PartZoomOutAction extends PartZoomAction {
 
     /**
      * Constructor for ZoomInAction.
-     * 
+     *
      * @param zoomManager
      *            the zoom manager
      */

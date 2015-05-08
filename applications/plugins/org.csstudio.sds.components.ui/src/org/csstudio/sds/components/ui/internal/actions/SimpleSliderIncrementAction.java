@@ -49,7 +49,7 @@ public class SimpleSliderIncrementAction extends Action implements IObjectAction
     public final void run(final IAction action) {
         this.run();
     }
-    
+
     @Override
     public void run() {
         if (_widgetModel != null) {

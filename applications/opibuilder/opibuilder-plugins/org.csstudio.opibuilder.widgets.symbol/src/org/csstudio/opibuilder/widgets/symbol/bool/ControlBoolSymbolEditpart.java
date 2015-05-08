@@ -33,9 +33,9 @@ import org.epics.vtype.VType;
 /**
  * Edit part Controller for a Control Boolean Symbol Image widget based on
  * {@link ControlBoolSymbolModel}.
- * 
+ *
  * @author SOPRA Group
- * 
+ *
  */
 public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
 
@@ -55,7 +55,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
      * Sets those properties on the figure that are defined in the
      * {@link ControlBoolSymbolFigure} implementation class. This method is
      * called by {@link #doCreateFigure()}.
-     * 
+     *
      * @param figure
      *            the figure.
      * @param model
@@ -329,7 +329,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
                 PermutationMatrix newMatrix = PermutationMatrix.generateFlipHMatrix();
                 PermutationMatrix oldMatrix = imageFigure.getPermutationMatrix();
                 PermutationMatrix result = newMatrix.multiply(oldMatrix);
-                
+
                 setPropertyValue(ControlBoolSymbolModel.PROP_FLIP_HORIZONTAL, (Boolean) newValue);
                 setPropertyValue(ControlBoolSymbolModel.PERMUTATION_MATRIX, result.getMatrix());
                 imageFigure.setPermutationMatrix(result);
@@ -347,7 +347,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
                 PermutationMatrix newMatrix = PermutationMatrix.generateFlipVMatrix();
                 PermutationMatrix oldMatrix = imageFigure.getPermutationMatrix();
                 PermutationMatrix result = newMatrix.multiply(oldMatrix);
-                
+
                 setPropertyValue(ControlBoolSymbolModel.PROP_FLIP_VERTICAL, (Boolean) newValue);
                 setPropertyValue(ControlBoolSymbolModel.PERMUTATION_MATRIX, result.getMatrix());
                 imageFigure.setPermutationMatrix(result);
@@ -428,7 +428,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
 
     /**
      * Get the control widget model.
-     * 
+     *
      * @return the control widget model.
      */
     @Override

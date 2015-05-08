@@ -27,14 +27,14 @@ public class ArrayFeedbackFactory extends DefaultGraphicalFeedbackFactory {
     public void showChangeBoundsFeedback(AbstractWidgetModel widgetModel,
             PrecisionRectangle bounds, IFigure feedbackFigure,
             ChangeBoundsRequest request) {
-        ArrayModel arrayModel = (ArrayModel)widgetModel;    
-        
+        ArrayModel arrayModel = (ArrayModel)widgetModel;
+
         if(arrayModel.getChildren().isEmpty()){
             super.showChangeBoundsFeedback(widgetModel, bounds, feedbackFigure, request);
             return;
         }
-                
-        Dimension sizeDelta = request.getSizeDelta();        
+
+        Dimension sizeDelta = request.getSizeDelta();
         if(arrayModel.isHorizontal()){
             int eWidth = arrayModel.getChildren().get(0).getWidth();
             bounds.width -=sizeDelta.width;
@@ -46,12 +46,12 @@ public class ArrayFeedbackFactory extends DefaultGraphicalFeedbackFactory {
             sizeDelta.height = Math.round((float)sizeDelta.height/eHeight)*eHeight;
             bounds.height +=sizeDelta.height;
         }
-        
+
         super.showChangeBoundsFeedback(widgetModel, bounds, feedbackFigure, request);
-        
+
     }
-    
-    
-    
-    
+
+
+
+
 }

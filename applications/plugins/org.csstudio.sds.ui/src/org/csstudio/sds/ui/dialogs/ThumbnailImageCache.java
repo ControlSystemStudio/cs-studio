@@ -37,7 +37,7 @@ public class ThumbnailImageCache {
         Configuration configuration = new Configuration();
         configuration.addDiskStore(new DiskStoreConfiguration().path(cacheDirectory.getAbsolutePath()));
         cacheManager = CacheManager.create(configuration);
-        
+
         CacheConfiguration config = new CacheConfiguration("DisplayThumbnailCache", 1000);
         config.overflowToOffHeap(false);
         config.overflowToDisk(true);
@@ -98,7 +98,7 @@ public class ThumbnailImageCache {
     private File getImageCacheDirectory() {
         File workspaceFile = ResourcesPlugin.getWorkspace().getRoot()
                 .getLocation().toFile();
-        
+
         File result = new File(workspaceFile, ".metadata/.plugins/" + SdsUiPlugin.PLUGIN_ID + "/" + CACHE_FOLDER_NAME);
         if (!result.exists()) {
             result.mkdirs();

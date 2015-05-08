@@ -31,7 +31,7 @@ public class ArchiveWriterFactory
         // Need exactly one implementation
         if (configs.length != 1)
             throw new Exception("Need 1 extension to " + EXTENSION_ID + ", found " + configs.length);
-        
+
         final IConfigurationElement config = configs[0];
         // final String plugin = config.getContributor().getName();
         final ArchiveWriter writer = (ArchiveWriter)config.createExecutableExtension("class");

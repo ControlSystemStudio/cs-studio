@@ -41,7 +41,7 @@ public class ByteMonitorModel extends AbstractPVWidgetModel {
 
     /** Reverse the direction that bytes are displayed normal display is start bit on right or bottom*/
     public static final String PROP_BIT_REVERSE = "bitReverse";
-    
+
     /** Default color if the bit is on */
     public static final String PROP_ON_COLOR = "on_color";
 
@@ -50,7 +50,7 @@ public class ByteMonitorModel extends AbstractPVWidgetModel {
 
     /** True if the LEDs are square LED. */
     public static final String PROP_SQUARE_LED = "square_led"; //$NON-NLS-1$
-    
+
     /** The default color of the on color property. */
     private static final RGB DEFAULT_ON_COLOR = new RGB(0,255,0);
     /** The default color of the off color property. */
@@ -58,34 +58,34 @@ public class ByteMonitorModel extends AbstractPVWidgetModel {
 
     /** The ID of the effect 3D property. */
     public static final String PROP_EFFECT3D = "effect_3d"; //$NON-NLS-1$
-    
+
     /** Label of each bit */
     public static final String PROP_LABELS = "label"; //$NON-NLS-1$
 
     public ByteMonitorModel() {
         setSize(292, 20);
     }
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.opibuilder.model.AbstractWidgetModel#configureProperties()
      */
     @Override
     protected void configureProperties() {
-        addProperty(new IntegerProperty(PROP_NUM_BITS, "Number of Bits", 
+        addProperty(new IntegerProperty(PROP_NUM_BITS, "Number of Bits",
                 WidgetPropertyCategory.Display, 16, 0, 64));
-        addProperty(new IntegerProperty(PROP_START_BIT, "Start Bit", 
+        addProperty(new IntegerProperty(PROP_START_BIT, "Start Bit",
                 WidgetPropertyCategory.Display, 0, 0, 64));
-        addProperty(new BooleanProperty(PROP_HORIZONTAL, "Horizontal", 
-                WidgetPropertyCategory.Display, true));    
-        addProperty(new BooleanProperty(PROP_BIT_REVERSE, "Reverse Bits", 
+        addProperty(new BooleanProperty(PROP_HORIZONTAL, "Horizontal",
+                WidgetPropertyCategory.Display, true));
+        addProperty(new BooleanProperty(PROP_BIT_REVERSE, "Reverse Bits",
         WidgetPropertyCategory.Display, false));
         addProperty(new ColorProperty(PROP_ON_COLOR, "On Color",
                 WidgetPropertyCategory.Display, DEFAULT_ON_COLOR));
         addProperty(new ColorProperty(PROP_OFF_COLOR, "Off Color",
-                WidgetPropertyCategory.Display, DEFAULT_OFF_COLOR));        
-        addProperty(new BooleanProperty(PROP_SQUARE_LED, "Square LED", 
+                WidgetPropertyCategory.Display, DEFAULT_OFF_COLOR));
+        addProperty(new BooleanProperty(PROP_SQUARE_LED, "Square LED",
                 WidgetPropertyCategory.Display, false));
-        addProperty(new BooleanProperty(PROP_EFFECT3D, "3D Effect", 
+        addProperty(new BooleanProperty(PROP_EFFECT3D, "3D Effect",
                 WidgetPropertyCategory.Display, true));
         addProperty(new StringListProperty(PROP_LABELS, "Labels",
                 WidgetPropertyCategory.Display, new ArrayList<String>()));
@@ -98,49 +98,49 @@ public class ByteMonitorModel extends AbstractPVWidgetModel {
     public String getTypeID() {
         return ID;
     }
-    
+
     public boolean isHorizontal() {
         return (Boolean)getPropertyValue(PROP_HORIZONTAL);
     }
-    
+
     public boolean isReverseBits(){
         return (Boolean)getPropertyValue(PROP_BIT_REVERSE);
     }
-    
+
     @Override
     public void flipHorizontally() {
         super.flipHorizontally();
         if(isHorizontal())
             setPropertyValue(PROP_BIT_REVERSE, !isReverseBits());
     }
-    
+
     @Override
     public void flipHorizontally(int centerX) {
         super.flipHorizontally(centerX);
         if(isHorizontal())
             setPropertyValue(PROP_BIT_REVERSE, !isReverseBits());
     }
-    
+
     @Override
     public void flipVertically() {
         super.flipVertically();
         if(!isHorizontal())
             setPropertyValue(PROP_BIT_REVERSE, !isReverseBits());
     }
-    
+
     @Override
     public void flipVertically(int centerY) {
         super.flipVertically(centerY);
         if(!isHorizontal())
             setPropertyValue(PROP_BIT_REVERSE, !isReverseBits());
     }
-    
+
     @Override
     public void rotate90(boolean clockwise) {
         setPropertyValue(PROP_HORIZONTAL, !isHorizontal());
     }
-    
-    
+
+
 
     @Override
     public void rotate90(boolean clockwise, Point center) {

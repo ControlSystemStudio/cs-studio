@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.opibuilder.adl2boy.utilities;
 
@@ -30,7 +30,7 @@ import org.junit.Test;
 
 /**
  * @author hammonds
- * 
+ *
  */
 public class ColorUtilitiesUiPluginTest extends TestCase {
 
@@ -47,7 +47,7 @@ public class ColorUtilitiesUiPluginTest extends TestCase {
         project.open(new NullProgressMonitor());
         IPreferenceStore store = OPIBuilderPlugin.getDefault()
                 .getPreferenceStore();
-        
+
         String colorFileName = "org.csstudio.opibuilder.adl2boy/color.def";
 
         // Create a default map
@@ -64,14 +64,14 @@ public class ColorUtilitiesUiPluginTest extends TestCase {
         System.out.println("colorFile " + colorFile + ", " + colorFile.getFullPath());
         colorFile.create(bais, true, null);
         store.setValue(org.csstudio.opibuilder.preferences.PreferencesHelper.COLOR_FILE, colorFileName );
-        
+
         // copy a default file from the plugin
         URL adlURL = FileLocator.toFileURL(FileLocator.find(ADL2BOYPlugin.getDefault().getBundle(), new Path ("resources/test.adl"), null));
         File adlFile = new File(adlURL.getPath());
         IPath adlFilePath = ResourceUtil.getPathFromString( "org.csstudio.opibuilder.adl2boy/test.adl");
         IFile adlIFile = ResourcesPlugin.getWorkspace().getRoot().getFile(adlFilePath);
         adlIFile.create(new FileInputStream(adlFile), true, new NullProgressMonitor());
-        
+
     }
 
     /**

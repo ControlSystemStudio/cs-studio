@@ -39,7 +39,7 @@ public class MemoryInfo
         non_heap = memory.getNonHeapMemoryUsage().getUsed();
     }
 
-    /** Initialize 
+    /** Initialize
      *  @param used_mem Used memory (kB)
      *  @param max_mem Maximum available memory (kB)
      *  @param non_heap Used non-heap memory (kB)
@@ -74,7 +74,7 @@ public class MemoryInfo
     {
         return non_heap;
     }
-    
+
     /** @return Memory usage in percent of max */
     public String getMemoryInfo()
     {

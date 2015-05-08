@@ -4,7 +4,7 @@ import org.csstudio.logbook.ILogbook;
 
 @SuppressWarnings("nls")
 public class MidasLogbook implements ILogbook {
-    
+
     final private String logbook;
     final private String user;
     final private String password;
@@ -25,13 +25,13 @@ public class MidasLogbook implements ILogbook {
             String cmd = "elog -h " +
                     LogbookMidasPreferences.getHOST() + " -p " +
                     LogbookMidasPreferences.getPORT() + " -l " + logbook + " -s" +
-                    " -u " + user + " " + password + 
+                    " -u " + user + " " + password +
                     " -a Author=" + user + " -a Type=Diary -a Category=SlowControl" +
                     " -a Subject=\"" + title + "\" -n 1";
 
             for (String file : file_names)
                 cmd += " -f " + file;
-            
+
             cmd += " \"" + text + "\"";
             //System.out.println( cmd );
             Runtime.getRuntime().exec( cmd );

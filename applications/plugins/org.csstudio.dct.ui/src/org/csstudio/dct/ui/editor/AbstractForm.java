@@ -34,16 +34,16 @@ import org.slf4j.LoggerFactory;
 /**
  * Base class for all editing forms. The class already prepares input element
  * that are common to all model parts and takes care of refreshes.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  * @param <E>
  *            the type of element that is edited with a form
  */
 public abstract class AbstractForm<E extends IElement> implements CommandStackListener {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(AbstractForm.class);
-    
+
     private final class ElementJumpLinkListener implements Listener {
         public void handleEvent(Event event) {
             UUID id = null;
@@ -70,7 +70,7 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 
     /**
      * Constructor.
-     * 
+     *
      * @param editor
      *            a DCT editor instance
      */
@@ -83,7 +83,7 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 
     /**
      * Returns the editor instance.
-     * 
+     *
      * @return the editor instance
      */
     public DctEditor getEditor() {
@@ -92,7 +92,7 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 
     /**
      * Returns the underlying DCT project.
-     * 
+     *
      * @return the DCT project
      */
     public Project getProject() {
@@ -101,7 +101,7 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 
     /**
      * Creates the controls for this editing form.
-     * 
+     *
      * @param parent
      *            the parent composite
      */
@@ -148,7 +148,7 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 
     /**
      * Returns the command stack.
-     * 
+     *
      * @return the command stack
      */
     public CommandStack getCommandStack() {
@@ -157,7 +157,7 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 
     /**
      * Returns the main composite.
-     * 
+     *
      * @return the main composite
      */
     public final Composite getMainComposite() {
@@ -166,7 +166,7 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 
     /**
      * Sets the input object for this editing form.
-     * 
+     *
      * @param in
      *            the current input element for the form
      */
@@ -188,7 +188,7 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
             rows.add(new NameTableRowAdapter(input));
             doAddCommonRows(rows, input);
             commonTable.setInput(rows);
-            
+
             // call subclasses
             doSetInput(input);
         }
@@ -197,7 +197,7 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 
     /**
      * Returns the input object for this editing form.
-     * 
+     *
      * @return the input object
      */
     public final E getInput() {
@@ -223,10 +223,10 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 
     /**
      * Template method. Subclasses return a label text for the form title here.
-     * 
+     *
      * @param input
      *            TODO
-     * 
+     *
      * @return a label text for the form title
      */
     protected abstract String doGetFormLabel(E input);
@@ -234,7 +234,7 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
     /**
      * Template method. Subclasses can add table rows for the "common settings"
      * table here.
-     * 
+     *
      * @param rows
      *            a list with table rows for the "common settings"
      * @param input
@@ -246,11 +246,11 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
      * Subclasses my provide a text with links to model elements, which will
      * appear in the breadcrumb underneath the headline. The text can contain
      * links in the following format
-     * 
+     *
      * <code>
      *         <a href="${elementId}">link</a>
      * </code>
-     * 
+     *
      * @param input
      *            the current input element for the form
      * @return a text with link that will appear underneath the headline
@@ -299,10 +299,10 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 
     /**
      * Templates method. Used by subclasses to prepare their widgets.
-     * 
+     *
      * @param bar
      *            the expand bar
-     * 
+     *
      * @param commandStack
      *            the command stack
      */
@@ -311,7 +311,7 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
     /**
      * Template method that is called, when the input for this form changes.
      * Subclasses should refresh their widgets when this method is called.
-     * 
+     *
      * @param input
      *            the current input object
      */

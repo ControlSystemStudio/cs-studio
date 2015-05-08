@@ -30,11 +30,11 @@ public class Border extends ContainerObject implements Selectable, SaveObject,
     {
         int number = 0;
         String testHashId = hashIdPrefix + String.valueOf(number);
-        
+
         while(getParent().containsObject(testHashId))
         {
             number++;
-            testHashId = hashIdPrefix + String.valueOf(number);        
+            testHashId = hashIdPrefix + String.valueOf(number);
         }
 
         return testHashId;
@@ -43,7 +43,7 @@ public class Border extends ContainerObject implements Selectable, SaveObject,
     private String hashId;
     private String name;
     private static final String nullString = "";
-    
+
     /**
      * @param parent
      */
@@ -61,22 +61,22 @@ public class Border extends ContainerObject implements Selectable, SaveObject,
         if(parName == null)
         {
             hashId = getAvailableHashId();
-        
+
             if(parentGroup.getAbsoluteName().length() > 0)
                 name = parentGroup.getAbsoluteName() + Constants.GROUP_SEPARATOR + hashId;
             else
                 name = hashId;
         }
         else
-            name = parName;    
+            name = parName;
     }
-    
+
     public Object removeObject(String id) {
         Object obj = super.removeObject(id);
         if (obj != null) {
             return obj;
         }
-        
+
         Vector e = getSubObjectsV();
         VisibleObject object;
         for (int i = 0; i < e.size(); i++) {
@@ -89,7 +89,7 @@ public class Border extends ContainerObject implements Selectable, SaveObject,
         }
         return null;
     }
-    
+
     /*
      *  (non-Javadoc)
      * @see com.cosylab.vdct.graphics.objects.VisibleObject#destroy()
@@ -187,7 +187,7 @@ public class Border extends ContainerObject implements Selectable, SaveObject,
 
         ViewState view = ViewState.getInstance();
         VisibleObject spotted = null;
-        
+
         Enumeration e = subObjectsV.elements();
         VisibleObject vo;
         while (e.hasMoreElements()) {
@@ -252,14 +252,14 @@ public class Border extends ContainerObject implements Selectable, SaveObject,
         String currentParent = Group.substractParentName(getName());
         if(group.equals(currentParent))
             return false;
-        
+
         //String oldName = getName();
         String newName;
         if (group.equals(nullString))
             newName = Group.substractObjectName(getName());
         else
             newName = group + Constants.GROUP_SEPARATOR + Group.substractObjectName(getName());
-    
+
         // object with new name already exists, add suffix // !!!
         Object obj;
         boolean renameNeeded = false;
@@ -276,17 +276,17 @@ public class Border extends ContainerObject implements Selectable, SaveObject,
                 newName = StringUtils.incrementName(newName, Constants.MOVE_SUFFIX);
             }
         }
-    
+
         if (renameNeeded)
             return rename(newName);
-        
+
         getParent().removeObject(Group.substractObjectName(getName()));
         setParent(null);
         Group.getRoot().addSubObject(newName, this, true);
-    
+
         name = newName;
         unconditionalValidation();
-    
+
         return true;
     }
 
@@ -294,7 +294,7 @@ public class Border extends ContainerObject implements Selectable, SaveObject,
     {
         String newObjName = Group.substractObjectName(newName);
         String oldObjName = Group.substractObjectName(getName());
-    
+
         if(!oldObjName.equals(newObjName))
         {
             getParent().removeObject(oldObjName);
@@ -302,10 +302,10 @@ public class Border extends ContainerObject implements Selectable, SaveObject,
             name = fullName;
             getParent().addSubObject(newObjName, this);
         }
-        
+
     // move if needed
         moveToGroup(Group.substractParentName(newName));
-    
+
         return true;
     }
 }

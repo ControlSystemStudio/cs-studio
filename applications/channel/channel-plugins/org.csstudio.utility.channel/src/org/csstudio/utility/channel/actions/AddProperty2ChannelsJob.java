@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.channel.actions;
 
@@ -25,10 +25,10 @@ public class AddProperty2ChannelsJob extends Job {
 
     private Property.Builder property;
     private Collection<Channel> channels;
-    
+
     /**
      * create a job to add a tag _tag_ to a group of channels
-     * 
+     *
      * @param name - job name
      * @param channels - collection of channels to which the tag is to be added
      * @param tag - builder of the the tag to be added
@@ -41,7 +41,7 @@ public class AddProperty2ChannelsJob extends Job {
 
     @Override
     protected IStatus run(IProgressMonitor monitor) {
-        monitor.beginTask("Adding Properties to channels", IProgressMonitor.UNKNOWN);        
+        monitor.beginTask("Adding Properties to channels", IProgressMonitor.UNKNOWN);
         try {
             ChannelFinder.getClient().update(property, ChannelUtil.getChannelNames(channels));
         } catch (ChannelFinderException e) {
@@ -51,7 +51,7 @@ public class AddProperty2ChannelsJob extends Job {
                             .getStatus()
                             .getStatusCode(), e
                             .getMessage(), e.getCause());
-        }        
+        }
         monitor.done();
     return Status.OK_STATUS;
     }

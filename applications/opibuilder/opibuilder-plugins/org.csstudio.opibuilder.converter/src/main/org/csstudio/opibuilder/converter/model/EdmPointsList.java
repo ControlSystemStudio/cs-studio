@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 
 /**
  * Specific class representing EdmPointsList property.
- * 
+ *
  * @author Xihui Chen
  *
  */
@@ -26,7 +26,7 @@ public class EdmPointsList extends EdmAttribute {
 
     /**
      * Constructor, which parses int property from EdmAttribute general interface.
-     * 
+     *
      * @param genericAttribute    EdmAttribute containing int format data.
      * @param required false if this attribute is optional, else true
      * @throws EdmException    if data from EdmAttribute of invalid format.
@@ -52,7 +52,7 @@ public class EdmPointsList extends EdmAttribute {
                 val.add(Integer.parseInt(getValue(i).split("\\s")[1]));
             }
             setInitialized(true);
-            log.debug("Parsed " + this.getClass().getName() + 
+            log.debug("Parsed " + this.getClass().getName() +
                     " = " + val);
         }
         catch (Exception e) {

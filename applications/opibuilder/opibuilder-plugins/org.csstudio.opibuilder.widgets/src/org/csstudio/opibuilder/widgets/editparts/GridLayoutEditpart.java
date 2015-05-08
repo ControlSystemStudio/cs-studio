@@ -23,12 +23,12 @@ import org.eclipse.swt.graphics.Image;
  *
  */
 public class GridLayoutEditpart extends AbstractLayoutEditpart {
-    
+
     @Override
     public GridLayoutModel getWidgetModel() {
         return (GridLayoutModel)getModel();
     }
-    
+
     @Override
     protected Image getIcon() {
         return CustomMediaFactory.getInstance().getImageFromPlugin(
@@ -43,9 +43,9 @@ public class GridLayoutEditpart extends AbstractLayoutEditpart {
         int numChildren = widgetModelList.size();
         int[] maxWidths = new int[numColumns];
         int[] maxHeights = new int[numRows];
-        
+
         int temp;
-    
+
         //fill max widths
         for(int c= 0; c<numColumns; c++){
             for(int r = 0; r < numRows; r++){
@@ -57,7 +57,7 @@ public class GridLayoutEditpart extends AbstractLayoutEditpart {
                 }
             }
         }
-        
+
         //fill max heights
         for(int r = 0; r < numRows; r++){
             for(int c= 0; c<numColumns; c++){
@@ -72,7 +72,7 @@ public class GridLayoutEditpart extends AbstractLayoutEditpart {
         int gap = getWidgetModel().getGridGap();
         boolean fill = getWidgetModel().isFillGrids();
         Rectangle[] newBounds = new Rectangle[numChildren];
-        
+
         //get bounds
         for(int c= 0; c<numColumns; c++){
             for(int r = 0; r < numRows; r++){
@@ -86,10 +86,10 @@ public class GridLayoutEditpart extends AbstractLayoutEditpart {
                 newBounds[index]=new Rectangle(x, y, w, h);
             }
         }
-        
+
         return Arrays.asList(newBounds);
     }
-    
+
     private int sumSubArray(int index, int[] array, int gap){
         if(array.length ==0)
             return 0;
@@ -105,7 +105,7 @@ public class GridLayoutEditpart extends AbstractLayoutEditpart {
     @Override
     protected void registerPropertyChangeHandlers() {
 //        IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-//            
+//
 //            public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
 //                refreshParentLayout();
 //                return false;
@@ -114,7 +114,7 @@ public class GridLayoutEditpart extends AbstractLayoutEditpart {
 //        setPropertyChangeHandler(GridLayoutModel.PROP_FILL_GRIDS, handler);
 //        setPropertyChangeHandler(GridLayoutModel.PROP_NUMBER_OF_COLUMNS, handler);
 //        setPropertyChangeHandler(GridLayoutModel.PROP_GRID_GAP, handler);
-        
+
     }
 
 }

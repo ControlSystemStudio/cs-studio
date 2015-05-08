@@ -14,9 +14,9 @@ import org.eclipse.core.runtime.IAdapterFactory;
 /**
  * Adapter factor for the common adaptables. This will adapt a selection of
  * {@link ChannelAdaptable}
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class ChannelAdapterFactory implements IAdapterFactory {
 

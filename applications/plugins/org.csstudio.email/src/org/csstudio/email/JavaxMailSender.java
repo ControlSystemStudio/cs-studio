@@ -18,12 +18,12 @@ public class JavaxMailSender {
     private List<String> to, cc, cci;
     private String subject = "";
     private String body = "";
-    
+
     public JavaxMailSender() {
         this.host = Preferences.getSMTP_Host();
         this.from = Preferences.getSMTP_Sender();
     }
-    
+
     public void send() {
         Properties props = new Properties();
         props.put("mail.smtp.host", host);
@@ -66,13 +66,13 @@ public class JavaxMailSender {
                     "Exception during EMail sending: {0}", e.getMessage());
         }
     }
-    
+
     public boolean checkContent() {
         return ((to != null && !to.isEmpty())
                 && (subject != null && !"".equals(subject.trim()))
                 && (body != null));
     }
-    
+
     public String getHost() {
         return host;
     }
@@ -117,5 +117,5 @@ public class JavaxMailSender {
         if (body == null) return;
         this.body = body;
     }
-    
+
 }

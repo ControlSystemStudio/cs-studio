@@ -11,7 +11,7 @@ public class ConnectionDescriptor {
         _channel = channel;
         _connectionState = ConnectionState.INITIAL;
     }
-    
+
     public String getDescription() {
         return _channel + " [" + _connectionState + "]";
     }
@@ -19,5 +19,5 @@ public class ConnectionDescriptor {
     public void setConnectionState(ConnectionState state) {
         _connectionState = state;
     }
-    
+
 }

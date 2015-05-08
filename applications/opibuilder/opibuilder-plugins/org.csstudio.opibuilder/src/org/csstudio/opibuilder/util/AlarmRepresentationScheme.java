@@ -20,15 +20,15 @@ import org.epics.vtype.AlarmSeverity;
  */
 public class AlarmRepresentationScheme {
 
-    
+
     public static final int ALARM_BORDER_WIDTH = 2;
     public static final String MAJOR = "Major"; //$NON-NLS-1$
     public static final String MINOR = "Minor"; //$NON-NLS-1$
     public static final String INVALID = "Invalid"; //$NON-NLS-1$
     public static final String DISCONNECTED = "Disconnected"; //$NON-NLS-1$
-    
+
     private static final AbstractBorder DISCONNECT_BORDER = BorderFactory.createBorder(
-            BorderStyle.TITLE_BAR, 1, AlarmRepresentationScheme.getDisconnectedColor(), 
+            BorderStyle.TITLE_BAR, 1, AlarmRepresentationScheme.getDisconnectedColor(),
             "Disconnected");
 
     /**
@@ -48,25 +48,25 @@ public class AlarmRepresentationScheme {
         case UNDEFINED:
         default:
             return getInValidColor();
-        }        
+        }
     }
 
     public static RGB getMajorColor(){
-        return MediaService.getInstance().getColor(MAJOR); 
+        return MediaService.getInstance().getColor(MAJOR);
     }
-    
+
     public static RGB getMinorColor(){
         return MediaService.getInstance().getColor(MINOR);
     }
-    
+
     public static RGB getInValidColor(){
         return MediaService.getInstance().getColor(INVALID);
     }
-    
+
     public static RGB getDisconnectedColor(){
         return MediaService.getInstance().getColor(DISCONNECTED);
     }
-    
+
     public static Border getMajorBorder(BorderStyle borderStyle){
         BorderStyle newBorderStyle = getNewBorderStyle(borderStyle);
         return BorderFactory.createBorder(newBorderStyle, ALARM_BORDER_WIDTH, getMajorColor(), ""); //$NON-NLS-1$
@@ -86,19 +86,19 @@ public class AlarmRepresentationScheme {
         }
         return newBorderStyle;
     }
-    
+
     public static Border getMinorBorder(BorderStyle borderStyle){
         BorderStyle newBorderStyle = getNewBorderStyle(borderStyle);
 
         return BorderFactory.createBorder(newBorderStyle, ALARM_BORDER_WIDTH, getMinorColor(), ""); //$NON-NLS-1$
     }
-    
+
     public static Border getInvalidBorder(BorderStyle borderStyle){
         BorderStyle newBorderStyle = getNewBorderStyle(borderStyle);
 
         return BorderFactory.createBorder(newBorderStyle, ALARM_BORDER_WIDTH, getInValidColor(), ""); //$NON-NLS-1$
     }
-    
+
     public static Border getDisonnectedBorder(){
         return DISCONNECT_BORDER;
     }

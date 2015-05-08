@@ -28,19 +28,19 @@ import org.eclipse.swt.widgets.MessageBox;
  *
  */
 public class AbstractBoolControlFigure extends AbstractBoolFigure {
-    
+
     public enum ShowConfirmDialog{
         NO("No"),
         Both("Both"),
         PUSH("Push"),
         RELEASE("Release");
-        
+
         String description;
-        
+
         private ShowConfirmDialog(String desc) {
             this.description = desc;
         }
-        
+
         public static String[] stringValues(){
             String[] sv = new String[values().length];
             int i=0;
@@ -48,7 +48,7 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
                 sv[i++] = p.toString();
             return sv;
         }
-        
+
         @Override
         public String toString() {
             return description;
@@ -62,7 +62,7 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
                     return;
                 boolean isOpen = false;
                 if(runMode){
-                     if(toggle){                         
+                     if(toggle){
                          switch (showConfirmDialog) {
                         case Both:
                             isOpen = true;
@@ -81,7 +81,7 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
                         }
                          if(!isOpen || (isOpen && openConfirmDialog()))
                                  fireManualValueChange(!booleanValue);
-                    }                        
+                    }
                     else{
                          switch (showConfirmDialog) {
                         case Both:
@@ -91,19 +91,19 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
                             break;
                         case NO:
                             isOpen = false;
-                            break;                        
+                            break;
                         default:
                             break;
                         }
                         if(!isOpen || (isOpen && openConfirmDialog())){
                             canceled = false;
-                            fireManualValueChange(true);    
+                            fireManualValueChange(true);
                             if(isOpen)
                                 Display.getCurrent().timerExec(100, new Runnable(){
                                     public void run() {
                                         fireManualValueChange(false);
-                                    }                                
-                                });                                
+                                    }
+                                });
                         }else
                             canceled = true;
                     }
@@ -112,73 +112,73 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
                     repaint();
                 }
             }
-            public void mouseReleased(MouseEvent me) {        
+            public void mouseReleased(MouseEvent me) {
                 if (me.button != 1)
                     return;
                 if(!toggle && runMode && !canceled){
                     fireManualValueChange(false);
                     me.consume();
                     repaint();
-                }                    
-            }            
+                }
+            }
     }
-    
-    protected boolean toggle = false;    
-    
+
+    protected boolean toggle = false;
+
     protected ShowConfirmDialog showConfirmDialog = ShowConfirmDialog.Both;
-    
+
 
     protected String password = "";
-    
+
     protected String confirmTip = "Are you sure you want to do this?";
-    
-    protected boolean runMode = false;    
-    
-    protected ButtonPresser buttonPresser; 
+
+    protected boolean runMode = false;
+
+    protected ButtonPresser buttonPresser;
     protected final static Color DISABLE_COLOR = CustomMediaFactory.getInstance().getColor(
-            CustomMediaFactory.COLOR_GRAY);    
-    
+            CustomMediaFactory.COLOR_GRAY);
+
     /** The alpha (0 is transparency and 255 is opaque) for disabled paint */
     protected static final int DISABLED_ALPHA = 100;
-    
+
     /**
      * Listeners that react on manual boolean value change events.
      */
-    private List<IManualValueChangeListener> boolControlListeners = 
+    private List<IManualValueChangeListener> boolControlListeners =
         new ArrayList<IManualValueChangeListener>();
-    
+
     public AbstractBoolControlFigure() {
         super();
         buttonPresser = new ButtonPresser();
     }
-    
-    
+
+
     /**add a boolean control listener which will be executed when pressed or released
      * @param listener the listener to add
      */
     public void addManualValueChangeListener(final IManualValueChangeListener listener){
         boolControlListeners.add(listener);
     }
-    
+
     public void removeManualValueChangeListener(final IManualValueChangeListener listener){
         if(boolControlListeners.contains(listener))
             boolControlListeners.remove(listener);
     }
-    
+
     /**
      * Inform all boolean control listeners, that the manual value has changed.
-     * 
+     *
      * @param newManualValue
      *            the new manual value
      */
     protected void fireManualValueChange(final boolean newManualValue) {
-        
+
         booleanValue = newManualValue;
-        updateValue();        
+        updateValue();
         if(runMode){
-            for (IManualValueChangeListener l : boolControlListeners) {                    
+            for (IManualValueChangeListener l : boolControlListeners) {
                     l.manualValueChanged(value);
-            }            
+            }
         }
     }
     /**
@@ -206,7 +206,7 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
     public boolean isShowConfirmDialog() {
         return showConfirmDialog != ShowConfirmDialog.NO;
     }
-    
+
     /**
      * @return the condition when confirm dialog should be shown.
      */
@@ -222,7 +222,7 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
 
     /**
      * open a confirm dialog.
-     * 
+     *
      * @return false if user canceled, true if user pressed OK or no confirm
      *         dialog needed.
      */
@@ -279,11 +279,11 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
      * @param runMode the runMode to set
      */
     public void setRunMode(boolean runMode) {
-        this.runMode = runMode;        
+        this.runMode = runMode;
     }
-    
-    
-    
+
+
+
     /**Deprecated. Use {@link #setShowConfirmDialog(ShowConfirmDialog)}
      * @param showConfirmDialog the showConfirmDialog to set
      */
@@ -295,13 +295,13 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
     public void setShowConfirmDialog(ShowConfirmDialog showConfirm) {
         this.showConfirmDialog = showConfirm;
     }
-    
+
     /**
      * @param toggle the toggle to set
      */
     public void setToggle(boolean toggle) {
         this.toggle = toggle;
     }
-    
-    
+
+
 }

@@ -8,22 +8,22 @@ package com.cosylab.vdct.graphics.objects;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -48,7 +48,7 @@ public class EPICSVarLink extends EPICSLink implements MultiInLink, Popupable, I
         public void actionPerformed(ActionEvent e) {
             String action = e.getActionCommand();
 /*            if (action.equals(colorString))
-            {            
+            {
                 Color newColor = ColorChooser.getColor(selectTitle, getColor());
                 if (newColor!=null)
                     setColor(newColor);
@@ -71,7 +71,7 @@ public class EPICSVarLink extends EPICSLink implements MultiInLink, Popupable, I
             {
                 destroy();
             }
-            
+
         }
     }
     protected Vector outlinks;
@@ -82,9 +82,9 @@ public class EPICSVarLink extends EPICSLink implements MultiInLink, Popupable, I
     private static final String moveDownString = "Move Down";
     private static final String removeString = "Remove Link";
     private static GUISeparator linkSeparator = null;
-    
+
     protected boolean drawOnlyOneSided = false;
-     
+
 /**
  * EPICSVarLink constructor comment.
  * @param parent com.cosylab.vdct.graphics.objects.ContainerObject
@@ -119,13 +119,13 @@ public void destroy() {
                     ((EPICSLinkOut)start).sourceDestroyed();
                 else if (start!=null)
                     start.disconnect(this);
-                else 
+                else
                     outlink.disconnect(this);
             }
             outlinks.clear();
         }
     }
-    
+
 }
 /**
  * Insert the method's description here.
@@ -149,33 +149,33 @@ public void disconnect(Linkable disconnector) {
  * @param hilited boolean
  */
 protected void drawOneSided(Graphics g, boolean hilited) {
-    
+
 
     com.cosylab.vdct.graphics.ViewState view = com.cosylab.vdct.graphics.ViewState.getInstance();
     double Rscale = view.getScale();
     boolean zoom = (Rscale < 1.0) && view.isZoomOnHilited() && view.isHilitedObject(this);
-    
+
     if (zoom) {
         zoomImage = ZoomPane.getInstance().startZooming(this,!isZoomRepaint());
     }
-    
+
     boolean isRightSide = isRight();
 
     int rrx;            // rrx, rry is center
     if (isRightSide)
         rrx = getRx()+r+getRwidth()-view.getRx();
-    else 
+    else
         rrx = getRx()-r-view.getRx();
 
     //int rry = getRy()+getRheight()/2-view.getRy();
     int rry = (int)(getRscale()*getInY()- view.getRy());
-    
+
     if (getParent().isZoomRepaint()) {
         if (isRightSide) {
             rrx = getX() - getParent().getX() + getWidth() + ZoomPane.getInstance().getLeftOffset();
             if (this instanceof TemplateEPICSLink) {
                 rrx += r;
-            } 
+            }
         } else {
             rrx = getX() - getParent().getX() + ZoomPane.getInstance().getLeftOffset();
             if (this instanceof TemplateEPICSLink) {
@@ -184,14 +184,14 @@ protected void drawOneSided(Graphics g, boolean hilited) {
                 rrx -= 2*r;
             }
         }
-        
+
         rry = getY() - getParent().getY() + ZoomPane.VERTICAL_MARGIN + getHeight()/2;
     } else if (isZoomRepaint()) {
         if (isRightSide) {
             rrx = getWidth() + ZoomPane.getInstance().getLeftOffset();
             if (this instanceof TemplateEPICSLink) {
                 rrx += r;
-            } 
+            }
         } else {
             rrx = getX() - getParent().getX() + ZoomPane.getInstance().getLeftOffset();
             if (this instanceof TemplateEPICSLink) {
@@ -200,27 +200,27 @@ protected void drawOneSided(Graphics g, boolean hilited) {
                 rrx -= 5*r;
             }
         }
-                
+
         rry = ZoomPane.VERTICAL_MARGIN + getHeight()/2;
     }
-    
-    
+
+
 
     if (!hilited) g.setColor(Constants.FRAME_COLOR);
-    else g.setColor((view.isHilitedObject(this)) ? 
+    else g.setColor((view.isHilitedObject(this)) ?
                     Constants.HILITE_COLOR : Constants.FRAME_COLOR);
 
     g.drawOval(rrx-r, rry-r, 2*r,2*r);
-    
+
     if (!disconnected && (outlinks.size()>0)) {
         /*// shorten tail if needed
         if (outlinks.size()==1) {
             int rlx = (int)(((OutLink)outlinks.firstElement()).getOutX()*scale);
             if (isRightSide) {
-                if ((rrx+rtailLen)>rlx) rtailLen = rlx-rrx; 
-            } 
+                if ((rrx+rtailLen)>rlx) rtailLen = rlx-rrx;
+            }
             else {
-                if ((rrx-rtailLen)<rlx) rtailLen = rrx-rlx; 
+                if ((rrx-rtailLen)<rlx) rtailLen = rrx-rlx;
             }
             if (rtailLen<0) rtailLen=0;
         }*/
@@ -231,24 +231,24 @@ protected void drawOneSided(Graphics g, boolean hilited) {
         int linkx = (int)(getRscale()*getInX() - view.getRx());
 
         if (isZoomRepaint() || getParent().isZoomRepaint()) {
-            if (isRightSide) 
+            if (isRightSide)
                 linkx = ZoomPane.getInstance().getWidth();
             else
                 linkx = 0;
-            
+
         }
-        
+
         if (isRightSide) {
             g.drawLine(rrx+2*r, rry, linkx, rry);
         }
-        else 
+        else
             g.drawLine(linkx, rry, rrx-3*r, rry);
 
         // !!! more intergroup inlinks?!
         LinkDrawer.drawInIntergroupLink(g, (OutLink)outlinks.firstElement(), this, isRightSide);
-        
+
     }
-    
+
     super.draw(g, hilited);
 
 }
@@ -268,14 +268,14 @@ protected void draw(Graphics g, boolean hilited) {
     }
 
     com.cosylab.vdct.graphics.ViewState view = com.cosylab.vdct.graphics.ViewState.getInstance();
-    
+
     double Rscale = view.getScale();
     boolean zoom = (Rscale < 1.0) && view.isZoomOnHilited() && view.isHilitedObject(this);
-    
+
     if (zoom) {
         zoomImage = ZoomPane.getInstance().startZooming(this,!isZoomRepaint());
     }
-    
+
     boolean isRightSide = isRight();
 
     int rrrx = getRx()+r+getRwidth()-view.getRx();
@@ -283,8 +283,8 @@ protected void draw(Graphics g, boolean hilited) {
 
     //int rry = getRy()+getRheight()/2-view.getRy();
     int rry = (int)(getRscale()*getInY()- view.getRy());
-    
-    
+
+
     if (getParent().isZoomRepaint()) {
         rrrx = getX() - getParent().getX() + getWidth() + ZoomPane.getInstance().getLeftOffset() + r;
         rrlx = getX() - getParent().getX() + ZoomPane.getInstance().getLeftOffset()-r;
@@ -298,14 +298,14 @@ protected void draw(Graphics g, boolean hilited) {
         }
         rry = ZoomPane.VERTICAL_MARGIN + getHeight()/2;
     }
-    
+
     if (!hilited) g.setColor(Constants.FRAME_COLOR);
-    else g.setColor((view.isHilitedObject(this)) ? 
+    else g.setColor((view.isHilitedObject(this)) ?
                     Constants.HILITE_COLOR : Constants.FRAME_COLOR);
 
     g.drawOval(rrrx-r, rry-r, 2*r,2*r);
     g.drawOval(rrlx-r, rry-r, 2*r,2*r);
-    
+
     if (!disconnected && (outlinks.size()>0)) {
 
         // tail
@@ -313,7 +313,7 @@ protected void draw(Graphics g, boolean hilited) {
 
         boolean hasLeftOutLink = false;
         boolean hasRightOutLink = false;
-        
+
         // check which sides are used
         int mid = (getLeftX() + getRightX())/2;
         Enumeration e = outlinks.elements();
@@ -344,10 +344,10 @@ protected void draw(Graphics g, boolean hilited) {
             g.drawLine(rrrx+2*r, rry, linkrx, rry);
         }
 
-        
+
         // !!! more intergroup inlinks?!
         LinkDrawer.drawInIntergroupLink(g, (OutLink)outlinks.firstElement(), this, isRightSide);
-        
+
     }
     super.draw(g, hilited);
 
@@ -395,7 +395,7 @@ public int getInY() {
  * @return java.util.Vector
  */
 public java.util.Vector getItems() {
-    
+
     Vector items = new Vector();
 
     ActionListener al = createPopupmenuHandler();
@@ -415,8 +415,8 @@ public java.util.Vector getItems() {
         LinkManagerObject parObj = (LinkManagerObject)getParent();
         boolean isFirst = parObj.isFirstField(this);
         boolean isLast = parObj.isLastField(this);
-        
-    
+
+
         if (!isFirst)
         {
             JMenuItem upItem = new JMenuItem(moveUpString);
@@ -424,7 +424,7 @@ public java.util.Vector getItems() {
             upItem.setIcon(new ImageIcon(getClass().getResource("/images/up.gif")));
             items.addElement(upItem);
         }
-    
+
         if (!isLast)
         {
             JMenuItem downItem = new JMenuItem(moveDownString);
@@ -432,18 +432,18 @@ public java.util.Vector getItems() {
             downItem.setIcon(new ImageIcon(getClass().getResource("/images/down.gif")));
             items.addElement(downItem);
         }
-    
+
         if (!(isFirst && isLast) && getLinkCount()>0)
             items.add(new JSeparator());
     }
-    
+
     if (getLinkCount()>0)
     {
         JMenuItem removeItem = new JMenuItem(removeString);
         removeItem.addActionListener(al);
         items.addElement(removeItem);
     }
-    
+
     return items;
 }
 /**
@@ -549,7 +549,7 @@ public boolean isRight() {
         return false;
     }
     else {
-        
+
         OutLink first = (OutLink)outlinks.firstElement();
         return isOutlinkOnRight(first);
     }
@@ -558,7 +558,7 @@ public boolean isRight() {
 private boolean isOutlinkOnRight(OutLink outlink) {
     if (outlink.getLayerID().equals(getLayerID()))
         return getRightX()<=outlink.getLeftX()
-            || (outlink.getLeftX()<getLeftX() && getLeftX() < outlink.getRightX() && outlink.getRightX() < getRightX());                
+            || (outlink.getLeftX()<getLeftX() && getLeftX() < outlink.getRightX() && outlink.getRightX() < getRightX());
         //return (first.getOutX()>(getX()+getWidth()/2));
     else
         return super.isRight();
@@ -622,7 +622,7 @@ public void revalidatePosition() {
 public void revalidateOutlinkConnectors() {
     Enumeration e = outlinks.elements();
     while (e.hasMoreElements()) {
-        Object obj = e.nextElement();        
+        Object obj = e.nextElement();
         if (obj instanceof Connector) {
             Connector con = (Connector)obj;
             con.revalidatePosition();
@@ -631,8 +631,8 @@ public void revalidateOutlinkConnectors() {
 }
 public int getRightX() {
     if (outlinks.size()==1 && !getLayerID().equals(getOutput().getLayerID()))
-        return getX()+getWidth()+Constants.TAIL_LENGTH;     
-    else    
+        return getX()+getWidth()+Constants.TAIL_LENGTH;
+    else
         return getX()+getWidth()+Constants.TAIL_LENGTH + getVerticalPosition()*Constants.LINK_SLOT_WIDTH;
 }
 
@@ -652,7 +652,7 @@ public Vector getOutlinks() {
 public int getLeftOffset() {
     if (isRight()) return 2*r;
     return 5*r;
-    
+
 }
 
 public int getRightOffset() {

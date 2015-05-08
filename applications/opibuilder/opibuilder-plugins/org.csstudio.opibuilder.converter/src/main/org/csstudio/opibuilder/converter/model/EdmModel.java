@@ -33,7 +33,7 @@ public class EdmModel {
     /**
      * Provides singleton functionality of EdmModel.
      * Creates instance of EdmModel when needed.
-     * 
+     *
      * @return EdmModel instance.
      * @throws EdmException when EdmModel's colors list parsing returns an error.
      */
@@ -46,7 +46,7 @@ public class EdmModel {
     /**
      * Constructor.
      * Parses Edm colors list file and stores it.
-     * 
+     *
      * @throws EdmException
      */
     private EdmModel() throws EdmException {
@@ -62,9 +62,9 @@ public class EdmModel {
             return;
         EdmColorsListParser colorsParser = new EdmColorsListParser(colorsFile);
         genColorsList = colorsParser.getRoot();
-        colorsList = new EdmColorsList(genColorsList);    
+        colorsList = new EdmColorsList(genColorsList);
     }
-    
+
     /**
      * Returns EdmColorsList of data model.
      * @return EdmColorsList in current data model.
@@ -75,7 +75,7 @@ public class EdmModel {
 
     /**
      * Parses given EDL file and stores it in fileName - EdmDisplay map.
-     * 
+     *
      * @param fileName EDL file to parse.
      * @return EdmDisplay object instance.
      * @throws EdmException if there is a parsing error.

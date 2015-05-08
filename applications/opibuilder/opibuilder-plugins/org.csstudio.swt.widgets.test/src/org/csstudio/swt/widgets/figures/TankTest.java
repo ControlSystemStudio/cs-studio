@@ -12,11 +12,11 @@ import org.eclipse.draw2d.Figure;
 public class TankTest extends AbstractMarkedWidgetTest{
 
     @Override
-    public Figure createTestWidget() {        
+    public Figure createTestWidget() {
         return new TankFigure();
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -25,15 +25,15 @@ public class TankTest extends AbstractMarkedWidgetTest{
                 "fillBackgroundColor",
                 "effect3D"
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
     @Override
     public boolean isAutoTest() {
         return true;
     }
 
-    
-        
+
+
 }

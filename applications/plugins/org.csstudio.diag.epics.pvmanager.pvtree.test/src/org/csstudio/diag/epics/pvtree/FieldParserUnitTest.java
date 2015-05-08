@@ -28,9 +28,9 @@ public class FieldParserUnitTest
     {
         final Map<String, List<String>> rec_fields =
             FieldParser.parse("ai(INP,FLNK) ; ao (DOL, SIML , FLNK, SCAN )  ; calc(X, INPA-L)");
-        
+
         assertThat(rec_fields.get("quirk"), is(nullValue()));
-        
+
         List<String> fields = rec_fields.get("ao");
         assertThat(fields.size(), equalTo(4));
         assertThat(fields.get(0), equalTo("DOL"));

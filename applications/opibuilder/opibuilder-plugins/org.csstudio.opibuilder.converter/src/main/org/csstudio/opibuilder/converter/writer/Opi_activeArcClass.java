@@ -23,22 +23,22 @@ public class Opi_activeArcClass extends OpiWidget {
     private static final String version = "1.0";
 
     /**
-     * Converts the Edm_activeArcClass to OPI Rectangle widget XML.  
+     * Converts the Edm_activeArcClass to OPI Rectangle widget XML.
      */
     public Opi_activeArcClass(Context con, Edm_activeArcClass r) {
         super(con, r);
         setTypeId(typeId);
         setVersion(version);
         setName(name);
-        
+
         new OpiColor(widgetContext, "foreground_color",r.getLineColor(), r);
-        
+
 
         new OpiBoolean(widgetContext, "fill", r.isFill());
-        
+
         new OpiColor(widgetContext, "background_color", r.getFillColor(), r);
-            
-            
+
+
         if (r.getAlarmPv() != null) {
             // line color alarm rule.
             if (r.isLineAlarm())
@@ -48,7 +48,7 @@ public class Opi_activeArcClass extends OpiWidget {
                 createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "background_color",
                         "backColorAlarmRule", false);
         }
-        
+
         int line_width = 1;
         if(r.getAttribute("lineWidth").isExistInEDL() && (r.getLineWidth() != 0 || r.isFill()))
             line_width = r.getLineWidth();
@@ -68,19 +68,19 @@ public class Opi_activeArcClass extends OpiWidget {
 
         }
         new OpiInt(widgetContext, "line_style", lineStyle);
-        
-        
+
+
         new OpiDouble(widgetContext, "start_angle", r.getStartAngle());
 
-        new OpiDouble(widgetContext, "total_angle", 
+        new OpiDouble(widgetContext, "total_angle",
                     r.getAttribute("totalAngle").isExistInEDL()?r.getTotalAngle():180);
-        
+
         log.debug("Edm_activeArcClass written.");
 
     }
-    
+
     protected void setDefaultPropertyValue(){
-        super.setDefaultPropertyValue();        
+        super.setDefaultPropertyValue();
         new OpiBoolean(widgetContext, "transparent", true);
     }
 

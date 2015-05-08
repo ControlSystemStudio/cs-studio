@@ -25,14 +25,14 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * @author Xihui Chen
  *
  */
-public class LabelFigure extends Figure implements Introspectable{    
-    
-    
+public class LabelFigure extends Figure implements Introspectable{
+
+
     protected V_ALIGN verticalAlignment = V_ALIGN.TOP;
     protected H_ALIGN horizontalAlignment = H_ALIGN.LEFT;
-    
+
     protected boolean runMode;
-    
+
     protected boolean selectable = true;
     private String text = ""; //$NON-NLS-1$
     private Point textLocation;
@@ -41,22 +41,22 @@ public class LabelFigure extends Figure implements Introspectable{
     public LabelFigure() {
         this(false);
     }
-    
-    /** 
+
+    /**
      * Constructor
-     * 
+     *
      * @param runMode true if this figure is in run mode; false if in edit mode.
      */
     public LabelFigure(boolean runMode) {
-        this.runMode = runMode;        
+        this.runMode = runMode;
     }
 
     protected void calculateTextLocation() {
-        Rectangle clientArea = getClientArea();        
+        Rectangle clientArea = getClientArea();
         Dimension textSize = getTextSize();
             int x=0;
             if(clientArea.width > textSize.width){
-                
+
                 switch (horizontalAlignment) {
                 case CENTER:
                     x = (clientArea.width - textSize.width)/2;
@@ -65,11 +65,11 @@ public class LabelFigure extends Figure implements Introspectable{
                     x = clientArea.width - textSize.width;
                     break;
                 case LEFT:
-                default:                    
+                default:
                     break;
                 }
             }
-            
+
             int y=0;
             if(clientArea.height > textSize.height){
                 switch (verticalAlignment) {
@@ -84,14 +84,14 @@ public class LabelFigure extends Figure implements Introspectable{
                     break;
                 }
             }
-            
+
             textLocation = new Point(x, y);
     }
 
     protected Dimension calculateTextSize() {
         return Draw2dSingletonUtil.getTextUtilities().getTextExtents(text, getFont());
     }
-    
+
     protected void clearLocation(){
         textLocation = null;
         textSize = null;
@@ -105,12 +105,12 @@ public class LabelFigure extends Figure implements Introspectable{
             return super.containsPoint(x, y);
     }
 
-    
+
     public Dimension getAutoSizeDimension(){
         return getPreferredSize().getCopy().expand(
                 getInsets().getWidth(), getInsets().getHeight());
     }
-    
+
     public BeanInfo getBeanInfo() throws IntrospectionException {
         return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
     }
@@ -121,7 +121,7 @@ public class LabelFigure extends Figure implements Introspectable{
     public H_ALIGN getHorizontalAlignment() {
         return horizontalAlignment;
     }
-    
+
 
     @Override
     public Dimension getMinimumSize(int wHint, int hHint) {
@@ -136,22 +136,22 @@ public class LabelFigure extends Figure implements Introspectable{
 
     public String getText() {
         return text;
-    }    
+    }
 
-    
+
     protected Point getTextLocation() {
         if (textLocation != null)
             return textLocation;
         calculateTextLocation();
         return textLocation;
-    }    
-    
+    }
+
     protected Dimension getTextSize() {
         if (textSize == null)
             textSize = calculateTextSize();
         return textSize;
     }
-    
+
     /**
      * @return the v_alignment
      */
@@ -164,21 +164,21 @@ public class LabelFigure extends Figure implements Introspectable{
         clearLocation();
         super.invalidate();
     }
-    
+
     /**
      * @return the runMode
      */
     public boolean isRunMode() {
         return runMode;
     }
-    
+
     /**
      * @return the selectable
      */
     public boolean isSelectable() {
         return selectable;
-    }    
-    
+    }
+
     @Override
     protected void paintFigure(Graphics graphics) {
         super.paintFigure(graphics);
@@ -187,9 +187,9 @@ public class LabelFigure extends Figure implements Introspectable{
         Rectangle clientArea = getClientArea();
         graphics.translate(clientArea.x, clientArea.y);
         graphics.drawText(text, getTextLocation());
-        graphics.translate(-clientArea.x, -clientArea.y);        
+        graphics.translate(-clientArea.x, -clientArea.y);
     }
-    
+
     public void setHorizontalAlignment(H_ALIGN hAlignment) {
         if(this.horizontalAlignment == hAlignment)
             return;
@@ -197,22 +197,22 @@ public class LabelFigure extends Figure implements Introspectable{
         revalidate();
         repaint();
     }
-    
+
     /**
      * @param runMode the runMode to set
      */
     public void setRunMode(boolean runMode) {
         this.runMode = runMode;
     }
-    
+
     /**
      * @param selectable the selectable to set
      */
     public void setSelectable(boolean selectable) {
         this.selectable = selectable;
-    }    
-    
-    
+    }
+
+
     public void setText(String s) {
         // "text" will never be null.
         if (s == null)
@@ -248,7 +248,7 @@ public class LabelFigure extends Figure implements Introspectable{
         H_ALIGN(String description){
             this.descripion = description;
         }
-        
+
         @Override
         public String toString() {
             return descripion;
@@ -271,7 +271,7 @@ public class LabelFigure extends Figure implements Introspectable{
         V_ALIGN(String description){
             this.descripion = description;
         }
-        
+
         @Override
         public String toString() {
             return descripion;

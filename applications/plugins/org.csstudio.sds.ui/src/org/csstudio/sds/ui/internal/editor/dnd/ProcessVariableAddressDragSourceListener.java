@@ -14,9 +14,9 @@ import org.eclipse.swt.dnd.DragSourceEvent;
 /**
  * Drag source listener for SDS that provides a list of
  * {@link IProcessVariableAddress}.
- * 
+ *
  * @author swende
- * 
+ *
  */
 public class ProcessVariableAddressDragSourceListener extends AbstractTransferDragSourceListener {
 

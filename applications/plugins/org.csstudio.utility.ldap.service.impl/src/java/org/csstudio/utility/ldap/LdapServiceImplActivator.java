@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * The activator class controls the plug-in life cycle
  */
 public final class LdapServiceImplActivator implements BundleActivator {
-    
+
 
     /**
      * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
@@ -44,7 +44,7 @@ public final class LdapServiceImplActivator implements BundleActivator {
     public static final String PLUGIN_ID = "org.csstudio.utility.ldap.service.impl";
 
     private static final Logger LOG = LoggerFactory.getLogger(LdapServiceImplActivator.class);
-    
+
     private static LdapServiceImplActivator INSTANCE;
 
     /**

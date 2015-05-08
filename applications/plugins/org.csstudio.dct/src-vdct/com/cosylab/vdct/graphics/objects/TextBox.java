@@ -8,22 +8,22 @@ package com.cosylab.vdct.graphics.objects;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS draw"AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -58,14 +58,14 @@ public class TextBox extends VisibleObject implements BorderObject, Movable, Sel
 
 class PopupMenuHandler implements ActionListener
 {
-    
+
 public void actionPerformed(ActionEvent event)
 {
     String action = event.getActionCommand();
-    
+
     if(action.equals(changeTextString))
         showChangeTextDialog();
-        
+
     else if(action.equals(changeFontString))
     {
         FontSelector demoFont = new FontSelector();
@@ -74,7 +74,7 @@ public void actionPerformed(ActionEvent event)
         demoFont.getDisplayPanel().setDisplayText(getDescription());
         demoFont.getDisplayPanel().setForeground(getColor());
         demoFont.getDisplayPanel().setBackground(Constants.BACKGROUND_COLOR);
-        
+
         JOptionPane optionPane = new JOptionPane(demoFont, JOptionPane.PLAIN_MESSAGE,
             JOptionPane.OK_CANCEL_OPTION);
 
@@ -83,42 +83,42 @@ public void actionPerformed(ActionEvent event)
         JDialog dialog = optionPane.createDialog(VisualDCT.getInstance(),
             "Select a Font, Font Style, and Font Size...");
         dialog.setVisible(true);
-        
+
         Object selectedValue = optionPane.getValue();
-        
+
         if((selectedValue != null) && (selectedValue instanceof Integer)
             && (((Integer)selectedValue).intValue() == JOptionPane.OK_OPTION))
         {
             setFont(demoFont.getFont());
-        }    
+        }
 
         CommandManager.getInstance().execute("RepaintWorkspace");
-        
+
     }
     else if(action.equals(colorString))
     {
         Color newColor = ColorChooser.getColor(colorTitleString, getColor());
-        
+
         if(newColor != null)
         {
             setColor(newColor);
-                
+
             currentColor = newColor;
         }
-        
+
         CommandManager.getInstance().execute("RepaintWorkspace");
     }
     else if(action.equals(borderString))
     {
         border = !border;
         currentBorder = border;
-        
+
         CommandManager.getInstance().execute("RepaintWorkspace");
     }
 }
 
 }
-    
+
 private String hashId;
 private String name;
 private Vertex startVertex;
@@ -157,11 +157,11 @@ protected Font rfont = null;
 public void showChangeTextDialog()
 {
     JTextArea textArea = new JTextArea(getDescription());
-        
+
     textArea.setFont(getFont());
-        
+
     JScrollPane scrollPane = new JScrollPane(textArea);
-        
+
     JOptionPane optionPane = new JOptionPane(scrollPane, JOptionPane.PLAIN_MESSAGE,
         JOptionPane.OK_CANCEL_OPTION);
 
@@ -170,15 +170,15 @@ public void showChangeTextDialog()
     JDialog dialog = optionPane.createDialog(VisualDCT.getInstance(), "Text Box Content");
     dialog.setResizable(true);
     dialog.setVisible(true);
-        
+
     Object selectedValue = optionPane.getValue();
-        
+
     if((selectedValue != null) && (selectedValue instanceof Integer)
         && (((Integer)selectedValue).intValue() == JOptionPane.OK_OPTION))
     {
         setDescription(textArea.getText());
-    }    
-        
+    }
+
     CommandManager.getInstance().execute("RepaintWorkspace");
 }
 
@@ -186,11 +186,11 @@ private String getAvailableHashId()
 {
     int grLineNumber = 0;
     String testHashId = "TB" + String.valueOf(grLineNumber);
-    
+
     while(getParent().containsObject(testHashId))
     {
         grLineNumber++;
-        testHashId = "TB" + String.valueOf(grLineNumber);        
+        testHashId = "TB" + String.valueOf(grLineNumber);
     }
 
     return testHashId;
@@ -202,7 +202,7 @@ public TextBox(String parName, Group parentGroup, int posX, int posY, int posX2,
 
     startVertex = new Vertex(this, posX, posY);
     endVertex = new Vertex(this, posX2, posY2);
-    
+
     border = currentBorder;
 
     revalidatePosition();
@@ -222,14 +222,14 @@ public TextBox(String parName, Group parentGroup, int posX, int posY, int posX2,
     label = new javax.swing.JLabel() {
             public void paint(Graphics g) {
                 Shape clip = g.getClip();
-                
+
                 Rectangle clipRect = g.getClipBounds();
                 Rectangle newClipRect = new Rectangle(this.getX(), this.getY(), getWidth(), getHeight());
                 if (clipRect!= null) newClipRect = newClipRect.intersection(clipRect);
                 if (!newClipRect.isEmpty()) {
                     newClipRect.setLocation(-this.getX(), -this.getY());
-                    
-                    g.translate(this.getX(),this.getY());                
+
+                    g.translate(this.getX(),this.getY());
                     g.setClip(newClipRect);
                     super.paint(g);
                     g.translate(-this.getX(),-this.getY());
@@ -239,9 +239,9 @@ public TextBox(String parName, Group parentGroup, int posX, int posY, int posX2,
         };
 
     setColor(currentColor);
-    
+
     label.setVerticalAlignment(JLabel.TOP);
-    
+
     setDescription(nullString);
     setFont(label.getFont());
 
@@ -286,7 +286,7 @@ protected void drawMultiLineText(Graphics g, float drawPosX, float drawPosY, flo
         // Move y-coordinate in preparation for next layout.
         drawPosY += layout.getDescent() + layout.getLeading();
 
-        // if EOL found, make a new line (assuming that descent and leading are all the same)    
+        // if EOL found, make a new line (assuming that descent and leading are all the same)
         if (lineMeasurer.getPosition()>=breaks[breaksPos])
         {
                 breaksPos++;
@@ -320,7 +320,7 @@ public boolean checkMove(int dx, int dy)
 
     if(startVertex.checkMove(dx, dy) && endVertex.checkMove(dx, dy))
         return true;
-    
+
     return false;
 }
 
@@ -355,10 +355,10 @@ public void destroy()
     super.destroy();
     if(getParent() != null)
         getParent().removeObject(Group.substractObjectName(name));
-        
+
     if(!startVertex.isDestroyed())
         startVertex.destroy();
-        
+
     if(!endVertex.isDestroyed())
         endVertex.destroy();
 }
@@ -375,7 +375,7 @@ protected void draw(Graphics g, boolean hilited)
     if(!((posX > view.getViewWidth()) || (posY > view.getViewHeight())
         || ((posX + rwidth) < 0) || ((posY + rheight) < 0)))
     {
-        
+
         double Rscale = view.getScale();
         boolean zoom = (Rscale < 1.0) && view.isZoomOnHilited() && view.isHilitedObject(this);
         if (zoom) {
@@ -385,23 +385,23 @@ protected void draw(Graphics g, boolean hilited)
             posY -= (rheight - getRheight())/2;
             if (view.getRx() < 0)
                 posX = posX < 0 ? 2 : posX;
-            if (view.getRy() < 0) 
+            if (view.getRy() < 0)
                 posY = posY <= 0 ? 2 : posY;
             Rscale = 1.0;
             g.setColor(Constants.BACKGROUND_COLOR);
             g.fillRect(posX, posY, rwidth, rheight);
             updateTextFont(true, Rscale);
         }
-        
+
         if(view.isSelected(this))
         {
             g.setColor(Constants.HILITE_COLOR);
             g.drawRect(posX - 2, posY - 2, rwidth + 4, rheight + 4);
         }
-        
+
         //int size = (int)(getFont().getSize()*getRscale());
         //Font f = FontMetricsBuffer.getInstance().getFont(getFont().getFamily(), size, getFont().getStyle());
-        
+
         if (htmlMode)
         {
             Color tmp = label.getForeground();
@@ -419,26 +419,26 @@ protected void draw(Graphics g, boolean hilited)
         else
         {
             Shape clip = g.getClip();
-                
+
             Rectangle clipRect = g.getClipBounds();
             Rectangle newClipRect = new Rectangle(posX, posY, rwidth, rheight);
             if (clipRect != null) newClipRect = newClipRect.intersection(clipRect);
-    
-            if (!newClipRect.isEmpty()) {                                
+
+            if (!newClipRect.isEmpty()) {
                 g.setClip(newClipRect);
-                
+
                 g.setColor(getVisibleColor());
-                drawMultiLineText(g, posX+2, posY+2, rwidth-4);    
-    
+                drawMultiLineText(g, posX+2, posY+2, rwidth-4);
+
                 g.setClip(clip);
             }
         }
-    
+
         if(border || hilited)
             drawDashedBorder(g, hilited, view, posX, posY, rwidth, rheight);
-            
+
     }
-    
+
 }
 
 public void drawDashedBorder(Graphics g, boolean hilited)
@@ -467,42 +467,42 @@ private void drawDashedBorder(Graphics g, boolean hilited,
     {
         g.setColor(getVisibleColor());
     }
-        
+
     //double scale = view.getScale();
-    
+
     int posX2 = posX + rwidth;
     int posY2 = posY + rheight;
-    
+
     if(((posX != posX2) || (posY != posY2)))
     {
         int curX = posX;
         while(curX <= posX2)
         {
             int curX2 = curX + Constants.DASHED_LINE_DENSITY;
-                
+
             if (curX2 > posX2)
                 curX2 = posX2;
-                
+
             g.drawLine(curX, posY, curX2, posY);
             g.drawLine(curX, posY2, curX2, posY2);
-            
+
             curX += 2 * Constants.DASHED_LINE_DENSITY;
         }
-    
+
         int curY = posY;
         while(curY <= posY2)
         {
             int curY2 = curY + Constants.DASHED_LINE_DENSITY;
-                
+
             if(curY2 > posY2)
                 curY2 = posY2;
-                
+
             g.drawLine(posX, curY, posX, curY2);
             g.drawLine(posX2, curY, posX2, curY2);
-                
+
             curY += 2 * Constants.DASHED_LINE_DENSITY;
         }
-    
+
     }
 }
 
@@ -569,7 +569,7 @@ public boolean move(int dx, int dy)
         endVertex.move(dx, dy);
 
         revalidatePosition();
-        
+
         return true;
     }
 
@@ -581,7 +581,7 @@ public boolean moveToGroup(String group)
     String currentParent = Group.substractParentName(getName());
     if(group.equals(currentParent))
         return false;
-    
+
     //String oldName = getName();
     String newName;
     if (group.equals(nullString))
@@ -608,7 +608,7 @@ public boolean moveToGroup(String group)
 
     if (renameNeeded)
         return rename(newName);
-    
+
     getParent().removeObject(Group.substractObjectName(getName()));
     setParent(null);
     Group.getRoot().addSubObject(newName, this, true);
@@ -630,13 +630,13 @@ public boolean rename(String newName)
         name = StringUtils.replaceEnding(getName(), oldObjName, newObjName);
         getParent().addSubObject(newObjName, this);
     }
-    
+
    // move if needed
     moveToGroup(Group.substractParentName(newName));
 
     return true;
 }
-    
+
 public void revalidatePosition()
 {
     startVertex.revalidatePosition();
@@ -644,7 +644,7 @@ public void revalidatePosition()
 
     int posX = startVertex.getX();
     int posY = startVertex.getY();
-    
+
     int posX2 = endVertex.getX();
     int posY2 = endVertex.getY();
 
@@ -672,7 +672,7 @@ protected void validate()
     endVertex.validate();
 
     revalidatePosition();
-    
+
     double rscale = getRscale();
 
     setRwidth((int)(getWidth() * rscale));
@@ -680,7 +680,7 @@ protected void validate()
 
     updateTextFont(false, getRscale());
 }
-    
+
 /**
  * @see com.cosylab.vdct.graphics.objects.Descriptable#getDescription()
  */
@@ -711,7 +711,7 @@ private void updateTextFont(boolean force, double Rscale) {
             return;
         rfont = FontMetricsBuffer.getInstance().getFont(getFont().getFamily(), size, getFont().getStyle());
         updateText();
-    }    
+    }
 }
 
 
@@ -719,7 +719,7 @@ private void updateTextFont(boolean force, double Rscale) {
  */
 private void updateText()
 {
-    
+
     if (description.startsWith(htmlString))
     {
         if (rfont!=null && rfont!=label.getFont())
@@ -731,33 +731,33 @@ private void updateText()
     else
     {
         htmlMode = false;
-    
-    
+
+
         if (description.length()>1)
         {
             // let attText be an AttributedCharacterIterator containing at least one character, otherwise null
             if (rfont!=null) map.put(TextAttribute.FONT, rfont);
 
             attText = new AttributedString(description, map);
-    
+
             paragraph = attText.getIterator();
             paragraphStart = paragraph.getBeginIndex();
             paragraphEnd = paragraph.getEndIndex();
-    
+
             int i = 1;
             char c = paragraph.first();        // skip first char
             for (paragraph.next(); c != CharacterIterator.DONE; c = paragraph.next())
                  if (c == '\n')
                      i++;
             breaks = new int[i];
-    
+
             i = 0;
             c = paragraph.first();                // skip first char
             for (paragraph.next(); c != CharacterIterator.DONE; c = paragraph.next())
                  if (c == '\n')
                      breaks[i++]=paragraph.getIndex();
             breaks[i] = paragraphEnd;
-            
+
             lineMeasurer = new LineBreakMeasurer(paragraph, frc);
         }
         else
@@ -799,8 +799,8 @@ public VisibleObject intersects(int px, int py) {
     // first check on small sub-objects like connectors
     VisibleObject spotted = hiliteComponentsCheck(px, py);
       if ((spotted==null) &&
-          (getRx()<=px) && (getRy()<=py) && 
-        ((getRx()+getRwidth())>=px) && 
+          (getRx()<=px) && (getRy()<=py) &&
+        ((getRx()+getRwidth())>=px) &&
         ((getRy()+getRheight())>=py))
         spotted = this;
     return spotted;

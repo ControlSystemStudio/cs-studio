@@ -41,7 +41,7 @@ public class EmailActionImpl extends AbstractMailActionImpl {
         mailSender.setSubject(emailCmdHandler.getSubject());
         mailSender.setBody(emailCmdHandler.getBody());
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(List<PVSnapshot> pvs) throws Exception {

@@ -58,11 +58,11 @@ public class SVGUtils {
         }
         return null;
     }
-    
+
     /**
      * Converts an AWT based buffered image into an SWT <code>Image</code>. This will always return an <code>Image</code> that
      * has 24 bit depth regardless of the type of AWT buffered image that is passed into the method.
-     * 
+     *
      * @param awtImage the {@link java.awt.image.BufferedImage} to be converted to an <code>Image</code>
      * @return an <code>Image</code> that represents the same image data as the AWT <code>BufferedImage</code> type.
      */

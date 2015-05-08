@@ -7,9 +7,9 @@ import de.desy.language.snl.parser.nodes.VariableNode;
 
 /**
  * The specialized {@link IAdapterFactory} for {@link VariableNode}s.
- * 
+ *
  * @author C1 WPS / KM, MZ
- * 
+ *
  */
 class VariableNodeAdapterFactory implements IAdapterFactory {
 
@@ -30,7 +30,7 @@ class VariableNodeAdapterFactory implements IAdapterFactory {
                     @Override
                     protected String getImageName(final VariableNode node) {
                         String name = "variable.gif";
-                        
+
                         if (node.isAssigned() && node.isMonitored()) {
                             name = "variable_assigned_monitored.gif";
                         } else if (node.isAssigned() && !node.isMonitored()) {

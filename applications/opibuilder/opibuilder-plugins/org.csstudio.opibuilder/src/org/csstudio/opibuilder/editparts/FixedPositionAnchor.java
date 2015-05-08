@@ -12,28 +12,28 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 
-/**The anchor is on a fixed position of the figure. 
+/**The anchor is on a fixed position of the figure.
  * For example, left, right, top left, ...
  * @author Xihui Chen
  *
  */
 public class FixedPositionAnchor extends AbstractConnectionAnchor {
 
-    public enum AnchorPosition{        
-        TOP,    
+    public enum AnchorPosition{
+        TOP,
         LEFT,
 //        CENTER,
         RIGHT,
         BOTTOM,
         TOP_LEFT,
-        TOP_RIGHT,    
+        TOP_RIGHT,
         BOTTOM_LEFT,
         BOTTOM_RIGHT;
     }
 
-    private AnchorPosition anchorPosition;    
+    private AnchorPosition anchorPosition;
 
-    
+
     public FixedPositionAnchor(IFigure owner, AnchorPosition anchorPosition) {
         super(owner);
         this.anchorPosition = anchorPosition;
@@ -44,19 +44,19 @@ public class FixedPositionAnchor extends AbstractConnectionAnchor {
      * this method to adjust the box the anchor can be placed on. For instance,
      * the owner figure may have a drop shadow that should not be included in
      * the box.
-     * 
+     *
      * @return The bounds of this ChopboxAnchor's owner
      * @since 2.0
      */
     protected Rectangle getBox() {
         return getOwner().getBounds();
     }
-    
+
     @Override
     public Point getReferencePoint() {
         return getLocation(null);
     }
-    
+
 
     @Override
     public Point getLocation(Point reference) {
@@ -81,7 +81,7 @@ public class FixedPositionAnchor extends AbstractConnectionAnchor {
         default:
             break;
         }
-        
+
         switch (anchorPosition) {
         case LEFT:
         case BOTTOM_LEFT:
@@ -108,7 +108,7 @@ public class FixedPositionAnchor extends AbstractConnectionAnchor {
 
     /**
      * Returns <code>true</code> if the other anchor has the same owner and box.
-     * 
+     *
      * @param obj
      *            the other anchor
      * @return <code>true</code> if equal
@@ -126,7 +126,7 @@ public class FixedPositionAnchor extends AbstractConnectionAnchor {
     /**
      * The owning figure's hashcode is used since equality is approximately
      * based on the owner.
-     * 
+     *
      * @return the hash code.
      */
     public int hashCode() {
@@ -135,5 +135,5 @@ public class FixedPositionAnchor extends AbstractConnectionAnchor {
         else
             return super.hashCode();
     }
-    
+
 }

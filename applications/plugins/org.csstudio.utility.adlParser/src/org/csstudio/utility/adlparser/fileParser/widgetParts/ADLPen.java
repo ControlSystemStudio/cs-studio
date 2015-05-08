@@ -11,11 +11,11 @@ public class ADLPen extends WidgetPart {
     private boolean _hasLimits;
     private int lineColor;
     private String channel;
-    
+
     public ADLPen(ADLWidget widgetPart) throws WrongADLFormatException {
         super(widgetPart);
     }
-    
+
     /**
      * Default constructor
      */
@@ -37,7 +37,7 @@ public class ADLPen extends WidgetPart {
         if (_hasLimits){
             ret[2] = new ADLResource(ADLResource.ADL_LIMITS, _adlLimit);
         }
-        
+
         return ret;
     }
 
@@ -59,7 +59,7 @@ public class ADLPen extends WidgetPart {
                     if (_adlLimit != null){
                         _hasLimits = true;
                     }
-                    
+
                 }
             }
             for (FileLine fileLine : widgetPart.getBody()) {
@@ -80,7 +80,7 @@ public class ADLPen extends WidgetPart {
                 }
             }
         }
-        
+
         catch (WrongADLFormatException ex) {
             ex.printStackTrace();
         }

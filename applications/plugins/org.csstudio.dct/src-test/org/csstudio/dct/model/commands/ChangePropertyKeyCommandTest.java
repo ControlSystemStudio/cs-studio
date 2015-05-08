@@ -12,9 +12,9 @@ import org.junit.Test;
 
 /**
  * Test class for {@link ChangePropertyKeyCommand}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ChangePropertyKeyCommandTest {
     private IPropertyContainer container;
@@ -42,7 +42,7 @@ public final class ChangePropertyKeyCommandTest {
         container.addProperty(id, value);
         assertEquals(value, container.getProperty(id));
         assertNull(container.getProperty(newId));
-        
+
         // .. execute
         ChangePropertyKeyCommand cmd = new ChangePropertyKeyCommand(container, id, newId);
         cmd.execute();

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.model.commands;
 
@@ -9,7 +9,7 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * Undoable command that adds a parameter to a {@link IPrototype}.
- * 
+ *
  * @author Sven Wende
  */
 public final class AddParameterCommand extends Command {

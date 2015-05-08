@@ -25,5 +25,5 @@ public class PVManagerPVFactory extends AbstractPVFactory {
         return new PVManagerPV(name, readOnly, minUpdatePeriod, bufferAllValues, notificationThread, exceptionHandler);
     }
 
-    
+
 }

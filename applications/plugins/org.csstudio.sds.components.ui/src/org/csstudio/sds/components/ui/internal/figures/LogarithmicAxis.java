@@ -27,29 +27,29 @@ import java.util.List;
 
 /**
  * A logarithmic axis.
- * 
+ *
  * @author Joerg Rathlev
  */
 final class LogarithmicAxis implements IAxis {
-    
+
     /**
      * The lower bound of the data range of this axis.
      */
     private double _dataLower;
-    
+
     /**
-     * The upper bound of the data range of this axis. 
+     * The upper bound of the data range of this axis.
      */
     private double _dataUpper;
-    
+
     /**
-     * The size of this axis in display units. 
+     * The size of this axis in display units.
      */
     private int _displaySize;
 
     /**
      * Creates a new logarithmic axis.
-     * 
+     *
      * @param dataLower
      *            the lower bound of the data range.
      * @param dataUpper
@@ -83,7 +83,7 @@ final class LogarithmicAxis implements IAxis {
         if (size < 0) {
             throw new IllegalArgumentException("Invalid display size");
         }
-        
+
         _displaySize = size;
     }
 
@@ -100,11 +100,11 @@ final class LogarithmicAxis implements IAxis {
                 : (intermediate < Integer.MIN_VALUE ? Integer.MIN_VALUE
                         : (int) intermediate);
     }
-    
+
     /**
      * Checks whether the specified value is a legal value for this axis. For
      * a logarithmic axis, all values &gt; 0 are legal.
-     * 
+     *
      * @param value
      *            the data value to check.
      * @return <code>true</code> if the value is legal, <code>false</code>
@@ -113,48 +113,48 @@ final class LogarithmicAxis implements IAxis {
     public boolean isLegalValue(final double value) {
         return value > 0.0;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public List<Tick> calculateTicks(final int minMajorDistance, final int minMinorDistance) {
         double lower = Math.log10(_dataLower);
         double upper = Math.log10(_dataUpper);
-        
+
         // convert the minimum distance into log data units
         double dataRange = upper - lower;
         double scaling = (_displaySize - 1) / dataRange;
         double exactDistance = minMajorDistance / scaling;
-        
+
         // now use basically the same algorithm as in TickCalculator,
         // except we already are calculating in log scale
 //        double magnitude = Math.floor(exactDistance);
 //        _tickDistance = Math.ceil(exactDist / Math.pow(10, o - 1)) * Math.pow(10, o - 1);
         double distance = Math.ceil(exactDistance);
         double lowestTick = Math.ceil(lower / distance) * distance;
-        
+
         List<Tick> result = new ArrayList<Tick>();
         if (distance > 0) {
             double value = lowestTick;
             while (value <= upper) {
                 Tick tick = new Tick(TickType.MAJOR, Math.pow(10, value));
                 result.add(tick);
-                
+
                 // TODO: calculate minor tickmarks. The minor tickmarks would
                 // have to be added here, in between the major tickmarks.
-                
+
                 value += distance;
             }
         }
         return result;
-        
+
 //        TickCalculator calc = new TickCalculator();
 //        calc.setMinimumValue(_dataLower);
 //        calc.setMaximumValue(_dataUpper);
 //        calc.setMaximumTickCount(_displaySize / minMajorDistance);
 //        return calc.calculateTicks();
     }
-    
+
     /**
      * {@inheritDoc}
      */

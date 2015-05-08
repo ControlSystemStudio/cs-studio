@@ -34,7 +34,7 @@ public class Activator extends AbstractUIPlugin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext
      * )
@@ -49,7 +49,7 @@ public class Activator extends AbstractUIPlugin {
                 ShiftClientBuilder shiftClientBuilder;
                 String url = prefs.getString(org.csstudio.utility.shift.Activator.PLUGIN_ID,
                         PreferenceConstants.Shift_URL, "http://localhost:8080/Shift/resources", null);
-                shiftClientBuilder = ShiftClientBuilder.serviceURL(url);            
+                shiftClientBuilder = ShiftClientBuilder.serviceURL(url);
                 shiftClientBuilder.withHTTPAuthentication(false);
                 log.info("Creating Shift client : " + url);
                 try {
@@ -64,7 +64,7 @@ public class Activator extends AbstractUIPlugin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
      * )
@@ -77,7 +77,7 @@ public class Activator extends AbstractUIPlugin {
 
     /**
      * Returns the shared instance
-     * 
+     *
      * @return the shared instance
      */
     public static Activator getDefault() {

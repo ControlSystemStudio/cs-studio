@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.sds.components.ui.internal.editparts;
@@ -31,14 +31,14 @@ import org.eclipse.swt.graphics.Font;
 
 /**
  * The controller.
- * 
+ *
  * @author jbercic
- * 
+ *
  */
 public final class MeterEditPart extends AbstractWidgetEditPart {
     /**
      * Returns the casted model. This is just for convenience.
-     * 
+     *
      * @return the casted {@link MeterModel}
      */
     protected MeterModel getCastedModel() {
@@ -68,28 +68,28 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
         figure.setScaleWidth(model.getScaleWidth());
         figure.setTextRadius(model.getTextRadius());
         figure.setTransparent(model.getTransparent());
-        
+
         figure.setMColor(getModelColor(MeterModel.PROP_MCOLOR));
         figure.setLOLOColor(getModelColor(MeterModel.PROP_LOLOCOLOR));
         figure.setLOColor(getModelColor(MeterModel.PROP_LOCOLOR));
         figure.setHIColor(getModelColor(MeterModel.PROP_HICOLOR));
         figure.setHIHIColor(getModelColor(MeterModel.PROP_HIHICOLOR));
-        
+
         figure.setMBound(model.getMBound());
         figure.setLOLOBound(model.getLOLOBound());
         figure.setLOBound(model.getLOBound());
         figure.setHIBound(model.getHIBound());
         figure.setHIHIBound(model.getHIHIBound());
-        
+
         figure.setValuesFont(getModelFont(MeterModel.PROP_VALFONT));
         figure.setChannelFont(getModelFont(MeterModel.PROP_CHANFONT));
-        
+
         figure.setDecimalPlaces(model.getPrecision());
 
         figure.setChannelName(model.getPrimaryPV());
         return figure;
     }
-    
+
     /**
      * Registers color property change handlers.
      */
@@ -99,57 +99,57 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
             @Override
             protected void doHandle(RefreshableMeterFigure figure, Color color) {
                 figure.setNeedleColor(color);
-            }                
+            }
         });
-        
+
         // scale
         setPropertyChangeHandler(MeterModel.PROP_SCALECOLOR, new ColorChangeHandler<RefreshableMeterFigure>(){
             @Override
             protected void doHandle(RefreshableMeterFigure figure, Color color) {
                 figure.setScaleColor(color);
-            }                
+            }
         });
-        
+
         //M area
         setPropertyChangeHandler(MeterModel.PROP_MCOLOR,  new ColorChangeHandler<RefreshableMeterFigure>(){
             @Override
             protected void doHandle(RefreshableMeterFigure figure, Color color) {
                 figure.setMColor(color);
-            }                
+            }
         });
-        
+
         //LOLO area
         setPropertyChangeHandler(MeterModel.PROP_LOLOCOLOR,  new ColorChangeHandler<RefreshableMeterFigure>(){
             @Override
             protected void doHandle(RefreshableMeterFigure figure, Color color) {
                 figure.setLOLOColor(color);
-            }                
+            }
         });
-        
+
         //LO area
         setPropertyChangeHandler(MeterModel.PROP_LOCOLOR,  new ColorChangeHandler<RefreshableMeterFigure>(){
             @Override
             protected void doHandle(RefreshableMeterFigure figure, Color color) {
                 figure.setLOColor(color);
-            }                
+            }
         });
-        
+
         //HI area
         setPropertyChangeHandler(MeterModel.PROP_HICOLOR,  new ColorChangeHandler<RefreshableMeterFigure>(){
             @Override
             protected void doHandle(RefreshableMeterFigure figure, Color color) {
                 figure.setHIColor(color);
-            }                
+            }
         });
-        
+
         //HIHI area
         setPropertyChangeHandler(MeterModel.PROP_HIHICOLOR,  new ColorChangeHandler<RefreshableMeterFigure>(){
             @Override
             protected void doHandle(RefreshableMeterFigure figure, Color color) {
                 figure.setHIHIColor(color);
-            }                
+            }
         });
-        
+
         // precision
         IWidgetPropertyChangeHandler precisionHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -161,7 +161,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
             }
         };
         setPropertyChangeHandler(MeterModel.PROP_PRECISION, precisionHandler);
-        
+
         // precision
         IWidgetPropertyChangeHandler channelHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -174,7 +174,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
         };
         setPropertyChangeHandler(MeterModel.PROP_PRIMARY_PV, channelHandler);
     }
-    
+
     /**
      * Registers boundary property change handlers for the five levels.
      */
@@ -189,7 +189,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
             }
         };
         setPropertyChangeHandler(MeterModel.PROP_MBOUND, handle);
-        
+
         //LOLO
         handle = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue,
@@ -200,7 +200,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
             }
         };
         setPropertyChangeHandler(MeterModel.PROP_LOLOBOUND, handle);
-        
+
         //LO
         handle = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue,
@@ -211,7 +211,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
             }
         };
         setPropertyChangeHandler(MeterModel.PROP_LOBOUND, handle);
-        
+
         //HI
         handle = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue,
@@ -222,7 +222,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
             }
         };
         setPropertyChangeHandler(MeterModel.PROP_HIBOUND, handle);
-        
+
         //HIHI
         handle = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue,
@@ -367,8 +367,8 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
                 figure.setValuesFont(font);
             }
         });
-        
-        
+
+
         //channel font change handler
         setPropertyChangeHandler(MeterModel.PROP_CHANFONT, new FontChangeHandler<RefreshableMeterFigure>(){
             @Override
@@ -376,7 +376,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
                 figure.setChannelFont(font);
             }
         });
-        
+
         IWidgetPropertyChangeHandler borderHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;

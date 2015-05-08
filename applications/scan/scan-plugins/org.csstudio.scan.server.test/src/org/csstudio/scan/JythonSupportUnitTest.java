@@ -33,7 +33,7 @@ public class JythonSupportUnitTest
     public void testJythonSupport() throws Exception
     {
         TestSettings.init();
-        
+
         // Load ScanScript
         final JythonSupport jython = new JythonSupport();
         final ScanScript script = jython.loadClass(ScanScript.class, "JythonTest");

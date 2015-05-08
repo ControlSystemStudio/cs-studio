@@ -17,7 +17,7 @@ import org.eclipse.swt.graphics.RGB;
  * Read preferences
  * <p>
  * See preferences.ini for explanation of supported preferences.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
  */
 @SuppressWarnings("nls")

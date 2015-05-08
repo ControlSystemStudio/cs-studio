@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -14,9 +14,9 @@ import org.csstudio.logbook.LogEntryBuilder;
  * Provides the property change support needed to share the logEntryBuilder
  * object between the various pieces which create and add properties to this
  * logEntry
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class LogEntryChangeset {
 

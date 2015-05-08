@@ -53,12 +53,12 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
         // Path URL for "file:..." so that it opens as FileInputStream
         if (local_file.getPath().startsWith("file:"))
             local_file = new File(local_file.getPath().substring(5));
-        
+
         return local_file.exists() ? local_file.getAbsoluteFile() : null;
-        
+
     }
 
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.opibuilder.util.ResourceUtilSSHelper#pathToInputStream(org.eclipse.core.runtime.IPath, boolean)
      */
@@ -87,7 +87,7 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
             // Could not open as local file.
             // Does it look like a URL?
             //TODO:
-             // Eclipse Path collapses "//" into "/", revert that: Is this true? Need test on Mac.            
+             // Eclipse Path collapses "//" into "/", revert that: Is this true? Need test on Mac.
              urlString = path.toString();
 //             if(!urlString.startsWith("platform") && !urlString.contains("://")) //$NON-NLS-1$ //$NON-NLS-2$
 //                 urlString = urlString.replaceFirst(":/", "://"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -97,10 +97,10 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
         }
 
         // Must be an URL
-        final URL url = new URL(urlString);        
-        
+        final URL url = new URL(urlString);
+
         return ResourceUtil.openURLStream(url, runInUIJob);
-       
+
     }
 
     /* (non-Javadoc)
@@ -160,7 +160,7 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
      * @see org.csstudio.opibuilder.util.ResourceUtilSSHelper#workspacePathToSysPath(org.eclipse.core.runtime.IPath)
      */
     @Override
-    public IPath workspacePathToSysPath(IPath path) {        
+    public IPath workspacePathToSysPath(IPath path) {
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         IWorkspaceRoot root = workspace.getRoot();
         IResource resource = root.findMember(path);
@@ -169,8 +169,8 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
         else
             return root.getFile(path).getLocation(); //for not existing resource
     }
-    
-    
+
+
 
     /**Get the IFile from IPath.
      * @param path Path to file in workspace
@@ -195,11 +195,11 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
         }
         return null;
     }
-    
+
     /**Get screenshot image from GraphicalViewer
      * @param viewer the GraphicalViewer
      * @return the screenshot image
-     */    
+     */
     @Override
     public Image getScreenShotImage(GraphicalViewer viewer){
         GC gc = new GC(viewer.getControl());
@@ -208,5 +208,5 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
         gc.copyArea(image, 0, 0);
         gc.dispose();
         return image;
-    }    
+    }
 }

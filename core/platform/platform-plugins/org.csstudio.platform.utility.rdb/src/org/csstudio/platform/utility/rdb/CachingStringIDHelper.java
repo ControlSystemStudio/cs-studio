@@ -20,7 +20,7 @@ public class CachingStringIDHelper extends StringIDHelper
      *  we treat as if they are not in the map.
      */
     final private Map<Integer, StringID> by_id = new HashMap<Integer, StringID>();
-    
+
     /** Construct helper
      *  @param rdb RDBUTil
      *  @param table Name of RDB table

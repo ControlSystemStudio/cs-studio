@@ -24,24 +24,24 @@ import org.eclipse.swt.widgets.Display;
  *
  */
 public class Bulb extends Figure{
-    
+
     private Color bulbColor;
 
     private static final Color COLOR_WHITE = CustomMediaFactory.getInstance().getColor(
             CustomMediaFactory.COLOR_WHITE);
     private boolean effect3D;
-    
+
     public Bulb() {
         setBulbColor(CustomMediaFactory.getInstance().getColor(
                 new RGB(150,150,150)));
         setEffect3D(true);
     }
-    
+
     @Override
     public boolean isOpaque() {
         return false;
     }
-    
+
     @Override
     public void setBounds(Rectangle rect) {
         //get the square in the rect
@@ -49,38 +49,38 @@ public class Bulb extends Figure{
         if(rect.width < 3)
             rect.width =3;
         rect.height = rect.width;
-        super.setBounds(rect);  
+        super.setBounds(rect);
 
     }
     @Override
-    protected void paintClientArea(Graphics graphics) {        
+    protected void paintClientArea(Graphics graphics) {
         graphics.setAntialias(SWT.ON);
-        
-        if(effect3D && GraphicsUtil.testPatternSupported(graphics)) {            
+
+        if(effect3D && GraphicsUtil.testPatternSupported(graphics)) {
             // Fills the circle with solid bulb color
             graphics.setBackgroundColor(bulbColor);
             graphics.fillOval(bounds);
-            
+
             //diagonal linear gradient
                 Pattern p = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), bounds.x,    bounds.y,
                         bounds.x + getWidth(), bounds.y + getHeight(),
                         COLOR_WHITE, 255, bulbColor, 0);
-            try {                
+            try {
                 graphics.setBackgroundPattern(p);
-                graphics.fillOval(bounds);        
+                graphics.fillOval(bounds);
                 p.dispose();
             } catch (Exception e) {
-                p.dispose();                
+                p.dispose();
             }
-            
-        } else {            
+
+        } else {
             graphics.setBackgroundColor(bulbColor);
             graphics.fillOval(bounds);
-        }        
-        
+        }
+
         super.paintClientArea(graphics);
     }
-    
+
     /**
      * @param bulbColor the bulbColor to set
      */
@@ -90,11 +90,11 @@ public class Bulb extends Figure{
         this.bulbColor = color;
         repaint();
     }
-    
+
     public Color getBulbColor() {
         return bulbColor;
     }
-    
+
     private int getHeight() {
         return bounds.height;
     }
@@ -102,7 +102,7 @@ public class Bulb extends Figure{
     private int getWidth() {
         return bounds.width;
     }
-    
+
     /**
      * @param effect3D the effect3D to set
      */
@@ -116,6 +116,6 @@ public class Bulb extends Figure{
 
 
 
-    
-    
+
+
 }

@@ -18,7 +18,7 @@ import org.eclipse.osgi.util.NLS;
  *  <p>
  *  Suggested use is in the context menu of an editor or view that
  *  uses the InteractiveChart.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class SaveCurrentImageAction extends Action
@@ -33,7 +33,7 @@ public class SaveCurrentImageAction extends Action
         this.chart = chart;
         setToolTipText(Messages.SaveImage_ActionName_TT);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void run()

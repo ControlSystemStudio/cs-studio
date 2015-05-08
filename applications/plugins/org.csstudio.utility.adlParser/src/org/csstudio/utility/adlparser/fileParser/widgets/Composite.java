@@ -12,7 +12,7 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLDynamicAttribute
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 
 /**
- * 
+ *
  * @author hammonds
  *
  */
@@ -21,7 +21,7 @@ public class Composite extends ADLAbstractWidget {
     private boolean _hasCompositeFile = false;
     private ADLChildren _adlChildren = null;
 //    private ArrayList<ADLWidget> _children;
-    
+
     public Composite(ADLWidget adlWidget) {
         super(adlWidget);
         name = new String("composite");
@@ -79,7 +79,7 @@ public class Composite extends ADLAbstractWidget {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public boolean hasCompositeFile(){
@@ -87,7 +87,7 @@ public class Composite extends ADLAbstractWidget {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public ArrayList<ADLWidget> getChildWidgets() {

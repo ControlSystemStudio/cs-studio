@@ -14,14 +14,14 @@ public class ChannelStructure extends PlatformObject implements Serializable { /
     private String aliasName;
     private int interval;
     private int tableId;
-    
+
     public ChannelStructure(InetSocketAddress clientAddress, String aliasName, int interval) {
         this.aliasName = aliasName;
         this.clientAddress = clientAddress.getHostName()+":"+clientAddress.getPort();
         repeats = 1;
         this.interval = interval;
     }
-    
+
     public ChannelStructure(int repeats, String clientAddress, String channelName, int interval, int tableId){
         setRepeats(repeats);
         setClientAddress(clientAddress);
@@ -29,7 +29,7 @@ public class ChannelStructure extends PlatformObject implements Serializable { /
         setInterval(interval);
         setTableId(tableId);
     }
-    
+
     /**
      * Returns the hostname and port of a source
      * @return String
@@ -37,7 +37,7 @@ public class ChannelStructure extends PlatformObject implements Serializable { /
     public String getClientAddress(){
         return clientAddress;
     }
-    
+
     /**
      * Returns the PV name
      * @return String
@@ -45,7 +45,7 @@ public class ChannelStructure extends PlatformObject implements Serializable { /
     public String getAliasName(){
         return aliasName;
     }
-    
+
     /**
      * Returns the number of PV repeats
      * @return
@@ -53,7 +53,7 @@ public class ChannelStructure extends PlatformObject implements Serializable { /
     public int getRepeats(){
         return repeats;
     }
-    
+
     public void setRepeats(int repeats){
         this.repeats = repeats;
     }
@@ -64,7 +64,7 @@ public class ChannelStructure extends PlatformObject implements Serializable { /
     public void updateRepeats() {
         repeats++;
     }
-    
+
     /**
      * Returns the frequency of a channel
      * @return double
@@ -72,14 +72,14 @@ public class ChannelStructure extends PlatformObject implements Serializable { /
     public double getFrequency(){
         return ((int)((getRepeats()*1000)/interval))/1000.0;
     }
-    
+
     /**
-     * Sets the current ID in table  
+     * Sets the current ID in table
      */
     public void setId(int id){
         tableId = id;
     }
-    
+
     /**
      * Returns the current ID in table
      * @return int
@@ -87,7 +87,7 @@ public class ChannelStructure extends PlatformObject implements Serializable { /
     public int getId(){
         return tableId;
     }
-    
+
     public String getName() {
         return aliasName;
     }

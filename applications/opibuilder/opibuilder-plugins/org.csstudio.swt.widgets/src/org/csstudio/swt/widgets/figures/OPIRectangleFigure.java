@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.swt.widgets.figures;
@@ -38,34 +38,34 @@ import org.eclipse.swt.graphics.Color;
 
 /**
  * A rectangle figure.
- * 
- * @author Sven Wende (original author), Xihui Chen (since import from SDS 2009/10) 
- * 
+ *
+ * @author Sven Wende (original author), Xihui Chen (since import from SDS 2009/10)
+ *
  */
 public final class OPIRectangleFigure extends RectangleFigure implements Introspectable {
     /**
      * The fill grade (0 - 100%).
      */
     private double fill = 100;
-    
+
     /**
      * The orientation (horizontal==true | vertical==false).
      */
     private boolean horizontalFill = true;
-    
+
     /**
      * The transparent state of the background.
      */
     private boolean transparent = false;
-    
+
     private Color lineColor = CustomMediaFactory.getInstance().getColor(
             CustomMediaFactory.COLOR_PURPLE);
-    
-    private Color backGradientStartColor =ColorConstants.white; 
-    private Color foreGradientStartColor =ColorConstants.white; 
+
+    private Color backGradientStartColor =ColorConstants.white;
+    private Color foreGradientStartColor =ColorConstants.white;
     private boolean gradient=false;
     private boolean useAdvancedGraphics=GraphicsUtil.useAdvancedGraphics();
-    
+
     /**
      * {@inheritDoc}
      */
@@ -79,7 +79,7 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
                 graphics.setForegroundColor(backGradientStartColor);
                 graphics.fillGradient(figureBounds, horizontalFill);
             }else
-                graphics.fillRectangle(figureBounds);    
+                graphics.fillRectangle(figureBounds);
         }
         if(getFill() > 0){
             if(isEnabled())
@@ -99,15 +99,15 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
                 graphics.fillRectangle(fillRectangle);
         }
     }
-    
+
     public BeanInfo getBeanInfo() throws IntrospectionException {
         return new ShapeWidgetIntrospector().getBeanInfo(this.getClass());
     }
-    
-    
+
+
     /**
      * Gets the fill grade.
-     * 
+     *
      * @return the fill grade
      */
     public double getFill() {
@@ -123,7 +123,7 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
 
     /**
      * Gets the transparent state of the background.
-     * 
+     *
      * @return the transparent state of the background
      */
     public boolean getTransparent() {
@@ -131,10 +131,10 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
     }
 
 
-    
+
     /**
      * Gets the orientation (horizontal==true | vertical==false).
-     * 
+     *
      * @return boolean
      *                 The orientation
      */
@@ -148,7 +148,7 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
     public Color getBackGradientStartColor() {
         return backGradientStartColor;
     }
-    
+
     public Color getForeGradientStartColor() {
         return foreGradientStartColor;
     }
@@ -167,7 +167,7 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
         this.gradient = gradient;
         repaint();
     }
-    
+
     /**Set gradient start color.
      * @param gradientStartColor
      */
@@ -175,34 +175,34 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
         this.backGradientStartColor = gradientStartColor;
         repaint();
     }
-    
+
     public void setForeGradientStartColor(Color foreGradientStartColor) {
         this.foreGradientStartColor = foreGradientStartColor;
         repaint();
     }
-    
+
 
     /**
      * @see Shape#outlineShape(Graphics)
      */
-    protected void outlineShape(Graphics graphics) {    
+    protected void outlineShape(Graphics graphics) {
         float lineInset = Math.max(1.0f, getLineWidth()) / 2.0f;
         int inset1 = (int)Math.floor(lineInset);
         int inset2 = (int)Math.ceil(lineInset);
 
         Rectangle r = Draw2dSingletonUtil.getRectangle().setBounds(getClientArea());
-        r.x += inset1 ; 
-        r.y += inset1; 
+        r.x += inset1 ;
+        r.y += inset1;
         r.width -= inset1 + inset2;
         r.height -= inset1 + inset2;
         if(isEnabled())
             graphics.setForegroundColor(lineColor);
         graphics.drawRectangle(r);
-    }    
+    }
 
     /**
      * Sets the fill grade.
-     * 
+     *
      * @param fill
      *            the fill grade.
      */
@@ -215,7 +215,7 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
 
     /**
      * Sets the orientation (horizontal==true | vertical==false).
-     * 
+     *
      * @param horizontal
      *            The orientation.
      */
@@ -239,7 +239,7 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
 
     /**
      * Sets the transparent state of the background.
-     * 
+     *
      * @param transparent
      *            the transparent state.
      */

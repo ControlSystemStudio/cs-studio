@@ -1,4 +1,4 @@
-// FIXME: swende: This class had to be changed for CSS DCT. 
+// FIXME: swende: This class had to be changed for CSS DCT.
 
 package com.cosylab.vdct.dbd;
 
@@ -10,22 +10,22 @@ package com.cosylab.vdct.dbd;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -52,7 +52,7 @@ public class DBDMenuData {
 
     /**
      * This method was created in VisualAge.
-     * 
+     *
      * @param choice_name
      *            java.lang.String
      * @param choice_value
@@ -61,7 +61,7 @@ public class DBDMenuData {
     public void addMenuChoice(String choice_name, String choice_value) {
         if (!choices.containsKey(choice_name)) {
             choices.put(choice_name, choice_value);
-            
+
             // swende: insert at the end, to keep the original order
             choicesForCssDct.add(choicesForCssDct.size(), new Choice(choice_name, choice_value));
         }
@@ -69,7 +69,7 @@ public class DBDMenuData {
 
     /**
      * This method was created in VisualAge.
-     * 
+     *
      * @param value
      *            java.lang.String
      */
@@ -86,7 +86,7 @@ public class DBDMenuData {
 
     /**
      * Insert the method's description here. Creation date: (9.12.2000 16:26:16)
-     * 
+     *
      * @return java.util.Hashtable
      */
     public java.util.Hashtable getChoices() {
@@ -95,7 +95,7 @@ public class DBDMenuData {
 
     /**
      * Insert the method's description here. Creation date: (9.12.2000 16:26:16)
-     * 
+     *
      * @return java.lang.String
      */
     public java.lang.String getName() {
@@ -104,14 +104,14 @@ public class DBDMenuData {
 
     /**
      * Insert the method's description here. Creation date: (9.12.2000 16:26:16)
-     * 
+     *
      * @param newName
      *            java.lang.String
      */
     public void setName(java.lang.String newName) {
         name = newName;
     }
-    
+
     public List<Choice> getChoicesForCssDct() {
         return choicesForCssDct;
     }

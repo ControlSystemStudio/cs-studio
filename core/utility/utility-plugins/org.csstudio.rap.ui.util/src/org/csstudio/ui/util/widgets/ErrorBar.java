@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Label;
 
 /**
  * An error bar to display an exception message and the details in a pop-up.
- * 
+ *
  * @author carcassi
  *
  */
@@ -31,10 +31,10 @@ public class ErrorBar extends Composite {
     private int marginBottom = 0;
     private int marginLeft = 0;
     private int marginRight = 0;
-    
+
     /**
      * Create a new error bar.
-     * 
+     *
      * @param parent widget parent
      * @param style style of the widget
      */
@@ -45,7 +45,7 @@ public class ErrorBar extends Composite {
         gridLayout.marginHeight = 0;
         gridLayout.marginLeft = 1;
         setLayout(gridLayout);
-        
+
         Cursor handCursor = new Cursor(getDisplay(), SWT.CURSOR_HAND);
         MouseListener listener = new MouseAdapter() {
             private static final long serialVersionUID = 8277072064588985041L;
@@ -56,14 +56,14 @@ public class ErrorBar extends Composite {
                 }
             }
         };
-        
+
         errorImage = new Label(this, SWT.NONE);
         GridData gd_errorImage = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
         errorImage.setLayoutData(gd_errorImage);
         errorImage.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(Activator.ID, "icons/error-16.png"));
         errorImage.setCursor(handCursor);
         errorImage.addMouseListener(listener);
-        
+
         errorLabel = new CLabel(this, SWT.NONE);
         GridData gd_errorLabel = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
         errorLabel.setLayoutData(gd_errorLabel);
@@ -71,7 +71,7 @@ public class ErrorBar extends Composite {
         errorLabel.addMouseListener(listener);
         setException(null);
     }
-    
+
     public void setException(Exception ex) {
         if (!isDisposed()) {
             this.exception = ex;
@@ -110,7 +110,7 @@ public class ErrorBar extends Composite {
 
     /**
      * The margin on the top of the error bar, if displayed.
-     * 
+     *
      * @return the top margin
      */
     public int getMarginTop() {
@@ -119,7 +119,7 @@ public class ErrorBar extends Composite {
 
     /**
      * Changes the margin on the top of the error bar, if displayed.
-     * 
+     *
      * @param marginTop the new margin
      */
     public void setMarginTop(int marginTop) {
@@ -129,7 +129,7 @@ public class ErrorBar extends Composite {
 
     /**
      * The margin on the bottom of the error bar, if displayed.
-     * 
+     *
      * @return the top margin
      */
     public int getMarginBottom() {
@@ -138,7 +138,7 @@ public class ErrorBar extends Composite {
 
     /**
      * Changes the margin on the bottom of the error bar, if displayed.
-     * 
+     *
      * @param marginBottom the new margin
      */
     public void setMarginBottom(int marginBottom) {
@@ -148,7 +148,7 @@ public class ErrorBar extends Composite {
 
     /**
      * The margin on the left of the error bar, if displayed.
-     * 
+     *
      * @return the left margin
      */
     public int getMarginLeft() {
@@ -157,7 +157,7 @@ public class ErrorBar extends Composite {
 
     /**
      * Changes the margin on the left of the error bar, if displayed.
-     * 
+     *
      * @param marginLeft the new margin
      */
     public void setMarginLeft(int marginLeft) {
@@ -167,7 +167,7 @@ public class ErrorBar extends Composite {
 
     /**
      * The margin on the right of the error bar, if displayed.
-     * 
+     *
      * @return the right margin
      */
     public int getMarginRight() {
@@ -176,13 +176,13 @@ public class ErrorBar extends Composite {
 
     /**
      * Changes the margin on the right of the error bar, if displayed.
-     * 
+     *
      * @param marginRight the new margin
      */
     public void setMarginRight(int marginRight) {
         this.marginRight = marginRight;
         getParent().layout();
     }
-    
+
 
 }

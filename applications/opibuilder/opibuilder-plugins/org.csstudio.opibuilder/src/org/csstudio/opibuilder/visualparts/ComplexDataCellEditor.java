@@ -22,7 +22,7 @@ import org.eclipse.ui.PlatformUI;
 public class ComplexDataCellEditor extends AbstractDialogCellEditor {
 
     private AbstractComplexData complexData;
-    
+
     public ComplexDataCellEditor(Composite parent, String title) {
         super(parent, title);
     }
@@ -33,15 +33,15 @@ public class ComplexDataCellEditor extends AbstractDialogCellEditor {
         "org.eclipse.help.ui.HelpView") !=null) //$NON-NLS-1$
             PlatformUI.getWorkbench().getHelpSystem().displayHelp(
             OPIBuilderPlugin.PLUGIN_ID + ".action"); //$NON-NLS-1$
-        PropertiesEditDialog dialog = 
+        PropertiesEditDialog dialog =
             new PropertiesEditDialog(parentShell, complexData.getAllProperties(), dialogTitle);
-        
+
         if(dialog.open() == Window.OK){
             complexData = complexData.getCopy();
             for (PropertyData propertyData : dialog.getOutput()){
                 complexData.setPropertyValue(
                         propertyData.property.getPropertyID(), propertyData.tmpValue);
-            }            
+            }
         }
     }
 

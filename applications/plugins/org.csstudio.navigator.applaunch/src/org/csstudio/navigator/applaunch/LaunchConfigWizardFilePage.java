@@ -20,7 +20,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 public class LaunchConfigWizardFilePage extends WizardNewFileCreationPage
 {
     private LaunchConfig config = new LaunchConfig();
-    
+
     public LaunchConfigWizardFilePage(IStructuredSelection selection)
     {
         super(Messages.LaunchConfigTitle, selection);
@@ -45,7 +45,7 @@ public class LaunchConfigWizardFilePage extends WizardNewFileCreationPage
     {
         return new ByteArrayInputStream(config.getXML().getBytes());
     }
-    
+
     @Override
     public String getFileExtension()
     {

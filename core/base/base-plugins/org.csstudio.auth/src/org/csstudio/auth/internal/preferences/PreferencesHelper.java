@@ -12,7 +12,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /** Access to preference settings.
- * 
+ *
  *  See preferences.ini for details on the available settings
  *  @author Xihui Chen
  */
@@ -22,7 +22,7 @@ public class PreferencesHelper
         INSTALL_LOCATION,
         CONFIGURATION_LOCATION;
     }
-    
+
     public final static String SECURE_STORAGE_LOCATION = "secure_storage_location"; //$NON-NLS-1$
      private static SecureStorageLocation secureStorageLocation;
 

@@ -16,9 +16,9 @@ import org.junit.Test;
 
 /**
  * Test class for {@link InitInstanceCommand}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class InitInstanceCommandTest extends AbstractTestCommand {
     private Prototype prototypeA;

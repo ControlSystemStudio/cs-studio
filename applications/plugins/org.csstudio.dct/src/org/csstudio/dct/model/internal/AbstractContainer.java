@@ -22,7 +22,7 @@ import org.csstudio.dct.util.CompareUtil;
 /**
  * Standard implementation for {@link IContainer}. Base class for
  * {@link Instance} and {@link Prototype}.
- * 
+ *
  * @author Sven Wende
  */
 public abstract class AbstractContainer extends AbstractPropertyContainer implements IContainer, IFolderMember {
@@ -63,7 +63,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
 
     /**
      * Constructor.
-     * 
+     *
      * @param name
      *            the name
      * @param parent
@@ -301,7 +301,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * Collect all parent containers in a stack. On top of the returned stack is
      * the parent that resides at the top of the hierarchy.
-     * 
+     *
      * @return all parent containers, including this
      */
     protected final Stack<IContainer> getParentStack() {

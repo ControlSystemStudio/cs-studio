@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.model.initializers;
@@ -39,10 +39,10 @@ import org.slf4j.LoggerFactory;
  * A service that can initialize widgets using contributions of the
  * <code>controlSystemSchema</code> and the
  * <code>widgetModelInitializers</code> extension points.
- * 
+ *
  * @author Stefan Hofer & Sven Wende
  * @version $Revision: 1.5 $
- * 
+ *
  */
 public final class WidgetInitializationService {
     private static final Logger LOG = LoggerFactory.getLogger(WidgetInitializationService.class);
@@ -54,10 +54,10 @@ public final class WidgetInitializationService {
 
     /**
      * A proxy for lazy loading of initializers.
-     * 
+     *
      * @author Stefan Hofer
      * @version $Revision: 1.5 $
-     * 
+     *
      */
     class InitializerDescriptor {
 
@@ -68,7 +68,7 @@ public final class WidgetInitializationService {
 
         /**
          * Constructor.
-         * 
+         *
          * @param configurationElement
          *            required
          */
@@ -80,7 +80,7 @@ public final class WidgetInitializationService {
 
         /**
          * Returns a new initializer instance.
-         * 
+         *
          * @return a new widget model initializer
          */
         public AbstractWidgetModelInitializer createInitializer() {
@@ -98,10 +98,10 @@ public final class WidgetInitializationService {
 
     /**
      * A proxy for lazy loading of schema objects.
-     * 
+     *
      * @author Stefan Hofer
      * @version $Revision: 1.5 $
-     * 
+     *
      */
     public final class ControlSystemSchemaDescriptor {
         /**
@@ -118,7 +118,7 @@ public final class WidgetInitializationService {
 
         /**
          * Constructor.
-         * 
+         *
          * @param configurationElement
          *            Required.
          * @param description
@@ -137,7 +137,7 @@ public final class WidgetInitializationService {
 
         /**
          * Returns a new schema instance.
-         * 
+         *
          * @return a new control system schema
          */
         public AbstractControlSystemSchema createSchema() {
@@ -194,7 +194,7 @@ public final class WidgetInitializationService {
 
     /**
      * Reads the extension point registry.
-     * 
+     *
      */
     private void lookupInitializers() {
         _initializerDescriptors = new HashMap<String, InitializerDescriptor>();
@@ -220,7 +220,7 @@ public final class WidgetInitializationService {
 
     /**
      * Reads the extension point registry.
-     * 
+     *
      */
     private void lookupSchema() {
         _schemaDescriptors = new HashMap<String, ControlSystemSchemaDescriptor>();
@@ -257,7 +257,7 @@ public final class WidgetInitializationService {
     /**
      * Initializes the specified widget using the schema that is configured via
      * the according preference pages.
-     * 
+     *
      * @param widget
      *            the widget
      */
@@ -271,7 +271,7 @@ public final class WidgetInitializationService {
 
     /**
      * Initializes the specified widget using the specified schema.
-     * 
+     *
      * @param widget
      */
     public void initialize(final AbstractWidgetModel widget, String schemaId) {
@@ -288,7 +288,7 @@ public final class WidgetInitializationService {
     /**
      * Returns the currently selected schema. A schema is selected via
      * preference page.
-     * 
+     *
      * @return the currently selected schema
      */
     private ControlSystemSchemaDescriptor getPreferredSchema() {
@@ -305,7 +305,7 @@ public final class WidgetInitializationService {
 
     /**
      * Initializes the model.
-     * 
+     *
      * @param widget
      *            The widget model that should be initialized.
      * @param schemaDescriptor
@@ -318,7 +318,7 @@ public final class WidgetInitializationService {
 
 //        CentralLogger.getInstance().info(null, "Initialization has been skipped. Initializers will be removed completely, soon!!");
 //        return;
-        
+
         if (schemaDescriptor != null) {
             AbstractControlSystemSchema schema = schemaDescriptor
                     .createSchema();

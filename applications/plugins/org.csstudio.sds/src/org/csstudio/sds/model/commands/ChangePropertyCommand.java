@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.sds.model.commands;
 

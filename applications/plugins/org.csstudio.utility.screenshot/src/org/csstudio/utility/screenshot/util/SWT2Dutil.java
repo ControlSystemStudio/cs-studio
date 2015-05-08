@@ -1,7 +1,7 @@
 
 /*******************************************************************************
 * Copyright (c) 2004 Chengdong Li : cdli@ccs.uky.edu
-* All rights reserved. This program and the accompanying materials 
+* All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Common Public License v1.0
 * which accompanies this distribution, and is available at
 * http://www.eclipse.org/legal/cpl-v10.html
@@ -17,9 +17,9 @@ import org.eclipse.swt.graphics.Rectangle;
 
 /**
  * Utility for Java2d transform
- *  
+ *
  * @author Chengdong Li: cli4@uky.edu
- * 
+ *
  */
 public class SWT2Dutil {
 
@@ -71,7 +71,7 @@ public class SWT2Dutil {
         Point point=new Point((int)Math.floor(dest.getX()), (int)Math.floor(dest.getY()));
         return point;
     }
-    
+
     /**
      * Given an arbitrary point, get the point with the inverse given transform.
      * @param af AffineTransform
@@ -90,16 +90,16 @@ public class SWT2Dutil {
     }
 
     /**
-     * Given arbitrary rectangle, return a rectangle with upper-left 
+     * Given arbitrary rectangle, return a rectangle with upper-left
      * start and positive width and height.
      * @param src source rectangle
      * @return result rectangle with positive width and height
      */
     public static Rectangle absRect(Rectangle src){
         Rectangle dest= new Rectangle(0,0,0,0);
-        if(src.width<0) { dest.x=src.x+src.width+1; dest.width=-src.width; } 
+        if(src.width<0) { dest.x=src.x+src.width+1; dest.width=-src.width; }
         else{ dest.x=src.x; dest.width=src.width; }
-        if(src.height<0) { dest.y=src.y+src.height+1; dest.height=-src.height; } 
+        if(src.height<0) { dest.y=src.y+src.height+1; dest.height=-src.height; }
         else{ dest.y=src.y; dest.height=src.height; }
         return dest;
     }

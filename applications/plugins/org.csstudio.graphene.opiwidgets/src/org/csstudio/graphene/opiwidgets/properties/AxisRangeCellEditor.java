@@ -21,15 +21,15 @@ import org.epics.graphene.AxisRanges;
 public class AxisRangeCellEditor extends AbstractDialogCellEditor {
 
     private AxisRange axisRange;
-    
-    
+
+
     public AxisRangeCellEditor(Composite parent, String title) {
         super(parent, title);
     }
 
     @Override
     protected void openDialog(Shell parentShell, String dialogTitle) {
-        AxisRangePropertyDialog dialog = 
+        AxisRangePropertyDialog dialog =
             new AxisRangePropertyDialog(parentShell, axisRange, dialogTitle);
         if(dialog.open() == Window.OK)
             axisRange = dialog.getAxisRange();

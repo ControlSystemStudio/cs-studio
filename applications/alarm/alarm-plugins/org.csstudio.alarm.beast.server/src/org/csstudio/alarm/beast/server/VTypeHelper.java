@@ -61,7 +61,7 @@ public class VTypeHelper
             return "null";
         return value.toString();
     }
-    
+
     /** Decode a {@link VType}'s severity
      *  @param value Value to decode
      *  @return {@link SeverityLevel}

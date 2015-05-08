@@ -6,7 +6,7 @@ import org.eclipse.draw2d.IFigure;
 
 public class ChannelTreeByPropertyEditPart
 extends AbstractChannelWidgetEditPart<ChannelTreeByPropertyFigure, ChannelTreeByPropertyModel> {
-    
+
     /**
      * Create and initialize figure.
      */
@@ -16,7 +16,7 @@ extends AbstractChannelWidgetEditPart<ChannelTreeByPropertyFigure, ChannelTreeBy
         configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
         return figure;
     }
-    
+
     private ChannelTreeByPropertySelectionNotification notification;
     private void configure(ChannelTreeByPropertyWidget widget, ChannelTreeByPropertyModel model, boolean runMode) {
         if (runMode) {
@@ -51,5 +51,5 @@ extends AbstractChannelWidgetEditPart<ChannelTreeByPropertyFigure, ChannelTreeBy
         setPropertyChangeHandler(ChannelTreeByPropertyModel.SELECTION_PV, reconfigure);
         setPropertyChangeHandler(ChannelTreeByPropertyModel.SELECTION_EXPRESSION, reconfigure);
     }
-    
+
 }

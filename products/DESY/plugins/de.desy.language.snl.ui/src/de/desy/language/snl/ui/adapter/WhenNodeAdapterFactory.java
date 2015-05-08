@@ -7,9 +7,9 @@ import de.desy.language.snl.parser.nodes.WhenNode;
 
 /**
  * The specialized {@link IAdapterFactory} for {@link WhenNode}s.
- * 
+ *
  * @author C1 WPS / KM, MZ
- * 
+ *
  */
 class WhenNodeAdapterFactory implements IAdapterFactory {
 

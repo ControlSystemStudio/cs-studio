@@ -25,10 +25,10 @@ public class Preferences
     public static final String RDB_SCHEMA = "rdb_schema";
     public static final String COLUMNS = "prop_cols";
     public static final String START = "start";
-    public static final String MAX_PROPERTIES = "max_properties"; 
-    public static final String AUTO_REFRESH_PERIOD = "auto_refresh_period"; 
-    
-    
+    public static final String MAX_PROPERTIES = "max_properties";
+    public static final String AUTO_REFRESH_PERIOD = "auto_refresh_period";
+
+
     /** Get preference settings for column definitions
      *  @return Array of raw strings for column preferences
      *  @throws Exception on error
@@ -43,7 +43,7 @@ public class Preferences
                     pref_text, null);
         return decodeRawColumnPreferences(pref_text);
     }
-    
+
     /** Decode the raw preference setting for column preferences
      *  into the per-column settings
      *  @param pref_text Raw COLUMNS preference value, may be <code>null</code>
@@ -104,8 +104,8 @@ public class Preferences
                     start, null);
         return start;
     }
-      
-    
+
+
 
     /**
      * Gets the max properties.
@@ -121,8 +121,8 @@ public class Preferences
                     max_properties, null);
         return max_properties;
     }
-    
-    
+
+
     /**
      * Gets the default auto refresh timer.
      *
@@ -138,5 +138,5 @@ public class Preferences
                     period, null);
         return TimeUnit.SECONDS.toMillis(period);
     }
-    
+
 }

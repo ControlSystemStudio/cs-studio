@@ -46,7 +46,7 @@ public class ExportLogsDialog extends Dialog {
     private Map<String, Integer> fieldPositionMap = new HashMap<String,Integer>();
     private final List<String> fields = Arrays.asList("id", "date", "modifyDate", "description", "owner", "logbooks", "tags", "level");
     private final String separator = "\t";
- 
+
     protected ExportLogsDialog(Shell parentShell, List<LogEntry> data) {
         super(parentShell);
         setBlockOnOpen(false);
@@ -101,42 +101,42 @@ public class ExportLogsDialog extends Dialog {
                 }
             }
         });
-        
+
         btnAddFields.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false,1, 1));
         btnAddFields.setText("...");
         return container;
     }
-    
+
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         // create OK and Cancel buttons by default
         createButton(parent, IDialogConstants.OK_ID, "Submit", true);
         createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
     }
-    
+
     @Override
     protected void okPressed() {
         Cursor originalCursor = getShell().getCursor();
-        try {    
+        try {
             final BufferedWriter bw = new BufferedWriter(new FileWriter(new File(filePath.getText())));
             try {
                 bw.append(Joiner.on(separator).join(getHeader()));
                 for (final LogEntry log : data) {
                     bw.newLine();
-                    bw.append(Joiner.on(separator).join(getLine(log)));    
+                    bw.append(Joiner.on(separator).join(getLine(log)));
                 }
                 getShell().setCursor(originalCursor);
                 setReturnCode(OK);
-                close();  
+                close();
             } finally {
                 bw.close();
             }
         } catch (Exception ex) {
             getShell().setCursor(originalCursor);
             errorBar.setException(ex);
-        } 
-    }  
-    
+        }
+    }
+
     private String[] getHeader() {
         int i = 0;
         final List<String> header = new LinkedList<String>();
@@ -146,15 +146,15 @@ public class ExportLogsDialog extends Dialog {
                     header.add(f);
             }
         }
-        return header.toArray(new String[fieldPositionMap.size()]);        
+        return header.toArray(new String[fieldPositionMap.size()]);
     }
-    
+
     private String[] getLine(final LogEntry log) {
         final String[] line = new String[fieldPositionMap.size()];
         for (final String field : fieldPositionMap.keySet()) {
             switch (field) {
                 case "id" :
-                    line[fieldPositionMap.get(field)] = String.valueOf(log.getId()); 
+                    line[fieldPositionMap.get(field)] = String.valueOf(log.getId());
                      break;
                 case "owner":
                     line[fieldPositionMap.get(field)] = log.getOwner();
@@ -172,7 +172,7 @@ public class ExportLogsDialog extends Dialog {
                     StringBuilder logbooks = new StringBuilder();
                     for (final Logbook logbook : log.getLogbooks()) {
                         logbooks.append(logbook.getName() + "/");
-                    }                    
+                    }
                     line[fieldPositionMap.get(field)] = logbooks.substring(0, logbooks.length() - 1);
                      break;
                 case "tags":
@@ -183,11 +183,11 @@ public class ExportLogsDialog extends Dialog {
                     line[fieldPositionMap.get(field)] = tags.length() == 0 ? "" : tags.substring(0, tags.length() - 1);
                      break;
                 case "level":
-                    line[fieldPositionMap.get(field)] = log.getLevel();            
+                    line[fieldPositionMap.get(field)] = log.getLevel();
                      break;
-            } 
+            }
         }
         return line;
     }
-    
+
 }

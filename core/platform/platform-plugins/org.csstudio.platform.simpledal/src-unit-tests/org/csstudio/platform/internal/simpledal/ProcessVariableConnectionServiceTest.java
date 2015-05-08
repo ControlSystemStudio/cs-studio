@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.platform.internal.simpledal;
 
@@ -25,7 +25,7 @@ import org.junit.Test;
 
 /**
  * @author Sven Wende
- * 
+ *
  */
 public class ProcessVariableConnectionServiceTest {
     private static final class ConnectorMock extends AbstractConnector {
@@ -116,7 +116,7 @@ public class ProcessVariableConnectionServiceTest {
     /**
      * Test method for
      * {@link org.csstudio.platform.internal.simpledal.ProcessVariableConnectionService#getConnectors()}.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -214,7 +214,7 @@ public class ProcessVariableConnectionServiceTest {
     /**
      * Test method for
      * {@link org.csstudio.platform.internal.simpledal.ProcessVariableConnectionService#writeValueSynchronously(org.csstudio.platform.model.pvs.IProcessVariableAddress, java.lang.Object, org.csstudio.platform.model.pvs.ValueType)}.
-     * @throws ConnectionException 
+     * @throws ConnectionException
      */
     @Test
     public final void testWriteValueSynchronously() throws ConnectionException {
@@ -226,7 +226,7 @@ public class ProcessVariableConnectionServiceTest {
     /**
      * Test method for
      * {@link org.csstudio.platform.internal.simpledal.ProcessVariableConnectionService#writeValueAsynchronously(org.csstudio.platform.model.pvs.IProcessVariableAddress, java.lang.Object, org.csstudio.platform.model.pvs.ValueType, IProcessVariableWriteListener)}.
-     * @throws ConnectionException 
+     * @throws ConnectionException
      */
     @Test(timeout=1000)
     public final void testWriteValueAsynchronously() throws ConnectionException {
@@ -250,7 +250,7 @@ public class ProcessVariableConnectionServiceTest {
     /**
      * Test method for
      * {@link org.csstudio.platform.internal.simpledal.ProcessVariableConnectionService#unregister(org.csstudio.platform.simpledal.IProcessVariableValueListener)}.
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     @Test(timeout=1000)
     public final void testUnregister() throws InterruptedException {

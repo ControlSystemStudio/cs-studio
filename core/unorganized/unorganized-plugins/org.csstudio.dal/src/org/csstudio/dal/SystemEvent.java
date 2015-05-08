@@ -34,7 +34,7 @@ import java.util.EventObject;
 public class SystemEvent<T, S> extends EventObject
 {
     private static final long serialVersionUID = 1L;
-    
+
     protected Timestamp timestamp;
     protected String message = null;
     protected T value;

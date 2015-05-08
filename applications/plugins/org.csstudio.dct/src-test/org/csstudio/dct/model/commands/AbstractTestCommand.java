@@ -10,9 +10,9 @@ import org.junit.Before;
 
 /**
  * Base class for command tests.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public abstract class AbstractTestCommand {
     private Project project;
@@ -31,7 +31,7 @@ public abstract class AbstractTestCommand {
 
     /**
      * Template method. Subclasses may override for doing setup.
-     * 
+     *
      * @throws Exception
      */
     protected abstract void doSetUp() throws Exception;
@@ -39,7 +39,7 @@ public abstract class AbstractTestCommand {
     /**
      * Returns a dummy project that is already equipped with a meta model from a
      * dbd file.
-     * 
+     *
      * @return a dummy project that is already equipped from a dbd file
      */
     public final Project getProject() {

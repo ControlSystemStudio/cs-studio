@@ -7,15 +7,15 @@ import de.desy.language.snl.diagram.model.WhenConnection;
 
 /**
  * The Command to create a new BendPoint for a {@link Connection}.
- * 
+ *
  * @author Kai Meyer (C1 WPS)
- * 
+ *
  */
 public class CreateBendPointCommand extends AbstractBendPointCommand {
 
     /**
      * Constructor.
-     * 
+     *
      * @param model
      *            The model of the connection
      * @param location

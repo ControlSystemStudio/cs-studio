@@ -13,18 +13,18 @@ import org.csstudio.dct.util.CompareUtil;
 
 /**
  * Standard implementation of {@link IInstance}.
- * 
+ *
  * @author Sven Wende
  */
 public final class Instance extends AbstractContainer implements IInstance {
 
     private static final long serialVersionUID = -7749937096138079752L;
-    
+
     private Map<String, String> parameterValues;
 
     public Instance() {
     }
-    
+
     /**
      * Constructor.
      * @param parent the parent container
@@ -100,23 +100,23 @@ public final class Instance extends AbstractContainer implements IInstance {
     public boolean isInherited() {
         return getParent() instanceof IInstance;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public void accept(IVisitor visitor) {
         visitor.visit(this);
-        
+
         for(IInstance instance : getInstances()) {
             instance.accept(visitor);
         }
-        
+
         for(IRecord record : getRecords()) {
             record.accept(visitor);
         }
     }
-    
-    
+
+
     /**
      *{@inheritDoc}
      */

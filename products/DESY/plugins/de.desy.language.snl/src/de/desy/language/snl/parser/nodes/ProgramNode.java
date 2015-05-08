@@ -4,7 +4,7 @@ import de.desy.language.libraries.utils.contract.Contract;
 
 /**
  * The root node of an SNL program outline.
- * 
+ *
  * @author C1 WPS / KM, MZ
  */
 public class ProgramNode extends AbstractSNLNode {

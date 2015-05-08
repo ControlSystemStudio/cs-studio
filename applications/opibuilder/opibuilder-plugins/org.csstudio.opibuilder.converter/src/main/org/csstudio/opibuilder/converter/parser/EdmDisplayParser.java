@@ -20,19 +20,19 @@ import org.csstudio.opibuilder.converter.model.EdmException;
 
 /**
  * Parser class which parses EdmDisplay data.
- * 
+ *
  * @author Matevz
  *
  */
 public class EdmDisplayParser extends EdmParser{
-    
+
     private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.parser.EdmDisplayParser");
 
     private static final String[] reservedWords = {"beginObjectProperties", "beginGroup",
         "beginScreenProperties", "endScreenProperties", "endObjectProperties", "endGroup"};
 
     /**
-     * Parses 
+     * Parses
      * @param m Matcher, which iterates through each line of data.
      * @param entity Entity which will contain parsed attributes.
      * @throws EdmException if there is nesting error, or if attribute already exists.
@@ -53,7 +53,7 @@ public class EdmDisplayParser extends EdmParser{
             if ( ! line.substring(0, bracePos).contains("\""))
                 isCompound = true;
         }
-        
+
         if (isCompound) {
             String attName = line.substring(0, line.indexOf("{") - 1);
             entity.addAttribute(attName, a);
@@ -86,7 +86,7 @@ public class EdmDisplayParser extends EdmParser{
                 finalValue = value.substring(0, value.length() - 1);
             else //if (i > 1)
                 finalValue = value.toString();
-            
+
             log.debug("Added value: \"" + a.appendValue(finalValue) + "\"");
         }
     }
@@ -142,7 +142,7 @@ public class EdmDisplayParser extends EdmParser{
 
         int i = 0;
         while (matcher.find()) {
-            
+
             String matchData = matcher.group(2);
             int start = matcher.start();
             int end = matcher.end();
@@ -156,10 +156,10 @@ public class EdmDisplayParser extends EdmParser{
             if (i > 0)
                 log.warn("More than one display file headers found.");
             i++;
-            
+
             data.delete(start, end);
         }
-        
+
         return data;
     }
 
@@ -186,7 +186,7 @@ public class EdmDisplayParser extends EdmParser{
             :::::data:::::
             endObjectProperties[2]
         */
-        
+
         Vector<Integer> begins = new Vector<Integer>();
         Vector<Integer> ends = new Vector<Integer>();
         Vector<Integer> finalEnds = new Vector<Integer>();
@@ -209,7 +209,7 @@ public class EdmDisplayParser extends EdmParser{
         // if opening and closing expressions count does not match, something is wrong
         if (begins.size() != ends.size())
             throw new EdmException(EdmException.NESTING_ERROR,
-                    "Open and close expressions count do not match: open = " + begins.size() + 
+                    "Open and close expressions count do not match: open = " + begins.size() +
                     " close = " + ends.size() + ".", null);
 
         // returns the position of closing expression that is relevant to current group
@@ -284,8 +284,8 @@ public class EdmDisplayParser extends EdmParser{
         String afterData = groupData.substring(afterDataStart, afterDataEnd);
         // removes afterData from groupData
         groupData.delete(endGroupPosition, groupData.length());
-        
-        
+
+
         // group data between "beginObjectProperties" and "beginGroup" declaration
         Pattern p = Pattern.compile(
                 "(object\\s+activeGroupClass.*?beginObjectProperties(.*?)beginGroup)",
@@ -295,10 +295,10 @@ public class EdmDisplayParser extends EdmParser{
         int start = m.start();
         int end = m.end();
         String matchData = m.group(2);
-        
+
         // append afterData
-        matchData = matchData + afterData;        
-        
+        matchData = matchData + afterData;
+
         Pattern p1 = Pattern.compile(".*");
         Matcher m1 = p1.matcher(matchData);
 
@@ -308,7 +308,7 @@ public class EdmDisplayParser extends EdmParser{
         groupData.delete(start, end);
         return groupData;
     }
-    
+
     /**
      * Parses the group data enclosed with regexp:
      * "(object activeGroupClass(.*?)endGroup.*?endObjectProperties)",
@@ -320,7 +320,7 @@ public class EdmDisplayParser extends EdmParser{
      * @param data Group data to parse.
      * @return Remaining data without already parsed data.
      * @throws EdmException if error occurs. Parsing is continued only when
-     *         objects contain invalid data. In this case, they are ignored. 
+     *         objects contain invalid data. In this case, they are ignored.
      */
     private StringBuilder parseGroup(EdmEntity parent, StringBuilder data) throws EdmException {
 
@@ -360,20 +360,20 @@ public class EdmDisplayParser extends EdmParser{
                     int start = m.start();
                     int end = m.end();
                     parseObject(groupEntity, objType, objData);
-                    
+
                     groupData.delete(start, end);
                 }
             }
         }
-        
+
         return data;
     }
-    
+
     /**
      * Parses object data. If edm2xml.robustParsing system property is set to "true",
      * parsing is not interrupted in case of erroneous object data. In such case, object is
-     * skipped at robust parsing. 
-     * 
+     * skipped at robust parsing.
+     *
      * @param parent Parent EdmEntity, which will contain parsed object.
      * @param objType Object type string.
      * @param objData Object data string, containing all properties.
@@ -388,7 +388,7 @@ public class EdmDisplayParser extends EdmParser{
         log.debug("");
         log.debug("******** Parsing object: " + objType);
 
-        EdmEntity object = new EdmEntity(objType);            
+        EdmEntity object = new EdmEntity(objType);
 
         Pattern p1 = Pattern.compile(".*");
         Matcher m1 = p1.matcher(objData);
@@ -401,7 +401,7 @@ public class EdmDisplayParser extends EdmParser{
                 catch (Exception e) {
                     log.error("Object parsing skipped due to parsing error.");
                     error = true;
-                    break;                    
+                    break;
                 }
             }
 
@@ -418,12 +418,12 @@ public class EdmDisplayParser extends EdmParser{
 
         return !error;
     }
-    
+
     /**
      * Constructor. Reads the file and parses its data.
      * First, display file header is parsed. Then all group hierarchy is parsed,
      * together with objects.
-     * 
+     *
      * @param fileName EDL file to parse.
      * @throws EdmException if a parsing error occurs.
      */
@@ -431,7 +431,7 @@ public class EdmDisplayParser extends EdmParser{
         super(fileName);
 
         edmData = parseDisplayProperties(edmData);
-        
+
         boolean isMatch = true;
         while (isMatch) {
             Pattern p = Pattern.compile(
@@ -440,7 +440,7 @@ public class EdmDisplayParser extends EdmParser{
             Matcher m = p.matcher(edmData);
 
             isMatch = m.find();
-            
+
             if (isMatch) {
                 String objType = m.group(2).trim();
                 String objData = m.group(3);
@@ -455,12 +455,12 @@ public class EdmDisplayParser extends EdmParser{
                         objType=objType.replace(":", "_");
                     }
                     parseObject(getRoot(), objType, objData);
-                    
+
                     edmData.delete(start, end);
                 }
             }
         }
-        
+
         if (edmData.toString().trim().length() > 0) {
             log.warn("Remaining data not parsed: " + edmData);
         }

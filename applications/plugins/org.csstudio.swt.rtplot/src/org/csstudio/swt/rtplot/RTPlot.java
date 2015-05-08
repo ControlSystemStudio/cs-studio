@@ -121,7 +121,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     {
         return toggle_legend;
     }
-    
+
     /** @return {@link Action} that can show/hide the toolbar */
     public Action getToolbarAction()
     {
@@ -163,7 +163,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     {
         plot.setScaleFont(Objects.requireNonNull(font));
     }
-    
+
     /** @param font Font to use for legend */
     public void setLegendFont(final FontData font)
     {
@@ -190,7 +190,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         plot.showLegend(show);
         toggle_legend.updateText();
     }
-    
+
     /** @return <code>true</code> if toolbar is visible */
     public boolean isToolbarVisible()
     {
@@ -307,7 +307,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     {
         return plot.getTraces();
     }
-    
+
     /** @return Count the number of traces */
     public int getTraceCount(){
     return plot.getTraceCount();

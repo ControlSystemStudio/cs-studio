@@ -43,7 +43,7 @@ public class Opi_activeRectangleClassTest extends TestCase {
         assertEquals("1.0", e.getAttribute("version"));
 
         XMLFileHandler.isElementEqual("EDM Rectangle", "name", e);
-        
+
         XMLFileHandler.isElementEqual("4", "x", e);
         XMLFileHandler.isElementEqual("45", "y", e);
         XMLFileHandler.isElementEqual("111", "width", e);
@@ -56,7 +56,7 @@ public class Opi_activeRectangleClassTest extends TestCase {
         XMLFileHandler.isElementEqual("2", "border_width", e);
 
         XMLFileHandler.isElementEqual("false", "visible", e);
-        
+
         //XMLFileHandler.writeXML(doc);
     }
 

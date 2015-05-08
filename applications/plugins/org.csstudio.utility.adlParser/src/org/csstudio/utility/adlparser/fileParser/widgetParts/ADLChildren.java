@@ -44,14 +44,14 @@ public class ADLChildren extends WidgetPart {
     private ArrayList<ADLWidget> _childrens;
 
     /**
-     * @param adlChildren 
-     * @throws WrongADLFormatException 
-     * @throws WrongADLFormatException 
+     * @param adlChildren
+     * @throws WrongADLFormatException
+     * @throws WrongADLFormatException
      */
     public ADLChildren(ADLWidget adlChildren) throws WrongADLFormatException {
         super(adlChildren);
     }
-    
+
     /**
      * Default constructor
      */
@@ -83,6 +83,6 @@ public class ADLChildren extends WidgetPart {
         assert adlChildren.isType("children") : Messages.ADLObject_AssertError_Begin+adlChildren.getType()+Messages.ADLObject_AssertError_End+"\r\n"+adlChildren; //$NON-NLS-1$
 
         _childrens = adlChildren.getObjects();
-        
+
     }
 }

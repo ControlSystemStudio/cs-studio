@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Composite;
 public class LaunchConfigWizardContentPage extends WizardPage
 {
     final private LaunchConfigUI gui = new LaunchConfigUI(new LaunchConfig());
-    
+
     public LaunchConfigWizardContentPage()
     {
         super(Messages.LaunchConfigTitle);
@@ -28,11 +28,11 @@ public class LaunchConfigWizardContentPage extends WizardPage
     public void createControl(final Composite parent)
     {
         final Composite box = gui.createControl(parent);
-            
+
         // Have to do this, see API of createControl()
         setControl(box);
     }
-    
+
     /** @return LaunchConfig that the user selected */
     public LaunchConfig getConfig()
     {

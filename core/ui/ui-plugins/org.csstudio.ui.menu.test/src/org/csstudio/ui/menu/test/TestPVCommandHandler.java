@@ -15,7 +15,7 @@ public class TestPVCommandHandler extends AbstractAdaptedHandler<ProcessVariable
     public TestPVCommandHandler() {
         super(ProcessVariable.class);
     }
-    
+
     @Override
     protected void execute(List<ProcessVariable> data, ExecutionEvent event) throws ExecutionException {
         IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);

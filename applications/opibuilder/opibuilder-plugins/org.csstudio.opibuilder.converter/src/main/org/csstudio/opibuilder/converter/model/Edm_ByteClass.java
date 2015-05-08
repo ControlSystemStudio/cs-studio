@@ -16,18 +16,18 @@ public class Edm_ByteClass extends EdmWidget {
     @EdmAttributeAn @EdmOptionalAn private EdmColor lineColor;
     @EdmAttributeAn @EdmOptionalAn private EdmColor onColor;
     @EdmAttributeAn @EdmOptionalAn private EdmColor offColor;
-    
+
     @EdmAttributeAn @EdmOptionalAn private String controlPv;
     @EdmAttributeAn @EdmOptionalAn private String endian;
-    
+
     @EdmAttributeAn @EdmOptionalAn private int numBits;
     @EdmAttributeAn @EdmOptionalAn private int shift;
     @EdmAttributeAn @EdmOptionalAn private int lineWidth;
-    
+
     public Edm_ByteClass(EdmEntity genericEntity) throws EdmException {
         super(genericEntity);
     }
-    
+
     public int getLineWidth() {
         return lineWidth;
     }
@@ -43,14 +43,14 @@ public class Edm_ByteClass extends EdmWidget {
     public EdmColor getOffColor() {
         return offColor;
     }
-    
+
     public final String getControlPv() {
         return controlPv;
     }
     public final String getEndian() {
         return endian;
     }
-    
+
     public int getNumBits() {
         return numBits;
     }

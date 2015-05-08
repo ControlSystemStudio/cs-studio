@@ -15,8 +15,8 @@ public class SpinnerTest extends AbstractWidgetTest{
     public Figure createTestWidget() {
         return new SpinnerFigure();
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -29,12 +29,12 @@ public class SpinnerTest extends AbstractWidgetTest{
                 "stepIncrement",
                 "value"
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
     @Override
     public boolean isAutoTest() {
         return true;
-    }        
+    }
 }

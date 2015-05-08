@@ -20,9 +20,9 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  * This is the central place for preference related operations.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class PreferenceHelper {
 
@@ -34,7 +34,7 @@ public class PreferenceHelper {
 
     private static final char ROW_SEPARATOR = ',';  //$NON-NLS-1$
     private static final char ITEM_SEPARATOR = '='; //$NON-NLS-1$
-    
+
     /**
      * @param preferenceName
      *            Preference identifier
@@ -53,7 +53,7 @@ public class PreferenceHelper {
     public static String getLoginModuleExtensionId() {
         return getString(LOGIN_MODULE_EXTENSION_ID, DEFAULT_LOGIN_MODULE_EXT_ID);
     }
-    
+
     /**Get login module options from preference store.
      * @return the options map. Empty if failed to get macros from preference store.
      */
@@ -77,7 +77,7 @@ public class PreferenceHelper {
         return new LinkedHashMap<String, String>();
 
     }
-    
+
     public static List<String[]> decodeStringTable(final String flattedString) throws Exception{
         final List<String[]> result = new ArrayList<String[]>();
         final String[] rows = StringSplitter.splitIgnoreInQuotes(flattedString, ROW_SEPARATOR, false);

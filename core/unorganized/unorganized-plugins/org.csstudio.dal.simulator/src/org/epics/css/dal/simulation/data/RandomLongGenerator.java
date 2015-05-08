@@ -6,7 +6,7 @@ import org.csstudio.dal.DataExchangeException;
 import org.epics.css.dal.simulation.ValueProvider;
 
 /**
- * 
+ *
  * <code>RandomLongGenerator</code> generates random long values.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
@@ -19,7 +19,7 @@ public class RandomLongGenerator implements ValueProvider<Long>{
 
     /**
      * Constructor.
-     * 
+     *
      * @param options (min,max)
      */
     public RandomLongGenerator(String[] options) {
@@ -54,7 +54,7 @@ public class RandomLongGenerator implements ValueProvider<Long>{
     public Long get() throws DataExchangeException {
         return min + ((max - min) * random.nextLong());
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.epics.css.dal.simulation.ValueProvider#set(java.lang.Object)

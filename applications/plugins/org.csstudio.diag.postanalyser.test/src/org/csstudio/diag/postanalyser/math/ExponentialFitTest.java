@@ -14,7 +14,7 @@ public class ExponentialFitTest
     {
         final double amp = 10.0;
         final double time = -2.0;
-        
+
         fit(amp, time);
     }
 
@@ -23,7 +23,7 @@ public class ExponentialFitTest
     {
         final double amp = 10.0;
         final double time = 2.0;
-        
+
         fit(amp, time);
     }
 
@@ -45,7 +45,7 @@ public class ExponentialFitTest
         // Perform the fit
         final ExponentialFit fit = new ExponentialFit(x, data);
         System.out.println("\n\n# Fit:" + fit);
-        
+
         for (int i=0; i<N; ++i)
         {
             System.out.println(x[i] + "\t" + fit.getValue(x[i]));

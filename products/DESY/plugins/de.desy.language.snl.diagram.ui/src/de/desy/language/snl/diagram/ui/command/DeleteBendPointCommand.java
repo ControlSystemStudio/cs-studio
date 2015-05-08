@@ -6,15 +6,15 @@ import de.desy.language.snl.diagram.model.WhenConnection;
 
 /**
  *The Command to delete a BendPoint.
- * 
+ *
  * @author Kai Meyer, Sebastian Middeke (C1 WPS)
- * 
+ *
  */
 public class DeleteBendPointCommand extends AbstractBendPointCommand {
 
     /**
      * Constructor.
-     * 
+     *
      * @param model
      *            The model of the connection
      * @param location

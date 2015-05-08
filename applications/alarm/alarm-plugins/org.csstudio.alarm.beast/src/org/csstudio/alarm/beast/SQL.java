@@ -75,7 +75,7 @@ public class SQL
 
     /** Initialize
      *  @param rdb RDBUtil
-     *  @param schema 
+     *  @param schema
      */
     public SQL(final RDBUtil rdb, final String schema) throws Exception
     {
@@ -162,7 +162,7 @@ public class SQL
                 "DELETE FROM " + schema_prefix + "AUTOMATED_ACTION WHERE COMPONENT_ID=?";
         insert_auto_action =
                 "INSERT INTO " + schema_prefix + "AUTOMATED_ACTION(COMPONENT_ID, AUTO_ACTION_ORDER, TITLE, DETAIL, DELAY) VALUES(?,?,?,?,?)";
-        
+
         update_item_config_time =
             "UPDATE " + schema_prefix + "ALARM_TREE SET CONFIG_TIME=? WHERE COMPONENT_ID=?";
 

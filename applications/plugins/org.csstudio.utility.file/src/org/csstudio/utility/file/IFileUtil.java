@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.file;
 
@@ -42,7 +42,7 @@ import org.eclipse.ui.part.FileEditorInput;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class IFileUtil {
 
@@ -55,24 +55,24 @@ public class IFileUtil {
 
     private class SyncShutdown {
         private boolean shutdown = false;
-        
+
         public synchronized void shutdown() {
             shutdown = true;
         }
-        
+
         public synchronized boolean status() {
             return shutdown;
         }
     }
-    
+
     private final static class IFileUtilHolder {
         private static final IFileUtil instance = new IFileUtil();
     }
-    
+
     public static IFileUtil getInstance() {
         return IFileUtilHolder.instance;
     }
-    
+
     private IFileUtil() {
 
         PlatformUI.getWorkbench().addWindowListener(new IWindowListener(){
@@ -80,19 +80,19 @@ public class IFileUtil {
             @Override
             public void windowActivated(IWorkbenchWindow window) {
                 // TODO Auto-generated method stub
-                
+
             }
 
             @Override
             public void windowDeactivated(IWorkbenchWindow window) {
                 // TODO Auto-generated method stub
-                
+
             }
 
             @Override
             public void windowClosed(IWorkbenchWindow window) {
                 // TODO Auto-generated method stub
-                
+
             }
 
             @Override
@@ -110,7 +110,7 @@ public class IFileUtil {
                                     if (input instanceof NoResourceEditorInput)
                                         input = ((NoResourceEditorInput)input).getOriginEditorInput();
                                     iFile = input instanceof FileEditorInput ? ((FileEditorInput)input).getFile(): null;
-                                    
+
                                 } else {
                                     try {
                                         Field f = part.getClass().getDeclaredField("input");
@@ -126,7 +126,7 @@ public class IFileUtil {
                                             | IllegalArgumentException
                                             | IllegalAccessException e1) {
                                         // I don't care if these fail, best
-                                        // attempt to read boy view files                                
+                                        // attempt to read boy view files
                                         iFile = null;
                                         // e1.printStackTrace();
                                     }
@@ -167,7 +167,7 @@ public class IFileUtil {
                         }
 
                         @Override
-                        public void partOpened(IWorkbenchPartReference partRef) {    
+                        public void partOpened(IWorkbenchPartReference partRef) {
                         // TODO Auto-generated method stub
 
                         }
@@ -192,9 +192,9 @@ public class IFileUtil {
                     });
 
                 }
-                
+
             }} );
-        
+
         attachShutdownListener();
     }
 
@@ -216,9 +216,9 @@ public class IFileUtil {
                     }
 
                 });
-        
+
     }
-    
+
     public IFile createFileResource(String fileName, InputStream inputStream)
         throws IOException {
     if (fileName != null && !fileName.isEmpty()) {
@@ -286,7 +286,7 @@ public class IFileUtil {
     /**
      * This will do the cleanup once the editor associated with the temporary
      * file has been closed
-     * 
+     *
      * @param part
      * @param file
      */
@@ -307,7 +307,7 @@ public class IFileUtil {
             part.putString(TAG_PATH, filePath);
             part.putInteger(TAG_COUNT, count.intValue());
         }
-        
+
     }
 
 
@@ -323,7 +323,7 @@ public class IFileUtil {
                     }
                 }
             }
-            
+
         }
     }
 

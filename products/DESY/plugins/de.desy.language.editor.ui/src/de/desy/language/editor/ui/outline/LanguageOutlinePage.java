@@ -104,7 +104,7 @@ public class LanguageOutlinePage extends ContentOutlinePage implements
             e.printStackTrace();
         }
     }
-    
+
     private List<Node> findSurroundingNode(Node rootNode, int caretPosition) {
         if (rootNode.hasChildren()) {
             for (Node node : rootNode.getChildrenNodes()) {

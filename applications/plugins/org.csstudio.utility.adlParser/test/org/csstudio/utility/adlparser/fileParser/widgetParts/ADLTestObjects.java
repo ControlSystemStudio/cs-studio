@@ -15,15 +15,15 @@ import org.eclipse.swt.graphics.RGB;
 /**
  * Just a bunch of static methods that produce ADLWidgets that can be used in
  * testing.
- * 
+ *
  * @author hammonds
- * 
+ *
  */
 public class ADLTestObjects {
 
     /**
      * Setup a normal control
-     * 
+     *
      * @return
      */
     public static ADLWidget setupRelDispUnknownElement() {
@@ -51,7 +51,7 @@ public class ADLTestObjects {
 
     /**
      * Setup a normal control
-     * 
+     *
      * @return
      */
     public static ADLWidget setupRelDispNoPolicy() {
@@ -66,7 +66,7 @@ public class ADLTestObjects {
 
     /**
      * Setup a normal control
-     * 
+     *
      * @return
      */
     public static ADLWidget setupRelDispMixedArgs() {
@@ -81,7 +81,7 @@ public class ADLTestObjects {
 
     /**
      * Setup a display with no arguments
-     * 
+     *
      * @return
      */
     public static ADLWidget setupRelDispEmptyArgs() {
@@ -95,7 +95,7 @@ public class ADLTestObjects {
 
     /**
      * Setup a display with no arguments
-     * 
+     *
      * @return
      */
     public static ADLWidget setupRelDispNoArgs() {
@@ -212,7 +212,7 @@ public class ADLTestObjects {
         ADLDisplay adlDisp = new ADLDisplay(setupBasicDisplay());
         return adlDisp;
     }
-    
+
     public static ADLWidget setupRelatedDisplayWidget() {
         ADLWidget widget = new ADLWidget("related display", null, 0);
         ADLWidget object = new ADLWidget("object", null, 5);
@@ -232,7 +232,7 @@ public class ADLTestObjects {
 
     /**
      * Convenience method to create a colorMap
-     * 
+     *
      * @return the colorMap
      */
     public static RGB[] makeColorMap() {

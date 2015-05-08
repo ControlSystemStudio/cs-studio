@@ -12,7 +12,7 @@ import de.desy.language.snl.compilerconfiguration.AbstractTargetConfigurationPro
 import de.desy.language.snl.internal.SNLCoreActivator;
 
 public class ConfigurationService {
-    
+
     private static ConfigurationService _instance;
     private Map<String, AbstractTargetConfigurationProvider> _providerMap;
 
@@ -22,7 +22,7 @@ public class ConfigurationService {
         }
         return _instance;
     }
-    
+
     private ConfigurationService() {
         _providerMap = new HashMap<String, AbstractTargetConfigurationProvider>();
         lookup();
@@ -44,28 +44,28 @@ public class ConfigurationService {
             }
         }
     }
-    
+
     public Set<String> getAllIDs() {
         return _providerMap.keySet();
     }
-    
+
     public boolean hasId(String id) {
         return _providerMap.containsKey(id);
     }
-    
+
     public AbstractTargetConfigurationProvider getProvider(String id) {
         assert id != null : "id != null";
         assert id.trim().length() != 0 : "id.trim().length() != 0";
         assert hasId(id) : "hasId(id)";
-        
+
         return _providerMap.get(id);
     }
-    
+
     public String getFullDescription(String id) {
         assert id != null : "id != null";
         assert id.trim().length() != 0 : "id.trim().length() != 0";
         assert hasId(id) : "hasId(id)";
-        
+
         AbstractTargetConfigurationProvider provider = _providerMap.get(id);
         StringBuffer buffer = new StringBuffer();
         buffer.append(provider.getDescription());

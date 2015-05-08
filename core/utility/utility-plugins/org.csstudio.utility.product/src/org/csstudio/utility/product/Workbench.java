@@ -63,12 +63,12 @@ public class Workbench implements WorkbenchExtPoint
         }
         return null;
     }
-    
+
 
     /**
      * Creates a workbench advisor to be used by the created workbench. This methods allows
      * to provide your own advisor and keep the rest of the logic intact.
-     * 
+     *
      * @param parameters the parameters that may give hints on how to create the advisor
      * @return a new advisor instance
      */

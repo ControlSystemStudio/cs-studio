@@ -7,9 +7,9 @@ import de.desy.language.snl.configurationservice.ICompilerOptionsService;
 /**
  * The abstract superclass for all TargetConfigurationProvider specified by the
  * <b>TargetConfigurationProvider</b> Extension Point.
- * 
+ *
  * @author Kai Meyer (C1 WPS)
- * 
+ *
  */
 public abstract class AbstractTargetConfigurationProvider {
 

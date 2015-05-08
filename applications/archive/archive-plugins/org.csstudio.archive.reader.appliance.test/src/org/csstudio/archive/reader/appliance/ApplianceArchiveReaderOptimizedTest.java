@@ -15,11 +15,11 @@ import org.epics.util.time.Timestamp;
 import org.junit.Test;
 
 /**
- * 
+ *
  * <code>ApplianceArchiveReaderOptimizedTest</code> tests the optimized data
  * retrieval using a dummy loopback appliance server. This class test the
  * retrieval methods, if they decode the data correctly. It doesn't tests
- * if data makes sense. 
+ * if data makes sense.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -30,13 +30,13 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
     protected ArchiveReader getReader() {
         return new TestApplianceArchiveReader(false);
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp)}
      * method for a double type PV where the requested number of points is greater
-     * than total number of points. 
-     * 
+     * than total number of points.
+     *
      * @throws Exception
      */
     @Test
@@ -45,7 +45,7 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_double",true,1800,start,end);
         assertEquals("Number of values comparison", 10, vals.length);
-        
+
         ArchiveVNumber val = null;
         for (int i = 0; i < vals.length; i++) {
             val = (ArchiveVNumber)vals[i];
@@ -55,12 +55,12 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp)}
      * method for a double type PV.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -69,10 +69,10 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_double",true,100,start,end);
         assertEquals("Number of values comparison", 100, vals.length);
-        
+
         long startM = TimestampHelper.toMillisecs(start);
-        long step = (TimestampHelper.toMillisecs(end) - startM)/100; 
-        
+        long step = (TimestampHelper.toMillisecs(end) - startM)/100;
+
         ArchiveVNumber val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -82,12 +82,12 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
             assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp)}
      * method for a float type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -96,10 +96,10 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_float",true,100,start,end);
         assertEquals("Number of values comparison", 100, vals.length);
-        
+
         long startM = TimestampHelper.toMillisecs(start);
-        long step = (TimestampHelper.toMillisecs(end) - startM)/100; 
-        
+        long step = (TimestampHelper.toMillisecs(end) - startM)/100;
+
         ArchiveVNumber val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -109,12 +109,12 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
             assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp)}
      * method for an int type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -123,10 +123,10 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_int",true,100,start,end);
         assertEquals("Number of values comparison", 100, vals.length);
-        
+
         long startM = TimestampHelper.toMillisecs(start);
-        long step = (TimestampHelper.toMillisecs(end) - startM)/100; 
-        
+        long step = (TimestampHelper.toMillisecs(end) - startM)/100;
+
         ArchiveVNumber val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -136,12 +136,12 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
             assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp)}
      * method for a short type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -150,10 +150,10 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_short",true,100,start,end);
         assertEquals("Number of values comparison", 100, vals.length);
-        
+
         long startM = TimestampHelper.toMillisecs(start);
-        long step = (TimestampHelper.toMillisecs(end) - startM)/100; 
-        
+        long step = (TimestampHelper.toMillisecs(end) - startM)/100;
+
         ArchiveVNumber val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -163,12 +163,12 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
             assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp)}
      * method for a byte type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -177,10 +177,10 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_byte",true,100,start,end);
         assertEquals("Number of values comparison", 100, vals.length);
-        
+
         long startM = TimestampHelper.toMillisecs(start);
-        long step = (TimestampHelper.toMillisecs(end) - startM)/100; 
-        
+        long step = (TimestampHelper.toMillisecs(end) - startM)/100;
+
         ArchiveVNumber val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -190,12 +190,12 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
             assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp)}
      * method for a string type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -205,7 +205,7 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
         ArchiveVString[] vals = getValuesString("test_pv_string",true,100,start,end);
         //no optimization for the string type
         assertEquals("There should be 10 values all together", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
-        
+
         ArchiveVString val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -215,12 +215,12 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
             assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp)}
      * method for an enum type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -230,7 +230,7 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
         ArchiveVEnum[] vals = getValuesEnum("test_pv_enum",true,100,start,end);
         //no optimization for the enum type
         assertEquals("There should be 10 values all together", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
-        
+
         ArchiveVEnum val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];

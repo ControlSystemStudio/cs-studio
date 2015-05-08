@@ -36,13 +36,13 @@ public class RDBUtilTest
             rdb.close();
         }
     }
-    
+
     @Test
     public void testMySQL() throws Exception
     {
         test(TestSetup.URL_MYSQL);
     }
-    
+
     @Test
     public void testReconnect() throws Exception
     {
@@ -55,10 +55,10 @@ public class RDBUtilTest
             // Get same instance again
             Connection connection2 = rdb.getConnection();
             assertThat(connection2, sameInstance(connection));
-            
+
             // Fake an error by closing the connection on purpose
             connection.close();
-            
+
             // Now get new instance, automatically re-connected
             connection2 = rdb.getConnection();
             assertThat(connection2, notNullValue());

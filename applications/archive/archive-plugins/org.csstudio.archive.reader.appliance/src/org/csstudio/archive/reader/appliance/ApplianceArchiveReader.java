@@ -26,23 +26,23 @@ import org.epics.util.time.Timestamp;
 
 /**
  * Appliance archive reader which reads data from EPICS archiver appliance.
- * 
+ *
  * @author Miha Novak <miha.novak@cosylab.com>
  */
 public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
-        
+
     private final String httpURL;
     private final String pbrawURL;
     private final boolean useStatistics;
-    
+
     private Map<ApplianceValueIterator, ApplianceArchiveReader> iterators = Collections.synchronizedMap(
-               new WeakHashMap<ApplianceValueIterator, ApplianceArchiveReader>()); 
-            
+               new WeakHashMap<ApplianceValueIterator, ApplianceArchiveReader>());
+
     /**
      * Constructor that sets appliance archiver reader url.
-     * 
+     *
      * @param url appliance archiver reader url (with specific prefix)
-     * @param useStatistics true if statistics type data should be returned    
+     * @param useStatistics true if statistics type data should be returned
      *             when optimized data is requested
      */
     public ApplianceArchiveReader(String url, boolean useStatistics) {
@@ -54,7 +54,7 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
         this.pbrawURL = url;
         this.httpURL = pbrawURL.replace("pbraw://", "http://");
     }
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.archive.reader.ArchiveReader#getServerName()
      */
@@ -96,9 +96,9 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
     @Override
     public ArchiveInfo[] getArchiveInfos() {
         return new ArchiveInfo[] { new ArchiveInfo(
-                ApplianceArchiveReaderConstants.ARCHIVER_NAME, 
-                ApplianceArchiveReaderConstants.ARCHIVER_DESCRIPTION, 
-                1) 
+                ApplianceArchiveReaderConstants.ARCHIVER_NAME,
+                ApplianceArchiveReaderConstants.ARCHIVER_DESCRIPTION,
+                1)
         };
     }
 
@@ -129,7 +129,7 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
             return it;
         } catch (ArchiverApplianceException ex) {
             throw new UnknownChannelException(name);
-        } 
+        }
     }
 
     /* (non-Javadoc)
@@ -160,9 +160,9 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
             try {
                 it = new ApplianceRawValueIterator(this, name, start, end, this);
             } catch (ArchiverApplianceException exc) {
-                throw new UnknownChannelException(name);    
+                throw new UnknownChannelException(name);
             }
-        } 
+        }
         iterators.put(it,this);
         return it;
     }
@@ -185,34 +185,34 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
     public void close() {
         cancel();
     }
-    
+
     /**
-     * Creates and returns DataRetrieval 
-     * 
+     * Creates and returns DataRetrieval
+     *
      * @param dataRetrievalURL
      * @return dataRetrieval instance
      */
     public DataRetrieval createDataRetriveal(String dataRetrievalURL) {
         return new RawDataRetrieval(dataRetrievalURL);
     }
-    
+
     /**
      * Returns data retrieval URL. A data retrieval URL looks like
      * http://domain:port/retrieval/data/getData.raw where /data/getData is
      * fixed and .raw identifies the MIME-type of the returned data.
-     * 
+     *
      * @return data retrieval URL
      */
     public String getDataRetrievalURL() {
         return httpURL + ApplianceArchiveReaderConstants.RETRIEVAL_PATH;
     }
-    
+
     /**
      * Search for PV names that match to the specified regular expression.
-     * 
+     *
      * @param reg regular expression
      * @return array with PV names that match to the given regular expression.
-     * @throws IOException 
+     * @throws IOException
      */
     private String[] search(String reg) throws IOException {
         String searchURL = httpURL + ApplianceArchiveReaderConstants.SEARCH_PATH + URLEncoder.encode(reg, "UTF-8");
@@ -237,10 +237,10 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
         }
         return names.toArray(new String[names.size()]);
     }
-    
+
     /**
      * Counts the number of points in the given time window using the ncount operator.
-     * 
+     *
      * @param pvName the name of the PV
      * @param start the start time of the data window
      * @param end the end time of the data window
@@ -253,7 +253,7 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
         java.sql.Timestamp sqlStartTimestamp = TimestampHelper.toSQLTimestamp(start);
         java.sql.Timestamp sqlEndTimestamp = TimestampHelper.toSQLTimestamp(end);
         GenMsgIterator iterator = dataRetrieval.getDataForPV(countName, sqlStartTimestamp, sqlEndTimestamp);
-        
+
         if (iterator != null) {
             try {
                 Iterator<EpicsMessage> it = iterator.iterator();
@@ -270,10 +270,10 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
         }
         return getNumberOfPointsLegacy(pvName, start, end);
     }
-    
+
     /**
      * Counts the number of points in the given time window using the bin count operator.
-     * 
+     *
      * @param pvName the name of the PV
      * @param start the start time of the data window
      * @param end the end time of the data window
@@ -287,7 +287,7 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
         java.sql.Timestamp sqlStartTimestamp = TimestampHelper.toSQLTimestamp(start);
         java.sql.Timestamp sqlEndTimestamp = TimestampHelper.toSQLTimestamp(end);
         GenMsgIterator iterator = dataRetrieval.getDataForPV(countName, sqlStartTimestamp, sqlEndTimestamp);
-        
+
         if (iterator != null) {
             try {
                 Iterator<EpicsMessage> it = iterator.iterator();
@@ -304,7 +304,7 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
         }
         return 0;
     }
-    
+
     @Override
     public void finished(ApplianceValueIterator iterator) {
         iterators.remove(iterator);

@@ -25,7 +25,7 @@ public class ADLTreeLabelProvider implements ILabelProvider {
             if (!(descriptor == null)){
                 image = descriptor.createImage();
             }
-            
+
         }
         return image;
     }

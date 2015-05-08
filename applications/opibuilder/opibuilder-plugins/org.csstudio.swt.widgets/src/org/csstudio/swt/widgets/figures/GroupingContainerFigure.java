@@ -25,15 +25,15 @@ import org.eclipse.draw2d.StackLayout;
  *
  */
 public class GroupingContainerFigure extends Figure implements Introspectable{
-    
+
     private IFigure pane;
-    
+
     private boolean transparent = false;
 
     private ScrollPane scrollPane;
 
     private boolean showScrollbar = false;
-    
+
     public GroupingContainerFigure() {
         scrollPane = new ScrollPane(){
             @Override
@@ -46,24 +46,24 @@ public class GroupingContainerFigure extends Figure implements Introspectable{
         setLayoutManager(new StackLayout());
         add(scrollPane);
         scrollPane.setViewport(new FreeformViewport());
-        scrollPane.setContents(pane);        
+        scrollPane.setContents(pane);
         setShowScrollBar(true);
     }
-    
+
     public BeanInfo getBeanInfo() throws IntrospectionException {
         return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
     }
-    
+
     public IFigure getContentPane(){
         return pane;
     }
-    
+
     public boolean isShowScrollBar(){
         return showScrollbar;
     }
-    
+
     @Override
-    public void setOpaque(boolean opaque) {        
+    public void setOpaque(boolean opaque) {
         transparent =!opaque;
         pane.setOpaque(opaque);
         super.setOpaque(opaque);
@@ -75,10 +75,10 @@ public class GroupingContainerFigure extends Figure implements Introspectable{
         this.showScrollbar = show;
         scrollPane.setScrollBarVisibility(show ? ScrollPane.AUTOMATIC : ScrollPane.NEVER);
     }
-    
-    
 
-    
-    
-    
+
+
+
+
+
 }

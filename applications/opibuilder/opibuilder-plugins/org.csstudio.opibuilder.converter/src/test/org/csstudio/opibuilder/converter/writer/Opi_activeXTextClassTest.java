@@ -60,7 +60,7 @@ public class Opi_activeXTextClassTest extends TestCase {
         XMLFileHandler.isElementEqual("1", "border_style", e);
         XMLFileHandler.isElementEqual("2", "border_width", e);
         XMLFileHandler.isElementEqual("true", "transparency", e);
-        
+
         //XMLFileHandler.writeXML(doc);
     }
 }

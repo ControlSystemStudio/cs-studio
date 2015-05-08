@@ -9,7 +9,7 @@ package org.csstudio.display.pace.model;
 
 /** Listener to Model changes
  *  @author Kay Kasemir
- *  
+ *
  *   reviewed by Delphy 01/28/09
  */
 public interface ModelListener

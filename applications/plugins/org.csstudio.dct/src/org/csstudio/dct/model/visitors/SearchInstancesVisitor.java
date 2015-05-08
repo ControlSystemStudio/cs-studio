@@ -16,9 +16,9 @@ import org.csstudio.dct.model.internal.Project;
 /**
  * Visitor implementation that can be used to find instances using their
  * prototype´s id as search criteria.
- * 
+ *
  * @author swende
- * 
+ *
  */
 public final class SearchInstancesVisitor implements IVisitor {
     private UUID prototypeId;
@@ -46,7 +46,7 @@ public final class SearchInstancesVisitor implements IVisitor {
      *{@inheritDoc}
      */
     public void visit(IRecord record) {
-        
+
     }
 
     /**
@@ -61,7 +61,7 @@ public final class SearchInstancesVisitor implements IVisitor {
 
     /**
      * Deep search for instances in a project.
-     * 
+     *
      * @param project
      *            the project
      * @param prototypeId

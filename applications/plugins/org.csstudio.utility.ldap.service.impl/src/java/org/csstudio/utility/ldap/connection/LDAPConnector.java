@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 public class LDAPConnector {
 
     private static final Logger LOG = LoggerFactory.getLogger(LDAPConnector.class);
-    
+
     private InitialLdapContext _ctx = null;
 
     private Map<String, String> _contextPrefs = Collections.emptyMap();

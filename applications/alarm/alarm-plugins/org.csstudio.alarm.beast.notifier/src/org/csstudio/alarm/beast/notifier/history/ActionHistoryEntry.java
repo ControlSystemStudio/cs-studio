@@ -12,9 +12,9 @@ import org.csstudio.alarm.beast.notifier.EActionStatus;
 
 /**
  * History entry of an automated action identified by its {@link ActionID}.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
- * 
+ *
  */
 public class ActionHistoryEntry {
 

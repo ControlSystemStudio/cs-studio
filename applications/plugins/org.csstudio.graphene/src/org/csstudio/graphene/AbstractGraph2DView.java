@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene;
 
@@ -21,7 +21,7 @@ import org.eclipse.ui.part.ViewPart;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public abstract class AbstractGraph2DView<Widget extends AbstractGraph2DWidget<?,?>>
         extends ViewPart {

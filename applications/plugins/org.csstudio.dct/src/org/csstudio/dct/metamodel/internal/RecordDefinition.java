@@ -12,9 +12,9 @@ import org.csstudio.dct.metamodel.IRecordDefinition;
 
 /**
  * Standard implementation of {@link IRecordDefinition}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class RecordDefinition implements IRecordDefinition, Serializable {
     private String type;
@@ -22,7 +22,7 @@ public final class RecordDefinition implements IRecordDefinition, Serializable {
 
     /**
      * Constructor.
-     * 
+     *
      * @param type the record type
      */
     public RecordDefinition(String type) {
@@ -38,14 +38,14 @@ public final class RecordDefinition implements IRecordDefinition, Serializable {
         return fieldDefinitions.get(fieldName);
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
     public Collection<IFieldDefinition> getFieldDefinitions() {
         return fieldDefinitions.values();
     }
-    
+
     public void setFieldDefinitions(Map<String, IFieldDefinition> fieldDefinitions) {
         this.fieldDefinitions = fieldDefinitions;
     }

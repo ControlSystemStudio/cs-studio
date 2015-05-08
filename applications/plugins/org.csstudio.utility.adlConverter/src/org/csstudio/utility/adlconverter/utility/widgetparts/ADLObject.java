@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * @since 04.09.2007
  */
 public class ADLObject extends WidgetPart {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(ADLObject.class);
 
     /** The x-coordinate of the Object.*/

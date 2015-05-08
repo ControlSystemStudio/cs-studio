@@ -19,7 +19,7 @@ public class PVFormulaInputBarTest {
         Shell shell = new Shell (display);
         PVFormulaInputBar bar = new PVFormulaInputBar(shell, SWT.NONE, null, null);
         bar.addPropertyChangeListener(new PropertyChangeListener() {
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent arg0) {
                 if ("pvFormula".equals(arg0.getPropertyName())) {

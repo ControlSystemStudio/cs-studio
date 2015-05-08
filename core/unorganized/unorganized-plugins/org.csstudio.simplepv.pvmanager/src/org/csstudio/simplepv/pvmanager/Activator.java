@@ -20,10 +20,10 @@ import org.osgi.framework.BundleContext;
 public class Activator implements BundleActivator {
 
     private static BundleContext context;
-    
+
     // The plug-in ID
     public static final String PLUGIN_ID = "org.csstudio.simplepv.pvmanager"; //$NON-NLS-1$
-    
+
     final private static Logger logger = Logger.getLogger(PLUGIN_ID);
 
     static BundleContext getContext() {
@@ -45,7 +45,7 @@ public class Activator implements BundleActivator {
     public void stop(BundleContext bundleContext) throws Exception {
         Activator.context = null;
     }
-    
+
     public static Logger getLogger() {
         return logger;
     }

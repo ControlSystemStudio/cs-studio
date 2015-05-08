@@ -45,7 +45,7 @@ public class adl2boyPreferencePage extends FieldEditorPreferencePage implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */

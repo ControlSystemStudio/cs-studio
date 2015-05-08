@@ -16,7 +16,7 @@ import org.epics.util.time.Timestamp;
 import org.junit.Test;
 
 /**
- * 
+ *
  * <code>ApplianceArchiverReaderRawWaveformTest</code> test retrieval of waveform type PVs
  * using non optimized algorithm.
  *
@@ -24,17 +24,17 @@ import org.junit.Test;
  *
  */
 public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReaderTesting {
-    
+
     @Override
     protected ArchiveReader getReader() {
         return new TestApplianceArchiveReader(false);
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
      * method for a double waveform type PV.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -43,7 +43,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_double",false,0, start, end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
-        
+
         ArchiveVNumberArray val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -57,12 +57,12 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
      * method for a float waveform type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -71,7 +71,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_float",false,0, start, end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
-        
+
         ArchiveVNumberArray val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -85,12 +85,12 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
      * method for an int waveform type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -99,7 +99,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_int",false,0, start, end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
-        
+
         ArchiveVNumberArray val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -113,12 +113,12 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
      * method for a short waveform type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -127,7 +127,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_short",false,0, start,end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
-        
+
         ArchiveVNumberArray val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -141,12 +141,12 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
      * method for a byte waveform type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -155,7 +155,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_byte",false,0,start,end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
-        
+
         ArchiveVNumberArray val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -169,12 +169,12 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
      * method for a string wavefdorm type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -187,14 +187,14 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
             fail();
         } catch (UnsupportedOperationException e) {
             assertNotNull(e);
-        }        
+        }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
      * method for an enum waveform type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -207,6 +207,6 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
             fail();
         } catch (UnsupportedOperationException e) {
             assertNotNull(e);
-        }    
+        }
     }
 }

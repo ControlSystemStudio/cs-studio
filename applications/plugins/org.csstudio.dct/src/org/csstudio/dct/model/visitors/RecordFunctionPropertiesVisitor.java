@@ -9,9 +9,9 @@ import org.csstudio.dct.model.IRecord;
 /**
  * Visitor that equips all abstract records of a project with properties that
  * belong to {@link IRecordFunction} extensions.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class RecordFunctionPropertiesVisitor extends AbstractVisitor {
     private Map<String, String> properties;

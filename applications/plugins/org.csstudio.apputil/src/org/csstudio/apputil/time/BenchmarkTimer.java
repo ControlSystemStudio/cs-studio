@@ -22,16 +22,16 @@ public class BenchmarkTimer
 {
     /** System nanosecs when started */
     private long start;
-    
+
     /** System nanosecs of last snapshot */
     private long elapsed;
-    
+
     /** Construct and start the timer */
     public BenchmarkTimer()
     {
         start();
     }
-    
+
     /** Start/Reset the timer */
     public void start()
     {
@@ -46,7 +46,7 @@ public class BenchmarkTimer
         elapsed = System.nanoTime() - start;
         return elapsed;
     }
-    
+
     /** Continue timer that was stop()ed from when it was stopped */
     public void cont()
     {

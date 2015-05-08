@@ -57,7 +57,7 @@ public class CSVSampleImporter implements SampleImporter
                 //    YYYY/MM/DD HH:MM:SS.SSSSSSSSS   value    negativeError    positiveError    ignore
                 "\\s*([0-9][0-9][0-9][0-9][-/][0-9][0-9][-/][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9]*)[ \\t,]+([-+0-9.,eE]+)[ \\t,]+([-+0-9.,eE]+)[ \\t,]+([-+0-9.,eE]+)\\s*.*");
 
-        
+
         final List<VType> values = new ArrayList<VType>();
 
         final BufferedReader reader =
@@ -87,8 +87,8 @@ public class CSVSampleImporter implements SampleImporter
                 }
                 statistics = false;
             }
-            
-            
+
+
             // Parse
             // Date may use '-' or '/' as separator. Force '-'
             String date_text = matcher.group(1).replace('/', '-');
@@ -96,7 +96,7 @@ public class CSVSampleImporter implements SampleImporter
             if (date_text.length() > 23)
                 date_text = date_text.substring(0, 23);
             final Date date = date_parser.parse(date_text);
-            //Double.parseDouble only parses numbers in format #.#... or #.#...#E0, meaning 
+            //Double.parseDouble only parses numbers in format #.#... or #.#...#E0, meaning
             //that you cannot have any grouping separators, and the decimal separator must be '.'
             //First remove all grouping separators, then replace the decimal separator with a '.'
             final double number = Double.parseDouble(
@@ -116,10 +116,10 @@ public class CSVSampleImporter implements SampleImporter
 
         return values;
     }
-        
+
     /**
      * Remove all occurrences of the character from the string.
-     * 
+     *
      * @param source the string to remove the characters from
      * @param charToRemove the character to remove
      * @return the string without any occurrence of the given character

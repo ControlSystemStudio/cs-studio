@@ -298,8 +298,8 @@ public class Preferences
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getInt(Activator.ID, MAX_CONTEXT_MENU_ENTRIES, 10, null);
     }
-    
-    /** @return the batch update period for rdb updates (the interval how often 
+
+    /** @return the batch update period for rdb updates (the interval how often
      *             the alarm state updates are inserted into the database in seconds)
      */
     public static double getBatchUpdatePeriod()
@@ -307,8 +307,8 @@ public class Preferences
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getDouble(Activator.ID, BATCH_UPDATE_PERIOD, 1., null);
     }
-    
-    /** @return the batch size for rdb updates (the number of sql statements in 
+
+    /** @return the batch size for rdb updates (the number of sql statements in
      *                 a single batch)
      */
     public static int getBatchSize()

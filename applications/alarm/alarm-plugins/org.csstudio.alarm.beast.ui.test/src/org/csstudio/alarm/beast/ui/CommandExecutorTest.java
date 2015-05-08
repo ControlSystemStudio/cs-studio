@@ -79,7 +79,7 @@ public class CommandExecutorTest
         assertEquals(Thread.State.TERMINATED, cmd.getState());
         assertEquals(CommandExecutorThread.CommandState.FINISHED_OK, cmd.getCommandState());
     }
-    
+
     @Test
     public void testLong() throws Exception
     {
@@ -98,14 +98,14 @@ public class CommandExecutorTest
         assertEquals(Thread.State.TERMINATED, cmd.getState());
         assertEquals(CommandExecutorThread.CommandState.LEFT_RUNNING, cmd.getCommandState());
     }
-    
+
     // Long running stand-alone test to check for memory leaks.
     // JProfiler on OS X shows a java.lang.UnixProcess for each
     // CommandExecutorForSleep.
     // On Linux, the UnixProcess implementation is
     // a little different but same end result:
     // One UnixProcess per actual external process.
-    // 
+    //
     // The UnixProcess instances may linger until a garbage collection
     // is forced, but a GC removes all of them with both
     // JDK 1.5.0_09 and JDK 1.6.0_13.

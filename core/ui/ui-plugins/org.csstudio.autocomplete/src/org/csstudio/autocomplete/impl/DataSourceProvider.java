@@ -25,7 +25,7 @@ import org.csstudio.autocomplete.proposals.ProposalStyle;
 /**
  * DataSource prefix (loc://, sim://, ...) provider. Provides only top
  * proposals if the content match a defined data source.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class DataSourceProvider implements IAutoCompleteProvider {

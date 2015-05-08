@@ -42,7 +42,7 @@ public class ArchiveConfigApplication implements IApplication
         final ArgParser parser = new ArgParser();
         final BooleanOption help = new BooleanOption(parser,
                 "-help", "show help");
-        final BooleanOption version = new BooleanOption(parser, 
+        final BooleanOption version = new BooleanOption(parser,
                 "-version", "Display version info");
         final BooleanOption list = new BooleanOption(parser,
                 "-list", "List engine names");
@@ -120,7 +120,7 @@ public class ArchiveConfigApplication implements IApplication
             SecurePreferences.set(pref, value);
             return IApplication.EXIT_OK;
         }
-        
+
         if (!list.get() && engine_name.get().length() <= 0)
         {
             System.err.println("Missing option " + engine_name.getOption());

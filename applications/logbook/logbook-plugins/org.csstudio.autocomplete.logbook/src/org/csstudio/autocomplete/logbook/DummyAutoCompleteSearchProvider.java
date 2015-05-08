@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.autocomplete.logbook;
 
@@ -13,7 +13,7 @@ import org.csstudio.logbook.util.LogEntrySearchUtil;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class DummyAutoCompleteSearchProvider extends
     AbstractAutoCompleteSearchProvider {

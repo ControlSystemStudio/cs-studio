@@ -18,18 +18,18 @@ public class Edm_activePipClass extends EdmWidget {
     @EdmAttributeAn @EdmOptionalAn private String displaySource;
     @EdmAttributeAn @EdmOptionalAn private String file;
     @EdmAttributeAn @EdmOptionalAn private String filePv;
-    
+
     @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings displayFileName;
     @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings menuLabel;
     @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings symbols;
     @EdmAttributeAn @EdmOptionalAn private EdmMultiBooleans replaceSymbols;
-    
-    
+
+
     public Edm_activePipClass(EdmEntity genericEntity) throws EdmException {
         super(genericEntity);
     }
 
-    
+
 
     public EdmMultiStrings getDisplayFileName() {
         return displayFileName;

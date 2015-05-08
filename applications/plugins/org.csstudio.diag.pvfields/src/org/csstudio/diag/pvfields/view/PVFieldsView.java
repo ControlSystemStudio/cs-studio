@@ -55,7 +55,7 @@ public class PVFieldsView  extends ViewPart
     public void createPartControl(Composite parent)
     {
         gui = new GUI(parent, Activator.getDefault().getDialogSettings(), getSite());
-        
+
         // Restore
         if (memento != null)
         {

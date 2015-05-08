@@ -11,9 +11,9 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * XML handler to load the stored location and size for states and state-sets of
  * the SNL diagram associated with the current file.
- * 
+ *
  * @author Kai Meyer, Sebastian Middeke (C1 WPS)
- * 
+ *
  */
 public class StateLayoutHandler extends DefaultHandler {
 
@@ -21,7 +21,7 @@ public class StateLayoutHandler extends DefaultHandler {
 
     /**
      * Constructor.
-     * 
+     *
      * @param stateLayoutMap
      *            the map for the stored state and state-set layout data
      * @require stateLayoutMap != null
@@ -47,7 +47,7 @@ public class StateLayoutHandler extends DefaultHandler {
      * Creates and inserts a {@link StateLayoutData} into the
      * <code>stateLayoutMap</code> with the name of the current element as key
      * loaded from the attributes of the element.
-     * 
+     *
      * @param attributes
      *            The attributes of XML state or state-set entry
      */

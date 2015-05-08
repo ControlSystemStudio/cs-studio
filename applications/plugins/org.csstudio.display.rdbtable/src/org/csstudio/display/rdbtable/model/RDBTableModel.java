@@ -22,17 +22,17 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /** Model of RDB Table
- * 
+ *
  *  Reads configuration file that defines table columns and SQL,
  *  reads table from RDB, allows editing, can write changes back to RDB.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class RDBTableModel
 {
     final ArrayList<RDBTableModelListener> listeners = new ArrayList<RDBTableModelListener>();
-    
+
     /** Document title */
     private String title;
 
@@ -43,7 +43,7 @@ public class RDBTableModel
      *  Array length also defines the number of columns
      */
     private ColumnInfo[] columns;
-    
+
     /** SQL statements */
     private String sql_select, sql_insert, sql_update, sql_delete;
 
@@ -52,11 +52,11 @@ public class RDBTableModel
 
     /** Has the model data been modified? */
     private boolean was_modified = false;
-    
+
     /** The rows in the table */
     final private ArrayList<RDBTableRow> rows = new ArrayList<RDBTableRow>();
 
-    
+
     /** Initialize RDBTable from file
      *  @param filename Name of XML file
      *  @throws Exception on error in XML file or RDB readout
@@ -85,26 +85,26 @@ public class RDBTableModel
         final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         final DocumentBuilder db = dbf.newDocumentBuilder();
         final Document doc = db.parse(stream);
-    
+
         // Check root element
         final Element root_node = doc.getDocumentElement();
         root_node.normalize();
         final String root_name = root_node.getNodeName();
         if (!root_name.equals("rdbtable"))
             throw new Exception("Got " + root_name + " instead of 'rdbtable'");
-        
+
         // Read basic info
         title = DOMHelper.getSubelementString(root_node, "title");
         url = DOMHelper.getSubelementString(root_node, "url");
         user = DOMHelper.getSubelementString(root_node, "user");
         password = DOMHelper.getSubelementString(root_node, "password");
-        
+
         // Read column definitions: Locate list of columns
         final Element cols_node =
             DOMHelper.findFirstElementNode(root_node.getFirstChild(), "columns");
         if (cols_node == null)
             throw new Exception("No 'columns' definition");
-        
+
         final ArrayList<ColumnInfo> columns = new ArrayList<ColumnInfo>();
         Element col_node = DOMHelper.findFirstElementNode(cols_node.getFirstChild(), "column");
         while (col_node != null)
@@ -115,7 +115,7 @@ public class RDBTableModel
             col_node = DOMHelper.findNextElementNode(col_node, "column");
         }
         this.columns = (ColumnInfo[]) columns.toArray(new ColumnInfo[columns.size()]);
-    
+
         // Read SQL
         final Element sql_node = DOMHelper.findFirstElementNode(root_node.getFirstChild(), "sql");
         if (sql_node == null)
@@ -153,7 +153,7 @@ public class RDBTableModel
     {
         return password.length() <= 0;
     }
-    
+
     /** @return User name provided in configuration file. May be "" */
     public String getUser()
     {
@@ -172,7 +172,7 @@ public class RDBTableModel
         this.password = password;
         read();
     }
-    
+
     /** Read table data from RDB with user, password from configuration file
      *  or last read(user, password) call.
      *  @throws Exception on error
@@ -212,7 +212,7 @@ public class RDBTableModel
     {
         listeners.remove(listener);
     }
-    
+
     /** @return Document title */
     public String getTitle()
     {

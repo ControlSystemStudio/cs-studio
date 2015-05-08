@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.model.commands;
 
@@ -20,7 +20,7 @@ import org.junit.Test;
 
 /**
  * Test class for {@link AddRecordCommand}.
- * 
+ *
  * @author Sven Wende
  *
  */
@@ -29,7 +29,7 @@ public final class RemoveRecordCommandTest extends AbstractTestCommand {
     private IInstance instance;
     private IRecord record;
     private RemoveRecordCommand command;
-    
+
     /**
      * @throws java.lang.Exception
      */
@@ -39,10 +39,10 @@ public final class RemoveRecordCommandTest extends AbstractTestCommand {
         instance = new Instance(prototype, UUID.randomUUID());
         prototype.addDependentContainer(instance);
         record = RecordFactory.createRecord(getProject(), "ai", "r", UUID.randomUUID());
-        
+
         AddRecordCommand cmd = new AddRecordCommand(prototype, record);
         cmd.execute();
-        
+
         command = new RemoveRecordCommand(record);
     }
 
@@ -57,7 +57,7 @@ public final class RemoveRecordCommandTest extends AbstractTestCommand {
         command.undo();
         verifyBeforeCommandExecution();
     }
-    
+
     private void verifyBeforeCommandExecution() {
         assertEquals(1, prototype.getRecords().size());
         assertEquals(1, instance.getRecords().size());
@@ -75,7 +75,7 @@ public final class RemoveRecordCommandTest extends AbstractTestCommand {
     }
 
 
-    
-    
+
+
 
 }

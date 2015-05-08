@@ -2,7 +2,7 @@ package org.csstudio.sds.language.script.parser.nodes;
 
 /**
  * This node represents a block statement.
- * 
+ *
  * @author C1 WPS / KM, MZ
  */
 public class BlockStatementNode extends AbstractBraceBlockNode {

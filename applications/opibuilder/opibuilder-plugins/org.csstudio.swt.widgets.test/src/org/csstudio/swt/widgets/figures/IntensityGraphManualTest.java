@@ -30,30 +30,30 @@ public class IntensityGraphManualTest extends AbstractWidgetTest{
                     for(int i=0; i<DataHeight; i++){
                         for(int j=0; j<DataWidth; j++){
                             int x = j-DataWidth;
-                            int y = i-DataHeight;        
+                            int y = i-DataHeight;
                             int p = (int) Math.sqrt(x*x + y*y);
-                            simuData[i*DataWidth + j] = (short) ( Math.sin(p*2*Math.PI/DataWidth + seed*Math.PI/100)*100);        
+                            simuData[i*DataWidth + j] = (short) ( Math.sin(p*2*Math.PI/DataWidth + seed*Math.PI/100)*100);
                         }
                     }
         Thread t = new Thread(new Runnable() {
-            
+
             public void run() {
                 while (true) {
                     count++;
                     try {
-                        
+
                         Thread.sleep(50);
                     } catch (InterruptedException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
 //                    long nanoTime = System.nanoTime();
-                    
+
                     System.arraycopy(simuData, count%DataWidth, data, 0, DataWidth*DataHeight);
 //                    System.out.println((System.nanoTime()-nanoTime)/1000000 + " generating "+ data[0] + "Count: " +count);
 //                    start=System.nanoTime();
                     Display.getDefault().asyncExec(new Runnable() {
-                        
+
                         public void run() {
 //                            long nanoTime = 0;//System.nanoTime();
 
@@ -62,9 +62,9 @@ public class IntensityGraphManualTest extends AbstractWidgetTest{
 //                            System.out.println(System.nanoTime()/1000 + " setting " + data[0] + "Count: " +count2);
                         }
                     });
-                            
-                            
-                
+
+
+
 
 
 
@@ -80,8 +80,8 @@ public class IntensityGraphManualTest extends AbstractWidgetTest{
         figure.setColorMap(new ColorMap(PredefinedColorMap.JET, true, true));
         return figure;
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -99,11 +99,11 @@ public class IntensityGraphManualTest extends AbstractWidgetTest{
                 "runMode",
                 "showRamp"
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
-    
+
+
     @Override
     public Object generateTestData(PropertyDescriptor pd, Object seed) {
         if(pd.getName().equals("dataArray") && seed != null && seed instanceof Integer){
@@ -111,9 +111,9 @@ public class IntensityGraphManualTest extends AbstractWidgetTest{
             for(int i=0; i<256; i++){
                 for(int j=0; j<256; j++){
                     int x = j-128;
-                    int y = i-128;        
+                    int y = i-128;
                     int p = (int) Math.sqrt(x*x + y*y);
-                    simuData[i*256 + j] = Math.sin(p*2*Math.PI/256 + (Integer)seed);        
+                    simuData[i*256 + j] = Math.sin(p*2*Math.PI/256 + (Integer)seed);
                 }
             }
             return simuData;
@@ -127,10 +127,10 @@ public class IntensityGraphManualTest extends AbstractWidgetTest{
             return new ColorMap(PredefinedColorMap.values()[(Integer)seed % 6 + 1], true, true);
         return super.generateTestData(pd, seed);
     }
-    
+
     @Override
     public boolean isAutoTest() {
         return false;
     }
-            
+
 }

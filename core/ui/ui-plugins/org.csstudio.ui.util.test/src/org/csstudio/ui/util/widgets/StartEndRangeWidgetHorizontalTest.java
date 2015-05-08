@@ -31,7 +31,7 @@ public class StartEndRangeWidgetHorizontalTest extends ApplicationWindow {
 
     /**
      * Create contents of the application window.
-     * 
+     *
      * @param parent
      */
     @Override
@@ -176,7 +176,7 @@ public class StartEndRangeWidgetHorizontalTest extends ApplicationWindow {
 
     /**
      * Create the menu manager.
-     * 
+     *
      * @return the menu manager
      */
     @Override
@@ -187,7 +187,7 @@ public class StartEndRangeWidgetHorizontalTest extends ApplicationWindow {
 
     /**
      * Create the status line manager.
-     * 
+     *
      * @return the status line manager
      */
     @Override
@@ -198,7 +198,7 @@ public class StartEndRangeWidgetHorizontalTest extends ApplicationWindow {
 
     /**
      * Launch the application.
-     * 
+     *
      * @param args
      */
     public static void main(String args[]) {
@@ -214,7 +214,7 @@ public class StartEndRangeWidgetHorizontalTest extends ApplicationWindow {
 
     /**
      * Configure the shell.
-     * 
+     *
      * @param newShell
      */
     @Override

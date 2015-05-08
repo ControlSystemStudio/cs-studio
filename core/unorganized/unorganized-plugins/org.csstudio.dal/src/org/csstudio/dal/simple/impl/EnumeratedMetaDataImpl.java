@@ -5,10 +5,10 @@ import org.csstudio.dal.simple.MetaData;
 
 @Deprecated
 public final class EnumeratedMetaDataImpl implements MetaData {
-    
+
     private final String[] states;
     private final Object[] values;
-    
+
     public EnumeratedMetaDataImpl(String[] states, Object[] values) {
         this.states = states;
         this.values = values;
@@ -48,13 +48,13 @@ public final class EnumeratedMetaDataImpl implements MetaData {
         System.arraycopy(states, 0, s, 0, s.length);
         return s;
     }
-    
+
     public Object[] getStateValues() {
         Object[] v = new Object[values.length];
         System.arraycopy(values, 0, v, 0, v.length);
         return v;
     }
-    
+
     public Object getStateValue(int state) {
         return values[state];
     }

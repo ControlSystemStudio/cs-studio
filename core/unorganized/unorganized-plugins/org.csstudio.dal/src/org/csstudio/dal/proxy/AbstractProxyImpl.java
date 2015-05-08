@@ -44,7 +44,7 @@ public abstract class AbstractProxyImpl<P extends AbstractPlug> implements Proxy
     protected Identifier identifier;
     protected P plug;
     private String connectionInfo;
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.dal.context.Identifiable#getIdentifier()
      */
@@ -74,7 +74,7 @@ public abstract class AbstractProxyImpl<P extends AbstractPlug> implements Proxy
         this.name = name;
         this.plug = plug;
     }
-    
+
     public P getPlug() {
         return plug;
     }
@@ -159,9 +159,9 @@ public abstract class AbstractProxyImpl<P extends AbstractPlug> implements Proxy
         setConnectionState(s, null);
     }
     /**
-     * This method is called after connection state was changed but change was not jet 
-     * fired to listeners. 
-     * Plug implementation may want to override this method to provide internal 
+     * This method is called after connection state was changed but change was not jet
+     * fired to listeners.
+     * Plug implementation may want to override this method to provide internal
      * synchronization of proxy with new state.
      * @param s the new connection state
      */
@@ -189,7 +189,7 @@ public abstract class AbstractProxyImpl<P extends AbstractPlug> implements Proxy
             }
         }
     }
-    
+
     public String getConnectionInfo() {
         if (connectionInfo == null) {
             if (connectionStateMachine.isConnected()) {
@@ -220,7 +220,7 @@ public abstract class AbstractProxyImpl<P extends AbstractPlug> implements Proxy
         }
         return connectionInfo;
     }
-    
+
     /**
      * Plug implementation should override this to provide remote host information.
      * Something like: HOST_NAME:PORT or HOST_IP:PORT.

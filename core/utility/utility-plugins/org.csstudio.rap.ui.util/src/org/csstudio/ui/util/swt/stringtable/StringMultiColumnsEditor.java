@@ -39,7 +39,7 @@ class StringMultiColumnsEditor extends EditingSupport {
         this.table_viewer = viewer;
         this.columnNo = columnNo;
         this.numOfColumns = numOfColumns;
-        this.cellEditorType = cellEditorType;        
+        this.cellEditorType = cellEditorType;
         this.cellEditorData = cellData;
         if(cellEditorType == CellEditorType.CHECKBOX){
             if(cellEditorData==null || !(cellEditorData instanceof String[]) || ((String[])cellEditorData).length<2)
@@ -59,7 +59,7 @@ class StringMultiColumnsEditor extends EditingSupport {
         case CHECKBOX:
             return new CheckboxCellEditor(parent){
                 /**
-                 * 
+                 *
                  */
                 private static final long serialVersionUID = 3284307131124279645L;
                 protected Object doGetValue() {
@@ -73,11 +73,11 @@ class StringMultiColumnsEditor extends EditingSupport {
                         super.doSetValue(false);
                 }
             };
-        case DROPDOWN: 
+        case DROPDOWN:
             return new ComboBoxCellEditor(parent,
                     (String[])cellEditorData,SWT.NONE){
                 /**
-                         * 
+                         *
                          */
                         private static final long serialVersionUID = 4196165158838137091L;
 
@@ -85,7 +85,7 @@ class StringMultiColumnsEditor extends EditingSupport {
                 protected Object doGetValue() {
                     return ((CCombo)getControl()).getText();
                 }
-                
+
                 @Override
                 protected void doSetValue(Object value) {
                     ((CCombo)getControl()).setText(value.toString());
@@ -95,7 +95,7 @@ class StringMultiColumnsEditor extends EditingSupport {
         default:
             return new TextCellEditor(parent);
         }
-        
+
     }
 
     @SuppressWarnings("unchecked")

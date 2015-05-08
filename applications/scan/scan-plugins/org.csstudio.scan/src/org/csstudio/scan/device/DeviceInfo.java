@@ -32,7 +32,7 @@ public class DeviceInfo
     {
         this(name, name);
     }
-    
+
     /** Initialize
      *  @param name Device name as understood by the control system
      *  @param alias Alias for the device that is used in GUI and scans
@@ -41,7 +41,7 @@ public class DeviceInfo
     {
         this(name, alias, "");
     }
-    
+
     /** Initialize
      *  @param name Device name as understood by the control system
      *  @param alias Alias for the device that is used in GUI and scans
@@ -71,7 +71,7 @@ public class DeviceInfo
     {
         return status;
     }
-    
+
     /** Hash on name
      *  {@inheritDoc}
      */

@@ -2,9 +2,9 @@ package de.desy.language.snl.diagram.persistence;
 
 /**
  * Defines the element names and attributes for the XML file.
- * 
+ *
  * @author Kai Meyer, Sebastian Middeke (C1 WPS)
- * 
+ *
  */
 public enum XMLConstant {
 

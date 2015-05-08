@@ -34,41 +34,41 @@ import javax.jms.Topic;
 import org.csstudio.utility.jms.sharedconnection.ISharedConnectionHandle;
 
 /**
- * 
+ *
  * This class handles the redundant connections to JMS servers. It uses queues
  * to store messages if two or more servers holds messages for a consumer.
  * They will be stored chronological. The oldest message will be returned first to a client.
- * 
+ *
  * It uses the new shared connection implemtations and replaces the old class JmsRedundantReceiver.
- * 
+ *
  * @author Markus Moeller
  * @version 2.0
  * @since 02.04.2012
  */
 
 public class JmsRedundantConsumer implements IJmsRedundantConsumer {
-    
+
     /** The handles for the shared connections */
     private ISharedConnectionHandle[] handle;
-    
+
     /** Array of JMS sessions */
     private Session[] session;
-    
+
     /** Message consumers. Key -> name, Value -> Array of message consumers */
     private Hashtable<String, MessageConsumer[]> subscriber;
-    
+
     /** Queues for the messages */
     // private Hashtable<String, ConcurrentLinkedQueue<Message>> messages;
     private Hashtable<String, TreeSet<Message>> messages;
-    
+
     /** Flag that indicates whether or not the connections are established. */
     private boolean connected;
-    
+
     public JmsRedundantConsumer(ISharedConnectionHandle[] handles) {
         handle = handles;
         int connectionCount = handle.length;
         session = new Session[connectionCount];
-        for(int i = 0;i < connectionCount;i++) {            
+        for(int i = 0;i < connectionCount;i++) {
             try {
                 session[i] = handle[i].createSession(false, Session.CLIENT_ACKNOWLEDGE);
                 connected = true;
@@ -77,7 +77,7 @@ public class JmsRedundantConsumer implements IJmsRedundantConsumer {
             }
         }
     }
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#createRedundantSubscriber(java.lang.String, java.lang.String, java.lang.String, boolean)
      */
@@ -89,58 +89,58 @@ public class JmsRedundantConsumer implements IJmsRedundantConsumer {
         MessageConsumer[] sub = null;
         Topic topic = null;
         boolean result = false;
-        
+
         if(subscriber == null) {
             subscriber = new Hashtable<String, MessageConsumer[]>();
         }
-        
+
         if(subscriber.containsKey(name)) {
             return false;
         }
-        
+
         int connectionCount = handle.length;
         sub = new MessageConsumer[connectionCount];
-        
+
         try {
             for(int i = 0;i < connectionCount;i++) {
                 topic = session[i].createTopic(destination);
-                
+
                 if((durable == true) && (durableName != null)) {
                     sub[i] = session[i].createDurableSubscriber(topic, durableName);
                 } else {
                     sub[i] = session[i].createConsumer(topic);
                 }
-                
+
                 //Logger.getLogger(this.getClass().getName()).log(Level.INFO, name + " -> Topic: " + destination + " " + urlList[i]);
             }
-            
+
             subscriber.put(name, sub);
-            
+
             if(messages == null) {
                 messages = new Hashtable<String, TreeSet<Message>>();
             }
-            
+
             messages.put(name, new TreeSet<Message>(new MessageComparator()));
-            
+
             result = true;
         } catch(JMSException jmse) {
             result = false;
         } catch(NullPointerException npe) {
             result = false;
         }
-        
+
         return result;
     }
 
     /* (non-Javadoc)
      * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#createRedundantSubscriber(java.lang.String, java.lang.String)
      */
-    
+
     @Override
     public boolean createRedundantSubscriber(String name, String destination) {
         return createRedundantSubscriber(name, destination, null, false);
     }
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#receive(java.lang.String)
      */
@@ -148,22 +148,22 @@ public class JmsRedundantConsumer implements IJmsRedundantConsumer {
     public Message receive(String name) {
         return receive(name, 0);
     }
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#receive(java.lang.String, long)
-     */   
+     */
     @Override
     public Message receive(String name, long waitTime) {
-        
+
         TreeSet<Message> subscriberQueue = null;
         Message result = null;
-        
+
         // First check the internal subscriber message queue
         if(messages.containsKey(name)) {
-            
+
             // Get the message queue for the subscriber
             subscriberQueue = messages.get(name);
-            
+
             // If we have a message in this queue, deliver it first!
             if(!subscriberQueue.isEmpty()) {
                 // Get the oldest message == the first element in the TreeSet
@@ -176,16 +176,16 @@ public class JmsRedundantConsumer implements IJmsRedundantConsumer {
         if(result != null) {
             return result;
         }
-        
+
         // Do we have a subscriber with the given name?
         if(subscriber.containsKey(name) && subscriberQueue != null) {
-            
+
             // Get the MessageConsumer objects for all hosts
             MessageConsumer[] c = subscriber.get(name);
-                        
+
             // Receive the next message from all hosts
             for(int i = 0;i < c.length;i++) {
-                
+
                 try {
                     // Wait for a message for some miliseconds
                     if(waitTime > 0) {
@@ -200,29 +200,29 @@ public class JmsRedundantConsumer implements IJmsRedundantConsumer {
                     // Ignore Me!
                 }
             }
-            
+
             // Get the first message. It is the oldest one. Maybe we just have one message.
             if(!subscriberQueue.isEmpty()) {
                 result = subscriberQueue.first();
                 subscriberQueue.remove(result);
             }
         }
-        
+
         return result;
     }
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#isConnected()
      */
-    
+
     @Override
     public boolean isConnected() {
         return connected;
     }
-    
+
     /**
      * The client has to acknowledge the received message
-     * 
+     *
      * @param msg
      * @return True, if everything works fine
      */
@@ -241,34 +241,34 @@ public class JmsRedundantConsumer implements IJmsRedundantConsumer {
      */
     @Override
     public void closeAll() {
-        
+
         MessageConsumer[] c = null;
-        
+
         if(subscriber != null) {
-            
+
             Enumeration<MessageConsumer[]> list = subscriber.elements();
             while(list.hasMoreElements()) {
                 c = list.nextElement();
-                
+
                 for(int i = 0;i < c.length;i++) {
                     try{c[i].close();}catch(JMSException jmse){System.err.println(jmse.getMessage());}
                 }
             }
-            
+
             subscriber.clear();
             subscriber = null;
         }
-        
+
         int connectionCount = handle.length;
         for(int i = 0;i < connectionCount;i++) {
-            
+
             if(session != null) {
                 if(session[i] != null) {
                     try{session[i].close();}catch(JMSException jmse){System.err.println(jmse.getMessage());}
                     session[i] = null;
                 }
             }
-            
+
             if(handle != null) {
                 if(handle[i] != null) {
                     handle[i].release();
@@ -276,5 +276,5 @@ public class JmsRedundantConsumer implements IJmsRedundantConsumer {
                 }
             }
         }
-    }   
+    }
 }

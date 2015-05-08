@@ -10,9 +10,9 @@ import org.eclipse.swt.graphics.Font;
 
 /**
  * Edit Part for Sixteen Binary Bar.
- * 
+ *
  * @author Alen Vrecko
- * 
+ *
  */
 public class SixteenBinaryBarEditPart extends AbstractWidgetEditPart {
 
@@ -131,7 +131,7 @@ public class SixteenBinaryBarEditPart extends AbstractWidgetEditPart {
                         figure.setInternalBorderColor(color);
                     }
                 });
-        
+
         // bit range from
         handler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(Object oldValue, Object newValue,

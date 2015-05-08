@@ -6,9 +6,9 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * Undoable command which removes an prototype from the model.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class RemovePrototypeCommand extends Command {
     private IPrototype prototype;
@@ -17,7 +17,7 @@ public final class RemovePrototypeCommand extends Command {
 
     /**
      * Constructor.
-     * 
+     *
      * @param prototype
      *            the prototype
      */

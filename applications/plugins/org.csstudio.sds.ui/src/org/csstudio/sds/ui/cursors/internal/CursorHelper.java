@@ -17,9 +17,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Cursor helper methods.
- * 
+ *
  * @author swende
- * 
+ *
  */
 public class CursorHelper {
 
@@ -34,7 +34,7 @@ public class CursorHelper {
 
     /**
      * Tries to find a cursor for the specified id.
-     * 
+     *
      * @param cursorId
      *            the cursor id
      * @return a cursor or null if none was found
@@ -76,7 +76,7 @@ public class CursorHelper {
     /**
      * Applies a cursor to the specified Draw2d figure. If no cursor is found
      * for the specified id, no cursor is applied.
-     * 
+     *
      * @param figure
      *            the Draw2d figure
      * @param cursorId
@@ -92,7 +92,7 @@ public class CursorHelper {
     /**
      * Applies a cursor to the specified SWT control. If no cursor is found for
      * the specified id, no cursor is applied.
-     * 
+     *
      * @param control
      *            the SWT control
      * @param cursorId

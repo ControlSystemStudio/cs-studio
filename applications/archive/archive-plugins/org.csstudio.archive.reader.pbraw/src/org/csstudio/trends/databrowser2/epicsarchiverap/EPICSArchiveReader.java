@@ -119,7 +119,7 @@ public class EPICSArchiveReader implements ArchiveReader {
     class MyValueIterator implements ValueIterator {
     private GenMsgIterator msgIter = null;
     private Iterator<EpicsMessage> theIter = null;
-    public MyValueIterator(GenMsgIterator msgIter) { 
+    public MyValueIterator(GenMsgIterator msgIter) {
         this.msgIter = msgIter;
         this.theIter = msgIter.iterator();
     }
@@ -151,13 +151,13 @@ public class EPICSArchiveReader implements ArchiveReader {
     public void close() {
         try {
         msgIter.close();
-        } catch(IOException ex) { 
+        } catch(IOException ex) {
         ex.printStackTrace();
         }
-    } 
-    
     }
-    
+
+    }
+
     @Override
     public ValueIterator getRawValues(int key, String name,
         org.epics.util.time.Timestamp start,
@@ -169,7 +169,7 @@ public class EPICSArchiveReader implements ArchiveReader {
     RawDataRetrieval rawDataRetrieval = new RawDataRetrieval(
         EPICSArchiveReader.parseURL(serverURL) + getRawDataURL);
     GenMsgIterator strm = rawDataRetrieval.getDataForPV(name, start2, end2);
-    
+
 
     if (strm != null) {
         return new MyValueIterator(strm);
@@ -182,7 +182,7 @@ public class EPICSArchiveReader implements ArchiveReader {
         org.epics.util.time.Timestamp start,
         org.epics.util.time.Timestamp end, int count)
         throws UnknownChannelException, Exception {
-    
+
     return getRawValues(key, "mean_600("+name+")", start, end);
     }
 
@@ -204,7 +204,7 @@ public class EPICSArchiveReader implements ArchiveReader {
 
     /**
      * Converts the specified glob expression to the equal regular expression.
-     * 
+     *
      * @param glob
      *            the glob expression
      * @return the regular expression

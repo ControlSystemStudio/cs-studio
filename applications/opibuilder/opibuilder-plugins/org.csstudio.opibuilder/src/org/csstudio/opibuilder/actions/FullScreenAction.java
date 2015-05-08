@@ -30,19 +30,19 @@ import org.eclipse.ui.internal.WorkbenchWindow;
 @SuppressWarnings("restriction")
 public class FullScreenAction extends Action implements
     IWorkbenchWindowActionDelegate {
-    
+
     public static final String ID = "org.csstudio.opibuilder.actions.fullscreen";
     private static final String FULLSCREEN = "Full Screen";
 
     private static final String EXIT_FULL_SCREEN = "Exit Full Screen";
-    
+
     private Menu menuBar;
     private boolean inFullScreen = false;
     private Shell shell;
-    private ImageDescriptor fullScreenImage = 
+    private ImageDescriptor fullScreenImage =
         CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
             OPIBuilderPlugin.PLUGIN_ID, "icons/fullscreen.png");
-    private ImageDescriptor exitFullScreenImage = 
+    private ImageDescriptor exitFullScreenImage =
         CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
             OPIBuilderPlugin.PLUGIN_ID, "icons/exitfullscreen.png");
     private IWorkbenchWindow window;
@@ -53,9 +53,9 @@ public class FullScreenAction extends Action implements
      * @param part The workbench part associated with this PrintAction
      */
     public FullScreenAction() {
-        setActionDefinitionId(ID);         
+        setActionDefinitionId(ID);
     }
-    
+
 
     /**
      * @see org.eclipse.jface.action.Action#run()
@@ -72,9 +72,9 @@ public class FullScreenAction extends Action implements
             setText(FULLSCREEN);
             setImageDescriptor(fullScreenImage);
         } else {
-            
+
             if(PreferencesHelper.isShowFullScreenDialog()){
-                TipDialog dialog = new TipDialog(shell, "Tip", 
+                TipDialog dialog = new TipDialog(shell, "Tip",
                         "Press F11 to exit full screen.");
                 dialog.open();
                 if(!dialog.isShowThisDialogAgain())
@@ -113,8 +113,8 @@ public class FullScreenAction extends Action implements
     public void init(IWorkbenchWindow window) {
         setId(ID);
         this.window = window;
-        shell = window.getShell();        
-        menuBar = shell.getMenuBar();    
+        shell = window.getShell();
+        menuBar = shell.getMenuBar();
         FullScreenAction registeredAction =
             WorkbenchWindowService.getInstance().getFullScreenAction(window);
         //copy states
@@ -127,20 +127,19 @@ public class FullScreenAction extends Action implements
         WorkbenchWindowService.getInstance().registerFullScreenAction(this, window);
 
         setText(FULLSCREEN);
-        setImageDescriptor(fullScreenImage);        
+        setImageDescriptor(fullScreenImage);
     }
 
     public boolean isInFullScreen() {
         return inFullScreen;
     }
-    
-        
+
+
     public void dispose() {
         WorkbenchWindowService.getInstance().unregisterFullScreenAction(window);
 
     }
 
-    
+
 }
 
-    

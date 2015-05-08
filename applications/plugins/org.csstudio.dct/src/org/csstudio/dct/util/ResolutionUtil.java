@@ -12,9 +12,9 @@ import org.csstudio.dct.model.IRecord;
 
 /**
  * Utility class that helps with the resolution of names.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ResolutionUtil {
     private ResolutionUtil() {
@@ -22,13 +22,13 @@ public final class ResolutionUtil {
 
     /**
      * Resolves all variables and functions in the specified source String.
-     * 
+     *
      * @param source
      *            the source String
      * @param element
      *            the model element
      * @return a resolved String
-     * 
+     *
      * @throws AliasResolutionException
      */
     public static String resolve(String source, IElement element) throws AliasResolutionException {
@@ -48,13 +48,13 @@ public final class ResolutionUtil {
 
     public static Map<String, String> resolveFields(IRecord record) {
         Map<String, String> result = new LinkedHashMap<String, String>();
-        
+
         Map<String, String> aliases = AliasResolutionUtil.getFinalAliases(record.getContainer());
 
         Map<String, String> fields = record.getFinalFields();
         for(String key : fields.keySet()) {
             String value = fields.get(key);
-            
+
             String resolved = "";
             try {
                 // .. resolve with multiple steps
@@ -64,7 +64,7 @@ public final class ResolutionUtil {
             } catch (Exception e) {
                 resolved = "<Error: "+e.getMessage()+">";
             }
-            
+
             result.put(key, resolved);
         }
 

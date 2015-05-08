@@ -60,9 +60,9 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
     private Object lastValue = null;
     private DynamicValueCondition lastCondition;
     private int suspendCount;
-    
+
     private Map<String, Object> initialParameters;
-    
+
     private DynamicValueAdapter internalListener = new DynamicValueAdapter<T, P>() {
 
         /* (non-Javadoc)
@@ -148,7 +148,7 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
                     dvlArray[i].timeoutStops(event);
                 }
             }
-        }    
+        }
     };
 
     /**
@@ -162,7 +162,7 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
     {
         this(property, listener, null);
     }
-    
+
     /**
      * Creates a new MonitorProxyWrapper object.
      *
@@ -210,7 +210,7 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
     public boolean isInitialized() {
         return proxy != null;
     }
-    
+
     private final static String ERROR_MESSAGE = "Error response";
 
     /* (non-Javadoc)
@@ -420,8 +420,8 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
      */
     public PropertyChangeListener[] getPropertyChangeListeners()
     {
-        return plistners == null 
-            ? new PropertyChangeListener[0] 
+        return plistners == null
+            ? new PropertyChangeListener[0]
             : (PropertyChangeListener[])plistners.toArray(new PropertyChangeListener[plistners.size()]);
     }
 
@@ -493,20 +493,20 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
         }
         return p;
     }
-    
+
     public Map<String, Object> getParameters() {
         if (proxy instanceof ExpertMonitor) {
             return ((ExpertMonitor)proxy).getParameters();
         }
         return null;
     }
-    
+
     public void setParameters(Map<String, Object> param) throws RemoteException {
         if (proxy instanceof ExpertMonitor) {
             ((ExpertMonitor)proxy).setParameters(param);
         }
     }
-    
+
     public Map<String, Object> getInitialParameters() {
         return initialParameters;
     }

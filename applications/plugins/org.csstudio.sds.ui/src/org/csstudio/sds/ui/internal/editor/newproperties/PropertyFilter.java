@@ -9,11 +9,11 @@ import org.eclipse.jface.viewers.IFilter;
  * Filter implementation that selects {@link EditPart} instances which control
  * an {@link AbstractWidgetModel} that has a certain {@link WidgetProperty}
  * which is identified by its id.
- * 
+ *
  * Can be
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class PropertyFilter implements IFilter {
 

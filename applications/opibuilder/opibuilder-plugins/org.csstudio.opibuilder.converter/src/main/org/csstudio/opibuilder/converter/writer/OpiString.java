@@ -21,7 +21,7 @@ public class OpiString extends OpiAttribute {
     public OpiString(Context con, String name, EdmString s) {
         this(con, name, s.get());
     }
-    
+
     /**
      * Creates an element <name>stringValue</name> with the given String value.
      */

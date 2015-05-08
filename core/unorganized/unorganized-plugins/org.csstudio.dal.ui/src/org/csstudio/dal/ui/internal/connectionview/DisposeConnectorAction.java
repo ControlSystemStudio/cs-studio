@@ -13,9 +13,9 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * Action that dispose all currently selected connectors.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class DisposeConnectorAction implements IObjectActionDelegate {
 

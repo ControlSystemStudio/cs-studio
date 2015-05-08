@@ -17,7 +17,7 @@ public class DefineStatementNode extends AbstractSNLNode {
     protected String doGetSourceIdentifier() {
         return this._sourceId;
     }
-    
+
     public String getValue() {
         return _value;
     }

@@ -24,7 +24,7 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 /**
  * The type of a tick.
- * 
+ *
  * @author Joerg Rathlev
  */
 enum TickType {
@@ -34,7 +34,7 @@ enum TickType {
      * ticks.
      */
     MAJOR,
-    
+
     /**
      * Minor tick type. Ticks of this type are usually displayed without a
      * label.

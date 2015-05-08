@@ -4,14 +4,14 @@ import org.csstudio.dct.model.IPrototype;
 
 /**
  * Box node that represents {@link IPrototype}s in the graphical model.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class PrototypeNode extends AbstractContainerNode<IPrototype> {
     /**
      * Standard constructor.
-     * 
+     *
      * @param prototype
      *            the dct prototype that is represented graphically
      */

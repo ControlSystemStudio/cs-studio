@@ -27,13 +27,13 @@ import java.util.Map;
 import org.eclipse.core.runtime.Path;
 
 /**
- * TODO (jhatje) : 
- * 
+ * TODO (jhatje) :
+ *
  * @author jhatje
  * @since 04.06.2012
  */
 public enum EpicsRecordTypesEnum {
-    
+
     AI("ai", new Path("/CSS//SDS//common//FP1_ai.css-sds")),
     AO("ao", new Path("/CSS//SDS//common//FP1_ao.css-sds")),
     BI("bi", new Path("/CSS//SDS//common//FP1_bi.css-sds")),
@@ -50,10 +50,10 @@ public enum EpicsRecordTypesEnum {
     UNKNOWN("unknown", new Path("/CSS//SDS//common//FP1_ai.css-sds"));
 
     private static Map<String, EpicsRecordTypesEnum> _types = new HashMap<String, EpicsRecordTypesEnum>();
-    
+
     private String _type;
     private Path _path;
-    
+
     static {
         for (EpicsRecordTypesEnum type : EpicsRecordTypesEnum.values()) {
             _types.put(type.getTypeNameEnum(), type);
@@ -63,7 +63,7 @@ public enum EpicsRecordTypesEnum {
         _type = type;
         _path = path;
     }
-    
+
     public String getTypeNameEnum() {
         return _type;
     }

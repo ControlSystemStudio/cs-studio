@@ -38,9 +38,9 @@ import org.eclipse.ui.IActionFilter;
 
 /**
  * Editpart for connections between widgets.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
 
@@ -92,17 +92,17 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
                         public void propertyChange(PropertyChangeEvent evt) {
                             updateRouter(getConnectionFigure());
                         }
-                    });            
-            
+                    });
+
             getWidgetModel().getProperty(ConnectionModel.PROP_POINTS)
                     .addPropertyChangeListener(new PropertyChangeListener() {
                         @Override
                         public void propertyChange(final PropertyChangeEvent evt) {
                             Runnable runnable = new Runnable() {
-                                
+
                                 @Override
                                 public void run() {
-                                    if(((PointList)evt.getOldValue()).size() != 
+                                    if(((PointList)evt.getOldValue()).size() !=
                                             ((PointList)evt.getNewValue()).size())
                                         updateRouter(getConnectionFigure());
                                     else
@@ -115,15 +115,15 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
                                 WidgetIgnorableUITask task = new WidgetIgnorableUITask(
                                         getWidgetModel().getProperty(ConnectionModel.PROP_POINTS),
                                         runnable, display);
-                                    
+
                                 GUIRefreshThread.getInstance(
                                         getExecutionMode() == ExecutionMode.RUN_MODE)
                                         .addIgnorableTask(task);
                             }else
                                 runnable.run();
-                            
-                            
-                            
+
+
+
                         }
                     });
 
@@ -190,7 +190,7 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
                                 originalRouter = getConnection()
                                         .getConnectionRouter();
                                 originalConstraint = originalRouter.getConstraint(getConnection());
-                                
+
                                 getConnection().setConnectionRouter(
                                         new ManhattanConnectionRouter());
                             }
@@ -213,7 +213,7 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
                         protected Command getDeleteCommand(GroupRequest request) {
                             return new ConnectionDeleteCommand(getWidgetModel());
                         }
-                    });            
+                    });
         }
     }
 
@@ -229,7 +229,7 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
         updateArrowLength(connection);
         updateRouter(connection);
         connection.setAntialias(getWidgetModel().isAntiAlias() ? SWT.ON
-                : SWT.OFF);        
+                : SWT.OFF);
         return connection;
     }
 
@@ -309,25 +309,25 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
     private void updateRouter(PolylineConnection connection) {
         ConnectionRouter router = ConnectionRouter.NULL;
         switch (getWidgetModel().getRouterType()) {
-        case MANHATTAN:        
+        case MANHATTAN:
             //Allow move bendpoint
             if(getExecutionMode()==ExecutionMode.EDIT_MODE)
-                installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE, 
+                installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE,
                     new ManhattanBendpointEditPolicy());
             //no points, use manhattan
             if(getWidgetModel().getPoints().size() == 0){
                 router = new ManhattanConnectionRouter();
                 break;
-            }    
+            }
             //has points, use points for routing
-            router = new FixedPointsConnectionRouter();            
+            router = new FixedPointsConnectionRouter();
             connection.setConnectionRouter(router);
             refreshBendpoints(connection);
-            return;                
+            return;
         case STRAIGHT_LINE:
             //no bendpoint
             if(getExecutionMode()==ExecutionMode.EDIT_MODE)
-                installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE, 
+                installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE,
                     null);
             router = ConnectionRouter.NULL;
         default:
@@ -335,14 +335,14 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
         }
         connection.setConnectionRouter(router);
     }
-    
+
     /**
      * Updates the bendpoints, based on the model.
-     * @param connection 
+     * @param connection
      */
     protected void refreshBendpoints(PolylineConnection connection) {
         //Only work for manhattan router
-        if (!(connection.getConnectionRouter() 
+        if (!(connection.getConnectionRouter()
                 instanceof FixedPointsConnectionRouter))
             return;
         PointList points = getWidgetModel().getPoints().getCopy();
@@ -353,7 +353,7 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
             getWidgetModel().setPoints(points);
         }
         connection.setRoutingConstraint(points);
-        
+
     }
 
     public ConnectionModel getWidgetModel() {
@@ -373,7 +373,7 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
 
     /**
      * Set execution mode, this should be set before widget is activated.
-     * 
+     *
      * @param executionMode
      *            the executionMode to set
      */
@@ -381,7 +381,7 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
         this.executionMode = executionMode;
         getWidgetModel().setExecutionMode(executionMode);
     }
-    
+
     @Override
     public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
         if (key == IActionFilter.class)
@@ -395,7 +395,7 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
                     if (name.equals("executionMode") && //$NON-NLS-1$
                             value.equals("RUN_MODE") && //$NON-NLS-1$
                             getExecutionMode() == ExecutionMode.RUN_MODE)
-                        return true;                    
+                        return true;
                     return false;
                 }
 
@@ -406,5 +406,5 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
     public void setPropertyValue(String propID, Object value){
         getWidgetModel().setPropertyValue(propID, value);
     }
-    
+
 }

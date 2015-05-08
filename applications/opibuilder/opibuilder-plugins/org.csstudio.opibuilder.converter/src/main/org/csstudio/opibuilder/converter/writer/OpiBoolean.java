@@ -21,7 +21,7 @@ public class OpiBoolean extends OpiAttribute {
     public OpiBoolean(Context con, String name, EdmBoolean b) {
         this(con, name, b.is());
     }
-    
+
     /**
      * Creates an element <name>booleanValue</name> with the given boolean value.
      */

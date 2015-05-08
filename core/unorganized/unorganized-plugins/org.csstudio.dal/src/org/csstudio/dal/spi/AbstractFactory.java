@@ -9,8 +9,8 @@ import org.csstudio.dal.proxy.AbstractPlug;
 /**
  * This is interface with methods, which are common to <code>PropertyFacctory</code>
  * and <code>DeviceFactory</code>.
- * 
- * 
+ *
+ *
  * @author ikriznar
  *
  */
@@ -18,18 +18,18 @@ public interface AbstractFactory {
 
     /**
      * If property with this name and value false is provided trough configuration of application
-     * context, then plug will use own instance of plug for this factory.  
+     * context, then plug will use own instance of plug for this factory.
      * @see AbstractFactory#isPlugShared()
      */
     String SHARE_PLUG = "AbstractFactory.plug_shared";
-    
+
     /**
      * If property withi this name and value true is provided through
      * the configuration to the AbstractFactorySupport, the factory will
      * use a synchronized family to store the properties/devices. If the
      * value is false, the factory will use nonsynchronized version which
-     * will have to be synchronized from the outside when the structure of 
-     * the family is changed (elements added or removed). 
+     * will have to be synchronized from the outside when the structure of
+     * the family is changed (elements added or removed).
      */
     String SYNCHRONIZE_FAMILY = "AbstractFactory.synchronizeFamily";
     /**
@@ -45,7 +45,7 @@ public interface AbstractFactory {
     public LinkPolicy getLinkPolicy();
 
     /**
-     * Return application context which initialized this factory. 
+     * Return application context which initialized this factory.
      * @return application context which initialized this factory
      */
     public AbstractApplicationContext getApplicationContext();
@@ -79,7 +79,7 @@ public interface AbstractFactory {
      * @return plug which is used for connection
      */
     public AbstractPlug getPlug();
-    
+
     /**
      * Return <code>true</code> if this factory is sharing plug instance with other factories.
      * Default DAL implementation is using shared plug instance if possible. This way

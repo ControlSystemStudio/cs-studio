@@ -23,13 +23,13 @@ public class LogTicks extends Ticks
             throw new Error("Tick range is not ordered: " + low + " > " + high);
         if (low == high)
             high = low + 1;
-        
+
         // Idea: Ask the basic linear tick computation to find 'nice'
         // ticks for the log(low...high):
         double log_low = Log10.log10(low);
         double log_high = Log10.log10(high);
         super.compute(log_low, log_high, gc, screen_width);
-        // That set 'start' to log(start_that_we_really_want), so fix that: 
+        // That set 'start' to log(start_that_we_really_want), so fix that:
         start = Log10.pow10(start);
         // distance is still in log space, handled accordingly in getNext()
     }
@@ -45,7 +45,7 @@ public class LogTicks extends Ticks
             return tick + 1;
         return next;
     }
-    
+
     /** @return Returns the number formated according to the tick precision. */
     @Override
     public String format(double num, int precision_change)
@@ -56,7 +56,7 @@ public class LogTicks extends Ticks
 
         // Split into mantissa and exponent
         double mantissa;
-        int exponent;        
+        int exponent;
         boolean negative = num < 0.0;
         if (num == 0.0)
         {

@@ -32,7 +32,7 @@ public class SavedValueTest
         SavedValue saved = new SavedScalarValue("3.14");
         System.out.println(saved);
         assertThat(saved.toString(), equalTo("3.14"));
-        
+
         VType value = ValueFactory.newVDouble(42.1);
         saved = SavedValue.forCurrentValue(value);
         System.out.println(saved);
@@ -44,14 +44,14 @@ public class SavedValueTest
         assertThat(saved.isEqualTo(value, 0.2), equalTo(true));
         assertThat(saved.isEqualTo(value, 0.1), equalTo(false));
     }
-    
+
     @Test
     public void testSavedArrayValue() throws Exception
     {
         SavedValue saved = new SavedArrayValue(Arrays.asList("1", "2", "3.14"));
         System.out.println(saved);
         assertThat(saved.toString(), equalTo("1, 2, 3.14"));
-        
+
         VType value = ValueFactory.newVDoubleArray(new ArrayDouble(1, 2, 3.14), ValueFactory.alarmNone(), ValueFactory.timeNow(), ValueFactory.displayNone());
         saved = SavedValue.forCurrentValue(value);
         System.out.println(saved);

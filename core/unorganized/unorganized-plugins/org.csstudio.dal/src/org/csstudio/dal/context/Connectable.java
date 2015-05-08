@@ -133,7 +133,7 @@ public interface Connectable extends Linkable, ContextBean
     void setRemoteInfo(RemoteInfo rinfo) throws IllegalArgumentException;
 
     /**
-     * @see {@link #setAutoConnect(boolean)} 
+     * @see {@link #setAutoConnect(boolean)}
      */
     public boolean isAutoConnect();
 
@@ -142,7 +142,7 @@ public interface Connectable extends Linkable, ContextBean
      * are provided. Default value is <code>true</code>.
      */
     public void setAutoConnect(boolean autoConnect);
-    
+
     /**
      * Returns true, if {@link #getConnectionState()} is {@link ConnectionState#CONNECTING}.
      */

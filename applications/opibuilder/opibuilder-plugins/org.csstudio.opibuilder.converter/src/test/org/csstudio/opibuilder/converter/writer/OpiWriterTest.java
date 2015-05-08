@@ -31,16 +31,16 @@ public class OpiWriterTest extends TestCase {
         o.writeDisplayFile(displayFile1);
         o.writeDisplayFile(displayFile2);
     }
-    
+
     public void testXMLMapping() throws EdmException {
-        
+
         System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
         String[] args = { displayFile1 };
         EdmConverter.main(args);
         Document doc = XMLFileHandler.readXml(xmlFile1);
-        
+
         if (doc != null) {
-            
+
             Element e = (Element)doc.getElementsByTagName("display").item(0);
             assertEquals("org.csstudio.opibuilder.Display", e.getAttribute("typeId"));
             assertEquals("1.0", e.getAttribute("version"));
@@ -64,7 +64,7 @@ public class OpiWriterTest extends TestCase {
             XMLFileHandler.isElementEqual("true", "grid_show", e);
             XMLFileHandler.isElementEqual("5", "grid_space", e);
             XMLFileHandler.isElementEqual("true", "scroll_disable", e);
-            
+
             e = (Element)doc.getElementsByTagName("widget").item(0);
             assertEquals("org.csstudio.opibuilder.widgets.Rectangle", e.getAttribute("typeId"));
             assertEquals("1.0", e.getAttribute("version"));
@@ -77,7 +77,7 @@ public class OpiWriterTest extends TestCase {
             XMLFileHandler.isColorElementEqual(new EdmColor(0), "color_background", e);
             XMLFileHandler.isElementEqual("9", "border_style", e);
             XMLFileHandler.isElementEqual("2", "border_width", e);
-            
+
             e = (Element)doc.getElementsByTagName("widget").item(1);
             assertEquals("org.csstudio.opibuilder.widgets.Rectangle", e.getAttribute("typeId"));
             assertEquals("1.0", e.getAttribute("version"));
@@ -89,7 +89,7 @@ public class OpiWriterTest extends TestCase {
             XMLFileHandler.isColorElementEqual(new EdmColor(7), "border_color", e);
             XMLFileHandler.isColorElementEqual(new EdmColor(0), "color_background", e);
             XMLFileHandler.isElementEqual("0", "border_style", e);
-            
+
             e = (Element)doc.getElementsByTagName("widget").item(2);
             assertEquals("org.csstudio.opibuilder.widgets.Rectangle", e.getAttribute("typeId"));
             assertEquals("1.0", e.getAttribute("version"));
@@ -100,7 +100,7 @@ public class OpiWriterTest extends TestCase {
             XMLFileHandler.isColorElementEqual(new EdmColor(7), "border_color", e);
             XMLFileHandler.isColorElementEqual(new EdmColor(0), "color_background", e);
             XMLFileHandler.isElementEqual("0", "border_style", e);
-            
+
             e = (Element)doc.getElementsByTagName("widget").item(3);
             assertEquals("org.csstudio.opibuilder.widgets.Label", e.getAttribute("typeId"));
             assertEquals("1.0", e.getAttribute("version"));
@@ -125,7 +125,7 @@ public class OpiWriterTest extends TestCase {
             XMLFileHandler.isElementEqual("120", "y", e);
             XMLFileHandler.isElementEqual("52", "width", e);
             XMLFileHandler.isElementEqual("11", "height", e);
-            
+
             e = (Element)doc.getElementsByTagName("widget").item(5);
             assertEquals("org.csstudio.opibuilder.widgets.Label", e.getAttribute("typeId"));
             assertEquals("1.0", e.getAttribute("version"));
@@ -141,19 +141,19 @@ public class OpiWriterTest extends TestCase {
             XMLFileHandler.isElementEqual("true", "auto_size", e);
             XMLFileHandler.isElementEqual("0", "border_style", e);
             XMLFileHandler.isElementEqual("false", "transparency", e);
-        } 
+        }
     }
-    
+
     public void testXMLMapping2() throws EdmException {
     // test for TextUpdate widget mapping
-        
+
         System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
         String[] args = { displayFile2 };
         EdmConverter.main(args);
         Document doc = XMLFileHandler.readXml(xmlFile2);
-        
+
         if (doc != null) {
-            
+
             Element e = (Element)doc.getElementsByTagName("widget").item(0);
             assertEquals("org.csstudio.opibuilder.widgets.TextUpdate", e.getAttribute("typeId"));
             assertEquals("1.0", e.getAttribute("version"));
@@ -176,6 +176,6 @@ public class OpiWriterTest extends TestCase {
             XMLFileHandler.isElementEqual("2", "border_width", e);
             XMLFileHandler.isElementEqual("true", "foregroundcolor_alarmsensitive", e);
             XMLFileHandler.isElementEqual("true", "border_alarmsensitive", e);
-        } 
+        }
     }
 }

@@ -16,13 +16,13 @@ import org.csstudio.dct.util.AliasResolutionUtil;
 
 /**
  * Represents a project. A project is the root of the hierarchy.
- * 
+ *
  * @author Sven Wende
  */
 public final class Project extends Folder implements IProject {
     private transient Map<String, BaseRecord> baseRecords;
     private transient IDatabaseDefinition databaseDefinition;
-    
+
     private String path;
     private String ioc;
 
@@ -36,14 +36,14 @@ public final class Project extends Folder implements IProject {
         baseRecords = new HashMap<String, BaseRecord>();
         databaseDefinition = null;
     }
-    
+
         /**
          *{@inheritDoc}
          */
     public IDatabaseDefinition getDatabaseDefinition() {
         return databaseDefinition;
     }
-    
+
         /**
          *{@inheritDoc}
          */
@@ -58,26 +58,26 @@ public final class Project extends Folder implements IProject {
         if(!baseRecords.containsKey(type)) {
             baseRecords.put(type, new BaseRecord(null));
         }
-        
+
         return baseRecords.get(type);
     }
 
-    
+
         /**
          *{@inheritDoc}
          */
     public Map<String, BaseRecord> getBaseRecords() {
         return baseRecords;
     }
-    
+
         /**
          *{@inheritDoc}
          */
     public void setBaseRecords(Map<String, BaseRecord> baseRecords) {
         this.baseRecords = baseRecords;
     }
-    
-    
+
+
 
         /**
          *{@inheritDoc}
@@ -106,7 +106,7 @@ public final class Project extends Folder implements IProject {
     public void setIoc(String ioc) {
         this.ioc = ioc;
     }
-    
+
         /**
          *{@inheritDoc}
          */
@@ -116,11 +116,11 @@ public final class Project extends Folder implements IProject {
 
     private List<IRecord> getFinalRecords(IFolder folder) {
         List<IRecord> result = new ArrayList<IRecord>();
-        
+
         for(IFolderMember m : folder.getMembers()) {
             if(m instanceof IRecord) {
                 Boolean disabled = AliasResolutionUtil.getPropertyViaHierarchy(m, "disabled");
-                
+
                 if(disabled!=null && !disabled) {
                     result.add((IRecord) m);
                 }
@@ -130,16 +130,16 @@ public final class Project extends Folder implements IProject {
                 result.addAll(getFinalRecords((IFolder)m));
             }
         }
-        
+
         return result;
     }
-    
+
     private List<IRecord> getFinalRecords(IInstance instance) {
         List<IRecord> result = new ArrayList<IRecord>();
-        
+
         for(IRecord r : instance.getRecords()) {
             Boolean disabled = AliasResolutionUtil.getPropertyViaHierarchy(r, "disabled");
-            
+
             if(disabled!=null && !disabled) {
                 result.add(r);
             }
@@ -148,7 +148,7 @@ public final class Project extends Folder implements IProject {
         for(IInstance i : instance.getInstances()) {
             result.addAll(getFinalRecords(i));
         }
-        
+
         return result;
     }
 }

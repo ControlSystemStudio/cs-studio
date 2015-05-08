@@ -16,7 +16,7 @@ import org.eclipse.draw2d.TitleBarBorder;
 import org.eclipse.swt.graphics.Font;
 
 /**
- * Provides for a frame-like border which contains a title bar for holding the title of a 
+ * Provides for a frame-like border which contains a title bar for holding the title of a
  * Figure.
  * @author Xihui Chen
  */
@@ -33,7 +33,7 @@ public class WidgetFrameBorder
 /**
  * Constructs a FrameBorder with its label set to the name of the {@link TitleBarBorder}
  * class.
- * 
+ *
  * @since 2.0
  */
 public WidgetFrameBorder() { }
@@ -49,9 +49,9 @@ public WidgetFrameBorder(String label) {
 }
 
 /**
- * Creates the necessary borders for this FrameBorder. The inner border is a 
+ * Creates the necessary borders for this FrameBorder. The inner border is a
  * {@link TitleBarBorder}. The outer border is a {@link SchemeBorder}.
- * 
+ *
  * @since 2.0
  */
 protected void createBorders() {
@@ -60,7 +60,7 @@ protected void createBorders() {
 }
 
 /**
- * Returns the inner border of this FrameBorder, which contains the label for the 
+ * Returns the inner border of this FrameBorder, which contains the label for the
  * FrameBorder.
  *
  * @return  the border holding the label.

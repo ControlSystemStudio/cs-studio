@@ -5,7 +5,7 @@ import java.util.Map;
 
 /**
  * Simple bean acting as clipboard for parameter values.
- * 
+ *
  * @author Sven Wende
  */
 public class ParameterValuesClipboard {
@@ -18,7 +18,7 @@ public class ParameterValuesClipboard {
     public Map<String, String> getContent() {
         return content!=null?new LinkedHashMap<String, String>(content):null;
     }
-    
+
     public boolean isEmpty() {
         return content==null;
     }

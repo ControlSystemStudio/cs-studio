@@ -43,7 +43,7 @@ public interface ITreeNodeConfiguration<T extends Enum<T>> {
      * @return
      */
     T getRoot();
-    
+
     /**
      * Returns the explaining description of the tree node.
      * @return returns the description
@@ -64,7 +64,7 @@ public interface ITreeNodeConfiguration<T extends Enum<T>> {
     ImmutableSet<T> getNestedContainerTypes();
 
     /**
-     * Returns the node type definition for the given name. 
+     * Returns the node type definition for the given name.
      *
      * @param nodeTypeName
      *            the rdn

@@ -23,27 +23,27 @@ import org.eclipse.swt.widgets.MessageBox;
 public class AbstractBoolControlFigure extends AbstractBoolFigure {
 
     protected boolean toggle = false;
-    
+
     protected boolean showConfirmDialog = false;
-    
+
     protected String password = "";
-    
+
     protected String confirmTip = "Are you sure you want to do this?";
-    
+
     protected boolean runMode = false;
-    
-    protected ButtonPresser buttonPresser;    
-    
+
+    protected ButtonPresser buttonPresser;
+
     protected final static Color DISABLE_COLOR = CustomMediaFactory.getInstance().getColor(
-            CustomMediaFactory.COLOR_GRAY); 
+            CustomMediaFactory.COLOR_GRAY);
     /** The alpha (0 is transparency and 255 is opaque) for disabled paint */
-    protected static final int DISABLED_ALPHA = 100;    
-    
+    protected static final int DISABLED_ALPHA = 100;
+
     public AbstractBoolControlFigure() {
         super();
         buttonPresser = new ButtonPresser();
     }
-    
+
     class ButtonPresser extends MouseListener.Stub {
         private boolean canceled = false;
             public void mousePressed(MouseEvent me) {
@@ -53,17 +53,17 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
                      if(toggle){
                         if(openConfirmDialog())
                             fireManualValueChange(!boolValue);
-                    }                        
+                    }
                     else{
                         if(openConfirmDialog()){
                             canceled = false;
-                            fireManualValueChange(true);    
+                            fireManualValueChange(true);
                             if(showConfirmDialog)
                                 Display.getCurrent().timerExec(100, new Runnable(){
                                     public void run() {
                                         fireManualValueChange(false);
-                                    }                                
-                                });                                
+                                    }
+                                });
                         }else
                             canceled = true;
                     }
@@ -71,24 +71,24 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
                     repaint();
                 }
             }
-            public void mouseReleased(MouseEvent me) {        
+            public void mouseReleased(MouseEvent me) {
                 if (me.button != 1)
                     return;
                 if(!toggle && runMode && !canceled){
                     fireManualValueChange(false);
                     me.consume();
                     repaint();
-                }                    
-            }            
+                }
+            }
     }
-    
+
     /**
      * Listeners that react on manual boolean value change events.
      */
-    private List<IBoolControlListener> boolControlListeners = 
+    private List<IBoolControlListener> boolControlListeners =
         new ArrayList<IBoolControlListener>();
-    
-    
+
+
     /**add a boolean control listener which will be executed when pressed or released
      * @param listener the listener to add
      */
@@ -127,23 +127,23 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
      * @param runMode the runMode to set
      */
     public void setRunMode(boolean runMode) {
-        this.runMode = runMode;        
+        this.runMode = runMode;
     }
-    
+
     /**
      * Inform all boolean control listeners, that the manual value has changed.
-     * 
+     *
      * @param newManualValue
      *            the new manual value
      */
     protected void fireManualValueChange(final boolean newManualValue) {
-        
+
         boolValue = newManualValue;
-        updateValue();        
+        updateValue();
         if(runMode){
-            for (IBoolControlListener l : boolControlListeners) {                    
+            for (IBoolControlListener l : boolControlListeners) {
                     l.valueChanged(boolValue);
-            }            
+            }
         }
     }
 
@@ -154,23 +154,23 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
         //confirm & password input dialog
         if(showConfirmDialog && runMode){
             if(password == null || password.equals("")){
-                MessageBox mb = new MessageBox(Display.getCurrent().getActiveShell(), 
+                MessageBox mb = new MessageBox(Display.getCurrent().getActiveShell(),
                         SWT.ICON_QUESTION | SWT.YES | SWT.NO |SWT.CANCEL);
                 mb.setMessage(confirmTip);
-                mb.setText("Confirm Dialog");                
+                mb.setText("Confirm Dialog");
                 int val = mb.open();
                 if(val == SWT.NO || val == SWT.CANCEL)
-                    return false;                    
+                    return false;
             }else {
                 InputDialog  dlg = new InputDialog(Display.getCurrent().getActiveShell(),
-                        "Password Input Dialog", "Please input the password", "", 
+                        "Password Input Dialog", "Please input the password", "",
                         new IInputValidator(){
                             public String isValid(String newText) {
                                 if (newText.equals(password))
                                     return null;
-                                else 
+                                else
                                     return "Password error!";
-                            }                    
+                            }
                         }){@Override
                         protected int getInputTextStyle() {
                             return SWT.SINGLE | SWT.PASSWORD;
@@ -178,11 +178,11 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
                 dlg.setBlockOnOpen(true);
                 int val = dlg.open();
                 if(val == Window.CANCEL)
-                    return false;    
-            }            
+                    return false;
+            }
         }
         return true;
     }
-    
-    
+
+
 }

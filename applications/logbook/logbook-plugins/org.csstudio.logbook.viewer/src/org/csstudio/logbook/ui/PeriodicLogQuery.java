@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -18,9 +18,9 @@ import org.eclipse.core.runtime.jobs.Job;
  * PeroidicLogQuery, allows you to periodically query the log service using the
  * same query and provide you with a notification when the result changes. This
  * is useful for implementing auto-refresh.
- * 
+ *
  * @author Kunal Shroff
- * 
+ *
  */
 public class PeriodicLogQuery {
 
@@ -36,11 +36,11 @@ public class PeriodicLogQuery {
     private Job currentJob;
 
     private List<LogQueryListener> listeners = new CopyOnWriteArrayList<LogQueryListener>();
-    
+
 
     /**
      * A class represents the result to a logbook query.
-     * 
+     *
      * @author Kunal Shroff
      *
      */
@@ -89,8 +89,8 @@ public class PeriodicLogQuery {
 
     /**
      * Create a new periodic query for the logbook
-     * 
-     * @param query the query 
+     *
+     * @param query the query
      * @param logbookClient
      * @param delay
      * @param minutes
@@ -159,7 +159,7 @@ public class PeriodicLogQuery {
 
     /**
      * Adds a new LogQueryListener listener.
-     * 
+     *
      * @param listener
      *            a new LogQueryListener listener
      */
@@ -169,7 +169,7 @@ public class PeriodicLogQuery {
 
     /**
      * Removes the given LogQueryListener listener.
-     * 
+     *
      * @param listener
      *            a LogQueryListener listener
      */

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -39,7 +39,7 @@ import org.eclipse.wb.swt.TableViewerColumnSorter;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class LogEntryTable extends Composite implements ISelectionProvider {
 

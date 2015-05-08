@@ -10,13 +10,13 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Widget;
 
 public abstract class ChannelSelectionNotification {
-    
+
     private final ChannelNotificationExpression notificationExpression;
     private final ISelectionProvider selectionProvider;
     private final LocalUtilityPvManagerBridge notification;
-    
+
     private final ISelectionChangedListener listener = new ISelectionChangedListener() {
-        
+
         @Override
         public void selectionChanged(SelectionChangedEvent event) {
             if (event.getSelection() instanceof IStructuredSelection) {
@@ -34,36 +34,36 @@ public abstract class ChannelSelectionNotification {
             }
         }
     };
-    
+
     protected abstract String notificationFor(Object selection);
-    
+
     public ChannelNotificationExpression getNotificationExpression() {
         return notificationExpression;
     }
-    
+
     public <T extends Widget & ISelectionProvider>  ChannelSelectionNotification(String notificationPv,
             String notificationExpression, T widget) {
         this(notificationPv, notificationExpression, widget, widget);
     }
-    
-    
+
+
     public ChannelSelectionNotification(String notificationPv,
             String notificationExpression, ISelectionProvider selectionProvider, Widget widget) {
         this.notificationExpression = new ChannelNotificationExpression(notificationExpression);
         this.selectionProvider = selectionProvider;
-        
+
         notification = new LocalUtilityPvManagerBridge(notificationPv);
-        
+
         selectionProvider.addSelectionChangedListener(listener);
         widget.addDisposeListener(new DisposeListener() {
-            
+
             @Override
             public void widgetDisposed(DisposeEvent e) {
                 close();
             }
         });
     }
-    
+
     public void close() {
         selectionProvider.removeSelectionChangedListener(listener);
         notification.close();

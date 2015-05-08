@@ -69,7 +69,7 @@ import org.slf4j.LoggerFactory;
 public class PvSearchView extends ViewPart {
 
     public static final String VIEW_ID = "org.csstudio.sds.ui.internal.pvlistview.PvSearchView";
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(PvSearchView.class);
 
     private Button searchButton;
@@ -197,7 +197,7 @@ public class PvSearchView extends ViewPart {
         GridData progressBarLayoutData = GridDataFactory.fillDefaults().grab(true, false).span(2, 1).create();
         progressBarLayoutData.heightHint = 0;
         progressBar.setLayoutData(progressBarLayoutData);
-        
+
         treeViewer = new TreeViewer(main, SWT.VIRTUAL | SWT.BORDER);
         GridDataFactory.fillDefaults().grab(true, true).span(2, 1)
                 .applyTo(treeViewer.getControl());
@@ -546,7 +546,7 @@ public class PvSearchView extends ViewPart {
             Path folderPath = new Path(folderString);
             if (ResourcesPlugin.getWorkspace().getRoot().exists(folderPath)) {
                 IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(folderPath);
-                
+
                 resource.accept(new IResourceVisitor() {
                     @Override
                     public boolean visit(IResource resource) {

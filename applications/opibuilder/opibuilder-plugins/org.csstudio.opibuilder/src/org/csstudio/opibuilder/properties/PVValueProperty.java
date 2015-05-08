@@ -43,9 +43,9 @@ public class PVValueProperty extends AbstractWidgetProperty {
         }else if(value instanceof String){
             acceptableValue = ValueFactory.newVString(
                     (String)value, ValueFactory.alarmNone(), ValueFactory.timeNow());
-        }else if(value instanceof Integer || value instanceof Short 
+        }else if(value instanceof Integer || value instanceof Short
                 || value instanceof Boolean
-                || value instanceof Byte || value instanceof Character){           
+                || value instanceof Byte || value instanceof Character){
             int r = 0;
             //TODO: change it to VLong when VLong is added to VType.
 //            if(value instanceof Long)
@@ -59,8 +59,8 @@ public class PVValueProperty extends AbstractWidgetProperty {
             else if(value instanceof Byte)
                 r=(Byte)value;
             else if(value instanceof Character)
-                r=(Character)value;            
-            
+                r=(Character)value;
+
             acceptableValue = ValueFactory.newVInt(
                     r, ValueFactory.alarmNone(), ValueFactory.timeNow(), ValueFactory.displayNone());
 
@@ -87,7 +87,7 @@ public class PVValueProperty extends AbstractWidgetProperty {
     public boolean configurableByRule() {
         return true;
     }
-    
+
     @Override
     public boolean onlyAcceptExpressionInRule() {
         return true;

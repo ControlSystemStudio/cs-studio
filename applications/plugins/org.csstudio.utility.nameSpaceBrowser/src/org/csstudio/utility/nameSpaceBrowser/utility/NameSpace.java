@@ -57,7 +57,7 @@ public abstract class NameSpace {
     }
 
     public abstract NameSpaceSearchResult getSearchResult();
-    
+
     /**
      * @param selection
      */

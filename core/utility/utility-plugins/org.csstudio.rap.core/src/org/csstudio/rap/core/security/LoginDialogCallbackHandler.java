@@ -98,5 +98,5 @@ public class LoginDialogCallbackHandler extends AbstractLoginDialog {
         getShell().setText(callback.getMessage());
     }
 
-    
+
 }

@@ -1,24 +1,24 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
  * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT
  * LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR
- * PURPOSE AND  NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+ * PURPOSE AND  NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, 
+ * IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING,
  * REPAIR OR CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL
- * PART OF THIS LICENSE. NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER 
+ * PART OF THIS LICENSE. NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER
  * EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, 
- * ENHANCEMENTS, OR MODIFICATIONS. THE FULL LICENSE SPECIFYING FOR THE 
- * SOFTWARE THE REDISTRIBUTION, MODIFICATION, USAGE AND OTHER RIGHTS AND 
- * OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES,
+ * ENHANCEMENTS, OR MODIFICATIONS. THE FULL LICENSE SPECIFYING FOR THE
+ * SOFTWARE THE REDISTRIBUTION, MODIFICATION, USAGE AND OTHER RIGHTS AND
+ * OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU
  * MAY FIND A COPY AT {@link http://www.desy.de/legal/license.htm}
  */
 package de.desy.language.snl.parser;
@@ -74,7 +74,7 @@ import de.desy.language.snl.parser.parser.WhenParser;
 
 /**
  * Outline parser of the SNL language.
- * 
+ *
  * @author <a href="mailto:kmeyer@c1-wps.de">Kai Meyer</a>
  * @author <a href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * @version 0.2
@@ -274,11 +274,11 @@ public class SNLParser extends AbstractLanguageParser {
 
             this.findAndAddAllStates(stateSetNode, lastFoundStatement);
             checkStatesOfWhens(stateSetNode);
-            
+
             final int lastFound = stateSetParser.getEndOffsetLastFound();
             stateSetParser.findNext(result, lastFound);
         }
-        
+
         long parseTimeEnd = System.currentTimeMillis();
         _measurementData.add(new KeyValuePair("StateSet Node parse duration (ms)", (int)(parseTimeEnd-parseTimeStart)));
         _measurementData.add(new KeyValuePair("StateSet Nodes", count));
@@ -301,7 +301,7 @@ public class SNLParser extends AbstractLanguageParser {
                 }
             }
         }
-                    
+
         if (stateSetNode.hasChildren()) {
             for (Node child : stateSetNode.getChildrenNodes()) {
                 if (child instanceof StateNode) {
@@ -327,7 +327,7 @@ public class SNLParser extends AbstractLanguageParser {
         final Map<String, AssignStatementNode> assignMap = new HashMap<String, AssignStatementNode>();
 
         AllVariablesNode variableParentNode = new AllVariablesNode();
-        
+
         Interval[] exclusions = findIllegalPositions(node);
 
         final VariableParser variableParser = new VariableParser(exclusions);
@@ -348,13 +348,13 @@ public class SNLParser extends AbstractLanguageParser {
             // search next one
             variableParser.findNext(input, lastEndPosition);
         }
-        
+
         if (!variableMap.isEmpty()) {
             node.addChild(variableParentNode);
         }
 
         long parseTimeIntermediate1 = System.currentTimeMillis();
-        
+
         final AssignStatementParser assignParser = new AssignStatementParser(exclusions);
         assignParser.findNext(input);
 
@@ -421,15 +421,15 @@ public class SNLParser extends AbstractLanguageParser {
         _measurementData.add(new KeyValuePair("Assignment Nodes", assignMap.size()));
         _measurementData.add(new KeyValuePair("Monitor Nodes", count));
     }
-    
+
     private void findAndAddAllDefineStatements(final Node node, final String input) {
         long parseTimeStart = System.currentTimeMillis();
-        
+
         AllDefineStatementsNode defineParentNode = new AllDefineStatementsNode();
-        
+
         List<String> defineNames = new LinkedList<String>();
         Interval[] exclusions = findIllegalPositions(node);
-        
+
         DefineConstantStatementParser constantParser = new DefineConstantStatementParser(exclusions);
         constantParser.findNext(input);
 
@@ -447,7 +447,7 @@ public class SNLParser extends AbstractLanguageParser {
             // search next one
             constantParser.findNext(input, lastEndPosition);
         }
-        
+
         DefineFunctionStatementParser functionParser = new DefineFunctionStatementParser(exclusions);
         functionParser.findNext(input);
 
@@ -465,18 +465,18 @@ public class SNLParser extends AbstractLanguageParser {
             // search next one
             functionParser.findNext(input, lastEndPosition);
         }
-        
+
         if (!defineNames.isEmpty()) {
             node.addChild(defineParentNode);
         }
-        
+
         long parseTimeEnd = System.currentTimeMillis();
         _measurementData.add(new KeyValuePair("Define parse duration (ms)", (int)(parseTimeEnd-parseTimeStart)));
         _measurementData.add(new KeyValuePair("Define Statements", defineNames.size()));
     }
-    
+
     private Interval[] findIllegalPositions(Node root) {
-        List<Interval> result = new LinkedList<Interval>(); 
+        List<Interval> result = new LinkedList<Interval>();
         if (root.hasChildren()) {
             for (Node current : root.getChildrenNodes()) {
                 if (current instanceof StateSetNode) {
@@ -491,29 +491,29 @@ public class SNLParser extends AbstractLanguageParser {
     private void findAndAddAllEventFlags(final Node node, final String input) {
         long parseTimeStart = System.currentTimeMillis();
         final Map<String, EventFlagNode> eventFlags = new HashMap<String, EventFlagNode>();
-    
+
         Interval[] exclusions = findIllegalPositions(node);
         final EventFlagParser eventFlagParser = new EventFlagParser(exclusions);
-    
+
         eventFlagParser.findNext(input);
         while (eventFlagParser.hasFoundElement()) {
             final EventFlagNode varNode = eventFlagParser.getLastFoundAsNode();
             node.addChild(varNode);
-    
+
             eventFlags.put(varNode.getSourceIdentifier(), varNode);
-    
+
             final int lastEndPosition = eventFlagParser.getEndOffsetLastFound();
-    
+
             // search next one
             eventFlagParser.findNext(input, lastEndPosition);
         }
-    
+
         long parseTimeMiddle = System.currentTimeMillis();
         _measurementData.add(new KeyValuePair("EventFlag Node parse duration (ms)", (int)(parseTimeMiddle - parseTimeStart)));
-        
+
         final SyncStatemantParser syncParser = new SyncStatemantParser(exclusions);
         syncParser.findNext(input);
-    
+
         int syncCount = 0;
         while (syncParser.hasFoundElement()) {
             syncCount++;
@@ -527,9 +527,9 @@ public class SNLParser extends AbstractLanguageParser {
             } else {
                 eventNode.setSynchronized(syncNode);
             }
-    
+
             final int lastEndPosition = syncParser.getEndOffsetLastFound();
-    
+
             // search next one
             syncParser.findNext(input, lastEndPosition);
         }
@@ -557,7 +557,7 @@ public class SNLParser extends AbstractLanguageParser {
         long parseTimeEnd = System.currentTimeMillis();
         _measurementData.add(new KeyValuePair("Option parse duration (ms)", (int)(parseTimeEnd-parseTimeStart)));
     }
-    
+
     private Node findSurroundingNode(Node rootNode, Node childNode) {
         if (rootNode.hasChildren()) {
             for (Node node : rootNode.getChildrenNodes()) {
@@ -648,11 +648,11 @@ public class SNLParser extends AbstractLanguageParser {
 
             singleLineEmbeddedCParser.findNext(result);
         }
-        
+
         _measurementData.add(new KeyValuePair("Single Line Embedded-C", singleLineCount));
         _measurementData.add(new KeyValuePair("Multi Line Embedded-C", multiLineCount));
         long parseTimeEnd = System.currentTimeMillis();
-        _measurementData.add(new KeyValuePair("Embedded-C parse duration (ms)", (int)(parseTimeEnd-parseTimeStart)));        
+        _measurementData.add(new KeyValuePair("Embedded-C parse duration (ms)", (int)(parseTimeEnd-parseTimeStart)));
         return result;
     }
 

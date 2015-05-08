@@ -13,7 +13,7 @@ import java.util.Iterator;
  *     interval\n<BR>
  *  tableIt\n<BR>
  *     <endClass>ChannelStructure</endClass><BR>
- *  
+ *
  * @author rkosir
  *
  */
@@ -26,10 +26,10 @@ public class SnooperStringParser {
     private String channelName;
     private int interval;
     private int tableId;
-    
+
     /**
      * Converts the string to Object[2]={String,ArrayList<ChannelStructure>}
-     * 
+     *
      * @param String
      * @return Object[]
      */
@@ -53,11 +53,11 @@ public class SnooperStringParser {
         }
         return new Object[]{statistics[0].replace("<statistics>","Remote snooping results"),parsedList};
     }
-    
+
     /**
      * Converts the ArrayList to String
-     * @param string 
-     * 
+     * @param string
+     *
      * @param ArrayList<ChannelStructure>
      * @return String
      */

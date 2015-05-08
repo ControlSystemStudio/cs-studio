@@ -40,14 +40,14 @@ public class RDBArchiveReaderTest
 {
     final private static TimeDuration TIMERANGE = TimeDuration.ofHours(10.0);
     final private static TimeDuration WAVEFORM_TIMERANGE = TimeDuration.ofMinutes(20.0);
-    
+
     final private static int BUCKETS = 50;
 
     final private static boolean dump = true;
 
     @SuppressWarnings("unused")
     final private static SimpleDateFormat parser = new SimpleDateFormat("yyyy/MM/dd");
-    
+
     private RDBArchiveReader reader;
     private String proc, name, array_name;
 
@@ -76,10 +76,10 @@ public class RDBArchiveReaderTest
         else
             System.out.println("Running read test with old array_val table");
         reader = new RDBArchiveReader(url, user, password, schema, proc, use_blob);
-        
+
         assertEquals(use_blob, reader.useArrayBlob());
     }
-    
+
     @After
     public void close()
     {
@@ -104,7 +104,7 @@ public class RDBArchiveReaderTest
             }
         }, 2000);
     }
-    
+
     /** Basic connection */
     @Test
     public void testBasicInfo() throws Exception
@@ -154,7 +154,7 @@ public class RDBArchiveReaderTest
         System.out.println("Raw samples for " + name + ":");
         final Timestamp end = Timestamp.now();
         final Timestamp start = end.minus(TIMERANGE);
-        
+
         final BenchmarkTimer timer = new BenchmarkTimer();
         final ValueIterator values = reader.getRawValues(0, name, start, end);
 
@@ -190,15 +190,15 @@ public class RDBArchiveReaderTest
             }
             timer.stop();
             /* PostgreSQL 9 Test Results without the System.out in the loop:
-             * 
+             *
              * HP Compact 8000 Elite Small Form Factor,
              * Intel Core Duo, 3GHz, Windows 7, 32 bit,
              * Hitachi Hds721025cla382 250gb Sata 7200rpm
-             * 
+             *
              * No constraints on sample table.
              * 723000 samples in 7.547 seconds
              * 95796.79727732475 samples/sec
-             * 
+             *
              * JProfiler shows that time is spent in ResultSet.next(),
              * which fetches new data according to the 'fetch size'
              * of 100000.
@@ -218,12 +218,12 @@ public class RDBArchiveReaderTest
         if (reader == null  ||  array_name == null)
             return;
         System.out.println("Raw samples for waveform " + array_name + ":");
-        
+
         if (reader.useArrayBlob())
             System.out.println(".. using BLOB");
         else
             System.out.println(".. using non-BLOB array table");
-        
+
         final Timestamp end = Timestamp.now();
         final Timestamp start = end.minus(WAVEFORM_TIMERANGE);
 
@@ -249,7 +249,7 @@ public class RDBArchiveReaderTest
 
         final Timestamp end = Timestamp.now();
         final Timestamp start = end.minus(TIMERANGE);
-        
+
         final ValueIterator raw = reader.getRawValues(0, name, start, end);
         final double seconds = end.durationFrom(start).toSeconds() / BUCKETS;
         System.out.println("Time range: "

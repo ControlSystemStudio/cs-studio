@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.opibuilder.adl2boy;
 
@@ -69,7 +69,7 @@ public class WriteADLColorMapHandler implements IHandler {
      */
     @Override
     public boolean isHandled() {
-        
+
         return true;
     }
 

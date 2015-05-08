@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene;
 
@@ -17,21 +17,21 @@ import org.epics.pvmanager.graphene.ScatterGraph2DExpression;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ScatterGraph2DWidget extends AbstractPointDatasetGraph2DWidget<ScatterGraph2DRendererUpdate, ScatterGraph2DExpression>
     implements ISelectionProvider {
-    
+
     public ScatterGraph2DWidget(Composite parent, int style) {
         super(parent, style);
     }
-    
+
     @Override
     protected ScatterGraph2DExpression createGraph() {
         ScatterGraph2DExpression graph = ExpressionLanguage.scatterGraphOf(formula(getDataFormula()),
                 formulaArg(getXColumnFormula()),
                 formulaArg(getYColumnFormula()),
-                formulaArg(getTooltipColumnFormula()));        
+                formulaArg(getTooltipColumnFormula()));
         return graph;
     }
 

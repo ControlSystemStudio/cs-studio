@@ -25,14 +25,14 @@ package org.csstudio.dal.tine;
 import de.desy.tine.dataUtils.TDataType;
 
 /**
- * 
+ *
  * @author Jaka Bobnar, Cosylab
  *
  */
 public class DoublePropertyProxyImpl extends PropertyProxyImpl<Double>{
-    
+
     private double[] value;
-    
+
     /**
      * Constructs a new DoublePropertyProxy.
      * @param name
@@ -55,7 +55,7 @@ public class DoublePropertyProxyImpl extends PropertyProxyImpl<Double>{
         } else {
             return Double.NaN;
         }
-        
+
     }
 
     /*
@@ -75,7 +75,7 @@ public class DoublePropertyProxyImpl extends PropertyProxyImpl<Double>{
     protected Object convertDataToObject(Double data) {
         return new double[]{data};
     }
-    
+
     /* (non-Javadoc)
      * @see de.desy.css.dal.tine.PropertyProxyImpl#getNumericType()
      */

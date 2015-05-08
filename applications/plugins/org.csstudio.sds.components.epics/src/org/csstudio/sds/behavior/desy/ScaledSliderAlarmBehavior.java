@@ -62,7 +62,7 @@ public class ScaledSliderAlarmBehavior extends MarkedWidgetDesyAlarmBehavior<Sca
     protected String[] doGetSettablePropertyIds() {
         return new String[] {AbstractScaledWidgetModel.PROP_VALUE };
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -71,7 +71,7 @@ public class ScaledSliderAlarmBehavior extends MarkedWidgetDesyAlarmBehavior<Sca
         super.doInitialize(widget);
         _defFillBackColor = widget.getColor(ThermometerModel.PROP_FILLBACKGROUND_COLOR);
     }
-    
+
     /**
      * {@inheritDoc}
      */

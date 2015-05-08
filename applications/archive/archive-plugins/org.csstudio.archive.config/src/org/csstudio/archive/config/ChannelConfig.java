@@ -18,7 +18,7 @@ public class ChannelConfig
     final private String name;
     final private SampleMode sample_mode;
     final private Timestamp last_sample_time;
-    
+
     /** Initialize
      *  @param name Channel name
      *  @param sample_mode Sample mode
@@ -36,7 +36,7 @@ public class ChannelConfig
     {
         return name;
     }
-    
+
     /** @return Sample mode */
     public SampleMode getSampleMode()
     {

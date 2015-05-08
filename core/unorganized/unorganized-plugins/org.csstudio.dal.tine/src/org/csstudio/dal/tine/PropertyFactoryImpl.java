@@ -26,7 +26,7 @@ import org.csstudio.dal.proxy.AbstractPlug;
 import org.csstudio.dal.spi.AbstractPropertyFactory;
 
 /**
- * 
+ *
  * @author Jaka Bobnar, Cosylab
  *
  */
@@ -38,7 +38,7 @@ public class PropertyFactoryImpl extends AbstractPropertyFactory
     public PropertyFactoryImpl() {
         super();
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.csstudio.dal.spi.AbstractFactorySupport#getPlugClass()

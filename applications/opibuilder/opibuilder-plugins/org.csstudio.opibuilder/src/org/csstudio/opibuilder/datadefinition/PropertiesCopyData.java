@@ -16,9 +16,9 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
  *
  */
 public class PropertiesCopyData {
-    
+
     private AbstractWidgetModel widgetModel;
-    
+
     private List<String> propIDList;
 
     public PropertiesCopyData(AbstractWidgetModel widgetModel,
@@ -54,8 +54,8 @@ public class PropertiesCopyData {
     public final void setPropIDList(List<String> propIDList) {
         this.propIDList = propIDList;
     }
-    
-    
-    
-    
+
+
+
+
 }

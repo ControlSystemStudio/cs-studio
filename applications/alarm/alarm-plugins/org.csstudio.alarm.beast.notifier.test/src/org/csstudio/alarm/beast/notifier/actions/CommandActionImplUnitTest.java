@@ -13,9 +13,9 @@ import org.junit.Test;
 
 /**
  * Unit test for {@link CommandActionImpl}. Execute a command on system.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
- * 
+ *
  */
 public class CommandActionImplUnitTest {
 

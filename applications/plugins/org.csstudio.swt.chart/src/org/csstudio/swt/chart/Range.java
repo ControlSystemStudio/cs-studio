@@ -18,7 +18,7 @@ package org.csstudio.swt.chart;
  *  change that range and thus affect the internal state of the axis,
  *  instead of going though a designated setValueRange() or setValueMin()
  *  method which would allow the axis to react to the change...
- *  
+ *
  *  @author Kay Kasemir
  */
 public class Range

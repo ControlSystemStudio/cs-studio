@@ -23,7 +23,7 @@ public class DragPVSourceListener extends AbstractTransferDragSourceListener {
                 && ((AbstractPVWidgetEditPart) (widgetLists.get(0))).getPV() != null
                 && ((AbstractPVWidgetEditPart) (widgetLists.get(0))).getPV().getName().trim().length() > 0) {
             event.doit = true;
-        }else    
+        }else
             event.doit = false;
     }
 

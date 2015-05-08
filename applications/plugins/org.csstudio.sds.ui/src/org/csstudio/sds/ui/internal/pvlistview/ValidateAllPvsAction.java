@@ -43,7 +43,7 @@ public class ValidateAllPvsAction extends Action implements IMenuCreator {
         return AbstractUIPlugin.imageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID,
                 "icons/validationButtonImage.png");
     }
-    
+
     @Override
     public Menu getMenu(Control parent) {
         if (actionMenu == null) {
@@ -54,7 +54,7 @@ public class ValidateAllPvsAction extends Action implements IMenuCreator {
                 item.fill(actionMenu, -1);
             }
         }
-        
+
         return actionMenu;
     }
 

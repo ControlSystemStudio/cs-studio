@@ -3,7 +3,7 @@ package org.csstudio.archive.reader.appliance;
 
 /**
  * Interface that defines constants which are used in archive reader appliance.
- * 
+ *
  * @author Miha Novak <miha.novak@cosylab.com>
  */
 public interface ApplianceArchiveReaderConstants {
@@ -19,7 +19,7 @@ public interface ApplianceArchiveReaderConstants {
     String SEARCH_PATH = "/bpl/searchForPVsRegex?regex=";
     /** Lower operating limit field */
     String LOPR = "LOPR";
-    /** Minor alarm lower limit field */ 
+    /** Minor alarm lower limit field */
     String LOW = "LOW";
     /** Major alarm lower limit field */
     String LOLO = "LOLO";
@@ -35,7 +35,7 @@ public interface ApplianceArchiveReaderConstants {
     String PREC = "PREC";
     /** Val field */
     String VAL = "val";
-    
+
     /** Operator for every nth value in the archive */
     String OP_NTH = "nth_";
     /** Operator for counting number of samples in the archive */
@@ -50,5 +50,5 @@ public interface ApplianceArchiveReaderConstants {
     String OP_STD = "std_";
     /** Operator for the mean bin value */
     String OP_MEAN = "mean_";
-    
+
 }

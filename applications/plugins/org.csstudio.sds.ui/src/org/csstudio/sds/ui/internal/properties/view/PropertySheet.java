@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.sds.ui.internal.properties.view;
@@ -71,10 +71,10 @@ import org.eclipse.ui.part.PageBookView;
  * Sheet view is needed for a workbench window. This class is not intended to be
  * instantiated or subclassed by clients.
  * </p>
- * 
+ *
  * @see IPropertySheetPage
  * @see PropertySheetPage
- * 
+ *
  * @author Sven Wende
  */
 public final class PropertySheet extends PageBookView implements
@@ -83,7 +83,7 @@ public final class PropertySheet extends PageBookView implements
      * The view id.
      */
     public static final String VIEW_ID = "org.csstudio.sds.ui.internal.properties.view.PropertySheet";
-    
+
     /**
      * No longer used but preserved to avoid api change.
      */
@@ -121,7 +121,7 @@ public final class PropertySheet extends PageBookView implements
         getSite().getPage().getWorkbenchWindow().getWorkbench().getHelpSystem()
                 .setHelp(getPageBook(),
                         IPropertiesHelpContextIds.PROPERTY_SHEET_VIEW);
-        
+
         parent.getParent().layout();
     }
 
@@ -248,7 +248,7 @@ public final class PropertySheet extends PageBookView implements
         }
         this.setContentDescription(this.createContentDescription(sel));
     }
-    
+
     /**
      * Creates and returns the content description for this View.
      * @param sel
@@ -258,11 +258,11 @@ public final class PropertySheet extends PageBookView implements
      */
     private String createContentDescription(final ISelection sel) {
         String description = "Type: ";
-        
+
         if(sel instanceof IStructuredSelection) {
             Object[] objects = ((IStructuredSelection) sel).toArray();
-            
-            if (objects.length>1) {    
+
+            if (objects.length>1) {
                 description = description +"Multiple ("+objects.length+") Widgets selected";
             } else if(objects.length==1){
                 if (objects[0] instanceof AbstractWidgetEditPart) {
@@ -273,7 +273,7 @@ public final class PropertySheet extends PageBookView implements
                 }
             }
         }
-        
+
         return description;
     }
 
@@ -293,7 +293,7 @@ public final class PropertySheet extends PageBookView implements
      * Returns an <code>ISaveablePart</code> that delegates to the source part
      * for the current page if it implements <code>ISaveablePart</code>, or
      * <code>null</code> otherwise.
-     * 
+     *
      * @return an <code>ISaveablePart</code> or <code>null</code>
      * @since 3.2
      */

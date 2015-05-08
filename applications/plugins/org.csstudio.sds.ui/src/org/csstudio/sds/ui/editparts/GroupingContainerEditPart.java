@@ -59,7 +59,7 @@ public final class GroupingContainerEditPart extends AbstractContainerEditPart {
 
     /**
      * Rotates all children.
-     * 
+     *
      * @param angle
      *            the angle to rotate
      */

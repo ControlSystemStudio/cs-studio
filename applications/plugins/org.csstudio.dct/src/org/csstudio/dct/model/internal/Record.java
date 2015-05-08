@@ -17,7 +17,7 @@ import org.csstudio.dct.util.CompareUtil;
 
 /**
  * Standard implementation of {@link IRecord}.
- * 
+ *
  * @author Sven Wende
  */
 public final class Record extends AbstractPropertyContainer implements IRecord {
@@ -35,7 +35,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
 
     /**
      * Constructor.
-     * 
+     *
      * @param name
      *            the name
      * @param type
@@ -50,7 +50,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
 
     /**
      * Constructor.
-     * 
+     *
      * @param parentRecord
      *            the parent record
      * @param id
@@ -72,7 +72,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     public void setType(String type) {
         this.type = type;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -236,7 +236,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
     }
-    
+
     /**
      *{@inheritDoc}
      */
@@ -246,10 +246,10 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
 
     /**
      * Recursive helper method which determines the root container.
-     * 
+     *
      * @param container
      *            a starting container
-     * 
+     *
      * @return the root container of the specified starting container
      */
     private IContainer getRootContainer(IContainer container) {
@@ -353,7 +353,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      * Collect all parent records in a stack. On top of the returned stack is
      * the parent that resides at the top of the hierarchy.
-     * 
+     *
      * @return all parent records, including this
      */
     private Stack<IRecord> getRecordStack() {

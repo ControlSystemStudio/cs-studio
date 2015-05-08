@@ -111,7 +111,7 @@ public class ImageTabFolder
 
         return button;
     }
-    
+
     /** Allow dropping file names (presumably images) */
     private void hookDragAndDrop(Composite parent)
     {
@@ -194,14 +194,14 @@ public class ImageTabFolder
         // to keep the dialog itself out of the screenshot
         final Shell shell = tab_folder.getShell();
         shell.setVisible(false);
-        
+
         // On Linux (X11, GTK), the dialog's shell may now be hidden, but the
         // vacated area on the screen is blank, not redrawn.
         // Force a redraw.
         final Shell main_shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
         main_shell.forceActive();
         main_shell.redraw();
-        
+
         // Delay screenshot in UI event queue to allow for the refresh
         final Display display = shell.getDisplay();
         display.timerExec(500, new Runnable()
@@ -213,22 +213,22 @@ public class ImageTabFolder
                 final Image image = full
                     ? Screenshot.getFullScreenshot()
                     : Screenshot.getApplicationScreenshot();
-                    
+
                 // Show the dialog again
                 shell.setVisible(true);
-        
+
                 // Write to file
                 try
                 {
                     final File screenshot_file = File.createTempFile("screenshot", ".png");
                     screenshot_file.deleteOnExit();
-        
+
                     final ImageLoader loader = new ImageLoader();
                     loader.data = new ImageData[] { image.getImageData() };
                     image.dispose();
                     // Save
                     loader.save(screenshot_file.getPath(), SWT.IMAGE_PNG);
-                    
+
                     addImage(screenshot_file.getPath());
                 }
                 catch (Exception ex)
@@ -239,7 +239,7 @@ public class ImageTabFolder
             }
         });
     }
-    
+
     /** Remove image from preview and list of images-to-add
      *  @param i Index of image
      */

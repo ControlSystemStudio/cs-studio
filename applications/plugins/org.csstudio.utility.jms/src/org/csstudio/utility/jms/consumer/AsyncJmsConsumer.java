@@ -40,13 +40,13 @@ import org.csstudio.utility.jms.sharedconnection.SharedJmsConnections;
  * @since 11.04.2012
  */
 public class AsyncJmsConsumer {
-    
+
     /** The connection handles that this class uses */
     private ISharedConnectionHandle[] handle;
-    
+
     /** Array of JMS sessions */
     private Session[] session;
-    
+
     private MessageConsumer[] consumer;
 
     public AsyncJmsConsumer() throws ClientConnectionException {
@@ -58,14 +58,14 @@ public class AsyncJmsConsumer {
             throw new ClientConnectionException(e);
         }
     }
-    
+
     public void createMessageConsumer(String topicName, boolean durable, String durableName)
             throws ClientConnectionException {
-        
+
         int connectionCount = handle.length;
         session = new Session[connectionCount];
         consumer = new MessageConsumer[connectionCount];
-        for(int i = 0;i < connectionCount;i++) {            
+        for(int i = 0;i < connectionCount;i++) {
             try {
                 session[i] = handle[i].createSession(false, Session.AUTO_ACKNOWLEDGE);
                 if((durable == true) && (durableName != null)) {
@@ -81,7 +81,7 @@ public class AsyncJmsConsumer {
             }
         }
     }
-    
+
     public void addMessageListener(MessageListener listener) throws JMSException {
         if (consumer != null) {
             for (MessageConsumer o : consumer) {
@@ -91,7 +91,7 @@ public class AsyncJmsConsumer {
             }
         }
     }
-    
+
     public void removeMessageListener() throws JMSException {
         if (consumer != null) {
             for (MessageConsumer o : consumer) {
@@ -101,7 +101,7 @@ public class AsyncJmsConsumer {
             }
         }
     }
-    
+
     public void close() {
         for (MessageConsumer o : consumer) {
             if (o != null) {

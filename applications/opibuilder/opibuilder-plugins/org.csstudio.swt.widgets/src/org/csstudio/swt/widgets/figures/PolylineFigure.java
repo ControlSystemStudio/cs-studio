@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
@@ -45,22 +45,22 @@ import org.eclipse.gef.handles.HandleBounds;
  * A polyline figure.
  * @author Sven Wende (original author)
  * @author Xihui Chen (imported from SDS since 2009/9)
- * 
+ *
  */
 public final class PolylineFigure extends Polyline implements HandleBounds, Introspectable {
-    
+
     public enum ArrowType{
         None("None"),
         From("From"),
         To("To"),
         Both("Both");
-        
+
         String description;
-        
+
         private ArrowType(String desc) {
             this.description = desc;
         }
-        
+
         public static String[] stringValues(){
             String[] sv = new String[values().length];
             int i=0;
@@ -68,7 +68,7 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
                 sv[i++] = p.toString();
             return sv;
         }
-        
+
         @Override
         public String toString() {
             return description;
@@ -90,35 +90,35 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
             int l, double angle){
 
         PointList result = new PointList();
-        
+
         PolarPoint ppE = PolarPoint.point2PolarPoint(endPoint, startPoint);
-        
+
         PolarPoint ppR = new PolarPoint(l, ppE.theta - angle);
         PolarPoint ppL = new PolarPoint(l, ppE.theta + angle);
-        
+
         //the intersection point bettwen arrow and line.
-        PolarPoint ppI = new PolarPoint((int) (l * Math.cos(angle)), ppE.theta); 
-        
+        PolarPoint ppI = new PolarPoint((int) (l * Math.cos(angle)), ppE.theta);
+
         Point pR = ppR.toPoint().translate(endPoint);
         Point pL = ppL.toPoint().translate(endPoint);
         Point pI = ppI.toPoint().translate(endPoint);
-    
+
         result.addPoint(pR);
         result.addPoint(pL);
         result.addPoint(pI);
-        
+
         return result;
-        
+
     }
     public static Rectangle getPointsBoundsWithArrows(PointList points, ArrowType arrowType, int arrowLength, double arrowAngle){
         PointList copy = points.getCopy();
-        if(points.size() >=2){        
+        if(points.size() >=2){
             if(arrowType == ArrowType.To || arrowType == ArrowType.Both)
                 copy.addAll(calcArrowPoints(points.getPoint(points.size()-2),
                     points.getLastPoint(), arrowLength, arrowAngle));
             if(arrowType == ArrowType.From || arrowType == ArrowType.Both)
                 copy.addAll(calcArrowPoints(points.getPoint(1),
-                    points.getFirstPoint(), arrowLength, arrowAngle));                
+                    points.getFirstPoint(), arrowLength, arrowAngle));
         }
         return copy.getBounds();
     }
@@ -128,17 +128,17 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
     private double fill = 100.0;
 
     private boolean horizontalFill;
-    
+
     private boolean transparent;
 
     private boolean fillArrow = true;
-    
+
 
 
     private ArrowType arrowType;
-    
+
     private int arrowLineLength = 30;
-    
+
     private static final Rectangle LINEBOUNDS = Draw2dSingletonUtil.getRectangle();
     /**
      * Constructor.
@@ -152,35 +152,35 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
         PointList points = getPoints().getCopy();
 
         graphics.pushState();
-        
+
         if(points.size() >= 2){
-            Point endPoint = points.getLastPoint(); 
+            Point endPoint = points.getLastPoint();
             Point firstPoint = points.getFirstPoint();
             if(arrowType == ArrowType.To || arrowType == ArrowType.Both){
                 //draw end arrow
                 PointList arrowPoints = calcArrowPoints(points.getPoint(points.size()-2),
-                            endPoint, arrowLineLength, ARROW_ANGLE);    
+                            endPoint, arrowLineLength, ARROW_ANGLE);
                 if(fillArrow)
                     points.setPoint(arrowPoints.getLastPoint(), points.size()-1);
                 arrowPoints.setPoint(endPoint, 2);
-                if(fillArrow){        
+                if(fillArrow){
                     if(isEnabled())
                         graphics.setBackgroundColor(graphics.getForegroundColor());
                     graphics.fillPolygon(arrowPoints);
-                        
+
                 }else{
                     graphics.drawLine(endPoint, arrowPoints.getFirstPoint());
                     graphics.drawLine(endPoint, arrowPoints.getMidpoint());
                 }
             }
             if(arrowType == ArrowType.From || arrowType == ArrowType.Both){
-                //draw start arrow            
+                //draw start arrow
                 PointList arrowPoints = calcArrowPoints(points.getPoint(1),
                         firstPoint, arrowLineLength, ARROW_ANGLE);
                 if(fillArrow)
                     points.setPoint(arrowPoints.getLastPoint(), 0);
                 arrowPoints.setPoint(firstPoint, 2);
-                if(fillArrow){    
+                if(fillArrow){
                     if(isEnabled())
                         graphics.setBackgroundColor(graphics.getForegroundColor());
                     graphics.fillPolygon(arrowPoints);
@@ -189,27 +189,27 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
                     graphics.drawLine(firstPoint, arrowPoints.getMidpoint());
                 }
             }
-        }        
+        }
         graphics.drawPolyline(points);
-        graphics.popState();    
+        graphics.popState();
     }
-    
+
     /**
      * @return the arrowLineLength
      */
     public int getArrowLineLength() {
         return arrowLineLength;
     }
-    
-    
+
+
     /**
      * @return the arrowType
      */
     public ArrowType getArrowType() {
         return arrowType;
     }
-    
-    
+
+
     /**
      * Overridden, to ensure that the bounds rectangle gets repainted each time,
      * the points of the polygon change. {@inheritDoc}
@@ -224,14 +224,14 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
         Rectangle correctedRectangle = new Rectangle(rect.x, rect.y, correctedWidth, correctedHeight);
         super.setBounds(correctedRectangle);
     }
-    
+
     @Override
     public void setSize(final int w, final int h) {
         int correctedWidth = w + getLineWidth();
         int correctedHeight = h + getLineWidth();
         super.setSize(correctedWidth, correctedHeight);
     }
-    
+
     @Override
     public void setLocation(Point p) {
         super.setLocation(p);
@@ -241,22 +241,22 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
 
     @Override
     public Rectangle getBounds() {
-        
+
         if(arrowType == ArrowType.None)
             return super.getBounds();
         if (bounds == null) {
             bounds = getPointsBoundsWithArrows(
                     getPoints(), arrowType, arrowLineLength, ARROW_ANGLE);
             int expand = (int)(getLineWidthFloat() / 2.0f);
-                bounds = bounds.getExpanded(expand, expand);            
+                bounds = bounds.getExpanded(expand, expand);
         }
-        
+
         return bounds;
     }
-    
+
     /**
      * Gets the fill grade.
-     * 
+     *
      * @return the fill grade
      */
     public double getFill() {
@@ -272,13 +272,13 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
 
     /**
      * Gets the transparent state of the background.
-     * 
+     *
      * @return the transparent state of the background
      */
     public boolean getTransparent() {
         return transparent;
     }
-    
+
     /**
      * @return the fillArrow
      */
@@ -286,10 +286,10 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
         return fillArrow;
     }
 
-    
+
     /**
      * Gets the orientation (horizontal==true | vertical==false).
-     * 
+     *
      * @return boolean The orientation
      */
     public boolean isHorizontalFill() {
@@ -300,7 +300,7 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
      * {@inheritDoc}
      */
     @Override
-    protected void outlineShape(final Graphics graphics) {        
+    protected void outlineShape(final Graphics graphics) {
         Rectangle figureBounds = getBounds();
 
         graphics.pushState();
@@ -309,18 +309,18 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
                 graphics.setForegroundColor(getBackgroundColor());
             drawPolyLineWithArrow(graphics);
         }
-        if(getFill() > 0){            
+        if(getFill() > 0){
             //set clip by fill level
             if(horizontalFill){
-                
+
                 int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
-                
+
                 graphics
                     .clipRect(new Rectangle(figureBounds.x, figureBounds.y, newW, figureBounds.height));
             }else{
-                int newH = (int) Math.round(figureBounds.height * (getFill() / 100));            
+                int newH = (int) Math.round(figureBounds.height * (getFill() / 100));
                 graphics
-                    .clipRect(new Rectangle(figureBounds.x, figureBounds.y + figureBounds.height - newH, 
+                    .clipRect(new Rectangle(figureBounds.x, figureBounds.y + figureBounds.height - newH,
                             figureBounds.width, newH));
             }
             if(isEnabled())
@@ -328,7 +328,7 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
             drawPolyLineWithArrow(graphics);
         }
         graphics.popState();
-                
+
     }
 
     /**
@@ -362,28 +362,28 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
         this.arrowType = arrowType;
         repaint();
     }
-    
-    
+
+
     @Override
     public void setBounds(Rectangle rect) {
         PointList points = getPoints();
         if(!points.getBounds().equals(rect)){
             int oldX = getLocation().x;
             int oldY = getLocation().y;
-            points.translate(rect.x - oldX, rect.y - oldY);        
-            
+            points.translate(rect.x - oldX, rect.y - oldY);
+
             setPoints(PointsUtil.scalePointsBySize(points, rect.width, rect.height));
         }
         super.setBounds(rect);
         //figure should be forced to be moved since the bounds of a polyline might be unchanged.
         fireFigureMoved();
-        
+
         //bounds = bounds.getExpanded(lineWidth / 2, lineWidth / 2);
     }
-    
+
     /**
      * Sets the fill grade.
-     * 
+     *
      * @param fill
      *            the fill grade.
      */
@@ -393,17 +393,17 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
         this.fill = fill;
         repaint();
     }
-    
+
     public void setFillArrow(boolean fillArrow) {
         if(this.fillArrow == fillArrow)
             return;
         this.fillArrow = fillArrow;
         repaint();
     }
-    
+
     /**
      * Sets the orientation (horizontal==true | vertical==false).
-     * 
+     *
      * @param horizontal
      *            The orientation.
      */
@@ -413,10 +413,10 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
         horizontalFill = horizontal;
         repaint();
     }
-    
+
     /**
      * Sets the transparent state of the background.
-     * 
+     *
      * @param transparent
      *            the transparent state.
      */
@@ -426,14 +426,14 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
         this.transparent = transparent;
         repaint();
     }
-    
+
     @Override
     public Dimension getMinimumSize(int wHint, int hHint) {
         if(wHint == -1 && hHint == -1)
             return new Dimension(1,1);
         return super.getMinimumSize(wHint, hHint);
     }
-    
+
     /**Override this to fix a bug in draw2d polyline: the polyline width should be considered.
      * @see org.eclipse.draw2d.IFigure#containsPoint(int, int)
      */
@@ -446,13 +446,13 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
             return false;
         return shapeContainsPoint(x, y, tolerance) || childrenContainsPoint(x, y);
     }
-    
+
     /**Override this to fix a bug in draw2d polyline: the polyline width should be considered.
     */
     protected boolean shapeContainsPoint(int x, int y, int tolerance) {
         return Geometry.polylineContainsPoint(getPoints(), x, y, tolerance);
     }
-    
+
     public BeanInfo getBeanInfo() throws IntrospectionException {
         return new PolyWidgetIntrospector().getBeanInfo(this.getClass());
     }

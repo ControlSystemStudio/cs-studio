@@ -1,18 +1,18 @@
 /*
  * $Id$
- * 
+ *
  * Copyright (c) 2006 Fran Lattanzio
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,8 +34,8 @@ package org.teneighty.lm;
 final class DefaultMatrixFactory
     extends MatrixFactory
 {
-    
-    
+
+
     /**
      * Constructor.
      * <p>
@@ -45,12 +45,12 @@ final class DefaultMatrixFactory
     {
         super();
     }
-    
-    
+
+
     /**
      * Create and return a new <code>Matrix</code> instance, of the specified
      * size.
-     * 
+     *
      * @param rows the number of rows.
      * @param cols the number of columns.
      * @return Matrix a new Matrix instance of the specified size.
@@ -65,14 +65,14 @@ final class DefaultMatrixFactory
         {
             throw new IllegalArgumentException();
         }
-        
+
         return( new DefaultMatrix( rows, cols ) );
     }
-    
-    
+
+
     /**
      * Simple equals implementation. Two instances of this class are always considered equal.
-     * 
+     *
      * @param other the other object.
      * @return boolean <code>true</code> if equal.
      */
@@ -83,19 +83,19 @@ final class DefaultMatrixFactory
         {
             return( false );
         }
-        
+
         if( other == this )
         {
             return( true );
         }
-        
-        return( other.getClass().equals( this.getClass() ) == true );        
+
+        return( other.getClass().equals( this.getClass() ) == true );
     }
-    
-    
+
+
     /**
      * Get a hashcode inline with equals.
-     * 
+     *
      * @return int 1 always.
      */
     @Override
@@ -103,6 +103,6 @@ final class DefaultMatrixFactory
     {
         return( 1 );
     }
-    
+
 
 }

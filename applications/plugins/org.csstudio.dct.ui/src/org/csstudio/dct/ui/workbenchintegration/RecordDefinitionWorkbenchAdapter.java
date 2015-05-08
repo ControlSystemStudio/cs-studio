@@ -4,7 +4,7 @@ import org.csstudio.dct.metamodel.IRecordDefinition;
 
 /**
  * UI adapter for {@link IRecordDefinition}.
- * 
+ *
  * @author Sven Wende
  */
 public final class RecordDefinitionWorkbenchAdapter extends BaseWorkbenchAdapter<IRecordDefinition> {

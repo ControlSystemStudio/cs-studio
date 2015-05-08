@@ -53,9 +53,9 @@ import org.slf4j.LoggerFactory;
  * @since 12.09.2007
  */
 public abstract class Widget extends AbstractDisplayImporter {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(Widget.class);
-    
+
     /** The ADL Widget element as CSS-SDS element. */
     protected AbstractWidgetModel _widget;
     /** The Widget object parameter. */
@@ -155,7 +155,7 @@ public abstract class Widget extends AbstractDisplayImporter {
 
     /**
      * Generate the XML-Element.
-     * 
+     *
      * @throws WrongADLFormatException
      */
     private void makeElemnet() throws WrongADLFormatException {
@@ -173,7 +173,7 @@ public abstract class Widget extends AbstractDisplayImporter {
             if (_dynamicAttribute.isColor()) {
                 _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
                         _dynamicAttribute.getColorAdlDynamicAttributes());
-            } 
+            }
         }
         makeConnectionState();
     }
@@ -198,7 +198,7 @@ public abstract class Widget extends AbstractDisplayImporter {
 
     /**
      * Scan the ADLWidget Object.
-     * 
+     *
      * @param widget
      *            The ADLWidget to generate the XML-Element.
      * @throws WrongADLFormatException
@@ -243,7 +243,7 @@ public abstract class Widget extends AbstractDisplayImporter {
     }
 
     /**
-     * 
+     *
      * @return the Widgetpart {@link ADLObject} of this Widget.
      */
     public ADLObject getObject() {
@@ -251,7 +251,7 @@ public abstract class Widget extends AbstractDisplayImporter {
     }
 
     /**
-     * 
+     *
      * @return the Widgetpart {@link ADLBasicAttribute} of this Widget.
      */
     public ADLBasicAttribute getBasicAttribute() {
@@ -259,7 +259,7 @@ public abstract class Widget extends AbstractDisplayImporter {
     }
 
     /**
-     * 
+     *
      * @return the Widgetpart {@link ADLDynamicAttribute} of this Widget.
      */
     public WidgetPart getDynamicAttribute() {
@@ -267,7 +267,7 @@ public abstract class Widget extends AbstractDisplayImporter {
     }
 
     /**
-     * 
+     *
      * @return the Widgetpart {@link ADLPoints} of this Widget.
      */
     public ADLPoints getPoints() {
@@ -275,7 +275,7 @@ public abstract class Widget extends AbstractDisplayImporter {
     }
 
     /**
-     * 
+     *
      * @return the Widgetpart {@link ADLMonitor} of this Widget.
      */
     public ADLMonitor getMonitor() {
@@ -283,7 +283,7 @@ public abstract class Widget extends AbstractDisplayImporter {
     }
 
     /**
-     * 
+     *
      * @return the Widgetpart {@link ADLControl} of this Widget.
      */
     public ADLControl getControl() {
@@ -291,7 +291,7 @@ public abstract class Widget extends AbstractDisplayImporter {
     }
 
     /**
-     * 
+     *
      * @return the Widgetpart {@link ADLSensitive} of this Widget.
      */
     public ADLSensitive getSensitive() {
@@ -300,7 +300,7 @@ public abstract class Widget extends AbstractDisplayImporter {
 
     /**
      * Convert the absolute coordinate to the relative coordinate of this Widget.
-     * 
+     *
      * @param x
      *            the x coordinate.
      * @param y
@@ -314,7 +314,7 @@ public abstract class Widget extends AbstractDisplayImporter {
 
     /**
      * Convert the absolute coordinate to the relative coordinate of this Widget.
-     * 
+     *
      * @param x
      *            the x coordinate.
      * @param y

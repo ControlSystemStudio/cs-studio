@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.opibuilder.widgets.extra;
 
@@ -10,14 +10,14 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public abstract class AbstractSelectionWidgetModel extends AbstractWidgetModel {
 
     public static final String CONFIGURABLE = "configurable"; //$NON-NLS-1$
     private final boolean enableConfigurableProperty;
     private final boolean enableBorderAlarmSensitiveProperty;
-    
+
     public AbstractSelectionWidgetModel(AbstractSelectionWidgetModelDescription model) {
         this.enableConfigurableProperty = model.isEnableConfigurableProperty();
         this.enableBorderAlarmSensitiveProperty = model.isEnableBorderAlarmSensitiveProperty();
@@ -26,7 +26,7 @@ public abstract class AbstractSelectionWidgetModel extends AbstractWidgetModel {
                     "Configurable", WidgetPropertyCategory.Behavior, false));
         }
         if (enableBorderAlarmSensitiveProperty) {
-            addProperty(new BooleanProperty(IPVWidgetModel.PROP_BORDER_ALARMSENSITIVE, 
+            addProperty(new BooleanProperty(IPVWidgetModel.PROP_BORDER_ALARMSENSITIVE,
                     "Alarm Sensitive", WidgetPropertyCategory.Border, true));
         }
     }
@@ -34,14 +34,14 @@ public abstract class AbstractSelectionWidgetModel extends AbstractWidgetModel {
     public boolean isEnableConfigurableProperty() {
         return enableConfigurableProperty;
     }
-    
+
     public boolean isConfigurable() {
         if (!enableConfigurableProperty) {
             throw new IllegalStateException("configurable property not enabled");
         }
         return getCastedPropertyValue(CONFIGURABLE);
     }
-    
+
     public boolean isEnableBorderAlarmSensitiveProperty() {
         return enableBorderAlarmSensitiveProperty;
     }

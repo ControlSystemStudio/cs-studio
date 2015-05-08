@@ -15,7 +15,7 @@ public class WhenConnection extends ModelElement {
     /**
      * Used for indicating that a Connection with solid line style should be
      * created.
-     * 
+     *
      * @see org.eclipse.gef.examples.shapes.parts.ShapeEditPart#createEditPolicies()
      */
     public static final Integer SOLID_CONNECTION = 1;
@@ -30,14 +30,14 @@ public class WhenConnection extends ModelElement {
     private SNLModel source;
     /** Connection's target endpoint. */
     private SNLModel target;
-    
+
     private WhenNode _whenNode;
-    
+
     private List<Point> _bendPoints;
-    
+
     /**
      * Create a (solid) connection between two distinct shapes.
-     * 
+     *
      * @param source
      *            a source endpoint for this connection (non null)
      * @param target
@@ -50,11 +50,11 @@ public class WhenConnection extends ModelElement {
         _bendPoints = new ArrayList<Point>();
         reconnect(source, target);
     }
-    
+
     public WhenNode getWhenNode() {
         return _whenNode;
     }
-    
+
     public void setWhenNode(WhenNode whenNode) {
         _whenNode = whenNode;
     }
@@ -72,7 +72,7 @@ public class WhenConnection extends ModelElement {
 
     /**
      * Returns the line drawing style of this connection.
-     * 
+     *
      * @return an int value (Graphics.LINE_DASH or Graphics.LINE_SOLID)
      */
     public int getLineStyle() {
@@ -81,7 +81,7 @@ public class WhenConnection extends ModelElement {
 
     /**
      * Returns the lineStyle as String for the Property Sheet
-     * 
+     *
      * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.lang.Object)
      */
     public Object getPropertyValue(Object id) {
@@ -90,7 +90,7 @@ public class WhenConnection extends ModelElement {
 
     /**
      * Returns the source endpoint of this connection.
-     * 
+     *
      * @return a non-null Shape instance
      */
     public SNLModel getSource() {
@@ -99,7 +99,7 @@ public class WhenConnection extends ModelElement {
 
     /**
      * Returns the target endpoint of this connection.
-     * 
+     *
      * @return a non-null Shape instance
      */
     public SNLModel getTarget() {
@@ -122,7 +122,7 @@ public class WhenConnection extends ModelElement {
      * Reconnect to a different source and/or target shape. The connection will
      * disconnect from its current attachments and reconnect to the new source
      * and target.
-     * 
+     *
      * @param newSource
      *            a new source endpoint for this connection (non null)
      * @param newTarget
@@ -139,30 +139,30 @@ public class WhenConnection extends ModelElement {
         this.target = newTarget;
         reconnect();
     }
-    
+
     public void addBendPoint(Point bendPoint, int index) {
         _bendPoints.add(index, bendPoint);
         firePropertyChange("BendPoint added", null, _bendPoints);
     }
-    
+
     public void removeBendPoint(int index) {
         _bendPoints.remove(index);
         firePropertyChange("BendPoint removed", null, _bendPoints);
     }
-    
+
     public void moveBendPoint(int index, Point newLocation) {
         Point point = _bendPoints.get(index);
         point.setLocation(newLocation);
         firePropertyChange("BendPoint moved", null, _bendPoints);
     }
-    
+
     public List<Point> getBendPoints() {
         return _bendPoints;
     }
-    
+
     @Override
     public String getIdentifier() {
         return _whenNode.getSourceIdentifier();
     }
-    
+
 }

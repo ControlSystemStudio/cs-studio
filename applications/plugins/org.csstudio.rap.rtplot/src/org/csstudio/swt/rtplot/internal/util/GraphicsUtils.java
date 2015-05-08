@@ -120,7 +120,7 @@ public class GraphicsUtils
         // Dispose the vertical image
         vertical.dispose();
     }
-    
+
     private static Image drawText(Device device, String text, Color foreground, Color background, FontData fd, int sx, int sy) {
         int style = fd.getStyle();
         int newStyle = Font.PLAIN;
@@ -141,7 +141,7 @@ public class GraphicsUtils
             return null;
         }
     }
-    
+
     private static Image makeSWTImage(Device device, java.awt.Image ai) {
         int width = ai.getWidth(null);
         int height = ai.getHeight(null);

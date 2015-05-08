@@ -5,9 +5,9 @@ import java.util.Arrays;
 import org.csstudio.dal.DynamicValueProperty;
 
 public final class DoubleSeqAnyDataImpl extends AbstractAnyDataImpl<double[]> {
-    
+
     public static final double[] UNINITIALIZED_VALUE = new double[] {Double.NaN};
-    
+
     public DoubleSeqAnyDataImpl(DynamicValueProperty<double[]> property, long beamID) {
         super(property,beamID);
     }

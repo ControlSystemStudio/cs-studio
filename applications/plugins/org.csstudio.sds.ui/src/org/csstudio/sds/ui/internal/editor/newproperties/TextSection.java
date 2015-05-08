@@ -13,7 +13,7 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 
 /**
  * Section implementation for {@link StringProperty}.
- * 
+ *
  * @author Sven Wende
  *
  */
@@ -59,9 +59,9 @@ public final class TextSection extends AbstractTextSection<StringProperty, Strin
             return Collections.emptyList();
         }
     }
-    
+
     private class PermissionIdContentProposal implements IContentProposal {
-        
+
         private final String _content;
         private final String _description;
 
@@ -87,7 +87,7 @@ public final class TextSection extends AbstractTextSection<StringProperty, Strin
         public String getLabel() {
             return _content;
         }
-        
+
     }
 
 }

@@ -17,9 +17,9 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 
 /**
  * Implementation for the ioname() function.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class IoNameFieldFunction implements IFieldFunction {
 

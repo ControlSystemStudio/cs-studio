@@ -90,10 +90,10 @@ public class AlarmTreeView extends ViewPart
             toolbar.add(new MaintenanceModeAction(model));
             toolbar.add(new Separator());
         }
-        
+
         final Shell shell = parent.getShell();
         toolbar.add(new InfoAction(shell, model));
-        
+
         if (model.isWriteAllowed())
         {
             // TODO Toolbar layout problems on some OS/WS.
@@ -114,13 +114,13 @@ public class AlarmTreeView extends ViewPart
         getSite().setSelectionProvider(gui.getTreeViewer());
     }
 
-    
-    
-    
+
+
+
     /** {@inheritDoc} */
-    
+
     @Override
-    
+
     public void setFocus()
     {
         if (gui != null)

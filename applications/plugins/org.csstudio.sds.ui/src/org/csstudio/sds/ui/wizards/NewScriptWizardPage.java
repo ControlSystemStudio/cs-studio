@@ -8,7 +8,7 @@ import org.csstudio.ui.util.wizards.WizardNewFileCreationPage;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
 public class NewScriptWizardPage extends WizardNewFileCreationPage {
-    
+
     /**
      * The initial script file contents.
      */
@@ -22,7 +22,7 @@ public class NewScriptWizardPage extends WizardNewFileCreationPage {
         setTitle("Create a new script");
         setDescription("Create a new script.");
     }
-    
+
     /**
      * {@inheritDoc}
      */

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.examples;
 
@@ -48,9 +48,9 @@ import org.eclipse.ui.dialogs.ListSelectionDialog;
 
 /**
  * A command to install examples defined using the sampleset extension point.
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class Install extends AbstractHandler {
 

@@ -47,12 +47,12 @@ public class PaletteEntryCreator {
 
             List<String> allCategories = new ArrayList<String>();
             allCategories.addAll(_widgetService.getAllCategories());
-            
+
             Collections.sort(allCategories, new StringComparator());
-            
+
             for (String category : allCategories) {
                 List<ToolEntry> toolEntries = createToolEntries(root, _widgetService.getWidgetForCategory(category));
-                
+
                 widgetCategory = new PaletteDrawer(category);
                 if (CategorizationType.STACK.equals(categorization)) {
                     widgetCategory = new PaletteStack(category, category, null);
@@ -64,7 +64,7 @@ public class PaletteEntryCreator {
                     widgetCategory.addAll(toolEntries);
                     root.add(widgetCategory);
                 }
-                
+
             }
         }
     }

@@ -7,7 +7,7 @@ import org.csstudio.dct.model.IPrototype;
 
 /**
  * UI adapter for {@link IPrototype}.
- * 
+ *
  * @author Sven Wende
  */
 @SuppressWarnings("unchecked")
@@ -40,6 +40,6 @@ public final class PrototypeWorkbenchAdapter extends BaseWorkbenchAdapter<IProto
         return "icons/prototype.png";
     }
 
-    
+
 
 }

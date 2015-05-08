@@ -30,7 +30,7 @@ public class ColorMapCellEditor extends AbstractDialogCellEditor {
 
     @Override
     protected void openDialog(Shell parentShell, String dialogTitle) {
-        ColorMapEditDialog dialog = 
+        ColorMapEditDialog dialog =
             new ColorMapEditDialog(parentShell, colorMap, dialogTitle, widgetModel.getMinimum(), widgetModel.getMaximum());
         if(dialog.open() == Window.OK)
             colorMap = dialog.getOutput();

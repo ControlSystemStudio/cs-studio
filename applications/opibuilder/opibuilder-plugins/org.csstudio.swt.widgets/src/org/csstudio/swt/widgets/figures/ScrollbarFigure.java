@@ -65,7 +65,7 @@ import org.eclipse.swt.widgets.Display;
  *
  */
 public class ScrollbarFigure extends Figure implements Orientable, Introspectable{
-    
+
 
 
     class ThumbDragger
@@ -77,18 +77,18 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
     protected double revertValue;
     protected boolean armed;
     public ThumbDragger() { }
-    
+
     public void mouseDoubleClicked(MouseEvent me) { }
-    
+
     public void mouseDragged(MouseEvent me) {
-        if (!armed) 
+        if (!armed)
             return;
         Dimension difference = transposer.t(me.getLocation().getDifference(start));
-        double change = (getValueRange()+getExtent()) * difference.height / dragRange;        
+        double change = (getValueRange()+getExtent()) * difference.height / dragRange;
         manualSetValue(revertValue + change);
         me.consume();
     }
-    
+
     public void mousePressed(MouseEvent me) {
         armed = true;
         start = me.getLocation();
@@ -98,23 +98,23 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
             area.height -= transposer.t(buttonUp.getSize()).height;
         if (buttonDown!= null)
             area.height -= transposer.t(buttonDown.getSize()).height;
-        Dimension sizeDifference = new Dimension(area.width, 
+        Dimension sizeDifference = new Dimension(area.width,
                                                     area.height - thumbSize.height);
         dragRange = sizeDifference.height;
         revertValue = getValue();
         me.consume();
     }
-    
+
     public void mouseReleased(MouseEvent me) {
-        if (!armed) 
+        if (!armed)
             return;
         armed = false;
         me.consume();
     }
 }
-    
+
     private static final String DEFAULT_ENGINEERING_FORMAT = "0.##E0"; //$NON-NLS-1$
-    
+
     /** the default label format */
     private static final String DEFAULT_DECIMAL_FORMAT = "############.##";  //$NON-NLS-1$
 
@@ -122,8 +122,8 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
      * the digits limit to be displayed in engineering format
      */
     private static final int ENGINEERING_LIMIT = 2;
-    
-    
+
+
     private final static Color GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
             CustomMediaFactory.COLOR_GRAY);
     private final static Color LABEL_COLOR = CustomMediaFactory.getInstance().getColor(
@@ -131,68 +131,68 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
     private boolean horizontal;
     private boolean showValueTip = true;
     private Label label;
-    
+
     private OPITimer labelTimer;
 
     private Runnable timerTask;
 
     private double value = 50;
-    
+
     private double minimum = 0;
-    
+
     private double maximum = 100;
     private double extent = 30;
-    
+
     private double stepIncrement = 1;
-    
+
     private double pageIncrement = 10;
     private List<IManualValueChangeListener> listeners;
     private IFigure thumb;
-    
-    
+
+
     private Clickable pageUp, pageDown;
-    
+
     private Clickable buttonUp, buttonDown;
 
     /**
      * Transposes from vertical to horizontal if needed.
      */
     protected final Transposer transposer = new Transposer();
-    
+
     /**
      * Listens to mouse events on the scrollbar to take care of scrolling.
      */
     protected ThumbDragger thumbDragger = new ThumbDragger();
-    
+
     private boolean valueIncreased;
 
     private static final Color COLOR_TRACK = FigureUtilities.mixColors(
             ColorConstants.white,
             ColorConstants.button);
-    
+
     private String formatPattern;
-    
+
     private DecimalFormat decimalFormat;
-    
+
     public ScrollbarFigure() {
         decimalFormat = new DecimalFormat(DEFAULT_DECIMAL_FORMAT);
         listeners = new ArrayList<IManualValueChangeListener>();
-        
-        
+
+
         initializeListeners();
         initializeParts();
-        
-        
+
+
     }
-    
+
     public void addManualValueChangeListener(IManualValueChangeListener listener){
         if(listener != null)
             listeners.add(listener);
     }
-    
+
     /**
      * Creates the default 'Down' ArrowButton for the ScrollBar.
-     * 
+     *
      * @return the down button
      * @since 2.0
      */
@@ -201,11 +201,11 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         buttonDown.setBorder(new ButtonBorder(ButtonBorder.SCHEMES.BUTTON_SCROLLBAR));
         return buttonDown;
     }
-    
+
     /**
-     * Creates the Scrollbar's "thumb", the draggable Figure that indicates the Scrollbar's 
+     * Creates the Scrollbar's "thumb", the draggable Figure that indicates the Scrollbar's
      * position.
-     * 
+     *
      * @return the thumb figure
      * @since 2.0
      */
@@ -217,11 +217,11 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         thumb.setBorder(new SchemeBorder(SchemeBorder.SCHEMES.BUTTON_CONTRAST));
         return thumb;
     }
-    
+
 
     /**
      * Creates the default 'Up' ArrowButton for the ScrollBar.
-     * 
+     *
      * @return the up button
      * @since 2.0
      */
@@ -233,9 +233,9 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 
     /**
      * Creates the pagedown Figure for the Scrollbar.
-     * 
+     *
      * @return the page down figure
-     * @since 2.0 
+     * @since 2.0
      */
     protected Clickable createPageDown() {
         return createPageUp();
@@ -243,9 +243,9 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 
     /**
      * Creates the pageup Figure for the Scrollbar.
-     * 
+     *
      * @return the page up figure
-     * @since 2.0 
+     * @since 2.0
      */
     protected Clickable createPageUp() {
         final Clickable clickable = new Clickable(){
@@ -256,8 +256,8 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
                         return new ToggleModel();
                     else
                         return new RapButtonModel();
-                }            
-                return super.createDefaultModel();    
+                }
+                return super.createDefaultModel();
             }
         };
         clickable.setOpaque(true);
@@ -284,9 +284,9 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
     }
 
-    
-    
-    
+
+
+
     public double getCoercedValue(){
         return value < minimum ? minimum : (value > maximum ? maximum : value);
     }
@@ -296,7 +296,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
     public double getExtent() {
         return extent;
     }
-    
+
     public String getFormatPattern() {
         return formatPattern;
     }
@@ -309,7 +309,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
     }
 
 
-    
+
     /**
      * @return the minimum
      */
@@ -334,7 +334,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         return value;
     }
 
-    
+
 
     /**
      * Returns the size of the range of allowable values.
@@ -350,48 +350,48 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
      */
     private void hookFocusListener(Clickable up) {
         up.addActionListener(new ActionListener() {
-            
+
             public void actionPerformed(ActionEvent event) {
                 if(!hasFocus())
-                    requestFocus();                
+                    requestFocus();
             }
         });
     }
 
-    
+
     /**
-     * 
+     *
      */
     private void initializeListeners() {
         setRequestFocusEnabled(true);
-        setFocusTraversable(true);        
+        setFocusTraversable(true);
         addKeyListener(new KeyListener() {
-                
+
                 public void keyPressed(KeyEvent ke) {
-                    if((ke.keycode == SWT.ARROW_UP && !isHorizontal()) || 
+                    if((ke.keycode == SWT.ARROW_UP && !isHorizontal()) ||
                             (ke.keycode == SWT.ARROW_LEFT && isHorizontal()))
                         stepUp();
-                    else if((ke.keycode == SWT.ARROW_DOWN && !isHorizontal()) || 
+                    else if((ke.keycode == SWT.ARROW_DOWN && !isHorizontal()) ||
                             (ke.keycode == SWT.ARROW_RIGHT && isHorizontal()))
                         stepDown();
                     else if((ke.keycode == SWT.PAGE_DOWN && !isHorizontal())||
                             (ke.keycode == SWT.PAGE_UP && isHorizontal()))
                         pageDown();
                     else if((ke.keycode == SWT.PAGE_UP && !isHorizontal())||
-                            (ke.keycode == SWT.PAGE_DOWN && isHorizontal()))                        
+                            (ke.keycode == SWT.PAGE_DOWN && isHorizontal()))
                         pageUp();
                 }
-                
-                public void keyReleased(KeyEvent ke) {                
+
+                public void keyReleased(KeyEvent ke) {
                 }
             });
-            
+
         addFocusListener(new FocusListener() {
-                
+
                 public void focusGained(FocusEvent fe) {
                     repaint();
                 }
-                
+
                 public void focusLost(FocusEvent fe) {
                     repaint();
                 }
@@ -400,9 +400,9 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 
 
     /**
-     * Initilization of the ScrollBar. Sets the Scrollbar to have a ScrollBarLayout with 
+     * Initilization of the ScrollBar. Sets the Scrollbar to have a ScrollBarLayout with
      * vertical orientation. Creates the Figures that make up the components of the ScrollBar.
-     * 
+     *
      * @since 2.0
      */
     protected void initializeParts() {
@@ -414,7 +414,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         setThumb(createDefaultThumb());
         label = new Label();
         label.setBackgroundColor(LABEL_COLOR);
-        label.setBorder(new LineBorder(GRAY_COLOR));    
+        label.setBorder(new LineBorder(GRAY_COLOR));
         label.setVisible(false);
         add(label, "Label"); //$NON-NLS-1$
     }
@@ -425,19 +425,19 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
             final Display display = Display.getCurrent();
             labelTimer = new OPITimer();
             timerTask = new Runnable() {
-                
+
                 public void run() {
                     display.asyncExec(new Runnable() {
-                        
+
                         public void run() {
                             label.setVisible(false);
                         }
-                    });                    
+                    });
                 }
             };
-        }            
+        }
     }
-    
+
     /**
      * @return the horizontal
      */
@@ -451,7 +451,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
     public boolean isShowValueTip() {
         return showValueTip;
     }
-    
+
     @Override
     protected void layout() {
         super.layout();
@@ -460,10 +460,10 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
             Dimension size = label.getPreferredSize();
             if(isHorizontal())
                 label.setBounds(new Rectangle(
-                        thumbBounds.x + (valueIncreased ? -size.width : thumbBounds.width), 
+                        thumbBounds.x + (valueIncreased ? -size.width : thumbBounds.width),
                         thumbBounds.y, size.width, size.height));
             else
-                label.setBounds(new Rectangle(thumbBounds.x, 
+                label.setBounds(new Rectangle(thumbBounds.x,
                         thumbBounds.y + (valueIncreased ? -size.height : thumbBounds.height),
                         size.width, size.height));
         }
@@ -476,7 +476,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         if (this.value == value)
             return;
         if(showValueTip){
-            valueIncreased = value > this.value;            
+            valueIncreased = value > this.value;
             label.setText("" + decimalFormat.format(value));
             label.setVisible(true);
             initLabelTimer();
@@ -487,9 +487,9 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         }
         setValue(value);
         fireManualValueChange(getValue());
-        
+
     }
-    
+
     public void pageDown(){
         manualSetValue(getValue() + pageIncrement);
     }
@@ -497,7 +497,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
     public void pageUp(){
         manualSetValue(getValue() - pageIncrement);
     }
-    
+
     @Override
     protected void paintClientArea(Graphics graphics) {
         super.paintClientArea(graphics);
@@ -505,33 +505,33 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
             graphics.setForegroundColor(ColorConstants.black);
             graphics.setBackgroundColor(ColorConstants.white);
 
-            Rectangle area = getClientArea();                    
+            Rectangle area = getClientArea();
             graphics.drawFocus(area.x, area.y, area.width-1, area.height-1);
         }
     }
-    
+
     public void removeManualValueChangeListener(IManualValueChangeListener listener){
         if(listeners.contains(listener))
             listeners.remove(listener);
     }
-    
+
     /**
      * @see IFigure#revalidate()
      */
     public void revalidate() {
-        // Override default revalidate to prevent going up the parent chain. Reason for this 
+        // Override default revalidate to prevent going up the parent chain. Reason for this
         // is that preferred size never changes unless orientation changes.
         invalidate();
         getUpdateManager().addInvalidFigure(this);
     }
-    
+
     public void setDirection(int direction) {
-        
+
     }
 
     /**
      * Sets the Clickable that represents the down arrow of the Scrollbar to <i>down</i>.
-     * 
+     *
      * @param down the down button
      * @since 2.0
      */
@@ -543,8 +543,8 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         buttonDown = down;
         if (buttonDown != null) {
             if (buttonDown instanceof Orientable)
-                ((Orientable)buttonDown).setDirection(isHorizontal() 
-                                                        ? Orientable.EAST 
+                ((Orientable)buttonDown).setDirection(isHorizontal()
+                                                        ? Orientable.EAST
                                                         : Orientable.SOUTH);
             buttonDown.setFiringMethod(Clickable.REPEAT_FIRING);
             buttonDown.addActionListener(new ActionListener() {
@@ -555,8 +555,8 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
             add(buttonDown, ScrollBarLayout.DOWN_ARROW);
         }
     }
-    
-    
+
+
     /**
      * @see IFigure#setEnabled(boolean)
      */
@@ -580,17 +580,17 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         this.extent = extent;
         revalidate();
     }
-    
+
     public void setFormatPattern(String formatPattern) {
         this.formatPattern = formatPattern;
         decimalFormat = new DecimalFormat(formatPattern);
     }
 
     /**
-     * Sets the orientation of the ScrollBar. If <code>true</code>, the Scrollbar will have 
-     * a horizontal orientation. If <code>false</code>, the scrollBar will have a vertical 
+     * Sets the orientation of the ScrollBar. If <code>true</code>, the Scrollbar will have
+     * a horizontal orientation. If <code>false</code>, the scrollBar will have a vertical
      * orientation.
-     * 
+     *
      * @param value <code>true</code> if the scrollbar should be horizontal
      * @since 2.0
      */
@@ -635,9 +635,9 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
     }
 
     /**
-     * Sets the pagedown button to the passed Clickable. The pagedown button is the figure 
+     * Sets the pagedown button to the passed Clickable. The pagedown button is the figure
      * between the down arrow button and the ScrollBar's thumb figure.
-     * 
+     *
      * @param down the page down figure
      * @since 2.0
      */
@@ -663,9 +663,9 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
     }
 
     /**
-     * Sets the pageup button to the passed Clickable. The pageup button is the rectangular 
+     * Sets the pageup button to the passed Clickable. The pageup button is the rectangular
      * figure between the down arrow button and the ScrollBar's thumb figure.
-     * 
+     *
      * @param up the page up figure
      * @since 2.0
      */
@@ -692,7 +692,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
     public void setShowValueTip(boolean showValueTip) {
         this.showValueTip = showValueTip;
     }
-    
+
 
     /**
      * @param stepIncrement the stepIncrement to set
@@ -700,12 +700,12 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
     public final void setStepIncrement(double stepIncrement) {
         this.stepIncrement = stepIncrement;
     }
-    
-    
+
+
     /**
-     * Sets the ScrollBar's thumb to the passed Figure. The thumb is the draggable component 
+     * Sets the ScrollBar's thumb to the passed Figure. The thumb is the draggable component
      * of the ScrollBar that indicates the ScrollBar's position.
-     * 
+     *
      * @param figure the thumb figure
      * @since 2.0
      */
@@ -733,7 +733,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 
     /**
      * Sets the Clickable that represents the up arrow of the Scrollbar to <i>up</i>.
-     * 
+     *
      * @param up the up button
      * @since 2.0
      */
@@ -746,8 +746,8 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         buttonUp = up;
         if (up != null) {
             if (up instanceof Orientable)
-                ((Orientable)up).setDirection(isHorizontal() 
-                                                ? Orientable.WEST 
+                ((Orientable)up).setDirection(isHorizontal()
+                                                ? Orientable.WEST
                                                 : Orientable.NORTH);
             buttonUp.setFiringMethod(Clickable.REPEAT_FIRING);
             buttonUp.addActionListener(new ActionListener() {
@@ -778,7 +778,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
     public void stepUp(){
         manualSetValue(getValue() - stepIncrement);
     }
-    
+
     private void updateFormat(){
         if(this.formatPattern != null)
             return;
@@ -787,7 +787,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
                 || (minimum !=0 && Math.abs(Math.log10(Math.abs(minimum))) >= ENGINEERING_LIMIT))
                 tempPattern = DEFAULT_ENGINEERING_FORMAT;
             else
-                tempPattern = DEFAULT_DECIMAL_FORMAT;    
+                tempPattern = DEFAULT_DECIMAL_FORMAT;
         decimalFormat = new DecimalFormat(tempPattern);
-    }    
+    }
 }

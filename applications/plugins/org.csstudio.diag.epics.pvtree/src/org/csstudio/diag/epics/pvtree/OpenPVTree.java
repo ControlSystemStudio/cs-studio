@@ -41,14 +41,14 @@ public class OpenPVTree extends AbstractHandler implements IHandler
             final ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
             if (pvs == null)
                 return null;
-            
+
             if (pvs.length > 5 &&
                 ! MessageDialog.openConfirm(
                         HandlerUtil.getActiveShell(event),
                         Messages.ManyPVs,
                         NLS.bind(Messages.ManyPVConfirmFmt, pvs.length)))
                 return null;
-                    
+
             // Set PV name(s)
             for (int i=0; i<pvs.length; ++i)
             {
@@ -65,7 +65,7 @@ public class OpenPVTree extends AbstractHandler implements IHandler
         }
         return null;
     }
-    
+
     /** Open (new) PV Tree view
      *  @param event
      *  @return {@link PVTreeView}

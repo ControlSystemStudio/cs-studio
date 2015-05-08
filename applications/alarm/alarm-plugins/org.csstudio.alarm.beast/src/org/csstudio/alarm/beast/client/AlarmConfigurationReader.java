@@ -182,7 +182,7 @@ public class AlarmConfigurationReader
         }
         return gdcList.toArray(new GDCDataStructure[gdcList.size()]);
     }
-    
+
     /**Get automated actions from RDB by id
      * @param id The id of the item in alarmtree
      * @return the display links

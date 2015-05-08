@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2008 Borland Software Corporation
- * 
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -174,7 +174,7 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
         } catch (TranscoderException e) {
         }
     }
-    
+
     protected void transcode(Document document, String uri, TranscoderOutput output) throws TranscoderException {
         super.transcode(document, uri, output);
         int w = (int) (this.width + 0.5);
@@ -207,7 +207,7 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
         }
         return bufferedImage;
     }
-    
+
     public Color getColor() {
         return colorToApply;
     }
@@ -218,17 +218,17 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
         this.colorToApply = newColor;
         contentChanged();
     }
-    
+
     public void setColorToChange(Color newColor) {
         if (newColor == null || (this.colorToChange != null && newColor.equals(this.colorToChange)))
             return;
         this.colorToChange = newColor;
     }
-    
+
     public double[][] getTransformMatrix() {
         return matrix;
     }
-    
+
     public void setTransformMatrix(double[][] newMatrix) {
         if (newMatrix == null)
             return;
@@ -238,14 +238,14 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
         this.appliedColor = null;
         contentChanged();
     }
-    
+
     public Dimension getDocumentSize() {
         SVGSVGElement svgElmt = ((SVGOMDocument) document).getRootElement();
         double width = svgElmt.getWidth().getBaseVal().getValue();
         double height = svgElmt.getHeight().getBaseVal().getValue();
         return new Dimension((int) Math.round(width), (int) Math.round(height));
     }
-    
+
     public Document copyDocument() {
         if (document == null)
             return null;
@@ -365,7 +365,7 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
         }
         return builder.toString().toUpperCase();
     }
-    
+
     private Document applyMatrix(double[][] matrix) {
         // creation of the SVG document
         DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
@@ -374,7 +374,7 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 
         // get the root element (the 'svg' element).
         Element svgRoot = newDocument.getDocumentElement();
-        
+
         // get the original document size
         SVGSVGElement svgElmt = ((SVGOMDocument) originalDocument).getRootElement();
         double width = 30;
@@ -394,13 +394,13 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
             value = length.getValueInSpecifiedUnits();
             height = value * 25.4/0.26458333333333333333333333333333;
         }
-                
+
         // current Transformation Matrix
-        double[][] CTM = { 
-                { matrix[0][0], matrix[0][1], 0 }, 
-                { matrix[1][0], matrix[1][1], 0 }, 
+        double[][] CTM = {
+                { matrix[0][0], matrix[0][1], 0 },
+                { matrix[1][0], matrix[1][1], 0 },
                 { 0, 0, 1 } };
-        
+
         // apply permutation to viewBox corner points
         double[] a = transformP(0.0, 0.0, 1.0, CTM);
         double[] b = transformP(width, 0.0, 1.0, CTM);
@@ -421,7 +421,7 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
         String vbs = minX + " " + minY + " " + newWidth + " " + newHeight;
         svgRoot.setAttributeNS(null, "viewBox", vbs);
         svgRoot.setAttributeNS(null, "preserveAspectRatio", "none");
-        
+
         // Create the transform matrix
         StringBuilder sb = new StringBuilder();
         // a c e
@@ -457,7 +457,7 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 //        }
         return newDocument;
     }
-    
+
     // apply transformation to point { x, y, z } (affine transformation)
     private double[] transformP(double x, double y, double z, double[][] matrix) {
         double[] p = { x, y, z };
@@ -467,14 +467,14 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
                 pp[a] += matrix[a][b] * p[b];
         return pp;
     }
-    
+
     private double findMax(double a, double b, double c, double d) {
         double result = Math.max(a, b);
         result = Math.max(result, c);
         result = Math.max(result, d);
         return result;
     }
-    
+
     private double findMin(double a, double b, double c, double d) {
         double result = Math.min(a, b);
         result = Math.min(result, c);

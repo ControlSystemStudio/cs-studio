@@ -24,7 +24,7 @@ public class ShapeSetConstraintCommand extends Command {
 
     /**
      * Create a command that can resize and/or move a shape.
-     * 
+     *
      * @param shape
      *            the shape to manipulate
      * @param req
@@ -47,7 +47,7 @@ public class ShapeSetConstraintCommand extends Command {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.commands.Command#canExecute()
      */
     @Override
@@ -62,7 +62,7 @@ public class ShapeSetConstraintCommand extends Command {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.commands.Command#execute()
      */
     @Override
@@ -73,7 +73,7 @@ public class ShapeSetConstraintCommand extends Command {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.commands.Command#redo()
      */
     @Override
@@ -84,7 +84,7 @@ public class ShapeSetConstraintCommand extends Command {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.commands.Command#undo()
      */
     @Override

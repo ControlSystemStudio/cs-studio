@@ -32,7 +32,7 @@ public class Messages extends NLS
     public static String SysMon_TimeSpanFormat;
     public static String SysMon_Total_TT;
     public static String SysMon_TotalLabel;
-    
+
     static
     {
         // initialize resource bundle

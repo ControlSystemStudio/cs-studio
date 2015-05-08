@@ -22,7 +22,7 @@ public class Activator extends AbstractUIPlugin {
 
     // The shared instance
     private static Activator plugin;
-    
+
     // The logger
     private static final Logger LOGGER = Logger.getLogger(PLUGIN_ID);
 
@@ -41,16 +41,16 @@ public class Activator extends AbstractUIPlugin {
 
     /**
      * Returns the shared instance
-     * 
+     *
      * @return the shared instance
      */
     public static Activator getDefault() {
         return plugin;
     }
-    
+
     /**
      * Get the logger for Symbol plug-in.
-     * 
+     *
      * @return the logger
      */
     public static Logger getLogger() {

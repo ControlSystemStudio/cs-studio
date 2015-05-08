@@ -142,7 +142,7 @@ public class RDBUtil
         Activator.getLogger().log(Level.FINE, "RDBUtil connects to {0}", url);
         return new RDBUtil(url, user, password, getRDBImpl(url), autoReconnect);
     }
-    
+
     /** Obtain RDB implementation based on URL
      *  @param url RDB URL, used to determine the RDB {@link Dialect}
      *  @return {@link RDBImpl}

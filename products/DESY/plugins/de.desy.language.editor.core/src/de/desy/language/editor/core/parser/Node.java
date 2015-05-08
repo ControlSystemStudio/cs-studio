@@ -11,7 +11,7 @@ import de.desy.language.libraries.utils.contract.Contract;
 
 /**
  * A node in the outline tree for exactly one document.
- * 
+ *
  * @author C1 WPS / KM, MZ
  */
 public abstract class Node {
@@ -29,29 +29,29 @@ public abstract class Node {
 
     /**
      * Gives the children of this node.
-     * 
+     *
      * @return A not-null array of nodes which are the children of this node (this array may be empty!).
      */
     public final Node[] getChildrenNodesAsArray()
     {
         Node[] result = this._children.toArray(new Node[this._children.size()]);
-        
+
         Contract.ensureResultNotNull(result);
         return result;
     }
-    
+
     /**
      * Gives the children of this node.
-     * 
+     *
      * @require hasChildren()
      * @return A not-null Set of nodes which are the children of this node.
      */
     public final Collection<Node> getChildrenNodes()
     {
         Contract.require(hasChildren(), Messages.Node_Contract_Require_hasChildren);
-        
+
         Collection<Node> result = Collections.unmodifiableCollection(this._children);
-        
+
         Contract.ensureResultNotNull(result);
         return result;
     }
@@ -66,10 +66,10 @@ public abstract class Node {
     /**
      * Gives the statements ending index in the source. Pay attention, this
      * index may not be accurate if changes happens since the last call of save.
-     * 
+     *
      * To enable this feature, you have to set the offsets by internally calling
      * {@link #setStatementOffsets(int, int)}.
-     * 
+     *
      * @return An index >= 0.
      */
     public final int getStatementEndOffset() {
@@ -84,10 +84,10 @@ public abstract class Node {
     /**
      * Gives the statements beginning index in the source. Pay attention, this
      * index may not be accurate if changes happens since the last call of save.
-     * 
+     *
      * To enable this feature, you have to set the offsets by internally calling
      * {@link #setStatementOffsets(int, int)}.
-     * 
+     *
      * @return An index >= 0.
      */
     public final int getStatementStartOffset() {
@@ -101,7 +101,7 @@ public abstract class Node {
 
     /**
      * Indicates if source offsets of the statement are avail.
-     * 
+     *
      * To enable this feature, you have to set the offsets by internally calling
      * {@link #setStatementOffsets(int, int)}.
      */
@@ -109,12 +109,12 @@ public abstract class Node {
         return (this._statementStartOffset >= 0)
                 && (this._statementEndOffset >= 0);
     }
-    
+
     public abstract String getNodeTypeName();
 
     /**
      * Gives the name to be shown for this note.
-     * 
+     *
      * @return A not null non empty string.
      */
     public abstract String humanReadableRepresentation();
@@ -126,7 +126,7 @@ public abstract class Node {
 
     /**
      * Used to internally set the offsets of a statement in the source.
-     * 
+     *
      * @param start
      *            The start offset (>= 0)
      * @param end
@@ -151,14 +151,14 @@ public abstract class Node {
         this._children.add(child);
     }
 
-    //    
+    //
     // public final void removeChild(final Node child) {
     // this._children.remove(child);
     // }
 
     /**
      * Checks if this node contains any error messages.
-     * 
+     *
      * @return {@code true} if and only if error messages are added to this
      *         node, {@code false} otherwise.
      */
@@ -168,7 +168,7 @@ public abstract class Node {
 
     /**
      * Checks if this node contains any warning messages.
-     * 
+     *
      * @return {@code true} if and only if warning messages are added to this
      *         node, {@code false} otherwise.
      */
@@ -178,7 +178,7 @@ public abstract class Node {
 
     /**
      * Adds a new error message to this node.
-     * 
+     *
      * @param errorMessage
      *            The not-null, non-empty error message to be added.
      */
@@ -194,7 +194,7 @@ public abstract class Node {
 
     /**
      * Adds a new warning message to this node.
-     * 
+     *
      * @param errorMessage
      *            The not-null, non-empty warning message to be added.
      */
@@ -212,7 +212,7 @@ public abstract class Node {
      * Gives all nodes beginning with this one and including all children-node
      * which contains warnings. The current may not be present in resulting
      * list, if the current node does not contains warnings.
-     * 
+     *
      * @return A not-null but possible empty set containing all significant
      *         nodes; the result is an unmodifiable view on a set.
      */
@@ -235,7 +235,7 @@ public abstract class Node {
      * Gives all nodes beginning with this one and including all children-node
      * which contains errors. The current may not be present in resulting list,
      * if the current node does not contains errors.
-     * 
+     *
      * @return A not-null but possible empty set containing all significant
      *         nodes; the result is an unmodifiable view on a set.
      */
@@ -256,7 +256,7 @@ public abstract class Node {
 
     /**
      * Returns a unmodifiable view on a Set of error messages.
-     * 
+     *
      * @require this.containsErrors()
      * @return A not-null, possible empty Set of errors.
      */
@@ -271,7 +271,7 @@ public abstract class Node {
 
     /**
      * Returns a unmodifiable view on a Set of warning messages.
-     * 
+     *
      * @require this.containsWarnings()
      * @return A not-null, possible empty Set of warnings.
      */

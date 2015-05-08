@@ -37,7 +37,7 @@ public class StartEndRangeWidgetTest extends ApplicationWindow {
 
     /**
      * Create contents of the application window.
-     * 
+     *
      * @param parent
      */
     @Override
@@ -60,8 +60,8 @@ public class StartEndRangeWidgetTest extends ApplicationWindow {
         text_max.setText(String.valueOf(hStartEndRangeWidget.getMax()));
         text_selectedMin.setText(String.valueOf(hStartEndRangeWidget.getSelectedMin()));
         text_selectedMax.setText(String.valueOf(hStartEndRangeWidget.getSelectedMax()));
-        StringBuffer log = new StringBuffer("[HORIZONTAL] rangeSet:"+hStartEndRangeWidget.isRangeSet() + 
-            " range:" + hStartEndRangeWidget.getMin()+","+hStartEndRangeWidget.getMax()+ 
+        StringBuffer log = new StringBuffer("[HORIZONTAL] rangeSet:"+hStartEndRangeWidget.isRangeSet() +
+            " range:" + hStartEndRangeWidget.getMin()+","+hStartEndRangeWidget.getMax()+
             " select range:" +hStartEndRangeWidget.getSelectedMin()+","+hStartEndRangeWidget.getSelectedMax());
         log.append(System.getProperty("line.separator"));
         log.append(textLog.getText());
@@ -79,13 +79,13 @@ public class StartEndRangeWidgetTest extends ApplicationWindow {
     vStartEndRangeWidget.addRangeListener(new RangeListener() {
 
         @Override
-        public void rangeChanged() {                
+        public void rangeChanged() {
         text_min.setText(String.valueOf(vStartEndRangeWidget.getMin()));
         text_max.setText(String.valueOf(vStartEndRangeWidget.getMax()));
         text_selectedMin.setText(String.valueOf(vStartEndRangeWidget.getSelectedMin()));
         text_selectedMax.setText(String.valueOf(vStartEndRangeWidget.getSelectedMax()));
-        StringBuffer log = new StringBuffer("[VERTICAL] rangeSet:"+vStartEndRangeWidget.isRangeSet() + 
-            " range:" + vStartEndRangeWidget.getMin()+","+vStartEndRangeWidget.getMax()+ 
+        StringBuffer log = new StringBuffer("[VERTICAL] rangeSet:"+vStartEndRangeWidget.isRangeSet() +
+            " range:" + vStartEndRangeWidget.getMin()+","+vStartEndRangeWidget.getMax()+
             " select range:" +vStartEndRangeWidget.getSelectedMin()+","+vStartEndRangeWidget.getSelectedMax());
         log.append(System.getProperty("line.separator"));
         log.append(textLog.getText());
@@ -150,7 +150,7 @@ public class StartEndRangeWidgetTest extends ApplicationWindow {
         vStartEndRangeWidget.setSelectedMax(Double.valueOf(text_selectedMax.getText()));
         }
     });
-    
+
     Button btnNewButton = new Button(container, SWT.NONE);
     btnNewButton.addSelectionListener(new SelectionAdapter() {
         @Override
@@ -161,11 +161,11 @@ public class StartEndRangeWidgetTest extends ApplicationWindow {
     });
     btnNewButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
     btnNewButton.setText("reset");
-    
+
         Label lblNewLabel = new Label(container, SWT.NONE);
         lblNewLabel.setText("Event log:");
         new Label(container, SWT.NONE);
-    
+
         textLog = new Text(container, SWT.BORDER | SWT.WRAP | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL);
         textLog.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
@@ -174,7 +174,7 @@ public class StartEndRangeWidgetTest extends ApplicationWindow {
 
     /**
      * Create the menu manager.
-     * 
+     *
      * @return the menu manager
      */
     @Override
@@ -185,7 +185,7 @@ public class StartEndRangeWidgetTest extends ApplicationWindow {
 
     /**
      * Create the toolbar manager.
-     * 
+     *
      * @return the toolbar manager
      */
     @Override
@@ -196,7 +196,7 @@ public class StartEndRangeWidgetTest extends ApplicationWindow {
 
     /**
      * Create the status line manager.
-     * 
+     *
      * @return the status line manager
      */
     @Override
@@ -207,7 +207,7 @@ public class StartEndRangeWidgetTest extends ApplicationWindow {
 
     /**
      * Launch the application.
-     * 
+     *
      * @param args
      */
     public static void main(String args[]) {
@@ -223,7 +223,7 @@ public class StartEndRangeWidgetTest extends ApplicationWindow {
 
     /**
      * Configure the shell.
-     * 
+     *
      * @param newShell
      */
     @Override

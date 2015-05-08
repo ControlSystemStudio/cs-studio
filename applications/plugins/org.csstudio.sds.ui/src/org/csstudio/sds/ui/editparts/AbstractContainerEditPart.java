@@ -67,14 +67,14 @@ import org.slf4j.LoggerFactory;
 /**
  * EditPart implementation with container semantics. Can be used as controller
  * base class for widgets that are derived from {@link ContainerModel}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public abstract class AbstractContainerEditPart extends AbstractBaseEditPart implements IAdaptable, ILayerModelListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractContainerEditPart.class);
-    
+
     /**
      * Flag which indicates that the layers are already initialized on the
      * content pane.
@@ -129,7 +129,7 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart imp
      * Returns the container model, which is managed by this controller. This is
      * for convinience only. The method returns the same object as
      * {@link #getModel()} or {@link #getWidgetModel()}.
-     * 
+     *
      * @return the container model
      */
     public final ContainerModel getContainerModel() {
@@ -139,7 +139,7 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart imp
     /**
      * Overidden to suppport layers. Layers are only supported if the figure for
      * this editpart used a {@link LayeredWidgetPane} as its content pane.
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -164,7 +164,7 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart imp
     /**
      * Overidden to suppport layers. Layers are only supported if the figure for
      * this editpart used a {@link LayeredWidgetPane} as its content pane.
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -409,11 +409,11 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart imp
 
     /**
      * Called by child editparts when their current layer has changed.
-     * 
+     *
      * Note: Layers are only supported if the figure for this editpart used a
      * {@link LayeredWidgetPane} as its content pane. Otherwise this call won´t
      * have any effect.
-     * 
+     *
      * @param childEditPart
      *            the child editpart
      * @param oldLayerName
@@ -436,7 +436,7 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart imp
 
     /**
      * Returns true, if children of this container may be selected.
-     * 
+     *
      * @return true, if children of this container may be selected
      */
     public final boolean allowsChildSelection() {
@@ -449,7 +449,7 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart imp
     /**
      * Helper method that checks if any direct or indirect child (e.g. a widget
      * in a contained container) is selected.
-     * 
+     *
      * @return true, if any direct or indirect child is selected
      */
     protected final boolean isAnyChildSelected() {

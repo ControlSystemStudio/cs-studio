@@ -49,9 +49,9 @@ public class EdmFont extends EdmAttribute {
         }
 
         Pattern p = Pattern.compile("(\\w*?)-(\\w*?)-([ri])-(\\d.*?\\.\\d)");
-        
+
         String fontString = getValue(0);
-        
+
         Matcher m = p.matcher(fontString);
 
         String nameStr = "";

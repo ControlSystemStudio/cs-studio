@@ -12,7 +12,7 @@ public class SNLCoreActivator extends Plugin {
      * The plug-in ID
      */
     public static final String PLUGIN_ID = "de.desy.language.snl";
-    
+
     /**
      * The constructor
      */
@@ -34,5 +34,5 @@ public class SNLCoreActivator extends Plugin {
     public void stop(final BundleContext context) throws Exception {
         super.stop(context);
     }
-    
+
 }

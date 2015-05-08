@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 public class ActionButton extends Widget {
 
     private static final Logger LOG = LoggerFactory.getLogger(ActionButton.class);
-    
+
     /**
      * @param actionButton
      *            The ADLWidget that describe the ActionButton.

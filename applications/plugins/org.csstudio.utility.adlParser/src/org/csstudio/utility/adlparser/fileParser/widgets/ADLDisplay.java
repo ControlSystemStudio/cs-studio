@@ -10,7 +10,7 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.internationalization.Messages;
 
 /**
- * 
+ *
  * @author hammonds
  *
  */
@@ -22,7 +22,7 @@ public class ADLDisplay extends ADLAbstractWidget {
     private int _gridSpacing = 5;
     private boolean _isBackColorDefined;
     private boolean _isForeColorDefined;
-    
+
     public ADLDisplay(ADLWidget adlWidget) {
         super(adlWidget);
         set_isBackColorDefined(false);
@@ -36,7 +36,7 @@ public class ADLDisplay extends ADLAbstractWidget {
                     if (_adlObject != null){
                         _hasObject = true;
                     }
-                    
+
                 }
             }
             for (FileLine fileLine : adlWidget.getBody()) {
@@ -68,13 +68,13 @@ public class ADLDisplay extends ADLAbstractWidget {
                 }
             }
         }
-        
+
         catch (WrongADLFormatException ex) {
             ex.printStackTrace();
         }
     }
 
-    
+
     /**
      * @param _snapToGrid the _snapToGrid to set
      */
@@ -194,5 +194,5 @@ public class ADLDisplay extends ADLAbstractWidget {
         return ret.toArray();
     }
 
-    
+
 }

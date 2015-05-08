@@ -35,9 +35,9 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
  * @author Matevz
  */
 public class OpiWriter {
-    
+
     private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.OpiWriter");
-    
+
     private static OpiWriter instance;
 
     /**
@@ -47,7 +47,7 @@ public class OpiWriter {
     private OpiWriter() throws EdmException {
         EdmModel.getInstance();
     }
-    
+
     /**
      * Returns an instance of OpiWriter
      * @return OpiWriter instance.
@@ -58,7 +58,7 @@ public class OpiWriter {
             instance = new OpiWriter();
         return instance;
     }
-    
+
     /**
      * Outputs EdmColorsList data from EdmModel into colors.def file.
      * @throws EdmException if there is write error.
@@ -74,16 +74,16 @@ public class OpiWriter {
      * @throws EdmException if there is an write error.
      */
     public void writeDisplayFile(String displayFile) throws EdmException {
-        
+
         String opiName = displayFile;
         if (opiName.endsWith(".edl"))
             opiName = opiName.substring(0, opiName.length() - 4);
         opiName = opiName + ".opi";
-        
+
         writeDisplayFile(displayFile, opiName);
-        
+
     }
-    
+
     /**
      * Outputs EdmDisplay data from EDL file to OPI XML file.
      * @param displayFile EDL Edm Display file.
@@ -91,28 +91,28 @@ public class OpiWriter {
      * @throws EdmException if there is an write error.
      */
     public void writeDisplayFile(String displayFile, String opiFile) throws EdmException {
-        
+
         EdmDisplay display = EdmModel.getDisplay(displayFile);
         Document doc = createDomDocument();
         new OpiDisplay(doc, display, displayFile);
         writeXML(doc, opiFile);
-        
+
     }
-    
+
     /**
      * Generates the DOM XML model for a group of entities.
      */
     public static void writeWidgets(Context context, Vector<? extends EdmEntity> entities) {
 
         boolean robust = Boolean.parseBoolean(System.getProperty("edm2xml.robustParsing"));
-        
+
         log.debug("Generating XML model for widgets.");
 
         for (EdmEntity e : entities) {
-            Class<? extends EdmEntity> edmClass = e.getClass(); 
+            Class<? extends EdmEntity> edmClass = e.getClass();
             String opiClassName = edmClass.getName().replaceFirst("model", "writer")
-                .replaceFirst("Edm_", "Opi_"); 
-            
+                .replaceFirst("Edm_", "Opi_");
+
             log.debug("Generating XML model for widget: " + opiClassName);
             try {
                 Class<?> opiClass = Class.forName(opiClassName);
@@ -125,7 +125,7 @@ public class OpiWriter {
             }
         }
     }
-    
+
     /**
      * Prepares DOM Document for building XML.
      * @return DOM XML document.
@@ -137,11 +137,11 @@ public class OpiWriter {
             return builder.newDocument();
 
         } catch (ParserConfigurationException e) {
-            throw new EdmException(EdmException.DOM_BUILDER_EXCEPTION, 
+            throw new EdmException(EdmException.DOM_BUILDER_EXCEPTION,
                     "Error instantiating DOM document.", e);
         }
     }
-    
+
     /**
      * Outputs XML Document data to specified file name.
      * @param doc XML Document.
@@ -151,9 +151,9 @@ public class OpiWriter {
     private void writeXML(Document doc, String fileName) throws EdmException {
 
         log.debug("Writing XML file: " + fileName);
-        
+
         try {
-            
+
             OutputFormat format = new OutputFormat(doc);
             format.setLineWidth(65);
             format.setIndenting(true);
@@ -164,15 +164,15 @@ public class OpiWriter {
             serializer.serialize(doc);
 
             String xmlString = out.toString();
-            
+
             File file = new File(fileName);
             Writer output = new BufferedWriter(new FileWriter(file));
             output.write(xmlString);
             output.close();
-            
+
             log.debug("Completed.");
         } catch (Exception e) {
             throw new EdmException(EdmException.OPI_WRITER_EXCEPTION, "Error writing to file " + fileName, e);
-        } 
+        }
     }
 }

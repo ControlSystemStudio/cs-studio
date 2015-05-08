@@ -25,9 +25,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ContentProposingTextCellEditor extends TextCellEditor implements IContentProposalListener2 {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(ContentProposingTextCellEditor.class);
-    
+
     IRecord record;
 
     public ContentProposingTextCellEditor(Composite parent, final IRecord record) {

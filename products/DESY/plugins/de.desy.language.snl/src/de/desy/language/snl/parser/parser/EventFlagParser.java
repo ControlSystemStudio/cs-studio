@@ -7,7 +7,7 @@ import de.desy.language.snl.parser.nodes.EventFlagNode;
 
 public class EventFlagParser extends
         AbstractOptimizedStatementParser<EventFlagNode> {
-    
+
     public EventFlagParser(Interval[] exclusions) {
         super(exclusions);
     }

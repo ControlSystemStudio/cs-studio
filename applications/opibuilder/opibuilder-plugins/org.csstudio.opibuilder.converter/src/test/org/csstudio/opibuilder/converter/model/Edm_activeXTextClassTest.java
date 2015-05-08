@@ -67,7 +67,7 @@ public class Edm_activeXTextClassTest extends TestCase {
         assertTrue(t.getAttribute("visMax") instanceof EdmDouble);
         assertTrue(t.isVisInvert());
         assertTrue(t.getAttribute("visInvert") instanceof EdmBoolean);
-        
+
         e = d.getSubEntity(7).getSubEntity(0);
         assertTrue(e instanceof Edm_activeXTextClass);
         t = (Edm_activeXTextClass)e;

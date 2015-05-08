@@ -42,16 +42,16 @@ public class RDBArchiveConfigTest
             System.out.println("Skipping test, no archive_rdb_url, user, password");
             return;
         }
-        
+
         config = new RDBArchiveConfig(url, user, password, schema);
     }
-    
+
     @After
     public void close()
     {
         config.close();
     }
-    
+
     @Test
     public void testEngine() throws Exception
     {
@@ -67,7 +67,7 @@ public class RDBArchiveConfigTest
         for (GroupConfig group : groups)
             System.out.println(group.getName());
         assertTrue(groups.length > 0);
-        
+
         for (GroupConfig group : groups)
         {
             final ChannelConfig[] channels = config.getChannels(group, false);

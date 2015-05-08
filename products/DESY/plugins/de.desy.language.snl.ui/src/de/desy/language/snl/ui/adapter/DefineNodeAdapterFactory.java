@@ -7,9 +7,9 @@ import de.desy.language.snl.parser.nodes.DefineStatementNode;
 
 /**
  * The specialized {@link IAdapterFactory} for {@link VariableNode}s.
- * 
+ *
  * @author C1 WPS / KM, MZ
- * 
+ *
  */
 class DefineNodeAdapterFactory implements IAdapterFactory {
 

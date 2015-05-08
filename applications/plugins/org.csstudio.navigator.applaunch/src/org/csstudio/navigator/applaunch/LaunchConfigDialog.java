@@ -19,7 +19,7 @@ public class LaunchConfigDialog extends Dialog
 {
     final private LaunchConfigUI gui;
     private LaunchConfig edited_config = null;
-    
+
     /** Initialize
      *  @param shell
      *  @param config
@@ -51,7 +51,7 @@ public class LaunchConfigDialog extends Dialog
     {
         return gui.createControl(parent);
     }
-    
+
     @Override
     protected void okPressed()
     {

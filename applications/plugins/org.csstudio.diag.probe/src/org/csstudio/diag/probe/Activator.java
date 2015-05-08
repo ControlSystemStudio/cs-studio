@@ -20,18 +20,18 @@ public class Activator extends AbstractUIPlugin
 
     /** The shared instance */
     private static Activator plugin;
-    
+
     @Override
     public void start(BundleContext context) throws Exception
     {
         super.start(context);
-        setPlugin(this);    
+        setPlugin(this);
     }
 
     @Override
     public void stop(BundleContext context) throws Exception
     {
-        setPlugin(this);    
+        setPlugin(this);
         super.stop(context);
     }
 

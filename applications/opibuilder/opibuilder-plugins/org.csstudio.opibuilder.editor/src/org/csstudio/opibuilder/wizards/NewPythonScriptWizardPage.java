@@ -25,20 +25,20 @@ public class NewPythonScriptWizardPage extends WizardNewFileCreationPage {
         setTitle("Create a new Python script");
         setDescription("Create a new python script in the selected project or folder.");
     }
-    
+
     @Override
     protected InputStream getInitialContents() {
-        String s = ScriptService.DEFAULT_PYTHONSCRIPT_HEADER; 
+        String s = ScriptService.DEFAULT_PYTHONSCRIPT_HEADER;
         InputStream result = new ByteArrayInputStream(s.getBytes());
         return result;
     }
-    
-    
+
+
     @Override
     protected String getNewFileLabel() {
         return "Python script File Name:";
     }
-    
+
     @Override
     public String getFileExtension() {
         return ScriptService.PY; //$NON-NLS-1$

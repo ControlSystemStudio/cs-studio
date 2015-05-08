@@ -27,21 +27,21 @@ public class FillParentContainerAction extends AbstractWidgetTargetAction{
     public void run(IAction action) {
 
         AbstractBaseEditPart widget = (AbstractBaseEditPart)selection.getFirstElement();
-        
+
         AbstractContainerEditpart containerEditpart = getParentContainerEditpart();
-        
+
         Dimension size = null;
         if(containerEditpart instanceof DisplayEditpart)
             size = ((DisplayEditpart)containerEditpart).getWidgetModel().getSize();
         else
             size= containerEditpart.getFigure().getClientArea().getSize();
-        
-        
-        Command cmd = new SetBoundsCommand(widget.getWidgetModel(), 
-                new Rectangle(0, 0, size.width, size.height));        
-        
-        execute(cmd);            
-    
+
+
+        Command cmd = new SetBoundsCommand(widget.getWidgetModel(),
+                new Rectangle(0, 0, size.width, size.height));
+
+        execute(cmd);
+
     }
 
 
@@ -49,5 +49,5 @@ public class FillParentContainerAction extends AbstractWidgetTargetAction{
         return (AbstractContainerEditpart) (
                 (AbstractBaseEditPart)selection.getFirstElement()).getParent();
     }
-        
+
 }

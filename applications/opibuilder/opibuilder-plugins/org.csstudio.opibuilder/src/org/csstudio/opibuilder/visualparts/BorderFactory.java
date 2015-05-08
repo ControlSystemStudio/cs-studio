@@ -31,28 +31,28 @@ public class BorderFactory {
     public static AbstractBorder createBorder(BorderStyle style, int width, RGB rgbColor,
             String text){
         Color color = CustomMediaFactory.getInstance().getColor(rgbColor);
-        
+
         switch (style) {
         case LINE:
             return createLineBorder(SWTConstants.LINE_SOLID, width, color);
         case RAISED:
             return createSchemeBorder(SchemeBorder.SCHEMES.RAISED);
-        case LOWERED: 
-            return createSchemeBorder(SchemeBorder.SCHEMES.LOWERED);    
+        case LOWERED:
+            return createSchemeBorder(SchemeBorder.SCHEMES.LOWERED);
         case ETCHED:
             return createSchemeBorder(SchemeBorder.SCHEMES.ETCHED);
         case RIDGED:
-            return createSchemeBorder(SchemeBorder.SCHEMES.RIDGED);        
-        case BUTTON_RAISED: 
+            return createSchemeBorder(SchemeBorder.SCHEMES.RIDGED);
+        case BUTTON_RAISED:
             return createSchemeBorder(SchemeBorder.SCHEMES.BUTTON_CONTRAST);
-        case BUTTON_PRESSED: 
-            return createSchemeBorder(SchemeBorder.SCHEMES.BUTTON_PRESSED);    
+        case BUTTON_PRESSED:
+            return createSchemeBorder(SchemeBorder.SCHEMES.BUTTON_PRESSED);
         case DASH_DOT:
             return createLineBorder(SWTConstants.LINE_DASHDOT, width, color);
         case DASHED:
             return createLineBorder(SWTConstants.LINE_DASH, width, color);
         case DOTTED:
-            return createLineBorder(SWTConstants.LINE_DOT, width, color);            
+            return createLineBorder(SWTConstants.LINE_DOT, width, color);
         case DASH_DOT_DOT:
             return createLineBorder(SWTConstants.LINE_DASHDOTDOT, width, color);
         case GROUP_BOX:
@@ -63,12 +63,12 @@ public class BorderFactory {
             return createRoundRectangleBorder(width, color);
         case EMPTY:
             return createEmptyBorder(width);
-        case NONE:            
+        case NONE:
         default:
             return null;
         }
     }
-    
+
     /**
      * Creates an empty border.
      * @param width width of the border.
@@ -84,20 +84,20 @@ public class BorderFactory {
 
                 public void paint(IFigure figure, Graphics graphics, Insets insets) {
                 }
-            };    
+            };
         }
         return null;
     }
-    
+
     /**
      * Creates a LineBorder.
-     * 
+     *
      * @return AbstractBorder The requested Border
      */
     private static AbstractBorder createLineBorder(int style, int width, Color color) {
         if (width>0) {
             LineBorder border = new VersatileLineBorder(color, width, style);
-            return border;    
+            return border;
         }
         return null;
     }
@@ -110,22 +110,22 @@ public class BorderFactory {
         SchemeBorder border = new SchemeBorder(scheme);
         return border;
     }
-    
+
     private static AbstractBorder createGroupBoxBorder(String text, Color textColor) {
         AbstractLabeledBorder border = new GroupBoxBorder(text);
         border.setTextColor(textColor);
         return border;
     }
-        
+
     private static AbstractBorder createTitleBarBorder(String text, Color color) {
         WidgetFrameBorder border = new WidgetFrameBorder(text);
         ((TitleBarBorder)border.getInnerBorder()).setBackgroundColor(color);
         return border;
     }
-    
+
     private static AbstractBorder createRoundRectangleBorder(int width, Color color){
         RoundRectangleBackgroundBorder border = new RoundRectangleBackgroundBorder(color, width);
         return border;
     }
-    
+
 }

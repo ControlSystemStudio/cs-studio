@@ -72,7 +72,7 @@ public final class PlatformPreferencesInitializer extends
         propNode.put("java.security.krb5.realm", "DESY.DE");
         propNode.put("java.security.krb5.kdc", "kdc1.desy.de:kdc2.desy.de:kdc3.desy.de");
     }
-    
+
     /**
      * Initializes all preference settings for the authentication mechanism.
      *
@@ -84,5 +84,5 @@ public final class PlatformPreferencesInitializer extends
         node.put(SecurityFacade.ONSITE_LOGIN_PREFERECE, "true"); //$NON-NLS-1$
         node.put(SecurityFacade.OFFSITE_LOGIN_PREFERENCE, "false"); //$NON-NLS-1$
     }
-    
+
 }

@@ -33,12 +33,12 @@ public class MacroContextUnitTest
     public void testStacking() throws Exception
     {
         final MacroContext macros = new MacroContext("x=Hello, y=Dolly");
-        
+
         macros.pushMacros("y=Freddy");
         String text = MacroUtil.replaceMacros("$(x), ${y}!", macros);
         System.out.println(text);
         assertThat(text, equalTo("Hello, Freddy!"));
-        
+
         macros.pushMacros("x=Bye,y=Jimmy");
         text = MacroUtil.replaceMacros("$(x), ${y}!", macros);
         System.out.println(text);
@@ -49,12 +49,12 @@ public class MacroContextUnitTest
         text = MacroUtil.replaceMacros("$(x), ${y}!", macros);
         System.out.println(text);
         assertThat(text, equalTo("Hello, Freddy!"));
-        
+
         macros.popMacros();
         text = MacroUtil.replaceMacros("$(x), ${y}!", macros);
         System.out.println(text);
         assertThat(text, equalTo("Hello, Dolly!"));
-        
+
         try
         {
             macros.popMacros();

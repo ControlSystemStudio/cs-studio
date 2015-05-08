@@ -31,17 +31,17 @@ package org.csstudio.utility.jms;
  * @since 02.05.2012
  */
 public class TransportEvent {
-    
+
     private String _brokerURI;
     private String _clientId;
     private int _handleCount;
-    
+
     public TransportEvent(String uri, String clientId, int handleCount) {
         _brokerURI = uri;
         _clientId = clientId;
         _handleCount = handleCount;
     }
-    
+
     @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer();
@@ -51,15 +51,15 @@ public class TransportEvent {
         buffer.append(_handleCount + "}");
         return buffer.toString();
     }
-    
+
     public String getBrokerURI() {
         return _brokerURI;
     }
-    
+
     public String getClientId() {
         return _clientId;
     }
-    
+
     public int getHandleCount() {
         return _handleCount;
     }

@@ -11,7 +11,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 
 /**Utility class to facilitate Javascript programming
- * for color operation. 
+ * for color operation.
  * @author Xihui Chen
  *
  */
@@ -27,7 +27,7 @@ public class ColorFontUtil {
     final static public RGB CYAN = new RGB(0, 255, 255);
 
     /** the color of dark gray */
-    final static public RGB DARK_GRAY = new RGB(150, 150, 150);    
+    final static public RGB DARK_GRAY = new RGB(150, 150, 150);
 
     /** the color of gray */
     final static public RGB GRAY = new RGB(200, 200, 200);
@@ -55,7 +55,7 @@ public class ColorFontUtil {
 
     /** the color of yellow */
     final static public RGB YELLOW = new RGB(255, 255, 0);
-        
+
     /**
      * Get a color with the given
      * red, green and blue values.
@@ -71,7 +71,7 @@ public class ColorFontUtil {
     public final static RGB getColorFromRGB(int red, int green, int blue){
         return new RGB(red, green, blue);
     }
-    
+
     /**
     * Get a color with the given
     * hue, saturation, and brightness.
@@ -84,15 +84,15 @@ public class ColorFontUtil {
     *    <li>ERROR_INVALID_ARGUMENT - if the hue is not between 0 and 360 or
     *    the saturation or brightness is not between 0 and 1</li>
     * </ul>
-    * 
+    *
     */
     public final static RGB getColorFromHSB(float hue, float saturation, float brightness){
         return new RGB(hue, saturation, brightness);
     }
-    
-    /**     
+
+    /**
      * Get a new font data given a font name,
-     * the height of the desired font in points, 
+     * the height of the desired font in points,
      * and a font style.
      *
      * @param name the name of the font (must not be null)
@@ -107,5 +107,5 @@ public class ColorFontUtil {
     public final static FontData getFont(String name, int height, int style){
         return new FontData(name, height, style);
     }
-    
+
 }

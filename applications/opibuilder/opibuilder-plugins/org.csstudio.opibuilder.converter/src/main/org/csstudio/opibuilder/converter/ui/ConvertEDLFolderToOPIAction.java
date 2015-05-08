@@ -37,9 +37,9 @@ import org.eclipse.ui.progress.UIJob;
 
 /**
  * Convert edm files in the folder to opi files recursively
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class ConvertEDLFolderToOPIAction implements IObjectActionDelegate {
 
@@ -62,7 +62,7 @@ public class ConvertEDLFolderToOPIAction implements IObjectActionDelegate {
                         final IFolder targetFolder = createTargetFolder(selectedFolder, null);
                         if(targetFolder != null){
                             Job backgroundJob = new Job("Converting .edl files to opi...") {
-                                
+
                                 @Override
                                 protected IStatus run(IProgressMonitor monitor) {
                                     try {
@@ -77,41 +77,41 @@ public class ConvertEDLFolderToOPIAction implements IObjectActionDelegate {
                             };
                             backgroundJob.schedule();
                         }
-                            
+
                     } catch (CoreException e) {
                         String message = "Failed to create target folder: " + e.getMessage();
                         MessageDialog.openError(null, "Failed", message);
                         EDM2OPIConverterPlugin.getLogger().log(Level.SEVERE, message, e);
                         return Status.CANCEL_STATUS;
-                    }                    
+                    }
                     monitor.worked(1);
                     if (monitor.isCanceled())
                         return Status.CANCEL_STATUS;
                 }
-                
-                
+
+
 
                 return Status.OK_STATUS;
             }
-            
+
         };
         job.schedule();
-        
+
     }
-    
+
     /**Convert all edm files in source folder
      * @param src the source folder
      * @param target an exist target folder
-     * @param monitor 
-     * @throws CoreException 
+     * @param monitor
+     * @throws CoreException
      */
     private IStatus convertFolder(IFolder src, IFolder target, IProgressMonitor monitor) throws CoreException{
-        for(IResource resource : src.members()){            
+        for(IResource resource : src.members()){
             if(monitor.isCanceled())
                 return Status.CANCEL_STATUS;
             if(resource instanceof IFile){
                 String extension = ((IFile)resource).getFileExtension();
-                if(extension!=null && extension.equals("edl")){ //$NON-NLS-1$                    
+                if(extension!=null && extension.equals("edl")){ //$NON-NLS-1$
                     String message = "Converting " + resource;
                     System.out.println(message);
                     EDM2OPIConverterPlugin.getLogger().log(Level.INFO, message);
@@ -127,7 +127,7 @@ public class ConvertEDLFolderToOPIAction implements IObjectActionDelegate {
                         final String message = "Failed to copy " + resource;
                         EDM2OPIConverterPlugin.getLogger().log(Level.WARNING, message, e);
                         ConsoleService.getInstance().writeWarning(message + "\n" + e.getMessage()); //$NON-NLS-1$
-                    
+
                     }
                 }
             }else if(resource instanceof IFolder){
@@ -142,7 +142,7 @@ public class ConvertEDLFolderToOPIAction implements IObjectActionDelegate {
     /**
      * Create the output target folder which is under the same parent but end
      * with "_opi_output"
-     * 
+     *
      * @param src the source folder
      * @param targetFolderName the target folder name. null if appended with "_opi_output".
      * @return the target folder
@@ -178,7 +178,7 @@ public class ConvertEDLFolderToOPIAction implements IObjectActionDelegate {
         target.create(false, true, null);
         return target;
     }
-    
+
 
     @SuppressWarnings("unchecked")
     public void selectionChanged(IAction action, ISelection selection) {

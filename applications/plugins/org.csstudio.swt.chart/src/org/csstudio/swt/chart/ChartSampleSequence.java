@@ -26,14 +26,14 @@ public interface ChartSampleSequence
 {
     /** @return The number of samples in this sequence. */
     public int size();
-    
+
     /** Random access to the samples of the sequence.
      *  <p>
-     *  It is an error to use indices below 0 or 
+     *  It is an error to use indices below 0 or
      *  &gt;= size().
      *  @return The Sample of given index. */
     public ChartSample get(int i);
-    
+
     /** In case the sample sequence has a default display range,
      *  return it, so that the plot can use it.
      *  Otherwise, return <code>null</code>, in which case the plot

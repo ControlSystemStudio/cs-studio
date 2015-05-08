@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.platform.simpledal;
 
@@ -11,9 +11,9 @@ import org.junit.Test;
 
 /**
  * Test class for {@link ConnectionState}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class ConnectionStateTest {
 

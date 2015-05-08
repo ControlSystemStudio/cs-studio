@@ -9,9 +9,9 @@ import org.eclipse.gef.commands.CompoundCommand;
 /**
  * Post Processor that switches {@link BargraphModel#PROP_ORIENTATION} depending
  * on widget size.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class BargraphSizePostProcessor extends AbstractWidgetPropertyPostProcessor<BargraphModel> {
 

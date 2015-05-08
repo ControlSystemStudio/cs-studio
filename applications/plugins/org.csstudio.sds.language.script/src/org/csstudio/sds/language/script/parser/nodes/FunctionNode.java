@@ -4,7 +4,7 @@ import org.csstudio.sds.language.script.codeElements.PredefinedFunctions;
 
 /**
  * The outline node of an Script-method.
- * 
+ *
  * @author C1 WPS / KM, MZ
  */
 public class FunctionNode extends AbstractScriptNode {
@@ -39,11 +39,11 @@ public class FunctionNode extends AbstractScriptNode {
     protected String doGetSourceIdentifier() {
         return this._variableName;
     }
-    
+
     public boolean isPredefined() {
         return _predefinedFunction!=null;
     }
-    
+
     public PredefinedFunctions getPredefinedFunction() {
         return _predefinedFunction;
     }

@@ -11,7 +11,7 @@ public class ErrorCommandHandler extends AbstractAdaptedHandler<ProcessVariable>
     public ErrorCommandHandler() {
         super(ProcessVariable.class);
     }
-    
+
     @Override
     protected void execute(List<ProcessVariable> data, ExecutionEvent event) {
         throw new RuntimeException("This is an error!", new RuntimeException("This is the cause"));

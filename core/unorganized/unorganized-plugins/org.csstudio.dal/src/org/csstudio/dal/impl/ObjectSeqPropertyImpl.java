@@ -37,7 +37,7 @@ public class ObjectSeqPropertyImpl extends DynamicValuePropertyImpl<Object[]>
 {
     private int sequenceLength;
     private boolean chInitialized;
-    
+
     /**
      * Creates a new ObjectSeqPropertyImpl object.
      *
@@ -53,7 +53,7 @@ public class ObjectSeqPropertyImpl extends DynamicValuePropertyImpl<Object[]>
     {
         if (chInitialized)
             return;
-    
+
         Integer length = null;
         length = (Integer)getCharacteristic(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH);
         sequenceLength = length.intValue();

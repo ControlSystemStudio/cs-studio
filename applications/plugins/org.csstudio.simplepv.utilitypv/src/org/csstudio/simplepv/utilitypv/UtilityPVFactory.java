@@ -13,8 +13,8 @@ import org.csstudio.simplepv.AbstractPVFactory;
 import org.csstudio.simplepv.ExceptionHandler;
 import org.csstudio.simplepv.IPV;
 
-/**A Factory to create PV that is implemented on top of Utility.PV. 
- * This is only used for compatibility of old BOY OPIs. Other tools should 
+/**A Factory to create PV that is implemented on top of Utility.PV.
+ * This is only used for compatibility of old BOY OPIs. Other tools should
  * not use this. In this implementation, maxUpdateRate and bufferAllValues
  * are ignored.
  * @author Xihui Chen
@@ -25,7 +25,7 @@ public class UtilityPVFactory extends AbstractPVFactory {
 
     /* (non-Javadoc)
      * @see org.csstudio.simplepv.AbstractPVFactory#createPV(java.lang.String, boolean, int, boolean, java.util.concurrent.Executor, org.csstudio.simplepv.ExceptionHandler)
-     *  
+     *
      */
     @Override
     public IPV createPV(String name, boolean readOnly, long minUpdatePeriod, boolean bufferAllValues,

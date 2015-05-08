@@ -13,19 +13,19 @@ class ChannelTreeByPropertyModel {
     // Reference to the widget is used to return the configurable
     // widget from the selection
     private ChannelTreeByPropertyWidget widget;
-    
+
     List<Channel> allChannels;
     List<String> properties;
     private ChannelTreeByPropertyNode root;
     final String query;
     private final boolean showChannelNames;
-    
+
     public ChannelTreeByPropertyModel(String query, Collection<Channel> allChannels, List<String> properties,
             ChannelTreeByPropertyWidget widget, boolean showChannelNames) {
         if (allChannels == null) {
             allChannels = Collections.emptyList();
         }
-        
+
         // Filter the channels that would not show up as leaf because they don't
         // have a value for all properties
         this.allChannels = new ArrayList<Channel>(ChannelUtil.filterbyProperties(allChannels, properties));
@@ -35,15 +35,15 @@ class ChannelTreeByPropertyModel {
         this.showChannelNames = showChannelNames;
         this.root = new ChannelTreeByPropertyNode(this, null, "");
     }
-    
+
     public ChannelTreeByPropertyNode getRoot() {
         return root;
     }
-    
+
     public ChannelTreeByPropertyWidget getWidget() {
         return widget;
     }
-    
+
     class Node {
         // Channels represented by this node and down
         private List<Channel> nodeChannels;
@@ -55,8 +55,8 @@ class ChannelTreeByPropertyModel {
         // Next property value for root and descendents, names of channels for first to last node,
         // null for leaf
         private final List<String> childrenNames;
-        
-        
+
+
         private Node(Node parentNode, String displayName) {
             // Calculate depth
             if (parentNode == null) {
@@ -64,9 +64,9 @@ class ChannelTreeByPropertyModel {
             } else {
                 depth = parentNode.depth + 1;
             }
-            
+
             this.displayName = displayName;
-            
+
             // Construct the Channel list
             if (parentNode == null) {
                 // Node is root, get all channels
@@ -83,7 +83,7 @@ class ChannelTreeByPropertyModel {
                     }
                 }
             }
-            
+
             if (depth < properties.size()) {
                 // Children will be property values
                 childrenNames = new ArrayList<String>(ChannelUtil.getPropValues(nodeChannels, properties.get(depth)));
@@ -95,31 +95,31 @@ class ChannelTreeByPropertyModel {
             } else {
                 childrenNames = null;
             }
-            
+
         }
-        
+
         /**
          * The property name at this level
-         * 
+         *
          * @return property name or null if leaf node
          */
         public String getPropertyName() {
             // Root node does not have any property associated with it
             if (depth == 0)
                 return null;
-            
+
             int index = depth - 1;
             // We are at the channel level
             if (index >= properties.size())
                 return null;
-            
+
             return properties.get(index);
         }
-        
+
         public String getDisplayName() {
             return displayName;
         }
-        
+
         public List<String> getChildrenNames() {
             return childrenNames;
         }
@@ -127,7 +127,7 @@ class ChannelTreeByPropertyModel {
         public Node getChild(int index) {
             return new Node(this, childrenNames.get(index));
         }
-        
+
     }
 
     public boolean isShowChannelNames() {

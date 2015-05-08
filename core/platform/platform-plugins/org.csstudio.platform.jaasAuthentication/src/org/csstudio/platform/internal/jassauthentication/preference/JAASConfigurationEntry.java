@@ -16,20 +16,20 @@ public class JAASConfigurationEntry {
 
     private String loginModuleName;
     private String moduleControlFlag;
-    private List<String[]> moduleOptionsList;     
-    
-    
+    private List<String[]> moduleOptionsList;
+
+
     /**
      * Constructor
      */
     public JAASConfigurationEntry() {}
-    
+
     /**
      * Constructor. moduleOptionList will be initialized with a new ArrayList<String[]>().
      * @param loginModuleName
      * @param moduleControlFlag
      */
-    public JAASConfigurationEntry(String loginModuleName, 
+    public JAASConfigurationEntry(String loginModuleName,
             String moduleControlFlag) {
         this.loginModuleName = loginModuleName;
         this.moduleControlFlag = moduleControlFlag;
@@ -59,8 +59,8 @@ public class JAASConfigurationEntry {
     }
 
     /**
-     * @return the moduleControlFlag index in JAASPreferenceModel.FLAGS. 
-     * -1 if the moduleControlFlag is not in JAASPreferenceModel.FLAGS. 
+     * @return the moduleControlFlag index in JAASPreferenceModel.FLAGS.
+     * -1 if the moduleControlFlag is not in JAASPreferenceModel.FLAGS.
      */
     public int getModuleControlFlagIndex() {
         if(moduleControlFlag.equals(JAASPreferenceModel.FLAG_REQUIRED))
@@ -99,7 +99,7 @@ public class JAASConfigurationEntry {
         this.moduleOptionsList = moduleOptionsList;
     }
 
-    
+
     public LoginModuleControlFlag getLoginModuleControlFlag() {
         LoginModuleControlFlag flag = null;
         if(moduleControlFlag.equals(JAASPreferenceModel.FLAG_REQUIRED))
@@ -112,7 +112,7 @@ public class JAASConfigurationEntry {
             flag = LoginModuleControlFlag.OPTIONAL;
         return flag;
     }
-    
+
     public Map<String, String> getModuleOptionsMap() {
         Map<String, String> moduleOptionsMap =  new HashMap<String, String>();
         for(String[] optionTuple : moduleOptionsList) {

@@ -68,9 +68,9 @@ public class PointListSection extends AbstractBaseSection<PointlistProperty> {
         table.setLinesVisible(true);
         table.setHeaderVisible(false);
 
-        tableViewer = ConvenienceTableWrapper.equip(table, 
-                new ColumnConfig("x", "x", 30, 10, false), 
-                new ColumnConfig("y", "y", 30, 10, false), 
+        tableViewer = ConvenienceTableWrapper.equip(table,
+                new ColumnConfig("x", "x", 30, 10, false),
+                new ColumnConfig("y", "y", 30, 10, false),
                 new ColumnConfig("remove", "Remove", 30, -1, true),
                 new ColumnConfig("up", "Up", 30, -1, true));
 
@@ -243,7 +243,7 @@ public class PointListSection extends AbstractBaseSection<PointlistProperty> {
         }
 
         public void setValue(int column, Object value) {
-            
+
             switch (column) {
             case 0:
                 _point.x = (Integer)value;
@@ -271,16 +271,16 @@ public class PointListSection extends AbstractBaseSection<PointlistProperty> {
         /**
          * Moves the current selected Point one step up or down, depending on
          * the given boolean.
-         * 
+         *
          * @param up
          *            True, if the Point should be moved up, false otherwise
          */
         private void movePoint(PointList list, int index) {
             if (index > 0) {
-                
+
                 Point point1 = list.getPoint(index);
                 Point point2 = list.getPoint(index-1);
-                
+
                 list.setPoint(point1, index-1);
                 list.setPoint(point2, index);
             }
@@ -294,7 +294,7 @@ public class PointListSection extends AbstractBaseSection<PointlistProperty> {
 
     /**
      * This class represents a Dialog for editing a Point.
-     * 
+     *
      * @author Kai Meyer
      */
     private final class PointDialog extends Dialog {
@@ -318,7 +318,7 @@ public class PointListSection extends AbstractBaseSection<PointlistProperty> {
          * <p>
          * Note that the <code>open</code> method blocks for input dialogs.
          * </p>
-         * 
+         *
          * @param parentShell
          *            the parent shell, or <code>null</code> to create a
          *            top-level shell

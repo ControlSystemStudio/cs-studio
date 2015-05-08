@@ -69,7 +69,7 @@ public class ArchiveVNumberArray extends ArchiveVDisplayType implements VNumberA
     {
         this(timestamp, severity, status, display, new ArrayInt(data));
     }
-    
+
     /** Initialize from {@link ListNumber}
      *  @param timestamp
      *  @param severity
@@ -96,13 +96,13 @@ public class ArchiveVNumberArray extends ArchiveVDisplayType implements VNumberA
     {
         return data;
     }
-    
+
     @Override
     public List<ArrayDimensionDisplay> getDimensionDisplay()
     {
         return ValueUtil.defaultArrayDisplay(this);
     }
-    
+
     @Override
     public int hashCode()
     {

@@ -23,9 +23,9 @@ import de.desy.language.snl.parser.nodes.WhenNode;
 /**
  * Creates a SNL diagram based on the root node of the AST and the given layout
  * data.
- * 
+ *
  * @author Kai Meyer, Sebastian Middeke (C1 WPS)
- * 
+ *
  */
 public class DiagramCreator {
 

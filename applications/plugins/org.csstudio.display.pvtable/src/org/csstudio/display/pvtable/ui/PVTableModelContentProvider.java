@@ -31,7 +31,7 @@ public class PVTableModelContentProvider implements ILazyContentProvider
         @Override
         public void tableItemSelectionChanged(PVTableItem item)
         {
-            // NOP            
+            // NOP
         }
 
         @Override
@@ -40,16 +40,16 @@ public class PVTableModelContentProvider implements ILazyContentProvider
             // NOP
         }
     }, null);
-    
+
     static
     {
         NEW_ITEM.setSelected(false);
     }
-    
+
     private TableViewer viewer;
     private PVTableModel model;
-    
-    
+
+
     @Override
     public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput)
     {
@@ -61,7 +61,7 @@ public class PVTableModelContentProvider implements ILazyContentProvider
             this.viewer.setItemCount(0);
     }
 
-    
+
     @Override
     public void updateElement(final int index)
     {

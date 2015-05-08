@@ -51,19 +51,19 @@ import org.epics.vtype.VTable;
 
 public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget implements ISelectionProvider,
     ConfigurableWidget {
-    
+
     private static final int MAX_COLUMNS = 200;
     private static final int MAX_CELLS = 50000;
-    
+
     private VTableDisplay table;
     private ErrorBar errorBar;
 
     public PVTableByPropertyWidget(Composite parent, int style) {
         super(parent, style);
-        
+
         // Close PV on dispose
         addDisposeListener(new DisposeListener() {
-            
+
             @Override
             public void widgetDisposed(DisposeEvent e) {
                 if (pv != null) {
@@ -76,38 +76,38 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
                 }
             }
         });
-        
+
         GridLayout gridLayout = new GridLayout(1, false);
         gridLayout.verticalSpacing = 0;
         gridLayout.marginWidth = 0;
         gridLayout.marginHeight = 0;
         setLayout(gridLayout);
-        
+
         errorBar = new ErrorBar(this, SWT.NONE);
         errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
         errorBar.setMarginBottom(5);
-        
+
         table = new VTableDisplay(this);
         table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         table.addSelectionListener(new SelectionListener() {
-            
+
             @Override
             public void widgetSelected(SelectionEvent e) {
                 if (rowSelectionWriter != null && ((Table) e.widget).getSelectionCount() > 0) {
                     rowSelectionWriter.write(((Table) e.widget).getSelection()[0].getText());
                 }
             }
-            
+
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
             }
         });
-        
+
         addPropertyChangeListener(new PropertyChangeListener() {
-            
+
             List<String> properties = Arrays.asList("channels", "rowProperty", "columnProperty", "columnTags");
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (properties.contains(evt.getPropertyName())) {
@@ -115,7 +115,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
                 }
             }
         });
-        
+
         selectionProvider = new AbstractSelectionProviderWrapper(table, this) {
             @Override
             protected ISelection transform(IStructuredSelection selection) {
@@ -126,23 +126,23 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
             }
         };
     }
-    
+
     private void setLastException(Exception ex) {
         errorBar.setException(ex);
     }
-    
+
     private String rowProperty;
     private String columnProperty;
     private List<String> columnTags = new ArrayList<String>();
-    
+
     private List<List<String>> cellPvs;
     private List<List<Collection<Channel>>> cellChannels;
     private List<String> columnNames;
     private List<String> rowNames;
-    
+
     private PVReader<VTable> pv;
     private PVReaderListener<VTable> listener = new PVReaderListener<VTable>() {
-        
+
         @Override
         public void pvChanged(PVReaderEvent<VTable> event) {
             if (!table.isDisposed()) {
@@ -151,20 +151,20 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
             }
         }
     };
-    
+
     private void reconnect() {
         if (pv != null) {
             pv.close();
             pv = null;
             table.setVTable(null);
         }
-        
+
         if (columnNames == null || rowNames == null || cellPvs == null ||
                 cellPvs.size() != columnNames.size()) {
             // Invalid data: don't connect
             return;
         }
-        
+
         VTableColumn[] columns = new VTableColumn[columnNames.size() + 1];
         columns[0] = column(rowProperty, vStringConstants(rowNames));
         for (int nColumn = 0; nColumn < columnNames.size(); nColumn++) {
@@ -178,49 +178,49 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
                 .readListener(listener).maxRate(ofMillis(500));
         table.setCellLabelProvider(new PVTableByPropertyCellLabelProvider(cellChannels));
     }
-    
+
     public String getRowProperty() {
         return rowProperty;
     }
-    
+
     public void setRowProperty(String rowProperty) {
         String oldValue = this.rowProperty;
         this.rowProperty = rowProperty;
         changeSupport.firePropertyChange("rowProperty", oldValue, rowProperty);
     }
-    
+
     public String getColumnProperty() {
         return columnProperty;
     }
-    
+
     public void setColumnProperty(String columnProperty) {
         String oldValue = this.columnProperty;
         this.columnProperty = columnProperty;
         changeSupport.firePropertyChange("columnProperty", oldValue, columnProperty);
     }
-    
+
     public List<String> getColumnTags() {
         return columnTags;
     }
-    
+
     public void setColumnTags(List<String> tags) {
         List<String> oldValue = this.columnTags;
         columnTags = Collections.unmodifiableList(new ArrayList<String>(tags));
         changeSupport.firePropertyChange("columnTags", oldValue, columnTags);
     }
-    
+
     public Collection<Channel> getChannels() {
         return channels;
     }
-    
+
     private Collection<Channel> channels;
-    
+
     private void setChannels(Collection<Channel> channels) {
         Collection<Channel> oldChannels = this.channels;
         this.channels = channels;
         changeSupport.firePropertyChange("channels", oldChannels, channels);
     }
-    
+
     /**
      * True if enough properties are set to compute the table channels.
      * @return true if we can compute the table
@@ -229,7 +229,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
         return rowProperty != null && (columnProperty != null ||
                 (columnTags != null && !columnTags.isEmpty() ));
     }
-    
+
     private void clearTableChannels() {
         columnNames = null;
         rowNames = null;
@@ -237,7 +237,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
         cellChannels = null;
         reconnect();
     }
-    
+
     private void computeTableChannels() {
         // Not have all the bits to prepare the channel list
         if (!propertiesReady() || channels == null) {
@@ -263,14 +263,14 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
             reconnect();
             return;
         }
-        
+
         // Find the rows and columns
         List<String> possibleRows = new ArrayList<String>(ChannelUtil.getPropValues(channelsInTable, rowProperty));
         List<String> columnPropertyValues = new ArrayList<String>(ChannelUtil.getPropValues(channelsInTable, columnProperty));
         //possibleColumns.addAll(tagNames);
         int nRows = possibleRows.size();
         int nColumns = columnPropertyValues.size() + tagNames.size();
-        
+
         // Limit column and cell count
         if (nColumns > MAX_COLUMNS) {
             errorBar.setException(new RuntimeException("Max column count is " + MAX_COLUMNS + " (would generate " + nColumns + ")"));
@@ -282,10 +282,10 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
             clearTableChannels();
             return;
         }
-        
+
         Collections.sort(possibleRows);
         Collections.sort(columnPropertyValues);
-        
+
         List<List<String>> cells = new ArrayList<List<String>>();
         List<List<Collection<Channel>>> channels = new ArrayList<List<Collection<Channel>>>();
         for (int nColumn = 0; nColumn < nColumns; nColumn++) {
@@ -298,7 +298,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
             cells.add(column);
             channels.add(channelColumn);
         }
-        
+
         for (Channel channel : channelsInTable) {
             int nColumn = -1;
             // Row is guaranteed to have the property, column may not
@@ -306,9 +306,9 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
             if (channel.getProperty(columnProperty) != null) {
                 nColumn = columnPropertyValues.indexOf(channel.getProperty(columnProperty).getValue());
             }
-            
+
             int nRow = possibleRows.indexOf(row);
-            
+
             if (nRow != -1 && nColumn != -1) {
                 cells.get(nColumn).set(nRow, channel.getName());
                 channels.get(nColumn).get(nRow).add(channel);
@@ -324,7 +324,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
                 tagCount++;
             }
         }
-        
+
         List<String> newColumnNames = new ArrayList<String>();
         for (String columnPropertyValue : columnPropertyValues) {
             newColumnNames.add(columnProperty + "=" + columnPropertyValue);
@@ -334,17 +334,17 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
         rowNames = possibleRows;
         cellPvs = cells;
         cellChannels = channels;
-        
+
         reconnect();
     }
-    
+
     private String rowSelectionPv = null;
     private LocalUtilityPvManagerBridge rowSelectionWriter = null;
-    
+
     public String getSelectionPv() {
         return rowSelectionPv;
     }
-    
+
     public void setRowSelectionPv(String selectionPv) {
         this.rowSelectionPv = selectionPv;
         if (selectionPv == null || selectionPv.trim().isEmpty()) {
@@ -353,12 +353,12 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
                 rowSelectionWriter.close();
                 rowSelectionWriter = null;
             }
-            
+
         } else {
             rowSelectionWriter = new LocalUtilityPvManagerBridge(selectionPv);
         }
     }
-    
+
     private AbstractSelectionProviderWrapper selectionProvider;
 
     @Override
@@ -387,7 +387,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
             return null;
         return cellChannels.get(column).get(row);
     }
-    
+
     @Override
     public void setMenu(Menu menu) {
         super.setMenu(menu);
@@ -463,13 +463,13 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
     public void configurationDialogClosed() {
         dialog = null;
     }
-    
+
     /** Memento tag */
     private static final String MEMENTO_CHANNEL_QUERY = "channelQuery"; //$NON-NLS-1$
     private static final String MEMENTO_ROW_PROPERTY = "rowProperty"; //$NON-NLS-1$
     private static final String MEMENTO_COLUMN_PROPERTY = "columnProperty"; //$NON-NLS-1$
     private static final String MEMENTO_COLUMN_TAGS = "columnTags"; //$NON-NLS-1$
-    
+
     public void saveState(IMemento memento) {
         if (getChannelQuery() != null) {
             memento.putString(MEMENTO_CHANNEL_QUERY, getChannelQuery().getQuery());
@@ -484,7 +484,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
             memento.putString(MEMENTO_COLUMN_TAGS, MementoUtil.toCommaSeparated(getColumnTags()));
         }
     }
-    
+
     public void loadState(IMemento memento) {
         if (memento != null) {
             if (memento.getString(MEMENTO_ROW_PROPERTY) != null) {
@@ -501,5 +501,5 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
             }
         }
     }
-    
+
 }

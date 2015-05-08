@@ -31,24 +31,24 @@ public class EDMConverterPreferencePage extends FieldEditorPreferencePage implem
         IWorkbenchPreferencePage {
 
     private static final String PREF_QUALIFIER_ID = EDM2OPIConverterPlugin.PLUGIN_ID;
-    
+
     public EDMConverterPreferencePage() {
         super(FieldEditorPreferencePage.GRID);
         setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE, PREF_QUALIFIER_ID));
         setMessage("EDM2OPI Converter Preferences");
     }
-    
+
     @Override
     protected void createFieldEditors() {
         final Composite parent = getFieldEditorParent();
-        
-        WorkspaceFileFieldEditor edmColorListEditor = 
-            new WorkspaceFileFieldEditor(PreferencesHelper.EDM_COLORLIST_FILE, 
+
+        WorkspaceFileFieldEditor edmColorListEditor =
+            new WorkspaceFileFieldEditor(PreferencesHelper.EDM_COLORLIST_FILE,
                     "EDM colors.list File", new String[]{"list"}, parent);//$NON-NLS-2$
-        addField(edmColorListEditor);  
-    
-        WorkspaceFileFieldEditor opiColorFileEditor = 
-            new WorkspaceFileFieldEditor(PreferencesHelper.OUTPUT_OPICOLOR_FILE, 
+        addField(edmColorListEditor);
+
+        WorkspaceFileFieldEditor opiColorFileEditor =
+            new WorkspaceFileFieldEditor(PreferencesHelper.OUTPUT_OPICOLOR_FILE,
                     "Output OPI Color File", new String[]{"def"}, parent){//$NON-NLS-2$
             @Override
             protected boolean checkState() {
@@ -72,19 +72,19 @@ public class EDMConverterPreferencePage extends FieldEditorPreferencePage implem
             }
         };
         addField(opiColorFileEditor);
-        
-        
-        
-        BooleanFieldEditor robustParsingEditor = 
+
+
+
+        BooleanFieldEditor robustParsingEditor =
             new BooleanFieldEditor(PreferencesHelper.FAIL_FAST, "Stop parsing at exception", parent);
         addField(robustParsingEditor);
-        
-        
+
+
     }
 
     public void init(IWorkbench workbench) {
-        
+
     }
 
-    
+
 }

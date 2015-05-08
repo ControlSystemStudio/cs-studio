@@ -11,7 +11,7 @@ import org.csstudio.dct.model.IVisitor;
 
 /**
  * Standard implementation of {@link IFolder}.
- * 
+ *
  * @author Sven Wende
  */
 public class Folder extends AbstractElement implements IFolderMember, IFolder {
@@ -20,7 +20,7 @@ public class Folder extends AbstractElement implements IFolderMember, IFolder {
 
     /**
      * Constructor.
-     * 
+     *
      * @param name
      *            the name
      */
@@ -31,10 +31,10 @@ public class Folder extends AbstractElement implements IFolderMember, IFolder {
 
     /**
      * Constructor.
-     * 
+     *
      * @param name
      *            the name
-     * 
+     *
      * @param id
      *            the id
      */

@@ -33,7 +33,7 @@ public class Application implements IApplication, JMSAnnunciatorListener
 {
     /** Flag to control if the application runs or stops */
     private boolean run = true;
-    
+
     /** {@inheritDoc} */
     @Override
     public Object start(IApplicationContext context) throws Exception

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook;
 
@@ -9,11 +9,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * 
+ *
  * A builder for a default implementation of the {@link Attachment} interface.
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class AttachmentBuilder {
 
@@ -31,7 +31,7 @@ public class AttachmentBuilder {
 
     /**
      * Create a Builder for Attachment with the name _name_
-     * 
+     *
      * @param name
      */
     public static AttachmentBuilder attachment(String fileName) {
@@ -42,7 +42,7 @@ public class AttachmentBuilder {
     /**
      * Create a Builder object with parameters initialized with the same values
      * as the given Attachment object
-     * 
+     *
      * @param Attachment
      * @return AttachmentBuilder
      * @throws IOException
@@ -61,7 +61,7 @@ public class AttachmentBuilder {
 
     /**
      * Set contentType
-     * 
+     *
      * @param contentType
      * @return AttachmentBuilder
      */
@@ -72,7 +72,7 @@ public class AttachmentBuilder {
 
     /**
      * Set Filesize
-     * 
+     *
      * @param fileSize
      * @return AttachmentBuilder
      */
@@ -82,7 +82,7 @@ public class AttachmentBuilder {
     }
 
     /**
-     * 
+     *
      * @param thumbnail
      * @return AttachmentBuilder
      */
@@ -92,7 +92,7 @@ public class AttachmentBuilder {
     }
 
     /**
-     * 
+     *
      * @param inputStream
      *            - InputStream to the
      * @return AttachmentBuilder
@@ -106,7 +106,7 @@ public class AttachmentBuilder {
 
     /**
      * Build an object implementing the {@link Attachment}.
-     * 
+     *
      * @return Attachment - an immutable instance of an {@link Attachment}
      * @throws IOException
      */
@@ -117,9 +117,9 @@ public class AttachmentBuilder {
 
     /**
      * A Default implementation of the Attachment interface
-     * 
+     *
      * @author shroffk
-     * 
+     *
      */
     private class AttachmentImpl implements Attachment {
 

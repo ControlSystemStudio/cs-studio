@@ -20,7 +20,7 @@ import org.junit.Test;
 /**
  * Test UtlityPV implementation.
  * @author Xihui Chen
- * 
+ *
  */
 public class UtilityPVTest {
 
@@ -29,38 +29,38 @@ public class UtilityPVTest {
 
     @Test
     public void testSimpleRead() throws Exception {
-        BasicReadTester tester = 
+        BasicReadTester tester =
                 new BasicReadTester(UTILITY_PV, "sim://ramp(0,100,1,0.1)");
         tester.testAll();
-        
-    }    
-    
-    
+
+    }
+
+
     @Test
     public void testReadWrite() throws Exception {
-        BasicReadWriteTester tester = 
+        BasicReadWriteTester tester =
                 new BasicReadWriteTester(UTILITY_PV, "loc://test(0)");
-        tester.testAll();        
+        tester.testAll();
     }
-    
+
     @Test
     public void testConvertPMPVToUtilityPVName(){
         assertEquals("123.45678",
                 UtilityPV.convertPMPVToUtilityPVName("=123.45678"));
-        
+
         assertEquals("\"abcd\"",
                 UtilityPV.convertPMPVToUtilityPVName("=\"abcd\""));
-        
+
         assertEquals("const://array(1, 23, 34,12.345)",
-                UtilityPV.convertPMPVToUtilityPVName("sim://const(1, 23, 34,12.345)"));    
-        
-        
+                UtilityPV.convertPMPVToUtilityPVName("sim://const(1, 23, 34,12.345)"));
+
+
         //regular pv
         assertEquals("fred:current",
-                UtilityPV.convertPMPVToUtilityPVName("fred:current"));    
-                
+                UtilityPV.convertPMPVToUtilityPVName("fred:current"));
+
     }
-    
+
     @Test
     public void testBulkOperations() throws Exception{
         BulkTester tester = new BulkTester(UTILITY_PV, 10000, new PVNameProvider() {

@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
 public final class LDAPReaderJob extends Job implements ILdapReaderJob {
 
     private static final Logger LOG = LoggerFactory.getLogger(LDAPReaderJob.class);
-    
+
     private final ILdapSearchParams _searchParams;
 
     private final ILdapSearchResult _searchResult;

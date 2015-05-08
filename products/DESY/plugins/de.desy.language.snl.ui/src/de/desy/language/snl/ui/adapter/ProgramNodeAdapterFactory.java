@@ -7,9 +7,9 @@ import de.desy.language.snl.parser.nodes.ProgramNode;
 
 /**
  * The specialized {@link IAdapterFactory} for {@link ProgramNode}s.
- * 
+ *
  * @author C1 WPS / KM, MZ
- * 
+ *
  */
 class ProgramNodeAdapterFactory implements IAdapterFactory {
 

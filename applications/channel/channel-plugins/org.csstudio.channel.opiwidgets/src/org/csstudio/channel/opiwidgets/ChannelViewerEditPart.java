@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.channel.opiwidgets;
 
@@ -9,7 +9,7 @@ import org.eclipse.draw2d.IFigure;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ChannelViewerEditPart extends
         AbstractChannelWidgetEditPart<ChannelViewerFigure, ChannelViewerModel> {

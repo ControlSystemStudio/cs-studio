@@ -56,7 +56,7 @@ public final class DisplayEditPart extends AbstractContainerEditPart {
     public DisplayModel getDisplayModel() {
         return (DisplayModel) getContainerModel();
     }
-    
+
     /**
      * {@inheritDoc}
      */

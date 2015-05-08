@@ -49,7 +49,7 @@ public class DumpPVListAction implements IObjectActionDelegate {
                 getSelectedWidget().getWidgetModel().getRootDisplayModel());
         if(o instanceof DisplayEditpart){
             Object[] allRuntimePVNames = ((DisplayEditpart)o).getAllRuntimePVNames().toArray();
-            
+
             Arrays.sort(allRuntimePVNames);
             new PVListDialog(targetPart.getSite().getShell(), allRuntimePVNames).open();
         }
@@ -65,16 +65,16 @@ public class DumpPVListAction implements IObjectActionDelegate {
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
         this.targetPart = targetPart;
     }
-    
 
-    
-    private AbstractBaseEditPart getSelectedWidget(){ 
+
+
+    private AbstractBaseEditPart getSelectedWidget(){
         if(selection.getFirstElement() instanceof AbstractBaseEditPart){
             return (AbstractBaseEditPart)selection.getFirstElement();
         }else
             return null;
     }
-    
+
     private final class PVListDialog extends Dialog {
 
         private Object[] allPVNames;
@@ -92,24 +92,24 @@ public class DumpPVListAction implements IObjectActionDelegate {
                     sb.append("\n"); //$NON-NLS-1$
                 i++;
             }
-            
+
             pvsText = sb.toString();
         }
-        
+
         @Override
         protected Control createDialogArea(Composite parent) {
-            getShell().setText("PV List");            
+            getShell().setText("PV List");
             getShell().setMinimumSize(200, 300);
-            Composite container = (Composite)super.createDialogArea(parent);            
+            Composite container = (Composite)super.createDialogArea(parent);
             FillLayout layout = new FillLayout();
             layout.marginHeight = 10;
-            layout.marginWidth = 5;            
+            layout.marginWidth = 5;
             container.setLayout(layout);
-            Text text = new Text(container, SWT.BORDER|SWT.MULTI|SWT.V_SCROLL);            
-            text.setText(pvsText);            
+            Text text = new Text(container, SWT.BORDER|SWT.MULTI|SWT.V_SCROLL);
+            text.setText(pvsText);
             return container;
         }
-        
+
         protected void createButtonsForButtonBar(final Composite parent) {
             if(!OPIBuilderPlugin.isRAP()){
                 Button copyButton = createButton(parent,
@@ -127,12 +127,12 @@ public class DumpPVListAction implements IObjectActionDelegate {
                 if (pvsText.isEmpty())
                     copyButton.setEnabled(false);
             }
-            
-            // create OK button            
+
+            // create OK button
             createButton(parent, IDialogConstants.OK_ID, JFaceResources.getString(IDialogLabelKeys.OK_LABEL_KEY),
-                    true);            
+                    true);
         }
-        
-        
+
+
     }
 }

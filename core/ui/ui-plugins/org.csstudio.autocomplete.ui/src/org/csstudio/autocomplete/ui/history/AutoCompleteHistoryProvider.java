@@ -27,7 +27,7 @@ import org.csstudio.autocomplete.ui.AutoCompleteUIPlugin;
  * History proposal provider. Retrieves matching proposals from history. Always
  * handles the full auto-completed content by using {@link ContentDescriptor}
  * originalValue and ignore wildcards.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class AutoCompleteHistoryProvider implements IAutoCompleteProvider {

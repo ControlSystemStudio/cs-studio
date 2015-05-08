@@ -17,76 +17,76 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * Widget that display a range (currently only time, and only vertical) which can be modified
  * using a mouse drag.
- * 
+ *
  * @author carcassi
  */
 public class RangeWidget extends Canvas {
-    
+
     private double distancePerPx = 0.5;
     private int startPosition = SWT.TOP;
     private double pxPerTick = 2.0;
     private boolean editable = true;
-    
+
     // The tick sizes for the first few ticks (loop around after that)
     private int[] sizes = new int[] {20, 10, 10, 10, 10, 15, 10, 10, 10, 10};
     private Set<RangeListener> listeners = new HashSet<RangeListener>();
-    
+
     /**
      * Adds a listener, notified if the range resolution changes.
-     * 
+     *
      * @param listener a new listener
      */
     public void addRangeListener(RangeListener listener) {
         listeners.add(listener);
     }
-    
+
     /**
      * Removes a listener.
-     * 
+     *
      * @param listener listener to be removed
      */
     public void removeRangeListener(RangeListener listener) {
         listeners.remove(listener);
     }
-    
+
     private void fireRangeChanged() {
         for (RangeListener listener : listeners) {
             listener.rangeChanged();
         }
     }
-    
+
     /**
      * Determines whether the range start at the top (and goes down)
      * or at the bottom (and goes up).
-     * 
+     *
      * @param startPosition SWT.TOP or SWT.BOTTOM
      */
     public void setStartPosition(int startPosition) {
         this.startPosition = startPosition;
         redraw();
     }
-    
+
     /**
      * Whether the range starts at the top or at the bottom.
-     * 
+     *
      * @return SWT.TOP or SWT.BOTTOM
      */
     public int getStartPosition() {
         return startPosition;
     }
-    
+
     /**
      * Whether the use can use the mouse to change the resolution.
-     * 
+     *
      * @return true if user changes are allowed
      */
     public boolean isEditable() {
         return editable;
     }
-    
+
     /**
      * Changes whether the use can use the mouse to change the resolution.
-     * 
+     *
      * @param editable true if user changes are allowed
      */
     public void setEditable(boolean editable) {
@@ -95,7 +95,7 @@ public class RangeWidget extends Canvas {
 
     /**
      * A new range widget.
-     * 
+     *
      * @param parent parent component
      * @param style SWT style
      */
@@ -106,9 +106,9 @@ public class RangeWidget extends Canvas {
         addMouseListener(mouseListener);
         addMouseMoveListener(mouseListener);
     }
-    
+
     private NumberFormat numberFormat = new DecimalFormat("0.#");
-    
+
     private String calculateLabel(double distance) {
         // Calculate the label
         if (distance == 0)
@@ -116,19 +116,19 @@ public class RangeWidget extends Canvas {
         if (distance >= 0.999) {
             return numberFormat.format(distance) + " s";
         } else if (distance >= 0.000999) {
-            return numberFormat.format(distance * 1000) + " ms";            
+            return numberFormat.format(distance * 1000) + " ms";
         } else if (distance >= 0.000000999) {
-            return numberFormat.format(distance * 1000000) + " us";            
+            return numberFormat.format(distance * 1000000) + " us";
         } else {
-            return numberFormat.format(distance * 1000000000) + " ns";            
+            return numberFormat.format(distance * 1000000000) + " ns";
         }
     }
-    
+
     private final MouseRescale mouseListener = new MouseRescale();
-    
+
     // Listener that implements the re-scaling through a drag operation
     private class MouseRescale extends MouseAdapter implements MouseMoveListener {
-        
+
         private double startY;
         private double startDistancePerPx;
 
@@ -138,7 +138,7 @@ public class RangeWidget extends Canvas {
             startY = e.y;
             startDistancePerPx = distancePerPx;
         }
-        
+
         @Override
         public void mouseMove(MouseEvent e) {
             // Only if editable and it is a left click drag
@@ -157,14 +157,14 @@ public class RangeWidget extends Canvas {
                 }
             }
         }
-        
+
     }
-    
+
     /**
      * Changes how much distance is represented by each pixel. For example,
      * 1 ms per pixel or 20 seconds per pixel. The distance is expressed in
      * seconds.
-     * 
+     *
      * @param distancePerPx seconds (or fraction) represented by each pixel
      */
     public void setDistancePerPx(double distancePerPx) {
@@ -181,24 +181,24 @@ public class RangeWidget extends Canvas {
                     pxPerTick /= 10;
             }
         }
-        
+
         // New range: need to redraw and notify listeners
         redraw();
         fireRangeChanged();
     }
-    
+
     /**
      * Distance represented by each pixel (e.g. 10 ms per pixel).
-     * 
+     *
      * @return seconds (or fraction) represented by each pixel
      */
     public double getDistancePerPx() {
         return distancePerPx;
     }
-    
+
     // Drawing function
     private PaintListener paintListener = new PaintListener() {
-        
+
         @Override
         public void paintControl(PaintEvent e) {
             double height = getClientArea().height;
@@ -211,7 +211,7 @@ public class RangeWidget extends Canvas {
                 if ((startPosition & SWT.BOTTOM) != 0) {
                     tickPosition = getClientArea().height - tickPosition - 1;
                 }
-                
+
                 // If we are at the beginning of a new ruler, we need
                 // to print the label
                 if (sizeIndex == 0) {
@@ -222,10 +222,10 @@ public class RangeWidget extends Canvas {
                         e.gc.drawText(calculateLabel(distancePerPx * currentPx), 0, tickPosition);
                     }
                 }
-                
+
                 // Draw the line of appropriate size
                 e.gc.drawLine(width - sizes[sizeIndex], tickPosition, width, tickPosition);
-                
+
                 // If there are more than 10 pixels between ticks,
                 // draw another smaller tick between them
                 if (pxPerTick >= 10.0) {
@@ -236,16 +236,16 @@ public class RangeWidget extends Canvas {
                     }
                     e.gc.drawLine(width - 5, tickPosition, width, tickPosition);
                 }
-                
+
                 // Increase screen position to next tick
                 currentPx += pxPerTick;
-                
+
                 // Increment the pointer for the tick size, and look around if necessary
                 sizeIndex++;
                 if (sizeIndex == sizes.length)
                     sizeIndex = 0;
             }
-            
+
         }
     };
 

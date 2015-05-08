@@ -27,20 +27,20 @@ import org.eclipse.swt.widgets.Display;
  *
  */
 public class RequestUtil {
-    
+
 
     public static boolean isSimpleMode(){
         HttpServletRequest request = RWT.getRequest();
         String mode = request.getParameter("startup"); //$NON-NLS-1$
          if(mode!=null && mode.equals(WebOPIConstants.SIMPLE_ENTRY_POINT)) //$NON-NLS-1$
-             return true;    
+             return true;
          String s = request.getServletPath();
-        if(s.contains(WebOPIConstants.MOBILE_S_SERVELET_NAME) 
+        if(s.contains(WebOPIConstants.MOBILE_S_SERVELET_NAME)
                 || s.contains(WebOPIConstants.STANDALONE_SERVELET_NAME))
             return true;
          return false;
     }
-    
+
     /**
      * @return the opi path specified in URL. null if no opi parameter is specified.
      */
@@ -104,15 +104,15 @@ public class RequestUtil {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                    }                    
+                    }
                 }
             }
             return new RunnerInput(path, null, macrosInput);
         }
-        
+
         return null;
     }
-    
+
     /**Try to login.
      * @param display
      */
@@ -124,7 +124,7 @@ public class RequestUtil {
                     return;
             } catch (Exception e) {
             }
-            
+
             if (!SecurityService.authenticate(display)){
                 display.dispose();
                 throw new RuntimeException("Failed to login.");

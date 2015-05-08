@@ -13,7 +13,7 @@ import org.csstudio.opibuilder.converter.model.Edm_activeLineClass;
 
 /**
  * XML conversion class for Edm_activeLineClass
- * 
+ *
  * @author Xihui Chen
  */
 public class Opi_activeLineClass extends OpiWidget {
@@ -39,7 +39,7 @@ public class Opi_activeLineClass extends OpiWidget {
             new OpiColor(widgetContext, "line_color", r.getLineColor(), r);
             new OpiColor(widgetContext, "background_color",
                     r.getFillColor(), r);
-            
+
             // If a string property is not exist, it is null.
             if (r.getAlarmPv() != null) {
                 // line color alarm rule.
@@ -50,7 +50,7 @@ public class Opi_activeLineClass extends OpiWidget {
                     createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "background_color",
                         "backColorAlarmRule", false);
             }
-            
+
         } else{
             setTypeId(typeId_polyline);
             new OpiColor(widgetContext, "background_color", r.getLineColor(), r);
@@ -65,7 +65,7 @@ public class Opi_activeLineClass extends OpiWidget {
 
                 new OpiInt(widgetContext, "arrows", a);
             }
-            
+
             // If a string property is not exist, it is null.
             if (r.getAlarmPv() != null) {
                 if(r.isLineAlarm())
@@ -73,7 +73,7 @@ public class Opi_activeLineClass extends OpiWidget {
                         "backColorAlarmRule", false);
             }
         }
-        
+
         widgetContext.getElement().setAttribute("version", version);
 
         new OpiString(widgetContext, "name", name);
@@ -85,15 +85,15 @@ public class Opi_activeLineClass extends OpiWidget {
         }
 
         new OpiPointsList(widgetContext, "points", r.getXPoints(), r.getYPoints());
-            
+
         new OpiInt(widgetContext, "line_width", r.getLineWidth() == 0 ? 1 : r.getLineWidth());
 
         /*
          * It is not clear when there is no border for EDM display.
-         * 
+         *
          * Here it is assumed there is no border (border style == 0) when line
          * style is not set.
-         * 
+         *
          * The alternative would be to use lineWidth?
          */
         int lineStyle = 0;

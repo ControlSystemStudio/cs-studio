@@ -46,8 +46,8 @@ public class OlogLogbookClient implements LogbookClient {
 
     private final OlogClient reader;
     private final OlogClient writer;
-    
-    private final List<String> levels = Arrays.asList("Info", "Problem", "Request", "Suggestion", "Urgent");  
+
+    private final List<String> levels = Arrays.asList("Info", "Problem", "Request", "Suggestion", "Urgent");
 
     public OlogLogbookClient(OlogClient ologClient) {
     this.reader = ologClient;
@@ -77,7 +77,7 @@ public class OlogLogbookClient implements LogbookClient {
     public List<String> listLevels() throws Exception {
     return levels;
     }
-    
+
     @Override
     public Collection<Tag> listTags() throws Exception {
     return Collections.unmodifiableCollection(Collections2.transform(
@@ -256,7 +256,7 @@ public class OlogLogbookClient implements LogbookClient {
     /**
      * A utility method to create a edu.msu.nscl.olog.api.LogBuilder from
      * org.csstudio.logbook.LogEntry
-     * 
+     *
      * @param logEntry
      * @return
      */
@@ -457,7 +457,7 @@ public class OlogLogbookClient implements LogbookClient {
     public String getLevel() {
         return log.getLevel();
     }
-    
+
     @Override
     public String getText() {
         return log.getDescription();
@@ -539,5 +539,5 @@ public class OlogLogbookClient implements LogbookClient {
     }
 
     }
-    
+
 }

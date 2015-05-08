@@ -95,7 +95,7 @@ public class ReviewSignDialog extends Dialog {
     @Override
     protected void okPressed() {
     final Cursor originalCursor = getShell().getCursor();
-    
+
     getButton(IDialogConstants.OK_ID).setEnabled(false);
 
         try {

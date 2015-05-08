@@ -11,7 +11,7 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLDynamicAttribute
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 
 /**
- * 
+ *
  * @author hammonds
  *
  */
@@ -34,7 +34,7 @@ public class Oval extends ADLAbstractWidget {
                     if (_adlObject != null){
                         _hasObject = true;
                     }
-                    
+
                 }
                 else if (childWidget.getType().equals("dynamic attribute")){
                     _adlDynamicAttribute = new ADLDynamicAttribute(childWidget);
@@ -45,7 +45,7 @@ public class Oval extends ADLAbstractWidget {
             }
         }
         catch (WrongADLFormatException ex) {
-            
+
         }
     }
 

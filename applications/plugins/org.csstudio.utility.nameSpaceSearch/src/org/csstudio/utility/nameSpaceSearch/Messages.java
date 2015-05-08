@@ -29,9 +29,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Messages extends NLS {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(Messages.class);
-    
+
     private static final String BUNDLE_NAME = "org.csstudio.utility.nameSpaceSearch.messages"; //$NON-NLS-1$
 
     public static String MainView_Controller;

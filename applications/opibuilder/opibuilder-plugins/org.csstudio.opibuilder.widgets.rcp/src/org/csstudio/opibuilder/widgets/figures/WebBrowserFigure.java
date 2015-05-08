@@ -28,14 +28,14 @@ public class WebBrowserFigure extends AbstractWebBrowserFigure<BrowserViewer> {
 
     private BrowserViewer browserViewer;
     private Browser browser;
-    
+
     private String errorMassage;
-        
+
     public WebBrowserFigure(AbstractBaseEditPart editPart, boolean showToolbar) {
         super(editPart, showToolbar ? BrowserViewer.BUTTON_BAR
                 | BrowserViewer.LOCATION_BAR : SWT.None);
     }
-    
+
     public void setUrl(String url){
         if(runmode && url.trim().length() > 0)
             try {
@@ -46,7 +46,7 @@ public class WebBrowserFigure extends AbstractWebBrowserFigure<BrowserViewer> {
                 ErrorHandlerUtil.handleError(errorMassage, e);
             }
     }
-    
+
     @Override
     protected void paintOutlineFigure(Graphics graphics) {
         super.paintOutlineFigure(graphics);
@@ -63,7 +63,7 @@ public class WebBrowserFigure extends AbstractWebBrowserFigure<BrowserViewer> {
             graphics.drawText(errorMassage, clientArea.x, clientArea.y);
             graphics.popState();
         }
-        
+
     }
 
     public Browser getBrowser() {
@@ -82,7 +82,7 @@ public class WebBrowserFigure extends AbstractWebBrowserFigure<BrowserViewer> {
             ErrorHandlerUtil.handleError(errorMassage, e);
         }
         return browserViewer;
-        
+
     }
-    
+
 }

@@ -23,7 +23,7 @@ public class PVWidgetAdapterFactory implements IAdapterFactory {
                 }
                 return pvs;
             }
-            
+
         }
         return null;
     }

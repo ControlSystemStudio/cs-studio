@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.opibuilder.properties;
 
@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ServiceMethodWidgetTest extends ApplicationWindow {
 
@@ -35,7 +35,7 @@ public class ServiceMethodWidgetTest extends ApplicationWindow {
     protected Control createContents(Composite parent) {
     Composite container = new Composite(parent, SWT.NONE);
     container.setLayout(new GridLayout(1, false));
-    
+
     Map<String, String> argumentPvs = new HashMap<String, String>();
     argumentPvs.put("arg1", "loc://${DID}_pv1");
     argumentPvs.put("arg2", "loc://${DID}_pv2");
@@ -55,7 +55,7 @@ public class ServiceMethodWidgetTest extends ApplicationWindow {
 
     /**
      * Launch the application.
-     * 
+     *
      * @param args
      */
     public static void main(String args[]) {

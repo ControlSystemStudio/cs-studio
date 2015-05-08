@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene;
 
@@ -38,31 +38,31 @@ import org.epics.vtype.table.VTableFactory;
 
 /**
  * A simple Line 2D plot which can handle both waveforms and a list of PVs
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class LineGraph2DWidget
         extends
         AbstractPointDatasetGraph2DWidget<LineGraph2DRendererUpdate, LineGraph2DExpression>
         implements ConfigurableWidget, ISelectionProvider {
-    
+
     private PVWriter<Object> selectionValueWriter;
 
     public LineGraph2DWidget(Composite parent, int style) {
         super(parent, style);
         addPropertyChangeListener(new PropertyChangeListener() {
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("highlightSelectionValue") && getGraph() != null) {
                     getGraph().update(getGraph().newUpdate().highlightFocusValue((Boolean) evt.getNewValue()));
                 }
-                
+
             }
         });
         getImageDisplay().addMouseMoveListener(new MouseMoveListener() {
-            
+
             @Override
             public void mouseMove(MouseEvent e) {
                 if (isHighlightSelectionValue() && getGraph() != null) {
@@ -70,9 +70,9 @@ public class LineGraph2DWidget
                 }
             }
         });
-        
+
         addPropertyChangeListener(new PropertyChangeListener() {
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("selectionValuePv") && getGraph() != null) {
@@ -80,11 +80,11 @@ public class LineGraph2DWidget
                         selectionValueWriter.close();
                         selectionValueWriter = null;
                     }
-                    
+
                     if (getSelectionValuePv() == null || getSelectionValuePv().trim().isEmpty()) {
                         return;
                     }
-                    
+
                     selectionValueWriter = PVManager.write(formula(getSelectionValuePv()))
                             .writeListener(new PVWriterListener<Object>() {
                                 @Override
@@ -100,13 +100,13 @@ public class LineGraph2DWidget
                     if (getSelectionValue() != null) {
                         selectionValueWriter.write(getSelectionValue());
                     }
-                            
+
                 }
-                
+
             }
         });
         addPropertyChangeListener(new PropertyChangeListener() {
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("selectionValue") && selectionValueWriter != null) {
@@ -114,7 +114,7 @@ public class LineGraph2DWidget
                         selectionValueWriter.write(getSelectionValue());
                     }
                 }
-                
+
             }
         });
     }
@@ -129,43 +129,43 @@ public class LineGraph2DWidget
                 .highlightFocusValue(isHighlightSelectionValue()));
         return graph;
     }
-    
+
     private boolean highlightSelectionValue = false;
     private VTable selectionValue;
     private String selectionValuePv;
-    
+
     public String getSelectionValuePv() {
         return selectionValuePv;
     }
-    
+
     public void setSelectionValuePv(String selectionValuePv) {
         String oldValue = this.selectionValuePv;
         this.selectionValuePv = selectionValuePv;
         changeSupport.firePropertyChange("selectionValuePv", oldValue, this.selectionValuePv);
     }
-    
+
     public boolean isHighlightSelectionValue() {
         return highlightSelectionValue;
     }
-    
+
     public void setHighlightSelectionValue(boolean highlightSelectionValue) {
         boolean oldValue = this.highlightSelectionValue;
         this.highlightSelectionValue = highlightSelectionValue;
         changeSupport.firePropertyChange("highlightSelectionValue", oldValue, this.highlightSelectionValue);
     }
-    
+
     public VTable getSelectionValue() {
         return selectionValue;
     }
-    
+
     private void setSelectionValue(VTable selectionValue) {
         VTable oldValue = this.selectionValue;
         this.selectionValue = selectionValue;
         changeSupport.firePropertyChange("selectionValue", oldValue, this.selectionValue);
     }
-    
+
     private static final String MEMENTO_HIGHLIGHT_SELECTION_VALUE = "highlightSelectionValue"; //$NON-NLS-1$
-    
+
     @Override
     public void loadState(IMemento memento) {
         super.loadState(memento);
@@ -175,19 +175,19 @@ public class LineGraph2DWidget
             }
         }
     }
-    
+
     @Override
     public void saveState(IMemento memento) {
         super.saveState(memento);
         memento.putBoolean(MEMENTO_HIGHLIGHT_SELECTION_VALUE, isHighlightSelectionValue());
     }
-    
+
     @Override
     protected void processInit() {
         super.processInit();
         processValue();
     }
-    
+
     @Override
     protected void processValue() {
         Graph2DResult result = getCurrentResult();
@@ -206,7 +206,7 @@ public class LineGraph2DWidget
                 if (result.getData() instanceof VNumberArray) {
                     VNumberArray data = (VNumberArray) result.getData();
                     VTable selection = ValueFactory.newVTable(Arrays.<Class<?>>asList(double.class, double.class),
-                            Arrays.asList("X", "Y"), 
+                            Arrays.asList("X", "Y"),
                             Arrays.<Object>asList(new ArrayDouble(index), new ArrayDouble(data.getData().getDouble(index))));
                     setSelectionValue(selection);
                     return;

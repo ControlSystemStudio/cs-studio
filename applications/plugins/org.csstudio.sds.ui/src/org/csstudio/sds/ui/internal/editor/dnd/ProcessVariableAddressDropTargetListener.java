@@ -32,7 +32,7 @@ import org.eclipse.swt.dnd.TransferData;
 /**
  * Drop target listener that processes an array of
  * {@link IProcessVariableAddress}.
- * 
+ *
  * @author Sven Wende
  */
 public final class ProcessVariableAddressDropTargetListener extends AbstractDropTargetListener<ProcessVariableAddressTransfer> {

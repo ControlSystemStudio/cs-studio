@@ -24,7 +24,7 @@ import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.eclipse.gef.requests.CreateRequest;
 
 /**A default implementation of {@link IGraphicalFeedbackFactory} which does nothing to changing
- * default graphical feedback behavior. 
+ * default graphical feedback behavior.
  * Subclass can override this class to create customized feedback behavior.
  * @author Xihui Chen
  *
@@ -39,11 +39,11 @@ public class DefaultGraphicalFeedbackFactory implements
 
     public void showChangeBoundsFeedback(AbstractWidgetModel widgetModel,
             PrecisionRectangle bounds, IFigure feedbackFigure,
-            ChangeBoundsRequest request) {    
+            ChangeBoundsRequest request) {
 
         feedbackFigure.translateToRelative(bounds);
         feedbackFigure.setBounds(bounds);
-        
+
     }
 
     public Shape createSizeOnDropFeedback(CreateRequest createRequest) {

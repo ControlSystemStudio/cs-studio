@@ -102,7 +102,7 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
                                 if (value != null && value instanceof VEnum){
                                     List<String> new_meta = ((VEnum)value).getLabels();
                                     getWidgetModel().setPropertyValue(
-                                                AbstractChoiceModel.PROP_ITEMS, new_meta);                                    
+                                                AbstractChoiceModel.PROP_ITEMS, new_meta);
                                 }
                             }
                         };
@@ -136,7 +136,7 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
             }
         };
         setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
-        
+
         // PV_Value
         IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -226,7 +226,7 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
             ((AbstractChoiceFigure)getFigure()).setState((String)value);
         else if (value instanceof Number)
             ((AbstractChoiceFigure)getFigure()).setState(((Number)value).intValue());
-        else 
+        else
             super.setValue(value);
     }
 

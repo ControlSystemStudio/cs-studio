@@ -46,9 +46,9 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 /**
  * Selection dialog for record types. Only one record type can be chosen at a
  * time.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class RecordDialog extends Dialog {
 
@@ -62,7 +62,7 @@ public final class RecordDialog extends Dialog {
      * <p>
      * Note that the <code>open</code> method blocks for input dialogs.
      * </p>
-     * 
+     *
      * @param parentShell
      *            the parent shell, or <code>null</code> to create a top-level
      *            shell
@@ -92,7 +92,7 @@ public final class RecordDialog extends Dialog {
     @Override
     protected Control createDialogArea(final Composite parent) {
         Composite composite = (Composite) super.createDialogArea(parent);
-        
+
         composite.setLayout(new GridLayout(1, false));
         Label label = new Label(composite, SWT.WRAP);
         label.setText("Please select the record type:");
@@ -132,7 +132,7 @@ public final class RecordDialog extends Dialog {
 
     /**
      * Returns the selected record definition.
-     * 
+     *
      * @return the selected record definition
      */
     public IRecordDefinition getSelection() {

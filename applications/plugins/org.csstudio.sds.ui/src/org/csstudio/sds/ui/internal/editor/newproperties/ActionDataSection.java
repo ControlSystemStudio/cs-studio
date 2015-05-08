@@ -63,7 +63,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 /**
  * Section for {@link ActionDataProperty}.
- * 
+ *
  * @author Kai Meyer (C1 WPS)
  *
  */
@@ -105,7 +105,7 @@ public class ActionDataSection extends AbstractBaseSection<ActionDataProperty> {
         table.setLinesVisible(true);
         table.setHeaderVisible(false);
 
-        tableViewer = ConvenienceTableWrapper.equip(table, 
+        tableViewer = ConvenienceTableWrapper.equip(table,
                 new ColumnConfig("action", "Action", 100, 10, false),
                 new ColumnConfig("remove", "Remove", 30, -1, true),
                 new ColumnConfig("up", "Up", 30, -1, true));
@@ -140,7 +140,7 @@ public class ActionDataSection extends AbstractBaseSection<ActionDataProperty> {
         });
 
     }
-    
+
     private void printAction(AbstractWidgetActionModel widgetAction) {
         System.out.println("WidgetAction:");
         System.out.println("    "+ widgetAction.getActionLabel());
@@ -229,9 +229,9 @@ public class ActionDataSection extends AbstractBaseSection<ActionDataProperty> {
     }
 
     /**
-     * 
+     *
      * @author Kai Meyer (C1 WPS)
-     * 
+     *
      */
     private class ActionDataRowAdapter implements ITableRow {
 
@@ -325,7 +325,7 @@ public class ActionDataSection extends AbstractBaseSection<ActionDataProperty> {
     }
 
     /**
-     * 
+     *
      * @author Kai Meyer (C1 WPS)
      *
      */
@@ -372,7 +372,7 @@ public class ActionDataSection extends AbstractBaseSection<ActionDataProperty> {
     }
 
     /**
-     * 
+     *
      * @author Kai Meyer (C1 WPS)
      *
      */
@@ -429,7 +429,7 @@ public class ActionDataSection extends AbstractBaseSection<ActionDataProperty> {
 
         /**
          * Creates and configures a {@link TableViewer}.
-         * 
+         *
          * @param parent
          *            The parent for the table
          * @return The {@link TableViewer}
@@ -521,7 +521,7 @@ public class ActionDataSection extends AbstractBaseSection<ActionDataProperty> {
         /**
          * Calculates the input for the table depending on the type of the
          * {@link ActionData}.
-         * 
+         *
          * @param action
          *            The {@link AbstractWidgetActionModel} for the input
          */
@@ -548,7 +548,7 @@ public class ActionDataSection extends AbstractBaseSection<ActionDataProperty> {
         /**
          * Returns the {@link WidgetProperty} of the {@link IPropertyDescriptor}
          * .
-         * 
+         *
          * @param descriptor
          *            The {@link IPropertyDescriptor}
          * @return The {@link WidgetProperty} for the given descriptor
@@ -572,9 +572,9 @@ public class ActionDataSection extends AbstractBaseSection<ActionDataProperty> {
 
         /**
          * The {@link EditingSupport} for the columns of the property table.
-         * 
+         *
          * @author Kai Meyer
-         * 
+         *
          */
         private final class CustomEditingSupport extends EditingSupport {
 
@@ -589,7 +589,7 @@ public class ActionDataSection extends AbstractBaseSection<ActionDataProperty> {
 
             /**
              * Constructor.
-             * 
+             *
              * @param viewer
              *            The {@link ColumnViewer} for this
              *            {@link EditingSupport}.
@@ -666,9 +666,9 @@ public class ActionDataSection extends AbstractBaseSection<ActionDataProperty> {
 
         /**
          * The {@link LabelProvider} for the table.
-         * 
+         *
          * @author Kai Meyer
-         * 
+         *
          */
         private final class TableLabelProvider extends LabelProvider implements
                 ITableLabelProvider {

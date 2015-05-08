@@ -18,9 +18,9 @@ import org.csstudio.alarm.beast.client.GDCDataStructure;
 
 /**
  * Unit test utilities.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
- * 
+ *
  */
 @SuppressWarnings("nls")
 public class UnitTestUtils {
@@ -37,7 +37,7 @@ public class UnitTestUtils {
                 "reset PV123", "caput PV123 Reset") };
         final AADataStructure automated_actions[] = new AADataStructure[] {
                 new AADataStructure("Send EMail", "mailto:paul@home.there", 2)
-                // new AADataStructure("Execute Cmd", "cmd:caput PV123 Reset", 1) 
+                // new AADataStructure("Execute Cmd", "cmd:caput PV123 Reset", 1)
                 };
 
         // Root

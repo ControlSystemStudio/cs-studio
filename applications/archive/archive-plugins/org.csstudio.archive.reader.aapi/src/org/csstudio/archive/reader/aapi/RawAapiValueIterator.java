@@ -31,7 +31,7 @@ public class RawAapiValueIterator extends AapiValueIterator {
                 answerData.getHighWarning(), answerData.getLowAlarm(),
                 answerData.getHighAlarm(), answerData.getPrecision(), answerData.getEgu());
         for (int i = 0; i < answerData.getData().length; i++) {
-            
+
             ITimestamp time = TimestampFactory.createTimestamp(
                     answerData.getTime()[i],
                     answerData.getUTime()[i]);
@@ -42,7 +42,7 @@ public class RawAapiValueIterator extends AapiValueIterator {
             result.add(ValueFactory.createDoubleValue(time, sevr, stat,
                     (INumericMetaData) meta, IValue.Quality.Interpolated,
                     value));
-        }    
+        }
     }
 
 }

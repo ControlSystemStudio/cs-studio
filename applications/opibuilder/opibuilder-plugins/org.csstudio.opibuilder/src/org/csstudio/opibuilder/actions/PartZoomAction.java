@@ -18,11 +18,11 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IWorkbenchPart;
 
 /**Tweak GEF ZoomAction
- * Base zoom action that only dedicates to a part. The GEF ZoomAction's zoom manager is 
+ * Base zoom action that only dedicates to a part. The GEF ZoomAction's zoom manager is
  * not changeable, which result in using RetargetAction to switch parts. This doesn't work
  * for OPIView which has its own toolbar.
  *  Sub-classes can perform zoom in or zoom out.
- * 
+ *
  * @author danlee, Xihui Chen
  */
 abstract class PartZoomAction extends Action implements ZoomListener, Disposable {
@@ -35,7 +35,7 @@ abstract class PartZoomAction extends Action implements ZoomListener, Disposable
 
     /**
      * Constructor a empty ZoomAction. Its part need to be set to make this action work.
-     * 
+     *
      * @param text
      *            the action's text, or <code>null</code> if there is no text
      * @param image
@@ -44,7 +44,7 @@ abstract class PartZoomAction extends Action implements ZoomListener, Disposable
     public PartZoomAction(String text, ImageDescriptor image) {
         super(text, image);
     }
-    
+
     /**
      * @param part a part which must have a ZoomManager Adapter.
      */
@@ -60,7 +60,7 @@ abstract class PartZoomAction extends Action implements ZoomListener, Disposable
             zoomManager = newZoomManager;
         }
     }
-    
+
     /**
      * @see org.eclipse.gef.Disposable#dispose()
      */

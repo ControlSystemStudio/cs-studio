@@ -6,22 +6,22 @@
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -69,19 +69,19 @@ public class InspectorTableClipboardAdapter implements ActionListener {
 
     /**
      * Cut action keystroke.
-     */ 
+     */
     private static final KeyStroke CUT_KEYSTROKE =
             KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK, false);
-    
+
     /**
      * Copy action keystroke.
-     */ 
+     */
     private static final KeyStroke COPY_KEYSTROKE =
             KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK, false);
-    
+
     /**
      * Paste action keystroke.
-     */ 
+     */
     private static final KeyStroke PASTE_KEYSTROKE =
         KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK, false);
 
@@ -107,12 +107,12 @@ public class InspectorTableClipboardAdapter implements ActionListener {
      */
     public InspectorTableClipboardAdapter(JTable table) {
         this.table = table;
-        
-        // register to the table 
+
+        // register to the table
         table.registerKeyboardAction(this, CUT_ACTION_NAME, CUT_KEYSTROKE, JComponent.WHEN_FOCUSED);
         table.registerKeyboardAction(this, COPY_ACTION_NAME, COPY_KEYSTROKE, JComponent.WHEN_FOCUSED);
         table.registerKeyboardAction(this, PASTE_ACTION_NAME, PASTE_KEYSTROKE, JComponent.WHEN_FOCUSED);
-        
+
         // cache clipboard system
         clipboardSystem = Toolkit.getDefaultToolkit().getSystemClipboard();
     }
@@ -147,34 +147,34 @@ public class InspectorTableClipboardAdapter implements ActionListener {
     private void performCopy(boolean cut)
     {
         final String EMPTY_STRING = "";
-        
+
         // check to ensure we have selected only a contiguous block of cells
         int numRows = table.getSelectedRowCount();
         int[] rowsSelected = table.getSelectedRows();
-        
+
         // noop check
         if (numRows == 0)
             return;
-        
+
         // inspector case
         //int numCols = table.getSelectedColumnCount();
         //int[] colsSelected = table.getSelectedColumns();
         int numCols = 2;
         int[] colsSelected = new int[] { 1, 2 };
-        
+
         // noop check
         if (numCols == 0)
             return;
 
         /*
-        boolean contiguousRows = 
+        boolean contiguousRows =
             (numRows-1) == (rowsSelected[rowsSelected.length - 1] - rowsSelected[0])
             && numRows == rowsSelected.length;
-        
-        boolean contiguousCols = 
+
+        boolean contiguousCols =
             (numCols-1) == (colsSelected[colsSelected.length - 1] - colsSelected[0])
             && numCols == colsSelected.length;
-        
+
         if (!(contiguousRows && contiguousCols))
         {
             JOptionPane.showMessageDialog(null,
@@ -184,7 +184,7 @@ public class InspectorTableClipboardAdapter implements ActionListener {
             return;
         }
         */
-        
+
         // undo support (to pack all into one action)
         try
         {
@@ -192,7 +192,7 @@ public class InspectorTableClipboardAdapter implements ActionListener {
                 UndoManager.getInstance().startMacroAction();
 
             StringBuffer sbf = new StringBuffer();
-            
+
             // construct string
             for (int i = 0; i < numRows; i++)
             {
@@ -207,7 +207,7 @@ public class InspectorTableClipboardAdapter implements ActionListener {
                 }
                 sbf.append("\n");
             }
-            
+
             // do the copy
             stringSelection = new StringSelection(sbf.toString());
             clipboardSystem = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -218,9 +218,9 @@ public class InspectorTableClipboardAdapter implements ActionListener {
                if (cut)
                    UndoManager.getInstance().stopMacroAction();
            }
-        
+
     }
-    
+
     /**
      * Perform paste action.
      * Selections comprising non-adjacent cells result in invalid selection and
@@ -233,22 +233,22 @@ public class InspectorTableClipboardAdapter implements ActionListener {
         final String EMPTY_STRING = "";
 
         int startRow = (table.getSelectedRows())[0];
-        
+
         int tableRowCount = table.getRowCount();
         int tableColumnCount = table.getColumnCount();
 
         // inspector case
         //int startCol = (table.getSelectedColumns())[0];
         int startCol = 1;
-        
+
         boolean pasted = false;
-        
-        // w/ packed undo support 
+
+        // w/ packed undo support
         try
         {
             String transferedString =
                 (String)clipboardSystem.getContents(this).getTransferData(DataFlavor.stringFlavor);
-            
+
             StringTokenizer st1 = new StringTokenizer(transferedString, "\n");
             for (int i = 0; st1.hasMoreTokens(); i++)
             {
@@ -258,12 +258,12 @@ public class InspectorTableClipboardAdapter implements ActionListener {
                 for (; st2.hasMoreTokens(); j++)
                 {
                     String value = (String)st2.nextToken();
-                    
+
                     // set value
                     int columnToSet = startCol + j;
                     // inspector sets only column 2
                     if (columnToSet == 2)
-                        if (startRow + i < tableRowCount && 
+                        if (startRow + i < tableRowCount &&
                             columnToSet < tableColumnCount)
                         {
                             if (!pasted) {
@@ -273,7 +273,7 @@ public class InspectorTableClipboardAdapter implements ActionListener {
                             table.setValueAt(value, startRow + i, columnToSet);
                         }
                 }
-                
+
                 // clear the rest
                 // only one field - inspector case
                 if (startCol + j == 2)
@@ -284,8 +284,8 @@ public class InspectorTableClipboardAdapter implements ActionListener {
                     }
                     table.setValueAt(EMPTY_STRING, startRow + i, 2);
                 }
-                
-                
+
+
             }
         } catch (Throwable th) {
             // noop
@@ -295,7 +295,7 @@ public class InspectorTableClipboardAdapter implements ActionListener {
             if (pasted)
                 UndoManager.getInstance().stopMacroAction();
         }
-        
+
     }
 
 }

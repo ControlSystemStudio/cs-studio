@@ -28,7 +28,7 @@ import org.epics.vtype.AlarmSeverity;
 class PVTreeLabelProvider extends LabelProvider implements IColorProvider, DisposeListener
 {
     final private Map<AlarmSeverity, Image> images = new HashMap<AlarmSeverity, Image>();
-    
+
     public PVTreeLabelProvider(final Control widget)
     {
         final Display display = widget.getDisplay();
@@ -40,7 +40,7 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider, Dispo
                 createImage(display, display.getSystemColor(SWT.COLOR_RED)));
         images.put(AlarmSeverity.INVALID,
                 createImage(display, display.getSystemColor(SWT.COLOR_MAGENTA)));
-        
+
         // Arrange for image disposal
         widget.addDisposeListener(this);
     }
@@ -65,7 +65,7 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider, Dispo
         gc.dispose();
         return image;
     }
-    
+
     @Override
     public String getText(final Object element)
     {

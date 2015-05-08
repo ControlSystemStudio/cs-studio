@@ -30,17 +30,17 @@ import org.eclipse.gef.requests.CreateConnectionRequest;
 import org.eclipse.gef.requests.DropRequest;
 import org.eclipse.gef.requests.ReconnectRequest;
 
-/**    The editpolicy that allows the creation of connections and 
+/**    The editpolicy that allows the creation of connections and
     the reconnection of connections between widgets.
  * @author Xihui Chen
  *
  */
 public class WidgetNodeEditPolicy extends GraphicalNodeEditPolicy {
-    
+
     /**
      * the List of handles
      */
-    protected List<AnchorHandle> handles;    
+    protected List<AnchorHandle> handles;
 
     @Override
     protected ConnectionRouter getDummyConnectionRouter(
@@ -55,9 +55,9 @@ public class WidgetNodeEditPolicy extends GraphicalNodeEditPolicy {
         default:
             return super.getDummyConnectionRouter(request);
         }
-        
+
     }
-    
+
     @Override
     protected Command getConnectionCompleteCommand(
             CreateConnectionRequest request) {
@@ -70,18 +70,18 @@ public class WidgetNodeEditPolicy extends GraphicalNodeEditPolicy {
         return cmd;
     }
 
-    
+
     @Override
     protected Command getConnectionCreateCommand(CreateConnectionRequest request) {
         AbstractWidgetModel source = getWidgetEditPart().getWidgetModel();
-        ConnectionAnchor anchor = getWidgetEditPart().getSourceConnectionAnchor(request);        
+        ConnectionAnchor anchor = getWidgetEditPart().getSourceConnectionAnchor(request);
         String sourceTerminal = getWidgetEditPart().getTerminalNameFromAnchor(anchor);
         ConnectionCreateCommand cmd = new ConnectionCreateCommand(source, sourceTerminal);
         request.setStartCommand(cmd);
         return cmd;
     }
 
-    
+
     @Override
     protected Command getReconnectTargetCommand(ReconnectRequest request) {
         ConnectionModel connection = (ConnectionModel) request.getConnectionEditPart().getModel();
@@ -91,12 +91,12 @@ public class WidgetNodeEditPolicy extends GraphicalNodeEditPolicy {
         ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(connection);
         cmd.setNewTarget(newTarget);
         cmd.setNewTargetTerminal(newTerminal);
-        //clear point list        
+        //clear point list
         return cmd.chain(new SetWidgetPropertyCommand(
                 connection, ConnectionModel.PROP_POINTS, new PointList()));
     }
 
-    
+
     @Override
     protected Command getReconnectSourceCommand(ReconnectRequest request) {
         ConnectionModel connection = (ConnectionModel) request.getConnectionEditPart().getModel();
@@ -106,27 +106,27 @@ public class WidgetNodeEditPolicy extends GraphicalNodeEditPolicy {
         ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(connection);
         cmd.setNewSource(newSource);
         cmd.setNewSourceTerminal(newTerminal);
-        //clear point list        
+        //clear point list
         return cmd.chain(new SetWidgetPropertyCommand(
                 connection, ConnectionModel.PROP_POINTS, new PointList()));
     }
-    
+
     protected AbstractBaseEditPart getWidgetEditPart(){
         return (AbstractBaseEditPart)getHost();
     }
 
-        
+
     @Override
     protected void showTargetConnectionFeedback(DropRequest request) {
         addAnchorHandles();
     }
-    
-    
+
+
     @Override
     protected void eraseTargetConnectionFeedback(DropRequest request) {
         removeAnchorHandles();
     }
-            
+
     /**
      * Adds the handles to the handle layer.
      */
@@ -140,7 +140,7 @@ public class WidgetNodeEditPolicy extends GraphicalNodeEditPolicy {
 
     /**
      * create the list of handles.
-     * 
+     *
      * @return List of handles; cannot be <code>null</code>
      */
     protected List<AnchorHandle> createAnchorHandles(){
@@ -150,7 +150,7 @@ public class WidgetNodeEditPolicy extends GraphicalNodeEditPolicy {
         }
         return result;
     }
-    
+
 
     /**
      * removes the anchor handles

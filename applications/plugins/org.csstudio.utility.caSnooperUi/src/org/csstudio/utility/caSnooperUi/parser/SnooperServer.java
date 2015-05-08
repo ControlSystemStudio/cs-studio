@@ -60,31 +60,31 @@ public class SnooperServer {
                 client.addBMessage(aliasName, clientAddress);
             return ProcessVariableExistanceCompletion.DOES_NOT_EXIST_HERE;
         }
-        
+
     }
 
     /**
      * JCA server context.
      */
     private ServerContext context = null;
-    
+
     /**
      * caSnooper message collector
      */
     protected ChannelCollector client = null;
-    
+
     /**
      * Initialize JCA context.
      * @throws CAException    throws on any failure.
      */
     private void initialize() throws CAException {
-        
+
         // Get the JCALibrary instance.
         JCALibrary jca = JCALibrary.getInstance();
 
         // Create server implementation
         SnopperServerImpl server = new SnopperServerImpl();
-        
+
         // Create a context with default configuration values.
         context = jca.createServerContext(JCALibrary.CHANNEL_ACCESS_SERVER_JAVA, server);
 
@@ -92,34 +92,34 @@ public class SnooperServer {
         //System.out.println(context.getVersion().getVersionString());
         //context.printInfo();
     }
- 
+
     /**
      * Destroy JCA server  context.
      */
     private void destroy() {
-        
+
         try {
 
             // Destroy the context, check if never initialized.
             if (context != null)
                 context.destroy();
-            
+
         } catch (Throwable th) {
             th.printStackTrace();
         }
     }
-    
+
     /**
      * @param channelName
      */
     public void execute() {
 
         try {
-            
+
             // initialize context
             initialize();
-            
-            // run server 
+
+            // run server
             context.run(0);
 
         } catch (Throwable th) {
@@ -131,20 +131,20 @@ public class SnooperServer {
         }
 
     }
-    
+
     /**
-     * Registration of client instance to the server 
+     * Registration of client instance to the server
      * @param listener as MessageCollector
      */
     public void addListener(ChannelCollector listener){
         this.client = listener;
     }
-    
+
     /**
      * Removal of client instance
      */
     public void resetListener(){
         this.client = null;
-    }    
+    }
 }
 

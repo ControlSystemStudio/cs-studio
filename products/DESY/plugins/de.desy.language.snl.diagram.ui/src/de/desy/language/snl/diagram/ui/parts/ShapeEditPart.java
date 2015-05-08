@@ -36,7 +36,7 @@ import de.desy.language.snl.diagram.ui.figures.StateSetFigure;
  * This edit part must implement the PropertyChangeListener interface, so it can
  * be notified of property changes in the corresponding model element.
  * </p>
- * 
+ *
  */
 class ShapeEditPart extends AbstractGraphicalEditPart implements
         PropertyChangeListener, NodeEditPart {
@@ -57,7 +57,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
      */
     @Override
@@ -71,7 +71,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
                 new GraphicalNodeEditPolicy() {
                     /*
                      * (non-Javadoc)
-                     * 
+                     *
                      * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy#getConnectionCompleteCommand(org.eclipse.gef.requests.CreateConnectionRequest)
                      */
                     @Override
@@ -85,7 +85,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 
                     /*
                      * (non-Javadoc)
-                     * 
+                     *
                      * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy#getConnectionCreateCommand(org.eclipse.gef.requests.CreateConnectionRequest)
                      */
                     @Override
@@ -100,7 +100,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 
                     /*
                      * (non-Javadoc)
-                     * 
+                     *
                      * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy#getReconnectSourceCommand(org.eclipse.gef.requests.ReconnectRequest)
                      */
                     @Override
@@ -117,7 +117,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 
                     /*
                      * (non-Javadoc)
-                     * 
+                     *
                      * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy#getReconnectTargetCommand(org.eclipse.gef.requests.ReconnectRequest)
                      */
                     @Override
@@ -133,7 +133,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
                     }
                 });
     }
-    
+
 //    @SuppressWarnings("unchecked")
 //    @Override
 //    protected List getModelChildren() {
@@ -149,7 +149,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
      */
     @Override
@@ -207,7 +207,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getModelSourceConnections()
      */
     @Override
@@ -217,7 +217,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getModelTargetConnections()
      */
     @Override
@@ -227,7 +227,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
      */
     public ConnectionAnchor getSourceConnectionAnchor(
@@ -237,7 +237,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.Request)
      */
     public ConnectionAnchor getSourceConnectionAnchor(final Request request) {
@@ -246,7 +246,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
      */
     public ConnectionAnchor getTargetConnectionAnchor(
@@ -256,7 +256,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.Request)
      */
     public ConnectionAnchor getTargetConnectionAnchor(final Request request) {
@@ -265,7 +265,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
     public void propertyChange(final PropertyChangeEvent evt) {
@@ -293,5 +293,5 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
         ((GraphicalEditPart) getParent()).setLayoutConstraint(this,
                 getFigure(), bounds);
     }
-    
+
 }

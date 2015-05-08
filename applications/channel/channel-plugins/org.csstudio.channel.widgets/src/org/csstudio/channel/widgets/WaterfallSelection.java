@@ -11,10 +11,10 @@ import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
 
 public class WaterfallSelection implements ChannelQueryAdaptable, ConfigurableWidgetAdaptable {
-    
+
     private final ChannelQuery channelQuery;
     private final WaterfallWidget waterfallWidget;
-    
+
     public WaterfallSelection(ChannelQuery channelQuery,
             WaterfallWidget waterfallWidget) {
         this.channelQuery = channelQuery;
@@ -43,7 +43,7 @@ public class WaterfallSelection implements ChannelQueryAdaptable, ConfigurableWi
         return Collections.singleton(channelQuery);
     }
 
-    
-    
+
+
 
 }

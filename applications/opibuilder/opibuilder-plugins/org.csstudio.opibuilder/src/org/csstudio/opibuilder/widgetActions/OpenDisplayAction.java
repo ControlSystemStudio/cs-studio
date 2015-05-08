@@ -27,9 +27,9 @@ import org.jdom.Element;
 
 /**
  * The action running another OPI file.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class OpenDisplayAction extends AbstractOpenOPIAction {
 
@@ -38,14 +38,14 @@ public class OpenDisplayAction extends AbstractOpenOPIAction {
 
     private enum OpenDisplayTarget{
         NEW_TAB("Open in new Tab"),
-        REPLACE("Replace"),        
+        REPLACE("Replace"),
         NEW_WINDOW("Open in new Window");
-        
+
         private String description;
         private OpenDisplayTarget(String desc) {
             this.description = desc;
         }
-        
+
         public static String[] stringValues(){
             String[] sv = new String[values().length];
             int i=0;
@@ -54,7 +54,7 @@ public class OpenDisplayAction extends AbstractOpenOPIAction {
             return sv;
         }
     }
-    
+
 
     @Override
     protected void configureProperties() {
@@ -76,7 +76,7 @@ public class OpenDisplayAction extends AbstractOpenOPIAction {
 
     @Override
     protected void openOPI(IPath absolutePath) {
-        if (!ctrlPressed && !shiftPressed && getOpenDisplayTarget() == OpenDisplayTarget.REPLACE) {                
+        if (!ctrlPressed && !shiftPressed && getOpenDisplayTarget() == OpenDisplayTarget.REPLACE) {
             IOPIRuntime opiRuntime = getWidgetModel().getRootDisplayModel()
                     .getOpiRuntime();
             DisplayOpenManager manager = (DisplayOpenManager) (opiRuntime
@@ -93,7 +93,7 @@ public class OpenDisplayAction extends AbstractOpenOPIAction {
                         "Open file error",
                         NLS.bind("Failed to open {0}", absolutePath));
             }
-            
+
         } else {
             TargetWindow target;
             if(!ctrlPressed && !shiftPressed){
@@ -115,7 +115,7 @@ public class OpenDisplayAction extends AbstractOpenOPIAction {
 
             RunModeService.getInstance().runOPI(absolutePath, target, null,
                     getMacrosInput(), null);
-        }        
+        }
     }
 
     private OpenDisplayTarget getOpenDisplayTarget() {

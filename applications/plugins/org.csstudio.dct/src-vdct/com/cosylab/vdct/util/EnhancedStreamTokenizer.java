@@ -15,7 +15,7 @@ import java.io.Reader;
 /**
  * Enhanced (in terms of tuning) version of <code>java.io.StreamTokenizer</code>.
  * If particular regarding parsing escape sequences - there are cases where we do not want to do that.
- * 
+ *
  * The <code>StreamTokenizer</code> class takes an input stream and
  * parses it into "tokens", allowing the tokens to be
  * read one at a time. The parsing process is controlled by a table
@@ -803,13 +803,13 @@ public class EnhancedStreamTokenizer {
         ret = "NOTHING";
         break;
       default: {
-        /* 
+        /*
          * ttype is the first character of either a quoted string or
          * is an ordinary character. ttype can definitely not be less
          * than 0, since those are reserved values used in the previous
          * case statements
          */
-        if (ttype < 256 && 
+        if (ttype < 256 &&
             ((ctype[ttype] & CT_QUOTE) != 0)) {
             ret = sval;
             break;

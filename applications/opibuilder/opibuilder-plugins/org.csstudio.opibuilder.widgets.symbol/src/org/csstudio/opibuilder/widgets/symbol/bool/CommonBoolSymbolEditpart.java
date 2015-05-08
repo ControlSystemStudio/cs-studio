@@ -32,9 +32,9 @@ import org.epics.vtype.VType;
 /**
  * Base edit part controller for a Boolean Symbol Image widget based on
  * {@link CommonBoolSymbolModel}.
- * 
+ *
  * @author SOPRA Group
- * 
+ *
  */
 public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
 
@@ -47,7 +47,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
      * Sets those properties on the figure that are defined in the
      * {@link CommonBoolSymbolFigure} base class. This method is called by
      * {@link #doCreateFigure()}.
-     * 
+     *
      * @param figure
      *            the figure.
      * @param model
@@ -154,7 +154,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
             }
         };
         setPropertyChangeHandler(CommonBoolSymbolModel.PROP_SYMBOL_IMAGE_FILE, handler);
-        
+
         // PV Name ForeColor color rule
         handler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(Object oldValue, Object newValue,
@@ -166,7 +166,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
             }
         };
         setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, handler);
-        
+
         // ForeColor Alarm Sensitive
         getPVWidgetEditpartDelegate().addAlarmSeverityListener(new AlarmSeverityListener() {
             @Override
@@ -289,7 +289,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
                 CommonBoolSymbolFigure imageFigure = (CommonBoolSymbolFigure) figure;
                 int newDegree = (Integer) newValue;
                 int oldDegree = (Integer) oldValue;
-                
+
                 PermutationMatrix oldMatrix = new PermutationMatrix(
                         (double[][]) getPropertyValue(CommonBoolSymbolModel.PERMUTATION_MATRIX));
                 PermutationMatrix newMatrix = PermutationMatrix.generateRotationMatrix(newDegree - oldDegree);
@@ -312,7 +312,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
                 PermutationMatrix newMatrix = PermutationMatrix.generateFlipHMatrix();
                 PermutationMatrix oldMatrix = imageFigure.getPermutationMatrix();
                 PermutationMatrix result = newMatrix.multiply(oldMatrix);
-                
+
                 setPropertyValue(CommonBoolSymbolModel.PERMUTATION_MATRIX, result.getMatrix());
                 setPropertyValue(CommonBoolSymbolModel.PROP_FLIP_HORIZONTAL, (Boolean) newValue);
                 imageFigure.setPermutationMatrix(result);
@@ -330,7 +330,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
                 PermutationMatrix newMatrix = PermutationMatrix.generateFlipVMatrix();
                 PermutationMatrix oldMatrix = imageFigure.getPermutationMatrix();
                 PermutationMatrix result = newMatrix.multiply(oldMatrix);
-                
+
                 setPropertyValue(CommonBoolSymbolModel.PERMUTATION_MATRIX, result.getMatrix());
                 setPropertyValue(CommonBoolSymbolModel.PROP_FLIP_VERTICAL, (Boolean) newValue);
                 imageFigure.setPermutationMatrix(result);
@@ -411,7 +411,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
 
     /**
      * Get the control widget model.
-     * 
+     *
      * @return the control widget model.
      */
     @Override

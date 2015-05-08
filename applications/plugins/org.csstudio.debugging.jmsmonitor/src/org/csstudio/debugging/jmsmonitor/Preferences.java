@@ -38,7 +38,7 @@ public class Preferences
 
     public static String getJMS_Password()
     {
-        return SecurePreferences.get(Activator.ID, JMS_PASSWORD, null);            
+        return SecurePreferences.get(Activator.ID, JMS_PASSWORD, null);
     }
 
     public static int getMaxMessages()

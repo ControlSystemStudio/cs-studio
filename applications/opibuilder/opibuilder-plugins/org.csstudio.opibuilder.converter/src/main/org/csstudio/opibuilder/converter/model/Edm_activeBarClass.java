@@ -12,12 +12,12 @@ package org.csstudio.opibuilder.converter.model;
  *
  */
 public class Edm_activeBarClass extends EdmWidget {
-    
+
     @EdmAttributeAn @EdmOptionalAn private String indicatorPv;
     @EdmAttributeAn @EdmOptionalAn private EdmColor indicatorColor;
     @EdmAttributeAn @EdmOptionalAn private boolean indicatorAlarm;
     @EdmAttributeAn @EdmOptionalAn private String orientation;
-    @EdmAttributeAn @EdmOptionalAn private String label;    
+    @EdmAttributeAn @EdmOptionalAn private String label;
     @EdmAttributeAn @EdmOptionalAn private boolean showScale;
     @EdmAttributeAn @EdmOptionalAn private boolean border;
     @EdmAttributeAn @EdmOptionalAn private boolean limitsFromDb;
@@ -26,18 +26,18 @@ public class Edm_activeBarClass extends EdmWidget {
     @EdmAttributeAn @EdmOptionalAn private double min;
     @EdmAttributeAn @EdmOptionalAn private double max;
     //Looks like this doesn't work in EDM
-    @EdmAttributeAn @EdmOptionalAn private String scaleFormat;    
-    
+    @EdmAttributeAn @EdmOptionalAn private String scaleFormat;
 
-    
-    
-    
-    
+
+
+
+
+
     public Edm_activeBarClass(EdmEntity genericEntity) throws EdmException {
         super(genericEntity);
     }
 
-    
+
 
     public boolean isShowScale() {
         return showScale;
@@ -48,7 +48,7 @@ public class Edm_activeBarClass extends EdmWidget {
      */
     public final String getIndicatorPv() {
         return indicatorPv;
-    }    
+    }
     public EdmColor getIndicatorColor() {
         return indicatorColor;
     }
@@ -108,7 +108,7 @@ public class Edm_activeBarClass extends EdmWidget {
 
     public String getScaleFormat() {
         return scaleFormat;
-    }    
-    
-    
+    }
+
+
 }

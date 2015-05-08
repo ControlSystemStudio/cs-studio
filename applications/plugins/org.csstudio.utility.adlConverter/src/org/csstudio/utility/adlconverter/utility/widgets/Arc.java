@@ -42,8 +42,8 @@ public class Arc extends Widget {
 
     /**
      * @param arc The ADLWidget that describe the Arc.
-     * @param storedDynamicAttribute 
-     * @param storedBasicAttribute 
+     * @param storedDynamicAttribute
+     * @param storedBasicAttribute
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
     public Arc(final ADLWidget arc, AbstractWidgetModel abstractWidgetModel,ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
@@ -62,9 +62,9 @@ public class Arc extends Widget {
 //              <property type="sds.integer" id="angle" value="180" />
                 int angle = Integer.parseInt(row[1])/64;
                 _widget.setPropertyValue(ArcModel.PROP_ANGLE, Integer.toString(angle));
-            }else{                
+            }else{
                 throw new WrongADLFormatException(Messages.Arc_WrongADLFormatException);
-            } 
+            }
         }
 
 //          <property type="sds.integer" id="linewidth" value="2" />
@@ -76,14 +76,14 @@ public class Arc extends Widget {
             _widget.setPropertyValue(ArcModel.PROP_FILLCOLOR, _widget.getColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
             _widget.setPropertyValue(ArcModel.PROP_LINEWIDTH, 0);
             _widget.setPropertyValue(ArcModel.PROP_FILLED, true);
-            
+
         }
-        
+
         ADLHelper.checkAndSetLayer(_widget, abstractWidgetModel);
-        
+
     }
 
-    
+
     /**
      * {@inheritDoc}
      */

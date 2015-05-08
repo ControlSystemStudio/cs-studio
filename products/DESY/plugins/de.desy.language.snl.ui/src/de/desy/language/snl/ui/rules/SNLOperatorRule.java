@@ -18,13 +18,13 @@ import de.desy.language.editor.ui.editor.highlighting.predefinedRules.SingleChar
 
 /**
  * Rule to recognize operators.
- * 
+ *
  * @author P.Tomaszewski
  */
 public class SNLOperatorRule extends SingleCharRule {
     /**
      * Creates new rule.
-     * 
+     *
      * @param token
      *            Style token.
      */

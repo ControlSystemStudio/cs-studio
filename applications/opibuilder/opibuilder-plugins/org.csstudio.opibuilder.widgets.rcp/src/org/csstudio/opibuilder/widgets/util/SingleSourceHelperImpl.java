@@ -23,8 +23,8 @@ import org.eclipse.swt.widgets.Display;
 
 public class SingleSourceHelperImpl extends SingleSourceHelper{
 
-    
-    
+
+
     /**Get the IFile from IPath.
      * @param path Path to file in workspace
      * @return the IFile. <code>null</code> if no IFile on the path, file does not exist, internal error.
@@ -90,7 +90,7 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
         control.addMouseTrackListener(listener);
         if(control instanceof Composite){
             for(Control c : ((Composite)control).getChildren()){
-                internalSwtWidgetAddMouseTrackListener(c, listener);                        
+                internalSwtWidgetAddMouseTrackListener(c, listener);
             }
         }
     }
@@ -102,5 +102,5 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
     }
 
 
-    
+
 }

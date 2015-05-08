@@ -21,7 +21,7 @@ import org.jdom.Element;
  *
  */
 public class StringProperty extends AbstractWidgetProperty {
-    
+
     private boolean multiLine, saveAsCDATA;
     /**String Property Constructor. The property value type is {@link String}.
      * @param prop_id the property id which should be unique in a widget model.
@@ -34,32 +34,32 @@ public class StringProperty extends AbstractWidgetProperty {
             WidgetPropertyCategory category, String defaultValue) {
         this(prop_id, description, category, defaultValue, false, false);
     }
-    
+
     public StringProperty(String prop_id, String description,
             WidgetPropertyCategory category, String defaultValue, boolean multiLine) {
         this(prop_id, description, category, defaultValue, multiLine, false);
     }
-    
+
     public StringProperty(String prop_id, String description,
             WidgetPropertyCategory category, String defaultValue, boolean multiLine, boolean saveAsCDATA) {
         super(prop_id, description, category, defaultValue);
         this.multiLine = multiLine;
         this.saveAsCDATA = saveAsCDATA;
     }
-    
+
 
     @Override
     public Object checkValue(Object value) {
         if(value == null)
             return null;
-        
+
         String acceptedValue = null;
 
-        if (value instanceof String) 
+        if (value instanceof String)
             acceptedValue = (String) value;
         else
             acceptedValue = value.toString();
-        
+
         return acceptedValue;
     }
 
@@ -83,14 +83,14 @@ public class StringProperty extends AbstractWidgetProperty {
             propElement.setText(reShapedString);
         }
     }
-    
+
 
 
     @Override
     public Object readValueFromXML(Element propElement) {
         return propElement.getValue();
     }
-    
+
     @Override
     public Object getPropertyValue() {
         if(widgetModel !=null && widgetModel.getExecutionMode() == ExecutionMode.RUN_MODE)
@@ -99,15 +99,15 @@ public class StringProperty extends AbstractWidgetProperty {
         else
             return super.getPropertyValue();
     }
-    
+
     @Override
     public boolean configurableByRule() {
         return true;
     }
-    
+
     @Override
     public String toStringInRuleScript(Object propValue) {
         return RuleData.QUOTE + super.toStringInRuleScript(propValue) + RuleData.QUOTE;
-    }    
+    }
 
 }

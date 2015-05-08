@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.channel.actions;
 
@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class DisplayTreeDialog extends TitleAreaDialog {
 
@@ -54,7 +54,7 @@ public class DisplayTreeDialog extends TitleAreaDialog {
 
     /**
      * Creates the dialog's contents
-     * 
+     *
      * @param parent
      *            the parent composite
      * @return Control

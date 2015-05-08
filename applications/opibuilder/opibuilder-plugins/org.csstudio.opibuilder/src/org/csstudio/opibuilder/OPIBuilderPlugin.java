@@ -48,7 +48,7 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 
     /** File extension used for OPI files */
     public static final String OPI_FILE_EXTENSION = "opi"; //$NON-NLS-1$
-    
+
     public static final String KEY_IS_MOBILE = "org.csstudio.rap.isMobile"; //$NON-NLS-1$
 
     final private static Logger logger = Logger.getLogger(PLUGIN_ID);
@@ -57,8 +57,8 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
     private static OPIBuilderPlugin plugin;
 
     private static boolean isRAP = SWT.getPlatform().startsWith("rap"); //$NON-NLS-1$;
-    
-    
+
+
     private IPropertyChangeListener preferenceLisener;
 
 
@@ -66,7 +66,7 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
      * The constructor
      */
     public OPIBuilderPlugin() {
-        plugin = this;        
+        plugin = this;
     }
 
 
@@ -83,16 +83,16 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
     @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
-        
+
         //set this to resolve Xincludes in XMLs
         System.setProperty("org.apache.xerces.xni.parser.XMLParserConfiguration",
                 "org.apache.xerces.parsers.XIncludeParserConfiguration");
-        
+
         if(isRAP)
             SingleSourceHelper.rapPluginStartUp();
-        
+
         ScriptService.getInstance();
-        
+
         if(PreferencesHelper.isDisplaySystemOutput()){
             ConsoleService.getInstance().turnOnSystemOutput();
         }
@@ -110,13 +110,13 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
                         GUIRefreshThread.getInstance(true).reLoadGUIRefreshCycle();
                     else if (event.getProperty().equals(
                             PreferencesHelper.DISABLE_ADVANCED_GRAPHICS)) {
-                        String disabled = PreferencesHelper.isAdvancedGraphicsDisabled() ? "true" : "false";//$NON-NLS-1$ //$NON-NLS-2$    
+                        String disabled = PreferencesHelper.isAdvancedGraphicsDisabled() ? "true" : "false";//$NON-NLS-1$ //$NON-NLS-2$
                         //for swt.widgets
                         System.setProperty(
-                                "org.csstudio.swt.widget.prohibit_advanced_graphics", disabled);//$NON-NLS-1$                                                
+                                "org.csstudio.swt.widget.prohibit_advanced_graphics", disabled);//$NON-NLS-1$
                         //for XYGraph
-                        System.setProperty("prohibit_advanced_graphics", disabled); //$NON-NLS-1$                
-                
+                        System.setProperty("prohibit_advanced_graphics", disabled); //$NON-NLS-1$
+
                     } else if (event.getProperty().equals(
                             PreferencesHelper.URL_FILE_LOADING_TIMEOUT))
                         System.setProperty(
@@ -138,7 +138,7 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
             };
 
             getPluginPreferences().addPropertyChangeListener(preferenceLisener);
-            
+
             @SuppressWarnings("serial")
             //need to run preferenceListener at startup
             //A hack to make protected constructor public.
@@ -169,14 +169,14 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
     {
         return logger;
     }
-    
+
     /**
      * @return true if this is running in RAP.
      */
     public static boolean isRAP() {
         return isRAP;
     }
-    
+
     /**
      * @param display the display attached to the session;
      * @return true if the display session is on mobile devices.

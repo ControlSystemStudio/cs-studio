@@ -31,7 +31,7 @@ public class ScriptInfoFieldEditor extends FieldEditor
 {
     final private List<String[]> texts = new ArrayList<String[]>();
     private StringTableEditor table_editor;
-    
+
     public ScriptInfoFieldEditor(final Composite parent)
     {
         init(Preferences.PREF_SCRIPTS, Messages.PrefEdit_Scripts);

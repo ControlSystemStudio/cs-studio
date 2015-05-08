@@ -17,9 +17,9 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 
 /**
  * Drag and Drop handler for {@link IInstance}s.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class InstanceDndHandler extends AbstractDnDHandler {
 
@@ -36,7 +36,7 @@ public class InstanceDndHandler extends AbstractDnDHandler {
         assert targetFolder != null || targetContainer != null;
 
         Command result;
-        
+
         if(targetFolder!=null) {
             result = new CloneInstanceCommand(instance, targetFolder, "Copy of ");
         } else {
@@ -59,14 +59,14 @@ public class InstanceDndHandler extends AbstractDnDHandler {
         // .. chain all command necessary to remove an instance and all
         // dependent instances
         CompoundCommand cmd = new CompoundCommand();
-        
+
         // .. remove all dependent instances
         List<IInstance> dependentInstances = ModelValidationUtil.recursivelyGetDependentInstances(instance);
-        
+
         for(IInstance i : dependentInstances) {
             cmd.add(new RemoveInstanceCommand(i));
         }
-        
+
         // .. remove the instance itself
         cmd.add(new RemoveInstanceCommand(instance));
 
@@ -81,7 +81,7 @@ public class InstanceDndHandler extends AbstractDnDHandler {
 
             IFolder targetFolder = container.getParentFolder();
             IContainer targetContainer = container.getContainer();
-            
+
             if (targetFolder != null) {
                 assert targetContainer == null;
                 // .. move within the parent folder
@@ -91,18 +91,18 @@ public class InstanceDndHandler extends AbstractDnDHandler {
                 if(tmp>-1 && tmp<index) {
                     index--;
                 }
-                
+
                 cmd.add(new AddInstanceCommand(targetFolder, instance, false, index));
             } else {
                 // .. move within the parent container
                 assert targetFolder == null;
-                
+
                 int index =targetContainer.getInstances().indexOf(container);
                 int tmp = targetContainer.getInstances().indexOf(instance);
                 if(tmp>-1 && tmp<index) {
                     index--;
                 }
-                
+
                 cmd.add(new AddInstanceCommand(targetContainer, instance, false, index));
             }
 

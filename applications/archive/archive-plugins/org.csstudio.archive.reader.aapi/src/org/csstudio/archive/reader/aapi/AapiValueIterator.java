@@ -17,7 +17,7 @@ public abstract class AapiValueIterator implements ValueIterator {
 
     private final AapiClient _aapiClient;
     private RequestData _requestData = new RequestData();
-    
+
     private List<IValue> _result = new ArrayList<IValue>();
 
     public AapiValueIterator(AapiClient aapiClient, int key, String name,
@@ -27,19 +27,19 @@ public abstract class AapiValueIterator implements ValueIterator {
         _requestData.setToTime((int) end.seconds());
         _requestData.setPvList(new String[]{name});
     }
-    
+
     public void setCount(int count) {
         _requestData.setNumberOfSamples(count);
     }
-    
+
     public void setConversionParam(double deadbandParam) {
         _requestData.setConversParam(deadbandParam);
     }
-    
+
     public void setConversionMethod(AapiReductionMethod minMaxAverageMethod) {
         _requestData.setConversionMethod(minMaxAverageMethod);
     }
-    
+
     @Override
     public boolean hasNext() {
 //        System.out.println(">>>>> AapiValueIterator.hasNext");
@@ -63,7 +63,7 @@ public abstract class AapiValueIterator implements ValueIterator {
 //        System.out.println(">>>>> AapiValueIterator.next return null");
         return null;
     }
-    
+
     public void getData() {
         dataConversion(_aapiClient.getData(_requestData), _result);
     }

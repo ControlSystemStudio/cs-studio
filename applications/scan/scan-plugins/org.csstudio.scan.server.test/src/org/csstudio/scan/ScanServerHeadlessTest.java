@@ -52,7 +52,7 @@ import org.junit.Test;
 public class ScanServerHeadlessTest implements Runnable
 {
     private ScanServer server = null;
-    
+
     private volatile Throwable client_error = null;
 
     /** @return Demo scan sequence */
@@ -119,10 +119,10 @@ public class ScanServerHeadlessTest implements Runnable
             infos = server.getScanInfos();
             for (ScanInfo info : infos)
                 System.out.println(info);
-            
+
             // Check if scan that just finished shows up as such
             assertEquals(ScanState.Finished, server.getScanInfo(id).getState());
-    
+
             // Also wait for scan to end by monitoring xpos (not really useful)
             System.out.println("Client waiting for PV to reach final value...");
             new NumericValueCondition(pv, Comparison.EQUALS, 5.0, 0.1, null).await();

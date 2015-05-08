@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.opibuilder.properties;
 
@@ -19,7 +19,7 @@ import org.jdom.Element;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ServiceMethodProperty extends AbstractWidgetProperty {
 
@@ -46,7 +46,7 @@ public class ServiceMethodProperty extends AbstractWidgetProperty {
     private static final String XML_ELEMENT_RESULTS = "results";
 
     @Override
-    public void writeToXML(Element propElement) {    
+    public void writeToXML(Element propElement) {
     ServiceMethodDescription serviceMethodDescription = (ServiceMethodDescription) getPropertyValue();
     Element serviceMethod;
     serviceMethod = new Element(XML_ELEMENT_SERVICE_METHOD_DESCRIPTION);
@@ -87,11 +87,11 @@ public class ServiceMethodProperty extends AbstractWidgetProperty {
         .getChild(XML_ELEMENT_SERVICE_METHOD_DESCRIPTION);
     if (serviceMethodDescriptionElement != null) {
         String service = serviceMethodDescriptionElement.getChild(XML_ELEMENT_SERVICE_NAME).getText();
-        String method = serviceMethodDescriptionElement.getChild(XML_ELEMENT_METHOD_NAME).getText();        
+        String method = serviceMethodDescriptionElement.getChild(XML_ELEMENT_METHOD_NAME).getText();
         String description = serviceMethodDescriptionElement.getChild(XML_ELEMENT_METHOD_DESCRIPTION).getText();
         List<Element> arguments = serviceMethodDescriptionElement.getChild(XML_ELEMENT_ARGUMENTS).getChildren();
         Map<String, String> argPvs = new HashMap<String, String>();
-        for (Element argument : arguments) {        
+        for (Element argument : arguments) {
         argPvs.put(argument.getChildText("key"), argument.getChildText("value"));
         }
         List<Element> results = serviceMethodDescriptionElement.getChild(XML_ELEMENT_RESULTS).getChildren();
@@ -103,22 +103,22 @@ public class ServiceMethodProperty extends AbstractWidgetProperty {
     }
     return null;
     }
-    
+
     @Override
     public Object getPropertyValue() {
     if(widgetModel !=null && widgetModel.getExecutionMode() == ExecutionMode.RUN_MODE){
             ServiceMethodDescription value = (ServiceMethodDescription) super.getPropertyValue();
-            
+
         Map<String, String> argumentPvs = new HashMap<String, String>();
         for (Entry<String, String> arg : value.getArgumentPvs().entrySet()) {
             argumentPvs.put(arg.getKey(), OPIBuilderMacroUtil.replaceMacros(widgetModel, arg.getValue()));
         }
-        
+
         Map<String, String> resultPvs = new HashMap<String, String>();
         for (Entry<String, String> result : value.getResultPvs().entrySet()) {
             resultPvs.put(result.getKey(), OPIBuilderMacroUtil.replaceMacros(widgetModel, result.getValue()));
         }
-            
+
         return createServiceMethodDescription(value.getService(), value.getMethod(), value.getDescription(), argumentPvs, resultPvs);
     } else {
         return super.getPropertyValue();

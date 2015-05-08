@@ -47,7 +47,7 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
     {
         this(command, null);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String[] getDeviceNames(final MacroContext macros) throws Exception
@@ -60,7 +60,7 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
     public void simulate(final SimulationContext context) throws Exception
     {
         final SimulatedDevice device = context.getDevice(command.getDeviceName());
-        
+
         // Estimate execution time
         final double time_estimate;
         double original = VTypeHelper.toDouble(device.read());
@@ -91,7 +91,7 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
             time_estimate = device.getChangeTimeEstimate(((Number) desired).doubleValue());
         }
         else
-            time_estimate = 1.0; // Not numeric, no known slew rate 
+            time_estimate = 1.0; // Not numeric, no known slew rate
 
         // Show command
         final StringBuilder buf = new StringBuilder();

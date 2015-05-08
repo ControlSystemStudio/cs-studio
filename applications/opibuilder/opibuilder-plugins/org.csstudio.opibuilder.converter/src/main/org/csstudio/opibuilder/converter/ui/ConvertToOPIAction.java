@@ -29,9 +29,9 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * Convert selected EDM filef to OPI files.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class ConvertToOPIAction implements IObjectActionDelegate {
 

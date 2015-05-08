@@ -50,7 +50,7 @@ public class PropertyProxyWrapper<T,P extends AbstractPlug> implements SyncPrope
     public P getPlug() {
         return proxy.getPlug();
     }
-    
+
     /**
      * Creates a new PropertyProxyWrapper object.
      *
@@ -174,11 +174,11 @@ public class PropertyProxyWrapper<T,P extends AbstractPlug> implements SyncPrope
     {
         return proxy.isDebug();
     }
-    
+
     public Response<T> getLatestValueResponse() {
         return proxy.getLatestValueResponse();
     }
-    
+
     public String getConnectionInfo() {
         return proxy.getConnectionInfo();
     }

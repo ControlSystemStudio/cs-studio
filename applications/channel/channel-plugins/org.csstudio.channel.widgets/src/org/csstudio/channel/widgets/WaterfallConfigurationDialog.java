@@ -9,10 +9,10 @@ import org.epics.util.time.TimeDuration;
 
 /**
  * Dialog used by the waterfall widget to modify the WaterfallWidget.
- * 
+ *
  * @author carcassi
  */
-public class WaterfallConfigurationDialog 
+public class WaterfallConfigurationDialog
 extends AbstractConfigurationDialog<WaterfallWidget, WaterfallConfigurationPanel>  {
 
     public WaterfallConfigurationDialog(WaterfallWidget widget) {
@@ -23,7 +23,7 @@ extends AbstractConfigurationDialog<WaterfallWidget, WaterfallConfigurationPanel
         addInitialValues("scrollDirection", widget.getScrollDirection());
         addInitialValues("resolution", widget.getPixelDuration());
     }
-    
+
     protected void onPropertyChange(PropertyChangeEvent evt) {
         getWidget().setPixelDuration(getConfigurationComposite().getResolution());
         getWidget().setShowTimeAxis(getConfigurationComposite().isShowTimeAxis());
@@ -31,7 +31,7 @@ extends AbstractConfigurationDialog<WaterfallWidget, WaterfallConfigurationPanel
         getWidget().setScrollDirection(getConfigurationComposite().getScrollDirection());
         getWidget().setAdaptiveRange(getConfigurationComposite().isAdaptiveRange());
     }
-    
+
     protected void populateInitialValues() {
         getConfigurationComposite().setShowTimeAxis((Boolean) getInitialValues().get("showTimeAxis"));
         getConfigurationComposite().setAdaptiveRange((Boolean) getInitialValues().get("adaptiveRange"));

@@ -29,9 +29,9 @@ import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
 
 /**
  * Controller for {@link AbstractContainerNode}s.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class ContainerNodeEditPart extends AbstractGraphicalEditPart implements NodeEditPart, PropertyChangeListener {
 
@@ -177,7 +177,7 @@ public class ContainerNodeEditPart extends AbstractGraphicalEditPart implements 
     @Override
     protected IFigure createFigure() {
         ContainerNodeFigure figure = new ContainerNodeFigure(getCastedModel().getCaption());
-        
+
         figure.addMouseListener(new MouseListener() {
 
             public void mouseDoubleClicked(MouseEvent me) {
@@ -194,12 +194,12 @@ public class ContainerNodeEditPart extends AbstractGraphicalEditPart implements 
 
             public void mouseReleased(MouseEvent me) {
             }
-            
+
         });
         return figure;
     }
 
-    
+
     private ConnectionAnchor createConnectionAnchor() {
         RecordFigure f = (RecordFigure) getFigure();
         return new EllipseAnchor(f);

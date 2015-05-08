@@ -31,7 +31,7 @@ public class AapiArchiveReaderTest {
 
     private void printoutRaw(ValueIterator rawValues) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Test

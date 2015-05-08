@@ -28,11 +28,11 @@ public class VTableDisplayDemo extends ViewPart {
 
     public static final String ID = "org.csstudio.utility.pvamanger.widgets.test.VImageDisplayDemo"; //$NON-NLS-1$
 
-    
+
     private VTableDisplay table;
     private PVReader<VTable> pv;
 
-    
+
     public VTableDisplayDemo() {
     }
 
@@ -63,7 +63,7 @@ public class VTableDisplayDemo extends ViewPart {
         //createActions();
         //initializeToolBar();
         //initializeMenu();
-        
+
     }
 
     /**
@@ -94,7 +94,7 @@ public class VTableDisplayDemo extends ViewPart {
     public void setFocus() {
         // Set the focus
     }
-    
+
     @Override
     public void dispose() {
         super.dispose();

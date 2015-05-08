@@ -71,7 +71,7 @@ public class EdmDisplayTest extends TestCase {
 
         assertEquals(true, d.isDisableScroll());
         assertTrue(d.getAttribute("disableScroll") instanceof EdmBoolean);
-        
+
         assertEquals(5, d.getGridSize());
         assertTrue(d.getAttribute("gridSize") instanceof EdmInt);
         assertEquals(true, d.isDisableScroll());
@@ -176,7 +176,7 @@ public class EdmDisplayTest extends TestCase {
         assertTrue(t.getAttribute("value") instanceof EdmMultilineText);
         assertEquals(true, t.isAutoSize());
         assertTrue(t.getAttribute("autoSize") instanceof EdmBoolean);
-        
+
         assertTrue(d.getWidgets().get(4) instanceof Edm_activeGroupClass);
         {
             t = (Edm_activeXTextClass)d.getWidgets().get(4).getSubEntity(0);
@@ -210,7 +210,7 @@ public class EdmDisplayTest extends TestCase {
             assertTrue(t.getAttribute("autoSize") instanceof EdmBoolean);
 
         }
-        
+
     }
 
     public void testRobustness() throws EdmException {
@@ -268,10 +268,10 @@ public class EdmDisplayTest extends TestCase {
         assertTrue(d.getAttribute("gridSize") instanceof EdmInt);
         assertEquals(true, d.isDisableScroll());
         assertTrue(d.getAttribute("showGrid") instanceof EdmBoolean);
-        
+
         assertEquals(4, d.getWidgets().size());
 
-        
+
         Edm_activeRectangleClass r = (Edm_activeRectangleClass)d.getWidgets().get(1);
         assertEquals(4, r.getMajor());
         assertTrue(r.getAttribute("major") instanceof EdmInt);

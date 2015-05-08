@@ -8,7 +8,7 @@ import org.eclipse.jface.viewers.Viewer;
 
 /**
  * Content provider for the changelog table viewer.
- * 
+ *
  * @author rkosir
  */
 class TableContentProvider implements IStructuredContentProvider {

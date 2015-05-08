@@ -10,7 +10,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 
 public class ShiftClientFactoryImpl implements ShiftClientFactory {
-    
+
     @Override
     public ShiftClient getClient() throws Exception {
           final IPreferencesService prefs = Platform.getPreferencesService();

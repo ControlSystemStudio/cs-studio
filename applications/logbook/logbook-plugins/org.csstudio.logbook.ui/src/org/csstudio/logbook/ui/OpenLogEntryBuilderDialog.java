@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -15,7 +15,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class OpenLogEntryBuilderDialog extends
     AbstractAdaptedHandler<LogEntryBuilder> {

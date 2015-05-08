@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
@@ -39,19 +39,19 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * @author Xihui Chen (import from SDS since 2009/9)
  */
 public abstract class AbstractPolyModel extends AbstractShapeModel {
-    
-    
+
+
 
     /**
      * Rotation angle of the widget.
      */
     public static final String PROP_ROTATION = "rotation_angle"; //$NON-NLS-1$
-    
+
     /**
      * Points of the widget.
      */
-    public static final String PROP_POINTS = "points"; //$NON-NLS-1$    
-    
+    public static final String PROP_POINTS = "points"; //$NON-NLS-1$
+
 
     /**
      * The original Points without rotation.
@@ -63,7 +63,7 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
     public AbstractPolyModel() {
         setScaleOptions(true, true, true);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -71,15 +71,15 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
     protected void configureProperties() {
         super.configureProperties();
         addProperty(new DoubleProperty(PROP_ROTATION, "Rotation Angle",
-                WidgetPropertyCategory.Display, 0, 0, 360));    
-        addProperty(new PointListProperty(PROP_POINTS, 
-                "Points", WidgetPropertyCategory.Display, new PointList()));        
+                WidgetPropertyCategory.Display, 0, 0, 360));
+        addProperty(new PointListProperty(PROP_POINTS,
+                "Points", WidgetPropertyCategory.Display, new PointList()));
     }
 
 
     /**
      * Sets the specified _points for the polygon.
-     * 
+     *
      * @param points
      *            the polygon points
      * @param rememberPoints true if the zero degree relative points should be remembered, false otherwise.
@@ -91,7 +91,7 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
             if (rememberPoints) {
                 this.rememberZeroDegreePoints(copy);
             }
-            
+
             Rectangle bounds = copy.getBounds();
             super.setPropertyValue(PROP_XPOS, bounds.x);
             super.setPropertyValue(PROP_YPOS, bounds.y);
@@ -103,14 +103,14 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 
     /**
      * Gets the polygon _points.
-     * 
+     *
      * @return the polygon _points
      */
     public PointList getPoints() {
         return (PointList) getProperty(PROP_POINTS).getPropertyValue();
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -121,10 +121,10 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 
         PointList newPoints = PointsUtil.scalePointsBySize(getPoints(), width, height);
 
-        setPoints(newPoints, true);        
+        setPoints(newPoints, true);
     }
-    
-    
+
+
 
     /**
      * {@inheritDoc}
@@ -141,13 +141,13 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 
     /**
      * Rotates all points.
-     * 
+     *
      * @param points The PoinList, which points should be rotated
      * @param angle
      *            The angle to rotate
      * @return The rotated PointList
      */
-    public PointList rotatePoints(final PointList points, final double angle) {        
+    public PointList rotatePoints(final PointList points, final double angle) {
         Rectangle pointBounds = points.getBounds();
         Point rotationPoint = pointBounds.getCenter();
         PointList newPoints = new PointList();
@@ -166,7 +166,7 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 
         return newPoints;
     }
-    
+
     /**
      * Rotates the given points to 0 degrees and sets them as <code>_originalPoints</code>.
      * @param points The current {@link PointList}
@@ -178,11 +178,11 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
             zeroDegreePoints = this.rotatePoints(points, -this.getRotationAngle());
         }
     }
-    
+
     /**
      * Returns the rotation angle for this widget. Returns 0 if this widget is
      * not rotatable
-     * 
+     *
      * @return The rotation angle
      */
     public final double getRotationAngle() {
@@ -192,7 +192,7 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
     /**
      * Sets the rotation angle for this widget, only when this widget is
      * rotatable.
-     * 
+     *
      * @param angle
      *            The angle
      */
@@ -211,7 +211,7 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
                 this.setPoints((PointList) value, true);
             }else if (value instanceof int[])
                 this.setPoints(new PointList((int[]) value), true);
-        } 
+        }
         else if (propertyID.equals(AbstractWidgetModel.PROP_XPOS) ||
                 propertyID.equals(AbstractWidgetModel.PROP_YPOS) ||
                 propertyID.equals(AbstractWidgetModel.PROP_WIDTH) ||
@@ -234,38 +234,38 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
             super.setPropertyValue(propertyID, value);
         }
     }
-    
+
     public PointList getOriginalPoints() {
         return zeroDegreePoints;
     }
-    
+
     @Override
-    public void flipHorizontally() {    
-        setPoints(PointsUtil.flipPointsHorizontally(getPoints()), true);        
+    public void flipHorizontally() {
+        setPoints(PointsUtil.flipPointsHorizontally(getPoints()), true);
     }
-    
+
     @Override
     public void flipHorizontally(int centerX) {
-        setPoints(PointsUtil.flipPointsHorizontally(getPoints(), centerX), true);        
+        setPoints(PointsUtil.flipPointsHorizontally(getPoints(), centerX), true);
     }
-    
-    
+
+
     @Override
-    public void flipVertically() {    
-        setPoints(PointsUtil.flipPointsVertically(getPoints()), true);        
+    public void flipVertically() {
+        setPoints(PointsUtil.flipPointsVertically(getPoints()), true);
     }
-    
+
     @Override
     public void flipVertically(int centerY) {
         setPoints(PointsUtil.flipPointsVertically(getPoints(), centerY), true);
     }
-    
+
     @Override
     public void rotate90(boolean clockwise) {
         setPoints(PointsUtil.rotatePoints(getPoints(), clockwise? 90:270), true);
     }
 
-    
+
     @Override
     public void rotate90(boolean clockwise, Point center) {
         setPoints(PointsUtil.rotatePoints(getPoints(), clockwise? 90:270, center), true);
@@ -279,11 +279,11 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
         PointList pl = initialPoints.getCopy();
         Point initLoc = pl.getBounds().getLocation();
         pl.translate((int)Math.round(initLoc.x*widthRatio) -initLoc.x,
-                (int)Math.round(initLoc.y * heightRatio) - initLoc.y); 
-        
-        
+                (int)Math.round(initLoc.y * heightRatio) - initLoc.y);
+
+
         WidgetScaleData scaleOptions = getScaleOptions();
-        if(scaleOptions.isKeepWHRatio()&& 
+        if(scaleOptions.isKeepWHRatio()&&
                 scaleOptions.isHeightScalable() && scaleOptions.isWidthScalable()){
             widthRatio = Math.min(widthRatio, heightRatio);
             heightRatio = widthRatio;
@@ -291,13 +291,13 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
             heightRatio = 1;
         else if(!scaleOptions.isWidthScalable())
             widthRatio = 1;
-        
+
         PointsUtil.scalePoints(pl, widthRatio, heightRatio);
 
         setPoints(pl, true);
-        
+
     }
-        
-    
-    
+
+
+
 }

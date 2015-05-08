@@ -5,7 +5,7 @@ import org.csstudio.utility.pvmanager.widgets.VImageWidget;
 import org.eclipse.swt.widgets.Composite;
 
 public class VImageDisplayFigure extends AbstractSelectionWidgetFigure<VImageWidget> {
-    
+
     public VImageDisplayFigure(AbstractBaseEditPart editPart) {
         super(editPart);
     }

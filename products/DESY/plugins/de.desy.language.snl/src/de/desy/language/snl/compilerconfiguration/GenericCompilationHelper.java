@@ -11,7 +11,7 @@ public class GenericCompilationHelper {
 
     public ErrorUnit compile(List<String> compilerParameter, Pattern errorPattern) {
         assert compilerParameter != null : "compilerOptions != null";
-        
+
         ErrorUnit error = null;
 
         try {

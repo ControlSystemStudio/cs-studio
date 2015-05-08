@@ -8,9 +8,9 @@ import org.csstudio.platform.model.pvs.ValueType;
 
 /**
  * Standard implementation of {@link IConnectorFactory}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class ConnectorFactory implements IConnectorFactory {
     /**

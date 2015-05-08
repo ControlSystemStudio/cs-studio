@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.opibuilder.widgets.editparts;
@@ -36,19 +36,19 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * EditPart controller for the image widget.
- * 
+ *
  * @author jbercic, Xihui Chen
- * 
+ *
  */
 public final class ImageEditPart extends AbstractWidgetEditPart {
 
-    
+
 
     private int maxAttempts;
 
     /**
      * Returns the casted model. This is just for convenience.
-     * 
+     *
      * @return the casted {@link ImageModel}
      */
     public ImageModel getWidgetModel() {
@@ -62,7 +62,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
     protected IFigure doCreateFigure() {
         ImageModel model = getWidgetModel();
         // create AND initialize the view properly
-        final ImageFigure figure = new ImageFigure();        
+        final ImageFigure figure = new ImageFigure();
 
         // Resize when new image is loaded
         figure.setImageLoadedListener(new IImageLoadedListener() {
@@ -74,7 +74,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
             }
         });
 
-        figure.setFilePath(model.getFilename());        
+        figure.setFilePath(model.getFilename());
         figure.setStretch(model.getStretch());
         figure.setAutoSize(model.isAutoSize());
         figure.setAnimationDisabled(model.isStopAnimation());
@@ -86,7 +86,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
         figure.setAlignedToNearestSecond(model.isAlignedToNearestSecond());
         return figure;
     }
-    
+
     @Override
     public void activate() {
         super.activate();
@@ -102,25 +102,25 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
-                imageFigure.setTopCrop((Integer)newValue);                
+                imageFigure.setTopCrop((Integer)newValue);
                 autoSizeWidget(imageFigure);
                 return false;
             }
         };
         setPropertyChangeHandler(ImageModel.PROP_TOPCROP, handle);
-        
+
         // bottom
         handle = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
-                imageFigure.setBottomCrop((Integer)newValue);            
+                imageFigure.setBottomCrop((Integer)newValue);
                 autoSizeWidget(imageFigure);
                 return false;
             }
         };
         setPropertyChangeHandler(ImageModel.PROP_BOTTOMCROP, handle);
-        
+
         // left
         handle = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue,
@@ -132,20 +132,20 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
             }
         };
         setPropertyChangeHandler(ImageModel.PROP_LEFTCROP, handle);
-        
+
         // right
         handle = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
-                imageFigure.setRightCrop((Integer)newValue);    
+                imageFigure.setRightCrop((Integer)newValue);
                 autoSizeWidget(imageFigure);
                 return false;
             }
         };
         setPropertyChangeHandler(ImageModel.PROP_RIGHTCROP, handle);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -165,10 +165,10 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
                 return false;
             }
 
-            
+
         };
         setPropertyChangeHandler(ImageModel.PROP_IMAGE_FILE, handle);
-        
+
         // changes to the stretch property
         handle = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue,
@@ -180,7 +180,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
             }
         };
         setPropertyChangeHandler(ImageModel.PROP_STRETCH, handle);
-    
+
         // changes to the autosize property
         handle = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue,
@@ -189,14 +189,14 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
                 imageFigure.setAutoSize((Boolean)newValue);
                 ImageModel model = (ImageModel)getModel();
                 Dimension d = imageFigure.getAutoSizedDimension();
-                if((Boolean) newValue && !model.getStretch() && d != null) 
+                if((Boolean) newValue && !model.getStretch() && d != null)
                     model.setSize(d.width, d.height);
                 return false;
             }
         };
         setPropertyChangeHandler(ImageModel.PROP_AUTOSIZE, handle);
-        
-        
+
+
         // changes to the stop animation property
         handle = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue,
@@ -231,7 +231,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
         };
         setPropertyChangeHandler(ImageModel.PROP_BORDER_WIDTH, handle);
         setPropertyChangeHandler(ImageModel.PROP_BORDER_STYLE, handle);
-        
+
         //size change handlers - so we can stretch accordingly
         handle = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue,
@@ -244,24 +244,24 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
         };
         setPropertyChangeHandler(ImageModel.PROP_HEIGHT, handle);
         setPropertyChangeHandler(ImageModel.PROP_WIDTH, handle);
-        
+
         registerCropPropertyHandlers();
         registerImageRotationPropertyHandlers();
     }
-    
-    
-    
+
+
+
     @Override
     public void deactivate() {
-        super.deactivate();        
+        super.deactivate();
         ((ImageFigure) getFigure()).dispose();
     }
-    
+
     private void autoSizeWidget(final ImageFigure imageFigure) {
         if(!getWidgetModel().isAutoSize())
             return;
         maxAttempts = 10;
-        Runnable task = new Runnable() {            
+        Runnable task = new Runnable() {
             public void run() {
                 if(maxAttempts-- > 0 && imageFigure.isLoadingImage()){
                     Display.getDefault().timerExec(100, this);
@@ -270,15 +270,15 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
                 ImageModel model = (ImageModel)getModel();
                 imageFigure.setAutoSize(model.isAutoSize());
                 Dimension d = imageFigure.getAutoSizedDimension();
-                if(model.isAutoSize() && !model.getStretch() && d != null) 
+                if(model.isAutoSize() && !model.getStretch() && d != null)
                     model.setSize(d.width, d.height);
-                
+
             }
         };
         Display.getDefault().timerExec(100, task);
-        
+
     }
-    
+
     /**
      * Registers image rotation property change handlers for the properties
      * defined in {@link MonitorBoolSymbolModel}.
@@ -295,7 +295,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
                 PermutationMatrix oldMatrix = new PermutationMatrix((double[][]) getPropertyValue(ImageModel.PERMUTATION_MATRIX));
                 PermutationMatrix newMatrix = PermutationMatrix.generateRotationMatrix(newDegree - oldDegree);
                 PermutationMatrix result = newMatrix.multiply(oldMatrix);
-                
+
                 // As we use only % Pi/2 angles, we can round to integer values
                 // => equals work better
                 result.roundToIntegers();
@@ -304,7 +304,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
                 setPropertyValue(ImageModel.PROP_DEGREE, (Integer) newValue);
                 imageFigure.setPermutationMatrix(result);
                 autoSizeWidget(imageFigure);
-                    
+
                 return false;
             }
         };
@@ -323,7 +323,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
                 // As we use only % Pi/2 angles, we can round to integer values
                 // => equals work better
                 result.roundToIntegers();
-                
+
                 setPropertyValue(ImageModel.PERMUTATION_MATRIX, result.getMatrix());
                 setPropertyValue(ImageModel.PROP_FLIP_HORIZONTAL, (Boolean) newValue);
                 imageFigure.setPermutationMatrix(result);
@@ -342,7 +342,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
                 PermutationMatrix newMatrix = PermutationMatrix.generateFlipVMatrix();
                 PermutationMatrix oldMatrix = imageFigure.getPermutationMatrix();
                 PermutationMatrix result = newMatrix.multiply(oldMatrix);
-                
+
                 // As we use only % Pi/2 angles, we can round to integer values
                 // => equals work better
                 result.roundToIntegers();

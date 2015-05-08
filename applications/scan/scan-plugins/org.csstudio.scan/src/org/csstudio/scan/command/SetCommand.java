@@ -149,7 +149,7 @@ public class SetCommand extends ScanCommand
     {
         this.completion = completion;
     }
-    
+
     /** @return Wait for readback to match? */
     public boolean getWait()
     {
@@ -214,7 +214,7 @@ public class SetCommand extends ScanCommand
         else
             element.appendChild(dom.createTextNode(value.toString()));
         command_element.appendChild(element);
-        
+
         if (completion)
         {
             element = dom.createElement("completion");
@@ -247,7 +247,7 @@ public class SetCommand extends ScanCommand
         }
         super.addXMLElements(dom, command_element);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception

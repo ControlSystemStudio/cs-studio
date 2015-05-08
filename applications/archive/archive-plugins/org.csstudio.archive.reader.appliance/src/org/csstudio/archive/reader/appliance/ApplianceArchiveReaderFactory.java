@@ -6,7 +6,7 @@ import org.csstudio.archive.reader.ArchiveReaderFactory;
 
 /**
  * Provides instance of the appliance archive reader.
- * 
+ *
  * @author Miha Novak <miha.novak@cosylab.com>
  */
 public class ApplianceArchiveReaderFactory implements ArchiveReaderFactory{
@@ -29,5 +29,5 @@ public class ApplianceArchiveReaderFactory implements ArchiveReaderFactory{
         }
         return result;
     }
-    
+
 }

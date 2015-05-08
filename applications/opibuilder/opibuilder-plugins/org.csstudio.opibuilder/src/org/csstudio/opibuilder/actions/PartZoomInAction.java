@@ -12,7 +12,7 @@ public class PartZoomInAction extends PartZoomAction {
 
     /**
      * Constructor for ZoomInAction.
-     * 
+     *
      * @param zoomManager
      *            the zoom manager
      */
@@ -28,7 +28,7 @@ public class PartZoomInAction extends PartZoomAction {
      */
     public void run() {
         if(zoomManager != null)
-            zoomManager.zoomIn();        
+            zoomManager.zoomIn();
     }
 
     /**

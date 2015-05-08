@@ -8,7 +8,7 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
 
 public class WorkbenchWebAlarmEntryPoint implements EntryPoint {
 
-    
+
 
     public int createUI() {
         Display display = PlatformUI.createDisplay();
@@ -17,7 +17,7 @@ public class WorkbenchWebAlarmEntryPoint implements EntryPoint {
         int result = PlatformUI.createAndRunWorkbench( display, advisor );
         display.dispose();
         return result;
-        
+
     }
 
 }

@@ -30,7 +30,7 @@ public class Preferences
             host = service.getString(Activator.ID, SMTP_HOST, host, null);
         return host;
     }
-    
+
     /** @return SMTP URL */
     public static String getSMTP_Sender()
     {

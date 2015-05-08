@@ -237,7 +237,7 @@ public class TabEditPart extends AbstractContainerEditpart {
                                 insets.left - insets.right,
                              getWidgetModel().getHeight() - 2 - insets.top -
                                  getTabFigure().getTabLabelHeight() - insets.bottom);
-        else 
+        else
             return new Dimension(getWidgetModel().getWidth() - 2 -insets.left-
                     getTabFigure().getTabLabelWidth()-insets.right,
                     getWidgetModel().getHeight() - 2 -
@@ -314,7 +314,7 @@ public class TabEditPart extends AbstractContainerEditpart {
             }
         };
         setPropertyChangeHandler(TabModel.PROP_HORIZONTAL_TABS, horizontalHandler);
-        
+
         IWidgetPropertyChangeHandler activeTabHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
@@ -325,9 +325,9 @@ public class TabEditPart extends AbstractContainerEditpart {
             }
         };
         setPropertyChangeHandler(TabModel.PROP_ACTIVE_TAB, activeTabHandler);
-        
+
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 ((TabFigure)figure).setMinimumTabHeight((Integer)newValue);
@@ -335,9 +335,9 @@ public class TabEditPart extends AbstractContainerEditpart {
             }
         };
         setPropertyChangeHandler(TabModel.PROP_MINIMUM_TAB_HEIGHT, handler);
-        
+
         IWidgetPropertyChangeHandler updateTabAreaSizeHandler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 updateTabAreaSize();
@@ -348,7 +348,7 @@ public class TabEditPart extends AbstractContainerEditpart {
 
         registerTabPropertyChangeHandlers();
         registerTabsAmountChangeHandler();
-        
+
     }
 
     private void registerTabPropertyChangeHandlers(){

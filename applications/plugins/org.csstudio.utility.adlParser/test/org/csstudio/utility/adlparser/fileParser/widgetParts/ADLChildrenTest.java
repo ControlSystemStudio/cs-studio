@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 
 public class ADLChildrenTest extends TestCase {
     ADLChildren children = new ADLChildren();
-    
+
     public void testADLChildrenADLWidget() {
         try {
             children = new ADLChildren(setupChildren());

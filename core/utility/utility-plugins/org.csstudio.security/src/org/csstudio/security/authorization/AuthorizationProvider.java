@@ -10,7 +10,7 @@ package org.csstudio.security.authorization;
 import javax.security.auth.Subject;
 
 /** Interface of service that determines {@link Authorizations} of a user ({@link Subject})
- * 
+ *
  *  <p>To define a new authorization mechanism:
  *  <ol>
  *  <li>Implement this interface, for example as <code>MyAuthorizationProvider</code>.

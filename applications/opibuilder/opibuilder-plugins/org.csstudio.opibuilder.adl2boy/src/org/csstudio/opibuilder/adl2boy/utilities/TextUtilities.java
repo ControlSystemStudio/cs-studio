@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.opibuilder.adl2boy.utilities;
 
@@ -13,12 +13,12 @@ import org.eclipse.swt.graphics.FontData;
 
 /**
  * @author hammonds
- * 
+ *
  */
 public class TextUtilities {
 
     /**
-     * 
+     *
      */
     public static void setWidgetFont(LabelModel textModel) {
         OPIFont font = textModel.getFont();
@@ -38,7 +38,7 @@ public class TextUtilities {
      *            Model of BOY widget to be modified
      * @param adlTextWidget
      *            Model of ADL widget.  Sourve of the data
-     * 
+     *
      */
     public static void setAlignment(LabelModel textModel,
             ADLAbstractWidget adlTextWidget) {
@@ -51,7 +51,7 @@ public class TextUtilities {
             }
             else if (alignment.equals("horiz. centered")){
                 textModel.setPropertyValue(LabelModel.PROP_ALIGN_H, 1);
-                
+
             }
             else if (alignment.equals("horiz.right")){
                 textModel.setPropertyValue(LabelModel.PROP_ALIGN_H, 2);
@@ -66,7 +66,7 @@ public class TextUtilities {
      *            Model of BOY widget to be modified
      * @param adlTextWidget
      *            Model of ADL widget.  Sourve of the data
-     * 
+     *
      */
     public static void setFormat(TextUpdateModel textModel,
             ADLAbstractWidget adlTextWidget) {
@@ -90,22 +90,22 @@ public class TextUtilities {
             else if (format.equals("octal")){
                 // TODO Add format to TextUtilities handle octal format
                 TranslatorUtils.printNotHandledWarning("", "format - octal");
-            }            
+            }
             else if (format.equals("compact")){
                 textModel.setPropertyValue(TextUpdateModel.PROP_FORMAT_TYPE, 6);
-            }            
+            }
             else if (format.equals("sexagesimal")){
                 // TODO Add format to TextUtilities handle sexagesimal format
                 TranslatorUtils.printNotHandledWarning("", "format - sexagesimal");
-            }            
+            }
             else if (format.equals("sexagesimal-hms")){
                 // TODO Add format to TextUtilities handle sexagesimal-hms format
                 TranslatorUtils.printNotHandledWarning("", "format - sexagesimal-hms");
-            }            
+            }
             else if (format.equals("sexagesimal-dms")){
                 // TODO Add format to TextUtilities handle sexagesimal-dms format
                 TranslatorUtils.printNotHandledWarning("", "format - sexagesimal-dms");
-            }            
+            }
         }
 
     }

@@ -13,9 +13,9 @@ import de.desy.language.snl.ui.SNLUiActivator;
 
 /**
  * Service to get the compiler options from the preference store.
- * 
+ *
  * @author Kai Meyer (C1 WPS)
- * 
+ *
  */
 public class CompilerOptionsService implements ICompilerOptionsService {
 
@@ -26,7 +26,7 @@ public class CompilerOptionsService implements ICompilerOptionsService {
 
     /**
      * Constructor.
-     * 
+     *
      * @param preferenceStore
      *            The store of the preferences.
      */
@@ -54,7 +54,7 @@ public class CompilerOptionsService implements ICompilerOptionsService {
     public String getPreCompilerPath() {
         return getFolder(PreferenceConstants.PRE_COMPILER_LOCATION_POST_FIX);
     }
-    
+
     /**
      * {@inheritDoc}
      */

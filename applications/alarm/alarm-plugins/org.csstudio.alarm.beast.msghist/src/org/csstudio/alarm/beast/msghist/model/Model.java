@@ -127,8 +127,8 @@ public class Model
         launchQuery();
     }
 
-   
-    
+
+
     /**
      * Refresh.
      *
@@ -137,8 +137,8 @@ public class Model
     public void refresh() throws Exception {
         launchQuery();
     }
-    
-    
+
+
     /** Launch RDB query with current settings. */
     private synchronized void launchQuery() throws Exception
     {
@@ -163,11 +163,11 @@ public class Model
                 fireModelChanged();
             }
 
-            
+
             @Override
             void handleError(final String message, final Exception ex) {
                     Activator.getLogger().log(Level.WARNING, message, ex);
-                    // notify scheduler auto refresh 
+                    // notify scheduler auto refresh
                     fireErrorModel(message);
                     if (shell == null) {
                         return;
@@ -188,7 +188,7 @@ public class Model
                         }
                     });
             }
-            
+
         };
         message_job.schedule();
     }
@@ -218,7 +218,7 @@ public class Model
             }
         }
     }
-    
+
     /**
      * Fire error model.
      *

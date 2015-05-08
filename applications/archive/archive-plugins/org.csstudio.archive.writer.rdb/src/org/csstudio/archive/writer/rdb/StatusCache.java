@@ -21,18 +21,18 @@ public class StatusCache
 {
     /** Helper. */
     final private StringIDHelper helper;
-    
+
     /** Cache that maps names to stati */
     final private HashMap<String, Status> cache_by_name =
         new HashMap<String, Status>();
-    
+
     /** Constructor */
     public StatusCache(final RDBUtil rdb, final SQL sql)
     {
         helper = new StringIDHelper(rdb,
             sql.status_table, sql.status_id_column, sql.status_name_column);
     }
-    
+
     /** Close prepared statements, clear cache. */
     public void dispose()
     {
@@ -68,7 +68,7 @@ public class StatusCache
         // else: Nothing found
         return status;
     }
-    
+
     /** Find or create a status by name.
      *  @param name Status name
      *  @return Status

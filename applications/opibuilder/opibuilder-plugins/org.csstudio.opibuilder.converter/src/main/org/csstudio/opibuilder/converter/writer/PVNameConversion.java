@@ -47,7 +47,7 @@ public class PVNameConversion {
     /**
      * If pvName is a LOC or CALC EDM PV, attempt to convert it to a syntax
      * understood by CSS.
-     * 
+     *
      * If conversion fails or it is a regular PV, return the unchanged PV name.
      * @param pvName PV name to convert
      * @return converted PV name
@@ -115,7 +115,7 @@ public class PVNameConversion {
      * {1000 > x}(...)
      * The string must be tokens separated by the items in the static variable
      * operators.
-     * 
+     *
      * @param op the substring to parse
      * @return a List<String> of the operators
      */
@@ -134,7 +134,7 @@ public class PVNameConversion {
     /**
      * Return variables provided in arguments to CALC pv as a List of Strings.
      * If an argument is a PV name, convert that PV name.
-     * 
+     *
      * @param argString
      *            - the arguments to a CALC PV, inside parentheses
      * @return List<String> of variables
@@ -218,7 +218,7 @@ public class PVNameConversion {
     private static boolean isPVString(String argument) {
         return !StringUtils.isNumeric(argument);
     }
-    
+
     /**
      * Split a String into substrings using the specifed delimiter.
      * If includeDelimiters, include delimiters in the returned list.

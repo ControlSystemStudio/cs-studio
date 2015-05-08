@@ -3,9 +3,9 @@ package org.csstudio.dal.simple.impl;
 import org.csstudio.dal.DynamicValueProperty;
 
 public final class LongAnyDataImpl extends AbstractAnyDataImpl<Long> {
-    
+
     public static final Long UNINITIALIZED_VALUE = Long.MIN_VALUE;
-    
+
     public LongAnyDataImpl(DynamicValueProperty<Long> property, long beamID) {
         super(property,beamID);
     }

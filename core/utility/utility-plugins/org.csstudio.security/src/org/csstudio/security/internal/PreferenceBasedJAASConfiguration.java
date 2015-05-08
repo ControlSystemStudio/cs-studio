@@ -19,7 +19,7 @@ import javax.security.auth.login.Configuration;
 import org.csstudio.java.string.StringSplitter;
 
 /** JAAS Configuration based on Eclipse preferences
- * 
+ *
  *  @author Kay Kasemir
  *  @author Xihui Chen - org.csstudio.platform.internal.jassauthentication.preference.PreferencesHelper
  */
@@ -39,16 +39,16 @@ public class PreferenceBasedJAASConfiguration extends Configuration
         {
             final String module_setting = module_settings[i];
             logger.fine(module_setting);
-            
+
             final String settings[] = StringSplitter.splitIgnoreInQuotes(module_setting, ' ', true);
             if (settings.length < 2)
                 throw new Exception("Expect at least 'ModuleName Flag', got " + module_setting);
             final String module_name = settings[0];
             final LoginModuleControlFlag flag = getFlag(settings[1]);
-            
+
             logger.fine(module_name);
             logger.fine(flag.toString());
-        
+
             final Map<String, String> options = new HashMap<>();
             for (int s=2; s<settings.length; ++s)
             {
@@ -58,7 +58,7 @@ public class PreferenceBasedJAASConfiguration extends Configuration
                 options.put(option_value[0], option_value[1]);
             }
             logger.fine(options.toString());
-            
+
             configurations[i] = new AppConfigurationEntry(module_name, flag, options);
         }
     }
@@ -94,10 +94,10 @@ public class PreferenceBasedJAASConfiguration extends Configuration
             {
                 new AppConfigurationEntry("com.sun.security.auth.module.NTLoginModule", LoginModuleControlFlag.REQUIRED, Collections.<String,String>emptyMap())
             };
-        
+
         // Else: Ignore the name.
         // Not using a JAAS config file with named entries, but
         // received the configurations to use in a 'jaas_config' preference.
         return configurations;
     }
-}   
+}

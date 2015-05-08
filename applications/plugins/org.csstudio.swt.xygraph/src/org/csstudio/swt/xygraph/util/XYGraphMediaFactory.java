@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.swt.xygraph.util;
@@ -48,13 +48,13 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 /**
  * A factory, which provides convenience methods for the creation of Images and
  * Fonts.
- * 
+ *
  * All resources created via this factory get automatically disposed, when the
  * application is stopped.
- * 
+ *
  * @author Sven Wende, Xihui Chen
  * @version $Revision$
- * 
+ *
  */
 public final class XYGraphMediaFactory {
     /**
@@ -76,20 +76,20 @@ public final class XYGraphMediaFactory {
      * The font registry.
      */
     private FontRegistry _fontRegistry;
-    
+
     private Set<Cursor> cursorRegistry;
 
     /**
      * Map that holds the provided image descriptors.
      */
     private HashMap<ImageDescriptor, Image> _imageCache;
-    
+
     public enum CURSOR_TYPE {
         GRABBING;
     }
-    
+
     private volatile static Cursor CURSOR_GRABBING;
-        
+
     public void disposeResources(){
         if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
             return;
@@ -100,26 +100,26 @@ public final class XYGraphMediaFactory {
                 if(cursor != null && !cursor.isDisposed())
                 cursor.dispose();
             }
-        
+
     }
 
     public static Cursor getCursor(CURSOR_TYPE cursorType){
         switch (cursorType) {
         case GRABBING:
-            if(CURSOR_GRABBING == null){                
+            if(CURSOR_GRABBING == null){
                 CURSOR_GRABBING = SingleSourceHelper.createCursor(
                         Display.getDefault(),
                         getInstance().getImage("images/Grabbing.png").getImageData(), //$NON-NLS-1$
-                        8,8, SWT.CURSOR_HAND);        
+                        8,8, SWT.CURSOR_HAND);
             }
             return CURSOR_GRABBING;
-            
+
         default:
             return Cursors.HAND;
-            
+
         }
     }
-    
+
     /**
      * Private constructor to avoid instantiation.
      */
@@ -144,7 +144,7 @@ public final class XYGraphMediaFactory {
 
     /**
      * Return the shared instance of this class.
-     * 
+     *
      * @return The shared instance of this class.
      */
     public static synchronized XYGraphMediaFactory getInstance() {
@@ -154,7 +154,7 @@ public final class XYGraphMediaFactory {
 
         return _instance;
     }
-    
+
     public static Image getTransparentImage() {
         PaletteData palette = new PaletteData(0xFF000,0x00FF00, 0x0000FF);
         ImageData transparentImage = new ImageData(16, 16, 8, palette);
@@ -164,14 +164,14 @@ public final class XYGraphMediaFactory {
 
     /**
      * Create the <code>Color</code> for the given color information.
-     * 
+     *
      * @param r
      *            red
      * @param g
      *            green
      * @param b
      *            blue
-     * 
+     *
      * @return The <code>Color</code> for the given color information.
      */
     public Color getColor(final int r, final int g, final int b) {
@@ -180,7 +180,7 @@ public final class XYGraphMediaFactory {
 
     /**
      * Create the <code>Color</code> for the given <code>RGB</code>.
-     * 
+     *
      * @param rgb
      *            A <code>RGB</code> object.
      * @return The <code>Color</code> for the given <code>RGB</code>.
@@ -202,7 +202,7 @@ public final class XYGraphMediaFactory {
 
     /**
      * Create the <code>Font</code> for the given information.
-     * 
+     *
      * @param name
      *            The font name.
      * @param height
@@ -226,7 +226,7 @@ public final class XYGraphMediaFactory {
 
     /**
      * Create the <code>Font</code> for the given <code>FontData</code>.
-     * 
+     *
      * @param fontData
      *            The <code>FontData</code>
      * @return The <code>Font</code> for the given <code>FontData</code>
@@ -239,7 +239,7 @@ public final class XYGraphMediaFactory {
     /**
      * Create the <code>Font</code> for the given <code>FontData</code> and
      * the given style code.
-     * 
+     *
      * @param fontData
      *            The <code>FontData</code>
      * @param style
@@ -256,7 +256,7 @@ public final class XYGraphMediaFactory {
     /**
      * Create the <code>Font</code> for the given <code>FontData</code> and
      * the given style code.
-     * 
+     *
      * @param fontData
      *            The <code>FontData</code>
      * @return The <code>Font</code> for the given <code>FontData</code> and
@@ -266,10 +266,10 @@ public final class XYGraphMediaFactory {
         Font font = getFont(fontData.getName(), fontData.getHeight(), fontData.getStyle());
         return font;
     }
-    
+
     /**
      * Return the system's default font.
-     * 
+     *
      * @param style
      *            additional styles, e.g. SWT.Bold
      * @return The system's default font.
@@ -277,20 +277,20 @@ public final class XYGraphMediaFactory {
     public Font getDefaultFont(final int style) {
         return Display.getCurrent().getSystemFont(); //$NON-NLS-1$
     }
-    
+
 
     /**Register the image to imageRegistry so it can be disposed when Display disposed.
      * @param key
      * @param img
      */
-    public void registerImage(final String key, final Image img){        
-            _imageRegistry.put(key, img);        
+    public void registerImage(final String key, final Image img){
+            _imageRegistry.put(key, img);
     }
-    
+
     public Image getRegisteredImage(final String key){
         return _imageRegistry.get(key);
     }
-    
+
     /**
      * Load the <code>Image</code> from the given path in the given plugin.
      * Usually, this is the image found via the the given plug-in
@@ -298,7 +298,7 @@ public final class XYGraphMediaFactory {
      * If no plugin is running, because for example this is an SWT-only
      * test, the path is used as is, i.e. relative to the current
      * directory.
-     * 
+     *
      * @param relativePath
      *            The image's relative path to the root of the plugin.
      * @return The <code>Image</code> from the given path in the given plugin.
@@ -310,12 +310,12 @@ public final class XYGraphMediaFactory {
         {
             // Not cached. Get from plugin (this should be the usual case)
             if(Activator.getDefault() != null)
-            {                    
+            {
                     ImageDescriptor descr = AbstractUIPlugin.imageDescriptorFromPlugin(
                             Activator.PLUGIN_ID, relativePath);
-                    _imageRegistry.put(relativePath, descr);                
+                    _imageRegistry.put(relativePath, descr);
             }
-            
+
             else
             {
                 // Must be running as JUnit test or demo w/o plugin environment.
@@ -329,12 +329,12 @@ public final class XYGraphMediaFactory {
 //                    stream.close();
 //                } catch (IOException ioe) {
 //                }
-                _imageRegistry.put(relativePath, img);                
+                _imageRegistry.put(relativePath, img);
             }
         }
         return _imageRegistry.get(relativePath);
     }
-    
+
     /**Register the cursor so it can be disposed when the plugin stopped.
      * @param cursor
      */
@@ -344,7 +344,7 @@ public final class XYGraphMediaFactory {
         }
         cursorRegistry.add(cursor);
     }
-    
+
     /** the color for light blue */
     final static public RGB COLOR_LIGHT_BLUE = new RGB(153, 186, 243);
 
@@ -362,31 +362,31 @@ public final class XYGraphMediaFactory {
 
     /** the color for black */
     final static public RGB COLOR_BLACK = new RGB(0, 0, 0);
-    
+
     /** the color for red */
     final static public RGB COLOR_RED = new RGB(255, 0, 0);
-    
+
     /** the color for green */
     final static public RGB COLOR_GREEN= new RGB(0, 255, 0);
-    
+
     /** the color for yellow */
     final static public RGB COLOR_YELLOW= new RGB(255, 255, 0);
-    
+
     /** the color for pink */
     final static public RGB COLOR_PINK= new RGB(255, 0, 255);
-    
+
      /** the color for cyan */
     final static public RGB COLOR_CYAN= new RGB(0, 255, 255);
-    
+
     /** the color for orange */
     final static public RGB COLOR_ORANGE= new RGB(255, 128, 0);
-    
+
      /** the color for orange */
     final static public RGB COLOR_PURPLE= new RGB(128, 0, 255);
-    
+
     /** the font for Arial in height of 9 */
     final static public FontData FONT_ARIAL = new FontData("Arial", 9, SWT.NONE);
-    
+
     /** the font for Tahoma in height of 9 */
     final static public FontData FONT_TAHOMA = new FontData("Tahoma", 9, SWT.NONE);
 }

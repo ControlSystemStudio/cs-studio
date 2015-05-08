@@ -24,13 +24,13 @@ import org.csstudio.opibuilder.properties.MacrosProperty;
 public class MacrosInput {
 
     private LinkedHashMap<String, String> macrosMap;
-    
-    private boolean include_parent_macros;    
-    
+
+    private boolean include_parent_macros;
+
     private static final char ITEM_SEPARATOR = ','; //$NON-NLS-1$
     private static final char MACRO_SEPARATOR = '='; //$NON-NLS-1$
     private static final char QUOTE = '\"'; //$NON-NLS-1$
-    
+
     public MacrosInput(LinkedHashMap<String, String> macros, boolean include_parent_macros) {
         this.macrosMap = macros;
         this.include_parent_macros = include_parent_macros;
@@ -57,7 +57,7 @@ public class MacrosInput {
     public final void put(String macroName, String macroValue){
         macrosMap.put(macroName, macroValue);
     }
-    
+
     /**
      * @return the include_parent_macros
      */
@@ -71,20 +71,20 @@ public class MacrosInput {
     public final void setInclude_parent_macros(boolean include_parent_macros) {
         this.include_parent_macros = include_parent_macros;
     }
-    
+
     public MacrosInput getCopy(){
         MacrosInput result = new MacrosInput(
                 new LinkedHashMap<String, String>(), include_parent_macros);
         result.getMacrosMap().putAll(macrosMap);
-        return result;        
+        return result;
     }
-    
+
     @Override
     public String toString() {
-        return (include_parent_macros? "{" + "Parent Macros" + //$NON-NLS-1$ 
-                "} " : "") + macrosMap.toString();        
+        return (include_parent_macros? "{" + "Parent Macros" + //$NON-NLS-1$
+                "} " : "") + macrosMap.toString();
     }
-    
+
     @Override
     public int hashCode(){
          int result = HashCodeUtil.SEED;
@@ -95,7 +95,7 @@ public class MacrosInput {
          return result;
     }
 
-    
+
     @Override
     public boolean equals(Object obj) {
         if(obj != null && obj instanceof MacrosInput){
@@ -109,14 +109,14 @@ public class MacrosInput {
             if(keyList.equals(inputKeyList))
                 return true;
             else
-                return false;    
-            
+                return false;
+
         }else
             return false;
-        
+
     }
-    
-    
+
+
     /**
      * @return a String with format like this: "true", "macro1 = hello", "macro2 = hello2"
      */
@@ -129,7 +129,7 @@ public class MacrosInput {
         }
         return result.toString();
     }
-    
+
     // TODO Offer a parser just for "macro1 = hello", "macro2 = hello2" without the inital "true", "false
     /**Parse MacrosInput from persistence string.
      * @param s
@@ -137,7 +137,7 @@ public class MacrosInput {
      * @throws Exception
      */
     public static MacrosInput recoverFromString(String s) throws Exception{
-        String[] items = StringSplitter.splitIgnoreInQuotes(s, ITEM_SEPARATOR, true);    
+        String[] items = StringSplitter.splitIgnoreInQuotes(s, ITEM_SEPARATOR, true);
         MacrosInput macrosInput = new MacrosInput(new LinkedHashMap<String, String>(), true);
         for(int i= 0; i<items.length; i++){
             if(i == 0)
@@ -148,9 +148,9 @@ public class MacrosInput {
                     macrosInput.getMacrosMap().put(macro[0], macro[1]);
                 else if(macro.length == 1) //if it is an empty value macro
                     macrosInput.getMacrosMap().put(macro[0], ""); //$NON-NLS-1$
-            }                
+            }
         }
         return macrosInput;
     }
-    
+
 }

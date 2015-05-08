@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.sds.ui.internal.properties;
@@ -54,7 +54,7 @@ import org.eclipse.swt.widgets.ToolBar;
 
 /**
  * A table cell editor for values of a multiple line String.
- *  
+ *
  * @author Kai Meyer
  */
 public final class ParamStringCellEditor extends AbstractDialogCellEditor {
@@ -71,7 +71,7 @@ public final class ParamStringCellEditor extends AbstractDialogCellEditor {
     /**
      * Creates a new string cell editor parented under the given control. The
      * cell editor value is a String.
-     * 
+     *
      * @param parent
      *            The parent table.
      * @param properties
@@ -81,7 +81,7 @@ public final class ParamStringCellEditor extends AbstractDialogCellEditor {
         super(parent, "Parameterized Text");
         _properties = properties;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -125,10 +125,10 @@ public final class ParamStringCellEditor extends AbstractDialogCellEditor {
         Assert.isTrue(value instanceof String);
         this._value = (String) value;
     }
-    
+
     /**
      * This class represents a TextCellEditor, which can handle multiple line text.
-     * 
+     *
      * @author Kai Meyer
      */
     private final class MultipleLineInputDialog extends Dialog {
@@ -147,7 +147,7 @@ public final class ParamStringCellEditor extends AbstractDialogCellEditor {
         /**
          * Input text widget.
          */
-        private Text _text;        
+        private Text _text;
         /**
          * The Action to add a new property-tag.
          */
@@ -156,14 +156,14 @@ public final class ParamStringCellEditor extends AbstractDialogCellEditor {
          * The menu for the add-action.
          */
         private Menu _actionMenu;
-        
+
         /**
          * Creates an input dialog with OK and Cancel buttons. Note that the dialog
          * will have no visual representation (no widgets) until it is told to open.
          * <p>
          * Note that the <code>open</code> method blocks for input dialogs.
          * </p>
-         * 
+         *
          * @param parentShell
          *            the parent shell, or <code>null</code> to create a top-level
          *            shell
@@ -189,7 +189,7 @@ public final class ParamStringCellEditor extends AbstractDialogCellEditor {
                 _value = initialValue;
             }
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -200,7 +200,7 @@ public final class ParamStringCellEditor extends AbstractDialogCellEditor {
                 shell.setText(_title);
             }
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -229,15 +229,15 @@ public final class ParamStringCellEditor extends AbstractDialogCellEditor {
             toolBarComposite.setLayout(gridLayout);
             GridData gridData = new GridData(SWT.FILL,SWT.FILL,true,true);
             toolBarComposite.setLayoutData(gridData);
-            
+
             ToolBarManager toolbarManager = new ToolBarManager(SWT.FLAT);
             ToolBar toolBar = toolbarManager.createControl(toolBarComposite);
             GridData grid = new GridData();
             grid.horizontalAlignment = GridData.FILL;
             grid.verticalAlignment = GridData.BEGINNING;
             toolBar.setLayoutData(grid);
-            
-           
+
+
             toolbarManager.add(_addAction);
             toolbarManager.update(true);
             _text = new Text(toolBarComposite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
@@ -260,11 +260,11 @@ public final class ParamStringCellEditor extends AbstractDialogCellEditor {
                     }
                 }
             });
-            
+
             TextDnDUtil.addDnDSupport(_text);
             return composite;
         }
-        
+
         /**
          * Creates the actions.
          */
@@ -286,7 +286,7 @@ public final class ParamStringCellEditor extends AbstractDialogCellEditor {
                     .getImageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID,
                     "icons/add.gif"));
         }
-        
+
         /**
          * Creates the popup-menu for adding a property-tag.
          * @param control The {@link Control} for the menu
@@ -321,7 +321,7 @@ public final class ParamStringCellEditor extends AbstractDialogCellEditor {
             }
             return listMenu.createContextMenu(control);
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -334,30 +334,30 @@ public final class ParamStringCellEditor extends AbstractDialogCellEditor {
             }
             super.buttonPressed(buttonId);
         }
-        
+
          /**
          * Returns the string typed into this dialog.
-         * 
+         *
          * @return the input string
          */
         public String getText() {
             return _value;
         }
-        
+
         /**
          * An {@link Action} which adds a parameter on the current position of the cursor.
          * @author Kai Meyer
          *
          */
         private final class ParamAction extends Action {
-            
+
             /**
              * The name of the property.
              */
             private String _tooltipVariable;
-            
+
             private String _description;
-            
+
             /**
              * Constructor.
              * @param tooltipVariable The name of the property
@@ -366,7 +366,7 @@ public final class ParamStringCellEditor extends AbstractDialogCellEditor {
                 _tooltipVariable = tooltipVariable;
                 this.setText("Add '"+description+"'-Tag");
             }
-            
+
             /**
              * {@inheritDoc}
              */
@@ -378,13 +378,13 @@ public final class ParamStringCellEditor extends AbstractDialogCellEditor {
                 if (caretPosition<textLength) {
                     String prefix = text.substring(0,caretPosition);
                     String postfix = text.substring(caretPosition, text.length());
-                    _text.setText(prefix+TooltipResolver.START_SEPARATOR+_tooltipVariable+TooltipResolver.END_SEPARATOR+postfix);    
+                    _text.setText(prefix+TooltipResolver.START_SEPARATOR+_tooltipVariable+TooltipResolver.END_SEPARATOR+postfix);
                 } else {
                     _text.setText(text+TooltipResolver.START_SEPARATOR+_tooltipVariable+TooltipResolver.END_SEPARATOR);
                 }
             }
         }
-        
+
     }
-    
+
 }

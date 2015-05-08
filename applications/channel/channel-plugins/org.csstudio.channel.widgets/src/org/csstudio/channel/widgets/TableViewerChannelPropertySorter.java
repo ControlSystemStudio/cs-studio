@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.channel.widgets;
 
@@ -13,7 +13,7 @@ import com.swtdesigner.TableViewerColumnSorter;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class TableViewerChannelPropertySorter extends TableViewerColumnSorter {
 

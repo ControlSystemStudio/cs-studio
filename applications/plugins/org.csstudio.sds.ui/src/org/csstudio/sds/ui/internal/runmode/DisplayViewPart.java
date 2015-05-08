@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.sds.ui.internal.runmode;
@@ -52,9 +52,9 @@ import org.eclipse.ui.part.ViewPart;
 /**
  * A view implementation that uses a GEF graphical viewer to display SDS
  * displays.
- * 
+ *
  * Note: This view is enabled for multiple use.
- * 
+ *
  * @author Sven Wende
  */
 public final class DisplayViewPart extends ViewPart {
@@ -80,7 +80,7 @@ public final class DisplayViewPart extends ViewPart {
      * Action for "Zoom Out" functionality.
      */
     private IAction _zoomOutAction;
-    
+
     /**
      * Action for "Change Layer Visibility" functionality.
      */
@@ -102,7 +102,7 @@ public final class DisplayViewPart extends ViewPart {
                 .getRootEditPart()).getZoomManager();
 
         _zoomInAction = new ZoomInAction(zm);
-        _zoomOutAction = new ZoomOutAction(zm);    
+        _zoomOutAction = new ZoomOutAction(zm);
         _changeLayerVisibilityAction = new ChangeLayerVisibilityAction(_graphicalViewer);
 
         // open a run mode box which is responsible for this view
@@ -118,7 +118,7 @@ public final class DisplayViewPart extends ViewPart {
 
     /**
      * Returns the "Zoom In" action.
-     * 
+     *
      * @return the "Zoom In" action
      */
     public IAction getZoomInAction() {
@@ -127,16 +127,16 @@ public final class DisplayViewPart extends ViewPart {
 
     /**
      * Returns the "Zoom Out" action.
-     * 
+     *
      * @return the "Zoom Out" action
      */
     public IAction getZoomOutAction() {
         return _zoomOutAction;
     }
-    
+
     /**
      * Returns the "Change Layer Visibility" action.
-     * 
+     *
      * @return the "Change Layer Visibility" action
      */
     public IAction getChangeLayerVisibilityAction() {
@@ -145,7 +145,7 @@ public final class DisplayViewPart extends ViewPart {
 
     /**
      * Sets the information that will be stored with this view´s memento object.
-     * 
+     *
      * @param mementoInfos
      */
     public void setMementoInfos(final Map<String, String> mementoInfos) {
@@ -155,7 +155,7 @@ public final class DisplayViewPart extends ViewPart {
     /**
      * Cache the memento which will be used in
      * {@link #createPartControl(Composite)} to create a run mode box.
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -171,7 +171,7 @@ public final class DisplayViewPart extends ViewPart {
     @Override
     public void setFocus() {
     }
-    
+
     @Override
     public void setTitleToolTip(String toolTip) {
         super.setTitleToolTip(toolTip);
@@ -179,7 +179,7 @@ public final class DisplayViewPart extends ViewPart {
 
     /**
      * Configures the specified graphical viewer.
-     * 
+     *
      * @param viewer
      *            the graphical viewer
      */
@@ -233,7 +233,7 @@ public final class DisplayViewPart extends ViewPart {
         viewer.setContextMenu(cmProvider);
         getSite().registerContextMenu(cmProvider, viewer);
     }
-    
+
     private void createActions(final ActionRegistry actionRegistry) {
         Action closeAction = new Action() {
             @Override
@@ -266,7 +266,7 @@ public final class DisplayViewPart extends ViewPart {
         }
         super.saveState(memento);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -274,5 +274,5 @@ public final class DisplayViewPart extends ViewPart {
     public void setPartName(String partName) {
         super.setPartName(partName);
     }
-    
+
 }

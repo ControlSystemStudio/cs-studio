@@ -15,9 +15,9 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
  *
  */
 public class PVNameProperty extends StringProperty {
-    
+
     private String detailDescription;
-    
+
     /**PV Name Property Constructor. The property value type is {@link String}.
      * @param prop_id the property id which should be unique in a widget model.
      * @param description the description of the property,
@@ -29,19 +29,19 @@ public class PVNameProperty extends StringProperty {
             WidgetPropertyCategory category, String defaultValue) {
         super(prop_id, description, category, defaultValue, false, false);
         setDetailedDescription(description);
-    }        
-    
+    }
+
     /**Set detailed description to be displayed on tooltip and status line
-      * @param detailedDescription the detailed description. 
+      * @param detailedDescription the detailed description.
      */
     public void setDetailedDescription(String detailDescription) {
         this.detailDescription = detailDescription;
     }
-    
+
     @Override
     protected PropertyDescriptor createPropertyDescriptor() {
         if(PropertySSHelper.getIMPL() == null)
-            return null;        
+            return null;
         return PropertySSHelper.getIMPL().getPVNamePropertyDescriptor(
                 prop_id, description, detailDescription);
     }

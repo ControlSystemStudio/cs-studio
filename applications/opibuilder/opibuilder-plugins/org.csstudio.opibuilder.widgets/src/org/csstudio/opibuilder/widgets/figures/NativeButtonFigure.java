@@ -29,21 +29,21 @@ import org.eclipse.swt.widgets.Composite;
  *
  */
 public class NativeButtonFigure extends AbstractSWTWidgetFigure<Button> implements ITextFigure{
-    
+
     private Button button;
     private Image image;
-    
+
     public NativeButtonFigure(AbstractBaseEditPart editPart, int buttonStyle) {
-        super(editPart, buttonStyle);    
+        super(editPart, buttonStyle);
     }
-    
+
     @Override
     protected Button createSWTWidget(Composite parent, int style) {
-        button= new Button(parent, style);    
+        button= new Button(parent, style);
         button.setCursor(Cursors.HAND);
         return button;
-    }    
-    
+    }
+
     @Override
     public void setBackgroundColor(Color bg) {
     }
@@ -62,22 +62,22 @@ public class NativeButtonFigure extends AbstractSWTWidgetFigure<Button> implemen
                 try {
                     stream.close();
                 } catch (IOException e) {
-                }                
+                }
                 button.setImage(image);
             }
         };
         if(path != null && !path.isEmpty()){
             ResourceUtil.pathToInputStreamInJob(path, uiTask,
                     "Load Button Icon...", new IJobErrorHandler() {
-                
+
                 public void handleError(Exception exception) {
                     image = null;
                     ErrorHandlerUtil.handleError("Failed to load button icon.", exception);
                 }
-            });            
-        }        
+            });
+        }
     }
-    
+
     @Override
     public String getText() {
         return button.getText();

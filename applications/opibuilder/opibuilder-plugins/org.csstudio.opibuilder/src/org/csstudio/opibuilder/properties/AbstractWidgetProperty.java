@@ -21,32 +21,32 @@ import org.jdom.Element;
  *
  */
 public abstract class AbstractWidgetProperty {
-    
+
     protected String prop_id;
-    
-    protected String description; 
-    
+
+    protected String description;
+
     private PropertyChangeSupport pcsDelegate;
-    
+
     private PropertyDescriptor propertyDescriptor;
-    
+
     protected Object propertyValue;
-    
+
     protected Object defaultValue;
-    
+
     protected WidgetPropertyCategory category;
-    
+
     protected boolean visibleInPropSheet;
-    
+
     /**
      * If this property will be saved to opi xml file.
      */
     private boolean isSavable = true;
-    
+
     protected ExecutionMode executionMode = ExecutionMode.EDIT_MODE;
-    
+
     protected AbstractWidgetModel widgetModel;
-    
+
     /**Widget Property Constructor
      * @param prop_id the property id which should be unique in a widget model.
      * @param description the description of the property,
@@ -62,9 +62,9 @@ public abstract class AbstractWidgetProperty {
         this.visibleInPropSheet = true;
         this.defaultValue = defaultValue;
         this.propertyValue = defaultValue;
-        pcsDelegate = new PropertyChangeSupport(this);    
+        pcsDelegate = new PropertyChangeSupport(this);
     }
-    
+
     /**Add listener on property change event. The listener will be removed when widget deactivated,
      * so it is better to call this method in edit part during activating the widget to make sure the widget
      * always have necessary listeners added.
@@ -76,19 +76,19 @@ public abstract class AbstractWidgetProperty {
         }
         pcsDelegate.addPropertyChangeListener(listener);
     }
-    
+
     /**Check if the requestNewValue is convertible or legal.
      * @param value the value to be checked.
-     * @return The value after being checked. It might be coerced if the requestValue 
+     * @return The value after being checked. It might be coerced if the requestValue
      * is illegal. return null if it is not convertible or illegal.
      */
     public abstract Object checkValue(final Object value);
-    
+
     public final void firePropertyChange(final Object oldValue, final Object newValue){
         if(pcsDelegate.hasListeners(prop_id))
             pcsDelegate.firePropertyChange(prop_id, oldValue, newValue);
     }
-    
+
     public final WidgetPropertyCategory getCategory() {
         return category;
     }
@@ -96,11 +96,11 @@ public abstract class AbstractWidgetProperty {
     public final Object getDefaultValue() {
         return defaultValue;
     }
-    
+
     public boolean isDefaultValue(){
         return defaultValue.equals(propertyValue);
     }
-    
+
     public final String getDescription() {
         return description;
     }
@@ -118,7 +118,7 @@ public abstract class AbstractWidgetProperty {
     public Object getPropertyValue() {
         return propertyValue;
     }
-    
+
     /**
      * @return the raw property value that should not be treated or replaced by macros.
      */
@@ -126,11 +126,11 @@ public abstract class AbstractWidgetProperty {
         return propertyValue;
     }
 
-    /**Get the formatted value to be displayed in property sheet. 
-     * @return 
+    /**Get the formatted value to be displayed in property sheet.
+     * @return
      */
     //public abstract Object getFormattedPropertyValue();
-    
+
     public final boolean isVisibleInPropSheet() {
         return visibleInPropSheet;
     }
@@ -142,11 +142,11 @@ public abstract class AbstractWidgetProperty {
             pcsDelegate.removePropertyChangeListener(l);
         }
     }
-    
+
     public final PropertyChangeListener[] getAllPropertyChangeListeners(){
         return pcsDelegate.getPropertyChangeListeners();
     }
-    
+
     public final void removePropertyChangeListener(PropertyChangeListener listener){
         if(listener instanceof WidgetPropertyChangeListener)
             ((WidgetPropertyChangeListener) listener).removeAllHandlers();
@@ -171,7 +171,7 @@ public abstract class AbstractWidgetProperty {
         this.category = category;
     }
 
-    public final void setDescription(String description) {        
+    public final void setDescription(String description) {
         this.description = description;
         createPropertyDescriptor(visibleInPropSheet);
     }
@@ -186,7 +186,7 @@ public abstract class AbstractWidgetProperty {
     /**Set property value and fire the listeners on the property.
      * @param value
      */
-    public void setPropertyValue(Object value) {    
+    public void setPropertyValue(Object value) {
         //do conversion and legally check
         Object newValue = checkValue(value);
         if(newValue == null || newValue.equals(propertyValue))
@@ -195,9 +195,9 @@ public abstract class AbstractWidgetProperty {
         propertyValue = newValue;
         firePropertyChange(oldValue, getPropertyValue());
     }
-    
+
     /**Set property value and fire the listeners on the property.oldValue will
-     * be set as null. 
+     * be set as null.
      * @param value
      */
     public void setPropertyValue_IgnoreOldValue(Object value) {
@@ -206,12 +206,12 @@ public abstract class AbstractWidgetProperty {
         if(newValue == null || newValue.equals(propertyValue))
             return;
         propertyValue = newValue;
-        firePropertyChange(null, getPropertyValue());                
+        firePropertyChange(null, getPropertyValue());
     }
-        
+
     /**Set the property value.
      * @param value the value to be set.
-     * @param fire true if listeners should be fired regardless the old value. 
+     * @param fire true if listeners should be fired regardless the old value.
      * If false, only set the property value without firing listeners.
      */
     public void setPropertyValue(Object value, boolean fire){
@@ -222,7 +222,7 @@ public abstract class AbstractWidgetProperty {
                 return;
             propertyValue = newValue;
             firePropertyChange(null, getPropertyValue());
-                
+
         }else{
             Object newValue = checkValue(value);
             if(newValue == null || newValue.equals(propertyValue))
@@ -230,7 +230,7 @@ public abstract class AbstractWidgetProperty {
             propertyValue = newValue;
         }
     }
-    
+
     /**
      * @param visibleInPropSheet
      * @return true if visibility changed.
@@ -242,7 +242,7 @@ public abstract class AbstractWidgetProperty {
         this.visibleInPropSheet = visibleInPropSheet;
         return true;
     }
-    
+
     private void createPropertyDescriptor(final boolean visibleInPropSheet){
         if(visibleInPropSheet){
             propertyDescriptor = createPropertyDescriptor();
@@ -252,7 +252,7 @@ public abstract class AbstractWidgetProperty {
         else
             propertyDescriptor = null;
     }
-    
+
     /**
      * Create the {@link IPropertyDescriptor}
      */
@@ -264,28 +264,28 @@ public abstract class AbstractWidgetProperty {
      */
     public abstract void writeToXML(Element propElement);
 
-    
+
     /**Read the property value from a XML element.
      * @param propElement
      * @return
      */
     public abstract Object readValueFromXML(Element propElement) throws Exception;
-    
+
     public void setWidgetModel(AbstractWidgetModel widgetModel) {
         this.widgetModel = widgetModel;
         if(widgetModel != null)
             setExecutionMode(widgetModel.getExecutionMode());
     }
-    
+
     public void setExecutionMode(ExecutionMode executionMode) {
         this.executionMode = executionMode;
     }
-    
-    
+
+
     public ExecutionMode getExecutionMode() {
         return executionMode;
     }
-    
+
     /**Subclass should override this method if it is configurable by rule.
      * If this returns true, the method {@link #toStringInRuleScript()} should be
      * properly overridden too.
@@ -294,7 +294,7 @@ public abstract class AbstractWidgetProperty {
     public boolean configurableByRule(){
         return false;
     }
-    
+
 
     /**Subclass should override this method if it only accept output expression.
      * @return true if this property only accept output expression.
@@ -302,7 +302,7 @@ public abstract class AbstractWidgetProperty {
     public boolean onlyAcceptExpressionInRule(){
         return false;
     }
-    
+
     /**Convert to the property value string in the script generated by rule.
      * @param propValue the property value
      * @return the string.
@@ -310,14 +310,14 @@ public abstract class AbstractWidgetProperty {
     public String toStringInRuleScript(Object propValue){
         if(propValue!=null)
             return propValue.toString();
-        else 
+        else
             return ""; //$NON-NLS-1$
     }
-    
+
     @Override
     public String toString() {
         return widgetModel.getName() + "." + prop_id + ": " + getPropertyValue().toString();//$NON-NLS-1$ //$NON-NLS-2$
     }
-    
-    
+
+
 }

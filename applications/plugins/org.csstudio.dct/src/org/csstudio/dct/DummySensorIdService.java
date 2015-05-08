@@ -4,9 +4,9 @@ import java.util.UUID;
 
 /**
  * Dummy implementation of a sensor id service.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class DummySensorIdService implements ISensorIdService {
 

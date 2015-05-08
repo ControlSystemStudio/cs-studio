@@ -20,7 +20,7 @@ public abstract class AbstractLanguageParser {
     /**
      * Performs the parsing of given input and returns an abstract parse tree as
      * nodes and child nodes.
-     * 
+     *
      * @param input
      *            The not-null, non-empty sequence to parse (this may also be a
      *            sub-sequence of the whole source code).
@@ -41,12 +41,12 @@ public abstract class AbstractLanguageParser {
      * The sequence this parser is working on. This sequence will never be
      * changed.
      * </p>
-     * 
+     *
      * <p>
      * Programmer's note: This method should only be called by clients and not
      * by this parser itself.
      * </p>
-     * 
+     *
      * @return The sequence this parser is working on, not null.
      */
     public final CharSequence getSequenceWorkingOn() {
@@ -55,7 +55,7 @@ public abstract class AbstractLanguageParser {
 
     /**
      * Implement this method to realize parsing.
-     * 
+     *
      * @param input
      *            The input to work on.
      * @param sourceResource
@@ -64,6 +64,6 @@ public abstract class AbstractLanguageParser {
      */
     protected abstract Node doParse(final CharSequence input,
             IResource sourceResource, final IProgressMonitor progressMonitor);
-    
+
     public abstract KeyValuePair[] getMeasurementData();
 }

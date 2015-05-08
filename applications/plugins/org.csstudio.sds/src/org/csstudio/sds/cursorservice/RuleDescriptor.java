@@ -11,26 +11,26 @@ import org.eclipse.core.runtime.IConfigurationElement;
  * Describes a {@link CursorSelectionRule}. The description includes the list
  * of cursor states that are declared for the rule (i.e., declared in the
  * contribution which contributes the rule).
- * 
+ *
  * @author swende, Joerg Rathlev
  */
 public final class RuleDescriptor {
-    
+
     /**
      * The id of the described rule.
      */
     private String _id;
-    
+
     /**
-     * The description of the rule. 
+     * The description of the rule.
      */
     private String _description;
-    
+
     /**
      * The cursor states declared for this rule.
      */
     private List<CursorState> _states;
-    
+
     /**
      * The configuration element that declared this rule.
      */
@@ -38,7 +38,7 @@ public final class RuleDescriptor {
 
     /**
      * Creates a new rule descriptor.
-     * 
+     *
      * @param id
      *            the id of the rule.
      * @param description
@@ -60,10 +60,10 @@ public final class RuleDescriptor {
         _states = new ArrayList<CursorState>(states);
         _configurationElement = configurationElement;
     }
-    
+
     /**
      * Returns the configuration element that declared this rule.
-     * 
+     *
      * @return the configuration element that declared this rule, or
      *         <code>null</code> if this rule was not declared by an extension
      *         point.
@@ -71,22 +71,22 @@ public final class RuleDescriptor {
     IConfigurationElement configurationElement() {
         return _configurationElement;
     }
-    
+
     /**
      * Returns an unmodifiable list of cursor states declared for the rule
      * described by this descriptor.
-     * 
+     *
      * @return an unmodifiable list of cursor states declared for the rule
      *         described by this descriptor.
      */
     public List<CursorState> cursorStates() {
         return Collections.unmodifiableList(_states);
     }
-    
+
     /**
      * Returns the cursor state with the speicified id, or <code>null</code>
      * if the state is not defined for this rule.
-     * 
+     *
      * @param id
      *            the state id.
      * @return the cursor state, or <code>null</code> if the state does not
@@ -103,7 +103,7 @@ public final class RuleDescriptor {
 
     /**
      * Returns the id of the rule described by this descriptor.
-     * 
+     *
      * @return the id of the rule described by this descriptor.
      */
     public String getId() {
@@ -112,7 +112,7 @@ public final class RuleDescriptor {
 
     /**
      * Returns the description of the rule described by this descriptor.
-     * 
+     *
      * @return the description of the rule described by this descriptor.
      */
     public String getDescription() {

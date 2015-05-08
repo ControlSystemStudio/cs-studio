@@ -18,7 +18,7 @@ public class Status extends StringID
     {
         super(id, name);
     }
-    
+
     @Override
     @SuppressWarnings("nls")
     final public String toString()

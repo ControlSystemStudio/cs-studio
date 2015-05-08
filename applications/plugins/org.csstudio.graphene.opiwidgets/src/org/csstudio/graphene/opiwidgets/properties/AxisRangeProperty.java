@@ -16,7 +16,7 @@ import org.jdom.Element;
  *
  */
 public class AxisRangeProperty extends AbstractWidgetProperty {
-    
+
     public static final String XML_ELEMENT_AXISRANGE = "axisRange"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_TYPE = "type"; //$NON-NLS-1$
     public static final String XML_VALUE_TYPE_DISPLAY = "display"; //$NON-NLS-1$
@@ -26,10 +26,10 @@ public class AxisRangeProperty extends AbstractWidgetProperty {
     public static final String XML_ATTRIBUTE_MINFIXED = "min"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_MAXFIXED = "max"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_MINUSAGE = "minUsage"; //$NON-NLS-1$
-    
+
     /**
      * AxisRange Property Constructor. The property value type is {@link AxisRange}.
-     * 
+     *
      * @param prop_id the property id which should be unique in a widget model.
      * @param description the description of the property,
      * which will be shown as the property name in property sheet.
@@ -40,7 +40,7 @@ public class AxisRangeProperty extends AbstractWidgetProperty {
             WidgetPropertyCategory category, AxisRange defaultValue) {
         super(prop_id, description, category, defaultValue);
     }
-    
+
 
     @Override
     public Object checkValue(Object value) {
@@ -53,7 +53,7 @@ public class AxisRangeProperty extends AbstractWidgetProperty {
 
     @Override
     protected PropertyDescriptor createPropertyDescriptor() {
-        return new AxisRangePropertyDescriptor(prop_id, description);        
+        return new AxisRangePropertyDescriptor(prop_id, description);
     }
 
     @Override
@@ -62,9 +62,9 @@ public class AxisRangeProperty extends AbstractWidgetProperty {
         if (value == null) {
             value = AxisRanges.display();
         }
-        
+
         Element axisRangeElement = new Element(XML_ELEMENT_AXISRANGE);
-        
+
         if (value instanceof Display) {
             axisRangeElement.setAttribute(XML_ATTRIBUTE_TYPE, XML_VALUE_TYPE_DISPLAY);
         } else if (value instanceof Data) {
@@ -81,8 +81,8 @@ public class AxisRangeProperty extends AbstractWidgetProperty {
         }
         propElement.addContent(axisRangeElement);
     }
-    
-    
+
+
     @Override
     public Object readValueFromXML(Element propElement) {
         Element axisRangeElement = propElement.getChild(XML_ELEMENT_AXISRANGE);
@@ -93,7 +93,7 @@ public class AxisRangeProperty extends AbstractWidgetProperty {
         if (type == null) {
             return AxisRanges.display();
         }
-        
+
         switch(type) {
             case XML_VALUE_TYPE_DATA:
                 return AxisRanges.data();

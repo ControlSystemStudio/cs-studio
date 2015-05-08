@@ -26,10 +26,10 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class AddAnnotationDialog extends Dialog {
     private AnnotationConfigPage configPage;
-    
+
     protected AddAnnotationDialog(final Shell parentShell, final XYGraph xyGraph) {
-        super(parentShell);    
-        
+        super(parentShell);
+
         // Allow resize
         setShellStyle(getShellStyle() | SWT.RESIZE);
 
@@ -37,7 +37,7 @@ public class AddAnnotationDialog extends Dialog {
         // Default name: Annotation 1, Annotation 2, ...
         final int num = xyGraph.getPlotArea().getAnnotationList().size();
         final String name = NLS.bind(Messages.Annotation_DefaultNameFmt, (num+1));
-        
+
         // If there are traces, default to 'snapping' to the first trace
         final Annotation annotation;
         final List<Trace> traces = xyGraph.getPlotArea().getTraceList();
@@ -50,23 +50,23 @@ public class AddAnnotationDialog extends Dialog {
         // Allow user to tweak the settings
         configPage = new AnnotationConfigPage(xyGraph, annotation);
     }
-    
+
     @Override
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
         newShell.setText(Messages.Annotation_Add);
     }
-    
+
     @Override
     protected Control createDialogArea(Composite parent) {
         final Composite parent_composite = (Composite) super.createDialogArea(parent);
         final Composite composite = new Composite(parent_composite, SWT.NONE);
-        configPage.createPage(composite);        
+        configPage.createPage(composite);
         return parent_composite;
     }
-    
+
     @Override
-    protected void okPressed() {    
+    protected void okPressed() {
         configPage.applyChanges();
         super.okPressed();
     }

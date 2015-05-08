@@ -20,9 +20,9 @@ import org.eclipse.gef.commands.CompoundCommand;
 
 /**
  * Copy & Paste strategy for instances.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class InstanceCopyAndPasteStrategy extends BaseCopyAndPasteStrategy {
 

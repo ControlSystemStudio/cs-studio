@@ -7,9 +7,9 @@ public abstract class AbstractSNLNode extends Node {
 
     /**
      * Returns the name of the content, like a program name or a variable name.
-     * 
+     *
      * Implemented by {@link #doGetSourceIdentifier()}.
-     * 
+     *
      * @return The non-empty, not null string represents the content like it
      *         appears in the source.
      */
@@ -22,7 +22,7 @@ public abstract class AbstractSNLNode extends Node {
 
     /**
      * Extracts the name of the content, like a program name or a variable name.
-     * 
+     *
      * @return The non-empty, not null string represents the content like it
      *         appears in the source.
      */

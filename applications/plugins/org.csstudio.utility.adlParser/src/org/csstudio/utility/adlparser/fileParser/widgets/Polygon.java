@@ -12,7 +12,7 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLPoints;
 
 /**
- * 
+ *
  * @author hammonds
  *
  */
@@ -36,7 +36,7 @@ public class Polygon extends ADLAbstractWidget {
                     if (_adlObject != null){
                         _hasObject = true;
                     }
-                    
+
                 }
                 else if (childWidget.getType().equals("dynamic attribute")){
                     _adlDynamicAttribute = new ADLDynamicAttribute(childWidget);
@@ -53,7 +53,7 @@ public class Polygon extends ADLAbstractWidget {
             }
         }
         catch (WrongADLFormatException ex) {
-            
+
         }
     }
 

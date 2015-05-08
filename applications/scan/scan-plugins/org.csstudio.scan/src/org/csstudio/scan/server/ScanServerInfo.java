@@ -79,7 +79,7 @@ public class ScanServerInfo extends MemoryInfo
         this.script_paths = script_paths;
         this.macros = macros;
     }
-    
+
     /** @return Version number */
     public String getVersion()
     {
@@ -117,7 +117,7 @@ public class ScanServerInfo extends MemoryInfo
     {
         return macros;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String toString()

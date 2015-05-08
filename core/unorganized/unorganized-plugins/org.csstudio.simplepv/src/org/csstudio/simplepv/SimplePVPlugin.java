@@ -15,7 +15,7 @@ import org.osgi.framework.BundleContext;
  *
  */
 public class SimplePVPlugin implements BundleActivator {
-    
+
     public static final String PLUGIN_ID = "org.csstudio.simplepv";
 
     public void start(BundleContext context) throws Exception {

@@ -33,7 +33,7 @@ public class Preferences
             return fetch_size;
         return prefs.getInt(Activator.ID, FETCH_SIZE, fetch_size, null);
     }
-    
+
     public static String getStoredProcedure()
     {
         return getString(STORED_PROCEDURE, "");

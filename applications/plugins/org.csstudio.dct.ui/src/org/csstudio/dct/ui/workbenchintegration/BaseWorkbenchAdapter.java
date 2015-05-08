@@ -9,9 +9,9 @@ import org.eclipse.ui.model.IWorkbenchAdapter2;
 
 /**
  * Base class for workbench adapters for elements of the DCT model.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  * @param <E>
  *            the element type
  */
@@ -76,10 +76,10 @@ public abstract class BaseWorkbenchAdapter<E> implements IWorkbenchAdapter, IWor
 
     /**
      * Provide a background color.
-     * 
+     *
      * @param element
      *            the element
-     * 
+     *
      * @return a background color
      */
     protected RGB doGetBackground(E element) {
@@ -88,10 +88,10 @@ public abstract class BaseWorkbenchAdapter<E> implements IWorkbenchAdapter, IWor
 
     /**
      * Provide a font.
-     * 
+     *
      * @param element
      *            the element
-     * 
+     *
      * @return a font
      */
     protected FontData doGetFontData(E element) {
@@ -100,10 +100,10 @@ public abstract class BaseWorkbenchAdapter<E> implements IWorkbenchAdapter, IWor
 
     /**
      * Provide a background color.
-     * 
+     *
      * @param element
      *            the element
-     * 
+     *
      * @return a background color
      */
     protected RGB doGetForeground(E element) {
@@ -112,7 +112,7 @@ public abstract class BaseWorkbenchAdapter<E> implements IWorkbenchAdapter, IWor
 
     /**
      * Provide the children.
-     * 
+     *
      * @param element
      *            the element
      * @return the children
@@ -123,9 +123,9 @@ public abstract class BaseWorkbenchAdapter<E> implements IWorkbenchAdapter, IWor
 
     /**
      * Provide an image. the element
-     * 
+     *
      * @param object the element
-     * 
+     *
      * @return an image
      */
     protected String doGetIcon(E object) {
@@ -134,7 +134,7 @@ public abstract class BaseWorkbenchAdapter<E> implements IWorkbenchAdapter, IWor
 
     /**
      * Provide a label.
-     * 
+     *
      * @param object
      *            the element
      * @return a label
@@ -145,7 +145,7 @@ public abstract class BaseWorkbenchAdapter<E> implements IWorkbenchAdapter, IWor
 
     /**
      * Provide the parent.
-     * 
+     *
      * @param object
      *            the element
      * @return the parent

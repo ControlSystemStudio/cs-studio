@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene;
 
@@ -7,7 +7,7 @@ import java.beans.PropertyChangeEvent;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public abstract class AbstractPointDatasetGraph2DConfigurationDialog<T extends AbstractPointDatasetGraph2DWidget<?, ?>, S extends AbstractPointDatasetGraph2DConfigurationPanel>
         extends

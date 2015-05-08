@@ -18,7 +18,7 @@ public class Activator
 {
     /** Plugin ID defined in MANIFEST.MF */
     final public static String ID = "org.csstudio.navigator.applaunch";
-    
+
     /** @param path Image path
      *  @return {@link ImageDescriptor}
      */

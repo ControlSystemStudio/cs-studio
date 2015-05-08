@@ -41,7 +41,7 @@ public class ScriptMethodRule implements IRule {
 
     /**
      * Checks if the given method name is the name in the character sequence.
-     * 
+     *
      * @returns the number of chars read for the name.
      */
     private static short checkNamePrefix(final CharacterSequence cs,

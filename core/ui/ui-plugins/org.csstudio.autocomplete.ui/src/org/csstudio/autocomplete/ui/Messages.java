@@ -11,7 +11,7 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * Eclipse string externalization.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
  */
 public class Messages extends NLS {

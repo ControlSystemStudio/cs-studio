@@ -21,7 +21,7 @@ public class DecimalVTypeFormat extends VTypeFormat
 {
     final protected int precision;
     final private NumberFormat format;
-   
+
     /** Initialize
      *  @param precision Desired number of decimal digits
      */
@@ -30,16 +30,16 @@ public class DecimalVTypeFormat extends VTypeFormat
         this.precision = precision;
         this.format = initFormat();
     }
-    
+
     /** @return NumberFormat to use in this formatter */
     protected NumberFormat initFormat()
     {
         final NumberFormat format = NumberFormat.getNumberInstance();
         format.setMinimumFractionDigits(precision);
-        format.setMaximumFractionDigits(precision); 
+        format.setMaximumFractionDigits(precision);
         return format;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public StringBuilder format(final VType value, final StringBuilder buf)
@@ -53,7 +53,7 @@ public class DecimalVTypeFormat extends VTypeFormat
             super.format(value, buf);
         return buf;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public StringBuilder format(final Number number,
@@ -69,7 +69,7 @@ public class DecimalVTypeFormat extends VTypeFormat
         }
         return buf.append(format.format(number));
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String toString()

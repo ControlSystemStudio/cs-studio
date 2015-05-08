@@ -37,7 +37,7 @@ public class SdsThumbnailImageCache {
         Configuration configuration = new Configuration();
         configuration.addDiskStore(new DiskStoreConfiguration().path(cacheDirectory.getAbsolutePath()));
         cacheManager = CacheManager.create(configuration);
-        
+
         CacheConfiguration config = new CacheConfiguration("DisplayThumbnailCache", 1000);
         config.overflowToOffHeap(false);
         config.overflowToDisk(true);
@@ -46,7 +46,7 @@ public class SdsThumbnailImageCache {
         config.setTimeToLiveSeconds(60 * 60 * 24 * 30);
 
         config.setEternal(true); // Overrides time to live
-        
+
         config.setMaxEntriesLocalHeap(100);
         config.setMaxBytesLocalDisk("100M");
         config.setMaxEntriesLocalDisk(50000);
@@ -101,7 +101,7 @@ public class SdsThumbnailImageCache {
     private File getImageCacheDirectory() {
         File workspaceFile = ResourcesPlugin.getWorkspace().getRoot()
                 .getLocation().toFile();
-        
+
         File result = new File(workspaceFile, ".metadata/.plugins/" + SdsUiPlugin.PLUGIN_ID + "/" + CACHE_FOLDER_NAME);
         if (!result.exists()) {
             result.mkdirs();

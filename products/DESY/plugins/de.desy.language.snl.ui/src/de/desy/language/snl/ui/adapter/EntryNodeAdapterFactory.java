@@ -7,9 +7,9 @@ import de.desy.language.snl.parser.nodes.EntryNode;
 
 /**
  * The specialized {@link IAdapterFactory} for {@link EntryNode}s.
- * 
+ *
  * @author C1 WPS / KM, MZ
- * 
+ *
  */
 class EntryNodeAdapterFactory implements IAdapterFactory {
 
@@ -27,12 +27,12 @@ class EntryNodeAdapterFactory implements IAdapterFactory {
 
             if (adapterType == IWorkbenchAdapter.class) {
                 return new AbstractSNLWorkbenchAdapter<EntryNode>(node) {
-                    
+
                     @Override
                     protected String doGetLabel(EntryNode node) {
                         return "Entry statement";
                     }
-                    
+
                     @Override
                     public String getImageName(final EntryNode nodeToRender) {
                         return "entry.gif";

@@ -43,9 +43,9 @@ import org.eclipse.swt.widgets.Display;
 /**
  * Control figure for Boolean Symbol Image widget based on
  * {@link ControlBoolSymbolModel}
- * 
+ *
  * @author SOPRA Group
- * 
+ *
  */
 public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
         implements SymbolImageListener {
@@ -185,15 +185,15 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
     protected boolean isEditMode() {
         return ExecutionMode.EDIT_MODE.equals(executionMode);
     }
-    
+
     public void setExecutionMode(ExecutionMode executionMode) {
         this.executionMode = executionMode;
     }
-    
+
     public void setSymbolProperties(SymbolImageProperties symbolProperties) {
         this.symbolProperties = symbolProperties;
     }
-    
+
     // ************************************************************
     // Image loading
     // ************************************************************
@@ -224,7 +224,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
      * If the image selected is off, then search on image. <br>
      * If one or both is not found, the image path selected is the same for
      * both.
-     * 
+     *
      * @param model
      * @param imagePath The path to the selected image (on or off or other)
      */
@@ -410,7 +410,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 
     /**
      * The main drawing routine.
-     * 
+     *
      * @param gfx The {@link Graphics} to use
      */
     @Override
@@ -508,12 +508,12 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
     }
 
     // ************************************************************
-    // Override Figure class methods 
+    // Override Figure class methods
     // ************************************************************
 
     /**
      * We want to have local coordinates here.
-     * 
+     *
      * @return True if here should used local coordinates
      */
     @Override

@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.ui.util.composites;
@@ -64,32 +64,32 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 /**
  * Workbench-level composite for choosing a resource.
- * 
+ *
  * <p>
  * <b>Code is based upon
  * <code>org.eclipse.ui.internal.ide.misc.ContainerSelectionGroup</code> in
  * plugin <code>org.eclipse.ui.ide</code>.</b>
  * </p>
- * 
+ *
  * @author Alexander Will, Joerg Rathlev
  * @version $Revision$
  */
 //TODO: Copied from org.csstudio.platform.ui. Review is needed.
 public final class ResourceSelectionGroup extends Composite {
-    
+
     /**
      * This action is for creating a new folder.
-     * 
+     *
      * @author Kai Meyer
      *
      */
     private final class NewFolderAction extends Action {
-        
+
         /**
          * The Shell.
          */
         private final Shell _shell;
-        
+
         /**
          * Constructor.
          * @param shell
@@ -102,7 +102,7 @@ public final class ResourceSelectionGroup extends Composite {
             this.setImageDescriptor(
                     ImageUtil.getInstance().getImageDescriptor(Activator.ID, "icons/new_folder.png")); //$NON-NLS-1$
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -130,20 +130,20 @@ public final class ResourceSelectionGroup extends Composite {
             }
         }
     }
-    
+
     /**
      * This action is for creating a new project.
-     * 
+     *
      * @author Kai Meyer
      *
      */
     private final class NewProjectAction extends Action {
-        
+
         /**
          * The Shell.
          */
         private final Shell _shell;
-        
+
         /**
          * Constructor.
          * @param shell
@@ -155,7 +155,7 @@ public final class ResourceSelectionGroup extends Composite {
             this.setToolTipText("Creates a new project");
             this.setImageDescriptor(ImageUtil.getInstance().getImageDescriptor(Activator.ID, "icons/new_project.png"));
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -176,8 +176,8 @@ public final class ResourceSelectionGroup extends Composite {
             }
         }
     }
-    
-    
+
+
     /**
      * The listener to notify of events.
      */
@@ -197,12 +197,12 @@ public final class ResourceSelectionGroup extends Composite {
      * The tree widget.
      */
     private TreeViewer _treeViewer;
-    
+
     /**
      * The NewFolderAction.
      */
     private Action _newFolderAction;
-    
+
     /**
      * The NewProjectAction.
      */
@@ -225,7 +225,7 @@ public final class ResourceSelectionGroup extends Composite {
 
     /**
      * Creates a new instance of the widget.
-     * 
+     *
      * @param parent
      *            The parent widget of the group.
      * @param listener
@@ -246,7 +246,7 @@ public final class ResourceSelectionGroup extends Composite {
 
     /**
      * Creates a new instance of the widget.
-     * 
+     *
      * @param parent
      *            The parent widget of the group.
      * @param listener
@@ -269,7 +269,7 @@ public final class ResourceSelectionGroup extends Composite {
 
     /**
      * Creates a new instance of the widget.
-     * 
+     *
      * @param parent
      *            The parent widget of the group.
      * @param listener
@@ -298,7 +298,7 @@ public final class ResourceSelectionGroup extends Composite {
 
     /**
      * Creates a new instance of the widget.
-     * 
+     *
      * @param parent
      *            The parent widget of the group.
      * @param listener
@@ -339,7 +339,7 @@ public final class ResourceSelectionGroup extends Composite {
     /**
      * The container selection has changed in the tree view. Update the
      * container name field value and notify all listeners.
-     * 
+     *
      * @param resource
      *            The container that changed
      */
@@ -354,7 +354,7 @@ public final class ResourceSelectionGroup extends Composite {
             _listener.handleEvent(changeEvent);
         }
     }
-    
+
     public void itemDoubleClicked(final IResource resource) {
         _selectedResource = resource;
 
@@ -368,7 +368,7 @@ public final class ResourceSelectionGroup extends Composite {
     }
     /**
      * Creates the contents of the composite.
-     * 
+     *
      * @param message
      *            The text to present to the user.
      * @param fileExtensions
@@ -396,7 +396,7 @@ public final class ResourceSelectionGroup extends Composite {
 
     /**
      * Returns a new drill down viewer for this dialog.
-     * 
+     *
      * @param fileExtensions
      *            The file extensions of files to include in the tree.
      * @param heightHint
@@ -450,7 +450,7 @@ public final class ResourceSelectionGroup extends Composite {
                         _treeViewer.expandToLevel(item, 1);
                     }else if(!(item instanceof IContainer))
                         itemDoubleClicked((IResource)item);
-                        
+
                 }
             }
         });
@@ -459,10 +459,10 @@ public final class ResourceSelectionGroup extends Composite {
         _treeViewer.setInput(ResourcesPlugin.getWorkspace());
         this.addNewContainerActions(drillDown.getToolBarManager());
         this.addPopupMenu(_treeViewer);
-        
+
         this.setDefaultSelection(_treeViewer);
     }
-    
+
     /**
      * Sets the first Element of the TreeViewer as selected Item.
      * @param viewer
@@ -474,12 +474,12 @@ public final class ResourceSelectionGroup extends Composite {
             viewer.getTree().setSelection(item);
         }
     }
-    
+
     /**
      * Creates the New Folder and New Project actions and adds them to
      * the given toolbar manager.
-     * 
-     * @param manager 
+     *
+     * @param manager
      *             The ToolBarManager, where the Actions are added
      */
     private void addNewContainerActions(final ToolBarManager manager) {
@@ -493,7 +493,7 @@ public final class ResourceSelectionGroup extends Composite {
             manager.update(true);
         }
     }
-    
+
     /**
      * Adds a PopupMenu to the given TreeViewer.
      * @param viewer
@@ -508,7 +508,7 @@ public final class ResourceSelectionGroup extends Composite {
         Menu menu = popupMenu.createContextMenu(viewer.getTree());
         viewer.getTree().setMenu(menu);
     }
-    
+
     /**
      * Refreshes the Tree in an async-thread.
      */
@@ -524,7 +524,7 @@ public final class ResourceSelectionGroup extends Composite {
      * Returns the currently entered container name. Null if the field is empty.
      * Note that the container may not exist yet if the user entered a new
      * container name in the field.
-     * 
+     *
      * @return IPath
      */
     public IPath getFullPath() {
@@ -541,15 +541,15 @@ public final class ResourceSelectionGroup extends Composite {
     public void setInitialFocus() {
         _treeViewer.getTree().setFocus();
     }
-    
+
     /**
      * Selects the given resource.
-     * 
+     *
      * @param resource the resource to select.
      */
     public void setSelectedResource(final IResource resource) {
         _selectedResource = resource;
-        
+
         List<IResource> itemsToExpand = new ArrayList<IResource>();
         IContainer parent = resource.getParent();
         while (parent != null) {
@@ -559,10 +559,10 @@ public final class ResourceSelectionGroup extends Composite {
         _treeViewer.setExpandedElements(itemsToExpand.toArray());
         _treeViewer.setSelection(new StructuredSelection(resource), true);
     }
-    
+
     /**
      * Selects the resource with the given path.
-     * 
+     *
      * @param path
      *            The path to a specific resource.
      */

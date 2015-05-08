@@ -21,36 +21,36 @@ import org.eclipse.swt.graphics.RGB;
  */
 public class BoolSwitchModel extends AbstractBoolControlModel {
 
-    
-    
+
+
     /** True if the widget is drawn with advanced graphics. In some platforms,
-     * advance graphics may not be available, in which case the widget will not be drawn 
+     * advance graphics may not be available, in which case the widget will not be drawn
      * with advanced graphics even this is set to true.*/
-    public static final String PROP_EFFECT3D = "effect_3d"; //$NON-NLS-1$    
-    
-    
-    /** The default value of the height property. */    
+    public static final String PROP_EFFECT3D = "effect_3d"; //$NON-NLS-1$
+
+
+    /** The default value of the height property. */
     private static final int DEFAULT_HEIGHT = 100;
-    
+
     /** The default value of the width property. */
     private static final int DEFAULT_WIDTH = 50;
-    
+
     private static final RGB DEFAULT_FORE_COLOR = CustomMediaFactory.COLOR_BLACK;
 
-    
+
     public BoolSwitchModel() {
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         setForegroundColor(DEFAULT_FORE_COLOR);
     }
-    
+
     @Override
     protected void configureProperties() {
         super.configureProperties();
-        
-        addProperty(new BooleanProperty(PROP_EFFECT3D, "3D Effect", 
+
+        addProperty(new BooleanProperty(PROP_EFFECT3D, "3D Effect",
                 WidgetPropertyCategory.Display, true));
-        removeProperty(PROP_ACTIONS);        
-        addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
+        removeProperty(PROP_ACTIONS);
+        addProperty(new ActionsProperty(PROP_ACTIONS, "Actions",
                 WidgetPropertyCategory.Behavior, false));
         //setPropertyDescription(PROP_PVNAME, "Readback PV");
 
@@ -58,8 +58,8 @@ public class BoolSwitchModel extends AbstractBoolControlModel {
     /**
      * The ID of this widget model.
      */
-    public static final String ID = "org.csstudio.opibuilder.widgets.BoolSwitch"; //$NON-NLS-1$    
-    
+    public static final String ID = "org.csstudio.opibuilder.widgets.BoolSwitch"; //$NON-NLS-1$
+
     @Override
     public String getTypeID() {
         return ID;
@@ -71,6 +71,6 @@ public class BoolSwitchModel extends AbstractBoolControlModel {
     public boolean isEffect3D() {
         return (Boolean) getProperty(PROP_EFFECT3D).getPropertyValue();
     }
-    
+
 
 }

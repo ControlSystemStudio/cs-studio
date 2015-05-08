@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -16,11 +16,11 @@ public class LogEntryBuilderDialogTest {
 
     /**
      * Launch the application.
-     * 
+     *
      * @param args
      */
     public static void main(String args[]) {
-        
+
         Display display = new Display();
         final Shell shell = new Shell(display);
         LogEntryBuilderDialog dialog = new LogEntryBuilderDialog(

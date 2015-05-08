@@ -28,7 +28,7 @@ public class ExecuteCommandAction extends AbstractWidgetAction {
     public final static String PROP_COMMAND = "command"; //$NON-NLS-1$
     public final static String PROP_DIRECTORY = "command_directory"; //$NON-NLS-1$
     public final static String PROP_WAIT_TIME = "wait_time"; //$NON-NLS-1$
-    
+
     @Override
     protected void configureProperties() {
         addProperty(new StringProperty(
@@ -37,7 +37,7 @@ public class ExecuteCommandAction extends AbstractWidgetAction {
                 PROP_DIRECTORY, "Command Directory[path]", WidgetPropertyCategory.Basic, "$(user.home)"));
         addProperty(new IntegerProperty(
                 PROP_WAIT_TIME, "Wait Time(s)", WidgetPropertyCategory.Basic, 10, 1, Integer.MAX_VALUE));
-        
+
     }
 
     @Override
@@ -49,13 +49,13 @@ public class ExecuteCommandAction extends AbstractWidgetAction {
     public void run() {
         ConsoleService.getInstance().writeInfo("Execute Command: " + getCommand());
         new CommandExecutor(getCommand(), getDirectory(), getWaitTime());
-        
+
     }
-    
+
     public String getCommand(){
         return (String)getPropertyValue(PROP_COMMAND);
     }
-    
+
     public String getDirectory(){
         String directory = (String)getPropertyValue(PROP_DIRECTORY);
         try {
@@ -69,7 +69,7 @@ public class ExecuteCommandAction extends AbstractWidgetAction {
     public int getWaitTime(){
         return (Integer)getPropertyValue(PROP_WAIT_TIME);
     }
-    
+
 
     /** @param value Value that might contain "$(prop)"
      *  @return Value where "$(prop)" is replaced by Java system property "prop"
@@ -88,7 +88,7 @@ public class ExecuteCommandAction extends AbstractWidgetAction {
                     opiFilePath = ResourceUtil.workspacePathToSysPath(opiFilePath);
                 prop=opiFilePath.removeLastSegments(1).toOSString();
             }
-            
+
             if (prop == null)
                 throw new Exception("Property '" + prop_name + "' is not defined");
             return prop;
@@ -96,7 +96,7 @@ public class ExecuteCommandAction extends AbstractWidgetAction {
         // Return as is
         return value;
     }
-    
+
     @Override
     public String getDefaultDescription() {
         return super.getDefaultDescription() + " " + getCommand(); //$NON-NLS-1$

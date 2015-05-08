@@ -8,22 +8,22 @@ package com.cosylab.vdct.plugin;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -40,7 +40,7 @@ import com.cosylab.vdct.xml.*;
  * Creation date: (6.12.2001 22:40:36)
  * @author Matej Sekoranja
  */
- 
+
 public class PluginObject
 {
 
@@ -57,7 +57,7 @@ public class PluginObject
     private final static String INITIALIZED_PLUGIN = "Initialized.";
     private final static String STARTED_PLUGIN = "Started.";
     private final static String STOPPED_PLUGIN = "Stopped.";
-    
+
     private final static String AUTOSTART_PLUGIN = "Auto.";
     private final static String NO_AUTOSTART_PLUGIN = "Manual.";
 
@@ -68,9 +68,9 @@ public class PluginObject
     private String className = null;
     private boolean autoStart = false;
     private Properties properties = null;
-    
+
     private PropertyChangeSupport propChangeSupport = null;
-    
+
 /**
  * Insert the method's description here.
  * Creation date: (6.12.2001 22:46:06)
@@ -299,11 +299,11 @@ private void loadConfig(Element pluginNode)
 {
     className = XMLManager.getNodeAttribute(pluginNode, "class");
     autoStart = XMLManager.getNodeAttribute(pluginNode, "autostart").equals("true");
-    
+
     properties = new Properties();
 
     System.out.println("Loading plugin: "+className);
-    
+
     Node node = pluginNode.getFirstChild();
     while (node!=null)
     {
@@ -324,12 +324,12 @@ public static Plugin loadPlugin(String className) throws Throwable
 {
     if (className==null)
         return null;
-    
+
     try
     {
         Class classObj = Class.forName(className);
         Object obj = classObj.newInstance();
-        
+
         return (Plugin)obj;
     }
     catch (Throwable t)

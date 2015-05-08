@@ -19,5 +19,5 @@ public class GaugeFeedbackFactory extends AbstractFixRatioSizeFeedbackFactory {
     public int getMinimumWidth() {
         return GaugeModel.MINIMUM_SIZE;
     }
-    
+
 }

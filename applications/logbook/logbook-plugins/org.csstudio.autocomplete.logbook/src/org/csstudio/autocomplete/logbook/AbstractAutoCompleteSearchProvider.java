@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.autocomplete.logbook;
 
@@ -24,7 +24,7 @@ import com.google.common.base.Joiner;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public abstract class AbstractAutoCompleteSearchProvider implements
         IAutoCompleteProvider {
@@ -39,7 +39,7 @@ public abstract class AbstractAutoCompleteSearchProvider implements
 
     /**
      * Configure the KeyValueMap to be used to provide the search proposals.
-     * 
+     *
      * @return Map<String, List<String>> where the keys are the search Keywords
      *         and the values are the list of possible values
      */

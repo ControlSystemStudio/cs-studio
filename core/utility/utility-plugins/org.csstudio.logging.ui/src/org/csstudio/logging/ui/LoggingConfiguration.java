@@ -36,11 +36,11 @@ import org.eclipse.ui.part.ViewPart;
 
 /**
  * This view lists all the loggers currently available in cs-studio
- * The users can turn add or remove the consoleViewHandler from any of the logger 
+ * The users can turn add or remove the consoleViewHandler from any of the logger
  * The users can configure the logging Level for these loggers too, thus allow temporary FINE logging.
- * 
+ *
  * TODO redo the GUI to have a tree table
- * 
+ *
  * @author Kunal Shroff
  *
  */
@@ -48,35 +48,35 @@ public class LoggingConfiguration extends ViewPart {
 
     private final static Logger LOGGER = Logger.getLogger(LoggingConfiguration.class.getName());
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    
+
     private static final String ID = "org.csstudio.logging.ui.LoggingConfiguration";
-    
+
     private ScrolledComposite sc;
     private final Map<String, Logger> loggerMap = new TreeMap<String, Logger>();
-    
-    public LoggingConfiguration() {     
-        
+
+    public LoggingConfiguration() {
+
     }
 
     @Override
     public void createPartControl(final Composite parent) {
-        
+
         IPartService service = (IPartService) getSite().getService(IPartService.class);
         service.addPartListener(new IPartListener2() {
-            
 
-            
+
+
             @Override
             public void partActivated(IWorkbenchPartReference partRef) {
                 // TODO Auto-generated method stub
                 if(partRef.getId().equals(ID)){
                     updateLoggerMap();
                     Display.getCurrent().asyncExec(new Runnable() {
-                        
+
                         @Override
                         public void run() {
                             if (!parent.isDisposed()) {
-                                //FIXME do not recreate the whole view every time it 
+                                //FIXME do not recreate the whole view every time it
                                 //becomes active (it happens on every focus gained event)
                                 createComposite(parent);
                             }
@@ -86,23 +86,23 @@ public class LoggingConfiguration extends ViewPart {
             }
 
             @Override
-            public void partBroughtToTop(IWorkbenchPartReference partRef) {                
+            public void partBroughtToTop(IWorkbenchPartReference partRef) {
             }
 
             @Override
-            public void partClosed(IWorkbenchPartReference partRef) {                
+            public void partClosed(IWorkbenchPartReference partRef) {
             }
 
             @Override
-            public void partDeactivated(IWorkbenchPartReference partRef) {                
+            public void partDeactivated(IWorkbenchPartReference partRef) {
             }
 
             @Override
-            public void partOpened(IWorkbenchPartReference partRef) {                
+            public void partOpened(IWorkbenchPartReference partRef) {
             }
 
             @Override
-            public void partHidden(IWorkbenchPartReference partRef) {                
+            public void partHidden(IWorkbenchPartReference partRef) {
             }
 
             @Override
@@ -113,23 +113,23 @@ public class LoggingConfiguration extends ViewPart {
             public void partInputChanged(IWorkbenchPartReference partRef) {
             }
         });
-        
+
         // Initialization
         LOGGER.setLevel(Level.ALL);
         LOGGER.setUseParentHandlers(false);
-        
+
         updateLoggerMap();
 
-//        Logger rootLogger = Logger.getLogger("");        
+//        Logger rootLogger = Logger.getLogger("");
 //        final ArrayList<Handler> globalHandlers = new ArrayList<Handler>(Arrays.asList(rootLogger.getHandlers()));
 
         createComposite(parent);
 
         // Do some logging
-        
+
         ScheduledExecutorService scheduler  = Executors.newSingleThreadScheduledExecutor();
         scheduler.scheduleAtFixedRate(new Runnable() {
-            
+
             @Override
             public void run() {
                 LOGGER.log(Level.INFO, "Current Time is: " + sdf.format(new Date()));
@@ -142,46 +142,46 @@ public class LoggingConfiguration extends ViewPart {
     public void setFocus() {
 
     }
-    
+
     private void createComposite(Composite parent){
         // GUI
         if (sc == null) {
-            sc = new ScrolledComposite(parent, SWT.V_SCROLL);            
+            sc = new ScrolledComposite(parent, SWT.V_SCROLL);
         } else {
             for (Control control : sc.getChildren()) {
                 control.dispose();
             }
         }
-        
+
         Composite composite = new Composite(sc, SWT.None);
-        composite.setLayout(new GridLayout(3, false));        
-        
+        composite.setLayout(new GridLayout(3, false));
+
         Label lblHeading = new Label(composite, SWT.NONE);
         lblHeading.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
         lblHeading.setText("Logger Name:");
-        
+
         Label btnHeading = new Label(composite, SWT.WRAP);
         btnHeading.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         btnHeading.setText("Enable/Disable the logging to the eclipse console view");
         btnHeading.setToolTipText("Enable/Disable the logging to the eclipse console view");
-        
+
         Label comboHeading = new Label(composite, SWT.WRAP);
         comboHeading.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         comboHeading.setText("Set logger level");
         comboHeading.setToolTipText("Set logger level");
-        
+
         for (final Entry<String, Logger> loggerEntry : loggerMap.entrySet()) {
-            
+
             //Label
             Label lblNewLabel = new Label(composite, SWT.NONE);
             lblNewLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
             lblNewLabel.setText(loggerEntry.getKey());
-            
-            //ON/OFF 
+
+            //ON/OFF
             Button btnNewButton = new Button(composite, SWT.TOGGLE);
             btnNewButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
             btnNewButton.setData("loggerName", loggerEntry.getKey());
-            
+
             // By default turn off the test logger associated with this plugin
             // TODO This test feature should be removed from this plugin
             if(loggerEntry.getKey().equals(ID)){
@@ -197,7 +197,7 @@ public class LoggingConfiguration extends ViewPart {
                 public void widgetSelected(SelectionEvent e) {
                     Button b = ((Button) e.widget);
                     if (b.getSelection()) {
-                        b.setText("ON");   
+                        b.setText("ON");
                         Logger logger = loggerMap.get((String)b.getData("loggerName"));
                         logger.setUseParentHandlers(true);
                         // this would explicitly add the handler on the individual logger
@@ -222,7 +222,7 @@ public class LoggingConfiguration extends ViewPart {
             comboViewer.setInput(levels);
             comboViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
             comboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-                
+
                 private Level _oldSelection;
 
                 @Override
@@ -231,11 +231,11 @@ public class LoggingConfiguration extends ViewPart {
                     if (newSelection != _oldSelection) {
                         loggerMap.get((String)comboViewer.getData("loggerName")).setLevel(newSelection);
                         _oldSelection = newSelection;
-                    }                                 
+                    }
                 }
-            });           
-        }        
-        
+            });
+        }
+
         sc.setContent(composite);
         sc.setExpandHorizontal(true);
         sc.setExpandVertical(true);
@@ -244,12 +244,12 @@ public class LoggingConfiguration extends ViewPart {
 
     private void updateLoggerMap(){
         LogManager manager = LogManager.getLogManager();
-        Enumeration<String> loggerNames = manager.getLoggerNames();        
+        Enumeration<String> loggerNames = manager.getLoggerNames();
         while (loggerNames.hasMoreElements()) {
             String name = loggerNames.nextElement();
-            Logger l = manager.getLogger(name);            
+            Logger l = manager.getLogger(name);
             loggerMap.put(name, l);
         }
     }
-    
+
 }

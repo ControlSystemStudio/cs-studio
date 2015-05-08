@@ -14,7 +14,7 @@ public class DetailsActivator extends AbstractUIPlugin {
 
     // The shared instance
     private static DetailsActivator plugin;
-    
+
     /**
      * The constructor
      */

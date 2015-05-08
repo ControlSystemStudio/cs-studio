@@ -6,7 +6,7 @@ import org.csstudio.sds.model.IWidgetModelFactory;
 
 /**
  * Factory for {@link SixteenBinaryBarModel}.
- * 
+ *
  * @author Alen Vrecko
  *
  */

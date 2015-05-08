@@ -63,19 +63,19 @@ public class ADLControl extends WidgetPart{
      * The Record property/Feldname.
      */
     private String _postfix;
-     
+
 
     /**
      * The default constructor.
-     * 
-     * @param adlControl An ADLWidget that correspond a ADL Control. 
+     *
+     * @param adlControl An ADLWidget that correspond a ADL Control.
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
     public ADLControl(final ADLWidget adlControl, final AbstractWidgetModel parentWidgetModel) throws WrongADLFormatException {
         super(adlControl, parentWidgetModel);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -83,9 +83,9 @@ public class ADLControl extends WidgetPart{
     final void init() {
         _connectionState = false;
     }
-    
+
     /**
-     * {@inheritDoc} 
+     * {@inheritDoc}
      */
     @Override
     final void parseWidgetPart(final ADLWidget adlControl) throws WrongADLFormatException {
@@ -136,7 +136,7 @@ public class ADLControl extends WidgetPart{
             _postfix = ADLHelper.setChan(_widgetModel,_chan);
         }
     }
-    
+
     /**
      * @return the state of background color display the ConnectionState.
      */

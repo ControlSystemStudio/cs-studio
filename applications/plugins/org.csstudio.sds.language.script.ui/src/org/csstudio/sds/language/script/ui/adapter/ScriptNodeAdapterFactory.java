@@ -12,9 +12,9 @@ import org.eclipse.ui.model.WorkbenchAdapter;
  * This class generate {@link IWorkbenchAdapter} for {@link AbstractScriptNode}s.
  * If a special {@link IAdapterFactory} is registered for a specific type of an
  * {@link AbstractScriptNode}, that factory is used.
- * 
+ *
  * @author C1 WPS / KM
- * 
+ *
  */
 public class ScriptNodeAdapterFactory implements IAdapterFactory {
 
@@ -47,7 +47,7 @@ public class ScriptNodeAdapterFactory implements IAdapterFactory {
     /**
      * Adds the given {@link IAdapterFactory} to the given {@link Map} for every
      * type the factory supports.
-     * 
+     *
      * @param factory The {@link IAdapterFactory} to be added
      * @param adapterMap The {@link Map} to add the factory
      */

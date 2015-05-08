@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.sds.ui.internal.properties.view;
@@ -86,9 +86,9 @@ import org.eclipse.ui.part.Page;
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
- * 
+ *
  * @see IPropertySource
- * 
+ *
  * @author Sven Wende
  */
 public final class PropertySheetPage extends Page implements
@@ -312,7 +312,7 @@ public final class PropertySheetPage extends Page implements
      * Returns an <code>ISaveablePart</code> that delegates to the source part
      * for the current page if it implements <code>ISaveablePart</code>, or
      * <code>null</code> otherwise.
-     * 
+     *
      * @return an <code>ISaveablePart</code> or <code>null</code>
      * @since 3.2
      */
@@ -325,7 +325,7 @@ public final class PropertySheetPage extends Page implements
 
     /**
      * Returns the cell editor activation listener for this page.
-     * 
+     *
      * @return ICellEditorActivationListener the cell editor activation listener
      *         for this page
      */
@@ -361,7 +361,7 @@ public final class PropertySheetPage extends Page implements
 
     /**
      * Handles a selection change in the entry table.
-     * 
+     *
      * @param selection
      *            the new selection
      */
@@ -401,7 +401,7 @@ public final class PropertySheetPage extends Page implements
 
     /**
      * The user is attempting to drag. Add the appropriate data to the event.
-     * 
+     *
      * @param event
      *            The event sent from the drag and drop support.
      */
@@ -476,7 +476,7 @@ public final class PropertySheetPage extends Page implements
         _configureDynamicAspectsAction.setText("Configure Dynamic Aspects");
         _configureDynamicAspectsAction.setImageDescriptor(sharedImages
                 .getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
-        
+
         // Remove dynamic aspects of a property
         _removeDynamicAspectsAction = new RemoveDynamicAspectsAction(_viewer,
                 "removeDynamicAspects");
@@ -531,7 +531,7 @@ public final class PropertySheetPage extends Page implements
         }
 
         if (part instanceof DisplayEditor) {
-            if (_sourcePart != null) { 
+            if (_sourcePart != null) {
                 _sourcePart.getSite().getPage().removePartListener(_partListener);
                 _sourcePart = null;
             }
@@ -555,7 +555,7 @@ public final class PropertySheetPage extends Page implements
      * <p>
      * Subclasses may reimplement.
      * </p>
-     * 
+     *
      * @param actionBars
      *            the action bars
      */
@@ -580,7 +580,7 @@ public final class PropertySheetPage extends Page implements
      * Calling this method is only valid if you are using this page's default
      * root entry.
      * </p>
-     * 
+     *
      * @param newProvider
      *            the property source provider
      */
@@ -597,7 +597,7 @@ public final class PropertySheetPage extends Page implements
 
     /**
      * Sets the given entry as the model for the page.
-     * 
+     *
      * @param entry
      *            the root entry
      */
@@ -615,7 +615,7 @@ public final class PropertySheetPage extends Page implements
      * <p>
      * The default sorter sorts categories and entries alphabetically.
      * </p>
-     * 
+     *
      * @param sorter
      *            the sorter to set (<code>null</code> will reset to the
      *            default sorter)
@@ -636,7 +636,7 @@ public final class PropertySheetPage extends Page implements
     /**
      * Part listener which cleans up this page when the source part is closed.
      * This is hooked only when there is a source part.
-     * 
+     *
      * @since 3.2
      */
     protected final class PartListener implements IPartListener {

@@ -36,14 +36,14 @@ import org.eclipse.swt.widgets.Table;
  *
  */
 public class RuntimePropertiesEditDialog extends Dialog {
-    
+
     private TableViewer propertiesViewer;
     private PropertyData[] propertyDataArray;
-    
-    public RuntimePropertiesEditDialog(Shell parentShell, 
+
+    public RuntimePropertiesEditDialog(Shell parentShell,
             AbstractWidgetModel widgetModel) {
         super(parentShell);
-        List<AbstractWidgetProperty> runningPropertyList = 
+        List<AbstractWidgetProperty> runningPropertyList =
             widgetModel.getRuntimePropertyList();
         if(runningPropertyList != null){
             int i=0;
@@ -55,26 +55,26 @@ public class RuntimePropertiesEditDialog extends Dialog {
             i=0;
             for(AbstractWidgetProperty prop : runningPropertyList){
                 if(prop.isVisibleInPropSheet())
-                    propertyDataArray[i++] = new PropertyData(prop, 
+                    propertyDataArray[i++] = new PropertyData(prop,
                         prop.getPropertyValue());
             }
-        }else { 
+        }else {
             propertyDataArray = new PropertyData[0];
         }
         // Allow resize
         setShellStyle(getShellStyle() | SWT.RESIZE);
     }
-    
+
     public PropertyData[] getOutput(){
         return propertyDataArray;
     }
-    
+
     @Override
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
         newShell.setText("Configure runtime properties");
     }
-    
+
     @Override
     protected Control createDialogArea(Composite parent) {
         final Composite parent_Composite = (Composite) super.createDialogArea(parent);
@@ -83,21 +83,21 @@ public class RuntimePropertiesEditDialog extends Dialog {
         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
         gd.widthHint = 350;
         rightComposite.setLayoutData(gd);
-    
+
         propertiesViewer = createPropertiesViewer(rightComposite);
-    
+
         propertiesViewer.setInput(propertyDataArray);
-        
+
         return parent_Composite;
-    
+
     }
-    
+
     private TableViewer createPropertiesViewer(Composite parent) {
         TableViewer viewer = new TableViewer(parent, SWT.V_SCROLL
                 | SWT.H_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
         viewer.getTable().setLinesVisible(true);
         viewer.getTable().setHeaderVisible(true);
-        TableViewerColumn tvColumn = new TableViewerColumn(viewer, SWT.NONE);        
+        TableViewerColumn tvColumn = new TableViewerColumn(viewer, SWT.NONE);
         tvColumn.getColumn().setText("Property");
         tvColumn.getColumn().setMoveable(false);
         tvColumn.getColumn().setWidth(150);
@@ -108,16 +108,16 @@ public class RuntimePropertiesEditDialog extends Dialog {
         EditingSupport editingSupport = new PropertyDataEditingSupport(viewer,
                 viewer.getTable());
         tvColumn.setEditingSupport(editingSupport);
-        
-        
+
+
         viewer.setContentProvider(new ArrayContentProvider());
-        viewer.setLabelProvider(new PropertyDataLabelProvider());        
+        viewer.setLabelProvider(new PropertyDataLabelProvider());
         viewer.getTable().setLayoutData(
                 new GridData(SWT.FILL, SWT.FILL, true, true));
         return viewer;
     }
-    
-    
+
+
 
 }
 
@@ -125,9 +125,9 @@ public class RuntimePropertiesEditDialog extends Dialog {
 
 /**
  * The {@link EditingSupport} for the value columns of the property table.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 class PropertyDataEditingSupport extends EditingSupport {
 
@@ -135,11 +135,11 @@ class PropertyDataEditingSupport extends EditingSupport {
      * The {@link Table} where this {@link EditingSupport} is embedded.
      */
     private final Table table;
-    
+
 
     /**
      * Constructor.
-     * 
+     *
      * @param viewer
      *            The {@link ColumnViewer} for this
      *            {@link EditingSupport}.
@@ -167,8 +167,8 @@ class PropertyDataEditingSupport extends EditingSupport {
     protected CellEditor getCellEditor(final Object element) {
         PropertyData propertyData;
         if((propertyData = getSelectedProperty()) != null){
-            return propertyData.property.getPropertyDescriptor().createPropertyEditor(table);                
-        }            
+            return propertyData.property.getPropertyDescriptor().createPropertyEditor(table);
+        }
         return null;
     }
 
@@ -182,17 +182,17 @@ class PropertyDataEditingSupport extends EditingSupport {
         }
         return null;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected Object getValue(final Object element) {
-        if (element instanceof PropertyData) {            
+        if (element instanceof PropertyData) {
                 return ((PropertyData)element).tmpValue;
             }
-        
+
         return null;
     }
 
@@ -204,7 +204,7 @@ class PropertyDataEditingSupport extends EditingSupport {
         if (element instanceof PropertyData) {
             PropertyData prop = (PropertyData) element;
             if (prop != null) {
-                prop.tmpValue = value;    
+                prop.tmpValue = value;
                 getViewer().refresh();
             }
         }
@@ -214,9 +214,9 @@ class PropertyDataEditingSupport extends EditingSupport {
 
 /**
 * The {@link LabelProvider} for the properties table.
-* 
+*
 * @author Xihui Chen
-* 
+*
 */
 class PropertyDataLabelProvider extends LabelProvider implements
                 ITableLabelProvider {
@@ -227,14 +227,14 @@ class PropertyDataLabelProvider extends LabelProvider implements
             public Image getColumnImage(final Object element,
                     final int columnIndex) {
                 if (columnIndex == 1 && element instanceof PropertyData) {
-                    PropertyData propertyData = (PropertyData) element;                    
-                    
+                    PropertyData propertyData = (PropertyData) element;
+
                     try {
                         return propertyData.property.getPropertyDescriptor().getLabelProvider().
                                     getImage(propertyData.tmpValue);
-                    } catch (NullPointerException e) {                    
+                    } catch (NullPointerException e) {
                     }
-                    
+
                 }
                 return null;
             }
@@ -252,7 +252,7 @@ class PropertyDataLabelProvider extends LabelProvider implements
                     try {
                         return propertyData.property.getPropertyDescriptor().getLabelProvider().getText(
                                     propertyData.tmpValue);
-                    } catch (NullPointerException e) {                        
+                    } catch (NullPointerException e) {
                     }
                 }
                 if (element != null) {
@@ -260,6 +260,6 @@ class PropertyDataLabelProvider extends LabelProvider implements
                 }
                 return "error";
             }
-        
+
 
 }

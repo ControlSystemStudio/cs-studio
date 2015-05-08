@@ -26,7 +26,7 @@ public class Edm_activeGroupClass extends EdmWidget {
 //    @EdmAttributeAn private int w;
 //    @EdmAttributeAn private int h;
 
-    
+
     @EdmAttributeAn private Vector<EdmWidget> widgets;
 
     public Edm_activeGroupClass(EdmEntity genericEntity) throws EdmException {
@@ -44,7 +44,7 @@ public class Edm_activeGroupClass extends EdmWidget {
 //    public int getRelease() {
 //        return release;
 //    }
-    
+
 
 
     public Vector<EdmWidget> getWidgets() {

@@ -29,7 +29,7 @@ public class ScanUIActivator
 
     /** The Constant logger. */
     final private static Logger logger = Logger.getLogger(PLUGIN_ID);
-    
+
     /** @param path Path to plugin image
      *  @return {@link ImageDescriptor}
      */
@@ -37,11 +37,11 @@ public class ScanUIActivator
     {
         return AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
-    
+
     /** @return Logger for plugin ID */
     public static Logger getLogger()
     {
         return logger;
     }
-    
+
 }

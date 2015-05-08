@@ -28,11 +28,11 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * A Command to set a property value of a widget. Use command can help to realize redo/undo.
- * @author Kai Meyer(original author), Xihui Chen (since import from SDS 2009/9) 
+ * @author Kai Meyer(original author), Xihui Chen (since import from SDS 2009/9)
  *
  */
 public class SetWidgetPropertyCommand extends Command {
-    
+
     /**
      * The {@link AbstractWidgetModel}.
      */
@@ -49,7 +49,7 @@ public class SetWidgetPropertyCommand extends Command {
      * The old value of the property.
      */
     private Object oldValue;
-    
+
     /**
      * Constructor.
      * @param widget
@@ -65,7 +65,7 @@ public class SetWidgetPropertyCommand extends Command {
         this.newValue = newValue;
         setLabel("Set " + prop_id);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -74,7 +74,7 @@ public class SetWidgetPropertyCommand extends Command {
         oldValue = widgetModel.getPropertyValue(prop_id);
         widgetModel.setPropertyValue(prop_id, newValue);
     }
-    
+
     /**
      * {@inheritDoc}
      */

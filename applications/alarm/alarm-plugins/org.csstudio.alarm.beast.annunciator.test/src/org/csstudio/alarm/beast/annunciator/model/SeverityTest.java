@@ -15,10 +15,10 @@ import org.junit.Test;
 /** JUnit test of Severity
  *  Can be used as JUnit Plug-in test when using preferences,
  *  see comments below
- *  
+ *
  *  @author Kay Kasemir
  *  @author Delphy Nypaver
- *  
+ *
  *    reviewed by Delphy 1/29/09
  */
 @SuppressWarnings("nls")
@@ -27,9 +27,9 @@ public class SeverityTest
     @Test
     public void testSeverities()
     {
-        // Use the line below to read preferences.ini 
+        // Use the line below to read preferences.ini
         // Severity.initialize(Preferences.getJMSSeverities());
-       
+
         // Use the line below for a hardcoded string
         Severity.initialize("ERROR, MAJOR, MINOR, INFO, DEBUG");
 

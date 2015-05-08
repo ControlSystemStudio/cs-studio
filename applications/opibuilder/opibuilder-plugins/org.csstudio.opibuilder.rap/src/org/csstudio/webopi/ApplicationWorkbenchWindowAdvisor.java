@@ -27,7 +27,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         super(configurer);
     }
 
-    
+
     @Override
     public void postWindowCreate() {
         super.postWindowCreate();
@@ -36,7 +36,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         shell.setText("WebOPI");
         shell.setMaximized(true);
         RunnerInput runnerInput = RequestUtil.getOPIPathFromRequest();
-        
+
         if(runnerInput == null){
             IPath path = null;
             String s = RWT.getRequest().getServletPath();
@@ -73,19 +73,19 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
             MessageDialog.openError(null, "Error in opening OPI", message);
         }
     }
-    
+
     public void preWindowOpen() {
-        
-        IWorkbenchWindowConfigurer configurer = getWindowConfigurer();    
-       
+
+        IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
+
 //        configurer.setShowCoolBar(!RequestUtil.isStandaloneMode());
         configurer.setShowMenuBar(false);
-        configurer.setShowStatusLine(false);        
+        configurer.setShowStatusLine(false);
         configurer.setTitle("WebOPI");
 
         configurer.setShellStyle(SWT.NO_TRIM);
     }
-    
-   
-    
+
+
+
 }

@@ -33,20 +33,20 @@ import org.eclipse.osgi.util.NLS;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
-/** A preference node for server side (RAP) configuration, 
+/** A preference node for server side (RAP) configuration,
  *  which is stored in a file similar to the RCP
  *  product_plugin/plugin_customization.ini
- *  
+ *
  *  <p>By default, looks for a file "css_rap.ini"
  *  in the user's home directory.
- *  
+ *
  *  <p>Alternatively, a property "org.csstudio.rap.preference"
  *  can point to the customization file.
  *  For Tomcat, this can be defined in conf/catalina.properties:
  *  <pre>
  *  org.csstudio.rap.preference=/path/to/my/css_rap.ini
  *  </pre>
- *  
+ *
  *  @author Xihui Chen
  */
 @SuppressWarnings({ "restriction", "unchecked", "rawtypes" })
@@ -64,16 +64,16 @@ public class ServerPreferenceNode implements IEclipsePreferences {
 
     private final String name;
     private final IEclipsePreferences parent;
-    
+
     /* cache the absolutePath once it has been computed */
     private String absolutePath;
 
-    
+
     private final Map children = Collections.synchronizedMap(new HashMap());
 
     private ListenerList nodeChangeListeners;
     private ListenerList preferenceChangeListeners;
-    
+
     protected ImmutableMap properties = ImmutableMap.EMPTY;
 
     public ServerPreferenceNode(final IEclipsePreferences parent,
@@ -82,7 +82,7 @@ public class ServerPreferenceNode implements IEclipsePreferences {
         this.parent = parent;
         this.name = name;
         load();
-        
+
     }
 
     public String absolutePath() {
@@ -97,8 +97,8 @@ public class ServerPreferenceNode implements IEclipsePreferences {
         }
         return absolutePath;
     }
-    
-    
+
+
     public void accept(IPreferenceNodeVisitor visitor)
             throws BackingStoreException {
         boolean withChildren = visitor.visit(this);
@@ -113,7 +113,7 @@ public class ServerPreferenceNode implements IEclipsePreferences {
             }
         }
     }
-    
+
     public void addNodeChangeListener(INodeChangeListener listener) {
         checkRemoved();
         if (nodeChangeListeners == null)
@@ -142,7 +142,7 @@ public class ServerPreferenceNode implements IEclipsePreferences {
             String key = childPath.lastSegment();
             childPath = childPath.removeLastSegments(1);
             String localQualifier = childPath.segment(0);
-            childPath = childPath.removeFirstSegments(1);            
+            childPath = childPath.removeFirstSegments(1);
             if (name().equals(localQualifier)) {
                 ((ServerPreferenceNode)node(childPath.toString())).internalPut(key, value);
             }
@@ -386,8 +386,8 @@ public class ServerPreferenceNode implements IEclipsePreferences {
         checkRemoved();
         return properties.keys();
     }
-    
-    
+
+
     protected void load() {
 
         try {
@@ -413,7 +413,7 @@ public class ServerPreferenceNode implements IEclipsePreferences {
                             .bind("Preference file is not found at {0}, try user.home.", //$NON-NLS-1$
                                     propDir);
                 RAPCorePlugin.getLogger().log(Level.WARNING, message);
-                    
+
                 //try "user.home"
                     propDir = System.getProperty("user.home");//$NON-NLS-1$
                     properties = loadProperties(new Path(propDir).append(SERVER_PREFERENCE_FILE_NAME).toOSString());
@@ -505,9 +505,9 @@ public class ServerPreferenceNode implements IEclipsePreferences {
         checkRemoved();
         return parent;
     }
-    
-    
-    
+
+
+
     public void put(String key, String newValue) {
         if (key == null || newValue == null)
             throw new NullPointerException();
@@ -589,7 +589,7 @@ public class ServerPreferenceNode implements IEclipsePreferences {
     public void removeNode() throws BackingStoreException {
         checkRemoved();
         // remove all preferences
-        clear(); 
+        clear();
         // remove all children
         Object[] childNodes = children.values().toArray();
         for( int i = 0; i < childNodes.length; i++ ) {
@@ -598,18 +598,18 @@ public class ServerPreferenceNode implements IEclipsePreferences {
             child.removeNode();
           }
         }
-        // remove from parent; this is ugly, because the interface 
+        // remove from parent; this is ugly, because the interface
         // Preference has no API for removing oneself from the parent.
         // In general the parent will be a SessionPreferencesNode.
         // The only case in the workbench where this is not true, is one level
         // below the root (i.e. at /session ), but the scope root must not
         // be removable (see IEclipsePreferences#removeNode())
         if( parent instanceof ServerPreferenceNode ) {
-          // this means: 
-          // (a) we know what kind of parent we have, and 
-          // (b) we are not the scope root, since that has a 
+          // this means:
+          // (a) we know what kind of parent we have, and
+          // (b) we are not the scope root, since that has a
           /// RootPreference as a parent
-            ServerPreferenceNode spnParent 
+            ServerPreferenceNode spnParent
             = ( ( ServerPreferenceNode ) parent );
           spnParent.children.remove( name );
           spnParent.fireNodeEvent( new NodeChangeEvent(spnParent, this), false );
@@ -621,7 +621,7 @@ public class ServerPreferenceNode implements IEclipsePreferences {
           removed = true;
         }
     }
-    
+
     public void removeNodeChangeListener(INodeChangeListener listener) {
         checkRemoved();
         if (nodeChangeListeners == null)
@@ -630,7 +630,7 @@ public class ServerPreferenceNode implements IEclipsePreferences {
         if (nodeChangeListeners.size() == 0)
             nodeChangeListeners = null;
     }
-    
+
     public void removePreferenceChangeListener(
             IPreferenceChangeListener listener) {
         checkRemoved();
@@ -641,7 +641,7 @@ public class ServerPreferenceNode implements IEclipsePreferences {
             preferenceChangeListeners = null;
 
     }
-    
+
     public void sync() throws BackingStoreException {
         // default values are not persisted
     }

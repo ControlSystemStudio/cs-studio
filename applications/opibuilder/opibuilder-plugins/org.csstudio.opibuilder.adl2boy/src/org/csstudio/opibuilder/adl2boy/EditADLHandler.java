@@ -33,7 +33,7 @@ import org.jdom.IllegalNameException;
 
 /**
  * Handler for menu item that converts the files.
- * 
+ *
  * @author John Hammonds, Argonne National Laboratory
  *
  */
@@ -63,7 +63,7 @@ public class EditADLHandler implements IHandler {
                 String outfileName = adlFileName.substring(0, element.toString().length()-4);
                 String opiFileName = new String(outfileName + "opi");
                 Path path = new Path(opiFileName);
-                
+
                 IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
                 String fullADLFileName = Platform.getLocation() + adlFileName;
                 convertAdlToFile(fullADLFileName, file);
@@ -131,7 +131,7 @@ public class EditADLHandler implements IHandler {
         // TODO Auto-generated method stub
 
     }
-    /** 
+    /**
      * Print message that a given ADL file structure is not handled.
      */
     private void printNotHandledMessage(String type) {

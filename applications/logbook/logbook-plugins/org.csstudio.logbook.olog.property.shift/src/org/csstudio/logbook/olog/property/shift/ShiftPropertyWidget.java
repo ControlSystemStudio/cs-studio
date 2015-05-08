@@ -38,24 +38,24 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 /**
- * The widget associated with the shift property 
+ * The widget associated with the shift property
  *
  * TODO The attach is called in the update since the editable is set after the widget is created.
- * 
+ *
  * @author shroffk
  *
  */
 class ShiftPropertyWidget extends AbstractPropertyWidget {
-    
+
     private final IPreferencesService prefService = Platform.getPreferencesService();
-    
+
     public static final String propertyName = "Shift";
     public static final String attrTypeName = "Type";
     public static final String attrIdName = "Id";
     public static final String attrURLName = "URL";
-    
+
     private static final String inactiveShift = "No Active Shift";
-    
+
     private static PropertyBuilder widgetProperty;
 
     private Text textId;
@@ -65,7 +65,7 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
     private Label lblAttached;
     private Combo comboType;
     private Composite container;
-    
+
     private List<String> types = Collections.emptyList();
     private ShiftClient shiftClient;
     private Shift shift;
@@ -76,43 +76,43 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
 
     private static boolean attach = false;
 
-    public ShiftPropertyWidget(Composite parent, int style, LogEntryChangeset logEntryChangeset, boolean editable) {        
+    public ShiftPropertyWidget(Composite parent, int style, LogEntryChangeset logEntryChangeset, boolean editable) {
     super(parent, style, logEntryChangeset, editable);
-    setLayout(new FormLayout());    
-    
+    setLayout(new FormLayout());
+
     container = new Composite(this, style);
     FormData layoutData = new FormData();
     layoutData.top = new FormAttachment(0, 5);
     layoutData.left = new FormAttachment(0, 5);
     layoutData.bottom = new FormAttachment(100, -5);
     layoutData.right = new FormAttachment(100, -5);
-    
+
     container.setLayoutData(layoutData);
-    
+
     GridLayout gridLayout = new GridLayout(2, false);
     gridLayout.verticalSpacing = 1;
     gridLayout.horizontalSpacing = 1;
     gridLayout.marginHeight = 1;
     gridLayout.marginWidth = 1;
-    container.setLayout(gridLayout);    
-        
+    container.setLayout(gridLayout);
+
     Label lblPropertyName = new Label(container, SWT.NONE);
     lblPropertyName.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
     lblPropertyName.setText(propertyName+":");
-    
+
     lblAttached = new Label(container, SWT.NONE);
     lblAttached.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.ITALIC));
     lblAttached.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
     lblAttached.setText("attached");
-    
+
     Label lblType = new Label(container, SWT.NONE);
     lblType.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
     lblType.setText(attrTypeName+": ");
-    
+
     comboType = new Combo(container, SWT.BORDER);
     comboType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
     comboType.addSelectionListener(new SelectionAdapter() {
-        
+
         @Override
         public void widgetSelected(SelectionEvent e) {
         String selectedType = comboType.getItem(comboType.getSelectionIndex());
@@ -139,14 +139,14 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
         }
         }
     });
-    
+
     Label lblId = new Label(container, SWT.NONE);
     lblId.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
     lblId.setText(attrIdName+": ");
 
     textId = new Text(container, SWT.BORDER);
     textId.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-    
+
     Label lblURL = new Label(container, SWT.NONE);
     lblURL.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
     lblURL.setText(attrURLName+": ");
@@ -169,14 +169,14 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
             public void widgetDefaultSelected(SelectionEvent arg0) {
             }
         });
-    
-    btnRemove = new Button(container, SWT.CHECK);    
+
+    btnRemove = new Button(container, SWT.CHECK);
     btnRemove.addSelectionListener(new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent e) {
         attach = btnRemove.getSelection();
         if(attach){
-            attachProperty();            
+            attachProperty();
         }else{
             removeProperty();
         }
@@ -184,7 +184,7 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
     });
     btnRemove.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, true, 1, 1));
     btnRemove.setText("Auto Attach");
-    
+
     btnAttach = new Button(container, SWT.NONE);
     btnAttach.addSelectionListener(new SelectionAdapter() {
         @Override
@@ -199,17 +199,17 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
     }
 
     public void init(){
-    try {        
+    try {
         if(shiftClient == null){
         shiftClient = ShiftClientManager.getShiftClientFactory().getClient();
         }
-        widgetProperty = PropertyBuilder.property(propertyName);        
+        widgetProperty = PropertyBuilder.property(propertyName);
         types = new ArrayList<String>();
         for (Type type : shiftClient.listTypes()) {
         types.add(type.getName());
         }
         comboType.setItems(types.toArray(new String[types.size()]));
-        defaultType = prefService.getString("org.csstudio.shift.ui", "Default.type", "", null);       
+        defaultType = prefService.getString("org.csstudio.shift.ui", "Default.type", "", null);
         shift = shiftClient.getShiftByType(defaultType);
         if (types.contains(defaultType) && shift.getStatus().equals("Active")) {
         widgetProperty.attribute(attrTypeName, defaultType);
@@ -221,7 +221,7 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
         } else {
         widgetProperty = null;
         }
-        
+
         attach = prefService.getBoolean("org.csstudio.logbook.olog.property.shift", "auto.attach", false, null);
             btnRemove.setSelection(attach);
             if (attach) {
@@ -231,9 +231,9 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
     } catch (Exception e) {
         e.printStackTrace();
     }
-    
+
     }
-    
+
     private void attachProperty(){
     LogEntryBuilder logEntryBuilder;
     try {
@@ -257,7 +257,7 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
         e1.printStackTrace();
     }
     }
-    
+
     private void removeProperty(){
        LogEntryBuilder logEntryBuilder;
        try {
@@ -272,7 +272,7 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
            e1.printStackTrace();
        }
        }
-    
+
     @Override
     public void updateUI() {
     this.lblAttached.setVisible(!isEditable());
@@ -287,7 +287,7 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
         linkGridData.exclude = isEditable();
         this.link.setLayoutData(linkGridData);
         this.btnAttach.setVisible(isEditable());
-        
+
     Property property = null;
     try {
         property = LogEntryUtil.getProperty(getLogEntryChangeset().getLogEntry(), propertyName);
@@ -304,7 +304,7 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
         this.textURL
             .setText(property.getAttributeValue(attrURLName) == null ? ""
                 : property.getAttributeValue(attrURLName));
-        String shiftURL = property.getAttributeValue(attrURLName) == null ? ""            
+        String shiftURL = property.getAttributeValue(attrURLName) == null ? ""
             : property.getAttributeValue(attrURLName);
         this.link.setText("<a>" + shiftURL + "</a>");
     }

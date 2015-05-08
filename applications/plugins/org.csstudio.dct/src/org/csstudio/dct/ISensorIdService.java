@@ -2,13 +2,13 @@ package org.csstudio.dct;
 
 /**
  * Interface for the sensor id service.
- * 
+ *
  * @author Sven Wende
  */
 public interface ISensorIdService {
     /**
      * Returns the sensor id.
-     * 
+     *
      * @param sensorName
      *            the key (mandatory)
      * @param field

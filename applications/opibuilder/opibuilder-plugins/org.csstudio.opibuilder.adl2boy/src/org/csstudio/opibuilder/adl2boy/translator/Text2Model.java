@@ -14,7 +14,7 @@ import org.csstudio.utility.adlparser.fileParser.widgets.TextWidget;
 import org.eclipse.swt.graphics.RGB;
 
 public class Text2Model extends AbstractADL2Model {
-    
+
     public Text2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel){
         super(adlWidget, colorMap, parentModel);
     }

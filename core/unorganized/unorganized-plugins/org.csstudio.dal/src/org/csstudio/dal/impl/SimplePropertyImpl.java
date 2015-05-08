@@ -287,7 +287,7 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
         throws RemoteException
     {
         if (proxy == null) throw new IllegalStateException("Proxy is null");
-        
+
         MonitorProxyWrapper<T, E> mpw = new MonitorProxyWrapper<T, E>((E) this, listener);
         MonitorProxy mp = null;
         mp = proxy.createMonitor(mpw,null);
@@ -335,7 +335,7 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
         if (defaultMonitor == null) {
             getDefaultMonitor();
         }
-        
+
         if (proxy != null){
             DynamicValueEvent<T, P> e = new DynamicValueEvent<T, P>(
                     this, (P)this, lastValue, getCondition(),
@@ -386,9 +386,9 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
     {
         super.initialize(proxy);
         this.directoryProxy = dirProxy;
-        
-        MonitorProxyWrapper<T,?>[] mm= getMonitorWrappers();  
-        
+
+        MonitorProxyWrapper<T,?>[] mm= getMonitorWrappers();
+
         for (int i=0;i<mm.length;i++){
             try {
                 MonitorProxy mp = proxy.createMonitor(mm[i],null);
@@ -451,17 +451,17 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
             }
         }
     }
-    
+
     /**
      * Returns the DirectoryProxy which describes characteristics of the remote
      * connection associated with this property.
-     * 
+     *
      * @return the directory proxy
      */
     public DirectoryProxy<?> getDirectoryProxy() {
         return directoryProxy;
     }
-    
+
     void updateLastValueCache(T lastValue, Timestamp lastUpdate, boolean sucess, boolean change) {
         if (lastValue!=null) {
             this.lastValue=lastValue;
@@ -492,11 +492,11 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
         }
         return tmp;
     }
-    
+
     public ChannelListener[] getListeners() {
         return getChListeners().getChannelListeners();
     }
-        
+
     private ChannelListenerNotifier getChListeners() {
         if (chListeners == null) {
             synchronized (this) {
@@ -507,31 +507,31 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
         }
         return chListeners;
     }
-    
+
     public void addListener(ChannelListener listener) {
         getChListeners().addChannelListener(listener);
     }
-    
+
     public void removeListener(ChannelListener listener) {
         getChListeners().removeChannelListener(listener);
     }
-    
+
     public DynamicValueMonitor[] getMonitors() {
         synchronized (monitors) {
             return monitors.toArray(new DynamicValueMonitor[monitors.size()]);
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     protected MonitorProxyWrapper<T,?>[] getMonitorWrappers() {
         synchronized (monitors) {
             return monitors.toArray(new MonitorProxyWrapper[monitors.size()]);
         }
     }
-    
+
     void removeMonitor(MonitorProxyWrapper<?,?> mon) {
         synchronized (monitors) {
             monitors.remove(mon);
         }
     }
-} 
+}

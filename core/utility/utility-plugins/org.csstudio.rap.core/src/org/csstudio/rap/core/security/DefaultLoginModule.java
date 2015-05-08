@@ -20,7 +20,7 @@ import javax.security.auth.spi.LoginModule;
 
 import com.sun.security.auth.UserPrincipal;
 
-/**The default login module for css.rap. The username and password are defined 
+/**The default login module for css.rap. The username and password are defined
  * in its options, for example: username="myname", password="mypassword".
  * @author Xihui Chen
  *

@@ -19,15 +19,15 @@ import org.eclipse.swt.graphics.Image;
  *
  */
 public class GrayableButton extends Button {
-    
+
     Image image;
     Image grayImage;
     private static final String GRAY_IMAGE = "GrayableButton.GrayImage";
-    
+
     public GrayableButton(Image image) {
         this(image, null);
     }
-    
+
     public GrayableButton(Image image, Image grayImage){
         super(image);
         this.image = image;
@@ -42,17 +42,17 @@ public class GrayableButton extends Button {
             else
                 this.grayImage = new Image(null, image, SWTConstants.IMAGE_GRAY);
             XYGraphMediaFactory.getInstance().registerImage(GRAY_IMAGE + image.toString(), this.grayImage);
-        }        
+        }
     }
-    
+
     @Override
     public void setEnabled(boolean value) {
         super.setEnabled(value);
-        if(value)            
+        if(value)
             setContents(new ImageFigure(image));
         else
             setContents(new ImageFigure(grayImage));
-    }    
-    
-    
+    }
+
+
 }

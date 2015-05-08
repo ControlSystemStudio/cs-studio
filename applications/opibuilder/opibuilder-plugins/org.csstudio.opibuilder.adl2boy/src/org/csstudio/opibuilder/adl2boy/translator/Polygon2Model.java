@@ -32,7 +32,7 @@ public class Polygon2Model extends AbstractADL2Model {
         //check fill parameters
         if ( polygonWidget.hasADLBasicAttribute() ) {
             setShapesColorFillLine(polygonWidget);
-            
+
         }
     }
 

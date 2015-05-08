@@ -1,7 +1,7 @@
 package de.desy.language.snl.configurationservice;
 
 public enum CompilerOptionPreferenceConstants {
-    
+
     /**
      * SNC compiler option +a - do asynchronous pvGet.
      */
@@ -49,7 +49,7 @@ public enum CompilerOptionPreferenceConstants {
      */
     SNC_OPTIONS_TURN_ON_DEBUG_RUNTIME_OPTION(
             ".compiler.options.plus-d", "+d", "turn on debug run-time option");
-    
+
     private final String _preferenceStoreId;
     private final String _option;
     private final String _description;

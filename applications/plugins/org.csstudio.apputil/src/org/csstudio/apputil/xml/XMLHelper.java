@@ -8,7 +8,7 @@
 package org.csstudio.apputil.xml;
 
 /** Helper for XML output.
- *  
+ *
  *  @author Kay Kasemir, Kunal Shroff
  *  @deprecated Use the XMLWrite instead, because it writes out directly to
  *              PrintWriter instead of creating intermediate strings.
@@ -35,7 +35,7 @@ public class XMLHelper
         indent(buf, level);
         return buf.toString();
     }
-    
+
     /** @return Returns text with less-than and ampersands replaced by XML escapes.
      *  @param text
      */
@@ -65,7 +65,7 @@ public class XMLHelper
             {   // Other non-printable. Exact definition not clear.
                 b.append("&#");
                 b.append((int) c);
-                b.append(";");            
+                b.append(";");
             }
             else
                 b.append(c);

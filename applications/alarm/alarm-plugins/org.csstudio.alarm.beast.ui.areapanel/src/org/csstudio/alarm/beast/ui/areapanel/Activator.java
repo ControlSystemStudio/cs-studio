@@ -17,7 +17,7 @@ public class Activator
 {
     /** Plugin ID defined in MANIFEST.MF */
     final public static String ID = "org.csstudio.alarm.beast.ui.areapanel";
-    
+
     /** @return Logger for the plugin ID */
     public static Logger getLogger()
     {

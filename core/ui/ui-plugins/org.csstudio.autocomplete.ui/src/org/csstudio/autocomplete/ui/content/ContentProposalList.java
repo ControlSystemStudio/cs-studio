@@ -24,7 +24,7 @@ import org.csstudio.autocomplete.ui.IAutoCompleteProposalProvider;
  * Handles all proposals from all providers.
  * Applies rules on top proposals.
  * Filled by {@link IAutoCompleteProposalProvider}.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class ContentProposalList {
@@ -145,7 +145,7 @@ public class ContentProposalList {
                 index++;
             }
         }
-        
+
         // We do not display top proposals if the content match a proposal and all
         // provided top proposals match a complete proposal
         boolean allComplete = true;

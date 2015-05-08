@@ -37,8 +37,8 @@ public class Symbol extends Widget {
 
     /**
      * @param symbol ADLWidget that describe the Symbol.
-     * @param storedDynamicAttribute 
-     * @param storedBasicAttribute 
+     * @param storedDynamicAttribute
+     * @param storedBasicAttribute
      */
     public Symbol(final ADLWidget symbol, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) {
         super(symbol, storedBasicAttribute, storedDynamicAttribute);

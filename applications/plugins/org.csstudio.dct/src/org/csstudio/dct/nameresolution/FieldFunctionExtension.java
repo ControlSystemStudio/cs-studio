@@ -6,7 +6,7 @@ public class FieldFunctionExtension {
     private String name;
     private String description;
     private String signature;
-    
+
     public IFieldFunction getFunction() {
         return function;
     }
@@ -32,6 +32,6 @@ public class FieldFunctionExtension {
         this.signature = signature;
     }
 
-    
-    
+
+
 }

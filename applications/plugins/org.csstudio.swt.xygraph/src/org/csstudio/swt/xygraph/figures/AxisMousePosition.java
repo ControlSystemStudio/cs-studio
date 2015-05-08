@@ -22,7 +22,7 @@ import org.eclipse.swt.SWT;
 
 /**
  * Linear Scale tick labels.
- * 
+ *
  * @author Xihui Chen
  */
 public class AxisMousePosition extends Figure implements MouseMotionListener, MouseListener {
@@ -45,7 +45,7 @@ public class AxisMousePosition extends Figure implements MouseMotionListener, Mo
 
     /**
      * Constructor.
-     * 
+     *
      * @param linearScale
      *            the scale
      */
@@ -68,7 +68,7 @@ public class AxisMousePosition extends Figure implements MouseMotionListener, Mo
 
     /**
      * Draw the X tick.
-     * 
+     *
      * @param grahics
      *            the graphics context
      */
@@ -103,7 +103,7 @@ public class AxisMousePosition extends Figure implements MouseMotionListener, Mo
 
     /**
      * Draw the Y tick.
-     * 
+     *
      * @param grahpics
      *            the graphics context
      */

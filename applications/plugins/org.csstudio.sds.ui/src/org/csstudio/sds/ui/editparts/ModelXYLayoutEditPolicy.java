@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.sds.ui.editparts;
@@ -63,12 +63,12 @@ import org.slf4j.LoggerFactory;
  * The EditPolicy for {@link DisplayModel}. It can be used with
  * <code>Figures</code> in {@link XYLayout}. The constraint for XYLayout is a
  * {@link org.eclipse.draw2d.geometry.Rectangle}.
- * 
+ *
  * @author Sven Wende, Kai Meyer
  */
 final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(ModelXYLayoutEditPolicy.class);
 
     /**
@@ -92,7 +92,7 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
         ContainerModel container = (ContainerModel) getHost().getModel();
         AbstractWidgetModel widget = (AbstractWidgetModel) child.getModel();
         CompoundCommand compoundCommand = new CompoundCommand();
-        
+
         compoundCommand.add(new AddWidgetCommand(container, widget));
         compoundCommand.add(new SetSelectionCommand(child.getViewer(), widget));
         compoundCommand.add(new SetBoundsCommand(widget, (Rectangle) constraint));
@@ -209,20 +209,20 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
         Command result = null;
         if (request.getNewObjectType().equals("List_AbstractWidgetModel")) {
             CompoundCommand cmd = new CompoundCommand();
-            
+
             // add all widgets
             @SuppressWarnings("unchecked")
             List<AbstractWidgetModel> widgetList = (List<AbstractWidgetModel>) request
                     .getNewObject();
-            
+
             Point location = request.getLocation().getCopy();
-            
+
             translateFromAbsoluteToLayoutRelative(location);
-            
+
             for (AbstractWidgetModel abstractWidgetModel : widgetList) {
                 abstractWidgetModel.setLocation(abstractWidgetModel.getX() + location.x, abstractWidgetModel.getY() + location.y);
             }
-            
+
             cmd.add(new AddWidgetCommand((ContainerModel) getHost().getModel(),
                     widgetList));
 
@@ -240,20 +240,20 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
         }
         return result;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected Command getCloneCommand(final ChangeBoundsRequest request) {
         CloneCommand clone = new CloneCommand((DisplayModel)getHost().getModel());
-        
+
         GraphicalEditPart currPart = null;
         for (Object part : request.getEditParts()) {
             currPart = (GraphicalEditPart)part;
             clone.addPart((AbstractWidgetModel)currPart.getModel(), (Rectangle)getConstraintForClone(currPart, request));
         }
-        
+
         // Attach to horizontal guide, if one is given
         Integer guidePos = (Integer)request.getExtendedData()
                 .get(SnapToGuides.KEY_HORIZONTAL_GUIDE);
@@ -262,7 +262,7 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
                     .get(SnapToGuides.KEY_HORIZONTAL_ANCHOR)).intValue();
             clone.setGuide(findGuideAt(guidePos.intValue(), true), hAlignment, true);
         }
-        
+
         // Attach to vertical guide, if one is given
         guidePos = (Integer)request.getExtendedData()
                 .get(SnapToGuides.KEY_VERTICAL_GUIDE);
@@ -317,7 +317,7 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
     /**
      * Creates a prototype object to determine the type identification of the
      * widget model, that is about to be created.
-     * 
+     *
      * @param request
      *            the create request
      * @return the type identification
@@ -341,7 +341,7 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
     /**
      * Override to provide custom feedback figure for the given create request.
-     * 
+     *
      * @param request
      *            the create request
      * @return custom feedback figure
@@ -362,7 +362,7 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
     /**
      * Gets the determining FeedbackFactory for the given typeID.
-     * 
+     *
      * @param typeId
      *            The identifier for the FeedbackFactory
      * @return IGraphicalFeedbackFactory The requested IGraphicalFeedbackFactory
@@ -377,7 +377,7 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
     /**
      * Adds a ChangeGuideCommand to the given Command.
-     * 
+     *
      * @param request
      *            The Request
      * @param part
@@ -414,7 +414,7 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
     /**
      * Returns the guide at the given position and with the given orientation.
-     * 
+     *
      * @param pos
      *            The Position of the guide
      * @param horizontal
@@ -431,7 +431,7 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
     /**
      * Adds a ChangeGuideCommand to the given Command.
-     * 
+     *
      * @param request
      *            The request
      * @param part
@@ -473,9 +473,9 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
      * with dashes is drawn. This feedback can be tailored by contributing a
      * {@link IGraphicalFeedbackFactory} via the extension point
      * org.csstudio.sds.graphicalFeedbackFactories.
-     * 
+     *
      * @author Sven Wende
-     * 
+     *
      */
     protected final class GenericChildEditPolicy extends ResizableEditPolicy {
         /**
@@ -485,7 +485,7 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
         /**
          * Standard constructor.
-         * 
+         *
          * @param child
          *            An edit part.
          */
@@ -517,7 +517,7 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
         /**
          * Shows or updates feedback for a change bounds request.
-         * 
+         *
          * @param request
          *            the request
          */
@@ -580,7 +580,7 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -588,7 +588,7 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
     protected Dimension getMinimumSizeFor(GraphicalEditPart child) {
         return new Dimension(1, 1);
     }
-    
+
     //TODO (jhatje): is this the right way to get the relative position in AbstractConnectionEditPart?
     public void getRelativePosition(Point p) {
         translateFromAbsoluteToLayoutRelative(p);

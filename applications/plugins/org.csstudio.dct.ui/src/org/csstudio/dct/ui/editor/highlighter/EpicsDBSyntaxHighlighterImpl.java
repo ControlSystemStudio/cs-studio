@@ -32,24 +32,24 @@ import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * TODO (hrickens) : 
- * 
+ * TODO (hrickens) :
+ *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
  * @since 01.08.2011
  */
 public class EpicsDBSyntaxHighlighterImpl implements IEpicsDBSyntaxHighlighter {
-    
+
     private final StringBuilder _epicsDB;
-    
+
     /**
      * Constructor.
      */
     public EpicsDBSyntaxHighlighterImpl() {
         _epicsDB = new StringBuilder();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -57,7 +57,7 @@ public class EpicsDBSyntaxHighlighterImpl implements IEpicsDBSyntaxHighlighter {
         _epicsDB.append(epicsDB);
         return this;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -76,7 +76,7 @@ public class EpicsDBSyntaxHighlighterImpl implements IEpicsDBSyntaxHighlighter {
         styleRanges = buildStyleRangeRecord(export, styleRanges, record, background);
         return styleRanges.values().toArray(new StyleRange[0]);
     }
-    
+
     private SortedMap<Integer, StyleRange> buildStyleRangeRecord(String export,
                                        SortedMap<Integer, StyleRange> styleRanges,
                                        Color record,
@@ -105,7 +105,7 @@ public class EpicsDBSyntaxHighlighterImpl implements IEpicsDBSyntaxHighlighter {
         }
         return styleRanges;
     }
-    
+
     private SortedMap<Integer, StyleRange> buildStyleRangeField(String export,
                                       SortedMap<Integer, StyleRange> styleRanges,
                                       Color field,
@@ -134,7 +134,7 @@ public class EpicsDBSyntaxHighlighterImpl implements IEpicsDBSyntaxHighlighter {
         }
         return styleRanges;
     }
-    
+
     private SortedMap<Integer, StyleRange> buildStyleRangeStringWithErrorDetection(String export,
                                                          SortedMap<Integer, StyleRange> styleRanges,
                                                          Color string,
@@ -171,7 +171,7 @@ public class EpicsDBSyntaxHighlighterImpl implements IEpicsDBSyntaxHighlighter {
         }
         return styleRanges;
     }
-    
+
     private SortedMap<Integer, StyleRange> buildStyleRangeComment(final String export,
                                         final SortedMap<Integer, StyleRange> styleRanges,
                                         final Color comment,
@@ -194,5 +194,5 @@ public class EpicsDBSyntaxHighlighterImpl implements IEpicsDBSyntaxHighlighter {
         }
         return styleRanges;
     }
-    
+
 }

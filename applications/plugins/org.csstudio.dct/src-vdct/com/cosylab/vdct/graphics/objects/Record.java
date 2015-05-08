@@ -8,22 +8,22 @@ package com.cosylab.vdct.graphics.objects;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -52,7 +52,7 @@ import com.cosylab.vdct.graphics.popup.*;
  * Creation date: (21.12.2000 20:46:35)
  * @author Matej Sekoranja
  */
-public class Record 
+public class Record
     extends LinkManagerObject
     implements Clipboardable, Descriptable, Flexible, Hub, Morphable, Movable,
                 MultiInLink, Rotatable, Selectable, Popupable, Inspectable, SaveObject, SelectableComponents
@@ -83,34 +83,34 @@ public class Record
     private boolean debugConnected = false;
     private int debugTimeoutHour = -1;
     private int debugTimeoutMinute = -1;
-    protected Color debugValueColor = null; 
-    
+    protected Color debugValueColor = null;
+
     // timestamp label
     protected int timestampX;
     protected int timestampY;
     protected String timestamp;
     protected Font timestampFont = null;
-    
+
     // value label
     protected int valueX;
     protected int valueY;
     protected String value;
     protected Font valueFont = null;
-    
+
     private static final String VAL_FIELD = "VAL";
-    
+
     private static GUISeparator alphaSeparator = null;
     private static GUISeparator dbdSeparator = null;
 
     private static ArrayList modes = null;
 
-    public final static int GUI_GROUP_ORDER = 0;  
+    public final static int GUI_GROUP_ORDER = 0;
     public final static int SORT_ORDER = 1;
     public final static int DBD_ORDER = 2;
 
     private int oldNumOfFields = 0;
 
-    
+
 /**
  * Group constructor comment.
  * @param parent com.cosylab.vdct.graphics.objects.ContainerObject
@@ -138,7 +138,7 @@ public Record(ContainerObject parent, VDBRecordData recordData, int x, int y) {
     oldNumOfFields = changedFields.size();
 
     forceValidation();
-    
+
 }
 /**
  * Insert the method's description here.
@@ -148,7 +148,7 @@ public Record(ContainerObject parent, VDBRecordData recordData, int x, int y) {
  */
 public void _fixEPICSInLinks(String oldRecordName, String newRecordName) {
     if (oldRecordName.equals(newRecordName)) return;
-    
+
     Object obj; String old;
     EPICSLinkOut outlink;
     Enumeration fields = getSubObjectsV().elements();
@@ -164,10 +164,10 @@ public void _fixEPICSInLinks(String oldRecordName, String newRecordName) {
                     old = outlink.getFieldData().getValue();
                     if (old.startsWith(oldRecordName))
                         outlink.getFieldData().setValue(newRecordName+old.substring(oldRecordName.length()));
-                        
+
                 }
             }
-        }                    
+        }
     }
 
     // fix record inlink
@@ -179,10 +179,10 @@ public void _fixEPICSInLinks(String oldRecordName, String newRecordName) {
             old = outlink.getFieldData().getValue();
             if (old.startsWith(oldRecordName))
                 outlink.getFieldData().setValue(newRecordName+old.substring(oldRecordName.length()));
-                
+
         }
     }
-      
+
 }
 /**
  * Insert the method's description here.
@@ -220,7 +220,7 @@ public void addLink(Linkable link) {
 public boolean checkMove(int dx, int dy) {
     ViewState view = ViewState.getInstance();
 
-    if ((getX()<-dx) || (getY()<-dy) || 
+    if ((getX()<-dx) || (getY()<-dy) ||
         (getX()>(view.getWidth()-getWidth()-dx)) || (getY()>(view.getHeight()-getHeight()-dy)))
         return false;
     else
@@ -254,12 +254,12 @@ public Flexible copyToGroup(java.lang.String group) {
     Record theRecordCopy = new Record(null, theDataCopy, getX(), getY());
     //theRecordCopy.move(20-view.getRx(), 20-view.getRy());
     Group.getRoot().addSubObject(theDataCopy.getName(), theRecordCopy, true);
-    
+
     // fix only valid links where target is also selected
     theRecordCopy.fixEPICSOutLinksOnCopy(Group.substractParentName(recordData.getName()), group);
     // links have to be fixed here... so <group>.manageLinks() should be called
     // for clipboard copy this is done later...
-    
+
     theRecordCopy.manageLinks();
     theRecordCopy.updateFields();
     unconditionalValidation();
@@ -277,7 +277,7 @@ public Flexible copyToGroup(java.lang.String group) {
  */
 public void fixEPICSOutLinksOnCopy(String prevGroup, String group) {
     if (prevGroup.equals(group)) return;
-    
+
     String prefix;
     if (group.equals(nullString)) prefix=nullString;
     else prefix=group+Constants.GROUP_SEPARATOR;
@@ -290,24 +290,24 @@ public void fixEPICSOutLinksOnCopy(String prevGroup, String group) {
             String old = field.getValue();
             if (!old.equals(nullString) && !old.startsWith(Constants.HARDWARE_LINK) &&
                 old.startsWith(prevGroup)) {
-                
+
                 LinkProperties lp = new LinkProperties(field);
                 InLink target = EPICSLinkOut.getTarget(lp, true);
                 if (target == null)
                     continue;
-                
+
                 // only parent can be selected
                 Object selectableObject;
                 if (target instanceof Field)
                     selectableObject = ((Field)target).getParent();
                 else
                     selectableObject = target;
-                
-                    
+
+
                 // fix only selected
                 if (!ViewState.getInstance().isSelected(selectableObject))
                     continue;
-                
+
                 // fix ports...
                 if (selectableObject instanceof Template) {
                     Template t = (Template)selectableObject;
@@ -335,7 +335,7 @@ public void destroy() {
         super.destroy();
         destroyFields();
 //        disconnected=true;
-        
+
         if (outlinks.size()>0) {
             Object[] objs = new Object[outlinks.size()];
             outlinks.copyInto(objs);
@@ -346,12 +346,12 @@ public void destroy() {
                     ((EPICSLinkOut)start).destroy();
                 else if (start!=null)
                     start.disconnect(this);
-                else 
+                else
                     outlink.disconnect(this);
             }
             outlinks.clear();
         }
-        
+
         clear();
         getParent().removeObject(Group.substractObjectName(getName()));
     }
@@ -378,14 +378,14 @@ protected void draw(Graphics g, boolean hilited) {
 
     double Rscale = getRscale();
     boolean zoom = Rscale < 1.0 && view.isZoomOnHilited() && view.isHilitedObject(this);
-    
+
     if (zoom) {
         zoomImage = ZoomPane.getInstance().startZooming(this, true);
     }
-    
+
     int rrx = getRx() - view.getRx();
     int rry = getRy() - view.getRy();
-    
+
     int rwidth = getRwidth();
     int rheight = getRheight();
 
@@ -394,13 +394,13 @@ protected void draw(Graphics g, boolean hilited) {
         || (rry > view.getViewHeight())
         || ((rrx + rwidth) < 0)
         || ((rry + rheight) < 0)) || isZoomRepaint()) {
-        
+
         if (isZoomRepaint()) {
             rrx = ZoomPane.getInstance().getLeftOffset();
             rry = ZoomPane.VERTICAL_MARGIN;
         }
 
-                
+
         if (!hilited)
             g.setColor(Constants.RECORD_COLOR);
         else
@@ -413,7 +413,7 @@ protected void draw(Graphics g, boolean hilited) {
                     g.setColor(Constants.RECORD_COLOR);
 
         g.fillRect(rrx, rry, rwidth, rheight);
-        
+
         if (!hilited)
             g.setColor(Constants.FRAME_COLOR);
         else
@@ -431,7 +431,7 @@ protected void draw(Graphics g, boolean hilited) {
         int ly = (int) (rry + recordSize);
         g.drawLine(rrx + ox, ly, rrx + rwidth - ox, ly);
 
-        
+
         // show VAL value and timestamp
         if (inDebugMode)
         {
@@ -471,7 +471,7 @@ protected void draw(Graphics g, boolean hilited) {
         }
 
         if (fieldFont != null) {
-                    
+
             g.setFont(fieldFont);
             FontMetrics fm = FontMetricsBuffer.getInstance().getFontMetrics(fieldFont);
             String val;
@@ -485,7 +485,7 @@ protected void draw(Graphics g, boolean hilited) {
                 val = fd.getName() + "=" + fd.getValue();
                 while (val.length() > 1 && (fm.stringWidth(val) + ox) > rwidth)
                     val = val.substring(0, val.length() - 2); // !!! TODO !!!
-                    
+
                 // make monitored fields visible
                 if (inDebugMode && fd.getVisibility() == InspectableProperty.ALWAYS_VISIBLE)
                 {
@@ -496,7 +496,7 @@ protected void draw(Graphics g, boolean hilited) {
                 }
                 else
                     g.drawString(val, px, py);
-                    
+
                 py = py0 + (int)((++n)*rfieldRowHeight);
             }
         }
@@ -509,22 +509,22 @@ protected void draw(Graphics g, boolean hilited) {
             if (!(hilited && view.isHilitedObject(this)))
                 if (outlinks.firstElement() instanceof VisibleObject)
                     linkColor = ((VisibleObject) outlinks.firstElement()).getVisibleColor();
-            
-            
-//            if (!zoom) { 
+
+
+//            if (!zoom) {
                 // draw link and its tail
                 boolean isRightSide = isRight();
                 int r = (int)(Constants.LINK_RADIOUS * Rscale);
                 int cy = (int)(Rscale*getInY()- view.getRy());
                 int ccx = (int)(Rscale*getInX()- view.getRx());
                 int cx;
-                
+
                 if (isZoomRepaint() || getParent().isZoomRepaint()) {
                     cy = getHeight()/2 + ZoomPane.VERTICAL_MARGIN;
                     ccx = isRightSide ? ZoomPane.getInstance().getWidth() - 1 : 1;
-                    
-                }                
-            
+
+                }
+
                 if (isRightSide) {
                     cx = rrx + rwidth + r;
                     g.drawOval(cx - r, cy - r, 2 * r, 2 * r);
@@ -543,7 +543,7 @@ protected void draw(Graphics g, boolean hilited) {
                     this,
                     isRightSide);
 //            }
-        
+
         }
 
     }
@@ -551,7 +551,7 @@ protected void draw(Graphics g, boolean hilited) {
     if (!hilited ) {
         paintSubObjects(g, hilited);
     }
-    
+
     if (zoom && !isZoomRepaint()) {
         rwidth /= Rscale;
         rheight /= Rscale;
@@ -559,13 +559,13 @@ protected void draw(Graphics g, boolean hilited) {
         rry -= ((rheight - getRheight())/2 + ZoomPane.VERTICAL_MARGIN);
         if (view.getRx() < 0)
             rrx = rrx < 0 ? 2 : rrx;
-        if (view.getRy() < 0) 
+        if (view.getRy() < 0)
             rry = rry <= 0 ? 2 : rry;
         g.drawImage(zoomImage, rrx,rry, ZoomPane.getInstance());
     }
-    
-    
-    
+
+
+
 
 }
 
@@ -582,16 +582,16 @@ protected void draw(Graphics g, boolean hilited) {
 protected static void drawDebugTimeout(Graphics g, int hour, int minute, int x0, int y0, int w, int h)
 {
     g.setColor(Color.MAGENTA);
-    
+
     final int thickness = 3;
     if (w < 5*thickness || h < 5*thickness) return;
 
-    // calculate angles    
+    // calculate angles
     double phiHour = (2*Math.PI/12)*hour-Math.PI/2;
     double phiMinute = (2*Math.PI/60)*minute-Math.PI/2;
 
     int size = (int)Math.min(0.75 * h, 0.75 * w);
-    
+
     // optimize
     w = w/2;
     h = h/2;
@@ -600,14 +600,14 @@ protected static void drawDebugTimeout(Graphics g, int hour, int minute, int x0,
     double sinHour = Math.sin(phiHour);
     double cosMin = Math.cos(phiMinute);
     double sinMin = Math.sin(phiMinute);
-    
+
     g.drawOval(x0 + w - size + thickness, y0 + h - size + thickness, 2*size - 2*thickness, 2*size - 2*thickness);
     g.drawOval(x0 + w - size, y0 + h - size, size*2, size*2);
-    
+
     int pointerSize = (3 * size) / 4;
     g.drawLine(x0 + w,     y0 + h, x0 + (int)(w + pointerSize * cosMin),      y0 + (int)(h + pointerSize * sinMin));
     g.drawLine(x0 + w + 1, y0 + h, x0 + (int)(w + pointerSize * cosMin) + 1,  y0 + (int)(h + pointerSize * sinMin));
-    
+
     pointerSize = size / 2;
     g.drawLine(x0 + w,     y0 + h, x0 + (int)(w + pointerSize * cosHour),      y0 + (int)(h + pointerSize * sinHour));
     g.drawLine(x0 + w + 1, y0 + h, x0 + (int)(w + pointerSize * cosHour) + 1,  y0 + (int)(h + pointerSize * sinHour));
@@ -633,7 +633,7 @@ protected static void drawDebugTimeout(Graphics g, int hour, int minute, int x0,
  * @param field com.cosylab.vdct.vdb.VDBFieldData
  */
 public void fieldChanged(VDBFieldData field) {
-    
+
     boolean repaint = false;
 
     if (inDebugMode && field.getName().equals(VAL_FIELD))
@@ -641,11 +641,11 @@ public void fieldChanged(VDBFieldData field) {
         repaint = true;
     else
         if (manageLink(field)) repaint=true;
-        
+
     if (isVisible(field)) {
         if (!changedFields.contains(field))
             changedFields.addElement(field);
-        repaint=true;        
+        repaint=true;
     }
     else {
         if (changedFields.contains(field)) {
@@ -653,7 +653,7 @@ public void fieldChanged(VDBFieldData field) {
             repaint = true;
         }
     }
-        
+
     if (repaint) {
         // do not repaint non-viewing group
         // might happen in debug mode and any other
@@ -672,24 +672,24 @@ public boolean isVisible(VDBFieldData field) {
         field.getDbdData().getGUI_type()==DBDConstants.GUI_OUTPUT ||
         field.getDbdData().getGUI_type()==DBDConstants.GUI_INPUTS;
     */
-    
-    boolean validLink = false;    
+
+    boolean validLink = false;
     Object obj = getSubObject(field.getName());
     if (obj instanceof Linkable && EPICSOutLink.getEndPoint((Linkable)obj) != null) validLink = true;
-    
+
     if (visibility == VDBFieldData.NEVER_VISIBLE ||
         (visibility == VDBFieldData.NON_DEFAULT_VISIBLE && (field.hasDefaultValue() || !Settings.getInstance().isDefaultVisibility())) ||
         (validLink && Settings.getInstance().isHideLinks())) return false;
-        
+
     return true;
 }
 
 public boolean isOldVisible(VDBFieldData field) {
     int visibility = field.getVisibility();
-    
+
     if (visibility == VDBFieldData.NEVER_VISIBLE ||
         (visibility == VDBFieldData.NON_DEFAULT_VISIBLE && field.hasDefaultValue())) return false;
-        
+
     return true;
 }
 /**
@@ -715,13 +715,13 @@ private void fixForwardLinks() {
     while (e.hasMoreElements())
     {
         unknownLink = e.nextElement();
-        if (unknownLink instanceof EPICSLinkOut) 
-                source = (EPICSLinkOut)unknownLink;  
+        if (unknownLink instanceof EPICSLinkOut)
+                source = (EPICSLinkOut)unknownLink;
             else
                 continue;    // nothing to fix
-        
+
         // !!!!
-        
+
         // now I got source and target, compare values
         String oldTarget = LinkProperties.getTarget(source.getFieldData());
         if (!oldTarget.equals(targetName))
@@ -732,9 +732,9 @@ private void fixForwardLinks() {
             source.getFieldData().setValueSilently(value);
             source.fixLinkProperties();
         }
-        
+
     }
-            
+
 }
 /**
  * Goes through link fields (in, out, var, fwd) and cheks
@@ -911,10 +911,10 @@ public OutLink getOutput() {
  * @return com.cosylab.vdct.inspector.InspectableProperty[]
  */
 public com.cosylab.vdct.inspector.InspectableProperty[] getProperties(int mode) {
-    
-    // to fix DBD which do not have prompt group set for VAL field 
+
+    // to fix DBD which do not have prompt group set for VAL field
     final String VAL_NAME = "VAL";
-    
+
     if (mode == GUI_GROUP_ORDER)
     {
         int size = 0;
@@ -923,9 +923,9 @@ public com.cosylab.vdct.inspector.InspectableProperty[] getProperties(int mode) 
         Enumeration e = recordData.getFieldsV().elements();
         while (e.hasMoreElements()) {
             field = (VDBFieldData)e.nextElement();
-            /*if (field.getDbdData().getField_type() != 
+            /*if (field.getDbdData().getField_type() !=
                 com.cosylab.vdct.dbd.DBDConstants.DBF_NOACCESS)*/ {
-    
+
                 key = new Integer(field.getGUI_type());
                 if (groups.containsKey(key) /*VAL DBD fix -> */ && key.intValue()!=DBDConstants.GUI_UNDEFINED /* <- VAL DBD fix*/) {
                     ((Vector)(groups.get(key))).addElement(field);
@@ -938,16 +938,16 @@ public com.cosylab.vdct.inspector.InspectableProperty[] getProperties(int mode) 
                     groups.put(key, v);
                     size+=2;    // separator + property
                 }
-    
+
             }
         }
-        
+
         Object[] grps;
         grps = new com.cosylab.vdct.util.IntegerQuickSort().sortEnumeration(groups.keys());
-    
+
         Vector all = new Vector();
         all.addElement(GUIHeader.getDefaultHeader());
-        
+
         Vector items; int grp;
         for (int gn=0; gn < grps.length; gn++) {
             items = (Vector)groups.get(grps[gn]);
@@ -955,7 +955,7 @@ public com.cosylab.vdct.inspector.InspectableProperty[] getProperties(int mode) 
             all.addElement(new GUISeparator(com.cosylab.vdct.dbd.DBDResolver.getGUIString(grp)));
             all.addAll(items);
         }
-        
+
         InspectableProperty[] properties = new InspectableProperty[all.size()];
         all.copyInto(properties);
         return properties;
@@ -965,14 +965,14 @@ public com.cosylab.vdct.inspector.InspectableProperty[] getProperties(int mode) 
 
         VDBFieldData field;
         Vector all = new Vector();
-    
+
         all.addElement(GUIHeader.getDefaultHeader());
 
         if (mode == SORT_ORDER)
             all.addElement(getAlphaSeparator());
         else
             all.addElement(getDBDSeparator());
-            
+
         if (mode==DBD_ORDER)
         {
             DBDFieldData dbdField;
@@ -994,14 +994,14 @@ public com.cosylab.vdct.inspector.InspectableProperty[] getProperties(int mode) 
                     (field.getGUI_type()!=DBDConstants.GUI_UNDEFINED) || field.getName().equals(VAL_NAME))
                         all.addElement(field);
                 }
-        }                
+        }
         InspectableProperty[] properties = new InspectableProperty[all.size()];
         all.copyInto(properties);
-    
+
         if (mode == SORT_ORDER)
             if (properties.length>2)
                 new com.cosylab.vdct.util.StringQuickSort().sort(properties, 2, properties.length-1);
-    
+
         return properties;
     }
     else
@@ -1042,7 +1042,7 @@ public VisibleObject hiliteComponentsCheck(int x, int y) {
 
     ViewState view = ViewState.getInstance();
     VisibleObject spotted = null;
-    
+
     Enumeration e = subObjectsV.elements();
     VisibleObject vo;
     while (e.hasMoreElements()) {
@@ -1065,7 +1065,7 @@ public EPICSLink initializeLinkField(VDBFieldData field) {
 
     if (!this.containsObject(field.getName()))
     {
-        EPICSLink link = null;    
+        EPICSLink link = null;
         int type = LinkProperties.getType(field);
         switch (type) {
             case LinkProperties.INLINK_FIELD:
@@ -1099,18 +1099,18 @@ public EPICSLink initializeLinkField(VDBFieldData field) {
  */
 public VisibleObject intersects(int px, int py) {
 /*
-      if ((getRx()<=px) && (getRy()<=py) && 
-        ((getRx()+getRwidth())>=px) && 
+      if ((getRx()<=px) && (getRy()<=py) &&
+        ((getRx()+getRwidth())>=px) &&
         ((getRy()+getRheight())>=py))
         return this;
-    else 
+    else
         return hiliteComponentsCheck(px, py);
 */
     // first check on small sub-objects like connectors
     VisibleObject spotted = hiliteComponentsCheck(px, py);
       if ((spotted==null) &&
-          (getRx()<=px) && (getRy()<=py) && 
-        ((getRx()+getRwidth())>=px) && 
+          (getRx()<=px) && (getRy()<=py) &&
+        ((getRx()+getRwidth())>=px) &&
         ((getRy()+getRheight())>=py))
         spotted = this;
     return spotted;
@@ -1135,12 +1135,12 @@ public boolean selectComponentsCheck(int x1, int y1, int x2, int y2) {
 
     ViewState view = ViewState.getInstance();
     boolean anyNew = false;
-    
+
     Enumeration e = subObjectsV.elements();
     VisibleObject vo;
     while (e.hasMoreElements()) {
         vo = (VisibleObject)(e.nextElement());
-        if ((vo instanceof Selectable) && 
+        if ((vo instanceof Selectable) &&
              (vo.intersects(x1, y1, x2, y2)!=null)) {
                 if (view.setAsSelected(vo)) anyNew = true;
         }
@@ -1207,24 +1207,24 @@ public void manageLinks() {
  * @param newType java.lang.String
  */
 public boolean morph(java.lang.String newType) {
-    
+
     //    copies VDBData
     VDBRecordData recordData = VDBData.morphVDBRecordData(
                 DataProvider.getInstance().getDbdDB(), getRecordData(), newType, getName());
-                
+
     if (recordData==null) {
         Console.getInstance().println("o) Interal error: failed to morph record "+getName()+" ("+getType()+")!");
         return false;
-    }                       
-    
+    }
+
     setRecordData(recordData);
-        
+
     return true;
 }
 
 public void setRecordData(VDBRecordData recordData) {
         this.recordData = recordData;
-    
+
         //    fix object links
         Object[] objs = new Object[subObjectsV.size()];
         subObjectsV.copyInto(objs);
@@ -1236,12 +1236,12 @@ public void setRecordData(VDBRecordData recordData) {
                 if (newFieldData!=null) {
                     field.fieldData=newFieldData;
                 } else {
-                    removeLink((Linkable)field);    
+                    removeLink((Linkable)field);
                     field.destroy();    // this also adds an undo action (FieldValueChanged)
                 }
             }
         }
-        
+
         changedFields.clear();
         Enumeration e = recordData.getFieldsV().elements();
         while (e.hasMoreElements()) {
@@ -1276,7 +1276,7 @@ public boolean move(int dx, int dy) {
         moveConnectors(dx, dy);
         return true;
     }
-    else 
+    else
         return false;
 }
 /**
@@ -1299,7 +1299,7 @@ public boolean moveAsMuchAsPossibleTopUp(int dx, int dy) {
 public boolean moveToGroup(java.lang.String group) {
     String currentParent = Group.substractParentName(recordData.getName());
     if (group.equals(currentParent)) return false;
-    
+
     //String oldName = getName();
     String newName;
     if (group.equals(nullString))
@@ -1328,7 +1328,7 @@ public boolean moveToGroup(java.lang.String group) {
 
     if (renameNeeded)
         return rename(newName);
-    
+
     getParent().removeObject(Group.substractObjectName(getName()));
     setParent(null);
     Group.getRoot().addSubObject(newName, this, true);
@@ -1355,7 +1355,7 @@ private void paintSubObjects(Graphics g, boolean hilited) {
         vo = (VisibleObject)(e.nextElement());
             vo.paint(g, hilited);
     }
-    
+
 }
 
 /**
@@ -1376,9 +1376,9 @@ public void removeLink(Linkable link) {
  * @param newName java.lang.String
  */
 public boolean rename(java.lang.String newName) {
-    
+
     // name has to be valid
-    
+
     String newObjName = Group.substractObjectName(newName);
     String oldObjName = Group.substractObjectName(getName());
 
@@ -1404,13 +1404,13 @@ public boolean rename(java.lang.String newName) {
             }
         }
     }
-    
+
     // move if needed
     if (!moveToGroup(Group.substractParentName(newName)))
         fixLinks();            // fix needed
 
     return true;
-    
+
 }
 /**
  * Insert the method's description here.
@@ -1443,7 +1443,7 @@ public void revalidatePosition() {
   double Rscale = getRscale();
   setRx((int)(getX()*Rscale));
   setRy((int)(getY()*Rscale));
-  
+
 
   // sub-components
   revalidateFieldsPosition();
@@ -1453,7 +1453,7 @@ public void revalidatePosition() {
 public void revalidateOutlinkConnectors() {
     Enumeration e = outlinks.elements();
     while (e.hasMoreElements()) {
-        Object obj = e.nextElement();        
+        Object obj = e.nextElement();
         if (obj instanceof Connector) {
             Connector con = (Connector)obj;
             con.revalidatePosition();
@@ -1472,10 +1472,10 @@ public void rotate() { right=!right; }
  * @return boolean
  */
 public boolean selectAllComponents() {
-    
+
     ViewState view = ViewState.getInstance();
     boolean anyNew = false;
-    
+
     Enumeration e = subObjectsV.elements();
     VisibleObject vo;
     while (e.hasMoreElements()) {
@@ -1529,23 +1529,23 @@ public String toString() {
 }
 
 /**
- * 
+ *
  * Validates the font size and position.
  * @see validate
- * @param scale 
- * @param rwidth 
+ * @param scale
+ * @param rwidth
  * @param rheight
  * @return the new rheight for the record
  */
 private int validateFont(double scale, int rwidth, int rheight) {
-    
+
     //  set appropriate font size
     final int x0 = (int)(8*scale);        // insets
     final int y0 = (int)(4*scale);
     final int fieldRowHeight = (int)((Constants.RECORD_HEIGHT-2*4)*0.375);
 
     Font font;
-    
+
     // translate name
     if (PluginDebugManager.isDebugState())
     {
@@ -1557,11 +1557,11 @@ private int validateFont(double scale, int rwidth, int rheight) {
     }
     else
         setLabel(recordData.getName());
-    
+
     if (rwidth<(2*x0)) font = null;
     else
         font = FontMetricsBuffer.getInstance().getAppropriateFont(
-                        Constants.DEFAULT_FONT, Font.PLAIN, 
+                        Constants.DEFAULT_FONT, Font.PLAIN,
                         getLabel(), rwidth-x0, (rheight-y0)/2);
 
     if (font!=null) {
@@ -1570,12 +1570,12 @@ private int validateFont(double scale, int rwidth, int rheight) {
          setRlabelY(rheight/2+(rheight/2-fm.getHeight())/2+fm.getAscent());
     }
     setFont(font);
-    
+
     label2 = recordData.getType();
     if (rwidth<(2*x0)) typeFont = null;
     else
         typeFont = FontMetricsBuffer.getInstance().getAppropriateFont(
-                         Constants.DEFAULT_FONT, Font.PLAIN, 
+                         Constants.DEFAULT_FONT, Font.PLAIN,
                          label2, rwidth-x0, (rheight-y0)/2);
 
     if (typeFont!=null) {
@@ -1585,17 +1585,17 @@ private int validateFont(double scale, int rwidth, int rheight) {
     }
 
    // !!! optimize - static
-   
+
     rfieldRowHeight = (rheight-2*y0)*0.375;
 
-    // code moves record up, when fields are added and down when deleted 
+    // code moves record up, when fields are added and down when deleted
     if (oldNumOfFields != changedFields.size()) {
-        int difference = oldNumOfFields - changedFields.size(); 
+        int difference = oldNumOfFields - changedFields.size();
       oldNumOfFields = changedFields.size();
         //move(0, fieldRowHeight*difference);
         moveAsMuchAsPossibleTopUp(0, fieldRowHeight*difference);
     }
-    
+
     // increase record size for VAL value and timestamp
     if (PluginDebugManager.isDebugState())
     {
@@ -1612,11 +1612,11 @@ private int validateFont(double scale, int rwidth, int rheight) {
     }
     else
       inDebugMode = false;
-      
+
     if (rwidth<(2*x0)) fieldFont = null;
     else
         fieldFont = FontMetricsBuffer.getInstance().getAppropriateFont(
-                         Constants.DEFAULT_FONT, Font.PLAIN, 
+                         Constants.DEFAULT_FONT, Font.PLAIN,
                          fieldMaxStr, rwidth-x0, (int)rfieldRowHeight);
 
     int ascent = 0;
@@ -1648,7 +1648,7 @@ private int validationsCounter = 0;
 protected void validate() {
 
 //  boolean use = super.getHeight() != 0 && !firstValidation;
-    boolean use = super.getHeight() != 0 && validationsCounter > 3;  
+    boolean use = super.getHeight() != 0 && validationsCounter > 3;
   int bottomy = getY() + getHeight();
   double scale = getRscale();
 
@@ -1672,18 +1672,18 @@ protected void validate() {
               if (i!=0 && Settings.getInstance().getSnapToGrid()) {
                   if (i > Constants.GRID_SIZE/2.0)
                       setY(bottomy-height + Constants.GRID_SIZE -i);
-                  else 
+                  else
                       setY(bottomy-height -i);
               } else
                   setY(bottomy-height);
           }
       }
   }
-  
+
   // round fix
   rheight = (int)((getY()+super.getHeight())*scale)-(int)(getY()*scale);
   setRheight(rheight);
-  
+
   // sub-components
   revalidatePosition();        // rec's height can be different
   validateFields();
@@ -1710,7 +1710,7 @@ private void validateDebug(VDBFieldData valField)
     }
     else if (debugConnected)
         debugTimeoutHour = -1;
-        
+
     // select debug color (follows MEDM standard)
     switch (valField.getSeverity())
     {
@@ -1734,7 +1734,7 @@ private void validateDebug(VDBFieldData valField)
     // TODO for timestamp this could be optimized
     timestamp = valField.getDebugValueTimeStamp();
     timestampFont = FontMetricsBuffer.getInstance().getAppropriateFont(
-                    Constants.DEFAULT_FONT, Font.PLAIN, 
+                    Constants.DEFAULT_FONT, Font.PLAIN,
                     timestamp, rwidth-x0, (rheight-y0)/2-y0);
     if (timestampFont!=null) {
         FontMetrics fm = FontMetricsBuffer.getInstance().getFontMetrics(timestampFont);
@@ -1744,7 +1744,7 @@ private void validateDebug(VDBFieldData valField)
 
     value = valField.getValue();
     valueFont = FontMetricsBuffer.getInstance().getAppropriateFont(
-                    Constants.DEFAULT_FONT, Font.PLAIN, 
+                    Constants.DEFAULT_FONT, Font.PLAIN,
                     value, rwidth-x0, rheight/2-y0);
 
     if (valueFont!=null) {
@@ -1768,7 +1768,7 @@ private void validateFields() {
             obj instanceof Connector)
             ((VisibleObject)obj).validate();
     }
-    
+
 }
 
 /**
@@ -1804,7 +1804,7 @@ private static ArrayList getModes()
  */
 public void generateMacros(HashMap macros) {
     Enumeration e = recordData.getFieldsV().elements();
-    while (e.hasMoreElements()) 
+    while (e.hasMoreElements())
         LinkManagerObject.checkIfMacroCandidate((VDBFieldData)e.nextElement(), macros);
 }
 /* (non-Javadoc)
@@ -1838,14 +1838,14 @@ public void updateFields() {
     while (e.hasMoreElements()) {
         VDBFieldData field = (VDBFieldData)e.nextElement();
         if (isVisible(field)) {
-            if (!changedFields.contains(field)) 
-                changedFields.addElement(field); 
+            if (!changedFields.contains(field))
+                changedFields.addElement(field);
         }
         else {
-            if (changedFields.contains(field)) 
+            if (changedFields.contains(field))
                 changedFields.removeElement(field);
         }
-        
+
     }
     validate();
 }
@@ -1859,13 +1859,13 @@ public void snapToGrid()
     // TODO za en piksel strize!!!
 //    int my = (y+getHeight()) % Constants.GRID_SIZE;
     int my = (getY()+getHeight()) % Constants.GRID_SIZE;
-    
+
     final int halfGrid = Constants.GRID_SIZE / 2;
     if (mx > halfGrid)
         mx -= Constants.GRID_SIZE;
     if (my > halfGrid)
         my -= Constants.GRID_SIZE;
-    
+
     x -= mx;
 //    y -= my;
     setY(getY() -my);

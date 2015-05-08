@@ -25,9 +25,9 @@ import org.epics.vtype.VDouble;
 /**
  * An utility class that provides basic PV test functionalities.
  * It should be used in a plugin test.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class BasicReadWriteTester {
 
@@ -40,7 +40,7 @@ public class BasicReadWriteTester {
     /**Create a tester.
      * @param pvFactoryId pv factory id.
      * @param pvName pv name. The pv should be a writable pv. For example, loc://test(0)
-     * @throws Exception 
+     * @throws Exception
      */
     public BasicReadWriteTester(String pvFactoryId, String pvName) throws Exception {
         updates = new AtomicInteger(0);
@@ -108,7 +108,7 @@ public class BasicReadWriteTester {
             Thread.sleep(100);
             i++;
         }
-        System.out.println("It took " + i * 100 + "ms to connect.");        
+        System.out.println("It took " + i * 100 + "ms to connect.");
         assertTrue(pv.isConnected());
 
         assertFalse(pv.isBufferingValues());
@@ -125,12 +125,12 @@ public class BasicReadWriteTester {
         assertEquals(1, updates.get());
         //Test write
         final int d = 123;
-        
+
         pv.setValue(d);
         Thread.sleep(1000);
         assertEquals(2, updates.get());
         assertEquals(d, VTypeHelper.getNumber(pv.getValue()).intValue());
-        
+
         // Test pausing
         pv.setPaused(true);
         assertTrue(pv.isPaused());
@@ -154,14 +154,14 @@ public class BasicReadWriteTester {
         pv.setValue(678);
         Thread.sleep(1000);
         assertEquals(updates.get(), temp +2);
-        
+
         //test sync write
         temp=updates.get();
         pv.setValue(890, 5000);
         Thread.sleep(1000);
         assertEquals(updates.get(), temp+1);
         assertEquals(890, VTypeHelper.getDouble(pv.getValue()), 0.1);
-        
+
     }
 
     protected void testStop() throws Exception {

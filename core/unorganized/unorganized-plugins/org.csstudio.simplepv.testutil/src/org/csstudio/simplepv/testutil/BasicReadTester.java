@@ -26,9 +26,9 @@ import org.epics.vtype.VType;
 /**
  * An utility class that provides basic PV test functionalities.
  * It should be used in a plugin test.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class BasicReadTester {
 
@@ -41,9 +41,9 @@ public class BasicReadTester {
 
     /**Create a tester.
      * @param pvFactoryId pv factory id.
-     * @param pvName pv name. The pv should be a read only pv that returns VType value that 
+     * @param pvName pv name. The pv should be a read only pv that returns VType value that
      * updates faster than 10hz. For example, sim://ramp(0,100,1,0.1)
-     * @throws Exception 
+     * @throws Exception
      */
     public BasicReadTester(String pvFactoryId, String pvName) throws Exception {
         updates = new AtomicInteger(0);
@@ -111,7 +111,7 @@ public class BasicReadTester {
             Thread.sleep(100);
             i++;
         }
-        System.out.println("It took " + i * 100 + "ms to connect.");        
+        System.out.println("It took " + i * 100 + "ms to connect.");
         assertTrue(pv.isConnected());
         assertFalse(pv.isWriteAllowed());
         assertFalse(pv.isBufferingValues());
@@ -135,7 +135,7 @@ public class BasicReadTester {
         assertFalse(pv.isPaused());
         Thread.sleep(3000);
         assertTrue(updates.get() - temp > 3);
-        //Test remove and add listener        
+        //Test remove and add listener
         pv.removeListener(pvListener);
         Thread.sleep(1000);
         temp=updates.get();
@@ -144,12 +144,12 @@ public class BasicReadTester {
         pv.addListener(pvListener);
         Thread.sleep(3000);
         assertTrue(updates.get() - temp > 3);
-        
+
         // Test reading buffered values
         assertTrue(pv.getValue() instanceof VType);
         assertEquals(1, pv.getAllBufferedValues().size());
         assertTrue(pv.getAllBufferedValues().get(0) instanceof VType);
-        
+
         //Test write
         Exception exception = null;
         try {

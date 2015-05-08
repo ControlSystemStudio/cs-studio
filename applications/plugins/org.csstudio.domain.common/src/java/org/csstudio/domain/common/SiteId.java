@@ -44,7 +44,7 @@ public enum SiteId {
      * specific dispatching of whatever you like to.
      */
     public static final String JVM_ARG_KEY = "siteId";
-    
+
     private final String _prefix;
 
     /**

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.pvmanager.ui.toolbox;
 
@@ -26,7 +26,7 @@ import org.epics.pvmanager.service.Service;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class FunctionsView extends ViewPart {
 
@@ -34,14 +34,14 @@ public class FunctionsView extends ViewPart {
     private TreeViewer treeViewer;
 
     /**
-     * 
+     *
      */
     public FunctionsView() {
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets
      * .Composite)
@@ -113,7 +113,7 @@ public class FunctionsView extends ViewPart {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
      */
     @Override

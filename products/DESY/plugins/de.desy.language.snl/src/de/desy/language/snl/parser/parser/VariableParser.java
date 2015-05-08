@@ -9,16 +9,16 @@ import de.desy.language.snl.parser.nodes.VariableNode;
 public class VariableParser extends
         AbstractOptimizedStatementParser<VariableNode> {
 
-    
+
     public VariableParser(Interval[] exclusions) {
         super(exclusions);
     }
-    
+
     @Override
     protected String getPostPatternString() {
         return "(\\s*;)";
     }
-    
+
     @Override
     protected String getPatternString() {
         return getPrePatternString() + "([a-zA-Z_][0-9a-zA-Z_]*)(\\s*\\[\\s*\\d+\\s*\\])*"

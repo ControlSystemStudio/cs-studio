@@ -7,12 +7,12 @@ import org.eclipse.draw2d.geometry.Point;
 
 /**
  * This class locates the middle point of the middle segment of the {@link Connection}.
- * 
+ *
  * @author Kai Meyer (C1 WPS)
  *
  */
 public class MidConnectionRouteLocator extends ConnectionLocator {
-    
+
     private static final int TOLERANCE = 10;
     private int _relativePosition = PositionConstants.SOUTH;
 
@@ -20,7 +20,7 @@ public class MidConnectionRouteLocator extends ConnectionLocator {
      * Constructs a MidpointLocator with associated Connection <i>c</i> and
      * index <i>i</i>. The points at index i and i+1 on the connection are used
      * to calculate the midpoint of the line segment.
-     * 
+     *
      * @param c
      *            the connection associated with the locator
      * @since 2.0
@@ -28,7 +28,7 @@ public class MidConnectionRouteLocator extends ConnectionLocator {
     public MidConnectionRouteLocator(final Connection c) {
         super(c);
     }
-    
+
     @Override
     public int getRelativePosition() {
         return _relativePosition;
@@ -37,7 +37,7 @@ public class MidConnectionRouteLocator extends ConnectionLocator {
     /**
      * Returns the point of reference associated with this locator. This point
      * will be midway between middle points.
-     * 
+     *
      * @return the reference point
      * @since 2.0
      */
@@ -54,9 +54,9 @@ public class MidConnectionRouteLocator extends ConnectionLocator {
         final int deltaY = p2.y - p1.y;
         p.x = deltaX / 2 + p1.x;
         p.y = deltaY / 2 + p1.y;
-        
+
         determineRelativePosition(deltaX, deltaY);
-        
+
         return p;
     }
 

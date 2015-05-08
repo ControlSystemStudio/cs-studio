@@ -81,7 +81,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
                 if(newValue == null || !(newValue instanceof VType))
                     return false;
                 AbstractBoolFigure figure = (AbstractBoolFigure) refreshableFigure;
-                
+
                 switch (VTypeHelper.getBasicDataType((VType) newValue)) {
                 case SHORT:
                     figure.setTotalBits(TotalBits.BITS_16);
@@ -172,7 +172,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
             }
         };
         setPropertyChangeHandler(AbstractBoolWidgetModel.PROP_BOOL_LABEL_POS, handler);
-    
+
         // on label
         handler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -232,7 +232,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
             ((AbstractBoolFigure)getFigure()).setValue(((Number)value).doubleValue());
         else if (value instanceof Boolean)
             ((AbstractBoolFigure)getFigure()).setBooleanValue((Boolean)value);
-        else 
+        else
             super.setValue(value);
     }
 

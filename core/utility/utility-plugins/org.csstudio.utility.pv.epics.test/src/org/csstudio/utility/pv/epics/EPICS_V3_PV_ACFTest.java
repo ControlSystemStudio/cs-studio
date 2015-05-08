@@ -23,19 +23,19 @@ import org.junit.Test;
 public class EPICS_V3_PV_ACFTest
 {
     private Boolean write_allowed = null;
-    
+
     @Test(timeout=15000)
     public void testWritePermissionUpdate() throws Exception
     {
         TestUtil.log_level = Level.WARNING;
-        
+
         // Allow write access
         final PV disable = TestUtil.getPV("allow");
         disable.start();
         while (! disable.isConnected())
             Thread.sleep(100);
         disable.setValue(0);
-        
+
         // Monitor permissions of a test PV that doesn't update except for permission changes
         final PV pv = TestUtil.getPV("check_access");
         pv.addListener(new PVListener()
@@ -50,7 +50,7 @@ public class EPICS_V3_PV_ACFTest
                     EPICS_V3_PV_ACFTest.this.notifyAll();
                 }
             }
-            
+
             @Override
             public void pvDisconnected(final PV pv)
             {
@@ -77,7 +77,7 @@ public class EPICS_V3_PV_ACFTest
             System.out.println("Write permitted: " + write_allowed);
             assertThat(write_allowed, equalTo(false));
         }
-        
+
         pv.stop();
         disable.stop();
     }

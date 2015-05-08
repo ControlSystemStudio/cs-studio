@@ -28,7 +28,7 @@ import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class AutoCompleteUIPlugin extends AbstractUIPlugin {
@@ -150,7 +150,7 @@ public class AutoCompleteUIPlugin extends AbstractUIPlugin {
 
     /**
      * Load the <code>Image</code> from the given path in the given plugin.
-     * 
+     *
      * @param pluginId The id of the plugin that contains the requested image.
      * @param relativePath The resource path of the requested image.
      * @return The <code>Image</code> from the given path in the given plugin.

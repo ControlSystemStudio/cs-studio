@@ -7,18 +7,18 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
 public class NewScriptWizard extends Wizard implements INewWizard {
-    
+
     /**
      * This wizard page is used to enter the file name and the target
      * project/folder for the new script rule.
      */
     private NewScriptWizardPage _sdsScriptPage;
-    
+
     /**
      * The current selection.
      */
     private IStructuredSelection _selection;
-    
+
     /**
      * {@inheritDoc}
      */

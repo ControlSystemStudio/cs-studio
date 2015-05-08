@@ -12,7 +12,7 @@ import java.util.HashSet;
 
 /**
  * The description for a function set to be used in data source language.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class DSFunctionSetDescription {
@@ -23,7 +23,7 @@ public class DSFunctionSetDescription {
 
     /**
      * A new function set description.
-     * 
+     *
      * @param name the name of the function set
      * @param description the description of the function set
      */
@@ -38,7 +38,7 @@ public class DSFunctionSetDescription {
 
     /**
      * Adds a function in the set.
-     * 
+     *
      * @param function the function to add
      * @return this description
      */

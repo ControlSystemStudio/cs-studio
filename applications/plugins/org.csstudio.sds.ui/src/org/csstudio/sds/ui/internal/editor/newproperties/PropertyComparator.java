@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.sds.ui.internal.editor.newproperties;
 

@@ -14,7 +14,7 @@ public class SmoothedDouble
 {
     private static final double WEIGHT = 0.9;
     private double value;
-    
+
     /** Constructor. */
     public SmoothedDouble()
     {
@@ -32,7 +32,7 @@ public class SmoothedDouble
     {
         value = WEIGHT * value + (1.0 - WEIGHT) * sample;
     }
-    
+
     /** @return The current smoothed value. */
     public double get()
     {

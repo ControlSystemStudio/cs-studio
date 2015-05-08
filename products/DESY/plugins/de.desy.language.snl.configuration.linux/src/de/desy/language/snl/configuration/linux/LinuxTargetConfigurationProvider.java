@@ -17,7 +17,7 @@ public class LinuxTargetConfigurationProvider extends
     @Override
     public List<AbstractCompilerConfiguration> getConfigurations(ICompilerOptionsService service) {
         List<AbstractCompilerConfiguration> configurations = new ArrayList<AbstractCompilerConfiguration>();
-        
+
         configurations.add(new PreCompilerConfiguration(service));
         configurations.add(new SNCompilerConfiguration(service));
         configurations.add(new CCompilerConfiguration(service));

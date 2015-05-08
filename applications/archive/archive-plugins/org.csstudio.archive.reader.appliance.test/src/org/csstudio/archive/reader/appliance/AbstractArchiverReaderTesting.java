@@ -13,7 +13,7 @@ import org.epics.util.time.Timestamp;
 import org.epics.vtype.AlarmSeverity;
 
 /**
- * 
+ *
  * <code>AbstractArchiverReaderTesting</code> is the base class for the
  * archiver appliance reader test classes. It provides common methods
  * to retrieve different kinds of data.
@@ -27,12 +27,12 @@ public abstract class AbstractArchiverReaderTesting {
      * @return the reader used for loading the data
      */
     protected abstract ArchiveReader getReader() throws Exception;
-    
-    
+
+
     /**
-     * Loads the data as statistics if applicable for the given pv name. This method will always 
+     * Loads the data as statistics if applicable for the given pv name. This method will always
      * retrieve optimized data.
-     * 
+     *
      * @param pvname the name of the provided PV
      * @param count the number of requested points
      * @param start the start timestamp of the data
@@ -49,10 +49,10 @@ public abstract class AbstractArchiverReaderTesting {
         iterator.close();
         return vals.toArray(new ArchiveVType[vals.size()]);
     }
-    
+
     /**
      * Loads the numerical array data for the provided pv.
-     * 
+     *
      * @param pvname the name of the PV to load data from
      * @param optimized true if optimized data should be loaded or false otherwise
      * @param count number of points to load in case optimized retrieval is selected
@@ -70,10 +70,10 @@ public abstract class AbstractArchiverReaderTesting {
         iterator.close();
         return vals.toArray(new ArchiveVNumber[vals.size()]);
     }
-    
+
     /**
      * Loads the numerical data for the provided pv.
-     * 
+     *
      * @param pvname the name of the PV to load data from
      * @param optimized true if optimized data should be loaded or false otherwise
      * @param count number of points to load in case optimized retrieval is selected
@@ -91,10 +91,10 @@ public abstract class AbstractArchiverReaderTesting {
         iterator.close();
         return vals.toArray(new ArchiveVNumberArray[vals.size()]);
     }
-    
+
     /**
      * Loads the string array data for the provided pv.
-     * 
+     *
      * @param pvname the name of the PV to load data from
      * @param optimized true if optimized data should be loaded or false otherwise
      * @param count number of points to load in case optimized retrieval is selected
@@ -109,10 +109,10 @@ public abstract class AbstractArchiverReaderTesting {
         iterator.next();
         return null;
     }
-    
+
     /**
      * Loads string-type data for the provided pv.
-     * 
+     *
      * @param pvname the name of the PV to load data from
      * @param optimized true if optimized data should be loaded or false otherwise
      * @param count number of points to load in case optimized retrieval is selected
@@ -129,12 +129,12 @@ public abstract class AbstractArchiverReaderTesting {
         }
         iterator.close();
         return vals.toArray(new ArchiveVString[vals.size()]);
-        
+
     }
-    
+
     /**
      * Loads the enum array data for the provided pv.
-     * 
+     *
      * @param pvname the name of the PV to load data from
      * @param optimized true if optimized data should be loaded or false otherwise
      * @param count number of points to load in case optimized retrieval is selected
@@ -149,10 +149,10 @@ public abstract class AbstractArchiverReaderTesting {
         iterator.next();
         return null;
     }
-    
+
     /**
      * Loads enum-type data for the provided pv.
-     * 
+     *
      * @param pvname the name of the PV to load data from
      * @param optimized true if optimized data should be loaded or false otherwise
      * @param count number of points to load in case optimized retrieval is selected
@@ -170,16 +170,16 @@ public abstract class AbstractArchiverReaderTesting {
         iterator.close();
         return vals.toArray(new ArchiveVEnum[vals.size()]);
     }
-    
+
     private ValueIterator getIterator(String name, boolean optimized, int count, Timestamp start, Timestamp end) throws Exception{
-        return optimized ? 
+        return optimized ?
                 getReader().getOptimizedValues(1, name, start, end,count) :
                 getReader().getRawValues(1, name, start, end);
     }
-    
+
     /**
      * Determines alarm severity from the given numerical representation.
-     * 
+     *
      * @param severity, numerical representation of alarm severity
      * @return Alarm severity.
      */

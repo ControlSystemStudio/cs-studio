@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Table;
 /**
  * Convenience wrapper for a SWT table viewer that allows for easy and fine
  * grained customization of all aspects of a table, like
- * 
+ *
  * <ul>
  * <li>number of columns</li>
  * <li>fore and background color of used in cells</li>
@@ -44,15 +44,15 @@ import org.eclipse.swt.widgets.Table;
  * <li>cell editors</li>
  * <li>cell content</li>
  * </ul>
- * 
+ *
  * The model for the table is a list of {@link ITableRow}s. Each
  * {@link ITableRow} represents an adapter for an arbitrary object.
- * 
+ *
  * To use this table just prepare {@link ITableRow} adapters for your model
  * objects.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ConvenienceTableWrapper {
 
@@ -152,7 +152,7 @@ public final class ConvenienceTableWrapper {
 
     /**
      * Editing support implementation.
-     * 
+     *
      * @author Sven Wende
      */
     static final class DelegatingColumnEditingSupport extends EditingSupport {
@@ -214,7 +214,7 @@ public final class ConvenienceTableWrapper {
 
     /**
      * Content provider implementation.
-     * 
+     *
      * @author Sven Wende
      */
     static final class ContentProvider implements IStructuredContentProvider {
@@ -244,7 +244,7 @@ public final class ConvenienceTableWrapper {
 
     /**
      * Label provider implementation.
-     * 
+     *
      * @author Sven Wende
      */
     static final class LabelProvider extends ColumnLabelProvider {
@@ -294,7 +294,7 @@ public final class ConvenienceTableWrapper {
 
         /**
          * Returns the text to display.
-         * 
+         *
          * @param element
          *            the current element
          * @param column

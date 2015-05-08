@@ -85,7 +85,7 @@ public class ItemConfigDialog extends TitleAreaDialog
      *  @param item Item who's configuration is initially displayed.
      *  @param model The AlarmClientModel to which the configuration maps
      *  @param blocking determines if the client should be blocking or not
-     *  
+     *
      *  The Dialog will read the current configuration for a PV and save the changes when Ok is pressed.
      */
     public ItemConfigDialog(final Shell shell, final AlarmTreeItem item, final AlarmClientModel model, boolean blocking)
@@ -154,7 +154,7 @@ public class ItemConfigDialog extends TitleAreaDialog
         super.configureShell(shell);
         shell.setText(Messages.Config_Title);
     }
-    
+
     /** @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite) */
     @Override
     protected Control createDialogArea(final Composite parent) {
@@ -162,7 +162,7 @@ public class ItemConfigDialog extends TitleAreaDialog
         final Composite parent_composite = (Composite) super
                 .createDialogArea(parent);
 
-        final ScrolledComposite sc = new ScrolledComposite(parent, 
+        final ScrolledComposite sc = new ScrolledComposite(parent,
                 SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
         sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
@@ -316,9 +316,9 @@ public class ItemConfigDialog extends TitleAreaDialog
         l.setText(Messages.Config_Guidance);
         l.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
 
-        guidance_editor = new StringTableEditor(composite, 
+        guidance_editor = new StringTableEditor(composite,
                 new String[] { Messages.Title, Messages.Detail }, editable,
-                guidance_table_list, new EditGDCItemDialog(parent.getShell()), 
+                guidance_table_list, new EditGDCItemDialog(parent.getShell()),
                 new int[] { 120, 120 });
         guidance_editor.setToolTipText(Messages.Config_GuidanceTT);
         guidance_editor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
@@ -333,7 +333,7 @@ public class ItemConfigDialog extends TitleAreaDialog
         l.setText(Messages.Config_Displays);
         l.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
 
-        display_editor = new StringTableEditor(composite, 
+        display_editor = new StringTableEditor(composite,
                 new String[] { Messages.Title, Messages.Command }, editable,
                 displays_table_list, new EditGDCItemDialog(parent.getShell()),
                 new int[] { 120, 120 });
@@ -350,7 +350,7 @@ public class ItemConfigDialog extends TitleAreaDialog
         l.setText(Messages.Config_Commands);
         l.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
 
-        command_editor = new StringTableEditor(composite, 
+        command_editor = new StringTableEditor(composite,
                 new String[] { Messages.Title, Messages.Command }, editable,
                 commands_table_list, new EditGDCItemDialog(parent.getShell()),
                 new int[] { 120, 120 });
@@ -372,8 +372,8 @@ public class ItemConfigDialog extends TitleAreaDialog
         l.setText(Messages.Config_AutomatedActions);
         l.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
         automated_action_editor = new StringTableEditor(composite,
-                new String[] { Messages.Title, Messages.Detail, Messages.Delay }, null, 
-                auto_actions_table_list, new EditAAItemDialog(parent.getShell()), 
+                new String[] { Messages.Title, Messages.Detail, Messages.Delay }, null,
+                auto_actions_table_list, new EditAAItemDialog(parent.getShell()),
                 new int[] { 120, 110, 10 });
         automated_action_editor.setToolTipText(Messages.Config_AutomatedActionsTT);
         automated_action_editor.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
@@ -428,7 +428,7 @@ public class ItemConfigDialog extends TitleAreaDialog
             return new GDCDataStructure(title, title);
         return new GDCDataStructure(title, details);
     }
-    
+
     /** Convert table editor's String table into GDC list */
     private GDCDataStructure[] getGDBArray(final List<String[]> list)
     {
@@ -453,13 +453,13 @@ public class ItemConfigDialog extends TitleAreaDialog
     {
         return getGDBArray(commands_table_list);
     }
-    
+
     /** @return Related displays */
     public GDCDataStructure[] getDisplays()
     {
         return getGDBArray(displays_table_list);
     }
-    
+
     /** Create AA from elements
      *  @param title
      *  @param details
@@ -481,7 +481,7 @@ public class ItemConfigDialog extends TitleAreaDialog
             return new AADataStructure(title, title, delayInt);
         return new AADataStructure(title, details, delayInt);
     }
-    
+
     /** @return Automated Actions */
     public AADataStructure[] getAutomatedActions() {
         final List<AADataStructure> aa_list = new ArrayList<AADataStructure>();

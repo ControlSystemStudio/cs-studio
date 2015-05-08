@@ -10,7 +10,7 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 
 /**
  * Section implementation for {@link DoubleProperty}.
- * 
+ *
  * @author Sven Wende
  *
  */

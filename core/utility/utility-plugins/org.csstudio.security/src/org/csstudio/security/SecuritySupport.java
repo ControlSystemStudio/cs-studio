@@ -28,7 +28,7 @@ import com.sun.security.auth.UserPrincipal;
 
 /** Plugin activator,
  *  API entry point for obtaining authentication and authorization info
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -36,7 +36,7 @@ public class SecuritySupport implements BundleActivator
 {
     /** Plugin ID defined in MANIFEST.MF */
     public static String ID = "org.csstudio.security";
-   
+
     /** Singleton {@link SecurityContext} */
     private static SecurityContext security = null;
 
@@ -83,7 +83,7 @@ public class SecuritySupport implements BundleActivator
     {
         security.addListener(listener);
     }
-    
+
     /** @param listener Listener to remove */
     public static void removeListener(final SecurityListener listener)
     {
@@ -103,9 +103,9 @@ public class SecuritySupport implements BundleActivator
     {
         return security.isCurrentUser();
     }
-    
+
     /** A Subject can have multiple Principals.
-     * 
+     *
      *  <p>Attempt to determine the 'primary' Principal
      *  @param user Subject that describes user
      *  @return Primary user name
@@ -118,7 +118,7 @@ public class SecuritySupport implements BundleActivator
             // If there's only one, use that
             if (principals.size() == 1)
                 return principal.getName();
-            
+
             // Try to identify the 'primary' one.
             // Not UnixNumericUserPrincipal, ..
             // but the one that has the actual name.
@@ -137,9 +137,9 @@ public class SecuritySupport implements BundleActivator
     {
         return security.getAuthorizations();
     }
-    
+
     /** Check if user may do something
-     * 
+     *
      *  @param authorization Authorization to check
      *  @return <code>true</code> if user has authorization
      */

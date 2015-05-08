@@ -7,9 +7,9 @@ import de.desy.language.snl.parser.nodes.ExitNode;
 
 /**
  * The specialized {@link IAdapterFactory} for {@link ExitNode}s.
- * 
+ *
  * @author C1 WPS / KM, MZ
- * 
+ *
  */
 class ExitNodeAdapterFactory implements IAdapterFactory {
 
@@ -27,12 +27,12 @@ class ExitNodeAdapterFactory implements IAdapterFactory {
 
             if (adapterType == IWorkbenchAdapter.class) {
                 return new AbstractSNLWorkbenchAdapter<ExitNode>(node) {
-                    
+
                     @Override
                     protected String doGetLabel(ExitNode node) {
                         return "Exit statement";
                     }
-                    
+
                     @Override
                     public String getImageName(final ExitNode nodeToRender) {
                         return "exit.gif";

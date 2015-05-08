@@ -14,11 +14,11 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
 public class SelectionProviders {
-    
+
     /**
      * Returns a selection provide that returns the data out of all
      * the treeItem selected.
-     * 
+     *
      * @param tree tree on which the selection provider is based
      * @return a new selection provider
      */

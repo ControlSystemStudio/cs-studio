@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.sds.ui.internal.runmode;
@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 public final class ChangeLayerVisibilityAction extends Action {
-    
+
     private GraphicalViewer _viewer;
 
     /**
@@ -55,7 +55,7 @@ public final class ChangeLayerVisibilityAction extends Action {
         this.setToolTipText("Opens a dialog to change the visibility of the defined layers");
         _viewer = viewer;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -69,9 +69,9 @@ public final class ChangeLayerVisibilityAction extends Action {
             dialog.open();
         }
     }
-    
+
     private final class LayerDialog extends Dialog {
-        
+
         private LayerTreeViewer _layerTreeViewer;
         private LayerSupport _layerSupport;
 
@@ -81,7 +81,7 @@ public final class ChangeLayerVisibilityAction extends Action {
          * <p>
          * Note that the <code>open</code> method blocks for input dialogs.
          * </p>
-         * 
+         *
          * @param parentShell
          *            the parent shell, or <code>null</code> to create a top-level
          *            shell
@@ -94,7 +94,7 @@ public final class ChangeLayerVisibilityAction extends Action {
             this.setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE
                     | SWT.BORDER | SWT.RESIZE);
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -103,7 +103,7 @@ public final class ChangeLayerVisibilityAction extends Action {
             super.configureShell(shell);
             shell.setText("Layers");
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -119,7 +119,7 @@ public final class ChangeLayerVisibilityAction extends Action {
             _layerTreeViewer.setLayerSupport(_layerSupport);
             return composite;
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -128,7 +128,7 @@ public final class ChangeLayerVisibilityAction extends Action {
             _layerTreeViewer.dispose();
             return super.close();
         }
-        
+
     }
 
 }

@@ -15,7 +15,7 @@ import org.jdom.Element;
  * A boolean widget property.
  * @author Alexander Will(class of same name in SDS)
  * @author Xihui Chen
- * 
+ *
  */
 public final class BooleanProperty extends AbstractWidgetProperty {
 
@@ -42,7 +42,7 @@ public final class BooleanProperty extends AbstractWidgetProperty {
             return null;
 
         Boolean acceptedValue;
-        if (value instanceof Boolean) 
+        if (value instanceof Boolean)
             acceptedValue = (Boolean) value;
         else
             acceptedValue = Boolean.parseBoolean(value.toString());
@@ -63,22 +63,22 @@ public final class BooleanProperty extends AbstractWidgetProperty {
     public void writeToXML(Element propElement) {
         propElement.setText(getPropertyValue().toString());
     }
-    
+
     @Override
     public Object readValueFromXML(Element propElement) {
         return Boolean.parseBoolean(propElement.getValue());
     }
-    
+
     @Override
     public boolean configurableByRule() {
         return true;
     }
-    
+
     @Override
     public String toStringInRuleScript(Object propValue) {
         return (Boolean)propValue? "true" : "false";
     }
-    
-    
+
+
 
 }

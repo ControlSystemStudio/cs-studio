@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class GUIDemo
-{  
+{
     @Before
     public void setup() throws Exception
     {
@@ -21,7 +21,7 @@ public class GUIDemo
     public void demoGUI()
     {
         final Display display = Display.getDefault();
-        
+
         // In plugin environment, PVManager defaults to SWT thread.
         // Emulate that in demo
         PVManager.setDefaultNotificationExecutor(new Executor()
@@ -32,10 +32,10 @@ public class GUIDemo
                 display.asyncExec(runnable);
             }
         });
-        
+
         final Shell shell = new Shell(display);
         shell.setSize(600, 400);
-        
+
         final GUI gui = new GUI(shell, null, null);
         gui.setFocus();
         gui.setPVName(TestSetup.CHANNEL_NAME);

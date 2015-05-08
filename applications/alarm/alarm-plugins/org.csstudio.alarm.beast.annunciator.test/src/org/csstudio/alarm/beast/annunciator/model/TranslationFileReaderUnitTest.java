@@ -16,7 +16,7 @@ import org.junit.Test;
 /** JUnit Test of the TranslationFileReader
  *  @author Katia Danilova
  *  @author Kay Kasemir
- *  
+ *
  *       reviewed by Delphy 1/29/09
  */
 @SuppressWarnings("nls")

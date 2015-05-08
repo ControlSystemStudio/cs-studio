@@ -19,15 +19,15 @@ import org.eclipse.swt.widgets.Shell;
 public class OPIColorCellEditor extends AbstractDialogCellEditor {
 
     private OPIColor opiColor;
-    
-    
+
+
     public OPIColorCellEditor(Composite parent, String title) {
         super(parent, title);
     }
 
     @Override
     protected void openDialog(Shell parentShell, String dialogTitle) {
-        OPIColorDialog dialog = 
+        OPIColorDialog dialog =
             new OPIColorDialog(parentShell, opiColor, dialogTitle);
         if(dialog.open() == Window.OK)
             opiColor = dialog.getOutput();

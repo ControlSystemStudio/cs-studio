@@ -16,11 +16,11 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 public class TipDialog extends MessageDialog {
-    
+
     private boolean showAgain = true;
-    
+
     /**
-     * 
+     *
      * @param parentShell
      * @param kind
      *            the kind of dialog to open, one of {@link MessageDialog#ERROR},
@@ -30,13 +30,13 @@ public class TipDialog extends MessageDialog {
      * @param dialogMessage
      */
     public TipDialog(Shell parentShell, int kind, String dialogTitle,
-            String dialogMessage) {    
+            String dialogMessage) {
         super(parentShell, dialogTitle, null, dialogMessage,
                 kind, getButtonLabels(kind), 0); //$NON-NLS-1$
     }
-    
+
     public TipDialog(Shell parentShell, String dialogTitle,
-            String dialogMessage) {    
+            String dialogMessage) {
         this(parentShell, MessageDialog.INFORMATION, dialogTitle, dialogMessage);
     }
 
@@ -52,12 +52,12 @@ public class TipDialog extends MessageDialog {
         });
         return checkbox;
     }
-    
-    
+
+
     public boolean isShowThisDialogAgain(){
         return showAgain;
     }
-    
+
     /**
      * @param kind
      * @return
@@ -94,5 +94,5 @@ public class TipDialog extends MessageDialog {
         }
         return dialogButtonLabels;
     }
-    
+
 }

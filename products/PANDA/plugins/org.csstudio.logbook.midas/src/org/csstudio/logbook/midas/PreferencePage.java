@@ -19,7 +19,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements
                                           org.csstudio.logbook.midas.Activator.ID);
             setPreferenceStore(store);
             setMessage(Messages.PreferenceTitle);
-        
+
     }
 
 

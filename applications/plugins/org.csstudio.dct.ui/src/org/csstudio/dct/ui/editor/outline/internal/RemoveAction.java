@@ -26,9 +26,9 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Popup menu action for the outline view that removes elements from the model.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class RemoveAction extends AbstractOutlineAction {
 
@@ -176,13 +176,13 @@ public final class RemoveAction extends AbstractOutlineAction {
             assert c instanceof IInstance;
             IInstance di = (IInstance) c;
             List<IInstance> dependent = recursivelyGetDependentInstances(di);
-            
+
             for(IInstance i : dependent) {
                 if(result.contains(i)) {
                     throw new IllegalArgumentException("TODO");
                 }
             }
-            
+
             result.addAll(dependent);
             result.add(di);
         }

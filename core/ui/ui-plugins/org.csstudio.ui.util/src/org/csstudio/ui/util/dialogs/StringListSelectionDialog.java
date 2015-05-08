@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.ui.util.dialogs;
 
@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class StringListSelectionDialog extends Dialog {
 
@@ -31,8 +31,8 @@ public class StringListSelectionDialog extends Dialog {
     private final String title;
 
     /**
-     * Create a string list selection dialog. 
-     * 
+     * Create a string list selection dialog.
+     *
      * @param parent
      * @param possibleValues -  a List of Values
      * @param selectedValues - a List of selected Values

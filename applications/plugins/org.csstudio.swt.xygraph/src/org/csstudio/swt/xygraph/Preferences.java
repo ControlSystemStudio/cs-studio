@@ -11,7 +11,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /** Access to preference settings.
- * 
+ *
  *  See preferences.ini for details on the available settings
  *  @author Kay Kasemir
  */
@@ -41,7 +41,7 @@ public class Preferences
         }
         return false;
     }
-    
+
     public static boolean isCombineLabelsAndTraces() {
         final IPreferencesService prefs = Platform.getPreferencesService();
         if (prefs == null)

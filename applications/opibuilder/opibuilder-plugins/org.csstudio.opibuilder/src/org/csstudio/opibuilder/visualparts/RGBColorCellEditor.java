@@ -19,15 +19,15 @@ import org.eclipse.swt.widgets.Shell;
 public class RGBColorCellEditor extends AbstractDialogCellEditor {
 
     private RGB rgb;
-    
-    
+
+
     public RGBColorCellEditor(Composite parent) {
         super(parent, null);
     }
 
     @Override
     protected void openDialog(Shell parentShell, String dialogTitle) {
-        ColorDialog dialog = 
+        ColorDialog dialog =
             new ColorDialog(parentShell);
         dialog.setRGB(rgb);
         RGB result = dialog.open();

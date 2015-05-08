@@ -19,21 +19,21 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  *
  */
 public class ComplexDataPropertyDescriptor extends TextPropertyDescriptor {
-    
-    
+
+
     private String dialogTitle;
-    
+
     /**
      * Creates an property descriptor with the given id and display name.
-     * 
+     *
      * @param id
      *            the id of the property
      * @param displayName
      *            the name to display for the property
-     * @param dialogTitle 
+     * @param dialogTitle
      *               title of the dialog.
      */
-    public ComplexDataPropertyDescriptor(final Object id, 
+    public ComplexDataPropertyDescriptor(final Object id,
             final String displayName, final String dialogTitle) {
         super(id, displayName);
         this.dialogTitle = dialogTitle;
@@ -50,5 +50,5 @@ public class ComplexDataPropertyDescriptor extends TextPropertyDescriptor {
         }
         return editor;
     }
-    
+
 }

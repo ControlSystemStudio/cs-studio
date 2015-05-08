@@ -10,7 +10,7 @@ package org.csstudio.archive.writer;
 import org.epics.vtype.VType;
 
 /** Interface for writing samples to an archive
- * 
+ *
  *  @author Kay Kasemir
  */
 public interface ArchiveWriter
@@ -23,9 +23,9 @@ public interface ArchiveWriter
      *          could not be added to the archive
      */
     public WriteChannel getChannel(String name) throws Exception;
-    
+
     /** Add a sample to the archive.
-     * 
+     *
      *  <p>The underlying implementation might optimize
      *  and not actually write anything until <code>flush()</code>
      *  is called.
@@ -49,7 +49,7 @@ public interface ArchiveWriter
      *          <code>flush()</code> are likely lost
      */
     public void flush() throws Exception;
-    
+
     /** Should be called to release resources,
      *  for example disconnect from a relational database.
      */

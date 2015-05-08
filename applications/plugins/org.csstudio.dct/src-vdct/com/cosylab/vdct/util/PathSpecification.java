@@ -8,22 +8,22 @@ package com.cosylab.vdct.util;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -39,29 +39,29 @@ import java.util.Iterator;
  */
 public class PathSpecification
 {
-    
+
     protected ArrayList currentPath = null;
-    
+
     protected static final String NAME_EPICS_DB_INCLUDE_PATH = "EPICS_DB_INCLUDE_PATH";
-    
+
     protected String currentDir = null;
-    
+
     public PathSpecification (String defaultPath)
     {
         this(defaultPath, null);
     }
-    
+
     /**
      */
     public PathSpecification (String defaultPath, PathSpecification parent)
     {
         currentDir = defaultPath;
-        
+
         if (parent == null)
             currentPath = new ArrayList();
         else
             currentPath = new ArrayList(parent.currentPath);
-        
+
         // check if EPICS_DB_INCLUDE_PATH is available, this overrides current-directory default
         String epicsIncludePath = System.getProperty(NAME_EPICS_DB_INCLUDE_PATH);
         if (epicsIncludePath != null)
@@ -71,7 +71,7 @@ public class PathSpecification
             currentPath.add(currentDir);
 
     }
-    
+
     /**
      */
     public static void splitPath(String dirs, String currentDir, ArrayList list)
@@ -89,21 +89,21 @@ public class PathSpecification
 
             // special case for  "::" part
             if ((pos1+1)==pos2)
-                list.add(currentDir);            
+                list.add(currentDir);
             else
             {
                 String part = dirs.substring(pos1+1, pos2);
                 if (part.equals("."))
-                    list.add(currentDir);            
+                    list.add(currentDir);
                 else if (part.startsWith("..") || part.startsWith("."))
-                    list.add(currentDir + File.separator + part);            
+                    list.add(currentDir + File.separator + part);
                 else
-                    list.add(part);            
-            }    
+                    list.add(part);
+            }
 
             pos1 = pos2;
         } while (pos1<dirs.length());
-        
+
     }
 
     /**
@@ -115,8 +115,8 @@ public class PathSpecification
             currentPath.clear();
             splitPath(dirs, currentDir, currentPath);
         }
-    }        
-    
+    }
+
     /**
      */
     public void addAddPath(String dirs)
@@ -137,10 +137,10 @@ public class PathSpecification
             if (t.exists())
                 return t;
             else
-                return null;        
+                return null;
         }
-        
-        // go and search        
+
+        // go and search
         Iterator pI = currentPath.iterator();
         while (pI.hasNext())
         {
@@ -150,13 +150,13 @@ public class PathSpecification
             t = new File(rootPath, fileName);
             if (t.exists())
                 return t;
-                
+
         }
-        
+
         // not found
-        
+
         // construct full path string to print out
-        
+
         StringBuffer path = new StringBuffer();
         pI = currentPath.iterator();
         while (pI.hasNext())
@@ -164,7 +164,7 @@ public class PathSpecification
             path.append(pI.next());
             if (pI.hasNext()) path.append(File.pathSeparatorChar);
         }
-        
+
         // not found
         throw new FileNotFoundException("File '"+fileName+"' not found (path: \""+path.toString()+"\").");
     }
@@ -181,7 +181,7 @@ public class PathSpecification
             path = path.getAbsoluteFile();
         if (!relativeToPath.isAbsolute())
             relativeToPath = relativeToPath.getAbsoluteFile();
-            
+
         // make both cannonical
         try
         {
@@ -192,57 +192,57 @@ public class PathSpecification
         {
             return path;
         }
-        
+
         // make relativeToPath directory
         if (!relativeToPath.isDirectory())
             relativeToPath = relativeToPath.getParentFile();
-            
+
         String strPath;
         if (path.isDirectory())
             strPath = path.getAbsolutePath()+File.separator;
         else
             strPath = path.getAbsolutePath();
         String strRelativeToPath = relativeToPath.getAbsolutePath()+File.separator;
-        
+
         // get common part of path
         int commonLength = 0;
         int minLength = Math.min(strPath.length(), strRelativeToPath.length());
-        while (commonLength < minLength && 
+        while (commonLength < minLength &&
                strPath.charAt(commonLength) == strRelativeToPath.charAt(commonLength))
             commonLength++;
-            
+
         // if none, return entire path
         if (commonLength == 0)
             return path;
-            
+
         // strip off common part to separator
         // there should be no separator in commonLength
         commonLength = strPath.lastIndexOf(File.separatorChar, commonLength-1);
-            
+
         // if none, return entire path
         if (commonLength == 0)
             return path;
 
         String commonPath = strPath.substring(0, commonLength);
         StringBuffer resultingRelativePath = new StringBuffer();
-        
-        
+
+
         //calculcate "step downs"
         final String stepDown = File.separator+"..";
-        while (relativeToPath.getParent()!=null &&        // needed to handle "<driveLetter>:" to "<driveLetter>:/" comparison  
+        while (relativeToPath.getParent()!=null &&        // needed to handle "<driveLetter>:" to "<driveLetter>:/" comparison
                !relativeToPath.getAbsolutePath().equals(commonPath))
         {
             resultingRelativePath.append(stepDown);
             relativeToPath = relativeToPath.getParentFile();
         }
-        
+
         // move up to path
         resultingRelativePath.append(strPath.substring(commonLength));
-    
+
         return new File(resultingRelativePath.substring(1));
     }
 
-/*    
+/*
     public static void main(String[] argv)
     {
         System.out.println(getRelativeName(new File("/home/matej/test.dbd"), new File("/elsewhere/epics/vbds/test.vdb")));
@@ -252,7 +252,7 @@ public class PathSpecification
         System.out.println(getRelativeName(new File("C:/home/matej/test.dbd"), new File("D:/home/matej/test.vdb")));
         System.out.println(getRelativeName(new File("/home/matej/test.dbd"), new File("/home/matej/test.vdb")));
         System.out.println(getRelativeName(new File("/home/matej/test.dbd"), new File("/")));
-        
+
         // test:
         // new File(getRelativeName(path1, path2), path2).getCannonicalPath().equals(path1)
 
@@ -267,22 +267,22 @@ public class PathSpecification
         System.out.println("===========");
         spec.search4File("dummy");
         System.out.println("===========");
-        spec.setPath("");        
+        spec.setPath("");
         spec.search4File("dummy");
         System.out.println("===========");
-        spec.setPath(":");        
+        spec.setPath(":");
         spec.search4File("dummy");
         System.out.println("===========");
-        spec.setPath("nnn::mmm");        
+        spec.setPath("nnn::mmm");
         spec.search4File("dummy");
         System.out.println("===========");
-        spec.setPath(":nnn");        
+        spec.setPath(":nnn");
         spec.search4File("dummy");
         System.out.println("===========");
-        spec.setPath("mmm:");        
+        spec.setPath("mmm:");
         spec.search4File("dummy");
         System.out.println("===========");
-        spec.setPath(":usr:lib:dbd:dir:sth::well:sth:here");        
+        spec.setPath(":usr:lib:dbd:dir:sth::well:sth:here");
         spec.search4File("dummy");
         System.out.println("===========");
         spec.addAddPath("added:added2");

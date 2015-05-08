@@ -36,7 +36,7 @@ public class EndShiftBuilder extends AbstractAdaptedHandler<ShiftBuilder> {
             ShiftBuilder shift = data.iterator().next();
             final ShiftClient shiftClient = ShiftClientManager.getShiftClientFactory().getClient();
             shift = ShiftBuilder.shift(shiftClient.getShift(shift.build().getId(), shift.build().getType().getName()));
-            if(shift.build().getEndDate() == null) {            
+            if(shift.build().getEndDate() == null) {
                 final CloseShiftBuilderDialog dialog = new CloseShiftBuilderDialog(shell, shift, true);
                     dialog.setBlockOnOpen(true);
                     if (dialog.open() == Window.OK) {
@@ -44,6 +44,6 @@ public class EndShiftBuilder extends AbstractAdaptedHandler<ShiftBuilder> {
             }
         } else {
             // Throw exception
-        }    
+        }
     }
 }

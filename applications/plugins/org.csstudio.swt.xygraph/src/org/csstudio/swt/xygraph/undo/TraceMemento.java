@@ -19,7 +19,7 @@ import org.eclipse.swt.graphics.Color;
  *
  */
 public class TraceMemento {
-    
+
     private String name;
     private Axis xAxis, yAxis;
     private Color traceColor;
@@ -238,6 +238,6 @@ public class TraceMemento {
      */
     public void setDrawYErrorInArea(boolean drawYErrorInArea) {
         this.drawYErrorInArea = drawYErrorInArea;
-    }    
-    
+    }
+
 }

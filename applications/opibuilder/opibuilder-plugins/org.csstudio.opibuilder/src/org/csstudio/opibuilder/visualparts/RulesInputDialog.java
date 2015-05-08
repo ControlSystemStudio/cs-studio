@@ -43,22 +43,22 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
  *
  */
 public class RulesInputDialog extends HelpTrayDialog {
-    
+
     private Action addAction;
     private Action editAction;
     private Action copyAction;
     private Action removeAction;
     private Action moveUpAction;
     private Action moveDownAction;
-    
+
     private ListViewer rulesViewer;
-    
-    
+
+
     private List<RuleData> ruleDataList;
     private String title;
-    private AbstractWidgetModel widgetModel;    
+    private AbstractWidgetModel widgetModel;
 
-    
+
     public RulesInputDialog(Shell parentShell, RulesInput scriptsInput, AbstractWidgetModel widgetModel, String dialogTitle) {
         super(parentShell);
         setShellStyle(getShellStyle() | SWT.RESIZE);
@@ -66,31 +66,31 @@ public class RulesInputDialog extends HelpTrayDialog {
         title = dialogTitle;
         this.widgetModel = widgetModel;
     }
-    
-    
+
+
     @Override
-    protected void okPressed() {    
+    protected void okPressed() {
         for(RuleData ruleData : ruleDataList){
             boolean hasTrigger = false;
             for(PVTuple pvTuple : ruleData.getPVList()){
                 hasTrigger |= pvTuple.trigger;
             }
             if(!hasTrigger){
-                MessageDialog.openWarning(getShell(), "Warning", 
-                        NLS.bind("At least one trigger PV must be selected for the rule:\n{0}", 
+                MessageDialog.openWarning(getShell(), "Warning",
+                        NLS.bind("At least one trigger PV must be selected for the rule:\n{0}",
                                 ruleData.getName().toString()));
                 return;
             }
         }
         super.okPressed();
     }
-    
+
     @Override
     protected String getHelpResourcePath() {
         return "/" + OPIBuilderPlugin.PLUGIN_ID + "/html/Rules.html"; //$NON-NLS-1$; //$NON-NLS-2$
     }
-    
-    
+
+
     /**
      * @return the ruleData List
      */
@@ -108,10 +108,10 @@ public class RulesInputDialog extends HelpTrayDialog {
             shell.setText(title);
         }
     }
-    
+
     /**
      * Creates 'wrapping' label with the given text.
-     * 
+     *
      * @param parent
      *            The parent for the label
      * @param text
@@ -122,22 +122,22 @@ public class RulesInputDialog extends HelpTrayDialog {
         label.setText(text);
         label.setLayoutData(new GridData(SWT.FILL, 0, false, false));
     }
-    
+
     @Override
     protected Control createDialogArea(Composite parent) {
         final Composite parent_Composite = (Composite) super.createDialogArea(parent);
-        
+
         // Parent composite has GridLayout with 1 columns.
         // Create embedded composite w/ 2 columns
-        final Composite mainComposite = new Composite(parent_Composite, SWT.None);            
+        final Composite mainComposite = new Composite(parent_Composite, SWT.None);
         mainComposite.setLayout(new GridLayout(1, false));
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         gridData.heightHint = 200;
         mainComposite.setLayoutData(gridData);
-        
-        
+
+
         createLabel(mainComposite, "Rules");
-        
+
         Composite toolBarComposite = new Composite(mainComposite, SWT.BORDER);
         GridLayout gridLayout = new GridLayout(1, false);
         gridLayout.marginLeft = 0;
@@ -149,7 +149,7 @@ public class RulesInputDialog extends HelpTrayDialog {
         toolBarComposite.setLayout(gridLayout);
         gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         toolBarComposite.setLayoutData(gridData);
-        
+
         ToolBarManager toolbarManager = new ToolBarManager(SWT.FLAT);
         ToolBar toolBar = toolbarManager.createControl(toolBarComposite);
         GridData grid = new GridData();
@@ -163,23 +163,23 @@ public class RulesInputDialog extends HelpTrayDialog {
         toolbarManager.add(removeAction);
         toolbarManager.add(moveUpAction);
         toolbarManager.add(moveDownAction);
-        
+
         toolbarManager.update(true);
-        
+
         rulesViewer = createRulsListViewer(toolBarComposite);
         rulesViewer.setInput(ruleDataList);
         rulesViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            
+
             public void selectionChanged(SelectionChangedEvent event) {
-                refreshToolbarOnSelection();                
+                refreshToolbarOnSelection();
             }
-        });                
-        
+        });
+
         return parent_Composite;
     }
-    
-    
-    
+
+
+
     private void setRulesViewerSelection(RuleData ruleData){
         rulesViewer.refresh();
         if(ruleData == null){
@@ -190,20 +190,20 @@ public class RulesInputDialog extends HelpTrayDialog {
         }
         refreshToolbarOnSelection();
     }
-    
+
     private void refreshToolbarOnSelection(){
         boolean enabled = !rulesViewer.getSelection().isEmpty();
         removeAction.setEnabled(enabled);
-        editAction.setEnabled(enabled);    
+        editAction.setEnabled(enabled);
         copyAction.setEnabled(enabled);
         moveUpAction.setEnabled(enabled);
         moveDownAction.setEnabled(enabled);
     }
-    
-    
+
+
     /**
      * Creates and configures a {@link TableViewer}.
-     * 
+     *
      * @param parent
      *            The parent for the table
      * @return The {@link TableViewer}
@@ -220,7 +220,7 @@ public class RulesInputDialog extends HelpTrayDialog {
         });
         viewer.setLabelProvider(new WorkbenchLabelProvider());
         viewer.addDoubleClickListener(new IDoubleClickListener() {
-            
+
             public void doubleClick(DoubleClickEvent event) {
                 invokeRuleDataDialog();
             }
@@ -229,19 +229,19 @@ public class RulesInputDialog extends HelpTrayDialog {
                 new GridData(SWT.FILL, SWT.FILL, true, true));
         return viewer;
     }
-    
-    
-    
-    
+
+
+
+
     /**
      * Creates the actions.
      */
-    private void createActions() {    
+    private void createActions() {
         addAction = new Action("Add") {
             @Override
             public void run() {
                 RuleDataEditDialog dialog = new RuleDataEditDialog(getShell(), new RuleData(widgetModel));
-            
+
                 if(dialog.open() == OK){
                     ruleDataList.add(dialog.getOutput());
                     rulesViewer.refresh();
@@ -252,7 +252,7 @@ public class RulesInputDialog extends HelpTrayDialog {
         addAction.setImageDescriptor(CustomMediaFactory.getInstance()
                 .getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
                         "icons/add.gif")); //$NON-NLS-1$
-        
+
         editAction = new Action("Edit") {
             @Override
             public void run() {
@@ -264,7 +264,7 @@ public class RulesInputDialog extends HelpTrayDialog {
                 .getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
                         "icons/edit.gif")); //$NON-NLS-1$
         editAction.setEnabled(false);
-        
+
         copyAction = new Action("Copy") {
             @Override
             public void run() {
@@ -274,8 +274,8 @@ public class RulesInputDialog extends HelpTrayDialog {
                         && selection.getFirstElement() instanceof RuleData) {
                     RuleData ruleData = ((RuleData) selection
                             .getFirstElement()).getCopy();
-                    ruleDataList.add(ruleData);                    
-                    setRulesViewerSelection(ruleData);                
+                    ruleDataList.add(ruleData);
+                    setRulesViewerSelection(ruleData);
                 }
             }
         };
@@ -284,7 +284,7 @@ public class RulesInputDialog extends HelpTrayDialog {
                 .getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
                         "icons/copy.gif")); //$NON-NLS-1$
         copyAction.setEnabled(false);
-        
+
         removeAction = new Action() {
             @Override
             public void run() {
@@ -319,7 +319,7 @@ public class RulesInputDialog extends HelpTrayDialog {
                         ruleDataList.remove(ruleData);
                         ruleDataList.add(i-1, ruleData);
                         setRulesViewerSelection(ruleData);
-                    }    
+                    }
                 }
             }
         };
@@ -344,7 +344,7 @@ public class RulesInputDialog extends HelpTrayDialog {
                         ruleDataList.remove(ruleData);
                         ruleDataList.add(i+1, ruleData);
                         setRulesViewerSelection(ruleData);
-                    }            
+                    }
                 }
             }
         };
@@ -358,14 +358,14 @@ public class RulesInputDialog extends HelpTrayDialog {
 
 
     /**
-     * 
+     *
      */
     private void invokeRuleDataDialog() {
-        RuleData selection = 
+        RuleData selection =
             (RuleData)((IStructuredSelection)rulesViewer.getSelection()).getFirstElement();
         if(selection == null)
             return;
-        RuleDataEditDialog dialog = 
+        RuleDataEditDialog dialog =
             new RuleDataEditDialog(rulesViewer.getControl().getShell(), selection);
         if(dialog.open() == OK){
             RuleData result = dialog.getOutput();
@@ -373,6 +373,6 @@ public class RulesInputDialog extends HelpTrayDialog {
             ruleDataList.remove(index);
             ruleDataList.add(index, result);
             rulesViewer.refresh();
-        }        
+        }
     }
 }

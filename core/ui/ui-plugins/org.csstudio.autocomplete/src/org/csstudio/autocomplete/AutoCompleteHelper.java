@@ -17,7 +17,7 @@ import java.util.regex.PatternSyntaxException;
 
 /**
  * Helper to handle wildcards.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class AutoCompleteHelper {
@@ -54,7 +54,7 @@ public class AutoCompleteHelper {
         cleaned = cleaned.replaceAll("[\\*\\?]+$", "");
         return cleaned;
     }
-    
+
     public static Set<String> retrieveVTypePVSupported() {
         Set<String> items = new HashSet<String>();
         try {

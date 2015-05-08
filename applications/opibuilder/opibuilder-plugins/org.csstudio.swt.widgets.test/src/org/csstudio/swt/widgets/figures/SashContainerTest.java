@@ -32,14 +32,14 @@ public class SashContainerTest extends AbstractWidgetTest {
         sashContainer.setSashStyle(SashStyle.RIDGED);
         sashContainer
                 .addLayoutListener(new LayoutListener.Stub(){
-        
+
                     @Override
                     public void postLayout(IFigure container) {
                         System.out.println(sashContainer.getSashPosition()
                                 + " " + sashContainer.getSubPanelsBounds()[0]
                                 + sashContainer.getSubPanelsBounds()[1]);
                     }
-                        
+
                 });
         return sashContainer;
     }

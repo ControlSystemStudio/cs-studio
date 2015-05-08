@@ -19,8 +19,8 @@ public class RoundedRectangleFigureTest extends OPIRectangleFigureTest{
     public Figure createTestWidget() {
         return new RoundedRectangleFigure();
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -28,12 +28,12 @@ public class RoundedRectangleFigureTest extends OPIRectangleFigureTest{
                 "cornerWidth",
                 "cornerHeight"
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
     @Override
     public boolean isAutoTest() {
         return true;
-    }        
+    }
 }

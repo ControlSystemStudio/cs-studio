@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.sds.util;
 
@@ -12,9 +12,9 @@ import org.junit.Test;
 
 /**
  * Test class for {@link TooltipResolver}.
- * 
+ *
  * @author swende
- * 
+ *
  */
 public class TooltipResolverTest {
 

@@ -6,7 +6,7 @@ import org.csstudio.dct.util.CompareUtil;
 
 /**
  * Represents a parameter with a default value.
- * 
+ *
  * @author Sven Wende
  */
 public final class Parameter implements Serializable {
@@ -16,7 +16,7 @@ public final class Parameter implements Serializable {
 
     /**
      * Constructor.
-     * 
+     *
      * @param name
      *            the name
      * @param defaultValue
@@ -29,7 +29,7 @@ public final class Parameter implements Serializable {
 
     /**
      * Returns the name.
-     * 
+     *
      * @return the name
      */
     public String getName() {
@@ -38,7 +38,7 @@ public final class Parameter implements Serializable {
 
     /**
      * Sets the name.
-     * 
+     *
      * @param name
      *            the name
      */
@@ -48,7 +48,7 @@ public final class Parameter implements Serializable {
 
     /**
      * Returns the default value.
-     * 
+     *
      * @return the default value
      */
     public String getDefaultValue() {
@@ -57,7 +57,7 @@ public final class Parameter implements Serializable {
 
     /**
      * Sets the default value.
-     * 
+     *
      * @param defaultValue
      *            the default value
      */

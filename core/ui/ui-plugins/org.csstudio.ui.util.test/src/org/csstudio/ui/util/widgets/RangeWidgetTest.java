@@ -40,13 +40,13 @@ public class RangeWidgetTest extends ApplicationWindow {
     protected Control createContents(Composite parent) {
         Composite container = new Composite(parent, SWT.NONE);
         container.setLayout(new FormLayout());
-        
+
         final RangeWidget composite = new RangeWidget(container, SWT.NONE);
         FormData fd_composite = new FormData();
         fd_composite.left = new FormAttachment(0);
         fd_composite.top = new FormAttachment(0);
         composite.setLayoutData(fd_composite);
-        
+
         final Spinner spinner = new Spinner(container, SWT.BORDER);
         FormData fd_spinner = new FormData();
         fd_spinner.right = new FormAttachment(0, 148);
@@ -55,7 +55,7 @@ public class RangeWidgetTest extends ApplicationWindow {
         spinner.setLayoutData(fd_spinner);
         spinner.setMaximum(1000000);
         spinner.setDigits(1);
-        
+
         Button button = new Button(container, SWT.NONE);
         fd_composite.bottom = new FormAttachment(button, 0, SWT.BOTTOM);
         FormData fd_button = new FormData();
@@ -63,7 +63,7 @@ public class RangeWidgetTest extends ApplicationWindow {
         fd_button.right = new FormAttachment(100);
         button.setLayoutData(fd_button);
         button.setText("New Button");
-        
+
         final Button btnInvertDirection = new Button(container, SWT.CHECK);
         FormData fd_btnInvertDirection = new FormData();
         fd_btnInvertDirection.top = new FormAttachment(spinner, 3);
@@ -71,7 +71,7 @@ public class RangeWidgetTest extends ApplicationWindow {
         btnInvertDirection.setLayoutData(fd_btnInvertDirection);
         btnInvertDirection.setText("Invert direction");
         btnInvertDirection.addSelectionListener(new SelectionListener() {
-            
+
             @Override
             public void widgetSelected(SelectionEvent e) {
                 if (btnInvertDirection.getSelection()) {
@@ -80,11 +80,11 @@ public class RangeWidgetTest extends ApplicationWindow {
                     composite.setStartPosition(SWT.UP);
                 }
             }
-            
+
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 // TODO Auto-generated method stub
-                
+
             }
         });
         spinner.addSelectionListener(new SelectionAdapter() {
@@ -93,9 +93,9 @@ public class RangeWidgetTest extends ApplicationWindow {
                 composite.setDistancePerPx(spinner.getSelection() / 10.0);
             }
         });
-        
+
         composite.addRangeListener(new RangeListener() {
-            
+
             @Override
             public void rangeChanged() {
                 if (spinner.getSelection() != (int) (composite.getDistancePerPx() * 10)) {

@@ -24,17 +24,17 @@ import com.cosylab.vdct.VisualDCT;
 import com.cosylab.vdct.graphics.ViewState;
 
 /**
- * <code>ZoomPane</code> enables blowing up zoomed objects. It provides 
+ * <code>ZoomPane</code> enables blowing up zoomed objects. It provides
  * the image containing zoomed objects in scale 1.0;
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  * @version $Id$
- * 
+ *
  * @since VERSION
  */
 public final class ZoomPane implements ImageObserver {
 
-    
+
     static final int VERTICAL_MARGIN = 10;
     static final int HORIZONTAL_MARGIN =10;
     static final Color borderColor = Color.RED;
@@ -46,47 +46,47 @@ public final class ZoomPane implements ImageObserver {
     private int width = 0;
     private int height = 0;
     private int topOffset;
-    
+
     public static ZoomPane panel = new ZoomPane();
-    
-    
+
+
     public static ZoomPane getInstance() {
         return panel;
     }
-    
+
     private ZoomPane() {}
-    
+
     /**
-     * 
+     *
      * Returns the left offset - distance from the left border to the most left object.
      * @return
      */
     public int getLeftOffset() {
         return leftOffset + HORIZONTAL_MARGIN;
     }
-    
+
     /**
-     * 
+     *
      * Returns the right offset - distance from the right border to the most right object.
      * @return
      */
     public int getRightOffset() {
         return rightOffset + HORIZONTAL_MARGIN;
     }
-    
+
     /**
-     * 
+     *
      * Returns the top offset - distance from the top border to the object that is the closest to the top.
      * @return
      */
     public int getTopOffset() {
         return topOffset + VERTICAL_MARGIN;
     }
-    
+
     /**
-     * 
+     *
      * Starts drawing objects and returns drawn image.
-     * 
+     *
      * @param obj
      * @param clearImage
      * @return
@@ -99,7 +99,7 @@ public final class ZoomPane implements ImageObserver {
         }
         return initialize(clearImage);
     }
-    
+
     private Image initialize(boolean clearImage) {
         if (zoomImage != null) {
             zoomImage.flush();
@@ -109,7 +109,7 @@ public final class ZoomPane implements ImageObserver {
         ViewState.getInstance().setScale(1.0);
         object.setZoomRepaint(true);
         object.forceValidation();
-        
+
         width = object.getWidth();
         height = object.getHeight();
         leftOffset = object.getLeftOffset();
@@ -131,7 +131,7 @@ public final class ZoomPane implements ImageObserver {
                 if (tempWidth/2 + tempRO > width/2) {
                     rightOffset = Math.max(rightOffset, tempWidth/2 + tempRO - width/2);
                 }
-                
+
                 height += obj.getHeight();
             }
         } else if (object instanceof Template) {
@@ -141,38 +141,38 @@ public final class ZoomPane implements ImageObserver {
                 leftOffset = Math.max(leftOffset, obj.getLeftOffset());
                 rightOffset = Math.max(rightOffset, obj.getRightOffset());
             }
-        }             
-        
-        
+        }
+
+
         width += leftOffset + rightOffset + 2*HORIZONTAL_MARGIN + 2;
         height += topOffset + 2*VERTICAL_MARGIN;
-        
+
         if (clearImage || zoomImage == null || imgGr == null) {
             zoomImage = VisualDCT.getInstance().getContentPane().createImage(width,height);
             imgGr = zoomImage.getGraphics();
             imgGr.setColor(Constants.BACKGROUND_COLOR);
             imgGr.fillRect(0,0,width-1, height-1);
             imgGr.setColor(borderColor);
-            imgGr.drawRect(0,0,width-1, height-1);  
+            imgGr.drawRect(0,0,width-1, height-1);
         }
-               
+
         object.draw(imgGr, false);
         object.setZoomRepaint(false);
         ViewState.getInstance().setScale(scale);
-        object.forceValidation();       
+        object.forceValidation();
         return zoomImage;
-        
+
     }
-    
+
     /**
-     * 
+     *
      * Returns the width of the image.
      * @return
      */
     public int getWidth() {
         return width;
     }
-    
+
     /**
      * Returns the height of the image.
      * @return
@@ -187,6 +187,6 @@ public final class ZoomPane implements ImageObserver {
     public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
         return false;
     }
-    
+
 
 }

@@ -26,7 +26,7 @@ public class MonitorMultiSymbolEditPart extends CommonMultiSymbolEditPart {
         super.initializeCommonFigureProperties(figure);
         return figure;
     }
-    
+
     protected void registerPropertyChangeHandlers() {
         super.registerCommonPropertyChangeHandlers();
     }

@@ -44,7 +44,7 @@ public class ArchivesRequest
         {
             final Hashtable<String,Object> info =
                 (Hashtable<String,Object>) result.get(i);
-            archive_infos[i] = 
+            archive_infos[i] =
                 new ArchiveInfo((String) info.get("name"),
                                 (String) info.get("path"),
                                 (Integer) info.get("key"));

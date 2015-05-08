@@ -18,7 +18,7 @@ import java.util.concurrent.TimeoutException;
 public class ImmediateFuture<T> implements Future<T>
 {
     final private T result;
-    
+
     public ImmediateFuture(final T result)
     {
         this.result = result;
@@ -29,7 +29,7 @@ public class ImmediateFuture<T> implements Future<T>
     {
         return true;
     }
-    
+
     @Override
     public boolean cancel(final boolean mayInterruptIfRunning)
     {
@@ -41,7 +41,7 @@ public class ImmediateFuture<T> implements Future<T>
     {
         return false;
     }
-    
+
     @Override
     public T get() throws InterruptedException, ExecutionException
     {

@@ -12,7 +12,7 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLPoints;
 
 /**
- * 
+ *
  * @author hammonds
  *
  */
@@ -35,7 +35,7 @@ public class PolyLine extends ADLAbstractWidget {
                     if (_adlObject != null){
                         _hasObject = true;
                     }
-                    
+
                 }
                 else if (childWidget.getType().equals("dynamic attribute")){
                     _adlDynamicAttribute = new ADLDynamicAttribute(childWidget);
@@ -52,7 +52,7 @@ public class PolyLine extends ADLAbstractWidget {
             }
         }
         catch (WrongADLFormatException ex) {
-            
+
         }
     }
 

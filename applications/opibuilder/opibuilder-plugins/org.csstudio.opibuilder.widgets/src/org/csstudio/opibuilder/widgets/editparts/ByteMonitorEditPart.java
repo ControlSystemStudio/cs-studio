@@ -111,13 +111,13 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 boolean succeed = true;
-                if((newValue != null) && (newValue instanceof VType) ){                    
+                if((newValue != null) && (newValue instanceof VType) ){
                     Number number = VTypeHelper.getNumber(((VType) newValue));
                     if (number != null) {
                         setValue(number);
                     } else
                         succeed = false;
-                    
+
                 }
                 else {
                     succeed = false;

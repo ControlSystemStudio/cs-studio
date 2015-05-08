@@ -9,9 +9,9 @@ import org.eclipse.gef.commands.CompoundCommand;
 /**
  * Undoable command the removes an {@link IInstance} from a {@link IFolder} or a
  * {@link IContainer}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class RemoveInstanceCommand extends Command {
     private IContainer container;
@@ -39,7 +39,7 @@ public final class RemoveInstanceCommand extends Command {
         this.folder = instance.getParentFolder();
         this.container = (IContainer) instance.getContainer();
 
-        
+
         if (folder != null) {
             index = folder.getMembers().indexOf(instance);
             folder.removeMember(instance);
@@ -52,7 +52,7 @@ public final class RemoveInstanceCommand extends Command {
 
         // ... unlink from super
         parent = instance.getParent();
-        
+
         if(parent!=null) {
             parent.removeDependentContainer(instance);
         }
@@ -70,7 +70,7 @@ public final class RemoveInstanceCommand extends Command {
             container.addInstance(Math.min(index, container.getInstances().size()), instance);
             instance.setContainer(container);
         }
-        
+
         // ... link to super
         if(parent!=null) {
             parent.addDependentContainer(instance);

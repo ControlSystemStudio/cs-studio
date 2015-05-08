@@ -111,7 +111,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
                  statement.setInt(4, count);
                  result = statement.executeQuery();
             }
-            else if(dialect == RDBUtil.Dialect.PostgreSQL) 
+            else if(dialect == RDBUtil.Dialect.PostgreSQL)
             {    //PostgreSQL
                 boolean autoCommit = reader.getRDB().getConnection().getAutoCommit();
                 // Disable auto-commit to determine sample with PostgreSQL when fetch direction is FETCH_FORWARD
@@ -274,7 +274,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         index = -1;
         values = null;
         if (reader.getRDB().getDialect() == Dialect.PostgreSQL) {
-            // Restore default auto-commit on result set close 
+            // Restore default auto-commit on result set close
              try {
                  reader.getRDB().getConnection().setAutoCommit(true);
              } catch (Exception e) {

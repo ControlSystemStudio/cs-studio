@@ -18,7 +18,7 @@ public class EdmLineStyleTest extends TestCase {
         assertEquals(EdmLineStyle.SOLID, i1.get());
         assertEquals(true, i1.isRequired());
         assertEquals(true, i1.isInitialized());
-        
+
         // required null
         try {
             EdmLineStyle i2 = new EdmLineStyle(null, true);
@@ -28,23 +28,23 @@ public class EdmLineStyleTest extends TestCase {
         catch (EdmException e) {
             assertEquals(EdmException.REQUIRED_ATTRIBUTE_MISSING, e.getType());
         }
-        
+
         // optional
         EdmLineStyle i3 = new EdmLineStyle(new EdmAttribute("dash"), false);
         assertEquals(EdmLineStyle.DASH, i3.get());
         assertEquals(false, i3.isRequired());
         assertEquals(true, i3.isInitialized());
-        
+
         // optional null
         EdmLineStyle i4;
         i4 = new EdmLineStyle(null, false);
         assertEquals(false, i4.isRequired());
         assertEquals(false, i4.isInitialized());
     }
-    
+
     public void testWrongInput() throws EdmException {
         EdmAttribute a = new EdmAttribute("dotted");
-        
+
         try {
             a = new EdmLineStyle(a, true);
         }

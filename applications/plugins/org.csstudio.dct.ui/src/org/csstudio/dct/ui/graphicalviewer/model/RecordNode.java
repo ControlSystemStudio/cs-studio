@@ -7,15 +7,15 @@ import org.csstudio.dct.util.ResolutionUtil;
 
 /**
  * Node that represents {@link IRecord}s in the graphical model.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class RecordNode extends AbstractNode<IRecord> {
 
     /**
      * Standard constructor.
-     * 
+     *
      * @param record
      *            the dct record that is represented graphically
      */

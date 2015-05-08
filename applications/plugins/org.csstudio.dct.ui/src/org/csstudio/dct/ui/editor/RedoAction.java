@@ -5,7 +5,7 @@ import org.eclipse.gef.commands.CommandStack;
 /**
  * Redo Action that handles the {@link CommandStack} of a
  * {@link DctEditor}.
- * 
+ *
  * @author Sven Wende
  */
 public final class RedoAction extends AbstractCommandStackAction {

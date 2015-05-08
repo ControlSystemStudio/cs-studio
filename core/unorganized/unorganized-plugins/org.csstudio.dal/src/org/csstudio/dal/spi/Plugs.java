@@ -43,28 +43,28 @@ import org.apache.log4j.varia.NullAppender;
  */
 public final class Plugs
 {
-    
+
     /*
-     * 
+     *
      * STATIC DECLARATIONS, COMMON TO ALL PLUGS OBJECTS
-     * 
+     *
      */
-    
-    /** 
-     * Keyword used in System properties to configure DAL logging. 
+
+    /**
+     * Keyword used in System properties to configure DAL logging.
      * Valie values are:
      * <ul>
      * <li>true - DAL will call basic log4j configuration, which enables logging to console.</li>
      * <li>false - DAL will not configure logging to console.</li>
      * </ul>
-     * 
+     *
      * By default true is assumed and logging will be configured.
-     * 
+     *
      * <p>
      * Regardless of this setting an application can configure own appenders for DAL logging.
      * See {@link Plugs#getLogger()} for details.
-     * </p>  
-     *  
+     * </p>
+     *
      * @see #getLogger()
      */
     public static final String PLUGS_LOGGING = "dal.logging";
@@ -89,7 +89,7 @@ public final class Plugs
      * what is expected timeout for remote operations in milliseconds.
      */
     public static final String CONNECTION_TIMEOUT = "dal.connectionTimeout";
-    
+
     /**
      * Optional system configuration property, which defines the timeout for
      * establishing or initializing the connections in milliseconds.
@@ -101,10 +101,10 @@ public final class Plugs
      * to use properties from cache when connection is requested. By default new property is created.
      */
     public static final String PROPERTIES_FROM_CACHE = "dal.propertiesFromCache";
-    
+
     /**
-     * An optional application configuration property name under which is in AbstractAppplicationContext stored an instance of 
-     * PropertyFactoryService. This service implementation must be able to produce PropertyFactory 
+     * An optional application configuration property name under which is in AbstractAppplicationContext stored an instance of
+     * PropertyFactoryService. This service implementation must be able to produce PropertyFactory
      * implementations for all supported and available plug types within application runtime context.
      */
     public static final String PROPERTY_FACTORY_SERVICE_IMPLEMENTATION = "dal.propertyfactoryServiceImplementation";
@@ -113,7 +113,7 @@ public final class Plugs
      * DAL default connection timeout value in milliseconds. Used if CONNECTION_TIMEOUT is not defined.
      */
     public static final long DEFAULT_CONNECTION_TIMEOUT = 30000;
-    
+
     /**
      * DAL default initial connection timeout value in milliseconds. Used if INITIAL_CONNECTION_TIMEOUT is not defined.
      */
@@ -122,7 +122,7 @@ public final class Plugs
     public static final String SIMULATOR_PLUG_TYPE = "Simulator";
 
     private static Plugs plugs;
-    
+
 
     /**
      * Returns an instance of <code>Plugs</code> with System <code>Properties</code> as storage.
@@ -134,16 +134,16 @@ public final class Plugs
         }
         return plugs;
     }
-    
+
     /**
-     * Returns an instance of <code>Plugs</code> with the specified list 
+     * Returns an instance of <code>Plugs</code> with the specified list
      * of <code>Properties</code>.
      * @return an instance of <code>Plugs</code>
      */
     public static Plugs getInstance(Properties properties) {
         return new Plugs(properties);
     }
-    
+
     /**
      * Copies the <code>Properties</code> to this <code>Plugs</code>.
      * @param properties the <code>Properties</code> to copy from
@@ -151,7 +151,7 @@ public final class Plugs
     public void putAll(Properties properties) {
         this.properties.putAll(properties);
     }
-    
+
     /**
      * Returns array with plug names defined in provided properties.
      *
@@ -434,11 +434,11 @@ public final class Plugs
     {
         return getConnectionTimeout(p, DEFAULT_CONNECTION_TIMEOUT);
     }
-    
+
     public long getConnectionTimeout() {
         return getConnectionTimeout(properties);
     }
-    
+
     /**
      * Convenience method which tries to get initial connection timeout first from provided properties,
      * then from system properties and if both fails returns provided default value.
@@ -475,70 +475,70 @@ public final class Plugs
     {
         return getInitialConnectionTimeout(p, DEFAULT_INITIAL_CONNECTION_TIMEOUT);
     }
-    
+
     /**
      * Return logger, which is parent for all DAL plug loggers.
-     * 
+     *
      * <p>
      * DAL Plug loggers collect and distribute messages, which are intended for general plublic.
-     * E.g. application which is not interested in internal structure, but wants to display progress when some channel 
+     * E.g. application which is not interested in internal structure, but wants to display progress when some channel
      * was connected or some user initiated action failed.
      * </p>
-     * 
+     *
      * <p>
      * Parent DAL logger name is 'DAL'. Names of plug loggers are 'DAL.PLUG_NAME', for example 'DAL.EPICS'.
      * </p>
-     * 
+     *
      * <p>
      * Default configuration of appenders is controlled with System parameter {@link Plugs#PLUGS_LOGGING}.
      * </p>
-     *    
+     *
      * @return parent logger for all DAL plug loggers.
-     * 
+     *
      * @see #PLUGS_LOGGING
      * @see #getPlugLogger(String)
      */
     public static final Logger getLogger() {
         if (logger == null) {
             logger = Logger.getLogger("DAL");
-            
+
             boolean log= Boolean.parseBoolean(System.getProperty(PLUGS_LOGGING, Boolean.TRUE.toString()));
-            
+
             if (log) {
                 BasicConfigurator.configure();
             } else {
-                // supresses log4j warning about nonconfigured logging  
+                // supresses log4j warning about nonconfigured logging
                 logger.addAppender(new NullAppender());
-            }            
+            }
         }
         return logger;
     }
-    
+
     /**
      * Returns logger for particular DAL plug, this logger shuld be used for general messages about plug activity.
-     *  
+     *
      * @param plugName the name ov the plug for which logger is to be obtained.
-     * 
+     *
      * @return logger for DAL plug
-     * 
+     *
      */
     public static final Logger getPlugLogger(String plugName) {
         return getLogger().getLogger("DAL."+plugName);
     }
 
-    
-    
-    
-    
+
+
+
+
     /*
-     * 
-     * INSTANCE SPECIFIC ONLY DECLARATIONS 
-     * 
+     *
+     * INSTANCE SPECIFIC ONLY DECLARATIONS
+     *
      */
-    
+
     private Properties properties;
     private static Logger logger;
-    
+
     /**
      * Gets the <code>Properties</code> of this <code>Plug</code>.
      * @return the <code>Properties</code>
@@ -546,7 +546,7 @@ public final class Plugs
     public Properties getProperties() {
         return properties;
     }
-    
+
     /**
          *
          */
@@ -591,39 +591,39 @@ public final class Plugs
     {
         return getDeviceFactoryClassForPlug(name, properties);
     }
-    
+
     public long getInitialConnectionTimeout() {
         return getInitialConnectionTimeout(properties);
     }
-    
+
     public Class getDefaultDeviceFacotry() throws ClassNotFoundException {
         return getDefaultDeviceFactory(properties);
     }
-    
+
     public Class getDefaultPropertyFactory() throws ClassNotFoundException {
         return getDefaultPropertyFactory(properties);
     }
-    
+
     public void setConnectionTimeout(long timeout) {
         properties.setProperty(CONNECTION_TIMEOUT, (new Long(timeout)).toString());
     }
-    
+
     public void registerDefaultDeviceFactory(Class<? extends DeviceFactory> cl) {
         properties.setProperty(DeviceFactoryService.DEFAULT_FACTORY_IMPL, cl.getCanonicalName());
     }
-    
+
     public void registerDefaultPropertyFactory(Class<? extends PropertyFactory> cl) {
         properties.setProperty(PropertyFactoryService.DEFAULT_FACTORY_IMPL, cl.getCanonicalName());
     }
-    
+
     public void registerDeviceFactoryClassForPlug(String name, Class<? extends DeviceFactory> cl) {
         properties.setProperty(PLUG_DEVICE_FACTORY_CLASS+name, cl.getCanonicalName());
     }
-    
+
     public void registerPropertyFactoryClassForPlug(String name, Class<? extends PropertyFactory> cl) {
         properties.setProperty(PLUG_PROPERTY_FACTORY_CLASS+name, cl.getCanonicalName());
     }
-    
+
     public void setPlugNames(String[] names) {
         StringBuilder sb = new StringBuilder();
         if (names != null && names.length > 0) {
@@ -643,30 +643,30 @@ public final class Plugs
     {
         String[] s = getPlugNames(p);
         Set<String> set = new HashSet<String>(Arrays.asList(s));
-    
+
         if (!set.contains(SIMULATOR_PLUG_TYPE)) {
             set.add(SIMULATOR_PLUG_TYPE);
-    
+
             StringBuffer sb = new StringBuffer();
-    
+
             for (Iterator iter = set.iterator(); iter.hasNext();) {
                 if (sb.length() > 0) {
                     sb.append(',');
                 }
-    
+
                 sb.append(iter.next());
             }
-    
+
             p.put(PLUGS, sb.toString());
         }
-    
+
         p.put(PLUGS_DEFAULT, SIMULATOR_PLUG_TYPE);
         p.put(PLUG_PROPERTY_FACTORY_CLASS + SIMULATOR_PLUG_TYPE,
             "org.csstudio.dal.simulation.PropertyFactoryImpl");
         p.put(PLUG_DEVICE_FACTORY_CLASS + SIMULATOR_PLUG_TYPE,
             "org.csstudio.dal.simulation.DeviceFactoryImpl");
     }
-    
+
 }
 
 /* __oOo__ */

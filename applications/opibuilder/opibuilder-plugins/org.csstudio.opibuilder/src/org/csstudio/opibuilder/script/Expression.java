@@ -12,10 +12,10 @@ package org.csstudio.opibuilder.script;
  *
  */
 public class Expression {
-    
+
     private String booleanExpression;
     private Object value;
-    
+
     public Expression(String booleanExpression, Object value) {
         this.booleanExpression = booleanExpression;
         this.value = value;
@@ -48,10 +48,10 @@ public class Expression {
     public final void setValue(Object value) {
         this.value = value;
     }
-    
+
     public Expression getCopy(){
         return new Expression(booleanExpression, value);
     }
-    
-    
+
+
 }

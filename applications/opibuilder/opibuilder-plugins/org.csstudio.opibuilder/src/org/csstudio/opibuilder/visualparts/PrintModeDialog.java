@@ -41,10 +41,10 @@ protected void configureShell(Shell newShell) {
 
 protected Control createDialogArea(Composite parent) {
     Composite composite = (Composite)super.createDialogArea(parent);
-    
+
     tile = new Button(composite, SWT.RADIO);
     tile.setText("Tile");
-    
+
     fitPage = new Button(composite, SWT.RADIO);
     fitPage.setText("Fit Page");
     fitPage.setSelection(true);

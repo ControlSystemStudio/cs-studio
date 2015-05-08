@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene;
 
@@ -11,11 +11,11 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class AbstractPointDatasetGraph2DConfigurationPanel extends
         AbstractGraph2DConfigurationPanel {
-    
+
     private Text textXColumnFormula;
     private Text textYColumnFormula;
 
@@ -38,7 +38,7 @@ public class AbstractPointDatasetGraph2DConfigurationPanel extends
         textYColumnFormula.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
                 true, false, 1, 1));
         forwardTextEvents(textYColumnFormula, "yColumnFormula");
-        
+
     }
 
     public String getXColumnFormula() {

@@ -28,7 +28,7 @@ import org.csstudio.remote.management.IManagementCommand;
 
 /**
  * Management command to get statistics from the CSS application.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class GetStatisticsManagementCommand implements IManagementCommand {

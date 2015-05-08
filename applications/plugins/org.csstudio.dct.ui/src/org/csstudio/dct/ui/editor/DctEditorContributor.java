@@ -60,12 +60,12 @@ public final class DctEditorContributor extends MultiPageEditorActionBarContribu
 
     /**
      * Returns the action registered with the given text editor.
-     * 
+     *
      * @param editor
      *            the text edit editor
      * @param actionID
      *            the action id
-     * 
+     *
      * @return IAction or null if editor is null.
      */
     protected IAction getAction(ITextEditor editor, String actionID) {

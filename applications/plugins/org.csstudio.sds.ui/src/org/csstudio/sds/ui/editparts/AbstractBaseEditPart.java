@@ -81,10 +81,10 @@ import com.cosylab.util.CommonException;
  * This is the base class for all controllers of SDS widgets. In the GEF
  * model-view-controller architecture, subclasses of this class are the
  * controllers.
- * 
+ *
  * @author Sven Wende
  * @version $Revision: 1.98 $
- * 
+ *
  */
 public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
         implements NodeEditPart, PropertyChangeListener,
@@ -142,7 +142,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
     /**
      * Sets the execution mode. The execution mode is one of
      * {@link ExecutionMode#EDIT_MODE} or {@link ExecutionMode#RUN_MODE}.
-     * 
+     *
      * @param executionMode
      *            The new execution mode
      */
@@ -153,7 +153,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
     /**
      * Returns the current execution mode. The execution mode is one of
      * {@link ExecutionMode#EDIT_MODE} or {@link ExecutionMode#RUN_MODE}.
-     * 
+     *
      * @return The current execution mode
      */
     public final ExecutionMode getExecutionMode() {
@@ -162,7 +162,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
     /**
      * Returns the model as {@link AbstractWidgetModel}.
-     * 
+     *
      * @return the model of this {@link AbstractBaseEditPart}
      */
     protected AbstractWidgetModel getCastedModel() {
@@ -271,7 +271,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
     /**
      * Implementors should create and return the figure here.
-     * 
+     *
      * @return the figure
      */
     protected abstract IFigure doCreateFigure();
@@ -287,7 +287,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
     /**
      * Resizes the figure. Use {@link AbstractBaseEditPart} to implement more
      * complex refreshing behavior.
-     * 
+     *
      * @param refreshableFigure
      *            the figure
      */
@@ -311,7 +311,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
      * Returns the widget model, which is managed by this controller. This is
      * for convinience only. The method returns the same object as
      * {@link #getModel()}.
-     * 
+     *
      * @return the casted model
      */
     public final AbstractWidgetModel getWidgetModel() {
@@ -320,7 +320,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
     /**
      * Returns runtime context information.
-     * 
+     *
      * @return runtime context information
      */
     protected RuntimeContext getRuntimeContext() {
@@ -403,7 +403,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
      * <li>PROP_LAYER</li>
      * <li>PROP_ENABLED</li>
      * </ul>
-     * 
+     *
      */
     private void registerStandardPropertyChangeHandlers() {
         IWidgetPropertyChangeHandler visibilityHandler = new IWidgetPropertyChangeHandler() {
@@ -651,7 +651,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
     /**
      * TODO: nur temporär verwenden! Returns the layer name
-     * 
+     *
      * @param s
      *            the layerName (may be null or "")
      * @return The layerName (is not null or "")
@@ -670,7 +670,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
     /**
      * Subclasses should register handlers for property changes here.
-     * 
+     *
      * Each handler can be registered by calling
      * {@link #setPropertyChangeHandler(String, IWidgetPropertyChangeHandler)}
      */
@@ -678,7 +678,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
     /**
      * Registers a property change handler for the specified property id.
-     * 
+     *
      * @param propertyId
      *            the property id
      * @param handler
@@ -770,7 +770,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
     /**
      * Creates a connection anchor.
-     * 
+     *
      * @return a connection anchor
      */
     private ConnectionAnchor createConnectionAnchor() {
@@ -805,7 +805,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
     /**
      * Configures this EditPart with the given live state.
-     * 
+     *
      * @param live
      *            The new live state
      */
@@ -1057,7 +1057,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
     /**
      * Returns a {@link SimpleDALBroker} instance. Those instance will be
      * display dependent. There will be 1 broker per display.
-     * 
+     *
      * @return the {@link SimpleDALBroker}
      */
     protected SimpleDALBroker getBroker() {
@@ -1068,10 +1068,10 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
     /**
      * Updates the figures enabled state. The figure is only enabled when the
      * current widget and all of its parents are enabled.
-     * 
+     *
      * Additionally we disable all input widgets like sliders and buttons etc.
      * in edit mode.
-     * 
+     *
      * @param f
      *            the figure that should be enabled or disabled
      */
@@ -1110,7 +1110,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
      * Subclasses should override this method to specify if the figure for this
      * controller should be disabled in edit mode in general. Default return
      * value is false.
-     * 
+     *
      * @return true if the figure for this controller should be disabled in edit
      *         mode in general, false otherwise
      */
@@ -1122,10 +1122,10 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
      * Convenience method that returns the real color for the specified model
      * property (which has to be a color property!). This call does also resolve
      * color variables. Callers do not need to care about Color.dispose().
-     * 
+     *
      * @param property
      *            the id of a color property
-     * 
+     *
      * @return the color
      */
     protected Color getModelColor(final String propertyId) {
@@ -1139,10 +1139,10 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
      * property (which has to be a font property!). This call does also resolve
      * font variables (see {@link IFontService}. Callers do not need to care
      * about Font.dispose().
-     * 
+     *
      * @param property
      *            the id of a font property
-     * 
+     *
      * @return the font
      */
     protected Font getModelFont(final String propertyId) {
@@ -1168,9 +1168,9 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
     /**
      * Convenience handler class for color properties.
-     * 
+     *
      * @author Sven Wende
-     * 
+     *
      * @param <F>
      *            the figure type
      */
@@ -1198,9 +1198,9 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
     /**
      * Convenience handler class for font properties.
-     * 
+     *
      * @author Sven Wende
-     * 
+     *
      * @param <F>
      *            the figure type
      */
@@ -1229,9 +1229,9 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
     /**
      * Keeps information for a single SimpleDAL listener that are needed to be
      * able to unregister that listener from SimpleDAL.
-     * 
+     *
      * @author swende
-     * 
+     *
      */
     private static class SimpleDalListenerInfo {
         private ConnectionParameters parameters;

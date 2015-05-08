@@ -82,9 +82,9 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
         figure.setInternalFocusedBorderColor(model.getInternalFocusedBorderColor());
         figure.setInternalBorderThickness(model.getInternalBorderWidth());
         figure.setButtonVisibility(model.isButtonVisible());
-        
+
         markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
-        
+
         figure.addWheelListener(new WheelListener() {
 
             public void decrementDecimalPart(int index) {
@@ -176,13 +176,13 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
     public ThumbWheelModel getWidgetModel() {
         return (ThumbWheelModel) super.getWidgetModel();
     }
-    
+
     @Override
     protected void doActivate() {
         super.doActivate();
         registerLoadLimitsListener();
     }
-    
+
     /**
      *
      */
@@ -209,14 +209,14 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
                                 }
                             }
 
-                        
+
                         };
                     pv.addListener(pvLoadLimitsListener);
                 }
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -247,7 +247,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
         };
         setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME,
                 pvNameHandler);
-        
+
         // decimal wheels
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -353,7 +353,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
         };
         setPropertyChangeHandler(ThumbWheelModel.PROP_INTERNAL_FOCUSED_FRAME_COLOR,
                 handler);
-        
+
         // border width
         handler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene;
 
@@ -11,9 +11,9 @@ import org.epics.vtype.VType;
 
 /**
  * TODO better ways to handle null parts to the selection
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class LineGraph2DSelection implements VTypeAdaptable,
         ConfigurableWidgetAdaptable {
@@ -23,7 +23,7 @@ public class LineGraph2DSelection implements VTypeAdaptable,
     public LineGraph2DSelection(LineGraph2DWidget widget) {
         this.widget = widget;
     }
-    
+
     @Override
     public VType toVType() {
         Graph2DResult result = widget.getCurrentResult();

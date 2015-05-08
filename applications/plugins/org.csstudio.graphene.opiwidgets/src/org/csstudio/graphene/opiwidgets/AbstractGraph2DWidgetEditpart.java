@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene.opiwidgets;
 
@@ -11,10 +11,10 @@ import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetEditpart;
 import org.eclipse.draw2d.IFigure;
 
 /**
- * 
- * 
+ *
+ *
  * @author shroffk
- * 
+ *
  */
 public abstract class AbstractGraph2DWidgetEditpart<F extends AbstractPointDatasetGraph2DWidgetFigure<? extends AbstractGraph2DWidget<?, ?>>,
 M extends AbstractGraph2DWidgetModel> extends AbstractSelectionWidgetEditpart<F, M> {
@@ -26,10 +26,10 @@ M extends AbstractGraph2DWidgetModel> extends AbstractSelectionWidgetEditpart<F,
             return false;
         }
     };
-    
+
     /**
      * Returns an IWidgetPropertyChangeHandler that calls the configure function;
-     * 
+     *
      * @return the property change handler
      */
     protected IWidgetPropertyChangeHandler getReconfigureWidgetPropertyChangeHandler() {
@@ -48,7 +48,7 @@ M extends AbstractGraph2DWidgetModel> extends AbstractSelectionWidgetEditpart<F,
         widget.setXAxisRange(model.getXAxisRange());
         widget.setYAxisRange(model.getYAxisRange());
     }
-    
+
     @Override
     protected void registerPropertyChangeHandlers() {
         setPropertyChangeHandler(PROP_DATA_FORMULA, getReconfigureWidgetPropertyChangeHandler());
@@ -57,5 +57,5 @@ M extends AbstractGraph2DWidgetModel> extends AbstractSelectionWidgetEditpart<F,
         setPropertyChangeHandler(PROP_X_AXIS_RANGE, getReconfigureWidgetPropertyChangeHandler());
         setPropertyChangeHandler(PROP_Y_AXIS_RANGE, getReconfigureWidgetPropertyChangeHandler());
     }
-    
+
 }

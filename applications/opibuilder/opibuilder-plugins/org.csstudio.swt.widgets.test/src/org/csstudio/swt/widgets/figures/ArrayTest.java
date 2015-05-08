@@ -19,8 +19,8 @@ public class ArrayTest extends AbstractWidgetTest{
 //        figure.setShowScrollbar(false);
         return figure;
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -32,12 +32,12 @@ public class ArrayTest extends AbstractWidgetTest{
                 "arrayLength",
                 "visibleElementsCount",
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
     @Override
     public boolean isAutoTest() {
         return false;
-    }        
+    }
 }

@@ -23,9 +23,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 
 /**
  * The command to add a widget to a container.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class WidgetCreateCommand extends Command {
 
@@ -90,7 +90,7 @@ public class WidgetCreateCommand extends Command {
     public boolean canExecute() {
         return newWidget != null && container != null;
     }
-    
+
     private void generateNewWUID(AbstractWidgetModel widgetModel){
         widgetModel.generateNewWUID();
         if(widgetModel instanceof AbstractContainerModel){
@@ -170,7 +170,7 @@ public class WidgetCreateCommand extends Command {
     @Override
     public void undo() {
         newWidget.setBounds(oldBounds);
-        container.removeChild(newWidget);        
+        container.removeChild(newWidget);
     }
 
     public void setIndex(int index) {

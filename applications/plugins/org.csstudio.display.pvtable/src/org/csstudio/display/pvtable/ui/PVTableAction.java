@@ -17,13 +17,13 @@ import org.eclipse.jface.viewers.TableViewer;
 public class PVTableAction extends Action
 {
     protected TableViewer viewer;
-    
+
     public PVTableAction(final String title, final String icon_path, final TableViewer viewer)
     {
         super(title, Plugin.getImageDescriptor(icon_path));
         setViewer(viewer);
     }
-    
+
     public void setViewer(final TableViewer viewer)
     {
         this.viewer = viewer;

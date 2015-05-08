@@ -32,14 +32,14 @@ public class MessageRDB
 {
     /** Util. for connection to RDB */
     final private RDBUtil rdb_util;
-    
+
     /** SQL statements */
     final private SQL sql;
-        
+
     /** Connect to RDB
      *  @param url Database URL
-     *  @param user 
-     *  @param password 
+     *  @param user
+     *  @param password
      *  @param schema Database schema ending in "." or "" if not used
      *  @throws Exception on error
      *  @see RDBUtil#connect(String)
@@ -57,7 +57,7 @@ public class MessageRDB
     {
         rdb_util.close();
     }
-    
+
     /** Read messages from start to end time, maybe including filters.
      *  <p>
      *  @param monitor Used to display progress, also checked for cancellation
@@ -91,7 +91,7 @@ public class MessageRDB
                 statement.setString(parm++, filter.getPattern());
             // Set start/end/limit
             statement.setInt(parm++, max_properties);
-            
+
             // One benchmark example:
             // Query took <<1 second, but reading all the messages took ~30.
             // Same result when only calling 'next',
@@ -155,7 +155,7 @@ public class MessageRDB
                 if (last_message != null  &&  last_datum != null)
                     last_message.setDelta(last_datum, datum);
             }
-            
+
             // Was readout stopped because we reached max. number of properties?
             if (prop_count >= max_properties)
             {
@@ -172,12 +172,12 @@ public class MessageRDB
             statement.close();
             monitor.done();
         }
-        
+
         // Convert to plain array
         final Message[] ret_val = new Message[messages.size()];
         return messages.toArray(ret_val);
     }
-    
+
     /** Create Message or PVMessage
      *  @param sequence Sequence number
      *  @param id RDB ID

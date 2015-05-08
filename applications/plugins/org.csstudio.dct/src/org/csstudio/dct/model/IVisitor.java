@@ -8,14 +8,14 @@ import org.csstudio.dct.model.internal.Project;
  * back the visit() method for its class. Separate concrete visitor classes can
  * then be written that perform some particular operations, by implementing
  * these operations in their respective visit() methods.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public interface IVisitor {
     /**
      * Call back method for {@link Project} nodes.
-     * 
+     *
      * @param project
      *            a project
      */

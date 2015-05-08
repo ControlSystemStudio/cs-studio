@@ -12,7 +12,7 @@ import org.csstudio.opibuilder.converter.model.Edm_TwoDProfileMonitorClass;
 
 /**
  * XML conversion class for Edm_TwoDProfileMonitorClass.
- * 
+ *
  * @author Xihui Chen
  */
 public class Opi_TwoDProfileMonitorClass extends OpiWidget {
@@ -31,20 +31,20 @@ public class Opi_TwoDProfileMonitorClass extends OpiWidget {
         setTypeId(typeId);
         setName(name);
         setVersion(version);
-        
+
         new OpiInt(widgetContext, "maximum", 255);
         new OpiInt(widgetContext, "minimum", 0);
         new OpiBoolean(widgetContext, "rgb_mode", false);
-        
+
         // No legend on the TwoDProfileMonitor
         new OpiBoolean(widgetContext, "show_ramp", false);
-        
+
         if(r.getDataPvStr()!=null)
             new OpiString(widgetContext, "pv_name", convertPVName(r.getDataPvStr()));
-        
-        if(r.isPvBasedDataSize() && r.getWidthPvStr() != null && r.getHeightPvStr() != null){            
+
+        if(r.isPvBasedDataSize() && r.getWidthPvStr() != null && r.getHeightPvStr() != null){
             createPVOutputRule(r, convertPVName(r.getWidthPvStr()), "data_width", "pv0", "DataWidthRule");
-            createPVOutputRule(r, convertPVName(r.getHeightPvStr()), "data_height", "pv0", "DataHeightRule");            
+            createPVOutputRule(r, convertPVName(r.getHeightPvStr()), "data_height", "pv0", "DataHeightRule");
         }else{
             new OpiInt(widgetContext, "data_width", r.getDataWidth());
             new OpiInt(widgetContext, "data_height", Integer.parseInt(r.getHeightPvStr()));

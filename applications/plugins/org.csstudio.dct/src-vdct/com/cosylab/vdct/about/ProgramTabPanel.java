@@ -8,22 +8,22 @@ package com.cosylab.vdct.about;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -32,7 +32,7 @@ import javax.swing.Icon;
 import javax.swing.JPanel;
 
 /**
- * @author 
+ * @author
  *
  * To change this generated comment edit the template variable "typecomment":
  * Window>Preferences>Java>Templates.
@@ -40,22 +40,22 @@ import javax.swing.JPanel;
  * Window>Preferences>Java>Code Generation.
  */
 public class ProgramTabPanel extends AboutTabPanel {
-    
+
     private javax.swing.JPanel JPanelLogo = null;
     private javax.swing.JLabel JLabelLogo = null;
-    
+
     private javax.swing.JPanel JPanelName = null;
     private javax.swing.JLabel JLabelProgramNameProperty = null;
     private javax.swing.JLabel JLabelProgramVersionProperty = null;
     private javax.swing.JLabel JLabelProgramBuildProperty = null;
     private javax.swing.JLabel JLabelProgramBuildDateProperty = null;
-        
+
        private javax.swing.JPanel JPanelURLs = null;
        private javax.swing.JLabel JLabelProgramURL = null;
        private javax.swing.JLabel JLabelProgramURLProperty = null;
        private javax.swing.JLabel JLabelProgramURLDoc = null;
        private javax.swing.JLabel JLabelProgramURLDocProperty = null;
-           
+
     private javax.swing.JPanel JPanelCopyright = null;
     private javax.swing.JLabel JLabelCopyright1 = null;
     private javax.swing.JLabel JLabelCopyright2 = null;
@@ -112,7 +112,7 @@ private javax.swing.JLabel getJLabelCopyright2() {
  * @return javax.swing.JLabel
  */
 private javax.swing.JLabel getJLabelCopyright3() {
-    if (JLabelCopyright3 == null) {    
+    if (JLabelCopyright3 == null) {
         try {
             JLabelCopyright3 = new javax.swing.JLabel();
             JLabelCopyright3.setName("JLabelCopyright3");
@@ -480,7 +480,7 @@ private javax.swing.JPanel getJPanelURLs() {
      * @see com.cosylab.gui.components.about.AboutTabPanel#initializePanel()
      */
     protected void initializePanel() {
-    
+
     try {
         setName("Program");
         setLayout(new java.awt.GridBagLayout());
@@ -492,7 +492,7 @@ private javax.swing.JPanel getJPanelURLs() {
         constraintsJPanelLogo.weighty = 0;
         constraintsJPanelLogo.insets = new java.awt.Insets(4, 4, 4, 4);
         this.add(getJPanelLogo(), constraintsJPanelLogo);
-        
+
         java.awt.GridBagConstraints constraintsJPanelName = new java.awt.GridBagConstraints();
         constraintsJPanelName.gridx = 0; constraintsJPanelName.gridy = 1;
         constraintsJPanelName.gridwidth = 2;
@@ -509,7 +509,7 @@ private javax.swing.JPanel getJPanelURLs() {
         constraintsJPanelURLs.weighty = 1.0;
         constraintsJPanelURLs.insets = new java.awt.Insets(4, 4, 4, 4);
         this.add(getJPanelURLs(), constraintsJPanelURLs);
-        
+
         java.awt.GridBagConstraints constraintsJPanelCopyright = new java.awt.GridBagConstraints();
         constraintsJPanelCopyright.gridx = 0; constraintsJPanelCopyright.gridy = 3;
         constraintsJPanelCopyright.gridwidth = 2;
@@ -524,7 +524,7 @@ private javax.swing.JPanel getJPanelURLs() {
     } catch (Exception e) {
             e.printStackTrace();
     }
-    
+
     }
 
     /**
@@ -538,40 +538,40 @@ private javax.swing.JPanel getJPanelURLs() {
     if (icon == null) {
         remove(getJPanelLogo());
     } else {
-        getJLabelLogo().setIcon(icon);    
+        getJLabelLogo().setIcon(icon);
         getJPanelLogo().setBackground(java.awt.Color.white);
     }
-    
-    
-    
+
+
+
     getJLabelProgramNameProperty().setText(ptm.getProductName());
     getJLabelProgramVersionProperty().setText(ptm.getProductVersion());
-    
+
     if (isProgramPropertyEmpty(ptm.getProductBuild())) {
         getJPanelName().remove(getJLabelProgramBuildProperty());
     } else {
-        getJLabelProgramBuildProperty().setText(ptm.getProductBuild());        
+        getJLabelProgramBuildProperty().setText(ptm.getProductBuild());
     }
     if (isProgramPropertyEmpty(ptm.getProductBuildDate())) {
         getJPanelName().remove(getJLabelProgramBuildDateProperty());
     } else {
-        getJLabelProgramBuildDateProperty().setText(ptm.getProductBuildDate());        
+        getJLabelProgramBuildDateProperty().setText(ptm.getProductBuildDate());
     }
-    
-    
+
+
     if (ptm.getProductURL() == null) getJPanelURLs().remove(getJLabelProgramURL());
     else getJLabelProgramURLProperty().setText(ptm.getProductURL().toString());
     if (ptm.getProductDocsURL() == null) getJPanelURLs().remove(getJLabelProgramURLDoc());
     else getJLabelProgramURLDocProperty().setText(ptm.getProductDocsURL().toString());
-    
+
     getJLabelCopyright3().setText(ptm.getVendorEmail());
     if (ptm.getVendorURL() != null) getJLabelCopyright4().setText(ptm.getVendorURL().toString());
     getJLabelCopyright2().setText(ptm.getVendor());
-    
+
     }
-    
+
     private boolean isProgramPropertyEmpty(String programProperty) {
-    
+
     if (programProperty == null || programProperty.equals("")) return true;
     else return false;
 }

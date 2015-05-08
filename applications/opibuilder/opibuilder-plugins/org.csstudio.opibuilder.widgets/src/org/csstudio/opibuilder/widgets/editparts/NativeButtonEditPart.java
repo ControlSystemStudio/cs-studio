@@ -33,12 +33,12 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 
 /**
- * EditPart controller for the Native Button widget. 
+ * EditPart controller for the Native Button widget.
  * @author Xihui Chen
  * @deprecated This is not used anymore since the native button is merged to action button.
  */
 public final class NativeButtonEditPart extends AbstractPVWidgetEditPart {
-      
+
     private Button button;
 
     /**
@@ -50,33 +50,33 @@ public final class NativeButtonEditPart extends AbstractPVWidgetEditPart {
         int style=SWT.None;
         style|= model.isToggleButton()?SWT.TOGGLE:SWT.PUSH;
         style |= SWT.WRAP;
-        final NativeButtonFigure buttonFigure = 
+        final NativeButtonFigure buttonFigure =
                 new NativeButtonFigure(this, style);
         button = buttonFigure.getSWTWidget();
         button.setText(model.getText());
         buttonFigure.setImagePath(model.getImagePath());
-        updatePropSheet(model.isToggleButton());    
+        updatePropSheet(model.isToggleButton());
         markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
         return buttonFigure;
     }
-    
+
     @Override
     protected void createEditPolicies() {
         super.createEditPolicies();
         if(getExecutionMode() == ExecutionMode.EDIT_MODE)
             installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new TextDirectEditPolicy());
-    }    
-    
+    }
+
 
     @Override
     public void performRequest(Request request){
         if (getExecutionMode() == ExecutionMode.EDIT_MODE &&(
                 request.getType() == RequestConstants.REQ_DIRECT_EDIT ||
                 request.getType() == RequestConstants.REQ_OPEN))
-            new TextEditManager(this, 
+            new TextEditManager(this,
                     new LabelCellEditorLocator(getFigure()), false).show();
     }
-    
+
     @Override
     protected void hookMouseClickAction() {
         button.addSelectionListener(new SelectionAdapter() {
@@ -92,30 +92,30 @@ public final class NativeButtonEditPart extends AbstractPVWidgetEditPart {
                                 ((AbstractOpenOPIAction) action).setCtrlPressed(true);
                             }else if ((e.stateMask & SWT.SHIFT) !=0){
                                 ((AbstractOpenOPIAction) action).setShiftPressed(true);
-                            }    
+                            }
                         }
                         action.run();
-                    }                    
-                }        
+                    }
+                }
             }
         });
-        
-        
+
+
     }
-    
+
     @Override
     public List<AbstractWidgetAction> getHookedActions() {
         ActionButtonModel widgetModel = getWidgetModel();
-        boolean isSelected = button.getSelection();    
+        boolean isSelected = button.getSelection();
         return ActionButtonEditPart.getHookedActionsForButton(widgetModel, isSelected);
-            
+
     }
 
     @Override
     public NativeButtonModel getWidgetModel() {
         return (NativeButtonModel)getModel();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -138,7 +138,7 @@ public final class NativeButtonEditPart extends AbstractPVWidgetEditPart {
         IWidgetPropertyChangeHandler imageHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
-                NativeButtonFigure figure = (NativeButtonFigure) refreshableFigure;                
+                NativeButtonFigure figure = (NativeButtonFigure) refreshableFigure;
                 IPath absolutePath = (IPath)newValue;
                 if(absolutePath != null && !absolutePath.isEmpty() && !absolutePath.isAbsolute())
                     absolutePath = ResourceUtil.buildAbsolutePath(
@@ -147,40 +147,40 @@ public final class NativeButtonEditPart extends AbstractPVWidgetEditPart {
                 return true;
             }
         };
-        setPropertyChangeHandler(ActionButtonModel.PROP_IMAGE, imageHandler);        
-    
+        setPropertyChangeHandler(ActionButtonModel.PROP_IMAGE, imageHandler);
+
         // button style
         final IWidgetPropertyChangeHandler buttonStyleHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
-                    final Object newValue, final IFigure refreshableFigure) {            
+                    final Object newValue, final IFigure refreshableFigure) {
                 updatePropSheet((Boolean) newValue);
                 return true;
-            }            
+            }
         };
         getWidgetModel().getProperty(ActionButtonModel.PROP_TOGGLE_BUTTON).
             addPropertyChangeListener(new PropertyChangeListener(){
                 public void propertyChange(PropertyChangeEvent evt) {
                     buttonStyleHandler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
                 }
-            });        
+            });
     }
-    
+
     /**
         * @param newValue
         */
     private void updatePropSheet(final boolean newValue) {
         getWidgetModel().setPropertyVisible(
                     ActionButtonModel.PROP_RELEASED_ACTION_INDEX, newValue);
-        getWidgetModel().setPropertyDescription(ActionButtonModel.PROP_ACTION_INDEX, 
+        getWidgetModel().setPropertyDescription(ActionButtonModel.PROP_ACTION_INDEX,
                     newValue ? "Push Action Index" : "Click Action Index" );
     }
-    
-    
+
+
     @Override
     public void setValue(Object value) {
         button.setText(value.toString());
     }
-    
+
     @Override
     public Object getValue() {
         return button.getText();

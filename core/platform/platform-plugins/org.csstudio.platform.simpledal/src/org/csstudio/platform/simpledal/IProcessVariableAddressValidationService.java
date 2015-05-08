@@ -15,7 +15,7 @@ public interface IProcessVariableAddressValidationService {
      * @return a description of the validation service
      */
     public String getServiceDescription();
-    
+
     /**
      * Validates the given IProcessVariableAddresses
      * @param pvAddresses the address objects to validate
@@ -23,5 +23,5 @@ public interface IProcessVariableAddressValidationService {
      * @return an IValidationProcess object that can be used to cancel the validation
      */
     public IValidationProcess validateProcessVariableAddresses(List<IProcessVariableAddress> pvAddresses, IProcessVariableAddressValidationCallback callback);
-    
+
 }

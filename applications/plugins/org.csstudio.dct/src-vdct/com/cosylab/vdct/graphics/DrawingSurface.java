@@ -8,22 +8,22 @@ package com.cosylab.vdct.graphics;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -129,7 +129,7 @@ public final class DrawingSurface extends Decorator implements Pageable, Printab
     private boolean forceRedraw = false;
     // does not redraws navigator image
     private boolean blockNavigatorRedrawOnce = false;
-    
+
     private boolean printing = false;
     // current view
     //private ViewState view;
@@ -166,12 +166,12 @@ public final class DrawingSurface extends Decorator implements Pageable, Printab
     private LinkSource tmplink = null;
     private Hiliter hiliter;
 
-    private boolean fastMove = false;    
+    private boolean fastMove = false;
     // see run()
     private boolean redrawRequest = false;
-    
+
     //private ComposedAction undoAction = null;
-    
+
     private static final String newRecordString = "New record...";
     private static final String newTemplesString = "New template instance";
     private static final String addPortString = "Show port";
@@ -190,18 +190,18 @@ public final class DrawingSurface extends Decorator implements Pageable, Printab
     private TextBox grTextBox = null;
 
 
-    private Stack viewStack = null;    
-    private Stack templateStack = null;    
+    private Stack viewStack = null;
+    private Stack templateStack = null;
     private Vector selectedConnectorsForMove = null;
-    
-    
+
+
 /**
  * DrawingSurface constructor comment.
  */
 public DrawingSurface() {
 
     instance = this;
-    
+
     setModified(false);
 
     ViewState view = new ViewState();
@@ -212,7 +212,7 @@ public DrawingSurface() {
     templateStack = new Stack();
 
     initializeNavigator();
-         
+
     currentCursor = defaultCursor = Cursor.getDefaultCursor();
     handCursor = new Cursor(Cursor.HAND_CURSOR);
     hourCursor = new Cursor(Cursor.WAIT_CURSOR);
@@ -228,7 +228,7 @@ public DrawingSurface() {
                 }
             }
         }
-        
+
         public void keyReleased(KeyEvent e) {
             if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
                 VisibleObject hil = ViewState.getInstance().getHilitedObject();
@@ -247,7 +247,7 @@ public DrawingSurface() {
     commandManager.addCommand("LinkCommand", new LinkCommand(this));
     commandManager.addCommand("GetPrintableInterface", new GetPrintableInterface(this));
     commandManager.addCommand("RepaintWorkspace", new RepaintCommand(this));
-    
+
     if (VisualDCT.getInstance() != null)
         new Thread(this, "DrawingSurface Repaint Thread").start();
 
@@ -271,7 +271,7 @@ public void baseView() {
     view.setRy((view.getHeight()-view.getViewHeight())/2);
     forceRedraw=true;
     updateWorkspaceScale();
-    repaint();    
+    repaint();
 }
 /**
  * Insert the method's description here.
@@ -302,15 +302,15 @@ private void createNavigatorImage() {
         blockNavigatorRedrawOnce = false;
         return;
     }
-    
+
     ViewState view = ViewState.getInstance();
-    
-    if ((navigatorImage==null) || 
-        (navigatorSize.width!=navigator.width) || 
+
+    if ((navigatorImage==null) ||
+        (navigatorSize.width!=navigator.width) ||
         (navigatorSize.height!=navigator.height)) {
-    
+
         if (navigator.width > 0 && navigator.height > 0)
-            navigatorImage = getWorkspacePanel().createImage(navigator.width, 
+            navigatorImage = getWorkspacePanel().createImage(navigator.width,
                                                              navigator.height);
         if (navigatorImage==null) return;
         navigatorSize = new Dimension(navigator.width, navigator.height);
@@ -319,12 +319,12 @@ private void createNavigatorImage() {
         double xscale = navigator.width/(double)view.getWidth();
         double yscale = navigator.height/(double)view.getHeight();
         double nscale = Math.min(xscale, yscale);
-    
+
         navigatorView.setScale(nscale);
     }
 
     ViewState.setInstance(navigatorView);
-        
+
     navigatorGraphics.setColor(Constants.BACKGROUND_COLOR);
     navigatorGraphics.fillRect(1, 1, navigator.width - 2, navigator.height - 2);
     navigatorGraphics.setColor(Color.lightGray);
@@ -345,7 +345,7 @@ public void draw(Graphics g) {
     if (printing) {
         if (canvasImage!=null) copyCanvasImage(g);
         if (Settings.getInstance().getNavigator())
-                drawNavigator(g);    
+                drawNavigator(g);
         return;
     }
 
@@ -361,7 +361,7 @@ public void draw(Graphics g) {
         redraw(g);
     }
 
-    
+
     // fix offset
 /*    int prevRX = view.getRx(); int prevRY = view.getRy();
     view.setRx(prevRX-x0); view.setRy(prevRY-y0);*/
@@ -372,21 +372,21 @@ public void draw(Graphics g) {
         // draw selected
         Enumeration selected = view.getSelectedObjects().elements();
         while (selected.hasMoreElements())
-            ((VisibleObject)selected.nextElement()).paint(g, true);    
+            ((VisibleObject)selected.nextElement()).paint(g, true);
     }
-    
+
     // draw selected
     if (view.isBlinkState()) {
         Enumeration blinking = view.getBlinkingObjects().elements();
         while (blinking.hasMoreElements())
-            ((VisibleObject)blinking.nextElement()).paint(g, true);    
+            ((VisibleObject)blinking.nextElement()).paint(g, true);
     }
-        
-    
+
+
     if (mouseOperation==OBJECT_MOVE && fastMove)  {  //fast move
         Movable hilitedObject = (Movable)view.getHilitedObject();
         g.setColor(Constants.GRID_COLOR);
-        
+
         if (view.isSelected(hilitedObject)) {
             boolean ok = true;
             int dx = draggedX-pressedX;
@@ -400,22 +400,22 @@ public void draw(Graphics g) {
 
                 int rwidth = vo.getRwidth();
                 int rheight = vo.getRheight();
-            
-                g.drawRect(rrx+draggedX-pressedX, rry+draggedY-pressedY, rwidth, rheight);            
-            }    
+
+                g.drawRect(rrx+draggedX-pressedX, rry+draggedY-pressedY, rwidth, rheight);
+            }
         }else {
                 VisibleObject vo = (VisibleObject)hilitedObject;
-                
+
                 int rrx = vo.getRx() - view.getRx();
                 int rry = vo.getRy() - view.getRy();
 
                 int rwidth = vo.getRwidth();
                 int rheight = vo.getRheight();
-                
+
                 g.drawRect(rrx+draggedX-pressedX, rry+draggedY-pressedY, rwidth, rheight);
             }
     }
-    
+
     if ((mouseOperation==ZOOM_SELECTION) ||
         (mouseOperation==OBJECT_SELECTION)) {
 
@@ -423,7 +423,7 @@ public void draw(Graphics g) {
         int py = Math.min(pressedY, draggedY);
         int w = Math.abs(pressedX-draggedX);
         int h = Math.abs(pressedY-draggedY);
-        
+
         g.setColor(Color.red);
         g.drawRect(px+view.getX0(), py+view.getY0(), w, h);
     }
@@ -443,7 +443,7 @@ public void draw(Graphics g) {
         LinkedHashSet objs = view.getHilitedObjects();
         Iterator i = objs.iterator();
         while (i.hasNext()) {
-            VisibleObject vo = (VisibleObject)i.next(); 
+            VisibleObject vo = (VisibleObject)i.next();
             if (vo!=null && !view.getBlinkingObjects().contains(vo)) vo.paint(g, true);
         }
     }
@@ -456,7 +456,7 @@ public void draw(Graphics g) {
     //view.setRx(prevRX); view.setRy(prevRY);
 
     if (Settings.getInstance().getNavigator())
-        drawNavigator(g);    
+        drawNavigator(g);
 }
 /**
  * Insert the method's description here.
@@ -466,38 +466,38 @@ private void drawNavigator(Graphics g) {
     if (navigatorImage==null) return;
 
     ViewState view = ViewState.getInstance();
-    
+
     // draw navigator image && position
     copyNavigatorImage(g);
 
     Rectangle currentClip = g.getClipBounds();
-    
-    g.setClip(navigator.x, navigator.y, 
+
+    g.setClip(navigator.x, navigator.y,
                 navigator.width, navigator.height);
-    
+
     g.setColor(Color.red);
     g.drawRect(navigatorRect.x,
-               navigatorRect.y, 
-               navigatorRect.width, 
+               navigatorRect.y,
+               navigatorRect.width,
                navigatorRect.height);
 
     g.setColor(Color.blue);
     g.drawRect(navigator.x,
-               navigator.y, 
-               (int)(view.getWidth()*navigatorView.getScale())-1, 
+               navigator.y,
+               (int)(view.getWidth()*navigatorView.getScale())-1,
                (int)(view.getHeight()*navigatorView.getScale())-1);
-    
+
     // add lock rectangle if necessary
     final int min = 8;
-    if ((navigatorRect.width<min) || 
+    if ((navigatorRect.width<min) ||
         (navigatorRect.height<min)) {
         g.setColor(Color.lightGray);
         g.drawRect(navigatorRect.x-min,
-                   navigatorRect.y-min, 
-                   navigatorRect.width+2*min, 
+                   navigatorRect.y-min,
+                   navigatorRect.width+2*min,
                    navigatorRect.height+2*min);
     }
-    
+
     g.setClip(currentClip);
 }
 /**
@@ -529,7 +529,7 @@ public static DrawingSurface getInstance() {
      * Returns the number of pages in the set.
      * To enable advanced printing features,
      * it is recommended that <code>Pageable</code>
-     * implementations return the true number of pages 
+     * implementations return the true number of pages
      * rather than the
      * UNKNOWN_NUMBER_OF_PAGES constant.
      * @return the number of pages in this <code>Pageable</code>.
@@ -537,7 +537,7 @@ public static DrawingSurface getInstance() {
 public int getNumberOfPages() {
 
     PageFormat pageFormat = com.cosylab.vdct.graphics.printing.Page.getPageFormat();
-    
+
     int pageWidth = (int)pageFormat.getImageableWidth();
     int pageHeight = (int)pageFormat.getImageableHeight();
 
@@ -545,18 +545,18 @@ public int getNumberOfPages() {
 
     // screen shot
     double screen2printer = 0;
-    
+
     switch (Page.getPrintMode()) {
         case Page.TRUE_SCALE:
             // 1:1 ratio
             screen2printer = 72.0/getWorkspacePanel().getToolkit().getScreenResolution();
             break;
-            
+
         case Page.USER_SCALE:
             screen2printer = 72.0/getWorkspacePanel().getToolkit().getScreenResolution();
             screen2printer *= Page.getUserScale();
             break;
-            
+
         case Page.FIT_SCALE:
             // fit to paper
             double xscale = pageWidth/(double)view.getViewWidth();
@@ -564,7 +564,7 @@ public int getNumberOfPages() {
             screen2printer = Math.min(xscale, yscale)*view.getScale();
             break;
     }
-    
+
     double converter = screen2printer/view.getScale();
     int w = (int)(view.getViewWidth()*converter);
     int h = (int)(view.getViewHeight()*converter);
@@ -671,7 +671,7 @@ private void initializeNavigator() {
  * Creation date: (8.1.2001 18:04:49)
  */
 public void initializeWorkspace() {
-    
+
     if (isModified())
         reloadTemplate(Group.getEditingTemplateData());
 
@@ -694,9 +694,9 @@ public void initializeWorkspace() {
     group.setLookupTable(new Hashtable());
     Group.setRoot(group);
     moveToGroup(group);
-    
+
     //Console.getInstance().flush();
-    
+
     UndoManager.getInstance().setMonitor(true);
     blockNavigatorRedrawOnce = false;
     createNavigatorImage();
@@ -734,10 +734,10 @@ public void linkCommand(VisibleObject linkObject, LinkSource linkData) {
 //    }
     setCursor(crossCursor);
     if (tmplink==null) {
-        
+
         // start linking (store source field reference)
         tmplink = linkData;
-        
+
         VisibleObject fld = (VisibleObject)Group.getRoot().getLookupTable().get(linkData.getFullName());
         if (fld!=null)
             // field found in lookup table (it is a special link field - not owned by linkManager container)
@@ -757,14 +757,14 @@ public void linkCommand(VisibleObject linkObject, LinkSource linkData) {
             if (linkData instanceof VDBTemplatePort ||
                 linkData instanceof VDBMacro)
                 tmplink.setValue(linkData.getFullName());
-            
+
         }
         else if (linkData==null && linkObject instanceof Record)
             tmplink.setValue(((Record)linkObject).getName());        // fwd link to manager
         // nothing can be linked to VDBTemplateMacro
         else if (!(linkData instanceof VDBTemplateMacro))
             tmplink.setValue(linkData.getFullName());
-            
+
         stopLinking();
     }
 }
@@ -773,7 +773,7 @@ public void linkCommand(VisibleObject linkObject, LinkSource linkData) {
      */
 public void mouseClicked(MouseEvent e) {
     ViewState view = ViewState.getInstance();
-    
+
     // check for drags!
     int cx = e.getX()-view.getX0();
     int cy = e.getY()-view.getY0();
@@ -781,8 +781,8 @@ public void mouseClicked(MouseEvent e) {
     if ((cx>0) && (cy>0) && (cx<width) && (cy<height)) {
 
         VisibleObject hilited = view.getHilitedObject();
-        
-        if (hilited!=null) {            
+
+        if (hilited!=null) {
             boolean leftButtonPush = (e.getModifiers() & InputEvent.BUTTON1_MASK) != 0;
 
             // linking support
@@ -813,7 +813,7 @@ public void mouseClicked(MouseEvent e) {
                     return;
                 }
             }
-            
+
             if (leftButtonPush)
             {
                 if (e.isControlDown() || (e.getClickCount()==1)) {
@@ -830,22 +830,22 @@ public void mouseClicked(MouseEvent e) {
                     }
                 }
                 else if (e.getClickCount()>=2) {
-    
-    
+
+
                     if (hilited instanceof Selectable) {                // invert selection
                         if (view.isSelected(hilited))
                             view.deselectObject(hilited);
                         else
                             view.setAsSelected(hilited);
                     }
-    
+
                     // shift for template
                     if (e.isShiftDown() && hilited instanceof Template) {
                             descendIntoTemplate((Template)hilited);
                     }
-                    else if (hilited instanceof Inspectable) 
+                    else if (hilited instanceof Inspectable)
                         InspectorManager.getInstance().requestInspectorFor((Inspectable)hilited);
-                        
+
                     else if (hilited instanceof Connector)
                     {
                         Connector con = (Connector)hilited;
@@ -857,7 +857,7 @@ public void mouseClicked(MouseEvent e) {
                         {
                             centerObject((VisibleObject)con.getOutput());            // !!! now is always true, but...
                         }
-                    } 
+                    }
                     else {
                         if (hilited instanceof Group) {
                             moveToGroup((Group)hilited);
@@ -874,7 +874,7 @@ public void mouseClicked(MouseEvent e) {
             {
                 if (Settings.getInstance().getShowGrid())
                     grLine.snapToGrid();
-                
+
                 grLine = null;
 
                     // cancel action
@@ -899,7 +899,7 @@ public void mouseClicked(MouseEvent e) {
 
                 grTextBox.setBorder(TextBox.getCurrentBorder());
                 grTextBox.showChangeTextDialog();
-    
+
                 grTextBox = null;
 
                     // cancel action
@@ -921,21 +921,21 @@ public void mouseClicked(MouseEvent e) {
                     createTextBox();
                 else {
                     VisibleObject spotted = viewGroup.hiliteComponentsCheck(cx+view.getRx(), cy+view.getRy());
-                    if (view.setAsHilited(spotted)) 
+                    if (view.setAsHilited(spotted))
                         repaint(true);
                     else
                         CommandManager.getInstance().execute("ShowNewDialog");
-                   
+
                 }
             }
-            else if (view.deselectAll()) 
+            else if (view.deselectAll())
                 repaint();                    // deselect all
-            
-        }
-        
 
-        
-            
+        }
+
+
+
+
     }
 }
 
@@ -971,36 +971,36 @@ private void showPopup(MouseEvent e)
             else
                 createTemplateInstance(null, action, true);
         }
-    
+
     };
-                    
+
     ActionListener al2 = new ActionListener()
     {
         public void actionPerformed(ActionEvent e) {
             String action = e.getActionCommand();
-            createPort((VDBPort)Group.getEditingTemplateData().getPorts().get(action));            
+            createPort((VDBPort)Group.getEditingTemplateData().getPorts().get(action));
         }
-    
+
     };
 
     ActionListener al3 = new ActionListener()
     {
         public void actionPerformed(ActionEvent e) {
             String action = e.getActionCommand();
-            createMacro((VDBMacro)Group.getEditingTemplateData().getMacros().get(action));            
+            createMacro((VDBMacro)Group.getEditingTemplateData().getMacros().get(action));
         }
-    
+
     };
 
     JPopupMenu popUp = new JPopupMenu();
-    
+
     JMenuItem item = new JMenuItem(newRecordString);
     item.addActionListener(al);
     popUp.add(item);
-    
+
     JMenu templatesMenu = new JMenu(newTemplesString);
     popUp.add(templatesMenu);
-    
+
     // add templates
     Enumeration templates = VDBData.getTemplates().keys();
     while (templates.hasMoreElements())
@@ -1011,24 +1011,24 @@ private void showPopup(MouseEvent e)
         item2.setActionCommand(key);
         item2.addActionListener(al);
         templatesMenu.add(item2);
-    
+
         // do not allow circular dependencies
         if (!templateStack.isEmpty() && templateStack.contains(t))
             item2.setEnabled(false);
-    }    
-    
+    }
+
     if (templatesMenu.getItemCount()==0)
         templatesMenu.setEnabled(false);
-    
+
     if (Group.getEditingTemplateData()!=null)
     {
 
         popUp.add(new JSeparator());
-    
+
         // generate visual port
         JMenu addPortMenu = new JMenu(addPortString);
         popUp.add(addPortMenu);
-        
+
         // add templates
         Enumeration ports = Group.getEditingTemplateData().getPortsV().elements();
         while (ports.hasMoreElements())
@@ -1040,15 +1040,15 @@ private void showPopup(MouseEvent e)
             item2.addActionListener(al2);
             addPortMenu.add(item2);
         }
-        
+
         if (addPortMenu.getItemCount()==0)
             addPortMenu.setEnabled(false);
-    
+
 
         // generate visual MACRO
         JMenu addMacroMenu = new JMenu(addMacroString);
         popUp.add(addMacroMenu);
-        
+
         // add templates
         Enumeration macros = Group.getEditingTemplateData().getMacrosV().elements();
         while (macros.hasMoreElements())
@@ -1060,22 +1060,22 @@ private void showPopup(MouseEvent e)
             item2.addActionListener(al3);
             addMacroMenu.add(item2);
         }
-        
+
         if (addMacroMenu.getItemCount()==0)
             addMacroMenu.setEnabled(false);
-    
+
         // create port
         JMenuItem portMenuItem = new JMenuItem(newPortString);
         portMenuItem.addActionListener(al);
         popUp.add(portMenuItem);
-    
+
         // create macro
         JMenuItem macroMenuItem = new JMenuItem(newMacroString);
         macroMenuItem.addActionListener(al);
         popUp.add(macroMenuItem);
 
         popUp.add(new JSeparator());
-        
+
         JMenuItem generateMacrosMenuItem = new JMenuItem(generateMacrosString);
         generateMacrosMenuItem.addActionListener(al);
         popUp.add(generateMacrosMenuItem);
@@ -1087,11 +1087,11 @@ private void showPopup(MouseEvent e)
     JMenuItem lineMenuItem = new JMenuItem(newLineString);
     lineMenuItem.addActionListener(al);
     popUp.add(lineMenuItem);
-    
+
     JMenuItem boxMenuItem = new JMenuItem(newBoxString);
     boxMenuItem.addActionListener(al);
     popUp.add(boxMenuItem);
-    
+
     JMenuItem textboxMenuItem = new JMenuItem(newTextBoxString);
     textboxMenuItem.addActionListener(al);
     popUp.add(textboxMenuItem);
@@ -1105,7 +1105,7 @@ private void showPopup(MouseEvent e)
         templatePropertiesMenuItem.addActionListener(al);
         popUp.add(templatePropertiesMenuItem);
     }
-    
+
     // add paste item
     if (Group.getClipboard().getSubObjectsV().size() > 0) {
         popUp.add(new JSeparator());
@@ -1113,7 +1113,7 @@ private void showPopup(MouseEvent e)
         pasteMenuItem.addActionListener(al);
         popUp.add(pasteMenuItem);
     }
-    
+
     // add plugin items
     PopUpMenu.addPluginItems(popUp, null);
 
@@ -1148,7 +1148,7 @@ private void createLine()
 }
 
     /**
-     * Invoked when a mouse button is pressed on a component and then 
+     * Invoked when a mouse button is pressed on a component and then
      * dragged.  Mouse drag events will continue to be delivered to
      * the component where the first originated until the mouse button is
      * released (regardless of whether the mouse position is within the
@@ -1158,24 +1158,24 @@ public void mouseDragged(MouseEvent e) {
     ViewState view = ViewState.getInstance();
     int px = e.getX()-view.getX0();
     int py = e.getY()-view.getY0();
-    
+
     if (resetDraggedPosition)
     {
         pressedX = draggedX = px;
         pressedY = draggedY = py;
         resetDraggedPosition = false;
     }
-        
-    if ((px>0) && (py>0) && (px<width) && (py<height)) {    
+
+    if ((px>0) && (py>0) && (px<width) && (py<height)) {
         switch (mouseOperation) {
 
-            case NAVIGATOR_MOVE : 
+            case NAVIGATOR_MOVE :
 //System.out.println("Dragged: NAVIGATOR_MOVE");
                 if (navigator.contains(e.getX(), e.getY()))    {
                     double navigatorScale = navigatorView.getScale();
                     double scale = view.getScale();
-                    
-                    int dx = (int)((px-pressedX)/navigatorScale*scale); 
+
+                    int dx = (int)((px-pressedX)/navigatorScale*scale);
                     int dy = (int)((py-pressedY)/navigatorScale*scale);
                     if (view.moveOrigin(dx, dy)) {
                         recalculateNavigatorPosition();
@@ -1196,39 +1196,39 @@ public void mouseDragged(MouseEvent e) {
                     pressedX=px; pressedY=py;
                 }
                 break; }
-            
+
             case OBJECT_MOVE : {
 //System.out.println("Dragged: OBJECT_MOVE");
-                
+
                 if (fastMove) { //fast move
                     draggedX=px; draggedY=py;
                     repaint();
-                    break;            
-                } 
+                    break;
+                }
 
                 int rdx = px-draggedX;
                 int rdy = py-draggedY;
-                
+
                 double scale = view.getScale();
-                int dx = (int)(rdx/scale); 
+                int dx = (int)(rdx/scale);
                 int dy = (int)(rdy/scale);
 
                 Movable hilitedObject = (Movable)view.getHilitedObject();
-                
+
                 // mark (remember) current position which is needed to create undo action
                 if (notYetDragged)
                     if (view.isSelected(hilitedObject))
                         markPositionSelection();
                     else
                         ((VisibleObject)hilitedObject).markPosition();
-                
+
                 // initial snap to grid (if needed)
                 if (notYetDragged && Settings.getInstance().getSnapToGrid())
                     if (view.isSelected(hilitedObject))
                         snapToGridSelection();
                     else
                         ((VisibleObject)hilitedObject).snapToGrid();
-                
+
                 // discrete move for snapping
                 if (Settings.getInstance().getSnapToGrid())
                 {
@@ -1245,10 +1245,10 @@ public void mouseDragged(MouseEvent e) {
                         pdy -= Constants.GRID_SIZE;
                     else if (pdy < -halfGrid)
                         pdy += Constants.GRID_SIZE;
-                    
+
                     dx -= pdx;
                     dy -= pdy;
-                    
+
                     /*
                     // snap to "whole" grid move
                      dx -= dx % Constants.GRID_SIZE;
@@ -1262,7 +1262,7 @@ public void mouseDragged(MouseEvent e) {
                         repaint();
                     break;
                 }
-                
+
                 if (view.isSelected(hilitedObject)) {
                     if (moveSelection(dx, dy)) {            // move selection
                         blockNavigatorRedrawOnce = true;    /// !!! performance
@@ -1278,24 +1278,24 @@ public void mouseDragged(MouseEvent e) {
                     if (dx!=0) draggedX=px-(int)(rdx-dx*scale);
                     if (dy!=0) draggedY=py-(int)(rdy-dy*scale);
                 }
-                
+
                 break;
             }
-                
-            case OBJECT_SELECTION : 
-            case ZOOM_SELECTION : 
+
+            case OBJECT_SELECTION :
+            case ZOOM_SELECTION :
 //System.out.println("Dragged: OBJECT_SELECTION/ZOOM_SELECTION");
                  draggedX=px; draggedY=py;
                  repaint();
                 break;
-            
+
             case LINK_OPERATION :
 //System.out.println("Dragged: LINK_OPERATION");
                  draggedX=px; draggedY=py;
                 break;
-        
+
         }
-    
+
     }
 
     // panning
@@ -1305,25 +1305,25 @@ public void mouseDragged(MouseEvent e) {
     {
         int dx = 0;
         int dy = 0;
-        
-        if (px<0) 
+
+        if (px<0)
             dx = -view.getGridSize();
-        else if (px>width) 
+        else if (px>width)
             dx = view.getGridSize();
-        
+
         if (py<0)
             dy = -view.getGridSize();
         else if (py>height)
             dy = view.getGridSize();
-        
+
         if (view.moveOrigin(dx, dy))
         {
             if (mouseOperation==OBJECT_MOVE)
             {
                 double scale = view.getScale();
-                int mdx = (int)(dx/scale); 
+                int mdx = (int)(dx/scale);
                 int mdy = (int)(dy/scale);
-                
+
                 if (!Settings.getInstance().getFastMove()) {
                     Movable hilitedObject = (Movable)view.getHilitedObject();
                     if (view.isSelected(hilitedObject))
@@ -1339,7 +1339,7 @@ public void mouseDragged(MouseEvent e) {
                 } else {
                     pressedX-=dx; pressedY-=dy;
                 }
-                
+
             }
             else /*if ((mouseOperation==OBJECT_SELECTION) ||
                     (mouseOperation==ZOOM_SELECTION))*/
@@ -1349,15 +1349,15 @@ public void mouseDragged(MouseEvent e) {
 
             forceRedraw=true;
     //        fastDrawing = false;
-            
+
             recalculateNavigatorPosition();
             blockNavigatorRedrawOnce = true;
             repaint();
         }
     }
-    
+
     notYetDragged = false;
-    
+
 }
     /**
      * Invoked when the mouse enters a component.
@@ -1378,26 +1378,26 @@ public void mouseMoved(MouseEvent e)
         int cx = e.getX()-view.getX0();
         int cy = e.getY()-view.getY0();
         double scale = view.getScale();
-    
+
         if(grLine != null)
         {
             grLine.getEndVertex().setX((int)((cx + view.getRx()) / scale));
             grLine.getEndVertex().setY((int)((cy + view.getRy()) / scale));
-            
+
             repaint();
         }
         else if(grBox != null)
         {
             grBox.getEndVertex().setX((int)((cx + view.getRx()) / scale));
             grBox.getEndVertex().setY((int)((cy + view.getRy()) / scale));
-            
+
             repaint();
         }
         else if(grTextBox != null)
         {
             grTextBox.getEndVertex().setX((int)((cx + view.getRx()) / scale));
             grTextBox.getEndVertex().setY((int)((cy + view.getRy()) / scale));
-            
+
             repaint();
         }
         else
@@ -1417,9 +1417,9 @@ public void mouseMoved(MouseEvent e)
                     //drawOnlyHilitedOnce=true;
                     repaint();
                 } else if (tmplink == null){
-                    
+
                     Vector connectors = LinkMoverUtilities.getLinkMoverUtilities().isMousePositionLinkMovable(cx+view.getRx(), cy+view.getRy());
-                    
+
                     if (connectors.size() != 0) {
                         if (connectors.size() == 1){
                             view.setAsHilited((VisibleObject) connectors.get(0));
@@ -1435,10 +1435,10 @@ public void mouseMoved(MouseEvent e)
                         setCursor(LinkMoverUtilities.getLinkMoverUtilities().getCursorForMove());
                     }
                     repaint();
-                    
+
                 }
-            } 
-            
+            }
+
         }
     }
 }
@@ -1448,7 +1448,7 @@ public void mouseMoved(MouseEvent e)
 public void mousePressed(MouseEvent e) {
     notYetDragged = true;
     ViewState view = ViewState.getInstance();
-    
+
     int px = e.getX()-view.getX0();
     int py = e.getY()-view.getY0();
     if ((px>0) && (py>0) && (px<width) && (py<height)) {
@@ -1456,7 +1456,7 @@ public void mousePressed(MouseEvent e) {
         boolean rightButtonPush  = (e.getModifiers() & InputEvent.BUTTON3_MASK) != 0;
 
 //         System.out.println("mousePressed("+leftButtonPush+","+rightButtonPush+")");
-        
+
         VisibleObject hilitedObject = view.getHilitedObject();
         if (leftButtonPush && !rightButtonPush) {
 
@@ -1466,7 +1466,7 @@ public void mousePressed(MouseEvent e) {
 
                 double navigatorScale = navigatorView.getScale();
                 double scale = view.getScale();
-                
+
                 int rx = (int)((e.getX()-navigatorRect.width/2.0-navigator.x)/navigatorScale*scale);
                 int ry = (int)((e.getY()-navigatorRect.height/2.0-navigator.y)/navigatorScale*scale);
 
@@ -1475,7 +1475,7 @@ public void mousePressed(MouseEvent e) {
                     repaint();
                     pressedX=px; pressedY=py;
                 }
-                
+
             }
             else if (e.isShiftDown()) {                // drag-move
 //System.out.println("Pressed: ORIGIN_MOVE");
@@ -1489,11 +1489,11 @@ public void mousePressed(MouseEvent e) {
                 pressedX=draggedX=px;
                 pressedY=draggedY=py;
                 fastDrawing=true;
-            }            
+            }
             else if (hilitedObject instanceof Movable) {  // move object
 //System.out.println("Pressed: OBJECT_MOVE");
                 mouseOperation = OBJECT_MOVE;
-                pressedX=draggedX=px; 
+                pressedX=draggedX=px;
                 pressedY=draggedY=py;
                 if (Settings.getInstance().getFastMove() && (hilitedObject instanceof Record
                         || hilitedObject instanceof Template || hilitedObject instanceof Group
@@ -1501,13 +1501,13 @@ public void mousePressed(MouseEvent e) {
                     fastDrawing=true;
                     fastMove = true;
                 }
-                     
+
             }
-            
+
         }
         else if (rightButtonPush && !leftButtonPush) {
 
-            if (e.isShiftDown() && 
+            if (e.isShiftDown() &&
                 (hilitedObject instanceof Rotatable)) {
                     ((Rotatable)hilitedObject).rotate();
                     alsoDrawHilitedOnce=true;
@@ -1520,7 +1520,7 @@ public void mousePressed(MouseEvent e) {
                 pressedX=draggedX=px;
                 pressedY=draggedY=py;
                 fastDrawing=true;
-            }            
+            }
             else if (hilitedObject instanceof Popupable) {
 
                 // linking support
@@ -1529,7 +1529,7 @@ public void mousePressed(MouseEvent e) {
                     // show all for VBDPorts
                     ((LinkManagerObject)hilitedObject).setTargetLink(tmplink);
                 }
-                
+
                 PopUpMenu.getInstance().show(
                     (Popupable)hilitedObject,
                     getWorkspacePanel(),
@@ -1545,7 +1545,7 @@ public void mousePressed(MouseEvent e) {
                 );
             }
         }
-    
+
     }
 }
     /**
@@ -1566,17 +1566,17 @@ public void mouseReleased(MouseEvent e) {
 
     switch (mouseOperation) {
 
-        case ORIGIN_MOVE : 
+        case ORIGIN_MOVE :
 //System.out.println("Released: ORIGIN_MOVE");
             restoreCursor();
             forceRedraw=true;
             repaint(); // jic
             break;
-                
+
         case OBJECT_MOVE : {
 //System.out.println("Released: OBJECT_MOVE");
             createNavigatorImage();
-            
+
             // no move at all
             if (notYetDragged)
                 break;
@@ -1588,10 +1588,10 @@ public void mouseReleased(MouseEvent e) {
                 dy = draggedY-pressedY;
                 fastMove=false;
             }
-            
-            
+
+
             double scale = view.getScale();
-            dx = (int)(dx/scale); 
+            dx = (int)(dx/scale);
             dy = (int)(dy/scale);
 
             if (Settings.getInstance().getSnapToGrid())
@@ -1600,14 +1600,14 @@ public void mouseReleased(MouseEvent e) {
                 dy -= dy % Constants.GRID_SIZE;
             }
 
-            
+
             if (!(dx==0 && dy==0))
-                if (view.isSelected(hilitedObject)) 
+                if (view.isSelected(hilitedObject))
                     moveSelection(dx, dy);
                 else
                     ((Movable)hilitedObject).move(dx, dy);
 
-            
+
             // create undo actions
             if (view.isSelected(hilitedObject))
             {
@@ -1624,24 +1624,24 @@ public void mouseReleased(MouseEvent e) {
             }
             else
             {
-                addAction(new MoveAction((Movable)hilitedObject, 
+                addAction(new MoveAction((Movable)hilitedObject,
                             hilitedObject.getX() - hilitedObject.getMarkedX(),
                             hilitedObject.getY() - hilitedObject.getMarkedY()));
             }
-            
+
             /*ViewState.getInstance().setAsHilited(null);
-        
+
             int cx = e.getX()-view.getX0();
             int cy = e.getY()-view.getY0();
             if (viewGroup.hiliteComponentsCheck(cx+view.getRx(), cy+view.getRy()))*/
-            
+
             fastDrawing=false;
             forceRedraw=true;
             if (selectedConnectorsForMove != null) {
                 for (int i = 0; i < selectedConnectorsForMove.size(); i++) {
                     view.deselectObject((VisibleObject) selectedConnectorsForMove.get(i));
                 }
-                
+
                 selectedConnectorsForMove = null;
                 setCursor(Cursor.getDefaultCursor());
             }
@@ -1649,32 +1649,32 @@ public void mouseReleased(MouseEvent e) {
             //alsoDrawHilitedOnce=true;
             repaint();
             break;}
-            
-        case OBJECT_SELECTION : 
+
+        case OBJECT_SELECTION :
 //System.out.println("Released: OBJECT_SELECTION");
             if (!e.isControlDown())
                 view.deselectAll();
             fastDrawing=false;
-            selectArea(pressedX, pressedY, 
+            selectArea(pressedX, pressedY,
                           draggedX, draggedY);
              repaint();
             break;
 
-        case ZOOM_SELECTION :{ 
+        case ZOOM_SELECTION :{
 //System.out.println("Released: ZOOM_SELECTION");
-        
+
             fastDrawing=false;
-            
+
             double scale = view.getScale();
             int dx = (int)(Math.abs(pressedX-draggedX)/scale);
             int dy = (int)(Math.abs(pressedY-draggedY)/scale);
-            
+
             if ((dx>Constants.RECORD_HEIGHT) &&    (dy>Constants.RECORD_HEIGHT))
-                zoomArea(pressedX, pressedY, 
+                zoomArea(pressedX, pressedY,
                             draggedX, draggedY);
              repaint();
             break;}
-            
+
         case LINK_OPERATION :
 //System.out.println("Released: LINK_OPERATION");
 
@@ -1682,13 +1682,13 @@ public void mouseReleased(MouseEvent e) {
             // link !!!
             repaint();
             break;
-        
+
     }
 
     //System.out.println(" hilited: "+hilitedObject);
     mouseOperation = NO_OPERATION;
 }
-         
+
 /**
  * Insert the method's description here.
  * Creation date: (28.1.2001 18:39:57)
@@ -1699,7 +1699,7 @@ public void moveLevelUp() {
     }
     else if (!viewStack.isEmpty())
     {
-        ascendFromTemplate();    
+        ascendFromTemplate();
     }
 }
 /**
@@ -1720,7 +1720,7 @@ private boolean moveSelection(int dx, int dy) {
     selected = view.getSelectedObjects().elements();
     while (selected.hasMoreElements() && ok)
         ((Movable)selected.nextElement()).move(dx, dy);
-        
+
     return ok;
 }
 /**
@@ -1768,18 +1768,18 @@ public void checkForIncodedDBDs(File file) throws IOException
     // get directory
     File relativeTo = file.getParentFile();
     DBDEntry.setBaseDir(relativeTo);
-    
+
     Console.getInstance().println();
-    
+
     Vector dbds = com.cosylab.vdct.DataProvider.getInstance().getCurrentDBDs();
     String[] dbd = DBResolver.resolveIncodedDBDs(file.getAbsolutePath());
-    
+
     if (dbd!=null)
     for (int i=0; i<dbd.length; i++)
     {
         DBDEntry entry = new DBDEntry(dbd[i]);
         File f = entry.getFile();
-        
+
         if (f.exists())
         {
             // skip if already loaded
@@ -1788,20 +1788,20 @@ public void checkForIncodedDBDs(File file) throws IOException
                 Console.getInstance().println("Loading DBD file: '"+f.getAbsolutePath()+"'.");
                 openDBD(f, com.cosylab.vdct.DataProvider.getInstance().getDbdDB()!=null);
             }
-            else {            
+            else {
                 Console.getInstance().println("DBD file '"+f.getAbsolutePath()+"' is already loaded.");
             }
         }
-        else 
+        else
         {
             Console.getInstance().println("DBD file not found: '"+f.getAbsolutePath()+"'.");
         }
-        
+
         //    replace
         if (dbds.contains(entry)) dbds.remove(entry);
         dbds.addElement(entry);
     }
-        
+
 }
 
 
@@ -1827,16 +1827,16 @@ public boolean importFields(File file, boolean ignoreLinkFields)
                 dbData = DBResolver.resolveDBasURL(new java.net.URL(getVDCTFrame().getAppletBase(), file.getAbsolutePath()));
             } catch (java.net.MalformedURLException e) { Console.getInstance().println(e); }
         else  */
-    
+
         try
         {
             dbData = DBResolver.resolveDB(file.getAbsolutePath());
-        } 
+        }
         catch(Exception e)
         {
             Console.getInstance().println(e);
         }
-        
+
         //
         // override fields of record which already exist in the opened DB
         //
@@ -1845,20 +1845,20 @@ public boolean importFields(File file, boolean ignoreLinkFields)
         while (enumer.hasMoreElements())
         {
             DBRecordData recordData = (DBRecordData)enumer.nextElement();
-    
+
             // does exist?
             Record existingRecord = (Record)rootGroup.findObject(recordData.getName(), true);
             if (existingRecord == null)
                 continue;
-            
+
             VDBRecordData existingRecordData = existingRecord.getRecordData();
-            
+
             // override here
             Enumeration fieldsEnum = recordData.getFieldsV().elements();
             while (fieldsEnum.hasMoreElements())
             {
                 DBFieldData field = (DBFieldData)fieldsEnum.nextElement();
-    
+
                 VDBFieldData existingField = (VDBFieldData)existingRecordData.getFields().get(field.getName());
                 if (existingField != null)
                 {
@@ -1870,30 +1870,30 @@ public boolean importFields(File file, boolean ignoreLinkFields)
                             fieldType == DBDConstants.DBF_FWDLINK)
                             continue;
                     }
-    
+
                     // packed undo
                     if (!imported)
                     {
                         imported = true;
                         UndoManager.getInstance().startMacroAction();
                     }
-                    
+
                     // do the override
                     existingField.setValue(field.getValue());
                 }
             }
         }
-        
+
         return true;
     }
     catch (Throwable th) {
         return false;
     }
     finally {
-        
+
         if (imported)
             UndoManager.getInstance().stopMacroAction();
-        
+
         restoreCursor();
     }
 }
@@ -1915,21 +1915,21 @@ public boolean importBorder(File file)
                 dbData = DBResolver.resolveDBasURL(new java.net.URL(getVDCTFrame().getAppletBase(), file.getAbsolutePath()));
             } catch (java.net.MalformedURLException e) { Console.getInstance().println(e); }
         else  */
-    
+
         try
         {
             dbData = DBResolver.resolveDB(file.getAbsolutePath());
-        } 
+        }
         catch(Exception e)
         {
             Console.getInstance().println(e);
         }
-        
+
         //
         // override fields of record which already exist in the opened DB
         //
         Group rootGroup = Group.getRoot();
-        
+
         // packed undo - use CreateAction(VisibleObject) instead
 //        if (!imported)
 //        {
@@ -1940,15 +1940,15 @@ public boolean importBorder(File file)
         Border border = new Border(null, rootGroup);
         applyVisualDataOfGraphicsObjects(dbData, border);
         rootGroup.addSubObject(border.getName(), border);
-        
+
         UndoManager.getInstance().addAction(new CreateAction(border));
-        
+
           blockNavigatorRedrawOnce = false;
            createNavigatorImage();
            forceRedraw = true;
            repaint();
 
-        // free db memory        
+        // free db memory
         dbData = null;
         System.gc();
 
@@ -1958,10 +1958,10 @@ public boolean importBorder(File file)
         return false;
     }
     finally {
-        
+
 //        if (imported)
 //            UndoManager.getInstance().stopMacroAction();
-        
+
         restoreCursor();
     }
 }
@@ -1976,20 +1976,20 @@ public boolean open(File file, boolean importDB, boolean importToCurrentGroup) t
  */
 public boolean open(InputStream is, File file, boolean importDB, boolean importToCurrentGroup) throws IOException {
 
-  
+
     ///
     /// DBD managment (not on system clipboard import)
     ///
     if (file != null)
         cleanDBDList();
-     
+
     // check for in-coded DBDs
     if (file != null)
         checkForIncodedDBDs(file);
 
 
     ///
-    /// load DB if we have DBD 
+    /// load DB if we have DBD
     ///
 
     DBDData dbdData = com.cosylab.vdct.DataProvider.getInstance().getDbdDB();
@@ -2017,7 +2017,7 @@ public boolean open(InputStream is, File file, boolean importDB, boolean importT
                 dbData = DBResolver.resolveDB(is);
             else
                 dbData = DBResolver.resolveDB(file.getAbsolutePath());
-        } 
+        }
         catch(Throwable e)
         {
             Console.getInstance().println(e);
@@ -2048,9 +2048,9 @@ public boolean open(InputStream is, File file, boolean importDB, boolean importT
                 viewGroup.setAbsoluteName("");
                 viewGroup.setLookupTable(new Hashtable());
                 Group.setRoot(viewGroup);
-                
+
                 boolean validate = (is != null);
-                
+
                 // import directly to workspace (current view group)
                 // imported list needed for undo action
                 HashMap importedList = applyVisualData(true, viewGroup, dbData, vdbData);
@@ -2062,16 +2062,16 @@ public boolean open(InputStream is, File file, boolean importDB, boolean importT
                     VDBData.addPortsAndMacros(dbData.getTemplateData(), template, vdbData, importedList);
                     validate = true;
                 }
-                
+
                 // clipboard import -> needs checks
                 if (validate)
                 {
                     viewGroup.manageLinks(true);
                     viewGroup.unconditionalValidateSubObjects(isFlat());
                 }
-                
+
                 viewGroup.selectAllComponents();
-                
+
                 ((GetGUIInterface)CommandManager.getInstance().getCommand("GetGUIMenuInterface")).getGUIMenuInterface().cut();
             }
             finally
@@ -2079,16 +2079,16 @@ public boolean open(InputStream is, File file, boolean importDB, boolean importT
                 viewGroup = vg;
                 Group.setRoot(rg);
             }
-            
+
             ((GetGUIInterface)CommandManager.getInstance().getCommand("GetGUIMenuInterface")).getGUIMenuInterface().paste();
             Group.getClipboard().clear();
-            
+
         }
         else if (!importDB)
         {
             // find 'first' template defined in this file (not via includes)
             VDBTemplate template = (VDBTemplate)VDBData.getTemplates().get(dbData.getTemplateData().getId());
-            
+
             // found
             if (template!=null)
             {
@@ -2103,14 +2103,14 @@ public boolean open(InputStream is, File file, boolean importDB, boolean importT
                 InspectorManager.getInstance().updateObjectLists();
                 moveToGroup(template.getGroup());
             }
-            
+
             setModified(false);
             viewGroup.unconditionalValidateSubObjects(isFlat());
         }
 
         // !!!
         if (VisualDCT.getInstance() != null)
-            VisualDCT.getInstance().updateLoadLabel();    
+            VisualDCT.getInstance().updateLoadLabel();
         //updateWorkspaceGroup();
 
         blockNavigatorRedrawOnce = false;
@@ -2121,18 +2121,18 @@ public boolean open(InputStream is, File file, boolean importDB, boolean importT
         ///!!! TODO put somewhere in try-finally block
         restoreCursor();
         UndoManager.getInstance().setMonitor(true);
-        // free db memory        
+        // free db memory
         dbData = null;
         System.gc();
 
         return true;
-    } 
+    }
     else
         return false;
 }
 
 /**
- * 
+ *
  */
 private void cleanDBDList() {
     // clean list of unexisting DBDs
@@ -2154,24 +2154,24 @@ public boolean importDB(File file) throws IOException {
 }
 
 public static void applyPortAndMacroConnectors(DBData dbData, VDBData vdbData) {
-    
+
     Group rootGroup = Group.getRoot();
     int pos;
     String objectName = null;
     String fieldName = null;
     String target;
-    
+
     Object object = null;
     Connector connector = null;
     Template template = null;
     DBConnectorData connectorData;
     DBLinkData dbLink;
     Enumeration e = dbData.getLinks().elements();
-    
+
     while (e.hasMoreElements())
     {
         dbLink = (DBLinkData) (e.nextElement());
-        
+
         pos = dbLink.getFieldName().lastIndexOf(Constants.FIELD_SEPARATOR);
 //        if (pos > 0) {
 //            continue;
@@ -2181,7 +2181,7 @@ public static void applyPortAndMacroConnectors(DBData dbData, VDBData vdbData) {
         if (pos > 0) {
             objectName = dbLink.getFieldName().substring(0, pos);
             fieldName = dbLink.getFieldName().substring(pos + 1);
-            
+
         } else {
             objectName = dbLink.getFieldName();
         }
@@ -2189,7 +2189,7 @@ public static void applyPortAndMacroConnectors(DBData dbData, VDBData vdbData) {
         object =  rootGroup.findObject(objectName, true);
         if (object instanceof Port) {
             Port port = (Port)object;
-            
+
             target = dbLink.getTargetID();
 
             while ((connectorData = (DBConnectorData) dbData.getConnectors().get(target))!= null)
@@ -2205,36 +2205,36 @@ public static void applyPortAndMacroConnectors(DBData dbData, VDBData vdbData) {
 
                 target = connectorData.getTargetID();
             }
-        } 
+        }
         else if (object instanceof Template) {
             //connects the macro and Template fields if there are multiple connectors on the link
             template = (Template)object;
-            
+
             // field has to be already created
             fieldName = fieldName.substring(2, fieldName.length()-1);
             Object unknownTarget = template.getSubObjects().get(fieldName);
 
             if (unknownTarget instanceof OutLink)
             {
-                
+
                 target = dbLink.getTargetID();
-                        
+
                 while ((connectorData = (DBConnectorData) dbData.getConnectors().get(target))!= null)
-                {    
+                {
                     //connectors were already created in the applyVisualData(...)
                     connector = (Connector) template.getSubObject(target);
                     target = connectorData.getTargetID();
                 }
-                    
+
                 Object potentialMacro = rootGroup.getSubObject(target);
                 if (potentialMacro instanceof Macro && connector != null) {
                     connector.setInput((InLink) potentialMacro);
                     ((Macro)potentialMacro).setOutput(connector, null);
                 }
-                
-                
+
+
             }
-        } 
+        }
 
     }
 }
@@ -2245,12 +2245,12 @@ public static void applyPortAndMacroConnectors(DBData dbData, VDBData vdbData) {
  */
 public static HashMap applyVisualData(boolean importDB, Group group, DBData dbData, VDBData vdbData)
 {
- 
+
     if (vdbData==null)
         return null;
-    
+
     HashMap importedList = null;
-    
+
     // apply visual-data && generate visual object, group hierarchy
     try {
 
@@ -2288,7 +2288,7 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
         DBTemplateInstance dbTemplate;
 
 
-        
+
         // add records, template instances and entries
         Enumeration e = vdbData.getStructure().elements();
 
@@ -2310,18 +2310,18 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
                             + " already exists - this definition will be ignored.");
                     blackList.add(record);
                     continue;
-                } 
-    
+                }
+
                 record = new Record(null, vdbRec, dbRec.getX(), dbRec.getY());
                 record.setRight(dbRec.isRotated());
                 record.setColor(dbRec.getColor());
                 record.setDescription(dbRec.getDescription());
-    
+
                 // add fields (preserve visual order)
                 e2 = dbRec.getVisualFieldsV().elements();
                 while (e2.hasMoreElements()) {
                     dbField = (DBFieldData) (e2.nextElement());
-                    
+
                     if (dbField.isHasAdditionalData()) {
                         field = record.initializeLinkField(vdbRec.getField(dbField.getName()));
                         field.setColor(dbField.getColor());
@@ -2329,7 +2329,7 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
                         field.setDescription(dbField.getDescription());
                     }
                 }
-                
+
                 group.addSubObject(vdbRec.getName(), record, true);
                 if (importDB) importedList.put(vdbRec.getName(), record);
 
@@ -2337,9 +2337,9 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
             else if (obj instanceof VDBTemplateInstance)
             {
                 vdbTemplate = (VDBTemplateInstance)obj;
-                
+
                 dbTemplate = (DBTemplateInstance)dbData.getTemplateInstances().get(vdbTemplate.getName());
-    
+
                 VDBTemplate template = (VDBTemplate)VDBData.getTemplates().get(dbTemplate.getTemplateId());
                 if (template==null)
                 {
@@ -2349,41 +2349,41 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
                             + dbTemplate.getTemplateClassID()
                             + " does not exist - this definition will be ignored.");*/
                     continue;
-                }            
-                
+                }
+
                 VDBTemplateInstance templateInstance = (VDBTemplateInstance)vdbData.getTemplateInstances().get(dbTemplate.getTemplateInstanceId());
                 if (templateInstance==null)
                 {
                     Console.getInstance().println(
                         "Template instance "+dbTemplate.getTemplateInstanceId()+" does not exist - this definition will be ignored.");
                     continue;
-                }            
-    
+                }
+
                 Template templ = new Template(null, templateInstance, false);
                 group.addSubObject(dbTemplate.getTemplateInstanceId(), templ, true);
                 if (importDB) importedList.put(dbTemplate.getTemplateInstanceId(), templ);
-                
+
                 // add fields (to preserve order)
                 e2 = dbTemplate.getTemplateFields().elements();
                 while (e2.hasMoreElements())
                 {
                     DBTemplateField dtf = (DBTemplateField)e2.nextElement();
-                    
+
                     // is it macro?
                     EPICSLink templateLink = null;
                     VDBMacro macro = (VDBMacro)templ.getTemplateData().getTemplate().getMacros().get(dtf.getName());
                     if (macro!=null) {
                         templateLink = templ.addMacroField(macro);
                     }
-    
+
                     // is it port?
                     if (templateLink==null)
-                    {                
+                    {
                         VDBPort port = (VDBPort)templ.getTemplateData().getTemplate().getPorts().get(dtf.getName());
                         if (port!=null)
                             templateLink = templ.addPortField(port);
                     }
-                                        
+
                     // apply GUI data
                     if (templateLink != null)
                     {
@@ -2391,9 +2391,9 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
                         templateLink.setRight(dtf.isRight());
                         templateLink.getFieldData().setVisibility(dtf.getVisibility());
                     }
-                    
+
                 }
-                
+
                 // initialize rest fields (if any)
                 templ.initializeLinkFields();
 
@@ -2402,15 +2402,15 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
                 templ.setColor(dbTemplate.getColor());
                 templ.move(dbTemplate.getX(), dbTemplate.getY());
                 //templ.forceValidation();
-                
+
                 tobeUpdated.add(templ);
-                
+
             }
             else if (obj instanceof DBEntry)
             {
                 group.getStructure().addElement(obj);
             }
-            
+
         }
 
         // add groups (if not already created) and apply visual data
@@ -2437,9 +2437,9 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
 
 
         // add links, connectors
-        
+
         // !!!! fix templates links, connectors
-        
+
         int pos;
         String recordName = null;
         String fieldName = null;
@@ -2462,15 +2462,15 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
             if (pos > 0) {
                 recordName = dbLink.getFieldName().substring(0, pos);
                 fieldName = dbLink.getFieldName().substring(pos + 1);
-                
+
             } else {
                 recordName = dbLink.getFieldName();
             }
 
             object =  rootGroup.findObject(recordName, true);
-            
+
             if (object instanceof Template) {
-               
+
                 template = (Template)object;
                 if (importDB)
                 {
@@ -2491,9 +2491,9 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
                 if (unknownTarget instanceof OutLink)
                 {
                     outlink = (OutLink) unknownTarget;
-                    
+
                     target = dbLink.getTargetID();
-                            
+
                     while ((connectorData = (DBConnectorData) dbData.getConnectors().get(target))!= null)
                     {
                         connector = new Connector(target, template, null, null);
@@ -2509,12 +2509,12 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
                         outlink = connector;
                         target = connectorData.getTargetID();
                     }
-                        
-                    
+
+
                     if (target == "null") {
                         continue;
                     }
-                    
+
                     InLink templateLink = (InLink)Group.getRoot().getLookupTable().get(target);
                     if (templateLink!=null)
                     {
@@ -2531,27 +2531,27 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
                             recordName = target.substring(0, pos);
                             fieldName = target.substring(pos + 1);
                         }
-                        
+
                         // remove process
                         pos = fieldName.indexOf(' ');
                         if (pos>0)
                             fieldName = fieldName.substring(0, pos);
 
                         object = rootGroup.findObject(recordName, true);
-                        
+
                         if (object instanceof LinkManagerObject)
                         {
                             // field has to be already created
                             Object unknown = ((LinkManagerObject)object).getSubObjects().get(fieldName);
-                            
+
                             if (unknown instanceof InLink)
                             {
                                 inlink = (InLink)unknown;
                                 inlink.setOutput(outlink, null);
                                 outlink.setInput(inlink);
                             }
-                        } 
-                        
+                        }
+
                     }
                     else
                     {
@@ -2561,10 +2561,10 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
                             InLink inlink2 = (InLink)unknown;
                             inlink2.setOutput(outlink, null);
                             outlink.setInput(inlink2);
-                        } 
+                        }
                     }
                 }
-            } 
+            }
             else if (object instanceof Record)
             {
                 record = (Record)object;
@@ -2585,13 +2585,13 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
                 if (unknownTarget instanceof OutLink)
                 {
                     outlink = (OutLink) unknownTarget;
-                    
+
                     target = dbLink.getTargetID();
 
                     pos = target.lastIndexOf(EPICSLinkOut.LINK_SEPARATOR);
                     if (pos >= 0) // connectors
                     {
-                        
+
                         while ((connectorData = (DBConnectorData) dbData.getConnectors().get(target))!= null)
                         {
                             connector = new Connector(target, record, null, null);
@@ -2608,7 +2608,7 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
                             target = connectorData.getTargetID();
                         }
                     }
-                    
+
                     // is in lookup table ?
                     InLink templateLink = (InLink)Group.getRoot().getLookupTable().get(target);
                     if (templateLink!=null)
@@ -2618,7 +2618,7 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
                     }
                     else if ((pos = target.lastIndexOf(Constants.FIELD_SEPARATOR)) >= 0)
                     {
-                       
+
                         recordName = target.substring(0, pos);
                         fieldName = target.substring(pos + 1);
 
@@ -2628,7 +2628,7 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
                             fieldName = fieldName.substring(0, pos);
 
                         record = (Record) rootGroup.findObject(recordName, true);
-                        
+
                         if (record != null)
                         {
                             // field has to be already created
@@ -2646,9 +2646,9 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
                         }
                     }
                     else
-                    {        
+                    {
                         Record targetRecord = null;
-                
+
                         if ((targetRecord = (Record) rootGroup.findObject(target, true)) != null)
                         {
                             // VAL or forward link
@@ -2658,7 +2658,7 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
                                 // forward link
                                 targetRecord.setOutput(outlink, null);
                                 outlink.setInput(targetRecord);
-                            } 
+                            }
                             else
                             {
                                 // VAL
@@ -2675,16 +2675,16 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
                     }
                 }
             }
-            
+
         }
 
-        
+
 //         update template instances links
         Iterator i = tobeUpdated.iterator();
         while (i.hasNext()) {
             ((Template)i.next()).manageLinks();
         }
-        
+
         applyVisualDataOfGraphicsObjects(dbData, rootGroup);
         if (importDB) {
             boolean monitor = UndoManager.getInstance().isMonitor();
@@ -2698,10 +2698,10 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
     }
 
     group.initializeLayout();
-        
+
     // call this after ports/macros fields are initialized !!
 //    group.manageLinks(true);
-    
+
     return importedList;
 }
 
@@ -2711,7 +2711,7 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
  */
 private static void applyVisualDataOfGraphicsObjects(DBData dbData, ContainerObject container) {
     Enumeration e;
-    // lines 
+    // lines
     DBLine dbLine;
     e = dbData.getLines().elements();
     while (e.hasMoreElements())
@@ -2740,7 +2740,7 @@ private static void applyVisualDataOfGraphicsObjects(DBData dbData, ContainerObj
             container.addSubObject(line.getName(), line, true);
     }
 
-    // boxes 
+    // boxes
     DBBox dbBox;
     e = dbData.getBoxes().elements();
     while (e.hasMoreElements())
@@ -2767,7 +2767,7 @@ private static void applyVisualDataOfGraphicsObjects(DBData dbData, ContainerObj
             container.addSubObject(box.getName(), box, true);
     }
 
-    // textboxes 
+    // textboxes
     DBTextBox dbTextBox;
     e = dbData.getTextboxes().elements();
     while (e.hasMoreElements())
@@ -2775,13 +2775,13 @@ private static void applyVisualDataOfGraphicsObjects(DBData dbData, ContainerObj
         dbTextBox = (DBTextBox)e.nextElement();
         TextBox textbox = new TextBox(dbTextBox.getName(), null, dbTextBox.getX(), dbTextBox.getY(), dbTextBox.getX2(), dbTextBox.getY2());
         textbox.setBorder(dbTextBox.getBorder());
-        
+
         Font font = FontMetricsBuffer.getInstance().getFont(dbTextBox.getFontName(), dbTextBox.getFontSize(), dbTextBox.getFontStyle());
         textbox.setFont(font);
-        
+
         textbox.setDescription(dbTextBox.getDescription());
         textbox.setColor(dbTextBox.getColor());
-    
+
         if (dbTextBox.getParentBorderID() != null && !dbTextBox.getParentBorderID().equals("null")) {
             Object obj = container.getSubObject(dbTextBox.getParentBorderID());
             Border border;
@@ -2826,12 +2826,12 @@ public boolean openDBD(File file, boolean importDBD) throws IOException {
     com.cosylab.vdct.dbd.DBDData dbdData = null;
     if (importDBD)
         dbdData = DataProvider.getInstance().getDbdDB();
-        
+
 /*    if (getAppletBase()!=null)     //applet support !!!
         try {
             dbdData = DBDResolver.resolveDBDasURL(dbdData, new java.net.URL(getAppletBase(), file.getAbsolutePath()));
         } catch (java.net.MalformedURLException e) {
-            Console.getInstance().println(e); 
+            Console.getInstance().println(e);
         }
     else */
          dbdData = DBDResolver.resolveDBD(dbdData, file.getAbsolutePath());
@@ -2840,7 +2840,7 @@ public boolean openDBD(File file, boolean importDBD) throws IOException {
         restoreCursor();
         return false;
     }
-    
+
     if (!importDBD)
     {
         DataProvider.getInstance().setDbdDB(dbdData);
@@ -2853,28 +2853,28 @@ public boolean openDBD(File file, boolean importDBD) throws IOException {
 
     // !!!
     if (VisualDCT.getInstance()!=null)
-        VisualDCT.getInstance().updateLoadLabel();    
+        VisualDCT.getInstance().updateLoadLabel();
 
     restoreCursor();
     return true;
 }
 
 /**
- * Prints the page at the specified index into the specified 
+ * Prints the page at the specified index into the specified
  * {@link Graphics} context in the specified
- * format.  A <code>PrinterJob</code> calls the 
+ * format.  A <code>PrinterJob</code> calls the
  * <code>Printable</code> interface to request that a page be
- * rendered into the context specified by 
+ * rendered into the context specified by
  * <code>graphics</code>.  The format of the page to be drawn is
  * specified by <code>pageFormat</code>.  The zero based index
- * of the requested page is specified by <code>pageIndex</code>. 
+ * of the requested page is specified by <code>pageIndex</code>.
  * If the requested page does not exist then this method returns
  * NO_SUCH_PAGE; otherwise PAGE_EXISTS is returned.
  * The <code>Graphics</code> class or subclass implements the
  * {@link PrinterGraphics} interface to provide additional
  * information.  If the <code>Printable</code> object
  * aborts the print job then it throws a {@link PrinterException}.
- * @param graphics the context into which the page is drawn 
+ * @param graphics the context into which the page is drawn
  * @param pageFormat the size and orientation of the page being drawn
  * @param pageIndex the zero based index of the page to be drawn
  * @return PAGE_EXISTS if the page is rendered successfully
@@ -2884,20 +2884,20 @@ public boolean openDBD(File file, boolean importDBD) throws IOException {
  *         thrown when the print job is terminated.
  */
 public int print(java.awt.Graphics graphics, java.awt.print.PageFormat pageFormat, int pageIndex) throws java.awt.print.PrinterException {
-    
+
     graphics.translate((int)pageFormat.getImageableX(),
                        (int)pageFormat.getImageableY());
 
     int pageWidth = (int)pageFormat.getImageableWidth();
     int pageHeight = (int)pageFormat.getImageableHeight();
 
-    
+
     /*------------------------------------------------------------*/
-    
+
     ViewState view = ViewState.getInstance();
 
     double printScale = 1.0;
-        
+
     double screen2printer = 0;
     switch (Page.getPrintMode()) {
         case Page.TRUE_SCALE:
@@ -2905,23 +2905,23 @@ public int print(java.awt.Graphics graphics, java.awt.print.PageFormat pageForma
             screen2printer = 72.0/getWorkspacePanel().getToolkit().getScreenResolution();
             printScale = 1.0;
             break;
-            
+
         case Page.USER_SCALE:
             screen2printer = 72.0/getWorkspacePanel().getToolkit().getScreenResolution();
             screen2printer *= Page.getUserScale();
             printScale = Page.getUserScale();
             break;
-            
+
         case Page.FIT_SCALE:
             // fit to paper
             double xscale = pageWidth/(double)view.getViewWidth();
             double yscale = pageHeight/(double)view.getViewHeight();
             screen2printer = Math.min(xscale, yscale)*view.getScale();
-            
+
             printScale = screen2printer / 72.0 * getWorkspacePanel().getToolkit().getScreenResolution();
             break;
     }
-    
+
     double converter = screen2printer/view.getScale();
     int w = (int)(view.getViewWidth()*converter);
     int h = (int)(view.getViewHeight()*converter);
@@ -2936,7 +2936,7 @@ public int print(java.awt.Graphics graphics, java.awt.print.PageFormat pageForma
                            (pageHeight-h)/2);
     }
 
-        
+
 
     int nCol = Math.max((int)Math.ceil((double)w/pageWidth), 1);
     int nRow = Math.max((int)Math.ceil((double)h/pageHeight), 1);
@@ -2952,9 +2952,9 @@ public int print(java.awt.Graphics graphics, java.awt.print.PageFormat pageForma
 
     int imageWidth = Math.min(pageWidth, w-x);
     int imageHeight = Math.min(pageHeight, h-y);
-    
+
     graphics.clipRect(0, 0, imageWidth, imageHeight);
-    
+
     int rx = view.getRx(); int ry = view.getRy();
     double scale = view.getScale();
     int viewWidth = view.getViewWidth(), viewHeight = view.getViewHeight();
@@ -2965,23 +2965,23 @@ public int print(java.awt.Graphics graphics, java.awt.print.PageFormat pageForma
     try
     {
         ((Graphics2D)graphics).scale(screen2printer, screen2printer);
-        
+
         printing = true;
-                
+
         view.setScale(1.0);
         view.setRx((int)(rx/scale+x));
         view.setRy((int)(ry/scale+y));
         view.setViewWidth((int)(imageWidth/screen2printer));
         view.setViewHeight((int)(imageHeight/screen2printer));
-        
+
         FontMetricsBuffer.setInstance(new FontMetricsBuffer(graphics));
-    
+
         /*Shape clip = graphics.getClip();
         graphics.setClip(null);
         graphics.setColor(Color.black);
         graphics.drawRect(0,0,view.getViewWidth(), view.getViewHeight());
         graphics.setClip(clip);*/
-        
+
         if (Settings.getInstance().getShowGrid())
         {
 
@@ -2991,7 +2991,7 @@ public int print(java.awt.Graphics graphics, java.awt.print.PageFormat pageForma
             int y0 = view.getGridSize() - view.getRy() % gridSize;
             int xsteps = view.getViewWidth() / gridSize + 1;
             int ysteps = view.getViewHeight() / gridSize + 1;
-    
+
             if (gridSize >= 15)
             // crosses
             for (int gy=0; gy < ysteps; gy++) {
@@ -3016,7 +3016,7 @@ public int print(java.awt.Graphics graphics, java.awt.print.PageFormat pageForma
         }
 
 
-        // change color sheme 
+        // change color sheme
         loadBlackOnWhiteColorScheme();
 
         viewGroup.paintComponents(graphics, false, isFlat());
@@ -3025,7 +3025,7 @@ public int print(java.awt.Graphics graphics, java.awt.print.PageFormat pageForma
         ((Graphics2D)graphics).setTransform(transf);
         if (Page.getPrintMode()==Page.FIT_SCALE) graphics.translate(-(pageWidth-w)/2, -(pageHeight-h)/2);
 //        graphics.setClip(null);
-        
+
         //prints legend
         if ((Settings.getInstance().getLegendVisibility()==1 && pageIndex==0) || Settings.getInstance().getLegendVisibility()==2) {
             if (Settings.getInstance().getLegendVisibility()==1) { // correct navigator rect
@@ -3034,7 +3034,7 @@ public int print(java.awt.Graphics graphics, java.awt.print.PageFormat pageForma
             }
             printLegend(graphics, pageWidth, pageHeight, pageIndex+1, maxNumPage, printScale);
         }
-    
+
     }
     catch (Exception e)
     {
@@ -3046,24 +3046,24 @@ public int print(java.awt.Graphics graphics, java.awt.print.PageFormat pageForma
 //        resets clipping
         ((Graphics2D)graphics).setTransform(transf);
         graphics.setClip(0,0,imageWidth, imageHeight);
-        
+
         view.setScale(scale);
         view.setRx(rx); view.setRy(ry);
         view.setViewWidth(viewWidth); view.setViewHeight(viewHeight);
-        
+
         FontMetricsBuffer.setInstance(fmb);
-        
-//        restore color sheme 
+
+//        restore color sheme
          loadWhiteOnBlackColorScheme();
-         
+
          printing = false;
     }
-    
+
 
 
     /*------------------------------------------------------------*/
-    
-    System.gc();    
+
+    System.gc();
     return PAGE_EXISTS;
 }
 /**
@@ -3071,14 +3071,14 @@ public int print(java.awt.Graphics graphics, java.awt.print.PageFormat pageForma
  */
 private void printLegend(Graphics graphics, int width, int height, int page, int pagenum, double scale) {
     Settings s = Settings.getInstance();
-    
+
     //prepare
-    int navigatorWidth=0, navigatorHeight=0; 
+    int navigatorWidth=0, navigatorHeight=0;
     if (s.isLegendNavigatorVisibility()) {
         navigatorWidth = s.getLegendNavigatorWidth();
-        navigatorHeight = s.getLegendNavigatorHeight();    
+        navigatorHeight = s.getLegendNavigatorHeight();
     }
-        
+
     Image img = Toolkit.getDefaultToolkit().getImage(s.getLegendLogo());
     MediaTracker mediaTracker = new MediaTracker(VisualDCT.getInstance());
     mediaTracker.addImage(img, 0);
@@ -3091,12 +3091,12 @@ private void printLegend(Graphics graphics, int width, int height, int page, int
     }
     int logoWidth = img.getWidth(null), logoHeight = img.getHeight(null)+8;
     /*int maxLogo =Math.max(logoWidth,logoHeight);
-    if (maxLogo > 200) {     
-        logoHeight = logoHeight * 200 / maxLogo; 
-        logoWidth = logoWidth * 200 / maxLogo; 
+    if (maxLogo > 200) {
+        logoHeight = logoHeight * 200 / maxLogo;
+        logoWidth = logoWidth * 200 / maxLogo;
     }*/
-    
-    
+
+
     String label = "";
     if (VisualDCT.getInstance().getOpenedFile()!=null)
         label = VisualDCT.getInstance().getOpenedFile().getName()+", ";
@@ -3104,66 +3104,66 @@ private void printLegend(Graphics graphics, int width, int height, int page, int
             +(int)(scale*1000+0.5)/10.0+"% scale";
     if (s.getLegendVisibility()==1) label+=", "+pagenum+" pages";
     if (s.getLegendVisibility()==2) label+=", Page "+page+" of "+pagenum;
-            
+
     Font font =FontMetricsBuffer.getInstance().getAppropriateFont(
-        Constants.DEFAULT_FONT, Font.PLAIN, 
-        label, 200, 16);            
+        Constants.DEFAULT_FONT, Font.PLAIN,
+        label, 200, 16);
     FontMetrics fm = FontMetricsBuffer.getInstance().getFontMetrics(font);
     int labelWidth = fm.stringWidth(label)+8, labelHeight = fm.getHeight();
-    
+
     int legendWidth = navigatorWidth + Math.max(logoWidth, labelWidth),
         legendHeight = Math.max(navigatorHeight, logoHeight+labelHeight);
-    
+
     int navX, navY, labX=0, labY, logoX, logoY;
     switch (s.getLegendPosition()) {
-        case 1:     
+        case 1:
             navX=0; navY=0;
             labX=navigatorWidth+8; labY=labelHeight;
             logoX=navigatorWidth; logoY=labelHeight+8;
             break;
-        case 2: 
+        case 2:
             navX=width-navigatorWidth-1; navY=0;
             labX=width-navigatorWidth-labelWidth-8-1; labY=labelHeight;
             logoX=width-navigatorWidth-logoWidth-1; logoY=labelHeight+8;
             break;
-        case 3: 
-            navX=0; navY=height-navigatorHeight-1; 
+        case 3:
+            navX=0; navY=height-navigatorHeight-1;
             labX=navigatorWidth+8; labY=height-1;
             logoX=navigatorWidth; logoY=height-labelHeight-logoHeight-1;
             break;
         default:
-        case 4: 
+        case 4:
             navX=width-navigatorWidth-1; navY=height-navigatorHeight-1;
             labX=width-navigatorWidth-labelWidth-8-1; labY=height-1;
             logoX=width-navigatorWidth-logoWidth-1;  logoY=height-labelHeight-logoHeight-1;
     }
-    
+
     // paints
-    
+
     //navigator
     ViewState view = ViewState.getInstance();
-    
+
     if (s.isLegendNavigatorVisibility()) {
         AffineTransform transf = ((Graphics2D)graphics).getTransform();
-    
+
         graphics.translate(navX, navY);
         graphics.setClip(new Rectangle(0,0,navigatorWidth, navigatorHeight));
-    
+
         Dimension navigatorSize = new Dimension(navigatorWidth, navigatorHeight);
         double xscale = navigatorWidth/(double)view.getWidth();
         double yscale = navigatorHeight/(double)view.getHeight();
         double nscale = Math.min(xscale, yscale);
-    
+
         graphics.setColor(Color.white);
         graphics.fillRect(0, 0, navigatorWidth-1, navigatorHeight-1);
-    
+
         ((Graphics2D)graphics).scale(nscale, nscale);
-    
-    
-    
+
+
+
         double rx=(double)view.getRx()*nscale, ry=(double)view.getRy()*nscale;
         int rwidth = (int)(view.getViewWidth()*nscale), rheight = (int)(view.getViewHeight()*nscale);
-    
+
         view.setRx(0); view.setRy(0);
         viewGroup.paintComponents(graphics, false, isFlat());
 
@@ -3177,22 +3177,22 @@ private void printLegend(Graphics graphics, int width, int height, int page, int
          final int min = 8;
          if ((rwidth<min) || (rheight<min)) {
             graphics.setColor(Color.lightGray);
-             graphics.drawRect((int)(rx-min), (int)(ry-min), 
+             graphics.drawRect((int)(rx-min), (int)(ry-min),
                  (int)(rwidth+2*min), (int)(rheight+2*min));
          }
-     
+
         graphics.setColor(Color.gray);
         graphics.drawRect(0, 0, navigatorWidth-1, navigatorHeight-1);
-    
-    
+
+
         ((Graphics2D)graphics).setTransform(transf);
     }
-    
+
     graphics.setClip(logoX, logoY, logoWidth, logoHeight);
     if (img!=null) {
         graphics.drawImage(img, logoX, logoY, null);
     }
-    
+
     graphics.setClip(0,0, width, height);
     graphics.setColor(Constants.FRAME_COLOR);
     graphics.setFont(font);
@@ -3227,19 +3227,19 @@ private synchronized void redraw(Graphics g) {
         createNavigatorImage();
 
     ViewState view = ViewState.getInstance();
-        
-    if ((canvasImage==null) || 
-        (canvasSize.width!=width) || 
+
+    if ((canvasImage==null) ||
+        (canvasSize.width!=width) ||
         (canvasSize.height!=height)) {
-    
+
         if (width == 0 || height == 0) return;
-        
+
         canvasImage = getWorkspacePanel().createImage(width, height);
         if (canvasImage==null) return;
         canvasSize = new Dimension(width, height);
         canvasGraphics = canvasImage.getGraphics();
 
-        // free old image memory        
+        // free old image memory
         System.gc();
     }
 
@@ -3254,13 +3254,13 @@ private synchronized void redraw(Graphics g) {
         origX = -view.getRx();
         canvasGraphics.fillRect(0, 0, origX, height);
     }
-    
+
     if (view.getRy()<0)
     {
         origY = -view.getRy();
         canvasGraphics.fillRect(origX, 0, width, origY);
     }
-        
+
     int reachX = view.getRx()+view.getViewWidth()+origX;
     int wX = (int)(view.getScale()*view.getWidth());
     if (reachX>wX)
@@ -3270,7 +3270,7 @@ private synchronized void redraw(Graphics g) {
     }
 
     int reachY = view.getRy()+view.getViewHeight()+origY;
-    int hY = (int)(view.getScale()*view.getHeight());    
+    int hY = (int)(view.getScale()*view.getHeight());
     if (reachY>hY)
     {
         h += hY - reachY;
@@ -3288,11 +3288,11 @@ private synchronized void redraw(Graphics g) {
         int sx = origX;
         if (view.getRx()>0)
             sx += (view.getGridSize() - view.getRx()) % gridSize;
-            
+
         int y0 = origY;
         if (view.getRy()>0)
             y0 += (view.getGridSize() - view.getRy()) % gridSize;
-            
+
         int xsteps = (w+1) / gridSize + 1;
         int ysteps = (h+1) / gridSize + 1;
 
@@ -3323,14 +3323,14 @@ private synchronized void redraw(Graphics g) {
     viewGroup.paintComponents(canvasGraphics, false, isFlat());
 
     if (canvasGraphics!=null) copyCanvasImage(g);
-    
+
 }
 
 /**
  * DrawingSurface thread.
  * Aim of this thread is to optimize drawing on the surface.
  * It could happen that <code>repaint()</code> method is called very often
- * (e.g. 100-times per second). Drawing at such rate is non-sence. 
+ * (e.g. 100-times per second). Drawing at such rate is non-sence.
  * The idea is to repaint whole workspace at maximum rate of 10 repaints/second.
  * @see java.lang.Runnable#run()
  */
@@ -3345,13 +3345,13 @@ public void run() {
         catch (InterruptedException ie)
         {
         }
-        
+
         if (redrawRequest)
         {
             redrawRequest = false;
             getWorkspacePanel().repaint();
         }
-            
+
     }
 
 }
@@ -3369,11 +3369,11 @@ public void repaint(boolean drawOnlyHilitedOnce) {
         this.drawOnlyHilitedOnce = drawOnlyHilitedOnce && !redrawRequest;
     else    // drawOnlyHilitedOnce: true after true case
         this.drawOnlyHilitedOnce = this.drawOnlyHilitedOnce && drawOnlyHilitedOnce;
-        
+
     forceRedraw = true;
     redrawRequest = true;
     //getWorkspacePanel().repaint();
-        
+
 }
 
 /**
@@ -3397,7 +3397,7 @@ public void resize(int x0, int y0, int width, int height) {
     }
 
     ViewState view = ViewState.getInstance();
-    
+
     view.setX0(x0);
     view.setY0(y0);
     view.setViewWidth(width);
@@ -3410,7 +3410,7 @@ public void resize(int x0, int y0, int width, int height) {
     navigator.y = y0;
 
     recalculateNavigatorPosition();
-    forceRedraw = true;    
+    forceRedraw = true;
 }
 /**
  * Insert the method's description here.
@@ -3435,7 +3435,7 @@ private void restoreCursor() {
  */
 private void selectArea(int x1, int y1, int x2, int y2) {
     ViewState view = ViewState.getInstance();
-    if (viewGroup.selectComponentsCheck(x1+view.getRx(), y1+view.getRy(), 
+    if (viewGroup.selectComponentsCheck(x1+view.getRx(), y1+view.getRy(),
                                         x2+view.getRx(), y2+view.getRy()))
     {
         blockNavigatorRedrawOnce = true;
@@ -3454,7 +3454,7 @@ private void setCursor(Cursor cursor) {
         currentCursor = cursor;
         cm.setCursor(currentCursor);
         cm.execute();
-    } 
+    }
 }
 
 /**
@@ -3480,11 +3480,11 @@ public void setScale(double scale) {
     // find center
     double drx = view.getDrx() + view.getViewWidth()*oldscale/2.0;
     double dry = view.getDry() + view.getViewHeight()*oldscale/2.0;
-    
+
     // transform into new scale
     drx *= ds;
     dry *= ds;
-    
+
     // find new origin
     drx += view.getViewWidth()*(ds-1-scale)/2.0;
     dry += view.getViewHeight()*(ds-1-scale)/2.0;
@@ -3496,7 +3496,7 @@ public void setScale(double scale) {
 
     blockNavigatorRedrawOnce = true;
     recalculateNavigatorPosition();
-    
+
     repaint();
 }
 
@@ -3529,7 +3529,7 @@ public void centerObject(VisibleObject object) {
     // find center
     int drx = object.getRx()+object.getRwidth()/2;
     int dry = object.getRy()+object.getRheight()/2;
-    
+
     // find new origin
     drx -= view.getViewWidth()/2;
     dry -= view.getViewHeight()/2;
@@ -3581,7 +3581,7 @@ public void zoomArea(int x1, int y1, int x2, int y2) {
     double scale = view.getScale();
     int w = Math.abs(x2-x1);
     int h = Math.abs(y2-y1);
-    
+
     double xscale = view.getViewWidth()/(double)w;
     double yscale = view.getViewHeight()/(double)h;
     double dfscale = Math.min(xscale, yscale);
@@ -3597,15 +3597,15 @@ public void zoomArea(int x1, int y1, int x2, int y2) {
 
     x1=Math.min(x1, x2);
     y1=Math.min(y1, y2);
-    
+
     dx = Math.max(0, (x1+view.getRx())*dfscale-dx);
     dy = Math.max(0, (y1+view.getRy())*dfscale-dy);
-    
+
     view.setDrx(dx);
     view.setDry(dy);
     view.setScale(nscale);
     updateWorkspaceScale();
-        
+
     blockNavigatorRedrawOnce = true;
     recalculateNavigatorPosition();
 
@@ -3631,17 +3631,17 @@ public void createTemplateInstance(String name, String type, boolean relative) {
                 + type
                 + " does not exist.");
         return;
-    }            
+    }
 
     // generate name
     if (name==null)
     {
         //name = "template000";
         name = template.getId();
-        
+
         int pos = name.lastIndexOf('.');  //removes file suffix
         if (pos>0) name = name.substring(0, pos);
-        
+
         if (Group.getRoot().findObject(name, true)!=null) name = name+"2";
         while (Group.getRoot().findObject(name, true)!=null)
             name = StringUtils.incrementName(name, null);
@@ -3658,7 +3658,7 @@ public void createTemplateInstance(String name, String type, boolean relative) {
 
     ViewState view = ViewState.getInstance();
     double scale = view.getScale();
-    
+
     Template templ = new Template(null, templateInstance);
     Group.getRoot().addSubObject(name, templ, true);
 
@@ -3666,7 +3666,7 @@ public void createTemplateInstance(String name, String type, boolean relative) {
     //templ.setDescription(template.getDescription());
     templ.setX((int)((getPressedX() + view.getRx()) / scale));
     templ.setY((int)((getPressedY() + view.getRy()) / scale));
-    
+
     if (Settings.getInstance().getSnapToGrid())
         templ.snapToGrid();
 
@@ -3690,31 +3690,31 @@ public boolean prepareTemplateLeave()
             return false;
         }
         else {
-            
-            int select = JOptionPane.showConfirmDialog(VisualDCT.getInstance(), "The file has been modified. Save changes?", "Confirmation", 
+
+            int select = JOptionPane.showConfirmDialog(VisualDCT.getInstance(), "The file has been modified. Save changes?", "Confirmation",
                         JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
             switch(select) {
-            
+
                 case JOptionPane.YES_OPTION: {
                     VisualDCT.getInstance().saveMenuItem_ActionPerformed();
 
                     break;
                 }
-            
+
                 case JOptionPane.NO_OPTION: {
 
                     break;
                 }
-                
+
                 default: {
                     return false;
                 }
-            }        
+            }
         }
-                
-        
+
+
     }
-    
+
     //template should be reloaded because user could save the template prior
     //to ascending/descending into another level
     if (isModified() || Group.hasMacroPortsIDChanged()) {
@@ -3723,7 +3723,7 @@ public boolean prepareTemplateLeave()
         boolean ok = reloadTemplate(Group.getEditingTemplateData());
         // push new
         VDBTemplate reloaded = (VDBTemplate)VDBData.getTemplates().get(backup.getId());
-        
+
         if (!ok || reloaded==null)
         {
             VDBData.addTemplate(backup);
@@ -3735,10 +3735,10 @@ public boolean prepareTemplateLeave()
             viewGroup = reloaded.getGroup();
         }
     }
-    
-    
+
+
     return true;
-    
+
 }
 
 /**
@@ -3773,21 +3773,21 @@ public void descendIntoTemplate(Template template)
         return;
 
     ViewState.getInstance().setAsHilited(null);
-    
+
     if (Group.hasMacroPortsIDChanged()) {
         viewGroup.reset();
         JOptionPane.showMessageDialog(VisualDCT.getInstance(),
                 "Macros/Ports in this template have changed. \nReload and save files that include this template to apply changes.", "Template changed!", JOptionPane.WARNING_MESSAGE);
     }
-    
+
     viewStack.push(viewGroup);
     templateStack.push(template.getTemplateData().getTemplate());
-    
+
     Group group = template.getTemplateData().getTemplate().getGroup();
     Group.setRoot(group);
 
     Group.setEditingTemplateData(template.getTemplateData().getTemplate());
-    
+
     // initialize
     templateReloadPostInit();
 
@@ -3804,22 +3804,22 @@ public void ascendFromTemplate()
 {
     if (!prepareTemplateLeave())
         return;
-    
+
     if (Group.hasMacroPortsIDChanged()) {
         viewGroup.reset();
         JOptionPane.showMessageDialog(VisualDCT.getInstance(),
                 "Macros/Ports in this template have changed. \nReload and save files that include this template to apply changes.", "Template changed!", JOptionPane.WARNING_MESSAGE);
     }
-    
+
     ViewState.getInstance().setAsHilited(null);
     viewGroup = (Group)viewStack.pop();
     templateStack.pop();
-    
+
     if (!templateStack.isEmpty())
         Group.setEditingTemplateData((VDBTemplate)templateStack.peek());
     else
         Group.setEditingTemplateData(null);
-        
+
     Group grp = viewGroup;
     while (grp.getParent()!=null)
         grp = (Group)grp.getParent();
@@ -3827,7 +3827,7 @@ public void ascendFromTemplate()
 
     // initialize
     templateReloadPostInit();
-    
+
     moveToGroup(grp);
     grp.reset();
     repaint();
@@ -3848,7 +3848,7 @@ public void moveToGroup(Group group)
     updateWorkspaceGroup();
 
     updateWorkspaceScale();
-    
+
     blockNavigatorRedrawOnce = false;
     forceRedraw = true;
     repaint();
@@ -3861,15 +3861,15 @@ public void moveToGroup(Group group)
 public void updateWorkspaceGroup()
 {
     SetWorkspaceGroup cmd = (SetWorkspaceGroup)CommandManager.getInstance().getCommand("SetGroup");
-    
+
     if (cmd == null)
         return;
-    
+
     String name = viewGroup.getAbsoluteName();
     if (name.length()==0)
         name = Constants.MAIN_GROUP;
-    
-    if (templateStack.size()>1) 
+
+    if (templateStack.size()>1)
         name = Constants.TEMPLATE_GROUP + " [" + ((VDBTemplate)templateStack.peek()).getDescription() + "]: "+ name;
     cmd.setGroup(name);
     cmd.execute();
@@ -3887,17 +3887,17 @@ public Stack getTemplateStack()
 /**
  */
 public boolean reloadTemplate(VDBTemplate data)
-{    
+{
     if (data==null)
         return true;
-    
+
     // remove from template repository
     VDBData.removeTemplate(data);
 
     InspectorManager.getInstance().updateObjectLists();
 
-    Console.getInstance().println("Reloading template '"+data.getFileName()+"'.");    
-    
+    Console.getInstance().println("Reloading template '"+data.getFileName()+"'.");
+
     // reload
     try
     {
@@ -3906,18 +3906,18 @@ public boolean reloadTemplate(VDBTemplate data)
 
         if (!ok || !VDBData.getTemplates().containsKey(data.getId()))
         {
-            Console.getInstance().println("Failed to reload template '"+data.getFileName()+"'. Using in-memory definitions...");    
+            Console.getInstance().println("Failed to reload template '"+data.getFileName()+"'. Using in-memory definitions...");
         }
 
         return true;
-        
+
     }
     catch (Exception e)
     {
-        Console.getInstance().println("Failed to reload template '"+data.getFileName()+"'. Using in-memory definitions...");    
+        Console.getInstance().println("Failed to reload template '"+data.getFileName()+"'. Using in-memory definitions...");
         Console.getInstance().println(e);
     }
-    
+
     return false;
 }
 
@@ -3972,17 +3972,17 @@ public static void loadBlackOnWhiteColorScheme()
  * @param name java.lang.String
  */
 public void createPort(VDBPort vdbPort) {
-    
+
     // if null bring up dialog and ask for name, then create port
     if (vdbPort==null)
         vdbPort = Group.getEditingTemplateData().addPort();
-        
+
     if (vdbPort==null)
         return;
-        
+
     ViewState view = ViewState.getInstance();
     double scale = view.getScale();
-    
+
     Port port = new Port(vdbPort, viewGroup,
                            (int)((getPressedX() + view.getRx()) / scale),
                            (int)((getPressedY() + view.getRy()) / scale));
@@ -4003,17 +4003,17 @@ public void createPort(VDBPort vdbPort) {
  * @param name java.lang.String
  */
 public Macro createMacro(VDBMacro vdbMacro) {
-    
+
     // if null bring up dialog and ask for name, then create port
     if (vdbMacro==null)
         vdbMacro = Group.getEditingTemplateData().addMacro();
-        
+
     if (vdbMacro==null)
         return null;
-        
+
     ViewState view = ViewState.getInstance();
     double scale = view.getScale();
-    
+
     Macro macro = new Macro(vdbMacro, viewGroup,
                            (int)((getPressedX() + view.getRx()) / scale),
                            (int)((getPressedY() + view.getRy()) / scale));
@@ -4048,9 +4048,9 @@ public void generateMacros()
     final String COMMA_SEP = ", ";
 
     Console.getInstance().println("Generating macros...");
-                
+
     HashMap macros = new HashMap();
-    
+
     Group.getRoot().generateMacros(macros, true);
 
     Iterator i = macros.keySet().iterator();
@@ -4058,7 +4058,7 @@ public void generateMacros()
     {
         String macroName = (String)i.next();
         String name = macroName.substring(2, macroName.length()-1);
-        
+
         Group.getEditingTemplateData().addMacro(name);
 
         // output to console
@@ -4095,14 +4095,14 @@ public void reset() {
 
     if (view.getRx()+view.getViewWidth() > view.getWidth()) view.setRx(Math.max(0,view.getWidth()-view.getViewWidth()));
     if (view.getRy()+view.getViewHeight() > view.getHeight()) view.setRx(Math.max(0,view.getHeight()-view.getViewHeight()));
-    
+
     initializeNavigator();
     navigator.height = height / 6;
     navigator.width = (int)(navigator.height * (view.getWidth()/(double)view.getHeight()));
     navigator.x = width - navigator.width + x0;
-    navigator.y = y0;    
+    navigator.y = y0;
     createNavigatorImage();
-    
+
     redrawRequest = true;
     viewGroup.reset();
     repaint();

@@ -16,7 +16,7 @@ public class FilterTest
         final int N = 50;
         final double input[] = new double[N];
         Arrays.fill(input, 1.0);
-        
+
         for (Filter.Type type : Filter.Type.values())
         {
             final double output[] = Filter.window(input, type);

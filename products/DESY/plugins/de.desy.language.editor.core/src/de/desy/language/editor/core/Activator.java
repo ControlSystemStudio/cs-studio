@@ -5,7 +5,7 @@ import org.osgi.framework.BundleContext;
 
 /**
  * Core Plug-in of the language editor support.
- * 
+ *
  * The activator class controls the plug-in life cycle.
  */
 public final class Activator extends Plugin {

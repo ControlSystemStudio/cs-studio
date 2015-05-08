@@ -68,20 +68,20 @@ import org.jdom.filter.ElementFilter;
 import org.jdom.input.SAXBuilder;
 
 /**
- * 
- * <code>SchemaVerifier</code> verifies if the given OPI or the OPIs located below the given path conform(s) to 
- * the the schema defined by the opibuilder. The instructions how to verify individual properties are defined 
+ *
+ * <code>SchemaVerifier</code> verifies if the given OPI or the OPIs located below the given path conform(s) to
+ * the the schema defined by the opibuilder. The instructions how to verify individual properties are defined
  * in the rules definitions file.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
 public class SchemaVerifier {
-            
+
     private static final Logger LOGGER = Logger.getLogger(SchemaVerifier.class.getName());
-    
+
     /**
-     * 
+     *
      * <code>NonNullArrayList</code> is an extension of the array list, which does
      * not accept a null value when passed via the {@link #add(Object)} method.
      *
@@ -97,13 +97,13 @@ public class SchemaVerifier {
             return super.add(e);
         }
     }
-    
+
     private List<ValidationFailure> validationFailures = new ArrayList<>();
     private IPath validatedPath;
     private Map<String, AbstractWidgetModel> schema;
     private OPIColor[] colors;
     private OPIFont[] fonts;
-    
+
     private int numberOfAnalyzedWidgets = 0;
     private int numberOfWidgetsFailures = 0;
     private int numberOfAnalyzedFiles = 0;
@@ -115,31 +115,31 @@ public class SchemaVerifier {
     private int numberOfCriticalROFailures = 0;
     private int numberOfMajorROFailures = 0;
     private int numberOfWRITEFailures = 0;
-    
+
     private IPath schemaPath;
     private WidgetEditPartFactory editPartFactory;
     private Method registerPropertyChangeHandlersMethod;
     private Method registerBasePropertyChangeHandlersMethod;
     private Method doCreateFigureMethod;
     private Method hookChildMethod;
-        
+
     private final Map<String, ValidationRule> rules;
     private final Map<Pattern, ValidationRule> patternRules;
     private final Map<String, String[]> additionalAcceptableValues;
     private final Map<Pattern, String[]> patternsAdditionalAcceptableValues;
     private final Map<String, String[]> removedValues;
     private final Map<Pattern, String[]> patternsRemovedValues;
-    
+
     /**
      * Constructs a new schema verifier using the schema path defined in the preferences.
-     * 
+     *
      * @param rules the validation rules to use (keys are the property names, values are the rules for that property)
      * @param patternRules the rules defined by patterns. If a property matches the pattern (and there is no specific
      *          rule for that property in the rules) it will obey the rule of the matched pattern
      * @param additionalAcceptableValues some properties have additional values (besides the one in the OPI Schema),
-     *          which are acceptable (e.g. background_color has acceptable values 'IO Background' and 
+     *          which are acceptable (e.g. background_color has acceptable values 'IO Background' and
      *          'IO Area Background'
-     * @param acceptableValuesPatterns the acceptable values defined by patterns. If a property matches the pattern 
+     * @param acceptableValuesPatterns the acceptable values defined by patterns. If a property matches the pattern
      *          (and there is no specific acceptable value for that pattern) the values stored under that pattern
      *          will be used
      * @param removedValues the values of complex properties which should be removed if they exist on the widgets
@@ -151,26 +151,26 @@ public class SchemaVerifier {
         this(PreferencesHelper.getSchemaOPIPath(), rules, patternRules, additionalAcceptableValues,
                 acceptableValuesPatterns,removedValues,removedValuesPatterns);
     }
-    
+
     /**
      * Construct a new SchemaVerifier.
-     * 
+     *
      * @param pathToSchema the path to the OPI schema against which the OPIs will be validated
      * @param rules the validation rules to use (keys are the property names, values are the rules for that property)
      * @param patternRules the rules given as pattern. If a property matches the pattern (and there is no specific
      *          rule for that property in the rules) it will obey the rule of the matched pattern
      * @param additionalAcceptableValues some properties have additional values (besides the one in the OPI Schema),
-     *          which are acceptable (e.g. background_color has acceptable values 'IO Background' and 
+     *          which are acceptable (e.g. background_color has acceptable values 'IO Background' and
      *          'IO Area Background'
-     * @param acceptableValuesPatterns the acceptable values defined by patterns. If a property matches the pattern 
+     * @param acceptableValuesPatterns the acceptable values defined by patterns. If a property matches the pattern
      *          (and there is no specific acceptable value for that pattern) the values stored under that pattern
      *          will be used
      * @param removedValues the values of complex properties which should be removed if they exist on the widgets
      * @param removedValuesPatterns the values of complex properties (given by patterns) to be removed if they exist
      */
-    public SchemaVerifier(IPath pathToSchema, Map<String,ValidationRule> rules,  
+    public SchemaVerifier(IPath pathToSchema, Map<String,ValidationRule> rules,
             Map<Pattern,ValidationRule> patternRules, Map<String,String[]> additionalAcceptableValues,
-            Map<Pattern,String[]> acceptableValuesPatterns, Map<String,String[]> removedValues, 
+            Map<Pattern,String[]> acceptableValuesPatterns, Map<String,String[]> removedValues,
             Map<Pattern,String[]> removedValuesPatterns) {
         if (pathToSchema == null) {
             throw new IllegalArgumentException("There is no OPI schema defined.");
@@ -183,16 +183,16 @@ public class SchemaVerifier {
         this.removedValues = new HashMap<>(removedValues);
         this.patternsRemovedValues = new HashMap<>(removedValuesPatterns);
     }
-    
+
     /**
      * Returns the list of all validation failures since the last cleanup
-     * 
+     *
      * @return the list of validation failures
      */
     public ValidationFailure[] getValidationFailures() {
         return validationFailures.toArray(new ValidationFailure[validationFailures.size()]);
     }
-    
+
     /**
      * Removes all validation failures and resets the counters.
      */
@@ -208,88 +208,88 @@ public class SchemaVerifier {
         numberOfFilesFailures = 0;
         numberOfWidgetsFailures = 0;
     }
-    
+
     /**
      * @return number of analysed files since the last cleanup
      */
     public int getNumberOfAnalyzedFiles() {
         return numberOfAnalyzedFiles;
     }
-    
+
     /**
      * @return number of analysed widgets since the last cleanup
      */
     public int getNumberOfAnalyzedWidgets() {
         return numberOfAnalyzedWidgets;
     }
-    
+
     /**
      * @return number of obligatory write failures since the last cleanup
      */
     public int getNumberOfWRITEFailures() {
         return numberOfWRITEFailures;
     }
-    
+
     /**
      * @return number of analysed obligatory write properties since the last cleanup
      */
     public int getNumberOfWRITEProperties() {
         return numberOfWRITEProperties;
     }
-    
+
     /**
      * @return number of critical read only failures since the last cleanup
      */
     public int getNumberOfCriticalROFailures() {
         return numberOfCriticalROFailures;
     }
-    
+
     /**
      * @return number of major read only failures since the last cleanup
      */
     public int getNumberOfMajorROFailures() {
         return numberOfMajorROFailures;
-    }    
-    
+    }
+
     /**
      * @return number of analysed read only properties since the last cleanup
      */
     public int getNumberOfROProperties() {
         return numberOfROProperties;
     }
-    
+
     /**
      * @return number of files with failures since the last cleanup
      */
     public int getNumberOfFilesFailures() {
         return numberOfFilesFailures;
     }
-    
+
     /**
      * @return number of widgets with failures since the last cleanup
      */
     public int getNumberOfWidgetsFailures() {
         return numberOfWidgetsFailures;
     }
-    
+
     /**
      * @return the number of failed RW checks
      */
     public int getNumberOfRWFailures() {
         return numberOfRWFailures;
     }
-    
+
     /**
      * @return the number of checked RW properties
      */
     public int getNumberOfRWProperties() {
         return numberOfRWProperties;
     }
-    
+
     /**
      * Validates the OPIs on the given path and returns the list of all validation failures. If the path is
      * a directory all OPIs below that path are validated.
-     * 
+     *
      * @param validatedPath the path the OPI to validate
      * @return the list of all validation failures
      * @throws IOException if there was an error opening the OPI file or schema
@@ -314,7 +314,7 @@ public class SchemaVerifier {
                 doCreateFigureMethod = AbstractGraphicalEditPart.class
                         .getDeclaredMethod("createFigure");
                 doCreateFigureMethod.setAccessible(true);
-                hookChildMethod = ArrayEditPart.class.getDeclaredMethod("hookChild", 
+                hookChildMethod = ArrayEditPart.class.getDeclaredMethod("hookChild",
                         EditPart.class, int.class, boolean.class);
                 hookChildMethod.setAccessible(true);
             } catch (NoSuchMethodException | SecurityException e) {
@@ -323,7 +323,7 @@ public class SchemaVerifier {
         }
         this.validatedPath = validatedPath;
         IFile ifile = ResourcesPlugin.getWorkspace().getRoot().getFile(this.validatedPath);
-        File file = ifile.getLocation().toFile(); 
+        File file = ifile.getLocation().toFile();
         List<ValidationFailure> failures = new ArrayList<>();
         if (file.isFile()) {
             failures.addAll(check(this.validatedPath));
@@ -333,11 +333,11 @@ public class SchemaVerifier {
         validationFailures.addAll(failures);
         return failures.toArray(new ValidationFailure[failures.size()]);
     }
-        
+
     /**
      * Checks if the given OPI matches the schema definition. All detected validation failures are stored into
      * {@link #validationFails} list.
-     *  
+     *
      * @param opi the path to the OPI file
      * @throws IOException if there was an error reading the OPI file
      */
@@ -349,21 +349,21 @@ public class SchemaVerifier {
         } catch (Exception e) {
             throw new IOException("Could not read the opi " + opi.toOSString() +".",e);
         }
-        
+
         numberOfAnalyzedFiles++;
         List<ValidationFailure> failures = new NonNullArrayList<>();
-        checkWidget(opi, displayModel, failures);    
+        checkWidget(opi, displayModel, failures);
         findCoordinates(failures.toArray(new ValidationFailure[failures.size()]), opi);
         if (!failures.isEmpty()) {
             numberOfFilesFailures++;
         }
         return failures;
     }
-    
+
     /**
-     * Scans the OPI given by path to find the occurrences of the failures. If they are found it stores the line 
+     * Scans the OPI given by path to find the occurrences of the failures. If they are found it stores the line
      * number into the failure object. All failures are expected to belong to the same OPI.
-     * 
+     *
      * @param failures the list of failures, which are to be found in the file (should belong to the same path)
      * @param path the path to scan
      * @throws IOException if there was an error opening the file
@@ -373,11 +373,11 @@ public class SchemaVerifier {
         try (InputStream stream = ResourceUtil.pathToInputStream(path, false)) {
             SAXBuilder saxBuilder = LineAwareXMLParser.createBuilder();
             Document document = saxBuilder.build(stream);
-            
+
             Iterator<?> widgetNodes = document.getDescendants(new ElementFilter(XMLUtil.XMLTAG_WIDGET));
             Iterator<?> displayNodes = document.getDescendants(new ElementFilter(XMLUtil.XMLTAG_DISPLAY));
             Iterator<?> connectionNodes = document.getDescendants(new ElementFilter(XMLUtil.XMLTAG_CONNECTION));
-            
+
             //gather all widgets, displays, and connectors in the same array
             List<LineAwareElement> list = new ArrayList<>();
             while(widgetNodes.hasNext()) {
@@ -391,7 +391,7 @@ public class SchemaVerifier {
             }
             LineAwareElement[] widgets = list.toArray(new LineAwareElement[list.size()]);
             Arrays.sort(widgets);
-            
+
             Map<Integer,LineAwareElement> widgetElements = new HashMap<>();
             int i = 0;
             String name;
@@ -400,21 +400,21 @@ public class SchemaVerifier {
             for (int m = 0; m < failures.length; m++) {
                 name = failures[m].getWidgetName();
                 line = failures[m].getLineNumber();
-                //for every failure find the widget that match the line number 
+                //for every failure find the widget that match the line number
                 widget = widgetElements.get(line);
                 if (widget == null) {
                     //widgets are sorted in the same way as failures
                     for (; i < widgets.length; i++) {
                         if (widgets[i].getLineNumber() == line) {
                             widgetElements.put(failures[m].getLineNumber(), widgets[i]);
-                            
+
                             setPropertyLineNumber(widgets[i],name,failures,m);
                             while(m < failures.length-1 && failures[m+1].getLineNumber() == failures[m].getLineNumber()) {
                                 setPropertyLineNumber(widgets[i],name,failures,m+1);
                                 m++;
                             }
                             break;
-                        }                    
+                        }
                     }
                 } else {
                     setPropertyLineNumber(widget, name, failures, m);
@@ -424,15 +424,15 @@ public class SchemaVerifier {
             throw new IOException("Unable to load opi '" + path + "'.",e);
         }
     }
-    
+
     private void setPropertyLineNumber(LineAwareElement widget, String name, ValidationFailure[] failures, int m) throws Exception {
         //find the node describing the property, but only if the name of the widget matches the one in the failure
         LineAwareElement node = findPropertyElement(widget,name,failures[m].getProperty());
         if (node == null) {
-            //if no such property is found, it is not defined in the XML, so mark the widget itself 
+            //if no such property is found, it is not defined in the XML, so mark the widget itself
             node = widget;
-        } 
-        
+        }
+
         int line = node.getLineNumber();
         failures[m].setLineNumber(line);
         //check if there are subvalidation failures and find those as well
@@ -450,13 +450,13 @@ public class SchemaVerifier {
             }
         }
     }
-        
+
     private static LineAwareElement findSubNode(LineAwareElement parent, String tagName, Object actualValue) throws Exception {
         if (parent.getName().equals(tagName)) return parent;
         List<?> children = parent.getChildren();
         try {
             if (actualValue instanceof RuleData) {
-                RulesProperty prop = new RulesProperty(AbstractWidgetModel.PROP_RULES, "Rules", 
+                RulesProperty prop = new RulesProperty(AbstractWidgetModel.PROP_RULES, "Rules",
                         WidgetPropertyCategory.Behavior);
                 prop.setWidgetModel(new DisplayModel());
                 List<RuleData> rules = prop.readValueFromXML(parent).getRuleDataList();
@@ -466,7 +466,7 @@ public class SchemaVerifier {
                     }
                 }
             } else if (actualValue instanceof ScriptData) {
-                ScriptProperty prop = new ScriptProperty(AbstractWidgetModel.PROP_SCRIPTS, "Scripts", 
+                ScriptProperty prop = new ScriptProperty(AbstractWidgetModel.PROP_SCRIPTS, "Scripts",
                         WidgetPropertyCategory.Behavior);
                 List<ScriptData> scripts = prop.readValueFromXML(parent).getScriptList();
                 for (int i = 0; i < scripts.size(); i++) {
@@ -475,7 +475,7 @@ public class SchemaVerifier {
                     }
                 }
             } else if (actualValue instanceof AbstractWidgetAction) {
-                ActionsProperty prop = new ActionsProperty(AbstractWidgetModel.PROP_ACTIONS, "Actions", 
+                ActionsProperty prop = new ActionsProperty(AbstractWidgetModel.PROP_ACTIONS, "Actions",
                         WidgetPropertyCategory.Behavior);
                 List<AbstractWidgetAction> actions = prop.readValueFromXML(parent).getActionsList();
                 for (int i = 0; i < actions.size(); i++) {
@@ -490,19 +490,19 @@ public class SchemaVerifier {
         }
         return null;
     }
-    
+
     private static LineAwareElement findPropertyElement(Element node, String name, String property) {
         Element n = node.getChild(Utilities.TAG_NAME);
         if (n.getValue().equals(name)) {
             return (LineAwareElement)node.getChild(property);
         }
         return null;
-    }    
-        
+    }
+
     /**
      * Checks the container model and its children if they match the definitions in the schema.
      * All detected validation failures are stored into the failures list.
-     * 
+     *
      * @param pathToFile the path to the file that owns the model
      * @param containerModel the container model to check against the schema
      * @param failures the list into which all validation failures are stored
@@ -510,14 +510,14 @@ public class SchemaVerifier {
     private void check(IPath pathToFile, AbstractContainerModel containerModel, List<ValidationFailure> failures) {
         for (AbstractWidgetModel model : containerModel.getChildren()) {
             checkWidget(pathToFile, model, failures);
-        }  
+        }
         if (containerModel instanceof DisplayModel) {
             for (ConnectionModel model : ((DisplayModel) containerModel).getConnectionList()) {
                 checkWidget(pathToFile, model, failures);
             }
         }
     }
-    
+
     private void checkWidget(IPath pathToFile, AbstractWidgetModel model, List<ValidationFailure> failures) {
         numberOfAnalyzedWidgets++;
         ValidationRule rule;
@@ -552,7 +552,7 @@ public class SchemaVerifier {
                 } else if (AbstractWidgetModel.PROP_RULES.equals(p)) {
                     List<RuleData> modelRules = ((RulesInput)modelVal).getRuleDataList();
                     List<RuleData> originalRules = ((RulesInput)orgVal).getRuleDataList();
-                    failures.add(handleActionsScriptsRules(pathToFile, model.getWUID(), widgetType, 
+                    failures.add(handleActionsScriptsRules(pathToFile, model.getWUID(), widgetType,
                             model.getName(), p, modelRules, originalRules, modelVal, orgVal, rule, lineNumber,
                             (orgRule,modelRule) -> Utilities.areRulesIdentical(orgRule,modelRule),
                             (theRule) -> RulesProperty.XML_ELEMENT_RULE,
@@ -562,8 +562,8 @@ public class SchemaVerifier {
                 } else if (AbstractWidgetModel.PROP_SCRIPTS.equals(p)) {
                     List<ScriptData> modelScripts = ((ScriptsInput)modelVal).getScriptList();
                     List<ScriptData> originalScripts = ((ScriptsInput)orgVal).getScriptList();
-                    failures.add(handleActionsScriptsRules(pathToFile, model.getWUID(), widgetType, 
-                            model.getName(), p, modelScripts, originalScripts, modelVal, orgVal, rule, lineNumber, 
+                    failures.add(handleActionsScriptsRules(pathToFile, model.getWUID(), widgetType,
+                            model.getName(), p, modelScripts, originalScripts, modelVal, orgVal, rule, lineNumber,
                             (orgScript,modelScript) -> Utilities.areScriptsIdentical(orgScript, modelScript),
                             (script) -> ScriptProperty.XML_ELEMENT_PATH,
                             (script) -> script.isEmbedded() ? script.getScriptName() : script.getPath().toString(),
@@ -576,7 +576,7 @@ public class SchemaVerifier {
                         if (!isPropertyAccepted(widgetType,p,orgVal,modelVal)) {
                             //the failure is always critical, except for fonts and colors if a predefined value was used
                             boolean critical = !isPropertyDefined(modelVal);
-                            failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
+                            failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType,
                                 model.getName(), p, orgVal, modelVal, rule, critical,true, null, lineNumber,false));
                             if (critical) {
                                 numberOfCriticalROFailures++;
@@ -585,8 +585,8 @@ public class SchemaVerifier {
                             }
                         } else if (!isFontColorPropertyDefined(modelVal)) {
                             numberOfMajorROFailures++;
-                            failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
-                                    model.getName(), p, orgVal, modelVal, rule, false, true, null, 
+                            failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType,
+                                    model.getName(), p, orgVal, modelVal, rule, false, true, null,
                                     lineNumber,true));
                         }
                     } else if (rule == ValidationRule.WRITE) {
@@ -594,13 +594,13 @@ public class SchemaVerifier {
                         numberOfWRITEProperties++;
                         if (modelVal == null || String.valueOf(modelVal).trim().isEmpty()) {
                             //simple write properties are never critical
-                            failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
-                                model.getName(), p, orgVal, modelVal, rule, false, false, null, lineNumber, false)); 
+                            failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType,
+                                model.getName(), p, orgVal, modelVal, rule, false, false, null, lineNumber, false));
                             numberOfWRITEFailures++;
                         } else if (!isFontColorPropertyDefined(modelVal)) {
                             numberOfWRITEFailures++;
-                            failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
-                                    model.getName(), p, orgVal, modelVal, rule, false, true, null, 
+                            failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType,
+                                    model.getName(), p, orgVal, modelVal, rule, false, true, null,
                                     lineNumber, true));
                         }
                     }
@@ -615,13 +615,13 @@ public class SchemaVerifier {
         }
 
     }
-    
+
     private void initModel(AbstractWidgetModel model) {
         //initialize the model in the GUI thread
         //Even if the GUI thread is not required, if some of the GUI stuff will be loaded directly
         //it might end up being loaded with a wrong class loader. That will cause problems later when
         //the same class will be needed by some other plugin.
-        
+
        //do not create linking container, because that might try reload the linked OPI, which we don't want at this point
         if (model instanceof LinkingContainerModel) return;
         Display.getDefault().syncExec(() -> {
@@ -639,7 +639,7 @@ public class SchemaVerifier {
                         if (registerBasePropertyChangeHandlersMethod != null) {
                             registerBasePropertyChangeHandlersMethod.invoke(editPart);
                         }
-                    } catch (Exception e) {} 
+                    } catch (Exception e) {}
                     try{
                         if (registerPropertyChangeHandlersMethod != null) {
                             registerPropertyChangeHandlersMethod.invoke(editPart);
@@ -657,16 +657,16 @@ public class SchemaVerifier {
                         } catch (Exception e) {}
                     }
                 }
-                
+
             });
-        
+
     }
-    
+
     /**
      * Returns true if the modelVal is accepted value for the property given by the propertyName.
      * Property value is accepted if it is identical to the schema value (orgVal) or if the value
      * is represented by one of the additional acceptable values.
-     *  
+     *
      * @param widgetType the type of the widget to which the property belongs
      * @param propertyName the name of the property to check
      * @param orgVal the value from the schema
@@ -679,7 +679,7 @@ public class SchemaVerifier {
             return true;
         } else if (String.valueOf(modelVal).equals(String.valueOf(orgVal))) {
             return true;
-        } 
+        }
         String[] acceptableValues = getValueFromMap(widgetType, propertyName,
                 additionalAcceptableValues, patternsAdditionalAcceptableValues);
         //if there are no additional acceptable values, the value is not accepted
@@ -692,13 +692,13 @@ public class SchemaVerifier {
         }
         return false;
     }
-    
+
     private ValidationFailure checkAction(IPath pathToFile, ActionsInput modelInput, ActionsInput originalInput,
             AbstractWidgetModel model, ValidationRule rule) {
         List<AbstractWidgetAction> modelActions = modelInput.getActionsList();
         List<AbstractWidgetAction> originalActions = originalInput.getActionsList();
-        ValidationFailure f = handleActionsScriptsRules(pathToFile, model.getWUID(), model.getTypeID(), 
-                model.getName(), AbstractWidgetModel.PROP_ACTIONS, modelActions, originalActions, 
+        ValidationFailure f = handleActionsScriptsRules(pathToFile, model.getWUID(), model.getTypeID(),
+                model.getName(), AbstractWidgetModel.PROP_ACTIONS, modelActions, originalActions,
                 modelInput, originalInput, rule, model.getLineNumber(),
                 (orgAction,modelAction) -> Utilities.areActionsIdentical(orgAction, modelAction),
                 (action) -> ActionsProperty.XML_ELEMENT_ACTION,
@@ -709,8 +709,8 @@ public class SchemaVerifier {
         if (rule == ValidationRule.RO) {
             if (modelInput.isFirstActionHookedUpToWidget() != originalInput.isFirstActionHookedUpToWidget()) {
                 ff.add(new SubValidationFailure(pathToFile, model.getWUID(),
-                        model.getTypeID(), model.getName(), AbstractWidgetModel.PROP_ACTIONS, 
-                        AbstractWidgetModel.PROP_ACTIONS, 
+                        model.getTypeID(), model.getName(), AbstractWidgetModel.PROP_ACTIONS,
+                        AbstractWidgetModel.PROP_ACTIONS,
                         Utilities.PROP_ACTION_HOOK, originalInput.isFirstActionHookedUpToWidget(),
                         modelInput.isFirstActionHookedUpToWidget(), rule, true, true, null,
                         model.getLineNumber()));
@@ -727,19 +727,19 @@ public class SchemaVerifier {
         if (!ff.isEmpty()) {
             if (f == null) {
                 numberOfCriticalROFailures++;
-                f = new ValidationFailure(pathToFile, model.getWUID(), model.getTypeID(), model.getName(), 
+                f = new ValidationFailure(pathToFile, model.getWUID(), model.getTypeID(), model.getName(),
                         AbstractWidgetModel.PROP_ACTIONS, originalInput, modelInput, rule, true, true,
-                        AbstractWidgetModel.PROP_ACTIONS + ": settings of a READ-ONLY property have been changed", 
+                        AbstractWidgetModel.PROP_ACTIONS + ": settings of a READ-ONLY property have been changed",
                         model.getLineNumber(),false);
             }
             f.addSubFailure(ff);
         }
         return f;
     }
-    
+
     /**
      * Handles the check of the actions, scripts, and rules (stuff).
-     * 
+     *
      * @param resource the path to the checked file
      * @param wuid the widget unique id that owns the stuff
      * @param widgetType the widget type
@@ -752,18 +752,18 @@ public class SchemaVerifier {
      * @param rule the rule for the property
      * @param lineNumber the line at which the model is located in the file
      * @param comparator the comparator to use when comparing stuff
-     * @param subPropertyTagger the function that returns the tag of the sub property that did not match 
-     * @param subPropertyDescriptor the helper that can transform the stuff into the sub property name used in the 
+     * @param subPropertyTagger the function that returns the tag of the sub property that did not match
+     * @param subPropertyDescriptor the helper that can transform the stuff into the sub property name used in the
      *              failure description
      * @param naming the function that returns the name of the sub property
      * @return the validation failure if it was detected or null if everything is OK
      */
-    private <T> ValidationFailure handleActionsScriptsRules(IPath resource, String wuid, String widgetType, 
+    private <T> ValidationFailure handleActionsScriptsRules(IPath resource, String wuid, String widgetType,
             String widgetName, String property, List<T> model, List<T> original, Object modelVal, Object orgVal,
-            ValidationRule rule, int lineNumber, Comparator<T> comparator, Function<T,String> subPropertyTagger, 
+            ValidationRule rule, int lineNumber, Comparator<T> comparator, Function<T,String> subPropertyTagger,
             Function<T,String> subPropDescriptor, Function<Integer,String> messageGenerator,
             Function<T,String> naming) {
-                    
+
         if (rule == ValidationRule.RW) {
             List<SubValidationFailure> ffs = checkRemovedValues(resource, wuid, widgetType, widgetName,
                     property, model, rule, lineNumber,
@@ -792,9 +792,9 @@ public class SchemaVerifier {
                             mostTightMatchValue = v;
                         }
                     }
-                    
+
                     ff.add(new SubValidationFailure(resource,wuid,widgetType,widgetName,
-                            property, subPropertyTagger.apply(stuff), subPropDescriptor.apply(stuff), 
+                            property, subPropertyTagger.apply(stuff), subPropDescriptor.apply(stuff),
                             stuff,null,rule,false,true,messageGenerator.apply(mostTightMatchValue), lineNumber));
                 }
             }
@@ -811,8 +811,8 @@ public class SchemaVerifier {
                 //if nothing was changed at all, it is a non critical failure
                 f = new ValidationFailure(resource,wuid,widgetType,widgetName,
                         property,orgVal,modelVal,rule,false,false,
-                        property +": nothing has been defined for a WRITE property", lineNumber,false);                
-            }     
+                        property +": nothing has been defined for a WRITE property", lineNumber,false);
+            }
             List<SubValidationFailure> ffs = checkRemovedValues(resource, wuid, widgetType, widgetName,
                     property, model, rule, lineNumber,
                     subPropertyTagger, subPropDescriptor, messageGenerator, naming);
@@ -825,7 +825,7 @@ public class SchemaVerifier {
                 }
                 f.addSubFailure(ffs);
             }
-            
+
             return f;
         } else if (rule == ValidationRule.RO) {
             numberOfROProperties++;
@@ -846,22 +846,22 @@ public class SchemaVerifier {
                             mostTightMatchValue = v;
                         }
                     }
-                    
+
                     ff.add(new SubValidationFailure(resource,wuid,widgetType,widgetName,
-                            property, subPropertyTagger.apply(stuff), subPropDescriptor.apply(stuff), 
+                            property, subPropertyTagger.apply(stuff), subPropDescriptor.apply(stuff),
                             stuff,null,rule,true,true,messageGenerator.apply(mostTightMatchValue), lineNumber));
                 }
             }
-                
+
             if (!notInOriginalStuff.isEmpty()) {
                 //model has items that are not in the schema
                 for (T a : notInOriginalStuff) {
                     ff.add(new SubValidationFailure(resource,wuid,widgetType,widgetName,
-                            property, subPropertyTagger.apply(a), subPropDescriptor.apply(a), 
+                            property, subPropertyTagger.apply(a), subPropDescriptor.apply(a),
                             null, a, rule,false,true,null, lineNumber));
                 }
             }
-            
+
             if (!ff.isEmpty()) {
                 numberOfCriticalROFailures++;
                 ValidationFailure f = new ValidationFailure(resource,wuid,widgetType,widgetName,
@@ -870,13 +870,13 @@ public class SchemaVerifier {
                 f.addSubFailure(ff);
                 return f;
             }
-        }        
+        }
         return null;
     }
-    
-    private <T> List<SubValidationFailure> checkRemovedValues(IPath resource, String wuid, String widgetType, 
+
+    private <T> List<SubValidationFailure> checkRemovedValues(IPath resource, String wuid, String widgetType,
             String widgetName, String property, List<T> model,
-            ValidationRule rule, int lineNumber, Function<T,String> subPropertyTagger, 
+            ValidationRule rule, int lineNumber, Function<T,String> subPropertyTagger,
             Function<T,String> subPropDescriptor, Function<Integer,String> messageGenerator,
             Function<T,String> naming) {
         String[] valuesToRemove = getValueFromMap(widgetType, property, removedValues, patternsRemovedValues);
@@ -886,8 +886,8 @@ public class SchemaVerifier {
                 String name = naming.apply(m);
                 for (String v : valuesToRemove) {
                     if (v.equals(name)) {
-                        ffs.add(new SubValidationFailure(resource, wuid, widgetType, widgetName, property, 
-                                subPropertyTagger.apply(m), subPropDescriptor.apply(m), 
+                        ffs.add(new SubValidationFailure(resource, wuid, widgetType, widgetName, property,
+                                subPropertyTagger.apply(m), subPropDescriptor.apply(m),
                                 null, m, rule, false, true, null, lineNumber, true));
                         break;
                     }
@@ -896,11 +896,11 @@ public class SchemaVerifier {
         }
         return ffs;
     }
-    
+
     /**
-     * Checks if the property matches one of the predefined colours or fonts. 
+     * Checks if the property matches one of the predefined colours or fonts.
      * If yes it returns true otherwise it returns false.
-     * 
+     *
      * @param modelVal the property value to check
      * @return true if a match was found or false otherwise
      */
@@ -916,29 +916,29 @@ public class SchemaVerifier {
         }
         return false;
     }
-    
+
     /**
      * Checks if the value is a font or colour. If yes it checks if it uses one of the defined values and returns
      * true if yes or false if not. If the value is not font or colour it always returns true.
-     *  
+     *
      * @param modelVal the property value to check
-     * @return true if it is a font or colour and a match was found, true if it is any other property 
-     *          or false otherwise 
+     * @return true if it is a font or colour and a match was found, true if it is any other property
+     *          or false otherwise
      */
     private boolean isFontColorPropertyDefined(Object modelVal) {
         if (modelVal instanceof OPIColor || modelVal instanceof OPIFont) {
             return isPropertyDefined(modelVal);
-        } 
+        }
         return true;
     }
 
     /**
-     * Loads the validation rule from the rules map. First the rule for the property of the specified widget 
+     * Loads the validation rule from the rules map. First the rule for the property of the specified widget
      * (as widget.property) is being loaded. If it is defined it is returned. If it does not exist the widget
      * is trimmed of any prefixes (e.g. org.csstudio.opibuilder.widgets) and the property for the trimmed
-     * widget is loaded. If it exist it is returned otherwise a general property rule definition is searched 
-     * for. If none is found the property is of read/write type. 
-     * 
+     * widget is loaded. If it exist it is returned otherwise a general property rule definition is searched
+     * for. If none is found the property is of read/write type.
+     *
      * @param property the name of the property (should be in lower case)
      * @param widget the type of the widget (should be in lower case)
      * @return the rule for the property
@@ -949,12 +949,12 @@ public class SchemaVerifier {
             return ValidationRule.RW;
         } else {
             return value;
-        }        
+        }
     }
-    
+
     /**
      * Loads the value that matches the widget and property.
-     * 
+     *
      * @see #getRuleForProperty(String, String)
      * @param widget the type of the widget
      * @param property the name of the property
@@ -965,7 +965,7 @@ public class SchemaVerifier {
     private static <T> T getValueFromMap(String widget, String property, Map<String,T> values,
             Map<Pattern, T> patterns) {
         widget = widget.toLowerCase();
-        property = property.toLowerCase();                
+        property = property.toLowerCase();
         String fullProp = widget + "." + property;
         String prop = null;
         T value = values.get(fullProp);
@@ -978,7 +978,7 @@ public class SchemaVerifier {
             //try general property definition
             value = values.get(property);
         }
-        
+
         if (value == null) {
             //no match was found yet, check patterns
             //if one of the patterns matches, add the property to the rules, so we can find it more quickly next time
@@ -998,7 +998,7 @@ public class SchemaVerifier {
                 }
             }
         }
-        
+
         return value;
     }
 }

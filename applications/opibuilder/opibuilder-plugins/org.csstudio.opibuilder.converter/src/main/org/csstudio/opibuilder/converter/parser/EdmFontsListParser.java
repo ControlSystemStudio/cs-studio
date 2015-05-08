@@ -22,7 +22,7 @@ import org.csstudio.opibuilder.converter.model.EdmException;
 public class EdmFontsListParser extends EdmParser {
 
     static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.parser.EdmFontsListParser");
-    
+
     /**
      * Constructor. Parses given Font List file.
      * @param fileName Font list file name.
@@ -32,7 +32,7 @@ public class EdmFontsListParser extends EdmParser {
         super(fileName);
         parseFonts(getRoot(), edmData.toString());
     }
-    
+
     /**
      * Stores all fonts as attributes in given EdmEntity.
      * @param parent EdmEntity that will hold all fonts.
@@ -43,21 +43,21 @@ public class EdmFontsListParser extends EdmParser {
         //each font definition must start at newline with four properties delimited with "-"
         Pattern p = Pattern.compile("\r(\\w*?)-(\\w*?)-([ri])-(\\d.*?\\.\\d)");
         Matcher m = p.matcher(data);
-        
+
         while (m.find()) {
-            
+
             try {
                 String name = m.group(1);
                 String weight = m.group(2);
                 String style = m.group(3);
                 String size = m.group(4);
-                
+
                 EdmAttribute a = new EdmAttribute(weight);
                 parent.addAttribute(name, a);
                 a.appendValue(style);
                 a.appendValue(size);
-                
-                log.debug("Added attribute " + name + " with values: " + weight + " and " + 
+
+                log.debug("Added attribute " + name + " with values: " + weight + " and " +
                         style + " and " + size);
             }
             catch (Exception e) {

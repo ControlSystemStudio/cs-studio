@@ -17,15 +17,15 @@ public class Activator extends AbstractUIPlugin
 {
     /** Plug-in ID defined in MANIFEST.MF */
     public static final String ID = "org.csstudio.alarm.beast.ui.alarmtable"; //$NON-NLS-1$
-    
+
     /** The shared instance */
     private static Activator plugin;
-    
+
     @Override
     public void start(BundleContext context) throws Exception
     {
         super.start(context);
-        setPlugin(this);    
+        setPlugin(this);
     }
 
     /** Static setter to avoid FindBugs warning */

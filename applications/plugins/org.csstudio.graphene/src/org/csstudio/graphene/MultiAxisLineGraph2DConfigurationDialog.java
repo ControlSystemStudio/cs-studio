@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene;
 
@@ -11,7 +11,7 @@ import org.epics.graphene.InterpolationScheme;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class MultiAxisLineGraph2DConfigurationDialog
         extends AbstractPointDatasetGraph2DConfigurationDialog<MultiAxisLineGraph2DWidget, MultiAxisLineGraph2DConfigurationPanel> {

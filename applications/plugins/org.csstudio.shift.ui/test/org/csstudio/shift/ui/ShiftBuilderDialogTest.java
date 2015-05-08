@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.shift.ui;
 
@@ -13,11 +13,11 @@ public class ShiftBuilderDialogTest {
 
     /**
      * Launch the application.
-     * 
+     *
      * @param args
      */
     public static void main(String args[]) {
-        
+
         Display display = new Display();
         final Shell shell = new Shell(display);
         ShiftBuilderDialog dialog = new ShiftBuilderDialog(shell, ShiftBuilder.withType("this is a test"));

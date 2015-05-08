@@ -43,7 +43,7 @@ public class RDBArchiveExportImportDemo
             System.out.println("Skipping test, no archive_rdb_url, user, password, tmp_file");
             return;
         }
-    
+
         final File file = new File(filename);
         if (file.exists())
             file.delete();
@@ -60,7 +60,7 @@ public class RDBArchiveExportImportDemo
         assertTrue(file.exists());
         System.out.println("Created file " + file + ", " + file.length() + " bytes");
     }
-    
+
     @Test
     public void testDelete() throws Exception
     {
@@ -90,7 +90,7 @@ public class RDBArchiveExportImportDemo
             config.close();
         }
     }
-    
+
     @Test
     public void testImport() throws Exception
     {
@@ -107,7 +107,7 @@ public class RDBArchiveExportImportDemo
             System.out.println("Skipping test, no archive_rdb_url, user, password, filename");
             return;
         }
-    
+
         final File file = new File(filename);
         assertTrue(file.exists());
         final XMLImport importer = new XMLImport(url, user, password, schema, true, false);

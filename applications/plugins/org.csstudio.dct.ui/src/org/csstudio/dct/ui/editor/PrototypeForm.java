@@ -36,9 +36,9 @@ import org.csstudio.domain.common.LayoutUtil;
 
 /**
  * Editing component for {@link IPrototype}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototype> {
     private ParameterClipboard parameterClipboard;
@@ -51,7 +51,7 @@ public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototyp
 
     /**
      * Constructor.
-     * 
+     *
      * @param editor
      *            the editor instance
      */
@@ -211,7 +211,7 @@ public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototyp
 
     /**
      * Returns the currently selected parameter.
-     * 
+     *
      * @return the currently selected parameter or null
      */
     public Parameter getSelectedParameter() {
@@ -229,7 +229,7 @@ public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototyp
 
     /**
      * Exposes the table viewer for parameters.
-     * 
+     *
      * @return the table viewer for parameters
      */
     TableViewer getParameterTableViewer() {
@@ -245,7 +245,7 @@ public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototyp
     }
 
     /**
-     * 
+     *
      *{@inheritDoc}
      */
     @Override
@@ -253,7 +253,7 @@ public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototyp
     }
 
     /**
-     * 
+     *
      *{@inheritDoc}
      */
     @Override

@@ -28,11 +28,11 @@ public class EdmMultiBooleans extends AbstractEdmMultiAttributes<EdmBoolean> {
         super(genericEntity, required);
 
     }
-    
+
     @Override
     protected EdmBoolean createEdmAttribute(EdmAttribute genericEntity) throws EdmException{
         return new EdmBoolean(genericEntity, false);
     }
 
-    
+
 }

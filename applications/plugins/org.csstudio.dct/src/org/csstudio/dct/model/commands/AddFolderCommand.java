@@ -7,9 +7,9 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * Undoable command which adds a new folder to the model.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class AddFolderCommand extends Command {
     private IFolder folder;
@@ -17,7 +17,7 @@ public final class AddFolderCommand extends Command {
 
     /**
      * Constructor.
-     * 
+     *
      * @param parentFolder
      *            the parent folder
      * @param name

@@ -72,7 +72,7 @@ public class ArchiveRecordReader implements ArchiveReader {
 //        valueIterator.getData();
 //        return valueIterator;
 //    }
-//    
+//
 //    @Override
 //    public ValueIterator getOptimizedValues(int key, String name,
 //            ITimestamp start, ITimestamp end, int count)

@@ -28,11 +28,11 @@ public class PVModelExport
         final FileDialog dlg = new FileDialog(shell, SWT.SAVE);
         dlg.setFilterNames(new String[] { "Tab-separated file" });
         dlg.setFilterExtensions(new String[] { "*.dat" });
-        
+
         final String filename = dlg.open();
         export(model, shell, filename);
     }
-    
+
     public static void export(final PVModel model, final Shell shell, final String filename)
     {
         if (filename == null)
@@ -44,7 +44,7 @@ public class PVModelExport
 
             out.append("PV\t").append(model.getPVName()).println();
             out.println();
-            
+
             out.println("Property\tValue");
             final Map<String, String> properties = model.getProperties();
             for (String prop : properties.keySet())

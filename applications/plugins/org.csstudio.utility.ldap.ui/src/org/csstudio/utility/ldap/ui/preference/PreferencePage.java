@@ -37,7 +37,7 @@ public class PreferencePage extends FieldEditorPreferencePage
         super(GRID);
         setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE,
                 Activator.getDefault().getBundle().getSymbolicName()));
-        
+
         String string = Messages.getString("PreferencePage.LDAP");
         setDescription(string); //$NON-NLS-1$
     }

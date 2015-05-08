@@ -56,10 +56,10 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 /** GUI for the Model
- * 
+ *
  *  <p>Allow entering PV name,
  *  set name in model, display data from model.
- * 
+ *
  * @author Kay Kasemir
  */
 public class GUI implements PVModelListener
@@ -96,7 +96,7 @@ public class GUI implements PVModelListener
         hookDrop(combo);
         hookDrop(property_view.getControl());
         hookDrop(field_view.getControl());
-        
+
         if (site != null)
         {
             // Add empty context menu so that other CSS apps can
@@ -114,12 +114,12 @@ public class GUI implements PVModelListener
     {
         final GridLayout layout = new GridLayout(3, false);
         parent.setLayout(layout);
-        
+
         // PV: _________ [Export]
         Label l = new Label(parent, 0);
         l.setText("PV Name:");
         l.setLayoutData(new GridData());
-        
+
         combo = new Text(parent, SWT.BORDER);
         combo.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         combo.setToolTipText("Enter PV Name");
@@ -129,7 +129,7 @@ public class GUI implements PVModelListener
             }
         });
         new AutoCompleteWidget(combo, AutoCompleteTypes.PV);
-        
+
         export = new Button(parent, SWT.PUSH);
         export.setText("Export");
         export.setToolTipText("Export displayed values to file");
@@ -144,11 +144,11 @@ public class GUI implements PVModelListener
             }
         });
         export.setEnabled(false);
-        
+
         // Sash for property and field tables
         final SashForm sashes = new SashForm(parent, SWT.VERTICAL);
         sashes.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
-        
+
         // TableColumnLayout requires table to be in its own container
         final Composite box = new Composite(sashes, 0);
         box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
@@ -157,10 +157,10 @@ public class GUI implements PVModelListener
         final Composite box2 = new Composite(sashes, 0);
         box2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
         field_view = createFieldTable(box2);
-        
+
         sashes.setWeights(new int[] { 100, 161 });
     }
-    
+
     /** Create table for Properties
      *  @param box Container
      *  @return {@link TableViewer}
@@ -176,7 +176,7 @@ public class GUI implements PVModelListener
         table.setLinesVisible(true);
         ColumnViewerToolTipSupport.enableFor(viewer);
         viewer.setContentProvider(new ArrayContentProvider());
-        
+
         createColumn(viewer, table_layout, "Property", 100, new CellLabelProvider()
         {
             @Override
@@ -195,7 +195,7 @@ public class GUI implements PVModelListener
                 cell.setText(values[1]);
             }
         });
-        
+
         return viewer;
     }
 
@@ -214,7 +214,7 @@ public class GUI implements PVModelListener
         table.setLinesVisible(true);
         ColumnViewerToolTipSupport.enableFor(viewer);
         viewer.setContentProvider(new ArrayContentProvider());
-        
+
         final Display display = viewer.getTable().getDisplay();
         createColumn(viewer, table_layout, "Field", 40, new CellLabelProvider()
         {
@@ -270,7 +270,7 @@ public class GUI implements PVModelListener
         table_col.setText(header);
         view_col.setLabelProvider(provider);
     }
-    
+
     /** Allow dropping PV names
      *  @param control Control that should allow dropping the names
      */
@@ -302,20 +302,20 @@ public class GUI implements PVModelListener
     {
         combo.setFocus();
     }
-    
+
     /** @return Currently entered PV name */
     public String getPVName()
     {
         return combo.getText();
     }
-    
+
     /** Set or update the PV name
      *  @param name Name of PV for which to get data
      */
     public void setPVName(String name)
     {
         name = PVHelper.getPV(name);
-        
+
         if (! combo.getText().equals(name))
         {
             combo.setText(name);
@@ -327,16 +327,16 @@ public class GUI implements PVModelListener
             model.stop();
             model = null;
         }
-        
+
         if (name.isEmpty())
         {
             showMessage("Enter PV name", "");
             export.setEnabled(false);
         }
-        
+
         showMessage("Please wait...", "Getting data for " + name);
         export.setEnabled(true);
-        
+
         // Create model for PV name
         try
         {
@@ -346,7 +346,7 @@ public class GUI implements PVModelListener
         {
             ExceptionDetailsErrorDialog.openError(parent.getShell(), "Error", ex);
         }
-        
+
         // Stop when GUI is disposed
         parent.addDisposeListener(new DisposeListener()
         {
@@ -377,10 +377,10 @@ public class GUI implements PVModelListener
     public void updateProperties(final Map<String, String> properties)
     {
         Set<String> keys = properties.keySet();
-        
+
         final String[] names = keys.toArray(new String[keys.size()]);
         Arrays.sort(names);
-        
+
         final String[][] values = new String[names.length][2];
         for (int i=0; i<values.length; ++i)
         {

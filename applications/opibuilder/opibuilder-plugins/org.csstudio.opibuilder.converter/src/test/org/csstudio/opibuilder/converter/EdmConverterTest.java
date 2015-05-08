@@ -13,7 +13,7 @@ import org.csstudio.opibuilder.converter.model.EdmException;
 /**
  * This is a convenience operation test that transforms the example files.
  * It does not perform any assertions so it will only fail if an exception is thrown
- * during conversion.   
+ * during conversion.
  */
 public class EdmConverterTest extends TestCase {
 
@@ -32,28 +32,28 @@ public class EdmConverterTest extends TestCase {
          */
         System.setProperty("edm2xml.robustParsing", "false");
     }
-    
+
     public void testExampleEDL1() throws EdmException {
         setEnvironment();
 
         String[] args = {edl1};
         EdmConverter.main(args);
     }
-    
+
     public void testExampleEDL2() throws EdmException {
         setEnvironment();
 
         String[] args = {edl2};
         EdmConverter.main(args);
     }
-    
+
     public void testExampleEDL3() throws EdmException {
         setEnvironment();
 
         String[] args = {edl3};
         EdmConverter.main(args);
     }
-    
+
     public void testExampleEDL4() throws EdmException {
         setEnvironment();
 

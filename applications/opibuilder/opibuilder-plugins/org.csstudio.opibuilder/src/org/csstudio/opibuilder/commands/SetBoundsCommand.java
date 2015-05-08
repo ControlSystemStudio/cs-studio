@@ -28,9 +28,9 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * A command, which applies position and location changes to widget models.
- * 
- * @author Sven Wende(original author), Xihui Chen (since import from SDS 2009/9) 
- * 
+ *
+ * @author Sven Wende(original author), Xihui Chen (since import from SDS 2009/9)
+ *
  */
 public final class SetBoundsCommand extends Command {
     /**
@@ -50,7 +50,7 @@ public final class SetBoundsCommand extends Command {
 
     /**
      * Create a command that can resize and/or move a widget model.
-     * 
+     *
      * @param widgetModel
      *            the widget model to manipulate
      * @param newBounds

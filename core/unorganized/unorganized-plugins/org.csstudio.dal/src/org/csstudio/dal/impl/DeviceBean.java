@@ -63,7 +63,7 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
     protected RemoteInfo rinfo;
     protected DeviceFactory deviceFactory;
     private boolean autoConnect = true;
-    
+
     /**
          * Creates new named instance of device bean.
          */
@@ -106,7 +106,7 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
 
         setConnectionState(ConnectionState.CONNECTING);
         deviceFactory.reconnectDevice(this);
-        
+
         reinitializePropertyProxies();
     }
 
@@ -126,7 +126,7 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
     public void destroy()
     {
         if (getConnectionState() == ConnectionState.DESTROYED) return; // TODO throw an exception?
-        
+
         if (deviceFactory != null && deviceFactory.getDeviceFamily() != null)
             deviceFactory.getDeviceFamily().destroy(this);
     }
@@ -141,9 +141,9 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
                     + "' is not in CONNECTED or CONNECTING state but in "
                     + getConnectionState() + ".");
             }
-        
+
         setConnectionState(ConnectionState.DISCONNECTING);
-        
+
         Proxy[] proxy= releaseProxy(false);
 
         if (proxy != null && proxy[0]!=null) {
@@ -155,7 +155,7 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
 
         setConnectionState(ConnectionState.DISCONNECTED);
     }
-    
+
     //TODO override refresh method to also call refresh on all properties? like Abean.refresh?
 
     /* (non-Javadoc)
@@ -197,11 +197,11 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
 
         this.rinfo = rinfo;
         this.name = rinfo.getRemoteName();
-        
+
         if (ctx!=null && deviceFactory!=null && rinfo!=null) {
             setConnectionState(ConnectionState.READY);
         }
-        
+
         tryConnect();
     }
 
@@ -219,8 +219,8 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
     public void initialize(AbstractApplicationContext ctx)
         throws CommonException
     {
-        // TODO: at some point this initialization must be changed. 
-        // device factory should be obtained only after RemoteInfo is set and correct plug type is known, 
+        // TODO: at some point this initialization must be changed.
+        // device factory should be obtained only after RemoteInfo is set and correct plug type is known,
         // now it is used default plug type from ctx
         deviceFactory = DefaultDeviceFactoryService.getDeviceFactoryService()
             .getDeviceFactory(ctx, null);
@@ -230,13 +230,13 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
         }
 
         this.ctx = ctx;
-        
+
         if (ctx!=null && deviceFactory!=null && rinfo!=null) {
             setConnectionState(ConnectionState.READY);
         }
         tryConnect();
     }
-    
+
     /**
      * Performs initialization the other way around.
      */
@@ -247,7 +247,7 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
         if (ctx!=null && deviceFactory!=null && rinfo!=null) {
             setConnectionState(ConnectionState.READY);
         }
-        
+
         tryConnect();
     }
 
@@ -265,10 +265,10 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
                 + "' is not initialized.");
         }
     }
-    
+
     /**
      * Reinitializes all already existing properties. Usually only happens when device is initialized
-     * second time. 
+     * second time.
      */
     protected void reinitializePropertyProxies(){
         if (properties != null){
@@ -277,7 +277,7 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
                 try {
                     PropertyProxy pp = deviceProxy.getPropertyProxy(pns[i]);
                     DirectoryProxy dp = deviceProxy.getDirectoryProxy(pns[i]);
-        
+
                     DynamicValuePropertyImpl<?> prop = ((DynamicValuePropertyImpl<?>)getProperty(pns[i]));
                     prop.initialize(pp, dp);
                     prop.refresh();
@@ -287,41 +287,41 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
             }
         }
     }
-    
+
     @Override
     protected DynamicValueProperty<?> createProperty(String name)
     throws RemoteException, IllegalAccessException, InstantiationException,
         InvocationTargetException, NoSuchMethodException
     {
         Class<? extends SimpleProperty<?>> type = getPropertyType(name);
-    
+
         // Creates property implementation
         Class<?> impClass = PropertyUtilities.getImplementationClass(type);
         DynamicValuePropertyImpl<?> property = (DynamicValuePropertyImpl<?>)impClass.getConstructor(String.class,
                 PropertyContext.class).newInstance(name, this);
-    
+
         if (deviceProxy != null){
             PropertyProxy pp = deviceProxy.getPropertyProxy(name);
             DirectoryProxy dp = deviceProxy.getDirectoryProxy(name);
-    
+
             property.initialize(pp, dp);
         }
         property.addPropertyChangeListener(propertyInterceptor);
-        
+
 //        if (deviceProxy != null){
 //            if (property.getConnectionState() != ConnectionState.CONNECTED) {
 //                Logger.getLogger(DeviceBean.class.getName()).info("Property '" + name +"' is not connected. Waiting for connection to be established...");
 //            }
 //            LinkBlocker.blockUntillConnected(property,Plugs.getConnectionTimeout(null, 30000) * 2, true);
 //        }
-    
+
         return property;
     }
-    
+
     protected Class<? extends SimpleProperty<?>> getPropertyType(String name){
         return (Class<? extends SimpleProperty<?>>)DynamicValueProperty.class;
     }
-    
+
     /**
      * Sets connection state and fires event.
      *
@@ -333,9 +333,9 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
 
         // TODO: should fire event here to connection listeners
     }
-    
+
     /**
-     * @see {@link #setAutoConnect(boolean)} 
+     * @see {@link #setAutoConnect(boolean)}
      */
     public boolean isAutoConnect() {
         return autoConnect;
@@ -349,7 +349,7 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
         this.autoConnect = autoConnect;
         tryConnect();
     }
-    
+
     protected void tryConnect(){
         if (autoConnect && (getConnectionState() == ConnectionState.READY  || getConnectionState() == ConnectionState.DISCONNECTED ) && deviceFactory != null)
             try {

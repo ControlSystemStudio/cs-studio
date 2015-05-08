@@ -15,9 +15,9 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Popup menu action for the outline view that creates a new record.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class AddRecordAction extends AbstractOutlineAction {
 

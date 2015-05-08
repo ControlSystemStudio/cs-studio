@@ -46,8 +46,8 @@ public class ChoiceButton extends Widget {
 
     /**
      * @param choiceButton The ADLWidget that describe the ActionButton.
-     * @param storedDynamicAttribute 
-     * @param storedBasicAttribute 
+     * @param storedDynamicAttribute
+     * @param storedBasicAttribute
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
     public ChoiceButton(final ADLWidget choiceButton, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
@@ -74,8 +74,8 @@ public class ChoiceButton extends Widget {
         dynamicsDescriptor = new DynamicsDescriptor();
         dynamicsDescriptor.addInputChannel(parameterDescriptor);
         _widget.setDynamicsDescriptor(ActionButtonModel.PROP_LABEL, dynamicsDescriptor);
-        
-        
+
+
         for (FileLine fileLine : choiceButton.getBody()) {
             String obj = fileLine.getLine();
             String[] row = obj.trim().split("="); //$NON-NLS-1$
@@ -92,7 +92,7 @@ public class ChoiceButton extends Widget {
 //                // <property type="sds.string" id="label" value="AButton" />
 //                _widget.setPropertyValue(ActionButtonModel.PROP_LABEL, row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
 //            }else if(row[0].equals("press_msg")){ //$NON-NLS-1$
-//                // <property type="sds.double" id="click_value" value="0.0" /> 
+//                // <property type="sds.double" id="click_value" value="0.0" />
 //                _widget.setPropertyValue("click_value", row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 //                CommitValueActionModelFactory fac = new CommitValueActionModelFactory();
 //                CommitValueActionModel action = (CommitValueActionModel) fac.createWidgetAction();
@@ -112,15 +112,15 @@ public class ChoiceButton extends Widget {
 //            }else if(row[0].equals("pressed_label")){ //$NON-NLS-1$
 //                // TODO: ActionButton-->pressed_label (Not Supported from SDS)
             if(row[0].equals("stacking")){ //$NON-NLS-1$
-                // not needed. 
+                // not needed.
             }else if(row[0].equals("clrmod")){ //$NON-NLS-1$
 //              // TODO: ActionButton-->clrmod
-            }else{                
+            }else{
 
                 throw new WrongADLFormatException(Messages.ActionButton_WrongADLFormatException+fileLine);
             }
         }
-        
+
     }
 
     /**

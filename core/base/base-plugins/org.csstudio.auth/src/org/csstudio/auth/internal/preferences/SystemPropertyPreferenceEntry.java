@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.auth.internal.preferences;
@@ -35,28 +35,28 @@ import org.osgi.service.prefs.Preferences;
 
 /**
  * An entry of the system property preferences.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class SystemPropertyPreferenceEntry {
-    
+
     /**
      * The node in the preferences below which the entries are stored.
      */
     private static final String PREFERENCE_NODE = "systemProperties";
-    
+
     /**
      * The preference key.
      */
     private String _key;
-    
+
     /**
      * The preference value.
      */
     private String _value;
-    
+
     private static final Logger log = Logger.getLogger(SystemPropertyPreferenceEntry.class.getName());
-    
+
     /**
      * Creates a new system property preference entry.
      * @param key the property key.
@@ -66,7 +66,7 @@ public final class SystemPropertyPreferenceEntry {
         _key = key;
         _value = value;
     }
-    
+
     /**
      * Returns the preference key.
      * @return the preference key.
@@ -74,7 +74,7 @@ public final class SystemPropertyPreferenceEntry {
     public String getKey() {
         return _key;
     }
-    
+
     /**
      * Returns the preference value.
      * @return the preference value.
@@ -90,7 +90,7 @@ public final class SystemPropertyPreferenceEntry {
     public void setKey(final String key) {
         _key = key;
     }
-    
+
     /**
      * Sets the value.
      * @param value the value.
@@ -98,7 +98,7 @@ public final class SystemPropertyPreferenceEntry {
     public void setValue(final String value) {
         _value = value;
     }
-    
+
     /**
      * Returns a string representation of this entry.
      * @return a string representation of this entry.
@@ -107,9 +107,9 @@ public final class SystemPropertyPreferenceEntry {
     public String toString() {
         return _key + "=" + _value;
     }
-    
+
     /**
-     * Loads the system property defaults from the preferences. 
+     * Loads the system property defaults from the preferences.
      * @return the system property defaults.
      */
     public static Collection<SystemPropertyPreferenceEntry> loadFromPreferences() {
@@ -137,7 +137,7 @@ public final class SystemPropertyPreferenceEntry {
         }
         return result;
     }
-    
+
     /**
      * Stores the system property defaults in the preferences. Any existing
      * entries will be overwritten.
@@ -167,7 +167,7 @@ public final class SystemPropertyPreferenceEntry {
         return InstanceScope.INSTANCE.getNode(
                 AuthActivator.ID);
     }
-    
+
     /**
      * Returns the preferences node that contains the defaults of the platform
      * preferences.

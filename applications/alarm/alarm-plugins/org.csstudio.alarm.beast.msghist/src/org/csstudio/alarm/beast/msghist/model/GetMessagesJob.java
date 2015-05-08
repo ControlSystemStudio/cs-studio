@@ -91,8 +91,8 @@ abstract public class GetMessagesJob extends Job
      * @param ex the ex
      */
     abstract void handleError(final String message, final Exception ex);
-    
-    
+
+
     /** Derived class must implement to handle received messages */
     abstract void gotMessages(final Message[] messages);
 }

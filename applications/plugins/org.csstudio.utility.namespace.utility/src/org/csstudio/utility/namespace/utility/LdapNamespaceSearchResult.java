@@ -26,15 +26,15 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * TODO (bknerr) : 
- * 
+ * TODO (bknerr) :
+ *
  * @author bknerr
  * @since 18.05.2011
  */
 public class LdapNamespaceSearchResult extends NameSpaceSearchResult {
-    
+
     private List<ControlSystemItem> _csiResult = Collections.emptyList();
-    
+
     /**
      * {@inheritDoc}
      */
@@ -42,7 +42,7 @@ public class LdapNamespaceSearchResult extends NameSpaceSearchResult {
     public List<ControlSystemItem> getCSIResultList() {
         return _csiResult;
     }
-    
+
 
     /**
      * Copies the list of {@link ControlSystemItem}.
@@ -52,7 +52,7 @@ public class LdapNamespaceSearchResult extends NameSpaceSearchResult {
     public final void setCSIResultList(final List<ControlSystemItem> resultList) {
         _csiResult = new ArrayList<ControlSystemItem>(resultList);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -60,7 +60,7 @@ public class LdapNamespaceSearchResult extends NameSpaceSearchResult {
     public NameSpaceSearchResult getNew() {
         return new LdapNamespaceSearchResult();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -69,5 +69,5 @@ public class LdapNamespaceSearchResult extends NameSpaceSearchResult {
         setChanged();
         notifyObservers();
     }
-    
+
 }

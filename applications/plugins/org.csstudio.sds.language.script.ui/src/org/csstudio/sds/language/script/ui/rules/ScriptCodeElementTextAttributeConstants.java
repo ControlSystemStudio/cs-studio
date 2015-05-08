@@ -30,21 +30,21 @@ public enum ScriptCodeElementTextAttributeConstants {
     /** The color key for predefined method names. */
     SCRIPT_PREDEFINED_METHOD(
             "script_method_pattern", new RGB(0, 0, 200), "Predefined methods"), //$NON-NLS-1$
-            
+
     /** The color key for predefined method names. */
     SCRIPT_PREDEFINED_VARIABLES(
             "script_method_pattern", new RGB(0, 0, 255), "Predefined methods"),//$NON-NLS-1$
 
     /** The color key for string and character literals in SCRIPT code. */
     SCRIPT_STRING("script_string", new RGB(42, 0, 255), "Strings"),//$NON-NLS-1$
-    
+
     /** The color key for comments in SCRIPT code. */
     SCRIPT_MULTI_LINE_COMMENT("script_comment", new RGB(63, 127, 95), "Comment"); //$NON-NLS-1$
- 
+
     /**
      * Returns the CodeElementTextAttributeConstant of given id-string, if
      * existing.
-     * 
+     *
      * @param idString
      *            The id string, may not be null.
      * @return The found constant or null if no constant found for given id.
@@ -73,7 +73,7 @@ public enum ScriptCodeElementTextAttributeConstants {
 
     /**
      * Initialize a enum constant of this type.
-     * 
+     *
      * @param constantId
      *            A senseless string-id of the color.
      * @param colorValue
@@ -92,7 +92,7 @@ public enum ScriptCodeElementTextAttributeConstants {
 
     /**
      * Initialize a enum constant of this type with the {@link SWT#NORMAL}-font-style.
-     * 
+     *
      * @param constantId
      *            A senseless string-id of the color.
      * @param colorValue
@@ -119,7 +119,7 @@ public enum ScriptCodeElementTextAttributeConstants {
 
     /**
      * Returns the human readable short description.
-     * 
+     *
      * @return The short description
      */
     public String getShortDescription() {
@@ -135,7 +135,7 @@ public enum ScriptCodeElementTextAttributeConstants {
 
     /**
      * Replaces default rgb with given rgb color value.
-     * 
+     *
      * @param color
      *            The new rgb value, may not be null.
      */

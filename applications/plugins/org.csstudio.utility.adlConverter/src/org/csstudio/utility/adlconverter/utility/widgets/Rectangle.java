@@ -36,12 +36,12 @@ import org.csstudio.utility.adlconverter.utility.ADLWidget;
  * @since 12.09.2007
  */
 public class Rectangle extends Widget{
-    
+
     /**
      * @param rectangle ADLWidget that describe the groupingContainer.
-     * @param storedDynamicAttribute 
-     * @param storedBasicAttribute 
-     * @param displayModel 
+     * @param storedDynamicAttribute
+     * @param storedBasicAttribute
+     * @param displayModel
      */
     public Rectangle(final ADLWidget rectangle, AbstractWidgetModel abstractWidgetModel, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) {
         super(rectangle, storedBasicAttribute, storedDynamicAttribute);
@@ -51,7 +51,7 @@ public class Rectangle extends Widget{
         }
         ADLHelper.checkAndSetLayer(_widget, abstractWidgetModel);
     }
-    
+
 
 
     /**

@@ -5,9 +5,9 @@ import org.eclipse.ui.views.properties.tabbed.ISection;
 
 /**
  * Default implementation of {@link ISectionFactory}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class SectionFactory implements ISectionFactory {
     /**
@@ -67,7 +67,7 @@ public class SectionFactory implements ISectionFactory {
         }
 
         assert section!=null;
-        
+
         return section;
     }
 }

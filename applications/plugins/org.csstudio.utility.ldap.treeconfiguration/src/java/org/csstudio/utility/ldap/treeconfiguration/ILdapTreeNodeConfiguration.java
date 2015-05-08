@@ -25,14 +25,14 @@ package org.csstudio.utility.ldap.treeconfiguration;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 
 /**
- * Tree node configuration specific for LDAP tree nodes. 
- * 
+ * Tree node configuration specific for LDAP tree nodes.
+ *
  * @author bknerr
  * @since 17.05.2011
  * @param <T> the type of the tree configuration
  */
 public interface ILdapTreeNodeConfiguration<T extends Enum<T>> extends ITreeNodeConfiguration<T>{
-    
+
     /**
      * Returns the root value (e.g. 'EpicsAlarmcfg' or 'EpicsControls') for the root type (typically 'ou').
      * @return the root value.

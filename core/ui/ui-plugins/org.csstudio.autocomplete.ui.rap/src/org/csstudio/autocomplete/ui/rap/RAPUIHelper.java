@@ -13,7 +13,7 @@ import org.csstudio.autocomplete.ui.util.UIHelper;
 
 /**
  * Helper for accessing RAP UI.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class RAPUIHelper extends UIHelper {

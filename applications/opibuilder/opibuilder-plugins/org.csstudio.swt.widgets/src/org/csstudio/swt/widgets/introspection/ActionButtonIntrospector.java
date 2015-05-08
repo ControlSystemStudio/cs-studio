@@ -23,8 +23,8 @@ public class ActionButtonIntrospector extends DefaultWidgetIntrospector {
     };
     @Override
     public String[] getNonProperties() {
-    
+
         return concatenateStringArrays(super.getNonProperties(), NON_PROPERTIES);
     }
-    
+
 }

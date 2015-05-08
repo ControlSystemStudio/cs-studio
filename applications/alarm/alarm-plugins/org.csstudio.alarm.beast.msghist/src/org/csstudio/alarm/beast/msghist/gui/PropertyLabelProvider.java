@@ -19,7 +19,7 @@ import org.eclipse.osgi.util.NLS;
 public class PropertyLabelProvider extends CellLabelProvider
 {
     final protected String property;
-    
+
     /** Create label provider for Message
      *  @param property Name of property to display
      */

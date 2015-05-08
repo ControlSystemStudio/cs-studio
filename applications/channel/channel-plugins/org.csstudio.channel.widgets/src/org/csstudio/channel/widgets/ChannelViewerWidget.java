@@ -120,9 +120,9 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
             TableColumn tblclmnNumericprop = channelTagColumn.getColumn();
             tblclmnNumericprop.setText(tagName);
         }
-        
+
         resetTableLayout();
-        
+
         // Clear the channel list;
         if (channels != null) {
             tableViewer.setInput(channels.toArray());
@@ -132,7 +132,7 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
             tableViewer.setItemCount(0);
         }
     }
-    
+
     private void resetTableLayout() {
         int tableWidth = table.getSize().x;
         int nColumn = table.getColumnCount();
@@ -162,11 +162,11 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
         tableViewer = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION |
                 SWT.MULTI);
         table = tableViewer.getTable();
-        
+
         table.setLinesVisible(true);
         table.setHeaderVisible(true);
         table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-        
+
         TableViewerColumn channelNameColumn = new TableViewerColumn(
                 tableViewer, SWT.NONE);
         channelNameColumn.setLabelProvider(new CellLabelProvider() {

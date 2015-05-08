@@ -14,9 +14,9 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 /**
  * The property descriptor for PV Name which supports auto complete.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class PVNamePropertyDescriptor extends TextPropertyDescriptor {
 
@@ -40,10 +40,10 @@ public class PVNamePropertyDescriptor extends TextPropertyDescriptor {
     @Override
     public CellEditor createPropertyEditor(final Composite parent) {
 
-        final PVNameTextCellEditor editor = new PVNameTextCellEditor(parent);            
+        final PVNameTextCellEditor editor = new PVNameTextCellEditor(parent);
         editor.getControl().setToolTipText(getDescription());
         return editor;
     }
 
-  
+
 }

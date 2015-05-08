@@ -9,7 +9,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * This instance can be shared between all extensions in the plugin. Information
  * shared between extensions can be persisted by using the PreferenceStore.
  * </p>
- * 
+ *
  * @see org.eclipse.ui.plugin.AbstractUIPlugin#getPreferenceStore()
  */
 public class ShapesPlugin extends AbstractUIPlugin {
@@ -37,7 +37,7 @@ public class ShapesPlugin extends AbstractUIPlugin {
     /**
      * Returns an image descriptor for the image file at the given plug-in
      * relative path
-     * 
+     *
      * @param path
      *            the path
      * @return the image descriptor

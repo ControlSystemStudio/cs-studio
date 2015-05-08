@@ -15,9 +15,9 @@ import org.eclipse.ui.part.EditorActionBarContributor;
 
 /**
  * The toolbar contributor for OPI runner
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class OPIRunnerToolBarContributor extends EditorActionBarContributor {
 
@@ -26,11 +26,11 @@ public class OPIRunnerToolBarContributor extends EditorActionBarContributor {
     @Override
     public void init(IActionBars bars, IWorkbenchPage page) {
         opiRuntimeToolBarDelegate.init(bars, page);
-        super.init(bars, page);        
+        super.init(bars, page);
     }
 
     public OPIRunnerToolBarContributor() {
-        opiRuntimeToolBarDelegate = new OPIRuntimeToolBarDelegate();    
+        opiRuntimeToolBarDelegate = new OPIRuntimeToolBarDelegate();
     }
 
     @Override
@@ -43,7 +43,7 @@ public class OPIRunnerToolBarContributor extends EditorActionBarContributor {
         opiRuntimeToolBarDelegate
                 .setActiveOPIRuntime((IOPIRuntime) targetEditor);
     }
-    
+
     @Override
     public void dispose() {
         opiRuntimeToolBarDelegate.dispose();

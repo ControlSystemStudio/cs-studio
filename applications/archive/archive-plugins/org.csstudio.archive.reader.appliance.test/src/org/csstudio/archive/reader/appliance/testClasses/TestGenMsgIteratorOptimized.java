@@ -20,18 +20,18 @@ import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadType;
 import edu.stanford.slac.archiverappliance.PB.EPICSEvent.ScalarDouble;
 
 /**
- * 
+ *
  * <code>TestGenMsgIteratorOptimized</code> is a message generator for the optimized data retrieval testing.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
 public class TestGenMsgIteratorOptimized implements GenMsgIterator {
-    
-    protected PayloadInfo info;    
+
+    protected PayloadInfo info;
     protected ArrayList<EpicsMessage> epicsMessageList;
     private int counter = -1;
-    
+
     private int size = 10;
     public static final double[] VALUES_DOUBLE = new double[]{
         1,2,3,4,5,6,7,8,9,10};
@@ -49,12 +49,12 @@ public class TestGenMsgIteratorOptimized implements GenMsgIterator {
         3,2,2,1,0,0,0,1,2,4};
     public static final int[] VALUES_COUNT = new int[]{
         100,200,300,4,500,600,7,8,9,10};
-    public static final int VALUES_NCOUNT = 1000; 
+    public static final int VALUES_NCOUNT = 1000;
     public static final int VALUES_NCOUNT_WAVE = 10;
-    
+
     /**
      * Constructor
-     * 
+     *
      * @param name the name of the PV
      * @param start the start time of the requested samples
      * @param end the end time of the requested samples
@@ -74,33 +74,33 @@ public class TestGenMsgIteratorOptimized implements GenMsgIterator {
         } else if (name.startsWith(ApplianceArchiveReaderConstants.OP_NCOUNT)) {
             step = Integer.MAX_VALUE;
         }
-        
+
         try {
             initialize(name,start,end,step);
         } catch (InvalidProtocolBufferException e) {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Initializes the epics messages.
-     * 
+     *
      * @param name the name of the PV
      * @param start the start time of the requested samples
      * @param end the end time of the requested samples
-     * @throws InvalidProtocolBufferException 
+     * @throws InvalidProtocolBufferException
      */
     protected void initialize(String name, Timestamp start, Timestamp end,int step) throws InvalidProtocolBufferException {
         Calendar startCal = Calendar.getInstance();
         startCal.setTime(start);
         PayloadType payloadType = PayloadType.SCALAR_DOUBLE;
-        
+
         ByteString byteString = ByteString.copyFrom(new byte[]{8, -52, -13, -57, 14, 16, -36, -78, -35, -51, 2, 25, 0, 0, 0, 0, 0, -87, -62, 64, 32, 2, 40, 3});
         GeneratedMessage message = ScalarDouble.parseFrom(byteString);
-        
+
         size = Math.max((int)(((end.getTime()-start.getTime())/1000)/step),1);
         Number[] values = new Number[size];
-        
+
         if (name.contains("ncount")) {
             payloadType = PayloadType.SCALAR_INT;
             values = new Number[1];
@@ -140,12 +140,12 @@ public class TestGenMsgIteratorOptimized implements GenMsgIterator {
                 values[i] = VALUES_BYTE[i%VALUES_BYTE.length];
             }
         }
-        
+
         info = PayloadInfo.newBuilder().setPvname(name)
                 .setType(payloadType)
                 .setYear(startCal.get(Calendar.YEAR)).build();
         epicsMessageList = new ArrayList<EpicsMessage>();
-                
+
         long s = start.getTime();
         long st = step*1000;
         for (int i = 0; i < size; i++) {
@@ -153,7 +153,7 @@ public class TestGenMsgIteratorOptimized implements GenMsgIterator {
             epicsMessageList.add(new TestEpicsMessage(time, values[i],SEVERITIES[i%SEVERITIES.length],STATUS[i%STATUS.length],message, info));
         }
     }
-    
+
     /* (non-Javadoc)
      * @see java.lang.Iterable#iterator()
      */
@@ -190,7 +190,7 @@ public class TestGenMsgIteratorOptimized implements GenMsgIterator {
      */
     @Override
     public void onInfoChange(InfoChangeHandler arg0) { }
-    
+
     /* (non-Javadoc)
      * @see java.io.Closeable#close()
      */

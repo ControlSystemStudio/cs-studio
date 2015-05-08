@@ -7,9 +7,9 @@ import de.desy.language.snl.parser.nodes.PlaceholderNode;
 
 /**
  * The specialized {@link IAdapterFactory} for {@link PlaceholderNode}s.
- * 
+ *
  * @author C1 WPS / KM, MZ
- * 
+ *
  */
 class PlaceholderNodeAdapterFactory implements IAdapterFactory {
 

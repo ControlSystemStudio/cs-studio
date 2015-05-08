@@ -18,7 +18,7 @@ public interface Annunciator
      *  @param translations
      */
     public void setTranslations(Translation[] translations);
-    
+
     /** Speak some text
      *  @param something Text to speak
      *  @throws Exception on error

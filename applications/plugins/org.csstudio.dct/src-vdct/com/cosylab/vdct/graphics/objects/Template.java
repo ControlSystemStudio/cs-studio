@@ -8,22 +8,22 @@ package com.cosylab.vdct.graphics.objects;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -88,7 +88,7 @@ public class Template
 
     private CommentProperty commentProperty = null;
 
-    private boolean initialized = false; 
+    private boolean initialized = false;
 
     // properties field
     protected int rfieldLabelX;
@@ -120,11 +120,11 @@ public class Template
     protected long macrosID = -1;
 
     protected Vector invalidLinks = null;
-    
+
     protected int fields = 0;
     protected int leftFields = 0;
     protected int rightFields = 0;
-    
+
     /**
      * @param parent
      * @param templateData
@@ -148,10 +148,10 @@ public class Template
         setColor(Color.black);
         setWidth(Constants.TEMPLATE_WIDTH);
         setHeight(Constants.TEMPLATE_INITIAL_HEIGHT);
-        
+
         if (initializeFields)
             initializeLinkFields();
-                    
+
         //forceValidation();
 
     }
@@ -162,27 +162,27 @@ public class Template
     protected void draw(Graphics g, boolean hilited)
     {
         ViewState view = ViewState.getInstance();
-    
+
         double Rscale = getRscale();
         boolean zoom = Rscale < 1.0 && view.isZoomOnHilited() && view.isHilitedObject(this);
         if (zoom) {
             zoomImage = ZoomPane.getInstance().startZooming(this, true);
         }
-        
+
         int rrx = getRx()-view.getRx();
         int rry = getRy()-view.getRy();
         int rwidth = getRwidth();
         int rheight = getRheight();
-            
+
         // clipping
         if ((!(rrx>view.getViewWidth()) || (rry>view.getViewHeight())
             || ((rrx+rwidth)<0) || ((rry+rheight)<0)) || isZoomRepaint()) {
-    
+
             if (isZoomRepaint()) {
                 rrx = ZoomPane.getInstance().getLeftOffset();
                 rry = ZoomPane.VERTICAL_MARGIN;
             }
-                        
+
             if (!hilited) g.setColor(Constants.RECORD_COLOR);
             else if (view.isPicked(this)) g.setColor(Constants.PICK_COLOR);
             else if (view.isSelected(this) ||
@@ -190,16 +190,16 @@ public class Template
             else g.setColor(Constants.RECORD_COLOR);
 
             Color fillColor = g.getColor();
-                    
+
             g.fillRect(rrx, rry, rwidth, rheight);
 
 
             if (!hilited) g.setColor(Constants.FRAME_COLOR);
-            else g.setColor((view.isHilitedObject(this)) ? 
+            else g.setColor((view.isHilitedObject(this)) ?
                             Constants.HILITE_COLOR : Constants.FRAME_COLOR);
-    
+
             g.drawRect(rrx, rry, rwidth, rheight);
-    
+
             // colors
             if (invalidLinks.size()>0)
             {
@@ -235,7 +235,7 @@ public class Template
                 int py = py0; int n = 0;
                  java.util.Iterator e = templateData.getPropertiesV().iterator();
                 while (e.hasNext())
-                {                
+                {
                     String name = e.next().toString();
                     val = name + "=" + templateData.getProperties().get(name).toString();
                     while ((fm.stringWidth(val) + ox) > rwidth)
@@ -249,7 +249,7 @@ public class Template
         }
 
         paintSubObjects(g, hilited);
-        
+
         if (zoom) {
             rwidth /= Rscale;
             rheight /= Rscale;
@@ -257,7 +257,7 @@ public class Template
             rry -= (rheight - getRheight())/2;
             if (view.getRx() < 0)
                 rrx = rrx < 0 ? 2 : rrx;
-            if (view.getRy() < 0) 
+            if (view.getRy() < 0)
                 rry = rry <= 0 ? 2 : rry;
             g.drawImage(zoomImage, rrx,rry, ZoomPane.getInstance());
         }
@@ -284,9 +284,9 @@ public class Template
           // sub-components
           revalidateFieldsPosition();
     }
-    
+
     private int validateFont(double scale, int rwidth, int height) {
-        
+
         int irheight = (int)(scale*height);
 
           // set appropriate font size
@@ -301,7 +301,7 @@ public class Template
           int frheight = (int)(scale*height);
 
 //          rlinkY = frheight;
-          
+
           // properties
 
           int xx0 = (int)(14*scale);        // insets
@@ -315,7 +315,7 @@ public class Template
           if (rwidth<(2*xx0)) fieldFont = null;
           else
               fieldFont = FontMetricsBuffer.getInstance().getAppropriateFont(
-                               Constants.DEFAULT_FONT, Font.PLAIN, 
+                               Constants.DEFAULT_FONT, Font.PLAIN,
                                fieldMaxStr, rwidth-x0, (int)rfieldRowHeight);
 
           int ascent = 0;
@@ -330,20 +330,20 @@ public class Template
           }
 
           int rheight = frheight + yy0 + (int)(rfieldRowHeight*templateData.getProperties().size())+ascent;
-          
-        
+
+
           // description
 
           int idLabelHeight = (int)(Constants.FIELD_HEIGHT*scale);
-          
+
           setLabel(getDescription());
-        
+
           final int MAX_FONT_SIZE = 30;
           Font font;
           font = FontMetricsBuffer.getInstance().getAppropriateFont(
-                          Constants.DEFAULT_FONT, Font.PLAIN, 
+                          Constants.DEFAULT_FONT, Font.PLAIN,
                           getLabel(), rwidth-x0, irheight-y0/*-idLabelHeight*/, (int)(MAX_FONT_SIZE*scale));
-          
+
           if (rwidth<(2*x0)) font = null;
           else
           if (font!=null) {
@@ -354,21 +354,21 @@ public class Template
           setFont(font);
 
           // id label
-          
+
           // idlabel = templateData.getTemplate().getId();
           idlabel = templateData.getName();
           if (rwidth<(2*x0)) idFont = null;
           else
               idFont = FontMetricsBuffer.getInstance().getAppropriateFont(
-                               Constants.DEFAULT_FONT, Font.PLAIN, 
+                               Constants.DEFAULT_FONT, Font.PLAIN,
                                idlabel, rwidth-x0, idLabelHeight);
-        
+
           if (idFont!=null) {
               FontMetrics fm = FontMetricsBuffer.getInstance().getFontMetrics(idFont);
               ridLabelX = (rwidth-fm.stringWidth(idlabel))/2;
                ridLabelY = (idLabelHeight-fm.getHeight())/2+fm.getAscent();
           }
-          
+
           return rheight;
     }
 
@@ -380,12 +380,12 @@ public class Template
     {
         if (validating)
             return;
-        
+
         try {
             validating = true;
 
               // template change check
-              VDBTemplate tmpl = (VDBTemplate)VDBData.getTemplates().get(getTemplateData().getTemplate().getId());        
+              VDBTemplate tmpl = (VDBTemplate)VDBData.getTemplates().get(getTemplateData().getTemplate().getId());
               if (tmpl!=getTemplateData().getTemplate())
               {
                   getTemplateData().setTemplate(tmpl);
@@ -398,7 +398,7 @@ public class Template
                 if (getTemplateData().getTemplate().getMacrosGeneratedID()!=macrosID)
                     synchronizeMacroLinkFields();
               }
-            
+
               revalidatePosition();
 
               double scale = getRscale();
@@ -406,17 +406,17 @@ public class Template
               int height = (int)(getY()*scale+Constants.TEMPLATE_INITIAL_HEIGHT)-getRy();
 
               initY = height;
-                    
+
               int rheight = validateFont(scale, rwidth, height);
-              
+
               setHeight((int)(rheight/scale));
               setRwidth(rwidth);
               setRheight(rheight);
-              
+
               // sub-components
               revalidatePosition();
               validateFields();
-              
+
         }
         finally {
             validating = false;
@@ -429,8 +429,8 @@ public class Template
     public boolean checkMove(int dx, int dy)
     {
         ViewState view = ViewState.getInstance();
-    
-        if ((getX()<-dx) || (getY()<-dy) || 
+
+        if ((getX()<-dx) || (getY()<-dy) ||
             (getX()>(view.getWidth()-getWidth()-dx)) || (getY()>(view.getHeight()-getHeight()-dy)))
             return false;
         else
@@ -444,12 +444,12 @@ public class Template
     {
         if (checkMove(dx, dy)) {
             x+=dx;
-            y+=dy;            
+            y+=dy;
             revalidatePosition();
             moveConnectors(dx, dy);
             return true;
         }
-        else 
+        else
             return false;
     }
 
@@ -499,7 +499,7 @@ public class Template
         if (templateSeparator==null) templateSeparator = new GUISeparator("Template");
         return templateSeparator;
     }
-    
+
     /**
      * Insert the method's description here.
      * Creation date: (3.2.2001 13:07:04)
@@ -553,9 +553,9 @@ public class Template
         items.addElement(new NameValueInfoProperty("FileName", templateData.getTemplate().getFileName()));
 
         items.addElement(getTemplateInstanceSeparator());
-        
+
         final String descriptionString = "Description";
-        
+
         items.addElement(getMacrosSeparator());
         Object obj;
         Enumeration e = subObjectsV.elements();
@@ -587,7 +587,7 @@ public class Template
             }
         }
 
-        
+
         items.addElement(getPropertiesSeparator());
 
           java.util.Iterator i = templateData.getPropertiesV().iterator();
@@ -601,7 +601,7 @@ public class Template
 
         final String addString = "Add macro...";
         items.addElement(new MonitoredActionProperty(addString, this));
-    
+
         InspectableProperty[] properties = new InspectableProperty[items.size()];
         items.copyInto(properties);
         return properties;
@@ -614,12 +614,12 @@ public class Template
     {
         ActionListener l = createPopupmenuHandler();
 
-        // template has link destination 
+        // template has link destination
         if (getTargetLink()==null)
         {
             JMenu macros = new JMenu("MACRO");
             int macroItems = 0;
-            
+
             Object obj;
             Enumeration e = subObjectsV.elements();
             while (e.hasMoreElements())
@@ -633,12 +633,12 @@ public class Template
                     {
                         JMenuItem menuitem = new JMenuItem(tem.getFieldData().getName());
                         menuitem.addActionListener(l);
-                        macros = PopUpMenu.addItem(menuitem, macros, macroItems); 
+                        macros = PopUpMenu.addItem(menuitem, macros, macroItems);
                         macroItems++;
                     }
                 }
             }
-            
+
             if (macros.getItemCount() > 0)
             {
                 Vector items = new Vector();
@@ -648,12 +648,12 @@ public class Template
             else
                 return null;
         }
-        // template has link target 
+        // template has link target
         else
         {
             JMenu ports = new JMenu("PORT");
             int portItems = 0;
-            
+
             Object obj;
             Enumeration e = subObjectsV.elements();
             while (e.hasMoreElements())
@@ -664,11 +664,11 @@ public class Template
                     TemplateEPICSPort tep = (TemplateEPICSPort)obj;
                     JMenuItem menuitem = new JMenuItem(tep.getFieldData().getName());
                     menuitem.addActionListener(l);
-                    ports = PopUpMenu.addItem(menuitem, ports, portItems); 
+                    ports = PopUpMenu.addItem(menuitem, ports, portItems);
                     portItems++;
                 }
             }
-            
+
             if (ports.getItemCount() > 0)
             {
                 Vector items = new Vector();
@@ -678,7 +678,7 @@ public class Template
             else
                 return null;
         }
-            
+
     }
 
     /**
@@ -725,7 +725,7 @@ public class Template
         this.description = description;
     }
     */
-    
+
 
 /**
  * Returned value inicates change
@@ -738,7 +738,7 @@ public VisibleObject hiliteComponentsCheck(int x, int y) {
 
     ViewState view = ViewState.getInstance();
     VisibleObject spotted = null;
-    
+
     Enumeration e = subObjectsV.elements();
     VisibleObject vo;
     while (e.hasMoreElements()) {
@@ -768,8 +768,8 @@ public VisibleObject intersects(int px, int py) {
     // first check on small sub-objects like connectors
     VisibleObject spotted = hiliteComponentsCheck(px, py);
       if ((spotted==null) &&
-          (getRx()<=px) && (getRy()<=py) && 
-        ((getRx()+getRwidth())>=px) && 
+          (getRx()<=px) && (getRy()<=py) &&
+        ((getRx()+getRwidth())>=px) &&
         ((getRy()+getRheight())>=py))
         spotted = this;
     return spotted;
@@ -783,7 +783,7 @@ public VisibleObject intersects(int px, int py) {
 public void revalidateFieldsPosition() {
 
   int lx = getX();
-  int rx = getX()+getWidth()/2; 
+  int rx = getX()+getWidth()/2;
   int ly = getY()+initY;
   int ry = getY()+initY;
   int rn = 0;
@@ -826,7 +826,7 @@ private void paintSubObjects(Graphics g, boolean hilited) {
         if (vo.isVisible())
             vo.paint(g, hilited);
     }
-    
+
 }
 
 
@@ -843,7 +843,7 @@ private void validateFields() {
         if (obj instanceof Field)
             ((VisibleObject)obj).validate();
     }
-    
+
 }
 
 /**
@@ -859,7 +859,7 @@ public void updateTemplateFields() {
         if (obj instanceof TemplateEPICSLink)
             ((TemplateEPICSLink)obj).updateTemplateLink();
     }
-    
+
 }
 
 /**
@@ -869,8 +869,8 @@ public void updateTemplateFields() {
  */
 private EPICSLink createLinkField(VDBFieldData field)
 {
-    
-    EPICSLink link = null;    
+
+    EPICSLink link = null;
 
     if (field instanceof VDBTemplatePort)
         link = new TemplateEPICSPort(this, field);
@@ -898,7 +898,7 @@ public void initializeLinkFields()
 {
     // set this flag before...
     initialized = true;
-    
+
     // ports
     Enumeration e = templateData.getTemplate().getPortsV().elements();
     while (e.hasMoreElements())
@@ -906,14 +906,14 @@ public void initializeLinkFields()
 
     portsID = getTemplateData().getTemplate().getPortsGeneratedID();
 
-    
+
     // macros
     e = templateData.getTemplate().getMacrosV().elements();
     while (e.hasMoreElements())
         addMacroField((VDBMacro)e.nextElement());
 
     macrosID = getTemplateData().getTemplate().getMacrosGeneratedID();
-    
+
 }
 
 /**
@@ -921,11 +921,11 @@ public void initializeLinkFields()
  */
 public EPICSLink addPortField(VDBPort port) {
     // check if not already added (order preservation)
-    EPICSLink link = (EPICSLink)getSubObject(port.getName()); 
+    EPICSLink link = (EPICSLink)getSubObject(port.getName());
     if (link==null)
     {
         VDBTemplatePort tf = new VDBTemplatePort(getTemplateData(), port);
-    
+
         link = createLinkField(tf);
         if (link!=null)
             addSubObject(tf.getName(), link);
@@ -938,11 +938,11 @@ public EPICSLink addPortField(VDBPort port) {
  */
 public EPICSLink addMacroField(VDBMacro macro) {
     // check if not already added (order preservation)
-    EPICSLink link = (EPICSLink)getSubObject(macro.getName()); 
+    EPICSLink link = (EPICSLink)getSubObject(macro.getName());
     if (link==null)
     {
         VDBTemplateMacro tf = new VDBTemplateMacro(getTemplateData(), macro);
-        
+
         link = createLinkField(tf);
         if (link!=null)
             addSubObject(tf.getName(), link);
@@ -951,7 +951,7 @@ public EPICSLink addMacroField(VDBMacro macro) {
         String value = (String)templateData.getProperties().get(tf.getName());
         if (value != null)
             tf.setValue(value);
-            
+
     }
     return link;
 }
@@ -993,7 +993,7 @@ private void synchronizePortLinkFields()
                         tep = t;
                         break;
                     }
-                }                    
+                }
 
             // renamed
             if (tep!=null)
@@ -1010,17 +1010,17 @@ private void synchronizePortLinkFields()
                         break;
                     }
                 }
-                
+
                 if (key!=null)
                     removeObject(key.toString());
                 else
                     System.out.println("Internal error...");
-                    
+
                 addSubObject(tep.getFieldData().getName(), tep);
 
-                // update lookup table and fix source links 
+                // update lookup table and fix source links
                 tep.fixTemplateLink();
-                                
+
                 //System.out.println("!! renamed !! "+port.getName());
             }
             else
@@ -1058,7 +1058,7 @@ private void synchronizePortLinkFields()
 
                 // remove port
                 link.destroyAndRemove();
-    
+
                 fields--;
                 if (link.isVisible())
                     if (link.isRight())
@@ -1070,7 +1070,7 @@ private void synchronizePortLinkFields()
             }
         }
     }
-    
+
     // save ports ID
     portsID = getTemplateData().getTemplate().getPortsGeneratedID();
     //com.cosylab.vdct.graphics.DrawingSurface.getInstance().setModified(true);
@@ -1106,7 +1106,7 @@ private void synchronizeMacroLinkFields()
                         tem = t;
                         break;
                     }
-                }                    
+                }
 
             // renamed
             if (tem!=null)
@@ -1123,11 +1123,11 @@ private void synchronizeMacroLinkFields()
                         break;
                     }
                 }
-                
+
                 if (key!=null)
                 {
                     removeObject(key.toString());
-                    
+
                     // remove from properties
                     String keyStr = key.toString();
                     Iterator it = templateData.getProperties().keySet().iterator();
@@ -1141,14 +1141,14 @@ private void synchronizeMacroLinkFields()
                 }
                 else
                     System.out.println("Internal error...");
-                    
+
                 addSubObject(tem.getFieldData().getName(), tem);
                 // add to properties
                 templateData.addProperty(tem.getFieldData().getName(), tem.getFieldData().getValue());
 
-                // update lookup table and fix source links 
+                // update lookup table and fix source links
                 tem.fixTemplateLink();
-                                
+
                 //System.out.println("!! renamed !! "+macro.getName());
             }
             else
@@ -1186,22 +1186,22 @@ private void synchronizeMacroLinkFields()
 
                 // remove macro
                 link.destroyAndRemove();
-    
+
                 removeObject(link.getFieldData().getName());
-                
+
                 fields--;
                 if (link.isVisible())
                     if (link.isRight())
                         rightFields--;
                     else
                         leftFields--;
-                
+
                 // remove from properties
                 templateData.removeProperty(link.getFieldData().getName());
             }
         }
     }
-    
+
     // save macros ID
     macrosID = getTemplateData().getTemplate().getMacrosGeneratedID();
     //com.cosylab.vdct.graphics.DrawingSurface.getInstance().setModified(true);
@@ -1245,11 +1245,11 @@ public void removeLink(Linkable link)
  */
 public void fieldChanged(VDBFieldData field) {
     boolean repaint = false;
-    
+
     if (manageLink(field) ||
         templateData.getProperties().get(field.getName())!=null)
             repaint=true;
-    
+
     if (repaint && initialized) {
         unconditionalValidation();
         com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
@@ -1301,10 +1301,10 @@ public void addProperty()
                 else
                 {
                     templateData.addProperty(reply, nullString);
-    
+
                     com.cosylab.vdct.undo.UndoManager.getInstance().addAction(
                             new CreateTemplatePropertyAction(this, reply));
-    
+
                     updateTemplateFields();
                     InspectorManager.getInstance().updateObject(this);
                     unconditionalValidation();
@@ -1318,7 +1318,7 @@ public void addProperty()
                 continue;
             }
         }
-        
+
         break;
     }
 }
@@ -1348,7 +1348,7 @@ public void propertyChanged(InspectableProperty property)
 public void removeProperty(InspectableProperty property)
 {
     templateData.removeProperty(property.getName());
-    
+
     com.cosylab.vdct.undo.UndoManager.getInstance().addAction(
                     new DeleteTemplatePropertyAction(this, property.getName()));
 
@@ -1356,7 +1356,7 @@ public void removeProperty(InspectableProperty property)
     InspectorManager.getInstance().updateObject(this);
     unconditionalValidation();
     com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
-    
+
 }
 
 /**
@@ -1390,7 +1390,7 @@ public void renameProperty(InspectableProperty property)
             else if (!templateData.getProperties().containsKey(reply) &&
                      getSubObject(reply)==null)
             {
-                com.cosylab.vdct.undo.ComposedAction composedAction = 
+                com.cosylab.vdct.undo.ComposedAction composedAction =
                                                 new com.cosylab.vdct.undo.ComposedAction();
 
                 Object value = templateData.getProperties().get(property.getName());
@@ -1413,9 +1413,9 @@ public void renameProperty(InspectableProperty property)
                 type = JOptionPane.WARNING_MESSAGE;
                 continue;
             }
-        
+
         }
-        
+
         break;
     }
 }
@@ -1443,7 +1443,7 @@ public void destroy() {
     if (!isDestroyed()) {
         super.destroy();
         destroyFields();
-        
+
         //clear();
         getParent().removeObject(Group.substractObjectName(getName()));
     }
@@ -1477,7 +1477,7 @@ public Flexible copyToGroup(java.lang.String group) {
 //        newName += Constants.COPY_SUFFIX;
             newName = StringUtils.incrementName(newName, Constants.COPY_SUFFIX);
 
-    
+
     //ViewState view = ViewState.getInstance();
 
     VDBTemplateInstance theDataCopy = VDBData.copyVDBTemplateInstance(templateData);
@@ -1487,14 +1487,14 @@ public Flexible copyToGroup(java.lang.String group) {
     //theTemplateCopy.setDescription(getTemplateData().getTemplate().getDescription());
     theTemplateCopy.setX(getX()); theTemplateCopy.setY(getY());
     //theTemplateCopy.move(20-view.getRx(), 20-view.getRy());
-        
+
     // apply fields data
     Enumeration e = subObjectsV.elements();
     EPICSLink field; Object obj;
-    
+
     // order the fields
     theTemplateCopy.getSubObjectsV().clear();
-    
+
     while (e.hasMoreElements()) {
         obj = e.nextElement();
         if (obj instanceof EPICSLink) {
@@ -1506,7 +1506,7 @@ public Flexible copyToGroup(java.lang.String group) {
                 fieldCopy.setColor(field.getColor());
                 fieldCopy.setRight(field.isRight());
                 fieldCopy.getFieldData().setVisibility(field.getFieldData().getVisibility());
-                
+
                 // put in the right order
                 theTemplateCopy.getSubObjectsV().add(fieldCopy);
             }
@@ -1532,7 +1532,7 @@ public Flexible copyToGroup(java.lang.String group) {
  */
 public void fixMacrosOnCopy(String prevGroup, String group) {
     if (prevGroup.equals(group)) return;
-    
+
     String prefix;
     if (group.equals(nullString)) prefix=nullString;
     else prefix=group+Constants.GROUP_SEPARATOR;
@@ -1547,24 +1547,24 @@ public void fixMacrosOnCopy(String prevGroup, String group) {
         String old = field.getValue();
         if (!old.equals(nullString) && !old.startsWith(Constants.HARDWARE_LINK) &&
             old.startsWith(prevGroup)) {
-            
+
             LinkProperties lp = new LinkProperties(field);
             InLink target = EPICSLinkOut.getTarget(lp, true);
             if (target == null)
                 continue;
-            
+
             // only parent can be selected
             Object selectableObject;
             if (target instanceof Field)
                 selectableObject = ((Field)target).getParent();
             else
                 selectableObject = target;
-            
-                
+
+
             // fix only selected
             if (!ViewState.getInstance().isSelected(selectableObject))
                 continue;
-            
+
             // fix ports...
             if (selectableObject instanceof Template) {
                 Template t = (Template)selectableObject;
@@ -1587,7 +1587,7 @@ public void fixMacrosOnCopy(String prevGroup, String group) {
 public boolean moveToGroup(java.lang.String group) {
     String currentParent = Group.substractParentName(templateData.getName());
     if (group.equals(currentParent)) return false;
-    
+
     //String oldName = getName();
     String newName;
     if (group.equals(nullString))
@@ -1634,7 +1634,7 @@ public boolean moveToGroup(java.lang.String group) {
  * @see com.cosylab.vdct.graphics.objects.Flexible#rename(String)
  */
 public boolean rename(java.lang.String newName) {
-    
+
     String newObjName = Group.substractObjectName(newName);
     String oldObjName = Group.substractObjectName(getName());
 
@@ -1660,7 +1660,7 @@ public boolean rename(java.lang.String newName) {
             }
         }
     }
-    
+
     this.updateTemplateFields();
 
     // move if needed
@@ -1668,7 +1668,7 @@ public boolean rename(java.lang.String newName) {
         fixLinks();            // fix needed
 
     return true;
-    
+
 }
 
 
@@ -1712,23 +1712,23 @@ public void writeObjects(DataOutputStream file, NamingContext context, boolean e
     // but write expand block
     if (!export)
     {
-        
+
         final String nl = "\n";
         final String comma = ", ";
         final String quote = "\"";
         final String macro = "  "+DBResolver.MACRO+"(";
         final String ending = ")"+nl;
-        
+
          // write comment
          if (getTemplateData().getComment()!=null)
              file.writeBytes(nl+getTemplateData().getComment());
-        
+
         // expand start
         file.writeBytes(nl+DBResolver.EXPAND+"(\""+getTemplateData().getTemplate().getId()+"\""+
-                        comma + 
+                        comma +
                             StringUtils.quoteIfMacro(getTemplateData().getName())
                          + ") {"+nl);
-    
+
         // macros (properties)
         Map macros = getTemplateData().getProperties();
         Iterator i = getTemplateData().getPropertiesV().iterator();
@@ -1737,15 +1737,15 @@ public void writeObjects(DataOutputStream file, NamingContext context, boolean e
             String name = i.next().toString();
             file.writeBytes(macro + name + comma + quote + StringUtils.removeQuotes(macros.get(name).toString()) + quote + ending);
         }
-            
+
         // export end
         file.writeBytes("}"+nl);
 
         return;
     }
-    
-    
-     //    
+
+
+     //
       // export (generate, flatten) DB option
      //
      //String templateName = namer.getResolvedName(getName());
@@ -1757,23 +1757,23 @@ public void writeObjects(DataOutputStream file, NamingContext context, boolean e
      Map ports = preparePorts(getTemplateData().getTemplate().getGroup(), namer.getSubstitutions());
 
      // new macros
-     // macros have to be made out of macros and ports (^^^ it's probably same with ports) 
+     // macros have to be made out of macros and ports (^^^ it's probably same with ports)
      Map properties = prepareSubstitutions(getTemplateData(), namer.getSubstitutions(), namer.getPorts());
     */
     //Map properties = prepareSubstitutions(getTemplateData(), namer.getSubstitutions(), null);
     //Map ports = preparePorts(getTemplateData().getTemplate().getGroup(), properties, namer);
-    // TODO !!! some strange path could break this code 
-    
+    // TODO !!! some strange path could break this code
+
      // new removedPrefix
      //String removedPrefix = namer.getRemovedPrefix();
-     
+
      // new addedPrefix
      //String addedPrefix = null;
 
 /*    //
     // no adding !!! anyway I noticed added prefix is not reset (to be checked, if this code is used someday)...
     //
-     
+
      if (getParent()==null)
          addedPrefix = namer.getAddedPrefix();
      else
@@ -1793,8 +1793,8 @@ public void writeObjects(DataOutputStream file, NamingContext context, boolean e
          else if (addedPrefix.charAt(len-1)!=Constants.GROUP_SEPARATOR)
              addedPrefix = addedPrefix + Constants.GROUP_SEPARATOR;
      }
-*/     
-     //NameManipulator newNamer = new DefaultNamer(namer.getFile(),removedPrefix, addedPrefix, properties, ports, export); 
+*/
+     //NameManipulator newNamer = new DefaultNamer(namer.getFile(),removedPrefix, addedPrefix, properties, ports, export);
 
      file.writeBytes("\n# expand(\""+getTemplateData().getTemplate().getFileName()+"\", "+templateName+")\n");
 
@@ -1806,39 +1806,39 @@ public void writeObjects(DataOutputStream file, NamingContext context, boolean e
      }
      finally
      {
-         Group.setRoot(currentRoot);    
+         Group.setRoot(currentRoot);
      }
      file.writeBytes("\n# end("+templateName+")\n");
-     
+
 }
 
-/*public static Map prepareMap(NamingContext renamer, Hashtable cache) {    
+/*public static Map prepareMap(NamingContext renamer, Hashtable cache) {
     if (renamer.getTemplateInstance()!=null && renamer.getParent()!=null) {
         Iterator i = renamer.getTemplateInstance().getPropertiesV().iterator();
         while (i.hasNext()) {
             String name=(String)i.next();
             String value=(String)renamer.getTemplateInstance().getProperties().get(name);
-            value=renamer.resolveMacro(name, value);            
+            value=renamer.resolveMacro(name, value);
         }
-    }        
-    
+    }
+
     Iterator i = renamer.getTemplate().getGroup().getStructure().iterator();
     while (i.hasNext())
     {
         Object obj = i.next();
         if (obj instanceof Template)
         {
-            Template t = (Template)obj;            
+            Template t = (Template)obj;
             NamingContext newRenamer = renamer.createNamingContextFor(t.getTemplateData());
 
             Iterator i2 = t.getTemplateData().getTemplate().getPortsV().iterator();
             while (i2.hasNext())
             {
                     VDBPort port = (VDBPort)i2.next();
-                    String value=newRenamer.resolvePort(port);                    
+                    String value=newRenamer.resolvePort(port);
             }
         }
-    }    
+    }
 
     return renamer.getMap();
 }*/
@@ -1852,15 +1852,15 @@ public static Map prepareSubstitutions(VDBTemplateInstance templateData, Map sub
      // Note:
       // the macro values given in an expand(){} statement should not be
      // automatically passed down into any templates that are expanded within the
-     // lower level file unless they are explicitly named as macros there too. 
+     // lower level file unless they are explicitly named as macros there too.
      Map properties = new Hashtable();
-     
+
      if (Settings.getInstance().getGlobalMacros() && substitutions!=null) {
          properties.putAll(substitutions);
      }
-        
-    properties.putAll(templateData.getProperties());        
-            
+
+    properties.putAll(templateData.getProperties());
+
      if (substitutions!=null || ports!=null)
      {
         // update values
@@ -1869,17 +1869,17 @@ public static Map prepareSubstitutions(VDBTemplateInstance templateData, Map sub
          {
              Object key = i.next();
              String value = properties.get(key).toString();
-             
-            /*LinkProperties lp = new LinkProperties(properties.get(key));                                
+
+            /*LinkProperties lp = new LinkProperties(properties.get(key));
             Object rec = Group.getRoot().findObject(lp.getRecord(), true);
             if (rec!=null) System.out.println("bingo:"+rec);
             if (rec !=null && rec instanceof Record) {
                 lp.setRecord(namer.getResolvedName(((Record)rec).getRecordData()));
                 value=lp.getFull();
             }*/
-             
+
             if (substitutions != null) value = VDBTemplateInstance.applyProperties(value, substitutions);
-            if (ports != null) value = VDBTemplateInstance.applyPorts(value, ports);            
+            if (ports != null) value = VDBTemplateInstance.applyPorts(value, ports);
              properties.put(key, value);
          }
      }
@@ -1894,23 +1894,23 @@ public static Map prepareSubstitutions(VDBTemplateInstance templateData, Map sub
 public static Map preparePorts(Group group, Map substitutions, NameManipulator namer)
 {
     HashMap map = new HashMap();
-    
+
     Iterator i = group.getStructure().iterator();
     while (i.hasNext())
     {
         Object obj = i.next();
         if (obj instanceof Template)
         {
-            Template t = (Template)obj;            
+            Template t = (Template)obj;
 
             Iterator i2 = t.getTemplateData().getTemplate().getPortsV().iterator();
             while (i2.hasNext())
             {
                 VDBPort port = (VDBPort)i2.next();
-                
+
                 String target = port.getTarget();
 
-/*                LinkProperties lp = new LinkProperties(port);                                
+/*                LinkProperties lp = new LinkProperties(port);
                 Object rec = Group.getRoot().findObject(lp.getRecord(), true);
                 if (rec!=null) System.out.println("bingo:"+rec);
                 if (rec !=null && rec instanceof Record) {
@@ -1922,15 +1922,15 @@ public static Map preparePorts(Group group, Map substitutions, NameManipulator n
                 // !!! this is done twice - optimize with buffering
                  Map newSubstitutions = prepareSubstitutions(t.getTemplateData(), substitutions, null);
 
-                target = VDBTemplateInstance.applyProperties(target, newSubstitutions);                
-                        
+                target = VDBTemplateInstance.applyProperties(target, newSubstitutions);
+
                 // if target is a contains a port definition it might be defined in lower levels
                 // try to resolve it
-                                                                
+
                 if (target.matches(".*\\$\\([a-zA-Z0-9_:-]+\\.[a-zA-Z0-9_:-]+\\).*")) {
                     //  System.out.println("Recursive: "+target);
                     //    we have sequence od '(' .. '.' .. ')'
-                    
+
                     Map lowerLevelPorts = preparePorts(t.getTemplateData().getTemplate().getGroup(), newSubstitutions, namer);
                     /*
                         System.out.println("Ports at lower level:");
@@ -1938,20 +1938,20 @@ public static Map preparePorts(Group group, Map substitutions, NameManipulator n
                         while (i3.hasNext())
                         {
                             Object key = i3.next();
-                            System.out.println("\t"+key+"="+lowerLevelPorts.get(key));    
+                            System.out.println("\t"+key+"="+lowerLevelPorts.get(key));
                         }
                     */
-                    target = VDBTemplateInstance.applyPorts(target, lowerLevelPorts);    
+                    target = VDBTemplateInstance.applyPorts(target, lowerLevelPorts);
                 }
-                
-                //if (target.indexOf('$')>=0) 
-            //System.out.println(port.getPortDefinition(t.getTemplateData().getName())+"="+target+"<map>:"+newSubstitutions+"<map>:"+substitutions);    
-                map.put(port.getPortDefinition(t.getTemplateData().getName()), target);            
+
+                //if (target.indexOf('$')>=0)
+            //System.out.println(port.getPortDefinition(t.getTemplateData().getName())+"="+target+"<map>:"+newSubstitutions+"<map>:"+substitutions);
+                map.put(port.getPortDefinition(t.getTemplateData().getName()), target);
             }
 
         }
     }
-    
+
     return map;
 }
 
@@ -2014,7 +2014,7 @@ public void fieldSideChange(EPICSLink link, boolean isRight)
     {
         leftFields++; rightFields--;
     }
-    
+
     if (initialized)
     {
         unconditionalValidation();
@@ -2035,14 +2035,14 @@ public void fieldVisibilityChange(VDBFieldData fieldData, boolean newVisible)
     {
         if (link.isRight())
             rightFields++;
-        else            
+        else
             leftFields++;
     }
     else
     {
         if (link.isRight())
             rightFields--;
-        else            
+        else
             leftFields--;
     }
 
@@ -2053,11 +2053,11 @@ public void fieldVisibilityChange(VDBFieldData fieldData, boolean newVisible)
             ((TemplateEPICSMacro)link).visilibityChanged(newVisible);
         else if (link instanceof TemplateEPICSPort)
             ((TemplateEPICSPort)link).visilibityChanged(newVisible);
-        
+
         unconditionalValidation();
         com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
     }
-    
+
 }
 
 /**
@@ -2068,9 +2068,9 @@ public void fieldVisibilityChange(VDBFieldData fieldData, boolean newVisible)
  */
 public boolean isFirstField(Field field) {
     // find first field on the same side and compare
-        
+
     EPICSLink ef = (EPICSLink)field;
-    
+
     Enumeration e = subObjectsV.elements();
     Object obj;
     while (e.hasMoreElements()) {
@@ -2086,7 +2086,7 @@ public boolean isFirstField(Field field) {
                     return false;
         }
     }
-    
+
     return false;
 }
 /**
@@ -2109,7 +2109,7 @@ public boolean isLastField(Field field) {
                     return false;
         }
     return false;
-    
+
 }
 
 /**
@@ -2161,7 +2161,7 @@ public void moveFieldUp(Field field) {
     while (pos>=0)
     {
         EPICSLink elo;
-        Object obj = fields.elementAt(pos);             
+        Object obj = fields.elementAt(pos);
         if ((obj instanceof EPICSLink) &&
             (elo=((EPICSLink)obj)).isRight() == ef.isRight() &&
             elo.isVisible())
@@ -2175,7 +2175,7 @@ public void moveFieldUp(Field field) {
         fields.insertElementAt(ef, pos);
         revalidateFieldsPosition();
     }
-    
+
     com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
     com.cosylab.vdct.undo.UndoManager.getInstance().addAction(new com.cosylab.vdct.undo.MoveFieldUpAction(ef));
     //InspectorManager.getInstance().updateObject(this);
@@ -2203,21 +2203,21 @@ public boolean morph(String newType) {
         {
             type = key; break;
         }
-    }    
+    }
 
     if (type == null)
         return false;
-    
+
     //    copies VDBData
     VDBTemplateInstance templateInstance = VDBData.morphVDBTemplateInstance(templateData, type, getName());
-                
+
     if (templateInstance==null) {
         Console.getInstance().println("o) Interal error: failed to morph template "+getName()+" ("+getType()+")!");
         return false;
-    }                       
-    
+    }
+
     setTemplateInstance(templateInstance);
-        
+
     return true;
 }
 
@@ -2227,7 +2227,7 @@ public boolean morph(String newType) {
 public void setTemplateInstance(VDBTemplateInstance templateInstance)
 {
         this.templateData = templateInstance;
-    
+
         validate();
 
         // update inspector
@@ -2239,7 +2239,7 @@ public void setTemplateInstance(VDBTemplateInstance templateInstance)
  * @see com.cosylab.vdct.graphics.objects.Morphable#getTargets()
  */
 public Object[] getTargets() {
-    
+
     Stack tis = DrawingSurface.getInstance().getTemplateStack();
 
     Enumeration templates = VDBData.getTemplates().keys();
@@ -2251,7 +2251,7 @@ public Object[] getTargets() {
         if (t != this.getTemplateData().getTemplate() &&
             !tis.contains(t))    // do not allow cyclic...
             al.add(t.getDescription());
-    }    
+    }
 
     Object[] desc = new Object[al.size()];
     al.toArray(desc);

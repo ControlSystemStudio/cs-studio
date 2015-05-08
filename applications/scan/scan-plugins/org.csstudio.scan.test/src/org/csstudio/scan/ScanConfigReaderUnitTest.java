@@ -79,12 +79,12 @@ public class ScanConfigReaderUnitTest
         device = find(devices, "readback");
         assertThat(device, not(nullValue()));
         assertThat(device.getAlias(), equalTo("readback"));
-        
+
         assertThat(config.getSlewRate("neutrons"), equalTo(7.0));
         // Not specifically listed, but there's ".pos" pattern
         assertThat(find(devices, "qpos"), nullValue());
         assertThat(config.getSlewRate("qpos"), equalTo(0.2));
-        
+
         // Unknown PV
         assertThat(config.getSlewRate("whatever"), equalTo(ScanConfig.DEFAULT_SLEW_RATE));
     }

@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /** JUnit test of the {@link EPICSDataProvider}
- * 
+ *
  *  @author Kay Kasemir
  */
 public class EPICSDataProviderUnitTest

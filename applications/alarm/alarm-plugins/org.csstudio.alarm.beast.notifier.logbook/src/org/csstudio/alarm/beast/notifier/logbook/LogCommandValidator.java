@@ -21,9 +21,9 @@ import org.csstudio.logbook.Tag;
 /**
  * Validator for {@link LogActionImpl}. Uses a {@link LogCommandHandler} to
  * validate an Log command.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
- * 
+ *
  */
 public class LogCommandValidator implements IActionValidator {
 

@@ -24,11 +24,11 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 class TicketPropertyWidget extends AbstractPropertyWidget {
-    
+
     private static final String propertyName = "Ticket";
     private static final String attrIdName = "TicketId";
     private static final String attrURLName = "TicketURL";
-    
+
     private static final Property widgetProperty = PropertyBuilder
         .property(propertyName).attribute(attrIdName).attribute(attrURLName)
         .build();
@@ -114,7 +114,7 @@ class TicketPropertyWidget extends AbstractPropertyWidget {
     link.setLayoutData(fd_link);
     link.setText("<a>www.google.com</a>");
     link.addSelectionListener(new SelectionListener() {
-        
+
         @Override
         public void widgetSelected(SelectionEvent event) {
             String url = link.getText();
@@ -122,7 +122,7 @@ class TicketPropertyWidget extends AbstractPropertyWidget {
                     url.length() - "</a>".length());
             Program.launch(url);
         }
-        
+
         @Override
         public void widgetDefaultSelected(SelectionEvent arg0) {
         }
@@ -145,7 +145,7 @@ class TicketPropertyWidget extends AbstractPropertyWidget {
     this.textURL.setVisible(isEditable());
     this.link.setVisible(!isEditable());
     this.btnAttach.setVisible(isEditable());
-    
+
     Property property = null;
     try {
         property = LogEntryUtil.getProperty(getLogEntryChangeset()

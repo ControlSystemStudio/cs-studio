@@ -45,7 +45,7 @@ import com.google.common.collect.Sets;
 public enum TestTreeConfiguration implements ITreeNodeConfiguration<TestTreeConfiguration> {
 
     /**
-     * The root for any tree structure. This node type does not have a pendant in any tree, 
+     * The root for any tree structure. This node type does not have a pendant in any tree,
      * hence 'virtual' - is used as 'starting point' to have access to common tree configuration
      * methods like {@link ITreeNodeConfiguration#getRoot()}. Why - enum cannot extend another
      * class (and abstract delegator pattern oder forwarding pattern is a bit oversized).
@@ -129,7 +129,7 @@ public enum TestTreeConfiguration implements ITreeNodeConfiguration<TestTreeConf
         _nodeTypeName = nodeTypeName;
         _description = description;
     }
-    
+
     /**
      * {@inheritDoc}
      */

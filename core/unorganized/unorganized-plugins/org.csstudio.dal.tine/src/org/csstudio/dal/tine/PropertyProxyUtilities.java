@@ -87,17 +87,17 @@ import de.desy.tine.types.UNAME;
 import de.desy.tine.types.USTRING;
 
 /**
- * 
+ *
  * @author Jaka Bobnar, Cosylab
  *
  */
 public class PropertyProxyUtilities {
-    
+
     public static void main(String[] args) throws ConnectionFailed {
         String name = "TEST/DswTestValues/Device0/textValue";
         System.out.println(PropertyProxyUtilities.getCharacteristics(new PropertyNameDissector(name), null));
     }
-    
+
     static Class<? extends PropertyProxy<?,?>> getProxyImplementationClass(Class<? extends SimpleProperty<?>> type) {
         if (DoubleProperty.class.isAssignableFrom(type) || DoublePropertyImpl.class.isAssignableFrom(type)) {
             return DoublePropertyProxyImpl.class;
@@ -107,10 +107,10 @@ public class PropertyProxyUtilities {
             return LongPropertyProxyImpl.class;
         } else if (LongSeqProperty.class.isAssignableFrom(type) || LongSeqPropertyImpl.class.isAssignableFrom(type)) {
             return LongSeqPropertyProxyImpl.class;
-        } 
+        }
         return null;
     }
-    
+
     static TDataType toTDataType(Object data, int length, boolean isBound)
     {
         if (data == null) {
@@ -290,7 +290,7 @@ public class PropertyProxyUtilities {
         }
         return null;
     }
-    
+
     static int getObjectSize(Object data) {
         if (data == null) {
             return 0;
@@ -306,17 +306,17 @@ public class PropertyProxyUtilities {
         }
         return TDataType.getObjectSize(data);
     }
-    
+
     static String makeDeviceName(PropertyNameDissector dissector) {
         if (dissector.getDeviceContext() != null && dissector.getDeviceContext().length() > 0) {
-            return new String("/" + dissector.getDeviceContext() + 
-                               "/" + dissector.getDeviceGroup() + 
+            return new String("/" + dissector.getDeviceContext() +
+                               "/" + dissector.getDeviceGroup() +
                                "/" + dissector.getDeviceName());
         } else {
             return new String(dissector.getDeviceGroup() + "/" + dissector.getDeviceName());
         }
     }
-    
+
     static Map<String, Object> getCharacteristics(PropertyNameDissector dissector, Class numberType) throws ConnectionFailed {
         XPropertyQuery[] info = TQuery.getDevicePropertyInformationX(dissector.getDeviceContext(),
                 dissector.getDeviceGroup(), dissector.getDeviceName(), dissector.getDeviceProperty());
@@ -324,8 +324,8 @@ public class PropertyProxyUtilities {
         if (info==null) {
             info = TQuery.getStockPropertyInformationX(dissector.getDeviceContext(),
                     dissector.getDeviceGroup(), dissector.getDeviceName(), dissector.getDeviceProperty());
-        } 
-        
+        }
+
         if (info==null) {
             throw new ConnectionFailed(dissector.getRemoteName());
         }
@@ -342,7 +342,7 @@ public class PropertyProxyUtilities {
             max= new Double((double) info[0].prpMaxValue);
             min= new Double((double) info[0].prpMinValue);
         }
-        
+
         characteristics.put(NumericPropertyCharacteristics.C_MAXIMUM, max);
         characteristics.put(NumericPropertyCharacteristics.C_GRAPH_MAX,max);
         characteristics.put(NumericPropertyCharacteristics.C_WARNING_MAX,max);
@@ -359,7 +359,7 @@ public class PropertyProxyUtilities {
         } catch (Exception e) {
             characteristics.put(PropertyCharacteristics.C_HOSTNAME,"unknown");
         }
-        
+
         TAccess access = TAccess.valueOf(info[0].prpAccess);
         characteristics.put(PropertyCharacteristics.C_ACCESS_TYPE,AccessType.getAccess(access.isRead(),access.isWrite()));
         TFormat format = TFormat.valueOf(info[0].prpFormat);
@@ -407,7 +407,7 @@ public class PropertyProxyUtilities {
             characteristics.put("xLabels", data);
            }
            characteristics.put("arrayType",arrayType);
-           
+
            // mandatory characteristics with bogus data.
            characteristics.put(CharacteristicInfo.C_POSITION.getName(),arrayType);
            characteristics.put(CharacteristicInfo.C_PROPERTY_TYPE.getName(),dissector.getDeviceProperty());
@@ -419,14 +419,14 @@ public class PropertyProxyUtilities {
         }
            characteristics.put(CharacteristicInfo.C_SCALE_TYPE.getName(),"linear");
         characteristics.put(CharacteristicInfo.C_META_DATA.getName(),DataUtil.createMetaData(characteristics));
-           
+
         return characteristics;
     }
-        
+
     static long toUTC(double stamp) {
         return (long)(stamp*1E3);
-    }    
-    
+    }
+
 //    static Class<? extends SimpleProperty> getPropertyImplementationClass(String name) {
 //        PropertyNameDissector dissector = new PropertyNameDissector(name);
 //        XPropertyQuery[] info = TQuery.getDevicePropertyInformationX(dissector.getDeviceContext(),
@@ -435,8 +435,8 @@ public class PropertyProxyUtilities {
 //        if (info==null) {
 //            info = TQuery.getStockPropertyInformationX(dissector.getDeviceContext(),
 //                    dissector.getDeviceGroup(), dissector.getDeviceName(), dissector.getDeviceProperty());
-//        } 
-//        
+//        }
+//
 //        if (info==null) {
 //            return null;
 //        }
@@ -493,9 +493,9 @@ public class PropertyProxyUtilities {
 //            }
 //            default: return null;
 //        }
-//        
+//
 //    }
-//    
+//
 //    static Class<? extends PropertyProxy> getPropertyProxyImplementationClass(String name) {
 //        PropertyNameDissector dissector = new PropertyNameDissector(name);
 //        XPropertyQuery[] info = TQuery.getDevicePropertyInformationX(dissector.getDeviceContext(),
@@ -504,8 +504,8 @@ public class PropertyProxyUtilities {
 //        if (info==null) {
 //            info = TQuery.getStockPropertyInformationX(dissector.getDeviceContext(),
 //                    dissector.getDeviceGroup(), dissector.getDeviceName(), dissector.getDeviceProperty());
-//        } 
-//        
+//        }
+//
 //        if (info==null) {
 //            return null;
 //        }
@@ -562,9 +562,9 @@ public class PropertyProxyUtilities {
 //            }
 //            default: return null;
 //        }
-//        
+//
 //    }
-    
+
     static Class<? extends SimpleProperty<?>> getPropertyImplementationClass(String name) {
         if (!TINEPlug.getInstance().containsName(name)) {
             try {
@@ -635,13 +635,13 @@ public class PropertyProxyUtilities {
             }
             default: return null;
         }
-        
+
     }
-    
+
     static Class<? extends PropertyProxy<?,?>> getPropertyProxyImplementationClass(String name) {
         return getPropertyProxyImplementationClass(name, null);
     }
-    
+
     static Class<? extends PropertyProxy<?,?>> getPropertyProxyImplementationClass(String name, Class<? extends SimpleProperty<?>> propertyType) {
         if (!TINEPlug.getInstance().containsName(name)) {
             try {

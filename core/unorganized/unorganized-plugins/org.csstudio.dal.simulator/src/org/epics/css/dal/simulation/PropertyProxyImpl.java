@@ -60,7 +60,7 @@ import org.epics.css.dal.simulation.data.DataGeneratorInfo;
 public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,SimulatorPlug,MonitorProxyImpl<T>>
     implements PropertyProxy<T,SimulatorPlug>, SyncPropertyProxy<T,SimulatorPlug>, DirectoryProxy<SimulatorPlug>
 {
-    
+
     public static void main(String[] args) throws Exception, InstantiationException {
         PropertyFactoryImpl factory = new PropertyFactoryImpl();
         factory.initialize(new DefaultApplicationContext("test"), LinkPolicy.SYNC_LINK_POLICY);
@@ -70,16 +70,16 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,SimulatorP
             public void valueChanged(DynamicValueEvent event) {
                 System.out.println(event.getValue());
             }
-            
+
             @Override
             public void valueUpdated(DynamicValueEvent event) {
                 System.out.println(event.getValue());
             }
         });
-        
+
         Thread.sleep(20000);
     }
-    
+
     protected ValueProvider<T> valueProvider = new MemoryValueProvider<T>();
     protected boolean isSettable = true;
     private long refreshRate = 1000;
@@ -91,7 +91,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,SimulatorP
     {
         this(name, plug, (Long)SimulatorUtilities.getConfiguration(SimulatorUtilities.CONNECTION_DELAY),type);
     }
-    
+
     /**
      * Creates new instance.
      * @param name
@@ -200,7 +200,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,SimulatorP
         setConnectionState(ConnectionState.DESTROYED);
     }
 
-    
+
     /**
      * @see DirectoryProxy#getCharacteristicNames()
      */
@@ -214,13 +214,13 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,SimulatorP
             String characteristicName) {
         return SimulatorUtilities.getCharacteristic(characteristicName, this);
     }
-    
+
     @Override
     protected Object processCharacteristicAfterCache(Object value,
             String characteristicName) {
         return value;
     }
-    
+
     public T getValueSync() throws DataExchangeException
     {
         if (getConnectionState() != ConnectionState.CONNECTED) {
@@ -281,12 +281,12 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,SimulatorP
     {
         setConnectionState(state);
     }
-    
+
     public void simulateCharacteristicChange(String characteristicName, Object value) {
         Object old= SimulatorUtilities.putCharacteristic(characteristicName, getUniqueName(), value);
         fireCharacteristicsChanged(new PropertyChangeEvent(this,characteristicName,old,value));
     }
-    
+
     @Override
     protected String getRemoteHostInfo() {
         return "local";

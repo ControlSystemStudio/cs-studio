@@ -27,14 +27,14 @@ public interface ICursorService {
 
     /**
      * Returns a list of the available cursors.
-     * 
+     *
      * @return a list of the available cursors.
      */
     List<AbstractCursor> availableCursors();
 
     /**
      * Returns an unmodifiable list of the available cursor selection rules.
-     * 
+     *
      * @return an unmodifiable list of rule descriptors for the available cursor
      *         selection rules.
      */
@@ -43,7 +43,7 @@ public interface ICursorService {
     /**
      * Applies the cursor to the given widget based on the selection rule
      * configured by the user.
-     * 
+     *
      * @param widget
      *            the widget.
      */
@@ -51,7 +51,7 @@ public interface ICursorService {
 
     /**
      * Returns the preferred rule.
-     * 
+     *
      * @return a descriptor of the preferred rule.
      */
     RuleDescriptor getPreferredRule();
@@ -59,7 +59,7 @@ public interface ICursorService {
     /**
      * Sets the preferred cursor selection rule. The preferred rule is stored in
      * the preference store.
-     * 
+     *
      * @param rule
      *            the preferred rule.
      */
@@ -67,7 +67,7 @@ public interface ICursorService {
 
     /**
      * Find the cursor with the specified id.
-     * 
+     *
      * @param id
      *            the id.
      * @return a cursor, or <code>null</code> if none was found for that id.
@@ -79,14 +79,14 @@ public interface ICursorService {
      * are not immediately reflected in the preference store. Use the
      * {@link #setPreferences(CursorSettings)} method to change the stored
      * preferences.
-     * 
+     *
      * @return the current cursor settings from the preferences.
      */
     CursorSettings getPreferences();
 
     /**
      * Sets the cursor preferences to the specified settings.
-     * 
+     *
      * @param settings
      *            the settings.
      */

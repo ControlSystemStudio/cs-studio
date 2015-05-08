@@ -41,22 +41,22 @@ import org.epics.util.time.Timestamp;
  *  @author Jaka Bobnar - RDB batching
  */
 @SuppressWarnings("nls")
-public class AlarmServer implements Runnable 
+public class AlarmServer implements Runnable
 {
     /** BatchUpdater takes care of periodic updates of alarm states into the RDB and
      *  to the JMS. This allows for the updates to queue up to sizable number.
-     *  Then they are sent in batches, which allows for better performance. 
+     *  Then they are sent in batches, which allows for better performance.
      */
     private class BatchUpdater extends Thread
     {
         boolean run = true;
-        
+
         public BatchUpdater()
         {
             setDaemon(true);
             setPriority(MIN_PRIORITY);
         }
-        
+
         @Override
         public void run()
         {
@@ -73,14 +73,14 @@ public class AlarmServer implements Runnable
                 // Ignore: Server has been terminated, there is no need for further updates
             }
         }
-        
+
         public void terminate()
         {
             run = false;
             this.interrupt();
         }
     }
-    
+
     /** Update is a wrapper about a single PV update received by the server.
      *  It is used to queue data for later processing.*
      */
@@ -93,7 +93,7 @@ public class AlarmServer implements Runnable
         public final String alarmMessage;
         public final String value;
         public final Timestamp timestamp;
-        
+
         public Update(final AlarmPV pv,
                 final SeverityLevel currentSeverity, final String currentMessage,
                 final SeverityLevel alarmSeverity, final String alarmMessage,
@@ -108,23 +108,23 @@ public class AlarmServer implements Runnable
             this.timestamp = timestamp;
         }
     }
-    
+
     /** A list holding all the updates, which have not yet been send to the JMS queue */
     private List<Update> queuedUpdates = new ArrayList<Update>();
-    
+
     /** A list holding all the global updates, which have not yet been send to the JMS queue */
     private List<Update> queuedGlobalUpdates = new ArrayList<Update>();
-    
+
     /** Updates to be persisted in the RDB, mapping the 'latest' by PV.
      *  While queuedUpdates contains all recent updates, the map only
      *  retains the most recent update for each PV
      *  because we only need to store the latest updates of the same PV.
      */
     private Map<String,Update> queuedRDBUpdates = new HashMap<String,Update>();
-    
+
     /** Global updates to be persisted in the RDB, mapping the 'latest' by PV */
     private Map<String,Update> queuedRDBGlobalUpdates = new HashMap<String,Update>();
-    
+
     /** Name of alarm tree root element */
     final String root_name;
 
@@ -265,7 +265,7 @@ public class AlarmServer implements Runnable
             return alarm_tree.getItemByPath(path);
         }
     }
-    
+
     /** Release all resources */
     public void close()
     {
@@ -385,7 +385,7 @@ public class AlarmServer implements Runnable
         {
             Activator.getLogger().log(Level.SEVERE, "Error committing state update batches.",e);
             had_RDB_error = true;
-        } 
+        }
     }
 
     /** Stop PVs */
@@ -629,7 +629,7 @@ public class AlarmServer implements Runnable
         had_RDB_error = false;
         messenger.sendReloadMessage();
     }
-    
+
     /** Send all queue updates to RDB as well as JMS */
     private void sendQueuedUpdates()
     {
@@ -643,9 +643,9 @@ public class AlarmServer implements Runnable
             updates = queuedUpdates.toArray(new Update[queuedUpdates.size()]);
             queuedUpdates.clear();
         }
-        
+
         if (rdbUpdates.length > 0)
-        {                    
+        {
             try
             {
                 rdb.persistAllStates(rdbUpdates, batchSize);
@@ -657,13 +657,13 @@ public class AlarmServer implements Runnable
                 had_RDB_error = true;
             }
         }
-        
+
         for (Update u : updates)
         {
             messenger.sendStateUpdate(u.pv, u.currentSeverity, u.currentMessage,
                 u.alarmSeverity, u.alarmMessage, u.value, u.timestamp);
         }
-        
+
         Update[] rdbGlobals = null;
         Update[] globals = null;
         synchronized(queuedRDBGlobalUpdates)
@@ -673,7 +673,7 @@ public class AlarmServer implements Runnable
             globals = queuedGlobalUpdates.toArray(new Update[queuedGlobalUpdates.size()]);
             queuedGlobalUpdates.clear();
         }
-        
+
         if (rdbGlobals.length > 0)
         {
             try
@@ -687,7 +687,7 @@ public class AlarmServer implements Runnable
                 had_RDB_error = true;
             }
         }
-        
+
         for (Update u : globals)
         {
             messenger.sendGlobalUpdate(u.pv, u.alarmSeverity, u.alarmMessage, u.value, u.timestamp);
@@ -698,6 +698,6 @@ public class AlarmServer implements Runnable
     @Override
     public void run()
     {
-        sendQueuedUpdates();        
+        sendQueuedUpdates();
     }
 }

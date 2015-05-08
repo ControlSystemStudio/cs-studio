@@ -30,15 +30,15 @@ import org.eclipse.swt.widgets.Display;
  *
  */
 public class LinkingContainerFigure extends Figure implements Introspectable {
-    
+
     private ScalableFreeformLayeredPane pane;
-    
+
     private ScrollPane scrollPane;
-    
+
     private ZoomManager zoomManager;
-    
+
     private boolean zoomToFitAll;
-    
+
     @SuppressWarnings("deprecation")
     public LinkingContainerFigure() {
         scrollPane = new ScrollPane();
@@ -48,20 +48,20 @@ public class LinkingContainerFigure extends Figure implements Introspectable {
         add(scrollPane);
         FreeformViewport viewPort = new FreeformViewport();
         scrollPane.setViewport(viewPort);
-        scrollPane.setContents(pane);    
-        
+        scrollPane.setContents(pane);
+
         zoomManager = new ZoomManager(pane, viewPort){
             @Override
             protected double getFitPageZoomLevel() {
                 double fitPageZoomLevel = super.getFitPageZoomLevel();
                 if(fitPageZoomLevel<=0){
-                    fitPageZoomLevel = 0.1;                    
+                    fitPageZoomLevel = 0.1;
                 }
                 return fitPageZoomLevel;
-                
+
             }
         };
-        
+
         addFigureListener(new FigureListener(){
             public void figureMoved(IFigure source) {
                 Display.getDefault().asyncExec(new Runnable(){
@@ -69,22 +69,22 @@ public class LinkingContainerFigure extends Figure implements Introspectable {
                         updateZoom();
                     }
                 });
-                
+
             }
         });
-        
-        
+
+
         updateZoom();
     }
-    
+
     public IFigure getContentPane(){
         return pane;
     }
-    
+
     public boolean isZoomToFitAll() {
         return zoomToFitAll;
     }
-    
+
     @Override
     public void setBorder(Border border) {
         super.setBorder(border);
@@ -103,18 +103,18 @@ public class LinkingContainerFigure extends Figure implements Introspectable {
             }
         });
     }
-    
+
     /**
      * Refreshes the zoom.
      */
-    public void updateZoom() {        
+    public void updateZoom() {
 
         if (zoomToFitAll) {
             zoomManager.setZoomAsText(Draw2dSingletonUtil.ZoomManager_FIT_ALL);
         }else
             zoomManager.setZoom(1.0);
     }
-    
+
     public ZoomManager getZoomManager() {
         return zoomManager;
     }
@@ -132,9 +132,9 @@ public class LinkingContainerFigure extends Figure implements Introspectable {
             scrollPane.setVerticalScrollBarVisibility(ScrollPane.NEVER);
         }
     }
-    
 
-    
-    
-    
+
+
+
+
 }

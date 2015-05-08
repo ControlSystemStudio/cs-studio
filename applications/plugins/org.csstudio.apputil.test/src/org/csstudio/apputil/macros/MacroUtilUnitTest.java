@@ -77,7 +77,7 @@ public class MacroUtilUnitTest
         input = "$($($(abc_$(123)_def)))Hello $($($(A)))Best OPI $(ABC)D) Yet ${ABC}))!";
         result = MacroUtil.replaceMacros(input, macros);
         assertEquals("$($(789))Hello $(D)Best OPI DEFD) Yet DEF))!", result);
-        
+
         input = "$(f)!";
         result = MacroUtil.replaceMacros(input, macros);
         assertEquals("hello-world!!", result);

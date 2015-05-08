@@ -31,7 +31,7 @@ import org.junit.Test;
 //import org.junit.Ignore;
 
 /** JUnit test of the archive writer
- * 
+ *
  *  <p>Main purpose of these tests is to run in debugger, step-by-step,
  *  so verify if correct RDB entries are made.
  *  The sources don't include anything to check the raw RDB data.
@@ -84,7 +84,7 @@ public class RDBArchiveWriterTest
         System.out.println(channel);
         assertThat(channel, not(nullValue()));
         assertThat(name, equalTo(channel.getName()));
-        
+
         if (array_name == null)
             return;
         channel = writer.getChannel(array_name);
@@ -129,11 +129,11 @@ public class RDBArchiveWriterTest
         // Enum, sets enumerated meta data
         writer.addSample(channel, new ArchiveVEnum(Timestamp.now(), AlarmSeverity.MINOR, "OK", Arrays.asList("Zero", "One"), 1));
         writer.flush();
-        
+
         // Writing string leaves the enumerated meta data untouched
         writer.addSample(channel, new ArchiveVString(Timestamp.now(), AlarmSeverity.MAJOR, "OK", "Hello"));
         writer.flush();
-        
+
         // Integer, sets numeric meta data
         writer.addSample(channel, new ArchiveVNumber(Timestamp.now(), AlarmSeverity.MINOR, "OK", display, 42));
         writer.flush();

@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * The popup used to display tooltips.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class ContentHelperPopup extends PopupDialog {
@@ -103,7 +103,7 @@ public class ContentHelperPopup extends PopupDialog {
             Shell controlShell = control.getShell();
             controlShell.addListener(SWT.Move, this);
             controlShell.addListener(SWT.Resize, this);
-            
+
             control.addListener(SWT.DefaultSelection, this);
             if (control instanceof Text)
                 ((Text) control).addSelectionListener(this);
@@ -126,7 +126,7 @@ public class ContentHelperPopup extends PopupDialog {
                 Shell controlShell = control.getShell();
                 controlShell.removeListener(SWT.Move, this);
                 controlShell.removeListener(SWT.Resize, this);
-                
+
                 control.removeListener(SWT.DefaultSelection, this);
                 if (control instanceof Text)
                     ((Text) control).removeSelectionListener(this);
@@ -244,7 +244,7 @@ public class ContentHelperPopup extends PopupDialog {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.dialogs.PopupDialog#getForeground()
      */
     protected Color getForeground() {
@@ -253,7 +253,7 @@ public class ContentHelperPopup extends PopupDialog {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.dialogs.PopupDialog#getBackground()
      */
     protected Color getBackground() {
@@ -262,9 +262,9 @@ public class ContentHelperPopup extends PopupDialog {
 
     /**
      * Opens this ContentHelperPopup
-     * 
+     *
      * @return the return code
-     * 
+     *
      * @see org.eclipse.jface.window.Window#open()
      */
     public int open() {
@@ -292,7 +292,7 @@ public class ContentHelperPopup extends PopupDialog {
 
     /**
      * Closes this ContentHelperPopup.
-     * 
+     *
      * @return <code>true</code> if the window is (or was already) closed, and
      *         <code>false</code> if it is still open
      */
@@ -312,7 +312,7 @@ public class ContentHelperPopup extends PopupDialog {
 
     /**
      * Refresh this ContentHelperPopup if already opened.
-     * 
+     *
      * @return <code>true</code> if the window was refreshed, and
      *         <code>false</code> if not
      */

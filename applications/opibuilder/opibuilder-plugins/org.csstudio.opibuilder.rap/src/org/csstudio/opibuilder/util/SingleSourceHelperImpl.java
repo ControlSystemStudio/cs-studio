@@ -38,7 +38,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
 public class SingleSourceHelperImpl extends SingleSourceHelper {
-    
+
     public static final String WEBDATABROWSER_CONTEXT = "/d";
 
     @Override
@@ -74,7 +74,7 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
     @Override
     protected void iRapActivatebaseEditPart(AbstractBaseEditPart editPart) {
         DisplayManager.getInstance().registerObject(editPart);
-        try {            
+        try {
             DisplayManager.getInstance().addDisplayDisposeListener(
                     editPart.getRoot().getViewer().getControl().getDisplay(),
                     editPart.getDisplayDisposeListener());
@@ -103,9 +103,9 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
         String url = request.getRequestURL().toString();
         //to allow multilple browser instances, session id is not allowed
         if(url.contains(";jsessionid")) //$NON-NLS-1$
-            url = url.substring(0, url.indexOf(";jsessionid"));//$NON-NLS-1$                    
+            url = url.substring(0, url.indexOf(";jsessionid"));//$NON-NLS-1$
         ExternalBrowser.open("_blank", url+"?opi=" + path.toString(), SWT.None);
-        
+
     }
 
     @Override
@@ -113,17 +113,17 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
             Runnable runnable) {
         try {
             DisplayManager.getInstance().addDisplayDisposeListener(display, runnable);
-        } catch (Exception e) {            
+        } catch (Exception e) {
         }
     }
 
     @Override
     protected void iRapPlayWavFile(IPath absolutePath) {
         if(!ResourceUtil.isURL(absolutePath.toString())){
-            MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Not support", 
+            MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Not support",
                     "The sound file path must be an URL!");
             return;        }
-            
+
         String code = "document.getElementById(\"dummy\").innerHTML=\"<embed src=\\\""+ //$NON-NLS-1$
                 absolutePath + "\\\" hidden=\\\"true\\\" autostart=\\\"true\\\" loop=\\\"false\\\" />\""; //$NON-NLS-1$
         JavaScriptExecutor executor = RWT.getClient().getService( JavaScriptExecutor.class );
@@ -138,7 +138,7 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
             OPIView.setOpenFromPerspective(false);
             RunnerInput runnerInput = RequestUtil.getOPIPathFromRequest();
             IPath opiPath = null;
-            if(runnerInput == null){                
+            if(runnerInput == null){
                 String s = RWT.getRequest().getServletPath();
                 if(s.contains(WebOPIConstants.MOBILE_SERVELET_NAME)) //$NON-NLS-1$
                     opiPath = PreferencesHelper.getMobileStartupOPI();
@@ -167,7 +167,7 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
                 InstanceScope.SCOPE, //
                 ConfigurationScope.SCOPE, //
                 ServerScope.SCOPE, //$NON-NLS-1$
-                DefaultScope.SCOPE});        
+                DefaultScope.SCOPE});
     }
 
     @Override
@@ -180,12 +180,12 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
     protected void iRapOpenWebPage(String hyperLink) {
         ExternalBrowser.open("_blank", hyperLink, SWT.NONE);
     }
-    
+
     @Override
     protected boolean iRapAuthenticate(Display display) {
         return SecurityService.authenticate(display);
     }
-    
+
     @Override
     protected boolean iRapIsLoggedIn(Display display) {
         return SecurityService.isLoggedIn(display);
@@ -197,7 +197,7 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
         IEditorDescriptor defaultEditor = page.getWorkbenchWindow().getWorkbench().
                         getEditorRegistry().getDefaultEditor(path.toString());
         if(defaultEditor == null)
-            throw new Exception("No editor was found for this file " + path); 
+            throw new Exception("No editor was found for this file " + path);
         String id = defaultEditor.getId();
         page.openEditor(new PathEditorInput(path), id);
     }

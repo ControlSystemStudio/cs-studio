@@ -8,22 +8,22 @@ package com.cosylab.vdct.graphics;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -54,19 +54,19 @@ import com.cosylab.vdct.events.commands.*;
 public class DSGUIInterface implements GUIMenuInterface, VDBInterface {
 
     private static DSGUIInterface instance = null;
-    
+
     private DrawingSurface drawingSurface;
 
-    // to remember on cut from which group object has beed cut 
+    // to remember on cut from which group object has beed cut
     private ArrayList pasteNames = null;
     // to remember copied objects for multiple pasting
     private Vector copiedObjects = null;
     private int pasteCount = 0;
-    
+
     private double pasteX;
     private double pasteY;
     private boolean doOffsetAtPaste = false;
-    
+
     //private static final String nullString = "";
 
 /**
@@ -86,11 +86,11 @@ public DSGUIInterface(DrawingSurface drawingSurface) {
  */
 public void moveOrigin(int direction)
 {
-    int dx = 0; 
+    int dx = 0;
     int dy = 0;
     ViewState view = ViewState.getInstance();
-    int d = (int)(100*view.getScale()); 
-    
+    int d = (int)(100*view.getScale());
+
     switch (direction)
     {
         case SwingConstants.WEST:
@@ -106,7 +106,7 @@ public void moveOrigin(int direction)
             dy =- d;
             break;
     }
-    
+
     if (view.moveOrigin(dx, dy))
     {
         drawingSurface.setBlockNavigatorRedrawOnce(true);
@@ -141,19 +141,19 @@ public java.lang.String checkRecordName(String name, boolean relative) {
 
     if (name.trim().length()==0) {
         return "Empty name!";
-    }    
+    }
     else if (name.indexOf(' ')!=-1) return "No spaces allowed!";
 
-    else if (!relative && (Group.getRoot().findObject(name, true)!=null)) 
+    else if (!relative && (Group.getRoot().findObject(name, true)!=null))
         return "Name already exists!";
-    else if (relative && (drawingSurface.getViewGroup().findObject(name, true)!=null)) 
+    else if (relative && (drawingSurface.getViewGroup().findObject(name, true)!=null))
         return "Name already exists!";
     else if (name.length()>Settings.getInstance().getRecordLength()) {
         return "WARNING: Name length is "+name.length()+" characters!";
     }
     else
         return null;
-        
+
 }
 public void copyToSystemClipboard(Vector objs)
 {
@@ -179,14 +179,14 @@ public void copyToSystemClipboard(Vector objs)
             if (hasPortOrMacro)
                 Group.writeTemplateData(dos, nc, objs);
         }
-        
+
         Group.writeObjects(objs, dos, nc, false);
         Group.writeVDCTData(objs, dos, nc, false);
-        
+
         StringSelection ss = new StringSelection(baos.toString());
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, ss);
     }
-    catch (Throwable th) 
+    catch (Throwable th)
     {
         th.printStackTrace();
     }
@@ -214,10 +214,10 @@ public void systemCopy() {
 
 
 private void copy(Vector objects, boolean firstCopy) {
-    
+
     if (objects.size()==0) return;
     Group.getClipboard().destroy();
-    
+
     ViewState view = ViewState.getInstance();
     pasteNames.clear();
     if (firstCopy) {
@@ -226,10 +226,10 @@ private void copy(Vector objects, boolean firstCopy) {
     } else {
         pasteCount++;
     }
-    
+
     Object obj;
     Enumeration selected = objects.elements();
-    
+
     int minx=Integer.MAX_VALUE, miny=Integer.MAX_VALUE;
     while (selected.hasMoreElements()) {
         obj = selected.nextElement();
@@ -237,31 +237,31 @@ private void copy(Vector objects, boolean firstCopy) {
             minx = Math.min(minx, ((VisibleObject)obj).getX());
             miny = Math.min(miny, ((VisibleObject)obj).getY());
         }
-        if (firstCopy) 
+        if (firstCopy)
             copiedObjects.add(obj);
     }
-    
+
     // remember position for paste
     pasteX = (minx - view.getRx()/view.getScale());
     pasteY = (miny - view.getRy()/view.getScale());
     doOffsetAtPaste = true;
-    
-    selected = objects.elements();    
-    
+
+    selected = objects.elements();
+
     while (selected.hasMoreElements()) {
         obj = selected.nextElement();
         if (obj instanceof Flexible) {
             Flexible copy = ((Flexible)obj).copyToGroup(Constants.CLIPBOARD_NAME);
             if (copy instanceof Movable)
                 ((Movable)copy).move(-minx, -miny);
-                        
+
         }
     }
     // fix links (due to order of copying links might not be validated...)
     Group.getClipboard().manageLinks(true);
     view.deselectAll();
     drawingSurface.repaint();
-    
+
 }
 
 public Box createBox()
@@ -275,7 +275,7 @@ public Box createBox()
     int posY = (int)((drawingSurface.getPressedY() + view.getRy()) / scale);
 
     //String parentName = parentGroup.getAbsoluteName();
-    
+
     Box grBox = new Box(null, parentGroup, posX, posY, posX, posY);
     if (Settings.getInstance().getSnapToGrid())
         grBox.snapToGrid();
@@ -283,7 +283,7 @@ public Box createBox()
     Group.getRoot().addSubObject(grBox.getName(), grBox, true);
 
     drawingSurface.repaint();
-    
+
     return grBox;
 }
 
@@ -296,9 +296,9 @@ public Line createLine()
 
     int posX = (int)((drawingSurface.getPressedX() + view.getRx()) / scale);
     int posY = (int)((drawingSurface.getPressedY() + view.getRy()) / scale);
-    
+
     //String parentName = parentGroup.getAbsoluteName();
-    
+
     Line grLine = new Line(null, parentGroup, posX, posY, posX, posY);
     if (Settings.getInstance().getSnapToGrid())
         grLine.snapToGrid();
@@ -306,7 +306,7 @@ public Line createLine()
     Group.getRoot().addSubObject(grLine.getName(), grLine, true);
 
     drawingSurface.repaint();
-    
+
     return grLine;
 }
 
@@ -331,7 +331,7 @@ public TextBox createTextBox()
     grTextBox.setBorder(true);
 
     drawingSurface.repaint();
-    
+
     return grTextBox;
 }
 
@@ -349,7 +349,7 @@ public void createRecord(String name, String type, boolean relative) {
         if (parentName.length()>0)
             name = parentName + Constants.GROUP_SEPARATOR + name;
     }
-    
+
     VDBRecordData recordData = VDBData.getNewVDBRecordData(
             DataProvider.getInstance().getDbdDB(), type, name);
     if (recordData==null) {
@@ -359,8 +359,8 @@ public void createRecord(String name, String type, boolean relative) {
 
     ViewState view = ViewState.getInstance();
     double scale = view.getScale();
-    
-    Record record = new Record(null, 
+
+    Record record = new Record(null,
                                recordData,
                                (int)((drawingSurface.getPressedX() + view.getRx()) / scale),
                                (int)((drawingSurface.getPressedY() + view.getRy()) / scale));
@@ -381,16 +381,16 @@ public void createRecord(String name, String type, boolean relative) {
 public void cut() {
     ViewState view = ViewState.getInstance();
     //copyToSystemClipboard(view.getSelectedObjects());
-    
+
     if (view.getSelectedObjects().size()==0) return;
     Group.getClipboard().destroy();
-    
+
     pasteNames.clear();
     copiedObjects.clear();
-    
+
     Object obj;
-    Enumeration selected = view.getSelectedObjects().elements();    
-    
+    Enumeration selected = view.getSelectedObjects().elements();
+
     int minx=Integer.MAX_VALUE, miny=Integer.MAX_VALUE;
     while (selected.hasMoreElements()) {
         obj = selected.nextElement();
@@ -400,12 +400,12 @@ public void cut() {
         }
         copiedObjects.add(obj);
     }
-    
+
     // remember position for paste
     pasteX = (minx - view.getRx()/view.getScale());
     pasteY = (miny - view.getRy()/view.getScale());
     doOffsetAtPaste = false;
-    
+
     selected = view.getSelectedObjects().elements();
     while (selected.hasMoreElements()) {
         obj = selected.nextElement();
@@ -421,13 +421,13 @@ public void cut() {
             }
         }
     }
-    
+
     view.deselectAll();
     view.setAsHilited(null);
     drawingSurface.setModified(true);
     drawingSurface.repaint();
-    
-    
+
+
 }
 
 
@@ -440,7 +440,7 @@ public void delete() {
     if (view.getSelectedObjects().size()==0) return;
 
     try    {
-    
+
         UndoManager.getInstance().startMacroAction();
 
         VisibleObject obj;
@@ -458,7 +458,7 @@ public void delete() {
                 obj.destroy();
                 UndoManager.getInstance().addAction(new DeleteAction(obj));
             }
-            
+
         }
 
     }
@@ -501,7 +501,7 @@ public void group(String groupName) {
             g.snapToGrid();
         composedAction.addAction(new CreateAction(g));
     }
-        
+
     int n = 0; int avgX = 0; int avgY = 0;
     Object obj; Flexible flex; String oldGroup;
     Enumeration selected = view.getSelectedObjects().elements();
@@ -509,11 +509,11 @@ public void group(String groupName) {
         obj = selected.nextElement();
         if (obj instanceof Flexible)
         {
-            flex = (Flexible)obj; oldGroup = Group.substractParentName(flex.getFlexibleName()); 
+            flex = (Flexible)obj; oldGroup = Group.substractParentName(flex.getFlexibleName());
             flex.moveToGroup(groupName);
-    
+
             composedAction.addAction(new MoveToGroupAction(flex, oldGroup, groupName));        // if true ?!!!
-            
+
             if (obj instanceof VisibleObject)
             {
                 VisibleObject vo = (VisibleObject)obj;
@@ -559,14 +559,14 @@ public void importTemplateDB(java.io.File file) throws IOException {
 public void importFields(java.io.File file) throws IOException {
     int result = JOptionPane.showConfirmDialog(VisualDCT.getInstance(),
                     "Do you want to ignore database link fields?",
-                    "Import fields", 
+                    "Import fields",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE);
-    
+
     // window closed
     if (result == JOptionPane.CLOSED_OPTION)
         return;
-    
+
     boolean ignoreLinkFields = (result == JOptionPane.OK_OPTION);
     drawingSurface.importFields(file, ignoreLinkFields);
 }
@@ -607,7 +607,7 @@ public void levelUp() {
  */
 public void newCmd() {
     drawingSurface.initializeWorkspace();
-    
+
     SetWorkspaceFile cmd = (SetWorkspaceFile)CommandManager.getInstance().getCommand("SetFile");
     cmd.setFile(null);
     cmd.execute();
@@ -650,7 +650,7 @@ public void systemPaste() {
             drawingSurface.open(bais, null, true, true);
          }
     }
-    catch (Throwable th) 
+    catch (Throwable th)
     {
         th.printStackTrace();
     }
@@ -675,9 +675,9 @@ public void paste() {
 public void pasteAtPosition(int pX, int pY) {
     ViewState view = ViewState.getInstance();
     String currentGroupName = drawingSurface.getViewGroup().getAbsoluteName();
-    
+
     Group group = Group.getClipboard();
-    
+
     int size = group.getSubObjectsV().size();
     if (size==0) return;
 
@@ -689,7 +689,7 @@ public void pasteAtPosition(int pX, int pY) {
     posX = posX >= view.getWidth() - group.getAbsoulteWidth() ? view.getWidth() - group.getAbsoulteWidth() : posX;
     posY = posY <= 0 ? 0 : posY;
     posY = posY >= view.getHeight() - group.getAbsoulteHeight() ? view.getHeight() - group.getAbsoulteHeight() : posY;
-    
+
     Object objs[] = new Object[size];
     group.getSubObjectsV().copyInto(objs);
 
@@ -701,21 +701,21 @@ public void pasteAtPosition(int pX, int pY) {
     boolean isCopy = pasteNames.size()!=size;
     ComposedAction composedAction = new ComposedAction();
 
-    Flexible flex; 
+    Flexible flex;
     for(int i=0; i<size; i++) {
         if (objs[i] instanceof Flexible) {
             flex = (Flexible)objs[i];
-            
+
             if (flex.moveToGroup(currentGroupName))
             {
                 if (isCopy)
                     composedAction.addAction(new CreateAction((VisibleObject)objs[i]));        // if true ?!!!
                 else {
-                    //System.out.println("Cut/paste:"+pasteNames.get(i).toString()+"->"+currentGroupName);    
+                    //System.out.println("Cut/paste:"+pasteNames.get(i).toString()+"->"+currentGroupName);
                     composedAction.addAction(new MoveToGroupAction(flex, pasteNames.get(i).toString(), currentGroupName));
                 }
 
-                
+
                 if (objs[i] instanceof Movable) {
                     //((Movable)objs[i]).move(view.getRx(), view.getRy());
                     ((Movable)objs[i]).move(posX, posY);
@@ -787,7 +787,7 @@ public void rename(java.lang.String oldName, java.lang.String newName) {
         if (flex.rename(newName))
         {
             UndoManager.getInstance().addAction(new RenameAction(flex, oldName, newName));
-            
+
             view.deselectObject((VisibleObject)obj);
             drawingSurface.getViewGroup().manageLinks(true);
             drawingSurface.repaint();
@@ -829,15 +829,15 @@ public void morph(java.lang.String name, String newType) {
     {
         try {
             UndoManager.getInstance().startMacroAction();
-        
+
             Record record = (Record)oldObject;
-            
+
             VDBRecordData oldRecordData = record.getRecordData();
-            
+
             if (record.morph(newType))
-            {    
+            {
                 UndoManager.getInstance().addAction(new MorphAction(record, oldRecordData, record.getRecordData()));
-            
+
                 view.deselectObject((VisibleObject)oldObject);
                 drawingSurface.repaint();
             }
@@ -849,15 +849,15 @@ public void morph(java.lang.String name, String newType) {
     {
         try {
             UndoManager.getInstance().startMacroAction();
-        
+
             Template template = (Template)oldObject;
-            
+
             VDBTemplateInstance oldTemplateData = template.getTemplateData();
-            
+
             if (template.morph(newType))
-            {    
+            {
                 UndoManager.getInstance().addAction(new MorphTemplateAction(template, oldTemplateData, template.getTemplateData()));
-            
+
                 view.deselectObject((VisibleObject)oldObject);
                 drawingSurface.repaint();
             }
@@ -879,7 +879,7 @@ public void save(java.io.File file) throws IOException {
      saveAsTemplate(file);
      return;
  }
-*/ 
+*/
  Group.save(Group.getRoot(), file, false);
 
  VDBTemplate data = Group.getEditingTemplateData();
@@ -888,39 +888,39 @@ public void save(java.io.File file) throws IOException {
      // create a new
      // id = basename
     data = new VDBTemplate(file.getName(), file.getAbsolutePath());
-    
+
     data.setPorts(new Hashtable());
     data.setPortsV(new Vector());
 
     data.setMacros(new Hashtable());
     data.setMacrosV(new Vector());
-    
+
     data.setGroup(Group.getRoot());
-    
+
     Group.setEditingTemplateData(data);
     drawingSurface.getTemplateStack().push(data);
 
     VDBData.addTemplate(data);
- } 
+ }
  // save as check
  //    fileName & id has been changed, fix them
  else if (!file.getAbsolutePath().equals(data.getFileName()))
  {
      // reload previous ...
      drawingSurface.reloadTemplate(data);
-     
+
      // ... and fix current id (basename) and path
-    data.setFileName(file.getAbsolutePath());     
+    data.setFileName(file.getAbsolutePath());
     data.setId(file.getName());
 
  }
- 
+
  // if ok
  drawingSurface.setModified(false);
  UndoManager.getInstance().prepareAfterSaving();
 
  // !!!
- VisualDCT.getInstance().updateLoadLabel();    
+ VisualDCT.getInstance().updateLoadLabel();
  VisualDCT.getInstance().setOpenedFile(file);
  //SetWorkspaceFile cmd = (SetWorkspaceFile)CommandManager.getInstance().getCommand("SetFile");
  //cmd.setFile(file.getCanonicalPath());
@@ -941,8 +941,8 @@ public void saveAsGroup(java.io.File file) throws IOException {
  */
 public void saveAsTemplate(File file) throws IOException
 {
-/*    
- VDBTemplate data = null; 
+/*
+ VDBTemplate data = null;
  Stack stack = drawingSurface.getTemplateStack();
  if (stack.isEmpty())
  {
@@ -953,11 +953,11 @@ public void saveAsTemplate(File file) throws IOException
     int pos = id.lastIndexOf('.');
     if (pos>0)
         id = id.substring(0, pos);
-    
+
     // generate first free
     while (VDBData.getTemplates().containsKey(id))
         id = StringUtils.incrementName(id, null);
-        
+
      // create a new
     data = new VDBTemplate(id, file.getAbsolutePath());
     data.setDescription(data.getId());
@@ -967,7 +967,7 @@ public void saveAsTemplate(File file) throws IOException
     data.setOutputComments(new Hashtable());
     data.setGroup(Group.getRoot());
      stack.push(data);
-     
+
      Group.setEditingTemplateData(data);
  }
 
@@ -975,7 +975,7 @@ public void saveAsTemplate(File file) throws IOException
 
  drawingSurface.setModified(false);
 
- // show user template mode 
+ // show user template mode
  drawingSurface.updateWorkspaceGroup();
 
  // new
@@ -983,7 +983,7 @@ public void saveAsTemplate(File file) throws IOException
  {
      // add to list of loaded templates
      VDBData.getTemplates().put(data.getId(), data);
-     
+
      VisualDCT.getInstance().updateLoadLabel();
  }
 
@@ -999,7 +999,7 @@ public void saveAsTemplate(File file) throws IOException
  * @param file java.io.File
  */
 public void export(java.io.File file) throws IOException {
- Group.save(Group.getRoot(), file, true); 
+ Group.save(Group.getRoot(), file, true);
 }
 /**
  * Insert the method's description here.
@@ -1127,11 +1127,11 @@ public void ungroup() {
     ComposedAction composedAction = new ComposedAction();
 
     String currentGroupName = drawingSurface.getViewGroup().getAbsoluteName();
-        
+
     Object objs2[]; int size2;
     Group group;
 
-    Object objs[] = new Object[size]; 
+    Object objs[] = new Object[size];
     view.getSelectedObjects().copyInto(objs);
     for (int i=0; i<size; i++) {
         if (objs[i] instanceof Group) {
@@ -1145,7 +1145,7 @@ public void ungroup() {
             /*!!!can be outside    if (objs2[i] instanceof Movable)
                     ((Movable)objs2[i]).move(view.getRx()-group.getInternalRx(),
                                              view.getRy()-group.getInternalRy());
-                    
+
             */
                 if (objs2[i] instanceof Flexible) {
                     Flexible flex = (Flexible)objs2[j];
@@ -1153,7 +1153,7 @@ public void ungroup() {
 
                     composedAction.addAction(new MoveToGroupAction(flex, group.getAbsoluteName(), currentGroupName));        // if true ?!!!
 
-                    
+
                     view.setAsSelected((VisibleObject)objs2[j]);
                 }
             }
@@ -1166,7 +1166,7 @@ public void ungroup() {
     }
 
     UndoManager.getInstance().addAction(composedAction);
-    
+
     drawingSurface.getViewGroup().manageLinks(true);
     drawingSurface.repaint();
 }
@@ -1181,7 +1181,7 @@ public void updateMenuItems() {
         cmd.setState(UndoManager.getInstance().actions2redo()>0);
         cmd.execute();
     }
-    
+
     SetUndoMenuItemState cmd2 = (SetUndoMenuItemState)CommandManager.getInstance().getCommand("SetUndoMenuItemState");
     if (cmd2 != null)
     {

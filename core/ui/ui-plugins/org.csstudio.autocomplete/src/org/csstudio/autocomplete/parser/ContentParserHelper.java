@@ -24,7 +24,7 @@ import org.csstudio.autocomplete.parser.engine.expr.ExprVariable;
 
 /**
  * Helper for content parsing.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class ContentParserHelper {

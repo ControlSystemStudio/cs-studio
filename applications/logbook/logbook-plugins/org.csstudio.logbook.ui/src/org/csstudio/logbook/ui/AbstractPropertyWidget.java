@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -12,9 +12,9 @@ import org.eclipse.swt.widgets.Display;
 /**
  * An Abstract class which provides the basic functionality expected from a
  * Composite used to represent a logbook property
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public abstract class AbstractPropertyWidget extends Composite {
 
@@ -24,7 +24,7 @@ public abstract class AbstractPropertyWidget extends Composite {
     /**
      * A constructor which creates the composite, registers the appropriate
      * listeners and initializes it with the logEntryChangeset
-     * 
+     *
      * @param parent
      * @param style
      * @param logEntryChangeset
@@ -40,7 +40,7 @@ public abstract class AbstractPropertyWidget extends Composite {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 Display.getDefault().asyncExec(() -> {updateUI();});
-                
+
             }
             });
     }

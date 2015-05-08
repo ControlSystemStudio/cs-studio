@@ -5,14 +5,14 @@ import org.osgi.framework.BundleContext;
 
 /**
  * Plugin activator
- * 
+ *
  * @author Takashi Nakamoto
   */
 public class Activator implements BundleActivator {
-    
+
     /** Plugin ID defined in MANIFEST.MF */
     final public static String ID = "org.csstudio.archive.reader.kblog";
-    
+
     private static Activator instance;
     private static BundleContext context;
 

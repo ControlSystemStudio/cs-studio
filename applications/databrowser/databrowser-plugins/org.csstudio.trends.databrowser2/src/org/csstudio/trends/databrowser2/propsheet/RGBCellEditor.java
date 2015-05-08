@@ -33,7 +33,7 @@ public class RGBCellEditor extends CellEditor
 {
     final private Shell shell;
     private RGB value;
-    
+
     /** Creates a new color cell editor parented under the given control.
      *  The cell editor value is an SWT RGB value.
      *  @param parent The parent table.

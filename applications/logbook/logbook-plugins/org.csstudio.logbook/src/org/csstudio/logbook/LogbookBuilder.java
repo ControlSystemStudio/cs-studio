@@ -2,9 +2,9 @@ package org.csstudio.logbook;
 
 /**
  * A builder for a default implementation of the {@link Logbook} interface.
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class LogbookBuilder {
 
@@ -15,7 +15,7 @@ public class LogbookBuilder {
 
     /**
      * Create a Builder for Logbook with the name _name_
-     * 
+     *
      * @param name
      *            - name of the logbook
      * @return LogbookBuilder
@@ -34,7 +34,7 @@ public class LogbookBuilder {
     /**
      * Create a Builder object with parameters initialized with the same values
      * as the given logbook object
-     * 
+     *
      * @param logbook
      * @return LogbookBuilder
      */
@@ -51,7 +51,7 @@ public class LogbookBuilder {
 
     /**
      * Set owner
-     * 
+     *
      * @param owner
      * @return LogbookBuilder
      */
@@ -62,7 +62,7 @@ public class LogbookBuilder {
 
     /**
      * Build an object implementing the {@link Logbook}.
-     * 
+     *
      * @return Logbook - concerete immutable instance of a Logbook
      */
     Logbook build() {
@@ -71,9 +71,9 @@ public class LogbookBuilder {
 
     /**
      * A Default implementation of the {@link Logbook} interface
-     * 
+     *
      * @author shroffk
-     * 
+     *
      */
     private class LogbookImpl implements Logbook {
 

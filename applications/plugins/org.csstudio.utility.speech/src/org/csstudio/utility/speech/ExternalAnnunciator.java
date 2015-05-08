@@ -22,7 +22,7 @@ class ExternalAnnunciator extends BaseAnnunciator
 {
     /** Timeout for the command to finish */
     private static final long TIMEOUT_MILLI = 60*1000;
-    
+
     private String say_command = "say";
 
     /** Helper for dumping any output of the command to stdout */
@@ -57,8 +57,8 @@ class ExternalAnnunciator extends BaseAnnunciator
             }
         }
     }
-    
-    
+
+
     public ExternalAnnunciator()
     {
         final IPreferencesService prefs = Platform.getPreferencesService();

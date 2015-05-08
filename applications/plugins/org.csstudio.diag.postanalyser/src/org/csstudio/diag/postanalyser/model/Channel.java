@@ -6,7 +6,7 @@ package org.csstudio.diag.postanalyser.model;
 public class Channel extends XYChartSamples
 {
     final private String name;
-    
+
     public Channel(final String name, final double[] x, final double[] y)
     {
         super(x, y);

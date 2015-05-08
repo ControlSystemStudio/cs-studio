@@ -25,27 +25,27 @@ public class URLPath implements IPath {
     private String url = null;
     /** The path segments */
     private String[] segments;
-    
+
     /** The device id string. May be null if there is no device. */
     private String device = null;
-    
+
     /**
      * Path separator character constant "/" used in paths.
      */
     public static final String SEPARATOR = "/"; //$NON-NLS-1$
-    
+
     /**
      * @param url
      */
     public URLPath(String url){
-        this.url = url;    
+        this.url = url;
         int i = url.indexOf(DEVICE_SEPARATOR);
         if(i != -1){
             device = url.substring(0, i+1);
             url = url.substring(i+1);
         }
-        segments = url.split(SEPARATOR);    
-        
+        segments = url.split(SEPARATOR);
+
     }
 
     public URLPath(String device, String[] segments, boolean hasTrailing){
@@ -54,7 +54,7 @@ public class URLPath implements IPath {
         StringBuilder sb;
         if(device == null)
             sb = new StringBuilder();
-        else 
+        else
             sb = new StringBuilder(device); //$NON-NLS-1$
         for (String s : segments) {
             sb.append(s);
@@ -65,7 +65,7 @@ public class URLPath implements IPath {
         else
             this.url = sb.deleteCharAt(sb.length()-1).toString();
     }
-    
+
     public IPath addFileExtension(String extension) {
         return new URLPath(url.concat(extension));
     }
@@ -90,10 +90,10 @@ public class URLPath implements IPath {
             else{
                 resultSegs.add(s);
             }
-        }        
+        }
         return new URLPath(device, resultSegs.toArray(new String[0]), path.hasTrailingSeparator());
     }
-    
+
 
     /* (Intentionally not included in javadoc)
      * Clones this object.
@@ -131,7 +131,7 @@ public class URLPath implements IPath {
         if (lastSegment == null) {
             return false;
         }
-        boolean hasTrailing = 
+        boolean hasTrailing =
             Character.valueOf(url.charAt(url.length()-1)).equals(IPath.SEPARATOR);
         return hasTrailing;
     }
@@ -144,7 +144,7 @@ public class URLPath implements IPath {
         return false;
     }
 
-    public boolean isEmpty() {        
+    public boolean isEmpty() {
         return url.length() <= 0;
     }
 
@@ -157,9 +157,9 @@ public class URLPath implements IPath {
                         return false;
                 }
                 return true;
-            }                
+            }
         }
-            
+
         return false;
     }
 
@@ -209,7 +209,7 @@ public class URLPath implements IPath {
         for (String s : segList) {
             if(s.equals(ELLIPSIS) || s.equals(".")) //$NON-NLS-1$
                 segList.remove(s);
-        }    
+        }
         URLPath result = new URLPath(device, segList.toArray(new String[0]),
                 hasTrailingSeparator());
         return result;
@@ -224,8 +224,8 @@ public class URLPath implements IPath {
         String[] absolutePathSegs = segments();
         for(String seg : base.segments()){
             if(!seg.equals(segment(i)))
-                break;            
-            i++;            
+                break;
+            i++;
         }
         int ellipsisCount = base.segmentCount() - i;
         int remainedSegsCount = segmentCount() -i;

@@ -18,7 +18,7 @@ import org.eclipse.swt.graphics.Font;
  *
  */
 public class AnnotationMemento {
-    
+
     private String name;
     private boolean free;
     private Axis xAxis, yAxis;

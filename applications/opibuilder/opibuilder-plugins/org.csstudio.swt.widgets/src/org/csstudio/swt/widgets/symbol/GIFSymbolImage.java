@@ -175,7 +175,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
             }
         }
     }
-    
+
     @Override
     public void resetData() {
         imageData = null;
@@ -193,7 +193,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
                     imageDataArray[i] = ImageUtils.changeImageColor(currentColor, imageDataArray[i]);
                 imageDataArray[i] = ImageUtils.applyMatrix(imageDataArray[i], permutationMatrix);
                 if (stretch && bounds != null) {
-                    imageDataArray[i] = imageDataArray[i].scaledTo(bounds.width + leftCrop + rightCrop, 
+                    imageDataArray[i] = imageDataArray[i].scaledTo(bounds.width + leftCrop + rightCrop,
                             bounds.height + topCrop + bottomCrop);
                 }
             }
@@ -204,7 +204,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
                 imageData = ImageUtils.changeImageColor(currentColor, imageData);
             imageData = ImageUtils.applyMatrix(imageData, permutationMatrix);
             if (stretch && bounds != null) {
-                imageData = imageData.scaledTo(bounds.width + leftCrop + rightCrop, 
+                imageData = imageData.scaledTo(bounds.width + leftCrop + rightCrop,
                         bounds.height + topCrop + bottomCrop);
             }
         }

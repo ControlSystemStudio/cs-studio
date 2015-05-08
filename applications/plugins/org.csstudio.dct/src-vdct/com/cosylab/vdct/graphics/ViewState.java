@@ -8,22 +8,22 @@ package com.cosylab.vdct.graphics;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -45,7 +45,7 @@ import com.cosylab.vdct.graphics.objects.VisibleObject;
 public class ViewState {
 
     protected static ViewState instance = null;
-    
+
     protected static int x0 = 0;                // origin
     protected static int y0 = 0;
 
@@ -56,25 +56,25 @@ public class ViewState {
     protected int ry = 0;
 
     protected double scale = 1.0;        // scale
-    
-     // viewport size 
+
+     // viewport size
      protected static int viewWidth = com.cosylab.vdct.Constants.VDCT_WIDTH;
     protected static int viewHeight = com.cosylab.vdct.Constants.VDCT_HEIGHT;
 
     protected static boolean flat = false;
-    
+
     protected VisibleObject hilitedObject = null;
-    protected LinkedHashSet hilitedObjects = new LinkedHashSet(); 
+    protected LinkedHashSet hilitedObjects = new LinkedHashSet();
     protected Vector selectedObjects = null;
 
     protected Vector blinkingObjects = null;
     protected boolean blinkState = false;
-    
+
     private boolean zoomOnHilited = false;
 
     private int gridSize = (int)(com.cosylab.vdct.Constants.GRID_SIZE*scale);
     private int dotSize = (int)(com.cosylab.vdct.Constants.DOT_SIZE*scale);
-    
+
 /**
  * Insert the method's description here.
  * Creation date: (21.12.2000 21:00:31)
@@ -90,7 +90,7 @@ public ViewState() {
  */
 public ViewState(ViewState original) {
     this();
-    
+
     //this.x0 = original.x0;
     //this.y0 = original.y0;
 
@@ -377,7 +377,7 @@ public boolean setAsHilited(VisibleObject object) {
  */
 public boolean setAsHilited(VisibleObject object, boolean zoomOnHilited) {
     this.zoomOnHilited = zoomOnHilited;
-    
+
     if(zoomOnHilited) {
         DrawingSurface.getInstance().repaint();
         hilitedObjects.clear();
@@ -385,31 +385,31 @@ public boolean setAsHilited(VisibleObject object, boolean zoomOnHilited) {
             hilitedObjects.add(hilitedObject);
         }
     }
-    
+
     if (object == null) {
         hilitedObjects.clear();
         hilitedObject = null;
         return false;
     }
-    
+
     if (object!=hilitedObject || hilitedObjects.size() == 1) {
-        
+
         hilitedObject=object;
-        
+
         //initialization
         hilitedObjects.clear();
         hilitedObjects.add(hilitedObject);
         Object obj = hilitedObject;
-        
+
         // inlinks
-        Vector outlinks = null;  
+        Vector outlinks = null;
         if (obj instanceof MultiInLink) {
              outlinks = ((MultiInLink)obj).getOutlinks();
         } else if (obj instanceof InLink){
             outlinks = new Vector();
             outlinks.add(((InLink)obj).getOutput());
         }
-        
+
         if (!zoomOnHilited) {
             if (outlinks != null)
                 for (int i=0; i<outlinks.size(); i++) {
@@ -420,7 +420,7 @@ public boolean setAsHilited(VisibleObject object, boolean zoomOnHilited) {
                         hilitedObjects.add(obj);
                     }
                 }
-                
+
             // outLinks
             obj = hilitedObject;
             while (obj instanceof OutLink) {

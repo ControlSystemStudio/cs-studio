@@ -14,7 +14,7 @@ import org.w3c.dom.Node;
 
 /**
  * XML output class for OPI Rule type.
- * 
+ *
  * @author Xihui Chen
  */
 public class OpiAction {

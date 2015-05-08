@@ -47,7 +47,7 @@ public class MetaDataHelper
             && equals(display.getUpperWarningLimit(), other.getUpperWarningLimit())
             && display.getUnits().equals(other.getUnits())))
             return false;
-        
+
         // Compare formats by result on some test value. Not perfect.
         final NumberFormat format = display.getFormat();
         final NumberFormat format2 = other.getFormat();
@@ -70,7 +70,7 @@ public class MetaDataHelper
     {
         return (a == null)  ?  (b == null)  :  a.equals(b);
     }
-    
+
     /** @param labels {@link Enum} labels to compare
      *  @param other {@link Enum} labels to compare
      *  @return <code>true</code> if labels are equal

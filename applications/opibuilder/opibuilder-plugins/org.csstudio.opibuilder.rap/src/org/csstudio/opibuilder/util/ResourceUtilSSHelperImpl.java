@@ -33,7 +33,7 @@ import org.eclipse.ui.PlatformUI;
 public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
     private static InputStream inputStream;
     private static Object lock = new Boolean(true);
-    private static final String NOT_IMPLEMENTED = 
+    private static final String NOT_IMPLEMENTED =
             "This method has not been implemented yet for RAP";
 
     @Override
@@ -42,10 +42,10 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
         // Path URL for "file:..." so that it opens as FileInputStream
         if (local_file.getPath().startsWith("file:"))
             local_file = new File(local_file.getPath().substring(5));
-        
+
         return local_file.exists() ? local_file : null;
     }
-    
+
     /**
      * Return the {@link InputStream} of the file that is available on the
      * specified path.
@@ -88,7 +88,7 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
         // Must be a URL
         final URL url = new URL(urlString);
         inputStream = null;
-        
+
         if (runInUIJob) {
             synchronized (lock) {
                 IRunnableWithProgress openURLTask = new IRunnableWithProgress() {
@@ -114,19 +114,19 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
             }
         }else
             return openURLStream(url);
-       
-        return inputStream;        
+
+        return inputStream;
 
     }
-    
+
     private static InputStream openURLStream(final URL url) throws IOException {
         URLConnection connection = url.openConnection();
         connection.setReadTimeout(PreferencesHelper.getURLFileLoadingTimeout());
         return connection.getInputStream();
     }
-        
-    
-    
+
+
+
     public boolean isExistingLocalFile(IPath path){
          // Not a workspace file. Try local file system
         File local_file = path.toFile();
@@ -143,7 +143,7 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
             return false;
         }
         return true;
-        
+
     }
 
     /**
@@ -152,11 +152,11 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
      */
     public IPath getPathInEditor(IEditorInput input){
         if(input instanceof IPathEditorInput)
-            return ((IPathEditorInput)input).getPath();        
+            return ((IPathEditorInput)input).getPath();
         return null;
     }
 
-    
+
 
 
     /** Check if a URL is actually a URL
@@ -186,5 +186,5 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
     @Override
     public Image getScreenShotImage(GraphicalViewer viewer) {
         throw new RuntimeException(NOT_IMPLEMENTED);
-    }    
+    }
 }

@@ -14,9 +14,9 @@ import de.desy.language.snl.ui.rules.SNLCodeElementTextAttributeConstants;
 
 /**
  * The property listener for the SNL-preference-page.
- * 
+ *
  * @author C1 WPS
- * 
+ *
  */
 public class SNLPreferenceListener implements IPropertyChangeListener {
 

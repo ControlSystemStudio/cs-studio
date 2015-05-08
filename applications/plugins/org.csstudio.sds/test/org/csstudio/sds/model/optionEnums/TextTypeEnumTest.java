@@ -13,9 +13,9 @@ public class TextTypeEnumTest {
 
     @Before
     public void setUp() throws Exception {
-        
+
     }
-    
+
     @Test
     public void isValidFormatTest() {
         // Test Text
@@ -47,7 +47,7 @@ public class TextTypeEnumTest {
         assertTrue(TextTypeEnum.TEXT.isValidFormat("-1af"));
         assertTrue(TextTypeEnum.TEXT.isValidFormat("-af"));
         assertTrue(TextTypeEnum.TEXT.isValidFormat("-AF"));
-        
+
         //Text Alias
         assertTrue(TextTypeEnum.ALIAS.isValidFormat(""));
         assertTrue(TextTypeEnum.ALIAS.isValidFormat("1qayXSW,.-+#"));
@@ -78,10 +78,10 @@ public class TextTypeEnumTest {
         assertTrue(TextTypeEnum.ALIAS.isValidFormat("-af"));
         assertTrue(TextTypeEnum.ALIAS.isValidFormat("-AF"));
 
-        
-        
+
+
         // Test Double
-     // --String  
+     // --String
         assertFalse(TextTypeEnum.DOUBLE.isValidFormat(""));
         assertFalse(TextTypeEnum.DOUBLE.isValidFormat("1qayXSW,.-+#"));
         assertFalse(TextTypeEnum.DOUBLE.isValidFormat("qayXSW,.-+#2454"));
@@ -89,7 +89,7 @@ public class TextTypeEnumTest {
         assertTrue(TextTypeEnum.DOUBLE.isValidFormat("0"));
         assertTrue(TextTypeEnum.DOUBLE.isValidFormat("1234567890"));
         assertTrue(TextTypeEnum.DOUBLE.isValidFormat("-1234567890"));
-        
+
         // --Float
         assertTrue(TextTypeEnum.DOUBLE.isValidFormat("12345.67890"));
         assertTrue(TextTypeEnum.DOUBLE.isValidFormat("-12345.67890"));
@@ -116,7 +116,7 @@ public class TextTypeEnumTest {
         assertFalse(TextTypeEnum.DOUBLE.isValidFormat("-1af"));
         assertFalse(TextTypeEnum.DOUBLE.isValidFormat("-af"));
         assertFalse(TextTypeEnum.DOUBLE.isValidFormat("-AF"));
-        
+
         assertTrue(TextTypeEnum.DOUBLE.isValidFormat("0x1AF"));
         assertTrue(TextTypeEnum.DOUBLE.isValidFormat("0x1af"));
         assertTrue(TextTypeEnum.DOUBLE.isValidFormat("0xaf"));
@@ -133,7 +133,7 @@ public class TextTypeEnumTest {
         assertTrue(TextTypeEnum.DOUBLE.isValidFormat("-0xAF"));
         assertTrue(TextTypeEnum.DOUBLE.isValidFormat("-0x16"));
         // Test Exp
-     // --String  
+     // --String
         assertFalse(TextTypeEnum.EXP.isValidFormat(""));
         assertFalse(TextTypeEnum.EXP.isValidFormat("1qayXSW,.-+#"));
         assertFalse(TextTypeEnum.EXP.isValidFormat("qayXSW,.-+#2454"));
@@ -141,7 +141,7 @@ public class TextTypeEnumTest {
         assertTrue(TextTypeEnum.EXP.isValidFormat("0"));
         assertTrue(TextTypeEnum.EXP.isValidFormat("1234567890"));
         assertTrue(TextTypeEnum.EXP.isValidFormat("-1234567890"));
-        
+
         // --Float
         assertTrue(TextTypeEnum.EXP.isValidFormat("12345.67890"));
         assertTrue(TextTypeEnum.EXP.isValidFormat("-12345.67890"));
@@ -168,7 +168,7 @@ public class TextTypeEnumTest {
         assertFalse(TextTypeEnum.EXP.isValidFormat("-1af"));
         assertFalse(TextTypeEnum.EXP.isValidFormat("-af"));
         assertFalse(TextTypeEnum.EXP.isValidFormat("-AF"));
-        
+
         assertTrue(TextTypeEnum.EXP.isValidFormat("0x1AF"));
         assertTrue(TextTypeEnum.EXP.isValidFormat("0x1af"));
         assertTrue(TextTypeEnum.EXP.isValidFormat("0xaf"));
@@ -184,10 +184,10 @@ public class TextTypeEnumTest {
         assertTrue(TextTypeEnum.EXP.isValidFormat("-0xaf"));
         assertTrue(TextTypeEnum.EXP.isValidFormat("-0xAF"));
         assertTrue(TextTypeEnum.EXP.isValidFormat("-0x16"));
-        
-        
+
+
         //Test Hex
-        // --String  
+        // --String
         assertFalse(TextTypeEnum.HEX.isValidFormat(""));
         assertFalse(TextTypeEnum.HEX.isValidFormat("1qayXSW,.-+#"));
         assertFalse(TextTypeEnum.HEX.isValidFormat("qayXSW,.-+#2454"));
@@ -195,7 +195,7 @@ public class TextTypeEnumTest {
         assertTrue(TextTypeEnum.HEX.isValidFormat("0"));
         assertTrue(TextTypeEnum.HEX.isValidFormat("1234567890"));
         assertTrue(TextTypeEnum.HEX.isValidFormat("-1234567890"));
-        
+
         // --Float
         assertTrue(TextTypeEnum.HEX.isValidFormat("12345.67890"));
         assertTrue(TextTypeEnum.HEX.isValidFormat("-12345.67890"));
@@ -222,7 +222,7 @@ public class TextTypeEnumTest {
         assertFalse(TextTypeEnum.HEX.isValidFormat("-1af"));
         assertFalse(TextTypeEnum.HEX.isValidFormat("-af"));
         assertFalse(TextTypeEnum.HEX.isValidFormat("-AF"));
-        
+
         assertTrue(TextTypeEnum.HEX.isValidFormat("0x1AF"));
         assertTrue(TextTypeEnum.HEX.isValidFormat("0x1af"));
         assertTrue(TextTypeEnum.HEX.isValidFormat("0xaf"));
@@ -238,9 +238,9 @@ public class TextTypeEnumTest {
         assertTrue(TextTypeEnum.HEX.isValidFormat("-0xaf"));
         assertTrue(TextTypeEnum.HEX.isValidFormat("-0xAF"));
         assertTrue(TextTypeEnum.HEX.isValidFormat("-0x16"));
-        
+
     }
-    
+
     @Test
     public void isValidCharsTest() {
         // test Text
@@ -374,7 +374,7 @@ public class TextTypeEnumTest {
       assertTrue(TextTypeEnum.HEX.isValidChars(SWT.CR,""+SWT.CR, 1));
       assertTrue(TextTypeEnum.HEX.isValidChars(SWT.DEL, ""+SWT.DEL, 1));
       assertTrue(TextTypeEnum.HEX.isValidChars(SWT.BS, ""+SWT.BS, 1));
-      
+
       //test Exp
       assertFalse(TextTypeEnum.EXP.isValidChars('+', "+", 0));
       assertTrue(TextTypeEnum.EXP.isValidChars('-', "-", 0));

@@ -13,18 +13,18 @@ public class ADLPlotData extends WidgetPart {
     private String rangeStyle;
     private float minRange;
     private float maxRange;
-    
+
     public ADLPlotData(ADLWidget widgetPart) throws WrongADLFormatException {
         super(widgetPart);
     }
-    
+
     /**
      * Default Constructor
      */
     public ADLPlotData(){
         super();
     }
-    
+
     @Override
     public Object[] getChildren() {
         ArrayList<Object> ret = new ArrayList<Object>();

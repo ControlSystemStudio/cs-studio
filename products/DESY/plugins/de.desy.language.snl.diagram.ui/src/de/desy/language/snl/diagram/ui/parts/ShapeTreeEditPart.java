@@ -20,14 +20,14 @@ import de.desy.language.snl.diagram.ui.ShapesPlugin;
  * This edit part must implement the PropertyChangeListener interface, so it can
  * be notified of property changes in the corresponding model element.
  * </p>
- * 
+ *
  */
 class ShapeTreeEditPart extends AbstractTreeEditPart implements
         PropertyChangeListener {
 
     /**
      * Create a new instance of this edit part using the given model element.
-     * 
+     *
      * @param model
      *            a non-null Shapes instance
      */
@@ -49,7 +49,7 @@ class ShapeTreeEditPart extends AbstractTreeEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.editparts.AbstractTreeEditPart#createEditPolicies()
      */
     @Override
@@ -77,7 +77,7 @@ class ShapeTreeEditPart extends AbstractTreeEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.editparts.AbstractTreeEditPart#getImage()
      */
     @Override
@@ -88,7 +88,7 @@ class ShapeTreeEditPart extends AbstractTreeEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.editparts.AbstractTreeEditPart#getText()
      */
     @Override
@@ -98,7 +98,7 @@ class ShapeTreeEditPart extends AbstractTreeEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @seejava.beans.PropertyChangeListener#propertyChange(java.beans.
      * PropertyChangeEvent)
      */

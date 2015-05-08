@@ -49,7 +49,7 @@ public class ADLWidgetUtils {
         }
         return adlWidget.getObjects().toArray();
     }
-    
+
     public static Object[] adlWidgetArray2ObjectArray( ArrayList<ADLWidget> inWidget ){
         ArrayList<Object> objectList = new ArrayList<Object>();
         System.out.println("number of widgets in the ADLFile " + inWidget.size());
@@ -62,15 +62,15 @@ public class ADLWidgetUtils {
                 }
                 else if (widgetType.equals("bar")){
                     objectList.add(new BarMonitor(adlWidget));
-                
+
                 }
                 else if (widgetType.equals("byte")){
                     objectList.add(new ByteMonitor(adlWidget));
-                    
+
                 }
                 else if (widgetType.equals("cartesian plot")){
                     objectList.add(new CartesianPlot(adlWidget));
-                    
+
                 }
                 else if (widgetType.equals("choice button")){
                     objectList.add(new ChoiceButton(adlWidget));
@@ -79,10 +79,10 @@ public class ADLWidgetUtils {
                     objectList.add(new Composite(adlWidget));
                 }
                 else if (widgetType.equals("dynamic symbol")){
-                    
+
                 }
                 else if (widgetType.equals("file")){
-                    
+
                 }
                 else if (widgetType.equals("image")){
                     objectList.add(new Image(adlWidget));
@@ -151,6 +151,6 @@ public class ADLWidgetUtils {
         }
         System.out.println("size of objectList "+ objectList.size());
         return objectList.toArray();
-        
+
     }
 }

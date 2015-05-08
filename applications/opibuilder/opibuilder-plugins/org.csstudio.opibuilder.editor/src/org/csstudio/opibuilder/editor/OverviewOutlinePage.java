@@ -32,26 +32,26 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
  */
 public class OverviewOutlinePage extends Page implements IContentOutlinePage
     {
-        
+
         private Canvas overview;
         private Thumbnail thumbnail;
         private DisposeListener disposeListener;
         private ScalableFreeformRootEditPart rootEP;
-        
-        
-        public OverviewOutlinePage(ScalableFreeformRootEditPart root){            
+
+
+        public OverviewOutlinePage(ScalableFreeformRootEditPart root){
             rootEP = root;
         }
-        
+
         public void createControl(Composite parent){
-            overview = new Canvas(parent, SWT.NONE);            
+            overview = new Canvas(parent, SWT.NONE);
             LightweightSystem lws = new LightweightSystem(overview);
 
             thumbnail = new ScrollableThumbnail((Viewport)rootEP.getFigure());
             thumbnail.setBorder(new MarginBorder(3));
             thumbnail.setSource(rootEP.getLayer(LayerConstants.PRINTABLE_LAYERS));
             lws.setContents(thumbnail);
-            
+
             disposeListener = new DisposeListener() {
                     public void widgetDisposed(DisposeEvent e) {
                         if (thumbnail != null) {
@@ -62,7 +62,7 @@ public class OverviewOutlinePage extends Page implements IContentOutlinePage
             };
             rootEP.getViewer().getControl().addDisposeListener(disposeListener);
         }
-        
+
         public void dispose(){
             if (thumbnail != null) {
                 thumbnail.deactivate();
@@ -70,11 +70,11 @@ public class OverviewOutlinePage extends Page implements IContentOutlinePage
             }
             super.dispose();
         }
-        
+
         public Control getControl() {
             return overview;
         }
-        
+
         public void setFocus() {
             if(getControl() != null)
                 getControl().setFocus();
@@ -83,7 +83,7 @@ public class OverviewOutlinePage extends Page implements IContentOutlinePage
 
         public void addSelectionChangedListener(
                 ISelectionChangedListener listener) {
-            
+
         }
 
         public ISelection getSelection() {
@@ -92,11 +92,11 @@ public class OverviewOutlinePage extends Page implements IContentOutlinePage
 
         public void removeSelectionChangedListener(
                 ISelectionChangedListener listener) {
-            
+
         }
 
         public void setSelection(ISelection selection) {
-            
+
         }
     }
-    
+

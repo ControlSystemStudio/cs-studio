@@ -14,9 +14,9 @@ import org.csstudio.dct.model.internal.Project;
 /**
  * Visitor implementation that can be used to find elements in the hierarchical
  * model by their id.
- * 
+ *
  * @author swende
- * 
+ *
  */
 public final class SearchVisitor implements IVisitor {
     private UUID id;
@@ -59,7 +59,7 @@ public final class SearchVisitor implements IVisitor {
 
     /**
      * Deep search for an element in a project.
-     * 
+     *
      * @param project
      *            the project
      * @param id
@@ -81,7 +81,7 @@ public final class SearchVisitor implements IVisitor {
 
     /**
      * Checks whether the id of the visited element matches the target id.
-     * 
+     *
      * @param element
      *            the element
      */

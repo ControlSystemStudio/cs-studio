@@ -43,7 +43,7 @@ abstract public class ControlSystemDropTarget
             final Class<?>... accepted)
     {
         target = new DropTarget(control, DND.DROP_COPY | DND.DROP_MOVE | DND.DROP_LINK);
-        
+
         final List<Transfer> supportedTransfers = new ArrayList<Transfer>();
         for (Class<?> clazz : accepted)
         {
@@ -82,7 +82,7 @@ abstract public class ControlSystemDropTarget
                     if (done)
                         break;
                 }
-                
+
                 if ((event.operations & DND.DROP_COPY) != 0)
                     event.detail = DND.DROP_COPY;
                 else
@@ -108,5 +108,5 @@ abstract public class ControlSystemDropTarget
      *  @param item Control system item
      */
     abstract public void handleDrop(Object item);
-    
+
 }

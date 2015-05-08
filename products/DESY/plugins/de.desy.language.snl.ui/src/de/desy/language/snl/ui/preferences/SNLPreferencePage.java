@@ -38,7 +38,7 @@ public class SNLPreferencePage extends FieldEditorPreferencePage implements
                 + PreferenceConstants.SAVE_AND_COMPILE_POST_FIX,
                 "Start compilation after saving", getFieldEditorParent());
         addField(editor);
-        
+
         editor = new BooleanFieldEditor(SNLUiActivator.PLUGIN_ID
                 + PreferenceConstants.KEEP_GENERATED_FILES_POST_FIX,
                 "Keep temporary compilation results", getFieldEditorParent());

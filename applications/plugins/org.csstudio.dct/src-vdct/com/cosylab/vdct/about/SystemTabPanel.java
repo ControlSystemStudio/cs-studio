@@ -8,22 +8,22 @@ package com.cosylab.vdct.about;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -54,7 +54,7 @@ public class SystemTabPanel extends AboutTabPanel {
     private javax.swing.JLabel JLabelSystemJavaProperty = null;
     private javax.swing.JLabel JLabelSystemJavaClasspath = null;
 
-    private javax.swing.JScrollPane JScrollPaneSystemJavaClasspathProperty = null;    
+    private javax.swing.JScrollPane JScrollPaneSystemJavaClasspathProperty = null;
 
     private javax.swing.JTextArea JTextAreaSystemJavaClasspathProperty = null;
     /**
@@ -69,7 +69,7 @@ public class SystemTabPanel extends AboutTabPanel {
      * @see com.cosylab.gui.components.about.AboutTabPanel#initializePanel()
      */
     protected void initializePanel() {
-    
+
     try {
 
             setName("System");
@@ -80,7 +80,7 @@ public class SystemTabPanel extends AboutTabPanel {
             constraintsJPanel1.fill = java.awt.GridBagConstraints.BOTH;
             constraintsJPanel1.weightx = 1.0;
             constraintsJPanel1.insets = new java.awt.Insets(4, 4, 4, 4);
-            
+
             add(getJPanel1(), constraintsJPanel1);
 
             java.awt.GridBagConstraints constraintsJPanel2 = new java.awt.GridBagConstraints();
@@ -91,14 +91,14 @@ public class SystemTabPanel extends AboutTabPanel {
             constraintsJPanel2.insets = new java.awt.Insets(4, 4, 4, 4);
             add(getJPanel2(), constraintsJPanel2);
 
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-    
-    
-    
+
+
+
     }
 
 
@@ -109,7 +109,7 @@ public class SystemTabPanel extends AboutTabPanel {
  * @return javax.swing.JLabel
  */
 private javax.swing.JLabel getJLabelDivider() {
-        
+
     if (JLabelDivider == null) {
         try {
             JLabelDivider = new javax.swing.JLabel();
@@ -157,7 +157,7 @@ private javax.swing.JLabel getJLabelSystemJavaClasspath() {
             e.printStackTrace();
         }
     }
-    
+
     return JLabelSystemJavaClasspath;
 }
 
@@ -177,7 +177,7 @@ private javax.swing.JLabel getJLabelSystemJavaProperty() {
             e.printStackTrace();
         }
     }
-    
+
     return JLabelSystemJavaProperty;
 }
 /**
@@ -196,7 +196,7 @@ private javax.swing.JLabel getJLabelSystemOS() {
             e.printStackTrace();
         }
     }
-    
+
     return JLabelSystemOS;
 }
 /**
@@ -216,7 +216,7 @@ private javax.swing.JLabel getJLabelSystemOSProperty() {
             e.printStackTrace();
         }
     }
-    
+
     return JLabelSystemOSProperty;
 }
 /**
@@ -322,11 +322,11 @@ private javax.swing.JPanel getJPanel2() {
             constraintsJScrollPaneSystemJavaClasspath.insets = new java.awt.Insets(6, 4, 12, 12);
             getJPanel2().add(getJScrollPaneSystemJavaClasspathProperty(), constraintsJScrollPaneSystemJavaClasspath);
 
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
     }
     return JPanel2;
 }
@@ -368,7 +368,7 @@ private javax.swing.JTextArea getJTextAreaSystemJavaProperties() {
             e.printStackTrace();
         }
     }
-    
+
     return JTextAreaSystemJavaClasspathProperty;
 }
         public JPanel getPanel() {
@@ -383,7 +383,7 @@ private javax.swing.JTextArea getJTextAreaSystemJavaProperties() {
         JLabelSystemJavaProperty.setText(properties.getProperty("java.runtime.name")+" "+properties.getProperty("java.runtime.version"));
         JLabelSystemOSProperty.setText(" "+properties.getProperty("os.name")+" "+properties.getProperty("os.version")+
                                        " on "+properties.getProperty("os.arch"));
-        
+
         TreeMap tree = new TreeMap(properties);
         Iterator i = tree.keySet().iterator();
         StringBuffer text = new StringBuffer();
@@ -391,12 +391,12 @@ private javax.swing.JTextArea getJTextAreaSystemJavaProperties() {
         {
             String key = i.next().toString();
             String value = properties.get(key).toString();
-            text.append(key);    
-            text.append("=");    
-            text.append(value);    
-            text.append("\n");    
+            text.append(key);
+            text.append("=");
+            text.append(value);
+            text.append("\n");
         }
-        
+
         JTextAreaSystemJavaClasspathProperty.setText(text.toString());
         JTextAreaSystemJavaClasspathProperty.setCaretPosition(0);
     }

@@ -45,10 +45,10 @@ public class ADLBasicAttribute extends WidgetPart{
 
     /**
      * The default constructor.
-     * 
-     * @param adlBasicAttribute An ADLWidget that correspond a ADL Basic Attribute. 
+     *
+     * @param adlBasicAttribute An ADLWidget that correspond a ADL Basic Attribute.
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
-     * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.    
+     * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
     public ADLBasicAttribute(final ADLWidget adlBasicAttribute) throws WrongADLFormatException {
         super(adlBasicAttribute);
@@ -68,7 +68,7 @@ public class ADLBasicAttribute extends WidgetPart{
     private String _fill;
 
     private boolean _isColorDefined;
-    
+
     /**
      * {@inheritDoc}
      */
@@ -81,10 +81,10 @@ public class ADLBasicAttribute extends WidgetPart{
         _fill = String.valueOf("solid");
         set_isColorDefined(false);
     }
-    
+
     /**
      * @param adlBasicAttribute The ADL String for an ADL Basic Attribute.
-     * @throws WrongADLFormatException this exception was thrown the String not an valid ADL Basic Attribute String. 
+     * @throws WrongADLFormatException this exception was thrown the String not an valid ADL Basic Attribute String.
      */
     @Override
     final void parseWidgetPart(final ADLWidget adlBasicAttribute) throws WrongADLFormatException {
@@ -93,7 +93,7 @@ public class ADLBasicAttribute extends WidgetPart{
             if(adlWidget.getType().equals("attr")){
                 for (FileLine fileLine : adlWidget.getBody()) {
                     //TODO Refactor this so that it is not necessary to copy the lines to from the attr object to the atrribute object
-                    adlBasicAttribute.addBody(fileLine);    
+                    adlBasicAttribute.addBody(fileLine);
                 }
             }
         }
@@ -119,7 +119,7 @@ public class ADLBasicAttribute extends WidgetPart{
             }
         }
     }
-    
+
 
     /** @return the Color */
     public final int getClr() {
@@ -137,12 +137,12 @@ public class ADLBasicAttribute extends WidgetPart{
     public final String getStyle() {
         return _style;
     }
-    
+
     /** @return the fill */
     public final String getFill() {
         return _fill;
     }
-    
+
 
     /**
      * @return child objects
@@ -153,7 +153,7 @@ public class ADLBasicAttribute extends WidgetPart{
         ret[1] = new ADLResource(ADLResource.LINE_WIDTH, new Integer(_width));
         ret[2] = new ADLResource(ADLResource.STYLE, _style);
         ret[3] = new ADLResource(ADLResource.FILL, _fill);
-        
+
         return ret;
     }
 

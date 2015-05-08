@@ -26,7 +26,7 @@ public class WidgetTreeEditPolicy extends AbstractEditPolicy {
             return getMoveCommand((ChangeBoundsRequest)req);
         return null;
     }
-    
+
     protected Command getMoveCommand(ChangeBoundsRequest req){
         EditPart parent = getHost().getParent();
         if(parent != null){
@@ -39,5 +39,5 @@ public class WidgetTreeEditPolicy extends AbstractEditPolicy {
         }
         return UnexecutableCommand.INSTANCE;
     }
-    
+
 }

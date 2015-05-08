@@ -7,17 +7,17 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
 
 public class MatrixProperty extends AbstractWidgetProperty {
-    
+
     /**
      * XML ELEMENT name for a row.
      */
     public static final String XML_ELEMENT_ROW= "row"; //$NON-NLS-1$
-    
+
     /**
      * XML ELEMENT name for a column.
      */
     public static final String XML_ELEMENT_COLUMN= "col"; //$NON-NLS-1$
-    
+
     public MatrixProperty(String prop_id, String description,
             WidgetPropertyCategory category, double[][] defaultValue) {
         super(prop_id, description, category, defaultValue);
@@ -33,7 +33,7 @@ public class MatrixProperty extends AbstractWidgetProperty {
         }
         return acceptableValue;
     }
-    
+
     @Override
     protected PropertyDescriptor createPropertyDescriptor() {
         if (PropertySSHelper.getIMPL() == null)

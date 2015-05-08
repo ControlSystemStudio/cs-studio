@@ -12,7 +12,7 @@ public class MementoUtil {
         sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
     }
-    
+
     public static List<String> fromCommaSeparated(String string) {
         return Arrays.asList(string.split(","));
     }

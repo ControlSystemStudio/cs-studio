@@ -12,7 +12,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 *  @author Fred Arnaud
 */
 @SuppressWarnings("nls")
-public class Preferences 
+public class Preferences
 {
     final public static String DEFAULT_EMAIL_SENDER = "default_email_sender";
 

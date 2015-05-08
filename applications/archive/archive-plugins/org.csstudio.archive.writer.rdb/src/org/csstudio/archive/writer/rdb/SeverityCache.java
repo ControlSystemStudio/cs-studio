@@ -33,7 +33,7 @@ public class SeverityCache
         helper = new StringIDHelper(rdb,
             sql.severity_table, sql.severity_id_column, sql.severity_name_column);
     }
-    
+
    /** Close prepared statements, clear cache. */
     public void dispose()
     {

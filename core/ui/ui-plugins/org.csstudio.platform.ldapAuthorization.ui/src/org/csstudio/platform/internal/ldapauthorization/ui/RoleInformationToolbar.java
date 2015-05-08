@@ -74,13 +74,13 @@ import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
  * @since 16.06.2010
  */
 public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
-    
+
     /**
      * Listens for user management events and processes them by updating the
      * text in the status bar.
      */
     private class UserManagementListener implements IUserManagementListener {
-        
+
         /**
          * {@inheritDoc}
          */
@@ -102,14 +102,14 @@ public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
             });
         }
     }
-    
+
     /**
      * Listens for the user management events.
      */
     private IUserManagementListener _listener;
     private final long _currentTimeMillis;
     private final DateFormat _df;
-    
+
     /**
      * Creates a new toolbar.
      */
@@ -118,7 +118,7 @@ public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
         _df = new SimpleDateFormat("HH:mm:ss");
         _df.setTimeZone(TimeZone.getTimeZone("GMT+0"));
     }
-    
+
     /**
      * Creates a new toolbar with an id.
      *
@@ -132,7 +132,7 @@ public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
         _df.setTimeZone(TimeZone.getTimeZone("GMT+0"));
 
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -144,7 +144,7 @@ public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
         if(user != null) {
             final List<String> roles = getRoles(user);
             String text = stringBuilder(roles);
-            
+
             Button button = new Button(composite, SWT.PUSH);
             GridData layoutData = GridDataFactory.swtDefaults().hint(SWT.DEFAULT, 22)
                     .align(SWT.FILL, SWT.TOP).indent(0, -2).create();
@@ -153,14 +153,14 @@ public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
             button.setToolTipText(text);
             button.setCursor(new Cursor(null, SWT.CURSOR_HELP));
             button.addSelectionListener(new SelectionListener() {
-                
+
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     MessageDialog.openInformation(null,
                                                   Messages.RoleInformationToolbar_Head,
                                                   stringBuilder(roles));
                 }
-                
+
                 @Override
                 public void widgetDefaultSelected(SelectionEvent e) {
                     MessageDialog.openInformation(null,
@@ -168,13 +168,13 @@ public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
                                                   stringBuilder(roles));
                 }
             });
-            
+
         }
         createListener();
-        
+
         return composite;
     }
-    
+
     /**
      * @param roles
      * @return
@@ -196,7 +196,7 @@ public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
         sb.append("\r\n"); //$NON-NLS-1$
         return sb.toString();
     }
-    
+
     /**
      * Returns the name of the currently logged in user.
      *
@@ -213,12 +213,12 @@ public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
                     Right right = (Right) iRight;
                     rigthNames.add(right.getGroup() + ":" + right.getRole()); //$NON-NLS-1$
                 }
-                
+
             }
         }
         return rigthNames;
     }
-    
+
     /**
      * Returns <code>true</code>.
      *
@@ -231,7 +231,7 @@ public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
         // createControl method) whenever it updates.
         return true;
     }
-    
+
     /**
      * Creates the user management listener.
      */
@@ -240,11 +240,11 @@ public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
         if(_listener != null) {
             closeListener();
         }
-        
+
         _listener = new UserManagementListener();
         SecurityFacade.getInstance().addUserManagementListener(_listener);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -252,12 +252,12 @@ public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
     public void dispose() {
         closeListener();
     }
-    
+
     /**
      * Removes the user management listener from the security system.
      */
     private void closeListener() {
         SecurityFacade.getInstance().removeUserManagementListener(_listener);
     }
-    
+
 }

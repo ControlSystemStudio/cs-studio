@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.channel.actions;
 
@@ -60,34 +60,34 @@ import org.eclipse.wb.swt.ResourceManager;
  * This dialog allows you to
  * 1. add/remove tags
  * 2. add/remove/modify properties
- * 
+ *
  * You can also create new properties and tags
- * 
+ *
  * @author Kunal Shroff
  *
  */
 public class ChannelEditDialog extends TitleAreaDialog {
 
     private ChannelModel channelModel;
-    
+
     private Label text;
     private Table table;
     private ListViewer listViewer;
     private TableViewer tableViewer;
-    
+
     private Button btnRemoveTag;
     private Button btnAddTag;
 
     private Button btnAddProperty;
     private Button btnRemoveProperty;
-    
+
     private Collection<String> allTags;
     private Collection<String> allProperties;
 
     private Combo comboTags;
     private Combo comboProperties;
 
-    
+
     public ChannelEditDialog(Shell parentShell, Channel channel, Collection<String> allTags, Collection<String> allProperties) {
         super(parentShell);
         setShellStyle(SWT.RESIZE);
@@ -102,7 +102,7 @@ public class ChannelEditDialog extends TitleAreaDialog {
 
     /**
      * Creates the dialog's contents
-     * 
+     *
      * @param parent
      *            the parent composite
      * @return Control
@@ -112,7 +112,7 @@ public class ChannelEditDialog extends TitleAreaDialog {
 
             // Set the title
             super.setTitle(Messages.channelEditDialogTitle);
-            
+
             // Set the message
             super.setMessage(Messages.channelEditDialogMessage, IMessageProvider.INFORMATION);
 
@@ -126,27 +126,27 @@ public class ChannelEditDialog extends TitleAreaDialog {
     protected Control createDialogArea(Composite parent) {
         Composite composite = (Composite) super.createDialogArea(parent);
         GridLayout gridLayout = (GridLayout) composite.getLayout();
-        
+
         Composite composite_1 = new Composite(composite, SWT.NONE);
         composite_1.setLayout(new GridLayout(3, false));
         composite_1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-        
+
         Label lblNewLabel = new Label(composite_1, SWT.NONE);
         lblNewLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         lblNewLabel.setText("Channel Name:");
-        
+
         text = new Label(composite_1, SWT.BORDER | SWT.SHADOW_NONE);
         text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         text.setBackground(new Color(Display.getCurrent(), 255, 255, 255));
         new Label(composite_1, SWT.NONE);
-        
+
         Label lblNewLabel_1 = new Label(composite_1, SWT.NONE);
         lblNewLabel_1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         lblNewLabel_1.setText("Tags:");
-        
+
         comboTags = new Combo(composite_1, SWT.NONE);
         comboTags.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        
+
         btnAddTag = new Button(composite_1, SWT.NONE);
         btnAddTag.setImage(ResourceManager.getPluginImage("org.csstudio.utility.channel", "icons/add_tag.png"));
         btnAddTag.setToolTipText("Add Tag");
@@ -156,14 +156,14 @@ public class ChannelEditDialog extends TitleAreaDialog {
                 channelModel.addTag(comboTags.getItem(comboTags.getSelectionIndex()));
             }
         });
-        
+
         new Label(composite_1, SWT.NONE);
-        
+
         listViewer = new ListViewer(composite_1, SWT.BORDER | SWT.V_SCROLL);
         List list = listViewer.getList();
         list.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         listViewer.setContentProvider(new ArrayContentProvider());
-        
+
         btnRemoveTag = new Button(composite_1, SWT.NONE);
         btnRemoveTag.setImage(ResourceManager.getPluginImage("org.csstudio.utility.channel", "icons/remove_tag.png"));
         btnRemoveTag.setToolTipText("Remove Tag");
@@ -174,14 +174,14 @@ public class ChannelEditDialog extends TitleAreaDialog {
                 channelModel.removeTags(Arrays.asList(AdapterUtil.convert(listViewer.getSelection(), String.class)));
             }
         });
-        
+
         Label lblNewLabel_2 = new Label(composite_1, SWT.NONE);
         lblNewLabel_2.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         lblNewLabel_2.setText("Properties:");
-        
+
         comboProperties = new Combo(composite_1, SWT.NONE);
         comboProperties.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        
+
         btnAddProperty = new Button(composite_1, SWT.NONE);
         btnAddProperty.setImage(ResourceManager.getPluginImage("org.csstudio.utility.channel", "icons/add_properties.png"));
         btnAddProperty.setToolTipText("Add Property");
@@ -191,21 +191,21 @@ public class ChannelEditDialog extends TitleAreaDialog {
                 channelModel.addProperty(comboProperties.getItem(comboProperties.getSelectionIndex()),"");
             }
         });
-        
+
         new Label(composite_1, SWT.NONE);
-        
+
         Composite tableComposite = new Composite(composite_1, SWT.NONE);
         tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         TableColumnLayout tableColumnLayout = new TableColumnLayout();
         tableComposite.setLayout(tableColumnLayout);
-        
+
         tableViewer = new TableViewer(tableComposite, SWT.BORDER | SWT.FULL_SELECTION);
         table = tableViewer.getTable();
         table.setHeaderVisible(true);
         table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
-        
+
         tableViewer.setContentProvider(ArrayContentProvider.getInstance());
-        
+
         TableViewerColumn colName = new TableViewerColumn(tableViewer, SWT.NONE);
         TableColumn tableColumn = colName.getColumn();
         tableColumn.setWidth(100);
@@ -218,7 +218,7 @@ public class ChannelEditDialog extends TitleAreaDialog {
           }
         });
         tableColumnLayout.setColumnData(colName.getColumn(), new ColumnWeightData(50, 100, true));
-        
+
         TableViewerColumn colValue = new TableViewerColumn(tableViewer, SWT.NONE);
         TableColumn tableColumn_1 = colValue.getColumn();
         tableColumn_1.setWidth(100);
@@ -232,32 +232,32 @@ public class ChannelEditDialog extends TitleAreaDialog {
           }
         });
         colValue.setEditingSupport(new EditingSupport(tableViewer) {
-            
+
             @Override
             protected void setValue(Object element, Object value) {
                 Entry<String, String> p = (Entry<String, String>) element;
                 channelModel.addProperty(p.getKey(), value.toString());
             }
-            
+
             @Override
             protected Object getValue(Object element) {
                 Entry<String, String> p = (Entry<String, String>) element;
                 return p.getValue().toString();
             }
-            
+
             @Override
             protected CellEditor getCellEditor(Object element) {
                 return new TextCellEditor(tableViewer.getTable());
             }
-            
+
             @Override
             protected boolean canEdit(Object element) {
                 return true;
             }
         });
-        
+
         tableColumnLayout.setColumnData(colValue.getColumn(), new ColumnWeightData(50, 100, true));
-        
+
         btnRemoveProperty = new Button(composite_1, SWT.NONE);
         btnRemoveProperty.setImage(ResourceManager.getPluginImage("org.csstudio.utility.channel", "icons/remove_properties.png"));
         btnRemoveProperty.setToolTipText("Remove Property");
@@ -273,10 +273,10 @@ public class ChannelEditDialog extends TitleAreaDialog {
                         return ((Entry<String, String>)s).getKey();
                     }).collect(Collectors.toList());
                     channelModel.removeProperty(propertyName);
-                }                
+                }
             }
         });
-        
+
         // register listeners to the model
         channelModel.addPropertyChangeListener("tags", (event) -> {
             listViewer.setInput(channelModel.getTags());
@@ -284,7 +284,7 @@ public class ChannelEditDialog extends TitleAreaDialog {
         channelModel.addPropertyChangeListener("properties", (event) -> {
             tableViewer.setInput(channelModel.getProperties().entrySet());
         });
-        
+
         init();
         return parent;
     }
@@ -297,9 +297,9 @@ public class ChannelEditDialog extends TitleAreaDialog {
         comboProperties.setItems(allProperties.toArray(new String[allProperties.size()]));
     }
 
-    
+
     /**
-     * 
+     *
      * @author Kunal Shroff
      *
      */
@@ -325,13 +325,13 @@ public class ChannelEditDialog extends TitleAreaDialog {
         protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
             changeSupport.firePropertyChange(propertyName, oldValue, newValue);
         }
-            
+
         private final String name;
         private final String owner;
-        
+
         private final Set<String> tags;
         private final Map<String, String> properties;
-        
+
         public ChannelModel(Channel channel) {
             this.name = channel.getName();
             this.owner = channel.getOwner();
@@ -357,45 +357,45 @@ public class ChannelEditDialog extends TitleAreaDialog {
         public Map<String, String> getProperties() {
             return Collections.unmodifiableMap(properties);
         }
-        
+
         public void addTag(String tag){
             Set<String> oldValue = null;
             this.tags.add(tag);
             firePropertyChange("tags", oldValue, getTags());
         }
-        
+
         public void removeTag(String tag){
             Object oldValue = null;
             this.tags.remove(tag);
             firePropertyChange("tags", oldValue, getTags());
         }
-        
+
         public void removeTags(Collection<String> tags){
             Object oldValue = null;
             this.tags.removeAll(tags);
             firePropertyChange("tags", oldValue, getTags());
         }
-        
+
         public void addProperty(Property property){
             addProperty(property.getName(), property.getValue());
         }
-        
+
         public void addProperty(String key, String value){
             Object oldValue = null;
             this.properties.put(key, value);
             firePropertyChange("properties", oldValue, getProperties());
         }
-        
+
         public void removeProperty(Property property){
             removeProperty(property.getName());
         }
-        
+
         public void removeProperty(String property){
             Object oldValue = null;
             this.properties.remove(property);
             firePropertyChange("properties", oldValue, getProperties());
         }
-        
+
         public void removeProperty(Collection<String> properties){
             Object oldValue = null;
             for (String property : properties) {
@@ -403,7 +403,7 @@ public class ChannelEditDialog extends TitleAreaDialog {
             }
             firePropertyChange("properties", oldValue, getProperties());
         }
-        
+
         public Channel getChannel(){
             Builder modifiedChannel = channel(this.name).owner(this.owner);
             java.util.List<gov.bnl.channelfinder.api.Tag.Builder> newTags = tags.stream().map(tag -> {

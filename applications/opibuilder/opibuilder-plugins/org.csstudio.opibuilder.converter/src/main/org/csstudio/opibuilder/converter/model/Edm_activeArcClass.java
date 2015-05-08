@@ -15,11 +15,11 @@ package org.csstudio.opibuilder.converter.model;
  */
 public class Edm_activeArcClass extends EdmWidget {
 
-    
+
     @EdmAttributeAn private EdmColor lineColor;
-    
+
     @EdmAttributeAn @EdmOptionalAn private int lineWidth;
-    @EdmAttributeAn @EdmOptionalAn private EdmLineStyle lineStyle;    
+    @EdmAttributeAn @EdmOptionalAn private EdmLineStyle lineStyle;
     @EdmAttributeAn @EdmOptionalAn private EdmColor fillColor;
     @EdmAttributeAn @EdmOptionalAn private boolean fill;
     @EdmAttributeAn @EdmOptionalAn private boolean invisible;
@@ -32,9 +32,9 @@ public class Edm_activeArcClass extends EdmWidget {
         super(genericEntity);
     }
 
-    
 
-    
+
+
 
     /**
      * @return the lineAlarm
@@ -78,7 +78,7 @@ public class Edm_activeArcClass extends EdmWidget {
     public boolean isFill(){
         return fill;
     }
-    
+
     public double getStartAngle() {
         return startAngle;
     }

@@ -71,7 +71,7 @@ public enum SNLCodeElementTextAttributeConstants {
     /**
      * Returns the CodeElementTextAttributeConstant of given id-string, if
      * existing.
-     * 
+     *
      * @param idString
      *            The id string, may not be null.
      * @return The found constant or null if no constant found for given id.
@@ -100,7 +100,7 @@ public enum SNLCodeElementTextAttributeConstants {
 
     /**
      * Initialize a enum constant of this type.
-     * 
+     *
      * @param constantId
      *            A senseless string-id of the color.
      * @param colorValue
@@ -119,7 +119,7 @@ public enum SNLCodeElementTextAttributeConstants {
 
     /**
      * Initialize a enum constant of this type with the {@link SWT#NORMAL}-font-style.
-     * 
+     *
      * @param constantId
      *            A senseless string-id of the color.
      * @param colorValue
@@ -146,7 +146,7 @@ public enum SNLCodeElementTextAttributeConstants {
 
     /**
      * Returns the human readable short description.
-     * 
+     *
      * @return The short description
      */
     public String getShortDescription() {
@@ -162,7 +162,7 @@ public enum SNLCodeElementTextAttributeConstants {
 
     /**
      * Replaces default rgb with given rgb color value.
-     * 
+     *
      * @param color
      *            The new rgb value, may not be null.
      */

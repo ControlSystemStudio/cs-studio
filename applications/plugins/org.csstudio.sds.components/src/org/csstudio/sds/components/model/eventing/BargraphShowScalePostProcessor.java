@@ -12,9 +12,9 @@ import org.eclipse.gef.commands.CompoundCommand;
  * {@link BargraphModel#PROP_SCALE_SECTION_COUNT} and
  * {@link BargraphModel#PROP_SHOW_VALUES} depending on property
  * {@link BargraphModel#PROP_SHOW_SCALE}
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class BargraphShowScalePostProcessor extends AbstractWidgetPropertyPostProcessor<BargraphModel> {
 

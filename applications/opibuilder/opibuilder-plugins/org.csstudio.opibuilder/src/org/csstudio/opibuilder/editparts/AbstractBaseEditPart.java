@@ -85,10 +85,10 @@ import org.eclipse.ui.progress.UIJob;
 
 /**
  * The editpart for {@link AbstractWidgetModel}
- * 
+ *
  * @author Sven Wende (similar class in SDS)
  * @author Xihui Chen
- * 
+ *
  */
 public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart implements NodeEditPart{
 
@@ -119,7 +119,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
     private TooltipLabel tooltipLabel;
 
     private Map<String, Object> externalObjectsMap;
-    
+
     private Runnable displayDisposeListener;
 
     private Map<String, IPV> pvMap = new HashMap<String, IPV>();
@@ -127,7 +127,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
     private ConnectionHandler connectionHandler;
 
     private List<ScriptData> scriptDataList;
-    
+
     protected Map<String, ConnectionAnchor> anchorMap;
 
     public AbstractBaseEditPart() {
@@ -226,7 +226,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
             }
             doActivate();
         }
-        
+
         //Rap specified code
         displayDisposeListener = new Runnable() {
 
@@ -235,13 +235,13 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
             }
         };
         SingleSourceHelper.rapActivateBaseEditPart(this);
-        
+
     }
 
     /**
-     * Subclass should do the activate things in this method. 
+     * Subclass should do the activate things in this method.
      * This method is last called from {@link #activate()}.
-     * If there is code to be called as the first thing in {@link #activate()}, it 
+     * If there is code to be called as the first thing in {@link #activate()}, it
      * can be put in {@link #doCreateFigure()}.
      */
     protected void doActivate() {
@@ -253,7 +253,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
      */
     protected void doDeActivate() {
     }
-    
+
     protected void addToConnectionHandler(String pvName, IPV pv) {
         if (connectionHandler == null)
             connectionHandler = createConnectionHandler();
@@ -263,10 +263,10 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
     /**Calculate the border for the widget with assume that the widget is connected.
      * @return the border.
      */
-    public Border calculateBorder(){        
+    public Border calculateBorder(){
         return BorderFactory.createBorder(getWidgetModel().getBorderStyle(),
                 getWidgetModel().getBorderWidth(), getWidgetModel().getBorderColor(),
-                getWidgetModel().getName());        
+                getWidgetModel().getName());
     }
 
     protected ConnectionHandler createConnectionHandler() {
@@ -314,8 +314,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 
     /**
      * Create and initialize the widget figure with the property values in
-     * model.      
-     * 
+     * model.
+     *
      * @return the widget figure
       */
     protected abstract IFigure doCreateFigure();
@@ -323,7 +323,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
     /**
      * Resizes the figure. Use {@link AbstractBaseEditPart} to implement more
      * complex refreshing behavior.
-     * 
+     *
      * @param refreshableFigure
      *            the figure
      */
@@ -339,7 +339,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 
     /**
      * Run a widget action which is attached to the widget.
-     * 
+     *
      * @param index
      *            the index of the action in the actions list.
      */
@@ -367,7 +367,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
     }
 
     /**
-     * @return the map with all PVs. PV name is the key. 
+     * @return the map with all PVs. PV name is the key.
      * It is not allowed to change the Map by client. null
      *   if no PV on this widget.
      */
@@ -376,8 +376,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
             return getConnectionHandler().getAllPVs();
         return null;
     }
-    
-    /**Get PV attached to this widget by pv name. It includes the PVs in Rules and Scripts. 
+
+    /**Get PV attached to this widget by pv name. It includes the PVs in Rules and Scripts.
      * @param pvName name of the PV.
      * @return the PV. null if no such PV exists.
      */
@@ -403,20 +403,20 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
     }
 
     /**
-     * 
+     *
      * Get the external object by name.
-     * 
+     *
      * @return the external object. null if no such an object was set before.
      * @deprecated Use {@link #getVar(String)} instead.
      */
     public synchronized Object getExternalObject(String name) {
         return getVar(name);
     }
-    
-    /**Get the value of a variable which 
+
+    /**Get the value of a variable which
      * is attached to this widget by {@link #setVar(String, Object)}.
      * @param varName name of the variable
-     * @return value of the variable. 
+     * @return value of the variable.
      * null if no variable in this name has been attached to this widget.
      * @since 2.0.0
      */
@@ -449,7 +449,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 
     /**
      * Get property value of the widget.
-     * 
+     *
      * @param prop_id
      *            the property id.
      * @return the property value.
@@ -457,7 +457,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
     public Object getPropertyValue(String prop_id) {
         return getWidgetModel().getPropertyValue(prop_id);
     }
-    
+
     /**Get macro value from this widget.
      * @param macroName the name of the macro.
      * @return the value of the macro.
@@ -506,7 +506,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 
     /**
      * initialize the figure
-     * 
+     *
      * @param figure
      */
     protected void initFigure(final IFigure figure) {
@@ -585,21 +585,21 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 
         //add connection should not be ignored by widget listener.
         getWidgetModel().getProperty(AbstractWidgetModel.PROP_SRC_CONNECTIONS)
-            .addPropertyChangeListener(new PropertyChangeListener() {                
+            .addPropertyChangeListener(new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-                    refreshSourceConnections();                    
+                    refreshSourceConnections();
                 }
-            });        
-        
+            });
+
         getWidgetModel().getProperty(AbstractWidgetModel.PROP_TGT_CONNECTIONS)
-            .addPropertyChangeListener(new PropertyChangeListener() {                
+            .addPropertyChangeListener(new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     refreshTargetConnections();
                 }
-            });    
-        
+            });
+
         IWidgetPropertyChangeHandler backColorHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
@@ -642,7 +642,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
         setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_STYLE,    borderHandler);
         setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_COLOR,    borderHandler);
         setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH,    borderHandler);
-        
+
 
         IWidgetPropertyChangeHandler labelBorderHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(Object oldValue, Object newValue,
@@ -724,7 +724,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 
     /**
      * Remove all the property change handlers on the specified property.
-     * 
+     *
      * @param propID
      *            the property id
      */
@@ -752,27 +752,27 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
          * AbstractWidgetProperty property = getWidgetModel().getProperty(id);
          * if(property != null){ property.setExecutionMode(executionMode);
          * property.setWidgetModel(getWidgetModel()); }
-         * 
+         *
          * }
          */
     }
 
     /**
      * Add/modify an external object from javascript.
-     * 
+     *
      * @param name
      *            the name of the object.
      * @param var
      *            the object.
-     * 
+     *
      * @deprecated use {@link #setVar(String, Object)} instead.
-     *  
+     *
      */
     public synchronized void setExternalObject(String name, Object var) {
         setVar(name, var);
     }
-    
-    /**Set variable value. If the variable does not exist, it will be added to this widget first.     * 
+
+    /**Set variable value. If the variable does not exist, it will be added to this widget first.     *
      * @param varName name of the variable.
      * @param varValue value of the variable, which can be any type.
      * @since 2.0.0
@@ -782,7 +782,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
             externalObjectsMap = new HashMap<String, Object>();
         externalObjectsMap.put(varName, varValue);
     }
-    
+
 
     /**Set border of the figure. If the border has been set for connection or null
      * value indication, the figure's border will not change.
@@ -798,7 +798,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 
     /**
      * Registers a property change handler for the specified property id.
-     * 
+     *
      * @param propertyId
      *            the property id
      * @param handler
@@ -816,7 +816,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
     /**
      * Set the property value of the widget. If the new value is same as the old
      * value, it will be ignored.
-     * 
+     *
      * @param prop_id
      *            the property id.
      * @param value
@@ -828,38 +828,38 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 
     /**
      * Set the property value of the widget.
-     * 
+     *
      * @param prop_id
      *            the property id.
      * @param value
      *            the value.
      * @param forceFire
      *            If true, the property will be set again even if the new value
-     *            is same as old value. If false, only property value will be set 
+     *            is same as old value. If false, only property value will be set
      *            and no listener will be fired.
      */
     public void setPropertyValue(String prop_id, Object value, boolean forceFire) {
         getWidgetModel().setPropertyValue(prop_id, value, forceFire);
     }
-    
+
     public void setSelectable(boolean isSelectable) {
         this.isSelectable = isSelectable;
     }
-    
+
     /**Set this widget to be enabled.
      * @param enable true if the widget should be enabled.
      */
     public void setEnabled(boolean enable){
         getWidgetModel().setEnabled(enable);
     }
-    
+
     /**Set this widget's visibility.
      * @param enable true if the widget should be visible.
      */
     public void setVisible(boolean visible){
         getWidgetModel().setPropertyValue(AbstractWidgetModel.PROP_VISIBLE, visible);
     }
-    
+
     /**Set X position of the widget
      * @param x x position in pixel which is relative to its parent.
      * @since 2.0.0
@@ -867,7 +867,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
     public void setX(Number x){
         getWidgetModel().setPropertyValue(AbstractWidgetModel.PROP_XPOS, x);
     }
-    
+
     /**Set Y position of the widget
      * @param y y position in pixel which is relative to its parent.
      * @since 2.0.0
@@ -875,7 +875,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
     public void setY(Number y){
         getWidgetModel().setPropertyValue(AbstractWidgetModel.PROP_YPOS, y);
     }
-    
+
     /**Set widget's width
      * @param width width in pixel.
      * @since 2.0.0
@@ -883,7 +883,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
     public void setWidth(Number width){
         getWidgetModel().setPropertyValue(AbstractWidgetModel.PROP_WIDTH, width);
     }
-    
+
     /**Set widget's height
      * @param height height in pixel.
      * @since 2.0.0
@@ -891,17 +891,17 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
     public void setHeight(Number height){
         getWidgetModel().setPropertyValue(AbstractWidgetModel.PROP_HEIGHT, height);
     }
-    
+
     @Override
     protected List<ConnectionModel> getModelSourceConnections() {
       return getWidgetModel().getSourceConnections();
     }
-    
+
     @Override
     protected List<ConnectionModel> getModelTargetConnections() {
         return getWidgetModel().getTargetConnections();
     }
-    
+
     @Override
     public ConnectionAnchor getSourceConnectionAnchor(
             ConnectionEditPart connection) {
@@ -909,14 +909,14 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
             fillAnchorMap();
         ConnectionModel conn = (ConnectionModel) connection.getModel();
         return anchorMap.get(conn.getSourceTerminal());
-    }    
+    }
 
     @Override
     public ConnectionAnchor getSourceConnectionAnchor(Request request) {
         Point p = new Point(((DropRequest) request).getLocation());
         return getClosestAnchorAt(p);
-    }    
-    
+    }
+
     @Override
     public ConnectionAnchor getTargetConnectionAnchor(
             ConnectionEditPart connection) {
@@ -925,13 +925,13 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
         ConnectionModel conn = (ConnectionModel) connection.getModel();
         return anchorMap.get(conn.getTargetTerminal());
     }
-    
+
     @Override
     public ConnectionAnchor getTargetConnectionAnchor(Request request) {
         Point p = new Point(((DropRequest) request).getLocation());
         return getClosestAnchorAt(p);
     }
-    
+
     /**Get name of the terminal by anchor
      * @param anchor the anchor
      * @return terminal name of the anchor. null if no name was found.
@@ -946,7 +946,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
         }
         return null;
     }
-    
+
     /**
      * Fill the anchor map with all predefined anchors.
      */
@@ -956,17 +956,17 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
             anchorMap.put(pos.name(), new FixedPositionAnchor(getFigure(), pos));
         }
     }
-    
+
     /**Get the anchor map on this widget. Caller should not change the map.
-     * @return all the anchors on this widget as in a anchor map. key is 
-     * the connection terminal name. 
+     * @return all the anchors on this widget as in a anchor map. key is
+     * the connection terminal name.
      */
     public Map<String, ConnectionAnchor> getAnchorMap() {
         if(anchorMap == null)
-            fillAnchorMap();    
+            fillAnchorMap();
         return anchorMap;
     }
-    
+
     /**Get the closest anchor to point p.
      * @param p the reference point
      * @return the closest anchor to point p
@@ -991,7 +991,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
     public String toString() {
         return getWidgetModel().getName();
     }
-    
+
     /**The value of the widget that is in representing.
      * It is not the value of the attached PV even though they are equals in most cases.
      * The value type is specified by the widget, for example, boolean for boolean widget,
@@ -1001,20 +1001,20 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
     public Object getValue(){
         return null;
     }
-    
-    
+
+
     /**Set the value of the widget. This only takes effect on the visual presentation of the widget and
-     * will not write the value to the PV attached to this widget. Since setting value to 
-     * a widget usually results in figure repaint, this method should be called in UI thread. To call 
+     * will not write the value to the PV attached to this widget. Since setting value to
+     * a widget usually results in figure repaint, this method should be called in UI thread. To call
      * it in non-UI thread, see {@link #setValueInUIThread(Object)}.
      * @param value the value to be set. It must be the compatible type for the widget.
      *  For example, a boolean widget only accept boolean or number.
      * @throws RuntimeException if the value is not an acceptable type.
-     */    
+     */
     public void setValue(Object value){
         throw new RuntimeException("widget.setValue() does not accept " + value.getClass().getSimpleName());
     }
-    
+
     /**Call {@link #setValue(Object)} in UI Thread.
      *  This method can be called in non-UI thread.
      * @param value
@@ -1023,7 +1023,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
     public final void setValueInUIThread(final Object value){
         UIBundlingThread.getInstance().addRunnable(
                 getViewer().getControl().getDisplay(), new Runnable() {
-                    
+
                     @Override
                     public void run() {
                         setValue(value);

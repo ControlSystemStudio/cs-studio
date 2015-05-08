@@ -43,7 +43,7 @@ import org.eclipse.ui.model.BaseWorkbenchContentProvider;
  *
  */
 public class OPIFontDialog extends HelpTrayDialog {
-    
+
     private OPIFont opiFont;
     private TableViewer preDefinedFontsViewer;
     private Label outputTextLabel;
@@ -59,7 +59,7 @@ public class OPIFontDialog extends HelpTrayDialog {
         else
             this.opiFont = new OPIFont(font.getFontData());
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -70,17 +70,17 @@ public class OPIFontDialog extends HelpTrayDialog {
             shell.setText(title);
         }
     }
-    
+
     @Override
     protected String getHelpResourcePath() {
         return "/" + OPIBuilderPlugin.PLUGIN_ID + "/html/ColorFont.html"; //$NON-NLS-1$; //$NON-NLS-2$
     }
-    
+
     @Override
     protected Control createDialogArea(Composite parent) {
         final Composite parent_Composite = (Composite) super.createDialogArea(parent);
-        
-        final Composite mainComposite = new Composite(parent_Composite, SWT.None);            
+
+        final Composite mainComposite = new Composite(parent_Composite, SWT.None);
         mainComposite.setLayout(new GridLayout(2, false));
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         gridData.heightHint = 300;
@@ -89,22 +89,22 @@ public class OPIFontDialog extends HelpTrayDialog {
         leftComposite.setLayout(new GridLayout(1, false));
         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
         gd.widthHint = 200;
-        leftComposite.setLayoutData(gd);    
+        leftComposite.setLayoutData(gd);
         createLabel(leftComposite, "Choose from Predefined Fonts:");
-        
+
         preDefinedFontsViewer = createPredefinedFontsTableViewer(leftComposite);
         preDefinedFontsViewer.setInput(
                 MediaService.getInstance().getAllPredefinedFonts());
-        
+
         Composite rightComposite = new Composite(mainComposite, SWT.None);
         rightComposite.setLayout(new GridLayout(1, false));
         gd = new GridData(SWT.FILL, SWT.FILL, true, true);
         gd.widthHint = 200;
         rightComposite.setLayoutData(gd);
-        
-        
+
+
         createLabel(rightComposite, "");
-        
+
         Button colorDialogButton = new Button(rightComposite, SWT.PUSH);
         colorDialogButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
         colorDialogButton.setText("Choose from Font Dialog");
@@ -124,13 +124,13 @@ public class OPIFontDialog extends HelpTrayDialog {
                 }
             }
         });
-        
-        
+
+
         Group group = new Group(mainComposite, SWT.None);
         gd = new GridData(SWT.FILL, SWT.END, true, true, 2, 1);
         gd.heightHint = 100;
         group.setLayoutData(gd);
-        
+
         group.setLayout(new GridLayout(1, false));
         group.setText("Output");
 
@@ -139,25 +139,25 @@ public class OPIFontDialog extends HelpTrayDialog {
         outputTextLabel.setText(opiFont.getFontMacroName());
         outputTextLabel.setFont(
                 CustomMediaFactory.getInstance().getFont(opiFont.getFontData()));
-        
+
         if(opiFont.isPreDefined())
             preDefinedFontsViewer.setSelection(new StructuredSelection(opiFont));
         else
             preDefinedFontsViewer.setSelection(null);
         return parent_Composite;
     }
-    
+
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         super.createButtonsForButtonBar(parent);
-        //this will help resolve a bug on GTK: The table widget in GTK 
+        //this will help resolve a bug on GTK: The table widget in GTK
         //will force one item selected if it got the focus.
-        getButton(IDialogConstants.OK_ID).setFocus();        
+        getButton(IDialogConstants.OK_ID).setFocus();
     }
-    
+
     /**
      * Creates and configures a {@link TableViewer}.
-     * 
+     *
      * @param parent
      *            The parent for the table
      * @return The {@link TableViewer}
@@ -178,26 +178,26 @@ public class OPIFontDialog extends HelpTrayDialog {
             }
         });
         viewer.getTable().setLayoutData(
-                new GridData(SWT.FILL, SWT.FILL, true, true));        
+                new GridData(SWT.FILL, SWT.FILL, true, true));
         MenuManager menuManager = new MenuManager();
         menuManager.add(new ReloadFontFileAction());
         viewer.getTable().setMenu(menuManager.createContextMenu(viewer.getTable()));
         viewer.addDoubleClickListener(new IDoubleClickListener() {
-            
+
             public void doubleClick(DoubleClickEvent event) {
                 okPressed();
             }
         });
         return viewer;
     }
-    
+
     /**
      * Refreshes the enabled-state of the actions.
      */
     private void refreshGUIOnSelection() {
         IStructuredSelection selection = (IStructuredSelection) preDefinedFontsViewer
                 .getSelection();
-        if(!selection.isEmpty() 
+        if(!selection.isEmpty()
                 && selection.getFirstElement() instanceof OPIFont){
             opiFont = (OPIFont)selection.getFirstElement();
             outputTextLabel.setText(opiFont.getFontMacroName());
@@ -205,10 +205,10 @@ public class OPIFontDialog extends HelpTrayDialog {
             getShell().layout(true, true);
         }
     }
-    
+
     /**
      * Creates a label with the given text.
-     * 
+     *
      * @param parent
      *            The parent for the label
      * @param text
@@ -224,14 +224,14 @@ public class OPIFontDialog extends HelpTrayDialog {
     public OPIFont getOutput() {
         return opiFont;
     }
-    
+
     class ReloadFontFileAction extends Action{
         public ReloadFontFileAction() {
             setText("Reload List From Font File");
             setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
                     OPIBuilderPlugin.PLUGIN_ID, "icons/refresh.gif"));
         }
-        
+
         @Override
         public void run() {
             MediaService.getInstance().reloadFontFile();
@@ -239,8 +239,8 @@ public class OPIFontDialog extends HelpTrayDialog {
                     MediaService.getInstance().getAllPredefinedFonts());
         }
 
-        
+
     }
-    
+
 
 }

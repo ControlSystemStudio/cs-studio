@@ -10,11 +10,11 @@ import de.desy.language.snl.ui.SNLUiActivator;
 /**
  * An abstract (re-)implementation of an {@link WorkbenchAdapter}. This class
  * can be used to adapt a specific subclass of an {@link AbstractSNLNode}.
- * 
+ *
  * @param <N>
  *            The Type of adapted {@link AbstractSNLNode}.
  * @author C1 WPS / km, mz
- * 
+ *
  */
 public abstract class AbstractSNLWorkbenchAdapter<N extends AbstractSNLNode>
         extends WorkbenchAdapter {
@@ -34,7 +34,7 @@ public abstract class AbstractSNLWorkbenchAdapter<N extends AbstractSNLNode>
 
     /**
      * Returns the node of this adapter.
-     * 
+     *
      * @return the node
      */
     protected final Node getNode() {
@@ -64,7 +64,7 @@ public abstract class AbstractSNLWorkbenchAdapter<N extends AbstractSNLNode>
     /**
      * Returns the path to the {@link ImageDescriptor} for the node. The path
      * starts with <i>/icons/nodes/</i>
-     * 
+     *
      * @param node
      *            The node
      * @return The path to the {@link ImageDescriptor} for the node
@@ -80,7 +80,7 @@ public abstract class AbstractSNLWorkbenchAdapter<N extends AbstractSNLNode>
     /**
      * Return the name of the image for the node. The image has to be in the
      * folder <i>/icons/nodes/</i>.
-     * 
+     *
      * @param nodeToRender
      *            The node
      * @return The name of the image
@@ -98,7 +98,7 @@ public abstract class AbstractSNLWorkbenchAdapter<N extends AbstractSNLNode>
     /**
      * Returns a textual representation of the given node. Subclasses may
      * override
-     * 
+     *
      * @param node
      *            The node
      * @return The textual representation
@@ -109,7 +109,7 @@ public abstract class AbstractSNLWorkbenchAdapter<N extends AbstractSNLNode>
 
     /**
      * Replaces all line breaks and tabs from the given description with a ' '.
-     * 
+     *
      * @param description
      *            The description
      * @return The cleared description

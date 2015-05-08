@@ -8,22 +8,22 @@ package com.cosylab.vdct.dbd;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -35,7 +35,7 @@ import com.cosylab.vdct.ConsoleInterface;
 /**
  * This type was created in VisualAge.
  */
- 
+
 public class DBDData {
     protected Hashtable records = null;
     protected Hashtable menus = null;
@@ -54,7 +54,7 @@ public DBDData() {
  */
 public void addDevice(DBDDeviceData dd) {
     // key def. : <recordtype>+"/"+<device choice string>
-    
+
     if (!devices.containsKey((dd.record_type+"/"+dd.choice_string)))
         devices.put((dd.record_type+"/"+dd.choice_string), dd);
     else
@@ -87,9 +87,9 @@ public void addRecord(DBDRecordData rd) {
  */
 public boolean consistencyCheck(com.cosylab.vdct.db.DBData db) {
     String illegalString;
-    
+
     ConsoleInterface console = Console.getInstance();
-    
+
     console.println();
     console.print("o) Checking consistency with DBD file...");
     if (db==null) {
@@ -98,7 +98,7 @@ public boolean consistencyCheck(com.cosylab.vdct.db.DBData db) {
         console.println();
         return false;
     }
-    
+
     boolean isOK = true;
     com.cosylab.vdct.db.DBRecordData dbRecord;
     DBDRecordData dbdRecord;
@@ -107,14 +107,14 @@ public boolean consistencyCheck(com.cosylab.vdct.db.DBData db) {
     DBDFieldData dbdField;
     DBDMenuData menu;
     String dev;
-    
+
     // records check
     Enumeration e = db.getRecordsV().elements();
     while (e.hasMoreElements()) {
         dbRecord = (com.cosylab.vdct.db.DBRecordData)(e.nextElement());
         dbdRecord = this.getDBDRecordData(dbRecord.getRecord_type());
         if (dbdRecord!=null) {
-            
+
             // fields check (fields, menus, devices)
             e2 = dbRecord.getFieldsV().elements();
             while (e2.hasMoreElements()) {
@@ -141,11 +141,11 @@ public boolean consistencyCheck(com.cosylab.vdct.db.DBData db) {
                             console.print("\tWarning: Record type '"+dbRecord.getRecord_type()+"', field '"+dbdField.getName()+"':");
                             console.print(" Device '"+dev+"' is not defined DBD file.");
 
-                            /* RT 12438 - if dbd not present, DTYP information is gone 
+                            /* RT 12438 - if dbd not present, DTYP information is gone
                             illegalString="# field("+dbField.getName()+",\""+dbField.getValue()+"\")";
                             if (dbField.getComment()!=null)    illegalString=dbField.getComment()+"\n"+illegalString;
                             dbField.setComment(illegalString);
-                            
+
                             dbField.setValue("");
                             */
                         }
@@ -167,25 +167,25 @@ public boolean consistencyCheck(com.cosylab.vdct.db.DBData db) {
                                 illegalString="# field("+dbField.getName()+",\""+dbField.getValue()+"\")";
                                 if (dbField.getComment()!=null)    illegalString=dbField.getComment()+"\n"+illegalString;
                                 dbField.setComment(illegalString);
-                            
+
                                 dbField.setValue("");*/
-                                
-                                console.print("\tWarning: Record '"+dbRecord.getName()+"', field '"+dbField.getName()+"':");            
+
+                                console.print("\tWarning: Record '"+dbRecord.getName()+"', field '"+dbField.getName()+"':");
                                 console.print(" Value '"+dbField.getValue()+"' is not valid for menu '"+dbdField.getMenu_name()+" -> template definition?...");
                                 dbField.setTemplate_def(true);
-                                
+
                             }
                         }
                     }
-        
-                    
+
+
                 }
                 else {
                     isOK=false;
                     console.println();
                     console.print("\tRecord '"+dbRecord.getName()+"':");
                     console.print(" Field '"+dbField.getName()+"' in record type '"+dbRecord.getRecord_type()+"' is not defined in DBD file. Field will be commented out when saved!");
-                    
+
                     illegalString="# illegal line - undefined field: field("+dbField.getName()+",\""+dbField.getValue()+"\")";
                     if (dbRecord.getComment()!=null) illegalString=dbRecord.getComment()+"\n"+illegalString;
                     dbRecord.setComment(illegalString);

@@ -93,7 +93,7 @@ public class EMailSenderDialog extends TitleAreaDialog
     {
         super.setShellStyle(style & ~SWT.APPLICATION_MODAL);
     }
-    
+
     /** Set the dialog title. */
     @Override
     protected void configureShell(Shell shell)
@@ -180,7 +180,7 @@ public class EMailSenderDialog extends TitleAreaDialog
         if (image_filename != null)
             image_tabfolder.addImage(image_filename);
         sash.setWeights(new int[] { 80, 20 });
-        
+
         // User needs to enter at least a 'to', replacing
         // the default "<enter email here>".
         // User is also likely to update the complete default
@@ -224,7 +224,7 @@ public class EMailSenderDialog extends TitleAreaDialog
 
         button = image_tabfolder.createScreenshotButton(composite, false);
         button.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
-        
+
         super.createButtonBar(composite);
         return composite;
     }
@@ -237,7 +237,7 @@ public class EMailSenderDialog extends TitleAreaDialog
         {
             final String from = txt_from.getText().trim();
             final String to = txt_to.getText().trim();
-            
+
             // Basic verification
             if (from.isEmpty())
             {

@@ -21,7 +21,7 @@ public class AreaAlarmModel implements AlarmClientModelListener
     final private AreaAlarmModelListener listener;
     private AlarmClientModel model;
     private volatile AlarmTreeItem[] items;
-    
+
     public AreaAlarmModel(final AreaAlarmModelListener listener) throws Exception
     {
         this.listener = listener;
@@ -68,7 +68,7 @@ public class AreaAlarmModel implements AlarmClientModelListener
         for (int i=0;  i<n;  ++i)
             collectPanelItems(item.getChild(i), items, item_level+1, panel_level);
     }
-    
+
     /** @return Items in alarm panel */
     public AlarmTreeItem[] getItems()
     {

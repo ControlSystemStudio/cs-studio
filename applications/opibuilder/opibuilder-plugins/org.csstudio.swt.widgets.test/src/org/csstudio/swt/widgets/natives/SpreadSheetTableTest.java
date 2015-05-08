@@ -49,7 +49,7 @@ public void testMain() {
 //    table.getTableViewer().getTable().setFont(new Font(Display.getCurrent(), "Verdana", 10, SWT.ITALIC));
 //    table.getTableViewer().getTable().setEnabled(false);
     final List<List<String>> input = new ArrayList<List<String>>();
-    
+
     //init table
     int rowCount=300;
     int colCount=3;
@@ -64,7 +64,7 @@ public void testMain() {
 
     table.setInput(input);
     table.setCellForeground(3,2, new RGB(211,1,23));
-    
+
     table.setCellBackground(2,1, new RGB(0,0,255));
     table.setRowBackground(2, new RGB(255,0,5));
     table.setRowForeground(1, new RGB(0,224,0));
@@ -73,33 +73,33 @@ public void testMain() {
 //    table.getTableViewer().getTable().getItem(3).setBackground(2, Display.getCurrent().getSystemColor(SWT.COLOR_CYAN));
 //    table.getTableViewer().getTable().getItem(3).setForeground(1, Display.getCurrent().getSystemColor(SWT.COLOR_CYAN));
 
-    
+
     table.getTableViewer().getTable().addMouseListener(new MouseAdapter() {
-        
+
         @Override
         public void mouseDown(MouseEvent e) {
-            
+
             int[] index = table.getRowColumnIndex(new Point(e.x, e.y));
             if(index != null)
             System.out.println(e.y + " "+ Arrays.toString(index) + " " + table.getCellText(index[0], index[1]));
-        
+
         }
-        
+
     });
-    
+
     table.addCellEditingListener(new ITableCellEditingListener() {
-        
+
         public void cellValueChanged(int row, int col, String oldValue,
                 String newValue) {
             System.out.println(row + " " + col + " " + oldValue + " " + newValue);
-            
+
         }
     });
-    
-    
+
+
     Composite composite = new Composite(shell, SWT.None);
     composite.setLayout(new FillLayout(SWT.VERTICAL));
-    
+
     Button button = new Button(composite, SWT.PUSH);
     button.setText("Insert Column");
     button.pack();
@@ -109,7 +109,7 @@ public void testMain() {
             table.autoSizeColumns();
         }
     });
-    
+
      button = new Button(composite, SWT.PUSH);
     button.setText("Delete Column");
     button.pack();
@@ -118,7 +118,7 @@ public void testMain() {
             table.deleteColumn(0);
         }
     });
-    
+
     button = new Button(composite, SWT.PUSH);
     button.setText("Insert Row");
     button.pack();
@@ -127,13 +127,13 @@ public void testMain() {
             table.insertRow(1);
         }
     });
-    
+
     button = new Button(composite, SWT.PUSH);
     button.setText("Set cell text");
     button.pack();
     button.addListener(SWT.Selection, new Listener() {
         public void handleEvent(Event event) {
-                
+
             for(int j=0; j<table.getColumnCount(); j++)
                 table.setColumnHeader(j, ""+j);
             table.setColumnHeaders(new String[]{"a","b","c"});
@@ -141,7 +141,7 @@ public void testMain() {
             table.autoSizeColumns();
         }
     });
-    
+
     button = new Button(composite, SWT.PUSH);
     button.setText("Set Content");
     button.pack();
@@ -151,7 +151,7 @@ public void testMain() {
             table.setContent(content);
         }
     });
-    
+
     button = new Button(composite, SWT.PUSH);
     button.setText("Print Selection");
     button.pack();
@@ -162,7 +162,7 @@ public void testMain() {
                 System.out.println(Arrays.toString(content[i]));
         }
     });
-    
+
     button = new Button(composite, SWT.PUSH);
     button.setText("Print");
     button.pack();
@@ -173,7 +173,7 @@ public void testMain() {
                 System.out.println(Arrays.toString(content[i]));
         }
     });
-    
+
 
     shell.open();
     while (!shell.isDisposed()) {

@@ -25,7 +25,7 @@ class GroupResponse extends AbstractResponse
 {
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
-    
+
     /** Maximum text length of last value that's displayed */
     private static final int MAX_VALUE_DISPLAY = 60;
 
@@ -33,7 +33,7 @@ class GroupResponse extends AbstractResponse
     {
         super(model);
     }
-    
+
     @Override
     protected void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
@@ -54,7 +54,7 @@ class GroupResponse extends AbstractResponse
 
         HTMLWriter html = new HTMLWriter(resp,
                         "Archive Engine Group " + group_name);
-                                         
+
         // Basic group info
         html.openTable(2, new String[]
         {
@@ -76,9 +76,9 @@ class GroupResponse extends AbstractResponse
             });
         }
         html.closeTable();
-        
+
         html.h2(Messages.HTTP_Channels);
-                             
+
         // HTML Table of all channels in the group
         html.openTable(1, new String[]
         {
@@ -98,7 +98,7 @@ class GroupResponse extends AbstractResponse
         for (int j=0; j<channel_count; ++j)
         {
             final ArchiveChannel channel = group.getChannel(j);
-            final String connected = channel.isConnected() 
+            final String connected = channel.isConnected()
             ? Messages.HTTP_Connected : HTMLWriter.makeRedText(Messages.HTTP_Disconnected);
             final SampleBuffer buffer = channel.getSampleBuffer();
             final BufferStats stats = buffer.getBufferStats();
@@ -129,7 +129,7 @@ class GroupResponse extends AbstractResponse
             });
         }
         html.closeTable();
-            
+
         html.close();
     }
 }

@@ -28,9 +28,9 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 /**
  * Section for {@link FontProperty}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class FontSection extends AbstractTextSection<FontProperty, String> implements ISelectionChangedListener {
     private String latestFont;
@@ -57,9 +57,9 @@ public class FontSection extends AbstractTextSection<FontProperty, String> imple
         super.doCreateControls(parent, tabbedPropertySheetPage);
 
         fontDialog = new FontDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-        
+
         FormData fd;
-        
+
         // .. button to open the color dialog
         Hyperlink link = getWidgetFactory().createHyperlink(parent, "Choose ...", SWT.NONE);
         link.setUnderlined(false);
@@ -80,14 +80,14 @@ public class FontSection extends AbstractTextSection<FontProperty, String> imple
                 }
             }
         });
-        
+
 
         // .. change position of the text control
         fd = new FormData();
         fd.left = new FormAttachment(0,0);
         fd.right = new FormAttachment(link, -5);
         getTextControl().setLayoutData(fd);
-        
+
     }
 
     /**
@@ -136,9 +136,9 @@ public class FontSection extends AbstractTextSection<FontProperty, String> imple
 
     /**
      * Content proposal for named fonts.
-     * 
+     *
      * @author Sven Wende
-     * 
+     *
      */
     private static final class NamedFontContentProposal implements IContentProposal {
         private NamedFont namedFont;

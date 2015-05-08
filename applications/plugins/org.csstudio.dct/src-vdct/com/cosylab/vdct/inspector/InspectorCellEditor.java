@@ -8,22 +8,22 @@ package com.cosylab.vdct.inspector;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -60,7 +60,7 @@ public class InspectorCellEditor implements TableCellEditor, TreeCellEditor {
     protected JTextField intelliFormattedTextField;
     protected EditorDelegate formattedTextfieldDelegate;
     protected Pattern pattern;
-    
+
     protected JComponent editorComponent;
     protected EditorDelegate delegate;
     protected int clickCountToStart = 1;
@@ -82,12 +82,12 @@ public class InspectorCellEditor implements TableCellEditor, TreeCellEditor {
         public boolean isCellEditable(EventObject anEvent) {
             return true;
         }
-        
-        /** Unfortunately, restrictions on API changes force us to 
-          * declare this method package private. 
+
+        /** Unfortunately, restrictions on API changes force us to
+          * declare this method package private.
           */
-        boolean shouldSelectCell(EventObject anEvent) { 
-            return true; 
+        boolean shouldSelectCell(EventObject anEvent) {
+            return true;
         }
 
 
@@ -129,7 +129,7 @@ public InspectorCellEditor(InspectorTableModel tableModel) {
         intelliComboBox.setBorder(null);
         intelliComboBox.setEditor(new BorderlessComboBoxEditor());
         comboDelegate = new EditorDelegate() {
-            
+
             public void setValue(Object value) {
                 intelliComboBox.setSelectedItem(value);
             }
@@ -137,15 +137,15 @@ public InspectorCellEditor(InspectorTableModel tableModel) {
             public Object getCellEditorValue() {
                 return intelliComboBox.getSelectedItem();
             }
-                
-            boolean shouldSelectCell(EventObject anEvent) { 
-                if (anEvent instanceof MouseEvent) { 
+
+            boolean shouldSelectCell(EventObject anEvent) {
+                if (anEvent instanceof MouseEvent) {
                     MouseEvent e = (MouseEvent)anEvent;
                     return e.getID() != MouseEvent.MOUSE_DRAGGED;
                 }
                 return true;
             }
-            
+
         };
         intelliComboBox.addActionListener(comboDelegate);
 
@@ -153,7 +153,7 @@ public InspectorCellEditor(InspectorTableModel tableModel) {
         intelliTextField = new JTextField();
         intelliTextField.setBorder(null);
         textfieldDelegate = new EditorDelegate() {
-            
+
             public void setValue(Object value) {
                 intelliTextField.setText((value != null) ? value.toString() : "");
             }
@@ -161,7 +161,7 @@ public InspectorCellEditor(InspectorTableModel tableModel) {
             public Object getCellEditorValue() {
                 return intelliTextField.getText();
             }
-            
+
         };
         intelliTextField.addActionListener(textfieldDelegate);
 /*
@@ -172,11 +172,11 @@ public InspectorCellEditor(InspectorTableModel tableModel) {
         formatter.setCommitsOnValidEdit(false);
         intelliFormattedTextField = new JFormattedTextField(formatter);
         intelliFormattedTextField.setFocusLostBehavior(JFormattedTextField.PERSIST);
-*/    
+*/
         intelliFormattedTextField = new JTextField();
         intelliFormattedTextField.setBorder(null);
         formattedTextfieldDelegate = new EditorDelegate() {
-            
+
             public void setValue(Object value) {
                 intelliFormattedTextField.setText((value != null) ? value.toString() : "");
             }
@@ -184,7 +184,7 @@ public InspectorCellEditor(InspectorTableModel tableModel) {
             public Object getCellEditorValue() {
                 return intelliFormattedTextField.getText();
             }
-            
+
         };
         intelliFormattedTextField.addActionListener(formattedTextfieldDelegate);
 
@@ -222,7 +222,7 @@ public InspectorCellEditor(InspectorTableModel tableModel) {
             public void changedUpdate(DocumentEvent e) {}
             public void insertUpdate(DocumentEvent e) { check(); }
             public void removeUpdate(DocumentEvent e) { check(); }
-        });        
+        });
 
 }
     /**
@@ -233,9 +233,9 @@ public InspectorCellEditor(InspectorTableModel tableModel) {
     public InspectorCellEditor(final JCheckBox checkBox) {
         editorComponent = checkBox;
         delegate = new EditorDelegate() {
-            
-            public void setValue(Object value) { 
-                boolean selected = false; 
+
+            public void setValue(Object value) {
+                boolean selected = false;
                 if (value instanceof Boolean)
                         selected = ((Boolean)value).booleanValue();
                 else if (value instanceof String)
@@ -258,7 +258,7 @@ public InspectorCellEditor(InspectorTableModel tableModel) {
         comboBox.setEditor(new BorderlessComboBoxEditor());
         editorComponent = comboBox;
         delegate = new EditorDelegate() {
-            
+
             public void setValue(Object value) {
                 comboBox.setSelectedItem(value);
             }
@@ -266,15 +266,15 @@ public InspectorCellEditor(InspectorTableModel tableModel) {
             public Object getCellEditorValue() {
                 return comboBox.getSelectedItem();
             }
-                
-            boolean shouldSelectCell(EventObject anEvent) { 
-                if (anEvent instanceof MouseEvent) { 
+
+            boolean shouldSelectCell(EventObject anEvent) {
+                if (anEvent instanceof MouseEvent) {
                     MouseEvent e = (MouseEvent)anEvent;
                     return e.getID() != MouseEvent.MOUSE_DRAGGED;
                 }
                 return true;
             }
-            
+
         };
         comboBox.addActionListener(delegate);
     }
@@ -286,7 +286,7 @@ public InspectorCellEditor(InspectorTableModel tableModel) {
     public InspectorCellEditor(final JTextField textField) {
         editorComponent = textField;
         delegate = new EditorDelegate() {
-            
+
             public void setValue(Object value) {
                 textField.setText((value != null) ? value.toString() : "");
             }
@@ -294,7 +294,7 @@ public InspectorCellEditor(InspectorTableModel tableModel) {
             public Object getCellEditorValue() {
                 return textField.getText();
             }
-            
+
         };
         textField.addActionListener(delegate);
     }
@@ -307,7 +307,7 @@ public InspectorCellEditor(InspectorTableModel tableModel) {
     /*public InspectorCellEditor(final JFormattedTextField formattedTextField) {
         editorComponent = formattedTextField;
         delegate = new EditorDelegate() {
-            
+
             public void setValue(Object value) {
                 formattedTextField.setText((value != null) ? value.toString() : "");
             }
@@ -315,7 +315,7 @@ public InspectorCellEditor(InspectorTableModel tableModel) {
             public Object getCellEditorValue() {
                 return formattedTextField.getText();
             }
-            
+
         };
         formattedTextField.addActionListener(delegate);
         // coloring
@@ -344,8 +344,8 @@ public InspectorCellEditor(InspectorTableModel tableModel) {
     }
     /*
      * Notify all listeners that have registered interest for
-     * notification on this event type.  The event instance 
-     * is lazily created using the parameters passed into 
+     * notification on this event type.  The event instance
+     * is lazily created using the parameters passed into
      * the fire method.
      * @see EventListenerList
      */
@@ -361,13 +361,13 @@ public InspectorCellEditor(InspectorTableModel tableModel) {
             if (changeEvent == null)
                 changeEvent = new ChangeEvent(this);
             ((CellEditorListener)listeners[i+1]).editingCanceled(changeEvent);
-           }           
+           }
         }
     }
     /*
      * Notify all listeners that have registered interest for
-     * notification on this event type.  The event instance 
-     * is lazily created using the parameters passed into 
+     * notification on this event type.  The event instance
+     * is lazily created using the parameters passed into
      * the fire method.
      * @see EventListenerList
      */
@@ -383,7 +383,7 @@ public InspectorCellEditor(InspectorTableModel tableModel) {
             if (changeEvent == null)
                 changeEvent = new ChangeEvent(this);
             ((CellEditorListener)listeners[i+1]).editingStopped(changeEvent);
-              }           
+              }
         }
     }
     // implements javax.swing.CellEditor
@@ -426,7 +426,7 @@ public InspectorCellEditor(InspectorTableModel tableModel) {
     }
     // implements javax.swing.CellEditor
     public boolean isCellEditable(EventObject anEvent) {
-        if (anEvent instanceof MouseEvent) { 
+        if (anEvent instanceof MouseEvent) {
             return ((MouseEvent)anEvent).getClickCount() >= clickCountToStart;
         }
         return true;
@@ -444,7 +444,7 @@ public InspectorCellEditor(InspectorTableModel tableModel) {
 private void setAppropriateComponent4Table(JTable table, int row, int column) {
     InspectableProperty property = tableModel.getPropertyAt(row);
     String[] choices = property.getSelectableValues();
-    
+
     if (choices!=null) {
             editorComponent = intelliComboBox;
             delegate = comboDelegate;
@@ -453,7 +453,7 @@ private void setAppropriateComponent4Table(JTable table, int row, int column) {
 
             for (int i=0; i<choices.length; i++)
                 intelliComboBox.addItem(choices[i]);
-        
+
             intelliComboBox.setToolTipText(property.getToolTipText());
             intelliComboBox.setEditable(property.allowsOtherValues());
             intelliComboBox.setSelectedItem(property.getValue());
@@ -504,8 +504,8 @@ private void setAppropriateComponent4Table(JTable table, int row, int column) {
         clickCountToStart = count;
     }
     // implements javax.swing.CellEditor
-    public boolean shouldSelectCell(EventObject anEvent) { 
-        return delegate.shouldSelectCell(anEvent); 
+    public boolean shouldSelectCell(EventObject anEvent) {
+        return delegate.shouldSelectCell(anEvent);
     }
     // implements javax.swing.CellEditor
     public boolean stopCellEditing() {

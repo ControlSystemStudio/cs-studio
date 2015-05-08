@@ -26,23 +26,23 @@ import org.eclipse.swt.widgets.Control;
 
 /**
  * Cell editor implementation that uses a combo box.
- * 
+ *
  * The editor displays a set of {@link IOption}´s. When one of the options is
  * chosen, the identifier of that option (see {@link IOption#getIdentifier()})
  * is returned as selected value for this cell editor.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class MenuCellEditor extends CellEditor {
     private AbstractListViewer _viewer;
     private CCombo _combobox;
     private IChoice _selection;
     private IMenuDefinition _menuDefinition;
-    
+
     /**
      * Constructor.
-     * 
+     *
      * @param parent
      *            the parent composite
      * @param menuDefinition

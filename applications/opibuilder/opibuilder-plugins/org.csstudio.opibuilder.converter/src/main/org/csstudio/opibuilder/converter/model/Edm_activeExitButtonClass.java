@@ -9,7 +9,7 @@ package org.csstudio.opibuilder.converter.model;
 
 /**
  * @author Xihui Chen
- * 
+ *
  */
 public class Edm_activeExitButtonClass extends EdmWidget {
 

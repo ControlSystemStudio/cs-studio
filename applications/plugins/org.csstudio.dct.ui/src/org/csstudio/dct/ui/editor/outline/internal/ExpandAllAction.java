@@ -4,9 +4,9 @@ import org.eclipse.jface.action.IAction;
 
 /**
  * View action the expands all tree items.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ExpandAllAction extends AbstractOutlineViewAction {
 

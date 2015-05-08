@@ -27,9 +27,9 @@ import org.eclipse.draw2d.geometry.PointList;
 
 /**
  * Model for connection.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class ConnectionModel extends AbstractWidgetModel {
 
@@ -136,7 +136,7 @@ public class ConnectionModel extends AbstractWidgetModel {
     /**
      * The source widget Path
      */
-    public static final String PROP_SRC_PATH = "src_path"; 
+    public static final String PROP_SRC_PATH = "src_path";
 
     /**
      * The target widget UID
@@ -146,10 +146,10 @@ public class ConnectionModel extends AbstractWidgetModel {
     /**
      * The target widget Path
      */
-    public static final String PROP_TGT_PATH = "tgt_path"; 
-    
+    public static final String PROP_TGT_PATH = "tgt_path";
+
     public static final String PATH_DELIMITER = "_";
-    
+
     /**
      * All points of this connection except start and end anchor.
      * null if it should be routed by router.
@@ -158,7 +158,7 @@ public class ConnectionModel extends AbstractWidgetModel {
 
     /** True, if the connection is attached to its endpoints. */
     private boolean isConnected;
-    
+
     /** True, if the connection was loaded from linked opi in LinkingContainer. */
     private boolean loadedFromLinkedOpi;
 
@@ -168,19 +168,19 @@ public class ConnectionModel extends AbstractWidgetModel {
     private AbstractWidgetModel target;
 
     private DisplayModel displayModel;
-    
+
     private PointList originPoints;
 
-    
+
     /**Construct a connection model which belongs to the displayModel.
      * If this is a temporary connection model which doesn't belong to any display model,
-     * displayModel can be null. 
+     * displayModel can be null.
      * @param displayModel the display model. Can be null.
      */
     public ConnectionModel(DisplayModel displayModel) {
         this.displayModel = displayModel;
     }
-    
+
     @Override
     protected void configureProperties() {
         addProperty(new IntegerProperty(PROP_LINE_WIDTH, "Line Width",
@@ -198,7 +198,7 @@ public class ConnectionModel extends AbstractWidgetModel {
         addProperty(new IntegerProperty(PROP_ARROW_LENGTH, "Arrow Length",
                 WidgetPropertyCategory.Display, 15, 5, 1000));
         addProperty(new BooleanProperty(PROP_ANTIALIAS, "Anti Alias",
-                WidgetPropertyCategory.Display, true));        
+                WidgetPropertyCategory.Display, true));
         addProperty(new StringProperty(PROP_SRC_TERM, "Source Terminal",
                 WidgetPropertyCategory.Display, ""));
         addProperty(new StringProperty(PROP_TGT_TERM, "Target Terminal",
@@ -206,11 +206,11 @@ public class ConnectionModel extends AbstractWidgetModel {
         addProperty(new PointListProperty(PROP_POINTS, "Points",
                 WidgetPropertyCategory.Display, new PointList()));
         setPropertyVisibleAndSavable(PROP_POINTS, false, true);
-        
+
         AbstractWidgetProperty srcWUIDProp = new StringProperty(PROP_SRC_WUID,
                 "Source WUID", WidgetPropertyCategory.Display, "");
         addProperty(srcWUIDProp);
-        srcWUIDProp.addPropertyChangeListener(new PropertyChangeListener() {            
+        srcWUIDProp.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if(displayModel == null)
@@ -218,7 +218,7 @@ public class ConnectionModel extends AbstractWidgetModel {
                 String wuid = evt.getNewValue().toString();
                 String path = getPropertyValue(PROP_SRC_PATH).toString();
 
-                AbstractWidgetModel w = null; 
+                AbstractWidgetModel w = null;
                 if(path == null || path.equals("")){
                     w = getTerminal(displayModel, null, wuid);
                 }else {
@@ -235,14 +235,14 @@ public class ConnectionModel extends AbstractWidgetModel {
         AbstractWidgetProperty tgtWUIDProp = new StringProperty(PROP_TGT_WUID,
                 "Target WUID", WidgetPropertyCategory.Display, "");
         addProperty(tgtWUIDProp);
-        tgtWUIDProp.addPropertyChangeListener(new PropertyChangeListener() {            
+        tgtWUIDProp.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if(displayModel == null)
                     return;
                 String wuid = evt.getNewValue().toString();
                 String path = getPropertyValue(PROP_TGT_PATH).toString();
-                AbstractWidgetModel w = null; 
+                AbstractWidgetModel w = null;
                 if(path == null || path.equals("")){
                     w = getTerminal(displayModel, null, wuid);
                 }else {
@@ -255,7 +255,7 @@ public class ConnectionModel extends AbstractWidgetModel {
                 } else
                     throw new IllegalArgumentException("Non exist widget PATH:[" + path + "],\nWUID:[" + wuid + "]");
             }
-        });        
+        });
 
         AbstractWidgetProperty srcPathProp = new StringProperty(PROP_SRC_PATH,
                 "Source Path", WidgetPropertyCategory.Display, "");
@@ -264,7 +264,7 @@ public class ConnectionModel extends AbstractWidgetModel {
         AbstractWidgetProperty tgtPathProp = new StringProperty(PROP_TGT_PATH,
                 "Target Path", WidgetPropertyCategory.Display, "");
         addProperty(tgtPathProp);
-        
+
         setPropertyVisibleAndSavable(PROP_SRC_WUID, false, true);
         setPropertyVisibleAndSavable(PROP_TGT_WUID, false, true);
         setPropertyVisibleAndSavable(PROP_SRC_PATH, false, true);
@@ -292,7 +292,7 @@ public class ConnectionModel extends AbstractWidgetModel {
         removeProperty(PROP_SCALE_OPTIONS);
 
     }
-    
+
     private AbstractWidgetModel getTerminal(AbstractContainerModel root, List<String> paths, String wuid) {
         if(root == null) return null;
 
@@ -304,7 +304,7 @@ public class ConnectionModel extends AbstractWidgetModel {
         String tempId = paths.get(0);
         for(AbstractWidgetModel w : widget.getChildren()) {
             if(w instanceof AbstractContainerModel && w.getWUID().equals(tempId)) {
-                AbstractWidgetModel tempResult = 
+                AbstractWidgetModel tempResult =
                         getTerminal((AbstractContainerModel)w, paths.subList(1, paths.size()), wuid);
                 if(tempResult != null) return tempResult;
             }
@@ -312,10 +312,10 @@ public class ConnectionModel extends AbstractWidgetModel {
 
         return null;
     }
-    
+
     private AbstractWidgetModel getTerminal(AbstractContainerModel model, String wuid) {
-        for(AbstractWidgetModel w : model.getChildren()) { 
-            if(w.getWUID().equals(wuid)) { 
+        for(AbstractWidgetModel w : model.getChildren()) {
+            if(w.getWUID().equals(wuid)) {
                 return w;
             }
             if (w instanceof AbstractContainerModel) {
@@ -333,7 +333,7 @@ public class ConnectionModel extends AbstractWidgetModel {
 
     /**
      * Returns the source endpoint of this connection.
-     * 
+     *
      * @return a non-null Shape instance
      */
     public AbstractWidgetModel getSource() {
@@ -342,7 +342,7 @@ public class ConnectionModel extends AbstractWidgetModel {
 
     /**
      * Returns the target endpoint of this connection.
-     * 
+     *
      * @return a non-null Shape instance
      */
     public AbstractWidgetModel getTarget() {
@@ -360,7 +360,7 @@ public class ConnectionModel extends AbstractWidgetModel {
             isConnected = true;
         }
     }
-    
+
     /**
      * Resync this connection with its source and target.
      */
@@ -372,7 +372,7 @@ public class ConnectionModel extends AbstractWidgetModel {
         disconnect();
         String wuid = target.getWUID();
         String path = getPropertyValue(PROP_TGT_PATH).toString();
-        AbstractWidgetModel w = null; 
+        AbstractWidgetModel w = null;
         if(path == null || path.equals("")){
             w = getTerminal(displayModel, null, wuid);
         }else {
@@ -380,7 +380,7 @@ public class ConnectionModel extends AbstractWidgetModel {
             w = getTerminal(displayModel, paths, wuid);
         }
         setTarget(w);
-        
+
         wuid = source.getWUID();
         path = getPropertyValue(PROP_SRC_PATH).toString();
         w = null;
@@ -400,7 +400,7 @@ public class ConnectionModel extends AbstractWidgetModel {
      * Reconnect to a different source and/or target shape. The connection will
      * disconnect from its current attachments and reconnect to the new source
      * and target.
-     * 
+     *
      * @param newSource
      *            a new source endpoint for this connection (non null)
      * @param newTarget
@@ -465,11 +465,11 @@ public class ConnectionModel extends AbstractWidgetModel {
     public int getLineWidth() {
         return (Integer) getPropertyValue(PROP_LINE_WIDTH);
     }
-    
+
     public String[] getTargetPath() {
         return ((String)getPropertyValue(PROP_TGT_PATH)).split(PATH_DELIMITER);
     }
-    
+
     public String[] getSourcePath() {
         return ((String)getPropertyValue(PROP_SRC_PATH)).split(PATH_DELIMITER);
     }
@@ -509,12 +509,12 @@ public class ConnectionModel extends AbstractWidgetModel {
     public final boolean isAntiAlias() {
         return (Boolean) getPropertyValue(PROP_ANTIALIAS);
     }
-    
+
     @Override
     public AbstractContainerModel getParent() {
         return displayModel;
     }
-    
+
     /**
      * @return the points on this connection except start and end anchors, can be null.
      */
@@ -524,9 +524,9 @@ public class ConnectionModel extends AbstractWidgetModel {
 
     public void setPoints(PointList points) {
         setPropertyValue(PROP_POINTS, points);
-        
+
     }
-    
+
     /**
      * @return the original points before scaling.
      */
@@ -535,9 +535,9 @@ public class ConnectionModel extends AbstractWidgetModel {
             originPoints = getPoints();
         return originPoints;
     }
-    
+
     /**
-     * 
+     *
      */
     public void setLoadedFromLinkedOpi(boolean loadedFromLinkedOpi) {
         this.loadedFromLinkedOpi = loadedFromLinkedOpi;
@@ -549,7 +549,7 @@ public class ConnectionModel extends AbstractWidgetModel {
     public boolean isLoadedFromLinkedOpi() {
         return this.loadedFromLinkedOpi;
     }
-    
+
     private String buildTerminalPathFromModel(AbstractWidgetModel model) {
         if(model == null) return "";
 
@@ -562,7 +562,7 @@ public class ConnectionModel extends AbstractWidgetModel {
 
         if(result.endsWith(PATH_DELIMITER))
             return result.substring(0, result.length() - 1);
-        else 
+        else
             return result;
     }
 

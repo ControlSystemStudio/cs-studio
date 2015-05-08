@@ -21,7 +21,7 @@ public class Edm_activeChoiceButtonClass extends EdmWidget {
     public Edm_activeChoiceButtonClass(EdmEntity genericEntity) throws EdmException {
         super(genericEntity);
     }
-    
+
 
     public String getOrientation() {
         return orientation;
@@ -29,7 +29,7 @@ public class Edm_activeChoiceButtonClass extends EdmWidget {
     public EdmColor getSelectColor() {
         return selectColor;
     }
-    
+
     /**
      * @return the lineAlarm
      */

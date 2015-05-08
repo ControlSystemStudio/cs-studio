@@ -7,7 +7,7 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 /**
  * A custom file path property applying filters on image resource name.
- * 
+ *
  * @author SOPRA Group
  */
 public class FilePathPropertyWithFilter extends FilePathProperty {

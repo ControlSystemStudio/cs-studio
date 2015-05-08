@@ -34,18 +34,18 @@ public class OPIColorPropertyDescriptor extends PropertyDescriptor {
         }
         return editor;
     }
-    
-    
+
+
     private final static class OPIColorLabelProvider extends LabelProvider{
-        
+
         @Override
         public Image getImage(Object element) {
             if(element !=null && element instanceof OPIColor){
                 return ((OPIColor)element).getImage();
             }
             return null;
-        }        
+        }
     }
-    
-    
+
+
 }

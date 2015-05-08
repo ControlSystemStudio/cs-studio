@@ -98,7 +98,7 @@ public class NumericValueCondition implements DeviceCondition, DeviceListener
 
         // Fetch initial value with get-callback?
         initial_value = VTypeHelper.toDouble(device.read(this.timeout));
-        
+
         device.addListener(this);
         try
         {

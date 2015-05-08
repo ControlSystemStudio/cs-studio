@@ -12,7 +12,7 @@ import org.csstudio.opibuilder.converter.model.Edm_activeUpdownButtonClass;
 
 /**
  * XML conversion class for Opi_activeUpdownButtonClass.
- * 
+ *
  * @author Xihui Chen
  */
 public class Opi_activeUpdownButtonClass extends OpiWidget {
@@ -41,9 +41,9 @@ public class Opi_activeUpdownButtonClass extends OpiWidget {
             new OpiString(widgetContext, "tooltip", r.getLabel());
         new OpiBoolean(widgetContext, "limits_from_pv", r.isLimitsFromDb());
         new OpiDouble(widgetContext, "minimum", r.getScaleMin());
-        new OpiDouble(widgetContext, "maximum", r.getScaleMax());        
-        
-        
+        new OpiDouble(widgetContext, "maximum", r.getScaleMax());
+
+
         log.debug("Opi_activeUpdownButtonClass written.");
 
     }

@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * Implements the bean bound property notification scheme on top of a composite.
  * Subclasses should specify in the documentation which properties are bound.
- * 
+ *
  * @author Gabriele Carcassi
  */
 public abstract class BeanComposite extends Composite {
@@ -19,7 +19,7 @@ public abstract class BeanComposite extends Composite {
 
     /**
      * Pass through constructor to Composite.
-     * 
+     *
      * @param parent
      *            composite parent
      * @param style
@@ -31,7 +31,7 @@ public abstract class BeanComposite extends Composite {
 
     /**
      * Adds a new listener.
-     * 
+     *
      * @param listener
      *            a new listener
      */
@@ -41,7 +41,7 @@ public abstract class BeanComposite extends Composite {
 
     /**
      * Removes the given listener.
-     * 
+     *
      * @param listener
      *            a listener
      */
@@ -55,7 +55,7 @@ public abstract class BeanComposite extends Composite {
      * <p>
      * This method is useful when this composite will be constructed with other
      * composites and will need to expose parts of them as its own.
-     * 
+     *
      * @param widgetProperty
      *            a property name of the widget inside the composite
      * @param panelProperty

@@ -15,7 +15,7 @@ public class WidgetCreationUtil {
 
     /**
      * Opens a dialog that allows for pre-configuring a new widget.
-     * 
+     *
      * @param widgetType
      *            optional - if null, the dialog will offer a widget type
      *            selection
@@ -49,12 +49,12 @@ public class WidgetCreationUtil {
     /**
      * Creates a preconfigured widget, without popping up a configuration
      * dialog.
-     * 
+     *
      * @param widgetType
      *            the widget type, mandatory
      * @param runInitializers
      *            if true, widget initializers will be run
-     * 
+     *
      * @return the preconfigured widget
      */
     public static AbstractWidgetModel createWidgetHeadlessly(String widgetType, boolean runInitializers) {

@@ -8,17 +8,17 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescription;
 
 public class PVTableByPropertyModel extends AbstractChannelWidgetWithNotificationModel {
-    
+
     public PVTableByPropertyModel() {
         super(AbstractSelectionWidgetModelDescription.newModelFrom(PVTableByPropertyWidget.class));
     }
-    
+
     public final String ID = "org.csstudio.channel.opiwidgets.PVTableByProperty"; //$NON-NLS-1$
-    
-    public static final String ROW_PROPERTY = "row_property"; //$NON-NLS-1$    
-    public static final String COLUMN_PROPERTY = "column_property"; //$NON-NLS-1$    
-    public static final String COLUMN_TAGS = "column_tags"; //$NON-NLS-1$    
-    
+
+    public static final String ROW_PROPERTY = "row_property"; //$NON-NLS-1$
+    public static final String COLUMN_PROPERTY = "column_property"; //$NON-NLS-1$
+    public static final String COLUMN_TAGS = "column_tags"; //$NON-NLS-1$
+
     @Override
     protected void configureProperties() {
         addProperty(new StringProperty(ROW_PROPERTY, "Row Property", WidgetPropertyCategory.Basic, ""));
@@ -30,15 +30,15 @@ public class PVTableByPropertyModel extends AbstractChannelWidgetWithNotificatio
     public String getTypeID() {
         return ID;
     }
-    
+
     public String getRowProperty() {
         return getCastedPropertyValue(ROW_PROPERTY);
     }
-    
+
     public String getColumnProperty() {
         return getCastedPropertyValue(COLUMN_PROPERTY);
     }
-    
+
     public List<String> getColumnTags() {
         return getListProperty(COLUMN_TAGS);
     }

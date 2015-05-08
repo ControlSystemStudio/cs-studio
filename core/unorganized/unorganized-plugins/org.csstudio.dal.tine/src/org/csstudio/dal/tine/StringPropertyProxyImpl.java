@@ -21,7 +21,7 @@
  */
 
 /**
- * 
+ *
  */
 package org.csstudio.dal.tine;
 
@@ -45,7 +45,7 @@ public class StringPropertyProxyImpl extends PropertyProxyImpl<String> {
 
     private Object value;
     private int length;
-    
+
     /**
      * Constructs a new StringPropertyProxy.
      * @param name
@@ -59,7 +59,7 @@ public class StringPropertyProxyImpl extends PropertyProxyImpl<String> {
         }
         switch (TINEPlug.getInstance().getTFormat(getUniqueName()).getValue()) {
             case TFormat.CF_TEXT: {
-                this.value = new char[this.length]; 
+                this.value = new char[this.length];
                 break;
             }
             case TFormat.CF_NAME8 : {
@@ -155,5 +155,5 @@ public class StringPropertyProxyImpl extends PropertyProxyImpl<String> {
     protected Class getNumericType() {
         return String.class;
     }
-    
+
 }

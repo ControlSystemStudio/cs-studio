@@ -25,7 +25,7 @@ public class EntryNode extends AbstractSNLNode {
     public String humanReadableRepresentation() {
         return this.getNodeTypeName() + ": " + this.getSourceIdentifier();
     }
-    
+
     public void setOffsets(final int startOffset, final int endOffset) {
         super.setStatementOffsets(startOffset, endOffset);
     }

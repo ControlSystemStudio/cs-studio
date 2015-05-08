@@ -18,7 +18,7 @@ import org.epics.vtype.VType;
 public class VTypeHelper
 {
     /** @param value {@link VType}
-     *  @return Value as String 
+     *  @return Value as String
      */
     public static String getString(final VType value)
     {

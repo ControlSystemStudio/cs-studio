@@ -19,7 +19,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ReviewSign extends AbstractHandler {
 

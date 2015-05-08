@@ -625,7 +625,7 @@ public class RDBArchiveConfig implements ArchiveConfig
                 final Timestamp stamp = result.getTimestamp(1);
                 if (stamp == null)
                     return null;
-                
+
                 if (rdb.getDialect() != Dialect.Oracle)
                 {
                     // For Oracle, the time stamp is indeed the last time.

@@ -27,7 +27,7 @@ import org.csstudio.sds.model.IWidgetModelFactory;
 
 /**
  *  A widget model factory for {@link ThumbWheelModel}.
- * 
+ *
  *  @author Alen Vrecko, Jozef Stefan Institute
  *  @author Joerg Rathlev, Universitaet Hamburg
  */

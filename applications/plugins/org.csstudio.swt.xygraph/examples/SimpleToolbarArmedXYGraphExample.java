@@ -24,15 +24,15 @@ public class SimpleToolbarArmedXYGraphExample {
         final Shell shell = new Shell();
         shell.setSize(600, 400);
         shell.open();
-        
+
         //use LightweightSystem to create the bridge between SWT and draw2D
         final LightweightSystem lws = new LightweightSystem(shell);
-        
+
         //create a new XY Graph.
         XYGraph xyGraph = new XYGraph();
-        
+
         ToolbarArmedXYGraph toolbarArmedXYGraph = new ToolbarArmedXYGraph(xyGraph);
-        
+
         xyGraph.setTitle("Simple Toolbar Armed XYGraph Example");
         //set it as the content of LightwightSystem
         lws.setContents(toolbarArmedXYGraph);
@@ -41,28 +41,28 @@ public class SimpleToolbarArmedXYGraphExample {
         xyGraph.primaryXAxis.setAutoScale(true);
         xyGraph.primaryYAxis.setShowMajorGrid(true);
         xyGraph.primaryYAxis.setAutoScale(true);
-        
+
         //create a trace data provider, which will provide the data to the trace.
         CircularBufferDataProvider traceDataProvider = new CircularBufferDataProvider(false);
-        traceDataProvider.setBufferSize(100);        
+        traceDataProvider.setBufferSize(100);
         traceDataProvider.setCurrentXDataArray(new double[]{-9, 10, 23, 34, 45, 56, 78, 88, 99});
-        traceDataProvider.setCurrentYDataArray(new double[]{-5, 11, 44, 55, 45, 88, 98, 52, 23});    
-        
+        traceDataProvider.setCurrentYDataArray(new double[]{-5, 11, 44, 55, 45, 88, 98, 52, 23});
+
         //create the trace
-        Trace trace = new Trace("Trace1-XY Plot", 
-                xyGraph.primaryXAxis, xyGraph.primaryYAxis, traceDataProvider);            
-        
+        Trace trace = new Trace("Trace1-XY Plot",
+                xyGraph.primaryXAxis, xyGraph.primaryYAxis, traceDataProvider);
+
         //set trace property
         trace.setPointStyle(PointStyle.XCROSS);
-        
+
         //add the trace to xyGraph
-        xyGraph.addTrace(trace);            
-       
+        xyGraph.addTrace(trace);
+
         Display display = Display.getDefault();
         while (!shell.isDisposed()) {
           if (!display.readAndDispatch())
             display.sleep();
         }
-       
+
     }
 }

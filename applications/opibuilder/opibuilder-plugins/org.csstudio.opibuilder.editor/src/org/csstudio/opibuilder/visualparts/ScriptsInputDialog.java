@@ -55,42 +55,42 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
  *
  */
 public class ScriptsInputDialog extends HelpTrayDialog {
-    
+
     private Action addAction;
     private Action editAction;
     private Action removeAction;
     private Action moveUpAction;
     private Action moveDownAction;
     private Action convertToEmbedAction;
-    
-    
+
+
     private TableViewer scriptsViewer;
     private PVTupleTableEditor pvsEditor;
     private Button skipFirstExecutionButton;
     private Button checkConnectivityButton;
     private Button stopExecuteOnErrorButton;
-    
+
     private List<ScriptData> scriptDataList;
-    private String title;    
+    private String title;
 
     private IPath startPath;
-    
+
     private AbstractWidgetModel widgetModel;
-    
-    public ScriptsInputDialog(Shell parentShell, ScriptsInput scriptsInput, 
+
+    public ScriptsInputDialog(Shell parentShell, ScriptsInput scriptsInput,
             String dialogTitle, AbstractWidgetModel widgetModel) {
         super(parentShell);
         setShellStyle(getShellStyle() | SWT.RESIZE);
         this.scriptDataList = scriptsInput.getCopy().getScriptList();
         title = dialogTitle;
         this.widgetModel = widgetModel;
-        this.startPath = 
+        this.startPath =
                 widgetModel.getRootDisplayModel().getOpiFilePath().removeLastSegments(1);
     }
-    
-    
+
+
     @Override
-    protected void okPressed() {    
+    protected void okPressed() {
         pvsEditor.forceFocus();
         for(ScriptData scriptData : scriptDataList){
             boolean hasTrigger = false;
@@ -98,20 +98,20 @@ public class ScriptsInputDialog extends HelpTrayDialog {
                 hasTrigger |= pvTuple.trigger;
             }
             if(!hasTrigger){
-                MessageDialog.openWarning(getShell(), "Warning", 
-                        NLS.bind("At least one trigger PV must be selected for the script:\n{0}", 
+                MessageDialog.openWarning(getShell(), "Warning",
+                        NLS.bind("At least one trigger PV must be selected for the script:\n{0}",
                                 scriptData.getPath().toString()));
                 return;
             }
         }
         super.okPressed();
     }
-    
+
     @Override
     protected String getHelpResourcePath() {
         return "/" + OPIBuilderPlugin.PLUGIN_ID + "/html/Script.html"; //$NON-NLS-1$; //$NON-NLS-2$
     }
-    
+
     /**
      * @return the scriptDataList
      */
@@ -129,10 +129,10 @@ public class ScriptsInputDialog extends HelpTrayDialog {
             shell.setText(title);
         }
     }
-    
+
     /**
      * Creates 'wrapping' label with the given text.
-     * 
+     *
      * @param parent
      *            The parent for the label
      * @param text
@@ -143,19 +143,19 @@ public class ScriptsInputDialog extends HelpTrayDialog {
         label.setText(text);
         label.setLayoutData(new GridData(SWT.FILL, 0, false, false));
     }
-    
+
     @Override
     protected Control createDialogArea(Composite parent) {
         final Composite parent_Composite = (Composite) super.createDialogArea(parent);
-        
+
         // Parent composite has GridLayout with 1 columns.
         // Create embedded composite w/ 2 columns
-        final Composite mainComposite = new Composite(parent_Composite, SWT.None);            
+        final Composite mainComposite = new Composite(parent_Composite, SWT.None);
         mainComposite.setLayout(new GridLayout(2, false));
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         gridData.heightHint = 250;
         mainComposite.setLayoutData(gridData);
-        
+
         // Left Panel: List of scripts
         final Composite leftComposite = new Composite(mainComposite, SWT.NONE);
         leftComposite.setLayout(new GridLayout(1, false));
@@ -163,7 +163,7 @@ public class ScriptsInputDialog extends HelpTrayDialog {
         gd.widthHint = 350;
         leftComposite.setLayoutData(gd);
         createLabel(leftComposite, "Scripts");
-        
+
         Composite toolBarComposite = new Composite(leftComposite, SWT.BORDER);
         GridLayout gridLayout = new GridLayout(1, false);
         gridLayout.marginLeft = 0;
@@ -175,7 +175,7 @@ public class ScriptsInputDialog extends HelpTrayDialog {
         toolBarComposite.setLayout(gridLayout);
         gd = new GridData(SWT.FILL, SWT.FILL, true, true);
         toolBarComposite.setLayoutData(gd);
-        
+
         ToolBarManager toolbarManager = new ToolBarManager(SWT.FLAT);
         ToolBar toolBar = toolbarManager.createControl(toolBarComposite);
         GridData grid = new GridData();
@@ -189,12 +189,12 @@ public class ScriptsInputDialog extends HelpTrayDialog {
         toolbarManager.add(moveUpAction);
         toolbarManager.add(moveDownAction);
         toolbarManager.add(convertToEmbedAction);
-        
+
         toolbarManager.update(true);
-        
+
         scriptsViewer = createScriptsTableViewer(toolBarComposite);
         scriptsViewer.setInput(scriptDataList);
-        
+
         // Right panel: Input PVs for selected script
         final Composite rightComposite = new Composite(mainComposite, SWT.NONE);
         gridLayout = new GridLayout(1, false);
@@ -203,22 +203,22 @@ public class ScriptsInputDialog extends HelpTrayDialog {
         gd.minimumWidth = 250; // Account for the StringTableEditor's minimum size
         rightComposite.setLayoutData(gd);
         this.createLabel(rightComposite, "");
-        
+
         TabFolder tabFolder = new TabFolder(rightComposite, SWT.None);
         tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        
+
         TabItem pvTab = new TabItem(tabFolder, SWT.NONE);
-        pvTab.setText("Input PVs");        
+        pvTab.setText("Input PVs");
         TabItem optionTab = new TabItem(tabFolder, SWT.NONE);
         optionTab.setText("Options");
-        
-        
+
+
         pvsEditor = new PVTupleTableEditor(tabFolder, new ArrayList<PVTuple>(), SWT.NONE);
         pvsEditor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         pvsEditor.setEnabled(false);
-        
+
         pvTab.setControl(pvsEditor);
-        
+
         final Composite optionTabComposite = new Composite(tabFolder, SWT.None);
         optionTabComposite.setLayout(new GridLayout(1, false));
         optionTab.setControl(optionTabComposite);
@@ -232,12 +232,12 @@ public class ScriptsInputDialog extends HelpTrayDialog {
         skipFirstExecutionButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                IStructuredSelection selection = 
+                IStructuredSelection selection =
                     (IStructuredSelection) scriptsViewer.getSelection();
                 if(!selection.isEmpty()){
                     ((ScriptData)selection.getFirstElement()).setSkipPVsFirstConnection(
                             skipFirstExecutionButton.getSelection());
-                }                
+                }
             }
         });
         gd = new GridData(SWT.FILL, SWT.FILL, true, false);
@@ -245,7 +245,7 @@ public class ScriptsInputDialog extends HelpTrayDialog {
         gd.widthHint = preferredSize.x;
         gd.minimumHeight = preferredSize.y;
         skipFirstExecutionButton.setLayoutData(gd);
-        
+
         checkConnectivityButton = new Button(optionTabComposite, SWT.CHECK|SWT.WRAP);
         checkConnectivityButton.setSelection(false);
         checkConnectivityButton.setText(
@@ -256,14 +256,14 @@ public class ScriptsInputDialog extends HelpTrayDialog {
         checkConnectivityButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                IStructuredSelection selection = 
+                IStructuredSelection selection =
                     (IStructuredSelection) scriptsViewer.getSelection();
                 if(!selection.isEmpty()){
                     ((ScriptData)selection.getFirstElement()).setCheckConnectivity(
                             !checkConnectivityButton.getSelection());
                 }
                 if(checkConnectivityButton.getSelection()){
-                    MessageDialog.openWarning(getShell(), "Warning", 
+                    MessageDialog.openWarning(getShell(), "Warning",
                             "If this option is checked, " +
                             "the script itself is responsible for checking PV's connectivity before using that PV in the script.\n" +
                             "Otherwise, you will probably get an error message with java.lang.NullPointerException. \n" +
@@ -276,7 +276,7 @@ public class ScriptsInputDialog extends HelpTrayDialog {
         gd.widthHint = preferredSize.x;
         gd.minimumHeight = preferredSize.y;
         checkConnectivityButton.setLayoutData(gd);
-        
+
         stopExecuteOnErrorButton = new Button(optionTabComposite, SWT.CHECK|SWT.WRAP);
         stopExecuteOnErrorButton.setSelection(false);
         stopExecuteOnErrorButton.setText(
@@ -288,12 +288,12 @@ public class ScriptsInputDialog extends HelpTrayDialog {
         stopExecuteOnErrorButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                IStructuredSelection selection = 
+                IStructuredSelection selection =
                     (IStructuredSelection) scriptsViewer.getSelection();
                 if(!selection.isEmpty()){
                     ((ScriptData)selection.getFirstElement()).setStopExecuteOnError(
                             stopExecuteOnErrorButton.getSelection());
-                }                
+                }
             }
         });
         gd = new GridData(SWT.FILL, SWT.FILL, true, false);
@@ -301,7 +301,7 @@ public class ScriptsInputDialog extends HelpTrayDialog {
         gd.widthHint = preferredSize.x;
         gd.minimumHeight = preferredSize.y;
         stopExecuteOnErrorButton.setLayoutData(gd);
-        
+
         if(scriptDataList.size() > 0){
             setScriptsViewerSelection(scriptDataList.get(0));
             checkConnectivityButton.setSelection(
@@ -310,16 +310,16 @@ public class ScriptsInputDialog extends HelpTrayDialog {
                     scriptDataList.get(0).isSkipPVsFirstConnection());
             stopExecuteOnErrorButton.setSelection(
                     scriptDataList.get(0).isStopExecuteOnError());
-            
+
         }
         return parent_Composite;
     }
-    
+
     /**
      * Refreshes the enabled-state of the actions.
      */
     private void refreshGUIOnSelection() {
-        
+
         IStructuredSelection selection = (IStructuredSelection) scriptsViewer
                 .getSelection();
         if (!selection.isEmpty()
@@ -329,7 +329,7 @@ public class ScriptsInputDialog extends HelpTrayDialog {
             moveDownAction.setEnabled(true);
             convertToEmbedAction.setEnabled(
                     !((ScriptData)selection.getFirstElement()).isEmbedded());
-            
+
             editAction.setEnabled(true);
             pvsEditor.updateInput(((ScriptData) selection
                     .getFirstElement()).getPVList());
@@ -343,7 +343,7 @@ public class ScriptsInputDialog extends HelpTrayDialog {
             stopExecuteOnErrorButton.setSelection(((ScriptData) selection
                     .getFirstElement()).isStopExecuteOnError());
             stopExecuteOnErrorButton.setEnabled(true);
-            
+
         } else {
             removeAction.setEnabled(false);
             moveUpAction.setEnabled(false);
@@ -356,8 +356,8 @@ public class ScriptsInputDialog extends HelpTrayDialog {
             stopExecuteOnErrorButton.setEnabled(false);
         }
     }
-    
-    
+
+
     private void setScriptsViewerSelection(ScriptData scriptData){
         scriptsViewer.refresh();
         if(scriptData == null)
@@ -366,11 +366,11 @@ public class ScriptsInputDialog extends HelpTrayDialog {
             scriptsViewer.setSelection(new StructuredSelection(scriptData));
         }
     }
-    
-    
+
+
     /**
      * Creates and configures a {@link TableViewer}.
-     * 
+     *
      * @param parent
      *            The parent for the table
      * @return The {@link TableViewer}
@@ -395,14 +395,14 @@ public class ScriptsInputDialog extends HelpTrayDialog {
                 new GridData(SWT.FILL, SWT.FILL, true, true));
         return viewer;
     }
-    
-    
-    
-    
+
+
+
+
     /**
      * Creates the actions.
      */
-    private void createActions() {    
+    private void createActions() {
         addAction = new Action("Add") {
             @Override
             public void run() {
@@ -412,7 +412,7 @@ public class ScriptsInputDialog extends HelpTrayDialog {
                     return;
                 ScriptData scriptData = null;
                 if (scriptChoiceDialog.isEmbedded()) {
-                    EmbeddedScriptEditDialog scriptEditDialog = 
+                    EmbeddedScriptEditDialog scriptEditDialog =
                             new EmbeddedScriptEditDialog(getShell(), null);
                     if(scriptEditDialog.open() == Window.OK)
                         scriptData = scriptEditDialog.getResult();
@@ -426,7 +426,7 @@ public class ScriptsInputDialog extends HelpTrayDialog {
                     if (rsd.open() == Window.OK) {
                         if (rsd.getSelectedResource() != null) {
                             path = rsd.getSelectedResource();
-                            scriptData = new ScriptData(path);                            
+                            scriptData = new ScriptData(path);
                         }
                     }
                 }
@@ -440,17 +440,17 @@ public class ScriptsInputDialog extends HelpTrayDialog {
         addAction.setImageDescriptor(CustomMediaFactory.getInstance()
                 .getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
                         "icons/add.gif")); //$NON-NLS-1$
-        
+
         editAction = new Action("Edit") {
             @Override
             public void run() {
-                IPath path;        
+                IPath path;
                 IStructuredSelection selection = (IStructuredSelection) scriptsViewer.getSelection();
                 if (!selection.isEmpty()
                         && selection.getFirstElement() instanceof ScriptData) {
                     ScriptData sd = (ScriptData) selection.getFirstElement();
                     if(sd.isEmbedded()){
-                        EmbeddedScriptEditDialog scriptEditDialog = 
+                        EmbeddedScriptEditDialog scriptEditDialog =
                                 new EmbeddedScriptEditDialog(getShell(), sd);
                         if(scriptEditDialog.open() == Window.OK){
                             ScriptData newSd = scriptEditDialog.getResult();
@@ -472,10 +472,10 @@ public class ScriptsInputDialog extends HelpTrayDialog {
                             }
                         }
                     }
-                        
-                                        
+
+
                 }
-                
+
             }
         };
         editAction.setToolTipText("Edit/Change script path");
@@ -518,7 +518,7 @@ public class ScriptsInputDialog extends HelpTrayDialog {
                         scriptDataList.remove(scriptData);
                         scriptDataList.add(i-1, scriptData);
                         setScriptsViewerSelection(scriptData);
-                    }    
+                    }
                 }
             }
         };
@@ -543,7 +543,7 @@ public class ScriptsInputDialog extends HelpTrayDialog {
                         scriptDataList.remove(scriptData);
                         scriptDataList.add(i+1, scriptData);
                         setScriptsViewerSelection(scriptData);
-                    }            
+                    }
                 }
             }
         };
@@ -553,7 +553,7 @@ public class ScriptsInputDialog extends HelpTrayDialog {
                 .getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
                         "icons/search_next.gif")); //$NON-NLS-1$
         moveDownAction.setEnabled(false);
-        
+
         convertToEmbedAction = new Action() {
             @Override
             public void run() {
@@ -571,9 +571,9 @@ public class ScriptsInputDialog extends HelpTrayDialog {
                                 absoluteScriptPath = ResourceUtil.getFileOnSearchPath(sd.getPath(), true);
                             }
                         }
-                        
+
                         try {
-                            String text = FileUtil.readTextFile(absoluteScriptPath.toString());    
+                            String text = FileUtil.readTextFile(absoluteScriptPath.toString());
                             String ext = absoluteScriptPath.getFileExtension().trim().toLowerCase();
                             if(ext.equals(ScriptService.JS))
                                 sd.setScriptType(ScriptType.JAVASCRIPT);
@@ -587,16 +587,16 @@ public class ScriptsInputDialog extends HelpTrayDialog {
                             sd.setEmbedded(true);
                             sd.setScriptText(text);
                             sd.setScriptName(
-                                    absoluteScriptPath.removeFileExtension().lastSegment());                            
+                                    absoluteScriptPath.removeFileExtension().lastSegment());
                             setScriptsViewerSelection(sd);
                         } catch (Exception e) {
                             MessageDialog.openError(getShell(),
                                     "Failed", "Failed to read script file");
                         }
-                        
+
                     }
-                        
-                                        
+
+
                 }
             }
         };
@@ -607,5 +607,5 @@ public class ScriptsInputDialog extends HelpTrayDialog {
                         "icons/convertToEmbedded.png")); //$NON-NLS-1$
         convertToEmbedAction.setEnabled(false);
     }
-    
+
 }

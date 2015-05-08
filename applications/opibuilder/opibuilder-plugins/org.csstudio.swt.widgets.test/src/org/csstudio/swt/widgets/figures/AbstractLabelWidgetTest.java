@@ -12,12 +12,12 @@ public abstract class AbstractLabelWidgetTest extends AbstractWidgetTest {
 
     @Override
     public String[] getPropertyNames() {
-        String[] superProps =  super.getPropertyNames();    
-        
+        String[] superProps =  super.getPropertyNames();
+
         String[] myProps = new String[]{
                 "text"
         };
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
 }

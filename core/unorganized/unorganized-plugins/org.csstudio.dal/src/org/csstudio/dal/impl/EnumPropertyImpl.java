@@ -38,7 +38,7 @@ public class EnumPropertyImpl extends NumericPropertyImpl<Long,Long>
     private Object[] enumValues;
     private String[] enumDescriptions;
     private boolean chInitialized = false;
-    
+
     public EnumPropertyImpl(String name, PropertyContext propertyContext)
     {
         super(Long.class, name, propertyContext);
@@ -48,7 +48,7 @@ public class EnumPropertyImpl extends NumericPropertyImpl<Long,Long>
     {
         if (chInitialized)
             return;
-    
+
         enumDescriptions = (String[])getCharacteristic(EnumPropertyCharacteristics.C_ENUM_DESCRIPTIONS);
         enumValues = (Object[])getCharacteristic(EnumPropertyCharacteristics.C_ENUM_VALUES);
         if (enumDescriptions == null || enumValues == null) {
@@ -58,7 +58,7 @@ public class EnumPropertyImpl extends NumericPropertyImpl<Long,Long>
         chInitialized = true;
 
     }
-    
+
 
     /*
      *  (non-Javadoc)

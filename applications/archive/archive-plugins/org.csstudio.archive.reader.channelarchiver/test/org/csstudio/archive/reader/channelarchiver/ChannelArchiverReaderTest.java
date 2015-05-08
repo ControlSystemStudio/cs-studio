@@ -33,7 +33,7 @@ public class ChannelArchiverReaderTest
     private static final int KEY = 4805;
     final private static String URL =
         "xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi";
-    
+
     /** Connect, dump basic info */
     @Test
     public void testInfo() throws Exception
@@ -46,7 +46,7 @@ public class ChannelArchiverReaderTest
             System.out.println(info);
         reader.close();
     }
-    
+
     /** Locate names */
     @Test
     public void testLookup() throws Exception
@@ -60,7 +60,7 @@ public class ChannelArchiverReaderTest
         reader.close();
         assertTrue(Arrays.asList(names).contains(CHANNEL));
     }
-    
+
     /** Get raw samples via iterator */
     @Test
     public void testRawData() throws Exception
@@ -69,7 +69,7 @@ public class ChannelArchiverReaderTest
         final DateFormat parser = new SimpleDateFormat("yyyy/MM/dd");
         final Timestamp end = Timestamp.of(parser.parse(END));
         final Timestamp start = end.minus(TimeDuration.ofHours(HOURS));
-        
+
         final ValueIterator values = reader.getRawValues(4805, CHANNEL, start, end);
         int count = 0;
         while (values.hasNext())
@@ -80,7 +80,7 @@ public class ChannelArchiverReaderTest
         }
         values.close();
         reader.close();
-        
+
         assertTrue(count > 0);
     }
 
@@ -92,7 +92,7 @@ public class ChannelArchiverReaderTest
         final DateFormat parser = new SimpleDateFormat("yyyy/MM/dd");
         final Timestamp end = Timestamp.of(parser.parse(END));
         final Timestamp start = end.minus(TimeDuration.ofHours(24.0));
-        
+
         final VType[] samples =
             reader.getSamples(4805, CHANNEL, start, end, false, 10);
         int count = 0;

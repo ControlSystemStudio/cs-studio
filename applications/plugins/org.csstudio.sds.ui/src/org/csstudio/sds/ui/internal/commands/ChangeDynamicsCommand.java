@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.sds.ui.internal.commands;
 
@@ -10,9 +10,9 @@ import org.eclipse.gef.commands.Command;
 /**
  * Command that changes the {@link DynamicsDescriptor} of a
  * {@link WidgetProperty}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class ChangeDynamicsCommand extends Command {
     private WidgetProperty property;

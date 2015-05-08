@@ -8,22 +8,22 @@ package com.cosylab.vdct.vdb;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -79,7 +79,7 @@ public class VDBTemplate implements Inspectable, Commentable, Descriptable, Moni
     protected Vector macrosV = null;
 
     protected Group group = null;
-    
+
     private String comment = null;
     private CommentProperty commentProperty = null;
 
@@ -92,7 +92,7 @@ public class VDBTemplate implements Inspectable, Commentable, Descriptable, Moni
     private static final String nullString = "";
 
     private String tempDescription = null;
-    
+
     private long portsGeneratedID = 0;
     private long macrosGeneratedID = 0;
     protected static Random random = null;
@@ -102,13 +102,13 @@ public class VDBTemplate implements Inspectable, Commentable, Descriptable, Moni
         if (random==null)
             random = new Random();
     }
-    
+
     class DescriptionProperty implements InspectableProperty
     {
         private static final String defaultDescription = "";
         private static final String name = "Description";
         private static final String helpString = "Template description";
-        
+
         /**
          * @see com.cosylab.vdct.inspector.InspectableProperty#allowsOtherValues()
          */
@@ -241,7 +241,7 @@ public class VDBTemplate implements Inspectable, Commentable, Descriptable, Moni
         this.id = id;
         this.fileName = fileName;
         regeneratePortsID();
-        updateDescription();            
+        updateDescription();
     }
 
     /**
@@ -284,7 +284,7 @@ public class VDBTemplate implements Inspectable, Commentable, Descriptable, Moni
     {
         boolean update = false;
         if (this.description==null || description==null ||        // one null
-            !this.description.equals(description))                    // not equals equals    
+            !this.description.equals(description))                    // not equals equals
         {
             // both null
             if (this.description!=description)
@@ -299,14 +299,14 @@ public class VDBTemplate implements Inspectable, Commentable, Descriptable, Moni
             }
         }
 
-        updateDescription();            
+        updateDescription();
 
         if (update)
         {
             InspectorManager.getInstance().updateObject(this);
             /// !!!
             if (com.cosylab.vdct.VisualDCT.getInstance() != null)
-                com.cosylab.vdct.VisualDCT.getInstance().updateLoadLabel();            
+                com.cosylab.vdct.VisualDCT.getInstance().updateLoadLabel();
             GetGUIInterface cmd = (GetGUIInterface)CommandManager.getInstance().getCommand("GetGUIMenuInterface");
             if (cmd!=null)
                 cmd.getGUIMenuInterface().updateGroupLabel();
@@ -332,7 +332,7 @@ public class VDBTemplate implements Inspectable, Commentable, Descriptable, Moni
         else
             tempDescription = null;
     }
-    
+
     /**
      * Sets the group.
      * @param group The group to set
@@ -405,7 +405,7 @@ public class VDBTemplate implements Inspectable, Commentable, Descriptable, Moni
         if (templateSeparator==null) templateSeparator = new GUISeparator("Template");
         return templateSeparator;
     }
-    
+
     /**
      * @see com.cosylab.vdct.inspector.Inspectable#getProperties(int)
      */
@@ -483,7 +483,7 @@ public class VDBTemplate implements Inspectable, Commentable, Descriptable, Moni
     {
         return ports;
     }
-    
+
     /**
      * Returns the portsV.
      * @return Vector
@@ -492,7 +492,7 @@ public class VDBTemplate implements Inspectable, Commentable, Descriptable, Moni
     {
         return portsV;
     }
-    
+
     /**
      * Returns the macros.
      * @return Hashtable
@@ -501,7 +501,7 @@ public class VDBTemplate implements Inspectable, Commentable, Descriptable, Moni
     {
         return macros;
     }
-    
+
     /**
      * Returns the macrosV.
      * @return Vector
@@ -520,7 +520,7 @@ public class VDBTemplate implements Inspectable, Commentable, Descriptable, Moni
         regeneratePortsID();
         this.ports = ports;
     }
-    
+
     /**
      * Sets the portsV.
      * @param portsV The portsV to set
@@ -536,10 +536,10 @@ public class VDBTemplate implements Inspectable, Commentable, Descriptable, Moni
      */
     public void setMacros(Hashtable macros)
     {
-        regenerateMacrosID();        
+        regenerateMacrosID();
         this.macros = macros;
     }
-    
+
     /**
      * Sets the macrosV.
      * @param macrosV The macrosV to set
@@ -587,7 +587,7 @@ public class VDBTemplate implements Inspectable, Commentable, Descriptable, Moni
  */
 public VDBPort addPort(String name)
 {
-    VDBPort vdbPort = new VDBPort(this, name, nullString, null);    
+    VDBPort vdbPort = new VDBPort(this, name, nullString, null);
     ports.put(name, vdbPort);
     portsV.addElement(vdbPort);
 
@@ -608,14 +608,14 @@ public VDBPort addPort(String name)
  */
 public VDBMacro addMacro(String name)
 {
-    VDBMacro vdbMacro = new VDBMacro(this, name, null);    
+    VDBMacro vdbMacro = new VDBMacro(this, name, null);
     macros.put(name, vdbMacro);
     macrosV.addElement(vdbMacro);
 
     com.cosylab.vdct.undo.UndoManager.getInstance().addAction(
             new CreateTemplateMacroAction(this, vdbMacro));
 
-    regenerateMacrosID();        
+    regenerateMacrosID();
     InspectorManager.getInstance().updateObject(this);
 /*
     updateTemplateFields();
@@ -648,7 +648,7 @@ public void addMacro(VDBMacro vdbMacro)
     macros.put(vdbMacro.getName(), vdbMacro);
     macrosV.addElement(vdbMacro);
 
-    regenerateMacrosID();        
+    regenerateMacrosID();
     InspectorManager.getInstance().updateObject(this);
 /*
     updateTemplateFields();
@@ -664,7 +664,7 @@ public void removePort(String name)
     VDBPort port = (VDBPort)ports.remove(name);
     if (port==null)
         return;
-    
+
     portsV.removeElement(port);
 
     ComposedAction ca = new ComposedAction();
@@ -679,9 +679,9 @@ public void removePort(String name)
     }
 
     ca.addAction(new DeleteTemplatePortAction(this, port));
-    
+
     UndoManager.getInstance().addAction(ca);
-    
+
     regeneratePortsID();
     InspectorManager.getInstance().updateObject(this);
 /*
@@ -698,7 +698,7 @@ public void removeMacro(String name)
     VDBMacro macro = (VDBMacro)macros.remove(name);
     if (macro==null)
         return;
-    
+
     macrosV.removeElement(macro);
 
     ComposedAction ca = new ComposedAction();
@@ -713,10 +713,10 @@ public void removeMacro(String name)
     }
 
     ca.addAction(new DeleteTemplateMacroAction(this, macro));
-    
+
     UndoManager.getInstance().addAction(ca);
-    
-    regenerateMacrosID();        
+
+    regenerateMacrosID();
     InspectorManager.getInstance().updateObject(this);
 /*
     updateTemplateFields();
@@ -752,7 +752,7 @@ public void removeMacro(VDBMacro macro)
 
     // no undo here
 
-    regenerateMacrosID();        
+    regenerateMacrosID();
     InspectorManager.getInstance().updateObject(this);
 /*
     updateTemplateFields();
@@ -766,7 +766,7 @@ public void removeMacro(VDBMacro macro)
 public void renamePort(VDBPort port, String newName)
 {
     String oldName = port.getName();
-    
+
     ports.remove(oldName);
     port.setName(newName);
     ports.put(port.getName(), port);
@@ -792,7 +792,7 @@ public void renamePort(VDBPort port, String newName)
 public void renameMacro(VDBMacro macro, String newName)
 {
     String oldName = macro.getName();
-    
+
     macros.remove(oldName);
     macro.setName(newName);
     macros.put(macro.getName(), macro);
@@ -804,7 +804,7 @@ public void renameMacro(VDBMacro macro, String newName)
     com.cosylab.vdct.undo.UndoManager.getInstance().addAction(
             new RenameTemplateMacroAction(this, macro, oldName, newName));
 
-    regenerateMacrosID();        
+    regenerateMacrosID();
     InspectorManager.getInstance().updateObject(this);
 /*
     updateTemplateFields();
@@ -861,10 +861,10 @@ public VDBPort addPort()
             }
 
         }
-        
+
         break;
     }
-    
+
     return null;
 }
 
@@ -908,10 +908,10 @@ public VDBMacro addMacro()
             }
 
         }
-        
+
         break;
     }
-    
+
     return null;
 }
 
@@ -921,7 +921,7 @@ public VDBMacro addMacro()
 public void propertyChanged(InspectableProperty property)
 {
     InspectorManager.getInstance().updateProperty(this, property);
-    
+
 /*
     updateTemplateFields();
     InspectorManager.getInstance().updateProperty(this, null);
@@ -993,7 +993,7 @@ public void renamePortProperty(InspectableProperty property)
             }
 
         }
-        
+
         break;
     }
 }
@@ -1039,11 +1039,11 @@ public void renameMacroProperty(InspectableProperty property)
             }
 
         }
-        
+
         break;
     }
 }
-    
+
     /**
      * Sets the fileName.
      * @param fileName The fileName to set
@@ -1060,7 +1060,7 @@ public void renameMacroProperty(InspectableProperty property)
     public void setId(String id)
     {
         this.id = id;
-        updateDescription();            
+        updateDescription();
         if (VDBData.getTemplates().containsKey(this.getId()))
         {
             Console.getInstance().print("Template with ID '"+this.getId()+"' is already loaded. Failed to store template '"+getFileName()+"' to the template repository.");

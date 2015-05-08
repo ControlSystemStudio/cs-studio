@@ -23,7 +23,7 @@ public class SQL
     final public String smpl_eng_insert;
     final public String smpl_eng_next_id;
     final public String smpl_eng_sel_by_group_id;
-    
+
     // 'chan_grp' table
     final public String chan_grp_sel_by_eng_id;
     final public String chan_grp_delete_by_engine_id;
@@ -43,7 +43,7 @@ public class SQL
 
     // 'sample mode' table
     final public String sample_mode_sel;
-    
+
     // 'sample' table
     final public String sel_last_sample_time_by_id;
 
@@ -85,7 +85,7 @@ public class SQL
         channel_next_id = "SELECT MAX(channel_id) FROM " + schema + "channel";
         channel_insert = "INSERT INTO " + schema + "channel(grp_id, name, smpl_mode_id, smpl_val, smpl_per, channel_id) VALUES (?,?,?,?,?,?)";
         channel_update = "UPDATE " + schema + "channel SET grp_id=?, name=?, smpl_mode_id=?, smpl_val=?, smpl_per=? WHERE channel_id=?";
-       
+
         // 'sample mode' table
         sample_mode_sel = "SELECT smpl_mode_id, name FROM " + schema + "smpl_mode";
 

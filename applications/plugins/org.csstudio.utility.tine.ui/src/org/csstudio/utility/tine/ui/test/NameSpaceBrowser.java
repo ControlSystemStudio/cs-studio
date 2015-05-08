@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.utility.tine.ui.test;
@@ -55,49 +55,49 @@ public class NameSpaceBrowser extends JDialog //implements ActionFrame
     public final static int COL_HEIGHT = 200;
     public final static int COL_SPACE = 5;
     public final static int COL_Y = 20;
-    
+
     public final static String DEFAULT_SEPARATOR = "/";
     public final static String INVALID_STRING = "No data available";
     public final static String NA = "N/A";
-    
+
 //    private int returnValue = CANCEL_OPTION;
     private int returnValue = 0;
-    
+
     Object calledFrom = null;
     JList lists[];
     JTextField selectedName;
     JButton okB, cancelB;
     ListSelection ls;
     JPanel mainPanel;
-        
+
     public NameSpaceBrowser (Component c, String title, String cols[]) {
         super(JOptionPane.getFrameForComponent(c), title+" Browser", true);
         setLocation(200,200);
         setResizable(false);
-        
+
         mainPanel = new JPanel();
         mainPanel.setBorder(new BevelBorder(BevelBorder.RAISED));
         Container cp = getContentPane();
         cp.setLayout(new BorderLayout());
-        
+
         cp.add(BorderLayout.CENTER, mainPanel);
-        
+
         String[] bnames = {"OK", "Cancel"};
 //        ActionButtons buttonsPanel = new ActionButtons(bnames, this);
 //        cp.add(BorderLayout.SOUTH,buttonsPanel);
 //        okB = buttonsPanel.getButton("OK");
 //        cancelB = buttonsPanel.getButton("Cancel");
-        
+
         mainPanel.setLayout(null);
         //setTitle(title+" Browser");
         int colNum = cols.length;
-        setSize(START_DRAW + STOP_DRAW + COL_WIDTH * colNum + 
-                COL_SPACE * (colNum - 1), DEFAULT_HEIGHT);       
-        
-        
+        setSize(START_DRAW + STOP_DRAW + COL_WIDTH * colNum +
+                COL_SPACE * (colNum - 1), DEFAULT_HEIGHT);
+
+
         Border etched = BorderFactory.createEtchedBorder();
         TitledBorder titled;
-        
+
         lists = new JList[colNum];
         JScrollPane scrolls[] = new JScrollPane[colNum];
         JPanel panels[] = new JPanel[colNum];
@@ -111,7 +111,7 @@ public class NameSpaceBrowser extends JDialog //implements ActionFrame
             panels[i] = new JPanel();
             panels[i].setLayout (new BorderLayout());
             mainPanel.add(panels[i]);
-            panels[i].setBounds(i * (COL_WIDTH + COL_SPACE) + START_DRAW, COL_Y, 
+            panels[i].setBounds(i * (COL_WIDTH + COL_SPACE) + START_DRAW, COL_Y,
                                  COL_WIDTH, COL_HEIGHT);
             titled = BorderFactory.createTitledBorder(etched, cols[i]+":");
             panels[i].add(scrolls[i]);
@@ -119,19 +119,19 @@ public class NameSpaceBrowser extends JDialog //implements ActionFrame
         }
         JPanel selectedPanel = new JPanel();
         selectedPanel.setLayout(new BorderLayout());
-        selectedPanel.setBounds(START_DRAW, COL_Y + COL_HEIGHT + 10, 
+        selectedPanel.setBounds(START_DRAW, COL_Y + COL_HEIGHT + 10,
                                colNum * COL_WIDTH + (colNum - 1) * COL_SPACE, 50);
         selectedName = new JTextField();
         selectedName.setEditable(false);
         selectedName.setBackground(Color.white);
         titled = BorderFactory.createTitledBorder(etched, "Selected Device:");
-        selectedPanel.setBorder(titled);                       
+        selectedPanel.setBorder(titled);
         selectedPanel.add(selectedName);
         mainPanel.add(selectedPanel);
-        
-        
-        int x = (Toolkit.getDefaultToolkit().getScreenSize().width - getWidth())/2;        
-        int y = (Toolkit.getDefaultToolkit().getScreenSize().height - getHeight())/2;        
+
+
+        int x = (Toolkit.getDefaultToolkit().getScreenSize().width - getWidth())/2;
+        int y = (Toolkit.getDefaultToolkit().getScreenSize().height - getHeight())/2;
         setLocation(x, y);
     }
     public void buttonActs(JButton b) {
@@ -160,7 +160,7 @@ public class NameSpaceBrowser extends JDialog //implements ActionFrame
         this.setVisible(false);
         this.dispose();
     }
-    
+
     protected void showDateChooser() {
 //        DateChooser dc = new DateChooser(this, null);
     }
@@ -183,7 +183,7 @@ public class NameSpaceBrowser extends JDialog //implements ActionFrame
     protected int getListsAmount () {
         return lists.length;
     }
-    
+
     public String getSelectedName() {
         if(!selectedName.getText().equals(INVALID_STRING)) return selectedName.getText();
         else return "";
@@ -194,7 +194,7 @@ public class NameSpaceBrowser extends JDialog //implements ActionFrame
         while (st.hasMoreTokens())  v.add(st.nextToken());
         return v;
     }
-        
+
     //static int st = 0;
     public String createName() {
         //System.out.println((st++)+"----------------------------");
@@ -265,7 +265,7 @@ public class NameSpaceBrowser extends JDialog //implements ActionFrame
         Collator defaultCollator = Collator.getInstance();
         String tmp;
         for (int i = 0; i < sin.length; i++) {
-            for (int j = i + 1; j < sin.length; j++) { 
+            for (int j = i + 1; j < sin.length; j++) {
                 if (defaultCollator.compare(sin[i], sin[j]) > 0) {
                     tmp = sin[i];
                     sin[i] = sin[j];
@@ -279,7 +279,7 @@ public class NameSpaceBrowser extends JDialog //implements ActionFrame
         Collator defaultCollator = Collator.getInstance();
         String tmp;
         for (int i = 0; i < sin.size(); i++) {
-            for (int j = i + 1; j < sin.size(); j++) { 
+            for (int j = i + 1; j < sin.size(); j++) {
                 if (defaultCollator.compare(sin.elementAt(i), sin.elementAt(j)) > 0) {
                     tmp = (String)sin.elementAt(i);
                     sin.setElementAt((String)sin.elementAt(j), i);
@@ -289,14 +289,14 @@ public class NameSpaceBrowser extends JDialog //implements ActionFrame
         }
         return sin;
     }
-    
+
     class ListSelection implements ListSelectionListener {
         public void valueChanged(ListSelectionEvent event) {
-            
+
             JList list = (JList) event.getSource();
             int listNum = getListNumber(list);
             //list.setEnabled(false);
-            //for(int i = 0; i < (lists.length - listNum - 1); i++) 
+            //for(int i = 0; i < (lists.length - listNum - 1); i++)
             setColumn(listNum + 1);
                 //if((listNum + 1) <= (lists.length - 1)) {
                     //System.out.println("from col:"+listNum+"("+list.getSelectedValue()+") to col:"+(listNum+1));
@@ -319,7 +319,7 @@ public class NameSpaceBrowser extends JDialog //implements ActionFrame
         //list.removeListSelectionListener(ls);
         int posorig = list.getSelectedIndex();
         int pos  = posorig;
-        
+
         for(int i = 0; i < list.getLastVisibleIndex(); i++) {
             list.setSelectedIndex(i);
             if(ch == ((String)list.getSelectedValue()).toLowerCase().charAt(0)) {

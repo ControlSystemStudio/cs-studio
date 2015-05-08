@@ -33,7 +33,7 @@ public class RampValue extends DynamicValue
     /** {@inheritDoc} */
     @Override
     protected void update()
-    {        
+    {
         if (down)
         {
             value = value - step;

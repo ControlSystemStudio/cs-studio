@@ -40,7 +40,7 @@ public class RegExHelperUnitTest
         // PVs
         assertEquals("SCL_..RF:IOC.*:Load", RegExHelper.regexFromGlob("SCL_??RF:IOC*:Load"));
     }
-    
+
     @Test
     public void testMatch()
     {

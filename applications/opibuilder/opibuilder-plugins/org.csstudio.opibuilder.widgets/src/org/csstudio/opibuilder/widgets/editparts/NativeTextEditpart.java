@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * The editpart for native text widget.
- * 
+ *
  * @author Xihui Chen
  * @deprecated not used anymore
  */
@@ -41,7 +41,7 @@ public class NativeTextEditpart extends TextInputEditpart {
 
 
     private Text text;
-    
+
     @Override
     public NativeTextModel getWidgetModel() {
         return (NativeTextModel) getModel();
@@ -50,7 +50,7 @@ public class NativeTextEditpart extends TextInputEditpart {
     @Override
     protected IFigure doCreateFigure() {
         initFields();
-        
+
         int style=SWT.NONE;
         NativeTextModel model = getWidgetModel();
         if(model.isShowNativeBorder())
@@ -81,8 +81,8 @@ public class NativeTextEditpart extends TextInputEditpart {
             style |= SWT.RIGHT;
         default:
             break;
-        }        
-        
+        }
+
         final NativeTextFigure figure = new NativeTextFigure(this, style);
         text = figure.getSWTWidget();
 
@@ -91,7 +91,7 @@ public class NativeTextEditpart extends TextInputEditpart {
                 text.addKeyListener(new KeyAdapter() {
                     @Override
                     public void keyPressed(KeyEvent keyEvent) {
-                        if (keyEvent.character == '\r') { // Return key                
+                        if (keyEvent.character == '\r') { // Return key
                             if (text != null && !text.isDisposed()
                                     && (text.getStyle() & SWT.MULTI) != 0) {
                                 if ((keyEvent.stateMask & SWT.CTRL) != 0) {
@@ -100,7 +100,7 @@ public class NativeTextEditpart extends TextInputEditpart {
                                   text.getShell().setFocus();
                                 }
                             }
-                            
+
                         }
                     }
                 });
@@ -121,7 +121,7 @@ public class NativeTextEditpart extends TextInputEditpart {
                         case KEEP:
                         default:
                             break;
-                        }                        
+                        }
                     }
                 });
             }
@@ -137,7 +137,7 @@ public class NativeTextEditpart extends TextInputEditpart {
             text.addFocusListener(new FocusAdapter() {
                 @Override
                 public void focusLost(FocusEvent e) {
-                    //On mobile, lost focus should output text since there is not enter hit or ctrl key. 
+                    //On mobile, lost focus should output text since there is not enter hit or ctrl key.
                     if(getPV() != null && !OPIBuilderPlugin.isMobile(text.getDisplay()))
                         text.setText(getWidgetModel().getText());
                     else if(figure.isEnabled())
@@ -145,25 +145,25 @@ public class NativeTextEditpart extends TextInputEditpart {
                 }
             });
         }
-        
+
         getPVWidgetEditpartDelegate().setUpdateSuppressTime(-1);
         updatePropSheet();
         return figure;
     }
-    
+
     protected void outputText(String newValue) {
         if(getPV() == null){
             setPropertyValue(NativeTextModel.PROP_TEXT, newValue);
             outputPVValue(newValue);
         }
-        else{ 
-            //PV may not be changed instantly, so recover it to old text first.    
-            text.setText(getWidgetModel().getText());    
+        else{
+            //PV may not be changed instantly, so recover it to old text first.
+            text.setText(getWidgetModel().getText());
             //Write PV and update the text with new PV value if writing succeed.
             outputPVValue(newValue);
         }
     }
-    
+
     @Override
     protected void updatePropSheet() {
         super.updatePropSheet();
@@ -171,7 +171,7 @@ public class NativeTextEditpart extends TextInputEditpart {
         getWidgetModel().setPropertyVisible(NativeTextModel.PROP_SHOW_H_SCROLL, isMulti);
         getWidgetModel().setPropertyVisible(NativeTextModel.PROP_SHOW_V_SCROLL, isMulti);
         getWidgetModel().setPropertyVisible(NativeTextModel.PROP_WRAP_WORDS, isMulti);
-        getWidgetModel().setPropertyVisible(NativeTextModel.PROP_PASSWORD_INPUT, !isMulti);    
+        getWidgetModel().setPropertyVisible(NativeTextModel.PROP_PASSWORD_INPUT, !isMulti);
     }
 
 
@@ -182,7 +182,7 @@ public class NativeTextEditpart extends TextInputEditpart {
             installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,    null);
     }
 
-    
+
     @Override
     protected void setFigureText(String text) {
         this.text.setText(text);
@@ -190,22 +190,22 @@ public class NativeTextEditpart extends TextInputEditpart {
 
     @Override
     protected void registerPropertyChangeHandlers() {
-        super.registerPropertyChangeHandlers();    
+        super.registerPropertyChangeHandlers();
         removeAllPropertyChangeHandlers(NativeTextModel.PROP_ALIGN_H);
-        
+
         PropertyChangeListener updatePropSheetListener = new PropertyChangeListener() {
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 updatePropSheet();
             }
         };
-        
+
         getWidgetModel().getProperty(NativeTextModel.PROP_MULTILINE_INPUT)
             .addPropertyChangeListener(updatePropSheetListener);
-        
+
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 AbstractWidgetModel model = getWidgetModel();
@@ -223,8 +223,8 @@ public class NativeTextEditpart extends TextInputEditpart {
         setPropertyChangeHandler(NativeTextModel.PROP_SHOW_V_SCROLL, handler);
         setPropertyChangeHandler(NativeTextModel.PROP_PASSWORD_INPUT, handler);
         setPropertyChangeHandler(NativeTextModel.PROP_ALIGN_H, handler);
-        
-    }    
+
+    }
 
     @Override
     protected String formatValue(Object newValue, String propId) {
@@ -234,18 +234,18 @@ public class NativeTextEditpart extends TextInputEditpart {
         return text;
 
     }
-    
+
     @Override
     protected void performAutoSize() {
         getWidgetModel().setSize(((NativeTextFigure)getFigure()).
                 getAutoSizeDimension());
     }
-    
+
     @Override
     public String getValue() {
         return text.getText();
     }
-    
+
     @SuppressWarnings("rawtypes")
     @Override
     public Object getAdapter(Class key) {
@@ -254,8 +254,8 @@ public class NativeTextEditpart extends TextInputEditpart {
 
         return super.getAdapter(key);
     }
-    
-    
-    
+
+
+
 
 }

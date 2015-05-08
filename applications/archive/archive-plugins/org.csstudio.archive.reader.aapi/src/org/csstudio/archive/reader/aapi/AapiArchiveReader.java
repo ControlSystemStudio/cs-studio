@@ -11,7 +11,7 @@ import de.desy.aapi.AapiException;
 
 /**
  * Access to aapi server.
- * 
+ *
  * @author jhatje
  * @author $Author: jhatje $
  * @version $Revision: 1.7 $
@@ -30,7 +30,7 @@ public class AapiArchiveReader implements ArchiveReader {
     }
 
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -86,9 +86,9 @@ public class AapiArchiveReader implements ArchiveReader {
 
     /**
      * Create the Aapi server for the url
-     * 
+     *
      * TODO (jhatje) aapiClient in factory erzeugen.
-     * 
+     *
      * @param url
      * @return
      * @throws Exception
@@ -113,7 +113,7 @@ public class AapiArchiveReader implements ArchiveReader {
 //        valueIterator.getData();
 //        return valueIterator;
 //    }
-//    
+//
 //    @Override
 //    public ValueIterator getOptimizedValues(int key, String name,
 //            ITimestamp start, ITimestamp end, int count)

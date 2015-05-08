@@ -28,15 +28,15 @@ import org.csstudio.dal.DataExchangeException;
 import de.desy.tine.dataUtils.TDataType;
 
 /**
- * 
+ *
  * @author Jaka Bobnar, Cosylab
  *
  */
 public class LongSeqPropertyProxyImpl extends PropertyProxyImpl<long[]>{
-    
+
     private long[] value;
     private int length;
-    
+
     /**
      * Constructs a new LongSeqPropertyProxy.
      * @param name
@@ -63,7 +63,7 @@ public class LongSeqPropertyProxyImpl extends PropertyProxyImpl<long[]>{
         } else {
             return new long[this.length];
         }
-        
+
     }
 
     /*

@@ -21,7 +21,7 @@ import org.csstudio.autocomplete.ui.content.IContentProposalSearchHandler;
 /**
  * Implements {@link IAutoCompleteProposalProvider} and manages the
  * {@link ContentProposalList} with results from {@link AutoCompleteService}.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class AutoCompleteProposalProvider implements

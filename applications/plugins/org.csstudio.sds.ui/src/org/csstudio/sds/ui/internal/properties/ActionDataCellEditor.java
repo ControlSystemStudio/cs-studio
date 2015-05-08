@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.ui.internal.properties;
@@ -84,7 +84,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 /**
  * A table cell editor for values of type {@link ActionData}.
- * 
+ *
  * @author Kai Meyer
  */
 public final class ActionDataCellEditor extends AbstractDialogCellEditor {
@@ -101,7 +101,7 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
     /**
      * Creates a new string cell editor parented under the given control. The
      * cell editor value is a Map of Strings.
-     * 
+     *
      * @param parent
      *            The parent table.
      */
@@ -112,7 +112,7 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
     /**
      * Creates a new string cell editor parented under the given control. The
      * cell editor value is a Map of Strings.
-     * 
+     *
      * @param parent
      *            The parent table.
      * @param title
@@ -171,7 +171,7 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
     /**
      * This class represents a Dialog to add, edit and remove the entries of a
      * Map.
-     * 
+     *
      * @author Kai Meyer
      */
     private final class ActionDataDialog extends Dialog {
@@ -224,7 +224,7 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
          * <p>
          * Note that the <code>open</code> method blocks for input dialogs.
          * </p>
-         * 
+         *
          * @param parentShell
          *            the parent shell, or <code>null</code> to create a
          *            top-level shell
@@ -240,7 +240,7 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
                     | SWT.BORDER | SWT.RESIZE);
             _title = dialogTitle;
             _message = dialogMessage;
-            
+
             _descriptorPropertyMap = new HashMap<IPropertyDescriptor, WidgetProperty>();
             _actionDescriptorsMap = new HashMap<AbstractWidgetActionModel, IPropertyDescriptor[]>();
         }
@@ -334,7 +334,7 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
 
         /**
          * Creates the popup-menu for adding a {@link AbstractWidgetActionModel}.
-         * 
+         *
          * @param control
          *            The {@link Control} for the menu
          * @param withRemoveAction
@@ -485,7 +485,7 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
         /**
          * Calculates the input for the table depending on the type of the
          * {@link ActionData}.
-         * 
+         *
          * @param action
          *            The {@link AbstractWidgetActionModel} for the input
          */
@@ -515,7 +515,7 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
 
         /**
          * Creates a label with the given text.
-         * 
+         *
          * @param parent
          *            The parent for the label
          * @param text
@@ -530,7 +530,7 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
 
         /**
          * Creates and configures a {@link TableViewer}.
-         * 
+         *
          * @param parent
          *            The parent for the table
          * @return The {@link TableViewer}
@@ -593,7 +593,7 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
 
         /**
          * Creates and configures a {@link TableViewer}.
-         * 
+         *
          * @param parent
          *            The parent for the table
          * @return The {@link TableViewer}
@@ -713,7 +713,7 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
 
         /**
          * Returns the {@link WidgetProperty} of the {@link IPropertyDescriptor}.
-         * 
+         *
          * @param descriptor
          *            The {@link IPropertyDescriptor}
          * @return The {@link WidgetProperty} for the given descriptor
@@ -743,7 +743,7 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
 
         /**
          * Refreshes the viewer for the {@link AbstractWidgetActionModel}s.
-         * 
+         *
          * @param action
          *            The action to select (may be null)
          */
@@ -779,9 +779,9 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
 
         /**
          * The {@link EditingSupport} for the columns of the property table.
-         * 
+         *
          * @author Kai Meyer
-         * 
+         *
          */
         private final class CustomEditingSupport extends EditingSupport {
 
@@ -796,7 +796,7 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
 
             /**
              * Constructor.
-             * 
+             *
              * @param viewer
              *            The {@link ColumnViewer} for this
              *            {@link EditingSupport}.
@@ -876,9 +876,9 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
         /**
          * An {@link Action}, which adds a new {@link AbstractWidgetActionModel} of the
          * given {@link ActionType}.
-         * 
+         *
          * @author Kai Meyer
-         * 
+         *
          */
         private final class TypeAction extends Action {
             /**
@@ -888,7 +888,7 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
 
             /**
              * Constructor.
-             * 
+             *
              * @param type
              *            The {@link ActionType} for the action.
              */
@@ -920,9 +920,9 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
 
         /**
          * The {@link LabelProvider} for the table.
-         * 
+         *
          * @author Kai Meyer
-         * 
+         *
          */
         private final class TableLabelProvider extends LabelProvider implements
                 ITableLabelProvider {

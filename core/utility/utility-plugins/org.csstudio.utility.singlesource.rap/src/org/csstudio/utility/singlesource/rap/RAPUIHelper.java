@@ -9,15 +9,15 @@ public class RAPUIHelper extends UIHelper {
     public RAPUIHelper() {
     }
 
-    
+
     @Override
     public boolean rapAuthenticate(Display display) {
         return SecurityService.authenticate(display);
     }
-    
+
     @Override
     public boolean rapIsLoggedIn(Display display) {
         return SecurityService.isLoggedIn(display);
-    }    
-    
+    }
+
 }

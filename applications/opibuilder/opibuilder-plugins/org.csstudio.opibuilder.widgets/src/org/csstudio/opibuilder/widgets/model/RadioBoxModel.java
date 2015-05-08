@@ -22,11 +22,11 @@ public class RadioBoxModel extends AbstractChoiceModel {
         setPropertyValue(PROP_COLOR_BACKGROUND, new RGB(230, 230, 230));
         setPropertyValue(PROP_SELECTED_COLOR, new RGB(77,77,77));
     }
-    
+
     @Override
     public String getTypeID() {
         return ID;
     }
-    
+
 
 }

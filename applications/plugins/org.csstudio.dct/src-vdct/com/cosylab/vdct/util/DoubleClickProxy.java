@@ -22,7 +22,7 @@ import com.cosylab.vdct.Settings;
 public class DoubleClickProxy implements MouseInputListener {
     static int awt_multiclick_time = 200;
     static int awt_multiclick_smudge = 4;
-    
+
     MouseInputListener listener;
     int clickCount = 1;
     Object lastPeer = null;
@@ -149,7 +149,7 @@ public class DoubleClickProxy implements MouseInputListener {
                 e.getWhen(), e.getModifiers(), e.getX(), e.getY(), clickCount,
                 e.isPopupTrigger(), e.getButton()));
     }
-    
+
     public static void setAwt_multiclick_smudge(int i) {
         awt_multiclick_smudge = i;
     }

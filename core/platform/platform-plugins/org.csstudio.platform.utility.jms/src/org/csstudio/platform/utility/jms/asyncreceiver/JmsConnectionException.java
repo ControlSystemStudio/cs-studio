@@ -24,7 +24,7 @@ package org.csstudio.platform.utility.jms.asyncreceiver;
 
 /**
  * Thrown when errors occur in trying to connect to a JMS broker.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class JmsConnectionException extends Exception {
@@ -36,7 +36,7 @@ public class JmsConnectionException extends Exception {
 
     /**
      * Creates a new <code>JmsConnectionException</code>.
-     * 
+     *
      * @param message
      *            an error message.
      * @param cause

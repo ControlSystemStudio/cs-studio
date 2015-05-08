@@ -47,24 +47,24 @@ import org.eclipse.core.runtime.Platform;
  * <code>managementCommands</code> extension point. This implementation makes
  * available all commands registered as extensions of that extension point.
  * </p>
- * 
+ *
  * <p>
  * Note that this service is not a remote service. For remote administration,
  * this service must be pubished as a remote service by another plug-in.
  * </p>
- * 
+ *
  * @author Joerg Rathlev
  */
 public class ManagementServiceImpl implements IManagementCommandService {
-    
+
     private static final String EXTENSION_POINT_ID =
         "org.csstudio.remote.managementCommands";
-    
-    
+
+
     private Map<String, CommandContribution> _commands;
 
     /**
-     * Creates a new instance of this service implementation. 
+     * Creates a new instance of this service implementation.
      */
     public ManagementServiceImpl() {
     }
@@ -106,7 +106,7 @@ public class ManagementServiceImpl implements IManagementCommandService {
     /**
      * Reads a single management command contribution from the specified
      * configuration element.
-     * 
+     *
      * @param configElement
      *            the configuration element.
      */
@@ -126,7 +126,7 @@ public class ManagementServiceImpl implements IManagementCommandService {
         } catch (Exception e) {
             String contributor = configElement.getContributor().getName();
 //            TODO (jhatje): Change logging.
-//            log.error(this, "The management command with id " + id + 
+//            log.error(this, "The management command with id " + id +
 //                    " from plug-in " + contributor + " is invalid. " +
 //                    e.getMessage(), e);
         }
@@ -134,7 +134,7 @@ public class ManagementServiceImpl implements IManagementCommandService {
 
     /**
      * Reads the parameter definitions from the configuration element.
-     * 
+     *
      * @param commandConfigElement
      *            the command configuration element.
      * @param commandBuilder
@@ -184,7 +184,7 @@ public class ManagementServiceImpl implements IManagementCommandService {
     /**
      * Reads the enumeration values of the specified enumeration parameter
      * configuration element.
-     * 
+     *
      * @param parameterConfig
      *            the configuration element.
      * @param definitionBuilder
@@ -205,7 +205,7 @@ public class ManagementServiceImpl implements IManagementCommandService {
     /**
      * Reads a numeric attribute from the integer parameter configuration
      * element.
-     * 
+     *
      * @param parameterConfig
      *            the configuration element.
      * @param attribute
@@ -267,5 +267,5 @@ public class ManagementServiceImpl implements IManagementCommandService {
             return new CommandParameterEnumValue[0];
         }
     }
-    
+
 }

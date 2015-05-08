@@ -17,8 +17,8 @@ public class RuleScriptData extends ScriptData {
 
     private String scriptString;
     private RuleData ruleData;
-    
-    
+
+
     public RuleScriptData(RuleData ruleData) {
         this.ruleData = ruleData;
     }
@@ -26,7 +26,7 @@ public class RuleScriptData extends ScriptData {
     public RuleData getRuleData() {
         return ruleData;
     }
-    
+
     /**
      * @return the scriptString
      */
@@ -40,11 +40,11 @@ public class RuleScriptData extends ScriptData {
     public final void setScriptString(String scriptString) {
         this.scriptString = scriptString;
     }
-    
+
     public void setPVList(List<PVTuple> pvList){
         this.pvList = pvList;
     }
-    
-    
-    
+
+
+
 }

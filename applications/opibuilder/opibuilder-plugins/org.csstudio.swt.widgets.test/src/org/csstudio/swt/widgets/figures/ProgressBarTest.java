@@ -15,8 +15,8 @@ public class ProgressBarTest extends AbstractMarkedWidgetTest{
     public Figure createTestWidget() {
         return new ProgressBarFigure();
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -29,15 +29,15 @@ public class ProgressBarTest extends AbstractMarkedWidgetTest{
                 "origin",
                 "originIgnored"
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
     @Override
     public boolean isAutoTest() {
         return true;
     }
 
-    
-        
+
+
 }

@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.importer;
@@ -33,16 +33,16 @@ import org.eclipse.core.runtime.IPath;
  * Abstract super class for display importers. A display importer is responsible
  * for the conversion of a legacy display model (e.g. EDM or MEDM) into a SDS
  * display.
- * 
+ *
  * @author Alexander Will
  * @version $Revision: 1.8 $
- * 
+ *
  */
 public abstract class AbstractDisplayImporter {
     /**
      * Import the display that is stored in the given source file into a SDS
      * diaplay in the workspace.
-     * 
+     *
      * @param sourceFile
      *            The source file's full path.
      * @param targetProject
@@ -58,7 +58,7 @@ public abstract class AbstractDisplayImporter {
 
     /**
      * Create a widget element with the given type ID.
-     * 
+     *
      * @param typeId
      *            The type ID of the widget element.
      * @return A new widget element with the given type ID.
@@ -66,17 +66,17 @@ public abstract class AbstractDisplayImporter {
     protected final AbstractWidgetModel createWidgetModel(String typeId) {
         AbstractWidgetModel result =  WidgetModelFactoryService.getInstance()
                 .getWidgetModel(typeId);
-        
+
         // .. update model to ensure invariants that have been declared by {@link SdsPlugin#EXTPOINT_WIDGET_PROPERTY_POSTPROCESSORS}
         SdsPlugin.getDefault().getWidgetPropertyPostProcessingService().applyForAllProperties(result, EventType.ON_DISPLAY_MODEL_LOADED);
-        
+
         return result;
     }
 
     /**
      * Connect a property of the given model element to one single input
      * channel.
-     * 
+     *
      * @param model
      *            The model element.
      * @param propertyId
@@ -97,7 +97,7 @@ public abstract class AbstractDisplayImporter {
     /**
      * Connect a property of the given model element to one single input
      * channel.
-     * 
+     *
      * @param model
      *            The model element.
      * @param propertyId
@@ -120,7 +120,7 @@ public abstract class AbstractDisplayImporter {
 
     /**
      * Connect a property of the given model element to an output channel.
-     * 
+     *
      * @param model
      *            The model element.
      * @param propertyId

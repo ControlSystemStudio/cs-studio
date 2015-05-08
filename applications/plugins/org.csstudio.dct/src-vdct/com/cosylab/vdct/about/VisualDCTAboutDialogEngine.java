@@ -13,7 +13,7 @@ import javax.swing.JFrame;
  */
 public class VisualDCTAboutDialogEngine extends AboutDialogEngine {
 
- 
+
 
     /**
      * Constructor for DefaultAboutDialogEngine.
@@ -49,39 +49,39 @@ public class VisualDCTAboutDialogEngine extends AboutDialogEngine {
                 javax.swing.JFrame jf = (javax.swing.JFrame) c;
                 receiver = (new AboutDialog(jf, true));
                 instanceOfJFrame(jf);
-            
+
             } else instanceOfComponent(c);
-            
+
         }
 
         else {
             receiver = new AboutDialog();
         }
-    } 
+    }
 
     /**
      * @see com.cosylab.gui.components.about.AboutDialogEngine#perform()
      */
     protected void perform() {
-    
+
     aquireDefaultTabs();
     arrangeTabs();
-    
-    
+
+
     }
-    
+
     protected void aquireDefaultTabs(){
-    
+
     ProgramTabPanel ptp = new ProgramTabPanel(new VisualDCTProgramTabModel(aboutedObject));
-    
+
     receiver.setTitle("About " + ptp.getTitle());
-    
+
     addAboutTab(ptp);
     addAboutTab(new LicenseTabPanel(new VisualDCTLicenseTabModel(aboutedObject)));
     addAboutTab(new SystemTabPanel(new VisualDCTSystemTabModel()));
-    
+
     }
-    
+
     protected void instanceOfJFrame(javax.swing.JFrame jf) {
 
         int x = (int) (jf.getX() + 0.5 * jf.getWidth() - 0.5 * ((AboutDialog)receiver).getWidth());
@@ -92,7 +92,7 @@ public class VisualDCTAboutDialogEngine extends AboutDialogEngine {
         if (y < 0)
             y = 0;
 
-        
+
         ((AboutDialog)receiver).setBounds(x,y,((AboutDialog)receiver).getWidth(),((AboutDialog)receiver).getHeight());
 
     }
@@ -106,7 +106,7 @@ public class VisualDCTAboutDialogEngine extends AboutDialogEngine {
         if (y < 0)
             y = 0;
 
-        
+
         ((AboutDialog)receiver).setBounds(x,y,((AboutDialog)receiver).getWidth(),((AboutDialog)receiver).getHeight());
 
     }

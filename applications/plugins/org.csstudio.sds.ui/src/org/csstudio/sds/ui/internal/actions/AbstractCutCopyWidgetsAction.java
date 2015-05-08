@@ -39,14 +39,14 @@ import org.eclipse.ui.IWorkbenchPart;
 /**
  * Abstract base class which contains the common parts of the cut and copy
  * actions.
- * 
+ *
  * @author Joerg Rathlev
  */
 public abstract class AbstractCutCopyWidgetsAction extends SelectionAction {
 
     /**
      * Creates a new cut or copy action.
-     * 
+     *
      * @param part the workbench part.
      */
     public AbstractCutCopyWidgetsAction(final IWorkbenchPart part) {
@@ -64,7 +64,7 @@ public abstract class AbstractCutCopyWidgetsAction extends SelectionAction {
 
     /**
      * Sets the clipboard contents to the given list of widgets.
-     * 
+     *
      * @param widgets
      *            the list of widgets.
      */
@@ -76,15 +76,15 @@ public abstract class AbstractCutCopyWidgetsAction extends SelectionAction {
 
     /**
      * Gets the widget models of all currently selected EditParts.
-     * 
+     *
      * @return a list with all widget models that are currently selected
      */
     @SuppressWarnings("rawtypes")
     protected final List<AbstractWidgetModel> getSelectedWidgetModels() {
         List selection = getSelectedObjects();
-    
+
         List<AbstractWidgetModel> selectedWidgetModels = new ArrayList<AbstractWidgetModel>();
-    
+
         for (Object o : selection) {
             if (o instanceof AbstractBaseEditPart) {
                 selectedWidgetModels.add(((AbstractBaseEditPart) o)
@@ -94,7 +94,7 @@ public abstract class AbstractCutCopyWidgetsAction extends SelectionAction {
         sortWidgetModels(selectedWidgetModels);
         return selectedWidgetModels;
     }
-    
+
     private void sortWidgetModels(final List<AbstractWidgetModel> widgetModels) {
         Collections.sort(widgetModels, new Comparator<AbstractWidgetModel>() {
             @Override

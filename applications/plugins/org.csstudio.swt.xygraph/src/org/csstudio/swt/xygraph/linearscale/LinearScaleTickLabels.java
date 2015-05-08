@@ -19,7 +19,7 @@ import org.eclipse.draw2d.geometry.Dimension;
 
 /**
  * Linear Scale tick labels.
- * 
+ *
  * @author Xihui Chen
  */
 public class LinearScaleTickLabels extends Figure {
@@ -65,7 +65,7 @@ public class LinearScaleTickLabels extends Figure {
 
     /**
      * Constructor.
-     * 
+     *
      * @param linearScale
      *            the scale
      */
@@ -73,7 +73,7 @@ public class LinearScaleTickLabels extends Figure {
 
         this.scale = linearScale;
         tickLabels = new ArrayList<String>();
-        tickLabelValues = new ArrayList<Double>();        
+        tickLabelValues = new ArrayList<Double>();
         tickLabelPositions = new ArrayList<Integer>();
         tickLabelVisibilities = new ArrayList<Boolean>();
 
@@ -104,7 +104,7 @@ public class LinearScaleTickLabels extends Figure {
 
     /**
      * Gets the tick label positions.
-     * 
+     *
      * @return the tick label positions
      */
     public ArrayList<Integer> getTickLabelPositions() {
@@ -120,7 +120,7 @@ public class LinearScaleTickLabels extends Figure {
 
     /**
      * Draw the X tick.
-     * 
+     *
      * @param grahics
      *            the graphics context
      */
@@ -140,7 +140,7 @@ public class LinearScaleTickLabels extends Figure {
 
     /**
      * Draw the Y tick.
-     * 
+     *
      * @param grahpics
      *            the graphics context
      */
@@ -168,7 +168,7 @@ public class LinearScaleTickLabels extends Figure {
 
     /**
      * Gets the grid step.
-     * 
+     *
      * @param lengthInPixels
      *            scale length in pixels
      * @param min
@@ -280,7 +280,7 @@ public class LinearScaleTickLabels extends Figure {
     }
 
     /**
-     * If it has enough space to draw the tick label    
+     * If it has enough space to draw the tick label
      */
     private boolean hasSpaceToDraw(int previousPosition, int tickLabelPosition,
             String previousTickLabel, String tickLabel) {
@@ -325,7 +325,7 @@ public class LinearScaleTickLabels extends Figure {
 
     /**
      * Updates tick label for normal scale.
-     * 
+     *
      * @param length
      *            scale tick length (without margin)
      */
@@ -339,7 +339,7 @@ public class LinearScaleTickLabels extends Figure {
 
     /**
      * Updates tick label for normal scale.
-     * 
+     *
      * @param length
      *            scale tick length (without margin)
      * @param tickStep
@@ -381,7 +381,7 @@ public class LinearScaleTickLabels extends Figure {
             }
             tickLabelPositions.add(scale.getMargin());
         }
-        
+
         double b = firstPosition;
         double previousB = Double.NaN;
         int i = 0;
@@ -392,7 +392,7 @@ public class LinearScaleTickLabels extends Figure {
                 tickLabels.add(scale.format(date, b == firstPosition && !minDateAdded));
             } else {
                 tickLabels.add(scale.format(b));
-            }            
+            }
                 tickLabelValues.add(b);
                 int tickLabelPosition = (int) ((b - min) / (max - min) * length) + scale.getMargin();
                 // - LINE_WIDTH;
@@ -418,7 +418,7 @@ public class LinearScaleTickLabels extends Figure {
 
     /**
      * Updates tick label for log scale.
-     * 
+     *
      * @param length
      *            the length of scale
      */
@@ -547,8 +547,8 @@ public class LinearScaleTickLabels extends Figure {
         tickLabelVisibilities.clear();
 
         if (tickLabelPositions.isEmpty())
-            return;        
-        
+            return;
+
         for (int i = 0; i < tickLabelPositions.size(); i++) {
             tickLabelVisibilities.add(Boolean.TRUE);
         }
@@ -568,7 +568,7 @@ public class LinearScaleTickLabels extends Figure {
                         previousLabel, currentLabel);
             }
             Double currentValue = tickLabelValues.get(i);
-            // check if repeated            
+            // check if repeated
             boolean isRepeatSameTickAndNotEnd = currentValue.equals(previousValue)
                     && (i != 0 && i != tickLabelPositions.size() - 1);
 
@@ -603,7 +603,7 @@ public class LinearScaleTickLabels extends Figure {
 
     /**
      * Updates the tick labels.
-     * 
+     *
      * @param length
      *            scale length without margin
      */

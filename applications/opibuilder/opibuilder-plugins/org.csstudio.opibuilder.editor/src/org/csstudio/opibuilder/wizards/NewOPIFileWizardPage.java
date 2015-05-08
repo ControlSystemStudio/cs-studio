@@ -28,7 +28,7 @@ public class NewOPIFileWizardPage extends WizardNewFileCreationPage {
         setTitle("Create a new OPI File");
         setDescription("Create a new OPI file in the selected project or folder.");
     }
-    
+
     @Override
     protected InputStream getInitialContents() {
         DisplayModel displayModel = new DisplayModel();
@@ -37,13 +37,13 @@ public class NewOPIFileWizardPage extends WizardNewFileCreationPage {
         InputStream result = new ByteArrayInputStream(s.getBytes());
         return result;
     }
-    
-    
+
+
     @Override
     protected String getNewFileLabel() {
         return "OPI File Name:";
     }
-    
+
     @Override
     public String getFileExtension() {
         return OPIBuilderPlugin.OPI_FILE_EXTENSION;

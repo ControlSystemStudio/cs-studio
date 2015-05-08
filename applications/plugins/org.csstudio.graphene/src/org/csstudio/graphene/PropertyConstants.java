@@ -2,7 +2,7 @@ package org.csstudio.graphene;
 
 /**
  * Constants to be used for mementos and opi model.
- * 
+ *
  * @author carcassi
  */
 public class PropertyConstants {

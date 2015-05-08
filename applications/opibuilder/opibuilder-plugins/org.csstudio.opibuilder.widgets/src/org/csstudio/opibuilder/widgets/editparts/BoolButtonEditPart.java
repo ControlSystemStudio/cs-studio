@@ -24,17 +24,17 @@ public class BoolButtonEditPart extends AbstractBoolControlEditPart{
         final BoolButtonModel model = getWidgetModel();
 
         BoolButtonFigure btn = new BoolButtonFigure();
-        
-        initializeCommonFigureProperties(btn, model);            
+
+        initializeCommonFigureProperties(btn, model);
         btn.setEffect3D(model.isEffect3D());
         btn.setSquareButton((model.isSquareButton()));
         btn.setShowLED(model.isShowLED());
         return btn;
-        
-        
+
+
     }
-    
-    
+
+
     @Override
     public BoolButtonModel getWidgetModel() {
         return (BoolButtonModel)getModel();
@@ -43,7 +43,7 @@ public class BoolButtonEditPart extends AbstractBoolControlEditPart{
     @Override
     protected void registerPropertyChangeHandlers() {
         registerCommonPropertyChangeHandlers();
-        
+
         //effect 3D
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -54,8 +54,8 @@ public class BoolButtonEditPart extends AbstractBoolControlEditPart{
                 return true;
             }
         };
-        setPropertyChangeHandler(BoolButtonModel.PROP_EFFECT3D, handler);    
-        
+        setPropertyChangeHandler(BoolButtonModel.PROP_EFFECT3D, handler);
+
         //Sqaure LED
         handler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -66,8 +66,8 @@ public class BoolButtonEditPart extends AbstractBoolControlEditPart{
                 return true;
             }
         };
-        setPropertyChangeHandler(BoolButtonModel.PROP_SQUARE_BUTTON, handler);    
-        
+        setPropertyChangeHandler(BoolButtonModel.PROP_SQUARE_BUTTON, handler);
+
         //Show LED
         handler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -78,8 +78,8 @@ public class BoolButtonEditPart extends AbstractBoolControlEditPart{
                 return true;
             }
         };
-        setPropertyChangeHandler(BoolButtonModel.PROP_SHOW_LED, handler);        
-        
+        setPropertyChangeHandler(BoolButtonModel.PROP_SHOW_LED, handler);
+
     }
 
 }

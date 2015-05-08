@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.shift;
 
@@ -27,7 +27,7 @@ public class ShiftClientFromPreferences implements ShiftClient {
     private volatile ShiftClient client;
 
     /**
-     * 
+     *
      */
     public ShiftClientFromPreferences() {
         final IPreferencesService prefs = Platform.getPreferencesService();
@@ -55,7 +55,7 @@ public class ShiftClientFromPreferences implements ShiftClient {
     public Collection<Shift> listShifts() throws ShiftFinderException {
         return client.listShifts();
     }
-    
+
     @Override
     public Shift getShiftByType(final String type) throws ShiftFinderException {
         return client.getShiftByType(type);
@@ -67,7 +67,7 @@ public class ShiftClientFromPreferences implements ShiftClient {
     }
 
     @Override
-    public Shift start(final Shift shift) throws ShiftFinderException {    
+    public Shift start(final Shift shift) throws ShiftFinderException {
         return client.start(shift);
     }
 

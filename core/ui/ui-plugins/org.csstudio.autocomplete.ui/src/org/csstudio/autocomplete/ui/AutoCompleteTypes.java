@@ -12,7 +12,7 @@ import org.csstudio.autocomplete.AutoCompleteType;
 /**
  * List commonly used types. Each type defines a specific behavior, see
  * AutoComplete providers preferences.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
  */
 public class AutoCompleteTypes {

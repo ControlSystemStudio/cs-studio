@@ -34,13 +34,13 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * Service which manages a shared connection for sending JMS messages. The
  * settings for the connection are read from the preferences of the JMS Utility
  * plug-in.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class SharedSenderConnectionService {
-    
+
     private final MonitorableSharedConnection _connection;
-    
+
     /**
      * Creates the service.
      */
@@ -54,7 +54,7 @@ public class SharedSenderConnectionService {
 
     /**
      * Returns a handle to the shared connection.
-     * 
+     *
      * @return a handle to the shared connection.
      * @throws JMSException
      *             if the underlying shared connection could not be created or

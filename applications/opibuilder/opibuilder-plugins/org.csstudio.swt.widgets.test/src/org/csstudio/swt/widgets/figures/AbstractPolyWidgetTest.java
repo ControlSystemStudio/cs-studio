@@ -20,19 +20,19 @@ public abstract class AbstractPolyWidgetTest extends AbstractShapeWidgetTest {
 
     @Override
     public String[] getPropertyNames() {
-        String[] superProps =  super.getPropertyNames();    
+        String[] superProps =  super.getPropertyNames();
         String[] shapeProps = new String[]{
                 "points",
-                
+
         };
         return concatenateStringArrays(superProps, shapeProps);
     }
-    
-    
+
+
     @Override
-    public Object generateTestData(PropertyDescriptor pd, Object seed) {                
+    public Object generateTestData(PropertyDescriptor pd, Object seed) {
         if(pd.getName().equals("points")){
-                if(seed !=null && seed instanceof Integer){    
+                if(seed !=null && seed instanceof Integer){
                     int size = (Integer)seed;
                     PointList pl = new PointList();
                     for(int i=0; i<size%50; i++){
@@ -45,8 +45,8 @@ public abstract class AbstractPolyWidgetTest extends AbstractShapeWidgetTest {
                 if(seed !=null && seed instanceof Integer){
                     return super.generateTestData(pd, (Integer)seed  +1);
         }
-        
+
         return super.generateTestData(pd, seed);
     }
-    
+
 }

@@ -14,7 +14,7 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLPlotcom;
 import org.csstudio.utility.adlparser.internationalization.Messages;
 
 /**
- * 
+ *
  * @author hammonds
  *
  */
@@ -33,7 +33,7 @@ public class StripChart extends ADLAbstractWidget {
                     if (_adlObject != null){
                         _hasObject = true;
                     }
-                    
+
                 }
                 if (childWidget.getType().equals("plotcom")){
                     _adlPlotcom = new ADLPlotcom(childWidget);
@@ -59,7 +59,7 @@ public class StripChart extends ADLAbstractWidget {
                 }
             }
         }
-        
+
         catch (WrongADLFormatException ex) {
             ex.printStackTrace();
         }

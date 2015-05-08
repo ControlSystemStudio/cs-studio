@@ -29,13 +29,13 @@ import java.io.Serializable;
  * The result of executing a management command. A result consists of the result
  * type and the value returned by the command, if any.
  * </p>
- * 
+ *
  * <p>
  * Note that the result type is not the Java class of the return value but a
  * logical type identifier which will be used to dispatch the return value to
  * an appropriate receiver.
  * </p>
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class CommandResult implements Serializable {
@@ -47,7 +47,7 @@ public final class CommandResult implements Serializable {
      */
     public static final String TYPE_VOID =
         "org.csstudio.platform.remotemanagement.resulttype.Void";
-    
+
     /**
      * Result type for a message returned by a command that should be displayed
      * to the end user. This type can for example be used by commands that want
@@ -65,7 +65,7 @@ public final class CommandResult implements Serializable {
      */
     public static final String TYPE_ERROR =
         "org.csstudio.platform.remotemanagement.resulttype.Error";
-    
+
     /**
      * Result type which indicates that the command did not execute successfully
      * and an exception was returned. The Java type of the serialized object
@@ -73,22 +73,22 @@ public final class CommandResult implements Serializable {
      */
     public static final String TYPE_EXCEPTION =
         "org.csstudio.platform.remotemanagement.resulttype.Exception";
-    
+
     /**
      * Result type which indicates that the command did not execute successfully
      * and an error message was returned. The Java type of the serialized object
      * returned by the command must be {@link String}. Receivers which handle
      * this result type should display the error message to the end user.
      */
-    public static final String TYPE_ERROR_MESSAGE = 
+    public static final String TYPE_ERROR_MESSAGE =
             "org.csstudio.platform.remotemanagement.resulttype.ErrorMessage";
-    
+
     private final Object _value;
     private final String _type;
 
     /**
      * Creates a new command result.
-     * 
+     *
      * @param value
      *            the return value, or <code>null</code> if the command did not
      *            return any value.
@@ -99,11 +99,11 @@ public final class CommandResult implements Serializable {
         _value = value;
         _type = type;
     }
-    
+
     /**
      * Creates a command result which indicates success and does not return any
      * value.
-     * 
+     *
      * @return the command result.
      */
     public static CommandResult createSuccessResult() {
@@ -112,7 +112,7 @@ public final class CommandResult implements Serializable {
 
     /**
      * Creates a command result which indicates success and returns a value.
-     * 
+     *
      * @param value
      *            the value that is returned by the command.
      * @param type
@@ -124,14 +124,14 @@ public final class CommandResult implements Serializable {
         if (value == null || type == null) {
             throw new NullPointerException("value and type must not be null");
         }
-        
+
         return new CommandResult(value, type);
     }
 
     /**
      * Creates a command result which transports a message for the end user who
      * executed the command.
-     * 
+     *
      * @param message
      *            the message.
      * @return the command result.
@@ -140,7 +140,7 @@ public final class CommandResult implements Serializable {
         if (message == null) {
             throw new NullPointerException("message must not be null");
         }
-        
+
         return new CommandResult(message, TYPE_MESSAGE);
     }
 
@@ -151,7 +151,7 @@ public final class CommandResult implements Serializable {
      * {@link #createFailureResult(Throwable)} instead of this method so that
      * administration tools can display an informative error message to the
      * user.
-     * 
+     *
      * @return the command result.
      */
     public static CommandResult createFailureResult() {
@@ -161,7 +161,7 @@ public final class CommandResult implements Serializable {
     /**
      * Creates a command result which indicates failure and contains an error
      * message.
-     * 
+     *
      * @param errorMessage
      *            the error message.
      * @return the command result.
@@ -170,14 +170,14 @@ public final class CommandResult implements Serializable {
         if (errorMessage == null) {
             throw new NullPointerException("errorMessage must not be null");
         }
-        
+
         return new CommandResult(errorMessage, TYPE_ERROR_MESSAGE);
     }
 
     /**
      * Creates a command result which indicates failure and contains the
      * exception which caused the failure.
-     * 
+     *
      * @param cause
      *            the exception which caused the command to fail.
      * @return the command result.
@@ -186,28 +186,28 @@ public final class CommandResult implements Serializable {
         if (cause == null) {
             throw new NullPointerException("cause must not be null");
         }
-        
+
         return new CommandResult(cause, TYPE_EXCEPTION);
     }
 
     /**
      * Returns the value returned by the command.
-     * 
+     *
      * @return the return value.
      */
     public Object getValue() {
         return _value;
     }
-    
+
     /**
      * Returns the type of this result.
-     * 
+     *
      * @return the type of this result.
      */
     public String getType() {
         return _type;
     }
-    
+
     /**
      * {@inheritDoc}
      */

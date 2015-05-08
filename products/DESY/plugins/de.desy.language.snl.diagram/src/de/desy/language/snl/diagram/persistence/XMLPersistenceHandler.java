@@ -25,15 +25,15 @@ import de.desy.language.snl.diagram.model.WhenConnection;
 
 /**
  * Stores and loads the diagram layout to a XML file.
- * 
+ *
  * @author Kai Meyer, Sebastian Middeke (C1 WPS)
- * 
+ *
  */
 public class XMLPersistenceHandler implements IPersistenceHandler {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @throws Exception
      *             if data could not be stored
      * @require originalFilePath != null
@@ -61,7 +61,7 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
 
     /**
      * Determines the path for file containing the layout data.
-     * 
+     *
      * @param originalFilePath
      *            The path to the *.st file
      * @return The path
@@ -90,7 +90,7 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
 
     /**
      * Creates a XML element for the diagram
-     * 
+     *
      * @param diagram
      *            the diagram to store
      * @return The corresponding {@link Element}
@@ -112,7 +112,7 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
 
     /**
      * Creates a XML Element for all connections.
-     * 
+     *
      * @param diagram
      *            The diagram to store
      * @require diagram != null
@@ -140,7 +140,7 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
 
     /**
      * Creates a XML element for a connection
-     * 
+     *
      * @param connection
      *            The connection to store
      * @param sourceIdentifier
@@ -172,7 +172,7 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
 
     /**
      * Creates a XML element for a point
-     * 
+     *
      * @param point
      *            The point to store
      * @return The corresponding element
@@ -194,7 +194,7 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
 
     /**
      * Create a XML element for all states and state-sets.
-     * 
+     *
      * @param diagram
      *            The diagram to store
      * @return The corresponding element
@@ -221,7 +221,7 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
 
     /**
      * Creates a XML element for a state.
-     * 
+     *
      * @param model
      *            The state to store
      * @return The corresponding element
@@ -250,7 +250,7 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
 
     /**
      * Creates a XML element for a state-set.
-     * 
+     *
      * @param model
      *            The state-set to store
      * @return The corresponding element
@@ -295,7 +295,7 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
     public Map<String, StateLayoutData> loadStateLayoutData(
             IPath originalFilePath) {
         assert originalFilePath != null : "originalFilePath != null";
-        
+
         Map<String, StateLayoutData> result = new HashMap<String, StateLayoutData>();
         StateLayoutHandler handler = new StateLayoutHandler(result);
 
@@ -306,7 +306,7 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
 
     /**
      * Fills the given map with the loaded layout data.
-     * 
+     *
      * @param originalFilePath
      *            The path to the *.st file
      * @param handler
@@ -317,7 +317,7 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
     private void fillMap(IPath originalFilePath, DefaultHandler handler) {
         assert originalFilePath != null : "originalFilePath != null";
         assert handler != null : "handler != null";
-        
+
         IPath layoutDataPath = getLayoutDataPath(originalFilePath);
         File file = layoutDataPath.toFile();
         if (file.exists()) {

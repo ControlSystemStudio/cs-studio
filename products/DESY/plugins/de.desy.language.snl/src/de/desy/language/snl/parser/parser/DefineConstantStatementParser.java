@@ -10,7 +10,7 @@ public class DefineConstantStatementParser extends AbstractOptimizedStatementPar
     public DefineConstantStatementParser(Interval[] exclusions) {
         super(exclusions);
     }
-    
+
     protected void matchFound(final Matcher preMatcher,
             final Matcher mainMatcher) {
         this._startOffSet = mainMatcher.start();
@@ -24,7 +24,7 @@ public class DefineConstantStatementParser extends AbstractOptimizedStatementPar
     protected String getPatternString() {
         return getPrePatternString() + "([\\S&&[^()]]*)(\\s+)(\\S*)([\\s&&[^\\n\\f\\r]]*)([^\\n\\f\\r]*)" + getPostPatternString();
     }
-    
+
     protected String getPrePatternString() {
         return "(#define\\s+)";
     }

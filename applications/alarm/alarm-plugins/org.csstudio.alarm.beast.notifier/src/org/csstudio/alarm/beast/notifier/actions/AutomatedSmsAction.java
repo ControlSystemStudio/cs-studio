@@ -21,7 +21,7 @@ public class AutomatedSmsAction implements IActionProvider
 {
     /** {@inheritDoc} */
     @Override
-    public IActionValidator getValidator() 
+    public IActionValidator getValidator()
     {
         return new SmsCommandValidator();
     }

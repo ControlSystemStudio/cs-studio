@@ -36,13 +36,13 @@ import org.eclipse.core.runtime.SafeRunner;
  * {@link IConnectionMonitor}. Instances of this class keep track of a list of
  * connection monitors that have been added and can send notifications to those
  * listeners.
- * 
+ *
  * @author Joerg Rathlev
  */
 class ConnectionMonitorSupport {
 
     private List<IConnectionMonitor> _monitors;
-    
+
     /**
      * Creates a new <code>ConnectionMonitorSupport</code> instance.
      */
@@ -55,7 +55,7 @@ class ConnectionMonitorSupport {
 
     /**
      * Adds a monitor to the list of monitors.
-     * 
+     *
      * @param monitor
      *            a monitor.
      */
@@ -65,17 +65,17 @@ class ConnectionMonitorSupport {
 
     /**
      * Removes the specified monitor from the list of monitors.
-     * 
+     *
      * @param monitor
      *            the monitor to remove.
      */
     public void removeMonitor(IConnectionMonitor monitor) {
         _monitors.remove(monitor);
     }
-    
+
     /**
      * Calls the <code>onConnected</code> method on all listeners.
-     * 
+     *
      * @see IConnectionMonitor#onConnected(TransportEvent event)
      */
     public void fireConnectedEvent(final TransportEvent event) {
@@ -92,10 +92,10 @@ class ConnectionMonitorSupport {
             });
         }
     }
-    
+
     /**
      * Calls the <code>onDisconnected</code> method on all listeners.
-     * 
+     *
      * @see IConnectionMonitor#onDisconnected(TransportEvent event)
      */
     public void fireDisconnectedEvent(final TransportEvent event) {

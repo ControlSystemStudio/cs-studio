@@ -198,7 +198,7 @@ public class DeviceProxyImpl extends AbstractProxyImpl<SimulatorPlug> implements
                 plug.releaseProxy(propProxy);
             }
         }
-        
+
         for (DirectoryProxy dirProxy:dirProxies) {
             if (dirProxy!=null)
             {

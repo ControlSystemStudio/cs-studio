@@ -80,7 +80,7 @@ public class RDBArchiveReader implements ArchiveReader
     {
         this(url, user, password, schema, stored_procedure, RDBArchivePreferences.useArrayBlob());
     }
-        
+
     /** Initialize
      *  @param url Database URL
      *  @param user .. user
@@ -104,7 +104,7 @@ public class RDBArchiveReader implements ArchiveReader
         rdb = RDBUtil.connect(url, user, password, false);
         // Read-only allows MySQL to use load balancing
         rdb.getConnection().setReadOnly(true);
-        
+
         final Dialect dialect = rdb.getDialect();
         switch (dialect)
         {
@@ -127,7 +127,7 @@ public class RDBArchiveReader implements ArchiveReader
         stati = getStatusValues();
         severities = getSeverityValues();
     }
-    
+
     /** @return <code>true</code> when using Oracle, i.e. no 'nanosec'
      *          because that is included in the 'smpl_time'
      */
@@ -135,7 +135,7 @@ public class RDBArchiveReader implements ArchiveReader
     {
         return is_oracle;
     }
-    
+
     /** @return <code>true</code> if array samples are stored in BLOB */
     public boolean useArrayBlob()
     {
@@ -200,7 +200,7 @@ public class RDBArchiveReader implements ArchiveReader
                 {
                     Activator.getLogger().log(Level.FINE,
                         "Undefined severity level {0}", text);
-                    severities.put(id, AlarmSeverity.UNDEFINED);     
+                    severities.put(id, AlarmSeverity.UNDEFINED);
                 }
                 else
                     severities.put(id, severity);
@@ -361,7 +361,7 @@ public class RDBArchiveReader implements ArchiveReader
     {
         return new RawSampleIterator(this, channel_id, start, end);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public ValueIterator getOptimizedValues(final int key, final String name,
@@ -371,7 +371,7 @@ public class RDBArchiveReader implements ArchiveReader
         if (count <= 1)
             throw new Exception("Count must be > 1");
         final int channel_id = getChannelID(name);
-        
+
         // Use stored procedure in RDB server?
         if (stored_procedure.length() > 0)
             return new StoredProcedureValueIterator(this, stored_procedure, channel_id, start, end, count);
@@ -394,11 +394,11 @@ public class RDBArchiveReader implements ArchiveReader
         }
         // Fetch raw data and perform averaging
         final ValueIterator raw_data = getRawValues(channel_id, start, end);
-        
+
         // If there weren't that many, that's it
         if (counted < count)
             return raw_data;
-        
+
         // Else: Perform averaging to reduce sample count
         final double seconds = end.durationFrom(start).toSeconds() / count;
         return new AveragedValueIterator(raw_data, seconds);

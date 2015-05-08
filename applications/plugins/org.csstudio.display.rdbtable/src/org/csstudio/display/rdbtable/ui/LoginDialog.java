@@ -27,7 +27,7 @@ public class LoginDialog extends Dialog
     // GUI elements
     private Text txt_user, txt_password;
     private String user, password;
-    
+
     /** Initialize
      *  @param shell Parent shell
      */
@@ -52,7 +52,7 @@ public class LoginDialog extends Dialog
     {
         return true;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected Control createDialogArea(final Composite parent)
@@ -69,7 +69,7 @@ public class LoginDialog extends Dialog
         txt_user = new Text(composite, SWT.BORDER);
         txt_user.setToolTipText("Enter user name");
         txt_user.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-        
+
         l = new Label(composite, 0);
         l.setText("Password:");
         l.setLayoutData(new GridData());
@@ -77,7 +77,7 @@ public class LoginDialog extends Dialog
         txt_password = new Text(composite, SWT.BORDER | SWT.PASSWORD);
         txt_password.setToolTipText("Enter password");
         txt_password.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-        
+
         return composite;
     }
 

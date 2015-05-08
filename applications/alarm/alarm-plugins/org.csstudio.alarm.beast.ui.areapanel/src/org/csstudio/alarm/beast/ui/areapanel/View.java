@@ -43,7 +43,7 @@ public class View extends ViewPart implements AreaAlarmModelListener
 {
     /** Model */
     private AreaAlarmModel model;
-    
+
     /** Colors for alarm severities */
     private SeverityColorProvider color_provider;
 
@@ -52,19 +52,19 @@ public class View extends ViewPart implements AreaAlarmModelListener
 
     /** Error display (server disconnect) */
     private Label error_message;
-    
+
     private volatile boolean have_error_message = true;
-    
+
     /** GUI box that holds the {@link AlarmPanelItem}s */
     private Composite panel_box;
-    
+
     /** List of panels in display */
     final private List<AlarmPanelItem> panels = new ArrayList<AlarmPanelItem>();
 
     /** Throttle for panel_box updates */
     private GUIUpdateThrottle throttle;
 
-    
+
     /** {@inheritDoc} */
     @SuppressWarnings("nls")
     @Override
@@ -83,7 +83,7 @@ public class View extends ViewPart implements AreaAlarmModelListener
             l.setText("Error: " + ex.getMessage());
             return;
         }
-        
+
         // Dispose model when done
         parent.addDisposeListener(new DisposeListener()
         {
@@ -131,13 +131,13 @@ public class View extends ViewPart implements AreaAlarmModelListener
         display = parent.getDisplay();
         color_provider = new SeverityColorProvider(parent);
         parent.setLayout(new FormLayout());
-        
+
         error_message = new Label(parent, 0);
         FormData fd = new FormData();
         fd.right = new FormAttachment(100);
         fd.top = new FormAttachment(0);
         error_message.setLayoutData(fd);
-        
+
         panel_box = new Composite(parent, 0);
         fd = new FormData();
         fd.left = new FormAttachment(0);
@@ -151,7 +151,7 @@ public class View extends ViewPart implements AreaAlarmModelListener
         } else {
             setErrorMessage(Messages.WaitingForServer);
         }
-        
+
         fillPanelBox();
 
         final MenuManager manager = new MenuManager();
@@ -185,7 +185,7 @@ public class View extends ViewPart implements AreaAlarmModelListener
             }
         });
     }
-    
+
     /** Update the error messages
      *  @param text Message to show or <code>null</code> to clear/hide the message
      */
@@ -257,13 +257,13 @@ public class View extends ViewPart implements AreaAlarmModelListener
             {
                 if (panel_box.isDisposed())
                     return;
-                
+
                 if (model.isServerAlive()) {
                     setErrorMessage(null);
                 } else {
                     setErrorMessage(Messages.WaitingForServer);
                 }
-                
+
                 // Remove existing alarm panels
                 for (AlarmPanelItem panel : panels)
                     panel.dispose();

@@ -16,16 +16,16 @@ import org.eclipse.swt.graphics.RGB;
 
 /**
  * Table adapter for Properties.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class PropertyTableRowAdapter extends AbstractTableRowAdapter<IPropertyContainer> {
     private String propertyKey;
 
     /**
      * Constructor.
-     * 
+     *
      * @param delegate
      *            a property container
      * @param propertyKey

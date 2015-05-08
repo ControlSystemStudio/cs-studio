@@ -27,19 +27,19 @@ public enum ZoomType{
                 XYGraphMediaFactory.getInstance().getImage("images/RubberbandZoom.png"),
                 XYGraphMediaFactory.getInstance().getImage("images/RubberbandZoomCursor.png"),
                 XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_CROSS),
-                
-        /** Zoom via 'cursors' for horizontal start/end position */        
+
+        /** Zoom via 'cursors' for horizontal start/end position */
         HORIZONTAL_ZOOM(Messages.Zoom_Horiz,
                 XYGraphMediaFactory.getInstance().getImage("images/HorizontalZoom.png"),
                 XYGraphMediaFactory.getInstance().getImage("images/HorizontalZoomCursor.png"),
                 XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_SIZEWE),
-                
-        /** Zoom via 'cursors' for vertical start/end position */     
+
+        /** Zoom via 'cursors' for vertical start/end position */
         VERTICAL_ZOOM(Messages.Zoom_Vert,
                 XYGraphMediaFactory.getInstance().getImage("images/VerticalZoom.png"),
                 XYGraphMediaFactory.getInstance().getImage("images/VerticalZoomCursor.png"),
                 XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_SIZENS),
-                
+
         /** Zoom 'in' around mouse pointer */
         ZOOM_IN(Messages.Zoom_In,
                 XYGraphMediaFactory.getInstance().getImage("images/ZoomIn.png"),
@@ -57,7 +57,7 @@ public enum ZoomType{
                 XYGraphMediaFactory.getInstance().getImage("images/ZoomInHoriz.png"),
                 XYGraphMediaFactory.getInstance().getImage("images/ZoomInHorizCursor.png"),
                 XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_SIZEWE),
-                
+
         /** Zoom 'out' around mouse pointer along horizontal axis */
         ZOOM_OUT_HORIZONTALLY(Messages.Zoom_OutHoriz,
                 XYGraphMediaFactory.getInstance().getImage("images/ZoomOutHoriz.png"),
@@ -69,31 +69,31 @@ public enum ZoomType{
                 XYGraphMediaFactory.getInstance().getImage("images/ZoomInVert.png"),
                 XYGraphMediaFactory.getInstance().getImage("images/ZoomInVertCursor.png"),
                 XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_SIZENS),
-                
+
         /** Zoom 'out' around mouse pointer along vertical axes */
         ZOOM_OUT_VERTICALLY(Messages.Zoom_OutVert,
                 XYGraphMediaFactory.getInstance().getImage("images/ZoomOutVert.png"),
                 XYGraphMediaFactory.getInstance().getImage("images/ZoomOutVertCursor.png"),
                 XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_SIZENS),
-                
+
         /** Zoom 'out' around mouse pointer */
         PANNING(Messages.Zoom_Pan,
                 XYGraphMediaFactory.getInstance().getImage("images/Panning.png"),
                 XYGraphMediaFactory.getInstance().getImage("images/PanningCursor.png"),
                 XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_SIZEALL),
-                
-        
-                
+
+
+
         /** Disarm zoom behavior */
         NONE(Messages.Zoom_None,
                 XYGraphMediaFactory.getInstance().getImage("images/MouseArrow.png"), null,
                 XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_ARROW);
-        
+
         final private Image iconImage;
         final private String description;
         final private Cursor cursor;
         final private int flags;
-        
+
         /** Initialize
          *  @param description Description used for tool tip
          *  @param iconImage Button icon
@@ -103,7 +103,7 @@ public enum ZoomType{
          *  @see XYGraphFlags#COMBINED_ZOOM
          *  @see XYGraphFlags#SEPARATE_ZOOM
          */
-        private ZoomType(final String description, 
+        private ZoomType(final String description,
                 final Image iconImage, final Image cursorImage,
                 final int flags, final int backUpSWTCursorType){
             this.description = description;
@@ -117,27 +117,27 @@ public enum ZoomType{
             XYGraphMediaFactory.getInstance().registerCursor(cursor);
             this.flags = flags;
         }
-        
+
         /**
          * @return the iconImageData
          */
         public Image getIconImage() {
             return iconImage;
         }
-        
+
         /**
          * @return the description
          */
         public String getDescription() {
             return description;
         }
-        
+
         /**
          * @return the cursor
          */
         public Cursor getCursor() {
             return cursor;
-        }        
+        }
 
         /** Check if this zoom mode should be offered when a graph was
          *  created with given flags
@@ -148,10 +148,10 @@ public enum ZoomType{
         {
             return (this.flags & flags) > 0;
         }
-        
-        
-    
-        
+
+
+
+
         @Override
         public String toString() {
             return description;

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.platform.internal.simpledal;
 
@@ -14,9 +14,9 @@ import org.junit.Test;
 
 /**
  * Test class for {@link ConnectorIdentification}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class ConnectorIdentificationTest {
     IProcessVariableAddress pv1;

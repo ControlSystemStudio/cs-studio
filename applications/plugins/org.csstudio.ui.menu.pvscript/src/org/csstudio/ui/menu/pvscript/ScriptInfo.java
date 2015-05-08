@@ -37,7 +37,7 @@ public class ScriptInfo
     {
         return script;
     }
-    
+
     /** @return Debug representation */
     @Override
     public String toString()

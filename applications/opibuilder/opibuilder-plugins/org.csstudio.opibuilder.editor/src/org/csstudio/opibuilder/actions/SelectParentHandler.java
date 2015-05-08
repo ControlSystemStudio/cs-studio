@@ -21,9 +21,9 @@ import org.eclipse.ui.handlers.HandlerUtil;
 /**
  * Handler to handle the select parent command which has a key binding of
  * Ctrl+R.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class SelectParentHandler extends AbstractHandler {
 

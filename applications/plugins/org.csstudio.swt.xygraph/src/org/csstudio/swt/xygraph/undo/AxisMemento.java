@@ -16,7 +16,7 @@ import org.eclipse.swt.graphics.Font;
  *
  */
 public class AxisMemento {
-    
+
     private String title;
     private Font titleFont;
     private Color foregroundColor;
@@ -199,7 +199,7 @@ public class AxisMemento {
     public void setMajorGridColor(Color majorGridColor) {
         this.majorGridColor = majorGridColor;
     }
-    
-    
+
+
 
 }

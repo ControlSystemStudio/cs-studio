@@ -29,9 +29,9 @@ import org.eclipse.swt.SWT;
 
 /**
  * An action which plays a .wav file.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class PlayWavFileAction extends AbstractWidgetAction {
 

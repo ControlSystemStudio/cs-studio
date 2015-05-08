@@ -43,7 +43,7 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
     {
         this(command, null);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String[] getDeviceNames(final MacroContext macros) throws Exception

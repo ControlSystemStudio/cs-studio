@@ -37,28 +37,28 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Combo-type widget that allows selecting multiple items.
- * 
+ *
  * <p>
  * Takes a list of {@link Object}s as input.
- * 
+ *
  * <p>
  * The <code>toString()</code> of each Object is displayed in a drop-down list.
  * Overriding the stringRepresention() method, the user can define an
  * alternative way to convert T to String.
- * 
+ *
  * <p>
  * One or more items can be selected, they're also displayed in the text field.
- * 
+ *
  * <p>
  * Items can be entered in the text field, comma-separated. If entered text does
  * not match a valid item, text is highlighted and tool-tip indicates error.
- * 
+ *
  * <p>
  * Keyboard support: 'Down' key in text field opens drop-down. Inside drop-down,
  * single item can be selected via cursor key and 'RETURN' closes the drop-down.
- * 
+ *
  * TODO Auto-completion while typing?
- * 
+ *
  * @author Kay Kasemir, Kunal Shroff
  */
 public class MultipleSelectionCombo<T> extends Composite {
@@ -97,7 +97,7 @@ public class MultipleSelectionCombo<T> extends Composite {
 
     /**
      * Initialize
-     * 
+     *
      * @param parent
      * @param style
      */
@@ -108,7 +108,7 @@ public class MultipleSelectionCombo<T> extends Composite {
 
     /**
      * Create SWT components
-     * 
+     *
      * @param parent
      */
     private void createComponents(final Composite parent) {
@@ -178,7 +178,7 @@ public class MultipleSelectionCombo<T> extends Composite {
         public void widgetSelected(final SelectionEvent e) {
         // Was list open, user clicked this button to close,
         // and list self-closed because is lost focus?
-            
+
         // e.time is an unsigned integer and should be AND'ed with
         // 0xFFFFFFFFL so that it can be treated as a signed long.
         if ((e.time & 0xFFFFFFFFL) - lost_focus <= 300)
@@ -209,7 +209,7 @@ public class MultipleSelectionCombo<T> extends Composite {
     /**
      * Define items to be displayed in the list, and returned as the current
      * selection when selected.
-     * 
+     *
      * @param new_items
      *            Items to display in the list
      */
@@ -221,7 +221,7 @@ public class MultipleSelectionCombo<T> extends Composite {
 
     /**
      * Get the list of items
-     * 
+     *
      * @return list of selectable items
      */
     public List<T> getItems() {
@@ -230,11 +230,11 @@ public class MultipleSelectionCombo<T> extends Composite {
 
     /**
      * Set items that should be selected.
-     * 
+     *
      * <p>
      * Selected items must be on the list of items provided via
      * <code>setItems</code>
-     * 
+     *
      * @param sel_items
      *            Items to select in the list
      */
@@ -256,7 +256,7 @@ public class MultipleSelectionCombo<T> extends Composite {
     /**
      * set the items to be selected, the selection is specified as a string with
      * values separated by {@value MultipleSelectionCombo.SEPARATOR}
-     * 
+     *
      * @param selection_text
      *            Items to select in the list as comma-separated string
      */
@@ -267,7 +267,7 @@ public class MultipleSelectionCombo<T> extends Composite {
 
     /**
      * Set the items to be selected
-     * 
+     *
      * @param selections
      */
     public void setSelection(final String[] selections) {
@@ -299,7 +299,7 @@ public class MultipleSelectionCombo<T> extends Composite {
     /**
      * return the index of the object in items with the string representation
      * _string_
-     * 
+     *
      * @param string
      * @return
      */
@@ -315,7 +315,7 @@ public class MultipleSelectionCombo<T> extends Composite {
     /**
      * get the list of items currently selected. Note: this does not return the
      * list in the order of selection.
-     * 
+     *
      * @return the list of selected items
      */
     public List<T> getSelection() {
@@ -443,7 +443,7 @@ public class MultipleSelectionCombo<T> extends Composite {
     /**
      * Register a PropertyChangeListener on this widget. the listener will be
      * notified when the items or the selection is changed.
-     * 
+     *
      * @param listener
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -452,7 +452,7 @@ public class MultipleSelectionCombo<T> extends Composite {
 
     /**
      * remove the PropertyChangeListner
-     * 
+     *
      * @param listener
      */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
@@ -462,7 +462,7 @@ public class MultipleSelectionCombo<T> extends Composite {
     /**
      * Override this method to define the how the object should be represented
      * as a string.
-     * 
+     *
      * @param object
      * @return the string representation of the object
      */

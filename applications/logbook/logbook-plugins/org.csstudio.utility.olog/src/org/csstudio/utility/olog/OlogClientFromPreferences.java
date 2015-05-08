@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.olog;
 
@@ -31,9 +31,9 @@ import edu.msu.nscl.olog.api.TagBuilder;
 
 /**
  * Client to be registered to the extension point.
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 @SuppressWarnings("deprecation")
 public class OlogClientFromPreferences implements OlogClient {
@@ -43,7 +43,7 @@ public class OlogClientFromPreferences implements OlogClient {
     private volatile OlogClient client;
 
     /**
-     * 
+     *
      */
     public OlogClientFromPreferences() {
         final IPreferencesService prefs = Platform.getPreferencesService();
@@ -77,13 +77,13 @@ public class OlogClientFromPreferences implements OlogClient {
         }
     }
 
-    
+
     @Override
     public Collection<Logbook> listLogbooks() throws OlogException {
         return client.listLogbooks();
     }
 
-    
+
     @Override
     public Collection<Tag> listTags() throws OlogException {
         return client.listTags();

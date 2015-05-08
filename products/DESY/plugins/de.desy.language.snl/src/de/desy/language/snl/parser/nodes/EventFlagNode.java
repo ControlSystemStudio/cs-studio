@@ -2,7 +2,7 @@ package de.desy.language.snl.parser.nodes;
 
 /**
  * The outline node of an SNL event flag.
- * 
+ *
  * @author C1 WPS / KM, MZ
  */
 public class EventFlagNode extends AbstractSNLNode {

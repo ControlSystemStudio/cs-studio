@@ -12,7 +12,7 @@ import org.eclipse.swt.graphics.Color;
 
 /**
  * Handler for {@link SymbolImage} properties.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
  */
 public class SymbolImageProperties {

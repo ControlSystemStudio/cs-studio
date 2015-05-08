@@ -62,23 +62,23 @@ public class Grid extends Figure implements IAxisListener{
     public void axisForegroundColorChanged(Axis axis, Color oldColor,
             Color newColor) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void axisTitleChanged(Axis axis, String oldTitle, String newTitle) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void axisAutoScaleChanged(Axis axis, boolean oldAutoScale,
             boolean newAutoScale) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void axisLogScaleChanged(Axis axis, boolean old, boolean logScale) {
         // TODO Auto-generated method stub
-        
+
     }
 
 

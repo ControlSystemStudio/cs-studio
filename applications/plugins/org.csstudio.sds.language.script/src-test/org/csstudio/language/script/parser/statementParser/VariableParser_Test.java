@@ -10,7 +10,7 @@ import org.junit.Test;
 
 
 public class VariableParser_Test extends TestCase {
-    
+
     private final String _source =     "var returns = \"org.eclipse.swt.graphics.RGB\";\n" +
                                     "var description = \"Simple Color Rule\";\n" +
                                     "var parameters = new Array(\"An arbitrary PV\");\n" +
@@ -36,7 +36,7 @@ public class VariableParser_Test extends TestCase {
     @Test
     public void testFindNextCharSequence() {
         final VariableParser parser = new VariableParser();
-    
+
         // var returns
         parser.findNext(this._source);
         Assert.assertTrue(parser.hasFoundElement());
@@ -49,10 +49,10 @@ public class VariableParser_Test extends TestCase {
         Assert.assertTrue(lastFoundAsNode.hasOffsets());
         Assert.assertEquals(0, lastFoundAsNode.getStatementStartOffset());
         Assert.assertEquals(44, lastFoundAsNode.getStatementEndOffset());
-    
+
         Assert.assertEquals(parser.getEndOffsetLastFound(), lastFoundAsNode
                 .getStatementEndOffset());
-    
+
         // var description
         parser.findNext(this._source, parser.getEndOffsetLastFound());
         Assert.assertTrue(parser.hasFoundElement());
@@ -65,7 +65,7 @@ public class VariableParser_Test extends TestCase {
         Assert.assertTrue(lastFoundAsNode.hasOffsets());
         Assert.assertEquals(46, lastFoundAsNode.getStatementStartOffset());
         Assert.assertEquals(83, lastFoundAsNode.getStatementEndOffset());
-        
+
         // var RED
         parser.findNext(this._source, parser.getEndOffsetLastFound()+45);
         Assert.assertTrue(parser.hasFoundElement());

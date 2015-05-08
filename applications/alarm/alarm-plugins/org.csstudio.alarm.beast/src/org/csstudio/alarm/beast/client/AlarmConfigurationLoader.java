@@ -226,7 +226,7 @@ public class AlarmConfigurationLoader
         }
         return gdcList.toArray(new GDCDataStructure[gdcList.size()]);
     }
-    
+
     /** Load Automated Actions
      *  @param node DOM node, could be a component or a PV
      *  @param name name of the item to load, it must be XMLTags.AUTOMATED_ACTION

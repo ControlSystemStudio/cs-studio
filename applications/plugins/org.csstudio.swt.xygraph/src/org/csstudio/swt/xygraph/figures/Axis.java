@@ -54,8 +54,8 @@ public class Axis extends LinearScale{
 //    private static final Color GRAY_COLOR = XYGraphMediaFactory.getInstance().getColor(
 //            XYGraphMediaFactory.COLOR_GRAY);
 
-    
-    
+
+
     private String title;
 
     /** the scale tick marks */
@@ -78,7 +78,7 @@ public class Axis extends LinearScale{
     private Font titleFont;
     //title FontData : Add because of SWT illegal thread access
         private FontData titleFontData;
-    
+
         //title FontData : Add because of SWT illegal thread access
             private FontData scaleFontData;
 
@@ -109,7 +109,7 @@ public class Axis extends LinearScale{
 
     private RGB colorRGB;
     private RGB majorGridColorRGB;
-    
+
 
     public FontData getTitleFontData() {
         return titleFontData;
@@ -134,7 +134,7 @@ public class Axis extends LinearScale{
 
         mousePositionLabel = new AxisMousePosition(this);
         add(mousePositionLabel);
-        
+
         final AxisMouseListener panner = new AxisMouseListener();
         addMouseListener(panner);
         addMouseMotionListener(panner);
@@ -212,7 +212,7 @@ public class Axis extends LinearScale{
         revalidate();
     }
     @Override
-    public void setForegroundColor(final Color color) {    
+    public void setForegroundColor(final Color color) {
         Color oldColor = getForegroundColor();
         super.setForegroundColor(color);
         colorRGB = color.getRGB();
@@ -221,7 +221,7 @@ public class Axis extends LinearScale{
             xyGraph.repaint();
         fireAxisForegroundColorChanged(oldColor, color);
     }
-    
+
     @Override
     public void setMinorTicksVisible(boolean minorTicksVisible) {
         //Save line operation in RAP.
@@ -230,18 +230,18 @@ public class Axis extends LinearScale{
         else
             super.setMinorTicksVisible(minorTicksVisible);
     }
-    
-    
+
+
     public RGB getForegroundColorRGB(){
         return colorRGB;
     }
-    
+
     private void fireAxisForegroundColorChanged(Color oldColor,
             Color newColor) {
         for(IAxisListener listener : listeners)
-            listener.axisForegroundColorChanged(this, oldColor, newColor);    
+            listener.axisForegroundColorChanged(this, oldColor, newColor);
     }
-    
+
     @Override
     public void setBackgroundColor(Color bg) {
         RGB backRGB = bg.getRGB();
@@ -372,7 +372,7 @@ public class Axis extends LinearScale{
         // Anything to do? Autoscale not enabled nor forced?
         if (traceList.size() <= 0  ||  !(force || autoScale))
             return false;
-        
+
         // Idea: Stop Autoscale on XYGraph whenever one of the Zoom buttons is toggled!
         // Seems reasonable, but doesn't work:
         // User may have selected HORIZONTAL_ZOOM to configure a time range,
@@ -408,7 +408,7 @@ public class Axis extends LinearScale{
 //        double extraSpace = (tempMax-tempMin)*0.05;
 //        double tempMin2 = tempMin -extraSpace;
 //        double tempMax2 = tempMax + extraSpace;
-        
+
         final double thr = (max - min)*autoScaleThreshold;
 
         //if both the changes are lower than threshold, return
@@ -421,7 +421,7 @@ public class Axis extends LinearScale{
             if((tempMax - max) > 0)
                 tempMax += thr;
         }
-    
+
 //        if(tempMin>tempMin2)
 //            tempMin=tempMin2;
 //        if(tempMax<tempMax2)
@@ -470,14 +470,14 @@ public class Axis extends LinearScale{
      * @param title the title to set
      */
     public void setTitle(final String title) {
-        
+
         String oldTitle = this.title;
         this.title = title;
         if(xyGraph != null)
             xyGraph.repaint();
         fireAxisTitleChanged(oldTitle, title);
     }
-    
+
     private void fireAxisTitleChanged(String oldTitle, String newTitle) {
         for(IAxisListener listener : listeners)
             listener.axisTitleChanged(this, oldTitle, newTitle);
@@ -502,7 +502,7 @@ public class Axis extends LinearScale{
      * @param autoScale the autoScale to set
      */
     public void setAutoScale(final boolean autoScale) {
-    
+
         boolean oldAutoScale = this.autoScale;
         this.autoScale = autoScale;
         performAutoScale(false);
@@ -513,7 +513,7 @@ public class Axis extends LinearScale{
             boolean newAutoScale) {
         for(IAxisListener listener : listeners)
             listener.axisAutoScaleChanged(this, oldAutoScale, newAutoScale);
-        
+
     }
 
     /**
@@ -568,8 +568,8 @@ public class Axis extends LinearScale{
             xyGraph.repaint();
     }
 
-    
-    
+
+
     public RGB getMajorGridColorRGB() {
         return majorGridColorRGB;
     }
@@ -683,17 +683,17 @@ public class Axis extends LinearScale{
             setCursor(ZoomType.NONE.getCursor());
 
     }
-    
+
     /**
      * Shows or hides the mouse position label.
-     * 
+     *
      * @param show true to show, false to hide
      */
     public void setShowMousePositionLabel(boolean show) {
         mousePositionLabel.setVisible(show);
         revalidate();
     }
-    
+
     /**
      * @return true if the mouse position label is shown or false otherwise
      */
@@ -829,12 +829,12 @@ public class Axis extends LinearScale{
         super.setLogScale(enabled);
         fireAxisLogScaleChanged(old, logScaleEnabled);
     }
-    
+
     private void fireAxisLogScaleChanged(boolean old, boolean logScale) {
-        
+
         if(old == logScale)
             return;
-        
+
         for(IAxisListener listener : listeners)
             listener.axisLogScaleChanged(this, old, logScale);
     }
@@ -909,7 +909,7 @@ public class Axis extends LinearScale{
         }
 
         public void mouseDoubleClicked(final MouseEvent me) { /* Ignored */ }
-        
+
         @Override
         public void mouseDragged(final MouseEvent me)
         {
@@ -1020,6 +1020,6 @@ public class Axis extends LinearScale{
             }
         }
     }
-    
-    
+
+
 }

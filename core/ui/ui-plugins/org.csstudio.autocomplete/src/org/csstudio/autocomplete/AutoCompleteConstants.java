@@ -9,7 +9,7 @@ package org.csstudio.autocomplete;
 
 /**
  * Common used constants.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class AutoCompleteConstants {

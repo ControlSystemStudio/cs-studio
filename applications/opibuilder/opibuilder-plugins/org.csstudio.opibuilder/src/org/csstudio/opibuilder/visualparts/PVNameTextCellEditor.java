@@ -17,9 +17,9 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * A text cell editor that allows pv name auto complete.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class PVNameTextCellEditor extends TextCellEditor {
 
@@ -28,7 +28,7 @@ public class PVNameTextCellEditor extends TextCellEditor {
 
     public PVNameTextCellEditor(Composite parent) {
         super(parent);
-        AutoCompleteWidget autoCompleteWidget = new AutoCompleteWidget(this, AutoCompleteTypes.Formula); //$NON-NLS-1$        
+        AutoCompleteWidget autoCompleteWidget = new AutoCompleteWidget(this, AutoCompleteTypes.Formula); //$NON-NLS-1$
         autoCompleteWidget.getContentProposalAdapter().addContentProposalListener(
                 new IContentProposalListener2() {
 
@@ -63,7 +63,7 @@ public class PVNameTextCellEditor extends TextCellEditor {
     /**
      * Add a listener that will be executed when pv name is seleteced by double
      * click on proposal dialog.
-     * 
+     *
      * @param listener
      */
     public void addContentProposalListener(IContentProposalListener listener) {

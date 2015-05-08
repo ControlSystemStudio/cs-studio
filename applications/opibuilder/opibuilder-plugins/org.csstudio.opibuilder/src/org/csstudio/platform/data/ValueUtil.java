@@ -56,7 +56,7 @@ public class ValueUtil
     public static double getDouble(final VType value, final int index)
     {
         return VTypeHelper.getDouble(value, index);
-       
+
     }
 
     /** Try to get a double-typed array from the Value.
@@ -71,7 +71,7 @@ public class ValueUtil
     {
         return VTypeHelper.getDoubleArray(value);
     }
-    
+
     /**
      * Converts the given value into a string representation. For string values,
      * returns the value. For numeric (double and long) values, returns a
@@ -85,7 +85,7 @@ public class ValueUtil
      */
     @SuppressWarnings("nls")
     public static String getString(final VType value)
-    {        
+    {
         return VTypeHelper.getString(value);
     }
 }

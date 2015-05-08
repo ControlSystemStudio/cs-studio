@@ -14,9 +14,9 @@ package org.csstudio.archive.config;
 public class SampleMode
 {
     final private boolean monitor;
-    
+
     final private double delta;
-    
+
     final private double period;
 
     /** Initialize

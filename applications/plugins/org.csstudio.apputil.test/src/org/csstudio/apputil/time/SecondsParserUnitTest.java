@@ -64,7 +64,7 @@ public class SecondsParserUnitTest  extends TestCase
         }
         assertTrue(caught);
     }
-    
+
     @Test
     public void testFormat()
     {

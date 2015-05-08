@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.ui.util.wizards;
@@ -69,10 +69,10 @@ import org.eclipse.swt.widgets.Listener;
  * <code>org.eclipse.ui.dialogs.WizardNewFileCreationPage</code> in plugin
  * <code>org.eclipse.ui.ide</code>.</b>
  * </p>
- * 
+ *
  * @author Alexander Will
  * @version $Revision$
- * 
+ *
  */
 
 //TODO: Copied from org.csstudio.platform.ui. Review is needed.
@@ -112,7 +112,7 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
      * Creates a new file creation wizard page. If the initial resource
      * selection contains exactly one container resource then it will be used as
      * the default container resource.
-     * 
+     *
      * @param pageName
      *            the name of the page
      * @param selection
@@ -127,7 +127,7 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
      * Creates a new file creation wizard page. If the initial resource
      * selection contains exactly one container resource then it will be used as
      * the default container resource.
-     * 
+     *
      * @param pageName
      *            the name of the page
      * @param selection
@@ -183,7 +183,7 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
 
     /**
      * Creates a file resource given the file handle and contents.
-     * 
+     *
      * @param fileHandle
      *            the file handle to create a file resource with
      * @param contents
@@ -231,7 +231,7 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
      * Creates a file resource handle for the file with the given workspace
      * path. This method does not create the file resource; this is the
      * responsibility of <code>createFile</code>.
-     * 
+     *
      * @param filePath
      *            the path of the file resource to create a handle for
      * @return the new file resource handle
@@ -259,7 +259,7 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
      * This method should be called within a workspace modify operation since it
      * creates resources.
      * </p>
-     * 
+     *
      * @return the created file resource, or <code>null</code> if the file was
      *         not created
      */
@@ -293,7 +293,7 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
     /**
      * Returns the current full path of the containing resource as entered or
      * selected by the user, or its anticipated initial value.
-     * 
+     *
      * @return the container's full path, anticipated initial value, or
      *         <code>null</code> if no path is known
      */
@@ -304,7 +304,7 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
     /**
      * Returns the current file name as entered by the user, or its anticipated
      * initial value.
-     * 
+     *
      * @return the file name, its anticipated initial value, or
      *         <code>null</code> if no file name is known
      */
@@ -320,7 +320,7 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
      * Returns a stream containing the initial contents to be given to new file
      * resource instances. <b>Subclasses</b> may wish to override. This default
      * implementation provides no initial contents.
-     * 
+     *
      * @return initial contents to be given to new file resource instances
      */
     protected InputStream getInitialContents() {
@@ -333,7 +333,7 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
      * <p>
      * Subclasses may reimplement.
      * </p>
-     * 
+     *
      * @return the label to display in the file name specification visual
      *         component group
      */
@@ -345,7 +345,7 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
      * The <code>WizardNewFileCreationPage</code> implementation of this
      * <code>Listener</code> method handles all events and enablements for
      * controls on this page. Subclasses may extend.
-     * 
+     *
      * @param event
      *            The event to handle.
      */
@@ -388,7 +388,7 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
     /**
      * Sets the value of this page's container name field, or stores it for
      * future use if this page's controls do not exist yet.
-     * 
+     *
      * @param path
      *            the full path to the container
      */
@@ -403,7 +403,7 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
     /**
      * Sets the value of this page's file name field, or stores it for future
      * use if this page's controls do not exist yet.
-     * 
+     *
      * @param value
      *            new file name
      */
@@ -417,7 +417,7 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
 
     /**
      * Returns whether this page's controls currently all contain valid values.
-     * 
+     *
      * @return <code>true</code> if all controls are valid, and
      *         <code>false</code> if at least one is invalid
      */
@@ -455,7 +455,7 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
 
     /**
      * Return the file extension.
-     * 
+     *
      * @return The file extension.
      */
     public String getFileExtension() {

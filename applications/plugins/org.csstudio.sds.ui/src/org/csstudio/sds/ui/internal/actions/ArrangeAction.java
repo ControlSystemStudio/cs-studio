@@ -80,7 +80,7 @@ public class ArrangeAction extends AbstractEditPartSelectionAction implements Up
                 normalizedSelection.removeAll(children);
             }
         }
-    
+
         return normalizedSelection;
     }
 }

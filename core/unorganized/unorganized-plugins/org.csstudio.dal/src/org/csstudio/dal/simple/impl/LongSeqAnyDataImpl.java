@@ -5,9 +5,9 @@ import java.util.Arrays;
 import org.csstudio.dal.DynamicValueProperty;
 
 public final class LongSeqAnyDataImpl extends AbstractAnyDataImpl<long[]> {
-    
+
     public static final long[] UNINITIALIZED_VALUE = new long[]{Long.MIN_VALUE};
-    
+
     public LongSeqAnyDataImpl(DynamicValueProperty<long[]> property, long beamID) {
         super(property,beamID);
     }

@@ -82,7 +82,7 @@ public class DefaultPropertyFactoryService implements PropertyFactoryService
     {
         if (linkPolicy == null)
             linkPolicy = LinkPolicy.SYNC_LINK_POLICY;
-        
+
         if (plugName == null) {
             Class cl = null;
 

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene;
 
@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class BubbleGraph2DView extends AbstractGraph2DView<BubbleGraph2DWidget> {
 

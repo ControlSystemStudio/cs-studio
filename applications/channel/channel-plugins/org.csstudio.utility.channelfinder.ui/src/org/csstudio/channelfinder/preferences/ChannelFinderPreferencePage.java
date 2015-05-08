@@ -74,7 +74,7 @@ public class ChannelFinderPreferencePage extends FieldEditorPreferencePage
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */

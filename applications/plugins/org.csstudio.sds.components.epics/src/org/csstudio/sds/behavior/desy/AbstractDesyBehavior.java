@@ -241,7 +241,7 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
             case TEXT:
                 // TODO (hrickens): The CA Gateway sent wrong formated floating point.
                 // when the gateway sent the correct string, the stringValue can sent 1by1.
-                final String stringValue = anyData.stringValue();                
+                final String stringValue = anyData.stringValue();
                 model.setPropertyValue(propertyId, stringValue);
                 break;
             default:

@@ -15,14 +15,14 @@ import org.eclipse.swt.widgets.Display;
  * @author Xihui Chen
  *
  */
-public class BOYPVFactory{    
-    
+public class BOYPVFactory{
+
     /**
      * The default background thread for PV change event notification.
      */
     private final static ExecutorService BOY_PV_THREAD = Executors
             .newSingleThreadExecutor();
-    
+
     private final static ExceptionHandler exceptionHandler = new ExceptionHandler() {
         @Override
         public void handleException(Exception ex) {
@@ -41,7 +41,7 @@ public class BOYPVFactory{
     public static IPV createPV(final String name) throws Exception {
         return createPV(name, false);
     }
-    
+
     /**Create a PV. If it is using PV Manager, max update rate is determined by GUI Refresh cycle.
      * @param name name of the PV.
      * @param bufferAllValues if all values should be buffered. Only meaningful if it is using
@@ -51,10 +51,10 @@ public class BOYPVFactory{
      * @see {@link #createPV(String, boolean, int)}
      */
     public static IPV createPV(final String name, final boolean bufferAllValues) throws Exception{
-        return createPV(name, bufferAllValues, 
+        return createPV(name, bufferAllValues,
                 PreferencesHelper.getGUIRefreshCycle());
     }
-    
+
     /**Create a PV based on PV connection layer preference.
      * @param name name of the PV.
      * @param bufferAllValues if all values should be buffered. Only meaningful if it is using
@@ -63,7 +63,7 @@ public class BOYPVFactory{
      * @return the PV
      * @throws Exception
      */
-    public static IPV createPV(final String name, 
+    public static IPV createPV(final String name,
             final boolean bufferAllValues, final int updateDuration) throws Exception{
 
             String pvConnectionLayer = PreferencesHelper.getPVConnectionLayer();
@@ -72,9 +72,9 @@ public class BOYPVFactory{
             AbstractPVFactory pvFactory = SimplePVLayer.getPVFactory
                     (pvConnectionLayer);
             if(pvFactory == null)
-                throw new Exception("No such PVFactory extension available: " + pvConnectionLayer);            
+                throw new Exception("No such PVFactory extension available: " + pvConnectionLayer);
             return pvFactory.createPV(
-                    name, false, updateDuration, bufferAllValues,  BOY_PV_THREAD, exceptionHandler);    
+                    name, false, updateDuration, bufferAllValues,  BOY_PV_THREAD, exceptionHandler);
     }
 
 }

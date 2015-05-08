@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /** Thread that reads input stream into a string.
- *  
+ *
  *  Can be used to capture the output of a background tasks
  *  @see StreamSwallowThread
  *  @author Kay Kasemir

@@ -31,14 +31,14 @@ public class ThumbnailCreator {
     private static ThumbnailImageCache imageCache = new ThumbnailImageCache();
 
     public ThumbnailCreator() {
-        
+
         Display.getCurrent().addListener(SWT.Dispose, new Listener() {
             @Override
             public void handleEvent(Event arg0) {
                 imageCache.shutdown();
             }
         });
-        
+
     }
 
     public ImageData createImage(final File file, final int thumbSize,
@@ -46,7 +46,7 @@ public class ThumbnailCreator {
 
         ImageData imageData = imageCache.getCachedImage(file);
         if (imageData == null) {
-            
+
             ThumbnailCreationJob job = new ThumbnailCreationJob(display, file, thumbSize);
             imageData = job.getImageData();
             if (imageData != null) {
@@ -55,7 +55,7 @@ public class ThumbnailCreator {
         }
         return imageData;
     }
-    
+
     private static class ThumbnailCreationJob implements Runnable {
 
         private final Display display;
@@ -67,13 +67,13 @@ public class ThumbnailCreator {
         public ThumbnailCreationJob(Display display, File file, int thumbSize) {
             this.display = display;
             this.thumbSize = thumbSize;
-            
+
             model = new DisplayModel();
             FileInputStream fip = null;
             try {
                 fip = new FileInputStream(file);
                 PersistenceUtil.syncFillModel(model, fip);
-                
+
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -83,16 +83,16 @@ public class ThumbnailCreator {
                     e.printStackTrace();
                 }
             }
-            
+
             if (!display.isDisposed()) {
                 display.syncExec(this);
             }
         }
-        
+
         public ImageData getImageData() {
             return imageData;
         }
-        
+
         @Override
         public void run() {
             if (!display.isDisposed()) {
@@ -114,7 +114,7 @@ public class ThumbnailCreator {
 
                     image = viewer.createImage(thumbSize);
                     imageData = image.getImageData();
-                    
+
                 } finally {
                     if (image != null) {
                         image.dispose();
@@ -123,9 +123,9 @@ public class ThumbnailCreator {
                 }
             }
         }
-        
+
     }
-    
+
     private static class ThumbnailDrawingViewer extends GraphicalViewerImpl {
 
         public Image createImage(int thumbSize) {

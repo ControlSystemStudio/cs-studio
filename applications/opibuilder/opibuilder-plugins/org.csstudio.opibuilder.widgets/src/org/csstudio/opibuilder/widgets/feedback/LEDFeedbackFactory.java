@@ -21,10 +21,10 @@ public class LEDFeedbackFactory extends AbstractFixRatioSizeFeedbackFactory {
     public int getMinimumWidth() {
         return LEDModel.MINIMUM_SIZE;
     }
-    
+
     @Override
     public boolean isSquareSizeRequired(AbstractWidgetModel widgetModel) {
         return !((LEDModel)widgetModel).isSquareLED();
     }
-    
+
 }

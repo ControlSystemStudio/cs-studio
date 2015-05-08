@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * TODO (jhatje) :
- * 
+ *
  * @author jhatje
  * @author $Author: jhatje $
  * @version $Revision: 1.2.2.2 $
@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
 public class DisplayAutoStart implements Runnable {
 
     private static final Logger LOG = LoggerFactory.getLogger(DisplayAutoStart.class);
-    
+
     private static final String PLT_FILE_EXTENSION = "plt";
     private static final String SDS_FILE_EXTENSION = "sds";
 
@@ -125,7 +125,7 @@ public class DisplayAutoStart implements Runnable {
 
     /**
      * Wait until the workbench is available to start SDS displays.
-     * 
+     *
      * @throws InterruptedException
      */
     private void waitForWorkbench() throws InterruptedException {

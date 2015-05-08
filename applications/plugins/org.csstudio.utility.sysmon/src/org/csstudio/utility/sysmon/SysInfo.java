@@ -17,7 +17,7 @@ public class SysInfo
     final double freeMB;
     final double totalMB;
     final double maxMB;
-    
+
     public SysInfo()
     {
         final Runtime runtime = Runtime.getRuntime();

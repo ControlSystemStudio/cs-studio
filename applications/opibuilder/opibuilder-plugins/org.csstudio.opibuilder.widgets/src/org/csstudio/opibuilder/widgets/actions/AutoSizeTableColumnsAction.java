@@ -19,22 +19,22 @@ import org.eclipse.ui.IWorkbenchPart;
  *
  */
 public class AutoSizeTableColumnsAction implements IObjectActionDelegate {
-    
+
 
 
     private IStructuredSelection selection;
-    
+
     public AutoSizeTableColumnsAction() {
     }
-    
+
 
     public void run(IAction action) {
         TableEditPart tableEditPart = getSelectedWidget();
-        
+
         tableEditPart.getTable().autoSizeColumns();
-        
-        
-        
+
+
+
     }
 
     public void selectionChanged(IAction action, ISelection selection) {
@@ -42,8 +42,8 @@ public class AutoSizeTableColumnsAction implements IObjectActionDelegate {
             this.selection = (IStructuredSelection) selection;
         }
     }
-    
-    private TableEditPart getSelectedWidget(){ 
+
+    private TableEditPart getSelectedWidget(){
         if(selection.getFirstElement() instanceof TableEditPart){
             return (TableEditPart)selection.getFirstElement();
         }else
@@ -53,7 +53,7 @@ public class AutoSizeTableColumnsAction implements IObjectActionDelegate {
 
     @Override
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-        
+
     }
 
 }

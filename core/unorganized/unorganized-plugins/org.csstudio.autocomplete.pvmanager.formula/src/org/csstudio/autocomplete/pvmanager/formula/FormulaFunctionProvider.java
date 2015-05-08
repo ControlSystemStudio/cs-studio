@@ -26,7 +26,7 @@ import org.epics.pvmanager.formula.FormulaRegistry;
 
 /**
  * PV formula functions provider.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  *
  */
@@ -80,14 +80,14 @@ public class FormulaFunctionProvider implements IAutoCompleteProvider {
             for (String functionName : functions.keySet()) {
                 if (functionName.startsWith(nameToFind)) {
                     Proposal proposal = new Proposal(functionName + "(", false);
-                    
+
                     String description = functions.get(functionName).get(0).getDescription() + "\n\n";
                     for (FormulaFunction ff : functions.get(functionName))
                         description += generateSignature(ff);
                     proposal.setDescription(description);
                     for (FormulaFunction ff : functions.get(functionName))
                         proposal.addTooltipData(generateTooltipData(ff, 0));
-                    
+
                     proposal.addStyle(ProposalStyle.getDefault(0, nameToFind.length() - 1));
                     proposal.setInsertionPos(insertionPos);
                     proposal.setFunction(true); // display function icon
@@ -105,7 +105,7 @@ public class FormulaFunctionProvider implements IAutoCompleteProvider {
                 result.addTopProposal(topProposal);
         }
         result.setCount(count);
-        
+
         // handle tooltip
         if (functionDesc.hasOpenBracket() && !functionDesc.isComplete()) {
             for (String setName : FormulaRegistry.getDefault().listFunctionSets()) {

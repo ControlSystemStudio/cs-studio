@@ -16,9 +16,9 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * Popup menu action for the outline view that creates a new prototype.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class AddPrototypeAction extends AbstractOutlineAction {
 

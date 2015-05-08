@@ -22,7 +22,7 @@ public class ActionsCellEditor extends AbstractDialogCellEditor {
 
     private ActionsInput actionsInput;
     private boolean showHookOption;
-    
+
     public ActionsCellEditor(Composite parent, String title, boolean showHookOption) {
         super(parent, title);
         this.showHookOption = showHookOption;
@@ -34,9 +34,9 @@ public class ActionsCellEditor extends AbstractDialogCellEditor {
         "org.eclipse.help.ui.HelpView") !=null) //$NON-NLS-1$
             PlatformUI.getWorkbench().getHelpSystem().displayHelp(
             OPIBuilderPlugin.PLUGIN_ID + ".action"); //$NON-NLS-1$
-        ActionsInputDialog dialog = 
+        ActionsInputDialog dialog =
             new ActionsInputDialog(parentShell, actionsInput, dialogTitle, showHookOption);
-        
+
         if(dialog.open() == Window.OK)
             actionsInput = dialog.getOutput();
     }

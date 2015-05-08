@@ -13,9 +13,9 @@ import org.csstudio.dct.util.ResolutionUtil;
 
 /**
  * Renders records in DB file syntax (as accepted by an IOC).
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class AdvancedDbFileExporter implements IExporter {
     private static final String NEWLINE = "\r\n";
@@ -27,7 +27,7 @@ public final class AdvancedDbFileExporter implements IExporter {
 
     /**
      * Constructor.
-     * 
+     *
      * @param renderEmptyFields
      *            flag that indicates whether empty fields should be rendered
      */

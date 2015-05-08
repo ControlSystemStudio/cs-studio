@@ -67,12 +67,12 @@ public class StatusBarInfo extends WorkbenchWindowControlContribution
                 }
             }
         });
-        
+
         // Trigger initial update
         changedSecurity(SecuritySupport.getSubject(),
                 SecuritySupport.isCurrentUser(),
                 SecuritySupport.getAuthorizations());
-        
+
         // Subscribe to changes
         SecuritySupport.addListener(this);
         parent.addDisposeListener(new DisposeListener()

@@ -48,9 +48,9 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 /**
  * Selection dialog that displays the prototypes of a project.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class InstanceDialog extends Dialog {
     private IPrototype selection;
@@ -67,7 +67,7 @@ public final class InstanceDialog extends Dialog {
      * <p>
      * Note that the <code>open</code> method blocks for input dialogs.
      * </p>
-     * 
+     *
      * @param parentShell
      *            the parent shell, or <code>null</code> to create a top-level
      *            shell
@@ -101,7 +101,7 @@ public final class InstanceDialog extends Dialog {
     protected Control createDialogArea(final Composite parent) {
         Composite composite = (Composite) super.createDialogArea(parent);
         composite.setLayout(new GridLayout(1, false));
-        
+
         Label label = new Label(composite, SWT.WRAP);
         label.setText("Available Prototypes:");
         GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
@@ -134,13 +134,13 @@ public final class InstanceDialog extends Dialog {
             }
         });
         treeViewer.setInput(project);
-        
+
         treeViewer.addOpenListener(new IOpenListener(){
             public void open(OpenEvent event) {
                 okPressed();
             }
         });
-        
+
         return composite;
     }
 
@@ -155,7 +155,7 @@ public final class InstanceDialog extends Dialog {
 
     /**
      * Returns the selected prototype.
-     * 
+     *
      * @return the selected prototype
      */
     public IPrototype getSelection() {

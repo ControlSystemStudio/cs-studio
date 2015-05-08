@@ -14,9 +14,9 @@ import org.eclipse.core.runtime.IAdapterFactory;
 /**
  * Adapter factor for a selection of {@link ChannelQueryAdaptable} to the
  * appropriate objects and arrays.
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class ChannelQueryAdapterFactory implements IAdapterFactory {
 

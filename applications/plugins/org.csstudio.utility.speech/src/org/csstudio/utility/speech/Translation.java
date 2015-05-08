@@ -25,7 +25,7 @@ public class Translation
         this.pattern = pattern;
         this.replacement = replacement;
     }
-    
+
     /** Apply this translation to the input text
      *  @param input Input to translate
      *  @return Translated text

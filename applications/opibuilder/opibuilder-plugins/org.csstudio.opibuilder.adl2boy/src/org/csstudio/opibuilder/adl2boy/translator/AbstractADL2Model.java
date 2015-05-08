@@ -31,7 +31,7 @@ import org.eclipse.swt.graphics.RGB;
 
 /**
  * @author John Hammonds, Argonne National Laboratory
- * 
+ *
  */
 public abstract class AbstractADL2Model {
     AbstractWidgetModel widgetModel;
@@ -51,7 +51,7 @@ public abstract class AbstractADL2Model {
 
     /**
      * Does the work of converting the adlWidget into the AbstractWidgetModel
-     * 
+     *
      * @param adlWidget
      */
     abstract public void processWidget(ADLWidget adlWidget);
@@ -59,7 +59,7 @@ public abstract class AbstractADL2Model {
     /**
      * Creates the widgetModel appropriate to the adlWidget. Adds the
      * widgetModel as a child to the parentModel
-     * 
+     *
      * @param adlWidget
      * @param parentModel
      */
@@ -67,7 +67,7 @@ public abstract class AbstractADL2Model {
             AbstractContainerModel parentModel);
 
     /**
-     * 
+     *
      * @return
      */
     public AbstractWidgetModel getWidgetModel() {
@@ -77,7 +77,7 @@ public abstract class AbstractADL2Model {
     /**
      * set the properties contained in the ADL basic properties section in the
      * created widgetModel
-     * 
+     *
      * @param adlWidget
      * @param widgetModel
      */
@@ -96,7 +96,7 @@ public abstract class AbstractADL2Model {
     /**
      * set the properties contained in the ADL basic properties section in the
      * created widgetModel
-     * 
+     *
      * @param adlWidget
      * @param widgetModel
      */
@@ -129,7 +129,7 @@ public abstract class AbstractADL2Model {
     }
 
     /**
-     * 
+     *
      * @param adlWidget
      * @param widgetModel
      */
@@ -211,12 +211,12 @@ public abstract class AbstractADL2Model {
 
 
     /**
-     * Perform a translation between an MEDM style 
-     * calc expression for visibility rules.  Makes 
+     * Perform a translation between an MEDM style
+     * calc expression for visibility rules.  Makes
      * the following assumptions
      * 1. The rule is fairy simple. The only
      *    alpha characters are A, B, C & D
-     * 2. That the pv fields A, B, C & D are 
+     * 2. That the pv fields A, B, C & D are
      *    used sequentially. (i.e. If B is used
      *    A is used, if C is used A & Bare used).
      *    This allows the substitutions
@@ -227,7 +227,7 @@ public abstract class AbstractADL2Model {
      * 3. Only basic desion maiking is hapenning
      *    ()+-/*=<># were used.  No use of math
      *    functions like ABS, SIN, ...
-     * 4. The characters = and # are replaced by 
+     * 4. The characters = and # are replaced by
      *    == and != respecively.
      * @param adlExpr
      * @return
@@ -244,7 +244,7 @@ public abstract class AbstractADL2Model {
     }
 
     /**
-     * 
+     *
      * @param adlChanName
      * @param opiChanName
      * @param opiExpr
@@ -266,7 +266,7 @@ public abstract class AbstractADL2Model {
             for (int occur = 0; occur<(parts.length-1); occur++){
                 if (!inName.equals("=")) {
                     if (inName.equals("=")
-                            && (tempExpr.toString().endsWith(">") || 
+                            && (tempExpr.toString().endsWith(">") ||
                                     tempExpr.toString().endsWith("<") ))
 
                     {
@@ -283,7 +283,7 @@ public abstract class AbstractADL2Model {
                 }
             }
             retExpr = tempExpr.toString();
-        } 
+        }
         return retExpr;
     }
 
@@ -297,7 +297,7 @@ public abstract class AbstractADL2Model {
     /**
      * set the properties contained in the ADL basic properties section in the
      * created widgetModel
-     * 
+     *
      * @param adlWidget
      * @param widgetModel
      */
@@ -312,7 +312,7 @@ public abstract class AbstractADL2Model {
     /**
      * set the properties contained in the ADL basic properties section in the
      * created widgetModel
-     * 
+     *
      * @param adlWidget
      * @param widgetModel
      */
@@ -388,7 +388,7 @@ public abstract class AbstractADL2Model {
             }
             widgetModel.setPropertyValue(AbstractShapeModel.PROP_FILL_LEVEL, 100);
             widgetModel.setPropertyValue(AbstractShapeModel.PROP_HORIZONTAL_FILL, true);
-            
+
         }
         else if (shapeWidget.getAdlBasicAttribute().getFill().equals("outline")) {
             if (!(widgetModel instanceof ArcModel)){
@@ -401,7 +401,7 @@ public abstract class AbstractADL2Model {
             }
             if ( shapeWidget.getAdlBasicAttribute().getStyle().equals("dash") ) {
                 widgetModel.setPropertyValue(AbstractShapeModel.PROP_LINE_STYLE, 1);
-                
+
             }
             int lineWidth = shapeWidget.getAdlBasicAttribute().getWidth();
             if (lineWidth == 0)lineWidth = 1;
@@ -428,7 +428,7 @@ public abstract class AbstractADL2Model {
     /**
      * Remove parent macros (i.e. P=$(P))from the list. We can now pass parent
      * Macros.
-     * 
+     *
      * @param args
      * @return
      */

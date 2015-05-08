@@ -24,16 +24,16 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * Table adapter for record fields.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IRecord> {
     private String fieldKey;
 
     /**
      * Constructor.
-     * 
+     *
      * @param record
      *            the record
      * @param fieldKey
@@ -46,7 +46,7 @@ public final class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IR
 
     /**
      * Returns the name of the field.
-     * 
+     *
      * @return the field name
      */
     public String getFieldKey() {

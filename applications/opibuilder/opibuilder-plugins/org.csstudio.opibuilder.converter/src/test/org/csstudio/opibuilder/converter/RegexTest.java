@@ -40,8 +40,8 @@ public class RegexTest {
             i++;
         }
         System.out.println(sb);
-        
-        
+
+
         System.out.println("LOC\\$(!M)abc".replaceAll("\\x24\\x28\\x21[A-Z]{1}\\x29", "\\$(DID)"));
     }
 

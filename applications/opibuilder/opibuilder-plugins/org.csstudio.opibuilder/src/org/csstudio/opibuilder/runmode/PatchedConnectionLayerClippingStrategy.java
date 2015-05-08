@@ -25,7 +25,7 @@ public class PatchedConnectionLayerClippingStrategy extends ViewportAwareConnect
         super(connectionLayer);
     }
 
-    
+
     @Override
     protected Rectangle[] getEdgeClippingRectangle(Connection connection) {
         // start with clipping the connection at its original bounds
@@ -43,7 +43,7 @@ public class PatchedConnectionLayerClippingStrategy extends ViewportAwareConnect
         // viewport
         // the connection has to be clipped at.
         IFigure sourceFigure = sourceAnchor.getOwner();
-        IFigure targetFigure = targetAnchor.getOwner();                        
+        IFigure targetFigure = targetAnchor.getOwner();
         if(!sourceFigure.isShowing() || !targetFigure.isShowing())
             return new Rectangle[]{};
         return super.getEdgeClippingRectangle(connection);

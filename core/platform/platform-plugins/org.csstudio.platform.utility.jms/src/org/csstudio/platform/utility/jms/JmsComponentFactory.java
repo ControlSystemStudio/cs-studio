@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.platform.utility.jms;
 
@@ -9,14 +9,14 @@ package org.csstudio.platform.utility.jms;
  *
  */
 public class JmsComponentFactory implements IJmsComponentFactory {
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.platform.libs.jms.IJmsComponentFactory#createJmsRedundantProducer(java.lang.String, java.lang.String[])
      */
     public IJmsProducer createJmsProducer(String clientId, String[] urlsToConnect) {
         return new JmsRedundantProducer(clientId, urlsToConnect);
     }
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.platform.libs.jms.IJmsComponentFactory#createIjmsRedundantReceiver(java.lang.String, java.lang.String, java.lang.String)
      */

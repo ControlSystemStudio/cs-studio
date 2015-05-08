@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene;
 
@@ -11,7 +11,7 @@ import org.epics.graphene.NumberColorMap;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class IntensityGraph2DConfigurationDialog
         extends

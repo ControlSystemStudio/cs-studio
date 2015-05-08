@@ -8,9 +8,9 @@ import org.csstudio.dct.model.IElement;
 /**
  * Base class for box nodes. Box nodes may have {@link Connection}s to other
  * nodes and theý can contain other nodes.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  * @param <F>
  */
 public abstract class AbstractContainerNode<F extends IElement> extends AbstractNode<F> {
@@ -18,7 +18,7 @@ public abstract class AbstractContainerNode<F extends IElement> extends Abstract
 
     /**
      * Constructor.
-     * 
+     *
      * @param element
      *            the corresponding element in the original dct model
      */
@@ -29,7 +29,7 @@ public abstract class AbstractContainerNode<F extends IElement> extends Abstract
 
     /**
      * Adds a node.
-     * 
+     *
      * @param node
      */
     public void addNode(AbstractNode node) {
@@ -38,7 +38,7 @@ public abstract class AbstractContainerNode<F extends IElement> extends Abstract
 
     /**
      * Returns all sub nodes.
-     * 
+     *
      * @return all sub ndes
      */
     public List<AbstractNode> getNodes() {

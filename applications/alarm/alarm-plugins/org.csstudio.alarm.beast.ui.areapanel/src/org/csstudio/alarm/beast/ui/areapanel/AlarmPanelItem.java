@@ -57,7 +57,7 @@ public class AlarmPanelItem extends Canvas implements PaintListener
         addPaintListener(this);
         addContextMenu();
     }
-    
+
     private void addContextMenu()
     {
         final boolean isRcp = UI.RCP.equals(SingleSourcePlugin.getUIHelper()
@@ -103,7 +103,7 @@ public class AlarmPanelItem extends Canvas implements PaintListener
         gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_BORDER));
         gc.drawRoundRectangle(0, 0, bounds.width-1, bounds.height-1, 10, 10);
 
-        
+
         // Draw Text
         gc.setForeground(display.getSystemColor(SWT.COLOR_BLACK));
         final String label = item.getName();

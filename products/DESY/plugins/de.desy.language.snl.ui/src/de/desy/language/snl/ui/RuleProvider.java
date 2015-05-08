@@ -145,7 +145,7 @@ public class RuleProvider extends AbstractRuleProvider {
     /**
      * Creates a Token from a given element of
      * {@link SNLCodeElementTextAttributeConstants}.
-     * 
+     *
      * @param element
      *            The element, not null.
      * @return A token, not null.
@@ -158,7 +158,7 @@ public class RuleProvider extends AbstractRuleProvider {
 
     /**
      * Creates a color for given rgb.
-     * 
+     *
      * @param rgb
      *            the rgb value.
      */

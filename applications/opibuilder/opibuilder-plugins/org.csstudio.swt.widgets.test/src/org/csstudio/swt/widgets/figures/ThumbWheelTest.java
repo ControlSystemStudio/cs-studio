@@ -15,8 +15,8 @@ public class ThumbWheelTest extends AbstractWidgetTest{
     public Figure createTestWidget() {
         return new ThumbWheelFigure();
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -28,9 +28,9 @@ public class ThumbWheelTest extends AbstractWidgetTest{
                 "wheelFont",
                 "test"
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
-            
+
+
 }

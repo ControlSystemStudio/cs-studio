@@ -59,7 +59,7 @@ public class RAPCorePlugin extends AbstractUIPlugin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext
      * )
@@ -71,15 +71,15 @@ public class RAPCorePlugin extends AbstractUIPlugin {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //$NON-NLS-1$
         startupTime = sdf.format(cal.getTime());
-        
-        //Set the default preference lookup order for all plugins 
+
+        //Set the default preference lookup order for all plugins
         ((PreferencesService)Platform.getPreferencesService()). setDefaultDefaultLookupOrder(
                 new String[] { //
                 InstanceScope.SCOPE, //
                 ConfigurationScope.SCOPE, //
                 ServerScope.SCOPE, //$NON-NLS-1$
                 DefaultScope.SCOPE});
-        
+
         // set security configuration
         Configuration.setConfiguration(new Configuration() {
 
@@ -98,7 +98,7 @@ public class RAPCorePlugin extends AbstractUIPlugin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
      * )
@@ -110,7 +110,7 @@ public class RAPCorePlugin extends AbstractUIPlugin {
 
     /**
      * Returns the shared instance
-     * 
+     *
      * @return the shared instance
      */
     public static RAPCorePlugin getDefault() {

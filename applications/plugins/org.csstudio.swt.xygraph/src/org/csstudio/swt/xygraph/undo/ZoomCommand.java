@@ -21,7 +21,7 @@ public class ZoomCommand extends SaveStateCommand
 {
     final private List<Axis> xAxisList;
     final private List<Axis> yAxisList;
-    
+
     final private List<Range> beforeXRangeList = new ArrayList<Range>();
     final private List<Range> beforeYRangeList = new ArrayList<Range>();
     final private List<Range> afterXRangeList = new ArrayList<Range>();
@@ -48,7 +48,7 @@ public class ZoomCommand extends SaveStateCommand
         for(Axis axis : yAxisList)
             beforeYRangeList.add(axis.getRange());
     }
-    
+
     public void redo() {
         int i=0;
         if (xAxisList != null) {
@@ -78,7 +78,7 @@ public class ZoomCommand extends SaveStateCommand
             i++;
         }
     }
-    
+
     @Override
     public void saveState(){
         if (xAxisList != null)

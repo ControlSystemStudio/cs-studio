@@ -17,9 +17,9 @@ import de.desy.language.libraries.utils.contract.Contract;
  * ignoring all declared (single line) comments, (single line) embedded C
  * statements, strings or chars. If the position of the cursor is inside of one
  * of them only this region is refreshed.
- * 
+ *
  * @author C1 WPS / KM
- * 
+ *
  */
 public class ScriptPresentationDamager implements IPresentationDamager {
 
@@ -57,7 +57,7 @@ public class ScriptPresentationDamager implements IPresentationDamager {
      * given compare char <code>c</code> ignoring all occurrences after the
      * given escape char, when it is not null. If the given offset is not inside
      * the range of the {@link IDocument} the match fails.
-     * 
+     *
      * @param offset
      *            The position within the {@link IDocument}
      * @param c
@@ -88,7 +88,7 @@ public class ScriptPresentationDamager implements IPresentationDamager {
      * are equal to the given compare char array <code>chars</code>. If the
      * given offset is not inside the range of the {@link IDocument} the match
      * fails.
-     * 
+     *
      * @param offset
      *            The position within the {@link IDocument}
      * @param chars
@@ -141,7 +141,7 @@ public class ScriptPresentationDamager implements IPresentationDamager {
 
             start = Math.min(start, event.getOffset());
             end = Math.max(end, event.getText().length()+event.getOffset());
-            
+
             region = new Region(start, end - start);
         }
         return region;
@@ -151,7 +151,7 @@ public class ScriptPresentationDamager implements IPresentationDamager {
      * Checks if the given offset is surrounded by <code>/*</code> and
      * <code>*\/</code> . If a match was found the corresponding region is
      * returned else <code>null</code> is returned
-     * 
+     *
      * @param offset
      *            The current position within the {@link IDocument}
      * @return The region of the comment or null if no surrounding comment
@@ -187,7 +187,7 @@ public class ScriptPresentationDamager implements IPresentationDamager {
      * Checks if the given offset is surrounded by <code>%{</code> and
      * <code>}%</code> . If a match was found the corresponding region is
      * returned else <code>null</code> is returned
-     * 
+     *
      * @param offset
      *            The current position within the {@link IDocument}
      * @return The region of the comment or null if no surrounding comment
@@ -223,7 +223,7 @@ public class ScriptPresentationDamager implements IPresentationDamager {
      * Checks if the given offset is surrounded by <code>//</code> and a line
      * break. If a match was found the corresponding region is returned else
      * <code>null</code> is returned
-     * 
+     *
      * @param offset
      *            The current position within the {@link IDocument}
      * @return The region of the comment or null if no surrounding comment
@@ -250,7 +250,7 @@ public class ScriptPresentationDamager implements IPresentationDamager {
      * Checks if the given offset is surrounded by <code>%%</code> and a line
      * break. If a match was found the corresponding region is returned else
      * <code>null</code> is returned
-     * 
+     *
      * @param offset
      *            The current position within the {@link IDocument}
      * @return The region of the comment or null if no surrounding comment
@@ -277,7 +277,7 @@ public class ScriptPresentationDamager implements IPresentationDamager {
      * Checks if the given offset is surrounded by <code>"</code>. If a match
      * was found the corresponding region is returned else <code>null</code>
      * is returned
-     * 
+     *
      * @param offset
      *            The current position within the {@link IDocument}
      * @return The region of the comment or null if no surrounding comment
@@ -322,7 +322,7 @@ public class ScriptPresentationDamager implements IPresentationDamager {
      * Checks if the given offset is surrounded by <code>'</code>. If a match
      * was found the corresponding region is returned else <code>null</code>
      * is returned
-     * 
+     *
      * @param offset
      *            The current position within the {@link IDocument}
      * @return The region of the comment or null if no surrounding comment
@@ -369,7 +369,7 @@ public class ScriptPresentationDamager implements IPresentationDamager {
     /**
      * Returns the offset first <code>;</code> or <code>{</code> outside
      * other SNL-statements
-     * 
+     *
      * @param offset
      *            The current position within the {@link IDocument}
      * @return The offset first <code>;</code> or <code>{</code>
@@ -406,7 +406,7 @@ public class ScriptPresentationDamager implements IPresentationDamager {
     /**
      * Returns the offset first <code>;</code> or <code>}</code> outside
      * other SNL-statements
-     * 
+     *
      * @param offset
      *            The current position within the {@link IDocument}
      * @return The offset first <code>;</code> or <code>}</code>

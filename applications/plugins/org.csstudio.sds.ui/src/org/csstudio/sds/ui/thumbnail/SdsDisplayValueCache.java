@@ -49,10 +49,10 @@ public class SdsDisplayValueCache {
 
         cacheManager.addCache(cache);
     }
-    
+
     public DisplayCacheValue getCacheValue(File file) {
         DisplayCacheValue result = null;
-        
+
         ClassLoader prevContextClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
@@ -69,7 +69,7 @@ public class SdsDisplayValueCache {
         }
         return result;
     }
-    
+
     public void cacheValueForFile(File file, DisplayCacheValue value) {
         ClassLoader prevContextClassLoader = Thread.currentThread().getContextClassLoader();
         try {
@@ -79,11 +79,11 @@ public class SdsDisplayValueCache {
             Thread.currentThread().setContextClassLoader(prevContextClassLoader);
         }
     }
-    
+
     public void flush() {
         cache.flush();
     }
-    
+
     public void shutdown() {
         if(cache.getStatus() == Status.STATUS_ALIVE) {
             cache.flush();
@@ -94,7 +94,7 @@ public class SdsDisplayValueCache {
     private static File getImageCacheDirectory() {
         File workspaceFile = ResourcesPlugin.getWorkspace().getRoot()
                 .getLocation().toFile();
-    
+
         File result = new File(workspaceFile, ".metadata/.plugins/"
                 + SdsUiPlugin.PLUGIN_ID + "/" + CACHE_FOLDER_NAME);
         if (!result.exists()) {
@@ -106,15 +106,15 @@ public class SdsDisplayValueCache {
     private static byte[] hashFile(File file) {
         assert file != null : "Precondition failed: file != null";
         assert file.exists() : "Precondition failed: file.exists()";
-    
+
         FileInputStream fis = null;
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA1");
             fis = new FileInputStream(file);
             byte[] dataBytes = new byte[1024];
-    
+
             int nread = 0;
-    
+
             while ((nread = fis.read(dataBytes)) != -1) {
                 messageDigest.update(dataBytes, 0, nread);
             }
@@ -134,7 +134,7 @@ public class SdsDisplayValueCache {
                 }
             }
         }
-    
+
         return null;
     }
 }

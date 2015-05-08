@@ -26,18 +26,18 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * EditPart controller for the image widget.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
-    
+
 
     private int maxAttempts;
 
     /**
      * Returns the casted model. This is just for convenience.
-     * 
+     *
      * @return the casted {@link ImageModel}
      */
     public ImageBoolButtonModel getWidgetModel() {
@@ -51,7 +51,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
     protected IFigure doCreateFigure() {
         ImageBoolButtonModel model = getWidgetModel();
         // create AND initialize the view properly
-        final ImageBoolButtonFigure figure = new ImageBoolButtonFigure();    
+        final ImageBoolButtonFigure figure = new ImageBoolButtonFigure();
         initializeCommonFigureProperties(figure, model);
 
         SymbolImageProperties sip = new SymbolImageProperties();
@@ -70,24 +70,24 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
             }
         });
         figure.addManualValueChangeListener(new IManualValueChangeListener() {
-            
+
             public void manualValueChanged(double newValue) {
                 if (getExecutionMode() == ExecutionMode.RUN_MODE)
-                    autoSizeWidget(figure);                
+                    autoSizeWidget(figure);
             }
-        });        
+        });
         figure.setOnImagePath(model.getOnImagePath());
         figure.setOffImagePath(model.getOffImagePath());
         return figure;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected void registerPropertyChangeHandlers() {
         registerCommonPropertyChangeHandlers();
-        
+
         //Save CPU usage
         //removeAllPropertyChangeHandlers(AbstractPVWidgetModel.PROP_PVVALUE);
         // value
@@ -113,16 +113,16 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
                 IPath absolutePath = (IPath)newValue;
                 if(!absolutePath.isAbsolute())
                     absolutePath = ResourceUtil.buildAbsolutePath(
-                            getWidgetModel(), absolutePath);                
+                            getWidgetModel(), absolutePath);
                 imageFigure.setOnImagePath(absolutePath);
                 autoSizeWidget(imageFigure);
                 return true;
             }
 
-            
+
         };
         setPropertyChangeHandler(ImageBoolButtonModel.PROP_ON_IMAGE, handle);
-        
+
         // changes to the off image property
         handle = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue,
@@ -131,16 +131,16 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
                 IPath absolutePath = (IPath)newValue;
                 if(!absolutePath.isAbsolute())
                     absolutePath = ResourceUtil.buildAbsolutePath(
-                            getWidgetModel(), absolutePath);                
+                            getWidgetModel(), absolutePath);
                 imageFigure.setOffImagePath(absolutePath);
                 autoSizeWidget(imageFigure);
                 return true;
             }
 
-            
+
         };
         setPropertyChangeHandler(ImageBoolButtonModel.PROP_OFF_IMAGE, handle);
-        
+
         // changes to the stretch property
         handle = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue,
@@ -152,7 +152,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
             }
         };
         setPropertyChangeHandler(ImageBoolButtonModel.PROP_STRETCH, handle);
-    
+
         // changes to the autosize property
         handle = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue,
@@ -185,7 +185,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
             }
         };
         setPropertyChangeHandler(ImageBoolButtonModel.PROP_ALIGN_TO_NEAREST_SECOND, handle);
-        
+
         // changes to the border width property
         handle = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue,
@@ -197,7 +197,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
         };
         setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH, handle);
         setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_STYLE, handle);
-        
+
         //size change handlers - so we can stretch accordingly
         handle = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue,
@@ -209,23 +209,23 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
         };
         setPropertyChangeHandler(AbstractWidgetModel.PROP_HEIGHT, handle);
         setPropertyChangeHandler(AbstractWidgetModel.PROP_WIDTH, handle);
-        
+
 
     }
-    
-    
-    
+
+
+
     @Override
     public void deactivate() {
         super.deactivate();
         ((ImageBoolButtonFigure) getFigure()).dispose();
     }
-    
-    private void autoSizeWidget(final ImageBoolButtonFigure imageFigure) {        
+
+    private void autoSizeWidget(final ImageBoolButtonFigure imageFigure) {
         if(!getWidgetModel().isAutoSize())
             return;
         maxAttempts = 10;
-        Runnable task = new Runnable() {            
+        Runnable task = new Runnable() {
             public void run() {
                 if(maxAttempts-- > 0 && imageFigure.isLoadingImage()){
                     Display.getDefault().timerExec(100, this);
@@ -233,12 +233,12 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
                 }
                 ImageBoolButtonModel model = getWidgetModel();
                 Dimension d = imageFigure.getAutoSizedDimension();
-                if(model.isAutoSize() && !model.isStretch() && d != null) 
+                if(model.isAutoSize() && !model.isStretch() && d != null)
                     model.setSize(d.width, d.height);
-                
+
             }
         };
         Display.getDefault().timerExec(100, task);
     }
-    
+
 }

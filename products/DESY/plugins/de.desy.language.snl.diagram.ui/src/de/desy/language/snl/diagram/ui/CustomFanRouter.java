@@ -16,21 +16,21 @@ import org.eclipse.draw2d.geometry.PointList;
 
 /**
  * Customized router for {@link Connection}s.
- * 
+ *
  * @author Kai Meyer, Sebastian Middeke (C1 WPS)
- * 
+ *
  */
 @Deprecated
 public class CustomFanRouter extends AutomaticRouter {
 
     /**
      * Internal class used as keys for the map.
-     * 
+     *
      * A MapKey holds the source and target {@link ConnectionAnchor} of a
      * {@link Connection}.
-     * 
+     *
      * @author Kai Meyer (C1 WPS)
-     * 
+     *
      */
     private class MapKey {
         /**
@@ -44,12 +44,12 @@ public class CustomFanRouter extends AutomaticRouter {
 
         /**
          * Constructor.
-         * 
+         *
          * @param source
          *            The source {@link ConnectionAnchor}
          * @param target
          *            The Target {@link ConnectionAnchor}
-         * 
+         *
          * @requires source != null
          * @requires target != null
          */
@@ -136,7 +136,7 @@ public class CustomFanRouter extends AutomaticRouter {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @requires conn != null
      */
     @Override
@@ -205,7 +205,7 @@ public class CustomFanRouter extends AutomaticRouter {
 
     /**
      * Handles the re-routing of a {@link Connection}.
-     * 
+     *
      * @param conn
      *            The {@link Connection}
      * @param index
@@ -226,7 +226,7 @@ public class CustomFanRouter extends AutomaticRouter {
             list.addAll(calculateNewPoints(firstPoint, lastPoint, index));
         }
     }
-    
+
 //    private void refreshBendPoints(Connection conn) {
 //        final List<Point> modelConstraint = getCastedModel().getBendPoints();
 //        final List<Bendpoint> figureConstraint = new ArrayList<Bendpoint>();
@@ -242,7 +242,7 @@ public class CustomFanRouter extends AutomaticRouter {
     /**
      * Calculates the points necessary for the re-routing of the
      * {@link Connection}.
-     * 
+     *
      * @param firstPoint
      *            The start point of the {@link Connection}
      * @param lastPoint
@@ -310,7 +310,7 @@ public class CustomFanRouter extends AutomaticRouter {
 
     /**
      * Calculates the angle of the {@link Connection}.
-     * 
+     *
      * @param firstPoint
      *            The start point of the {@link Connection}.
      * @param lastPoint
@@ -341,7 +341,7 @@ public class CustomFanRouter extends AutomaticRouter {
 
     /**
      * Calculates the length of the first re-routing segment.
-     * 
+     *
      * @param distance
      *            The default distance between two {@link Connection}s
      * @param index
@@ -359,7 +359,7 @@ public class CustomFanRouter extends AutomaticRouter {
 
     /**
      * Sets the space between two {@link Connection}s.
-     * 
+     *
      * @param separation
      * @requires separation >= 0
      */
@@ -371,7 +371,7 @@ public class CustomFanRouter extends AutomaticRouter {
 
     /**
      * Returns the space between two {@link Connection}s.
-     * 
+     *
      * @return The space.
      */
     public int getSeparation() {

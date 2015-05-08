@@ -38,19 +38,19 @@ public class StandalonePerspective implements IPerspectiveFactory
         //      |
         //      +-------------
         //      | bottom
-        
+
         final String editor = layout.getEditorArea();
         layout.setFixed(true);
         layout.setEditorAreaVisible(false);
-        
+
         final IFolderLayout left = layout.createFolder("left",
                         IPageLayout.LEFT, 0.25f, editor);
         final IFolderLayout top = layout.createFolder("top",
                 IPageLayout.TOP, 0.66f, editor);
         final IFolderLayout bottom = layout.createFolder("bottom",
                 IPageLayout.BOTTOM, 0.66f, editor);
-        
-        
+
+
         // Stuff for 'left'
         if (isViewAvailable(ID_ALARM_PANEL))
         {
@@ -62,7 +62,7 @@ public class StandalonePerspective implements IPerspectiveFactory
 
         // Stuff for 'top'
         top.addView(ID_ALARM_TABLE);
-        
+
         // Stuff for 'bottom'
         bottom.addView(ID_MSG_HIST);
     }

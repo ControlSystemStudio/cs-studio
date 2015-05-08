@@ -8,14 +8,14 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
-    
+
     @Override
     public void initializeDefaultPreferences() {
         IEclipsePreferences node = new DefaultScope().getNode(SimpleDalPluginActivator.ID);
         initializeControlSystemPreferences(node);
     }
- 
-    
+
+
     /**
      * Initializes the control system settings.
      * @param node

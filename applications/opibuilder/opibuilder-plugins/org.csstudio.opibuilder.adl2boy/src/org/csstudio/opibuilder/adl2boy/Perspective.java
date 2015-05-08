@@ -14,7 +14,7 @@ public class Perspective implements IPerspectiveFactory {
         String editorArea = layout.getEditorArea();
         layout.setEditorAreaVisible(true);
         layout.setFixed(true);
-        
+
         IFolderLayout folder_left = layout.createFolder(ID_LEFT,
                 IPageLayout.LEFT, .3f, editorArea);
         final IFolderLayout folder_bottom = layout.createFolder(ID_BOTTOM,

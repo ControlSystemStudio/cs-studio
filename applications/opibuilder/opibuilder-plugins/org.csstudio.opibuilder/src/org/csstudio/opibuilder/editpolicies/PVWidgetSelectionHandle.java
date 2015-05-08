@@ -53,14 +53,14 @@ public class PVWidgetSelectionHandle extends AbstractHandle {
     private static final String TIP = "<Set PV Name>";
     private  static final Color handleBackColor = CustomMediaFactory.getInstance().getColor(180, 180, 180);
     private  static final Color handleFilledBackColor = CustomMediaFactory.getInstance().getColor(255, 200, 0);
-    
+
     private Dimension textExtents;
     private AbstractWidgetModel widgetModel;
     private String pvName = "";
 
     public PVWidgetSelectionHandle(final GraphicalEditPart owner) {
         super(owner, new Locator() {
-            
+
             @Override
             public void relocate(IFigure target) {
                 IFigure ownerFigure = owner.getFigure();
@@ -71,12 +71,12 @@ public class PVWidgetSelectionHandle extends AbstractHandle {
                 targetLocation.translate(-3, -preferedSize.height-2);
                 target.setBounds(new Rectangle(targetLocation, preferedSize));
             }
-        });            
+        });
         setCursor(Cursors.HAND);
-                
+
         if(owner.getModel() instanceof AbstractWidgetModel)
             this.widgetModel = (AbstractWidgetModel) owner.getModel();
-        
+
         if(widgetModel instanceof IPVWidgetModel){
             String p = ((IPVWidgetModel)widgetModel).getPVName();
             if(p!=null && !p.isEmpty()){
@@ -86,37 +86,37 @@ public class PVWidgetSelectionHandle extends AbstractHandle {
         setToolTip(new Label(pvName.isEmpty()? "Click to set PV name.":pvName));
         setBorder(new LineBorder(ColorConstants.white));
     }
-    
 
-    
+
+
     private Dimension getTextExtent(){
         if(textExtents == null){
             textExtents = Draw2dSingletonUtil.getTextUtilities().getTextExtents(pvName, getFont());
         }
         return textExtents;
     }
-    
+
     @Override
     protected DragTracker createDragTracker() {
         DragEditPartsTracker tracker = new DragEditPartsTracker(getOwner()){
             @Override
             protected boolean handleButtonDown(int button) {
-                
+
                 if((button == 1 || button==3) && widgetModel instanceof IPVWidgetModel){
-                    
+
                     DirectEditManager directEditManager = new PVNameDirectEditManager(getOwner(), new CellEditorLocator() {
-                        
+
                         @Override
                         public void relocate(CellEditor celleditor) {
                             Rectangle rect;
                             int width=120;
                             if(!pvName.isEmpty() && getTextExtent().width>120)
                                 width = getTextExtent().width+4;
-                            
-                            rect = new Rectangle(PVWidgetSelectionHandle.this.getLocation(), 
+
+                            rect = new Rectangle(PVWidgetSelectionHandle.this.getLocation(),
                                         new Dimension(width, getTextExtent().height));
-                            
-                            translateToAbsolute(rect);                            
+
+                            translateToAbsolute(rect);
                             Text control = (Text) celleditor.getControl();
                             org.eclipse.swt.graphics.Rectangle trim = control .computeTrim(0, 0, 0, 0);
                             rect.translate(trim.x, trim.y);
@@ -124,21 +124,21 @@ public class PVWidgetSelectionHandle extends AbstractHandle {
                             rect.height += trim.height;
                             control.setBounds(rect.x, rect.y, rect.width, rect.height);
                         }
-                    });                     
+                    });
                     directEditManager.show();
 
-                    
-                }                
+
+                }
                 return true;
             }
         };
         tracker.setDefaultCursor(getCursor());
         return tracker;
     }
-    
+
     @Override
     protected void paintFigure(Graphics graphics) {
-        super.paintFigure(graphics);        
+        super.paintFigure(graphics);
         if(pvName == null|| pvName.isEmpty())
             graphics.setBackgroundColor(handleBackColor);
         else
@@ -148,14 +148,14 @@ public class PVWidgetSelectionHandle extends AbstractHandle {
 
 
 
-    
 
-    
+
+
     @Override
-    public Dimension getPreferredSize(int wHint, int hHint) {            
+    public Dimension getPreferredSize(int wHint, int hHint) {
         return PREFERED_SIZE;
     }
-    
+
     final class PVNameDirectEditManager extends DirectEditManager{
 
         private boolean committing;
@@ -166,14 +166,14 @@ public class PVWidgetSelectionHandle extends AbstractHandle {
                 CellEditorLocator locator) {
             super(source, null, locator);
         }
-        
-            
+
+
             protected CellEditor createCellEditorOn(Composite composite) {
                 final PVNameTextCellEditor cellEditor = new PVNameTextCellEditor(
                 (Composite) getEditPart().getViewer().getControl());
                 return cellEditor;
             };
-            
+
             @Override
             protected void initCellEditor() {
                 getCellEditor().getControl().setBackground(ColorConstants.white);
@@ -191,7 +191,7 @@ public class PVWidgetSelectionHandle extends AbstractHandle {
                     actionBars.updateActionBars();
                 }
             }
-        
+
             /**
              * Commits the current value of the cell editor by getting a {@link Command}
              * from the source edit part and executing it via the {@link CommandStack}.
@@ -212,10 +212,10 @@ public class PVWidgetSelectionHandle extends AbstractHandle {
                                 IPVWidgetModel.PROP_PVNAME,
                                 newName));
                     }
-                } finally {                    
+                } finally {
                     //work around to make sure autocomplete widget get notified before bringdown
                     Display.getCurrent().asyncExec(new Runnable() {
-                        
+
                         @Override
                         public void run() {
                             bringDown();
@@ -224,7 +224,7 @@ public class PVWidgetSelectionHandle extends AbstractHandle {
                     committing = false;
                 }
             }
-            
+
             private void restoreSavedActions(IActionBars actionBars){
                 actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), copy);
                 actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), paste);
@@ -246,7 +246,7 @@ public class PVWidgetSelectionHandle extends AbstractHandle {
                 undo = actionBars.getGlobalActionHandler(ActionFactory.UNDO.getId());
                 redo = actionBars.getGlobalActionHandler(ActionFactory.REDO.getId());
             }
-            
+
             protected void bringDown() {
 
                 if (actionHandler != null) {
@@ -258,12 +258,12 @@ public class PVWidgetSelectionHandle extends AbstractHandle {
                     actionBars.updateActionBars();
                     actionBars = null;
                 }
-                
+
                 super.bringDown();
 
             }
-        
-        
+
+
     }
-    
+
 }

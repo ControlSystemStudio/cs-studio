@@ -13,7 +13,7 @@ public class AuthUiActivator extends AbstractUIPlugin {
 
     // The shared instance
     private static AuthUiActivator plugin;
-    
+
     /**
      * The constructor
      */

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.opibuilder.properties;
 
@@ -49,7 +49,7 @@ import org.eclipse.swt.events.SelectionEvent;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ServiceMethodWidget extends BeanComposite {
 
@@ -334,7 +334,7 @@ public class ServiceMethodWidget extends BeanComposite {
         argumentPvTableViewer, SWT.NONE);
     tableViewerColumn_1.setEditingSupport(new EditingSupport(
         argumentPvTableViewer) {
-        
+
         protected boolean canEdit(Object element) {
         return true;
         }
@@ -374,9 +374,9 @@ public class ServiceMethodWidget extends BeanComposite {
         50, 100, true));
     tblclmnNewColumn_1.setText("pv/formula");
     argumentPvTableViewer.setContentProvider(new ArrayContentProvider());
-        
+
     addPropertyChangeListener(new PropertyChangeListener() {
-        
+
         @Override
         public void propertyChange(PropertyChangeEvent event) {
         if(event.getPropertyName().equals("serviceMethodDescription")){
@@ -386,7 +386,7 @@ public class ServiceMethodWidget extends BeanComposite {
         }
         }
     });
-    
+
     this.serviceMethodDescription = serviceMethodDescription;
     useArgumentPrefix = false;
     argumentPrefix = DEFAULT_PREFIX + "_"

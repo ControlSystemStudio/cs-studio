@@ -17,7 +17,7 @@ public class Edm_activeMenuButtonClass extends EdmWidget {
 
     public Edm_activeMenuButtonClass(EdmEntity genericEntity) throws EdmException {
         super(genericEntity);
-    }    
+    }
 
     /**
      * @return the lineAlarm

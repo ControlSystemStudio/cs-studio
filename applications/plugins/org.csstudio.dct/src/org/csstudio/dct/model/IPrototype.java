@@ -6,22 +6,22 @@ import org.csstudio.dct.model.internal.Parameter;
 
 /**
  * Represents a prototype.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public interface IPrototype extends IContainer {
 
     /**
      * Returns all parameters defined by the prototype.
-     * 
+     *
      * @return all parameters
      */
     List<Parameter> getParameters();
 
     /**
      * Adds the specified parameter.
-     * 
+     *
      * @param parameter
      *            the parameter
      */
@@ -29,19 +29,19 @@ public interface IPrototype extends IContainer {
 
     /**
      * Adds a parameter at a specified list index.
-     * 
+     *
      * @param index
      *            the index
-     * 
+     *
      * @param parameter
      *            the parameter
-     * 
+     *
      */
     void addParameter(int index, Parameter parameter);
 
     /**
      * Removes the specified parameter.
-     * 
+     *
      * @param parameter
      *            the parameter
      */
@@ -49,7 +49,7 @@ public interface IPrototype extends IContainer {
 
     /**
      * Removes the parameter at the specified list index.
-     * 
+     *
      * @param index
      *            the list index
      */
@@ -57,7 +57,7 @@ public interface IPrototype extends IContainer {
 
     /**
      * Returns true, if a parameter with the specified name exists.
-     * 
+     *
      * @param key
      *            the parameter name
      * @return true, if a parameter with the specified name exists

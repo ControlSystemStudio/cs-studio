@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.platform.utility.jms.dummy;
 
@@ -13,14 +13,14 @@ import org.csstudio.platform.libs.jms.IJmsRedundantReceiver;
  *
  */
 public class DummyJmsComponentFactory implements IJmsComponentFactory {
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.platform.libs.jms.IJmsComponentFactory#createJmsRedundantProducer(java.lang.String, java.lang.String[])
      */
     public IJmsProducer createJmsProducer(String clientId, String[] urlsToConnect) {
         return new DummyJmsProducer();
     }
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.platform.libs.jms.IJmsComponentFactory#createIjmsRedundantReceiver(java.lang.String, java.lang.String, java.lang.String)
      */

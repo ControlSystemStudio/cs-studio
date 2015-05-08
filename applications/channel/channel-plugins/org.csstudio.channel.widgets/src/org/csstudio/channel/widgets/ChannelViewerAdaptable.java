@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.channel.widgets;
 
@@ -14,7 +14,7 @@ import org.csstudio.utility.pvmanager.widgets.ConfigurableWidgetAdaptable;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ChannelViewerAdaptable implements ChannelAdaptable,
         ConfigurableWidgetAdaptable {
@@ -38,7 +38,7 @@ public class ChannelViewerAdaptable implements ChannelAdaptable,
     public Collection<Channel> toChannels() {
         return channels;
     }
-    
+
     @Override
     public ConfigurableWidget toConfigurableWidget() {
         if(channels != null && !channels.isEmpty())

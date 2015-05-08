@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.ui.util;
@@ -37,11 +37,11 @@ import org.osgi.framework.Bundle;
  * Utility class, which provides access to images. Images returned by this
  * utility are managed by a ImageRegistry and must not explicitly be disposed,
  * when they are not used anymore.
- * 
+ *
  * @see {@link ImageRegistry}
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 
 //TODO: Copied from org.csstudio.platform.ui. Review is needed.
@@ -66,7 +66,7 @@ public final class ImageUtil {
 
     /**
      * Gets the singleton instance.
-     * 
+     *
      * @return the singleton instance
      */
     public static ImageUtil getInstance() {
@@ -80,7 +80,7 @@ public final class ImageUtil {
     /**
      * Gets an ImageDescriptor for an image resource which is supposed to reside
      * in the plugin with the specified pluginId under the specified path.
-     * 
+     *
      * @param pluginId
      *            the ID of the plugin that contains the image resource
      * @param fullPath
@@ -108,7 +108,7 @@ public final class ImageUtil {
     /**
      * Gets an ImageDescriptor for an image resource which is supposed to reside
      * in the plugin with the specified pluginId under the specified path.
-     * 
+     *
      * @param pluginId
      *            the ID of the plugin that contains the image resource
      * @param path
@@ -134,7 +134,7 @@ public final class ImageUtil {
     /**
      * Gets an Image for an image resource which is supposed to reside
      * in the plugin with the specified pluginId under the specified path.
-     * 
+     *
      * @param pluginId
      *            the ID of the plugin that contains the image resource
      * @param path
@@ -169,7 +169,7 @@ public final class ImageUtil {
      * "icons/mysample.gif" rather than "./icons/mysample.gif" or
      * "/icons/mysample.gif".
      * </p>
-     * 
+     *
      * @param pluginId
      *            the id of the plug-in containing the image file;
      *            <code>null</code> is returned if the plug-in does not exist

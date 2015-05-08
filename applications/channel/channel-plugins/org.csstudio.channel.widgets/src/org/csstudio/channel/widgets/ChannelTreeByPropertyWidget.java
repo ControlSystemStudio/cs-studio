@@ -28,42 +28,42 @@ import org.eclipse.ui.IMemento;
 
 /**
  * A tree constructed by a query to channel finder and a set of properties.
- * 
+ *
  * @author carcassi
- * 
+ *
  */
 public class ChannelTreeByPropertyWidget extends AbstractChannelQueryResultWidget
 implements ConfigurableWidget, ISelectionProvider {
-    
+
     private Tree tree;
     private ErrorBar errorBar;
     private ISelectionProvider selectionProvider;
     private List<String> properties = new ArrayList<String>();
     private ChannelTreeByPropertyModel model;
-    
+
     @Override
     public void setMenu(Menu menu) {
         super.setMenu(menu);
         tree.setMenu(menu);
     }
-    
+
     public ChannelTreeByPropertyWidget(Composite parent, int style) {
         super(parent, style);
-        
+
         GridLayout gridLayout = new GridLayout(1, false);
         gridLayout.verticalSpacing = 0;
         gridLayout.marginWidth = 0;
         gridLayout.marginHeight = 0;
         setLayout(gridLayout);
-        
+
         errorBar = new ErrorBar(this, SWT.NONE);
         errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
         errorBar.setMarginBottom(5);
-        
+
         addPropertyChangeListener(new PropertyChangeListener() {
-            
+
             List<String> properties = Arrays.asList("properties");
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (properties.contains(evt.getPropertyName())) {
@@ -71,7 +71,7 @@ implements ConfigurableWidget, ISelectionProvider {
                 }
             }
         });
-        
+
         tree = new Tree(this, SWT.VIRTUAL | SWT.BORDER);
         tree.addListener(SWT.SetData, new Listener() {
             public void handleEvent(Event event) {
@@ -103,32 +103,32 @@ implements ConfigurableWidget, ISelectionProvider {
         tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         selectionProvider = SelectionProviders.treeItemDataSelectionProvider(tree);
     }
-    
+
     private boolean showChannelNames = true;
-    
+
     public boolean isShowChannelNames() {
         return showChannelNames;
     }
-    
+
     public void setShowChannelNames(boolean showChannelNames) {
         boolean oldShowChannelNames = showChannelNames;
         this.showChannelNames = showChannelNames;
         computeTree();
         changeSupport.firePropertyChange("showChannelNames", oldShowChannelNames, showChannelNames);
     }
-    
+
     /**
      * The properties, in the correct order, used to create the tree.
-     * 
+     *
      * @return a list of property names
      */
     public List<String> getProperties() {
         return properties;
     }
-    
+
     /**
      * Changes the properties that are used to create the tree.
-     * 
+     *
      * @param properties a list of property names
      */
     public void setProperties(List<String> properties) {
@@ -138,14 +138,14 @@ implements ConfigurableWidget, ISelectionProvider {
         tree.clearAll(true);
         changeSupport.firePropertyChange("properties", oldProperties, properties);
     }
-    
+
     @Override
     protected void queryCleared() {
         tree.setItemCount(0);
         tree.clearAll(true);
         errorBar.setException(null);
     }
-    
+
     @Override
     protected void queryExecuted(Result result) {
         errorBar.setException(result.exception);
@@ -158,7 +158,7 @@ implements ConfigurableWidget, ISelectionProvider {
             computeTree();
         }
     }
-    
+
     private void computeTree() {
         tree.setItemCount(0);
         tree.clearAll(true);
@@ -173,22 +173,22 @@ implements ConfigurableWidget, ISelectionProvider {
             tree.setItemCount(model.getRoot().getChildrenNames().size());
         }
     }
-    
+
     private boolean configurable = true;
-    
+
     private ChannelTreeByPropertyConfigurationDialog dialog;
-    
+
     public void openConfigurationDialog() {
         if (dialog != null)
             return;
         dialog = new ChannelTreeByPropertyConfigurationDialog(this);
         dialog.open();
     }
-    
+
     private final String MEMENTO_CHANNEL_QUERY = "channelQuery";
     private final String MEMENTO_PROPERTIES = "properties";
     private final String MEMENTO_SHOW_CHANNEL_NAMES = "showChanelNames";
-    
+
     public void saveState(IMemento memento) {
         if (getChannelQuery() != null) {
             memento.putString(MEMENTO_CHANNEL_QUERY, getChannelQuery().getQuery());
@@ -203,7 +203,7 @@ implements ConfigurableWidget, ISelectionProvider {
         }
         memento.putBoolean(MEMENTO_SHOW_CHANNEL_NAMES, isShowChannelNames());
     }
-    
+
     public void loadState(IMemento memento) {
         if (memento != null) {
             if (memento.getString(MEMENTO_CHANNEL_QUERY) != null) {
@@ -260,5 +260,5 @@ implements ConfigurableWidget, ISelectionProvider {
     public void setSelection(ISelection selection) {
         selectionProvider.setSelection(selection);
     }
-    
+
 }

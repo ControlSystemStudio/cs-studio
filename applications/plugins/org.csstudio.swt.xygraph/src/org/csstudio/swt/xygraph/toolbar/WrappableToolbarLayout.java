@@ -40,11 +40,11 @@ public class WrappableToolbarLayout extends AbstractLayout {
                     h+=maxH;
                     maxH = preferSize.height;
                     w = preferSize.width;
-                }                    
+                }
             }
             h += maxH;
             if(height < 0)
-                height = h;            
+                height = h;
             return new Dimension(width, height);
         }else{
 //            int w =0;
@@ -55,12 +55,12 @@ public class WrappableToolbarLayout extends AbstractLayout {
 //                w += preferSize.width;
                 if(maxH < preferSize.height){
                         maxH = preferSize.height;
-                }                
+                }
             }
             if(height < 0)
                 height = maxH;
             return new Dimension(width, height);
-        }        
+        }
     }
 
     public void layout(IFigure container) {
@@ -72,7 +72,7 @@ public class WrappableToolbarLayout extends AbstractLayout {
             IFigure figure = (IFigure)child;
             Dimension preferSize = figure.getPreferredSize();
             if(w + preferSize.width < clientArea.width){
-                figure.setBounds(new Rectangle(clientArea.x + w, clientArea.y + h, 
+                figure.setBounds(new Rectangle(clientArea.x + w, clientArea.y + h,
                     preferSize.width, preferSize.height));
                 w += preferSize.width;
                 if(maxH < preferSize.height){
@@ -85,9 +85,9 @@ public class WrappableToolbarLayout extends AbstractLayout {
                         preferSize.width, preferSize.height));
                 w = preferSize.width;
                 maxH = preferSize.height;
-            }            
+            }
         }
-        
+
     }
 
 }

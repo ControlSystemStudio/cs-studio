@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.opibuilder.properties;
 
@@ -11,7 +11,7 @@ import org.epics.pvmanager.service.ServiceMethod;
 
 /**
  * @author shroffk
- * 
+ *
  */
 
 public class ServiceMethodDescription {
@@ -72,8 +72,8 @@ public class ServiceMethodDescription {
      */
     public String getMethod() {
     return method;
-    }    
-    
+    }
+
     /**
      * @return the description
      */
@@ -125,7 +125,7 @@ public class ServiceMethodDescription {
     }
 
     /**
-     * 
+     *
      * @param argName
      * @param value
      */
@@ -140,7 +140,7 @@ public class ServiceMethodDescription {
     }
 
     /**
-     * 
+     *
      * @param resultName
      * @param value
      */

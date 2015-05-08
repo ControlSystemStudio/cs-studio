@@ -9,7 +9,7 @@ package org.csstudio.autocomplete.pvmanager.sim;
 
 /**
  * A function set that corresponds to all methods in Simulation DataSource.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class SimDSFunctionSet extends DSFunctionSet {

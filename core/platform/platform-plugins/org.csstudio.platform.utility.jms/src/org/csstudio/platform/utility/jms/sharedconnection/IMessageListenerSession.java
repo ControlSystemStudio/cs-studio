@@ -31,11 +31,11 @@ import org.csstudio.platform.utility.jms.IConnectionMonitor;
  * availability of the underlying JMS connections, and to close the session
  * when they no longer want to receive any messages.
  * </p>
- * 
+ *
  * <p>
  * This interface is not intended to be implemented by clients.
  * </p>
- * 
+ *
  * @author Joerg Rathlev
  */
 public interface IMessageListenerSession {
@@ -49,7 +49,7 @@ public interface IMessageListenerSession {
     /**
      * Adds a connection monitor which monitors the availability of the
      * underlying JMS connections.
-     * 
+     *
      * @param monitor
      *            a connection monitor.
      */
@@ -57,7 +57,7 @@ public interface IMessageListenerSession {
 
     /**
      * Removes the specified connection monitor from this session.
-     * 
+     *
      * @param monitor
      *            the monitor to remove.
      */
@@ -66,7 +66,7 @@ public interface IMessageListenerSession {
     /**
      * Returns whether all of the underlying JMS connections are currently
      * active.
-     * 
+     *
      * @return <code>true</code> if all underlying connections are started and
      *         not interrupted, <code>false</code> otherwise.
      */

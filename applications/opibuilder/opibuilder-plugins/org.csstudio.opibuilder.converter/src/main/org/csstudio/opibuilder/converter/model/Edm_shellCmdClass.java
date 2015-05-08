@@ -9,7 +9,7 @@ package org.csstudio.opibuilder.converter.model;
 
 /**
  * @author Xihui Chen
- * 
+ *
  */
 public class Edm_shellCmdClass extends EdmWidget {
 
@@ -19,7 +19,7 @@ public class Edm_shellCmdClass extends EdmWidget {
     @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings command;
     @EdmAttributeAn private boolean invisible;
 
-    
+
 
     public Edm_shellCmdClass(EdmEntity genericEntity) throws EdmException {
         super(genericEntity);

@@ -23,7 +23,7 @@ import org.junit.Test;
 
 /**
  * Unit test for {@link WorkQueue}.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class WorkQueueUnitTest {
@@ -100,13 +100,13 @@ public class WorkQueueUnitTest {
 
     /**
      * Test overflow.
-     * 
+     *
      * Schedules actions in the work queue. A unique id is attributed to each
      * action. When the action is initialized, its unique id is added to the
      * actions map and its value is set to false. When the action is executed,
      * it sets its value to true. The test waits for expected actions to be
      * executed and asserts the size of the work queue before and after this.
-     * 
+     *
      */
     @Test
     public void testOverflow() {

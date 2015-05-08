@@ -32,9 +32,9 @@ import org.junit.Test;
 
 /**
  * Unit test for {@link AlarmNotifier} workflow.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
- * 
+ *
  */
 public class AlarmNotifierUnitTest {
 
@@ -117,7 +117,7 @@ public class AlarmNotifierUnitTest {
             }
         }
     }
-    
+
     private static WorkQueue init(final MockAlarmRDBHandler rdbHandler)
             throws Exception {
         Activator.getLogger().setLevel(Level.FINE);
@@ -138,17 +138,17 @@ public class AlarmNotifierUnitTest {
 
     /**
      * Test PV alarm state changes.
-     * 
-     * Initializes a RDB mock, finds a PV item with 1 automated action and calculates its {@link ActionID}. 
-     * When the {@link WorkQueue} is set to debug=true, each action is recorded in the history. 
+     *
+     * Initializes a RDB mock, finds a PV item with 1 automated action and calculates its {@link ActionID}.
+     * When the {@link WorkQueue} is set to debug=true, each action is recorded in the history.
      * This test sends one or more alarm update to the model, waits for the work queue to finish
      * executing scheduled actions if necessary and checks the
      * {@link EActionStatus} retrieved with {@link ActionID} from the history.
-     * 
-     * EXECUTED => executed by the timer AFTER the delay 
-     * FORCED => interrupted + executed WITHOUT delay 
+     *
+     * EXECUTED => executed by the timer AFTER the delay
+     * FORCED => interrupted + executed WITHOUT delay
      * CANCELED => NOT executed AFTER the delay
-     * 
+     *
      */
     @Test
     public void testPVStateChange() {
@@ -305,18 +305,18 @@ public class AlarmNotifierUnitTest {
 
     /**
      * Test System alarm state changes.
-     * 
-     * Initializes a RDB mock, finds 2 PV items and 1 System item with 1 automated action 
-     * and calculates system's {@link ActionID}. 
-     * When the {@link WorkQueue} is set to debug=true, each action is recorded in the history. 
+     *
+     * Initializes a RDB mock, finds 2 PV items and 1 System item with 1 automated action
+     * and calculates system's {@link ActionID}.
+     * When the {@link WorkQueue} is set to debug=true, each action is recorded in the history.
      * This test sends one or more alarm update to the model, waits for the work queue to finish
      * executing scheduled actions if necessary and checks the
      * {@link EActionStatus} retrieved with {@link ActionID} from the history.
-     * 
-     * EXECUTED => executed by the timer AFTER the delay 
-     * FORCED => interrupted + executed WITHOUT delay 
+     *
+     * EXECUTED => executed by the timer AFTER the delay
+     * FORCED => interrupted + executed WITHOUT delay
      * CANCELED => NOT executed AFTER the delay
-     * 
+     *
      */
     @Test
     public void testSystemStateChange() {
@@ -405,7 +405,7 @@ public class AlarmNotifierUnitTest {
             Assert.assertNotNull(history.getAction(actionId));
             Assert.assertEquals(EActionStatus.CANCELED,
                     history.getAction(actionId).getStatus());
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());

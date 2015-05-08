@@ -14,7 +14,7 @@ import org.csstudio.autocomplete.ui.IAutoCompleteProposalProvider;
 
 /**
  * Handle results from {@link IAutoCompleteProposalProvider}.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public interface IContentProposalSearchHandler {

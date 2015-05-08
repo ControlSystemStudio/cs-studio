@@ -195,7 +195,7 @@ public class LogActionImpl implements IAutomatedAction {
 
         // Create log
         LogEntryBuilder logBuilder = LogEntryBuilder.withText(buildBody());
-        
+
         List<String> logbooks = handler.getLogbooks();
         if (logbooks.isEmpty())
             logbooks.add(defaultLogbook);

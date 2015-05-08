@@ -13,12 +13,12 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
 
 /**The widget property for list. This property is only used for property change communication
- * between model and editpart, so it is not savable and viewable in property sheet. 
+ * between model and editpart, so it is not savable and viewable in property sheet.
  * @author Xihui Chen
  *
  */
 public class UnsavableListProperty extends AbstractWidgetProperty {
-    
+
     /**String Property Constructor. The property value type is {@link List}.
      * @param prop_id the property id which should be unique in a widget model.
      * @param description the description of the property,
@@ -30,7 +30,7 @@ public class UnsavableListProperty extends AbstractWidgetProperty {
             WidgetPropertyCategory category, List<?> defaultValue) {
         super(prop_id, description, category, defaultValue);
     }
-    
+
     @Override
     public Object checkValue(Object value) {
         if(value instanceof List)
@@ -50,11 +50,11 @@ public class UnsavableListProperty extends AbstractWidgetProperty {
     public Object readValueFromXML(Element propElement) {
         return null;
     }
-    
+
     @Override
     public boolean isSavable() {
         return false;
     }
-    
+
 
 }

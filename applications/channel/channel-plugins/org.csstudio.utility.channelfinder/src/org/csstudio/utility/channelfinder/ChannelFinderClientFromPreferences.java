@@ -22,9 +22,9 @@ import org.eclipse.equinox.security.storage.StorageException;
 
 /**
  * ChannelFinderClient that takes the configuration from the CSS preferences.
- * 
+ *
  * @author carcassi
- * 
+ *
  */
 public class ChannelFinderClientFromPreferences implements ChannelFinderClient {
 

@@ -9,16 +9,16 @@ import org.eclipse.swt.graphics.RGB;
 
 /**
  * Table adapter for parameter values.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ParameterValueTableRowAdapter extends AbstractTableRowAdapter<IInstance> {
     private Parameter parameter;
 
     /**
      * Constructor.
-     * 
+     *
      * @param instance
      *            an instance
      * @param parameter

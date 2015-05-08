@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Display;
 /**
  * Implementation of {@link ILoginCallbackHandler} which displays an interactive
  * dialog to the user.
- * 
+ *
  * @author Joerg Rathlev
  * @author Xihui Chen
  */
@@ -43,22 +43,22 @@ public final class UiLoginCallbackHandler implements ILoginCallbackHandler {
      * The title of the dialog.
      */
     private String _title;
-    
+
     /**
      * The messge that will be displayed in the dialog.
      */
     private String _message;
-    
+
     /**
-     * if this is not null, it will be used to pass the first time of authentication. 
+     * if this is not null, it will be used to pass the first time of authentication.
      * If it failed, this will be set to null, so a login dialog will be popped up for user
      * reenter the password again.
      */
     private Credentials _defaultCredentials = null;
-    
+
     /**
      * Creates a new login callback handler.
-     * 
+     *
      * @param title
      *            the title of the login dialog.
      * @param message
@@ -69,10 +69,10 @@ public final class UiLoginCallbackHandler implements ILoginCallbackHandler {
         this._message = message;
 
     }
-    
+
     /**
      * Creates a new login callback handler.
-     * 
+     *
      * @param title
      *            the title of the login dialog.
      * @param message
@@ -81,17 +81,17 @@ public final class UiLoginCallbackHandler implements ILoginCallbackHandler {
      *            the user name that is preset in the dialog when it opens. Set
      *            this to <code>null</code> for no preset.
      * @param defaultPassword
-     *               if this is not null, it will be used to pass the first time of authentication.   
+     *               if this is not null, it will be used to pass the first time of authentication.
      */
-    public UiLoginCallbackHandler(final String title, final String message, 
+    public UiLoginCallbackHandler(final String title, final String message,
             final Credentials defaultCredentials) {
         this._title = title;
         this._message = message;
         this._defaultCredentials = defaultCredentials;
     }
-    
-    
-    
+
+
+
     /**
      * Displays a login dialog and returns the credentials that were entered by
      * the user. Returns <code>null</code> if the user did not enter any
@@ -101,20 +101,20 @@ public final class UiLoginCallbackHandler implements ILoginCallbackHandler {
         // a one-element array for communication between the current thread
         // and the UI thread
         final Credentials[] credentials = new Credentials[1];
-        
+
         //if there were default user name and password provided, use them for authentication
-        if(_defaultCredentials != null){            
+        if(_defaultCredentials != null){
             //Anonymous login
-            if(_defaultCredentials == Credentials.ANONYMOUS) {                
-                credentials[0] = Credentials.ANONYMOUS;            
+            if(_defaultCredentials == Credentials.ANONYMOUS) {
+                credentials[0] = Credentials.ANONYMOUS;
             } else {
                 WorkspaceIndependentStore.writeLastLoginUser(_defaultCredentials.getUsername());
-                credentials[0] = _defaultCredentials;    
+                credentials[0] = _defaultCredentials;
             }
-            _defaultCredentials = null; //the default credentials should only be used once.        
+            _defaultCredentials = null; //the default credentials should only be used once.
             return credentials[0];
         }
-            
+
         // run the login dialog in the UI thread
         Display.getDefault().syncExec(new Runnable() {
             public void run() {
@@ -126,17 +126,17 @@ public final class UiLoginCallbackHandler implements ILoginCallbackHandler {
                 }
             }
         });
-        
+
         return credentials[0];
-        
-            
+
+
     }
 
     /**
      * Displays an error message to the user.
      */
     public void signalFailedLoginAttempt() {
-        
+
         Display.getDefault().syncExec(new Runnable() {
             public void run() {
                 MessageDialog.openError(null, _title,

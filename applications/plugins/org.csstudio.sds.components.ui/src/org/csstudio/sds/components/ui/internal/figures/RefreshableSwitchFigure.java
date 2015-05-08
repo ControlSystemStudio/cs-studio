@@ -147,9 +147,9 @@ public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
         AntialiasingUtil.getInstance().enableAntialiasing(gfx);
         Rectangle figureBounds = getBounds().getCopy().crop(this.getInsets());
         gfx.translate(figureBounds.getLocation());
-        
+
         gfx.translate(figureBounds.width/2,figureBounds.height/2);
-        
+
         int scalingDegreeOffset = 90;
         if ((_rotAngle >= 90 && _rotAngle < 180) || (_rotAngle >= 270 && _rotAngle < 360)) {
             int tmpWidth = figureBounds.width;
@@ -157,7 +157,7 @@ public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
             figureBounds.height = tmpWidth;
             scalingDegreeOffset = 0;
         }
-        
+
         if (_resized) {
             /*some trigonometry to determine the new scaling factor*/
             double longSide  = (figureBounds.width<figureBounds.height)?(double)figureBounds.width:(double)figureBounds.height;
@@ -167,14 +167,14 @@ public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
             _scaling=Math.abs(_scaling);
             _resized=false;
         }
-        
+
         try {
             gfx.rotate(_rotAngle);
         } catch (RuntimeException e) {
             LOG.error("Error occurred during rotation");
         }
         gfx.translate(-(int)(_scaling*figureBounds.width*0.5),-(int)(_scaling*figureBounds.height*0.5));
-        
+
 
         if (_switchState==CosySwitch.STATE_UNKNOWN) {
             gfx.setForegroundColor(getForegroundColor());

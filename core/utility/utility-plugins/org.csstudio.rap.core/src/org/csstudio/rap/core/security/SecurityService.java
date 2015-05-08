@@ -22,9 +22,9 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * The service that provides security related feature to CSS RAP.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class SecurityService {
 
@@ -33,7 +33,7 @@ public class SecurityService {
     /**
      * Authenticate user with the registered login module. This method must be
      * called in UI thread.
-     * 
+     *
      * @param display
      *            display of the session, must not be null.
      * @param retry
@@ -46,7 +46,7 @@ public class SecurityService {
             throw new NullPointerException("display is null");
         final CountDownLatch latch = new CountDownLatch(1);
         final AtomicBoolean loggedIn = new AtomicBoolean(false);
-        
+
         Runnable runnable = new Runnable() {
 
             @Override
@@ -90,8 +90,8 @@ public class SecurityService {
             runnable.run();
 
         try {
-            latch.await();                        
-            return loggedIn.get();            
+            latch.await();
+            return loggedIn.get();
         } catch (InterruptedException e) {
             return false;
         }
@@ -106,11 +106,11 @@ public class SecurityService {
             return true;
         return false;
     }
-    
+
     public static void logout(Display display) throws LoginException{
         if(display != null && display.getData(SECURECONTEXT_KEY)!=null)
             ((ILoginContext)display.getData(SECURECONTEXT_KEY)).logout();
     }
-    
+
 
 }

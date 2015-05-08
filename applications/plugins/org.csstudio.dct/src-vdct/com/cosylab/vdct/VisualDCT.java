@@ -8,22 +8,22 @@ package com.cosylab.vdct;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -215,181 +215,181 @@ public class VisualDCT extends JFrame {
     private boolean textBoxButtonEnabled = false;
 
     private PluginManagerDialog pluginManagerDialog = null;
-    
+
     private ComboBoxFileChooser comboBoxFileChooser = null;
 
     private PrintService lastPrintService = null;
-    
+
 // shp: not final solution
     private static VisualDCT instance = null;
-    
-    
+
+
 class IvjEventHandler implements java.awt.event.ActionListener, java.awt.event.ItemListener, java.awt.event.MouseListener, java.awt.event.MouseMotionListener, java.awt.event.WindowListener {
         public void actionPerformed(java.awt.event.ActionEvent e) {
             if (e.getSource() == VisualDCT.this.getLeftMenuItem())
                 VisualDCT.this.moveOrigin(SwingConstants.WEST);
-            else if (e.getSource() == VisualDCT.this.getRightMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getRightMenuItem())
                 VisualDCT.this.moveOrigin(SwingConstants.EAST);
-            else if (e.getSource() == VisualDCT.this.getUpMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getUpMenuItem())
                 VisualDCT.this.moveOrigin(SwingConstants.SOUTH);
-            else if (e.getSource() == VisualDCT.this.getDownMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getDownMenuItem())
                 VisualDCT.this.moveOrigin(SwingConstants.NORTH);
 
-            else if (e.getSource() == VisualDCT.this.getAbout_BoxMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getAbout_BoxMenuItem())
                 connEtoC3(e);
-            else if (e.getSource() == VisualDCT.this.getNewMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getNewMenuItem())
                 connEtoC4(e);
-            else if (e.getSource() == VisualDCT.this.getOpenMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getOpenMenuItem())
                 connEtoC7(e);
-            else if (e.getSource() == VisualDCT.this.getImport_DBMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getImport_DBMenuItem())
                 connEtoC8(e);
-            else if (e.getSource() == VisualDCT.this.getImportTemplate_DBMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getImportTemplate_DBMenuItem())
                 VisualDCT.this.importTemplateActionPerformed();
             else if (e.getSource() == VisualDCT.this.getImportFieldsMenuItem())
                 VisualDCT.this.importFieldsActionPerformed();
             else if (e.getSource() == VisualDCT.this.getImportBorderMenuItem())
                 VisualDCT.this.importBorderActionPerformed();
-            else if (e.getSource() == VisualDCT.this.getImport_DBDMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getImport_DBDMenuItem())
                 connEtoC9(e);
-            else if (e.getSource() == VisualDCT.this.getSaveMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getSaveMenuItem())
                 connEtoC10(e);
-            else if (e.getSource() == VisualDCT.this.getSave_AsMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getSave_AsMenuItem())
                 connEtoC11(e);
-            else if (e.getSource() == VisualDCT.this.getSave_As_GroupMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getSave_As_GroupMenuItem())
                 connEtoC12(e);
-            else if (e.getSource() == VisualDCT.this.getPrintMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getPrintMenuItem())
                 connEtoC13(e);
-            else if (e.getSource() == VisualDCT.this.getExitMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getExitMenuItem())
                 connEtoC14(e);
-            else if (e.getSource() == VisualDCT.this.getUndoMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getUndoMenuItem())
                 connEtoC15(e);
-            else if (e.getSource() == VisualDCT.this.getRedoMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getRedoMenuItem())
                 connEtoC16(e);
-            else if (e.getSource() == VisualDCT.this.getCutMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getCutMenuItem())
                 connEtoC17(e);
-            else if (e.getSource() == VisualDCT.this.getCopyMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getCopyMenuItem())
                 connEtoC18(e);
-            else if (e.getSource() == VisualDCT.this.getPasteMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getPasteMenuItem())
                 connEtoC19(e);
-            else if (e.getSource() == VisualDCT.this.getSystemCopyMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getSystemCopyMenuItem())
                 systemCopy();
-            else if (e.getSource() == VisualDCT.this.getSystemPasteMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getSystemPasteMenuItem())
                 systemPaste();
-            else if (e.getSource() == VisualDCT.this.getMove_RenameMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getMove_RenameMenuItem())
                 connEtoC20(e);
-            else if (e.getSource() == VisualDCT.this.getMorphMenuItem()) 
-                connEtoC69(e);                
-            else if (e.getSource() == VisualDCT.this.getFindMenuItem()) 
-                VisualDCT.this.findActionPerformed();                
-            else if (e.getSource() == VisualDCT.this.getGroupMenuItem()) 
-                connEtoC21(e);
-            else if (e.getSource() == VisualDCT.this.getUngroupMenuItem()) 
-                connEtoC22(e);
-            else if (e.getSource() == VisualDCT.this.getDeleteMenuItem()) 
-                connEtoC23(e);
-            else if (e.getSource() == VisualDCT.this.getSelect_AllMenuItem()) 
-                connEtoC24(e);
-            else if (e.getSource() == VisualDCT.this.getHelp_TopicsMenuItem()) 
-                connEtoC26(e);
-            else if (e.getSource() == VisualDCT.this.getBooks_OnlineMenuItem()) 
-                connEtoC27(e);
-            else if (e.getSource() == VisualDCT.this.getOpenButton()) 
-                connEtoC28(e);
-            else if (e.getSource() == VisualDCT.this.getSaveButton()) 
-                connEtoC29(e);
-            else if (e.getSource() == VisualDCT.this.getFindButton()) 
+            else if (e.getSource() == VisualDCT.this.getMorphMenuItem())
+                connEtoC69(e);
+            else if (e.getSource() == VisualDCT.this.getFindMenuItem())
                 VisualDCT.this.findActionPerformed();
-            else if (e.getSource() == VisualDCT.this.getUndoButton()) 
+            else if (e.getSource() == VisualDCT.this.getGroupMenuItem())
+                connEtoC21(e);
+            else if (e.getSource() == VisualDCT.this.getUngroupMenuItem())
+                connEtoC22(e);
+            else if (e.getSource() == VisualDCT.this.getDeleteMenuItem())
+                connEtoC23(e);
+            else if (e.getSource() == VisualDCT.this.getSelect_AllMenuItem())
+                connEtoC24(e);
+            else if (e.getSource() == VisualDCT.this.getHelp_TopicsMenuItem())
+                connEtoC26(e);
+            else if (e.getSource() == VisualDCT.this.getBooks_OnlineMenuItem())
+                connEtoC27(e);
+            else if (e.getSource() == VisualDCT.this.getOpenButton())
+                connEtoC28(e);
+            else if (e.getSource() == VisualDCT.this.getSaveButton())
+                connEtoC29(e);
+            else if (e.getSource() == VisualDCT.this.getFindButton())
+                VisualDCT.this.findActionPerformed();
+            else if (e.getSource() == VisualDCT.this.getUndoButton())
                 connEtoC30(e);
-            else if (e.getSource() == VisualDCT.this.getRedoButton()) 
+            else if (e.getSource() == VisualDCT.this.getRedoButton())
                 connEtoC31(e);
-            else if (e.getSource() == VisualDCT.this.getCutButton()) 
+            else if (e.getSource() == VisualDCT.this.getCutButton())
                 connEtoC32(e);
-            else if (e.getSource() == VisualDCT.this.getCopyButton()) 
+            else if (e.getSource() == VisualDCT.this.getCopyButton())
                 connEtoC33(e);
-            else if (e.getSource() == VisualDCT.this.getPasteButton()) 
+            else if (e.getSource() == VisualDCT.this.getPasteButton())
                 connEtoC34(e);
-            else if (e.getSource() == VisualDCT.this.getLevel_UpMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getLevel_UpMenuItem())
                 connEtoC36(e);
-            else if (e.getSource() == VisualDCT.this.getZoom_InMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getZoom_InMenuItem())
                 connEtoC37(e);
-            else if (e.getSource() == VisualDCT.this.getZoom_OutMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getZoom_OutMenuItem())
                 connEtoC38(e);
-            else if (e.getSource() == VisualDCT.this.getSmart_ZoomMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getSmart_ZoomMenuItem())
                 connEtoC39(e);
-            else if (e.getSource() == VisualDCT.this.getBase_ViewMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getBase_ViewMenuItem())
                 connEtoC41(e);
-            else if (e.getSource() == VisualDCT.this.getPreferences___MenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getPreferences___MenuItem())
                 connEtoC45(e);
-            else if (e.getSource() == VisualDCT.this.getOKButton()) 
+            else if (e.getSource() == VisualDCT.this.getOKButton())
                 connEtoC47(e);
-            else if (e.getSource() == VisualDCT.this.getMorphingOKButton()) 
-                connEtoC66(e);                
-            else if (e.getSource() == VisualDCT.this.getCancelButton()) 
+            else if (e.getSource() == VisualDCT.this.getMorphingOKButton())
+                connEtoC66(e);
+            else if (e.getSource() == VisualDCT.this.getCancelButton())
                 connEtoM2(e);
-            else if (e.getSource() == VisualDCT.this.getMorphingCancelButton()) 
+            else if (e.getSource() == VisualDCT.this.getMorphingCancelButton())
                 connEtoM4(e);
-            else if (e.getSource() == VisualDCT.this.getNameTextField()) 
+            else if (e.getSource() == VisualDCT.this.getNameTextField())
                 connEtoC51(e);
-            else if (e.getSource() == VisualDCT.this.getStatusbarMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getStatusbarMenuItem())
                 connEtoC2(e);
-            else if (e.getSource() == VisualDCT.this.getStatusbarMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getStatusbarMenuItem())
                 connEtoC43(e);
-            else if (e.getSource() == VisualDCT.this.getToolbarMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getToolbarMenuItem())
                 connEtoC1(e);
-            else if (e.getSource() == VisualDCT.this.getToolbarMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getToolbarMenuItem())
                 connEtoC42(e);
-            else if (e.getSource() == VisualDCT.this.getFlat_ViewMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getFlat_ViewMenuItem())
                 connEtoC35(e);
-            else if (e.getSource() == VisualDCT.this.getCancelButton1()) 
+            else if (e.getSource() == VisualDCT.this.getCancelButton1())
                 connEtoM1(e);
-            else if (e.getSource() == VisualDCT.this.getGroupOKButton()) 
+            else if (e.getSource() == VisualDCT.this.getGroupOKButton())
                 connEtoC52(e);
-            else if (e.getSource() == VisualDCT.this.getgroupNameTextField()) 
+            else if (e.getSource() == VisualDCT.this.getgroupNameTextField())
                 connEtoC53(e);
-            else if (e.getSource() == VisualDCT.this.getRenameCancelButton()) 
+            else if (e.getSource() == VisualDCT.this.getRenameCancelButton())
                 connEtoM3(e);
-            else if (e.getSource() == VisualDCT.this.getRenameOKButton()) 
+            else if (e.getSource() == VisualDCT.this.getRenameOKButton())
                 connEtoC55(e);
-            else if (e.getSource() == VisualDCT.this.getNewNameTextField()) 
+            else if (e.getSource() == VisualDCT.this.getNewNameTextField())
                 connEtoC56(e);
-            else if (e.getSource() == VisualDCT.this.getPageSetupMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getPageSetupMenuItem())
                 connEtoC61(e);
-            else if (e.getSource() == VisualDCT.this.getPrintPreviewMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getPrintPreviewMenuItem())
                 connEtoC62(e);
-            else if (e.getSource() == VisualDCT.this.getPluginManagerMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getPluginManagerMenuItem())
                 connEtoC63(e);
-            else if (e.getSource() == VisualDCT.this.getExportPostScriptFileMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getExportPostScriptFileMenuItem())
                 connEtoC64(e);
-            else if (e.getSource() == VisualDCT.this.getPrintAsPostScriptMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getPrintAsPostScriptMenuItem())
                 connEtoC65(e);
-            else if (e.getSource() == VisualDCT.this.getLineButton()) 
+            else if (e.getSource() == VisualDCT.this.getLineButton())
                 lineButton_ActionPerformed();
-            else if (e.getSource() == VisualDCT.this.getBoxButton()) 
+            else if (e.getSource() == VisualDCT.this.getBoxButton())
                 boxButton_ActionPerformed();
-            else if (e.getSource() == VisualDCT.this.getTextBoxButton()) 
+            else if (e.getSource() == VisualDCT.this.getTextBoxButton())
                 textBoxButton_ActionPerformed();
-            else if (e.getSource() == VisualDCT.this.getGenerateMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getGenerateMenuItem())
                 generateMenuItem_ActionPerformed();
-            else if (e.getSource() == VisualDCT.this.getGenerateAsGroupMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getGenerateAsGroupMenuItem())
                 generateAsGroupMenuItem_ActionPerformed();
-            else if (e.getSource() == VisualDCT.this.getSaveAsTemplateMenuItem()) 
+            else if (e.getSource() == VisualDCT.this.getSaveAsTemplateMenuItem())
                 saveAsTemplateMenuItem_ActionPerformed();
 
         };
         public void itemStateChanged(java.awt.event.ItemEvent e) {
-            if (e.getSource() == VisualDCT.this.getShow_PointsMenuItem()) 
+            if (e.getSource() == VisualDCT.this.getShow_PointsMenuItem())
                 connEtoC44(e);
-            if (e.getSource() == VisualDCT.this.getSnapToGridMenuItem()) 
+            if (e.getSource() == VisualDCT.this.getSnapToGridMenuItem())
                 connEtoC46(e);
-            if (e.getSource() == VisualDCT.this.getWindowsPanMenuItem()) 
-                connEtoCWindowsPan(e);                
-            if (e.getSource() == VisualDCT.this.getNavigatorMenuItem()) 
+            if (e.getSource() == VisualDCT.this.getWindowsPanMenuItem())
+                connEtoCWindowsPan(e);
+            if (e.getSource() == VisualDCT.this.getNavigatorMenuItem())
                 connEtoC25(e);
         };
         public void mouseClicked(java.awt.event.MouseEvent e) {};
         public void mouseDragged(java.awt.event.MouseEvent e) {
-            if (e.getSource() == VisualDCT.this.getZoomSlider()) 
+            if (e.getSource() == VisualDCT.this.getZoomSlider())
                 connEtoC5(e);
         };
         public void mouseEntered(java.awt.event.MouseEvent e) {};
@@ -397,17 +397,17 @@ class IvjEventHandler implements java.awt.event.ActionListener, java.awt.event.I
         public void mouseMoved(java.awt.event.MouseEvent e) {};
         public void mousePressed(java.awt.event.MouseEvent e) {};
         public void mouseReleased(java.awt.event.MouseEvent e) {
-            if (e.getSource() == VisualDCT.this.getZoomSlider()) 
+            if (e.getSource() == VisualDCT.this.getZoomSlider())
                 connEtoC6(e);
         };
         public void windowActivated(java.awt.event.WindowEvent e) {
-            if (e.getSource() == VisualDCT.this.getNewRecordDialog()) 
+            if (e.getSource() == VisualDCT.this.getNewRecordDialog())
                 connEtoC58(e);
-            if (e.getSource() == VisualDCT.this.getMorphingDialog())         
-                connEtoC67(e);                
-            if (e.getSource() == VisualDCT.this.getGroupDialog()) 
+            if (e.getSource() == VisualDCT.this.getMorphingDialog())
+                connEtoC67(e);
+            if (e.getSource() == VisualDCT.this.getGroupDialog())
                 connEtoC59(e);
-            if (e.getSource() == VisualDCT.this.getRenameDialog()) 
+            if (e.getSource() == VisualDCT.this.getRenameDialog())
                 connEtoC60(e);
         };
         public void windowClosed(java.awt.event.WindowEvent e) {};
@@ -416,13 +416,13 @@ class IvjEventHandler implements java.awt.event.ActionListener, java.awt.event.I
         public void windowDeiconified(java.awt.event.WindowEvent e) {};
         public void windowIconified(java.awt.event.WindowEvent e) {};
         public void windowOpened(java.awt.event.WindowEvent e) {
-            if (e.getSource() == VisualDCT.this.getNewRecordDialog()) 
-                connEtoC48(e);                
-            if (e.getSource() == VisualDCT.this.getMorphingDialog()) 
+            if (e.getSource() == VisualDCT.this.getNewRecordDialog())
+                connEtoC48(e);
+            if (e.getSource() == VisualDCT.this.getMorphingDialog())
                 connEtoC68(e);
-            if (e.getSource() == VisualDCT.this.getGroupDialog()) 
+            if (e.getSource() == VisualDCT.this.getGroupDialog())
                 connEtoC50(e);
-            if (e.getSource() == VisualDCT.this.getRenameDialog()) 
+            if (e.getSource() == VisualDCT.this.getRenameDialog())
                 connEtoC57(e);
         };
     };
@@ -434,7 +434,7 @@ public VisualDCT() {
 
 //    shp: not final solution
      instance = this;
-     
+
     initialize();
 }
 /**
@@ -1758,7 +1758,7 @@ public void systemCopy() {
     GetGUIInterface cmd = (GetGUIInterface)CommandManager.getInstance().getCommand("GetGUIMenuInterface");
     cmd.getGUIMenuInterface().systemCopy();
 }
-    
+
 public void systemPaste() {
     GetGUIInterface cmd = (GetGUIInterface)CommandManager.getInstance().getCommand("GetGUIMenuInterface");
     cmd.getGUIMenuInterface().systemPaste();
@@ -1795,7 +1795,7 @@ public void exitMenuItem_ActionPerformed() {
         Settings.getInstance().save();
         if (cmd.getGUIMenuInterface().isModified())
         {
-            int choice = JOptionPane.showConfirmDialog(this, "The file has been modified. Save changes?", "Confirmation", 
+            int choice = JOptionPane.showConfirmDialog(this, "The file has been modified. Save changes?", "Confirmation",
                     JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
             switch(choice) {
 
@@ -1811,7 +1811,7 @@ public void exitMenuItem_ActionPerformed() {
                     this.dispose();
                     break;
                 }
-                
+
                 case JOptionPane.YES_OPTION: {
                     saveMenuItem_ActionPerformed();
                     if (Group.hasMacroPortsIDChanged()) {
@@ -1825,11 +1825,11 @@ public void exitMenuItem_ActionPerformed() {
                     this.dispose();
                     break;
                 }
-                
+
                 default: {
                     break;
                 }
-                    
+
             }
         }
         else
@@ -1867,7 +1867,7 @@ public void exportPostScriptFileMenuItem_ActionPerformed()
         {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             FileOutputStream fileOutputStream = null;
-                
+
             DocFlavor pageableFlavor = DocFlavor.SERVICE_FORMATTED.PAGEABLE;
             String postScriptMime = new String("application/postscript");
 
@@ -1880,16 +1880,16 @@ public void exportPostScriptFileMenuItem_ActionPerformed()
 
             if(streamPrintServiceFactory.length == 0)
             {
-                JOptionPane.showMessageDialog(VisualDCT.this, "Printing error", "No suitable PostScript factory found.", JOptionPane.ERROR_MESSAGE); 
+                JOptionPane.showMessageDialog(VisualDCT.this, "Printing error", "No suitable PostScript factory found.", JOptionPane.ERROR_MESSAGE);
                 //System.err.println("Printing error: no suitable PostScript factory found.");
                 return;
             }
 
             StreamPrintService streamPrintService =
                 streamPrintServiceFactory[0].getPrintService(byteArrayOutputStream);
-                
+
             PrinterJob printerJob = PrinterJob.getPrinterJob();
-        
+
             printerJob.setPageable(pi.getPageable());
 
             boolean showGrid = Settings.getInstance().getShowGrid();
@@ -1897,7 +1897,7 @@ public void exportPostScriptFileMenuItem_ActionPerformed()
             try
             {
                 printerJob.setPrintService(streamPrintService);
-                
+
                 PageFormat pageFormat = printerJob.pageDialog(printRequestAttributeSet);
 
                 if(pageFormat == null)
@@ -1914,7 +1914,7 @@ public void exportPostScriptFileMenuItem_ActionPerformed()
 
                 boolean jFileChooserConfirmed = false;
                 File outputFile = null;
-                
+
                 while(!jFileChooserConfirmed)
                 {
                     int jFileChooserOption = jFileChooser.showSaveDialog(ownerComponent);
@@ -1923,7 +1923,7 @@ public void exportPostScriptFileMenuItem_ActionPerformed()
                         return;
 
                     outputFile = jFileChooser.getSelectedFile();
-                            
+
                             // fix ending
                     if (jFileChooser.getFileFilter().getDescription().startsWith("PostScript") &&
                         !outputFile.getName().endsWith(".ps"))
@@ -1955,7 +1955,7 @@ public void exportPostScriptFileMenuItem_ActionPerformed()
                 printerJob.print();
 
                 Settings.getInstance().setShowGrid(showGrid);
-                
+
                 fileOutputStream = new FileOutputStream(outputFile);
                 fileOutputStream.write(printGrid(pi.getPageable().getPageFormat(0), new StringBuffer(byteArrayOutputStream.toString())));
                 fileOutputStream.close();
@@ -1969,7 +1969,7 @@ public void exportPostScriptFileMenuItem_ActionPerformed()
             {
                 setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.DEFAULT_CURSOR));
                 Settings.getInstance().setShowGrid(showGrid);
-        
+
                 CommandManager.getInstance().execute("RepaintWorkspace");
             }
         }
@@ -2594,7 +2594,7 @@ private javax.swing.JMenuItem getExportPostScriptFileMenuItem() {
     return ivjExportPostScriptFileMenuItem;
 }
 /**
- * NOTE: everytime this method is called "JFileChooser.setSelectedFile" is reset. 
+ * NOTE: everytime this method is called "JFileChooser.setSelectedFile" is reset.
  * Return the fileChooser property value.
  * @return javax.swing.JFileChooser
  */
@@ -2615,10 +2615,10 @@ public javax.swing.JFileChooser getfileChooser() {
     }
     if (ivjfileChooser != null)
     {
-        final File blankFile = new File(""); 
+        final File blankFile = new File("");
         ivjfileChooser.setSelectedFile(blankFile);
     }
-        
+
     return ivjfileChooser;
 }
 /**
@@ -2780,7 +2780,7 @@ private javax.swing.JTextField getgroupNameTextField() {
             ivjgroupNameTextField = new javax.swing.JTextField();
             ivjgroupNameTextField.setName("groupNameTextField");
             // user code begin {1}
-            
+
             ivjgroupNameTextField.getDocument().addDocumentListener(new DocumentListener()
             {
                 public void insertUpdate(DocumentEvent e) {
@@ -3268,7 +3268,7 @@ private javax.swing.JPanel getJFrameContentPane() {
             ivjJFrameContentPane.setFocusable(true);
             ivjJFrameContentPane.addMouseListener(new MouseAdapter() {
                 public void mouseEntered(MouseEvent e) {
-                    if (VisualDCT.this.isActive()) {    
+                    if (VisualDCT.this.isActive()) {
                         ivjJFrameContentPane.requestFocus();
                     }
                 }
@@ -3788,7 +3788,7 @@ private javax.swing.JLabel getNameLabel2() {
  * Return the NameTextField property value.
  * @return javax.swing.JTextField
  *
-/* WARNING: THIS METHOD WILL BE REGENERATED. 
+/* WARNING: THIS METHOD WILL BE REGENERATED.
 private javax.swing.JTextField getNameTextField() {
     if (ivjNameTextField == null) {
         try {
@@ -3855,14 +3855,14 @@ private javax.swing.JComboBox getNameTextField() {
             if (editor.getEditorComponent() instanceof JTextField)
             {
                 final JTextField comboBoxTextField = (JTextField)editor.getEditorComponent();
-                
+
                 // register event listener to the text field
                 comboBoxTextField.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
                                 oKButton_ActionPerformed(e);
                             }
                         });
-                
+
                 // add document (on change listener)
                 comboBoxTextField.getDocument().addDocumentListener(
                             new DocumentListener() {
@@ -3879,7 +3879,7 @@ private javax.swing.JComboBox getNameTextField() {
                                 }
 
                                 private void check(DocumentEvent e) {
-                                    GetVDBManager validator = 
+                                    GetVDBManager validator =
                                         (GetVDBManager)CommandManager.getInstance().getCommand("GetVDBManager");
                                     String errmsg = validator.getManager().checkRecordName(
                                                         comboBoxTextField.getText(),
@@ -3898,7 +3898,7 @@ private javax.swing.JComboBox getNameTextField() {
                                 }
                             });
             }
-            
+
             // user code end
         } catch (java.lang.Throwable ivjExc) {
             // user code begin {2}
@@ -4687,32 +4687,32 @@ private javax.swing.JMenuItem getRecentFilesMenuItem() {
                     GetGUIInterface cmd = (GetGUIInterface)CommandManager.getInstance().getCommand("GetGUIMenuInterface");
                     if (cmd!=null && cmd.getGUIMenuInterface().isModified())
                     {
-                        int choice = JOptionPane.showConfirmDialog(VisualDCT.this, "The file has been modified. Save changes?", "Confirmation", 
+                        int choice = JOptionPane.showConfirmDialog(VisualDCT.this, "The file has been modified. Save changes?", "Confirmation",
                                 JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
                         switch(choice) {
-                        
+
                             case JOptionPane.NO_OPTION: {
                                 VisualDCT.this.openDB(e.getActionCommand());
                                 break;
                             }
-                            
+
                             case JOptionPane.YES_OPTION: {
                                 saveMenuItem_ActionPerformed();
                                 VisualDCT.this.openDB(e.getActionCommand());
                                 break;
                             }
-                            
+
                             default: {
                                 break;
                             }
-                                
+
                         }
                     }
                     else
                     {
                         VisualDCT.this.openDB(e.getActionCommand());
                     }
-                
+
 
                 }
             }
@@ -4918,7 +4918,7 @@ private javax.swing.JPanel getStatusBarPane() {
             ivjStatusBarPane = new javax.swing.JPanel();
             ivjStatusBarPane.setName("StatusBarPane");
             ivjStatusBarPane.setLayout(new java.awt.BorderLayout());
-            
+
             getStatusBarPane().add(getZoomPanel(), "East");
             getStatusBarPane().add(getStatusMsg1(), "West");
             //getStatusBarPane().add(getStatusMsg2(), "Center");
@@ -5116,7 +5116,7 @@ private javax.swing.JToolBar getToolBarPane() {
             ivjToolBarPane.add(getCutButton());
             ivjToolBarPane.add(getCopyButton());
             ivjToolBarPane.add(getPasteButton());
-            
+
             JSeparator sep = new JSeparator();
             //sep.setOrientation(JSeparator.VERTICAL);
             Dimension dim = new Dimension(8, 0);
@@ -5418,8 +5418,8 @@ private com.cosylab.vdct.graphics.WorkspacePanel getworkspace() {
             ivjworkspace.setName("workspace");
             ivjworkspace.addMouseListener(new MouseAdapter() {
                 public void mouseEntered(MouseEvent e) {
-                    if (VisualDCT.this.isActive()) 
-                        ivjJFrameContentPane.requestFocus(); 
+                    if (VisualDCT.this.isActive())
+                        ivjJFrameContentPane.requestFocus();
                 }
             });
             // user code begin {1}
@@ -5995,9 +5995,9 @@ public static void main(final java.lang.String[] args) {
                 Help.printHelpAndExit();
             }
         }
-    
+
         System.out.println("Loading VisualDCT v"+Version.VERSION+" build "+Version.BUILD+"...\n");
-        
+
         String javaVersion = (String)System.getProperties().get("java.version");
         if (javaVersion!=null && javaVersion.compareTo(Version.JAVA_VERSION_REQUIRED) == -1)
             System.out.println("WARNING: Java "+javaVersion+" detected. VisualDCT requires Java "+Version.JAVA_VERSION_REQUIRED+" or newer!\n");
@@ -6008,7 +6008,7 @@ public static void main(final java.lang.String[] args) {
             Settings.setDefaultDir(dir);
         else
             Settings.setDefaultDir(".");
-            
+
         /* Set cross-platform look and feel (e.g. MacOS LAF has bugs) */
         try {
             // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -6016,7 +6016,7 @@ public static void main(final java.lang.String[] args) {
         } catch (Throwable th) {
             th.printStackTrace();
         }
-        
+
         /* Calculate the screen size */
         final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -6041,11 +6041,11 @@ public static void main(final java.lang.String[] args) {
             } catch (InterruptedException e) {
             }
         }
-        
+
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    
+
         /* Create the frame */
         final VisualDCT aVisualDCT = new VisualDCT();
         aVisualDCT.setSize(Constants.VDCT_WIDTH, Constants.VDCT_HEIGHT);
@@ -6057,7 +6057,7 @@ public static void main(final java.lang.String[] args) {
         /* Set default directory (for GUI !!! to be cleaned, use Setting singleton) */
         if (dir!=null) aVisualDCT.setDefaultDirectory(dir);
         else aVisualDCT.setDefaultDirectory(".");        // current dir
-        
+
         /* Parameters */
         ConsoleInterface console = Console.getInstance();
         console.silent("Loading VisualDCT v"+Version.VERSION+" build "+Version.BUILD+"...\n");
@@ -6067,9 +6067,9 @@ public static void main(final java.lang.String[] args) {
 
         /* Plugins */
         com.cosylab.vdct.plugin.PluginManager.getInstance().checkAutoStartPlugins();
-    
+
         System.out.println();
-            
+
         if (args.length==0) {
             System.out.println("\no) Usage: java "+VisualDCT.class.getName()+" [<DBDs>] [<DB>]\n");
             aVisualDCT.openDBD(null, true);                    // bring up a file dialog
@@ -6091,7 +6091,7 @@ public static void main(final java.lang.String[] args) {
 
         }
 
-        
+
         if (DataProvider.getInstance().getDbdDB()==null) {
             System.out.println("No DBD loaded! Exiting...");
             com.cosylab.vdct.plugin.PluginManager.getInstance().destroyAllPlugins();
@@ -6129,7 +6129,7 @@ public static void main(final java.lang.String[] args) {
     }
 
             }
-        });        
+        });
 
 }
 
@@ -6168,18 +6168,18 @@ public void newMenuItem_ActionPerformed() {
     GetGUIInterface cmd = (GetGUIInterface)CommandManager.getInstance().getCommand("GetGUIMenuInterface");
     if (cmd.getGUIMenuInterface().isModified())
     {
-        
-        int choice = JOptionPane.showConfirmDialog(this, "The file has been modified. Save changes?", "Confirmation", 
+
+        int choice = JOptionPane.showConfirmDialog(this, "The file has been modified. Save changes?", "Confirmation",
                 JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
         switch(choice) {
-        
+
             case JOptionPane.NO_OPTION: {
                 GetGUIInterface cmd2 = (GetGUIInterface)CommandManager.getInstance().getCommand("GetGUIMenuInterface");
                  cmd2.getGUIMenuInterface().newCmd();
                 openedFile = null;
                 break;
             }
-            
+
             case JOptionPane.YES_OPTION: {
                 saveMenuItem_ActionPerformed();
                 GetGUIInterface cmd2 = (GetGUIInterface)CommandManager.getInstance().getCommand("GetGUIMenuInterface");
@@ -6187,11 +6187,11 @@ public void newMenuItem_ActionPerformed() {
                 openedFile = null;
                 break;
             }
-        
+
             default: {
                 break;
             }
-                
+
         }
     }
     else
@@ -6214,7 +6214,7 @@ public void newRecordDialog_WindowOpened(
     if (names.length > combo.getItemCount())
      {
         ComboBoxModel model = combo.getModel();
-        
+
         for (int i = 0; i < names.length; i++)
         {
             boolean found = false;
@@ -6222,7 +6222,7 @@ public void newRecordDialog_WindowOpened(
             for (int j=0;!found && (j<c); j++)
                 if (model.getElementAt(j).equals(names[i]))
                     found = true;
-                    
+
             if (!found)
                 combo.addItem(names[i]);
         }
@@ -6234,7 +6234,7 @@ public void newRecordDialog_WindowOpened(
     //getNameTextField().setText("");
     getWarningLabel().setText(" ");
     getOKButton().setEnabled(false);
-    
+
     getNameTextField().requestFocus();
 }
 
@@ -6248,7 +6248,7 @@ public void morphingDialog_WindowOpened(
     if (names.length > combo.getItemCount())
      {
         ComboBoxModel model = combo.getModel();
-        
+
         for (int i = 0; i < names.length; i++)
         {
             boolean found = false;
@@ -6256,7 +6256,7 @@ public void morphingDialog_WindowOpened(
             for (int j=0;!found && (j<c); j++)
                 if (model.getElementAt(j).equals(names[i]))
                     found = true;
-                    
+
             if (!found)
                 combo.addItem(names[i]);
         }
@@ -6297,10 +6297,10 @@ private static void updateComboBoxHistory(JComboBox cb, Object item)
         //Object item = cb.getSelectedItem();
         if (item == null)
             return;
-        
+
         // search for the already entered qualifier
         String valueToAdd = item.toString();
-        
+
         // retrieve prefix - part of the name before last ':'
         int pos = valueToAdd.lastIndexOf(':');
         if (pos > 0)
@@ -6309,12 +6309,12 @@ private static void updateComboBoxHistory(JComboBox cb, Object item)
             // do not add if no ":"
             return;
         }
-        
+
         Object qualifier = null;
-        int len = cb.getModel().getSize(); 
+        int len = cb.getModel().getSize();
         for (int i = 0; i < len; i++)
         {
-            Object it = cb.getModel().getElementAt(i); 
+            Object it = cb.getModel().getElementAt(i);
             if (it != item && it.toString().equals(valueToAdd))
             {
                 qualifier = (Object)it;
@@ -6328,10 +6328,10 @@ private static void updateComboBoxHistory(JComboBox cb, Object item)
             qualifier = new StringBuffer(valueToAdd);
             cb.addItem(qualifier);
         }
-        
+
         // select the qualifier (prefix)
         cb.setSelectedItem(qualifier);
-        
+
         // remove string object
         cb.removeItem(item);
 }
@@ -6352,16 +6352,16 @@ public void openDB(String fileName) {
         fileName = getfileChooser().getCurrentDirectory().toString()+
                                     java.io.File.separatorChar+
                                     fileName;
-        
+
     java.io.File theFile = new java.io.File(fileName);
     if(theFile != null && theFile.exists()) {
-        
+
         // add to the recent file list
         getRecentFilesMenu().addFile(theFile);
         Settings.getInstance().saveRecentFiles();
-        
+
         GetGUIInterface cmd = (GetGUIInterface)CommandManager.getInstance().getCommand("GetGUIMenuInterface");
-        try {    
+        try {
             cmd.getGUIMenuInterface().openDB(theFile);
             openedFile = theFile;
         } catch (java.io.IOException e) {
@@ -6369,7 +6369,7 @@ public void openDB(String fileName) {
             Console.getInstance().println(e);
         }
     }
-    else if (!theFile.exists()) 
+    else if (!theFile.exists())
     {
          Console.getInstance().println("o) Failed to open DB file - file does not exist: '"+theFile.getAbsolutePath()+"'.");
          Console.getInstance().println();
@@ -6436,7 +6436,7 @@ public boolean openDBD(String fileName, boolean allowDB) {
          System.out.println("o) Failed to open DBD/DB file - file does not exist: '"+theFile.getAbsolutePath()+"'.");
          return false;
     }
-    
+
     GetGUIInterface cmd = (GetGUIInterface)CommandManager.getInstance().getCommand("GetGUIMenuInterface");
 
     try {
@@ -6444,7 +6444,7 @@ public boolean openDBD(String fileName, boolean allowDB) {
         if (!allowDB || theFile.getName().toUpperCase().endsWith("DBD")) {
             DBDEntry entry = new DBDEntry(theFile.getPath());
             DataProvider.getInstance().getCurrentDBDs().add(entry);
-            cmd.getGUIMenuInterface().openDBD(entry.getFile()); 
+            cmd.getGUIMenuInterface().openDBD(entry.getFile());
         }
         else if (allowDB)
             cmd.getGUIMenuInterface().openDB(theFile);
@@ -6456,7 +6456,7 @@ public boolean openDBD(String fileName, boolean allowDB) {
 
 
     return true;         // !!! add check
-    
+
 }
 /**
  * Comment
@@ -6465,27 +6465,27 @@ public void openMenuItem_ActionPerformed() {
     GetGUIInterface cmd2 = (GetGUIInterface)CommandManager.getInstance().getCommand("GetGUIMenuInterface");
     if (cmd2.getGUIMenuInterface().isModified())
     {
-        
-        int choice = JOptionPane.showConfirmDialog(this, "The file has been modified. Save changes?", "Confirmation", 
+
+        int choice = JOptionPane.showConfirmDialog(this, "The file has been modified. Save changes?", "Confirmation",
                 JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
         switch(choice) {
-        
+
             case JOptionPane.NO_OPTION: {
                 break;
             }
-            
+
             case JOptionPane.YES_OPTION: {
                 saveMenuItem_ActionPerformed();
                 break;
             }
-            
+
             default: {
                 return;
             }
-                
+
         }
     }
-    
+
     JFileChooser chooser = getfileChooser();
     chooser.resetChoosableFileFilters();
 
@@ -6497,7 +6497,7 @@ public void openMenuItem_ActionPerformed() {
     UniversalFileFilter filter = new UniversalFileFilter(
         new String[] {"db", "vdb"}, "EPICS DB files");
     chooser.addChoosableFileFilter(filter);
-    
+
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     chooser.setDialogTitle("Open DB");
     int retval = chooser.showOpenDialog(this);
@@ -6509,7 +6509,7 @@ public void openMenuItem_ActionPerformed() {
             // add to the recent file list
             getRecentFilesMenu().addFile(theFile);
             Settings.getInstance().saveRecentFiles();
-        
+
             GetGUIInterface cmd = (GetGUIInterface)CommandManager.getInstance().getCommand("GetGUIMenuInterface");
             try {
                 cmd.getGUIMenuInterface().openDB(theFile);
@@ -6531,15 +6531,15 @@ public void pageSetupMenuItem_ActionPerformed(java.awt.event.ActionEvent actionE
 //        {
 
             final GetPrintableInterface pi = (GetPrintableInterface)CommandManager.getInstance().getCommand("GetPrintableInterface");
-        
+
             if(pi == null)
                 return;
-            
+
             PrintRequestAttributeSet printRequestAttributeSet = Page.getPrintRequestAttributeSet();
-        
+
             PrinterJob printerJob = PrinterJob.getPrinterJob();
             PrintService temp = PrinterSelector.getPrinterSelector(this).getPrintService(lastPrintService);
-            
+
             if (temp == null) {
                 return;
             } else {
@@ -6550,17 +6550,17 @@ public void pageSetupMenuItem_ActionPerformed(java.awt.event.ActionEvent actionE
                     handleException(e);
                 }
             }
-                            
+
             PageFormat pageFormat = printerJob.pageDialog(printRequestAttributeSet);
-            
+
             if(pageFormat==null)
                 return;
-        
+
             int pageFormatOrientation = PageFormat.PORTRAIT;
 
             OrientationRequested orientationRequested = (OrientationRequested)
                 printRequestAttributeSet.get(OrientationRequested.class);
-                
+
             if(orientationRequested != null)
             {
                 if(orientationRequested.equals(OrientationRequested.LANDSCAPE))
@@ -6568,22 +6568,22 @@ public void pageSetupMenuItem_ActionPerformed(java.awt.event.ActionEvent actionE
                 else if(orientationRequested.equals(OrientationRequested.REVERSE_LANDSCAPE))
                     pageFormatOrientation = PageFormat.REVERSE_LANDSCAPE;
             }
-            
+
             pi.getPageable().getPageFormat(0).setOrientation(pageFormatOrientation);
-        
+
             MediaPrintableArea mediaPrintableArea = (MediaPrintableArea)
                 printRequestAttributeSet.get(MediaPrintableArea.class);
-                
+
             Paper paper = pi.getPageable().getPageFormat(0).getPaper();
-        
+
             paper.setImageableArea(mediaPrintableArea.getX(MediaPrintableArea.INCH) * 72.0,
                 mediaPrintableArea.getY(MediaPrintableArea.INCH) * 72.0,
                 mediaPrintableArea.getWidth(MediaPrintableArea.INCH) * 72,
                 mediaPrintableArea.getHeight(MediaPrintableArea.INCH) * 72);
-        
+
             pi.getPageable().getPageFormat(0).setPaper(paper);
-                        
-            // store settings 
+
+            // store settings
             com.cosylab.vdct.graphics.printing.Page.setPageFormat(pageFormat);
             Page.setPrintRequestAttributeSet(printRequestAttributeSet);
     //    }
@@ -6619,16 +6619,16 @@ public void preferences___MenuItem_ActionPerformed() {
 
 public byte[] printGrid(PageFormat pageFormat, StringBuffer stringBuffer) {
         ViewState view = ViewState.getInstance();
-                        
+
         int pageWidth = (int)pageFormat.getImageableWidth();
         int pageHeight = (int)pageFormat.getImageableHeight();
-        
+
         NullCommand pm =
             (NullCommand)CommandManager.getInstance().getCommand("NullCommand");
         Component component = pm.getComponent();
-    
+
         double screen2printer = 0;
-    
+
         switch(Page.getPrintMode())
         {
             case Page.TRUE_SCALE:
@@ -6641,7 +6641,7 @@ public byte[] printGrid(PageFormat pageFormat, StringBuffer stringBuffer) {
                     72.0 / component.getToolkit().getScreenResolution();
                 screen2printer *= Page.getUserScale();
                 break;
-                
+
             case Page.FIT_SCALE:
                 // fit to paper
                 double xscale = pageWidth / (double)view.getViewWidth();
@@ -6649,39 +6649,39 @@ public byte[] printGrid(PageFormat pageFormat, StringBuffer stringBuffer) {
                 screen2printer = Math.min(xscale, yscale) * view.getScale();
                 break;
         }
-        
+
         double converter = screen2printer / view.getScale();
         int w = (int)(view.getViewWidth() * converter);
         int h = (int)(view.getViewHeight() * converter);
-    
+
         int nCol = Math.max((int)Math.ceil((double)w / pageWidth), 1);
         int nRow = Math.max((int)Math.ceil((double)h / pageHeight), 1);
         int maxNumPage = nCol * nRow;
-    
+
         String numberOfPages = String.valueOf(maxNumPage);
-        
-        
+
+
         int stringOffset = stringBuffer.indexOf("%%BeginProlog");
         stringBuffer.insert(stringOffset, "%%Pages: " + numberOfPages + "\n");
-        
+
         for(int pageIndex = 0; pageIndex < maxNumPage; pageIndex++)
         {
             int iCol = pageIndex % nCol;
             int iRow = pageIndex / nCol;
             int x = iCol * pageWidth;
             int y = iRow * pageHeight;
-    
+
             int imageWidth = Math.min(pageWidth, w-x);
             int imageHeight = Math.min(pageHeight, h-y);
-            
+
             /*view.setScale(1.0);*/
             int viewRx = (int)(view.getRx()/view.getScale()+x);
             int viewRy= (int)(view.getRy()/view.getScale()+y);
             int viewViewWidth=(int)(imageWidth/screen2printer);
             int viewViewHeight=(int)(imageHeight/screen2printer);
-    
+
             String postScriptGrid = new String();
-        
+
             if (Settings.getInstance().getShowGrid())
             {
                 postScriptGrid += "\n"
@@ -6690,19 +6690,19 @@ public byte[] printGrid(PageFormat pageFormat, StringBuffer stringBuffer) {
                     / 255.0)).toString() + " "
                     + (new Double(Constants.GRID_COLOR.getBlue() / 255.0)).toString()
                     + " setrgbcolor\n";
-                
+
                 int gridSize = Math.max(1, (int)(com.cosylab.vdct.Constants.GRID_SIZE));
                 int sx = gridSize - viewRx % gridSize;
                 int y0 = gridSize - viewRy % gridSize;
                 int xsteps = (int)(viewViewWidth / gridSize + 1);
                 int ysteps = (int)(viewViewHeight / gridSize + 1);
-    
-                
+
+
                 imageWidth = Math.min(viewViewWidth, gridSize * xsteps + sx);
                 imageHeight = Math.min(viewViewHeight, gridSize * ysteps + y0);
-    
+
                 System.out.println(sx+" "+y0+" "+xsteps+" "+ysteps+" "+imageWidth+" "+imageHeight);
-    
+
                 if(gridSize >= 15)
                     postScriptGrid += "/gridshape {posX posY moveto -1 -1 rmoveto "
                         + "2 2 rlineto 0 -2 rmoveto -2 2 rlineto stroke} def\n";
@@ -6710,49 +6710,49 @@ public byte[] printGrid(PageFormat pageFormat, StringBuffer stringBuffer) {
                     postScriptGrid += "/gridshape {newpath posX posY moveto "
                         + "-0.5 -0.5 rmoveto 1 0 rlineto 0 1 rlineto -1 0 rlineto "
                         + "0 -1 rlineto closepath fill} def\n";
-    
+
                 postScriptGrid += "/posX " + String.valueOf(sx) + " def\n"
                     + "/posY " + String.valueOf(y0) + " def\n"
                     + "{\n{\ngridshape\n"
-                            
+
                     + "/posX posX " + String.valueOf(gridSize) + " add def\n"
-                            
+
                     + "posX " + String.valueOf(imageWidth)
                     + " ge {exit} if\n"
-                            
+
                     + "} loop\n"
                     + "/posX " + String.valueOf(sx) + " def\n"
-                            
+
                     + "/posY posY " + String.valueOf(gridSize) + " add def\n"
-                            
+
                     + "posY " + String.valueOf(imageHeight)
                     + " ge {exit} if\n} loop\n";
             }
-    
-            stringOffset = stringBuffer.indexOf("%%Page: "+(pageIndex+1), stringOffset);        
+
+            stringOffset = stringBuffer.indexOf("%%Page: "+(pageIndex+1), stringOffset);
             if (stringOffset == -1) continue;
-            
+
             int selectionStart = stringBuffer.indexOf("concat", stringOffset) + 6;
-    
+
             int selectionEnd = stringBuffer.indexOf("gsave", selectionStart);
             stringOffset = selectionEnd;
             stringBuffer.insert(stringOffset, "\n");
-    
+
             String startingColour = stringBuffer.substring(selectionStart,
                 selectionEnd);
             //stringBuffer.delete(selectionStart, selectionEnd);
-                        
+
             stringOffset = stringBuffer.indexOf("concat", stringOffset) + 6;
-    
+
             if((startingColour.indexOf("setgray") == -1)
                 && (startingColour.indexOf("setrgbcolor") == -1))
             {
-                startingColour = "0.0 setgray\n";    
+                startingColour = "0.0 setgray\n";
             }
-    
+
             stringBuffer.insert(stringOffset, postScriptGrid + startingColour);
         }
-    
+
     return stringBuffer.toString().getBytes();
 }
 
@@ -6765,7 +6765,7 @@ public void printAsPostScriptMenuItem_ActionPerformed()
 
     if(pi == null)
         return;
-    
+
     new Thread()
     {
         public void run()
@@ -6773,7 +6773,7 @@ public void printAsPostScriptMenuItem_ActionPerformed()
             boolean showGrid = Settings.getInstance().getShowGrid();
 
             try
-            {    
+            {
                 PrintRequestAttributeSet printRequestAttributeSet = Page.getPrintRequestAttributeSet();
 
                 PrinterJob printerJob = PrinterJob.getPrinterJob();
@@ -6784,11 +6784,11 @@ public void printAsPostScriptMenuItem_ActionPerformed()
                     return;
 
                 int pageFormatOrientation = PageFormat.PORTRAIT;
-        
+
 
                 OrientationRequested orientationRequested = (OrientationRequested)
                     printRequestAttributeSet.get(OrientationRequested.class);
-                    
+
                 if(orientationRequested != null)
                 {
                     if(orientationRequested.equals(OrientationRequested.LANDSCAPE))
@@ -6796,23 +6796,23 @@ public void printAsPostScriptMenuItem_ActionPerformed()
                     else if(orientationRequested.equals(OrientationRequested.REVERSE_LANDSCAPE))
                         pageFormatOrientation = PageFormat.REVERSE_LANDSCAPE;
                 }
-                
+
                 pi.getPageable().getPageFormat(0).setOrientation(pageFormatOrientation);
 
                 MediaPrintableArea mediaPrintableArea = (MediaPrintableArea)
                     printRequestAttributeSet.get(MediaPrintableArea.class);
-                    
+
                 Paper paper = pi.getPageable().getPageFormat(0).getPaper();
 
                 paper.setImageableArea(mediaPrintableArea.getX(MediaPrintableArea.INCH) * 72.0,
                     mediaPrintableArea.getY(MediaPrintableArea.INCH) * 72.0,
                     mediaPrintableArea.getWidth(MediaPrintableArea.INCH) * 72,
                     mediaPrintableArea.getHeight(MediaPrintableArea.INCH) * 72);
-    
+
                 pi.getPageable().getPageFormat(0).setPaper(paper);
 
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                
+
                 DocFlavor pageableFlavor = DocFlavor.SERVICE_FORMATTED.PAGEABLE;
                 String postScriptMime = new String("application/postscript");
 
@@ -6824,11 +6824,11 @@ public void printAsPostScriptMenuItem_ActionPerformed()
                 {
                     System.err.println("Printing error: no suitable PostScript factory found.");
                     return;
-                }    
+                }
 
                 StreamPrintService streamPrintService =
                     streamPrintServiceFactory[0].getPrintService(byteArrayOutputStream);
-                
+
                 PrinterJob postScriptPrinterJob = PrinterJob.getPrinterJob();
 
                 postScriptPrinterJob.setPrintService(streamPrintService);
@@ -6848,7 +6848,7 @@ public void printAsPostScriptMenuItem_ActionPerformed()
 
                 if(!printerJob.getPrintService().isDocFlavorSupported(postScriptFlavor))
                 {
-                    JOptionPane.showMessageDialog(VisualDCT.this, "Printing error", "PostScript not supported on selected printer.", JOptionPane.ERROR_MESSAGE); 
+                    JOptionPane.showMessageDialog(VisualDCT.this, "Printing error", "PostScript not supported on selected printer.", JOptionPane.ERROR_MESSAGE);
                     //System.err.println("Printing error: PostScript not supported on selected printer.");
                     return;
                 }
@@ -6864,7 +6864,7 @@ public void printAsPostScriptMenuItem_ActionPerformed()
                 DocPrintJob docPrintJob = printerJob.getPrintService().createPrintJob();
 
                       DocAttributeSet docAttributeSet = new HashDocAttributeSet();
-                   
+
                     Doc doc = new SimpleDoc(byteArrayInputStream, postScriptFlavor,
                         docAttributeSet);
 
@@ -6898,11 +6898,11 @@ public void printMenuItem_ActionPerformed() {
                 PrintRequestAttributeSet printRequestAttributeSet = Page.getPrintRequestAttributeSet();
 
 //                HashPrintRequestAttributeSet printRequestAttributeSet = new HashPrintRequestAttributeSet();
-                
+
                 PrinterJob printerJob = PrinterJob.getPrinterJob();
                 printerJob.setJobName(getTitle());
                 printerJob.setPageable(pi.getPageable());
-                
+
                 if (lastPrintService != null) {
                     try {
                         printerJob.setPrintService(lastPrintService);
@@ -6910,19 +6910,19 @@ public void printMenuItem_ActionPerformed() {
                         handleException(e);
                     }
                 }
-                
+
                 if(!printerJob.printDialog(printRequestAttributeSet)) {
                     lastPrintService = printerJob.getPrintService();
                     return;
                 }
-                
+
                 lastPrintService = printerJob.getPrintService();
-                
+
                 int pageFormatOrientation = PageFormat.PORTRAIT;
 
                 OrientationRequested orientationRequested = (OrientationRequested)
                     printRequestAttributeSet.get(OrientationRequested.class);
-                    
+
                 if(orientationRequested != null)
                 {
                     if(orientationRequested.equals(OrientationRequested.LANDSCAPE))
@@ -6930,42 +6930,42 @@ public void printMenuItem_ActionPerformed() {
                     else if(orientationRequested.equals(OrientationRequested.REVERSE_LANDSCAPE))
                         pageFormatOrientation = PageFormat.REVERSE_LANDSCAPE;
                 }
-                
+
                 pi.getPageable().getPageFormat(0).setOrientation(pageFormatOrientation);
 
                 Paper paper = pi.getPageable().getPageFormat(0).getPaper();
                 PageFormat pf = pi.getPageable().getPageFormat(0);
-                
+
                 Media media = (Media)printRequestAttributeSet.get(Media.class);
                 if (media instanceof MediaSizeName) {
                     MediaSizeName msn = (MediaSizeName)media;
                     MediaSize ms = MediaSize.getMediaSizeForName(msn);
                     double width = ms.getX (MediaSize.INCH) * 72;
                     double height = ms.getY (MediaSize.INCH) * 72;
-                    
+
                     paper.setSize(width, height);
                 }
-                
+
                 MediaPrintableArea mediaPrintableArea = (MediaPrintableArea)
                     printRequestAttributeSet.get(MediaPrintableArea.class);
-                    
+
                 paper.setImageableArea(mediaPrintableArea.getX(MediaPrintableArea.INCH) * 72.0,
                     mediaPrintableArea.getY(MediaPrintableArea.INCH) * 72.0,
                     mediaPrintableArea.getWidth(MediaPrintableArea.INCH) * 72,
                     mediaPrintableArea.getHeight(MediaPrintableArea.INCH) * 72);
-    
+
                 pi.getPageable().getPageFormat(0).setPaper(paper);
 
-                
-                
-                // store settings 
+
+
+                // store settings
                 com.cosylab.vdct.graphics.printing.Page.setPageFormat(pi.getPageable().getPageFormat(0));
                 Page.setPrintRequestAttributeSet(printRequestAttributeSet);
                 setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.WAIT_CURSOR));
-                
+
                 Thread.yield();
                 printerJob.print(printRequestAttributeSet);
-                                
+
             } catch (Exception ex) {
                 ex.printStackTrace();
                 com.cosylab.vdct.Console.getInstance().println("Printing error: "+ex);
@@ -7070,7 +7070,7 @@ public void save_As_GroupMenuItem_ActionPerformed() {
         else
             jFileChooserConfirmed = true;
     }
-        
+
     if(theFile != null)
     {
         GetGUIInterface cmd = (GetGUIInterface)CommandManager.getInstance().getCommand("GetGUIMenuInterface");
@@ -7127,7 +7127,7 @@ public void generateAsGroupMenuItem_ActionPerformed() {
         else
             jFileChooserConfirmed = true;
     }
-        
+
     if(theFile != null)
     {
         GetGUIInterface cmd = (GetGUIInterface)CommandManager.getInstance().getCommand("GetGUIMenuInterface");
@@ -7164,7 +7164,7 @@ public void save_AsMenuItem_ActionPerformed() {
 
         if(retval == JFileChooser.CANCEL_OPTION)
             return;
-            
+
         theFile = chooser.getSelectedFile();
 
         // fix ending
@@ -7224,9 +7224,9 @@ public void saveAsTemplateMenuItem_ActionPerformed() {
 
         if(retval == JFileChooser.CANCEL_OPTION)
             return;
-            
+
         theFile = chooser.getSelectedFile();
-        
+
         // fix ending
         if (chooser.getFileFilter().getDescription().startsWith("EPICS") &&
             !theFile.getName().endsWith(".db") &&
@@ -7283,7 +7283,7 @@ public void generateMenuItem_ActionPerformed() {
 
         if(retval == JFileChooser.CANCEL_OPTION)
             return;
-            
+
         theFile = chooser.getSelectedFile();
 
         // fix ending
@@ -7316,7 +7316,7 @@ public void generateMenuItem_ActionPerformed() {
              Console.getInstance().println("o) Failed to save DB to file: '"
                  + theFile.toString() + "'");
             Console.getInstance().println(e);
-        } 
+        }
     }
 }
 /**
@@ -7330,7 +7330,7 @@ public void saveMenuItem_ActionPerformed() {
         save_AsMenuItem_ActionPerformed();
         return;
     }
-        
+
     GetGUIInterface cmd = (GetGUIInterface)CommandManager.getInstance().getCommand("GetGUIMenuInterface");
     try {
         cmd.getGUIMenuInterface().save(openedFile);
@@ -7474,11 +7474,11 @@ public void showNewDialog() {
 
 public void showMorphingDialog(String name, String oldType, Object[] targets) {
     morphingDialog_WindowOpened(null);
-    
+
     getTypeComboBox2().removeAllItems();
     for (int i = 0; i < targets.length; i++)
         getTypeComboBox2().addItem(targets[i]);
-    
+
     getMorphingOKButton().setEnabled(getTypeComboBox2().getItemCount()>0);
     getNameTextLabel().setText(name);
     getTypeComboBox2().setSelectedItem(oldType);
@@ -7620,7 +7620,7 @@ public void updateLoadLabel() {
     if (dbds.size()==0)
         tip.append("<p>No loaded DBDs.</p>");
     else
-    {    
+    {
         tip.append("Loaded DBD(s):<b><ul>");
         java.util.Enumeration e = dbds.elements();
         while (e.hasMoreElements())
@@ -7631,11 +7631,11 @@ public void updateLoadLabel() {
         }
         tip.append("</b></ul>");
     }
-    
+
     if (VDBData.getTemplates().size()==0)
         tip.append("<p>No loaded templates.</p>");
     else
-    {    
+    {
         tip.append("Loaded template(s):<b><ul>");
         java.util.Enumeration e = VDBData.getTemplates().keys();
         while (e.hasMoreElements())
@@ -7654,7 +7654,7 @@ public void updateLoadLabel() {
 
     StringBuffer label = new StringBuffer();
     label.append(" ");
-    
+
     if (dbds.size()==0)
         label.append("No loaded DBDs");
     else if (dbds.size()==1)
@@ -7664,7 +7664,7 @@ public void updateLoadLabel() {
         label.append(dbds.size());
         label.append(" loaded DBD(s)");
     }
-    
+
     label.append(", ");
 
     if (VDBData.getTemplates().size()==0)
@@ -7676,7 +7676,7 @@ public void updateLoadLabel() {
     }
 
     label.append(" ");
-    
+
     getStatusMsg1().setToolTipText(tip.toString());
     getStatusMsg1().setText(label.toString());
 }
@@ -7698,7 +7698,7 @@ public void updateLoadLabel() {
         this.openedFile = openedFile;
         if (openedFile==null)
             setFileInTitle(null);
-        else 
+        else
             setFileInTitle(openedFile.getAbsolutePath());
     }
 
@@ -7715,7 +7715,7 @@ public void updateLoadLabel() {
      * @return
      */
     public ComboBoxFileChooser getComboBoxFileChooser() {
-        if (comboBoxFileChooser == null) 
+        if (comboBoxFileChooser == null)
             comboBoxFileChooser = new ComboBoxFileChooser();
         return comboBoxFileChooser;
     }

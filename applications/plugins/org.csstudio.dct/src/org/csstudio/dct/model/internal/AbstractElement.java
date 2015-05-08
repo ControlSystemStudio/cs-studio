@@ -10,13 +10,13 @@ import org.eclipse.core.runtime.Platform;
 
 /**
  * Standard implementation of {@link IElement}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public abstract class AbstractElement implements IElement, IAdaptable, Serializable {
     private static final long serialVersionUID = 6033398826670082191L;
-    
+
     private String name;
     private UUID id;
 
@@ -25,7 +25,7 @@ public abstract class AbstractElement implements IElement, IAdaptable, Serializa
 
     /**
      * Constructor.
-     * 
+     *
      * @param name
      *            the name
      */
@@ -36,7 +36,7 @@ public abstract class AbstractElement implements IElement, IAdaptable, Serializa
 
     /**
      * Constructor.
-     * 
+     *
      * @param name
      *            the name
      * @param id

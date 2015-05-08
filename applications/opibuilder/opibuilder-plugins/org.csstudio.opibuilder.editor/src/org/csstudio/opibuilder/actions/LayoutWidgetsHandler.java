@@ -22,17 +22,17 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Handler to handle the layout widgets command which has a key binding of Ctrl+L.
- * @author Xihui Chen 
+ * @author Xihui Chen
  *
  */
 public class LayoutWidgetsHandler extends AbstractHandler {
 
     public Object execute(ExecutionEvent event) throws ExecutionException {
-        
+
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IEditorPart activeEditor = page.getActiveEditor();
-    
-        
+
+
         if (activeEditor instanceof OPIEditor) {
             ISelection currentSelection =
                 ((GraphicalViewer)((OPIEditor)activeEditor).getAdapter(GraphicalViewer.class)).getSelection();
@@ -40,18 +40,18 @@ public class LayoutWidgetsHandler extends AbstractHandler {
                 Object element = ((IStructuredSelection) currentSelection)
                         .getFirstElement();
                 if(element instanceof AbstractLayoutEditpart){
-                    CommandStack commandStack = 
+                    CommandStack commandStack =
                         (CommandStack) ((OPIEditor)activeEditor).getAdapter(CommandStack.class);
                     if(commandStack != null)
                         LayoutWidgetsImp.run((AbstractLayoutEditpart)element, commandStack);
                 }
             }
-                
+
         } else {
             return null;
         }
-        
-        
+
+
         return null;
     }
 

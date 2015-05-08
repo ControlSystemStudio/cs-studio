@@ -4,9 +4,9 @@ import java.util.regex.Pattern;
 
 /**
  * Utility for color and font conversions.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class ColorAndFontUtil {
     private static final Pattern COLOR_SYNTAX_PATTERN = Pattern.compile("#[0123456789abcdefABCDEF]{6}");
@@ -43,7 +43,7 @@ public class ColorAndFontUtil {
 
     /**
      * Converts the specified rgb values to a hexadecimal representation.
-     * 
+     *
      * @param r
      *            red
      * @param g
@@ -59,10 +59,10 @@ public class ColorAndFontUtil {
     /**
      * Returns true, if the specified String is a hexadecimal color
      * representation, like #FF0000.
-     * 
+     *
      * @param hex
      *            the raw String
-     * 
+     *
      * @return true if the specified raw String is a hexadecimal color
      *         representation
      */
@@ -77,10 +77,10 @@ public class ColorAndFontUtil {
     /**
      * Returns true if the specified String is a variable that can be used for
      * colors or fonts, like ${colorId}.
-     * 
+     *
      * @param s
      *            the raw String
-     * 
+     *
      * @return true if the specified String is a variable that can be used for
      *         colors or fonts
      */

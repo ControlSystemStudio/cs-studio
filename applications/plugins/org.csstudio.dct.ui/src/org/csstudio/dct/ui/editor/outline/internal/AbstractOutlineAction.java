@@ -18,9 +18,9 @@ import org.eclipse.ui.views.contentoutline.ContentOutline;
 
 /**
  * Base class for actions that are used in the outline´s popup menu.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public abstract class AbstractOutlineAction implements IViewActionDelegate {
     private List<IElement> selectedElements;
@@ -48,7 +48,7 @@ public abstract class AbstractOutlineAction implements IViewActionDelegate {
      * Empty default implementation. Can be overridden by subclasses to
      * implement actions which are not undoable and should be independent of the
      * command stack.
-     * 
+     *
      * @param selection
      *            the selected elements
      */
@@ -83,10 +83,10 @@ public abstract class AbstractOutlineAction implements IViewActionDelegate {
     /**
      * Template method. Subclasses have to return a command that does the real
      * action.
-     * 
+     *
      * @param selection
      *            the currently selected element
-     * 
+     *
      * @return a command which does the real action
      */
     protected abstract Command createCommand(List<IElement> selection);
@@ -94,19 +94,19 @@ public abstract class AbstractOutlineAction implements IViewActionDelegate {
     /**
      * Hook for subclasses to manipulate the action state based on the current
      * selection.
-     * 
+     *
      * @param selection
      *            the current selection
      * @param action
      *            the action
-     * 
+     *
      */
     protected void afterSelectionChanged(List<IElement> selection, IAction action) {
     }
 
     /**
      * Returns the {@link IProject} that is currently displayed in the outline.
-     * 
+     *
      * @return the current project
      */
     protected final IProject getProject() {
@@ -122,7 +122,7 @@ public abstract class AbstractOutlineAction implements IViewActionDelegate {
 
     /**
      * Executes the specified command.
-     * 
+     *
      * @param command
      *            a command
      */
@@ -137,7 +137,7 @@ public abstract class AbstractOutlineAction implements IViewActionDelegate {
 
     /**
      * Returns the command stack.
-     * 
+     *
      * @return the central command stack
      */
     private CommandStack getCommandStack() {

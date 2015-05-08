@@ -19,7 +19,7 @@ import org.jdom.Element;
  *
  */
 public class ColorProperty extends AbstractWidgetProperty {
-    
+
     /**
      * XML attribute name <code>color</code>.
      */
@@ -30,7 +30,7 @@ public class ColorProperty extends AbstractWidgetProperty {
      */
     public static final String XML_ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
 
-    
+
     /**
      * XML attribute name <code>red</code>.
      */
@@ -44,10 +44,10 @@ public class ColorProperty extends AbstractWidgetProperty {
     /**
      * XML attribute name <code>blue</code>.
      */
-    public static final String XML_ATTRIBUTE_BLUE = "blue"; //$NON-NLS-1$    
+    public static final String XML_ATTRIBUTE_BLUE = "blue"; //$NON-NLS-1$
 
     private static final String QUOTE = "\""; //$NON-NLS-1$
-    
+
     /**Color Property Constructor. The property value type is {@link OPIColor}.
      * @param prop_id the property id which should be unique in a widget model.
      * @param description the description of the property,
@@ -59,21 +59,21 @@ public class ColorProperty extends AbstractWidgetProperty {
             WidgetPropertyCategory category, RGB defaultValue) {
         super(prop_id, description, category, new OPIColor(defaultValue));
     }
-    
+
     /**Color Property Constructor. The property value type is {@link OPIColor}.
      * @param prop_id the property id which should be unique in a widget model.
      * @param description the description of the property,
      * which will be shown as the property name in property sheet.
      * @param category the category of the widget.
-     * @param defaultValue the default value when the widget is first created. It must be 
+     * @param defaultValue the default value when the widget is first created. It must be
      * a color macro name in color file.
      */
     public ColorProperty(String prop_id, String description,
             WidgetPropertyCategory category, String defaultValue) {
-        super(prop_id, description, category, 
+        super(prop_id, description, category,
                 MediaService.getInstance().getOPIColor(defaultValue));
     }
-    
+
 
     /* (non-Javadoc)
      * @see org.csstudio.opibuilder.properties.AbstractWidgetProperty#checkValue(java.lang.Object)
@@ -82,10 +82,10 @@ public class ColorProperty extends AbstractWidgetProperty {
     public Object checkValue(Object value) {
         if(value == null)
             return null;
-        
+
         Object acceptedValue = value;
 
-        
+
         if (value instanceof OPIColor) {
             if(((OPIColor)value).getRGBValue() == null)
                 acceptedValue = null;
@@ -95,8 +95,8 @@ public class ColorProperty extends AbstractWidgetProperty {
             acceptedValue = MediaService.getInstance().getOPIColor((String)value);
         }else
             acceptedValue = null;
-            
-        
+
+
         return acceptedValue;
     }
 
@@ -107,7 +107,7 @@ public class ColorProperty extends AbstractWidgetProperty {
     protected PropertyDescriptor createPropertyDescriptor() {
         if(PropertySSHelper.getIMPL() == null)
             return null;
-        return PropertySSHelper.getIMPL().getOPIColorPropertyDescriptor(prop_id, description);        
+        return PropertySSHelper.getIMPL().getOPIColorPropertyDescriptor(prop_id, description);
     }
 
     @Override
@@ -115,8 +115,8 @@ public class ColorProperty extends AbstractWidgetProperty {
         OPIColor opiColor = (OPIColor) getPropertyValue();
         Element colorElement;
         colorElement= new Element(XML_ELEMENT_COLOR);
-        if(opiColor.isPreDefined()){            
-            colorElement.setAttribute(XML_ATTRIBUTE_NAME, opiColor.getColorName());            
+        if(opiColor.isPreDefined()){
+            colorElement.setAttribute(XML_ATTRIBUTE_NAME, opiColor.getColorName());
         }
         RGB color = opiColor.getRGBValue();
         colorElement.setAttribute(XML_ATTRIBUTE_RED, "" + color.red); //$NON-NLS-1$
@@ -124,8 +124,8 @@ public class ColorProperty extends AbstractWidgetProperty {
         colorElement.setAttribute(XML_ATTRIBUTE_BLUE, "" + color.blue); //$NON-NLS-1$
         propElement.addContent(colorElement);
     }
-    
-    
+
+
     @Override
     public Object readValueFromXML(Element propElement) {
         Element colorElement = propElement.getChild(XML_ELEMENT_COLOR);
@@ -134,7 +134,7 @@ public class ColorProperty extends AbstractWidgetProperty {
                 RGB result = new RGB(Integer.parseInt(colorElement.getAttributeValue(XML_ATTRIBUTE_RED)),
                 Integer.parseInt(colorElement.getAttributeValue(XML_ATTRIBUTE_GREEN)),
                 Integer.parseInt(colorElement.getAttributeValue(XML_ATTRIBUTE_BLUE)));
-                return new OPIColor(result);        
+                return new OPIColor(result);
         }else{
             String red = colorElement.getAttributeValue(XML_ATTRIBUTE_RED);
             String green = colorElement.getAttributeValue(XML_ATTRIBUTE_GREEN);
@@ -146,14 +146,14 @@ public class ColorProperty extends AbstractWidgetProperty {
             }
             return MediaService.getInstance().getOPIColor(name);
         }
-    
+
     }
 
     @Override
     public boolean configurableByRule() {
         return true;
     }
-    
+
     @Override
     public String toStringInRuleScript(Object propValue) {
         OPIColor opiColor = (OPIColor) propValue;

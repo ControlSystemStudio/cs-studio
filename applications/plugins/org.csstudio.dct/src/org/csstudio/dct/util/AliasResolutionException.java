@@ -3,9 +3,9 @@ package org.csstudio.dct.util;
 /**
  * Signals that an attempt to resolve the aliases in a name has failed. Will be
  * thrown by {@link AliasResolutionUtil}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class AliasResolutionException extends Exception {
 
@@ -13,7 +13,7 @@ public class AliasResolutionException extends Exception {
 
     /**
      * Constructor.
-     * 
+     *
      * @param message
      *            the error message
      */

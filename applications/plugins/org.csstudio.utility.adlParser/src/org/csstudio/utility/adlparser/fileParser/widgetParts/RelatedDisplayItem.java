@@ -37,7 +37,7 @@ import org.csstudio.utility.adlparser.internationalization.Messages;
  * @since 20.09.2007
  */
 public class RelatedDisplayItem extends WidgetPart {
-    //TODO Add LineParser routines to get commonly used entries 
+    //TODO Add LineParser routines to get commonly used entries
 
     /**
      * The Button Label Text.
@@ -59,7 +59,7 @@ public class RelatedDisplayItem extends WidgetPart {
 
     /**
      * The default constructor.
-     * 
+     *
      * @param display
      *            An ADLWidget that correspond a ADL Related Display Item.
      * @param parentWidgetModel
@@ -78,7 +78,7 @@ public class RelatedDisplayItem extends WidgetPart {
     public RelatedDisplayItem(){
         super();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -90,8 +90,8 @@ public class RelatedDisplayItem extends WidgetPart {
         _args = String.valueOf("");
         _policy = String.valueOf("false");
     }
-    
-    
+
+
 
     /**
      * {@inheritDoc}
@@ -150,7 +150,7 @@ public class RelatedDisplayItem extends WidgetPart {
     }
 
     /**
-     * 
+     *
      * @return the Label of the Related Display Item.
      */
     public final String getLabel() {
@@ -158,7 +158,7 @@ public class RelatedDisplayItem extends WidgetPart {
     }
 
     /**
-     * 
+     *
      * @return the filename of the Related Display Item.
      */
     public final String getFileName() {
@@ -166,7 +166,7 @@ public class RelatedDisplayItem extends WidgetPart {
     }
 
     /**
-     * 
+     *
      * @return the arguments(macros) of the Related Display Item.
      */
     public final String getArgs() {
@@ -179,7 +179,7 @@ public Object[] getChildren() {
     ret[0] = new ADLResource(ADLResource.RD_LABEL, _label);
     ret[1] = new ADLResource(ADLResource.RD_NAME, _fileName);
     ret[2] = new ADLResource(ADLResource.RD_ARGS, _args);
-    
+
     return ret;
 }
 

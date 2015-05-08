@@ -20,24 +20,24 @@ public class OPIFont{
 
 
     private String fontName;
-    
+
     private FontData fontData;
-    
-    private boolean preDefined;    
-    
+
+    private boolean preDefined;
+
     public OPIFont(String fontName) {
         this.fontName = fontName;
         this.fontData = MediaService.getInstance().getFontData(fontName);
         preDefined = true;
     }
-    
+
     public OPIFont(FontData fontData){
         this.fontName = fontData.toString();
         setFontData(fontData);
     }
-    
-    
-    
+
+
+
     public OPIFont(String name, FontData fontData) {
         this.fontName = name;
         this.fontData = fontData;
@@ -45,13 +45,13 @@ public class OPIFont{
     }
 
     /**Returns the Macro Name of the OPIFont.
-     * @return the predefined font macro name or 
+     * @return the predefined font macro name or
      * flattened font data string if it is not predefined.
      */
     public String getFontMacroName() {
         return fontName;
     }
-    
+
     /**
      * Returns the name of the Font.
      * On platforms that support font foundries, the return value will
@@ -63,7 +63,7 @@ public class OPIFont{
     public String getFontName(){
         return fontData.getName();
     }
-    
+
     /**
      * Returns the height of the font in points.
      *
@@ -73,50 +73,50 @@ public class OPIFont{
     public int getHeight(){
         return fontData.getHeight();
     }
-    
+
     /**
-     * Returns the style of the receiver which is a bitwise OR of 
+     * Returns the style of the receiver which is a bitwise OR of
      * one or more of the <code>SWT</code> constants NORMAL(0), BOLD(2)
      * and ITALIC(1).
      *
      * @return the style of the font.
-     * 
+     *
      */
     public int getStyle(){
         return fontData.getStyle();
     }
-    
-    
+
+
     /**
      * @return the fontData of the Font. null if the predefined color does not exist.
      */
     public FontData getFontData() {
         return fontData;
     }
-    
+
     public Font getSWTFont(){
         return CustomMediaFactory.getInstance().getFont(fontData);
     }
-    
+
     /**
      * @return true if this font is predefined in font file, false otherwise.
      */
     public boolean isPreDefined() {
         return preDefined;
     }
-    
+
     public void setFontName(String fontName) {
         this.fontName = fontName;
         this.fontData = MediaService.getInstance().getFontData(fontName);
         preDefined = true;
     }
-    
+
     public void setFontData(FontData fontdata) {
         this.fontData = fontdata;
         preDefined = false;
     }
 
-    
+
     @Override
     public String toString() {
         return fontName;
@@ -152,7 +152,7 @@ public class OPIFont{
             return false;
         return true;
     }
-    
-    
-    
+
+
+
 }

@@ -59,7 +59,7 @@ public final class DctActivator extends AbstractUIPlugin {
 
     /**
      * Returns the shared instance.
-     * 
+     *
      * @return the shared instance
      */
     public static DctActivator getDefault() {
@@ -68,7 +68,7 @@ public final class DctActivator extends AbstractUIPlugin {
 
     /**
      * Returns the persistence service.
-     * 
+     *
      * @return the persistence service
      */
     public IPersistenceService getPersistenceService() {
@@ -77,7 +77,7 @@ public final class DctActivator extends AbstractUIPlugin {
 
     /**
      * Returns the field function service.
-     * 
+     *
      * @return the field function service
      */
     public IFieldFunctionService getFieldFunctionService() {

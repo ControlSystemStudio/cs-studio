@@ -14,7 +14,7 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
 
 /** Decorator for image files.
- * 
+ *
  *  <p>Displays a small version of image in its icon.
  *
  *  @author Xihui Chen (original check-in 2012-07-10)
@@ -37,7 +37,7 @@ public class ImageIconDecorator implements ILabelDecorator {
     public Image decorateImage(Image image, Object element) {
         if (!(element instanceof IStorage))
             return null;
-        
+
         final IStorage stor = (IStorage) element;
         final IPath path = stor.getFullPath();
         try {
@@ -66,7 +66,7 @@ public class ImageIconDecorator implements ILabelDecorator {
         }
         return null;
     }
-    
+
     @Override
     public String decorateText(String text, Object element) {
         return null;

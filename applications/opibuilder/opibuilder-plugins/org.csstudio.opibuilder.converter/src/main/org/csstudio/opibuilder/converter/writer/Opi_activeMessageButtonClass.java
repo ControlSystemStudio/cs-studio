@@ -17,7 +17,7 @@ import org.w3c.dom.Element;
 
 /**
  * XML conversion class for Edm_activeRectangleClass
- * 
+ *
  * @author Lei Hu, Xihui Chen
  */
 public class Opi_activeMessageButtonClass extends OpiWidget {
@@ -82,7 +82,7 @@ public class Opi_activeMessageButtonClass extends OpiWidget {
 
     /**
      * Create a rule that make a color property alarm sensitive.
-     * 
+     *
      * @param edmWidgetClass
      * @param edmAlarmAttr
      * @param edmAlarmPVAttr

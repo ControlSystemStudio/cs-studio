@@ -6,9 +6,9 @@ import org.csstudio.sds.model.IWidgetModelFactory;
 
 /**
  * This class defines a widget model factory for scaled slider widget models.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public final class ScaledSliderModelFactory implements IWidgetModelFactory {
 

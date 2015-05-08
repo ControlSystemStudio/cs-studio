@@ -12,11 +12,11 @@ import org.eclipse.draw2d.Figure;
 public class ThermometerTest extends AbstractMarkedWidgetTest{
 
     @Override
-    public Figure createTestWidget() {        
+    public Figure createTestWidget() {
         return new ThermometerFigure();
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -26,15 +26,15 @@ public class ThermometerTest extends AbstractMarkedWidgetTest{
                 "effect3D",
                 "temperatureUnit"
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
     @Override
     public boolean isAutoTest() {
         return true;
     }
 
-    
-        
+
+
 }

@@ -40,11 +40,11 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
         // Valid file should either open, or give meaningful exception
         if (workspace_file != null  &&  workspace_file.exists())
             return workspace_file.getContents();
-        else 
+        else
             throw new Exception();
     }
 
-    
+
     /**Get the IFile from IPath.
      * @param path Path to file in workspace
      * @return the IFile. <code>null</code> if no IFile on the path, file does not exist, internal error.
@@ -98,7 +98,7 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
         case DIRECTORY:
         case FULL_PATH:
             currentPath = textInput.getText();
-            break;        
+            break;
         default:
             if (currentPath == null) {
                 if (startPath == null)
@@ -108,16 +108,16 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
             }
             break;
         }
-        
+
         switch (textInput.getFileSource()) {
         case WORKSPACE:
-            ResourceSelectionDialog dialog = 
+            ResourceSelectionDialog dialog =
                 new ResourceSelectionDialog(Display.getCurrent().getActiveShell(),
-                        "Select workspace file", 
-                        textInput.getFileReturnPart() == FileReturnPart.DIRECTORY ? 
+                        "Select workspace file",
+                        textInput.getFileReturnPart() == FileReturnPart.DIRECTORY ?
                                 null : new String[]{"*.*"}); //$NON-NLS-2$
             if(currentPath != null)
-                dialog.setSelectedResource(new Path(currentPath));                     
+                dialog.setSelectedResource(new Path(currentPath));
             if(dialog.open() == Window.OK){
                 IPath path = dialog.getSelectedResource();
                 currentPath = path.toPortableString();
@@ -148,7 +148,7 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
                  String directory = directoryDialog.open();
                  if(directory!=null)
                      paths = new Path[]{new Path(directory)};
-                
+
             }else {
                 FileDialog fileDialog = new FileDialog(Display.getCurrent()
                         .getActiveShell(), SWT.MULTI);
@@ -163,7 +163,7 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
                                 fileDialog.getFileNames()[i]);
                     }
                 }
-            }                
+            }
             if (paths != null) {
                 currentPath = paths[0].toOSString();
                 StringBuilder result=new StringBuilder();
@@ -173,7 +173,7 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
                         if(i>0)
                             result.append(SEPARATOR);
                         result.append(paths[i].removeFileExtension().lastSegment());
-                    }                    
+                    }
                     break;
                 case NAME_EXT:
                     for(int i=0; i<paths.length;i++){
@@ -196,12 +196,12 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
                 textInput.setCurrentPath(currentPath);
                 textInput.fireManualValueChange(textInput.getText());
             }
-    
+
             break;
         default:
             break;
         }
-        
+
     }
-    
+
 }

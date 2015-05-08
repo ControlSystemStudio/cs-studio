@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 public final class LdapUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(LdapUtils.class);
-    
+
     /**
      * Constructor.
      */
@@ -64,7 +64,7 @@ public final class LdapUtils {
     public static String any(final String fieldName) {
         return equ(fieldName, FIELD_WILDCARD);
     }
-    
+
     /**
      * Returns a filter for a direct match of the field name (e.g. '<fieldName>=<fieldValue>').
      * @param fieldName the field type

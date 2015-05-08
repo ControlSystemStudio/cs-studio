@@ -16,14 +16,14 @@ import org.slf4j.LoggerFactory;
 /**
  * Utility class that provides methods to access information that arise from the
  * hierarchical relationships between model elements.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class AliasResolutionUtil {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(AliasResolutionUtil.class);
-    
+
     private AliasResolutionUtil() {
         // Constructor
     }
@@ -32,10 +32,10 @@ public final class AliasResolutionUtil {
      * Returns the name for an element that arises from its hierarchy. The
      * delivered name can be defined on the element directly or is inherited
      * from one of its parents.
-     * 
+     *
      * @param element
      *            the element
-     * 
+     *
      * @return the element name as it is inherited from the hierarchy
      */
     public static String getNameFromHierarchy(IElement element) {
@@ -46,10 +46,10 @@ public final class AliasResolutionUtil {
      * Returns the EPICS name for a record that arises from its hierarchy. The
      * delivered name can be defined on the record directly or is inherited from
      * one of its parent records.
-     * 
+     *
      * @param record
      *            the record
-     * 
+     *
      * @return the records EPICS name as it is inherited from the hierarchy
      */
     public static String getEpicsNameFromHierarchy(IRecord record) {
@@ -80,17 +80,17 @@ public final class AliasResolutionUtil {
 
         return result;
     }
-    
+
     /**
      * Returns the value for a named parameter or an instance. The delivered
      * value can be defined on the instance directly or is inherited from one of
      * its parent instance or the initial prototype.
-     * 
+     *
      * @param instance
      *            the instance
      * @param parameter
      *            the parameter name
-     * 
+     *
      * @return a parameter value as it is inherited from the hierarchy
      */
     public static String getParameterValueFromHierarchy(IInstance instance, String parameter) {
@@ -112,7 +112,7 @@ public final class AliasResolutionUtil {
     /**
      * Returns the final aliases for a container. The aliases are inherited
      * from hierarchical parents (classical inheritance) and from container´s.
-     * 
+     *
      * @param container
      *            the container
      * @return the final aliases for this container
@@ -143,7 +143,7 @@ public final class AliasResolutionUtil {
     /**
      * Collect all parent containers in a stack. On top of the returned stack is
      * the parent that resides at the top of the hierarchy.
-     * 
+     *
      * @param container
      *            the container
      * @return all parent containers, including this
@@ -163,7 +163,7 @@ public final class AliasResolutionUtil {
     /**
      * Collect all parent containers in a stack. On top of the returned stack is
      * the parent that resides at the top of the hierarchy.
-     * 
+     *
      * @param instance
      *            the instance
      * @return all parent containers, including this
@@ -184,7 +184,7 @@ public final class AliasResolutionUtil {
     /**
      * Collect all parent records in a stack. On top of the returned stack is
      * the parent that resides at the top of the hierarchy.
-     * 
+     *
      * @param element
      *            the record
      * @return all parent records, including this

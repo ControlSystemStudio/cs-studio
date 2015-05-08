@@ -41,21 +41,21 @@ import org.eclipse.swt.graphics.FontData;
 public class MeterFigure extends AbstractRoundRampedFigure {
 
     private final static Font DEFAULT_LABEL_FONT = CustomMediaFactory.getInstance().getFont(
-            new FontData("Arial", 12, SWT.BOLD));    
+            new FontData("Arial", 12, SWT.BOLD));
 //    private Ellipse needleCenter;
-    
+
     private Needle needle;
-    
+
     private Label valueLabel;
-    
+
     private final static double SPACE_ANGLE = 45;
-    
+
     public static final int NEEDLE_WIDTH = 16;
-    
-    public final static double ALPHA = SPACE_ANGLE * Math.PI/180;  
-    
-    public final static double HW_RATIO = (1- Math.sin(ALPHA)/2)/(2*Math.cos(ALPHA));    
-    
+
+    public final static double ALPHA = SPACE_ANGLE * Math.PI/180;
+
+    public final static double HW_RATIO = (1- Math.sin(ALPHA)/2)/(2*Math.cos(ALPHA));
+
     public MeterFigure() {
         super();
         //TODO, remove this if clip is supported by RAP
@@ -63,63 +63,63 @@ public class MeterFigure extends AbstractRoundRampedFigure {
             ramp.setVisible(false);
         setTransparent(false);
         scale.setScaleLineVisible(false);
-        
+
         ((RoundScale)scale).setStartAngle(180-SPACE_ANGLE);
         ((RoundScale)scale).setEndAngle(SPACE_ANGLE);
         ramp.setRampWidth(12);
         setLoColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_YELLOW));
         setHiColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_YELLOW));
-        
-        valueLabel = new Label();        
+
+        valueLabel = new Label();
         valueLabel.setFont(DEFAULT_LABEL_FONT);
         needle = new Needle();
         needle.setFill(true);
         needle.setOutline(false);
-        
+
     //    needleCenter = new Ellipse();
     //    needleCenter.setOutline(false);
-        
+
         setLayoutManager(new XMeterLayout());
         add(ramp, XMeterLayout.RAMP);
-        add(scale, XMeterLayout.SCALE);            
+        add(scale, XMeterLayout.SCALE);
         add(needle, XMeterLayout.NEEDLE);
-    //    add(needleCenter, XMeterLayout.NEEDLE_CENTER);        
+    //    add(needleCenter, XMeterLayout.NEEDLE_CENTER);
         add(valueLabel, XMeterLayout.VALUE_LABEL);
-        
-        addFigureListener(new FigureListener() {            
+
+        addFigureListener(new FigureListener() {
             public void figureMoved(IFigure source) {
                 ramp.setDirty(true);
-                revalidate();    
+                revalidate();
             }
-        });    
-        
+        });
+
     }
     @Override
     public void setBounds(Rectangle rect) {
-        
+
         super.setBounds(rect);
     }
     @Override
     public void setShowMarkers(boolean showMarkers) {
-        super.setShowMarkers(showMarkers);        
+        super.setShowMarkers(showMarkers);
         //TODO: this should be removed if RAP supports clip
         if(SWT.getPlatform().startsWith("rap"))//$NON-NLS-1$
             ramp.setVisible(false);
         else
-            ramp.setVisible(showMarkers);    
+            ramp.setVisible(showMarkers);
     }
-    
+
     @Override
     public void setValue(double value) {
         super.setValue(value);
-        valueLabel.setText(getValueText());            
+        valueLabel.setText(getValueText());
     }
-    
-    
+
+
     public void setValueLabelVisibility(boolean visible) {
         valueLabel.setVisible(visible);
     }
-    
+
     /**
      * @param needleColor the needleColor to set
      */
@@ -133,12 +133,12 @@ public class MeterFigure extends AbstractRoundRampedFigure {
     public Color getNeedleColor(){
         return needle.getBackgroundColor();
     }
-    
+
     @Override
     public BeanInfo getBeanInfo() throws IntrospectionException {
         return new MeterIntrospector().getBeanInfo(this.getClass());
     }
-    
+
     static class Needle extends Polygon {
         public Needle() {
             setBackgroundColor(CustomMediaFactory.getInstance().getColor(
@@ -152,16 +152,16 @@ public class MeterFigure extends AbstractRoundRampedFigure {
     }
 
 
-    
+
 
     class XMeterLayout extends AbstractLayout {
-        
+
         private static final int GAP_BTW_NEEDLE_SCALE = -5;
-        
-            
-        
+
+
+
         int M = 0;
-        
+
         /** Used as a constraint for the scale. */
         public static final String SCALE = "scale";   //$NON-NLS-1$
         /** Used as a constraint for the Needle. */
@@ -172,17 +172,17 @@ public class MeterFigure extends AbstractRoundRampedFigure {
         //public static final String NEEDLE_CENTER = "needleCenter";      //$NON-NLS-1$
         /** Used as a constraint for the value label*/
         public static final String VALUE_LABEL = "valueLabel";      //$NON-NLS-1$
-        
-        
-        
+
+
+
         private RoundScale scale;
         private RoundScaledRamp ramp;
         private Polygon needle;
     //    private Ellipse needleCenter;
         private Label valueLabel;
         private PointList needlePoints = new PointList(new int[] {0,0,0,0,0,0});
-        
-        
+
+
         @Override
         public void setConstraint(IFigure child, Object constraint) {
             if(constraint.equals(SCALE))
@@ -209,38 +209,38 @@ public class MeterFigure extends AbstractRoundRampedFigure {
 
 
         public void layout(IFigure container) {
-            Rectangle area = container.getClientArea();    
+            Rectangle area = container.getClientArea();
             // calculate a virtual area
-            
+
             if(scale != null && scale.isDirty())
                 M = Math.max(FigureUtilities.getTextWidth(
                         scale.format(scale.getRange().getLower()), scale.getFont()),
                         FigureUtilities.getTextWidth(
                         scale.format(scale.getRange().getUpper()), scale.getFont()))/2;
-            
+
             int h = area.height;
-            int w = area.width;            
-            if(h > HW_RATIO * (w - 2*M)) 
+            int w = area.width;
+            if(h > HW_RATIO * (w - 2*M))
                 h = (int) (HW_RATIO * (w - 2*M));
-            //else if (w > h/HW_RATIO + 2*M) 
-            //    w = (int) (h/HW_RATIO + 2*M);            
-            double r = h/(1- Math.sin(ALPHA)/2);        
+            //else if (w > h/HW_RATIO + 2*M)
+            //    w = (int) (h/HW_RATIO + 2*M);
+            double r = h/(1- Math.sin(ALPHA)/2);
             int x = (int) (area.x - r * (1.0 - Math.cos(ALPHA)) + M);
             int y = area.y;
-            
-            area = new Rectangle(x, y, (int)(2*r), (int)(2*r));            
-            Point center = area.getCenter();            
-            
-            if(scale != null) {                
+
+            area = new Rectangle(x, y, (int)(2*r), (int)(2*r));
+            Point center = area.getCenter();
+
+            if(scale != null) {
                 scale.setBounds(area);
             }
-            
+
             if(ramp != null && ramp.isVisible()) {
                 Rectangle rampBounds = area.getCopy();
-                ramp.setBounds(rampBounds.shrink(area.width/4 -ramp.getRampWidth(), 
+                ramp.setBounds(rampBounds.shrink(area.width/4 -ramp.getRampWidth(),
                         area.height/4 - ramp.getRampWidth()));
             }
-            
+
             if(valueLabel != null) {
                 Dimension labelSize = valueLabel.getPreferredSize();
                 valueLabel.setBounds(new Rectangle(area.x + area.width/2 - labelSize.width/2,
@@ -248,7 +248,7 @@ public class MeterFigure extends AbstractRoundRampedFigure {
                         -(scale.getInnerRadius() - area.height/4)/2 - labelSize.height/2,
                         labelSize.width, labelSize.height));
             }
-            
+
             if(needle != null && scale != null) {
                 needlePoints.setPoint (
                         new Point(center.x + area.width/4, center.y - NEEDLE_WIDTH/2 + 3), 0);
@@ -257,7 +257,7 @@ public class MeterFigure extends AbstractRoundRampedFigure {
                         new Point(center.x + scale.getInnerRadius() - GAP_BTW_NEEDLE_SCALE, center.y), 1);
                 needlePoints.setPoint(
                         new Point(center.x + area.width/4, center.y + NEEDLE_WIDTH/2 - 3), 2);
-    
+
                 double valuePosition = 360 - scale.getValuePosition(getCoercedValue(), false);
                 if(maximum > minimum){
                     if(value > maximum)
@@ -275,18 +275,18 @@ public class MeterFigure extends AbstractRoundRampedFigure {
                 needlePoints.setPoint(
                         PointsUtil.rotate(needlePoints.getPoint(1), valuePosition, center), 1);
                 needlePoints.setPoint(
-                        PointsUtil.rotate(needlePoints.getPoint(2), valuePosition, center),2);                
-                needle.setPoints(needlePoints);            
-                
+                        PointsUtil.rotate(needlePoints.getPoint(2), valuePosition, center),2);
+                needle.setPoints(needlePoints);
+
             }
-            
+
 //            if(needleCenter != null){
 //                needleCenter.setBounds(new Rectangle(center.x - area.width/4,
 //                        center.y - area.height/4,
 //                        area.width/2, area.height/2));
-//            }        
-                        
-        }        
+//            }
+
+        }
     }
-    
+
 }

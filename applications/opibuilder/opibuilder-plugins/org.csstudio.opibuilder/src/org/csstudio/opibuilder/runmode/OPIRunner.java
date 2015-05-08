@@ -23,15 +23,15 @@ import org.eclipse.ui.part.EditorPart;
 
 /**
  * The editor for running of OPI.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class OPIRunner extends EditorPart implements IOPIRuntime{
 
 
     public static final String ID = "org.csstudio.opibuilder.OPIRunner"; //$NON-NLS-1$
-    
+
 
     private OPIRuntimeDelegate opiRuntimeDelegate;
 
@@ -46,7 +46,7 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
     @Override
     public void doSaveAs() {
     }
-    
+
     @Override
     public void dispose() {
         if (opiRuntimeDelegate != null) {
@@ -60,13 +60,13 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
     public void init(final IEditorSite site, final IEditorInput input)
             throws PartInitException {
         setSite(site);
-        
-        setInput(!(input instanceof IRunnerInput) && !(input instanceof NoResourceEditorInput) ? 
+
+        setInput(!(input instanceof IRunnerInput) && !(input instanceof NoResourceEditorInput) ?
                         new NoResourceEditorInput(input) : input);
-        opiRuntimeDelegate.init(site, input instanceof NoResourceEditorInput ? 
+        opiRuntimeDelegate.init(site, input instanceof NoResourceEditorInput ?
                 ((NoResourceEditorInput)input).getOriginEditorInput() : input);
     }
-    
+
     public void setOPIInput(IEditorInput input) throws PartInitException {
         init(getEditorSite(), input);
     }
@@ -90,11 +90,11 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
         if(OPIBuilderPlugin.isRAP())
             return;
         Display.getCurrent().asyncExec(new Runnable() {
-            
+
             @Override
             public void run() {
                 if (getSite().getWorkbenchWindow().getActivePage()
-                        .getEditorReferences().length == 1 && 
+                        .getEditorReferences().length == 1 &&
                         getSite().getWorkbenchWindow().getActivePage().getViewReferences().length ==0) {
                     int trimWidth = 45, trimHeight = 165;
                     CompactModeAction action = WorkbenchWindowService.getInstance().getCompactModeAction(
@@ -117,12 +117,12 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
                 }
             }
         });
-        
+
     }
 
     @Override
     public void setFocus() {}
-    
+
     @SuppressWarnings("rawtypes")
     @Override
     public Object getAdapter(Class adapter) {
@@ -143,11 +143,11 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
     public OPIRuntimeDelegate getOPIRuntimeDelegate() {
         return opiRuntimeDelegate;
     }
-    
+
     public IEditorInput getOPIInput() {
         return getOPIRuntimeDelegate().getEditorInput();
     }
-    
+
     public DisplayModel getDisplayModel() {
         return getOPIRuntimeDelegate().getDisplayModel();
     }

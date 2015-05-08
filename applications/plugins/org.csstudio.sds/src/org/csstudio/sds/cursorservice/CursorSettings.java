@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * Stores the selected cursor for each cursor state declared by each cursor
  * selection rule.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class CursorSettings {
@@ -39,10 +39,10 @@ public final class CursorSettings {
      * Internal map which stores the settings.
      */
     private Map<RuleDescriptor, Map<CursorState, AbstractCursor>> _settings;
-    
+
     /**
      * Creates new cursor settings from the given collection of rules.
-     * 
+     *
      * @param rules
      *            the descriptors of the available cursor selection rules.
      */
@@ -53,11 +53,11 @@ public final class CursorSettings {
             _settings.put(rule, new HashMap<CursorState, AbstractCursor>());
         }
     }
-    
+
     /**
      * Creates a new cursor settings object with the same settings as the
      * specified settings.
-     * 
+     *
      * @param s
      *            the settings object whose settings are to be copied to these
      *            settings.
@@ -71,11 +71,11 @@ public final class CursorSettings {
                     s._settings.get(rule)));
         }
     }
-    
+
     /**
      * Returns the cursor for the cursor state declared by the given cursor
      * selection rule.
-     * 
+     *
      * @param rule
      *            the cursor selection rule.
      * @param state
@@ -91,11 +91,11 @@ public final class CursorSettings {
         }
         return result;
     }
-    
+
     /**
      * Sets the cursor for the given cursor state declared by the given cursor
      * selection rule.
-     * 
+     *
      * @param rule
      *            the cursor selection rule.
      * @param state

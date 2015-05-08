@@ -9,18 +9,18 @@ import java.util.Set;
 
 /**
  * Structure for received broadcast message
- * 
+ *
  * @author rkosir
  *
  */
 public class Channel{
-    
+
     private ChannelStructure tmpStructure;
     /**
      * Data storage for messages
      */
     private HashMap<String, ChannelStructure> map;
-    
+
     /**
      * Returns list of all hostnames and PVs sorted by highest frequency
      * @return
@@ -43,7 +43,7 @@ public class Channel{
 
     /**
      * Adds a new channel to the list or increases the frequency of the channel
-     * 
+     *
      * @param aliasName
      * @param clientAddress
      * @param interval

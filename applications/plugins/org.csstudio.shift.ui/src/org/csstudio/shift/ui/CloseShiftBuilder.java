@@ -38,7 +38,7 @@ public class CloseShiftBuilder extends AbstractAdaptedHandler<ShiftBuilder> {
             final ShiftClient shiftClient = ShiftClientManager.getShiftClientFactory().getClient();
             shift = ShiftBuilder.shift(shiftClient.getShift(shift.build().getId(), shift.build().getType().getName()));
             if(shift.build().getEndDate() != null && shift.build().getCloseShiftUser() == null) {
-            
+
                 final CloseShiftBuilderDialog dialog = new CloseShiftBuilderDialog(shell, shift, false);
                 dialog.setBlockOnOpen(true);
                 if (dialog.open() == Window.OK) {
@@ -46,6 +46,6 @@ public class CloseShiftBuilder extends AbstractAdaptedHandler<ShiftBuilder> {
             }
         } else {
             // Throw exception
-        }  
+        }
     }
 }

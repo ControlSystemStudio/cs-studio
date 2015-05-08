@@ -29,7 +29,7 @@ public class VImageDisplayDemo extends ViewPart {
 
     private PVReader<VImage> pv;
     private Action horizontalStretch;
-    
+
     VImageDisplay topLeft;
     VImageDisplay top;
     VImageDisplay topRight;
@@ -41,7 +41,7 @@ public class VImageDisplayDemo extends ViewPart {
     VImageDisplay bottomRight;
     private Action verticalStretch;
 
-    
+
     public VImageDisplayDemo() {
     }
 
@@ -55,54 +55,54 @@ public class VImageDisplayDemo extends ViewPart {
         FillLayout fl_container = new FillLayout(SWT.VERTICAL);
         fl_container.spacing = 10;
         container.setLayout(fl_container);
-        
+
         Composite composite = new Composite(container, SWT.NONE);
         FillLayout fl_composite = new FillLayout(SWT.HORIZONTAL);
         fl_composite.spacing = 10;
         composite.setLayout(fl_composite);
-        
+
         topLeft = new VImageDisplay(composite);
         topLeft.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
         topLeft.setAlignment(SWT.TOP | SWT.LEFT);
-        
+
         top = new VImageDisplay(composite);
         top.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
         top.setAlignment(SWT.TOP);
-        
+
         topRight = new VImageDisplay(composite);
         topRight.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
         topRight.setAlignment(SWT.TOP | SWT.RIGHT);
-        
+
         Composite composite_1 = new Composite(container, SWT.NONE);
         FillLayout fl_composite_1 = new FillLayout(SWT.HORIZONTAL);
         fl_composite_1.spacing = 10;
         composite_1.setLayout(fl_composite_1);
-        
+
         centerLeft = new VImageDisplay(composite_1);
         centerLeft.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
         centerLeft.setAlignment(SWT.CENTER | SWT.LEFT);
-        
+
         center = new VImageDisplay(composite_1);
         center.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
         center.setAlignment(SWT.CENTER);
-        
+
         centerRight = new VImageDisplay(composite_1);
         centerRight.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
         centerRight.setAlignment(SWT.CENTER | SWT.RIGHT);
-        
+
         Composite composite_2 = new Composite(container, SWT.NONE);
         FillLayout fl_composite_2 = new FillLayout(SWT.HORIZONTAL);
         fl_composite_2.spacing = 10;
         composite_2.setLayout(fl_composite_2);
-        
+
         bottomLeft = new VImageDisplay(composite_2);
         bottomLeft.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
         bottomLeft.setAlignment(SWT.BOTTOM | SWT.LEFT);
-        
+
         bottom = new VImageDisplay(composite_2);
         bottom.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
         bottom.setAlignment(SWT.BOTTOM);
-        
+
         bottomRight = new VImageDisplay(composite_2);
         bottomRight.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
         bottomRight.setAlignment(SWT.BOTTOM | SWT.RIGHT);
@@ -110,7 +110,7 @@ public class VImageDisplayDemo extends ViewPart {
         createActions();
         initializeToolBar();
         initializeMenu();
-        
+
         if (pv != null) {
             pv.close();
         }
@@ -134,7 +134,7 @@ public class VImageDisplayDemo extends ViewPart {
                 .maxRate(ofHertz(50));
         updateStretch();
     }
-    
+
     private void updateStretch() {
         int stretched = 0;
         if (horizontalStretch.isChecked()) {
@@ -165,7 +165,7 @@ public class VImageDisplayDemo extends ViewPart {
             horizontalStretch.setChecked(true);
             horizontalStretch.setImageDescriptor(ResourceManager.getImageDescriptor(VImageDisplayDemo.class, "/org/csstudio/utility/pvamanger/widgets/test/stretchHorizontal.png"));
             horizontalStretch.addPropertyChangeListener(new IPropertyChangeListener() {
-                
+
                 @Override
                 public void propertyChange(PropertyChangeEvent event) {
                     if ("checked".equals(event.getProperty())) {
@@ -180,7 +180,7 @@ public class VImageDisplayDemo extends ViewPart {
             verticalStretch.setChecked(true);
             verticalStretch.setImageDescriptor(ResourceManager.getImageDescriptor(VImageDisplayDemo.class, "/org/csstudio/utility/pvamanger/widgets/test/stretchVertical.png"));
             verticalStretch.addPropertyChangeListener(new IPropertyChangeListener() {
-                
+
                 @Override
                 public void propertyChange(PropertyChangeEvent event) {
                     if ("checked".equals(event.getProperty())) {
@@ -214,7 +214,7 @@ public class VImageDisplayDemo extends ViewPart {
     public void setFocus() {
         // Set the focus
     }
-    
+
     @Override
     public void dispose() {
         super.dispose();

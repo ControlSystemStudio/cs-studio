@@ -7,14 +7,14 @@
  ******************************************************************************/
 package org.csstudio.apputil.macros;
 
-/**Infinite loop detected. 
+/**Infinite loop detected.
  * @author Xihui Chen
  *
  */
 public class InfiniteLoopException extends Exception {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 569430280936384743L;
 

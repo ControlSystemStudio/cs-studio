@@ -48,19 +48,19 @@ public final class CloneRecordCommand extends Command {
 
     private CompoundCommand createCommandChain() {
         CompoundCommand chain = new CompoundCommand();
-        
+
         IRecord record = RecordFactory.createRecord(targetContainer.getProject(), original.getType(), (namePrefix!=null?namePrefix:"")+original.getName(), UUID.randomUUID());
 
         chain.add(new ChangeBeanPropertyCommand(record, "epicsName", original.getEpicsName()));
         chain.add(new ChangeBeanPropertyCommand(record, "disabled", original.getDisabled()));
         chain.add(new ChangeBeanPropertyCommand(record, "name", original.getName()));
-        
+
         chain.add(new AddRecordCommand(targetContainer, record));
 
         for (String key : original.getFields().keySet()) {
             chain.add(new ChangeFieldValueCommand(record, key, original.getField(key)));
         }
-        
+
         return chain;
     }
 

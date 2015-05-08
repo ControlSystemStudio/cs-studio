@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.pvmanager.ui.toolbox;
 
@@ -41,7 +41,7 @@ public class ServiceTreeWidget extends Composite implements ISelectionProvider{
     public ServiceTreeWidget(Composite parent, int style) {
     super(parent, style);
     setLayout(new FormLayout());
-    
+
     Composite composite = new Composite(this, SWT.NONE);
     composite.setBounds(0, 0, 64, 64);
     FormData fd_composite = new FormData();
@@ -50,7 +50,7 @@ public class ServiceTreeWidget extends Composite implements ISelectionProvider{
     fd_composite.top = new FormAttachment(0);
     fd_composite.left = new FormAttachment(0);
     composite.setLayoutData(fd_composite);
-    
+
     TreeColumnLayout tcl_composite = new TreeColumnLayout();
     composite.setLayout(tcl_composite);
 
@@ -106,12 +106,12 @@ public class ServiceTreeWidget extends Composite implements ISelectionProvider{
     trclmnNewColumn_1.setText("Description");
     treeViewer.setContentProvider(new ServiceTreeContentProvider());
     }
-    
-    
+
+
     public void setServiceNames(List<Service> services){
     treeViewer.setInput(services);
     }
-    
+
     private String serviceMethod2String(ServiceMethod serviceMethod) {
     StringBuffer stringBuffer = new StringBuffer();
     stringBuffer.append(serviceMethod.getName()).append("(");

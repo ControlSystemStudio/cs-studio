@@ -14,17 +14,17 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Utility methods to work with Display object
- * 
+ *
  * @author Xihui Chen
  */
 public class DisplayUtils {
-    
+
     /**
      * Returns a non-null instance of Display object. Tries to find the Display
      * object for the current thread first and if it fails tries to get:
      * <li> Workbench display if the workbench running
      * <li> Default display object
-     * 
+     *
      * @return non-null Display object
      * @since 1.2
      */
@@ -35,11 +35,11 @@ public class DisplayUtils {
         }
         return display != null ? display : Display.getDefault();
     }
-    
+
     /**
      * Attempts to return the default shell. If it cannot return the default
      * shell, it returns the shell of the first workbench window that has shell.
-     * 
+     *
      * @return The shell
      * @since 1.2
      */
@@ -58,7 +58,7 @@ public class DisplayUtils {
                     .getActiveWorkbenchWindow();
                 if (activeWindow != null)
                     shell = activeWindow.getShell();
-                
+
             }
         } catch (Exception e) {
             // ignore

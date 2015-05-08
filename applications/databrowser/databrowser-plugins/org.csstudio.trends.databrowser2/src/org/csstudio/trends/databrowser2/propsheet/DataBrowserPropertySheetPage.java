@@ -859,11 +859,11 @@ public class DataBrowserPropertySheetPage extends Page
                     new ChangeScaleFontCommand(model, operations_manager, selected);
             }
         });
-        
+
         // Empty label to fill 2 grib boxes to alight the legend font below the rest of the fonts
         label = new Label(parent, 0);
         label = new Label(parent, 0);
-        
+
         label = new Label(parent, 0);
         label.setText(Messages.LegendFontLbl);
         label.setLayoutData(new GridData());

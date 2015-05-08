@@ -15,9 +15,9 @@ import org.junit.Test;
 
 /**
  * Umit test for {@link PhoneUtils}.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
- * 
+ *
  */
 public class PhoneUtilsUnitTest {
 

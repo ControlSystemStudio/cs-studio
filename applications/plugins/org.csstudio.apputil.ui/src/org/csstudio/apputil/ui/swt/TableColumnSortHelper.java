@@ -18,20 +18,20 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 /** Helper for sorting tables via clicks on the table column header.
- * 
+ *
  *  <p>When clicking on the table header, it is updated
  *  to include a sort indicator, toggling between
  *  an 'up' or 'down' sort order.
- *  
+ *
  *  <p>Abstract class requires a <code>compare</code> function
  *  for basic comparison of table model items.
  *  The up/down is handled in this class.
- *  
+ *
  *  <p>This helper can be used for {@link TableViewer} based
  *  tables that support sorting in the viewer.
  *  When using {@link SWT#VIRTUAL} tables,
  *  the sorting needs to be performed inside the model.
- *  
+ *
  *  @author Kay Kasemir
  *
  *  @param <E> Data type used for rows in the table
@@ -42,7 +42,7 @@ public abstract class TableColumnSortHelper<E>
     final private TableViewer viewer;
     final private TableColumn column;
     private boolean up = true; // Initial sort: up
-    
+
     /** Initialize
      *  @param viewer {@link TableViewer}
      *  @param column {@link TableViewerColumn} of column to sort
@@ -62,7 +62,7 @@ public abstract class TableColumnSortHelper<E>
     public void widgetSelected(final SelectionEvent e)
     {
         final Table table = viewer.getTable();
-        
+
         // Was this column already used for sorting?
         if (table.getSortColumn() == column)
         {   // toggle
@@ -70,7 +70,7 @@ public abstract class TableColumnSortHelper<E>
         }
         table.setSortDirection(up ? SWT.UP : SWT.DOWN);
         table.setSortColumn(column);
-        
+
         viewer.setComparator(new ViewerComparator()
         {
             @SuppressWarnings("unchecked")

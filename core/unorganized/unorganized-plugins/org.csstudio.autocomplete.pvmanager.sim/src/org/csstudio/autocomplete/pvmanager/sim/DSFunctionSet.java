@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  * <p>
  * Objects of this class can be registered in the {@link DSFunctionRegistry} and
  * the functions will be available in the data source language.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class DSFunctionSet {
@@ -33,7 +33,7 @@ public class DSFunctionSet {
     /**
      * Creates a new set of functions to be registered in the data source
      * language.
-     * 
+     *
      * @param functionSetDescription the description of the function set
      */
     public DSFunctionSet(DSFunctionSetDescription functionSetDescription) {
@@ -45,7 +45,7 @@ public class DSFunctionSet {
 
     /**
      * Returns the name of the function set.
-     * 
+     *
      * @return the function set name
      */
     public final String getName() {
@@ -54,7 +54,7 @@ public class DSFunctionSet {
 
     /**
      * Returns the description of the function set.
-     * 
+     *
      * @return the function set description
      */
     public final String getDescription() {
@@ -63,7 +63,7 @@ public class DSFunctionSet {
 
     /**
      * The names of all functions in this set.
-     * 
+     *
      * @return the function names
      */
     public final Collection<String> getFunctionNames() {
@@ -76,7 +76,7 @@ public class DSFunctionSet {
 
     /**
      * Returns all the functions in the set with the given name.
-     * 
+     *
      * @param name the name of the function
      * @return the matched functions; never null
      */
@@ -95,7 +95,7 @@ public class DSFunctionSet {
 
     /**
      * Returns all functions in the set.
-     * 
+     *
      * @return the functions in the set
      */
     public final Collection<DSFunction> getFunctions() {

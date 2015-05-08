@@ -10,18 +10,18 @@ import org.csstudio.dct.metamodel.IMenuDefinition;
 
 /**
  * Standard implementation of {@link IMenuDefinition}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class MenuDefinition implements IMenuDefinition, Serializable {
 
     private String name;
     private List<IChoice> choices;
-    
+
     /**
      * Constructor.
-     * 
+     *
      * @param name a non-empty name
      */
     public MenuDefinition(String name) {
@@ -29,18 +29,18 @@ public final class MenuDefinition implements IMenuDefinition, Serializable {
         this.name = name;
         choices = new ArrayList<IChoice>();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public List<IChoice> getChoices() {
         return choices;
     }
-    
+
     public void setChoices(List<IChoice> choices) {
         this.choices = choices;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -61,7 +61,7 @@ public final class MenuDefinition implements IMenuDefinition, Serializable {
     public String getName() {
         return name;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }

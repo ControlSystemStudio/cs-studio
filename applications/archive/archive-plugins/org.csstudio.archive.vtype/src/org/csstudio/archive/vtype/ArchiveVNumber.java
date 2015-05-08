@@ -33,7 +33,7 @@ public class ArchiveVNumber extends ArchiveVDisplayType implements VNumber
     {
         return value;
     }
-    
+
     /** @return Hash based on the double-typed value */
     @Override
     public int hashCode()

@@ -25,14 +25,14 @@ package org.csstudio.dal.tine;
 import de.desy.tine.dataUtils.TDataType;
 
 /**
- * 
+ *
  * @author Jaka Bobnar, Cosylab
  *
  */
 public class LongPropertyProxyImpl extends PropertyProxyImpl<Long>{
-    
+
     private int[] value;
-    
+
     /**
      * Constructs a new LongPropertyProxy.
      * @param name
@@ -55,7 +55,7 @@ public class LongPropertyProxyImpl extends PropertyProxyImpl<Long>{
         } else {
             return new Long(0);
         }
-        
+
     }
 
     /*

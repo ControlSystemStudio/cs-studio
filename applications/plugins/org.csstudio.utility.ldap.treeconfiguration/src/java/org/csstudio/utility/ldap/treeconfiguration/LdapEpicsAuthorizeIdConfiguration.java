@@ -123,7 +123,7 @@ public enum LdapEpicsAuthorizeIdConfiguration implements ILdapTreeNodeConfigurat
         _nodeTypeName = nodeTypeName;
         _attributes = attributes;
     }
-    
+
     /**
      * {@inheritDoc}
      */

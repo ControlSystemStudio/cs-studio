@@ -33,11 +33,11 @@ import org.csstudio.platform.utility.jms.IConnectionMonitor;
  * Handle which provides access to a shared JMS connection. Clients can use this
  * handle to create sessions using the shared connection.
  * </p>
- * 
+ *
  * <p>
  * This interface is not intended to be implemented by clients.
  * </p>
- * 
+ *
  * @author Joerg Rathlev
  */
 public interface ISharedConnectionHandle {
@@ -46,7 +46,7 @@ public interface ISharedConnectionHandle {
      * Creates a session object for the shared connection. It is the
      * responsibility of the client to close the session when it is no longer
      * needed.
-     * 
+     *
      * @param transacted
      *            indicates whether the session is transacted.
      * @param acknowledgeMode
@@ -76,7 +76,7 @@ public interface ISharedConnectionHandle {
     /**
      * Adds a connection monitor to the shared connection represented by this
      * handle.
-     * 
+     *
      * @param monitor
      *            a connection monitor.
      */
@@ -85,7 +85,7 @@ public interface ISharedConnectionHandle {
     /**
      * Removes the specified connection monitor from the shared connection
      * represented by this handle.
-     * 
+     *
      * @param monitor
      *            the monitor to remove.
      */
@@ -94,7 +94,7 @@ public interface ISharedConnectionHandle {
     /**
      * Returns whether the shared connection represented by this handle is
      * started and not interrupted.
-     * 
+     *
      * @return <code>true</code> if the shared connection is started and not
      *         interrupted, <code>false</code> otherwise.
      */

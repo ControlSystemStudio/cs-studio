@@ -23,9 +23,9 @@ import org.eclipse.draw2d.IFigure;
 
 /**
  * Base editPart controller for a widget based on {@link AbstractBoolControlModel}.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
 
@@ -34,7 +34,7 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
      * {@link AbstractBoolFigure} base class. This method is provided for the
      * convenience of subclasses, which can call this method in their
      * implementation of {@link AbstractBaseEditPart#doCreateFigure()}.
-     * 
+     *
      * @param figure
      *            the figure.
      * @param model
@@ -55,15 +55,15 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
                     if(getWidgetModel().getDataType() == 0)
                         setPVValue(AbstractBoolControlModel.PROP_PVNAME, newValue);
                     else
-                        setPVValue(AbstractBoolWidgetModel.PROP_PVNAME, newValue<=0.01 ? 
+                        setPVValue(AbstractBoolWidgetModel.PROP_PVNAME, newValue<=0.01 ?
                                 getWidgetModel().getOffState() : getWidgetModel().getOnState());
                 }
             }
-        });        
+        });
         delegate.setUpdateSuppressTime(-1);
         markAsControlPV(AbstractBoolControlModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
-    }    
-    
+    }
+
     /**
      * Registers property change handlers for the properties defined in
      * {@link AbstractBoolWidgetModel}. This method is provided for the convenience
@@ -71,11 +71,11 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
      * {@link #registerPropertyChangeHandlers()}.
      */
     protected void registerCommonPropertyChangeHandlers() {
-        
+
         configureButtonListener((AbstractBoolControlFigure) getFigure());
-        
+
         super.registerCommonPropertyChangeHandlers();
-        
+
         // toggle button
         final IWidgetPropertyChangeHandler toggleHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -92,10 +92,10 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
                 toggleHandler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
             }
         });
-        
-        
+
+
         //setPropertyChangeHandler(AbstractBoolControlModel.PROP_TOGGLE_BUTTON, handler);
-        
+
         // show confirm dialog
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -107,7 +107,7 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
             }
         };
         setPropertyChangeHandler(AbstractBoolControlModel.PROP_CONFIRM_DIALOG, handler);
-                
+
         // confirm tip
         handler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -119,7 +119,7 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
             }
         };
         setPropertyChangeHandler(AbstractBoolControlModel.PROP_CONFIRM_TIP, handler);
-        
+
         // password
         handler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -130,8 +130,8 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
                 return true;
             }
         };
-        setPropertyChangeHandler(AbstractBoolControlModel.PROP_PASSWORD, handler);        
-        
+        setPropertyChangeHandler(AbstractBoolControlModel.PROP_PASSWORD, handler);
+
         //enabled. WidgetBaseEditPart will force the widget as disabled in edit model,
         //which is not the case for the bool control widget
         IWidgetPropertyChangeHandler enableHandler = new IWidgetPropertyChangeHandler() {
@@ -144,42 +144,42 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
             }
         };
         setPropertyChangeHandler(AbstractBoolControlModel.PROP_ENABLED, enableHandler);
-        
+
     }
-    
+
     @Override
     public AbstractBoolControlModel getWidgetModel() {
         return (AbstractBoolControlModel)getModel();
     }
-    
+
     /**
      * Configures a listener for performing a {@link AbstractWidgetActionModel}.
-     * 
+     *
      * @param figure
      *            The figure of the widget
      */
     private void configureButtonListener(
             final AbstractBoolControlFigure figure) {
-        figure.addManualValueChangeListener(new IManualValueChangeListener() {            
-            
-            public void manualValueChanged(double newValue) {        
+        figure.addManualValueChangeListener(new IManualValueChangeListener() {
+
+            public void manualValueChanged(double newValue) {
                 // If the display is not in run mode, don't do anything.
                 if (getExecutionMode() != ExecutionMode.RUN_MODE)
-                    return;                
-                
+                    return;
+
                 int actionIndex;
 
                 if(figure.getBooleanValue()){
                     actionIndex = getWidgetModel().getPushActionIndex();
                 }else
-                actionIndex = getWidgetModel().getReleasedActionIndex();                
-                
-                if(actionIndex >= 0 && getWidgetModel().getActionsInput().getActionsList().size() > 
+                actionIndex = getWidgetModel().getReleasedActionIndex();
+
+                if(actionIndex >= 0 && getWidgetModel().getActionsInput().getActionsList().size() >
                     actionIndex)
                     getWidgetModel().getActionsInput().getActionsList().get(
-                        actionIndex).run();                
+                        actionIndex).run();
             }
-            
+
         });
     }
 }

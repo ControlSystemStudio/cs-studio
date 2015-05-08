@@ -31,15 +31,15 @@ public class Activator implements BundleActivator, PropertyFactoryService {
     public void stop(BundleContext bundleContext) throws Exception {
         Activator.context = null;
     }
-    
+
     public PropertyFactory getPropertyFactory(AbstractApplicationContext ctx,
             LinkPolicy linkPolicy) {
-        
+
         PropertyFactoryImpl pf= new PropertyFactoryImpl();
         pf.initialize(ctx, linkPolicy);
         return pf;
     }
-    
+
     public PropertyFactory getPropertyFactory(AbstractApplicationContext ctx,
             LinkPolicy linkPolicy, String plugName) {
         // not required

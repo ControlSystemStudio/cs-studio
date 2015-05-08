@@ -21,20 +21,20 @@ import org.w3c.dom.Element;
 
 /**
  * XML output class for EdmColor type.
- * 
+ *
  * @author Matevz
  */
 public class OpiColor extends OpiAttribute {
 
     private static Logger log = Logger
             .getLogger("org.csstudio.opibuilder.converter.writer.OpiColor");
-    
+
     /**
      * If EdmColor name is defined, it creates an element <tag> <color
      * name="colorName" /> </tag>
-     * 
+     *
      * otherwise creates an element
-     * 
+     *
      * <tag> <color blue="blueValue" green="greenValue" red="redValue" /> </tag>
      */
     public OpiColor(Context widgetContext, String tag, EdmColor c, EdmWidget w) {
@@ -44,8 +44,8 @@ public class OpiColor extends OpiAttribute {
         if(c.isBlinking()){
             createBlinkingColorRule(widgetContext, tag, c);
         }
-        
-        
+
+
         Element colorElement = propertyContext.getDocument().createElement("color");
         propertyContext.getElement().appendChild(colorElement);
 
@@ -54,7 +54,7 @@ public class OpiColor extends OpiAttribute {
         if (colorName != null && colorName.length() > 0) {
             colorElement.setAttribute("name", colorName);
             log.debug("Written color: " + colorName);
-        } 
+        }
         String red = String.valueOf(colorComponentTo8Bits(c.getRed()));
         String green = String.valueOf(colorComponentTo8Bits(c.getGreen()));
         String blue = String.valueOf(colorComponentTo8Bits(c.getBlue()));
@@ -66,7 +66,7 @@ public class OpiColor extends OpiAttribute {
         log.debug("Written color property with attributes: " + red + ", " + green + ", " + blue);
 
     }
-    
+
     /**
      * Create a rule that make a dynamic color
      */
@@ -83,7 +83,7 @@ public class OpiColor extends OpiAttribute {
         colorNode.setAttribute("blue", "" + OpiColor.colorComponentTo8Bits(c.getBlue()));
         valueNode.appendChild(colorNode);
         expressions.put("pv0==0", valueNode);
-        
+
         valueNode = widgetContext.getDocument().createElement("value");
         colorNode = widgetContext.getDocument().createElement("color");
         colorNode.setAttribute("red", "" + OpiColor.colorComponentTo8Bits(c.getBlinkRed()));
@@ -121,11 +121,11 @@ public class OpiColor extends OpiAttribute {
                     String in = "pv0";
                     boolean isEqual = m.group().equals("=");
                     if(isEqual){
-                        in=in+"=";                        
+                        in=in+"=";
                     }
                     sb.insert(m.start() + 3 * i+numOfEqual, in);
                     if(isEqual){
-                        numOfEqual++;                    
+                        numOfEqual++;
                     }
                     i++;
                 }

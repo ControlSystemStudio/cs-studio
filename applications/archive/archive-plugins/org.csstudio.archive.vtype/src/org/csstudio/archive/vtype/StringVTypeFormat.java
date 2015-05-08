@@ -50,7 +50,7 @@ public class StringVTypeFormat extends DefaultVTypeFormat
             super.format(value, buf);
         return buf;
     }
-    
+
     /** Handle 'printable' characters
      *  @param code Code point to add to buffer
      *  @param buf Buffer

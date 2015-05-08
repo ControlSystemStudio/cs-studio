@@ -13,34 +13,34 @@ package org.csstudio.opibuilder.converter.model;
  */
 public class Edm_activeButtonClass extends EdmWidget {
 
-    
+
     @EdmAttributeAn @EdmOptionalAn private EdmColor onColor;
     @EdmAttributeAn @EdmOptionalAn private EdmColor offColor;
     @EdmAttributeAn @EdmOptionalAn private EdmColor inconsistentColor;
     @EdmAttributeAn @EdmOptionalAn private EdmColor topShadowColor;
     @EdmAttributeAn @EdmOptionalAn private EdmColor botShadowColor;
-    
+
     @EdmAttributeAn @EdmOptionalAn private String controlPv;
     @EdmAttributeAn @EdmOptionalAn private String onLabel;
     @EdmAttributeAn @EdmOptionalAn private String offLabel;
     @EdmAttributeAn @EdmOptionalAn private String buttonType;
     @EdmAttributeAn @EdmOptionalAn private int controlBitsPos;
-    
-    
-    
+
+
+
 
     public Edm_activeButtonClass(EdmEntity genericEntity) throws EdmException {
         super(genericEntity);
     }
 
-    
+
     public String getButtonType() {
         return buttonType;
     }
     public int getControlBitsPos() {
         return controlBitsPos;
     }
-    
+
     public EdmColor getOnColor() {
         return onColor;
     }
@@ -59,14 +59,14 @@ public class Edm_activeButtonClass extends EdmWidget {
 
     public final String getControlPv() {
         return controlPv;
-    }    
+    }
 
     public final String getOnLabel() {
         return onLabel;
-    }    
+    }
     public final String getOffLabel() {
         return offLabel;
-    }    
+    }
 
 
 }

@@ -48,7 +48,7 @@ public abstract class AbstractDataAccessWrapper<T> implements DataAccess<T>
             }
             //this event violates generics usage - Property is of different type than
             //value
-            DynamicValueEvent newEvent = 
+            DynamicValueEvent newEvent =
                 new DynamicValueEvent(
                     AbstractDataAccessWrapper.this,
                     event.getProperty(),
@@ -272,7 +272,7 @@ public abstract class AbstractDataAccessWrapper<T> implements DataAccess<T>
         }
         return dvListeners;
     }
-    
+
     public boolean hasDynamicValueListeners() {
         return dvListeners!=null && dvListeners.size()>0;
     }

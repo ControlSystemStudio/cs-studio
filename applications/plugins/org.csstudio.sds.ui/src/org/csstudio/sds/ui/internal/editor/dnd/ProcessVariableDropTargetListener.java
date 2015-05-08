@@ -28,7 +28,7 @@ import org.eclipse.swt.dnd.TransferData;
 
 /**
  * Drop target listener that processes a single {@link ProcessVariable}.
- * 
+ *
  * @author Sven Wende
  */
 public final class ProcessVariableDropTargetListener extends AbstractDropTargetListener<SerializableItemTransfer> {

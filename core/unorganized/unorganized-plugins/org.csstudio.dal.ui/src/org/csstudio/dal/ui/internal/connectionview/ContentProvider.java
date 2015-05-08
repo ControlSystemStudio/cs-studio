@@ -6,9 +6,9 @@ import org.eclipse.jface.viewers.Viewer;
 
 /**
  * Content provider for the input statistic table.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 class ContentProvider implements
         IStructuredContentProvider {

@@ -1,23 +1,23 @@
 
-/* 
- * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
@@ -47,19 +47,19 @@ public class ClipboardHandler
 {
     private static ClipboardHandler instance = null;
     private Clipboard clipboard;
-    
+
     private ClipboardHandler()
     {
         clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
     }
-    
+
     public synchronized static ClipboardHandler getInstance()
     {
         if(instance == null)
         {
             instance = new ClipboardHandler();
         }
-        
+
         return instance;
     }
 
@@ -67,10 +67,10 @@ public class ClipboardHandler
     {
         BufferedImage bImage = null;
         boolean result = false;
-        
+
         bImage = this.convertToAWT(imageData);
         TransferableImage tImage = new TransferableImage(bImage);
-        
+
         try
         {
             clipboard.setContents(tImage, tImage);
@@ -80,23 +80,23 @@ public class ClipboardHandler
         {
             result = false;
         }
-        
+
         return result;
     }
-    
+
     public Image getClipboardImage(Display display)
     {
         Transferable data = null;
         DataFlavor[] df = null;
         Image result = null;
-        
+
         BufferedImage bImage = null;
-        
+
         data = clipboard.getContents(null);
-        
+
         // Get all data flavors
         df = data.getTransferDataFlavors();
-        
+
         for (int i = 0; i < df.length; i++)
         {
             // Direkte Grafikinformationen
@@ -105,21 +105,21 @@ public class ClipboardHandler
                 try
                 {
                     bImage = (BufferedImage)data.getTransferData(df[i]);
-                                        
+
                     result = new Image(display, convertToSWT(bImage));
-                                        
-                    bImage = null;                    
+
+                    bImage = null;
                 }
                 catch(Exception e)
                 {
                     result = null;
                 }
-                
+
                 break;
             }
         }
-        
-        df = null;        
+
+        df = null;
         data = null;
 
         return result;
@@ -130,39 +130,39 @@ public class ClipboardHandler
         Transferable data = null;
         DataFlavor[] df = null;
         boolean bImageAvailable = false;
-        
+
         data = clipboard.getContents(null);
-        
+
         // Get all data flavors
         df = data.getTransferDataFlavors();
-        
+
         for(int i = 0; i < df.length; i++)
         {
             // Do we have an image in the clipboard?
             if(df[i].isMimeTypeEqual(DataFlavor.imageFlavor))
             {
                 bImageAvailable = true;
-                
+
                 break;
             }
         }
-        
+
         df = null;
         data = null;
-        
+
         return bImageAvailable;
     }
-    
+
     public void addListener(FlavorListener listener)
     {
         clipboard.addFlavorListener(listener);
     }
-    
+
     public BufferedImage convertToAWT(ImageData data)
     {
         ColorModel colorModel = null;
         PaletteData palette = data.palette;
-        
+
         if (palette.isDirect)
         {
             colorModel = new DirectColorModel(data.depth, palette.redMask, palette.greenMask, palette.blueMask);
@@ -181,7 +181,7 @@ public class ClipboardHandler
                     raster.setPixels(x, y, 1, 1, pixelArray);
                 }
             }
-            
+
             return bufferedImage;
         }
         else
@@ -197,7 +197,7 @@ public class ClipboardHandler
                 green[i] = (byte) rgb.green;
                 blue[i] = (byte) rgb.blue;
             }
-            
+
             if (data.transparentPixel != -1)
             {
                 colorModel = new IndexColorModel(data.depth, rgbs.length, red, green, blue, data.transparentPixel);
@@ -206,7 +206,7 @@ public class ClipboardHandler
             {
                 colorModel = new IndexColorModel(data.depth, rgbs.length, red, green, blue);
             }
-            
+
             BufferedImage bufferedImage = new BufferedImage(colorModel, colorModel.createCompatibleWritableRaster(data.width, data.height), false, null);
             WritableRaster raster = bufferedImage.getRaster();
             int[] pixelArray = new int[1];
@@ -219,7 +219,7 @@ public class ClipboardHandler
                     raster.setPixel(x, y, pixelArray);
                 }
             }
-            
+
             return bufferedImage;
         }
     }
@@ -242,7 +242,7 @@ public class ClipboardHandler
                     data.setPixel(x, y, pixel);
                 }
             }
-            
+
             return data;
         }
         else if(bufferedImage.getColorModel() instanceof IndexColorModel)
@@ -252,17 +252,17 @@ public class ClipboardHandler
             byte[] reds = new byte[size];
             byte[] greens = new byte[size];
             byte[] blues = new byte[size];
-            
+
             colorModel.getReds(reds);
             colorModel.getGreens(greens);
             colorModel.getBlues(blues);
-            
+
             RGB[] rgbs = new RGB[size];
             for (int i = 0; i < rgbs.length; i++)
             {
                 rgbs[i] = new RGB(reds[i] & 0xFF, greens[i] & 0xFF, blues[i] & 0xFF);
             }
-            
+
             PaletteData palette = new PaletteData(rgbs);
             ImageData data = new ImageData(bufferedImage.getWidth(), bufferedImage.getHeight(), colorModel.getPixelSize(), palette);
             data.transparentPixel = colorModel.getTransparentPixel();
@@ -276,7 +276,7 @@ public class ClipboardHandler
                     data.setPixel(x, y, pixelArray[0]);
                 }
             }
-            
+
             return data;
         }
 

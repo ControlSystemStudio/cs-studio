@@ -67,7 +67,7 @@ public class AutoCompleteTextCellEditor extends TextCellEditor {
 
     /**
      * Return the {@link ContentProposalAdapter} of this cell editor.
-     * 
+     *
      * @return the {@link ContentProposalAdapter}
      */
     public ContentProposalAdapter getContentProposalAdapter() {

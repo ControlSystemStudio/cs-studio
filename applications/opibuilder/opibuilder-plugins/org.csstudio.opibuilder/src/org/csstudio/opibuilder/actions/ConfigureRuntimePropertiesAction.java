@@ -32,7 +32,7 @@ public class ConfigureRuntimePropertiesAction extends Action {
         this.widgetModel = widgetModel;
         this.shell = shell;
     }
-    
+
     @Override
     public void run() {
         RuntimePropertiesEditDialog dialog = new RuntimePropertiesEditDialog(shell, widgetModel);
@@ -42,6 +42,6 @@ public class ConfigureRuntimePropertiesAction extends Action {
             }
         }
     }
-    
-    
+
+
 }

@@ -6,9 +6,9 @@ import org.csstudio.sds.model.IWidgetModelFactory;
 
 /**
  * This class defines a widget model factory for gauge widget models.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public final class GaugeModelFactory implements IWidgetModelFactory {
 

@@ -27,7 +27,7 @@ import org.csstudio.autocomplete.parser.engine.expr.ExprVariable;
 
 /**
  * PV formula content parser.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class FormulaContentParser implements IContentParser {
@@ -81,7 +81,7 @@ public class FormulaContentParser implements IContentParser {
         case ConditionalOperation: // complete values
             handleConditionalOperation((ExprConditionalOperator) e);
             break;
-            
+
         default:
             break;
         }

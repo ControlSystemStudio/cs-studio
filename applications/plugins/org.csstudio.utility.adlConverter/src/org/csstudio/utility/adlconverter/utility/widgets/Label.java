@@ -51,9 +51,9 @@ public class Label extends Widget {
 
     /**
      * @param label ADLWidget that describe the Label.
-     * @param displayModel 
-     * @param storedDynamicAttribute 
-     * @param storedBasicAttribute 
+     * @param displayModel
+     * @param storedDynamicAttribute
+     * @param storedBasicAttribute
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
     @SuppressWarnings("restriction")
@@ -87,8 +87,8 @@ public class Label extends Widget {
                     labelText = textit[0];
                 }
                 _widget.setPropertyValue(LabelModel.PROP_TEXTVALUE, labelText);
-                
-                
+
+
             // The Text alignment.
             }else if(row[0].equals("alignment")||row[0].equals("align")){ //$NON-NLS-1$ //$NON-NLS-2$
 //              <property type="sds.option" id="textAlignment">
@@ -107,7 +107,7 @@ public class Label extends Widget {
                     id = 4;
                 }
                 _widget.setPropertyValue(LabelModel.PROP_TEXT_ALIGN, id);
-            // 
+            //
             }else if(row[0].equals("clrmod")){ //$NON-NLS-1$
                 //TODO: Label-->clrmod (CSS-SDS unterstüzung fehlt!)
             // The Text Format
@@ -116,7 +116,7 @@ public class Label extends Widget {
                 if(test.equals("\"exponential\"")){ //$NON-NLS-1$
                     _widget.setPropertyValue(AbstractTextTypeWidgetModel.PROP_TEXT_TYPE, TextTypeEnum.TYPE_TEXT); //TODO: Label->format->exponential wird noch nicht vom ASDS unterstützt.
                 }else if(test.equals("\"decimal\"")){ //$NON-NLS-1$
-                    _widget.setPropertyValue(AbstractTextTypeWidgetModel.PROP_TEXT_TYPE, TextTypeEnum.TYPE_DOUBLE); 
+                    _widget.setPropertyValue(AbstractTextTypeWidgetModel.PROP_TEXT_TYPE, TextTypeEnum.TYPE_DOUBLE);
                 }else if(test.equals("\"engr.notation\"")){ //$NON-NLS-1$
                     _widget.setPropertyValue(AbstractTextTypeWidgetModel.PROP_TEXT_TYPE, TextTypeEnum.TYPE_TEXT);  //TODO: Label->format->engr.notation wird noch nicht vom ASDS unterstützt.
                 }else if(test.equals("\"compact\"")){ //$NON-NLS-1$
@@ -124,13 +124,13 @@ public class Label extends Widget {
                 }else if(test.equals("\"octal\"")){ //$NON-NLS-1$
                     _widget.setPropertyValue(AbstractTextTypeWidgetModel.PROP_TEXT_TYPE, TextTypeEnum.TYPE_TEXT);  //TODO: Label->format->octal wird noch nicht vom ASDS unterstützt.
                 }else if(test.equals("\"hexadecimal\"")){ //$NON-NLS-1$
-                    _widget.setPropertyValue(AbstractTextTypeWidgetModel.PROP_TEXT_TYPE, TextTypeEnum.TYPE_HEX); 
+                    _widget.setPropertyValue(AbstractTextTypeWidgetModel.PROP_TEXT_TYPE, TextTypeEnum.TYPE_HEX);
                 }else if(test.equals("\"truncated\"")){ //$NON-NLS-1$
                     _widget.setPropertyValue(AbstractTextTypeWidgetModel.PROP_TEXT_TYPE, TextTypeEnum.TYPE_TEXT); //TODO: Label->format->truncated wird noch nicht vom ASDS unterstützt.
                 }else{// Unknown or String
                     _widget.setPropertyValue(AbstractTextTypeWidgetModel.PROP_TEXT_TYPE, TextTypeEnum.TYPE_TEXT);
                 }
-            }else{                
+            }else{
                 throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin+ bodyPart+Messages.Label_WrongADLFormatException_Parameter_End);
             } //Label have no Parameter
         }

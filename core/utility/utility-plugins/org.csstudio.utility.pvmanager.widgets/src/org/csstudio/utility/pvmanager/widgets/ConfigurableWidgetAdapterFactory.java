@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.pvmanager.widgets;
 
@@ -7,9 +7,9 @@ import org.eclipse.core.runtime.IAdapterFactory;
 
 /**
  * Adapter factor for the ConfigurableWidgets.
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class ConfigurableWidgetAdapterFactory implements IAdapterFactory {
 

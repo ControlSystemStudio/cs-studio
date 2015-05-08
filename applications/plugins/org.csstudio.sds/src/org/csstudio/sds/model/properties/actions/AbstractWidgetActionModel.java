@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.model.properties.actions;
@@ -71,19 +71,19 @@ public abstract class AbstractWidgetActionModel implements IAdaptable {
         _name = name;
         _type = type;
         createProperties();
-    } 
-    
+    }
+
     /**
      * Creates the properties for the {@link AbstractWidgetActionModel}.
      */
     protected abstract void createProperties();
-    
+
     /**
      * Returns a short description of the {@link AbstractWidgetActionModel}.
      * @return The short description
      */
     public abstract String getActionLabel();
-    
+
     /**
      * Adds the given {@link WidgetProperty} with the given key
      * to the properties of the {@link AbstractWidgetActionModel}.
@@ -95,7 +95,7 @@ public abstract class AbstractWidgetActionModel implements IAdaptable {
         assert property!=null;
         _properties.put(key, property);
     }
-    
+
     /**
      * Returns a Set of the property-keys.
      * @return The Set of the property-keys
@@ -103,7 +103,7 @@ public abstract class AbstractWidgetActionModel implements IAdaptable {
     public final Set<String> getPropertyKeys() {
         return _properties.keySet();
     }
-    
+
     /**
      * Return the property to the given key.
      * @param key The key of the property
@@ -120,7 +120,7 @@ public abstract class AbstractWidgetActionModel implements IAdaptable {
     public final Collection<WidgetProperty> getProperties() {
         return _properties.values();
     }
-    
+
     /**
      * Checks if the {@link AbstractWidgetActionModel} has a property with the given key.
      * @param key The key of the property
@@ -129,7 +129,7 @@ public abstract class AbstractWidgetActionModel implements IAdaptable {
     public final boolean hasProperty(final String key) {
         return this.getPropertyKeys().contains(key);
     }
-    
+
     /**
      * Creates a new {@link AbstractWidgetActionModel} with the properties and values of the original.
      * @return The copy
@@ -141,7 +141,7 @@ public abstract class AbstractWidgetActionModel implements IAdaptable {
         }
         return newAction;
     }
-    
+
     /**
      * Return the name of the {@link AbstractWidgetActionModel}.
      * @return The name of the {@link AbstractWidgetActionModel}
@@ -149,7 +149,7 @@ public abstract class AbstractWidgetActionModel implements IAdaptable {
     public final String getName() {
         return _name;
     }
-    
+
     /**
      * Return the type of the {@link AbstractWidgetActionModel}.
      * @return The type of the {@link AbstractWidgetActionModel}
@@ -157,7 +157,7 @@ public abstract class AbstractWidgetActionModel implements IAdaptable {
     public final ActionType getType() {
         return _type;
     }
-    
+
     /**
      * Returns if this {@link AbstractWidgetActionModel} is enabled.
      * @return True if this {@link AbstractWidgetActionModel} is enabled, false otherwise
@@ -165,7 +165,7 @@ public abstract class AbstractWidgetActionModel implements IAdaptable {
     public final boolean isEnabled() {
         return _enabled;
     }
-    
+
     /**
      * Sets if this {@link AbstractWidgetActionModel} is enabled or not.
      * @param enabled True if this {@link AbstractWidgetActionModel} should be enabled, false otherwise
@@ -173,7 +173,7 @@ public abstract class AbstractWidgetActionModel implements IAdaptable {
     public final void setEnabled(final boolean enabled) {
         _enabled = enabled;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -181,7 +181,7 @@ public abstract class AbstractWidgetActionModel implements IAdaptable {
     public final Object getAdapter(final Class adapter) {
         return Platform.getAdapterManager().getAdapter(this, adapter);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -198,14 +198,14 @@ public abstract class AbstractWidgetActionModel implements IAdaptable {
         }
         return hashCode;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public final boolean equals(final Object arg) {
         if (arg instanceof AbstractWidgetActionModel) {
-            AbstractWidgetActionModel that = (AbstractWidgetActionModel) arg; 
+            AbstractWidgetActionModel that = (AbstractWidgetActionModel) arg;
 //            if (this.getType().equals(that.getType()) && this._internalID==that._internalID) {
             if (this.getType().equals(that.getType())) {
                 for (String key : this.getPropertyKeys()) {

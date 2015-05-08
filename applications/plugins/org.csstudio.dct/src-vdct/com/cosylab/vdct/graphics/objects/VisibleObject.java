@@ -8,22 +8,22 @@ package com.cosylab.vdct.graphics.objects;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -41,24 +41,24 @@ import com.cosylab.vdct.graphics.*;
 public abstract class VisibleObject implements Visitable {
     // parent (owner)
     private ContainerObject parent;
-    
+
     // position & size
     protected int x;
     protected int y;
     private int width;
     private int height;
-    
+
     // to support option to mark (remember) some position
     private int markedX;
     private int markedY;
 
     // scale
     private double scale = 1;
-        
+
     // scaled position & size
     private int rx;
     private int ry;
-    private int rwidth; 
+    private int rwidth;
     private int rheight;
 
     // scaled scale
@@ -79,7 +79,7 @@ public abstract class VisibleObject implements Visitable {
     //used for blowing up the object on small zoom
     private boolean isZoomRepaint = false;
     protected Image zoomImage;
-    
+
 /**
  * Insert the method's description here.
  * Creation date: (21.12.2000 20:40:53)
@@ -292,8 +292,8 @@ private void internalRevalidate() {
  * @param py int
  */
 public VisibleObject intersects(int px, int py) {
-    if ((rx<=px) && (ry<=py) && 
-            ((rx+rwidth)>=px) && 
+    if ((rx<=px) && (ry<=py) &&
+            ((rx+rwidth)>=px) &&
             ((ry+rheight)>=py)) return this;
     else return null;
 }
@@ -309,8 +309,8 @@ public VisibleObject intersects(int px, int py) {
  */
 
 public VisibleObject intersects(int p1x, int p1y, int p2x, int p2y) {
-    if ((rx>=p1x) && (ry>=p1y) && 
-            ((rx+rwidth)<=p2x) && 
+    if ((rx>=p1x) && (ry>=p1y) &&
+            ((rx+rwidth)<=p2x) &&
             ((ry+rheight)<=p2y)) return this;
     else return null;
 }
@@ -505,13 +505,13 @@ public void snapToGrid()
 {
     int mx = x % Constants.GRID_SIZE;
     int my = y % Constants.GRID_SIZE;
-    
+
     final int halfGrid = Constants.GRID_SIZE / 2;
     if (mx > halfGrid)
         mx -= Constants.GRID_SIZE;
     if (my > halfGrid)
         my -= Constants.GRID_SIZE;
-    
+
     x -= mx;
     y -= my;
 }
@@ -546,7 +546,7 @@ public void setZoomRepaint(boolean zoomRepaint) {
 }
 
 /**
- * 
+ *
  * Returns true if the object is being repainted as blown up on small zoom.
  * @return
  */
@@ -555,7 +555,7 @@ public boolean isZoomRepaint() {
 }
 
 /**
- * 
+ *
  * Returns the offset in pixels(the length of additional objects (arrows, strings) drawn on
  * the left side of this object.
  * @return
@@ -565,7 +565,7 @@ public int getLeftOffset() {
 }
 
 /**
- * 
+ *
  * Returns the offset in pixels(the length of additional objects (arrows, strings) drawn on
  * the right side of this object.
  * @return
@@ -575,7 +575,7 @@ public int getRightOffset() {
 }
 
 /**
- * 
+ *
  * Returns the offset in pixels(the length of additional objects (arrows, strings) drawn above
  * this object.
  * @return

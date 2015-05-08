@@ -12,7 +12,7 @@ import java.util.List;
 import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
 
 /** Utility for turning list of alarms into text.
- * 
+ *
  *  <p>Used to send alarm info to email, clipboard
  *  @author Kay Kasemir
  */

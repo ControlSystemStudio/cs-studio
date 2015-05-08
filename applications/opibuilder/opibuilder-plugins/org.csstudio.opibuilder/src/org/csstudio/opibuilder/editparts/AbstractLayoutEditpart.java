@@ -28,9 +28,9 @@ public abstract class AbstractLayoutEditpart extends AbstractBaseEditPart {
         figure.setIcon(getIcon());
         return figure;
     }
-    
+
     protected abstract Image getIcon();
-    
+
     /**Get the new bounds after layout.
      * @param widgetModelList the children widget models to be layout.
      * @param containerBounds the bounds of the container which contains the widget models.
@@ -38,7 +38,7 @@ public abstract class AbstractLayoutEditpart extends AbstractBaseEditPart {
      */
     public abstract List<Rectangle> getNewBounds(
             List<AbstractWidgetModel> widgetModelList, Rectangle containerBounds);
-    
+
     /**Layout widgets.
      * @param widgetModelList
      * @param containerBounds
@@ -51,7 +51,7 @@ public abstract class AbstractLayoutEditpart extends AbstractBaseEditPart {
             i++;
         }
     }
-    
+
     /**
      * Refresh container's layout.
      */
@@ -60,25 +60,25 @@ public abstract class AbstractLayoutEditpart extends AbstractBaseEditPart {
             ((AbstractContainerEditpart)getParent()).layout();
         }
     }
-    
+
     /**The figure for layout widgets.
      * @author Xihui Chen
      *
      */
     static class LayoutterFigure extends Label{
-        
+
         private ExecutionMode executionMode;
-        
+
         public LayoutterFigure(ExecutionMode executionMode) {
             this.executionMode = executionMode;
             setVisible(true);
         }
-        
+
         @Override
         public void setVisible(boolean visible) {
             super.setVisible(executionMode == ExecutionMode.EDIT_MODE);
         }
-        
+
         @Override
         public Dimension getMinimumSize(int w, int h) {
             return new Dimension(16, 16);

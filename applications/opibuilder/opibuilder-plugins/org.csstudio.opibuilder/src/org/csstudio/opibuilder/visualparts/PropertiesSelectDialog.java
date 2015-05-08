@@ -35,31 +35,31 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 public class PropertiesSelectDialog extends Dialog {
-    
+
     private ListViewer propertiesViewer;
     private List<String> selectedProps;
     private AbstractWidgetModel widgetModel;
-    
-    public PropertiesSelectDialog(Shell parentShell, 
+
+    public PropertiesSelectDialog(Shell parentShell,
             AbstractWidgetModel widgetModel) {
-        super(parentShell);        
+        super(parentShell);
         // Allow resize
         setShellStyle(getShellStyle() | SWT.RESIZE);
         selectedProps = new ArrayList<String>();
         this.widgetModel = widgetModel;
-    
+
     }
-    
+
     public List<String> getOutput(){
         return selectedProps;
     }
-    
+
     @Override
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
         newShell.setText("Select Properties to Copy");
     }
-    
+
     @Override
     protected Control createDialogArea(Composite parent) {
         final Composite parent_Composite = (Composite) super.createDialogArea(parent);
@@ -69,52 +69,52 @@ public class PropertiesSelectDialog extends Dialog {
         gd.widthHint = 320;
         gd.heightHint = 500;
         rightComposite.setLayoutData(gd);
-    
+
         propertiesViewer = createPropertiesViewer(rightComposite);
-    
+
         Set<String> propSet = widgetModel.getAllPropertyIDs();
-        
+
         propSet.remove(AbstractPVWidgetModel.PROP_PVVALUE);
-        
+
         for(Object propId : propSet.toArray()){
             if(!widgetModel.getProperty(propId.toString()).isVisibleInPropSheet())
                 propSet.remove(propId);
         }
-            
-        
+
+
         String[] propArray = propSet.toArray(new String[0]);
-        Arrays.sort(propArray);    
-        
+        Arrays.sort(propArray);
+
         propertiesViewer.setInput(propArray);
-        
+
         return parent_Composite;
-    
+
     }
-    
+
     private ListViewer createPropertiesViewer(Composite parent) {
         final ListViewer viewer = new ListViewer(parent, SWT.V_SCROLL
                 | SWT.H_SCROLL | SWT.BORDER | SWT.MULTI);
         viewer.setContentProvider(new ArrayContentProvider());
-        viewer.setLabelProvider(new PropertyListLableProvider());        
+        viewer.setLabelProvider(new PropertyListLableProvider());
         viewer.getList().setLayoutData(
                 new GridData(SWT.FILL, SWT.FILL, true, true));
-        
+
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            
+
             @SuppressWarnings("unchecked")
             public void selectionChanged(SelectionChangedEvent event) {
                 selectedProps = ((StructuredSelection)viewer.getSelection()).toList();
             }
         });
         viewer.addDoubleClickListener(new IDoubleClickListener() {
-            
+
             public void doubleClick(DoubleClickEvent event) {
                 okPressed();
             }
         });
         return viewer;
     }
-    
+
     class PropertyListLableProvider extends LabelProvider {
         @Override
         public String getText(Object element) {

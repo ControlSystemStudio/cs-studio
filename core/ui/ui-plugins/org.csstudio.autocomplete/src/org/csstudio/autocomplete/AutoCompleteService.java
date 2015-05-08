@@ -33,7 +33,7 @@ import org.osgi.framework.ServiceReference;
  * Service which handles content parsing (see {@link IContentParser}) and
  * requesting proposals from defined providers (see
  * {@link IAutoCompleteProvider}.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class AutoCompleteService {

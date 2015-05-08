@@ -38,27 +38,27 @@ public class RadioBoxFigure extends AbstractChoiceFigure {
         super(runMode);
         selectedColor = ColorConstants.black;
     }
-    
+
     @Override
     protected Toggle createToggle(String text) {
         return new RadioBox(text);
     }
-    
+
 
 
 class RadioBox    extends Toggle {
 
         private RadioFigure radio = null;
-        
+
         /**
          * Constructs a CheckBox with no text.
-         * 
+         *
          * @since 2.0
          */
         public RadioBox() {
             this(""); //$NON-NLS-1$
         }
-        
+
         /**
          * Constructs a CheckBox with the passed text in its label.
          * @param text The label text
@@ -87,50 +87,50 @@ class RadioBox    extends Toggle {
                 });
             }
         }
-        
-        
-        
-        
+
+
+
+
         /**
          * Adjusts CheckBox's icon depending on selection status.
-         * 
+         *
          * @since 2.0
          */
-        protected void handleSelectionChanged() {    
+        protected void handleSelectionChanged() {
             radio.setSelected(isSelected());
-            
+
         }
-        
+
         /**
          * Initializes this Clickable by setting a default model and adding a clickable event
          * handler for that model. Also adds a ChangeListener to update icon when  selection
          * status changes.
-         * 
+         *
          * @since 2.0
          */
         protected void init() {
             super.init();
             addChangeListener(new ChangeListener () {
-                public void handleStateChanged(ChangeEvent changeEvent) { 
+                public void handleStateChanged(ChangeEvent changeEvent) {
                     if (changeEvent.getPropertyName().equals(ButtonModel.SELECTED_PROPERTY))
                         handleSelectionChanged();
                 }
             });
         }
 }
-    
+
 class RadioFigure extends Figure{
-        
+
         private static final int RADIO_RADIUS = 7;
         private static final int DOT_RADIUS = 2;
         private static final int GAP =4 ;
-        
+
         private boolean selected = false;
-        
+
         private String text;
         private Boolean support3d;
-        
-        
+
+
         public RadioFigure(String text) {
             this.text = text;
             if(runMode)
@@ -145,12 +145,12 @@ class RadioFigure extends Figure{
             graphics.setAntialias(support3d ? SWT.ON : SWT.OFF);
             Rectangle clientArea = getClientArea();
             Rectangle circle = new Rectangle(
-                    clientArea.x , clientArea.getCenter().y - RADIO_RADIUS, 
+                    clientArea.x , clientArea.getCenter().y - RADIO_RADIUS,
                     2*RADIO_RADIUS, 2*RADIO_RADIUS);
             graphics.pushState();
             if(support3d)
                 graphics.setBackgroundPattern(
-                    GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), circle.x, circle.y, 
+                    GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), circle.x, circle.y,
                             circle.x+circle.width, circle.y+circle.height,
                             ColorConstants.white, graphics.getBackgroundColor()));
             graphics.fillArc(circle, 0 ,360);
@@ -160,7 +160,7 @@ class RadioFigure extends Figure{
             if(selected){
                 graphics.setBackgroundColor(selectedColor);
                 graphics.fillArc(new Rectangle(
-                        circle.getCenter().x - DOT_RADIUS, circle.getCenter().y - DOT_RADIUS, 
+                        circle.getCenter().x - DOT_RADIUS, circle.getCenter().y - DOT_RADIUS,
                         2*DOT_RADIUS+1, 2*DOT_RADIUS+1), 0, 360);
             }
             graphics.popState();
@@ -172,21 +172,21 @@ class RadioFigure extends Figure{
                 graphics.translate(-1, -1);
                 graphics.setForegroundColor(ColorConstants.buttonDarker);
             }
-            
+
             graphics.drawText(text, circle.getRight().getTranslated(GAP, -textSize.height/2));
-                
+
         }
-        
+
         public void setSelected(boolean selected) {
             this.selected = selected;
             repaint();
         }
-        
+
         public void setText(String text) {
             this.text = text;
             repaint();
         }
-        
+
     }
 
 }

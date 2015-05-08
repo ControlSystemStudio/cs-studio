@@ -8,22 +8,22 @@ package com.cosylab.vdct.plugin.debug;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -77,7 +77,7 @@ public void actionPerformed(ActionEvent event)
             Toolkit.getDefaultToolkit().beep();
             return;
         }
-        
+
         DebugPlugin debugPlugin = (DebugPlugin)plugin.getPlugin();
 
         Console.getInstance().println("Starting debugging with '" + debugPlugin.getName()+ "'...");
@@ -86,7 +86,7 @@ public void actionPerformed(ActionEvent event)
         PluginDebugManager.setDebugState(true);
         debugPlugin.startDebugging();
 
-    
+
         new Thread(this).start();
     }
 }
@@ -99,13 +99,13 @@ public void run()
 {
 
     DebugPlugin debugPlugin = PluginDebugManager.getDebugPlugin();
-    
+
 
     // all new (or deleted) filed are not updated
     // if field has InspectableProperty.ALWAYS_VISIBLE visibility then is is monitored
     // VAL fields is always registered
     final String valFieldName = "VAL";
-    
+
     // count loop
     int recordCount = 0;
     Stack groupStack = new Stack();
@@ -150,17 +150,17 @@ public void run()
                 while (e2.hasMoreElements() && !progressMonitor.isCanceled() && PluginDebugManager.isDebugState())
                 {
                     VDBFieldData field = (VDBFieldData)e2.nextElement();
-                        
+
                     if (field.getVisibility() == InspectableProperty.ALWAYS_VISIBLE && !field.equals(valFieldName))
                     {
                         progressMonitor.setNote("Connecting to "+field.getFullName()+"...");
                         debugPlugin.registerMonitor(field);
                     }
                 }
-    
+
                 if (progressMonitor.isCanceled() || !PluginDebugManager.isDebugState())
                     break;
-    
+
                 // always register VAL field
                 Debuggable valField = (Debuggable)rec.getField(valFieldName);
                 if (valField != null)
@@ -168,18 +168,18 @@ public void run()
                     progressMonitor.setNote("Connecting to "+valField.getFullName()+"...");
                     debugPlugin.registerMonitor(valField);
                 }
-                        
+
             }
             else if (obj instanceof Group)
                 groupStack.push(obj);
-                
+
             progress++;
             progressMonitor.setProgress(progress);
-                
+
         }
     }
-    
-            
+
+
     if (progressMonitor.isCanceled() /*|| !PluginDebugManager.isDebugState()*/)
     {
         Console.getInstance().println("Debugging canceled.");
@@ -195,7 +195,7 @@ public void run()
     DrawingSurface.getInstance().repaint();
 
 }
-    
+
 
 /**
  * Insert the method's description here.
@@ -247,7 +247,7 @@ private void updateStatus()
  * Creation date: (7.12.2001 17:06:11)
  * @param
  * @return
- */    
+ */
 public String getText()
 {
     if( plugin!=null )

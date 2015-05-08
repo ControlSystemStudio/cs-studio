@@ -24,7 +24,7 @@ public class PVModelUnitTest implements PVModelListener
     {
         TestSetup.setup();
     }
-    
+
     @Override
     public void updateProperties(final Map<String, String> properties)
     {
@@ -42,7 +42,7 @@ public class PVModelUnitTest implements PVModelListener
             System.out.println(field);
         updates.countDown();
     }
-    
+
     @Override
     public void updateField(final PVField field)
     {
@@ -55,17 +55,17 @@ public class PVModelUnitTest implements PVModelListener
     {
         final PVModel model = new PVModel(TestSetup.CHANNEL_NAME, this);
         updates.await();
-        
+
         assertThat(TestSetup.CHANNEL_NAME, equalTo(model.getPVName()));
-        
+
         final Map<String, String> properties = model.getProperties();
         assertTrue(properties.size() > 0);
-        
+
         // Wait a little longer to allow more field updates
         System.out.println("Allowing more updates...");
         TimeUnit.SECONDS.sleep(1);
         System.out.println("Stopping");
-        
+
         model.stop();
     }
 }

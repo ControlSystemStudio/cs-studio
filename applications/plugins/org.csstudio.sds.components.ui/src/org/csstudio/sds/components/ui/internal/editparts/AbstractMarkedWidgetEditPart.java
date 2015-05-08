@@ -9,9 +9,9 @@ import org.eclipse.swt.graphics.Color;
 /**
  * Base editPart controller for a widget based on
  * {@link AbstractMarkedWidgetModel}.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public abstract class AbstractMarkedWidgetEditPart extends
         AbstractScaledWidgetEditPart {
@@ -23,7 +23,7 @@ public abstract class AbstractMarkedWidgetEditPart extends
      * implementation of
      * {@link org.csstudio.sds.ui.editparts.AbstractBaseEditPart#doCreateFigure()}
      * .
-     * 
+     *
      * @param figure
      *            the figure.
      * @param model

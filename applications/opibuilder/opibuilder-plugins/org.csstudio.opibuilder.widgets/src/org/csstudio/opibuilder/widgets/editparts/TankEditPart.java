@@ -18,7 +18,7 @@ import org.epics.vtype.AlarmSeverity;
 /**
  * EditPart controller for the tank widget. The controller mediates between
  * {@link TankModel} and {@link TankFigure}.
- * 
+ *
  * @author Xihui Chen
  * @author Takashi Nakamoto - support for "FillColor Alarm Sensitive" property
  */
@@ -31,10 +31,10 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
         TankModel model = getWidgetModel();
 
         TankFigure tank = new TankFigure();
-        
-        initializeCommonFigureProperties(tank, model);        
+
+        initializeCommonFigureProperties(tank, model);
         tank.setFillColor(model.getFillColor());
-        tank.setEffect3D(model.isEffect3D());    
+        tank.setEffect3D(model.isEffect3D());
         tank.setFillBackgroundColor(model.getFillbackgroundColor());
         return tank;
 
@@ -44,14 +44,14 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
     public TankModel getWidgetModel() {
         return (TankModel)getModel();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected void registerPropertyChangeHandlers() {
         registerCommonPropertyChangeHandlers();
-        
+
         //fillColor
         IWidgetPropertyChangeHandler fillColorHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -62,8 +62,8 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
                 return false;
             }
         };
-        setPropertyChangeHandler(TankModel.PROP_FILL_COLOR, fillColorHandler);    
-        
+        setPropertyChangeHandler(TankModel.PROP_FILL_COLOR, fillColorHandler);
+
         //fillBackgroundColor
         IWidgetPropertyChangeHandler fillBackColorHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -74,8 +74,8 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
                 return false;
             }
         };
-        setPropertyChangeHandler(TankModel.PROP_FILLBACKGROUND_COLOR, fillBackColorHandler);    
-        
+        setPropertyChangeHandler(TankModel.PROP_FILLBACKGROUND_COLOR, fillBackColorHandler);
+
         //effect 3D
         IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -86,7 +86,7 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
                 return false;
             }
         };
-        setPropertyChangeHandler(TankModel.PROP_EFFECT3D, effect3DHandler);    
+        setPropertyChangeHandler(TankModel.PROP_EFFECT3D, effect3DHandler);
 
         // Change fill color when "FillColor Alarm Sensitive" property changes.
         IWidgetPropertyChangeHandler fillColorAlarmSensitiveHandler = new IWidgetPropertyChangeHandler() {
@@ -100,9 +100,9 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
             }
         };
         setPropertyChangeHandler(TankModel.PROP_FILLCOLOR_ALARM_SENSITIVE, fillColorAlarmSensitiveHandler);
-        
+
         // Change fill color when alarm severity changes.
-        delegate.addAlarmSeverityListener(new AlarmSeverityListener() {            
+        delegate.addAlarmSeverityListener(new AlarmSeverityListener() {
 
             @Override
             public boolean severityChanged(AlarmSeverity severity, IFigure figure) {

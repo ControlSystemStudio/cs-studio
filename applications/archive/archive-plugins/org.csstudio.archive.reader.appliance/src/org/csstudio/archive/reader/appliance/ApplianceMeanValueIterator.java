@@ -16,7 +16,7 @@ import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadInfo;
 import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadType;
 
 /**
- * 
+ *
  * <code>ApplianceMeanValueIterator</code> retrieves the mean value of the archived data bins.
  * The size of the bin is specified by the selected time range and the requested number of points.
  *
@@ -24,31 +24,31 @@ import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadType;
  *
  */
 public class ApplianceMeanValueIterator extends ApplianceValueIterator {
-    
+
     protected final int requestedPoints;
-    
+
     /**
      * Constructor that fetches data from appliance archive reader.
-     * 
+     *
      * @param reader instance of appliance archive reader
      * @param name name of the PV
      * @param start start of the time period
      * @param end end of the time period
      * @param points the number of requested points
      * @param listener the listener that is notified when the iterator is closed
-     * 
+     *
      * @throws IOException if there was an error during the data fetch process
      * @throws ArchiverApplianceException if it is not possible to load optimized data for the selected PV
      */
     public ApplianceMeanValueIterator(ApplianceArchiveReader reader,
-            String name, Timestamp start, Timestamp end, int points, IteratorListener listener) 
+            String name, Timestamp start, Timestamp end, int points, IteratorListener listener)
                     throws ArchiverApplianceException, IOException {
         super(reader,name,start,end,listener);
         this.requestedPoints = points;
         this.display = determineDisplay(reader, name, end);
         fetchData();
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.csstudio.archive.reader.appliance.ApplianceValueIterator#fetchDataInternal(java.lang.String)
@@ -59,13 +59,13 @@ public class ApplianceMeanValueIterator extends ApplianceValueIterator {
         String mean = new StringBuilder().append(ApplianceArchiveReaderConstants.OP_MEAN).append(interval).append('(').append(pvName).append(')').toString();
         super.fetchDataInternal(mean);
     }
-        
+
     /**
      * Determine and return display values.
-     * 
+     *
      * @param reader instance of appliance archive reader
      * @param name name of the PV
-     * 
+     *
      * @return the display
      * @throws IOException if there was an error reading data
      * @throws ArchiverApplianceException if the data cannot be loaded with the optimized method
@@ -91,15 +91,15 @@ public class ApplianceMeanValueIterator extends ApplianceValueIterator {
                 genMsgIterator.close();
             }
         }
-        
-        return ValueFactory.newDisplay(Double.NaN, Double.NaN, Double.NaN, "", 
+
+        return ValueFactory.newDisplay(Double.NaN, Double.NaN, Double.NaN, "",
                 NumberFormats.toStringFormat(),    Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN);
     }
-    
+
     /**
      * Check if the type of data is OK to be loaded in mean mode.
-     * Mean mode is possible only with numeric scalars. 
-     * 
+     * Mean mode is possible only with numeric scalars.
+     *
      * @param type the type to check
      * @return true if OK or false otherwise
      */

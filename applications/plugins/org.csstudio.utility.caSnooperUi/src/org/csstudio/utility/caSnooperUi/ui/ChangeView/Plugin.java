@@ -5,21 +5,21 @@ import org.osgi.framework.BundleContext;
 
 /**
  * The main class for the activator
- * 
- * 
+ *
+ *
  */
 public class Plugin extends AbstractUIPlugin {
 
     /**
      * The plug-in ID
-     */ 
+     */
     public static final String PLUGIN_ID = "org.csstudio.utility.caSnooper";
 
     /**
      * The shared instance
      */
     private static Plugin plugin;
-    
+
     /**
      * The constructor
      */
@@ -35,7 +35,7 @@ public class Plugin extends AbstractUIPlugin {
         super.start(context);
         plugin = this;
     }
-    
+
     public void stop(BundleContext context)throws Exception {
         super.stop(context);
         plugin = null;

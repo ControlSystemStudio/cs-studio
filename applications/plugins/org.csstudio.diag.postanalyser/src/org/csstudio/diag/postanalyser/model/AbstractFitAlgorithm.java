@@ -23,16 +23,16 @@ abstract public class AbstractFitAlgorithm extends Algorithm
     {
         if (input == null)
             throw new IllegalArgumentException(Messages.Algorithm_NoDataPoints);
-        
+
         try
         {
             // Perform the fit
             final double[] x = input.getX();
             final Fit fit = getFit(x, input.getY());
-    
+
             // Describe the output
             message = fit.toString();
-            
+
             // Generate line
             final double fit_line[] = new double[x.length];
             for (int i=0; i<x.length; ++i)

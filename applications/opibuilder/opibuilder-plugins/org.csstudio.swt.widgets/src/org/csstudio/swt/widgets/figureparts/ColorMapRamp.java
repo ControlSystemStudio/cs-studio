@@ -27,9 +27,9 @@ import org.eclipse.swt.widgets.Display;
 public class ColorMapRamp extends Figure {
 
     private double min, max;
-    
+
     private double[] mapData;
-    
+
     private ColorMap colorMap;
     private LinearScale scale;
     private ColorMapFigure colorMapFigure;
@@ -40,7 +40,7 @@ public class ColorMapRamp extends Figure {
         max = 1;
         updateMapData();
         colorMap = new ColorMap(PredefinedColorMap.GrayScale, true, true);
-        
+
         scale = new LinearScale();
         scale.setOrientation(Orientation.VERTICAL);
         scale.setScaleLineVisible(false);
@@ -50,7 +50,7 @@ public class ColorMapRamp extends Figure {
         scale.setMajorTickMarkStepHint(50);
         colorMapFigure = new ColorMapFigure();
         add(colorMapFigure);
-        add(scale);    
+        add(scale);
     }
 
 
@@ -58,27 +58,27 @@ public class ColorMapRamp extends Figure {
         for(int j=0; j<256; j++)
             mapData[j] = max-j*(max-min)/255.0;
     }
-    
-    
+
+
     @Override
-    protected void layout() {            
+    protected void layout() {
         Rectangle clientArea = getClientArea();
-        Dimension scaleSize = scale.getPreferredSize(clientArea.width, clientArea.height);        
+        Dimension scaleSize = scale.getPreferredSize(clientArea.width, clientArea.height);
         scale.setBounds(new Rectangle(clientArea.x + clientArea.width - scaleSize.width, clientArea.y,
                 scaleSize.width, clientArea.height));
-        
+
         colorMapFigure.setBounds(new Rectangle(clientArea.x, scale.getValuePosition(max, false),
                 clientArea.width - scaleSize.width, scale.getTickLength()));
         super.layout();
-        
+
     }
-    
+
     @Override
     public Dimension getPreferredSize(int hint, int hint2) {
-        Dimension result = super.getPreferredSize(hint, hint2);        
+        Dimension result = super.getPreferredSize(hint, hint2);
         result.width = RAMP_WIDTH + scale.getPreferredSize(hint, hint2).width;
         return result;
-        
+
     }
 
     /**
@@ -105,15 +105,15 @@ public class ColorMapRamp extends Figure {
     public final void setColorMap(ColorMap colorMap) {
         this.colorMap = colorMap;
     }
-    
+
     @Override
     public void setFont(Font f) {
         super.setFont(f);
         scale.setFont(f);
     }
-    
+
     class ColorMapFigure extends Figure{
-        
+
         @Override
         protected void paintClientArea(Graphics graphics) {
             super.paintClientArea(graphics);
@@ -121,11 +121,11 @@ public class ColorMapRamp extends Figure {
             Image image = new Image(Display.getCurrent(), colorMap.drawImage(mapData, 1, 256, max, min));
             graphics.drawImage(image, new Rectangle(image.getBounds()), clientArea);
             image.dispose();
-        }        
-        
+        }
+
     }
-    
-    
-    
-    
+
+
+
+
 }

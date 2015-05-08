@@ -4,7 +4,7 @@ package de.desy.language.editor.ui.editor;
 /**
  * A listener to be used by the {@link LanguageEditor} to offer adapted classes ({@link LanguageEditor#getAdapter(Class)})
  * a way to highlight text ranges.
- * 
+ *
  * @author C1 WPS / KM, MZ
  */
 public abstract class HighlightingListener {

@@ -11,11 +11,11 @@ import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.util.GUIRefreshThread;
 import org.eclipse.swt.widgets.Display;
 
-/** The element in the {@link GUIRefreshThread}'s task queue. 
+/** The element in the {@link GUIRefreshThread}'s task queue.
  *  An existing task in the queue should be ignored when a new task arrives
  *  that has the same identifyObject.
  *  For example, multiple tasks calling Gauge.setValue() are ignorable
- *  since the widget only needs to display the latest value.  
+ *  since the widget only needs to display the latest value.
  *  @author Xihui Chen
  *  @author Kay Kasemir Reviewed, made immutable
  */
@@ -25,12 +25,12 @@ public class WidgetIgnorableUITask {
      * The widget property.
      */
     final private Object identifyObject;
-    
+
     /**
      * The task to be executed.
      */
     final private Runnable runnableTask;
-    
+
     final private Display display;
 
     /**Constructor.
@@ -45,8 +45,8 @@ public class WidgetIgnorableUITask {
         this.runnableTask = runnableTask;
         this.display = display;
     }
-    
-    
+
+
     public Display getDisplay() {
         return display;
     }
@@ -64,7 +64,7 @@ public class WidgetIgnorableUITask {
     public Runnable getRunnableTask() {
         return runnableTask;
     }
-    
+
     /** @param obj Possible other {@link WidgetIgnorableUITask}
      *  @return <code>true</code> if other {@link WidgetIgnorableUITask}
      *          refers to the same {@link AbstractWidgetProperty}
@@ -73,18 +73,18 @@ public class WidgetIgnorableUITask {
     public boolean equals(final Object obj) {
         if(obj instanceof WidgetIgnorableUITask)
             return identifyObject ==((WidgetIgnorableUITask)obj).getIdentifyObject();
-        else 
+        else
             return false;
     }
-    
+
     @Override
     public String toString() {
         return identifyObject.toString();
     }
-    
+
     @Override
     public int hashCode() {
         return identifyObject.hashCode();
     }
-    
+
 }

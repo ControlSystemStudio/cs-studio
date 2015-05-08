@@ -68,8 +68,8 @@ public class SpreadsheetIterator
      *  @see #next()
      */
     public boolean hasNext()
-    { 
-        return values != null; 
+    {
+        return values != null;
     }
 
     /** Get the time of the spreadsheet line.

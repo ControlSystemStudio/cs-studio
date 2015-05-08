@@ -34,17 +34,17 @@ import org.csstudio.utility.jms.sharedconnection.ISharedConnectionHandle;
 /**
  * Connects a {@link MessageListener} to multiple JMS brokers using shared
  * connections.
- * 
+ *
  * @author Joerg Rathlev
  */
 class MultiConnectionReceiver implements IMessageListenerSession {
-    
+
     /*
      * Implementation note: this class was designed to be used only through
      * the IMessageListenerSession interface. Its only public methods are
      * methods defined by that interface.
      */
-    
+
     private final ISharedConnectionHandle[] _connections;
     private final Session[] _sessions;
     private final MessageListener _listener;
@@ -55,7 +55,7 @@ class MultiConnectionReceiver implements IMessageListenerSession {
 
     /**
      * Creates a new <code>MultiConnectionReceiver</code>.
-     * 
+     *
      * @param connections
      *            handles to the shared connections that this receiver will use.
      * @param listener
@@ -83,7 +83,7 @@ class MultiConnectionReceiver implements IMessageListenerSession {
     /**
      * Connects a listener to one or more shared JMS connections. The listener
      * will already be started when this method returns.
-     * 
+     *
      * @param connections
      *            the shared connections from which the listener will receive
      *            messages.
@@ -96,7 +96,7 @@ class MultiConnectionReceiver implements IMessageListenerSession {
      *            are <code>Session.AUTO_ACKNOWLEDGE</code>,
      *            <code>Session.CLIENT_ACKNOWLEDGE</code>, and
      *            <code>Session.DUPS_OK_ACKNOWLEDGE</code>.
-     * 
+     *
      * @return An <code>IMessageListenerSession</code> which can be used to
      *         control the listener session.
      * @throws JMSException
@@ -115,7 +115,7 @@ class MultiConnectionReceiver implements IMessageListenerSession {
     /**
      * Creates the sessions with the underlying JMS connections and starts
      * listening.
-     * 
+     *
      * @throws JMSException
      *             if one of the sessions could not be created or one of the
      *             topics or message consumers could not be created or the
@@ -150,7 +150,7 @@ class MultiConnectionReceiver implements IMessageListenerSession {
 
     /**
      * Creates the <code>MessageConsumer</code>s for the specified session.
-     * 
+     *
      * @param session
      *            the session.
      * @throws JMSException
@@ -165,7 +165,7 @@ class MultiConnectionReceiver implements IMessageListenerSession {
             consumer.setMessageListener(_listener);
         }
     }
-    
+
     /**
      * Closes this receiver. The receiver cannot be restarted after it was
      * closed.
@@ -184,7 +184,7 @@ class MultiConnectionReceiver implements IMessageListenerSession {
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -192,7 +192,7 @@ class MultiConnectionReceiver implements IMessageListenerSession {
     public void addMonitor(IConnectionMonitor monitor) {
         _monitorSupport.addMonitor(monitor);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -200,7 +200,7 @@ class MultiConnectionReceiver implements IMessageListenerSession {
     public void removeMonitor(IConnectionMonitor monitor) {
         _monitorSupport.removeMonitor(monitor);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -208,7 +208,7 @@ class MultiConnectionReceiver implements IMessageListenerSession {
     public boolean isActive() {
         return _allConnectionsActive;
     }
-    
+
     /**
      * Starts monitoring the shared connections used by this receiver.
      */
@@ -220,7 +220,7 @@ class MultiConnectionReceiver implements IMessageListenerSession {
             _allConnectionsActive &= connection.isActive();
         }
     }
-    
+
     /**
      * Called by the {@link ConnectionMonitor} when the state of one of the
      * connections used by this receiver has changed.
@@ -230,7 +230,7 @@ class MultiConnectionReceiver implements IMessageListenerSession {
         for (ISharedConnectionHandle connection : _connections) {
             newAllConnectionsActive &= connection.isActive();
         }
-        
+
         // If the state has changed, update the state and fire the appropriate
         // event.
         if (newAllConnectionsActive != _allConnectionsActive) {
@@ -246,7 +246,7 @@ class MultiConnectionReceiver implements IMessageListenerSession {
     /**
      * Used by a <code>MultiConnectionReceiver</code> to track the connection
      * state of its connections.
-     * 
+     *
      * @author Joerg Rathlev
      */
     private class ConnectionMonitor implements IConnectionMonitor {

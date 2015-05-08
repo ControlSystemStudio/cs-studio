@@ -18,7 +18,7 @@ import org.junit.Test;
 /** [Headless] JUnit Plug-in test of the engine model
  *  <p>
  *  {@link ArchiveConfig} is obtained via extension point, hence Plug-in test.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -32,14 +32,14 @@ public class EngineModelHeadlessTest
         final int port = settings.getInteger("archive_port", 4812);
         if (config_name == null  ||  config_name.isEmpty())
             System.out.println("Skipping test, no archive_config");
-        
+
         final ArchiveConfig config = ArchiveConfigFactory.getArchiveConfig();
         final BenchmarkTimer timer = new BenchmarkTimer();
         final EngineModel model = new EngineModel();
         model.readConfig(config, config_name, port, false);
         timer.stop();
         config.close();
-        
+
         model.dumpDebugInfo();
         final int count = model.getChannelCount();
         System.out.println("Channel count: " + count);

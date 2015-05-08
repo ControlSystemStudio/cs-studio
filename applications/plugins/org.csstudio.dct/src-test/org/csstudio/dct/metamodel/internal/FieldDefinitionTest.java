@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.metamodel.internal;
 
@@ -12,9 +12,9 @@ import org.junit.Test;
 
 /**
  * Test class for {@link FieldDefinition}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class FieldDefinitionTest {
 

@@ -43,19 +43,19 @@ public class ArchiveVTypeTest
 
         final VType dbl3 = new ArchiveVNumber(Timestamp.of(now), AlarmSeverity.MINOR, "Troubling", display, Double.valueOf(3));
         assertThat(int3, equalTo(dbl3));
-        
+
         final List<String> labels = Arrays.asList("zero", "one", "two", "three");
         final VType enum3 = new ArchiveVEnum(Timestamp.of(now), AlarmSeverity.MINOR, "Troubling", labels, 3);
         assertThat(enum3, not(equalTo(dbl314)));
         assertThat(enum3, equalTo(int3));
         assertThat(enum3, equalTo(dbl3));
         assertThat(dbl3, equalTo(enum3));
-        
+
         final VType str3 = new ArchiveVString(Timestamp.of(now), AlarmSeverity.MINOR, "Troubling", "three");
         assertThat(str3, not(equalTo(int3)));
         assertThat(enum3, equalTo(str3));
         assertThat(str3, equalTo(enum3));
-    
+
         final VType arr1 = new ArchiveVNumberArray(Timestamp.of(now), AlarmSeverity.MINOR, "Troubling", display, 1.0, 2.0, 3.0);
         final VType arr1b = new ArchiveVNumberArray(Timestamp.of(now), AlarmSeverity.MINOR, "Troubling", display, 1.0, 2.0, 3.0);
         final VType arr2 = new ArchiveVNumberArray(Timestamp.of(now), AlarmSeverity.MINOR, "Troubling", display, 1.0, 2.0, 3.1);
@@ -63,7 +63,7 @@ public class ArchiveVTypeTest
         assertThat(arr1, not(equalTo(int3)));
         assertThat(arr1, not(equalTo(arr2)));
         assertThat(arr1, equalTo(arr1b));
-        
+
         final StatisticsAccumulator stats = new StatisticsAccumulator(1.0, 2.0, 3.0, 4.0);
         final VType stat1 = new ArchiveVStatistics(Timestamp.of(now), AlarmSeverity.MINOR, "Troubling", display, stats);
         final VType stat1b = new ArchiveVStatistics(Timestamp.of(now), AlarmSeverity.MINOR, "Troubling", display, stats);

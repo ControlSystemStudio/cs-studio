@@ -12,14 +12,14 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
  *
  */
 public abstract class PropertySSHelper {
-    
-    private static final PropertySSHelper IMPL =            
+
+    private static final PropertySSHelper IMPL =
             (PropertySSHelper)ImplementationLoader.loadObjectInPlugin(
                     "org.csstudio.opibuilder.editor",  //$NON-NLS-1$
                     "org.csstudio.opibuilder.properties.support.PropertySSHelperImpl", //$NON-NLS-1$
                     false);
-    
-    
+
+
     public static PropertySSHelper getIMPL(){
         return IMPL;
     }
@@ -76,12 +76,12 @@ public abstract class PropertySSHelper {
 
     public abstract PropertyDescriptor FilePathPropertyDescriptorWithFilter(
             String prop_id, String description, AbstractWidgetModel widgetModel, String[] filters);
-    
+
     public abstract PropertyDescriptor getMatrixPropertyDescriptor(String prop_id,
             String description);
 
     public abstract PropertyDescriptor getPVNamePropertyDescriptor(String prop_id,
             String description, String detailedDescription);
-    
-    
+
+
 }

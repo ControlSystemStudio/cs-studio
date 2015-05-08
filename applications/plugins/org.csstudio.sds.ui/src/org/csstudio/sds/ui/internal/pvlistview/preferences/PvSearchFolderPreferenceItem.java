@@ -9,7 +9,7 @@ public class PvSearchFolderPreferenceItem {
     public PvSearchFolderPreferenceItem(String folderPath) {
         assert folderPath != null : "Precondition failed: folderPath != null";
         assert !folderPath.contains(",") : "Precondition failed: !folderPath.contains(\",\")";
-        
+
         this.folderPath = folderPath;
         this.isChecked = true;
     }
@@ -56,6 +56,6 @@ public class PvSearchFolderPreferenceItem {
             return false;
         return true;
     }
-    
-    
+
+
 }

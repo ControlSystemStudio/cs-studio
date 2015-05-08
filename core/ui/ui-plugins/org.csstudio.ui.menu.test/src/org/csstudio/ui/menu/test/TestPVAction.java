@@ -12,7 +12,7 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
 public class TestPVAction implements IObjectActionDelegate {
-    
+
     private Shell shell;
     private ISelection selection;
 

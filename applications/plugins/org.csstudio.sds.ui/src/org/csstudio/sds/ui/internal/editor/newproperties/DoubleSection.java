@@ -10,9 +10,9 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 
 /**
  * Section implementation for {@link IntegerProperty}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class DoubleSection extends AbstractTextSection<DoubleProperty, Double> {
 

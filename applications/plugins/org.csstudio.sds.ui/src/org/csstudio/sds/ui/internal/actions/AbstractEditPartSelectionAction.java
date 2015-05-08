@@ -34,12 +34,12 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * Base class for selection dependent actions.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public abstract class AbstractEditPartSelectionAction extends SelectionAction {
-    
+
     private final GraphicalViewer _viewer;
 
     public AbstractEditPartSelectionAction(IWorkbenchPart part, GraphicalViewer viewer) {
@@ -76,7 +76,7 @@ public abstract class AbstractEditPartSelectionAction extends SelectionAction {
 
     private final List<AbstractBaseEditPart> getSelectedEditParts() {
         List<?> selection = getSelectedObjects();
-        
+
         List<AbstractBaseEditPart> selectedEditParts = new ArrayList<AbstractBaseEditPart>(selection.size());
         for (Object o : selection) {
             if (o instanceof AbstractBaseEditPart) {

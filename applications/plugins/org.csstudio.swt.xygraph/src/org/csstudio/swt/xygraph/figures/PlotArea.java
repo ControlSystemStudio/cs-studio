@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * The plot area figure.
- * 
+ *
  * @author Xihui Chen
  * @author Kay Kasemir - Axis zoom/pan tweaks
  * @author Laurent PHILIPPE - Add property change event for annotation
@@ -92,13 +92,13 @@ public class PlotArea extends Figure {
                 255 - backRGB.red, 255 - backRGB.green, 255 - backRGB.blue);
         Color oldColor = getBackgroundColor();
         super.setBackgroundColor(bg);
-        
+
         firePropertyChange(BACKGROUND_COLOR, oldColor, bg);
     }
 
     /**
      * Add a trace to the plot area.
-     * 
+     *
      * @param trace
      *            the trace to be added.
      */
@@ -116,7 +116,7 @@ public class PlotArea extends Figure {
 
     /**
      * Remove a trace from the plot area.
-     * 
+     *
      * @param trace
      * @return true if this plot area contained the specified trace
      */
@@ -133,7 +133,7 @@ public class PlotArea extends Figure {
 
     /**
      * Add a grid to the plot area.
-     * 
+     *
      * @param grid
      *            the grid to be added.
      */
@@ -152,7 +152,7 @@ public class PlotArea extends Figure {
 
     /**
      * Remove a grid from the plot area.
-     * 
+     *
      * @param grid
      *            the grid to be removed.
      * @return true if this plot area contained the specified grid
@@ -168,7 +168,7 @@ public class PlotArea extends Figure {
 
     /**
      * Add an annotation to the plot area.
-     * 
+     *
      * @param annotation
      *            the annotation to be added.
      */
@@ -177,14 +177,14 @@ public class PlotArea extends Figure {
         annotation.setxyGraph(xyGraph);
         add(annotation);
         revalidate();
-        
+
         //Laurent PHILIPPE send event
         firePropertyChange("annotationList", null , annotation);
     }
 
     /**
      * Remove a annotation from the plot area.
-     * 
+     *
      * @param annotation
      *            the annotation to be removed.
      * @return true if this plot area contained the specified annotation
@@ -197,7 +197,7 @@ public class PlotArea extends Figure {
         if (result) {
             remove(annotation);
             revalidate();
-            
+
             //Laurent PHILIPPE send event
             firePropertyChange("annotationList", annotation, null);
         }
@@ -220,7 +220,7 @@ public class PlotArea extends Figure {
         if(hoverLabels.isVisible()) {
             hoverLabels.setBounds(clientArea);
         }
-        
+
         if(axisTrace.isVisible()) {
             axisTrace.setBounds(clientArea);
         }
@@ -288,7 +288,7 @@ public class PlotArea extends Figure {
 
     /**
      * Zoom 'in' or 'out' by a fixed factor
-     * 
+     *
      * @param horizontally
      *            along x axes?
      * @param vertically
@@ -540,10 +540,10 @@ public class PlotArea extends Figure {
             }
         }
     }
-    
+
     /**
      * Shows or hides the hover value labels.
-     * 
+     *
      * @param show true to show, false to hide
      */
     public void setShowValueLabels(boolean show) {
@@ -553,17 +553,17 @@ public class PlotArea extends Figure {
         revalidate();
         firePropertyChange("showValueLabels", old, show);
     }
-    
+
     /**
      * @return true if the hover value labels are shown or false otherwise
      */
     public boolean isShowValueLabels() {
         return showValueLabels;
     }
-    
+
     /**
      * Shows or hides the axis traces.
-     * 
+     *
      * @param show true to show, false to hide
      */
     public void setShowAxisTrace(boolean show) {
@@ -573,7 +573,7 @@ public class PlotArea extends Figure {
         revalidate();
         firePropertyChange("showAxisTrace", old, showAxisTrace);
     }
-    
+
     /**
      * @return true if the axis traces are shown or false otherwise
      */

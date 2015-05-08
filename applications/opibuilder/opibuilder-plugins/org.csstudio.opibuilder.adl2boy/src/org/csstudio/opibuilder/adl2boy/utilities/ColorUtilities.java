@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.opibuilder.adl2boy.utilities;
 
@@ -28,7 +28,7 @@ import org.eclipse.swt.graphics.RGB;
 
 /**
  * @author hammonds
- * 
+ *
  */
 public class ColorUtilities {
 
@@ -54,7 +54,7 @@ public class ColorUtilities {
                 .makeRelativeTo(Platform.getLocation());
         IFile colorIFile = getIFileFromIPath(colorFilePath);
         StringBuffer sb = new StringBuffer();
-        
+
         for (int ii = 0; ii < colorMap.length; ii++) {
                 sb.append("\n" + colorPrefix + ii + " = " + colorMap[ii].red
                         + "," + colorMap[ii].green + "," + colorMap[ii].blue);
@@ -68,8 +68,8 @@ public class ColorUtilities {
                             + colorFilePath);
             e1.printStackTrace();
         }
-        
-        
+
+
         MediaService.getInstance().reload();
     }
 
@@ -120,7 +120,7 @@ public class ColorUtilities {
 
     /**
      * Get the colorMap from an ADLroot ADLWidget
-     * 
+     *
      * @param root
      * @return
      */

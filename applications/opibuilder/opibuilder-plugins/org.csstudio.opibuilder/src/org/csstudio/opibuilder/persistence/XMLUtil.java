@@ -59,12 +59,12 @@ public class XMLUtil {
     public static String XMLTAG_DISPLAY = "display"; //$NON-NLS-1$
 
     public static String XMLTAG_WIDGET = "widget"; //$NON-NLS-1$
-    
+
     public static String XMLTAG_CONNECTION = "connection"; //$NON-NLS-1$
-    
-    public static Set<String> WIDGET_TAGS = 
+
+    public static Set<String> WIDGET_TAGS =
             new HashSet<String>(Arrays.asList(XMLTAG_DISPLAY, XMLTAG_WIDGET, XMLTAG_CONNECTION));
-    
+
     public static String XMLATTR_TYPEID = "typeId"; //$NON-NLS-1$
 
     public static String XMLATTR_PROPID = "id"; //$NON-NLS-1$
@@ -72,7 +72,7 @@ public class XMLUtil {
 
     public static String XMLTAG_WIDGET_UID = AbstractWidgetModel.PROP_WIDGET_UID; //$NON-NLS-1$
     public static String XMLTAG_OPI_FILE = AbstractLinkingContainerModel.PROP_OPI_FILE;
-    
+
     /**Flatten a widget to XML element.
      * @param widgetModel model of the widget
      * @return the XML element
@@ -97,16 +97,16 @@ public class XMLUtil {
                 result.addContent(widgetToXMLElement(child));
             }
         }
-        
+
         //convert connections on this displayModel to xml element
-        if(widgetModel instanceof DisplayModel && 
-                ((DisplayModel)widgetModel).getConnectionList() != null){            
+        if(widgetModel instanceof DisplayModel &&
+                ((DisplayModel)widgetModel).getConnectionList() != null){
             for(ConnectionModel connectionModel : ((DisplayModel)widgetModel).getConnectionList()){
                 if(!connectionModel.isLoadedFromLinkedOpi()) {
                     Element connElement = widgetToXMLElement(connectionModel);
                     result.addContent(connElement);
                 }
-            }        
+            }
         }
 
         return result;
@@ -118,7 +118,7 @@ public class XMLUtil {
      * @return the XML String
      */
     public static String widgetToXMLString(AbstractWidgetModel widgetModel, boolean prettyFormat){
-        Format format = Format.getRawFormat();        
+        Format format = Format.getRawFormat();
         if(prettyFormat)
             format.setIndent("  "); //$NON-NLS-1$
         XMLOutputter xmlOutputter = new XMLOutputter();
@@ -134,7 +134,7 @@ public class XMLUtil {
      * @throws IOException
      */
     public static void widgetToOutputStream(AbstractWidgetModel widgetModel, OutputStream out, boolean prettyFormat) throws IOException{
-        Format format = Format.getRawFormat();        
+        Format format = Format.getRawFormat();
         if(prettyFormat)
             format.setIndent("  "); //$NON-NLS-1$
         XMLOutputter xmlOutputter = new XMLOutputter(format);
@@ -174,7 +174,7 @@ public class XMLUtil {
 
     private static void fillDisplayModelFromInputStreamSub(
             final InputStream inputStream, final DisplayModel displayModel, Display display, List<IPath> trace) throws Exception{
-    
+
         if(display == null){
             display = Display.getCurrent();
         }
@@ -191,7 +191,7 @@ public class XMLUtil {
                             throw new FailedLoginException();
                         }
                     }
-                }                
+                }
             }
             //check unsecured opi paths
             if(PreferencesHelper.isWholeSiteSecured()){
@@ -203,7 +203,7 @@ public class XMLUtil {
                             shouldBeSecured=false;
                             break;
                         }
-                    }                
+                    }
                     if(shouldBeSecured){
                         if (!SingleSourceHelper.rapAuthenticate(display)) {
                             inputStream.close();
@@ -212,23 +212,23 @@ public class XMLUtil {
                     }
                 }
             }
-            
+
         }
-        
+
         Element root = inputStreamToXML(inputStream);
         if(root != null){
              XMLElementToWidgetSub(root, displayModel, trace);
-             
+
              //check version
              if(compareVersion(displayModel.getBOYVersion(),
-                     OPIBuilderPlugin.getDefault().getBundle().getVersion()) > 0){                
+                     OPIBuilderPlugin.getDefault().getBundle().getVersion()) > 0){
                 final String message = displayModel.getOpiFilePath() == null ? "This OPI"
                         : displayModel.getOpiFilePath().lastSegment()
                                 + " was created in a newer version of BOY ("
                                 + displayModel.getBOYVersion().toString()
                                 + "). It may not function properly! "
-                                + "Please update your " + 
-                                (OPIBuilderPlugin.isRAP()? "WebOPI":"BOY") 
+                                + "Please update your " +
+                                (OPIBuilderPlugin.isRAP()? "WebOPI":"BOY")
                                 + " (" + OPIBuilderPlugin.getDefault().getBundle().getVersion() +
                                 ") to the latest version.";
                 if(display == null){
@@ -241,11 +241,11 @@ public class XMLUtil {
 //                            MessageDialog.openWarning(null, "Warning", message);
                             ConsoleService.getInstance().writeWarning(message);
                             OPIBuilderPlugin.getLogger().log(Level.WARNING,
-                                    message); //$NON-NLS-1$    
+                                    message); //$NON-NLS-1$
                         }
-                    });            
-             }     
-             
+                    });
+             }
+
         }
         inputStream.close();
     }
@@ -263,8 +263,8 @@ public class XMLUtil {
 
     /**Construct widget model from XML element. Sometimes it includes filling LinkingContainer and/or construct Connection model between widgets.
      * @param element
-     * @param displayModel the root display model. If root of the element is a display, use this display model as root model 
-     * instead of creating a new one. If this is null, a new one will be created. 
+     * @param displayModel the root display model. If root of the element is a display, use this display model as root model
+     * instead of creating a new one. If this is null, a new one will be created.
      * @return the root widget model
      * @throws Exception
      */
@@ -279,7 +279,7 @@ public class XMLUtil {
 
         if(WIDGET_TAGS.contains(element.getName())) {
             result = fillWidgets(element, displayModel);
-            
+
             if(result instanceof AbstractContainerModel)
                 fillLinkingContainersSub((AbstractContainerModel)result, trace);
             fillConnections(element, displayModel);
@@ -294,8 +294,8 @@ public class XMLUtil {
 
     /**Convert XML String to a widget model.
      * @param xmlString
-     * @param displayModel the root display model. If root of the element is a display, use this display model as root model 
-     * instead of creating a new one. If this is null, a new one will be created. 
+     * @param displayModel the root display model. If root of the element is a display, use this display model as root model
+     * instead of creating a new one. If this is null, a new one will be created.
      * @throws Exception
      */
     public static AbstractWidgetModel fillWidgetsFromXMLString(String xmlString, DisplayModel displayModel) throws Exception {
@@ -304,16 +304,16 @@ public class XMLUtil {
 
     /**Convert XML Element to a widget model.
      * @param element
-     * @param displayModel the root display model. If root of the element is a display, use this display model as root model 
-     * instead of creating a new one. If this is null, a new one will be created. 
+     * @param displayModel the root display model. If root of the element is a display, use this display model as root model
+     * instead of creating a new one. If this is null, a new one will be created.
      * @throws Exception
      */
     @SuppressWarnings("rawtypes")
     public static AbstractWidgetModel fillWidgets(Element element, DisplayModel displayModel) throws Exception{
         if(element == null) return null;
-        
+
         AbstractWidgetModel rootWidgetModel = null;
-        
+
         //Determine root widget model
         if(element.getName().equals(XMLTAG_DISPLAY)){
             if(displayModel != null)
@@ -332,14 +332,14 @@ public class XMLUtil {
                 return null;
             }
         }else if(element.getName().equals(XMLTAG_CONNECTION)){
-            rootWidgetModel = new ConnectionModel(displayModel);            
+            rootWidgetModel = new ConnectionModel(displayModel);
         }else {
             String errorMessage = "Unknown Tag: " + element.getName();
             ConsoleService.getInstance().writeError(errorMessage);
             return null;
         }
 
-        setPropertiesFromXML(element, rootWidgetModel); 
+        setPropertiesFromXML(element, rootWidgetModel);
 
         if(rootWidgetModel instanceof AbstractContainerModel) {
             AbstractContainerModel container = (AbstractContainerModel)rootWidgetModel;
@@ -347,28 +347,28 @@ public class XMLUtil {
             Iterator iterator = children.iterator();
             while (iterator.hasNext()) {
                 Element subElement = (Element) iterator.next();
-                if(subElement.getName().equals(XMLTAG_WIDGET)) 
+                if(subElement.getName().equals(XMLTAG_WIDGET))
                     container.addChild(fillWidgets(subElement, displayModel));
             }
         }
-        
-        
+
+
         if(displayModel !=null)
             rootWidgetModel.processVersionDifference(displayModel.getBOYVersion());
-        
+
         return rootWidgetModel;
     }
-    
+
     /**
      * Fill all LinkingContainers under the model.
-     * 
+     *
      * @param container LinkingContainer to be filled.
      * @throws Exception
      */
     public static void fillLinkingContainers(AbstractContainerModel container) throws Exception {
         fillLinkingContainersSub(container, new ArrayList<IPath>());
     }
-    
+
     private static void fillLinkingContainersSub(AbstractContainerModel container, List<IPath> trace) throws Exception{
         if(container instanceof AbstractLinkingContainerModel) {
             AbstractLinkingContainerModel linkingContainer = (AbstractLinkingContainerModel)container;
@@ -386,12 +386,12 @@ public class XMLUtil {
             }
         }
     }
-    
+
     @SuppressWarnings("rawtypes")
     private static void fillConnections(Element element, DisplayModel displayModel) throws Exception {
         if(element.getName().equals(XMLTAG_CONNECTION)) {
             ConnectionModel result = new ConnectionModel(displayModel);
-            setPropertiesFromXML(element, result); 
+            setPropertiesFromXML(element, result);
         } else if(element.getName().equals(XMLTAG_DISPLAY)){
             List children = element.getChildren();
             Iterator iterator = children.iterator();
@@ -407,14 +407,14 @@ public class XMLUtil {
     @SuppressWarnings("rawtypes")
     private static void setPropertiesFromXML(Element element, AbstractWidgetModel model) {
         if(model == null || element == null) return;
-        
+
         String versionOnFile = element.getAttributeValue(XMLATTR_VERSION);
         model.setVersionOnFile(Version.parseVersion(versionOnFile));
-        
+
         if (element instanceof LineAwareElement) {
             model.setLineNumber(((LineAwareElement) element).getLineNumber());
         }
-        
+
         List children = element.getChildren();
         Iterator iterator = children.iterator();
         Set<String> propIdSet = model.getAllPropertyIDs();
@@ -423,7 +423,7 @@ public class XMLUtil {
             //handle property
             if(propIdSet.contains(subElement.getName())){
                 String propId = subElement.getName();
-                try {                
+                try {
                     model.setPropertyValue(propId,
                             model.getProperty(propId).readValueFromXML(subElement));
                 } catch (Exception e) {
@@ -436,24 +436,24 @@ public class XMLUtil {
             }
         }
     }
-    
+
     /**
-     * Load opi file attached to LinkingContainer widget. 
-     * 
+     * Load opi file attached to LinkingContainer widget.
+     *
      * @param container LinkingContainer to be filled.
      * @throws Exception
      */
-    public static void fillLinkingContainer(final AbstractLinkingContainerModel container) 
+    public static void fillLinkingContainer(final AbstractLinkingContainerModel container)
             throws Exception {
         fillLinkingContainerSub(container, new ArrayList<IPath>());
     }
 
-    private static void fillLinkingContainerSub(final AbstractLinkingContainerModel container, List<IPath> trace)  
+    private static void fillLinkingContainerSub(final AbstractLinkingContainerModel container, List<IPath> trace)
         throws Exception {
 
         if(container == null) return;
 
-        if(container.getRootDisplayModel() != null && 
+        if(container.getRootDisplayModel() != null &&
                 container.getRootDisplayModel().getOpiFilePath() != null) {
             if(trace.contains(container.getRootDisplayModel().getOpiFilePath())) {
                 container.setOPIFilePath("");
@@ -467,10 +467,10 @@ public class XMLUtil {
                 final DisplayModel inside = new DisplayModel(path);
 
                 fillDisplayModelFromInputStreamSub(ResourceUtil.pathToInputStream(path), inside, Display.getCurrent(), trace);
-                
+
                 // mark connection as it is loaded from linked opi
-                for(AbstractWidgetModel w : inside.getAllDescendants()) 
-                    for(ConnectionModel conn : w.getSourceConnections()) 
+                for(AbstractWidgetModel w : inside.getAllDescendants())
+                    for(ConnectionModel conn : w.getSourceConnections())
                         conn.setLoadedFromLinkedOpi(true);
 
 
@@ -484,22 +484,22 @@ public class XMLUtil {
                     }
                 }
 
-                for (AbstractWidgetModel w : loadTarget.getChildren()) 
+                for (AbstractWidgetModel w : loadTarget.getChildren())
                     container.addChild(w, true);
 
                 container.setDisplayModel(inside);
             }
         }
     }
-    
-    
+
+
     /**Compare version without comparing qualifier.
      * @param v1
      * @param v2
      * @return
      */
     private static int compareVersion(Version v1, Version v2) {
-        if (v2 == v1) { 
+        if (v2 == v1) {
             return 0;
         }
 
@@ -520,7 +520,7 @@ public class XMLUtil {
 
         return 0;
     }
-    
+
     /**
      * Return the wuid of the closest widget to offset char position in input stream
      * @param in the OPI file input stream
@@ -577,7 +577,7 @@ public class XMLUtil {
         }
         return null;
     }
-    
+
     /**
      * Return true if the string starting at offset in sb matches with xmlTag.
      * @param sb StringBuffer
@@ -610,7 +610,7 @@ public class XMLUtil {
     }
 
     private static Element inputStreamToXML(InputStream stream) throws JDOMException, IOException {
-        SAXBuilder saxBuilder = LineAwareXMLParser.createBuilder(); 
+        SAXBuilder saxBuilder = LineAwareXMLParser.createBuilder();
         Document doc = saxBuilder.build(stream);
         Element root = doc.getRootElement();
         return root;

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene.opiwidgets;
 
@@ -13,10 +13,10 @@ import static org.csstudio.graphene.opiwidgets.ModelPropertyConstants.*;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class BubbleGraph2DWidgetModel extends AbstractPointDatasetGraph2DWidgetModel {
-    
+
     public BubbleGraph2DWidgetModel() {
         super(AbstractSelectionWidgetModelDescription.newModelFrom(BubbleGraph2DWidget.class));
     }
@@ -30,7 +30,7 @@ public class BubbleGraph2DWidgetModel extends AbstractPointDatasetGraph2DWidgetM
 
     public static final String PROP_SIZE_FORMULA = "size_formula"; //$NON-NLS-1$
     public static final String PROP_COLOR_FORMULA = "color_formula"; //$NON-NLS-1$
-    
+
     @Override
     protected void configureProperties() {
         super.configureProperties();
@@ -43,7 +43,7 @@ public class BubbleGraph2DWidgetModel extends AbstractPointDatasetGraph2DWidgetM
         addProperty(new StringProperty(PROP_SELECTION_VALUE_PV,
                 "Selection Value PV (VTable)", WidgetPropertyCategory.Basic, ""));
     }
-    
+
     public String getSelectionValuePv() {
         return (String) getCastedPropertyValue(PROP_SELECTION_VALUE_PV);
     }
@@ -51,11 +51,11 @@ public class BubbleGraph2DWidgetModel extends AbstractPointDatasetGraph2DWidgetM
     public boolean isHighlightSelectionValue() {
         return (Boolean) getCastedPropertyValue(PROP_HIGHLIGHT_SELECTION_VALUE);
     }
-    
+
     public String getSizeColumnFormula() {
         return (String) getCastedPropertyValue(PROP_SIZE_FORMULA);
     }
-    
+
     public String getColorColumnFormula() {
         return (String) getCastedPropertyValue(PROP_COLOR_FORMULA);
     }

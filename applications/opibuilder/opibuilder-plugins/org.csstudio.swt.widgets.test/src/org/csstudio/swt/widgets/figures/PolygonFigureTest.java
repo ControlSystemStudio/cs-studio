@@ -19,8 +19,8 @@ public class PolygonFigureTest extends AbstractPolyWidgetTest{
     public Figure createTestWidget() {
         return new PolygonFigure();
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -31,12 +31,12 @@ public class PolygonFigureTest extends AbstractPolyWidgetTest{
                 "fill",
                 "transparent"
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
     @Override
     public boolean isAutoTest() {
         return true;
-    }        
+    }
 }

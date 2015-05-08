@@ -18,8 +18,8 @@ public class Edm_activeDynSymbolClass extends EdmWidget {
     @EdmAttributeAn @EdmOptionalAn private String file;
     @EdmAttributeAn @EdmOptionalAn private double rate;
     @EdmAttributeAn @EdmOptionalAn private int numStates;
-    
-    
+
+
     public Edm_activeDynSymbolClass(EdmEntity genericEntity) throws EdmException {
         super(genericEntity);
     }

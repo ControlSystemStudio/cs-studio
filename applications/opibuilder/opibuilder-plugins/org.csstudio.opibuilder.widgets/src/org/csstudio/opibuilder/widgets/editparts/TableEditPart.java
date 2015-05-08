@@ -28,9 +28,9 @@ import org.eclipse.ui.IActionFilter;
  *
  */
 public class TableEditPart extends AbstractBaseEditPart {
-    
+
     private SpreadSheetTable spreadSheetTable;
-    
+
     /**
      * The cell under mouse when menu is triggered. point.x is row index. poing.y is column index.
      */
@@ -42,11 +42,11 @@ public class TableEditPart extends AbstractBaseEditPart {
      * @see org.csstudio.opibuilder.editparts.AbstractBaseEditPart#doCreateFigure()
      */
     @Override
-    protected IFigure doCreateFigure() {        
+    protected IFigure doCreateFigure() {
         SpreadSheetTableFigure figure = new SpreadSheetTableFigure(this);
-        spreadSheetTable = figure.getSWTWidget();    
+        spreadSheetTable = figure.getSWTWidget();
         spreadSheetTable.setEditable(getWidgetModel().isEditable());
-        spreadSheetTable.setColumnsCount(getWidgetModel().getColumnsCount());        
+        spreadSheetTable.setColumnsCount(getWidgetModel().getColumnsCount());
         spreadSheetTable.setColumnHeaders(
                 getWidgetModel().getColumnHeaders());
         spreadSheetTable.setColumnWidths(getWidgetModel().getColumnWidthes());
@@ -58,12 +58,12 @@ public class TableEditPart extends AbstractBaseEditPart {
         }
         spreadSheetTable.setContent(getWidgetModel().getDefaultContent());
 
-        spreadSheetTable.setColumnHeaderVisible(getWidgetModel().isColumnHeaderVisible());                
+        spreadSheetTable.setColumnHeaderVisible(getWidgetModel().isColumnHeaderVisible());
         spreadSheetTable.getTableViewer().getTable().addMenuDetectListener(new MenuDetectListener() {
-            
+
             @Override
             public void menuDetected(MenuDetectEvent e) {
-                
+
                 int[] index = spreadSheetTable.getRowColumnIndex(
                         spreadSheetTable.getTableViewer().getTable().toControl(e.x, e.y));
                 if(index != null)
@@ -72,22 +72,22 @@ public class TableEditPart extends AbstractBaseEditPart {
                     menuTriggeredCell = null;
             }
         });
-        
+
         return figure;
     }
-    
-    /**Get the cell under mouse when menu is triggered. 
+
+    /**Get the cell under mouse when menu is triggered.
      * @return the cell. point.x is row index. point.y is column index. null if no cell under mouse.
      */
     public Point getMenuTriggeredCell() {
         return menuTriggeredCell;
     }
-    
+
     @Override
     public TableModel getWidgetModel() {
         return (TableModel) super.getWidgetModel();
     }
-    
+
     @SuppressWarnings("rawtypes")
     @Override
     public Object getAdapter(Class key) {
@@ -96,14 +96,14 @@ public class TableEditPart extends AbstractBaseEditPart {
             @Override
             public boolean testAttribute(Object target, String name,
                     String value) {
-                if (name.equals("allowInsert") && value.equals("TRUE")) //$NON-NLS-1$ //$NON-NLS-2$                        
-                    return spreadSheetTable.isEditable() && 
+                if (name.equals("allowInsert") && value.equals("TRUE")) //$NON-NLS-1$ //$NON-NLS-2$
+                    return spreadSheetTable.isEditable() &&
                             (getMenuTriggeredCell() != null || spreadSheetTable.isEmpty());
-                if (name.equals("allowDeleteRow") && value.equals("TRUE")) //$NON-NLS-1$ //$NON-NLS-2$                        
+                if (name.equals("allowDeleteRow") && value.equals("TRUE")) //$NON-NLS-1$ //$NON-NLS-2$
                     return spreadSheetTable.isEditable() && (getMenuTriggeredCell() != null);
-                if (name.equals("allowDeleteColumn") && value.equals("TRUE")) //$NON-NLS-1$ //$NON-NLS-2$                        
-                    return spreadSheetTable.isEditable() && 
-                            (getMenuTriggeredCell() != null && 
+                if (name.equals("allowDeleteColumn") && value.equals("TRUE")) //$NON-NLS-1$ //$NON-NLS-2$
+                    return spreadSheetTable.isEditable() &&
+                            (getMenuTriggeredCell() != null &&
                             spreadSheetTable.isColumnEditable(getMenuTriggeredCell().y));
                 return super.testAttribute(target, name, value);
             }
@@ -118,7 +118,7 @@ public class TableEditPart extends AbstractBaseEditPart {
     protected void registerPropertyChangeHandlers() {
 
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 spreadSheetTable.setEditable((Boolean)newValue);
@@ -126,9 +126,9 @@ public class TableEditPart extends AbstractBaseEditPart {
             }
         };
         setPropertyChangeHandler(TableModel.PROP_EDITABLE, handler);
-        
+
         handler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 spreadSheetTable.setColumnHeaderVisible((Boolean)newValue);
@@ -136,9 +136,9 @@ public class TableEditPart extends AbstractBaseEditPart {
             }
         };
         setPropertyChangeHandler(TableModel.PROP_COLUMN_HEADER_VISIBLE, handler);
-        
+
         final IWidgetPropertyChangeHandler headersHandler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 String[] s = getWidgetModel().getColumnHeaders();
@@ -153,15 +153,15 @@ public class TableEditPart extends AbstractBaseEditPart {
         //update prop sheet immediately
         getWidgetModel().getProperty(TableModel.PROP_COLUMN_HEADERS).addPropertyChangeListener(
                 new PropertyChangeListener() {
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 headersHandler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
             }
         });
-        
+
         handler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 String[][] headers = (String[][])getPropertyValue(TableModel.PROP_COLUMN_HEADERS);
@@ -175,9 +175,9 @@ public class TableEditPart extends AbstractBaseEditPart {
             }
         };
         setPropertyChangeHandler(TableModel.PROP_COLUMNS_COUNT, handler);
-        
+
         handler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 spreadSheetTable.setContent((String[][])newValue);
@@ -185,16 +185,16 @@ public class TableEditPart extends AbstractBaseEditPart {
             }
         };
         setPropertyChangeHandler(TableModel.PROP_DEFAULT_CONTENT, handler);
-                
+
     }
-    
+
     /**Get the native spread sheet table held by this widget.
      * @return the native spread sheet table.
      */
     public SpreadSheetTable getTable(){
         return spreadSheetTable;
     }
-    
+
     /**Set allowed header titles. If this is set, the insert column dialog
      * will have a combo box instead of text for title input.
      * @param headers the allowed header titles.
@@ -202,7 +202,7 @@ public class TableEditPart extends AbstractBaseEditPart {
     public void setAllowedHeaders(String[] headers){
         this.allowedHeaders = headers;
     }
-    
+
     public String[] getAllowedHeaders() {
         return allowedHeaders;
     }

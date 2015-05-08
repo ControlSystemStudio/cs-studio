@@ -50,7 +50,7 @@ public class Application implements IApplication
     private String jms_filters = "ALARM;TEXT=IDLE";
 
     /** RDB Server URL
-     *  
+     *
      *  Must include the user/password unless they are provided
      *  in rdb_user, rdb_password
      */
@@ -61,7 +61,7 @@ public class Application implements IApplication
 
     /** RDB password */
     private String rdb_password = null;
-    
+
     /** RDB Schema */
     private String rdb_schema = "";
 
@@ -90,7 +90,7 @@ public class Application implements IApplication
         // Display configuration info
         final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
         final String app_info = context.getBrandingName() + " " + version;
-        
+
         // Create parser for arguments and run it.
         final String args[] = (String []) context.getArguments().get("application.args");
 
@@ -128,7 +128,7 @@ public class Application implements IApplication
             SecurePreferences.set(pref, value);
             return IApplication.EXIT_OK;
         }
-        
+
         final IPreferencesService service = Platform.getPreferencesService();
         httpd_port =
             service.getInt(Activator.ID, "httpd_port", httpd_port, null);

@@ -37,36 +37,36 @@ public class SNLCompilerPreferencePage extends FieldEditorPreferencePage
         preCompilerGroup.setLayoutData(new GridData(
                 GridData.FILL_HORIZONTAL));
         this.addField(new FileFieldEditor(SNLUiActivator.PLUGIN_ID
-                + PreferenceConstants.PRE_COMPILER_LOCATION_POST_FIX, "", true, 
+                + PreferenceConstants.PRE_COMPILER_LOCATION_POST_FIX, "", true,
                 preCompilerGroup));
-        
+
         Group groupOfLocationElement = new Group(getFieldEditorParent(),
                 SWT.NONE);
         groupOfLocationElement.setText("Location of EPICS SNL compiler");
         groupOfLocationElement.setLayoutData(new GridData(
                 GridData.FILL_HORIZONTAL));
         this.addField(new FileFieldEditor(SNLUiActivator.PLUGIN_ID
-                + PreferenceConstants.SNC_LOCATION_POST_FIX, "", true, 
+                + PreferenceConstants.SNC_LOCATION_POST_FIX, "", true,
                 groupOfLocationElement));
-        
+
         Group cCompilerGroup = new Group(getFieldEditorParent(),
                 SWT.NONE);
         cCompilerGroup.setText("Location of C Compiler");
         cCompilerGroup.setLayoutData(new GridData(
                 GridData.FILL_HORIZONTAL));
         this.addField(new FileFieldEditor(SNLUiActivator.PLUGIN_ID
-                + PreferenceConstants.C_COMPILER_LOCATION_POST_FIX, "", true, 
+                + PreferenceConstants.C_COMPILER_LOCATION_POST_FIX, "", true,
                 cCompilerGroup));
-        
+
         Group applicationCompilerGroup = new Group(getFieldEditorParent(),
                 SWT.NONE);
         applicationCompilerGroup.setText("Location of Application Compiler");
         applicationCompilerGroup.setLayoutData(new GridData(
                 GridData.FILL_HORIZONTAL));
         this.addField(new FileFieldEditor(SNLUiActivator.PLUGIN_ID
-                + PreferenceConstants.APPLICATION_COMPILER_POST_FIX, "", true, 
+                + PreferenceConstants.APPLICATION_COMPILER_POST_FIX, "", true,
                 applicationCompilerGroup));
-        
+
         /*-
          * <pre>
          * SNC Version 2.0.11: Fri Jan 18 15:18:15 2008

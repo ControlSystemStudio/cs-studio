@@ -22,9 +22,9 @@ import java.lang.reflect.Array;
 *    return result;
 *  }
 * </pre>
-* 
+*
 * This class is learned from http://www.javapractices.com/topic/TopicAction.do?Id=28
-* 
+*
 * @author Xihui Chen
 */
 public final class HashCodeUtil {
@@ -119,6 +119,6 @@ public final class HashCodeUtil {
   private static boolean isArray(Object aObject){
     return aObject.getClass().isArray();
   }
-} 
+}
 
 

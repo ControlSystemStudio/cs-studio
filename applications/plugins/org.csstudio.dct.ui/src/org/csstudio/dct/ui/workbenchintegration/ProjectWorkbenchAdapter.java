@@ -4,7 +4,7 @@ import org.csstudio.dct.model.IFolder;
 
 /**
  * UI adapter for projects.
- * 
+ *
  * @author Sven Wende
  */
 public final class ProjectWorkbenchAdapter extends FolderWorkbenchAdapter {

@@ -30,10 +30,10 @@ import org.eclipse.gef.RequestConstants;
 /**
  * EditPart controller for the ActioButton widget. The controller mediates
  * between {@link ActionButtonModel} and {@link ActionButtonFigure2}.
- * 
+ *
  * @author Sven Wende (class of same name in SDS)
  * @author Xihui Chen
- * 
+ *
  */
 public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 
@@ -45,7 +45,7 @@ public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
     @Override
     protected IFigure doCreateFigure() {
         ActionButtonModel model = getWidgetModel();
-        
+
         switch (model.getStyle()) {
         case NATIVE:
             this.delegate = new NativeButtonEditPartDelegate(this);
@@ -55,7 +55,7 @@ public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
             this.delegate = new Draw2DButtonEditPartDelegate(this);
             break;
         }
-        updatePropSheet();    
+        updatePropSheet();
         markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
         return delegate.doCreateFigure();
     }
@@ -92,7 +92,7 @@ public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 
     /**
      * A shared static method for all button widgets.
-     * 
+     *
      * @param widgetModel
      * @param isSelected
      * @return
@@ -145,11 +145,11 @@ public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
     protected void registerPropertyChangeHandlers() {
 
         PropertyChangeListener styleListener = new PropertyChangeListener() {
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 AbstractWidgetModel model = getWidgetModel();
-                WidgetDescriptor descriptor = 
+                WidgetDescriptor descriptor =
                         WidgetsService.getInstance().getWidgetDescriptor(model.getTypeID());
                 String type = descriptor == null? model.getTypeID().substring(
                         model.getTypeID().lastIndexOf(".")+1) :    descriptor.getName();
@@ -157,12 +157,12 @@ public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
                 AbstractContainerModel parent = model.getParent();
                 parent.removeChild(model);
                 parent.addChild(model);
-                parent.selectWidget(model, true);                
+                parent.selectWidget(model, true);
             }
         };
         getWidgetModel().getProperty(ActionButtonModel.PROP_STYLE).addPropertyChangeListener(
                 styleListener);
-        updatePropSheet();    
+        updatePropSheet();
 
         delegate.registerPropertyChangeHandlers();
     }
@@ -178,12 +178,12 @@ public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
                 ActionButtonModel.PROP_ACTION_INDEX,
                 isToggle ? "Push Action Index" : "Click Action Index");
         boolean isDraw2DButton = delegate instanceof Draw2DButtonEditPartDelegate;
-        getWidgetModel().setPropertyVisible(AbstractWidgetModel.PROP_COLOR_BACKGROUND, 
+        getWidgetModel().setPropertyVisible(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
                 isDraw2DButton);
-        getWidgetModel().setPropertyVisible(ActionButtonModel.PROP_BACKCOLOR_ALARMSENSITIVE, 
+        getWidgetModel().setPropertyVisible(ActionButtonModel.PROP_BACKCOLOR_ALARMSENSITIVE,
                 isDraw2DButton);
-        getWidgetModel().setPropertyVisible(ActionButtonModel.PROP_ALARM_PULSING, 
-                isDraw2DButton);        
+        getWidgetModel().setPropertyVisible(ActionButtonModel.PROP_ALARM_PULSING,
+                isDraw2DButton);
     }
 
     @Override

@@ -22,14 +22,14 @@ public class Opi_activeMeterClass extends OpiWidget {
     private static final String version = "1.0";
 
     /**
-     * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.  
+     * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.
      */
     public Opi_activeMeterClass(Context con, Edm_activeMeterClass r) {
         super(con, r);
         setTypeId(typeId);
 
         widgetContext.getElement().setAttribute("version", version);
-        
+
         new OpiString(widgetContext, "name", name);
         new OpiString(widgetContext, "pv_name", convertPVName(r.getReadPv()));
         new OpiColor(widgetContext, "needle_color", r.getFgColor(), r);
@@ -37,7 +37,7 @@ public class Opi_activeMeterClass extends OpiWidget {
         new OpiBoolean(widgetContext, "forecolor_alarm_sensitive", r.isScaleAlarm());
         new OpiDouble(widgetContext, "minimum", r.getScaleMin());
         new OpiDouble(widgetContext, "maximum", r.getScaleMax());
-        
+
         if(r.isShowScale())
             new OpiBoolean(widgetContext, "show_scale", r.isShowScale());
         log.debug("Edm_activeMeterClass written.");

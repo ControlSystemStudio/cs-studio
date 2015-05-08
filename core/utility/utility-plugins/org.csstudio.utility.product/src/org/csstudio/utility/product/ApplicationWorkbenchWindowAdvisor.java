@@ -34,7 +34,7 @@ import org.eclipse.ui.internal.ide.EditorAreaDropAdapter;
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor
 {
     private List<IWorkbenchWindowAdvisorExtPoint> hooks = new ArrayList<IWorkbenchWindowAdvisorExtPoint>();
-    
+
     public ApplicationWorkbenchWindowAdvisor(final IWorkbenchWindowConfigurer configurer)
     {
         super(configurer);
@@ -64,12 +64,12 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor
         configurer.setShowProgressIndicator(true);
         configurer.setShowStatusLine(true);
         configurer.setTitle(Messages.Window_Title);
-        
+
         // Workaround for text editor DND bug.
         // See http://www.eclipse.org/forums/index.php/m/333816/
         configurer.configureEditorAreaDropListener(
             new EditorAreaDropAdapter(configurer.getWindow()));
-        
+
         for(IWorkbenchWindowAdvisorExtPoint hook : hooks){
             try{
                 hook.preWindowOpen();
@@ -77,7 +77,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor
                  t.printStackTrace();
             }
         }
-        
+
     }
 
     @Override
@@ -95,8 +95,8 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor
         // Add console view to the logger
         ConsoleViewHandler.addToLogger();
     }
-    
-    
+
+
 
     @Override
     public void postWindowRestore() throws WorkbenchException {
@@ -126,7 +126,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor
 
     @Override
     public boolean preWindowShellClose() {
-        
+
         boolean window = super.preWindowShellClose();
         for(IWorkbenchWindowAdvisorExtPoint hook : hooks){
             try{
@@ -161,7 +161,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor
                 } catch (Exception e) {
                     //ignore
                 }
-            }            
+            }
             win.setActivePage(null);
         }
     }
@@ -201,6 +201,6 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor
     {
         return new ApplicationActionBarAdvisor(configurer);
     }
-    
-    
+
+
 }

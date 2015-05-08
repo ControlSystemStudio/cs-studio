@@ -13,7 +13,7 @@ public class LibraryFolderPreferenceService {
 
     private static final String TEMPLATE_LIBRARY_ITEMS = "template_library_items";
     private final IPreferenceStore preferenceStore;
-    
+
     private final List<LibraryFolderPreferenceChangeListener> listeners;
 
     public LibraryFolderPreferenceService(IPreferenceStore preferenceStore) {
@@ -21,9 +21,9 @@ public class LibraryFolderPreferenceService {
 
         this.preferenceStore = preferenceStore;
         this.listeners = new ArrayList<LibraryFolderPreferenceService.LibraryFolderPreferenceChangeListener>();
-        
+
         preferenceStore.setDefault(TEMPLATE_LIBRARY_ITEMS, "");
-        
+
         preferenceStore.addPropertyChangeListener(new IPropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent event) {
@@ -60,13 +60,13 @@ public class LibraryFolderPreferenceService {
 
     public void addChangeListener(LibraryFolderPreferenceChangeListener changeListener) {
         assert changeListener != null : "Precondition failed: changeListener != null";
-        
+
         this.listeners.add(changeListener);
     }
-    
+
     public void removeChangeListener(LibraryFolderPreferenceChangeListener changeListener) {
         assert changeListener != null : "Precondition failed: changeListener != null";
-        
+
         this.listeners.remove(changeListener);
     }
 

@@ -10,7 +10,7 @@ public class PVFormulaUtil {
         if (channel == null) {
             return null;
         }
-        
+
         DataSource defaultDS = PVManager.getDefaultDataSource();
         String pvName = channel;
         if (defaultDS instanceof CompositeDataSource) {

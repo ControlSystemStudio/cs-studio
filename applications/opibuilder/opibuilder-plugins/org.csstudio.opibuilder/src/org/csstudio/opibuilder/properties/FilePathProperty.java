@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
@@ -46,10 +46,10 @@ public class FilePathProperty extends AbstractWidgetProperty {
      * The file extension, which should be accepted.
      */
     private String[] fileExtensions;
-    
+
     private boolean buildAbsolutePath;
-    
-    
+
+
     /**File Path Property Constructor. The property value type is {@link IPath}.
      * It will automatically build the absolute path if it is relative path.
      * @param prop_id the property id which should be unique in a widget model.
@@ -61,11 +61,11 @@ public class FilePathProperty extends AbstractWidgetProperty {
      */
     public FilePathProperty(String prop_id, String description,
             WidgetPropertyCategory category, IPath defaultValue,
-            String[] fileExtensions) {        
+            String[] fileExtensions) {
         this(prop_id, description, category, defaultValue, fileExtensions, true);
-        
+
     }
-    
+
     /**File Path Property Constructor. The property value type is {@link IPath}.
      * @param prop_id the property id which should be unique in a widget model.
      * @param description the description of the property,
@@ -77,7 +77,7 @@ public class FilePathProperty extends AbstractWidgetProperty {
      */
     public FilePathProperty(String prop_id, String description,
             WidgetPropertyCategory category, IPath defaultValue,
-            String[] fileExtensions, boolean buildAbsolutePath) {        
+            String[] fileExtensions, boolean buildAbsolutePath) {
         super(prop_id, description, category,
                 defaultValue == null? new Path("") : defaultValue); //$NON-NLS-1$
         this.fileExtensions = fileExtensions;
@@ -89,20 +89,20 @@ public class FilePathProperty extends AbstractWidgetProperty {
         if(value == null)
             return null;
         Object acceptedValue = null;
-        
+
         if (value instanceof IPath || value instanceof String) {
             IPath path;
             if(value instanceof String)
                 path = ResourceUtil.getPathFromString((String) value);
-            else 
+            else
                 path = (IPath) value;
             if (fileExtensions!=null && fileExtensions.length>0) {
                 for (String extension : fileExtensions) {
                     if (extension.equalsIgnoreCase(path.getFileExtension())) {
-                        acceptedValue = path; 
+                        acceptedValue = path;
                     }
                     if(extension.equals("*"))
-                        acceptedValue = path; 
+                        acceptedValue = path;
                 }
             } else {
                 acceptedValue = path;
@@ -111,7 +111,7 @@ public class FilePathProperty extends AbstractWidgetProperty {
                 acceptedValue = path;
             }
         }
-        
+
         return acceptedValue;
     }
 
@@ -119,12 +119,12 @@ public class FilePathProperty extends AbstractWidgetProperty {
     protected PropertyDescriptor createPropertyDescriptor() {
         if(PropertySSHelper.getIMPL() == null)
             return null;
-        return PropertySSHelper.getIMPL().getFilePathPropertyDescriptor(prop_id, 
+        return PropertySSHelper.getIMPL().getFilePathPropertyDescriptor(prop_id,
                 description,
-                widgetModel, 
+                widgetModel,
                 fileExtensions);
     }
-    
+
     @Override
     public Object getPropertyValue() {
         if(widgetModel !=null && widgetModel.getExecutionMode() == ExecutionMode.RUN_MODE
@@ -137,10 +137,10 @@ public class FilePathProperty extends AbstractWidgetProperty {
                 return ResourceUtil.buildAbsolutePath(widgetModel, path);
             else
                 return path;
-        }            
+        }
         return super.getPropertyValue();
     }
-    
+
 
     @Override
     public Object readValueFromXML(Element propElement) {
@@ -158,10 +158,10 @@ public class FilePathProperty extends AbstractWidgetProperty {
     public boolean configurableByRule() {
         return true;
     }
-    
+
     @Override
     public String toStringInRuleScript(Object propValue) {
         return RuleData.QUOTE + super.toStringInRuleScript(propValue) + RuleData.QUOTE;
     }
-    
+
 }

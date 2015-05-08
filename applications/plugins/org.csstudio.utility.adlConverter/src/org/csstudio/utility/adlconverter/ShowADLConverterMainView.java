@@ -72,7 +72,7 @@ public class ShowADLConverterMainView implements IWorkbenchWindowActionDelegate 
             e.printStackTrace();
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */

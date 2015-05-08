@@ -26,9 +26,9 @@ import org.eclipse.gef.EditPolicy;
 
 /**
  * The Editpart Controller for a Sash Container
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class SashContainerEditPart extends AbstractContainerEditpart {
 
@@ -36,14 +36,14 @@ public class SashContainerEditPart extends AbstractContainerEditpart {
 
     @Override
     protected IFigure doCreateFigure() {
-        final SashContainerFigure figure = new SashContainerFigure();        
-        SashContainerModel model = getWidgetModel();        
+        final SashContainerFigure figure = new SashContainerFigure();
+        SashContainerModel model = getWidgetModel();
         figure.setSashStyle(model.getSashStyle());
         figure.setSashWidth(model.getSashWidth());
         figure.setHorizontal(model.isHorizontal());
         figure.setOpaque(!getWidgetModel().isTransparent());
         figure.setSashPosition(model.getSashPosition());
-        
+
 
         return figure;
     }
@@ -64,10 +64,10 @@ public class SashContainerEditPart extends AbstractContainerEditpart {
             });
         }else{
             groupContainer1 = (GroupingContainerModel) getWidgetModel().getChildren().get(0);
-            groupContainer2 = (GroupingContainerModel) getWidgetModel().getChildren().get(1);            
+            groupContainer2 = (GroupingContainerModel) getWidgetModel().getChildren().get(1);
         }
-        getSashFigure().addLayoutListener(new LayoutListener.Stub(){    
-            
+        getSashFigure().addLayoutListener(new LayoutListener.Stub(){
+
             @Override
             public void postLayout(IFigure container) {
 
@@ -89,17 +89,17 @@ public class SashContainerEditPart extends AbstractContainerEditpart {
                 }
                 if(getExecutionMode() == ExecutionMode.EDIT_MODE){
                     getViewer().getEditDomain().getCommandStack().execute(
-                        new SetWidgetPropertyCommand(getWidgetModel(), SashContainerModel.PROP_SASH_POSITION, 
+                        new SetWidgetPropertyCommand(getWidgetModel(), SashContainerModel.PROP_SASH_POSITION,
                         getSashFigure().getSashPosition()));
                 }
             }
-        });        
-        
+        });
+
         getSashFigure().setSashPosition(getWidgetModel().getSashPosition());
 
-        
+
     }
-    
+
     private GroupingContainerModel createGroupingContainerModel(boolean isPanel1){
         GroupingContainerModel groupingContainerModel = new GroupingContainerModel();
         groupingContainerModel.setName(isPanel1? "Panel 1" : "Panel 2");
@@ -108,7 +108,7 @@ public class SashContainerEditPart extends AbstractContainerEditpart {
 
         return groupingContainerModel;
     }
-    
+
     /**
      * {@inheritDoc} Overidden, to set the selection behaviour of child
      * EditParts.
@@ -131,7 +131,7 @@ public class SashContainerEditPart extends AbstractContainerEditpart {
         installEditPolicy(EditPolicy.CONTAINER_ROLE, null);
         installEditPolicy(EditPolicy.LAYOUT_ROLE, null);
         installEditPolicy(EditPolicy.LAYOUT_ROLE, null);
-        
+
         //the snap feedback effect
         installEditPolicy("Snap Feedback", null); //$NON-NLS-1$
         if(getExecutionMode() == ExecutionMode.EDIT_MODE)
@@ -148,60 +148,60 @@ public class SashContainerEditPart extends AbstractContainerEditpart {
     protected void registerPropertyChangeHandlers() {
 
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 getSashFigure().setSashPosition((Double)newValue);
                 return false;
             }
         };
-        
+
         setPropertyChangeHandler(SashContainerModel.PROP_SASH_POSITION, handler);
 
         handler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 getSashFigure().setSashStyle(getWidgetModel().getSashStyle());
                 return false;
             }
         };
-        
+
         setPropertyChangeHandler(SashContainerModel.PROP_SASH_STYLE, handler);
-        
+
         handler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 getSashFigure().setSashWidth((Integer)newValue);
                 return false;
             }
         };
-        
+
         setPropertyChangeHandler(SashContainerModel.PROP_SASH_WIDTH, handler);
-        
+
         handler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 getSashFigure().setHorizontal((Boolean)newValue);
                 return false;
             }
         };
-        
-        setPropertyChangeHandler(SashContainerModel.PROP_HORIZONTAL, handler);        
-        
+
+        setPropertyChangeHandler(SashContainerModel.PROP_HORIZONTAL, handler);
+
         handler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 getSashFigure().setOpaque(!(Boolean)newValue);
                 return false;
             }
         };
-        
+
         setPropertyChangeHandler(SashContainerModel.PROP_TRANSPARENT, handler);
-        
+
     }
 
     private SashContainerFigure getSashFigure() {
@@ -211,7 +211,7 @@ public class SashContainerEditPart extends AbstractContainerEditpart {
     @Override
     public IFigure getContentPane() {
         return getSashFigure().getContentPane();
-    }    
+    }
 
 
 }

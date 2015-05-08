@@ -27,25 +27,25 @@ public class OpiRule{
      * @param prop_id opi property id
      * @param output_exp true if output expression
      * @param pvNames PV inputs of the rule
-     * @param expressions The expressions list. Key is the boolean expression, Value is 
+     * @param expressions The expressions list. Key is the boolean expression, Value is
      * the value xml element.
      */
     public OpiRule(Context widgetContext, String ruleName, String prop_id, boolean output_exp,
             List<String> pvNames, LinkedHashMap<String, Element> expressions) {
-        if(widgetContext.getElement().getElementsByTagName("rules").getLength()<=0){            
+        if(widgetContext.getElement().getElementsByTagName("rules").getLength()<=0){
             widgetContext.getElement().appendChild(widgetContext.getDocument().createElement("rules"));
         }
         Node rulesNode = widgetContext.getElement().getElementsByTagName("rules").item(0);
         Element ruleNode = widgetContext.getDocument().createElement("rule");
         rulesNode.appendChild(ruleNode);
-        
+
         ruleNode.setAttribute("name", ruleName);
         ruleNode.setAttribute("prop_id", prop_id);
         ruleNode.setAttribute("out_exp", String.valueOf(output_exp));
         for (Entry<String, Element> entry : expressions.entrySet()) {
             Element expNode = widgetContext.getDocument().createElement("exp");
             expNode.setAttribute("bool_exp", entry.getKey());
-            ruleNode.appendChild(expNode);            
+            ruleNode.appendChild(expNode);
             expNode.appendChild(entry.getValue());
         }
         for(String pv : pvNames){
@@ -53,6 +53,6 @@ public class OpiRule{
             pvNode.setAttribute("trig", "true");
             pvNode.setTextContent(pv);
             ruleNode.appendChild(pvNode);
-        }    
+        }
     }
 }

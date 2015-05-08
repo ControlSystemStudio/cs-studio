@@ -26,9 +26,9 @@ import org.epics.vtype.VType;
 /**
  * An utility class that provides pv buffering read test functionalities.
  * It should be used in a plugin test.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class BufferingReadTester {
 
@@ -41,9 +41,9 @@ public class BufferingReadTester {
 
     /**Create a tester.
      * @param pvFactoryId pv factory id.
-     * @param pvName pv name. The pv should be a read only pv that returns VType value that 
+     * @param pvName pv name. The pv should be a read only pv that returns VType value that
      * updates faster than 10hz. For example, sim://ramp(0,100,1,0.1)
-     * @throws Exception 
+     * @throws Exception
      */
     public BufferingReadTester(String pvFactoryId, String pvName) throws Exception {
         updates = new AtomicInteger(0);
@@ -65,13 +65,13 @@ public class BufferingReadTester {
                     List<VType> allValues = pv.getAllBufferedValues();
                     if (allValues != null && allValues.size() >8) {
                         updates.incrementAndGet();
-                    }                    
+                    }
                     if(allValues == null)
                         System.err.println("Got null values. getValue()= " + pv.getValue());
                     else
                         System.out.println("value " + updates.get() + ": " +
                                 allValues.size() + " values: " + allValues.get(0));
-                    
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -116,7 +116,7 @@ public class BufferingReadTester {
             Thread.sleep(10);
             i++;
         }
-        System.out.println("It took " + i * 10 + "ms to connect.");        
+        System.out.println("It took " + i * 10 + "ms to connect.");
         assertTrue(pv.isConnected());
         assertFalse(pv.isWriteAllowed());
         assertTrue(pv.isBufferingValues());
@@ -150,12 +150,12 @@ public class BufferingReadTester {
         pv.addListener(pvListener);
         Thread.sleep(3000);
         assertTrue(updates.get() - temp > 3);
-        
+
         // Test reading buffered values
         assertTrue(pv.getAllBufferedValues() instanceof List<?>);
-        assertTrue(pv.getAllBufferedValues().size()>8);        
+        assertTrue(pv.getAllBufferedValues().size()>8);
         assertTrue(pv.getAllBufferedValues().get(0) instanceof VType);
-        
+
         //Test write
         Exception exception = null;
         try {
@@ -187,7 +187,7 @@ public class BufferingReadTester {
 //            Thread.sleep(100);
 //            i++;
 //        }
-//        System.out.println("It took " + i * 100 + "ms to connect.");    
+//        System.out.println("It took " + i * 100 + "ms to connect.");
         Thread.sleep(3000);
         assertTrue(updates.get() > temp);
         pv.stop();

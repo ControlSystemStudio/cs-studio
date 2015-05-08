@@ -19,7 +19,7 @@ package org.csstudio.swt.xygraph.dataprovider;
  *  Only the x/y value is used in equals()!
  *  Error ranges and info texts are ignored when determining equality
  *  with another Sample.
- *  
+ *
  *  @author Xihui Chen
  *  @author Kay Kasemir Comments, made immutable
  */
@@ -31,7 +31,7 @@ public class Sample implements ISample {
     final private double xMinusError;
     final private double yMinusError;
     final private String info;
-    
+
     /** Initialize with x/y value
      *  @param xdata
      *  @param ydata
@@ -49,7 +49,7 @@ public class Sample implements ISample {
     *  @param xMinusError
     */
     public Sample(final double xValue, final double yValue,
-            final double yPlusError, final double yMinusError, 
+            final double yPlusError, final double yMinusError,
             final double xPlusError, final double xMinusError) {
        this(xValue, yValue, yPlusError, yMinusError,
            xPlusError, xMinusError,  ""); //$NON-NLS-1$
@@ -65,7 +65,7 @@ public class Sample implements ISample {
      *  @param info
      */
     public Sample(final double xValue, final double yValue,
-            final double yPlusError, final double yMinusError, 
+            final double yPlusError, final double yMinusError,
             final double xPlusError, final double xMinusError,
             final String info) {
         this.xValue = xValue;
@@ -91,12 +91,12 @@ public class Sample implements ISample {
     public double getXMinusError() {
         return xMinusError;
     }
-    
+
     /** @return Positive X error. */
     public double getXPlusError() {
         return xPlusError;
     }
-    
+
     /** @return Negative Y error. */
     public double getYMinusError() {
         return yMinusError;
@@ -111,7 +111,7 @@ public class Sample implements ISample {
     public String getInfo() {
         return info;
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;

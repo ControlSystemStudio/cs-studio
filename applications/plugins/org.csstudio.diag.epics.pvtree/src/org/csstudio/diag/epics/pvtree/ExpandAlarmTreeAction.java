@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 public class ExpandAlarmTreeAction extends Action
 {
     final private TreeViewer viewer;
-    
+
     public ExpandAlarmTreeAction(final TreeViewer viewer)
     {
         super(Messages.ExpandAlarms,
@@ -27,7 +27,7 @@ public class ExpandAlarmTreeAction extends Action
         setToolTipText(Messages.ExpandAlarmsTT);
         this.viewer = viewer;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void run()

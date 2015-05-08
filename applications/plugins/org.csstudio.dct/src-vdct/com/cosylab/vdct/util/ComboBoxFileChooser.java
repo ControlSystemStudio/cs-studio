@@ -27,7 +27,7 @@ import javax.swing.filechooser.FileSystemView;
 public class ComboBoxFileChooser extends JFileChooser {
 
     /**
-     * 
+     *
      */
     public ComboBoxFileChooser() {
         super();
@@ -76,7 +76,7 @@ public class ComboBoxFileChooser extends JFileChooser {
     /* (non-Javadoc)
      * @see javax.swing.JFileChooser#createDialog(java.awt.Component)
      */
-    protected JDialog createDialog(Component parent) throws HeadlessException {        
+    protected JDialog createDialog(Component parent) throws HeadlessException {
         Frame frame = parent instanceof Frame ? (Frame) parent
                       : (Frame)SwingUtilities.getAncestorOfClass(Frame.class, parent);
 
@@ -87,7 +87,7 @@ public class ComboBoxFileChooser extends JFileChooser {
                 dialog.setTitle(title);
 
                 if (JDialog.isDefaultLookAndFeelDecorated()) {
-                    boolean supportsWindowDecorations = 
+                    boolean supportsWindowDecorations =
                     UIManager.getLookAndFeel().getSupportsWindowDecorations();
                     if (supportsWindowDecorations) {
                         dialog.getRootPane().setWindowDecorationStyle(JRootPane.FILE_CHOOSER_DIALOG);
@@ -96,10 +96,10 @@ public class ComboBoxFileChooser extends JFileChooser {
 
                 dialog.pack();
                 dialog.setLocationRelativeTo(parent);
-            
+
             return dialog;
     }
-    
+
     public javax.swing.JCheckBox getJCheckBoxAbsoluteDBD() {
         return dialog.getJCheckBoxAbsoluteDBD();
     }

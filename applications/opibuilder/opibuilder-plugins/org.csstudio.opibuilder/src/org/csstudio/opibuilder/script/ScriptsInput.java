@@ -20,11 +20,11 @@ import org.csstudio.opibuilder.properties.ScriptProperty;
 public class ScriptsInput {
 
     private List<ScriptData> scriptList;
-    
+
     public ScriptsInput(List<ScriptData> scriptDataList) {
         scriptList = scriptDataList;
     }
-    
+
     public ScriptsInput() {
         scriptList = new ArrayList<ScriptData>();
     }
@@ -35,7 +35,7 @@ public class ScriptsInput {
     public List<ScriptData> getScriptList() {
         return scriptList;
     }
-    
+
     /**
      * @return a total contents copy of this ScriptsInput.
      */
@@ -46,7 +46,7 @@ public class ScriptsInput {
         }
         return copy;
     }
-    
+
     @Override
     public String toString() {
         if(scriptList.size() ==0){
@@ -59,6 +59,6 @@ public class ScriptsInput {
         }
         return scriptList.size() + " scripts attached";
     }
-    
-    
+
+
 }

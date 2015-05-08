@@ -17,9 +17,9 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /** API for obtaining single-source helper
- * 
+ *
  *  <p>Acts as plugin activator
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -27,9 +27,9 @@ public class SingleSourcePlugin implements BundleActivator
 {
     /** Extension point ID for providing the helpers */
     final public static String EXT_ID = "org.csstudio.utility.singlesource.helpers";
-    
+
     private static ResourceHelper resources;
-    
+
     private static UIHelper ui;
 
     /** {@inheritDoc} */
@@ -61,7 +61,7 @@ public class SingleSourcePlugin implements BundleActivator
     {
         SingleSourcePlugin.resources = null;
     }
-    
+
     /** @return {@link ResourceHelper} */
     public static ResourceHelper getResourceHelper()
     {
@@ -73,7 +73,7 @@ public class SingleSourcePlugin implements BundleActivator
     {
         return SingleSourcePlugin.ui;
     }
-    
+
     /** @return <code>true</code> if this is running in RAP */
     public static boolean isRAP()
     {

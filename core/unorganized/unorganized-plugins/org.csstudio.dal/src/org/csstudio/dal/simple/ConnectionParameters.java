@@ -1,12 +1,12 @@
 /**
- * 
+ *
  */
 package org.csstudio.dal.simple;
 
 /**
- * Objects with parameters, which specifies to DAL 
+ * Objects with parameters, which specifies to DAL
  * how to connect to remote data entity.
- * 
+ *
  * @author ikriznar
  *
  */
@@ -16,15 +16,15 @@ public class ConnectionParameters {
     private DataFlavor connectionType;
     private DataFlavor dataType;
     private int hashCode;
-    
+
     /**
      * Creates new instance of connection parameters.
-     * 
+     *
      * @param remoteInfo the connection name for remote object, can describe device, property or characteristic.
-     * @param connectionType 
+     * @param connectionType
      *         hint for DAL how to create connection to remote object if DAL needs to establish connection type when connecting.
      *      If <code>null</code> then DAL decides which type to use.
-     * @param dataType 
+     * @param dataType
      *         hint for DAL for which data type to retrieve remote data. Note that connection type can be different from data type.
      *         If <code>null</code> then DAL decides which type to use.
      */
@@ -35,12 +35,12 @@ public class ConnectionParameters {
         this.connectionType = connectionType;
         this.dataType = dataType;
     }
-    
+
     /**
      * Creates new instance of connection parameters.
-     * 
+     *
      * @param remoteInfo the connection name for remote object, can describe device, property or characteristic.
-     * @param javaType hint for DAL for which data type to retrieve remote data. Note that connection type can be 
+     * @param javaType hint for DAL for which data type to retrieve remote data. Note that connection type can be
      * different from data type, in this case it will be determined from data type.
      */
     public ConnectionParameters(RemoteInfo remoteInfo,
@@ -52,7 +52,7 @@ public class ConnectionParameters {
      * Creates new instance of connection parameters. This connection parameters object will have
      * <code>null</code> for connection and data type, which means that it will be left to DAL
      * to use appropriate types.
-     * 
+     *
      * @param rinfo the connection name for remote object, can describe device, property or characteristic.
      */
     public ConnectionParameters(RemoteInfo rinfo) {
@@ -76,19 +76,19 @@ public class ConnectionParameters {
     }
 
     /**
-     * Hint for DAL for which data type to retrieve remote data. 
+     * Hint for DAL for which data type to retrieve remote data.
      * Note that connection type can be different from data type.
      * @return type of data retrieval
      */
     public DataFlavor getDataType() {
         return dataType;
     }
-    
-    
+
+
     @Override
     public String toString() {
         // TODO should we make this string in a way, that can be sued for serialization/deserialization?
-        
+
         StringBuilder sb= new StringBuilder();
         sb.append("ConnParam={rinfo=");
         sb.append(remoteInfo.toString());
@@ -101,10 +101,10 @@ public class ConnectionParameters {
             sb.append(dataType.toString());
         }
         sb.append("}");
-        
+
         return sb.toString();
     }
-    
+
     @Override
     public int hashCode() {
         if (hashCode==0) {
@@ -112,9 +112,9 @@ public class ConnectionParameters {
         }
         return hashCode;
     }
-    
-    
-    
+
+
+
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
@@ -123,5 +123,5 @@ public class ConnectionParameters {
         if (!(obj instanceof ConnectionParameters)) return false;
         return obj.toString().equals(this.toString());
     }
-    
+
 }

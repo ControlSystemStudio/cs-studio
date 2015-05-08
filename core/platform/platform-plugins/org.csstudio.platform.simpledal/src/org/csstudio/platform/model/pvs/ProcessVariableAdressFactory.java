@@ -112,9 +112,9 @@ public class ProcessVariableAdressFactory {
         final IPreferencesService prefService = Platform.getPreferencesService();
 
         if (prefService != null) {
-            final String defaultCs = 
+            final String defaultCs =
                 Platform.getPreferencesService().getString(SimpleDalPluginActivator.ID,
-                                                           PROP_CONTROL_SYSTEM, 
+                                                           PROP_CONTROL_SYSTEM,
                                                            ControlSystemEnum.LOCAL.name(), //$NON-NLS-1$
                                                            null);
             controlSystem = ControlSystemEnum.valueOf(defaultCs);

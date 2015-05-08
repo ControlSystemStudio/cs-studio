@@ -43,7 +43,7 @@ public class ActionsProperty extends AbstractWidgetProperty {
      * XML ATTRIBUTE name <code>HOOK</code>.
      */
     public static final String XML_ATTRIBUTE_HOOK_FIRST = "hook"; //$NON-NLS-1$
-    
+
     public static final String XML_ATTRIBUTE_HOOK_ALL = "hook_all"; //$NON-NLS-1$
 
     private boolean showHookOption;
@@ -136,7 +136,7 @@ public class ActionsProperty extends AbstractWidgetProperty {
         ActionsInput actionsInput = (ActionsInput)getPropertyValue();
         propElement.setAttribute(XML_ATTRIBUTE_HOOK_FIRST, "" + actionsInput.isFirstActionHookedUpToWidget()); ////$NON-NLS-1$
         propElement.setAttribute(XML_ATTRIBUTE_HOOK_ALL, "" + actionsInput.isHookUpAllActionsToWidget()); ////$NON-NLS-1$
-        
+
         for(AbstractWidgetAction action : actionsInput.getActionsList()){
                 Element actionElement = new Element(XML_ELEMENT_ACTION);
                 actionElement.setAttribute(XML_ATTRIBUTE_ACTION_TYPE,

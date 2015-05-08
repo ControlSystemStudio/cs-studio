@@ -17,7 +17,7 @@ import org.jdom.Element;
 
 /**
  * Converts a {@link Project} to XML format.
- * 
+ *
  * @author Sven Wende
  *
  */
@@ -35,7 +35,7 @@ public final class ProjectToXml {
 
     /**
      * Returns a xml representation of the provided project;
-     * 
+     *
      * @return a xml representation of the provided project.
      */
     public Document createDocument() {
@@ -62,18 +62,18 @@ public final class ProjectToXml {
 
         return result;
     }
-    
+
     private Element createElement(Project project) {
         Element element = createElement((IFolder) project);
         element.setAttribute("dbd", StringUtil.trimNull(project.getDbdPath()));
         element.setAttribute("ioc", StringUtil.trimNull(project.getIoc()));
-        
+
         return element;
     }
 
     /**
      * Creates the xml representation for a folder like this:
-     * 
+     *
      * <code>
      *     <folder name="{name}" id={id}">
      *         <prototype ...>
@@ -90,7 +90,7 @@ public final class ProjectToXml {
      *      ...
      *     </folder>
      * </code>
-     * 
+     *
      * @param folder
      *            the folder
      * @return the xml representation
@@ -102,12 +102,12 @@ public final class ProjectToXml {
 
         // FOLDER NAME
         folderXmlElement.setAttribute("name", getNonEmptyString(folder.getName(), "unknown"));
-        
+
         // LIST INDEX
         if(folder.getParentFolder()!=null) {
             folderXmlElement.setAttribute("index", ""+folder.getParentFolder().getMembers().indexOf(folder));
         }
-        
+
         // CHILDREN
         for (IFolderMember m : folder.getMembers()) {
             Element childElement = createElement((IElement) m);
@@ -119,7 +119,7 @@ public final class ProjectToXml {
 
     /**
      * Creates the xml representation for a prototype like this:
-     * 
+     *
      * <code>
      *     <prototype name="{name}" id={id}">
      *         <parameter name="${parameterName}" value="{defaultValue}" />
@@ -132,7 +132,7 @@ public final class ProjectToXml {
      *      ...
      *     </prototype>
      * </code>
-     * 
+     *
      * @param prototype
      *            the prototype
      * @return the xml representation
@@ -147,7 +147,7 @@ public final class ProjectToXml {
         if(prototype.getParentFolder()!=null) {
             prototypeXmlElement.setAttribute("index", ""+prototype.getParentFolder().getMembers().indexOf(prototype));
         }
-        
+
         // PARAMETERS
         for (Parameter p : prototype.getParameters()) {
             Element pElement = new Element("parameter");
@@ -181,7 +181,7 @@ public final class ProjectToXml {
      *      ...
      * </instance>
      * </code>
-     * 
+     *
      * @param instance the instance
      * @return
      */
@@ -201,7 +201,7 @@ public final class ProjectToXml {
             index = instance.getContainer().getInstances().indexOf(instance);
         }
         instanceXmlElement.setAttribute("index", ""+index);
-        
+
         // PARAMETER VALUES
         Map<String, String> parameterValues = instance.getParameterValues();
         for (String pName : parameterValues.keySet()) {
@@ -229,7 +229,7 @@ public final class ProjectToXml {
 
     /**
      * Create the xml representation for a record like this:
-     * 
+     *
      * <code>
      *     <record name="{name}" id={id} parent="{parentRecordId}">
      *         <field name="{fieldName} value={fieldValue} />
@@ -240,10 +240,10 @@ public final class ProjectToXml {
      *      ...
      * </record>
      * </code>
-     * 
+     *
      * @param record
      *            the record
-     * 
+     *
      * @return the xml element representing the record
      */
     private Element createElement(IRecord record) {
@@ -256,14 +256,14 @@ public final class ProjectToXml {
         // EPICS NAME
         String epicsName = record.getEpicsName();
         element.setAttribute("epicsname", (epicsName != null && epicsName.length() > 0) ? epicsName : "{inherited}");
-        
+
         // DISABLED
         Boolean disabled = record.getDisabled();
         element.setAttribute("disabled", (disabled != null) ? disabled.toString() : "{inherited}");
-        
+
         // TYPE
         element.setAttribute("type", record.getType());
-        
+
         // PARENT
         IRecord parentRecord = record.getParentRecord();
         if (parentRecord != null && parentRecord.getParentRecord() != null) {
@@ -308,12 +308,12 @@ public final class ProjectToXml {
     /**
      * Convenience method that echos the specified source string when it is not
      * empty. Otherwise the fall back string is echoed.
-     * 
+     *
      * @param source
      *            the source string
      * @param fallback
      *            the fall back string
-     * 
+     *
      * @return the non-empty source string or the fall back string
      */
     private static String getNonEmptyString(String source, String fallback) {

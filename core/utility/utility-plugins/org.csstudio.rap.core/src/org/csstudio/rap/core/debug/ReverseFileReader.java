@@ -15,7 +15,7 @@ public class ReverseFileReader {
         // Open up a random access file
         this.randomfile = new RandomAccessFile(filename, "r");
         // Set our seek position to the end of the file
-        
+
         this.position = this.randomfile.length();
         // Seek to the end of the file
         this.randomfile.seek(this.position);
@@ -29,7 +29,7 @@ public class ReverseFileReader {
         }
     }
 
-    
+
     /**Read one line from the current position towards the beginning
      * @return the line. null if reached beginning.
      * @throws Exception
@@ -81,7 +81,7 @@ public class ReverseFileReader {
         // return the line
         return finalLine;
     }
-    
+
     public long length() throws IOException {
         return randomfile.length();
     }

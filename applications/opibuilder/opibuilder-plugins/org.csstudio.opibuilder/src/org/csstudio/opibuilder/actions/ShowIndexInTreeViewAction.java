@@ -18,29 +18,29 @@ import org.eclipse.jface.resource.ImageDescriptor;
  *
  */
 public class ShowIndexInTreeViewAction extends Action {
-    
+
     public static final String ID = "org.csstudio.opibuilder.actions.showIndexInTreeView";
     private EditPartViewer editPartViewer;
-    
+
     public static final String SHOW_INDEX_PROPERTY = "show_index_property";
-    
+
     private boolean showIndex = false;
-    
-    private ImageDescriptor showIndexImage = 
+
+    private ImageDescriptor showIndexImage =
         CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
             OPIBuilderPlugin.PLUGIN_ID, "icons/show_index.png");
-    private ImageDescriptor hideIndexImage = 
+    private ImageDescriptor hideIndexImage =
         CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
             OPIBuilderPlugin.PLUGIN_ID, "icons/hide_index.png");
-    
+
     public ShowIndexInTreeViewAction(EditPartViewer editPartViewer) {
         setText("Show Index");
         setId(ID);
         setImageDescriptor(showIndexImage);
-        this.editPartViewer = editPartViewer;        
+        this.editPartViewer = editPartViewer;
     }
-    
-        
+
+
     @Override
     public void run() {
         showIndex = !showIndex;
@@ -53,6 +53,6 @@ public class ShowIndexInTreeViewAction extends Action {
             setText("Show Index");
             setImageDescriptor(showIndexImage);
         }
-        
+
     }
 }

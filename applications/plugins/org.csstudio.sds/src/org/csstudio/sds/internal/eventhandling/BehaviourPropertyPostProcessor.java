@@ -15,9 +15,9 @@ import org.eclipse.gef.commands.CompoundCommand;
  * {@link AbstractWidgetModel#PROP_BORDER_WIDTH} when
  * {@link AbstractWidgetModel#PROP_BORDER_STYLE} is set to
  * {@link BorderStyleEnum#NONE}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class BehaviourPropertyPostProcessor extends AbstractWidgetPropertyPostProcessor<AbstractWidgetModel> {
 
@@ -45,12 +45,12 @@ public class BehaviourPropertyPostProcessor extends AbstractWidgetPropertyPostPr
 
                 // .. determine the selected behavior
                 String behaviorId = widget.getBehaviorProperty(AbstractWidgetModel.PROP_BEHAVIOR);
-                
+
                 IBehaviorService behaviourService = SdsPlugin.getDefault()
                         .getBehaviourService();
                 String[] invisiblePropertyIds = behaviourService
                         .getInvisiblePropertyIds(behaviorId, widget.getTypeID());
-                
+
                 for (WidgetProperty property : widget.getProperties()) {
                     chain.add(new ShowPropertyCommand(widget, property.getId(), AbstractWidgetModel.PROP_BEHAVIOR));
                 }

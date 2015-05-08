@@ -20,7 +20,7 @@ public class NamesRequest
     final private int key;
     final private String pattern;
     private String names[];
-    
+
     /** Create a name lookup.
      *   @param pattern Regular expression pattern for the name.
      */
@@ -71,7 +71,7 @@ public class NamesRequest
     {
         return names;
     }
-    
+
     /** @return Returns a more or less useful string. */
     @Override public String toString()
     {

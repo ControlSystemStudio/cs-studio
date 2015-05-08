@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.opibuilder.widgets.extra;
 
@@ -33,22 +33,22 @@ import org.epics.vtype.ValueUtil;
  * The selection is automatically use to adapt the edit part to pvs, values and
  * configurable widgets. If no selection is provided, or if the type is not
  * adaptable, the selection will be empty.
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public abstract class AbstractSelectionWidgetEditpart
-    <F extends AbstractSelectionWidgetFigure<?>, M extends AbstractSelectionWidgetModel> 
+    <F extends AbstractSelectionWidgetFigure<?>, M extends AbstractSelectionWidgetModel>
     extends AbstractWidgetEditPart
     implements ProcessVariableAdaptable, VTypeAdaptable, ConfigurableWidgetAdaptable {
-    
+
     @Override
     public F getFigure() {
         @SuppressWarnings("unchecked")
         F figure = (F) super.getFigure();
         return figure;
     }
-    
+
     @Override
     public M getWidgetModel() {
         @SuppressWarnings("unchecked")
@@ -65,7 +65,7 @@ public abstract class AbstractSelectionWidgetEditpart
     public ConfigurableWidget toConfigurableWidget() {
         return selectionToTypeSingle(ConfigurableWidget.class);
     }
-    
+
     @Override
     public Collection<ProcessVariable> toProcessVariables() {
         return selectionToTypeCollection(ProcessVariable.class);
@@ -90,7 +90,7 @@ public abstract class AbstractSelectionWidgetEditpart
             return adapted[0];
         }
     }
-    
+
     @Override
     public Border calculateBorder() {
         if (getWidgetModel().isEnableBorderAlarmSensitiveProperty() && getWidgetModel().isAlarmSensitive()) {
@@ -99,7 +99,7 @@ public abstract class AbstractSelectionWidgetEditpart
             return super.calculateBorder();
         }
     }
-    
+
     protected Border createBorderFromAlarm(Alarm alarm) {
         if (alarm.getAlarmSeverity() == AlarmSeverity.NONE) {
             return super.calculateBorder();
@@ -115,7 +115,7 @@ public abstract class AbstractSelectionWidgetEditpart
     protected final void registerCommonProperties() {
         if (getWidgetModel().isEnableBorderAlarmSensitiveProperty()) {
             ((BeanComposite) getFigure().getSWTWidget()).addPropertyChangeListener(new PropertyChangeListener() {
-                
+
                 @Override
                 public void propertyChange(PropertyChangeEvent event) {
                     if ("alarm".equals(event.getPropertyName())) {

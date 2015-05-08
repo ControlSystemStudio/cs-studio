@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.platform.internal.simpledal.dal;
@@ -51,18 +51,18 @@ import org.slf4j.LoggerFactory;
 
 /**
  * DAL Connectors are connected to the control system via the DAL API.
- * 
+ *
  * All events received from DAL are forwarded to
  * {@link IProcessVariableValueListener}s which abstract from DAL.
- * 
+ *
  * For convenience the {@link IProcessVariableValueListener}s are only weakly
  * referenced. The connector tracks for {@link IProcessVariableValueListener}s
  * that have been garbage collected and removes those references from its
  * internal list. This way {@link IProcessVariableValueListener}s don�t have
  * to be disposed explicitly.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 @SuppressWarnings("unchecked")
 public final class DalConnector extends AbstractConnector implements DynamicValueListener, LinkListener, ResponseListener,
@@ -263,10 +263,10 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 
     /**
      * Waits until DAL property is connected or timeout has elapsed
-     * 
+     *
      * @param timeout
      *            the timeout to wait
-     * 
+     *
      * @return <code>true</code> if property was connected
      */
     public boolean waitTillConnected(long timeout) {
@@ -409,7 +409,7 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 
             PropertyFactory factory = DALPropertyFactoriesProvider.getInstance().getPropertyFactory(
                     getProcessVariableAddress().getControlSystem());
-            
+
             switch (getValueType()) {
             case OBJECT:
                 property = factory.getProperty(ri);
@@ -483,9 +483,9 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
                 // ********************************************************
                 /*
                  * try { Object e = property.getLatestResponse();
-                 * 
+                 *
                  * property.getAsynchronous(null);
-                 * 
+                 *
                  * while (e == property.getLatestResponse()) { Thread.sleep(1);
                  * } } catch (DataExchangeException e) { e.printStackTrace(); }
                  * catch (InterruptedException e) { e.printStackTrace(); }
@@ -590,7 +590,7 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 
     /**
      * Returns the DAL property that is internally used.
-     * 
+     *
      * @return the internally used DAL property
      */
     protected DynamicValueProperty getDalProperty() {
@@ -599,7 +599,7 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 
     /**
      * Sets the DAL property, this connector is connected to.
-     * 
+     *
      * @param dalProperty
      *            the DAL property
      */
@@ -628,7 +628,7 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
     /**
      * A change of the "normal" value has been reported and needs to be
      * forwarded.
-     * 
+     *
      * @param event
      *            the event that reports the value update
      */

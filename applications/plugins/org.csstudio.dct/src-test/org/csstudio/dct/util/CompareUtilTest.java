@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.util;
 
@@ -20,7 +20,7 @@ import org.junit.Test;
 
 /**
  * @author Sven Wende
- * 
+ *
  */
 public class CompareUtilTest {
 
@@ -89,20 +89,20 @@ public class CompareUtilTest {
         List list = new ArrayList();
         list.add("a");
         list.add("b");
-        
+
         assertTrue(CompareUtil.containsOnly(String.class, list));
         assertTrue(CompareUtil.containsOnly(Object.class, list));
         assertFalse(CompareUtil.containsOnly(IRecord.class, list));
-        
+
         list.add(new Record());
 
         assertFalse(CompareUtil.containsOnly(String.class, list));
         assertTrue(CompareUtil.containsOnly(Object.class, list));
         assertFalse(CompareUtil.containsOnly(IRecord.class, list));
-        
+
         list.remove(0);
         list.remove(0);
-        
+
         assertFalse(CompareUtil.containsOnly(String.class, list));
         assertTrue(CompareUtil.containsOnly(Object.class, list));
         assertTrue(CompareUtil.containsOnly(IRecord.class, list));

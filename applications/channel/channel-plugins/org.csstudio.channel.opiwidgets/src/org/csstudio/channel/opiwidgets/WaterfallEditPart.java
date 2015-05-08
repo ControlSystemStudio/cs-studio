@@ -6,7 +6,7 @@ import org.eclipse.draw2d.IFigure;
 
 public class WaterfallEditPart
 extends AbstractChannelWidgetEditPart<WaterfallFigure, WaterfallModel> {
-    
+
     /**
      * Create and initialize figure.
      */
@@ -16,7 +16,7 @@ extends AbstractChannelWidgetEditPart<WaterfallFigure, WaterfallModel> {
         configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
         return figure;
     }
-    
+
     private static void configure(WaterfallWidget widget, WaterfallModel model, boolean runMode) {
         if (runMode)
             widget.setChannelQuery(model.getChannelQuery());
@@ -46,5 +46,5 @@ extends AbstractChannelWidgetEditPart<WaterfallFigure, WaterfallModel> {
         setPropertyChangeHandler(WaterfallModel.SHOW_TIME_AXIS, reconfigure);
         setPropertyChangeHandler(WaterfallModel.SORT_PROPERTY, reconfigure);
     }
-    
+
 }

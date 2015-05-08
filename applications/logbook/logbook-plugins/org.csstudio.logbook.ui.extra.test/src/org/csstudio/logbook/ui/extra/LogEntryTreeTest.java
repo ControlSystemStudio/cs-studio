@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui.extra;
 
@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class LogEntryTreeTest extends ApplicationWindow {
     private static String MEDIUM_TEXT = "this a a text that is a bit longer, but not too long. This row should have a smaller height than row #1";
@@ -48,7 +48,7 @@ public class LogEntryTreeTest extends ApplicationWindow {
 
     /**
      * Create contents of the application window.
-     * 
+     *
      * @param parent
      */
     @Override
@@ -159,7 +159,7 @@ public class LogEntryTreeTest extends ApplicationWindow {
 
     /**
      * Launch the application.
-     * 
+     *
      * @param args
      */
     public static void main(String args[]) {
@@ -175,7 +175,7 @@ public class LogEntryTreeTest extends ApplicationWindow {
 
     /**
      * Configure the shell.
-     * 
+     *
      * @param newShell
      */
     @Override

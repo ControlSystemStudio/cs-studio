@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.RGB;
  */
 public class ComboModel extends AbstractPVWidgetModel {
 
-    
+
     public final String ID = "org.csstudio.opibuilder.widgets.combo";//$NON-NLS-1$
     /**
      * Items of the combo.
@@ -33,7 +33,7 @@ public class ComboModel extends AbstractPVWidgetModel {
      * True if items are read from the input PV which must be an Enum PV.
      */
     public static final String PROP_ITEMS_FROM_PV = "items_from_pv";//$NON-NLS-1$
-    
+
     public ComboModel() {
         setBackgroundColor(new RGB(255,255,255));
         setForegroundColor(new RGB(0,0,0));
@@ -41,24 +41,24 @@ public class ComboModel extends AbstractPVWidgetModel {
     }
 
     @Override
-    protected void configureProperties() {        
+    protected void configureProperties() {
         addProperty(new StringListProperty(
                 PROP_ITEMS, "Items", WidgetPropertyCategory.Behavior, new ArrayList<String>()));
 
         addProperty(new BooleanProperty(
                 PROP_ITEMS_FROM_PV, "Items From PV", WidgetPropertyCategory.Behavior, false));
     }
-    
+
     @SuppressWarnings("unchecked")
     public List<String> getItems(){
         return (List<String>)getPropertyValue(PROP_ITEMS);
     }
-    
+
     public boolean isItemsFromPV(){
         return (Boolean)getPropertyValue(PROP_ITEMS_FROM_PV);
     }
-    
-    
+
+
     @Override
     public String getTypeID() {
         return ID;

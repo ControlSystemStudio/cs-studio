@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.metamodel.internal;
 
@@ -15,7 +15,7 @@ import org.junit.Test;
 
 /**
  * Test class for {@link DatabaseDefinition}.
- * 
+ *
  * @author Sven Wende
  *
  */
@@ -30,7 +30,7 @@ public final class DatabaseDefinitionTest {
     public void setUp() throws Exception {
         recordDefinition1 = new RecordDefinition("ai");
         recordDefinition2 = new RecordDefinition("ao");
-        
+
         databaseDefinition = new DatabaseDefinition("1.0.1.a");
         databaseDefinition.addRecordDefinition(recordDefinition1);
         databaseDefinition.addRecordDefinition(recordDefinition2);
@@ -70,7 +70,7 @@ public final class DatabaseDefinitionTest {
         assertEquals(recordDefinition1, databaseDefinition.getRecordDefinition("ai"));
         assertEquals(recordDefinition2, databaseDefinition.getRecordDefinition("ao"));
     }
-        
+
     /**
      * Test method for {@link org.csstudio.dct.metamodel.internal.DatabaseDefinition#removeRecordDefinition(org.csstudio.dct.metamodel.IRecordDefinition)}.
      */
@@ -79,10 +79,10 @@ public final class DatabaseDefinitionTest {
         List<IRecordDefinition> recordDefinitions = databaseDefinition.getRecordDefinitions();
         assertTrue(recordDefinitions.contains(recordDefinition1));
         assertTrue(recordDefinitions.contains(recordDefinition2));
-        
+
         databaseDefinition.removeRecordDefinition(recordDefinition1);
         databaseDefinition.removeRecordDefinition(recordDefinition2);
-        
+
         recordDefinitions = databaseDefinition.getRecordDefinitions();
 
         assertEquals(0, recordDefinitions.size());

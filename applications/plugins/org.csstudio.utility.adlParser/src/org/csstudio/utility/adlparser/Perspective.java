@@ -13,7 +13,7 @@ public class Perspective implements IPerspectiveFactory {
         String editorArea = layout.getEditorArea();
         layout.setEditorAreaVisible(false);
         layout.setFixed(true);
-        
+
         IFolderLayout folder_left = layout.createFolder(ID_LEFT,
                 IPageLayout.LEFT, .3f, editorArea);
         final IFolderLayout folder_bottom = layout.createFolder(ID_BOTTOM,
@@ -23,7 +23,7 @@ public class Perspective implements IPerspectiveFactory {
         folder_left.addView("org.eclipse.ui.views.ResourceNavigator");
 
 
-        
+
         folder_right.addView(ADLTreeView.ID);
         folder_bottom.addView("org.eclipse.ui.console.ConsoleView");
     }

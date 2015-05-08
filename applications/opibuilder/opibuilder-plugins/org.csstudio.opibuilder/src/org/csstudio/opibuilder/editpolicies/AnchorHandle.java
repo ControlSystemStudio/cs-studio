@@ -23,12 +23,12 @@ import org.eclipse.swt.graphics.Color;
  *
  */
 public class AnchorHandle extends SquareHandle {
-    
+
     public AnchorHandle(final GraphicalEditPart owner, final ConnectionAnchor anchor) {
-    
+
         setOwner(owner);
         setLocator(new Locator() {
-            
+
             @Override
             public void relocate(IFigure target) {
                 Point center = anchor.getLocation(null);
@@ -41,19 +41,19 @@ public class AnchorHandle extends SquareHandle {
                         ));
             }
         });
-    
+
     }
 
     @Override
     protected DragTracker createDragTracker() {
         return null;
     }
-    
+
     @Override
     protected Color getBorderColor() {
         return ColorConstants.darkGray;
     }
-    
+
     @Override
     protected Color getFillColor() {
         return ColorConstants.red;

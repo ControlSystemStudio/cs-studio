@@ -40,7 +40,7 @@ public interface EnumSimpleProperty extends NumericSimpleProperty<Long,Long>,
      * Returns all allowed enumeration values.
      *
      * @return all enumerated values
-     * 
+     *
      * @throws DataExchangeException if remote layer is not operational
      */
     public Object[] getEnumValues() throws DataExchangeException;
@@ -49,7 +49,7 @@ public interface EnumSimpleProperty extends NumericSimpleProperty<Long,Long>,
      * Returns descriptions strings for enumerated values.
      *
      * @return descriptions for enumerated values
-     * 
+     *
      * @throws DataExchangeException if remote layer is not operational
      */
     public String[] getEnumDescriptions() throws DataExchangeException;

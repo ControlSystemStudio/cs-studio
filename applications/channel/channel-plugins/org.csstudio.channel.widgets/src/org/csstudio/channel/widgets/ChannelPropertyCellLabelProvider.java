@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.channel.widgets;
 
@@ -11,7 +11,7 @@ import org.eclipse.jface.viewers.ViewerCell;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ChannelPropertyCellLabelProvider extends CellLabelProvider {
 
@@ -24,7 +24,7 @@ public class ChannelPropertyCellLabelProvider extends CellLabelProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.jface.viewers.CellLabelProvider#update(org.eclipse.jface.
      * viewers.ViewerCell)

@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.platform.ui.composites.resourcefilter;
@@ -46,13 +46,13 @@ import org.eclipse.swt.widgets.Text;
  * Workbench-level composite for resource and container specification by the
  * user. Services such as field validation are performed by the group. The group
  * can be configured to accept existing resources, or only new resources.
- * 
+ *
  * <p>
  * <b>Code is based upon
  * <code>org.eclipse.ui.internal.ide.misc.ResourceAndContainerGroup</code> in
  * plugin <code>org.eclipse.ui.ide</code>.</b>
  * </p>
- * 
+ *
  * @author Alexander Will
  * @version $Revision$
  */
@@ -157,7 +157,7 @@ public final class ResourceAndContainerGroup implements Listener {
     /**
      * Create an instance of the group to allow the user to enter/select a
      * container and specify a resource name.
-     * 
+     *
      * @param parent
      *            composite widget to parent the group
      * @param client
@@ -178,7 +178,7 @@ public final class ResourceAndContainerGroup implements Listener {
     /**
      * Create an instance of the group to allow the user to enter/select a
      * container and specify a resource name.
-     * 
+     *
      * @param parent
      *            composite widget to parent the group
      * @param client
@@ -202,7 +202,7 @@ public final class ResourceAndContainerGroup implements Listener {
     /**
      * Create an instance of the group to allow the user to enter/select a
      * container and specify a resource name.
-     * 
+     *
      * @param parent
      *            composite widget to parent the group
      * @param client
@@ -231,7 +231,7 @@ public final class ResourceAndContainerGroup implements Listener {
     /**
      * Returns a boolean indicating whether all controls in this group contain
      * valid values.
-     * 
+     *
      * @return boolean
      */
     public boolean areAllValuesValid() {
@@ -240,7 +240,7 @@ public final class ResourceAndContainerGroup implements Listener {
 
     /**
      * Creates this object's visual components.
-     * 
+     *
      * @param parent
      *            org.eclipse.swt.widgets.Composite
      * @param heightHint
@@ -311,7 +311,7 @@ public final class ResourceAndContainerGroup implements Listener {
      * Returns the path of the currently selected container or null if no
      * container has been selected. Note that the container may not exist yet if
      * the user entered a new container name in the field.
-     * 
+     *
      * @return The full path of the selected container.
      */
     public IPath getContainerFullPath() {
@@ -322,7 +322,7 @@ public final class ResourceAndContainerGroup implements Listener {
      * Returns an error message indicating the current problem with the value of
      * a control in the group, or an empty message if all controls in the group
      * contain valid values.
-     * 
+     *
      * @return java.lang.String
      */
     public String getProblemMessage() {
@@ -331,7 +331,7 @@ public final class ResourceAndContainerGroup implements Listener {
 
     /**
      * Returns the type of problem with the value of a control in the group.
-     * 
+     *
      * @return one of the PROBLEM_* constants
      */
     public int getProblemType() {
@@ -341,7 +341,7 @@ public final class ResourceAndContainerGroup implements Listener {
     /**
      * Returns a string that is the path of the currently selected container.
      * Returns an empty string if no container has been selected.
-     * 
+     *
      * @return The entered resource name.
      */
     public String getResource() {
@@ -350,7 +350,7 @@ public final class ResourceAndContainerGroup implements Listener {
 
     /**
      * Handles events for all controls in the group.
-     * 
+     *
      * @param e
      *            org.eclipse.swt.widgets.Event
      */
@@ -364,7 +364,7 @@ public final class ResourceAndContainerGroup implements Listener {
 
     /**
      * Sets the flag indicating whether existing resources are permitted.
-     * 
+     *
      * @param value
      *            Flag that signals of it is allows to enter the names of
      *            already existing resources.
@@ -375,7 +375,7 @@ public final class ResourceAndContainerGroup implements Listener {
 
     /**
      * Sets the value of this page's container.
-     * 
+     *
      * @param path
      *            Full path to the container.
      */
@@ -403,7 +403,7 @@ public final class ResourceAndContainerGroup implements Listener {
 
     /**
      * Sets the value of this page's resource name.
-     * 
+     *
      * @param value
      *            new value
      */
@@ -417,7 +417,7 @@ public final class ResourceAndContainerGroup implements Listener {
      * represents a valid container resource in the workbench. An error message
      * is stored for future reference if the name does not represent a valid
      * container.
-     * 
+     *
      * @return <code>boolean</code> indicating validity of the container name
      */
     private boolean validateContainer() {
@@ -455,7 +455,7 @@ public final class ResourceAndContainerGroup implements Listener {
      * value is found then a descriptive error message is stored for later
      * reference. Returns a boolean indicating the validity of all of the
      * controls in the group.
-     * 
+     *
      * @return True, if all values are valid.
      */
     private boolean validateControls() {
@@ -480,7 +480,7 @@ public final class ResourceAndContainerGroup implements Listener {
      * path represents a valid new resource in the workbench. An error message
      * is stored for future reference if the path does not represent a valid new
      * resource path.
-     * 
+     *
      * @param resourcePath
      *            the path to validate
      * @return <code>boolean</code> indicating validity of the resource path
@@ -511,7 +511,7 @@ public final class ResourceAndContainerGroup implements Listener {
      * resents a valid resource name in the workbench. An error message is
      * stored for future reference if the name does not represent a valid
      * resource name.
-     * 
+     *
      * @return <code>boolean</code> indicating validity of the resource name
      */
     private boolean validateResourceName() {
@@ -559,7 +559,7 @@ public final class ResourceAndContainerGroup implements Listener {
 
     /**
      * Return the resource name including its eventually set file extension.
-     * 
+     *
      * @return The resource name including its eventually set file extension.
      */
     private String getResourceNameWithExtension() {
@@ -574,7 +574,7 @@ public final class ResourceAndContainerGroup implements Listener {
 
     /**
      * Return the file extension.
-     * 
+     *
      * @return The file extension
      */
     public String getFileExtension() {
@@ -583,7 +583,7 @@ public final class ResourceAndContainerGroup implements Listener {
 
     /**
      * Set the file extension.
-     * 
+     *
      * @param fileExtension
      *            The file extension to set
      */
@@ -593,7 +593,7 @@ public final class ResourceAndContainerGroup implements Listener {
 
     /**
      * Set the embedded container selection group to enabled/disabled.
-     * 
+     *
      * @param enabled
      *            true for enabled, false for diabled.
      */

@@ -44,27 +44,27 @@ public class ScriptService {
         }
     }
 
-    public static final String DEFAULT_JS_HEADER = 
+    public static final String DEFAULT_JS_HEADER =
             "importPackage(Packages.org.csstudio.opibuilder.scriptUtil);\n"; //$NON-NLS-1$
-    public static final String DEFAULT_PYTHONSCRIPT_HEADER = 
+    public static final String DEFAULT_PYTHONSCRIPT_HEADER =
             "from org.csstudio.opibuilder.scriptUtil import PVUtil\n"; //$NON-NLS-1$
-    
+
     public static final String PVS = "pvs"; //$NON-NLS-1$
 
     public static final String WIDGET = "widget"; //$NON-NLS-1$
 
     public static final String DISPLAY = "display"; //$NON-NLS-1$
-    
+
     public static final String PV_ARRAY_DEPRECIATED = "pvArray"; //$NON-NLS-1$
 
     public static final String TRIGGER_PV = "triggerPV"; //$NON-NLS-1$
-    
+
     public static final String WIDGET_CONTROLLER_DEPRECIATED = "widgetController"; //$NON-NLS-1$
-    
+
     public static final String JS = "js"; //$NON-NLS-1$
-    
-    public static final String PY= "py"; //$NON-NLS-1$    
-    
+
+    public static final String PY= "py"; //$NON-NLS-1$
+
     private static ScriptService instance;
 
     private Map<ScriptData, IScriptStore> scriptMap;
@@ -73,8 +73,8 @@ public class ScriptService {
      *  @see #getInstance()
      */
     private ScriptService(){
-        scriptMap = new HashMap<ScriptData, IScriptStore>();        
-        
+        scriptMap = new HashMap<ScriptData, IScriptStore>();
+
     }
 
     public synchronized static ScriptService getInstance() {

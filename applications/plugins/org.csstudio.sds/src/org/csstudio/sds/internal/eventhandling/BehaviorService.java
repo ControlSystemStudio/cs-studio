@@ -40,8 +40,8 @@ public class BehaviorService implements IBehaviorService {
             String widgetTypeId = e.getAttribute("widgetTypeId");
             String description = e.getAttribute("description");
             AbstractBehavior<AbstractWidgetModel> behavior;
-            
-            
+
+
             try {
                 behavior = (AbstractBehavior<AbstractWidgetModel>) e.createExecutableExtension("class");
             } catch (CoreException e1) {
@@ -49,16 +49,16 @@ public class BehaviorService implements IBehaviorService {
                 LOG.error(msg);
                 throw new IllegalArgumentException(msg);
             }
-            
+
             assert behaviorId!=null;
             assert widgetTypeId!=null;
             assert description!=null;
             assert behavior!=null;
-            
+
             Set<String> shadowedProperties = new HashSet<String>();
             shadowedProperties.addAll(Arrays.asList(behavior.getInvisiblePropertyIds()));
             assert shadowedProperties!=null;
-            
+
             addBehaviour(new BehaviorDescriptor(behaviorId, widgetTypeId, description, shadowedProperties, e));
         }
     }
@@ -100,7 +100,7 @@ public class BehaviorService implements IBehaviorService {
 
         if (descriptor != null) {
             IConfigurationElement e = descriptor.getConfigurationElement();
-            
+
             try {
                 behavior = (AbstractBehavior<AbstractWidgetModel>) e.createExecutableExtension("class");
             } catch (CoreException e1) {

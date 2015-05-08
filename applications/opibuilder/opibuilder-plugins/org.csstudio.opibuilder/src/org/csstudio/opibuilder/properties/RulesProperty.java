@@ -22,7 +22,7 @@ import org.jdom.Element;
  *
  */
 public class RulesProperty extends AbstractWidgetProperty {
-    
+
     /**
      * XML ELEMENT name <code>RULE</code>.
      */
@@ -32,32 +32,32 @@ public class RulesProperty extends AbstractWidgetProperty {
      * XML ATTRIBUTE name <code>NAME</code>.
      */
     public static final String XML_ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
-    
+
     /**
      * XML ATTRIBUTE name <code>PROPID</code>.
      */
     public static final String XML_ATTRIBUTE_PROPID= "prop_id"; //$NON-NLS-1$
-    
+
     /**
      * XML ATTRIBUTE name <code>OUTPUTEXPRESSION</code>.
      */
     public static final String XML_ATTRIBUTE_OUTPUTEXPRESSION = "out_exp"; //$NON-NLS-1$
-    
+
     /**
      * XML ELEMENT name <code>EXPRESSION</code>.
      */
     public static final String XML_ELEMENT_EXPRESSION = "exp"; //$NON-NLS-1$
-        
+
     /**
      * XML ATTRIBUTE name <code>BOOLEXP</code>.
      */
     public static final String XML_ATTRIBUTE_BOOLEXP= "bool_exp"; //$NON-NLS-1$
-        
+
     /**
      * XML ELEMENT name <code>VALUE</code>.
      */
     public static final String XML_ELEMENT_VALUE = "value"; //$NON-NLS-1$
-    
+
     /**
      * XML Element name <code>PV</code>.
      */
@@ -74,7 +74,7 @@ public class RulesProperty extends AbstractWidgetProperty {
     public RulesProperty(String prop_id, String description,
             WidgetPropertyCategory category) {
         super(prop_id, description, category, new RulesInput());
-        
+
     }
 
     @Override
@@ -83,12 +83,12 @@ public class RulesProperty extends AbstractWidgetProperty {
             return null;
         RulesInput acceptableValue = null;
         if(value instanceof RulesInput){
-            acceptableValue = (RulesInput)value;            
-        }        
+            acceptableValue = (RulesInput)value;
+        }
         return acceptableValue;
     }
 
-    
+
     @Override
     public Object getPropertyValue() {
         if(executionMode == ExecutionMode.RUN_MODE && widgetModel !=null){
@@ -108,8 +108,8 @@ public class RulesProperty extends AbstractWidgetProperty {
         }else
             return super.getPropertyValue();
     }
-    
-    
+
+
     @Override
     protected PropertyDescriptor createPropertyDescriptor() {
         if(PropertySSHelper.getIMPL() == null)
@@ -127,7 +127,7 @@ public class RulesProperty extends AbstractWidgetProperty {
             ruleData.setPropId(se.getAttributeValue(XML_ATTRIBUTE_PROPID));
             ruleData.setOutputExpValue(
                     Boolean.parseBoolean(se.getAttributeValue(XML_ATTRIBUTE_OUTPUTEXPRESSION)));
-            
+
             for(Object eo : se.getChildren(XML_ELEMENT_EXPRESSION)){
                 Element ee = (Element)eo;
                 String booleanExpression = ee.getAttributeValue(XML_ATTRIBUTE_BOOLEXP);
@@ -136,12 +136,12 @@ public class RulesProperty extends AbstractWidgetProperty {
                 if(ruleData.isOutputExpValue())
                     value = valueElement.getText();
                 else{
-                    value = ruleData.getProperty().readValueFromXML(valueElement);                    
+                    value = ruleData.getProperty().readValueFromXML(valueElement);
                 }
                 Expression exp = new Expression(booleanExpression, value);
                 ruleData.addExpression(exp);
             }
-            
+
             for(Object pvo : se.getChildren(XML_ELEMENT_PV)){
                 Element pve = (Element)pvo;
                 boolean trig = true;
@@ -149,9 +149,9 @@ public class RulesProperty extends AbstractWidgetProperty {
                     trig = Boolean.parseBoolean(pve.getAttributeValue(XML_ATTRIBUTE_TRIGGER));
                 ruleData.addPV(new PVTuple(pve.getText(), trig));
             }
-            
-            result.getRuleDataList().add(ruleData);            
-        }        
+
+            result.getRuleDataList().add(ruleData);
+        }
         return result;
     }
 
@@ -163,7 +163,7 @@ public class RulesProperty extends AbstractWidgetProperty {
                 ruleElement.setAttribute(XML_ATTRIBUTE_PROPID, ruleData.getPropId());
                 ruleElement.setAttribute(XML_ATTRIBUTE_OUTPUTEXPRESSION,
                         Boolean.toString(ruleData.isOutputExpValue()));
-                
+
                 for(Expression exp : ruleData.getExpressionList()){
                     Element expElement = new Element(XML_ELEMENT_EXPRESSION);
                     expElement.setAttribute(XML_ATTRIBUTE_BOOLEXP, exp.getBooleanExpression());
@@ -178,8 +178,8 @@ public class RulesProperty extends AbstractWidgetProperty {
                     }
                     expElement.addContent(valueElement);
                     ruleElement.addContent(expElement);
-                }                
-                
+                }
+
                 for(PVTuple pv : ruleData.getPVList()){
                     Element pvElement = new Element(XML_ELEMENT_PV);
                     pvElement.setText(pv.pvName);
@@ -187,7 +187,7 @@ public class RulesProperty extends AbstractWidgetProperty {
                     ruleElement.addContent(pvElement);
                 }
                 propElement.addContent(ruleElement);
-        }        
+        }
     }
 
 }

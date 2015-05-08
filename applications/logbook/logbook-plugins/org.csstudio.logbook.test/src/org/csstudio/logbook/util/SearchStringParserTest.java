@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.util;
 
@@ -13,7 +13,7 @@ import org.junit.Test;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class SearchStringParserTest {
     private static final String defaultKey = "text";
@@ -38,7 +38,7 @@ public class SearchStringParserTest {
     assertEquals("Failed to parse " + textAndlogbook,
         expectedTextAndlogbook,
         searchParser(textAndlogbook, defaultKey));
-    
+
     String textAndProperty = "test shift.Id:1";
     Map<String, String> expectedTextAndProperty = new HashMap<String, String>();
     expectedTextAndProperty.put("text", "test");
@@ -46,7 +46,7 @@ public class SearchStringParserTest {
     assertEquals("Failed to parse " + textAndProperty,
         expectedTextAndProperty,
         searchParser(textAndProperty, defaultKey));
-    
+
     String textAnd2Property = "test shift.Id:1 SignOff.signature:test";
     Map<String, String> expectedTextAnd2Property = new HashMap<String, String>();
     expectedTextAnd2Property.put("text", "test");

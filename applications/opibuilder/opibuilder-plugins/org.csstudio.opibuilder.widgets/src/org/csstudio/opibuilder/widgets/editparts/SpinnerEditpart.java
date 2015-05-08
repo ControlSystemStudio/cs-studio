@@ -46,7 +46,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
     private IPVListener pvLoadLimitsListener;
     private Display meta = null;
     private IPVListener pvLoadPrecisionListener;
-    
+
     @Override
     protected IFigure doCreateFigure() {
         SpinnerFigure spinner = new SpinnerFigure();
@@ -133,7 +133,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
                         };
                     pv.addListener(pvLoadLimitsListener);
                 }
-            }            
+            }
         }
     }
 
@@ -280,7 +280,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
                 }
             };
             setPropertyChangeHandler(SpinnerModel.PROP_PRECISION, handler);
-            
+
             handler = new IWidgetPropertyChangeHandler() {
 
                 public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
@@ -289,7 +289,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
                 }
             };
             setPropertyChangeHandler(SpinnerModel.PROP_BUTTONS_ON_LEFT, handler);
-            
+
             handler = new IWidgetPropertyChangeHandler() {
 
                 public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
@@ -298,13 +298,13 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
                 }
             };
             setPropertyChangeHandler(SpinnerModel.PROP_HORIZONTAL_BUTTONS_LAYOUT, handler);
-            
+
 
     }
 
     public DragTracker getDragTracker(Request request) {
         if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-            return new SelectEditPartTracker(this) {                
+            return new SelectEditPartTracker(this) {
                 @Override
                 protected boolean handleButtonUp(int button) {
                     if (button == 1) {
@@ -330,7 +330,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
     protected void performDirectEdit(){
         new SpinnerTextEditManager(this,
                 new LabelCellEditorLocator(
-                        ((SpinnerFigure)getFigure()).getLabelFigure()), false,((SpinnerFigure)figure).getStepIncrement(),((SpinnerFigure)figure).getPageIncrement()).show();    
+                        ((SpinnerFigure)getFigure()).getLabelFigure()), false,((SpinnerFigure)figure).getStepIncrement(),((SpinnerFigure)figure).getPageIncrement()).show();
     }
 
     @Override

@@ -9,9 +9,9 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * Utility class that helps to create standard widgets used in the editing forms
  * of CSS-DCT.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class WidgetUtil {
     /**
@@ -23,7 +23,7 @@ public final class WidgetUtil {
     /**
      * Creates and returns a new standard table with 3 columns (for key, value,
      * error).
-     * 
+     *
      * @param parent
      *            the parent composite
      * @param commandStack

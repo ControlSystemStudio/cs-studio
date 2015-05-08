@@ -24,88 +24,88 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  * @author Xihui Chen
  *
  */
-public class ScriptData implements IAdaptable {    
+public class ScriptData implements IAdaptable {
 
     /**
      * The path of the script.
      */
     private IPath path;
-    
+
     /**
      * The input PVs of the script. Which can be accessed in the script and trigger the script execution.
      */
     protected List<PVTuple> pvList;
-    
+
     /**
-     * Check PVs connectivity before executing the script. 
+     * Check PVs connectivity before executing the script.
      */
     private boolean checkConnectivity = true;
-    
+
     /**
      * Skip the executions triggered by PVs first connection.
      */
     private boolean skipPVsFirstConnection = false;
-    
+
     /**
      * Stop to execute the script if error is detected in script.
      */
     private boolean stopExecuteOnError = false;
-    
+
     private ScriptType scriptType;
-    
+
     private boolean isEmbedded = false;
-    
+
     private String scriptText;
-    
+
     private String scriptName;
-    
-    
+
+
     public ScriptData() {
         path = new Path("");
         pvList = new ArrayList<PVTuple>();
     }
-    
+
     public ScriptData(IPath path) {
         this.path = path;
         pvList = new ArrayList<PVTuple>();
     }
-    
+
     /**Set the script path.
      * @param path the file path of the script.
      * @return true if successful. false if the input is not a javascript file.
      */
     public boolean setPath(IPath path){
         if(path.getFileExtension() != null){
-            this.path = path; 
+            this.path = path;
             return true;
         }
-        return false;        
+        return false;
     }
-    
+
     /**Get the path of the script.
      * @return the file path.
      */
     public IPath getPath() {
         return path;
     }
-    
-    /**Get the input PVs of the script 
+
+    /**Get the input PVs of the script
      * @return
      */
     public List<PVTuple> getPVList() {
         return pvList;
     }
-    
+
     public void addPV(PVTuple pvTuple){
         if(!pvList.contains(pvTuple)){
             pvList.add(pvTuple);
-        }            
+        }
     }
-    
+
     public void removePV(PVTuple pvTuple){
         pvList.remove(pvTuple);
-    }    
-    
+    }
+
     public void setCheckConnectivity(boolean checkConnectivity) {
         this.checkConnectivity = checkConnectivity;
     }
@@ -113,7 +113,7 @@ public class ScriptData implements IAdaptable {
     public boolean isCheckConnectivity() {
         return checkConnectivity;
     }
-    
+
     public ScriptData getCopy(){
         ScriptData copy = new ScriptData();
         copy.setPath(path);
@@ -135,25 +135,25 @@ public class ScriptData implements IAdaptable {
     public Object getAdapter(Class adapter) {
         if(adapter == IWorkbenchAdapter.class)
             return new IWorkbenchAdapter() {
-                
+
                 public Object getParent(Object o) {
                     return null;
                 }
-                
+
                 public String getLabel(Object o) {
                     if(isEmbedded)
                         return getScriptName();
                     return path.toString();
                 }
-                
+
                 public ImageDescriptor getImageDescriptor(Object object) {
                     String icon;
                     if(isEmbedded){
                         if(getScriptType() == ScriptType.PYTHON )
                             icon = "icons/pyEmbedded.gif";
                         else
-                            icon = "icons/jsEmbedded.gif";                        
-                    }else if(path != null && !path.isEmpty() 
+                            icon = "icons/jsEmbedded.gif";
+                    }else if(path != null && !path.isEmpty()
                             && path.getFileExtension().equals(ScriptService.PY)){
                         icon = "icons/python_file.gif"; //$NON-NLS-1$
                     }else
@@ -161,12 +161,12 @@ public class ScriptData implements IAdaptable {
                     return CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
                             OPIBuilderPlugin.PLUGIN_ID, icon);
                 }
-                
+
                 public Object[] getChildren(Object o) {
                     return new Object[0];
                 }
             };
-        
+
         return null;
     }
 
@@ -183,7 +183,7 @@ public class ScriptData implements IAdaptable {
     public boolean isSkipPVsFirstConnection() {
         return skipPVsFirstConnection;
     }
-    
+
     /**
      * @param stopExecuteOnError
      *  If true, stop to execute the script if error is detected in script.
@@ -192,7 +192,7 @@ public class ScriptData implements IAdaptable {
             boolean stopExecuteOnError) {
         this.stopExecuteOnError = stopExecuteOnError;
     }
-    
+
     /**
      * @return true if stop to execute the script if error is detected in script..
      */
@@ -256,5 +256,5 @@ public class ScriptData implements IAdaptable {
         this.scriptName = scriptName;
     }
 
-    
+
 }

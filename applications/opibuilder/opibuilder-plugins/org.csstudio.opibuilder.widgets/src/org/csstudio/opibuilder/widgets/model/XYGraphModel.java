@@ -39,9 +39,9 @@ import org.osgi.framework.Version;
  * @author Xihui Chen
  */
 public class XYGraphModel extends AbstractPVWidgetModel {
-    
-    
-    
+
+
+
     public enum AxisProperty{
         Y_AXIS("y_axis", "Y Axis"),
         VISIBLE("visible", "Visible"),
@@ -59,22 +59,22 @@ public class XYGraphModel extends AbstractPVWidgetModel {
         SHOW_GRID("show_grid", "Show Grid"),
         GRID_COLOR("grid_color", "Grid Color"),
         DASH_GRID("dash_grid_line", "Dash Grid Line"),
-        SCALE_FORMAT("scale_format", "Scale Format");        
-        
+        SCALE_FORMAT("scale_format", "Scale Format");
+
         public String propIDPre;
         public String description;
-        
+
         private AxisProperty(String propertyIDPrefix, String description) {
             this.propIDPre = propertyIDPrefix;
             this.description = description;
         }
-        
+
         @Override
         public String toString() {
             return description;
         }
-    }    
-    
+    }
+
     public enum TraceProperty{
         NAME("name", "Name"),
         PLOTMODE("plot_mode", "Plot Mode"),
@@ -86,7 +86,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
         YPV("y_pv", "Y PV"),
         XPV_VALUE("x_pv_value", "X PV Value"),
         YPV_VALUE("y_pv_value", "Y PV Value"),
-        //CHRONOLOGICAL("chronological", "Chronological"),        
+        //CHRONOLOGICAL("chronological", "Chronological"),
         TRACE_COLOR("trace_color","Trace Color"),
         XAXIS_INDEX("x_axis_index", "X Axis Index"),
         YAXIS_INDEX("y_axis_index", "Y Axis Index"),
@@ -100,50 +100,50 @@ public class XYGraphModel extends AbstractPVWidgetModel {
         VISIBLE("visible", "Visible");
         public String propIDPre;
         public String description;
-        
+
         private TraceProperty(String propertyIDPrefix, String description) {
             this.propIDPre = propertyIDPrefix;
             this.description = description;
         }
-        
+
         @Override
         public String toString() {
             return description;
         }
-    }        
-    
+    }
+
     public final static String[] TIME_FORMAT_ARRAY = new String[]{
-        "None", "yyyy-MM-dd\nHH:mm:ss",  "yyyy-MM-dd\nHH:mm:ss.SSS", "HH:mm:ss", "HH:mm:ss.SSS", "HH:mm", 
+        "None", "yyyy-MM-dd\nHH:mm:ss",  "yyyy-MM-dd\nHH:mm:ss.SSS", "HH:mm:ss", "HH:mm:ss.SSS", "HH:mm",
         "yyyy-MM-dd", "MMMMM d", "Auto"};
-    
-    
+
+
     /** The ID of the title property. */
     public static final String PROP_TITLE = "title"; //$NON-NLS-1$
-    
+
     /** The ID of the title font property. */
     public static final String PROP_TITLE_FONT = "title_font"; //$NON-NLS-1$
-    
+
     /** The ID of the show legend property. */
     public static final String PROP_SHOW_LEGEND = "show_legend"; //$NON-NLS-1$
-    
+
     /** The ID of the show plot area border property. */
-    public static final String PROP_SHOW_PLOTAREA_BORDER = "show_plot_area_border"; //$NON-NLS-1$        
-    
+    public static final String PROP_SHOW_PLOTAREA_BORDER = "show_plot_area_border"; //$NON-NLS-1$
+
     /** The ID of the plot area background color property.*/
     public static final String PROP_PLOTAREA_BACKCOLOR = "plot_area_background_color"; //$NON-NLS-1$
-    
+
     /** The ID of the transparent property. */
     public static final String PROP_TRANSPARENT = "transparent"; //$NON-NLS-1$
-    
+
     /** The ID of the number of axes property. */
     public static final String PROP_AXIS_COUNT = "axis_count"; //$NON-NLS-1$
-    
+
     /** The ID of the number of axes property. */
     public static final String PROP_TRACE_COUNT = "trace_count"; //$NON-NLS-1$
-    
+
     /** The ID of the show toolbar property. */
     public static final String PROP_SHOW_TOOLBAR = "show_toolbar"; //$NON-NLS-1$
-    
+
     public static final String PROP_TRIGGER_PV = "trigger_pv"; //$NON-NLS-1$
 
     public static final String PROP_TRIGGER_PV_VALUE = "trigger_pv_value"; //$NON-NLS-1$
@@ -153,64 +153,64 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 
     /** The default color of the axis color property. */
     private static final RGB DEFAULT_AXIS_COLOR = new RGB(0,0,0);
-    
+
     /** The default color of the grid color property. */
     private static final RGB DEFAULT_GRID_COLOR = new RGB(200,200,200);
-    
+
     /** The default value of the minimum property. */
     private static final double DEFAULT_MIN = 0;
-    
-    /** The default value of the maximum property. */    
-    private static final double DEFAULT_MAX = 100;    
-    
+
+    /** The default value of the maximum property. */
+    private static final double DEFAULT_MAX = 100;
+
     /** The default value of the buffer size property. */
-    private static final int DEFAULT_BUFFER_SIZE = 100;    
-    
+    private static final int DEFAULT_BUFFER_SIZE = 100;
+
     /** The maximum allowed buffer size. */
-    private static final int MAX_BUFFER_SIZE = 10000000;    
-    
+    private static final int MAX_BUFFER_SIZE = 10000000;
+
     public static final int MAX_AXES_AMOUNT = 4;
-    
+
     public static final int MAX_TRACES_AMOUNT = 20;
-    
+
     public final static String[] AXES_ARRAY = new String[MAX_AXES_AMOUNT];
     {
         AXES_ARRAY[0] = "Primary X Axis (0)";
         AXES_ARRAY[1] = "Primary Y Axis (1)";
-        for(int i=2; i<MAX_AXES_AMOUNT; i++)        
-            AXES_ARRAY[i] = "Secondary Axis (" + i + ")";            
+        for(int i=2; i<MAX_AXES_AMOUNT; i++)
+            AXES_ARRAY[i] = "Secondary Axis (" + i + ")";
     }
     /**
      * The ID of this widget model.
      */
-    public static final String ID = "org.csstudio.opibuilder.widgets.xyGraph"; //$NON-NLS-1$    
-    
-    /** The default value of the height property. */    
+    public static final String ID = "org.csstudio.opibuilder.widgets.xyGraph"; //$NON-NLS-1$
+
+    /** The default value of the height property. */
     private static final int DEFAULT_HEIGHT = 250;
-    
+
     /** The default value of the width property. */
     private static final int DEFAULT_WIDTH = 400;
-    
+
     public XYGraphModel() {
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         setForegroundColor(CustomMediaFactory.COLOR_BLUE);
         setTooltip("$(trace_0_y_pv)\n$(trace_0_y_pv_value)");
-        
+
     }
 
     @Override
     protected void configureProperties() {
         addPVProperty(new PVNameProperty(PROP_TRIGGER_PV, "Trigger PV",
-                WidgetPropertyCategory.Behavior, ""), 
+                WidgetPropertyCategory.Behavior, ""),
                 new PVValueProperty(PROP_TRIGGER_PV_VALUE, null));
         addProperty(new StringProperty(PROP_TITLE, "Title",
-                WidgetPropertyCategory.Display, ""));    
+                WidgetPropertyCategory.Display, ""));
         addProperty(new FontProperty(PROP_TITLE_FONT, "Title Font",
                 WidgetPropertyCategory.Display, MediaService.DEFAULT_BOLD_FONT)); //$NON-NLS-1$
         addProperty(new BooleanProperty(PROP_SHOW_LEGEND, "Show Legend",
-                WidgetPropertyCategory.Display,true));        
+                WidgetPropertyCategory.Display,true));
         addProperty(new BooleanProperty(PROP_SHOW_PLOTAREA_BORDER, "Show Plot Area Border",
-                WidgetPropertyCategory.Display,false));    
+                WidgetPropertyCategory.Display,false));
         addProperty(new BooleanProperty(PROP_SHOW_TOOLBAR, "Show Toolbar",
                 WidgetPropertyCategory.Display,true));
         addProperty(new ColorProperty(PROP_PLOTAREA_BACKCOLOR, "Plot Area Background Color",
@@ -220,35 +220,35 @@ public class XYGraphModel extends AbstractPVWidgetModel {
         addProperty(new IntegerProperty(PROP_AXIS_COUNT, "Axis Count",
                 WidgetPropertyCategory.Behavior,2,  2, MAX_AXES_AMOUNT));
         addProperty(new IntegerProperty(PROP_TRACE_COUNT, "Trace Count",
-                WidgetPropertyCategory.Behavior, 1, 0, MAX_TRACES_AMOUNT));    
+                WidgetPropertyCategory.Behavior, 1, 0, MAX_TRACES_AMOUNT));
         addAxisProperties();
         addTraceProperties();
-        setPropertyVisible(PROP_FONT, false);        
+        setPropertyVisible(PROP_FONT, false);
     }
-    
+
     @Override
     public void processVersionDifference(Version boyVersionOnFile) {
         super.processVersionDifference(boyVersionOnFile);
         if(UpgradeUtil.VERSION_WITH_PVMANAGER.compareTo(boyVersionOnFile)>0){
-            setPropertyValue(PROP_TRIGGER_PV, 
+            setPropertyValue(PROP_TRIGGER_PV,
                     UpgradeUtil.convertUtilityPVNameToPM(
-                            (String) getPropertyValue(PROP_TRIGGER_PV)));            
-            
+                            (String) getPropertyValue(PROP_TRIGGER_PV)));
+
             for(int i=0; i < MAX_TRACES_AMOUNT; i++){
                 String traceXPVPropId = makeTracePropID(TraceProperty.XPV.propIDPre, i);
-                setPropertyValue(traceXPVPropId, 
+                setPropertyValue(traceXPVPropId,
                         UpgradeUtil.convertUtilityPVNameToPM(
                                 (String) getPropertyValue(traceXPVPropId)));
-                
+
                 String traceYPVPropId = makeTracePropID(TraceProperty.YPV.propIDPre, i);
-                setPropertyValue(traceYPVPropId, 
+                setPropertyValue(traceYPVPropId,
                         UpgradeUtil.convertUtilityPVNameToPM(
                                 (String) getPropertyValue(traceYPVPropId)));
             }
         }
     }
-    
-    
+
+
     private void addAxisProperties(){
         for(int i=0; i < MAX_AXES_AMOUNT; i++){
             WidgetPropertyCategory category;
@@ -262,10 +262,10 @@ public class XYGraphModel extends AbstractPVWidgetModel {
                 addAxisProperty(axisProperty, i, category);
         }
     }
-    
-    private void addAxisProperty(AxisProperty axisProperty, int axisIndex, WidgetPropertyCategory category){        
-        String propID = makeAxisPropID(axisProperty.propIDPre, axisIndex);        
-        
+
+    private void addAxisProperty(AxisProperty axisProperty, int axisIndex, WidgetPropertyCategory category){
+        String propID = makeAxisPropID(axisProperty.propIDPre, axisIndex);
+
         switch (axisProperty) {
         case Y_AXIS:
             if(axisIndex < 2)
@@ -276,7 +276,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
             if(axisIndex < 2)
                 break;
             addProperty(new BooleanProperty(propID, axisProperty.toString(), category, true));
-            break;            
+            break;
         case TITLE:
             addProperty(new StringProperty(propID, axisProperty.toString(), category, category.toString()));
             break;
@@ -287,7 +287,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
         case SCALE_FONT:
             addProperty(new FontProperty(propID, axisProperty.toString(), category,
                     MediaService.DEFAULT_FONT));
-            break;    
+            break;
         case AXIS_COLOR:
             addProperty(new ColorProperty(propID, axisProperty.toString(), category, DEFAULT_AXIS_COLOR));
             break;
@@ -301,20 +301,20 @@ public class XYGraphModel extends AbstractPVWidgetModel {
         case SHOW_GRID:
         case DASH_GRID:
             addProperty(new BooleanProperty(propID, axisProperty.toString(), category, true));
-            break;    
+            break;
         case MAX:
             addProperty(new DoubleProperty(propID, axisProperty.toString(), category, DEFAULT_MAX));
             break;
         case MIN:
             addProperty(new DoubleProperty(propID, axisProperty.toString(), category,DEFAULT_MIN));
-            break;    
+            break;
         case TIME_FORMAT:
-            addProperty(new ComboProperty(propID, 
+            addProperty(new ComboProperty(propID,
                     axisProperty.toString(), category, TIME_FORMAT_ARRAY, 0));
-            break;    
+            break;
         case GRID_COLOR:
             addProperty(new ColorProperty(propID, axisProperty.toString(), category,DEFAULT_GRID_COLOR));
-            break;    
+            break;
         case VISIBLE:
             addProperty(new BooleanProperty(propID, axisProperty.toString(), category, true));
             break;
@@ -325,20 +325,20 @@ public class XYGraphModel extends AbstractPVWidgetModel {
             break;
         }
     }
-    
+
     public static String makeAxisPropID(String propIDPre, int index){
         return "axis_" + index + "_" + propIDPre; //$NON-NLS-1$ //$NON-NLS-2$
     }
-    
+
     private void addTraceProperties(){
         for(int i=0; i < MAX_TRACES_AMOUNT; i++){
             for(TraceProperty traceProperty : TraceProperty.values())
                 addTraceProperty(traceProperty, i);
         }
     }
-    
-    private void addTraceProperty(TraceProperty traceProperty, int traceIndex){        
-        String propID = makeTracePropID(traceProperty.propIDPre, traceIndex);        
+
+    private void addTraceProperty(TraceProperty traceProperty, int traceIndex){
+        String propID = makeTracePropID(traceProperty.propIDPre, traceIndex);
         WidgetPropertyCategory category = new NameDefinedCategory("Trace " + traceIndex);
         switch (traceProperty) {
         case NAME:
@@ -350,7 +350,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
             addProperty(new BooleanProperty(propID, traceProperty.toString(), category, true));
             break;
         case BUFFER_SIZE:
-            addProperty(new IntegerProperty(propID, 
+            addProperty(new IntegerProperty(propID,
                     traceProperty.toString(), category, DEFAULT_BUFFER_SIZE, 1, MAX_BUFFER_SIZE));
             break;
         case CONCATENATE_DATA:
@@ -363,7 +363,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
             addProperty(new IntegerProperty(propID, traceProperty.toString(), category, 1, 1, 100));
             break;
         case PLOTMODE:
-            addProperty(new ComboProperty(propID, traceProperty.toString(), category, PlotMode.stringValues(), 
+            addProperty(new ComboProperty(propID, traceProperty.toString(), category, PlotMode.stringValues(),
                     0));
             break;
         case POINT_SIZE:
@@ -374,11 +374,11 @@ public class XYGraphModel extends AbstractPVWidgetModel {
                     0));
             break;
         case TRACE_COLOR:
-            addProperty(new ColorProperty(propID, traceProperty.toString(), category, 
+            addProperty(new ColorProperty(propID, traceProperty.toString(), category,
                     XYGraph.DEFAULT_TRACES_COLOR[traceIndex%XYGraph.DEFAULT_TRACES_COLOR.length]));
-            break;    
+            break;
         case TRACE_TYPE:
-            addProperty(new ComboProperty(propID, traceProperty.toString(), category, TraceType.stringValues(), 
+            addProperty(new ComboProperty(propID, traceProperty.toString(), category, TraceType.stringValues(),
                     0));
             break;
     //    case TRIGGER_VALUE:
@@ -388,20 +388,20 @@ public class XYGraphModel extends AbstractPVWidgetModel {
             addProperty(new IntegerProperty(propID, traceProperty.toString(), category, 100, 0, 655350));
             break;
         case UPDATE_MODE:
-            addProperty(new ComboProperty(propID, traceProperty.toString(), category, UpdateMode.stringValues(), 
+            addProperty(new ComboProperty(propID, traceProperty.toString(), category, UpdateMode.stringValues(),
                     0));
             break;
         case XAXIS_INDEX:
             addProperty(new ComboProperty(propID, traceProperty.toString(), category, AXES_ARRAY, 0));
             break;
         case XPV:
-            addPVProperty(new PVNameProperty(propID, traceProperty.toString(), category, ""), 
-                    new PVValueProperty(makeTracePropID(TraceProperty.XPV_VALUE.propIDPre, traceIndex), null));            
+            addPVProperty(new PVNameProperty(propID, traceProperty.toString(), category, ""),
+                    new PVValueProperty(makeTracePropID(TraceProperty.XPV_VALUE.propIDPre, traceIndex), null));
             break;
         case YPV:
-            addPVProperty(new PVNameProperty(propID, traceProperty.toString(), category, 
-                    traceIndex == 0 ? "$(" + PROP_PVNAME + ")" : ""), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
-                    new PVValueProperty(makeTracePropID(TraceProperty.YPV_VALUE.propIDPre, traceIndex), null));            
+            addPVProperty(new PVNameProperty(propID, traceProperty.toString(), category,
+                    traceIndex == 0 ? "$(" + PROP_PVNAME + ")" : ""), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    new PVValueProperty(makeTracePropID(TraceProperty.YPV_VALUE.propIDPre, traceIndex), null));
             break;
         case YAXIS_INDEX:
             addProperty(new ComboProperty(propID, traceProperty.toString(), category, AXES_ARRAY, 1));
@@ -412,15 +412,15 @@ public class XYGraphModel extends AbstractPVWidgetModel {
         default:
             break;
         }
-        
-        
+
+
     }
-    
-    
+
+
     public static String makeTracePropID(String propIDPre, int index){
         return "trace_" +index + "_" + propIDPre; //$NON-NLS-1$ //$NON-NLS-2$
     }
-    
+
     /**
      * @return the title
      */
@@ -430,56 +430,56 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 
     /**
      * Return the title font.
-     * 
+     *
      * @return The title font.
      */
     public OPIFont getTitleFont() {
         return (OPIFont) getProperty(PROP_TITLE_FONT).getPropertyValue();
     }
-    
+
     /**
      * @return true if the plot area border should be shown, false otherwise
      */
     public boolean isShowPlotAreaBorder() {
         return (Boolean) getProperty(PROP_SHOW_PLOTAREA_BORDER).getPropertyValue();
     }
-    
-    
+
+
     /**
      * @return the plot area background color
      */
     public RGB getPlotAreaBackColor() {
         return getRGBFromColorProperty(PROP_PLOTAREA_BACKCOLOR);
-    }    
-    
+    }
+
     /**
      * @return true if the XY Graph is transparent, false otherwise
      */
     public boolean isTransprent() {
         return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
     }
-    
+
     /**
      * @return true if the legend should be shown, false otherwise
      */
     public boolean isShowLegend() {
         return (Boolean) getProperty(PROP_SHOW_LEGEND).getPropertyValue();
     }
-    
+
     /**
      * @return true if the legend should be shown, false otherwise
      */
     public boolean isShowToolbar() {
         return (Boolean) getProperty(PROP_SHOW_TOOLBAR).getPropertyValue();
     }
-    
+
     /**
      * @return The number of axes.
      */
     public int getAxesAmount() {
         return (Integer) getProperty(PROP_AXIS_COUNT).getPropertyValue();
     }
-    
+
     /**
      * @return The number of traces.
      */

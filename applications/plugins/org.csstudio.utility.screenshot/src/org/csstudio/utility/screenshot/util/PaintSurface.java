@@ -1,23 +1,23 @@
 
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  *
  */
@@ -54,14 +54,14 @@ public class PaintSurface
     private ImageBundle imageBundle = null;
     private AffineTransform transform = new AffineTransform();
     private Image screenImage = null;
-    
+
     public PaintSurface(Canvas paintCanvas, ImageBundle bundle)
     {
         this.paintCanvas = paintCanvas;
         this.imageBundle = bundle;
 
         if(imageBundle != null)
-        {       
+        {
             if(imageBundle.getSectionImage() != null)
             {
                 imageBundle.setDisplayedImage(imageBundle.getSectionImage());
@@ -75,27 +75,27 @@ public class PaintSurface
                 imageBundle.setDisplayedImage(imageBundle.getScreenImage());
             }
         }
-        
+
         paintCanvas.addPaintListener(new PaintListener()
         {
             public void paintControl(PaintEvent event)
             {
                 Rectangle clientRect = null;
-                
+
                 if(imageBundle.getDisplayedImage() != null)
                 {
                     Canvas widget = (Canvas)event.widget;
                     clientRect = widget.getClientArea();
-                    
+
                     Rectangle imageRect=SWT2Dutil.inverseTransformRect(transform, clientRect);
                     int gap = 2; /* find a better start point to render. */
                     imageRect.x -= gap; imageRect.y -= gap;
                     imageRect.width += 2 * gap; imageRect.height += 2 * gap;
-    
+
                     Rectangle imageBound = imageBundle.getDisplayedImage().getBounds();
                     imageRect = imageRect.intersection(imageBound);
                     Rectangle destRect = SWT2Dutil.transformRect(transform, imageRect);
-         
+
                     if(screenImage != null){screenImage.dispose();}
                     screenImage = new Image(widget.getDisplay(), clientRect.width, clientRect.height);
                     GC newGC = new GC(screenImage);
@@ -110,7 +110,7 @@ public class PaintSurface
                             destRect.width,
                             destRect.height);
                     newGC.dispose();
-    
+
                     event.gc.drawImage(screenImage, 0, 0);
                 }
                 else
@@ -119,17 +119,17 @@ public class PaintSurface
                     event.gc.fillRectangle(clientRect);
                     initScrollBars();
                 }
-            }            
+            }
         });
-                
+
         paintCanvas.addControlListener(new ControlAdapter()
         {
             public void controlResized(ControlEvent event)
             {
                 syncScrollBars();
-            }           
+            }
         });
-        
+
         initScrollBars();
     }
 
@@ -142,7 +142,7 @@ public class PaintSurface
                 scrollHorizontally((ScrollBar) event.widget);
             }
         });
-        
+
         ScrollBar vertical = paintCanvas.getVerticalBar();
         vertical.setEnabled(false);
         vertical.addSelectionListener(new SelectionAdapter() {
@@ -241,26 +241,26 @@ public class PaintSurface
     {
         paintCanvas.redraw();
     }
-    
+
     public void dispose()
     {
         paintCanvas = null;
         imageBundle = null;
-        
+
         if(screenImage != null)
         {
             if(!screenImage.isDisposed())
             {
                 screenImage.dispose();
             }
-            
+
             screenImage = null;
         }
     }
-    
+
     /**
      * Perform a zooming operation centered on the given point
-     * (dx, dy) and using the given scale factor. 
+     * (dx, dy) and using the given scale factor.
      * The given AffineTransform instance is preconcatenated.
      * @param dx center x
      * @param dy center y
@@ -346,7 +346,7 @@ public class PaintSurface
     public void setCapturedImage(Image i)
     {
         // TODO Auto-generated method stub
-        
+
     }
 
     public ImageBundle getAllImages()

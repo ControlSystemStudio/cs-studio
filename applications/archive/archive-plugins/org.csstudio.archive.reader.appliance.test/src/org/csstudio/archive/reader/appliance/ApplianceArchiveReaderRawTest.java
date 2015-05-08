@@ -14,9 +14,9 @@ import org.epics.util.time.Timestamp;
 import org.junit.Test;
 
 /**
- * 
+ *
  * <code>ApplianceRawArchiveReaderTest</code> tests raw data retrieval using
- * a dummy appliance server loopback. 
+ * a dummy appliance server loopback.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -27,12 +27,12 @@ public class ApplianceArchiveReaderRawTest extends AbstractArchiverReaderTesting
     protected ArchiveReader getReader() {
         return new TestApplianceArchiveReader(false);
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
      * method for a double type PV.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -41,7 +41,7 @@ public class ApplianceArchiveReaderRawTest extends AbstractArchiverReaderTesting
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_double",false,0, start, end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
-        
+
         ArchiveVNumber val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -51,12 +51,12 @@ public class ApplianceArchiveReaderRawTest extends AbstractArchiverReaderTesting
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
      * method for a float type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -65,7 +65,7 @@ public class ApplianceArchiveReaderRawTest extends AbstractArchiverReaderTesting
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_float",false,0, start, end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
-        
+
         ArchiveVNumber val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -75,12 +75,12 @@ public class ApplianceArchiveReaderRawTest extends AbstractArchiverReaderTesting
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
      * method for an int type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -89,7 +89,7 @@ public class ApplianceArchiveReaderRawTest extends AbstractArchiverReaderTesting
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_int",false,0, start, end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
-        
+
         ArchiveVNumber val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -99,12 +99,12 @@ public class ApplianceArchiveReaderRawTest extends AbstractArchiverReaderTesting
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
      * method for a short type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -113,7 +113,7 @@ public class ApplianceArchiveReaderRawTest extends AbstractArchiverReaderTesting
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_short",false,0, start,end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
-        
+
         ArchiveVNumber val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -123,12 +123,12 @@ public class ApplianceArchiveReaderRawTest extends AbstractArchiverReaderTesting
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
      * method for a byte type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -137,7 +137,7 @@ public class ApplianceArchiveReaderRawTest extends AbstractArchiverReaderTesting
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_byte",false,0,start,end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
-        
+
         ArchiveVNumber val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -147,12 +147,12 @@ public class ApplianceArchiveReaderRawTest extends AbstractArchiverReaderTesting
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
      * method for a string type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -161,7 +161,7 @@ public class ApplianceArchiveReaderRawTest extends AbstractArchiverReaderTesting
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVString[] vals = getValuesString("test_pv_string",false,0,start,end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
-        
+
         ArchiveVString val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -171,12 +171,12 @@ public class ApplianceArchiveReaderRawTest extends AbstractArchiverReaderTesting
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
      * method for an enum type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -185,7 +185,7 @@ public class ApplianceArchiveReaderRawTest extends AbstractArchiverReaderTesting
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVEnum[] vals = getValuesEnum("test_pv_enum",false,0,start,end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
-        
+
         ArchiveVEnum val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];

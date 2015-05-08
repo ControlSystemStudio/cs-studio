@@ -25,9 +25,9 @@ import org.csstudio.domain.common.LayoutUtil;
 
 /**
  * Editing component for instances.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class InstanceForm extends AbstractPropertyContainerForm<IInstance> {
     private ParameterValuesClipboard parameterClipboard;
@@ -37,7 +37,7 @@ public final class InstanceForm extends AbstractPropertyContainerForm<IInstance>
 
     /**
      * Constructor.
-     * 
+     *
      * @param editor
      *            the editor instance
      */
@@ -143,7 +143,7 @@ public final class InstanceForm extends AbstractPropertyContainerForm<IInstance>
     }
 
     /**
-     * 
+     *
      *{@inheritDoc}
      */
     @Override

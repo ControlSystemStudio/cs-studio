@@ -35,14 +35,14 @@ public class ScanScript
 {
     /** Scan scripts may have arguments,
      *  and their constructor will be called with those arguments.
-     *  
+     *
      *  <p>The default implementation has no arguments.
      */
     public ScanScript()
     {
         // Nop
     }
-    
+
     /** Scan scripts that intend to access devices
      *  need to list their names.
      *  This allows the scan system to connect to the

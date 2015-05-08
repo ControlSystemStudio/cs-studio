@@ -5,9 +5,9 @@ import java.beans.PropertyChangeSupport;
 
 /**
  * Base class for elements of the graphical model.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public abstract class AbstractBase {
     private transient PropertyChangeSupport _pcsDelegate;
@@ -22,7 +22,7 @@ public abstract class AbstractBase {
 
     /**
      * Adds a {@link PropertyChangeListener}.
-     * 
+     *
      * @param listener
      *            the listener
      */
@@ -34,7 +34,7 @@ public abstract class AbstractBase {
 
     /**
      * Removes a {@link PropertyChangeListener}.
-     * 
+     *
      * @param listener
      *            the listener
      */
@@ -46,7 +46,7 @@ public abstract class AbstractBase {
 
     /**
      * Returns the node´s caption.
-     * 
+     *
      * @return the caption
      */
     public abstract String getCaption();
@@ -61,7 +61,7 @@ public abstract class AbstractBase {
 
     /**
      * Report a property change to registered listeners.
-     * 
+     *
      * @param property
      *            the name of the property that changed
      * @param oldValue

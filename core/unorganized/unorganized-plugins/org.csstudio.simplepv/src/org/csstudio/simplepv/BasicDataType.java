@@ -21,17 +21,17 @@ public enum BasicDataType {
         DOUBLE_ARRAY("double[]"), //$NON-NLS-1$
         STRING_ARRAY("String[]"), //$NON-NLS-1$
         ENUM_ARRAY("enum[]"),
-        OBJECT_ARRAY("Object[]");//$NON-NLS-1$        
+        OBJECT_ARRAY("Object[]");//$NON-NLS-1$
         private String description;
         private BasicDataType(String description) {
             this.description = description;
         }
-        
+
         @Override
         public String toString() {
             return description;
         }
-        
+
         public static String[] stringValues(){
             String[] result = new String[values().length];
             int i =0 ;

@@ -77,7 +77,7 @@ public class Messages extends NLS {
     public static String ADLDisplayImporter_ADLBackgroundLayerName;
     public static String ADLDisplayImporter_ADLBargraphLayerDes;
     public static String ADLDisplayImporter_ADLBargraphLayerName;
-    public static String ADLDisplayImporter_ADLDynamicLayerDes;    
+    public static String ADLDisplayImporter_ADLDynamicLayerDes;
     public static String ADLDisplayImporter_ADLDynamicLayerName;
     public static String ADLDisplayImporter_Dialog_Header_Directory_not_exist;
     public static String ADLDisplayImporter_Dialog_No2All_Button;
@@ -148,7 +148,7 @@ public class Messages extends NLS {
     public static String Textinput_Format_Debug;
     public static String Textinput_WrongADLFormatException;
     public static String Textinput_WrongADLFormatException_Parameter_Begin;
-        
+
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

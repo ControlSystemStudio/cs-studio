@@ -10,11 +10,11 @@ import org.eclipse.core.commands.ExecutionEvent;
 
 /**
  * Opens the waterfall view.
- * 
+ *
  * @author carcassi
  */
 public class OpenWaterfall extends AbstractAdaptedHandler<ProcessVariable> {
-    
+
     public OpenWaterfall() {
         super(ProcessVariable.class);
     }

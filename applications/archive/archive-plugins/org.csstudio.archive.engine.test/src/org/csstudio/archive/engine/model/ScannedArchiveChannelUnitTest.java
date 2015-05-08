@@ -28,12 +28,12 @@ public class ScannedArchiveChannelUnitTest
     public void testHandleNewValue() throws Exception
     {
         PVPool.addPVFactory(new LocalPVFactory());
-        
+
         final PV pv = PVPool.getPV(PV_NAME);
         final ScannedArchiveChannel channel = new ScannedArchiveChannel(PV_NAME, Enablement.Passive, 5, null, 1.0, 2);
         final SampleBuffer samples = channel.getSampleBuffer();
         channel.start();
-        
+
         // Might get initial sample from PV, dump it
         SECONDS.sleep(2);
         TestHelper.dump(samples);
@@ -42,7 +42,7 @@ public class ScannedArchiveChannelUnitTest
         System.out.println("Initial value 1.0");
         pv.write(1.0);
         SECONDS.sleep(2);
-        
+
         // Scan the channel
         channel.run();
         assertThat(TestHelper.dump(samples), equalTo(1));
@@ -57,7 +57,7 @@ public class ScannedArchiveChannelUnitTest
         SECONDS.sleep(2);
         channel.run();
         assertThat(TestHelper.dump(samples), equalTo(1));
-        
+
         // Repeats
         for (int repeat=0; repeat<4; ++repeat)
         {
@@ -67,7 +67,7 @@ public class ScannedArchiveChannelUnitTest
             channel.run();
         }
         assertThat(TestHelper.dump(samples), equalTo(2));
-        
+
         channel.stop();
         PVPool.releasePV(pv);
     }

@@ -85,7 +85,7 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 
         LinkingContainerFigure linkingContainerFigure = new LinkingContainerFigure();
         linkingContainerFigure.setAutoFit(widget.isAutoZoom());
-        
+
         return linkingContainerFigure;
     }
 

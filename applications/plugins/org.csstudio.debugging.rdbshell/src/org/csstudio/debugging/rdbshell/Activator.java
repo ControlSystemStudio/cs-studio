@@ -8,7 +8,7 @@
 package org.csstudio.debugging.rdbshell;
 
 /** Plugin activator
- *  
+ *
  *  At this time, not really. Only used to keep the plugin ID
  *  @author Kay Kasemir
  */

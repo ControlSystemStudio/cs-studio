@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 /**
  * Class represents UInt8 (byte) array (matrix)
- * 
+ *
  * @author Wojciech Gradkowski <wgradkowski@gmail.com>
  */
 public class MLUInt8 extends MLNumericArray<Byte>
@@ -12,7 +12,7 @@ public class MLUInt8 extends MLNumericArray<Byte>
 
     /**
      * Normally this constructor is used only by MatFileReader and MatFileWriter
-     * 
+     *
      * @param name - array name
      * @param dims - array dimensions
      * @param type - array type: here <code>mxDOUBLE_CLASS</code>
@@ -25,7 +25,7 @@ public class MLUInt8 extends MLNumericArray<Byte>
     /**
      * Create a <code>{@link MLUInt8}</code> array with given name,
      * and dimensions.
-     * 
+     *
      * @param name - array name
      * @param dims - array dimensions
      */
@@ -34,9 +34,9 @@ public class MLUInt8 extends MLNumericArray<Byte>
         super(name, dims, MLArray.mxUINT8_CLASS, 0);
     }
     /**
-     * <a href="http://math.nist.gov/javanumerics/jama/">Jama</a> [math.nist.gov] style: 
+     * <a href="http://math.nist.gov/javanumerics/jama/">Jama</a> [math.nist.gov] style:
      * construct a 2D real matrix from a one-dimensional packed array
-     * 
+     *
      * @param name - array name
      * @param vals - One-dimensional array of doubles, packed by columns (ala Fortran).
      * @param m - Number of rows
@@ -46,11 +46,11 @@ public class MLUInt8 extends MLNumericArray<Byte>
         super(name, MLArray.mxUINT8_CLASS, vals, m );
     }
     /**
-     * <a href="http://math.nist.gov/javanumerics/jama/">Jama</a> [math.nist.gov] style: 
+     * <a href="http://math.nist.gov/javanumerics/jama/">Jama</a> [math.nist.gov] style:
      * construct a 2D real matrix from <code>byte[][]</code>
-     * 
+     *
      * Note: array is converted to Byte[]
-     * 
+     *
      * @param name - array name
      * @param vals - two-dimensional array of values
      */
@@ -59,9 +59,9 @@ public class MLUInt8 extends MLNumericArray<Byte>
         this( name, byte2DToByte(vals), vals.length );
     }
     /**
-     * <a href="http://math.nist.gov/javanumerics/jama/">Jama</a> [math.nist.gov] style: 
+     * <a href="http://math.nist.gov/javanumerics/jama/">Jama</a> [math.nist.gov] style:
      * construct a matrix from a one-dimensional packed array
-     * 
+     *
      * @param name - array name
      * @param vals - One-dimensional array of doubles, packed by columns (ala Fortran).
      * @param m - Number of rows
@@ -79,19 +79,19 @@ public class MLUInt8 extends MLNumericArray<Byte>
     }
     /**
      * Gets two-dimensional real array.
-     * 
+     *
      * @return - 2D real array
      */
     public byte[][] getArray()
     {
         byte[][] result = new byte[getM()][];
-        
+
         for ( int m = 0; m < getM(); m++ )
         {
            result[m] = new byte[ getN() ];
 
            for ( int n = 0; n < getN(); n++ )
-           {               
+           {
                result[m][n] = getReal(m,n);
            }
         }
@@ -99,7 +99,7 @@ public class MLUInt8 extends MLNumericArray<Byte>
     }
     /**
      * Casts <code>Double[]</code> to <code>byte[]</code>
-     * 
+     *
      * @param - source <code>Byte[]</code>
      * @return - result <code>byte[]</code>
      */
@@ -114,7 +114,7 @@ public class MLUInt8 extends MLNumericArray<Byte>
     }
     /**
      * Converts byte[][] to Byte[]
-     * 
+     *
      * @param dd
      * @return
      */
@@ -125,7 +125,7 @@ public class MLUInt8 extends MLNumericArray<Byte>
         {
             for ( int m = 0; m < dd.length; m++ )
             {
-                d[ m+n*dd.length ] = dd[m][n]; 
+                d[ m+n*dd.length ] = dd[m][n];
             }
         }
         return d;
@@ -134,8 +134,8 @@ public class MLUInt8 extends MLNumericArray<Byte>
     {
         if ( bytes.length != getBytesAllocated() )
         {
-            throw new IllegalArgumentException( 
-                        "To build from byte array I need array of size: " 
+            throw new IllegalArgumentException(
+                        "To build from byte array I need array of size: "
                                 + getBytesAllocated() );
         }
         return bytes[0];
@@ -148,15 +148,15 @@ public class MLUInt8 extends MLNumericArray<Byte>
     {
         return Byte.SIZE >> 3;
     }
-    
+
     public Class<Byte> getStorageClazz()
     {
         return Byte.class;
     }
-    
+
     /**
      * Override to accelerate the performance
-     * 
+     *
      * @see com.jmatio.types.MLNumericArray#_get(java.nio.ByteBuffer, int)
      */
     @Override

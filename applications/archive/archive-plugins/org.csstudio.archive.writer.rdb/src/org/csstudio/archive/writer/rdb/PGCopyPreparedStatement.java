@@ -515,7 +515,7 @@ public class PGCopyPreparedStatement implements PreparedStatement {
      * href="http://www.postgresql.org/docs/9.2/static/datatype-binary.html"
      * >http://www.postgresql.org/docs/9.2/static/datatype-binary.html</a>
      * </p>
-     * 
+     *
      * @param bytes
      * @return
      */

@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.model.initializers;
@@ -32,10 +32,10 @@ import org.csstudio.sds.model.DynamicsDescriptor;
 /**
  * Base class for widget model initializers that provides a convenient API for
  * initializing widget model for a certain control system.
- * 
+ *
  * @author Sven Wende
  * @version $Revision: 1.5 $
- * 
+ *
  */
 abstract class AbstractInitializer {
     /**
@@ -47,7 +47,7 @@ abstract class AbstractInitializer {
     /**
      * Setter, which injects the widget model at runtime. Should only be called
      * within this package.
-     * 
+     *
      * @param widgetModel
      *            the widget model
      */
@@ -57,12 +57,12 @@ abstract class AbstractInitializer {
 
     /**
      * Initializes a alias, which has widget scope.
-     * 
+     *
      * @param alias
      *            the alias name, e.g. "channel"
      * @param description
      *            a alias description
-     * 
+     *
      */
     public final void initializeAlias(final String alias,
             final String description) {
@@ -71,7 +71,7 @@ abstract class AbstractInitializer {
 
     /**
      * Initializes a property with a static value.
-     * 
+     *
      * @param propertyId
      *            the property id
      * @param value
@@ -84,7 +84,7 @@ abstract class AbstractInitializer {
 
     /**
      * Initializes a property with a single input and a single output channel.
-     * 
+     *
      * @param propertyId
      *            the property id
      * @param channelName
@@ -109,7 +109,7 @@ abstract class AbstractInitializer {
 
     /**
      * Initializes a property with a single input channel.
-     * 
+     *
      * @param propertyId
      *            the property id
      * @param channelName
@@ -123,7 +123,7 @@ abstract class AbstractInitializer {
 
     /**
      * Initializes a property with a several input channels.
-     * 
+     *
      * @param propertyId
      *            the property id
      * @param channelNames
@@ -137,7 +137,7 @@ abstract class AbstractInitializer {
     /**
      * Initializes a property with several input channels and a single output
      * channel.
-     * 
+     *
      * @param propertyId
      *            the property id
      * @param channelNames
@@ -202,21 +202,21 @@ abstract class AbstractInitializer {
     // channelName, ConnectionState connectionState, Object value) {
     // // create a new dynamic configuration for the specified property
     // DynamicsDescriptor descriptor = new DynamicsDescriptor();
-    //        
+    //
     // // configure channels
     // descriptor.addInputChannel(new ParameterDescriptor(channelName));
-    //        
+    //
     // // configure connection state dependent values
     // Map<ConnectionState, Object> values = new HashMap<ConnectionState,
     // Object>();
     // values.put(connectionState, value);
     // descriptor.setConnectionStateDependentPropertyValues(values);
-    //        
+    //
     // // configure the rule (the Null-Rule is needed so that connection states
     // dominate value changes)
     // descriptor.setRuleId(NullRule.ID);
-    //        
+    //
     // _widgetModel.setDynamicsDescriptor(propertyId,descriptor);
-    //        
+    //
     // }
 }

@@ -281,7 +281,7 @@ abstract public class RDBDataLogger
         return -1;
     }
 
-    
+
     /** Obtain data for a scan
      *  @param scan_id ID of the scan
      *  @return {@link ScanData}

@@ -42,9 +42,9 @@ import org.junit.Test;
  * @author Joerg Rathlev
  */
 public class CommandContributionTest {
-    
+
     private IManagementCommand _dummyImplementation;
-    
+
     @Before
     public void setUp() {
         _dummyImplementation = new IManagementCommand() {
@@ -66,7 +66,7 @@ public class CommandContributionTest {
         assertEquals(0, c.getDescription().getParameters().length);
         assertSame(_dummyImplementation, c.getCommandImplementation());
     }
-    
+
     @Test
     public void testStringParameter() throws Exception {
         CommandParameterDefinition parameterDefinition = new CommandParameterDefinition.Builder()
@@ -83,7 +83,7 @@ public class CommandContributionTest {
         assertEquals(1, c.getDescription().getParameters().length);
         assertEquals(parameterDefinition, c.getDescription().getParameters()[0]);
     }
-    
+
     @Test
     public void testDynamicEnumerationParameter() throws Exception {
         CommandParameterDefinition parameterDefinition = new CommandParameterDefinition.Builder()

@@ -12,12 +12,12 @@ public abstract class AbstractRoundRampedWidgetTest extends AbstractMarkedWidget
 
     @Override
     public String[] getPropertyNames() {
-        String[] superProps =  super.getPropertyNames();    
-        
+        String[] superProps =  super.getPropertyNames();
+
         String[] myProps = new String[]{
-                "gradient"                
+                "gradient"
         };
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
 }

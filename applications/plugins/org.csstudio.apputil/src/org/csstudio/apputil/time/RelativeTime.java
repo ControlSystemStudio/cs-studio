@@ -19,14 +19,14 @@ import java.util.Calendar;
  *  and for example substract 6 from the calendar's hours.
  *  <p>
  *  The time gets somewhat normalized: 60 seconds turn into one minute etc.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class RelativeTime implements Cloneable
 {
     /** Constant to define 'now', i.e. the current wallclock date and time. */
     public static final String NOW = "now"; //$NON-NLS-1$
-    
+
     /** String identifier for years */
     public static final String YEAR_TOKEN = "years"; //$NON-NLS-1$
 
@@ -47,22 +47,22 @@ public class RelativeTime implements Cloneable
 
     /** The pieces of relative time. */
     private int rel_time[];
-    
+
     /** Identifier of the relative years in get() or set(). */
     public static final int YEARS = 0;
-    
+
     /** Identifier of the relative months in get() or set(). */
     public static final int MONTHS = 1;
-    
+
     /** Identifier of the relative days in get() or set(). */
     public static final int DAYS = 2;
-    
+
     /** Identifier of the relative hours in get() or set(). */
     public static final int HOURS = 3;
-    
+
     /** Identifier of the relative minutes in get() or set(). */
     public static final int MINUTES = 4;
-    
+
     /** Identifier of the relative seconds in get() or set(). */
     public static final int SECONDS = 5;
 
@@ -128,12 +128,12 @@ public class RelativeTime implements Cloneable
         rel_time[MILLISECONDS] += frac_seconds * 1000; // 1000 millis per sec
         normalize();
     }
-    
+
     /** Construct relative time information from the given data.
      *  <p>
      *  Some attempts are made to normalize fractional pieces.
      *  For example, x.5 days are turned into x days, 12 hours.
-     *  
+     *
      *  @param ymdhms Array with years, months, days, hours, minutes, seconds
      */
     public RelativeTime(double ymdhms[])
@@ -167,10 +167,10 @@ public class RelativeTime implements Cloneable
         rel_time[MILLISECONDS] += frac_seconds * 1000; // 1000 millis per sec
         normalize();
     }
-    
+
     /** (Try to) normalize the relative time by turning 70 seconds
      *  into 1 minute, 10 seconds etc.
-     */ 
+     */
     private void normalize()
     {
         rollover(MILLISECONDS, 1000);
@@ -181,7 +181,7 @@ public class RelativeTime implements Cloneable
         // leave as is
         rollover(MONTHS, 12);
     }
-    
+
     /** Roll one relative time field into the next bigger one
      *  when it exceeds the limit
      *  @param field Field index like MILLISECONDS
@@ -197,7 +197,7 @@ public class RelativeTime implements Cloneable
         rel_time[field] -= overrun * limit;
         rel_time[into] += overrun;
     }
-    
+
 
     /** @return The string token that's recognized by the
      *          {@link RelativeTimeParser} and that's also used
@@ -211,7 +211,7 @@ public class RelativeTime implements Cloneable
     /** Get one of the pieces of relative time.
      *  <p>
      *  For example, if get(YEAR) == -1, that stands for "one year ago".
-     *   
+     *
      *  @param piece One of the constants YEAR, ..., SECONDS.
      *  @return The piece.
      */
@@ -219,8 +219,8 @@ public class RelativeTime implements Cloneable
     {
         return rel_time[piece];
     }
-    
-    /** Adjust the given calendar with the relative years etc. of this 
+
+    /** Adjust the given calendar with the relative years etc. of this
      *  relative time.
      *  @param calendar The calendar that will be modified.
      */
@@ -248,10 +248,10 @@ public class RelativeTime implements Cloneable
             return null;
         }
         for (int i=0; i<rel_time.length; ++i)
-            copy.rel_time[i] = rel_time[i]; 
+            copy.rel_time[i] = rel_time[i];
         return copy;
     }
-    
+
     /** @return <code>true</code> if all relative time pieces are zero,
      *          i.e. indicate "now".
      */
@@ -277,7 +277,7 @@ public class RelativeTime implements Cloneable
             addToStringBuffer(result, piece);
         return result.toString();
     }
-    
+
     /** Add piece==YEAR etc. to buffer; value and token. */
     private void addToStringBuffer(StringBuffer buf, int piece)
     {

@@ -14,7 +14,7 @@ import org.w3c.dom.Element;
 
 /**
  * XML conversion class for Edm_activeExitButtonClass
- * 
+ *
  * @author Xihui Chen
  */
 public class Opi_activeExitButtonClass extends OpiWidget {

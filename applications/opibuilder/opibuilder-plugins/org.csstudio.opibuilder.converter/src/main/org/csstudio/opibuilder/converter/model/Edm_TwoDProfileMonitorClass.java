@@ -50,5 +50,5 @@ public class Edm_TwoDProfileMonitorClass extends EdmWidget {
         return nBitsPerPixel;
     }
 
-    
+
 }

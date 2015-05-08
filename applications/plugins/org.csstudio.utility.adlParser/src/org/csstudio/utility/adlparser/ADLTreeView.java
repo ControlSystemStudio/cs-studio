@@ -33,17 +33,17 @@ public class ADLTreeView extends ViewPart {
     public void createPartControl(Composite parent) {
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout(1, false));
-        
+
         treeViewer = new TreeViewer(composite);
         treeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
         treeViewer.setContentProvider(new ADLTreeContentProvider());
         treeViewer.setLabelProvider(new ADLTreeLabelProvider());
         treeViewer.setInput(new ADLWidget("default", null, 0));
-        
+
         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
                 // TODO Auto-generated method stub
-                
+
             }
         });
         hookPageSelection();
@@ -55,7 +55,7 @@ public class ADLTreeView extends ViewPart {
         // TODO Auto-generated method stub
 
     }
-    private void hookPageSelection() { 
+    private void hookPageSelection() {
         pageSelectionListener = new ISelectionListener() {
             public void selectionChanged(IWorkbenchPart part,
                     ISelection selection) {
@@ -76,16 +76,16 @@ public class ADLTreeView extends ViewPart {
         if (strucSelection.size() > 1){
             return;
         }
-        
+
         String selectedFileName = new String(Platform.getLocation() + (strucSelection.getFirstElement().toString()).substring(1));
-        
+
         if (selectedFileName.endsWith(".adl")) {
-            
+
             treeViewer.setInput(this.adlRootWidget = ParserADL.getNextElement(new File(selectedFileName)));
         }
-        
+
     }
-    
+
     @Override
     public void dispose() {
         super.dispose();

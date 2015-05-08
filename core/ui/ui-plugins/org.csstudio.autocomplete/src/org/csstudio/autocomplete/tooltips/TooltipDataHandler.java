@@ -15,7 +15,7 @@ import org.csstudio.autocomplete.proposals.ProposalStyle;
 
 /**
  * Handles a list of {@link TooltipData} to provide a {@link TooltipContent}.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class TooltipDataHandler {

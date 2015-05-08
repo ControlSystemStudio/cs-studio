@@ -12,11 +12,11 @@ public class ADLPlotTrace extends WidgetPart {
     private String xData;
     private String yData;
     private int dataColor;
-    
+
     public ADLPlotTrace(ADLWidget widgetPart) throws WrongADLFormatException {
         super(widgetPart);
     }
-    
+
     /**
      * Default constructor
      */

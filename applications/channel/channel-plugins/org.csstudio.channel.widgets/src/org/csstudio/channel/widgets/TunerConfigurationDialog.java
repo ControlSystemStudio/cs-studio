@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.channel.widgets;
 
@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class TunerConfigurationDialog extends
         AbstractConfigurationDialog<TunerWidget, TunerConfigurationPanel> {

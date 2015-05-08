@@ -41,7 +41,7 @@ import java.util.Calendar;
  *  @see AbsoluteTimeParser
  *  @see RelativeTimeParser
  *  @see #parse(String, String)
- *  
+ *
  *  @author Sergei Chevtsov developed the original code for the
  *          Java Archive Viewer, from which this code heavily borrows.
  *  @author Kay Kasemir
@@ -53,7 +53,7 @@ public class StartEndTimeParser
     private final RelativeTimeParserResult rel_start;
     private final RelativeTimeParserResult rel_end;
     private Calendar start, end;
-    
+
     /** Parse the given start and end time strings,
      *  and return the calendar date and time obtained from that.
      *  <p>
@@ -71,7 +71,7 @@ public class StartEndTimeParser
         this.end_specification = end_specification.replace(',', ' ').trim();
         rel_start = RelativeTimeParser.parse(this.start_specification);
         rel_end = RelativeTimeParser.parse(this.end_specification);
-        
+
         if (rel_start.isAbsolute())
             start = AbsoluteTimeParser.parse(this.start_specification);
         if (rel_end.isAbsolute())
@@ -97,7 +97,7 @@ public class StartEndTimeParser
         end = adjust(now, this.end_specification, rel_end);
         start = adjust(end, this.start_specification, rel_start);
     }
-    
+
     /** @return Start time specification */
     public final String getStartSpecification()
     {
@@ -169,7 +169,7 @@ public class StartEndTimeParser
      */
     public final boolean isAbsoluteStart()
     {   return rel_start.isAbsolute(); }
-    
+
     /** @return <code>true</code> if the end time is absolute, i.e. there
      *          were no 'relative' pieces found.
      */
@@ -187,7 +187,7 @@ public class StartEndTimeParser
      */
     public final RelativeTime getRelativeEnd()
     {   return rel_end.getRelativeTime();  }
-    
+
     /** @return <code>true</code> if the end time is 'now',
      *          i.e. relative with zero offsets.
      */
@@ -200,7 +200,7 @@ public class StartEndTimeParser
      *  @param date A date.
      *  @param relative_time Result of RelativeTimeParser.parse()
      *  @return The adjusted time (a new instance, not 'date' as passed in).
-     * @throws Exception 
+     * @throws Exception
      */
     private static Calendar adjust(final Calendar date, final String text,
                     RelativeTimeParserResult relative_time) throws Exception
@@ -208,9 +208,9 @@ public class StartEndTimeParser
         // Get copy of date, and patch that one
         Calendar result = Calendar.getInstance();
         result.setTimeInMillis(date.getTimeInMillis());
-        
+
         relative_time.getRelativeTime().adjust(result);
-        
+
         // In case there's more text after the end of the relative
         // date/time specification, for example because we got
         // "-2month 08:00", apply that absolute text to the result.

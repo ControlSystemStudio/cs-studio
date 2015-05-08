@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.model;
@@ -40,10 +40,10 @@ import org.eclipse.core.runtime.Platform;
 /**
  * This class provides access to the <code>widgetModelFactories</code> extension
  * point.
- * 
+ *
  * @author Alexander Will
  * @version $Revision: 1.8 $
- * 
+ *
  */
 public final class WidgetModelFactoryService {
     /**
@@ -69,7 +69,7 @@ public final class WidgetModelFactoryService {
 
     /**
      * Return the widget type IDs of all registered widget models.
-     * 
+     *
      * @return The widget type IDs of all registered widget models.
      */
     public Set<String> getUsedWidgetTypes() {
@@ -80,7 +80,7 @@ public final class WidgetModelFactoryService {
 
     /**
      * Return the shared instance of this class.
-     * 
+     *
      * @return The shared instance of this class.
      */
     public static WidgetModelFactoryService getInstance() {
@@ -103,10 +103,10 @@ public final class WidgetModelFactoryService {
 
     /**
      * Creates a widget of the specified type.
-     * 
+     *
      * @param typeId
      *            type identifier
-     * 
+     *
      * @return a new widget or null
      */
     public AbstractWidgetModel getWidgetModel(final String typeId) {
@@ -136,7 +136,7 @@ public final class WidgetModelFactoryService {
 
     /**
      * Return the description of the widget model factory for the given type ID.
-     * 
+     *
      * @param typeId
      *            A widget model type ID.
      * @return The description of the widget model factory for the given type
@@ -149,7 +149,7 @@ public final class WidgetModelFactoryService {
     /**
      * Return the icon ressource path of the widget model factory for the given
      * type ID.
-     * 
+     *
      * @param typeId
      *            A widget model type ID.
      * @return the icon ressource path of the widget model factory for the given
@@ -162,7 +162,7 @@ public final class WidgetModelFactoryService {
 
     /**
      * Return the name of the widget model factory for the given type ID.
-     * 
+     *
      * @param typeId
      *            A widget model type ID.
      * @return The name of the widget model factory for the given type ID.
@@ -174,7 +174,7 @@ public final class WidgetModelFactoryService {
     /**
      * Return the ID of the plugin that provides the widget model factory for
      * the given type ID.
-     * 
+     *
      * @param typeId
      *            A widget model type ID.
      * @return The ID of the plugin that provides the widget model factory for
@@ -187,7 +187,7 @@ public final class WidgetModelFactoryService {
 
     /**
      * Returns the IDs of all known contributing plugins.
-     * 
+     *
      * @return A set of the plugin-IDs
      */
     public Set<String> getAllContributingPluginIds() {
@@ -201,7 +201,7 @@ public final class WidgetModelFactoryService {
     /**
      * Returns all widget-IDs contributed by the plugin with the given
      * <code>pluginId</code>.
-     * 
+     *
      * @param pluginId
      *            The ID of the plugin
      * @return A set of the widget-IDs
@@ -261,7 +261,7 @@ public final class WidgetModelFactoryService {
     /**
      * Determines the excluded Widgets based on the settings in the preference
      * page.
-     * 
+     *
      * @return The list of excluded widget-ids
      */
     private List<String> determineExcludedWidgetIds() {

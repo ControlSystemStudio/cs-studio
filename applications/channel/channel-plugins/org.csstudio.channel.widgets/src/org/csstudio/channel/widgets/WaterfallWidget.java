@@ -55,7 +55,7 @@ import org.epics.vtype.VImage;
 
 public class WaterfallWidget extends AbstractChannelQueryResultWidget
 implements ConfigurableWidget, ISelectionProvider {
-    
+
     private VImageDisplay imageDisplay;
     private RangeWidget rangeWidget;
     private WaterfallPlotParameters parameters = WaterfallPlotParameters.defaults();
@@ -63,25 +63,25 @@ implements ConfigurableWidget, ISelectionProvider {
     private ErrorBar errorBar;
     private GridData gd_rangeWidget;
     private boolean editable = true;
-    
+
     private String sortProperty;
-    
+
     public String getSortProperty() {
         return sortProperty;
     }
 
     /**
      * Creates a new widget.
-     * 
+     *
      * @param parent the parent
      * @param style the style
      */
     public WaterfallWidget(Composite parent, int style) {
         super(parent, style);
-        
+
         // Close PV on dispose
         addDisposeListener(new DisposeListener() {
-            
+
             @Override
             public void widgetDisposed(DisposeEvent e) {
                 if (pv != null) {
@@ -90,21 +90,21 @@ implements ConfigurableWidget, ISelectionProvider {
                 }
             }
         });
-        
+
         GridLayout gridLayout = new GridLayout(2, false);
         gridLayout.horizontalSpacing = 0;
         gridLayout.verticalSpacing = 0;
         gridLayout.marginWidth = 0;
         gridLayout.marginHeight = 0;
         setLayout(gridLayout);
-        
+
         errorBar = new ErrorBar(this, SWT.NONE);
         errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
         errorBar.setMarginBottom(5);
-        
+
         rangeWidget = new RangeWidget(this, SWT.NONE);
         rangeWidget.addRangeListener(new RangeListener() {
-            
+
             @Override
             public void rangeChanged() {
                 parameters = parameters.with(pixelDuration(TimeDuration.ofNanos((long) (rangeWidget.getDistancePerPx() * 1000000000))));
@@ -116,55 +116,55 @@ implements ConfigurableWidget, ISelectionProvider {
         gd_rangeWidget = new GridData(SWT.LEFT, SWT.FILL, false, true, 1, 1);
         gd_rangeWidget.widthHint = 61;
         rangeWidget.setLayoutData(gd_rangeWidget);
-        
+
         imageDisplay = new VImageDisplay(this);
         imageDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         imageDisplay.setStretched(SWT.HORIZONTAL);
         imageDisplay.addControlListener(new ControlListener() {
-            
+
             @Override
             public void controlResized(ControlEvent e) {
                 if (imageDisplay.getSize().y != 0) {
                     changePlotHeight(imageDisplay.getSize().y);
                 }
             }
-            
+
             @Override
             public void controlMoved(ControlEvent e) {
                 // Nothing to do
             }
         });
-        
+
         // Set the parameters to the default
         parametersChanged();
     }
-    
-    
+
+
     @Override
     public void setMenu(Menu menu) {
         super.setMenu(menu);
         imageDisplay.setMenu(menu);
     }
-    
+
     // The pv name for waveform
     private String waveformPVName;
     // The pv names for multiple channels
     private List<String> scalarPVNames;
     // The pv created by pvmanager
     private PVReader<VImage> pv;
-    
+
     /**
      * The pv name to connect to.
-     * 
+     *
      * @return the current property value
      */
     public String getWaveformPVName() {
         return waveformPVName;
     }
-    
+
     /**
      * Changes the pv name to connect to. Triggers a reconnection.
-     * 
+     *
      * @param pvName the new property value
      */
     public void setWaveformPVName(String pvName) {
@@ -172,50 +172,50 @@ implements ConfigurableWidget, ISelectionProvider {
         if (this.waveformPVName != null && this.waveformPVName.equals(pvName)) {
             return;
         }
-        
+
         this.scalarPVNames = null;
         this.waveformPVName = pvName;
         reconnect();
     }
-    
+
     public List<String> getScalarPVNames() {
         return scalarPVNames;
     }
-    
+
     public void setScalarPVNames(List<String> scalarPVNames) {
         // Guard from double calls
         if (this.scalarPVNames != null && this.scalarPVNames.equals(scalarPVNames)) {
             return;
         }
-        
+
         this.waveformPVName = null;
         this.scalarPVNames = scalarPVNames;
         reconnect();
     }
-    
+
     /**
      * Whether the user is able to customize the widget.
-     * 
+     *
      * @return true if it can be customized
      */
     public boolean isEditable() {
         return editable;
     }
-    
+
     /**
      * Changes whether the user is able to customize the widget.
-     * 
+     *
      * @param editable true if it can be customized
      */
     public void setEditable(boolean editable) {
         this.editable = editable;
     }
-    
+
     // Displays the last error generated
     private void setLastError(Exception ex) {
         errorBar.setException(ex);
     }
-    
+
     private void parametersChanged() {
         // Make sure image alignment and the range direction
         // are consistent with the scroll direction
@@ -226,11 +226,11 @@ implements ConfigurableWidget, ISelectionProvider {
             imageDisplay.setAlignment(SWT.LEFT | SWT.BOTTOM);
             rangeWidget.setStartPosition(SWT.DOWN);
         }
-        
+
         // Make sure the range is consistent with the image resolution
         rangeWidget.setDistancePerPx(parameters.getPixelDuration().toSeconds());
     }
-    
+
     // Reconnects the pv
     private void reconnect() {
         // First de-allocate current pv if any
@@ -238,7 +238,7 @@ implements ConfigurableWidget, ISelectionProvider {
             pv.close();
             pv = null;
         }
-        
+
         if (waveformPVName != null && !waveformPVName.trim().isEmpty()) {
             int color = (getBackground().getRed() << 16) + (getBackground().getGreen() << 8) + getBackground().getBlue();
             plot = waterfallPlotOf(vNumberArray(waveformPVName)).with(parameters, WaterfallPlotParameters.backgroundColor(color));
@@ -254,7 +254,7 @@ implements ConfigurableWidget, ISelectionProvider {
                 .maxRate(ofHertz(50));
             return;
         }
-        
+
         if (scalarPVNames != null && !scalarPVNames.isEmpty()) {
             int color = (getBackground().getRed() << 16) + (getBackground().getGreen() << 8) + getBackground().getBlue();
             plot = waterfallPlotOf(vDoubles(scalarPVNames)).with(parameters, WaterfallPlotParameters.backgroundColor(color));
@@ -271,7 +271,7 @@ implements ConfigurableWidget, ISelectionProvider {
             return;
         }
     }
-    
+
     private void changePlotHeight(int newHeight) {
         parameters = parameters.with(WaterfallPlotParameters.height(newHeight));
         if (plot != null) {
@@ -283,10 +283,10 @@ implements ConfigurableWidget, ISelectionProvider {
     protected void checkSubclass() {
         // Disable the check that prevents subclassing of SWT components
     }
-    
+
     /**
      * Changes the parameters used for the waterfall plot.
-     * 
+     *
      * @param parameters a set of waterfall plot parameter
      */
     public void setWaterfallPlotParameters(WaterfallPlotParameters parameters) {
@@ -299,20 +299,20 @@ implements ConfigurableWidget, ISelectionProvider {
 
     /**
      * The parameters used for the waterfall plot.
-     * 
+     *
      * @return waterfall plot parameters
      */
     WaterfallPlotParameters getWaterfallPlotParameters() {
         return parameters;
     }
-    
+
     public int getScrollDirection() {
         if (parameters.isScrollDown())
             return SWT.DOWN;
         else
             return SWT.UP;
     }
-    
+
     public void setScrollDirection(int direction) {
         if (direction == SWT.UP) {
             setWaterfallPlotParameters(parameters.with(scrollDown(false)));
@@ -322,39 +322,39 @@ implements ConfigurableWidget, ISelectionProvider {
             throw new IllegalArgumentException("Scroll direction must be SWT.UP or SWT.DOWN");
         }
     }
-    
+
     public boolean isAdaptiveRange() {
         return parameters.isAdaptiveRange();
     }
-    
+
     public void setAdaptiveRange(boolean adaptiveRange) {
         setWaterfallPlotParameters(parameters.with(adaptiveRange(adaptiveRange)));
     }
-    
+
     public TimeDuration getPixelDuration() {
         return parameters.getPixelDuration();
     }
-    
+
     public void setPixelDuration(TimeDuration pixelDuration) {
         setWaterfallPlotParameters(parameters.with(pixelDuration(pixelDuration)));
     }
-    
+
     public ColorScheme getColorScheme() {
         return parameters.getColorScheme();
     }
-    
+
     public void setColorScheme(ColorScheme colorScheme) {
         setWaterfallPlotParameters(parameters.with(colorScheme(colorScheme)));
     }
-    
+
     /**
      * Changes whether the range should be displayed.
-     * 
+     *
      * @param showRange true if range should be displayed
      */
     public void setShowTimeAxis(boolean showRange) {
         rangeWidget.setVisible(showRange);
-        
+
         // Making the range invisible is not enough to not show it.
         // We have to change the layout so that the width is
         // zero and redo the layout
@@ -367,10 +367,10 @@ implements ConfigurableWidget, ISelectionProvider {
         }
         layout();
     }
-    
+
     /**
      * Whether the range should be displayed.
-     * 
+     *
      * @return true if the range is displayed
      */
     public boolean isShowTimeAxis() {
@@ -387,19 +387,19 @@ implements ConfigurableWidget, ISelectionProvider {
     protected void queryCleared() {
         setWaveformPVName(null);
         setScalarPVNames(null);
-        
+
         // Clean up old image and previous error
         imageDisplay.setVImage(null);
         setLastError(null);
     }
-    
+
     private Result result;
 
     @Override
     protected void queryExecuted(Result result) {
         if (result == null)
             return;
-        
+
         setLastError(result.exception);
         this.result = result;
         List<String> channelNames = null;
@@ -445,7 +445,7 @@ implements ConfigurableWidget, ISelectionProvider {
                 }
             }
         }
-        
+
         final List<String> finalChannels = channelNames;
 
         if (finalChannels == null || finalChannels.isEmpty()) {
@@ -492,7 +492,7 @@ implements ConfigurableWidget, ISelectionProvider {
     }
 
     private Map<ISelectionChangedListener, PropertyChangeListener> listenerMap = new HashMap<ISelectionChangedListener, PropertyChangeListener>();
-    
+
     @Override
     public void addSelectionChangedListener(final ISelectionChangedListener listener) {
         PropertyChangeListener propListener = new PropertyChangeListener() {
@@ -521,8 +521,8 @@ implements ConfigurableWidget, ISelectionProvider {
     public void setSelection(ISelection selection) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
-    
-    
+
+
     /** Memento tag */
     private static final String MEMENTO_CHANNEL_QUERY = "channelQuery"; //$NON-NLS-1$
     private static final String MEMENTO_ADAPTIVE_RANGE = "adaptiveRange"; //$NON-NLS-1$
@@ -530,7 +530,7 @@ implements ConfigurableWidget, ISelectionProvider {
     private static final String MEMENTO_SCROLL_DIRECTION = "scrollDirection"; //$NON-NLS-1$
     private static final String MEMENTO_SHOW_TIME_AXIS = "showTimeAxis"; //$NON-NLS-1$
     private static final String MEMENTO_SORT_PROPERTY = "sortProperty"; //$NON-NLS-1$
-    
+
     public void saveState(IMemento memento) {
         if (getChannelQuery() != null) {
             memento.putString(MEMENTO_CHANNEL_QUERY, getChannelQuery().getQuery());
@@ -543,7 +543,7 @@ implements ConfigurableWidget, ISelectionProvider {
             memento.putString(MEMENTO_SORT_PROPERTY, getSortProperty());
         }
     }
-    
+
     public void loadState(IMemento memento) {
         if (memento != null) {
             if (memento.getBoolean(MEMENTO_ADAPTIVE_RANGE) != null) {
@@ -566,6 +566,6 @@ implements ConfigurableWidget, ISelectionProvider {
             }
         }
     }
-    
+
 
 }

@@ -24,7 +24,7 @@ public class StatisticsAccumulator implements Statistics
     public StatisticsAccumulator()
     {
     }
-    
+
     /** Initialize
      *  @param initial_values Initial values to add to the stats
      */
@@ -33,7 +33,7 @@ public class StatisticsAccumulator implements Statistics
         for (double value : initial_values)
             add(value);
     }
-    
+
     /** @param value Value to be added to the accumulator */
     public void add(final double value)
     {
@@ -45,7 +45,7 @@ public class StatisticsAccumulator implements Statistics
             max = value;
         ++count;
     }
-    
+
     @Override
     public Double getAverage()
     {

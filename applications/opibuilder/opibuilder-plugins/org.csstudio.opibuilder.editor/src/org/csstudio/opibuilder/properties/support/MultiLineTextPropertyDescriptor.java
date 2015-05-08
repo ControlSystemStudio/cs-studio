@@ -24,7 +24,7 @@ public class MultiLineTextPropertyDescriptor extends TextPropertyDescriptor {
         super(id, displayName);
         setLabelProvider(new MultiLineLabelProvider());
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -37,7 +37,7 @@ public class MultiLineTextPropertyDescriptor extends TextPropertyDescriptor {
         }
         return editor;
     }
-    
+
     static class MultiLineLabelProvider extends LabelProvider{
         @Override
         public String getText(Object element) {

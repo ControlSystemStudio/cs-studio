@@ -28,20 +28,20 @@ import org.osgi.framework.BundleContext;
 
 /**
  * Controls the life cycle of the service locator
- * 
+ *
  * @author jpenning
  * @since 25.01.2012
  */
 public class ServiceLocatorActivator implements BundleActivator {
-    
+
     @Override
     public void start(BundleContext context) throws Exception {
         // nothing to do
     }
-    
+
     @Override
     public void stop(BundleContext context) throws Exception {
         ServiceLocator.close();
     }
-    
+
 }

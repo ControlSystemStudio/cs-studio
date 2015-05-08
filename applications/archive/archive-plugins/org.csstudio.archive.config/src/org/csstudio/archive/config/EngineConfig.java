@@ -30,7 +30,7 @@ public class EngineConfig
     {
         this.name = name;
         this.description = description;
-        
+
         // Catch invalid URLs, create exception that mentions the affected engine
         try
         {
@@ -53,13 +53,13 @@ public class EngineConfig
     {
         return description;
     }
-    
+
     /** @return Engine's web server URL */
     public URI getURL()
     {
         return url;
     }
-    
+
     /** @return Debug representation */
     @Override
     public String toString()

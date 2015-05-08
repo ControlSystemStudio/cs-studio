@@ -55,19 +55,19 @@ public final class Timestamp implements Comparable<Timestamp>
     {
         /** Format to ISO with "YYYY-MM-DD". */
         Date,
-        
+
         /** Format to ISO with "YYYY-MM-DDTHH:MM". */
         DateTime,
-        
+
         /** Format to ISO with "YYYY-MM-DDTHH:MM:SS". */
         DateTimeSeconds,
-        
+
         /** Format to ISO with full precision "YYYY/MM/DD HH:MM:SS.000000000". */
         Full;
     }
 
-    
-    
+
+
     private final static long currentSecondInNano()
     {
         long l = System.nanoTime();
@@ -86,13 +86,13 @@ public final class Timestamp implements Comparable<Timestamp>
 
     /**
      * Creates timestamp representing provided values. If nanoseconds exceed 1000000 or -1000000 then they are
-     * truncated to nanoseconds within millisecond and millisecond is corrected. 
+     * truncated to nanoseconds within millisecond and millisecond is corrected.
      * @param milli
      * @param nano
      */
     public Timestamp(long milli, long nano)
     {
-        // correction if there is more nanoseconds than it fits in 
+        // correction if there is more nanoseconds than it fits in
         if (nano >= 1000000) {
             long t = nano / 1000000;
             milliseconds = milli + t;
@@ -204,14 +204,14 @@ public final class Timestamp implements Comparable<Timestamp>
                 }
             }
         }
-        
+
         sb.append(nanoseconds);
 
         return sb.toString();
     }
 
     /**
-     * @return Returns timestamp as string formated as specified. 
+     * @return Returns timestamp as string formated as specified.
      */
     public String toString(Format format)
     {
@@ -234,15 +234,15 @@ public final class Timestamp implements Comparable<Timestamp>
         }
     }
 
-    
+
     /** Get seconds since epoch, i.e. 1 January 1970 0:00 UTC.
      *  @return Seconds since 1970.
      */
     public long getSeconds() {
         return milliseconds/1000L;
     }
-    
-    /** 
+
+    /**
      * Converts timestamp to double.
      *  @return Return seconds and fractional nanoseconds.
      */
@@ -250,14 +250,14 @@ public final class Timestamp implements Comparable<Timestamp>
         return (double)milliseconds/1000.0+(double)nanoseconds/1000000000.0;
     }
 
-    /** 
+    /**
      * @return Returns <code>true</code> if time fields &gt; 0.
      */
     public boolean isValid() {
         return milliseconds>0;
     }
-    
-    /** 
+
+    /**
      * @return Returns <code>true</code> if this time stamp is greater than
      *          the <code>other</code> time stamp.
      *  @param other Other time stamp
@@ -272,7 +272,7 @@ public final class Timestamp implements Comparable<Timestamp>
         return true;
     }
 
-    /** 
+    /**
      * @return Returns <code>true</code> if this time stamp is greater than or
      *          equal to the <code>other</code> time stamp.
      *  @param other Other time stamp
@@ -287,7 +287,7 @@ public final class Timestamp implements Comparable<Timestamp>
         return true;
     }
 
-    /** 
+    /**
      * @return Returns <code>true</code> if this time stamp is smaller than
      *          the <code>other</code> time stamp.
      *  @param other Other time stamp
@@ -302,7 +302,7 @@ public final class Timestamp implements Comparable<Timestamp>
         return true;
     }
 
-    /** 
+    /**
      * @return Returns <code>true</code> if this time stamp is smaller than or
      *          equal to the <code>other</code> time stamp.
      *  @param other Other time stamp

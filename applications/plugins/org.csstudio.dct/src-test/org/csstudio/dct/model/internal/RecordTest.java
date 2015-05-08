@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.model.internal;
 
@@ -21,9 +21,9 @@ import org.junit.Test;
 
 /**
  * Test cases for {@link Record}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class RecordTest {
     private BaseRecord baseRecord;
@@ -36,7 +36,7 @@ public final class RecordTest {
     @Before
     public void setUp() throws Exception {
         baseRecord = new BaseRecord(new RecordDefinition("ai"));
-        
+
         parentRecord = new Record(baseRecord, UUID.randomUUID());
         parentRecord.setName("Pump");
         parentRecord.setEpicsName("record_$a$");
@@ -46,7 +46,7 @@ public final class RecordTest {
         parentRecord.addProperty("property1", "propertyvalue1");
         parentRecord.addProperty("property2", "propertyvalue2");
         parentRecord.addProperty("property3", "propertyvalue3");
-        
+
         record = new Record(parentRecord, UUID.randomUUID());
         record.addField("field4", "value4");
         record.addProperty("property4", "propertyvalue4");
@@ -218,7 +218,7 @@ public final class RecordTest {
         assertNull(record.getEpicsName());
         assertEquals("record_$a$", parentRecord.getEpicsNameFromHierarchy());
         assertEquals("record_$a$", record.getEpicsNameFromHierarchy());
-        
+
         record.setEpicsName("myname");
         assertEquals("record_$a$", parentRecord.getEpicsName());
         assertEquals("myname", record.getEpicsName());
@@ -269,10 +269,10 @@ public final class RecordTest {
             Prototype prototype = new Prototype("p", UUID.randomUUID());
             parentRecord.setContainer(prototype);
             assertEquals(prototype, parentRecord.getContainer());
-    
+
             assertFalse(parentRecord.isInherited());
             assertTrue(record.isInherited());
-    
+
         }
 
     /**
@@ -304,7 +304,7 @@ public final class RecordTest {
         IRecord r1 = new Record("name", "ai", id);
         IRecord r2 = new Record("name", "ai", id);
         IRecord r3 = new Record("name", "ai", UUID.randomUUID());
-        
+
         assertEquals(r1, r2);
         assertEquals(r1.hashCode(), r2.hashCode());
         assertNotSame(r1, r3);
@@ -316,7 +316,7 @@ public final class RecordTest {
         IRecord r4 = new Record("name", "ao", id);
         assertNotSame(r1, r4);
         assertNotSame(r1.hashCode(), r4.hashCode());
-        
+
         // .. container must equals
         IPrototype prototype = new Prototype("test", UUID.randomUUID());
         r1.setContainer(prototype);
@@ -325,12 +325,12 @@ public final class RecordTest {
         r2.setContainer(prototype);
         assertEquals(r1, r2);
         assertEquals(r1.hashCode(), r2.hashCode());
-        
+
         // .. parent must equal
         IRecord r5 = new Record(record, id);
         assertNotSame(r1, r5);
         assertNotSame(r1.hashCode(), r5.hashCode());
-        
+
         // .. properties must equal
         r1.addProperty("a", "a");
         assertNotSame(r1, r2);
@@ -354,10 +354,10 @@ public final class RecordTest {
         r2.setName("x");
         assertEquals(r1, r2);
         assertEquals(r1.hashCode(), r2.hashCode());
-        
 
-        
-        
+
+
+
 }
 
 }

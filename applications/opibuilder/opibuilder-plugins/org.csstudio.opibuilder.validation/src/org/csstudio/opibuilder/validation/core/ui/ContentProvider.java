@@ -24,9 +24,9 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 /**
- * 
- * <code>ContentProvider</code> is meant to replace the content provide of the problems view. 
- * It provides elements in a 3-level tree like structure to be able to group the sub validation 
+ *
+ * <code>ContentProvider</code> is meant to replace the content provide of the problems view.
+ * It provides elements in a 3-level tree like structure to be able to group the sub validation
  * failures below the parent failures.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
@@ -37,10 +37,10 @@ public class ContentProvider implements ITreeContentProvider {
     private boolean filterOut = true;
     private ITreeContentProvider original;
     private Field markerField;
-    
+
     private Map<ValidationFailure,Set<Object>> markersMap = new HashMap<>();
-    
-    
+
+
     /**
      * @param extendedMarkersView
      */
@@ -50,7 +50,7 @@ public class ContentProvider implements ITreeContentProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse
      * .jface.viewers.Viewer, java.lang.Object, java.lang.Object)
      */
@@ -61,7 +61,7 @@ public class ContentProvider implements ITreeContentProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.viewers.IContentProvider#dispose()
      */
     public void dispose() {
@@ -70,7 +70,7 @@ public class ContentProvider implements ITreeContentProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java
      * .lang.Object)
      */
@@ -87,7 +87,7 @@ public class ContentProvider implements ITreeContentProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements
      * (java.lang.Object)
      */
@@ -97,7 +97,7 @@ public class ContentProvider implements ITreeContentProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.viewers.ILazyTreeContentProvider#getParent(
      * java.lang.Object)
      */
@@ -107,7 +107,7 @@ public class ContentProvider implements ITreeContentProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java
      * .lang.Object)
      */
@@ -122,7 +122,7 @@ public class ContentProvider implements ITreeContentProvider {
             return false;
         } return original.hasChildren(element);
     }
-    
+
     private ValidationFailure getValidationFailure(Object element) {
         if ("MarkerEntry".equals(element.getClass().getSimpleName())) {
             try {
@@ -138,7 +138,7 @@ public class ContentProvider implements ITreeContentProvider {
         }
         return null;
     }
-    
+
     private Object[] filterElements(Object[] categories) {
         if (Activator.getInstance().isNestMarkers()) {
             try {
@@ -157,11 +157,11 @@ public class ContentProvider implements ITreeContentProvider {
         }
         return categories;
     }
-    
+
     private Object[] filterChildren(Object[] markers) {
         if (Activator.getInstance().isNestMarkers()) {
             try {
-                List<Object> list = new ArrayList<>(markers.length); 
+                List<Object> list = new ArrayList<>(markers.length);
                 for (Object o : markers) {
                     if ("MarkerEntry".equals(o.getClass().getSimpleName())) {
                         if (markerField == null) {

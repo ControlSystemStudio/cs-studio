@@ -10,13 +10,13 @@ import org.slf4j.LoggerFactory;
 
 /**
  * UI adapter for {@link IRecord}.
- * 
+ *
  * @author Sven Wende
  */
 public final class RecordWorkbenchAdapter extends BaseWorkbenchAdapter<IRecord> {
 
     private static final Logger LOG = LoggerFactory.getLogger(RecordWorkbenchAdapter.class);
-    
+
     /**
      * {@inheritDoc}
      */

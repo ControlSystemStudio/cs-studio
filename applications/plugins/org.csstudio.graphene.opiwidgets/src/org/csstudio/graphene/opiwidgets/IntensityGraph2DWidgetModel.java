@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene.opiwidgets;
 
@@ -16,12 +16,12 @@ import org.epics.graphene.NumberColorMap;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class IntensityGraph2DWidgetModel extends AbstractPointDatasetGraph2DWidgetModel {
     private static int defaultColorMapIndex = NumberColorMapUtil.colorMapIndex(new IntensityGraph2DRenderer().getColorMap());
     private static boolean defaultDrawLegend = new IntensityGraph2DRenderer().isDrawLegend();
-    
+
     public IntensityGraph2DWidgetModel() {
         super(AbstractSelectionWidgetModelDescription.newModelFrom(IntensityGraph2DWidget.class));
     }
@@ -41,7 +41,7 @@ public class IntensityGraph2DWidgetModel extends AbstractPointDatasetGraph2DWidg
         addProperty(new BooleanProperty(PROP_DRAW_LEGEND,
                 "Draw Legend", WidgetPropertyCategory.Basic, defaultDrawLegend));
     }
-    
+
     public NumberColorMap getColorMap() {
         return NumberColorMapUtil.colorMap((Integer) getCastedPropertyValue(PROP_COLOR_MAP));
     }

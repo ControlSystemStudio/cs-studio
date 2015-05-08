@@ -21,7 +21,7 @@ public class SeverityLabelProvider extends PropertyLabelProvider
 {
     /** Mapping of severities to colors */
     final private SeverityColumnPreference color_prefs;
-    
+
     /** Constructor
      *  @param property Message property to display in column
      *  @param parent Parent widget, used to register DisposeListener

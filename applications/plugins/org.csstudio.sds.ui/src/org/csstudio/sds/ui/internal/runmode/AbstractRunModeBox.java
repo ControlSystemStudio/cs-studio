@@ -71,7 +71,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractRunModeBox {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRunModeBox.class);
-    
+
     private boolean _disposed;
 
     /**
@@ -154,11 +154,11 @@ public abstract class AbstractRunModeBox {
                         RuntimeContext runtimeContext = new RuntimeContext(
                                 _input.getFilePath(), _input.getAliases());
                         runtimeContext.setRunModeBoxInput(_input);
-                        
-                        // .. we create a separate broker instance for each running display 
+
+                        // .. we create a separate broker instance for each running display
                         runtimeContext.setBroker(SimpleDALBroker.newInstance(new CssApplicationContext("CSS")));
                         LOG.info("SimpleDALBroker instance created");
-                        
+
                         _displayModel.setRuntimeContext(runtimeContext);
 
                         final int x = _displayModel.getX();
@@ -237,8 +237,8 @@ public abstract class AbstractRunModeBox {
      *            x position hint
      * @param y
      *            y position hin
-     * @param openRelative 
-     *               To be opened relative to predecessor displays          
+     * @param openRelative
+     *               To be opened relative to predecessor displays
      * @param width
      *            width hint
      * @param height
@@ -308,7 +308,7 @@ public abstract class AbstractRunModeBox {
 
             // kill broker
             RuntimeContext context = _displayModel.getRuntimeContext();
-            
+
             if(context!=null) {
                 SimpleDALBroker broker = context.getBroker();
                 broker.releaseAll();
@@ -412,7 +412,7 @@ public abstract class AbstractRunModeBox {
     }
 
     public abstract Point getCurrentLocation();
-    
+
     public DisplayModel getDisplayModel() {
         return _displayModel;
     }

@@ -14,12 +14,12 @@ import org.csstudio.dal.simple.SimpleDALBroker;
 /**
  * Test class for a connection problem with initially unavailable channels in
  * combination with untyped {@link ConnectionParameters}.
- * 
+ *
  * To reproduce the problem, start the test WITHOUT a running SOFT-IOC. The test
  * should throw an execption then!
- * 
+ *
  * @author swende
- * 
+ *
  */
 public final class DataAccessLayerTest5 extends TestCase {
     private static final ConnectionParameters UNTYPED_PARAMETERS = new ConnectionParameters(

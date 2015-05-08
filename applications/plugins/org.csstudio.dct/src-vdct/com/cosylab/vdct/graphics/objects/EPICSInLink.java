@@ -8,22 +8,22 @@ package com.cosylab.vdct.graphics.objects;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -66,32 +66,32 @@ public class EPICSInLink extends EPICSLinkOutIn {
                 EPICSInLink.this.getFieldData().setValue(EPICSInLink.this.getLinkProperties().getCompactLinkDef());
             }
             else if (action.equals(ppString))
-            {            
+            {
                 EPICSInLink.this.getLinkProperties().setProcess("PP");
                 EPICSInLink.this.getFieldData().setValue(EPICSInLink.this.getLinkProperties().getCompactLinkDef());
             }
             else if (action.equals(caString))
-            {            
+            {
                 EPICSInLink.this.getLinkProperties().setProcess("CA");
                 EPICSInLink.this.getFieldData().setValue(EPICSInLink.this.getLinkProperties().getCompactLinkDef());
             }
             else if (action.equals(cpString))
-            {            
+            {
                 EPICSInLink.this.getLinkProperties().setProcess("CP");
                 EPICSInLink.this.getFieldData().setValue(EPICSInLink.this.getLinkProperties().getCompactLinkDef());
             }
             else if (action.equals(cppString))
-            {            
+            {
                 EPICSInLink.this.getLinkProperties().setProcess("CPP");
                 EPICSInLink.this.getFieldData().setValue(EPICSInLink.this.getLinkProperties().getCompactLinkDef());
             }
             else if (action.equals(nmsString))
-            {            
+            {
                 EPICSInLink.this.getLinkProperties().setMaximize("NMS");
                 EPICSInLink.this.getFieldData().setValue(EPICSInLink.this.getLinkProperties().getCompactLinkDef());
             }
             else if (action.equals(msString))
-            {            
+            {
                 EPICSInLink.this.getLinkProperties().setMaximize("MS");
                 EPICSInLink.this.getFieldData().setValue(EPICSInLink.this.getLinkProperties().getCompactLinkDef());
             }
@@ -114,7 +114,7 @@ public EPICSInLink(ContainerObject parent, com.cosylab.vdct.vdb.VDBFieldData fie
  */
 protected void draw(Graphics g, boolean hilited) {
 //    super.draw(g, hilited);
-    
+
     com.cosylab.vdct.graphics.ViewState view = com.cosylab.vdct.graphics.ViewState.getInstance();
 
     double Rscale = view.getScale();
@@ -123,24 +123,24 @@ protected void draw(Graphics g, boolean hilited) {
     if (zoom) {
         zoomImage = ZoomPane.getInstance().startZooming(this,!isZoomRepaint());
     }
-        
+
     boolean rightSide = isRight();
     int arrowLength = 2*r;
 
     int rrx;
     if (rightSide)
         rrx = getRx()+getRwidth()-view.getRx();
-    else 
+    else
         rrx = getRx()-view.getRx()-arrowLength;
 
 //    int rry = getRy()+getRheight()/2-view.getRy();
     int rry = (int)(getRscale()*getOutY()-view.getRy());
-    
+
     Color color;
     if (!hilited) color = Constants.FRAME_COLOR;
-    else color = (view.isHilitedObject(this)) ? 
+    else color = (view.isHilitedObject(this)) ?
                     Constants.HILITE_COLOR : Constants.FRAME_COLOR;
-    
+
     if (getParent().isZoomRepaint()) {
         if (rightSide) {
             rrx = getX() - getParent().getX() + getWidth() + ZoomPane.getInstance().getLeftOffset();
@@ -156,28 +156,28 @@ protected void draw(Graphics g, boolean hilited) {
         }
         rry = ZoomPane.VERTICAL_MARGIN + getHeight()/2;
     }
-    
-            
+
+
     if (inlink!=null) {
-        
+
         g.setColor(hilited && view.isHilitedObject(this) && !zoom ? Constants.HILITE_COLOR : getVisibleColor());
-        
+
         LinkDrawer.drawLink(g, this, inlink, getQueueCount(), rightSide);
-    
+
         g.setColor(color);
         // draw arrow
         g.drawLine(rrx, rry-r, rrx+arrowLength, rry-r);
         g.drawLine(rrx, rry+r, rrx+arrowLength, rry+r);
-        
-        int dr=r; 
+
+        int dr=r;
         if (rightSide) {
             dr=-dr;
             rrx+=arrowLength;
         }
-        
+
         g.drawLine(rrx, rry-r, rrx+dr, rry);
         g.drawLine(rrx, rry+r, rrx+dr, rry);
-                
+
         if (font2!=null) {
             g.setFont(font2);
             rry += realHalfHeight;
@@ -185,13 +185,13 @@ protected void draw(Graphics g, boolean hilited) {
                 rrx += (labelLen-realLabelLen)/2+arrowLength/2;
             else
                 rrx += arrowLength-rtailLen+labelLen-realLabelLen;
-            
+
             g.drawString(label2, rrx, rry);
         }
-        
+
         //if (inlink.getLayerID().equals(getLayerID()))
-        
-        
+
+
     } else {
 
          if (getLinkCount()>0) {
@@ -203,15 +203,15 @@ protected void draw(Graphics g, boolean hilited) {
              g.setColor(color);
             g.drawLine(rrx, rry-r, rrx+arrowLength, rry-r);
             g.drawLine(rrx, rry+r, rrx+arrowLength, rry+r);
-            
-            int dr=-r; 
+
+            int dr=-r;
             if (rightSide) {
                 dr=-dr;
                 rrx+=arrowLength;
             }
             g.drawLine(rrx, rry-r, rrx+dr, rry);
             g.drawLine(rrx, rry+r, rrx+dr, rry);
-    
+
             int rrx2 = (int)(getRscale()*getInX()- view.getRx());
             g.drawLine(rrx, rry, rrx2, rry);
 
@@ -227,16 +227,16 @@ protected void draw(Graphics g, boolean hilited) {
             g.drawLine(rrx+r, rry-r, rrx-r, rry+r);
         }
     }
-    
+
     super.draw(g, hilited);
-    
-    
+
+
 //    if (zoom && isZoomRepaint()) {
 //        int rwidth = getRwidth();
 //        int rheight = getRheight();
-//        if (rightSide)       
+//        if (rightSide)
 //            rrx += ((rwidth/Rscale - rwidth)/2 - ZoomPane.getInstance().getLeftOffset());
-//        else 
+//        else
 //            rrx -= ((rwidth/Rscale - rwidth)/2 + ZoomPane.getInstance().getLeftOffset());
 //        if (view.getRx() < 0)
 //            rrx = rrx < 0 ? 2 : rrx;
@@ -270,14 +270,14 @@ public java.util.Vector getItems() {
 
     JMenu processMenu = new JMenu(processString);
     items.addElement(processMenu);
-    
+
     JMenuItem npp = new JMenuItem(nppString);
     npp.addActionListener(al);
-    processMenu.add(npp);    
-    
+    processMenu.add(npp);
+
     JMenuItem pp = new JMenuItem(ppString);
     pp.addActionListener(al);
-    processMenu.add(pp);    
+    processMenu.add(pp);
 
     JMenuItem ca = new JMenuItem(caString);
     ca.addActionListener(al);

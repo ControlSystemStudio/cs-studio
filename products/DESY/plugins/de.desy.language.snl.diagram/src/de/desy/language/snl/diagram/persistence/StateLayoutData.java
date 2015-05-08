@@ -5,9 +5,9 @@ import org.eclipse.draw2d.geometry.Point;
 
 /**
  * A container for the location and the size of a state or state-set
- * 
+ *
  * @author Kai Meyer, Sebastian Middeke (C1 WPS)
- * 
+ *
  */
 public class StateLayoutData {
 
@@ -16,7 +16,7 @@ public class StateLayoutData {
 
     /**
      * Constructor.
-     * 
+     *
      * @param point
      *            The location
      * @param dimension

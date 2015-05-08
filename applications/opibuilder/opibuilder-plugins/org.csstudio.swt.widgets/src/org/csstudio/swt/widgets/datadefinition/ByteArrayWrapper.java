@@ -12,10 +12,10 @@ package org.csstudio.swt.widgets.datadefinition;
  *
  */
 public class ByteArrayWrapper implements IPrimaryArrayWrapper {
-    
+
     private byte[] data;
-    
-    
+
+
 
     public ByteArrayWrapper(byte[] data) {
         this.data = data;
@@ -24,7 +24,7 @@ public class ByteArrayWrapper implements IPrimaryArrayWrapper {
     public void setData(byte[] data) {
         this.data = data;
     }
-    
+
     public double get(int i) {
         return data[i];
     }

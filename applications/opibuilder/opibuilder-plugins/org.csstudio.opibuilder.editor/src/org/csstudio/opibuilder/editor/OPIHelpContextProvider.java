@@ -22,7 +22,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 public class OPIHelpContextProvider implements IContextProvider{
 
     private GraphicalViewer viewer;
-    
+
     public OPIHelpContextProvider(GraphicalViewer viewer) {
         this.viewer = viewer;
     }
@@ -80,20 +80,20 @@ public class OPIHelpContextProvider implements IContextProvider{
                 return "See Details";
             return null;
         }
-        
+
     }
-    
+
     final static class WidgetHelpResource implements IHelpResource {
 
         private AbstractWidgetModel widgetModel;
-                
-        
+
+
         public WidgetHelpResource(AbstractWidgetModel widgetModel) {
             this.widgetModel = widgetModel;
         }
 
         public String getHref() {
-            WidgetDescriptor widgetDescriptor = 
+            WidgetDescriptor widgetDescriptor =
                     WidgetsService.getInstance().getWidgetDescriptor(widgetModel.getTypeID());
             String onlineHelpHtml = widgetDescriptor.getOnlineHelpHtml();
             if( onlineHelpHtml != null && !onlineHelpHtml.trim().isEmpty()){
@@ -115,6 +115,6 @@ public class OPIHelpContextProvider implements IContextProvider{
             return WidgetsService.getInstance().getWidgetDescriptor(
                     widgetModel.getTypeID()).getName();
         }
-        
+
     }
 }

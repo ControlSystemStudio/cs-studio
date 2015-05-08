@@ -13,7 +13,7 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.internationalization.Messages;
 
 /**
- * 
+ *
  * @author hammonds
  *
  */
@@ -21,7 +21,7 @@ public class Image extends ADLAbstractWidget {
     private String imageType = new String("gif");
     private String imageName =  new String();
     private String imageCalc = new String();
-    
+
     public Image(ADLWidget adlWidget) {
         super(adlWidget);
         name = new String("image");
@@ -33,7 +33,7 @@ public class Image extends ADLAbstractWidget {
                     if (_adlObject != null){
                         _hasObject = true;
                     }
-                    
+
                 }
                 else if (childWidget.getType().equals("dynamic attribute")){
                     _adlDynamicAttribute = new ADLDynamicAttribute(childWidget);

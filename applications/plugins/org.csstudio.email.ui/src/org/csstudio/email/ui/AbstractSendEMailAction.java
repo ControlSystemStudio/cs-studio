@@ -21,7 +21,7 @@ abstract public class AbstractSendEMailAction extends Action
     final protected Shell shell;
     final private String from, subject;
     private String body;
-    
+
     /** Initialize with body, awaiting image
      *  @param shell
      *  @param from
@@ -80,7 +80,7 @@ abstract public class AbstractSendEMailAction extends Action
             public void run()
             {
                 final String image_filename = getImage();
-                
+
                 final Dialog dlg;
                 if (image_filename == null)
                     dlg = new EMailSenderDialog(shell, Preferences.getSMTP_Host(), from,

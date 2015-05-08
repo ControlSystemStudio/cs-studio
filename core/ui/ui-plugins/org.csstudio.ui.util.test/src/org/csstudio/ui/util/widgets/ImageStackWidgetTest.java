@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.ui.util.widgets;
 
@@ -27,7 +27,7 @@ import org.eclipse.swt.events.SelectionEvent;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ImageStackWidgetTest extends ApplicationWindow {
 
@@ -40,7 +40,7 @@ public class ImageStackWidgetTest extends ApplicationWindow {
 
     /**
      * Create contents of the application window.
-     * 
+     *
      * @param parent
      */
     @Override
@@ -108,7 +108,7 @@ public class ImageStackWidgetTest extends ApplicationWindow {
 
     /**
      * Launch the application.
-     * 
+     *
      * @param args
      */
     public static void main(String args[]) {
@@ -124,7 +124,7 @@ public class ImageStackWidgetTest extends ApplicationWindow {
 
     /**
      * Configure the shell.
-     * 
+     *
      * @param newShell
      */
     @Override

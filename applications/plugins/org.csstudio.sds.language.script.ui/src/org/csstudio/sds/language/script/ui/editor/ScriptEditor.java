@@ -60,7 +60,7 @@ public class ScriptEditor extends LanguageEditor {
         }
         return _defaultDamagerRepairer;
     }
-    
+
     @Override
     protected void determineAdditionalErrors() {
         doHandleSourceModifiedAndSaved(null);

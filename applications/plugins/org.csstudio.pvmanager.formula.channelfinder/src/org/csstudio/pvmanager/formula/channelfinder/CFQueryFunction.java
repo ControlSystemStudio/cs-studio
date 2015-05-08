@@ -13,17 +13,17 @@ import org.epics.vtype.VString;
 import org.epics.vtype.VTable;
 
 /**
- * 
+ *
  * @author Kunal Shroff
  *
  */
 public class CFQueryFunction extends StatefulFormulaFunction {
-    
+
     private VString currentQuery;
     private volatile VTable currentResult;
     private volatile Exception currentException;
-    
-    private ServiceMethod serviceMethod;    
+
+    private ServiceMethod serviceMethod;
 
     @Override
     public boolean isVarArgs() {
@@ -59,7 +59,7 @@ public class CFQueryFunction extends StatefulFormulaFunction {
     public Object calculate(List<Object> args) {
         if (currentQuery == null || !((VString) args.get(0)).getValue().equals(currentQuery.getValue())) {
             currentQuery = (VString) args.get(0);
-            serviceMethod = ServiceRegistry.getDefault().findServiceMethod("cf/find");            
+            serviceMethod = ServiceRegistry.getDefault().findServiceMethod("cf/find");
             serviceMethod.executeMethod(Collections.<String, Object>singletonMap("query", currentQuery), new WriteFunction<Map<String, Object>>(){
 
                 @Override
@@ -67,7 +67,7 @@ public class CFQueryFunction extends StatefulFormulaFunction {
                     currentResult = (VTable) newValue.get("result");
                     currentException = null;
                 }
-                
+
             } , new WriteFunction<Exception>(){
 
                 @Override
@@ -75,7 +75,7 @@ public class CFQueryFunction extends StatefulFormulaFunction {
                     currentException = newValue;
                     currentResult = null;
                 }
-                
+
             });
         }
         return currentResult;

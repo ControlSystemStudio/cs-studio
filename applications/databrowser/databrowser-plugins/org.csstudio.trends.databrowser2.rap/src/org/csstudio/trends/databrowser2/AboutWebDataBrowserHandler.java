@@ -19,9 +19,9 @@ import org.eclipse.ui.internal.UIPlugin;
 
 /**
  * The action to pop up an About WebDataBrowser Dialog.
- * 
+ *
  * @author Davy Dequidt <davy.dequidt@iter.org>
- * 
+ *
  */
 public class AboutWebDataBrowserHandler extends AbstractHandler {
 
@@ -35,7 +35,7 @@ public class AboutWebDataBrowserHandler extends AbstractHandler {
 
         /**
          * Create the dialog.
-         * 
+         *
          * @param parentShell
          */
         public AboutDialog(Shell parentShell) {
@@ -45,7 +45,7 @@ public class AboutWebDataBrowserHandler extends AbstractHandler {
 
         /**
          * Create contents of the dialog.
-         * 
+         *
          * @param parent
          */
         @SuppressWarnings({ "restriction" })

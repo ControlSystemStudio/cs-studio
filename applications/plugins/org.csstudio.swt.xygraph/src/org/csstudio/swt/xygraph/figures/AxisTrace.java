@@ -19,10 +19,10 @@ import org.eclipse.swt.graphics.RGB;
 
 /**
  * The axis traces for the plot area.
- * 
+ *
  * @author Davy Dequidt
  * @author Jaka Bobnar
- * 
+ *
  */
 public class AxisTrace extends Figure implements MouseMotionListener, MouseListener,
         PropertyChangeListener {
@@ -56,14 +56,14 @@ public class AxisTrace extends Figure implements MouseMotionListener, MouseListe
         if (use_advanced_graphics) {
             graphics.setAntialias(SWT.ON);
         }
-    
+
         graphics.setForegroundColor(revertBackColor);
         graphics.setLineStyle(SWTConstants.LINE_DOT);
         graphics.setLineWidth(2);
         graphics.drawLine(cursor_x, bounds.y, cursor_x, bounds.y + bounds.height);
         graphics.setLineWidth(1);
         graphics.drawLine(bounds.x, cursor_y, bounds.x + bounds.width, cursor_y);
-        
+
         graphics.popState();
     }
 
@@ -106,7 +106,7 @@ public class AxisTrace extends Figure implements MouseMotionListener, MouseListe
     public void mouseDoubleClicked(MouseEvent me) {
         // NOP
     }
-    
+
     /*
      * (non-Javadoc)
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)

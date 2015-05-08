@@ -18,11 +18,11 @@ import org.csstudio.alarm.beast.client.AADataStructure;
 import org.csstudio.alarm.beast.notifier.model.IActionHandler;
 
 /**
- * Handler for Log command: Parse {@link AADataStructure} details to extract information. 
+ * Handler for Log command: Parse {@link AADataStructure} details to extract information.
  * Example: log:CODAC,Sandbox&body={0} Alarm raised - Water below {1} m3
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
- * 
+ *
  */
 public class LogCommandHandler implements IActionHandler {
 

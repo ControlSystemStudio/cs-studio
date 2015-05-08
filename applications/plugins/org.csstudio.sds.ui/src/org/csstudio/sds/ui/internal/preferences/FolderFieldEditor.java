@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.sds.ui.internal.preferences;
 
@@ -10,10 +10,10 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 
 public class FolderFieldEditor extends PathEditor {
-    
+
     /**
      * Creates a path field editor.
-     * 
+     *
      * @param name the name of the preference this field editor works on
      * @param labelText the label text of the field editor
      * @param parent the parent of the field editor's control
@@ -32,5 +32,5 @@ public class FolderFieldEditor extends PathEditor {
         }
         return null;
     }
-    
+
 }

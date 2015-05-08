@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Text;
  * <p>
  * TODO once it's clear what class to use for PVFormula, the selection will
  * change from String to that.
- * 
+ *
  * @author carcassi
  *
  */
@@ -39,7 +39,7 @@ public class PVFormulaInputBar extends AbstractPVFormulaWidget {
 
     /**
      * Create the composite.
-     * 
+     *
      * @param parent the parent
      * @param style the SWT style
      * @param dialogSettings where to store the text history
@@ -49,7 +49,7 @@ public class PVFormulaInputBar extends AbstractPVFormulaWidget {
             IDialogSettings dialogSettings, String settingsKey) {
         super(parent, style);
         setLayout(new GridLayout(2, false));
-        
+
         lblPvFormula = new Label(this, SWT.NONE);
         lblPvFormula.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         lblPvFormula.setText("PV Formula:");
@@ -135,11 +135,11 @@ public class PVFormulaInputBar extends AbstractPVFormulaWidget {
         super.setMenu(menu);
         text.setMenu(menu);
     }
-    
+
     public String getLabelText() {
         return lblPvFormula.getText();
     }
-    
+
     public void setLabelText(String text) {
         lblPvFormula.setText(text);
     }

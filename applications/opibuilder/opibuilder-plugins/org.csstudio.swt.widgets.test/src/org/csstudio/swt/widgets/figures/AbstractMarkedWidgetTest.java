@@ -12,8 +12,8 @@ public abstract class AbstractMarkedWidgetTest extends AbstractScaledWidgetTest 
 
     @Override
     public String[] getPropertyNames() {
-        String[] superProps =  super.getPropertyNames();    
-        
+        String[] superProps =  super.getPropertyNames();
+
         String[] myProps = new String[]{
                 "showMarkers",
                 "loloLevel",
@@ -31,5 +31,5 @@ public abstract class AbstractMarkedWidgetTest extends AbstractScaledWidgetTest 
         };
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
 }

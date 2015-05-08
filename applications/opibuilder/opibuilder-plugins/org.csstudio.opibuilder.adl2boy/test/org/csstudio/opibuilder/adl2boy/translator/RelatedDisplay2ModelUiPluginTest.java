@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.Path;
 
 /**
  * @author John Hammonds, Argonne National Laboratory
- * 
+ *
  */
 public class RelatedDisplay2ModelUiPluginTest extends TestCase {
     RelatedDisplay2Model converter = null;

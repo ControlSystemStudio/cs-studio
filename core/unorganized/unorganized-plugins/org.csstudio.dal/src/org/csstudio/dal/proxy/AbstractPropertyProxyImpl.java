@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dal.proxy;
 
@@ -27,13 +27,13 @@ import org.csstudio.dal.simple.impl.DynamicValueConditionConverterUtil;
 
 /**
  * Abstract implementation of PropertyProxy, as help for plug implementation.
- * 
+ *
  * @author ikriznar
  *
  */
-public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M extends MonitorProxy> 
-    extends AbstractProxyImpl<P> 
-    implements PropertyProxy<T,P> /*, DirectoryProxy<P> implements also some directory methods although does not import it*/ 
+public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M extends MonitorProxy>
+    extends AbstractProxyImpl<P>
+    implements PropertyProxy<T,P> /*, DirectoryProxy<P> implements also some directory methods although does not import it*/
 {
 
     private DynamicValueCondition condition= new DynamicValueCondition(DynamicValueState.NORMAL);
@@ -41,14 +41,14 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
     private Map<String, Object> characteristics;
     private List<M> monitors;
 
-    
+
     private boolean liveDataNotSet = true;
     private boolean metaDataNotSet = true;
 
     public AbstractPropertyProxyImpl(String name, P plug) {
         super(name,plug);
     }
-    
+
     /**
      * Internal storage for monitors.
      * @return characteristics cache
@@ -63,24 +63,24 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
         }
         return monitors;
     }
-    
+
     protected boolean isMonitorListCreated() {
         return monitors!=null;
     }
-    
+
     protected boolean isCharacteristicsCacheCreated() {
         return characteristics!=null;
     }
 
     /**
-     * Creates new instance of list that is used for storing monitors. 
+     * Creates new instance of list that is used for storing monitors.
      * Plug implementation may override to provide own list implementation.
      * @return new instance of list that is used for storing monitors
      */
     private List<M> newMonitorsList() {
         return new ArrayList<M>(2);
     }
-    
+
     /**
      * Destroy all monitors.
      */
@@ -96,7 +96,7 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
             for (int i = 0; i < array.length; i++)
                 array[i].destroy();
         }
-        
+
     }
 
     /**
@@ -109,12 +109,12 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
             if (!monitors.contains(monitor)) monitors.add(monitor);
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public void addProxyListener(ProxyListener<?> l) {
         super.addProxyListener(l);
-        
+
         @SuppressWarnings("rawtypes")
         ProxyEvent e = new ProxyEvent(this, getCondition(),
                 getConnectionState(), null);
@@ -126,7 +126,7 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
         }
 
     }
-    
+
     /**
      * Remove monitor.
      * @param monitor monitor to be removed.
@@ -155,7 +155,7 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
         }
         return characteristics;
     }
-    
+
     /**
      * Returns new characteristics cache map. Called only once when cache is created.
      * Plug implementation may override this to implement own creation and initialization.
@@ -182,10 +182,10 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
         if (this.proxyListeners == null) {
             return;
         }
-        
+
         @SuppressWarnings("unchecked")
         ProxyListener<T>[] l= (ProxyListener<T>[])this.proxyListeners.toArray();
-    
+
         ProxyEvent<PropertyProxy<T,?>> pe= new ProxyEvent<PropertyProxy<T,?>>((PropertyProxy<T,P>)this,this.condition,this.connectionStateMachine.getConnectionState(),null);
         for (int i = 0; i < l.length; i++) {
             try {
@@ -194,7 +194,7 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
                 Logger.getLogger(this.getClass()).warn("Event handler error, continuing.", e);
             }
         }
-        
+
         if (metaDataNotSet && condition.containsAnyOfStates(DynamicValueState.HAS_METADATA)) {
             metaDataNotSet=false;
             if (connectionStateMachine.requestOperationalState(getCondition().getStates())) {
@@ -222,14 +222,14 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
         this.condition=s;
         fireCondition();
     }
-    
+
     public void updateConditionWith(String message, DynamicValueState... states) {
         if (states == null) {
             return;
         }
-        
+
         DynamicValueCondition c= new DynamicValueCondition(DynamicValueState.deriveSetWithStates(getCondition().getStates(), states),null, message);
-        
+
         setCondition(c);
     }
 
@@ -239,7 +239,7 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
 
     public void updateValueReponse(Response<T> r) {
         lastValueResponse=r;
-        
+
         if (liveDataNotSet && lastValueResponse!=null) {
             liveDataNotSet=false;
             getCondition().getStates().remove(DynamicValueState.NO_VALUE);
@@ -248,20 +248,20 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
                 fireConnectionState(ConnectionState.OPERATIONAL,null);
             }
         }
-    }    
+    }
 
     /**
-     * Returns some value for those characteristics, which does not require remote connection 
-     * but can provide value from proxy within.   
+     * Returns some value for those characteristics, which does not require remote connection
+     * but can provide value from proxy within.
      * @param name the characteristic name
      * @return the proxy local characteristic value
      */
     public Object getLocalProxyCharacteristic(String name) {
-        
+
         if (name == null) {
             return null;
         }
-        
+
         if (name.equals(CharacteristicInfo.C_SEVERITY.getName())) {
             return condition;
         }
@@ -274,45 +274,45 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
 
         return null;
     }
-    
+
     /**
      * Default implementation trying to help getting characteristic value.
      */
     public Object getCharacteristic(String characteristicName)
             throws DataExchangeException {
-        
+
         if (characteristicName==null) {
             return null;
         }
-        
+
         // get system characteristic
         Object value= getLocalProxyCharacteristic(characteristicName);
-        
+
         value = processCharacteristicBeforeCache(value, characteristicName);
-        
+
         // get characteristic from cache
         if (value==null && characteristics!=null) {
             synchronized (characteristics) {
                 value= characteristics.get(characteristicName);
             }
         }
-        
+
         value = processCharacteristicAfterCache(value, characteristicName);
-        
+
         if (value==null && (this instanceof DirectoryProxy)) {
             value= PropertyUtilities.verifyCharacteristic((DirectoryProxy<?>)this, characteristicName, value);
         }
-        
+
         return value;
     }
 
     /**
-     * Plug implementation should implement here processing characteristic value after has not been found in 
-     * characteristic cache. 
-     * 
-     * Plus should here implement remote requesting of characteristic. Simulator should simply 
+     * Plug implementation should implement here processing characteristic value after has not been found in
+     * characteristic cache.
+     *
+     * Plus should here implement remote requesting of characteristic. Simulator should simply
      * provide some value, if it is not already in cache.
-     * 
+     *
      * @param value the value establishes so far
      * @param characteristicName the name of requested characteristic
      * @return new value or just provided value
@@ -321,37 +321,37 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
             String characteristicName);
 
     /**
-     * Plug implementation should implement here processing characteristic value before it is taken from 
-     * characteristic cache. 
-     * 
+     * Plug implementation should implement here processing characteristic value before it is taken from
+     * characteristic cache.
+     *
      * If plug has nothing to do, then should simply return provided value.
-     * 
+     *
      * @param value the value establishes so far
      * @param characteristicName the name of requested characteristic
      * @return new value or just provided value
      */
     protected abstract Object processCharacteristicBeforeCache(Object value,
             String characteristicName);
-    
-    
+
+
     @Override
     public void destroy() {
-        
+
         destroyMonitors();
-        
+
         super.destroy();
-        
+
     }
-    
+
     /**
      * Fires new characteristics changed event
      */
-    
+
     protected void fireCharacteristicsChanged(PropertyChangeEvent ev)
     {
-        if (proxyListeners == null) 
+        if (proxyListeners == null)
             return;
-        
+
         ProxyListener<?>[] l = (ProxyListener[])proxyListeners.toArray();
 
         for (int i = 0; i < l.length; i++) {
@@ -361,7 +361,7 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
                 Logger.getLogger(this.getClass()).warn("Simulator error.", e);
             }
         }
-        
+
     }
 
     /*
@@ -378,19 +378,19 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
     public String[] getPropertyNames() throws RemoteException {
         return null;
     }
-    
-    
+
+
     @SuppressWarnings("unchecked")
     public Request<?> getCharacteristics(final String[] characteristics,
             ResponseListener<?> callback) throws DataExchangeException {
-        
+
         RequestImpl<Object> r = new RequestImpl<Object>(this, (ResponseListener<Object>) callback);
 
         handleCharacteristicsReponses(characteristics, (ResponseListener<Object>) callback, r);
-        
+
         return r;
     }
-    
+
     /**
      * Handles firing responses with characteristics.
      * Plug implementation may override this method to handles this operation asynchronously.
@@ -405,7 +405,7 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
     {
         handleCharacteristicsReponsesSync(characteristics, callback, request);
     }
-    
+
     /**
      * Handles getting and firing characteristics responses in synchronous way.
      * @param characteristics
@@ -414,31 +414,31 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
      */
     protected void handleCharacteristicsReponsesSync(final String[] characteristics,
             final ResponseListener<Object> callback,
-            final RequestImpl<Object> request) 
+            final RequestImpl<Object> request)
     {
-        
+
         for (int i = 0; i < characteristics.length; i++) {
             Object value;
             try {
                 value= getCharacteristic(characteristics[i]);
-                
+
                 request.addResponse(new ResponseImpl<Object>(this, request,    value, characteristics[i],
                         value != null, null, getCondition(), null, i+1 == characteristics.length));
 
             } catch (DataExchangeException e) {
-                
+
                 request.addResponse(new ResponseImpl<Object>(this, request,    null, characteristics[i],
                         false, e, getCondition(), null, i+1 == characteristics.length));
-                
+
             }
         }
     }
-    
+
     /**
-     * Sets new characteristics value and fires property change event to proxy listeners 
-     * with new characteristic value. Note that adding value directly to getCharacteristics() 
+     * Sets new characteristics value and fires property change event to proxy listeners
+     * with new characteristic value. Note that adding value directly to getCharacteristics()
      * object does not fire property change event.
-     *    
+     *
      * @param chName characteristic name
      * @param newValue new value to be stores in characteristic cache
      * @return true if characteristics value in property has changed by this operation
@@ -460,5 +460,5 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
         return true;
     }
 
-    
+
 }

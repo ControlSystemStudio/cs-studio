@@ -92,7 +92,7 @@ public class ValueRequestIterator implements ValueIterator
             close();
             return result;
         }
-        
+
         // Prepare next batch of samples
         fetch(VTypeHelper.getTimestamp(result));
         if (samples == null)

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene;
 
@@ -37,28 +37,28 @@ import org.epics.vtype.table.VTableFactory;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<BubbleGraph2DRendererUpdate, BubbleGraph2DExpression>
     implements ISelectionProvider {
 
     private PVWriter<Object> selectionValueWriter;
-    
+
     public BubbleGraph2DWidget(Composite parent, int style) {
         super(parent, style);
         final List<String> properties = Arrays.asList("highlightSelectionValue");
         addPropertyChangeListener(new PropertyChangeListener() {
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (properties.contains(evt.getPropertyName()) && getGraph() != null) {
                     updateGraph();
                 }
-                
+
             }
         });
         getImageDisplay().addMouseMoveListener(new MouseMoveListener() {
-            
+
             @Override
             public void mouseMove(MouseEvent e) {
                 if (isHighlightSelectionValue() && getGraph() != null) {
@@ -66,9 +66,9 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
                 }
             }
         });
-        
+
         addPropertyChangeListener(new PropertyChangeListener() {
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("selectionValuePv") && getGraph() != null) {
@@ -76,11 +76,11 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
                         selectionValueWriter.close();
                         selectionValueWriter = null;
                     }
-                    
+
                     if (getSelectionValuePv() == null || getSelectionValuePv().trim().isEmpty()) {
                         return;
                     }
-                    
+
                     selectionValueWriter = PVManager.write(formula(getSelectionValuePv()))
                             .writeListener(new PVWriterListener<Object>() {
                                 @Override
@@ -96,13 +96,13 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
                     if (getSelectionValue() != null) {
                         selectionValueWriter.write(getSelectionValue());
                     }
-                            
+
                 }
-                
+
             }
         });
         addPropertyChangeListener(new PropertyChangeListener() {
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("selectionValue") && selectionValueWriter != null) {
@@ -110,7 +110,7 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
                         selectionValueWriter.write(getSelectionValue());
                     }
                 }
-                
+
             }
         });
 
@@ -125,7 +125,7 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
             }
         });
     }
-    
+
     @Override
     protected BubbleGraph2DExpression createGraph() {
         BubbleGraph2DExpression graph = ExpressionLanguage.bubbleGraphOf(formula(getDataFormula()),
@@ -135,16 +135,16 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
                 formulaArg(getColorColumnFormula()));
         return graph;
     }
-    
+
     @Override
     protected BubbleGraph2DRendererUpdate createUpdate() {
         return getGraph().newUpdate().highlightFocusValue(isHighlightSelectionValue());
     }
-    
+
     private String sizeColumnFormula;
     private String colorColumnFormula;
     private boolean highlightSelectionValue = false;
-    
+
     private static final String MEMENTO_SIZE_COLUMN_FORMULA = "sizeColumnFormula"; //$NON-NLS-1$
     private static final String MEMENTO_COLOR_COLUMN_FORMULA = "sizeColumnFormula"; //$NON-NLS-1$
     private static final String MEMENTO_HIGHLIGHT_SELECTION_VALUE = "highlightSelectionValue"; //$NON-NLS-1$
@@ -170,11 +170,11 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
         changeSupport.firePropertyChange("colorColumnFormula", oldValue,
                 this.colorColumnFormula);
     }
-    
+
     public boolean isHighlightSelectionValue() {
         return highlightSelectionValue;
     }
-    
+
     public void setHighlightSelectionValue(boolean highlightSelectionValue) {
         boolean oldValue = this.highlightSelectionValue;
         this.highlightSelectionValue = highlightSelectionValue;
@@ -206,37 +206,37 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
             }
         }
     }
-    
+
     private VTable selectionValue;
     private String selectionValuePv;
-    
+
     public String getSelectionValuePv() {
         return selectionValuePv;
     }
-    
+
     public void setSelectionValuePv(String selectionValuePv) {
         String oldValue = this.selectionValuePv;
         this.selectionValuePv = selectionValuePv;
         changeSupport.firePropertyChange("selectionValuePv", oldValue, this.selectionValuePv);
     }
-    
+
     public VTable getSelectionValue() {
         return selectionValue;
     }
-    
+
     private void setSelectionValue(VTable selectionValue) {
         VTable oldValue = this.selectionValue;
         this.selectionValue = selectionValue;
         changeSupport.firePropertyChange("selectionValue", oldValue, this.selectionValue);
     }
-    
-    
+
+
     @Override
     protected void processInit() {
         super.processInit();
         processValue();
     }
-    
+
     @Override
     protected void processValue() {
         Graph2DResult result = getCurrentResult();
@@ -255,7 +255,7 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
                 if (result.getData() instanceof VNumberArray) {
                     VNumberArray data = (VNumberArray) result.getData();
                     VTable selection = ValueFactory.newVTable(Arrays.<Class<?>>asList(double.class, double.class),
-                            Arrays.asList("X", "Y"), 
+                            Arrays.asList("X", "Y"),
                             Arrays.<Object>asList(new ArrayDouble(index), new ArrayDouble(data.getData().getDouble(index))));
                     setSelectionValue(selection);
                     return;

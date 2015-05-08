@@ -27,22 +27,22 @@ public class RerouteConnectionAction extends AbstractWidgetTargetAction {
         execute(new SetWidgetPropertyCommand(
                 getSelectedConnection().getWidgetModel(), ConnectionModel.PROP_POINTS, new PointList()));
     }
-    
-    
-    
+
+
+
     protected WidgetConnectionEditPart getSelectedConnection(){
         return (WidgetConnectionEditPart)getSelection().getFirstElement();
     }
-    
+
     @Override
     public void selectionChanged(IAction action, ISelection selection) {
         super.selectionChanged(action, selection);
         if(getSelectedConnection() == null)
             return;
         Connection figure = getSelectedConnection().getConnectionFigure();
-        action.setEnabled(figure != null && 
+        action.setEnabled(figure != null &&
                 figure.getConnectionRouter() instanceof FixedPointsConnectionRouter);
     }
-        
+
 
 }

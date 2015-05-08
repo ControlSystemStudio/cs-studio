@@ -9,19 +9,19 @@ import org.csstudio.dct.model.IPrototype;
 
 /**
  * Collection of utility method used for model validation.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class ModelValidationUtil {
     private ModelValidationUtil() {
     }
-    
+
     /**
      * Returns all instances that dependend on the specified instance.
-     *  
+     *
      * @param instance the instance
-     * 
+     *
      * @return all instances depending on the specified instance
      */
     public static List<IInstance> recursivelyGetDependentInstances(IInstance instance) {
@@ -49,12 +49,12 @@ public class ModelValidationUtil {
     /**
      * Checks for a transitive loop between the specified target container and a
      * prototype.
-     * 
+     *
      * @param container
      *            the target container
      * @param prototype
      *            the prototype
-     * 
+     *
      * @return true, if the specified prototype is already used in the
      *         transitive closure of the specified container
      */
@@ -88,6 +88,6 @@ public class ModelValidationUtil {
 
         return result;
     }
-    
-    
+
+
 }

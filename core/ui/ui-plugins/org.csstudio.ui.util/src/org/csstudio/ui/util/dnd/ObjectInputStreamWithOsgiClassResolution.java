@@ -17,7 +17,7 @@ import org.osgi.framework.Bundle;
  * Using the normal ObjectInputStream would resolve classes only according
  * to this plugin classloader. This resolves the classes by looking for the
  * class in any plugin whose name is a package parent of the given class.
- * 
+ *
  * @author Gabriele Carcassi
  */
 public class ObjectInputStreamWithOsgiClassResolution extends ObjectInputStream {
@@ -29,9 +29,9 @@ public class ObjectInputStreamWithOsgiClassResolution extends ObjectInputStream 
        throws IOException {
         super(in);
     }
-    
+
     // classes already resolved
-    private static Map<String, Class<?>> resolvedClasses = 
+    private static Map<String, Class<?>> resolvedClasses =
         new ConcurrentHashMap<String, Class<?>>();
 
     private static Class<?> findClass(String className, String bundleName) {
@@ -47,7 +47,7 @@ public class ObjectInputStreamWithOsgiClassResolution extends ObjectInputStream 
         }
         return null;
     }
-    
+
     private static Class<?> findClass(String className) {
         // Let's first find a class normally
         try {
@@ -55,7 +55,7 @@ public class ObjectInputStreamWithOsgiClassResolution extends ObjectInputStream 
         } catch (ClassNotFoundException ex) {
             // Not found continue
         }
-        
+
         // Look inside bundle that have the same name as one of the packages
         // of the class
         String currentBundleName = className;
@@ -65,11 +65,11 @@ public class ObjectInputStreamWithOsgiClassResolution extends ObjectInputStream 
             if (clazz != null)
                 return clazz;
         }
-        
+
         // Can't find it
         return null;
     }
-    
+
     private static Class<?> getClass(String className) {
         // Look if it's already resolved
         Class<?> clazz = resolvedClasses.get(className);
@@ -79,16 +79,16 @@ public class ObjectInputStreamWithOsgiClassResolution extends ObjectInputStream 
             if (ReflectUtil.isArray(className)) {
                 classNameToResolve = ReflectUtil.getComponentType(className);
             }
-            
+
             // Resolve it
             clazz = findClass(classNameToResolve);
-            
+
             // If found, cache it
             if (clazz == null)
                 return null;
-            
+
                resolvedClasses.put(classNameToResolve, clazz);
-            
+
             if (ReflectUtil.isArray(className)) {
                 clazz = Array.newInstance(clazz, 0).getClass();
                 resolvedClasses.put(className, clazz);
@@ -96,7 +96,7 @@ public class ObjectInputStreamWithOsgiClassResolution extends ObjectInputStream 
         }
         return clazz;
     }
-    
+
     @Override
     protected Class<?> resolveClass(final ObjectStreamClass desc)
       throws IOException, ClassNotFoundException {

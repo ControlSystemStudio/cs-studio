@@ -108,7 +108,7 @@ public class VTypeHelper
             return ScanSampleFactory.createSample(date, serial, ((VNumber) value).getValue());
         else if (value instanceof VString)
             return ScanSampleFactory.createSample(date, serial, ((VString) value).getValue());
-        else if (value instanceof VNumberArray) 
+        else if (value instanceof VNumberArray)
         {   // Handle any numeric array as such
             final ListNumber list = ((VNumberArray) value).getData();
             final Object[] numbers = new Number[list.size()];

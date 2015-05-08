@@ -3,7 +3,7 @@ package org.eclipse.jface.viewers;
 import org.eclipse.swt.widgets.Event;
 
 /**
- * 
+ *
  * <code>StyledCellLabelProvider</code> is a dummy class that allows for compilation
  * of the sources on the RAP target. This class is not intended to provide any
  * proper functionality as does its non-RAP counterpart.
@@ -23,15 +23,15 @@ public abstract class StyledCellLabelProvider extends CellLabelProvider {
     public StyledCellLabelProvider(int style) {
 
     }
-    
+
     protected void paint(final Event event, final Object element) {
         //
     }
-    
+
 
     public void update(ViewerCell cell) {
         // TODO Auto-generated method stub
-        
+
     }
-    
+
 }

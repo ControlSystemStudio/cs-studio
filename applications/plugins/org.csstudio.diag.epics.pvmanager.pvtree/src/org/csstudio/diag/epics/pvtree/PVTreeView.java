@@ -46,7 +46,7 @@ public class PVTreeView extends ViewPart
 {
     /** View ID, defined in plugin.xml */
     public static final String ID = PVTreeView.class.getName();
-    
+
     /** (Numeric) secondary view ID */
     final private static AtomicInteger instance = new AtomicInteger();
 
@@ -67,7 +67,7 @@ public class PVTreeView extends ViewPart
     private DrillDownAdapter drillDownAdapter;
 
     // private ComboHistoryHelper pv_name_helper;
-    
+
     /** @return New unique code to allow multiple instances of this view */
     public static String newInstance()
     {
@@ -99,13 +99,13 @@ public class PVTreeView extends ViewPart
             return;
 
         hookContextMenu();
-        
+
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
         toolbar.add(new CollapseTreeAction(viewer.getTree()));
         toolbar.add(new ExpandAlarmTreeAction(viewer));
         toolbar.add(new ExpandTreeAction(viewer.getTree()));
     }
-    
+
     private void createGUI(final Composite parent)
     {
         GridLayout gl = new GridLayout();

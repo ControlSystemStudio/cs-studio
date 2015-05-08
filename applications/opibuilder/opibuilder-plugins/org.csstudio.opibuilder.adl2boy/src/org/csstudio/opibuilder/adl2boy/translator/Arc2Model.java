@@ -18,7 +18,7 @@ public class Arc2Model extends AbstractADL2Model {
             AbstractContainerModel parentModel) {
         super(adlWidget, colorMap, parentModel);
     }
-    
+
     @Override
     public void processWidget(ADLWidget adlWidget) {
         Arc arcWidget = new Arc(adlWidget);
@@ -44,6 +44,6 @@ public class Arc2Model extends AbstractADL2Model {
             AbstractContainerModel parentModel) {
         widgetModel = new ArcModel();
         parentModel.addChild(widgetModel, true);
-        
+
     }
 }

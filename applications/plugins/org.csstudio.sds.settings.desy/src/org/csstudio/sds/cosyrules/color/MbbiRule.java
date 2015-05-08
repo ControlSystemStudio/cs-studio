@@ -26,15 +26,15 @@ package org.csstudio.sds.cosyrules.color;
 import org.csstudio.sds.model.IRule;
 
 /**
- * TODO (Rickens Helge) : 
- * 
+ * TODO (Rickens Helge) :
+ *
  * @author Rickens Helge
  * @author $Author: $
  * @since 14.03.2011
 
  */
 public class MbbiRule implements IRule {
-    
+
     /**
      * {@inheritDoc}
      */
@@ -43,7 +43,7 @@ public class MbbiRule implements IRule {
         // TODO Auto-generated method stub
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -52,5 +52,5 @@ public class MbbiRule implements IRule {
         // TODO Auto-generated method stub
         return null;
     }
-    
+
 }

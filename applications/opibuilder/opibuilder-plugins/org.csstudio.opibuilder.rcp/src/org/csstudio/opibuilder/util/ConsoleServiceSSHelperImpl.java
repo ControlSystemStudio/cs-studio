@@ -41,7 +41,7 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
      * The IO console.
      */
     private IOConsole console = null;
-    
+
     /**
      * The original system output stream.
      */
@@ -51,27 +51,27 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
      * The console output stream.
      */
     private IOConsoleOutputStream errorStream, warningStream, infoStream, generalStream;
-        
+
     {
-        console = new IOConsole("BOY Console", null);       
+        console = new IOConsole("BOY Console", null);
 
         generalStream = console.newOutputStream();
-        
+
         // Values are from https://bugs.eclipse.org/bugs/show_bug.cgi?id=46871#c5
         console.setWaterMarks(400000, 500000);
-        
+
         ConsolePlugin consolePlugin = ConsolePlugin.getDefault();
         consolePlugin.getConsoleManager().addConsoles(
                 new IConsole[] { console });
- 
-        
+
+
     }
-    
+
     /**
-     * Direct system output to BOY console. 
-     * <b>Warning: </b>To make this take effect for the Python script calling this method, 
+     * Direct system output to BOY console.
+     * <b>Warning: </b>To make this take effect for the Python script calling this method,
      * it is required to rerun the OPI with the Python script so that the Python interpreter
-     * has a chance to reload system output. 
+     * has a chance to reload system output.
      */
     public void turnOnSystemOutput(){
         if(originalSystemOut == null){
@@ -81,11 +81,11 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
 //            System.setIn(console.getInputStream());
         }
     }
-    
+
     /**
-     * Turn off displaying system output in BOY console and 
+     * Turn off displaying system output in BOY console and
      * reset system output to original output.
-     * <b>Warning: </b>It is required to rerun the OPI if this method is called from Python script. 
+     * <b>Warning: </b>It is required to rerun the OPI if this method is called from Python script.
      */
     public void turnOffSystemOutput() {
         if (originalSystemOut != null) {
@@ -98,7 +98,7 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
             // could cause a deadlock.
         }
     }
-    
+
 
 
     private String getTimeString(){
@@ -107,8 +107,8 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
         return sdf.format(cal.getTime());
 
     }
-    
-    
+
+
 
     /**Write error information to the OPI console.
      * @param message the output string.
@@ -202,7 +202,7 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
             }
         });
     }
-    
+
     public void writeString(final String s, final RGB color){
         UIBundlingThread.getInstance().addRunnable(new Runnable() {
             public void run() {
@@ -219,7 +219,7 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
             }
         });
     }
-    
+
 
 
 
@@ -249,7 +249,7 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
                             UIBundlingThread.getInstance().addRunnable(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ((ConsoleView)view).display(console);                                    
+                                    ((ConsoleView)view).display(console);
                                 }
                             });
                         }

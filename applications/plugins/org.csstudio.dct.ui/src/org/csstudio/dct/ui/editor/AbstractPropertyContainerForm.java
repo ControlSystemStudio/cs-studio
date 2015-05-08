@@ -34,9 +34,9 @@ import org.csstudio.domain.common.LayoutUtil;
 /**
  * Abstract base class for forms that edit model elements which contain
  * properties and therefore implement {@link IPropertyContainer}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  * @param <E>
  *            the type of element that is edited with a form
  */
@@ -46,7 +46,7 @@ public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer
 
     /**
      * Constructor.
-     * 
+     *
      * @param editor
      *            a DCT editor instance
      */
@@ -56,7 +56,7 @@ public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer
 
     /**
      * Returns the currently selected property.
-     * 
+     *
      * @return the selected property or null
      */
     public final String getSelectedProperty() {
@@ -71,7 +71,7 @@ public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer
 
         return result;
     }
-    
+
     /**
      *{@inheritDoc}
      */

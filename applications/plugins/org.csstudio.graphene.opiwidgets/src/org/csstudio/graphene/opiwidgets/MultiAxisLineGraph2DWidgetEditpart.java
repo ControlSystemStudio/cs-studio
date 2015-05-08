@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene.opiwidgets;
 
@@ -11,7 +11,7 @@ import org.eclipse.draw2d.IFigure;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class MultiAxisLineGraph2DWidgetEditpart extends AbstractPointDatasetGraph2DWidgetEditpart<MultiAxisLineGraph2DWidgetFigure, MultiAxisLineGraph2DWidgetModel> {
 
@@ -21,7 +21,7 @@ public class MultiAxisLineGraph2DWidgetEditpart extends AbstractPointDatasetGrap
         configure(figure, getWidgetModel());
         return figure;
     }
-    
+
     @Override
     protected void configure(MultiAxisLineGraph2DWidgetFigure figure, MultiAxisLineGraph2DWidgetModel model) {
         super.configure(figure, model);

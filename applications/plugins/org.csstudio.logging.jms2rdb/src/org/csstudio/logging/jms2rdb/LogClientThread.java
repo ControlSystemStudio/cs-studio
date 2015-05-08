@@ -56,13 +56,13 @@ public class LogClientThread extends Thread
 
     /** RDB user name */
     private String rdb_user = null;
-    
+
     /** RDB password */
     private String rdb_password = null;
-    
+
     /** RDB Schema */
     final private String rdb_schema;
-    
+
     /** Message filters */
     final private Filter filters[];
 
@@ -249,7 +249,7 @@ public class LogClientThread extends Thread
     {
         Activator.getLogger().log(Level.WARNING, "JMS Exception", ex);
     }
-   
+
     /** @see JMS MessageListener */
     @Override
     public void onMessage(final Message message)

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.channel.actions;
 
@@ -13,7 +13,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ChannelTreeLabelProvider extends LabelProvider {
     @SuppressWarnings("rawtypes")

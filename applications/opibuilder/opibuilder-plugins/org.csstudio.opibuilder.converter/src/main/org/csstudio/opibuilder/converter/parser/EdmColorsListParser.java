@@ -21,7 +21,7 @@ import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 
 /**
  * Parser class which parses data on EdmColors.
- * 
+ *
  * @author Matevz
  *
  */
@@ -36,7 +36,7 @@ public class EdmColorsListParser extends EdmParser {
      */
     public EdmColorsListParser(String fileName) throws EdmException {
         super(fileName);
-        
+
         String data = edmData.toString();
         parseStaticColors(getRoot(), data);
         parseDynamicColors(getRoot(), data);
@@ -53,12 +53,12 @@ public class EdmColorsListParser extends EdmParser {
              >=2.5  && <3.5        : "orange-42"        # black heat     = 3
            }
          */
-        Pattern p = Pattern.compile("rule [^\\x7B]*\\x7B{1}[^\\x7D]*\\x7D{1}", Pattern.DOTALL); 
+        Pattern p = Pattern.compile("rule [^\\x7B]*\\x7B{1}[^\\x7D]*\\x7D{1}", Pattern.DOTALL);
         Matcher m = p.matcher(data);
         while(m.find()){
             EdmAttribute a = new EdmAttribute(EdmColor.DYNAMIC);
             String rule = m.group();
-            try {                
+            try {
                 String[] pieces = StringSplitter.splitIgnoreInQuotes(rule.substring(0, rule.indexOf('{')), ' ', true);
                 String colorIndex = pieces[1];
                 String colorName = pieces[2];
@@ -69,13 +69,13 @@ public class EdmColorsListParser extends EdmParser {
             }catch (Exception e) {
                 ErrorHandlerUtil.handleError("Error in parsing color rule: " + rule, e);
             }
-            
+
         }
     }
-    
+
     /**
      * Parses static colors to EdmAttributes on parent.
-     * 
+     *
      * @param parent EdmEntity which will contain EdmColorsList data.
      * @param data Data containing EdmColors.
      * @throws EdmException if there is an invalid format given. If parsing is robust,
@@ -116,7 +116,7 @@ public class EdmColorsListParser extends EdmParser {
                             throw new EdmException(EdmException.STRING_FORMAT_ERROR,
                                     "String value does not start with quote at line: " + colorData, null);
                     }
-                        
+
                     else {
                         StringBuilder nameValue = new StringBuilder(word);
                         if (!nameValue.toString().endsWith("\"")) { // when there are more words in name
@@ -131,7 +131,7 @@ public class EdmColorsListParser extends EdmParser {
                             catch (Exception e) {
                                 if (robust)
                                     error = true;
-                                else 
+                                else
                                     throw new EdmException(EdmException.STRING_FORMAT_ERROR,
                                             "String value does not end with quote at line: " + colorData, null);
                             }
@@ -156,7 +156,7 @@ public class EdmColorsListParser extends EdmParser {
                     a.appendValue(colorValue.toString());
                 }
                 i = i + 1;
-                
+
             }
 
             if (!robust)
@@ -168,9 +168,9 @@ public class EdmColorsListParser extends EdmParser {
                     }
                     catch (Exception e) {
                         ErrorHandlerUtil.handleError("Error when parsing color attribute. Attribute skipped.", e);
-                    }    
+                    }
                 }
-                else 
+                else
                     log.error("Error when parsing color attribute. Attribute skipped.");
             }
         }
@@ -178,7 +178,7 @@ public class EdmColorsListParser extends EdmParser {
 
     /**
      * Parses menumap order of colors into ordered EdmEntity objects on parent.
-     * 
+     *
      * @param parent EdmEntity which will contain data.
      * @param data Data containing EdmColors.
      * @throws EdmException if there is an invalid format given. If parsing is robust,
@@ -188,7 +188,7 @@ public class EdmColorsListParser extends EdmParser {
 
         Pattern p = Pattern.compile("menumap\\s*[{](.*)[}]", Pattern.DOTALL);    // get menumap content
         Matcher m = p.matcher(data);
-        
+
         if (m.find()) {
             p = Pattern.compile("\\s*[\"](.*)[\"]");    // get menumap content
             Matcher nameMatcher = p.matcher(m.group(1));

@@ -110,7 +110,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
     protected ProxyListener<T> proxyListener = new ProxyListener<T>() {
         public void connectionStateChange(ProxyEvent<Proxy<?>> e) {
             //ConnectionState cs = e.getConnectionState();
-            if (e.getConnectionState()==ConnectionState.OPERATIONAL 
+            if (e.getConnectionState()==ConnectionState.OPERATIONAL
                     && getConnectionState()==ConnectionState.CONNECTING) {
                 setConnectionState(ConnectionState.CONNECTED, null);
             }
@@ -128,11 +128,11 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
         }
     };
     public boolean isMetaDataInitialized() {
-        return condition!=null && isConnected() 
-        ? condition.containsAnyOfStates(DynamicValueState.HAS_METADATA) 
+        return condition!=null && isConnected()
+        ? condition.containsAnyOfStates(DynamicValueState.HAS_METADATA)
                 : false;
     }
-    
+
     protected Request<?> lastRequest = null;
     protected Request<T> lastValueRequest = null;
     protected Response<?> lastResponse = null;
@@ -237,10 +237,10 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
         if (proxy == null || !proxy.getConnectionState().isConnected()) {
             throw new DataExchangeException(this, "Proxy not connected");
         }
-        
+
             lastValueRequest = proxy.getValueAsync(listener == null
                     ? defaultValueResponseListener : new ResponseForwarder<T>(listener,true));
-        
+
         //lastValueRequest = proxy.getValueAsync(new ResponseForwarder(listener));
         lastRequest = lastValueRequest;
 
@@ -264,7 +264,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
         if (proxy == null || !proxy.getConnectionState().isConnected()) {
             throw new DataExchangeException(this, "Proxy not connected");
         }
-        
+
         lastValueRequest = proxy.setValueAsync(value,
                 (listener == null ? (ResponseListener<T>)defaultResponseListener
                 : new ResponseForwarder<T>(listener)));
@@ -366,13 +366,13 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 
         return lastRequest;
     }
-    
+
     public Request<? extends Object> getCharacteristicsAsynchronously(
             String[] names, ResponseListener<? extends Object> listener)
             throws DataExchangeException {
-        lastRequest = directoryProxy.getCharacteristics(names, 
+        lastRequest = directoryProxy.getCharacteristics(names,
                 listener == null ? defaultResponseListener : new ResponseForwarder(listener));
-        
+
         return lastRequest;
     }
 
@@ -387,14 +387,14 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 
         return lastRequest;
     }
-    
+
     public Request<?> getCharacteristicAsynchronously(
             String name, ResponseListener<?> listener)
             throws DataExchangeException {
 
-        lastRequest = directoryProxy.getCharacteristics(new String[]{ name }, 
+        lastRequest = directoryProxy.getCharacteristics(new String[]{ name },
                 listener == null ? defaultResponseListener : new ResponseForwarder(listener));
-        
+
         return lastRequest;
     }
 
@@ -474,7 +474,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
     {
         return connectionStateMachine.isConnected();
     }
-    
+
     /**
      * @see Linkable#isOperational();
      */
@@ -571,29 +571,29 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
     protected void setConnectionState(ConnectionState connectionState, Throwable error)
     {
         boolean change= false;
-    
+
         try {
             change= connectionStateMachine.requestNextConnectionState(connectionState);
         } catch (IllegalStateException e) {
             Logger.getLogger(this.getClass()).error("Internal error.", e);
             throw e;
         }
-        
+
         if (!change) {
             return;
         }
-        
+
         LinkListener<Linkable>[] l = (LinkListener<Linkable>[])linkListeners.toArray();
 
         ConnectionEvent<Linkable> e = new ConnectionEvent<Linkable>(this, connectionState, error);
         lastConnectionEvent= e;
 
         if (connectionState == ConnectionState.CONNECTED) {
-            
+
             if (hasDynamicValueListeners() && defaultMonitor==null) {
                 getDefaultMonitor();
             }
-            
+
             for(MonitorProxyWrapper<T, ? extends SimpleProperty<T>> mpw : monitors) {
                 if (!mpw.isInitialized()) {
                     try {
@@ -605,7 +605,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
                     }
                 }
             }
-            
+
             for (int i = 0; i < l.length; i++) {
                 try {
                     l[i].connected(e);
@@ -672,13 +672,13 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
         }
 
         super.initialize(proxy, dirProxy);
-        
+
         // if proxy already has some value, it shoudl share
         Response<T> res= proxy.getLatestValueResponse();
         if (res!=null) {
             updateLastValueCache(res, res.success(), true);
         }
-        
+
         if (proxy != null) {
             proxy.addProxyListener(proxyListener);
             if (dirProxy != null && dirProxy != proxy) {
@@ -686,14 +686,14 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
             }
         }
     }
-    
+
 
     protected void fireDynamicValueEvent(byte type)
     {
         if (!hasDynamicValueListeners()) {
             return;
         }
-        
+
         String msg = null;
         switch (type) {
         case DVE_CONDITIONCHANGE:
@@ -766,36 +766,36 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
             return;
         }
     }
-    
+
     protected void checkAndFireConditionEvents(DynamicValueCondition oldCond, DynamicValueCondition newCond){
         fireDynamicValueEvent(DVE_CONDITIONCHANGE);
-        
+
         if (newCond == null) return;
         if (oldCond == null){
-            if (newCond.containsAllStates(DynamicValueState.TIMELAG))    
+            if (newCond.containsAllStates(DynamicValueState.TIMELAG))
                 fireDynamicValueEvent(DVE_TIMELAGSTARTS);
-            if (newCond.containsAllStates(DynamicValueState.TIMEOUT))    
+            if (newCond.containsAllStates(DynamicValueState.TIMEOUT))
                 fireDynamicValueEvent(DVE_TIMEOUTSTARTS);
-            if (newCond.containsAllStates(DynamicValueState.ERROR))    
-                fireDynamicValueEvent(DVE_ERRORRESPONSE);            
-        } else {
-            
-            //timelag checks
-            if (newCond.containsAllStates(DynamicValueState.TIMELAG) && !oldCond.containsAllStates(DynamicValueState.TIMELAG))    
-                fireDynamicValueEvent(DVE_TIMELAGSTARTS);
-            else if (oldCond.containsAllStates(DynamicValueState.TIMELAG) && !newCond.containsAllStates(DynamicValueState.TIMELAG))    
-                fireDynamicValueEvent(DVE_TIMELAGSTOPS);
-            
-            //timeout checks
-            if (newCond.containsAllStates(DynamicValueState.TIMEOUT) && !oldCond.containsAllStates(DynamicValueState.TIMEOUT))    
-                fireDynamicValueEvent(DVE_TIMEOUTSTARTS);
-            else if (oldCond.containsAllStates(DynamicValueState.TIMEOUT) && !newCond.containsAllStates(DynamicValueState.TIMEOUT))    
-                fireDynamicValueEvent(DVE_TIMEOUTSTOPS);
-            
-            //error checks
-            if (newCond.containsAllStates(DynamicValueState.ERROR) && !oldCond.containsAllStates(DynamicValueState.ERROR))    
+            if (newCond.containsAllStates(DynamicValueState.ERROR))
                 fireDynamicValueEvent(DVE_ERRORRESPONSE);
-            
+        } else {
+
+            //timelag checks
+            if (newCond.containsAllStates(DynamicValueState.TIMELAG) && !oldCond.containsAllStates(DynamicValueState.TIMELAG))
+                fireDynamicValueEvent(DVE_TIMELAGSTARTS);
+            else if (oldCond.containsAllStates(DynamicValueState.TIMELAG) && !newCond.containsAllStates(DynamicValueState.TIMELAG))
+                fireDynamicValueEvent(DVE_TIMELAGSTOPS);
+
+            //timeout checks
+            if (newCond.containsAllStates(DynamicValueState.TIMEOUT) && !oldCond.containsAllStates(DynamicValueState.TIMEOUT))
+                fireDynamicValueEvent(DVE_TIMEOUTSTARTS);
+            else if (oldCond.containsAllStates(DynamicValueState.TIMEOUT) && !newCond.containsAllStates(DynamicValueState.TIMEOUT))
+                fireDynamicValueEvent(DVE_TIMEOUTSTOPS);
+
+            //error checks
+            if (newCond.containsAllStates(DynamicValueState.ERROR) && !oldCond.containsAllStates(DynamicValueState.ERROR))
+                fireDynamicValueEvent(DVE_ERRORRESPONSE);
+
         }
     }
 
@@ -825,15 +825,15 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
         Map<String, Object> parameters) throws RemoteException
     {
 //        if (proxy == null) throw new IllegalStateException("Proxy is null");
-        
+
         MonitorProxyWrapper<T, E> mpw = new MonitorProxyWrapper<T, E>((E) this, listener, parameters);
-        
+
         if (proxy != null && isConnected()) {
             MonitorProxy mp = null;
             mp = proxy.createMonitor(mpw,parameters);
             mpw.initialize(mp);
         }
-        
+
         synchronized (monitors) {
             monitors.add(mpw);
         }
@@ -899,7 +899,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
     public AnyData getData() {
         return DataUtil.createAnyData(this);
     }
-    
+
     public void setValueAsObject(Object new_value) throws RemoteException {
         setValue(DataUtil.castTo(new_value, getDataType()));
     }
@@ -918,12 +918,12 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 
     public void start() throws Exception {
         // TODO at the moment this method does nothing
-        
+
     }
 
     public void startSync() throws Exception {
         // TODO at the moment this method does nothing
-        
+
     }
 
     /* (non-Javadoc)
@@ -937,7 +937,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
         ((PropertyFamily)propertyContext).destroy(this);
         releaseProxy(true);
     }
-    
+
     @Override
     public Proxy<?>[] releaseProxy(boolean destroy) {
         if (connectionStateMachine.isConnected()) {
@@ -960,7 +960,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
             linkListeners.clear();
             responseListeners.clear();
         }
-        
+
         return p;
     }
 

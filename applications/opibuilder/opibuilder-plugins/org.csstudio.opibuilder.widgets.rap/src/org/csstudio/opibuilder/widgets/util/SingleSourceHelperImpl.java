@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Display;
 
 public class SingleSourceHelperImpl extends SingleSourceHelper {
 
-    private static final String NOT_IMPLEMENTED = 
+    private static final String NOT_IMPLEMENTED =
             "This method has not been implemented yet for RAP";
 
     @Override
@@ -47,21 +47,21 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
 
     @Override
     protected void internalSetGCTransform(GC gc, Transform transform) {
-        throw new RuntimeException(NOT_IMPLEMENTED);        
+        throw new RuntimeException(NOT_IMPLEMENTED);
     }
 
     @Override
     protected void internalSwtWidgetAddMouseTrackListener(Control control,
             MouseTrackListener listener) {
-        
+
     }
 
     @Override
     protected void internalSWTControlTraverse(Control control, int traversal) {
-        
+
     }
-    
-    
-    
+
+
+
 
 }

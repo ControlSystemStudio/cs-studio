@@ -49,10 +49,10 @@ public class Edm_activeRectangleClassTest extends TestCase {
         assertTrue(r.getAttribute("lineWidth") instanceof EdmInt);
         assertEquals(EdmLineStyle.DASH, r.getLineStyle().get());
         assertTrue(r.getAttribute("lineStyle") instanceof EdmLineStyle);
-        
+
         assertTrue(r.isInvisible());
         assertTrue(r.getAttribute("invisible") instanceof EdmBoolean);
-        
+
         assertEquals("$(S)_LLRF:FCM$(N):cavAmpCheck.SEVR", r.getVisPv());
         assertTrue(r.getAttribute("visPv") instanceof EdmString);
         assertEquals(-1.1, r.getVisMin());

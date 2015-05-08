@@ -19,11 +19,11 @@ import org.csstudio.autocomplete.parser.PVDescriptor;
 
 /**
  * Common non-simulated PV parser (ca://, epics://, pva://)
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class PVParser implements IContentParser {
-    
+
     public static final String CA_SOURCE = "ca://";
     public static final String EPICS_SOURCE = "epics://";
     public static final String PVA_SOURCE = "pva://";
@@ -108,5 +108,5 @@ public class PVParser implements IContentParser {
             desc.setName(jcaChannelName);
         }
     }
-    
+
 }

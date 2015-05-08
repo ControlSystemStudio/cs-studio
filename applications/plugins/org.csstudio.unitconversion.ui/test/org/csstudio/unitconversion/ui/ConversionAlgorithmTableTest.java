@@ -18,7 +18,7 @@ import org.eclipse.swt.events.SelectionEvent;
 
 /**
  * @author shroffk
- * 
+ *
  */
 
 public class ConversionAlgorithmTableTest {

@@ -33,11 +33,11 @@ public class PreprocessorRule extends WordRule implements IRule {
      * token associated with the detected word. If no token has been associated,
      * the scanner will be rolled back and an undefined token will be returned
      * in order to allow any subsequent rules to analyze the characters.
-     * 
+     *
      * @param detector
      *            the word detector to be used by this rule, may not be
      *            <code>null</code>
-     * 
+     *
      * @see WordRule#addWord
      */
     public PreprocessorRule(final IWordDetector detector) {
@@ -48,14 +48,14 @@ public class PreprocessorRule extends WordRule implements IRule {
      * Creates a rule which, with the help of an word detector, will return the
      * token associated with the detected word. If no token has been associated,
      * the specified default token will be returned.
-     * 
+     *
      * @param detector
      *            the word detector to be used by this rule, may not be
      *            <code>null</code>
      * @param defaultToken
      *            the default token to be returned on success if nothing else is
      *            specified, may not be <code>null</code>
-     * 
+     *
      * @see WordRule#addWord
      */
     public PreprocessorRule(final IWordDetector detector,

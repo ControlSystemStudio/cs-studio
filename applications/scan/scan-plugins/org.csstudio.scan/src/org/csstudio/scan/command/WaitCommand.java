@@ -172,7 +172,7 @@ public class WaitCommand extends ScanCommand
         element = dom.createElement("comparison");
         element.appendChild(dom.createTextNode(comparison.name()));
         command_element.appendChild(element);
-        
+
         if (tolerance > 0.0)
         {
             element = dom.createElement("tolerance");
@@ -185,7 +185,7 @@ public class WaitCommand extends ScanCommand
             element.appendChild(dom.createTextNode(Double.toString(timeout)));
             command_element.appendChild(element);
         }
-        
+
         super.addXMLElements(dom, command_element);
     }
 

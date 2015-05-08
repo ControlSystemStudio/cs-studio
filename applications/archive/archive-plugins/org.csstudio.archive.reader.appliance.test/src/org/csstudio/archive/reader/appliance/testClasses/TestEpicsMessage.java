@@ -13,17 +13,17 @@ import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadInfo;
 
 /**
  * Dummy {@code EpicsMessage} implementation.
- * 
+ *
  * @author Miha Novak <miha.novak@cosylab.com>
  */
 public class TestEpicsMessage extends EpicsMessage{
-        
+
     private final long time;
     private final Number value;
     private final Number[] arrayValue;
     private final int severity;
     private final int status;
-    
+
     /**
      * Constructor.
      */
@@ -35,7 +35,7 @@ public class TestEpicsMessage extends EpicsMessage{
         this.status = status;
         this.arrayValue = null;
     }
-    
+
     /**
      * Constructor.
      */
@@ -47,7 +47,7 @@ public class TestEpicsMessage extends EpicsMessage{
         this.status = status;
         this.value = null;
     }
-    
+
     /* (non-Javadoc)
      * @see org.epics.archiverappliance.retrieval.client.EpicsMessage#getElementCount()
      */
@@ -55,7 +55,7 @@ public class TestEpicsMessage extends EpicsMessage{
     public int getElementCount() {
         return 1;
     }
-    
+
     /* (non-Javadoc)
      * @see org.epics.archiverappliance.retrieval.client.EpicsMessage#getFieldValues()
      */
@@ -72,7 +72,7 @@ public class TestEpicsMessage extends EpicsMessage{
         fields.put(ApplianceArchiveReaderConstants.PREC, "3");
         return fields;
     }
-        
+
     /* (non-Javadoc)
      * @see org.epics.archiverappliance.retrieval.client.EpicsMessage#getNumberAt(int)
      */
@@ -83,7 +83,7 @@ public class TestEpicsMessage extends EpicsMessage{
         }
         return value;
     }
-    
+
     /* (non-Javadoc)
      * @see org.epics.archiverappliance.retrieval.client.EpicsMessage#getNumberValue()
      */
@@ -94,7 +94,7 @@ public class TestEpicsMessage extends EpicsMessage{
         }
         return value;
     }
-    
+
     /* (non-Javadoc)
      * @see org.epics.archiverappliance.retrieval.client.EpicsMessage#getSeverity()
      */
@@ -102,7 +102,7 @@ public class TestEpicsMessage extends EpicsMessage{
     public int getSeverity() {
         return severity;
     }
-    
+
     /* (non-Javadoc)
      * @see org.epics.archiverappliance.retrieval.client.EpicsMessage#getStatus()
      */
@@ -110,7 +110,7 @@ public class TestEpicsMessage extends EpicsMessage{
     public int getStatus() {
         return status;
     }
-    
+
     /* (non-Javadoc)
      * @see org.epics.archiverappliance.retrieval.client.EpicsMessage#getTimestamp()
      */
@@ -118,7 +118,7 @@ public class TestEpicsMessage extends EpicsMessage{
     public Timestamp getTimestamp() {
         return new Timestamp(time);
     }
-    
+
     /* (non-Javadoc)
      * @see org.epics.archiverappliance.retrieval.client.EpicsMessage#hasFieldValues()
      */
@@ -126,7 +126,7 @@ public class TestEpicsMessage extends EpicsMessage{
     public boolean hasFieldValues() {
         return false;
     }
-    
+
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
@@ -134,7 +134,7 @@ public class TestEpicsMessage extends EpicsMessage{
     public int hashCode() {
         return 0;
     }
-    
+
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
@@ -142,7 +142,7 @@ public class TestEpicsMessage extends EpicsMessage{
     public boolean equals(Object obj) {
         return false;
     }
-    
+
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */

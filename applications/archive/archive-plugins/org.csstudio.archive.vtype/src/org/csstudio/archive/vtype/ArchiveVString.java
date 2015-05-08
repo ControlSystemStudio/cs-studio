@@ -64,7 +64,7 @@ public class ArchiveVString extends ArchiveVType implements VString
         }
         return false;
     }
-    
+
     @Override
     public String toString()
     {

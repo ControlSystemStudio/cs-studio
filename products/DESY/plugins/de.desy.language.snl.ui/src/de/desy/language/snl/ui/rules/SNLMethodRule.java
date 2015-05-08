@@ -25,16 +25,16 @@ public class SNLMethodRule implements IRule {
 
         final short readCharsInMethodName = SNLMethodRule.checkNamePrefix(cs,
                 this._method.getMethodName());
-        
+
         if (readCharsInMethodName > 0) {
-            
+
             // Just prove that no more identifier chars following.
             char charBehindName = cs.readSingleCharacter();
             cs.performUnreadOneSingleChar();
             if( ! Character.isJavaIdentifierPart(charBehindName) ) {
                 result = this._token;
             }
-            
+
             // no more name-characters should follow...
             // Character lastReadAsObject =
             // RuleUtils.readUpToFirstNonWhitespace(cs);
@@ -94,7 +94,7 @@ public class SNLMethodRule implements IRule {
 
     /**
      * Checks if the given method name is the name in the character sequence.
-     * 
+     *
      * @returns the number of chars read for the name.
      */
     private static short checkNamePrefix(final CharacterSequence cs,

@@ -21,7 +21,7 @@ public class OpiInt extends OpiAttribute {
     public OpiInt(Context con, String name, EdmInt i) {
         this(con, name, i.get());
     }
-    
+
     /**
      * Creates an element <name>intValue</name> with the given int value.
      */

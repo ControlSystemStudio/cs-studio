@@ -18,14 +18,14 @@ public class AuthActivator implements BundleActivator {
     private static BundleContext context;
 
     private static AuthActivator INSTANCE;
-    
+
     private static final Logger log = Logger.getLogger(AuthActivator.class.getName());
-    
+
     static BundleContext getContext() {
         return context;
     }
 
-    
+
     /**
      * Don't instantiate.
      * Called by framework.
@@ -36,7 +36,7 @@ public class AuthActivator implements BundleActivator {
         }
         INSTANCE = this; // Antipattern is required by the framework!
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
@@ -53,16 +53,16 @@ public class AuthActivator implements BundleActivator {
     public void stop(BundleContext bundleContext) throws Exception {
         AuthActivator.context = null;
     }
-    
+
     /**
      * Returns the shared instance.
-     * 
+     *
      * @return Return the shared instance.
      */
     public static AuthActivator getDefault() {
         return INSTANCE;
     }
-    
+
     /**
      * Applies the default values for system properties set up in the CSS
      * preferences.

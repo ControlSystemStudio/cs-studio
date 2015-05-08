@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.sds.util;
@@ -31,9 +31,9 @@ import java.util.regex.Pattern;
 /**
  * A utility class, which helps to validate inputs for or apply alias substitutions
  * to channel names.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ChannelReferenceValidationUtil {
 
@@ -60,13 +60,13 @@ public final class ChannelReferenceValidationUtil {
 
     /**
      * Generates a regular expression which is used to replace aliases in arbitrary texts.
-     * 
+     *
      * @param aliasName
      *            the alias name, which should be found (without the bordering
      *            "$" signs
-     * 
+     *
      * @return a regular expression which is used to replace aliases in arbitrary texts
-     * 
+     *
      */
     private static Pattern createSearchPattern(final String aliasName) {
         return Pattern.compile("(\\$" + aliasName + "\\$)");
@@ -74,7 +74,7 @@ public final class ChannelReferenceValidationUtil {
 
     public static List<String> getRequiredAliasNames(final String input) {
         List<String> result = new ArrayList<String>();
-        
+
         // Get a Matcher based on the target string.
         Matcher matcher = FIND_ALIAS_NAME_PATTERN.matcher(input);
 
@@ -83,7 +83,7 @@ public final class ChannelReferenceValidationUtil {
             String name = matcher.group(1);
             result.add(name);
         }
-        
+
         return result;
     }
     /**
@@ -91,7 +91,7 @@ public final class ChannelReferenceValidationUtil {
      * text is valid. Optionally inputs can contain aliases, which are bordered
      * by "$" signs. In this case, the input must contain an even number of "$"
      * signs and at least one other sign between two "$" signs.
-     * 
+     *
      * @param input
      *            the text to be checked
      * @return true, if the text is valid, false otherwise
@@ -112,7 +112,7 @@ public final class ChannelReferenceValidationUtil {
      * Creates a canonical representation of the provided input string in which
      * all aliases are replaced by their values. All aliases need to be
      * delivered in a Map.
-     * 
+     *
      * @param input
      *            the input text
      * @param aliases
@@ -120,7 +120,7 @@ public final class ChannelReferenceValidationUtil {
      * @throws ChannelReferenceValidationException
      *             this exception is thrown, if the specified input or the
      *             aliases cannot be processed
-     * 
+     *
      * @return a canonical representation of the provided input string in which
      *         all aliases are replaced by their values
      */
@@ -147,7 +147,7 @@ public final class ChannelReferenceValidationUtil {
     /**
      * This method is called recursively, to apply alias substitutions to the
      * provided input text.
-     * 
+     *
      * @param input
      *            the text input
      * @param markerList
@@ -159,10 +159,10 @@ public final class ChannelReferenceValidationUtil {
      *            handled via the same recursive call)
      * @param aliases
      *            the existing aliases as provided by the user
-     * 
+     *
      * @return a canonical name in which all aliases are replaced by their real
      *         values
-     * 
+     *
      * @throws ChannelReferenceValidationException
      *             this exception is thrown, if an error occurs during the
      *             replacement procedure (e.g. in case of circular references

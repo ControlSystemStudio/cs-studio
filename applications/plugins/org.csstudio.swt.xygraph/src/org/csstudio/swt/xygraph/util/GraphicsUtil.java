@@ -15,17 +15,17 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * Utility function for graphics operations.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public final class GraphicsUtil {
-    
+
     private static boolean isRAP= SWT.getPlatform().startsWith("rap"); //$NON-NLS-1$;
 
     /**
      * Draw vertical text.
-     * 
+     *
      * @param graphics
      *            draw2D graphics.
      * @param text
@@ -81,7 +81,7 @@ public final class GraphicsUtil {
 
     /**
      * Draw vertical text.
-     * 
+     *
      * @param graphics
      *            draw2D graphics.
      * @param text
@@ -93,7 +93,7 @@ public final class GraphicsUtil {
             Point location, boolean upToDown) {
         drawVerticalText(graphics, text, location.x, location.y, upToDown);
     }
-    
+
     public static final boolean isRAP(){
         return isRAP;
     }

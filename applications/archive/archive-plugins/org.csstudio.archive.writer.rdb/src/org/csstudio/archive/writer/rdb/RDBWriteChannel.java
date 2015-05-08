@@ -18,7 +18,7 @@ public class RDBWriteChannel implements WriteChannel
     final private String name;
     final private int id;
     private Object meta = null;
-    
+
     /** Initialize
      *  @param name Channel name
      *  @param id Channel ID in RDB
@@ -35,7 +35,7 @@ public class RDBWriteChannel implements WriteChannel
     {
         return name;
     }
-    
+
     /** @return RDB ID of channel */
     public int getId()
     {
@@ -54,7 +54,7 @@ public class RDBWriteChannel implements WriteChannel
     {
         return meta;
     }
-    
+
     /** @param meta Current meta data of channel */
     public void setMetaData(final Object meta)
     {

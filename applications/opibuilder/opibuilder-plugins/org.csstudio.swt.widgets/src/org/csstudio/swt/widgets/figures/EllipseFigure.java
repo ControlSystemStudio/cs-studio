@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.swt.widgets.figures;
@@ -39,9 +39,9 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * An ellipse figure.
- * 
- * @author Sven Wende, Alexander Will, Xihui Chen (since import from SDS 2009/10) 
- * 
+ *
+ * @author Sven Wende, Alexander Will, Xihui Chen (since import from SDS 2009/10)
+ *
  */
 public final class EllipseFigure extends Ellipse implements Introspectable {
 
@@ -58,14 +58,14 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
     /**
      * The transparent state of the background.
      */
-    private boolean transparent = false;    
-    
-    
+    private boolean transparent = false;
+
+
     private Color lineColor = CustomMediaFactory.getInstance().getColor(
             CustomMediaFactory.COLOR_PURPLE);
-    
-    private Color backGradientStartColor =ColorConstants.white; 
-    private Color foreGradientStartColor =ColorConstants.white; 
+
+    private Color backGradientStartColor =ColorConstants.white;
+    private Color foreGradientStartColor =ColorConstants.white;
     private boolean gradient=false;
     private Boolean support3D = null;
 
@@ -102,14 +102,14 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
                         .round(figureBounds.height * (getFill() / 100));
                 fillRectangle = new Rectangle(figureBounds.x, figureBounds.y
                         + figureBounds.height - newH, figureBounds.width, newH);
-            }            
-            
+            }
+
             graphics.pushState();
-            
+
             graphics.setClip(fillRectangle);
             if(isEnabled())
                 graphics.setBackgroundColor(getForegroundColor());
-            
+
             Pattern pattern = null;
             if(gradient && support3D && isEnabled()){
                 pattern = setGradientPattern(graphics, figureBounds, foreGradientStartColor, getForegroundColor());
@@ -128,7 +128,7 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
      */
     protected Pattern setGradientPattern(final Graphics graphics,
             Rectangle figureBounds, Color gradientStartColor, Color fillColor) {
-        Pattern pattern;        
+        Pattern pattern;
         int tx = figureBounds.x;
         int ty = figureBounds.y+figureBounds.height;
         if(!horizontalFill){
@@ -139,38 +139,38 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
         //Workaround for the pattern zoom bug on ScaledGraphics:
         //The coordinates need to be scaled for ScaledGraphics.
         double scale = graphics.getAbsoluteScale();
-        pattern = new Pattern(Display.getCurrent(), 
-                (int)(figureBounds.x*scale),    
+        pattern = new Pattern(Display.getCurrent(),
+                (int)(figureBounds.x*scale),
                 (int)(figureBounds.y*scale),
                 (int)(tx*scale),
-                (int)(ty*scale), 
+                (int)(ty*scale),
                 gradientStartColor, alpha, fillColor, alpha);
         graphics.setBackgroundPattern(pattern);
         return pattern;
     }
 
-    
+
     public BeanInfo getBeanInfo() throws IntrospectionException {
         return new ShapeWidgetIntrospector().getBeanInfo(this.getClass());
     }
-    
-    
+
+
     /**
      * Gets the fill grade.
-     * 
+     *
      * @return the fill grade
      */
     public double getFill() {
         return fill;
     }
-    
+
     /**
      * @return the start color of gradient.
      */
     public Color getBackGradientStartColor() {
         return backGradientStartColor;
     }
-    
+
     public Color getForeGradientStartColor() {
         return foreGradientStartColor;
     }
@@ -184,7 +184,7 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
 
     /**
      * Gets the transparent state of the background.
-     * 
+     *
      * @return the transparent state of the background
      */
     public boolean getTransparent() {
@@ -197,10 +197,10 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
     public boolean isGradient() {
         return gradient;
     }
-    
+
     /**
      * Gets the orientation (horizontal==true | vertical==false).
-     * 
+     *
      * @return boolean The orientation
      */
     public boolean isHorizontalFill() {
@@ -215,10 +215,10 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
         float lineInset = Math.max(1.0f, getLineWidth()) / 2.0f;
         int inset1 = (int)Math.floor(lineInset);
         int inset2 = (int)Math.ceil(lineInset);
-    
+
         Rectangle r = Draw2dSingletonUtil.getRectangle().setBounds(getClientArea());
-        r.x += inset1 ; 
-        r.y += inset1; 
+        r.x += inset1 ;
+        r.y += inset1;
         r.width -= inset1 + inset2;
         r.height -= inset1 + inset2;
         graphics.pushState();
@@ -231,7 +231,7 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
 
     /**
      * Sets the fill grade.
-     * 
+     *
      * @param fill
      *            the fill grade.
      */
@@ -241,27 +241,27 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
         this.fill = fill;
         repaint();
     }
-    
+
     public void setGradient(boolean gradient) {
         this.gradient = gradient;
         repaint();
     }
-    
+
     public void setBackGradientStartColor(Color gradientStartColor) {
         this.backGradientStartColor = gradientStartColor;
         repaint();
     }
-    
+
     public void setForeGradientStartColor(Color foreGradientStartColor) {
         this.foreGradientStartColor = foreGradientStartColor;
         repaint();
     }
-    
-    
+
+
 
     /**
      * Sets the orientation (horizontal==true | vertical==false).
-     * 
+     *
      * @param horizontal
      *            The orientation.
      */
@@ -281,7 +281,7 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
 
     /**
      * Sets the transparent state of the background.
-     * 
+     *
      * @param transparent
      *            the transparent state.
      */
@@ -292,5 +292,5 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
         repaint();
     }
 
-    
+
 }

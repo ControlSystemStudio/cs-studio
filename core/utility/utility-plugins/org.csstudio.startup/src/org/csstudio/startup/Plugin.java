@@ -8,10 +8,10 @@
 package org.csstudio.startup;
 
 /** Plugin info.
- *  
+ *
  *  Note that it does not extend org.eclipse.core.runtime.Plugin, yet,
  *  because so far that's not needed.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class Plugin

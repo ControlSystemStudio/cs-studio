@@ -63,7 +63,7 @@ public class AdvancedSliderAlarmBehavior extends AbstractDesyAlarmBehavior<Advan
    }
 
    @Override
-   
+
    protected String[] doGetSettablePropertyIds() {
        return new String[] { AdvancedSliderModel.PROP_VALUE };
    }

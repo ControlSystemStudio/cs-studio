@@ -66,7 +66,7 @@ public abstract class AbstractDeviceFactory extends AbstractFactorySupport
     {
         family = new DeviceFamilyImpl<AbstractDevice>(this);
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.csstudio.dal.spi.AbstractFactorySupport#initialize(org.csstudio.dal.context.AbstractApplicationContext, org.csstudio.dal.spi.LinkPolicy)
@@ -109,7 +109,7 @@ public abstract class AbstractDeviceFactory extends AbstractFactorySupport
     {
         return createDevice(uniqueName, type, l);
     }
-    
+
     private <D extends AbstractDevice> D createDevice(String uniqueName,
             Class<D> type, LinkListener<? extends Linkable> l)
             throws InstantiationException, RemoteException

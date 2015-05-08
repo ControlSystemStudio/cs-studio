@@ -12,8 +12,8 @@ public abstract class AbstractBoolControlFigureTest extends AbstractBoolFigureTe
 
     @Override
     public String[] getPropertyNames() {
-        String[] superProps =  super.getPropertyNames();    
-        
+        String[] superProps =  super.getPropertyNames();
+
         String[] myProps = new String[]{
                 "confirmTip",
                 "password",
@@ -23,5 +23,5 @@ public abstract class AbstractBoolControlFigureTest extends AbstractBoolFigureTe
         };
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
 }

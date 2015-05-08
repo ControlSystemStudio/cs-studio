@@ -31,7 +31,7 @@ public class TextEntry2Model extends AbstractADL2Model {
             setADLControlProps(textEntryWidget, widgetModel);
         }
         TextUtilities.setWidgetFont((LabelModel)widgetModel);
-        
+
 
         TextUtilities.setAlignment((LabelModel)widgetModel, textEntryWidget);
         TextUtilities.setFormat((TextUpdateModel)widgetModel, textEntryWidget);

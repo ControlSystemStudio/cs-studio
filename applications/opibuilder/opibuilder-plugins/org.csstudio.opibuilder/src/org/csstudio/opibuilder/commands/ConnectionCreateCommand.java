@@ -14,7 +14,7 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * A command to create a connection between two widgets.
- * 
+ *
  * @author Xihui Chen
  */
 public class ConnectionCreateCommand extends Command {
@@ -30,7 +30,7 @@ public class ConnectionCreateCommand extends Command {
 
     /**
      * Instantiate a command that can create a connection between two widgets.
-     * 
+     *
      * @param source
      *            the source endpoint
      * @param terminal
@@ -50,7 +50,7 @@ public class ConnectionCreateCommand extends Command {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.commands.Command#canExecute()
      */
     public boolean canExecute() {
@@ -64,7 +64,7 @@ public class ConnectionCreateCommand extends Command {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.commands.Command#execute()
      */
     public void execute() {
@@ -86,7 +86,7 @@ public class ConnectionCreateCommand extends Command {
 
     /**
      * Set the target for the connection.
-     * 
+     *
      * @param target
      *            that target
      * @throws IllegalArgumentException

@@ -11,19 +11,19 @@ import org.csstudio.swt.chart.ChartSampleSearch;
 import org.csstudio.swt.chart.ChartSampleSequence;
 
 /** Helper for searching a SampleSequence for samples that reside within
- *  the visible region of an axis. 
+ *  the visible region of an axis.
  *  @author Kay Kasemir
  */
 public class AxisRangeLimiter
 {
     private Axis axis;
-    
+
     /** Construct a limiter for the given axis' low and high value range. */
     public AxisRangeLimiter(Axis axis)
     {
         this.axis = axis;
     }
-    
+
     /** Determine the low index into the sample sequence, the one that's
      *  just below or at the axis' lower range limit.
      */

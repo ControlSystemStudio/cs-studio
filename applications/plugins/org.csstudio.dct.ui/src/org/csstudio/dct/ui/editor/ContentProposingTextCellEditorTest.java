@@ -18,13 +18,13 @@ public class ContentProposingTextCellEditorTest extends TestCase {
             String name = matcher.group(1);
             String parameters = matcher.group(2);
 
-            int param = 0; 
+            int param = 0;
             for (int i=0;i<parameters.length();i++) {
                 if(",".equals(parameters.substring(i,i+1))) {
                     param++;
                 }
             }
-            
+
             System.out.println(param);
         }else {
             System.out.println("nomatch");

@@ -37,7 +37,7 @@ import org.epics.vtype.VType;
 public class LogCommandImpl extends ScanCommandImpl<LogCommand>
 {
     final private static double timeout = ScanSystemPreferences.getLogCommandReadTimeout();
-    
+
     /** {@inheritDoc} */
     public LogCommandImpl(final LogCommand command, final JythonSupport jython) throws Exception
     {

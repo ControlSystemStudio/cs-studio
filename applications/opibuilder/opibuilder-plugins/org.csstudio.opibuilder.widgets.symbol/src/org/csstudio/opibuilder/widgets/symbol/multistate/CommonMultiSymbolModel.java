@@ -37,10 +37,10 @@ import org.eclipse.swt.graphics.RGB;
 /**
  * This class defines a common model for Multistate Symbol Image widget.
  * @author Fred Arnaud (Sopra Group)
- * 
+ *
  */
 public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
-    
+
     /**
      * File path of the image.
      */
@@ -87,7 +87,7 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
      */
     public static final String PERMUTATION_MATRIX = "permutation_matrix";
     // Obsolete property
-    public static final String IMAGE_DISPOSITION = "image_disposition"; 
+    public static final String IMAGE_DISPOSITION = "image_disposition";
     /**
      * Images values of the symbol widget.
      */
@@ -96,16 +96,16 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
      * If this is true, items will be loaded from input Enum PV.
      */
     public static final String PROP_ITEMS_FROM_PV = "items_from_pv";//$NON-NLS-1$
-    
+
     /** Widget color when boolean widget is on. */
     public static final String PROP_ON_COLOR = "on_color"; //$NON-NLS-1$
-    
+
     /** Widget color when boolean widget is off. */
     public static final String PROP_OFF_COLOR = "off_color"; //$NON-NLS-1$
-    
+
     public static final RGB DEFAULT_ON_COLOR = new RGB(0, 255, 0);
     public static final RGB DEFAULT_OFF_COLOR = new RGB(255, 0, 0);
-    
+
     /** True if the boolean label should be visible. */
     public static final String PROP_SHOW_SYMBOL_LABEL = "show_boolean_label"; //$NON-NLS-1$
     public static final String PROP_SYMBOL_LABEL_POS = "boolean_label_position"; //$NON-NLS-1$
@@ -147,12 +147,12 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
                 WidgetPropertyCategory.Image, 0));
         addProperty(new BooleanProperty(PROP_FLIP_HORIZONTAL,
                 "Flip Horizontal", WidgetPropertyCategory.Image, false));
-        addProperty(new BooleanProperty(PROP_FLIP_VERTICAL, 
+        addProperty(new BooleanProperty(PROP_FLIP_VERTICAL,
                 "Flip Vertical", WidgetPropertyCategory.Image, false));
 //        setPropertyVisibleAndSavable(PROP_DEGREE, false, true);
 //        setPropertyVisibleAndSavable(PROP_FLIP_HORIZONTAL, false, true);
 //        setPropertyVisibleAndSavable(PROP_FLIP_VERTICAL, false, true);
-        
+
         addProperty(new MatrixProperty(PERMUTATION_MATRIX,
                 "Permutation Matrix", WidgetPropertyCategory.Image,
                 PermutationMatrix.generateIdentityMatrix().getMatrix()));
@@ -172,9 +172,9 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
                 WidgetPropertyCategory.Display, DEFAULT_OFF_COLOR));
         addProperty(new BooleanProperty(PROP_SHOW_SYMBOL_LABEL, "Show Symbol Label",
                 WidgetPropertyCategory.Display,false));
-        addProperty(new ComboProperty(PROP_SYMBOL_LABEL_POS, "Symbol Label Position", 
+        addProperty(new ComboProperty(PROP_SYMBOL_LABEL_POS, "Symbol Label Position",
                 WidgetPropertyCategory.Display, BoolLabelPosition.stringValues(), 0));
-        
+
         addProperty(new StringListProperty(
                 PROP_ITEMS, "Items", WidgetPropertyCategory.Behavior, new ArrayList<String>()));
         addProperty(new BooleanProperty(PROP_ITEMS_FROM_PV, "Items From PV",
@@ -185,7 +185,7 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
 
     /**
      * Get the path to the specified file.
-     * 
+     *
      * @return The path to the specified file
      */
     public IPath getSymbolImagePath() {
@@ -200,7 +200,7 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
     /**
      * Get the amount of pixels, which should be cropped from the top edge of
      * the image.
-     * 
+     *
      * @return The amount of pixels
      */
     public int getTopCrop() {
@@ -210,7 +210,7 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
     /**
      * Get the amount of pixels, which should be cropped from the bottom edge of
      * the image.
-     * 
+     *
      * @return The amount of pixels
      */
     public int getBottomCrop() {
@@ -220,7 +220,7 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
     /**
      * Get the amount of pixels, which should be cropped from the left edge of
      * the image.
-     * 
+     *
      * @return The amount of pixels
      */
     public int getLeftCrop() {
@@ -230,7 +230,7 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
     /**
      * Get the amount of pixels, which should be cropped from the right edge of
      * the image.
-     * 
+     *
      * @return The amount of pixels
      */
     public int getRightCrop() {
@@ -239,7 +239,7 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
 
     /**
      * Check if the image should be stretched.
-     * 
+     *
      * @return True if stretched, false otherwise
      */
     public boolean getStretch() {
@@ -248,7 +248,7 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
 
     /**
      * Check if the widget should be auto sized according the image size.
-     * 
+     *
      * @return True if auto sized, false otherwise
      */
     public boolean isAutoSize() {
@@ -257,7 +257,7 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
 
     /**
      * Get the current degree of the image.
-     * 
+     *
      * @return The degree value
      */
     public int getDegree() {
@@ -266,7 +266,7 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
 
     /**
      * Check if an horizontal flip was applied.
-     * 
+     *
      * @return True if horizontal flip, false otherwise
      */
     public boolean isFlipHorizontal() {
@@ -275,7 +275,7 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
 
     /**
      * Check if an vertical flip was applied.
-     * 
+     *
      * @return True if vertical flip, false otherwise
      */
     public boolean isFlipVertical() {
@@ -284,7 +284,7 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
 
     /**
      * Get the current disposition of the image.
-     * 
+     *
      * @return The permutation matrix
      */
     public PermutationMatrix getPermutationMatrix() {
@@ -360,7 +360,7 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
     public boolean isItemsFromPV() {
         return (Boolean) getPropertyValue(PROP_ITEMS_FROM_PV);
     }
-    
+
     @Override
     public void setPropertyValue(Object id, Object value) {
         // Override obsolete properties

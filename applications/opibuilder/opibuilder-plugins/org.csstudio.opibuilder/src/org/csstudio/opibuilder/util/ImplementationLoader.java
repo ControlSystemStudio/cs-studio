@@ -15,21 +15,21 @@ public class ImplementationLoader {
 
     public static Object newInstance(Class<?> type, boolean logError){
         String name = type.getName();
-        Object result = null;        
+        Object result = null;
         try {
             result = type.getClassLoader().loadClass(name + "Impl").newInstance(); //$NON-NLS-1$
         } catch (Exception e) {
             if(logError)
-                OPIBuilderPlugin.getLogger().log(Level.SEVERE, 
+                OPIBuilderPlugin.getLogger().log(Level.SEVERE,
                     NLS.bind("Failed to load class {0} from fragment.", name+"Impl"), e); //$NON-NLS-2$
-        } 
+        }
         return result;
     }
-    
+
     public static Object newInstance(Class<?> type){
         return newInstance(type, true);
     }
-    
+
     /**Load the instance of a class in other plugins.
      * @param bundleID symbolic name of the bundle.
      * @param fullClassName class name with package name included.
@@ -42,11 +42,11 @@ public class ImplementationLoader {
                     fullClassName).newInstance();
         } catch (Exception e) {
             if(logError)
-                OPIBuilderPlugin.getLogger().log(Level.SEVERE, 
-                    NLS.bind("Failed to load class {0} from plugin {1}.", 
-                            fullClassName, bundleID), e); //$NON-NLS-2$        
+                OPIBuilderPlugin.getLogger().log(Level.SEVERE,
+                    NLS.bind("Failed to load class {0} from plugin {1}.",
+                            fullClassName, bundleID), e); //$NON-NLS-2$
             return null;
-        }            
+        }
     }
-    
+
 }

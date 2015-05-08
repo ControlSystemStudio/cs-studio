@@ -65,7 +65,7 @@ import org.slf4j.LoggerFactory;
 public final class RefreshableImageFigure extends Figure implements IAdaptable {
 
     private static final Logger LOG = LoggerFactory.getLogger(RefreshableImageFigure.class);
-    
+
     /**
      * A border adapter, which covers all border handlings.
      */

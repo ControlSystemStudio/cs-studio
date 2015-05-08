@@ -300,7 +300,7 @@ public class AlarmLogicUnitTest
         logic.computeNewState("f", SeverityLevel.OK, "OK");
         logic.check(true, false, SeverityLevel.OK, "OK", SeverityLevel.OK, "OK");
     }
-    
+
     @Test
     public void testLatchedAnnunciatedMajMinMajAckMinOK()
     {

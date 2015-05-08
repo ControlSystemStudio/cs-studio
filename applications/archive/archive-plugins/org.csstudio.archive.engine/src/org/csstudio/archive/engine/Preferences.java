@@ -21,7 +21,7 @@ public class Preferences
             return ignored_future;
         return prefs.getLong(Activator.ID, "ignored_future", ignored_future, null);
     }
-    
+
     public static int getWritePeriodSecs()
     {
         final IPreferencesService prefs = Platform.getPreferencesService();
@@ -48,7 +48,7 @@ public class Preferences
             return batch_size;
         return prefs.getInt(Activator.ID, "batch_size", batch_size, null);
     }
-    
+
     public static double getBufferReserve()
     {
         final IPreferencesService prefs = Platform.getPreferencesService();
@@ -58,5 +58,5 @@ public class Preferences
         return prefs.getDouble(Activator.ID, "buffer_reserve", buffer_reserve, null);
     }
 
-    
+
 }

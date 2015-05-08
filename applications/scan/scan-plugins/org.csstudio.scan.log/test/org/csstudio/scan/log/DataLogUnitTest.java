@@ -68,7 +68,7 @@ public class DataLogUnitTest
         logger.addDataLogListener(listener);
         logData(logger);
         assertThat(events.get(), equalTo(1));
-        
+
         final ScanData data = logger.getScanData();
         assertEquals(2, data.getDevices().length);
         assertNotNull(data.getSamples("x"));
@@ -80,8 +80,8 @@ public class DataLogUnitTest
 
         assertEquals(data.getSamples("y").get(5*5-1).getSerial(),
                      logger.getLastScanDataSerial());
-        
-        
+
+
         logger.removeDataLogListener(listener);
         logData(logger);
         // Should not see updates

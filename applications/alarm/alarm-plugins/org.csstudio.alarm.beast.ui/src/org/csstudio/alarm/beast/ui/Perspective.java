@@ -33,7 +33,7 @@ public class Perspective implements IPerspectiveFactory
         "org.csstudio.alarm.beast.ui.alarmtree.View";
     final private static String ID_ALARM_TABLE =
             "org.csstudio.alarm.beast.ui.alarmtable.view";
-    
+
     final private static String ID_CONSOLE_VIEW =
             "org.eclipse.ui.console.ConsoleView";
 
@@ -51,8 +51,8 @@ public class Perspective implements IPerspectiveFactory
                         IPageLayout.LEFT, 0.25f, editor);
         final IFolderLayout bottom = layout.createFolder("bottom",
                         IPageLayout.BOTTOM, 0.66f, editor);
-        
-        
+
+
         // Stuff for 'left'
         if (isViewAvaialble(ID_ALARM_PANEL))
         {

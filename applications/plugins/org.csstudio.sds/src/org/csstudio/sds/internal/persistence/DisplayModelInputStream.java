@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.internal.persistence;
@@ -43,10 +43,10 @@ import org.jdom.output.XMLOutputter;
 /**
  * <code>InputStream</code> that provides "on the fly" access to the XML
  * representation of <code>DisplayModels</code>.
- * 
+ *
  * @author Alexander Will
  * @version $Revision: 1.3 $
- * 
+ *
  */
 public final class DisplayModelInputStream extends ByteArrayInputStream {
 
@@ -87,7 +87,7 @@ public final class DisplayModelInputStream extends ByteArrayInputStream {
 
     /**
      * Standard constructor.
-     * 
+     *
      * @param displayModel
      *            The <code>DisplayModel</code> that should be accessed.
      */
@@ -104,7 +104,7 @@ public final class DisplayModelInputStream extends ByteArrayInputStream {
 
     /**
      * Reset the underlying buffer to the given array of bytes.
-     * 
+     *
      * @param buffer
      *            The new state of the internal buffer.
      */
@@ -167,7 +167,7 @@ public final class DisplayModelInputStream extends ByteArrayInputStream {
     /**
      * Return the XML representation of the given widget model as an array of
      * bytes.
-     * 
+     *
      * @param modelElement
      *            A widget model.
      * @return The XML representation of the given widget model as an array of
@@ -179,7 +179,7 @@ public final class DisplayModelInputStream extends ByteArrayInputStream {
 
     /**
      * Return the XML representation of the given widget model as a String.
-     * 
+     *
      * @param modelElement
      *            A widget model.
      * @return The XML representation of the given widget model as a String.
@@ -194,7 +194,7 @@ public final class DisplayModelInputStream extends ByteArrayInputStream {
     /**
      * Return the XML representation of the given display model as an array of
      * bytes.
-     * 
+     *
      * @param displayModel
      *            The display model.
      * @return The XML representation of the given display model as an array of
@@ -207,7 +207,7 @@ public final class DisplayModelInputStream extends ByteArrayInputStream {
     /**
      * Return the XML representation of the given display model as an array of
      * bytes.
-     * 
+     *
      * @param displayModel
      *            The display model.
      * @return The XML representation of the given display model as an array of
@@ -222,7 +222,7 @@ public final class DisplayModelInputStream extends ByteArrayInputStream {
 
     /**
      * Create the XML representation of the given display model.
-     * 
+     *
      * @param displayModel
      *            The display model.
      * @return The XML representation of the given display model.
@@ -246,7 +246,7 @@ public final class DisplayModelInputStream extends ByteArrayInputStream {
 
     /**
      * Create the XML representation of the given widget model.
-     * 
+     *
      * @param widgetModel
      *            A widget model.
      * @return The XML representation of the given widget model.
@@ -287,7 +287,7 @@ public final class DisplayModelInputStream extends ByteArrayInputStream {
     /**
      * Create a <code>property</code> tag from the given
      * <code>WidgetProperty</code>.
-     * 
+     *
      * @param propertyId
      *            The ID of the given <code>WidgetProperty</code>.
      * @param elementProperty
@@ -314,7 +314,7 @@ public final class DisplayModelInputStream extends ByteArrayInputStream {
     /**
      * Create a <code>layer</code> XML tag from the given
      * <code>layerName</code>. <code>layerName</code>.
-     * 
+     *
      * @param layerName
      *            The id of the given Layer.
      * @param layerName
@@ -342,7 +342,7 @@ public final class DisplayModelInputStream extends ByteArrayInputStream {
     /**
      * Create a <code>dynamicsDescriptor</code> XML tag from the given
      * <code>WidgetProperty</code>.
-     * 
+     *
      * @param elementProperty
      *            An <code>WidgetProperty</code>.
      * @return A <code>dynamicsDescriptor</code> XML tag from the given
@@ -436,7 +436,7 @@ public final class DisplayModelInputStream extends ByteArrayInputStream {
 
     /**
      * Create a parameter element.
-     * 
+     *
      * @param elementName
      *            The element name (for the input or output parameter tag).
      * @param parameter
@@ -459,7 +459,7 @@ public final class DisplayModelInputStream extends ByteArrayInputStream {
      * Write the given widget property to the given XML property tag. In case of
      * a simple property, a "value" attribute is added. Complex properties might
      * also add child tags.
-     * 
+     *
      * @param elementProperty
      *            An <code>WidgetProperty</code>.
      * @param propertyTag
@@ -480,7 +480,7 @@ public final class DisplayModelInputStream extends ByteArrayInputStream {
     /**
      * Create a <code>aliasDescriptors</code> XML tag from the given display
      * widget model.
-     * 
+     *
      * @param modelElement
      *            A widget model.
      * @return A <code>aliasDescriptors</code> XML tag from the given display
@@ -523,7 +523,7 @@ public final class DisplayModelInputStream extends ByteArrayInputStream {
     /**
      * Set the XML Header for the Stream. The default is "<?xml version=\"1.0\"
      * encoding=\"UTF-8\"?>\n"
-     * 
+     *
      * @param header
      *            The XML Header.
      */

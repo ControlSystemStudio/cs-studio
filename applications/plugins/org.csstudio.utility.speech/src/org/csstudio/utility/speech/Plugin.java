@@ -8,7 +8,7 @@
 package org.csstudio.utility.speech;
 
 /** Plugin info. Not actually used as Eclipse plugin activator.
- * 
+ *
  *  @author Kay Kasemir
  */
 public class Plugin

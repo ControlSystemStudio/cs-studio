@@ -38,7 +38,7 @@ public class SymbolUtils {
 
     /**
      * Check if the file path exists into the current workspace.
-     * 
+     *
      * @param path
      * @return the check result
      */

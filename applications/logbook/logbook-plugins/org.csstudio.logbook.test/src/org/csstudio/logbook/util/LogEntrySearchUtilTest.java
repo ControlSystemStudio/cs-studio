@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.util;
 
@@ -13,7 +13,7 @@ import static org.csstudio.logbook.util.LogEntrySearchUtil.parseSearchString;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class LogEntrySearchUtilTest {
 

@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * SWT Demo of the {@link MultiSelectionCombo}
- * 
+ *
  * @author Kay Kasemir, Kunal Shroff
  */
 @SuppressWarnings("nls")
@@ -51,7 +51,7 @@ public class MultipleSelectionComboDemo
             return name;
         }
     };
-    
+
     private static Text text;
     private final static List<MyItem> itemSet1 = Arrays.asList(
         new MyItem("Zero"), new MyItem("One"),

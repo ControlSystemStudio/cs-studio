@@ -60,9 +60,9 @@ public class UtilityPV implements IPV {
 
     private Map<IPVListener, PVListener> listenerMap;
     private IValue lastIValue;
-    private VType lastVTypeValue;    
-    
-    final private static Map<Integer, NumberFormat> fmt_cache = 
+    private VType lastVTypeValue;
+
+    final private static Map<Integer, NumberFormat> fmt_cache =
             new HashMap<Integer, NumberFormat>();
 
 
@@ -78,43 +78,43 @@ public class UtilityPV implements IPV {
 
     @Override
     public void addListener(final IPVListener listener) {
-        
+
         PVListener pvListener = new PVListener() {
             private Boolean isWriteAllowed;
             private boolean connected;
-            
+
             @Override
             public void pvValueUpdate(final PV pv) {
                 notificationThread.execute( new Runnable() {
-                    
+
                     @Override
                     public void run() {
                         if(!connected){
                             connected = true;
-                            listener.connectionChanged(UtilityPV.this);                            
+                            listener.connectionChanged(UtilityPV.this);
                         }
                         if(isWriteAllowed == null ||
                                 (!readOnly && pv.isWriteAllowed() != isWriteAllowed)){
                             listener.writePermissionChanged(UtilityPV.this);
                             isWriteAllowed = pv.isWriteAllowed();
                         }
-                        listener.valueChanged(UtilityPV.this);                        
+                        listener.valueChanged(UtilityPV.this);
                     }
                 });
-                
+
             }
-            
+
             @Override
             public void pvDisconnected(PV pv) {
                 notificationThread.execute(new Runnable() {
-                    
+
                     @Override
                     public void run() {
                         connected =false;
-                        listener.connectionChanged(UtilityPV.this);                                
+                        listener.connectionChanged(UtilityPV.this);
                     }
                 });
-                        
+
             }
         };
         listenerMap.put(listener, pvListener);
@@ -133,12 +133,12 @@ public class UtilityPV implements IPV {
 
     @Override
     public synchronized VType getValue() {
-        IValue iValue = pv.getValue();        
+        IValue iValue = pv.getValue();
         if(iValue!=null){
             if(iValue == lastIValue)
-                return lastVTypeValue;            
+                return lastVTypeValue;
             lastVTypeValue = iValueToVType(iValue);
-            lastIValue = iValue;            
+            lastIValue = iValue;
             return lastVTypeValue;
         }
         return null;
@@ -149,8 +149,8 @@ public class UtilityPV implements IPV {
         Time time = convertTimeStamp(iValue.getTime());
         Display display =null;
         if(iValue.getMetaData() instanceof INumericMetaData)
-            display = convertNumericMetaToDisplay((INumericMetaData) iValue.getMetaData());            
-    
+            display = convertNumericMetaToDisplay((INumericMetaData) iValue.getMetaData());
+
         if(iValue instanceof IDoubleValue){
             double[] values = ((IDoubleValue)iValue).getValues();
             if(values.length >1)
@@ -170,21 +170,21 @@ public class UtilityPV implements IPV {
             List<String> lables = Arrays.asList(((IEnumeratedMetaData)iValue.getMetaData()).getStates());
             if(values.length>1)
                 return ValueFactory.newVEnumArray(new ArrayInt(values), lables, alarm, time);
-            return ValueFactory.newVEnum(((IEnumeratedValue)iValue).getValue(), lables, alarm, time);            
+            return ValueFactory.newVEnum(((IEnumeratedValue)iValue).getValue(), lables, alarm, time);
         }
         if(iValue instanceof IStringValue){
             String[] values = ((IStringValue)iValue).getValues();
             if(values.length>1)
                 return ValueFactory.newVStringArray(Arrays.asList(values), alarm, time);
             return ValueFactory.newVString(((IStringValue)iValue).getValue(), alarm, time);
-            
+
         }
         return null;
     }
-    
+
     private static AlarmSeverity convertSeverity(ISeverity severity){
         if(severity.isOK())
-            return AlarmSeverity.NONE;        
+            return AlarmSeverity.NONE;
         if(severity.isMajor())
             return AlarmSeverity.MAJOR;
         if(severity.isMinor())
@@ -193,11 +193,11 @@ public class UtilityPV implements IPV {
             return AlarmSeverity.INVALID;
         return AlarmSeverity.UNDEFINED;
     }
-    
+
     private static Time convertTimeStamp(ITimestamp time){
         return ValueFactory.newTime(Timestamp.of(time.seconds(), (int) time.nanoseconds()));
     }
-    
+
     private static Display convertNumericMetaToDisplay(INumericMetaData meta){
         int precision = meta.getPrecision();
         NumberFormat fmt = fmt_cache.get(-precision);
@@ -209,10 +209,10 @@ public class UtilityPV implements IPV {
         }
         return ValueFactory.newDisplay(
                 meta.getDisplayLow(), meta.getAlarmLow(), meta.getWarnLow(), meta.getUnits(),
-                fmt, meta.getWarnHigh(), meta.getAlarmHigh(), meta.getDisplayHigh(), 
+                fmt, meta.getWarnHigh(), meta.getAlarmHigh(), meta.getDisplayHigh(),
                 meta.getDisplayLow(),meta.getDisplayHigh());
     }
-    
+
 
     @Override
     public boolean isBufferingValues() {
@@ -258,7 +258,7 @@ public class UtilityPV implements IPV {
                 fireExceptionChanged(e);
             }
     }
-    
+
     private void fireExceptionChanged(Exception e){
         if(exceptionHandler!=null)
             exceptionHandler.handleException(e);
@@ -283,7 +283,7 @@ public class UtilityPV implements IPV {
         while ((Calendar.getInstance().getTimeInMillis() - startTime) < timeout
                 && !pv.isConnected()) {
             Thread.sleep(100);
-        }        
+        }
 
         if (!pv.isConnected()) {
             throw new Exception(
@@ -306,13 +306,13 @@ public class UtilityPV implements IPV {
     @Override
     public void stop() {
         if(!pv.isRunning()){
-            Activator.getLogger().log(Level.WARNING, 
+            Activator.getLogger().log(Level.WARNING,
                     NLS.bind("PV {0} has already been stopped or was not started yet.", getName()));
             return;
         }
         pv.stop();
     }
-    
+
     /**Convert PVManager PV name to Utility PV name if the pv name is supported by Utility pv.
      * @param pvName
      * @return the converted name.
@@ -323,14 +323,14 @@ public class UtilityPV implements IPV {
         if(pvName.startsWith("=")){//$NON-NLS-1$
             return pvName.substring(1);
         }
-        
+
         //convert sim://const(1.23, 34, 34) to const://array(1.23, 34, 34)
         if(pvName.startsWith("sim://const")){ //$NON-NLS-1$
             return pvName.replace("sim://const", "const://array"); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        
+
         return pvName;
-    
+
     }
 
 }

@@ -21,8 +21,8 @@ public class PolylineFigureTest extends AbstractPolyWidgetTest{
     public Figure createTestWidget() {
         return new PolylineFigure();
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -35,20 +35,20 @@ public class PolylineFigureTest extends AbstractPolyWidgetTest{
                 "arrowLineLength",
                 "arrowType"
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
     @Override
     public boolean isAutoTest() {
         return true;
-    }        
-    
+    }
+
     @Override
     public Object generateTestData(PropertyDescriptor pd, Object seed) {
         if(pd.getName().equals("arrowType") && seed !=null && seed instanceof Integer)
                 return PolylineFigure.ArrowType.values()[(Integer)seed%4];
-        
+
         return super.generateTestData(pd, seed);
     }
 }

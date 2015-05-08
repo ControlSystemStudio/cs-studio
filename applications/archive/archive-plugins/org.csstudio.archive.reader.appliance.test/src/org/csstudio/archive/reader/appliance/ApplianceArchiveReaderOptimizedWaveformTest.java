@@ -16,7 +16,7 @@ import org.epics.util.time.Timestamp;
 import org.junit.Test;
 
 /**
- * 
+ *
  * <code>ApplianceArchiveReaderOptimizedWaveformTest</code> test retrieval of waveform type PVs
  * using optimized algorithm.
  *
@@ -24,17 +24,17 @@ import org.junit.Test;
  *
  */
 public class ApplianceArchiveReaderOptimizedWaveformTest extends AbstractArchiverReaderTesting {
-    
+
     @Override
     protected ArchiveReader getReader() {
         return new TestApplianceArchiveReader(false);
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp, int)
      * method for a double waveform type PV.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -43,7 +43,7 @@ public class ApplianceArchiveReaderOptimizedWaveformTest extends AbstractArchive
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_double",true,5, start, end);
         assertEquals("Number of values comparison", 5, vals.length);
-        
+
         ArchiveVNumberArray val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -57,12 +57,12 @@ public class ApplianceArchiveReaderOptimizedWaveformTest extends AbstractArchive
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i*2]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp, int)
      * method for a float waveform type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -71,7 +71,7 @@ public class ApplianceArchiveReaderOptimizedWaveformTest extends AbstractArchive
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_float",true,5, start, end);
         assertEquals("Number of values comparison", 5, vals.length);
-        
+
         ArchiveVNumberArray val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -85,12 +85,12 @@ public class ApplianceArchiveReaderOptimizedWaveformTest extends AbstractArchive
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i*2]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp, int)
      * method for an int waveform type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -99,7 +99,7 @@ public class ApplianceArchiveReaderOptimizedWaveformTest extends AbstractArchive
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_int",true,5, start, end);
         assertEquals("Number of values comparison", 5, vals.length);
-        
+
         ArchiveVNumberArray val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -113,12 +113,12 @@ public class ApplianceArchiveReaderOptimizedWaveformTest extends AbstractArchive
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i*2]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp, int)
      * method for a short waveform type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -127,7 +127,7 @@ public class ApplianceArchiveReaderOptimizedWaveformTest extends AbstractArchive
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_short",true,5, start,end);
         assertEquals("Number of values comparison", 5, vals.length);
-        
+
         ArchiveVNumberArray val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -141,12 +141,12 @@ public class ApplianceArchiveReaderOptimizedWaveformTest extends AbstractArchive
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i*2]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp, int)
      * method for a byte waveform type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -155,7 +155,7 @@ public class ApplianceArchiveReaderOptimizedWaveformTest extends AbstractArchive
         Timestamp start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_byte",true,5,start,end);
         assertEquals("Number of values comparison", 5, vals.length);
-        
+
         ArchiveVNumberArray val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
@@ -169,12 +169,12 @@ public class ApplianceArchiveReaderOptimizedWaveformTest extends AbstractArchive
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i*2]), val.getAlarmName());
         }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp, int)
      * method for a string wavefdorm type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -186,14 +186,14 @@ public class ApplianceArchiveReaderOptimizedWaveformTest extends AbstractArchive
             fail();
         } catch (UnsupportedOperationException e) {
             assertNotNull(e);
-        }        
+        }
     }
-    
+
     /**
      * Tests
      * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
      * method for an enum waveform type pv.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -206,6 +206,6 @@ public class ApplianceArchiveReaderOptimizedWaveformTest extends AbstractArchive
             fail();
         } catch (UnsupportedOperationException e) {
             assertNotNull(e);
-        }    
+        }
     }
 }

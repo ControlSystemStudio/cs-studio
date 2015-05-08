@@ -17,7 +17,7 @@ public class Activator extends AbstractUIPlugin
 {
     /** Plug-in ID defined in MANIFEST.MF */
     public static final String PLUGIN_ID = "org.csstudio.scan.ui.scantree"; //$NON-NLS-1$
-    
+
     /** @param path Path to plugin image
      *  @return {@link ImageDescriptor}
      */

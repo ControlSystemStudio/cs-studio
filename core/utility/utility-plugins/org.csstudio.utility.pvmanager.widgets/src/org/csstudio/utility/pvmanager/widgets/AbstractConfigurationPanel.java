@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Text;
  * Utility methods are supplied to make it easy to forward notifications
  * from widgets inside this composite as notifications of properties
  * of this composite.
- * 
+ *
  * @author Gabriele Carcassi
  */
 public abstract class AbstractConfigurationPanel extends BeanComposite {
@@ -38,7 +38,7 @@ public abstract class AbstractConfigurationPanel extends BeanComposite {
     /**
      * Creates a listener that forwards the change notification from a widget
      * of the panel (widgetProperty) to a property of this composite (compositeProperty).
-     * 
+     *
      * @param widgetProperty a property name of the widget inside the composite
      * @param panelProperty a property name of this widget
      * @return a new listener
@@ -46,7 +46,7 @@ public abstract class AbstractConfigurationPanel extends BeanComposite {
     protected PropertyChangeListener forwardPropertyChangeListener(final String widgetProperty,
             final String panelProperty) {
         return new PropertyChangeListener() {
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (widgetProperty.equals(evt.getPropertyName())) {
@@ -59,36 +59,36 @@ public abstract class AbstractConfigurationPanel extends BeanComposite {
     /**
      * Creates a listener that forwards the selection notification from a widget
      * of the panel to a property of this composite (compositeProperty).
-     * 
+     *
      * @param widgetProperty a property name of the widget inside the composite
      * @param panelProperty a property name of this widget
      * @return a new listener
      */
     protected SelectionListener forwardSelectionListener(final String panelProperty) {
         return new SelectionListener() {
-            
+
             @Override
             public void widgetSelected(SelectionEvent e) {
                 // TODO Find a solution for the values
                 changeSupport.firePropertyChange(panelProperty, null, null);
             }
-            
+
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
             }
         };
     }
-    
+
     protected void forwardTextEvents(final Text widget, final String propertyName) {
         widget.addModifyListener(new ModifyListener() {
-            
+
             private DelayedNotificator notificator = new DelayedNotificator(750, TimeUnit.MILLISECONDS);
-            
+
             @Override
             public void modifyText(ModifyEvent e) {
                 notificator.delayedExec(widget, new Runnable() {
-                    
+
                     @Override
                     public void run() {
                         changeSupport.firePropertyChange(propertyName, null,
@@ -98,15 +98,15 @@ public abstract class AbstractConfigurationPanel extends BeanComposite {
             }
         });
     }
-    
+
     protected boolean getCheckBoxValue(final Button checkBox) {
         return checkBox.getSelection();
     }
-    
+
     protected void setCheckBoxValue(final Button checkBox, final boolean newSelection) {
         checkBox.setSelection(newSelection);
     }
-    
+
     protected void forwardCheckBoxEvents(final Button checkBox, final String propertyName) {
         checkBox.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -115,7 +115,7 @@ public abstract class AbstractConfigurationPanel extends BeanComposite {
             }
         });
     }
-    
+
     protected void forwardComboEvents(final Combo combo, final String propertyName) {
         combo.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -124,7 +124,7 @@ public abstract class AbstractConfigurationPanel extends BeanComposite {
             }
         });
     }
-    
+
     protected String comboSelectedValue(final Combo combo) {
         if (combo.getSelectionIndex() != -1) {
             return combo.getItem(combo.getSelectionIndex());
@@ -132,5 +132,5 @@ public abstract class AbstractConfigurationPanel extends BeanComposite {
             return null;
         }
     }
-    
+
 }

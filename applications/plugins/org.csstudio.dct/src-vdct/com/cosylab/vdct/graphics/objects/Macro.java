@@ -8,22 +8,22 @@ package com.cosylab.vdct.graphics.objects;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -61,7 +61,7 @@ public class Macro extends VisibleObject implements Descriptable, Movable, InLin
 
             /*
             if (action.equals(colorString))
-            {            
+            {
                 Color newColor = ColorChooser.getColor(selectTitle, getColor());
                 if (newColor!=null)
                     setColor(newColor);
@@ -104,10 +104,10 @@ public class Macro extends VisibleObject implements Descriptable, Movable, InLin
             else if (action.equals(textSide)) {
                 setTextPositionNorth(false);
             }
-            
+
         }
     }
-    
+
     protected boolean disconnected = true;
 
     //private static final String descriptionString = "Description";
@@ -124,7 +124,7 @@ public class Macro extends VisibleObject implements Descriptable, Movable, InLin
     private static final String modeString = "Macro Mode";
     private static final String inputString = "INPUT";
     private static final String outputString = "OUTPUT";
-    
+
     private static final String textPosition = "Text Position";
     private static final String textNorth = "TOP";
     private static final String textSide = "SIDE";
@@ -137,7 +137,7 @@ public class Macro extends VisibleObject implements Descriptable, Movable, InLin
     private static javax.swing.ImageIcon icon = null;
     private static GUISeparator macroSeparator = null;
     protected VDBMacro data = null;
-    
+
     protected int rightXtranslation = 0;
     protected int rightYtranslation = 0;
     protected int leftXtranslation = 0;
@@ -148,11 +148,11 @@ public class Macro extends VisibleObject implements Descriptable, Movable, InLin
     private int r = 0;
 
      private String lastUpdatedFullName = null;
-     
-     /** if textPositionNorth=true text is positioned on the top of 
+
+     /** if textPositionNorth=true text is positioned on the top of
       * the macro, if false it is on the side */
      private boolean textPositionNorth = true;
-    
+
 /**
  * Insert the method's description here.
  * Creation date: (1.2.2001 17:22:29)
@@ -162,21 +162,21 @@ public Macro(VDBMacro data, ContainerObject parent, int x, int y) {
     this.data = data;
 
     setColor(Constants.FRAME_COLOR);
-    
+
     setWidth(Constants.LINK_STUB_SIZE);
     setHeight(Constants.LINK_STUB_SIZE);
 
     setX(x); setY(y);
-    
+
     data.setVisibleObject(this);
-    
+
     // initialize polygon so that it contains 5 points
     int[] pts = new int[5];
     leftPoly = new Polygon(pts, pts, 5);
     rightPoly = new Polygon(pts, pts, 5);
 
     outlinks = new Vector();
-    
+
     updateTemplateLink();
 }
 /**
@@ -196,7 +196,7 @@ public void accept(Visitor visitor) {}
 public boolean checkMove(int dx, int dy) {
     ViewState view = ViewState.getInstance();
 
-    if ((getX()<-dx) || (getY()<-dy) || 
+    if ((getX()<-dx) || (getY()<-dy) ||
         (getX()>(view.getWidth()-getWidth()-dx)) || (getY()>(view.getHeight()-getHeight()-dy)))
         return false;
     else
@@ -228,9 +228,9 @@ public void destroy() {
                     ((EPICSLinkOut)start).sourceDestroyed();
                 }
                 else if ((start instanceof EPICSVarLink)) {
-                    
+
                     if (outlink instanceof Connector) {
-                        OutLink temp; 
+                        OutLink temp;
                         while(outlink instanceof Connector) {
                             temp =((Connector)outlink).getOutput();
                             ((Connector)outlink).destroy();
@@ -238,16 +238,16 @@ public void destroy() {
                         }
                     }
                     start.disconnect(this);
-                    
+
                 }
                 else if (start!=null)
                     start.disconnect(this);
-                else 
+                else
                     outlink.disconnect(this);
             }
             outlinks.clear();
         }
-        
+
         if (lastUpdatedFullName!=null)
             Group.getRoot().getLookupTable().remove(data.getFullName());
         //else
@@ -258,11 +258,11 @@ public void destroy() {
 
         // also remove macro definition
         data.getTemplate().removeMacro(getName());
-        
 
-        
+
+
     }
-    
+
 }
 /**
  * Insert the method's description here.
@@ -271,7 +271,7 @@ public void destroy() {
 public void disconnect(Linkable disconnector) {
     if (!disconnected && outlinks.contains(disconnector)) {
         outlinks.removeElement(disconnector);
-        
+
         if (outlinks.size()==0) {
              // cannot be destoryed by removing links
             //destroy();
@@ -292,7 +292,7 @@ public void disconnect(Linkable disconnector) {
 protected void draw(java.awt.Graphics g, boolean hilited) {
 
     ViewState view = ViewState.getInstance();
-    
+
     double Rscale = getRscale();
     boolean zoom = Rscale < 1.0 && view.isZoomOnHilited() && view.isHilitedObject(this);
     if (zoom) {
@@ -312,12 +312,12 @@ protected void draw(java.awt.Graphics g, boolean hilited) {
         || (rry > view.getViewHeight())
         || ((rrx + rwidth) < 0)
         || ((rry + rheight) < 0)) || isZoomRepaint()) {
-        
+
         if (isZoomRepaint()) {
             rrx = ZoomPane.getInstance().getLeftOffset();
             rry = ZoomPane.getInstance().getTopOffset();
         }
-        
+
         Polygon poly = null;
         if (rightSide)
         {
@@ -331,8 +331,8 @@ protected void draw(java.awt.Graphics g, boolean hilited) {
             poly.translate(rrx-leftXtranslation, rry-leftYtranslation);
             leftXtranslation = rrx; leftYtranslation = rry;
         }
-        
-    
+
+
         if (!hilited)
             g.setColor(Constants.RECORD_COLOR);
         else
@@ -343,7 +343,7 @@ protected void draw(java.awt.Graphics g, boolean hilited) {
                     g.setColor(Constants.SELECTION_COLOR);
                 else
                     g.setColor(Constants.RECORD_COLOR);
-    
+
         g.fillPolygon(poly);
 
         Color drawColor;
@@ -357,7 +357,7 @@ protected void draw(java.awt.Graphics g, boolean hilited) {
 
         g.setColor(drawColor);
         g.drawPolygon(poly);
-        
+
         if (rightSide)
         {
             int xx = rrx-r;
@@ -385,7 +385,7 @@ protected void draw(java.awt.Graphics g, boolean hilited) {
         }
 
         Font font = FontMetricsBuffer.getInstance().getAppropriateFont(
-                  Constants.DEFAULT_FONT, Font.PLAIN, 
+                  Constants.DEFAULT_FONT, Font.PLAIN,
                   getLabel(), rwidth*4, rheight);
 
         if (font!=null)    {
@@ -404,19 +404,19 @@ protected void draw(java.awt.Graphics g, boolean hilited) {
             }
             g.setFont(getFont());
             g.drawString(getLabel(), rrx+getRlabelX(), rry+getRlabelY());
-        }        
-        
+        }
+
     }
 
     if (false)///!!!
     {
-        
+
         // draw link
         g.setColor(getVisibleColor());
 
         //LinkDrawer.drawLink(g, this, inlink, getQueueCount(), rightSide);
     }
-    
+
     if (zoom) {
         rwidth /= Rscale;
         rheight /= Rscale;
@@ -424,12 +424,12 @@ protected void draw(java.awt.Graphics g, boolean hilited) {
         rry -= ((rheight - getRheight())/2 + ZoomPane.getInstance().getTopOffset());
         if (view.getRx() < 0)
             rrx = rrx < 0 ? 2 : rrx;
-        if (view.getRy() < 0) 
+        if (view.getRy() < 0)
             rry = rry <= 0 ? 2 : rry;
         g.drawImage(zoomImage, rrx,rry, ZoomPane.getInstance());
     }
 
-        
+
 }
 /**
  * Insert the method's description here.
@@ -475,11 +475,11 @@ public java.util.Vector getItems() {
     addItem.setEnabled(!isDisconnected());
     addItem.addActionListener(al);
     items.addElement(addItem);
-    
+
     // modes
     items.addElement(new JSeparator());
     */
-    
+
     JMenu modeMenu = new JMenu(modeString);
     items.addElement(modeMenu);
 
@@ -511,11 +511,11 @@ public java.util.Vector getItems() {
     items.add(new JSeparator());
 
     JMenuItem descItem = new JMenuItem(descriptionString);
-    descItem.setEnabled(false); 
+    descItem.setEnabled(false);
     descItem.addActionListener(al);
     items.addElement(descItem);
     */
-    
+
     items.add(new JSeparator());
 
     /*
@@ -533,7 +533,7 @@ public java.util.Vector getItems() {
     JMenuItem removeMacroDefItem = new JMenuItem(removeMacroDefString);
     removeMacroDefItem.addActionListener(al);
     items.addElement(removeMacroDefItem);
-    
+
     return items;
 }
 /**
@@ -556,7 +556,7 @@ public int getInX() {
 
     if (right)
         return getX()-Constants.LINK_RADIOUS*4;
-    else 
+    else
         return getX()+getWidth()+Constants.LINK_RADIOUS*4;
 }
 /**
@@ -597,7 +597,7 @@ public boolean move(int dx, int dy) {
         revalidatePosition();
         return true;
     }
-    else 
+    else
         return false;
 }
 /**
@@ -625,10 +625,10 @@ public void setLayerID(String id) {
 }
 
 private void validateFontAndPolygon(double Rscale, int rwidth, int rheight) {
-    
+
     leftXtranslation = 0; leftYtranslation = 0;
     rightXtranslation = 0; rightYtranslation = 0;
-    
+
     if (getMode() == InLink.OUTPUT_MACRO_MODE)
     {
       setWidth(Constants.GRID_SIZE);
@@ -640,21 +640,21 @@ private void validateFontAndPolygon(double Rscale, int rwidth, int rheight) {
         leftPoly.xpoints[2]=rwidth;
         leftPoly.xpoints[3]=leftPoly.xpoints[2];
         leftPoly.xpoints[4]=leftPoly.xpoints[1];
-      
+
         leftPoly.ypoints[0]=rheight/2;
         leftPoly.ypoints[1]=rheight;
         leftPoly.ypoints[2]=leftPoly.ypoints[1];
         leftPoly.ypoints[3]=0;
         leftPoly.ypoints[4]=leftPoly.ypoints[3];
 
-      
+
         // right poly
         rightPoly.xpoints[0]=0;
         rightPoly.xpoints[1]=rightPoly.xpoints[0];
         rightPoly.xpoints[2]=rwidth/2;
         rightPoly.xpoints[3]=rwidth;
         rightPoly.xpoints[4]=rightPoly.xpoints[2];
-      
+
         rightPoly.ypoints[0]=0;
         rightPoly.ypoints[1]=rheight;
         rightPoly.ypoints[2]=rightPoly.ypoints[1];
@@ -663,7 +663,7 @@ private void validateFontAndPolygon(double Rscale, int rwidth, int rheight) {
     }
     else if (getMode() == InLink.INPUT_MACRO_MODE)
     {
-  
+
         setWidth(Constants.GRID_SIZE);
         setHeight(Constants.GRID_SIZE);
 
@@ -673,21 +673,21 @@ private void validateFontAndPolygon(double Rscale, int rwidth, int rheight) {
         leftPoly.xpoints[2]=rwidth;
         leftPoly.xpoints[3]=leftPoly.xpoints[2];
         leftPoly.xpoints[4]=leftPoly.xpoints[1];
-      
+
         leftPoly.ypoints[0]=rheight/2;
         leftPoly.ypoints[1]=rheight;
         leftPoly.ypoints[2]=leftPoly.ypoints[1];
         leftPoly.ypoints[3]=0;
         leftPoly.ypoints[4]=leftPoly.ypoints[3];
 
-      
+
         // right poly
         rightPoly.xpoints[0]=0;
         rightPoly.xpoints[1]=rightPoly.xpoints[0];
         rightPoly.xpoints[2]=rwidth;
         rightPoly.xpoints[3]=rwidth/2;
         rightPoly.xpoints[4]=rightPoly.xpoints[2];
-      
+
         rightPoly.ypoints[0]=0;
         rightPoly.ypoints[1]=rheight;
         rightPoly.ypoints[2]=rightPoly.ypoints[1];
@@ -700,7 +700,7 @@ private void validateFontAndPolygon(double Rscale, int rwidth, int rheight) {
       ///!!! optimize static
 
     Font font = FontMetricsBuffer.getInstance().getAppropriateFont(
-                    Constants.DEFAULT_FONT, Font.PLAIN, 
+                    Constants.DEFAULT_FONT, Font.PLAIN,
                     getLabel(), rwidth*4, rheight);
 
     if (font!=null)
@@ -719,11 +719,11 @@ private void validateFontAndPolygon(double Rscale, int rwidth, int rheight) {
             }
         }
     }
-    
+
     setFont(font);
 
     r = (int)(Rscale*Constants.LINK_RADIOUS*2);
-    
+
 }
 /**
  * Insert the method's description here.
@@ -731,18 +731,18 @@ private void validateFontAndPolygon(double Rscale, int rwidth, int rheight) {
  */
 protected void validate() {
   revalidatePosition();
-  
+
   double Rscale = getRscale();
-    
+
   // to make it nice, do /2)*2
   int rwidth = (int)(getWidth()*Rscale/2)*2;
   int rheight = (int)(getHeight()*Rscale/2)*2;
-  
+
   setRwidth(rwidth);
   setRheight(rheight);
-  
+
   validateFontAndPolygon(Rscale, rwidth, rheight);
-  
+
 
 }
 
@@ -768,7 +768,7 @@ public boolean isTextPositionNorth() {
 public void setMode(int mode)
 {
     this.mode = mode;
-    
+
     // reload symbol
     forceValidation();
 }
@@ -849,16 +849,16 @@ public InspectableProperty[] getProperties(int mode)
 public void setDestroyed(boolean newDestroyed)
 {
     super.setDestroyed(newDestroyed);
-    
+
     if (!newDestroyed)
     {
         // set data appropriate visibleObject
         data.setVisibleObject(this);
-        
+
         // update lookup table
         lastUpdatedFullName = null;
         updateTemplateLink();
-        
+
         // repair the links
         //Group.getRoot().manageLinks(true);
     }
@@ -873,7 +873,7 @@ public void rename(String oldName, String newName)
 
     // fix lookup table
     updateTemplateLink();
-    
+
     // fix source links
     LinkManagerObject.fixMacroLink(this);
 
@@ -924,7 +924,7 @@ public boolean isRight() {
                     if (first.getRightX() < getLeftX()){
 //                    if (!( getRightX() <= first.getLeftX() ||
 //                           (first.getLeftX()<getLeftX() && getLeftX()<first.getRightX() && first.getRightX()<getRightX()))) {
-                        right++;    
+                        right++;
                     } else {
                         left++;
                     }
@@ -987,11 +987,11 @@ public void updateTemplateLink()
 {
     if (lastUpdatedFullName!=null && data.getFullName().equals(lastUpdatedFullName))
         return;
-        
-    // remove old one        
+
+    // remove old one
     if (lastUpdatedFullName!=null)
         Group.getRoot().getLookupTable().remove(lastUpdatedFullName);
-    
+
     // ups, we already got this registered
     if (Group.getRoot().getLookupTable().containsKey(data.getFullName()))
     {
@@ -1039,7 +1039,7 @@ public int getLeftOffset() {
     int templ = (length - getWidth())/2;
     if (isRight()) {
         if (isTextPositionNorth() && templ > 0) return templ;
-        else return 2*r;       
+        else return 2*r;
     }
     else {
         if (isTextPositionNorth()) {
@@ -1058,7 +1058,7 @@ public int getRightOffset() {
     int templ = (length - getWidth())/2;
     if (!isRight()) {
         if (isTextPositionNorth() && templ > 0) return templ;
-        else return 2*r;   
+        else return 2*r;
     }
     else {
         if (isTextPositionNorth()) {
@@ -1080,7 +1080,7 @@ public Flexible copyToGroup(String group) {
     else
         newName = group+Constants.GROUP_SEPARATOR+
                   Group.substractObjectName(data.getName());
-    
+
     // object with new name already exists, add suffix ///!!!
     while (Group.getRoot().findObject(newName, true)!=null){
             newName = StringUtils.incrementName(newName, Constants.COPY_SUFFIX);
@@ -1094,7 +1094,7 @@ public Flexible copyToGroup(String group) {
 
     Group.getRoot().manageLinks(true);
     unconditionalValidation();
-    
+
     return theMacroCopy;
 }
 
@@ -1109,10 +1109,10 @@ public String getFlexibleName() {
  * @see com.cosylab.vdct.graphics.objects.Flexible#moveToGroup(java.lang.String)
  */
 public boolean moveToGroup(String group) {
-    
+
     if (Group.getEditingTemplateData()==null)
         return false;
-        
+
     Group.getEditingTemplateData().removeMacro(data);
     //String oldName = getName();
     String newName;
@@ -1168,11 +1168,11 @@ public boolean rename(String newName) {
 
     if (!oldObjName.equals(newObjName))
     {
-        
+
         String fullName = com.cosylab.vdct.util.StringUtils.replaceEnding(getName(), oldObjName, newObjName);
         data.setName(fullName);
         getParent().addSubObject(newObjName, this);
-                
+
         // fix connectors IDs
         Enumeration e = getParent().getSubObjectsV().elements();
         Object obj; Connector connector;
@@ -1187,7 +1187,7 @@ public boolean rename(String newName) {
             }
         }
     }
-    
+
     return true;
 }
 

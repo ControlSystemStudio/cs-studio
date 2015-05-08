@@ -21,9 +21,9 @@ public abstract class AbstractEdmMultiAttributes<T extends EdmAttribute> extends
 
     private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.parser.EdmColor");
 
-    
+
     private LinkedHashMap<String, T> edmAttrMap = new LinkedHashMap<String, T>();
-    
+
     /**
      * Constructor which parses EdmColor from general EdmAttribute value.
      *
@@ -43,18 +43,18 @@ public abstract class AbstractEdmMultiAttributes<T extends EdmAttribute> extends
                 log.warn("Missing optional property.");
                 return;
             }
-        }        
-        
+        }
+
         for(int i=0; i<getValueCount(); i++){
             String[] vals = getValue(i).split("\\s+", 2);
-            edmAttrMap.put(vals[0], createEdmAttribute(new EdmAttribute(vals[1])));            
-        }        
+            edmAttrMap.put(vals[0], createEdmAttribute(new EdmAttribute(vals[1])));
+        }
 
         setInitialized(true);
     }
-    
+
     protected abstract T createEdmAttribute(EdmAttribute genericEntity) throws EdmException;
-    
+
 
     /**
      * @return the color map with name and value.
@@ -63,5 +63,5 @@ public abstract class AbstractEdmMultiAttributes<T extends EdmAttribute> extends
         return edmAttrMap;
     }
 
-    
+
 }

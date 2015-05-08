@@ -36,16 +36,16 @@ import java.util.List;
  * @author:
  */
 public abstract class AboutDialogEngine {
-    
+
     protected List<AboutTab> tabs = new java.util.ArrayList<AboutTab>();
     protected Object aboutedObject = null;
     protected AboutTabReceiver receiver = null;
-    
+
     public AboutDialogEngine()
     {
         super();
     }
-    
+
     /**
      * Default constructor with "abouted object" as parameter
      */
@@ -54,7 +54,7 @@ public abstract class AboutDialogEngine {
         setAboutedObject(toAbout);
         initializeReceiver();
         perform();
-        
+
     }
     /**
      * This method is intended for adding Tab object into tabs ArrayList.
@@ -97,8 +97,8 @@ public abstract class AboutDialogEngine {
     public AboutTabReceiver getReceiver() {
         return receiver;
     }
-    
-    
+
+
     /**
      * Sets the aboutedObject.
      * @param o The aboutedObject to set
@@ -108,12 +108,12 @@ public abstract class AboutDialogEngine {
     }
     public void triggerReceiver(){
         receiver.receiverPerform();
-        
+
     }
-    
+
     protected void arrangeTabs(){
         for (int i = 0; i < tabs.size(); i++) {
-            
+
             final AboutTab at = tabs.get(i);
             receiver.addAboutTab(at);
         }

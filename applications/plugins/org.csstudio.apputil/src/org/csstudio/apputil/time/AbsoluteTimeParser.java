@@ -12,9 +12,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /** Parse an absolute date/time string.
- *  
+ *
  *  @see #parse(Calendar, String)
- *  
+ *
  *  @author Sergei Chevtsov developed the original code for the
  *          Java Archive Viewer, from which this code heavily borrows.
  *  @author Kay Kasemir
@@ -60,7 +60,7 @@ public class AbsoluteTimeParser
      *  An empty text leaves the provided calendar unchanged.
      *  <p>
      *  All other cases result in an exception.
-     *  
+     *
      *  @param cal Base calendar, defines the time zone as well as
      *             the year, in case the text doesn't include a year.
      *  @param text The text to parse.
@@ -74,7 +74,7 @@ public class AbsoluteTimeParser
         if (cooked.length() < 1)
             return cal;
         final Calendar result = Calendar.getInstance();
-        
+
         // Provide missing year from given cal
         int datesep = cooked.indexOf('/');
         if (datesep < 0) // No date at all provided? Use the one from cal.
@@ -114,7 +114,7 @@ public class AbsoluteTimeParser
         // No parser parsed the string?
         throw new Exception("Cannot parse date and time from '" + text + "'");
     }
-    
+
     /** Format given calendar value into something that this parser would handle.
      *  @return Date and time string.
      */

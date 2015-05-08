@@ -1,8 +1,8 @@
 package org.csstudio.ui.util;
 
 /**
- * SWT Constants. Some SWT constants doesn't exist in org.eclipse.rap.ui, but exist 
- * in org.eclipse.draw2d.rap.swt. So I copy them to here to achieve the compatibility. 
+ * SWT Constants. Some SWT constants doesn't exist in org.eclipse.rap.ui, but exist
+ * in org.eclipse.draw2d.rap.swt. So I copy them to here to achieve the compatibility.
  * @author Xihui Chen
  *
  */
@@ -30,14 +30,14 @@ public class SWTConstants {
       public static final int LINE_DASHDOTDOT = 5;
       /**
        * Line drawing style for custom dashed lines (value is 6).
-       * 
+       *
        * @see org.eclipse.swt.graphics.GC#setLineDash(int[])
        * @see org.eclipse.swt.graphics.GC#getLineDash()
        * @since 3.1
        */
       public static final int LINE_CUSTOM = 6;
-      
-      
+
+
       /**
        * The <code>Image</code> constructor argument indicating that the new image
        * should have the appearance of a "disabled" (using the platform's rules for
@@ -54,15 +54,15 @@ public class SWTConstants {
 
       /**
          * The paint event type (value is 9).
-         * 
+         *
          * @see org.eclipse.swt.widgets.Widget#addListener
          * @see org.eclipse.swt.widgets.Display#addFilter
          * @see org.eclipse.swt.widgets.Event
-         * 
+         *
          * @see org.eclipse.swt.widgets.Control#addPaintListener
          * @see org.eclipse.swt.events.PaintListener#paintControl
          * @see org.eclipse.swt.events.PaintEvent
          */
       public static final int Paint = 9;
-    
+
 }

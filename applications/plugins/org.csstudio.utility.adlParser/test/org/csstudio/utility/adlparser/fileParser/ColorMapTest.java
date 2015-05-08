@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.adlparser.fileParser;
 
@@ -10,7 +10,7 @@ import org.junit.Test;
 
 /**
  * @author hammonds
- * 
+ *
  */
 public class ColorMapTest extends TestCase {
     ADLWidget colorMap = new ADLWidget("color map", null, 10);
@@ -69,7 +69,7 @@ public class ColorMapTest extends TestCase {
         assertEquals(message + " Comparing red", color.red, red );
         assertEquals(message + " Comparing green", color.green, green );
         assertEquals(message + " Comparing blue", color.blue, blue );
-        
+
     }
 
     /**
@@ -360,7 +360,7 @@ public class ColorMapTest extends TestCase {
             e.printStackTrace();
             fail("Wrong format chosen for test colorMap");
         }
-        
+
         //A bad color map.  Number of colors not defined properly
         buildDl_Color_BadColorMap1();
         try {

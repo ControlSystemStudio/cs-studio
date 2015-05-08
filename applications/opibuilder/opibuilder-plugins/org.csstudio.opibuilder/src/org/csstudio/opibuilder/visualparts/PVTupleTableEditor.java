@@ -47,7 +47,7 @@ import org.eclipse.swt.widgets.ToolBar;
 
 /**
  * A table editor which can edit string boolean pair.
- * 
+ *
  * @author Xihui Chen
  * @author Takashi Nakamoto (Cosylab)
  */
@@ -120,7 +120,7 @@ public class PVTupleTableEditor extends Composite {
 
     /**
      * Creates and configures a {@link TableViewer}.
-     * 
+     *
      * @param parent
      *            The parent for the table
      * @return The {@link TableViewer}
@@ -130,7 +130,7 @@ public class PVTupleTableEditor extends Composite {
                 | SWT.FULL_SELECTION | SWT.MULTI);
         viewer.getTable().setLinesVisible(true);
         viewer.getTable().setHeaderVisible(true);
-        
+
         final TableViewerColumn numColumn = new TableViewerColumn(viewer, SWT.NONE);
         numColumn.getColumn().setText("#");
         numColumn.getColumn().setMoveable(false);
@@ -394,13 +394,13 @@ public class PVTupleTableEditor extends Composite {
 
     private final static class PVTupleLabelProvider extends LabelProvider implements
             ITableLabelProvider {
-        
+
         private List<PVTuple> pvTupleList;
-        
+
         public PVTupleLabelProvider(List<PVTuple> pvTupleList) {
             this.pvTupleList = pvTupleList;
         }
-        
+
         public void setPVTupleList(List<PVTuple> pvTupleList) {
             this.pvTupleList = pvTupleList;
         }
@@ -461,7 +461,7 @@ public class PVTupleTableEditor extends Composite {
         @Override
         protected void setValue(Object element, Object value) {
             if (element instanceof PVTuple) {
-                String s = value == null ? "" : value.toString(); //$NON-NLS-1$                                
+                String s = value == null ? "" : value.toString(); //$NON-NLS-1$
                 ((PVTuple) element).pvName = s;
                 getViewer().refresh();
             }
@@ -506,6 +506,6 @@ public class PVTupleTableEditor extends Composite {
 
     }
 
-    
+
 
 }

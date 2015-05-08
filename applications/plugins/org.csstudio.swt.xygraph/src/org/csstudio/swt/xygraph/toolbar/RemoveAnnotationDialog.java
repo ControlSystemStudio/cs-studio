@@ -27,20 +27,20 @@ public class RemoveAnnotationDialog extends Dialog {
     private XYGraph xyGraph;
     private Combo annotationsCombo;
     private Annotation removedAnnotation;
-    
+
     protected RemoveAnnotationDialog(Shell parentShell, XYGraph xyGraph) {
-        super(parentShell);    
+        super(parentShell);
         this.xyGraph = xyGraph;
         // Allow resize
         setShellStyle(getShellStyle() | SWT.RESIZE);
     }
-    
+
     @Override
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
         newShell.setText("Remove Annotation");
     }
-    
+
     @Override
     protected Control createDialogArea(Composite parent) {
         final Composite parent_composite = (Composite) super.createDialogArea(parent);
@@ -49,20 +49,20 @@ public class RemoveAnnotationDialog extends Dialog {
         composite.setLayout(new GridLayout(1, false));
         final Label removeLabel = new Label(composite, SWT.None);
         removeLabel.setLayoutData(new GridData());
-        if(xyGraph.getPlotArea().getAnnotationList().size() > 0){            
-            removeLabel.setText("Select the annotation to be removed: ");        
+        if(xyGraph.getPlotArea().getAnnotationList().size() > 0){
+            removeLabel.setText("Select the annotation to be removed: ");
             annotationsCombo = new Combo(composite, SWT.DROP_DOWN);
             annotationsCombo.setLayoutData(new GridData(SWT.FILL, 0, true, false));
             for(Annotation annotation : xyGraph.getPlotArea().getAnnotationList())
                 annotationsCombo.add(annotation.getName());
             annotationsCombo.select(0);
         }else{
-            removeLabel.setText("There is no annotation on the graph."); 
+            removeLabel.setText("There is no annotation on the graph.");
         }
-        
+
         return parent_composite;
     }
-     
+
     @Override
     protected void okPressed() {
         if(annotationsCombo != null)
@@ -70,7 +70,7 @@ public class RemoveAnnotationDialog extends Dialog {
                 annotationsCombo.getSelectionIndex());
         super.okPressed();
     }
-     
+
     /**
      * @return the annotation to be removed.
      */

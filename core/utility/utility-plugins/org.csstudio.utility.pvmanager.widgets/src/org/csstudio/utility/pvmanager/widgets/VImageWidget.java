@@ -23,7 +23,7 @@ import org.epics.vtype.ValueUtil;
 
 /**
  * Widget that can display a formula that returns a VImage.
- * 
+ *
  * @author carcassi
  */
 public class VImageWidget extends SelectionBeanComposite implements ISelectionProvider {
@@ -33,7 +33,7 @@ public class VImageWidget extends SelectionBeanComposite implements ISelectionPr
 
     /**
      * Creates a new display.
-     * 
+     *
      * @param parent
      */
     public VImageWidget(Composite parent) {
@@ -54,7 +54,7 @@ public class VImageWidget extends SelectionBeanComposite implements ISelectionPr
         forwardPropertyChange(imageDisplay, "vImage", "value");
         forwardPropertyChangeToSelection("value");
         addDisposeListener(new DisposeListener() {
-            
+
             @Override
             public void widgetDisposed(DisposeEvent e) {
                 if (pv != null) {
@@ -64,7 +64,7 @@ public class VImageWidget extends SelectionBeanComposite implements ISelectionPr
             }
         });
     }
-    
+
     @Override
     public void setMenu(Menu menu) {
         super.setMenu(menu);
@@ -98,20 +98,20 @@ public class VImageWidget extends SelectionBeanComposite implements ISelectionPr
                 }).maxRate(TimeDuration.ofHertz(25));
 
     }
-    
+
     public String getPvFormula() {
         return pvFormula;
     }
-    
+
     public void setPvFormula(String pvFormula) {
         this.pvFormula = pvFormula;
         reconnect();
     }
-    
+
     public VImage getValue() {
         return imageDisplay.getVImage();
     }
-    
+
     public Alarm getAlarm() {
         if (pv == null) {
             return ValueFactory.alarmNone();

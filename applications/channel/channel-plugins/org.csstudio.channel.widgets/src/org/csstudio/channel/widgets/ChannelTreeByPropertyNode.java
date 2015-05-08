@@ -16,11 +16,11 @@ import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
 import org.csstudio.utility.pvmanager.widgets.ConfigurableWidgetAdaptable;
 
 public class ChannelTreeByPropertyNode implements ConfigurableWidgetAdaptable, ChannelQueryAdaptable {
-    
+
     // The model that contains the node, used to access all data
     // common to all nodes
     private ChannelTreeByPropertyModel model;
-    
+
     // Channels represented by this node and down
     private List<Channel> nodeChannels;
     // 0 for root, 1 for children, 2 for grandchildren...
@@ -39,7 +39,7 @@ public class ChannelTreeByPropertyNode implements ConfigurableWidgetAdaptable, C
     ChannelTreeByPropertyNode(ChannelTreeByPropertyModel model, ChannelTreeByPropertyNode parentNode, String displayName) {
         this.model = model;
         this.parentNode = parentNode;
-        
+
         // Calculate depth
         if (parentNode == null) {
             depth = 0;
@@ -93,7 +93,7 @@ public class ChannelTreeByPropertyNode implements ConfigurableWidgetAdaptable, C
 
     /**
      * The property name at this level
-     * 
+     *
      * @return property name or null if leaf node
      */
     public String getPropertyName() {
@@ -120,15 +120,15 @@ public class ChannelTreeByPropertyNode implements ConfigurableWidgetAdaptable, C
     public ChannelTreeByPropertyNode getChild(int index) {
         return new ChannelTreeByPropertyNode(model, this, childrenNames.get(index));
     }
-    
+
     public List<Channel> getNodeChannels() {
         return Collections.unmodifiableList(nodeChannels);
     }
-    
+
     public ConfigurableWidget getConfigurableWidget() {
         return model.getWidget();
     }
-    
+
     /**
      * True if the node represents a sub-query and not a single channel.
      * @return
@@ -138,23 +138,23 @@ public class ChannelTreeByPropertyNode implements ConfigurableWidgetAdaptable, C
         // We are at the channel level
         if (index >= model.properties.size())
             return false;
-        
+
         return true;
     }
-    
+
     public String getSubQuery() {
         // If it's not a sub-query, return the channel name (i.e. the display name)
         if (!isSubQuery()) {
             return getDisplayName();
         }
-        
+
         if (parentNode == null) {
             return model.query;
         }
-        
+
         return parentNode.getSubQuery() + " " + getPropertyName() + "=" + getDisplayName();
     }
-    
+
     private void includePropertyAndValue(Map<String, String> map) {
         if (getPropertyName() != null) {
             map.put(getPropertyName(), getDisplayName());
@@ -163,7 +163,7 @@ public class ChannelTreeByPropertyNode implements ConfigurableWidgetAdaptable, C
             parentNode.includePropertyAndValue(map);
         }
     }
-    
+
     public Map<String, String> getPropertiesAndValues() {
         Map<String, String> map = new HashMap<String, String>();
         includePropertyAndValue(map);

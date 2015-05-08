@@ -24,7 +24,7 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 /**
  * A strip chart figure.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class StripChartFigure extends AbstractChartFigure {
@@ -38,24 +38,24 @@ public final class StripChartFigure extends AbstractChartFigure {
      * Array containing one buffer of values per channel.
      */
     private RingBuffer[] _values;
-    
+
     /**
      * The number of values to be recorded per channel. Note that this will be
      * larger than the capacity of each ring buffer if this value exceeds
      * {@link #MAX_BUFFER_SIZE}.
      */
     private int _valuesPerChannel;
-    
+
     /**
      * The timespan covered by the x-axis.
      */
     private double _xAxisTimespan;
-    
+
     /**
      * The greatest data value.
      */
     private double _greatestDataValue;
-    
+
     /**
      * The lowest data value.
      */
@@ -67,10 +67,10 @@ public final class StripChartFigure extends AbstractChartFigure {
      * differences.
      */
     private double _dataSeriesTimespan;
-    
+
     /**
      * Creates a new strip chart figure.
-     * 
+     *
      * @param numberOfChannels
      *            the number of channels to be supported by this figure.
      * @param valuesPerChannel
@@ -93,10 +93,10 @@ public final class StripChartFigure extends AbstractChartFigure {
             _values[i] = new RingBuffer(Math.min(valuesPerChannel, MAX_BUFFER_SIZE));
         }
     }
-    
+
     /**
      * Sets the x-axis timespan of this figure.
-     * 
+     *
      * @param timespan
      *            the timespan in seconds.
      */
@@ -104,13 +104,13 @@ public final class StripChartFigure extends AbstractChartFigure {
         _xAxisTimespan = timespan;
         xAxisRangeChanged();
     }
-    
+
     /**
      * Adds the next value for the data series with the specified index to the
      * plot. This figure does not itself keep track of the exact times at which
      * this method is called. It is assumed that this method is called by the
      * edit part at a regular interval.
-     * 
+     *
      * @param index
      *            the data index.
      * @param value
@@ -126,7 +126,7 @@ public final class StripChartFigure extends AbstractChartFigure {
             dataRangeChanged();
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -155,8 +155,8 @@ public final class StripChartFigure extends AbstractChartFigure {
     /**
      * Returns the greatest x-axis value. For a strip chart, this is always zero
      * (the time of the latest recorded value). Note that for a strip chart, the
-     * x-axis maximum is lower than the x-axis minimum. 
-     * 
+     * x-axis maximum is lower than the x-axis minimum.
+     *
      * @return zero.
      */
     @Override
@@ -169,17 +169,17 @@ public final class StripChartFigure extends AbstractChartFigure {
      * timespan value, which is the age of the oldest recorded value in seconds.
      * Note that for a strip chart, the x-axis maximum is lower than the x-axis
      * minimum.
-     * 
+     *
      * @return the lowest x-axis value.
      */
     @Override
     protected double xAxisMinimum() {
         return _xAxisTimespan;
     }
-    
+
     /**
      * A simple ring buffer for <code>double</code> values.
-     * 
+     *
      * @author Joerg Rathlev
      */
     private final class RingBuffer {
@@ -187,20 +187,20 @@ public final class StripChartFigure extends AbstractChartFigure {
          * The values stored in the buffer.
          */
         private double[] _values;
-        
+
         /**
          * The next write index.
          */
         private int _nextWriteIndex;
-        
+
         /**
          * The number of values stored in the buffer.
          */
         private int _size;
-        
+
         /**
          * Creates a new, empty buffer with the specified capacity.
-         * 
+         *
          * @param capacity
          *            the capacity.
          */
@@ -209,10 +209,10 @@ public final class StripChartFigure extends AbstractChartFigure {
             _nextWriteIndex = 0;
             _size = 0;
         }
-        
+
         /**
          * Adds a value to this buffer.
-         * 
+         *
          * @param value
          *            the value.
          */
@@ -225,12 +225,12 @@ public final class StripChartFigure extends AbstractChartFigure {
                 _nextWriteIndex = 0;
             }
         }
-        
+
         /**
          * Processes the values in this buffer with the specified processor.
          * Values are processed in reverse, i.e., the latest value is processed
          * first and the oldest value is processed last.
-         * 
+         *
          * @param processor
          *            the processor.
          */

@@ -12,7 +12,7 @@ import org.eclipse.gef.commands.CompoundCommand;
 
 /**
  * Command the initializes an instance.
- * 
+ *
  * @author Sven Wende
  *
  */
@@ -34,7 +34,7 @@ public final class InitInstanceCommand extends Command {
     @Override
     public void execute() {
         internalCmd = new CompoundCommand();
-        
+
         IContainer parent = instance.getParent();
 
         if (parent != null) {
@@ -50,10 +50,10 @@ public final class InitInstanceCommand extends Command {
                 internalCmd.add(new AddInstanceCommand(instance, iInstance));
             }
         }
-        
+
         internalCmd.execute();
     }
-    
+
     /**
      *{@inheritDoc}
      */

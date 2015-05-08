@@ -36,14 +36,14 @@ public class XMLFileHandler extends TestCase {
      */
     public void testDummy() {
     }
-    
+
     public static Document createDomDocument() throws EdmException {
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             return builder.newDocument();
 
         } catch (ParserConfigurationException e) {
-            throw new EdmException(EdmException.DOM_BUILDER_EXCEPTION, 
+            throw new EdmException(EdmException.DOM_BUILDER_EXCEPTION,
                     "Error instantiating DOM document.",e);
         }
     }
@@ -61,7 +61,7 @@ public class XMLFileHandler extends TestCase {
 
             System.out.println(out.toString());
         }
-        catch (Exception e) { 
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -148,7 +148,7 @@ public class XMLFileHandler extends TestCase {
         String style = String.valueOf(s);
         assertEquals(style, fontElement.getAttribute("style"));
     }
-    
+
     /** Returns true if parent element has a child element with the given name.
      *  Descendants of children are ignored.
      */
@@ -160,6 +160,6 @@ public class XMLFileHandler extends TestCase {
             }
             node = node.getNextSibling();
         }
-        return false;        
+        return false;
     }
 }

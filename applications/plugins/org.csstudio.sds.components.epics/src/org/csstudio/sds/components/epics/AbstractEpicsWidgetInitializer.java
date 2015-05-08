@@ -13,7 +13,7 @@ import org.csstudio.sds.util.ColorAndFontUtil;
 
 /**
  * Common EPICS initializer for (dynamic) properties of all widgets.
- *  
+ *
  * @author jhatje
  *
  */
@@ -25,18 +25,18 @@ public abstract class AbstractEpicsWidgetInitializer extends AbstractWidgetModel
 //        initializeStaticProperty(AbstractWidgetModel.PROP_BORDER_STYLE, 0);
 //        initializeStaticProperty(AbstractWidgetModel.PROP_BORDER_WIDTH, 3);
 //    }
-    
+
     public void initializeCommonDynamicProperties() {
-        
+
     }
-    
+
     public void initializeCommonAlarmBehaviour() {
 //        initializeStaticProperty(AbstractWidgetModel.PROP_BORDER_WIDTH, 3);
         initializeDynamicProperty(AbstractWidgetModel.PROP_BORDER_COLOR, "$channel$[severity]", null, Alarm.TYPE_ID);
         initializeDynamicProperty(AbstractWidgetModel.PROP_BORDER_STYLE, "$channel$[severity]", null, AlarmBorder.TYPE_ID);
         initializeDynamicProperty(AbstractWidgetModel.PROP_BORDER_WIDTH, "$channel$[severity]", null, AlarmBorderWidth.TYPE_ID);
     }
-    
+
     public void initializeCommonConnectionStates() {
         Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
         colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, ColorAndFontUtil.toHex(255,
@@ -49,5 +49,5 @@ public abstract class AbstractEpicsWidgetInitializer extends AbstractWidgetModel
                 AbstractWidgetModel.PROP_COLOR_BACKGROUND, "$channel$",
                 colorsByConnectionState);
     }
-    
+
 }

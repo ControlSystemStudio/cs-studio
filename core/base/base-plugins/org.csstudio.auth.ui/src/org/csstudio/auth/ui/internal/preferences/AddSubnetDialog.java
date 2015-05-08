@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.auth.ui.internal.preferences;
@@ -40,27 +40,27 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Dialog to add a subnet to the Onsite Subnet preferences page.
- * 
+ *
  * @author Joerg Rathlev
  */
 class AddSubnetDialog extends TitleAreaDialog {
-    
+
     /**
      * The network address input field.
      */
     private Text _networkAddress;
-    
+
     /**
      * The netmask input field.
      */
     private Text _netmask;
-    
+
     /**
      * The subnet that was entered by the user. This gets set when the user
      * presses the Ok button.
      */
     private Subnet _result;
-    
+
     /**
      * Regular expression that matches IPv4 addresses. (Note: this expression
      * allows numbers up to 299, so it is not guaranteed that a string is a
@@ -68,7 +68,7 @@ class AddSubnetDialog extends TitleAreaDialog {
      */
     private static final String IPV4_ADDRESS_REGEX =
         "([12]?[0-9]?[0-9]\\.){3}([12]?[0-9]?[0-9])";
-    
+
     /**
      * Creates a new Add Subnet Dialog.
      * @param parentShell the parent shell.
@@ -76,7 +76,7 @@ class AddSubnetDialog extends TitleAreaDialog {
     AddSubnetDialog(Shell parentShell) {
         super(parentShell);
     }
-    
+
     /**
      * Returns the subnet the user entered in this dialog.
      * @return the subnet the user entered in this dialog, or <code>null</code>
@@ -85,7 +85,7 @@ class AddSubnetDialog extends TitleAreaDialog {
     public Subnet getSubnet() {
         return _result;
     }
-    
+
     /**
      * Sets the result of this dialog (the subnet that was entered by the user).
      */
@@ -102,7 +102,7 @@ class AddSubnetDialog extends TitleAreaDialog {
         }
         super.okPressed();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -111,17 +111,17 @@ class AddSubnetDialog extends TitleAreaDialog {
         super.configureShell(newShell);
         newShell.setText("Add Subnet");
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected Control createDialogArea(Composite parent) {
         Composite parentComposite = (Composite) super.createDialogArea(parent);
-        
+
         setTitle("Add Subnet");
         setMessage("Please enter the subnet address and netmask.");
-        
+
         Composite contents = new Composite(parentComposite, SWT.NULL);
         GridLayout layout = new GridLayout();
         layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
@@ -132,7 +132,7 @@ class AddSubnetDialog extends TitleAreaDialog {
         contents.setLayout(layout);
         contents.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, true));
         contents.setFont(parentComposite.getFont());
-        
+
         Label addressLabel = new Label(contents, SWT.NULL);
         addressLabel.setText("Subnet address:");
         _networkAddress = new Text(contents, SWT.SINGLE | SWT.BORDER);
@@ -145,7 +145,7 @@ class AddSubnetDialog extends TitleAreaDialog {
                 }
             }
         });
-        
+
         Label netmaskLabel = new Label(contents, SWT.NULL);
         netmaskLabel.setText("Subnet address:");
         _netmask = new Text(contents, SWT.SINGLE | SWT.BORDER);
@@ -157,10 +157,10 @@ class AddSubnetDialog extends TitleAreaDialog {
                 }
             }
         });
-        
+
         return contents;
     }
-    
+
     /**
      * Checks if a valid network address and netmask were entered. Enables
      * or disables the Ok button based on the validity, and displays error
@@ -168,7 +168,7 @@ class AddSubnetDialog extends TitleAreaDialog {
      */
     private void checkValid() {
         boolean addressValid = _networkAddress.getText().matches(IPV4_ADDRESS_REGEX);
-        
+
         boolean netmaskValid;
         if (_netmask.getText().matches(IPV4_ADDRESS_REGEX)) {
             try {
@@ -180,7 +180,7 @@ class AddSubnetDialog extends TitleAreaDialog {
         } else {
             netmaskValid = false;
         }
-        
+
         if (!addressValid) {
             setErrorMessage("Invalid subnet address.");
         } else if (!netmaskValid) {
@@ -188,11 +188,11 @@ class AddSubnetDialog extends TitleAreaDialog {
         } else {
             setErrorMessage(null);
         }
-        
+
         getButton(IDialogConstants.OK_ID).setEnabled(
                 addressValid && netmaskValid);
     }
-    
+
     /**
      * Automatically enters a netmask based on the network address. The netmask
      * is only entered automatically if no netmask was entered yet.
@@ -201,12 +201,12 @@ class AddSubnetDialog extends TitleAreaDialog {
         // no autocompletion unless netmask is still empty
         if (!_netmask.getText().equals(""))
             return;
-        
+
         // no automcomletion if the subnet address does not look like a standard
         // IPv4 address
         if (!(_networkAddress.getText().matches(IPV4_ADDRESS_REGEX)))
             return;
-        
+
         try {
             InetAddress address = InetAddress.getByName(_networkAddress.getText());
             byte[] addrBytes = address.getAddress();
@@ -224,7 +224,7 @@ class AddSubnetDialog extends TitleAreaDialog {
             // do nothing
         }
     }
-    
+
     /**
      * Creates the standard dialog buttons OK and Cancel and disables the OK
      * button.

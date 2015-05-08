@@ -45,10 +45,10 @@ public class ControlMultiSymbolEditPart extends CommonMultiSymbolEditPart {
         markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
         return figure;
     }
-    
+
     /**
      * Configures a listener for performing a {@link AbstractWidgetActionModel}.
-     * 
+     *
      * @param figure The figure of the widget
      */
     private void configureButtonListener(final ControlMultiSymbolFigure figure) {
@@ -67,7 +67,7 @@ public class ControlMultiSymbolEditPart extends CommonMultiSymbolEditPart {
             }
         });
     }
-    
+
     /**
      * Registers property change handlers for the properties defined in
      * {@link AbstractBoolWidgetModel}. This method is provided for the

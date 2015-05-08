@@ -38,15 +38,15 @@ import org.eclipse.swt.widgets.Display;
  *
  */
 public class ProgressBarFigure extends AbstractLinearMarkedFigure {
-    
+
     private Color fillColor = BLUE_COLOR;
     private Color fillBackgroundColor = GRAY_COLOR;
-    
+
     private boolean effect3D = true;
-    private boolean horizontal = false; 
-    
-    private boolean indicatorMode = false;    
-    
+    private boolean horizontal = false;
+
+    private boolean indicatorMode = false;
+
     private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
             CustomMediaFactory.COLOR_WHITE);
     //border color for track and thumb
@@ -58,52 +58,52 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 
     private Track track;
     private Label label;
-    
+
     private Thumb thumb;
 
-    private double origin = 0; //the start point of the bar.    
-    
+    private double origin = 0; //the start point of the bar.
+
     private boolean originIgnored;
-    
+
     public ProgressBarFigure() {
-        
+
         super();
         scale.setScaleLineVisible(false);
         scale.setTickLableSide(LabelSide.Secondary);
-        
+
         if(horizontal) {
             ((LinearScale)scale).setOrientation(Orientation.HORIZONTAL);
-            scale.setTickLableSide(LabelSide.Primary);        
-            marker.setLabelSide(LabelSide.Secondary);            
+            scale.setTickLableSide(LabelSide.Primary);
+            marker.setLabelSide(LabelSide.Secondary);
         }else {
             ((LinearScale)scale).setOrientation(Orientation.VERTICAL);
-            scale.setTickLableSide(LabelSide.Primary);        
-            marker.setLabelSide(LabelSide.Secondary);    
-        }        
-        
-        track = new Track();        
+            scale.setTickLableSide(LabelSide.Primary);
+            marker.setLabelSide(LabelSide.Secondary);
+        }
+
+        track = new Track();
 
         label = new Label();
-        label.setOpaque(false);        
-        
+        label.setOpaque(false);
+
         thumb = new Thumb();
         thumb.setVisible(indicatorMode);
-        
+
         setLayoutManager(new ProgressBarLayout());
         add(scale, ProgressBarLayout.SCALE);
         add(marker, ProgressBarLayout.MARKERS);
         add(track, ProgressBarLayout.TRACK);
         add(thumb, ProgressBarLayout.THUMB);
         add(label, ProgressBarLayout.LABEL);
-    
-        addFigureListener(new FigureListener() {            
+
+        addFigureListener(new FigureListener() {
             public void figureMoved(IFigure source) {
-                revalidate();                
+                revalidate();
             }
-        });    
+        });
     }
-    
-    
+
+
 
     /**
      * @return the fillBackgroundColor
@@ -111,21 +111,21 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
     public Color getFillBackgroundColor() {
         return fillBackgroundColor;
     }
-    
+
     /**
      * @return the fillColor
      */
     public Color getFillColor() {
         return fillColor;
     }
-    
+
     /**
      * @return the origin
      */
     public double getOrigin() {
         return origin;
     }
-    
+
     /**
      * @return the effect3D
      */
@@ -159,7 +159,7 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
         return originIgnored;
     }
 
-    
+
     /**
      * @param effect3D the effect3D to set
      */
@@ -174,9 +174,9 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
     public void setEnabled(boolean value) {
         super.setEnabled(value);
         repaint();
-        
+
     }
-    
+
 
 
     /**
@@ -188,7 +188,7 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
         this.fillBackgroundColor = fillBackgroundColor;
         repaint();
     }
-    
+
     /**
      * @param fillColor the fillColor to set
      */
@@ -199,8 +199,8 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
         repaint();
     }
 
-    
-    
+
+
     /**
      * @param horizontal the horizontal to set
      */
@@ -210,16 +210,16 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
         this.horizontal = horizontal;
         if(horizontal) {
             ((LinearScale)scale).setOrientation(Orientation.HORIZONTAL);
-            scale.setTickLableSide(LabelSide.Primary);        
-            marker.setLabelSide(LabelSide.Secondary);            
+            scale.setTickLableSide(LabelSide.Primary);
+            marker.setLabelSide(LabelSide.Secondary);
         }else {
             ((LinearScale)scale).setOrientation(Orientation.VERTICAL);
-            scale.setTickLableSide(LabelSide.Primary);        
-            marker.setLabelSide(LabelSide.Secondary);    
-        }        
+            scale.setTickLableSide(LabelSide.Primary);
+            marker.setLabelSide(LabelSide.Secondary);
+        }
         revalidate();
     }
-    
+
     public void setIndicatorMode(boolean indicatorMode) {
         if(this.indicatorMode == indicatorMode)
             return;
@@ -229,15 +229,15 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
         repaint();
     }
 
-    public void setOrigin(double origin) {    
+    public void setOrigin(double origin) {
         if(this.origin == origin)
             return;
         this.origin = origin;
         repaint();
     }
-    
-    
-    
+
+
+
     public void setOriginIgnored(boolean originIgnored) {
         if(this.originIgnored == originIgnored)
             return;
@@ -245,34 +245,34 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
         repaint();
     }
 
-    
+
     @Override
     public void setRange(double min, double max) {
         super.setRange(min, max);
         updateLabelText();
     }
 
-    
+
     public void setShowLabel(boolean visible){
         label.setVisible(visible);
         repaint();
     }
-    
+
     @Override
     public void setValue(double value) {
         super.setValue(value);
         updateLabelText();
         revalidate();
     }
-        
-    
+
+
     /**
      * Update the text of the label.
      */
     private void updateLabelText() {
         label.setText(getValueText());
     }
-    
+
     class Thumb extends Polygon {
         public static final  int LENGTH = 20;
         public static final int BREADTH = 13;
@@ -280,26 +280,26 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
                 0,0,  0, BREADTH,  LENGTH*4/5, BREADTH,  LENGTH, BREADTH/2,
                 LENGTH*4/5, 0}) ;
         public final PointList verticalThumbPointList = new PointList(new int[] {
-                0,0,  0, LENGTH*4/5, BREADTH/2, LENGTH, BREADTH, LENGTH*4/5, BREADTH,  
+                0,0,  0, LENGTH*4/5, BREADTH/2, LENGTH, BREADTH, LENGTH*4/5, BREADTH,
                 0}) ;
-            
+
         public Thumb() {
             super();
             //setOutline(true);
             setFill(true);
             setForegroundColor(GRAY_COLOR);
-            setLineWidth(1);        
+            setLineWidth(1);
         }
-        
+
         @Override
-        protected void fillShape(Graphics g) {    
+        protected void fillShape(Graphics g) {
             g.setAntialias(SWT.ON);
             g.setClip(new Rectangle(getBounds().x, getBounds().y, getBounds().width, getBounds().height));
             g.setBackgroundColor(WHITE_COLOR);
             super.fillShape(g);
             Point leftPoint = getPoints().getPoint(0);
             Point rightPoint;
-            //if(horizontal) 
+            //if(horizontal)
                 rightPoint = getPoints().getPoint(2);
             //else
             //    rightPoint = getPoints().getPoint(1);//.translate(0, -BREADTH/2);
@@ -308,31 +308,31 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
             setOutline(effect3D && support3D);
             if(effect3D && support3D) {
                 thumbPattern = GraphicsUtil.createScaledPattern(g, Display.getCurrent(),
-                    leftPoint.x, leftPoint.y, rightPoint.x, rightPoint.y, WHITE_COLOR, 0, 
+                    leftPoint.x, leftPoint.y, rightPoint.x, rightPoint.y, WHITE_COLOR, 0,
                     fillColor, 255);
-                g.setBackgroundPattern(thumbPattern);        
+                g.setBackgroundPattern(thumbPattern);
             }else
                 g.setBackgroundColor(fillColor);
-                
+
             g.fillPolygon(getPoints());
-            
+
             if(effect3D && support3D)
                 thumbPattern.dispose();
-                    
+
         }
     }
 
-    class Track extends RectangleFigure {        
+    class Track extends RectangleFigure {
         public Track() {
             super();
             setForegroundColor(GRAY_COLOR);
             setOutline(false);
-        }    
-    
+        }
+
         @Override
-        protected void fillShape(Graphics graphics) {        
-            
-            graphics.setAntialias(SWT.ON);            
+        protected void fillShape(Graphics graphics) {
+
+            graphics.setAntialias(SWT.ON);
             int valuePosition = ((LinearScale) scale).getValuePosition(getCoercedValue(), false);
             double tempOrigin;
             if(originIgnored)
@@ -340,14 +340,14 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
             else
                 tempOrigin = origin;
             int originPosition = ((LinearScale) scale).getValuePosition(tempOrigin, false);
-            int fillLength = valuePosition - originPosition;            
+            int fillLength = valuePosition - originPosition;
 
             boolean support3D = GraphicsUtil.testPatternSupported(graphics);
-            if(effect3D && support3D) {        
+            if(effect3D && support3D) {
                 //fill background
                 graphics.setBackgroundColor(fillBackgroundColor);
                 super.fillShape(graphics);
-                Pattern backGroundPattern; 
+                Pattern backGroundPattern;
                 if(horizontal)
                     backGroundPattern= GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
                         bounds.x, bounds.y,
@@ -362,9 +362,9 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
                         fillBackgroundColor, 0);
                 graphics.setBackgroundPattern(backGroundPattern);
                 super.fillShape(graphics);
-                
+
                 backGroundPattern.dispose();
-                
+
                 //fill value
                 if(!indicatorMode){
                     if(horizontal)
@@ -379,7 +379,7 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
                             bounds.x + bounds.width, bounds.y,
                             WHITE_COLOR, 255,
                             fillColor, 0);
-                    
+
                     graphics.setBackgroundColor(fillColor);
                     graphics.setForegroundColor(fillColor);
                     if(horizontal){
@@ -387,39 +387,39 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
                             bounds.y + 1, fillLength, bounds.height-2) ;
                         graphics.fillRectangle(valueRectangle);
                         graphics.setBackgroundPattern(backGroundPattern);
-                        graphics.fillRectangle(valueRectangle);                    
-                        
+                        graphics.fillRectangle(valueRectangle);
+
                     }else {
                         Rectangle valueRectangle = new Rectangle(bounds.x +1,
                                 originPosition, bounds.width-2, fillLength);
                         graphics.fillRectangle(valueRectangle);
                         graphics.setBackgroundPattern(backGroundPattern);
                         graphics.fillRectangle(valueRectangle);
-    
-                    }        
+
+                    }
                     backGroundPattern.dispose();
                 }
-                
+
                 graphics.setForegroundColor(GRAY_COLOR);
                 outlineShape(graphics);
-                
-                
-                
+
+
+
             }else {
                 graphics.setBackgroundColor(fillBackgroundColor);
                 if(!indicatorMode){
                     if(horizontal){
                         graphics.fillRectangle(
-                                bounds.x, bounds.y, bounds.width-getLineWidth(), bounds.height);            
+                                bounds.x, bounds.y, bounds.width-getLineWidth(), bounds.height);
                         graphics.setBackgroundColor(fillColor);
                         graphics.fillRectangle(new Rectangle(originPosition,
-                                bounds.y,                         
-                                fillLength, 
+                                bounds.y,
+                                fillLength,
                                 bounds.height));
                     }
                     else {
                         graphics.fillRectangle(
-                                bounds.x, bounds.y, bounds.width, bounds.height-getLineWidth());            
+                                bounds.x, bounds.y, bounds.width, bounds.height-getLineWidth());
                         graphics.setBackgroundColor(fillColor);
                         graphics.fillRectangle(new Rectangle(bounds.x,
                                 originPosition,
@@ -428,19 +428,19 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
                     }
                 }else
                     graphics.fillRectangle(getBounds());
-                
+
 //                graphics.setForegroundColor(outlineColor);
 //                graphics.setForegroundColor(GRAY_COLOR);
 //                outlineShape(graphics);
-            }            
-        }        
+            }
+        }
     }
 
     class ProgressBarLayout extends AbstractLayout {
-        
-    
+
+
         private static final int ADDITIONAL_MARGIN = 1;
-        
+
         /** Used as a constraint for the scale. */
         public static final String SCALE = "scale";   //$NON-NLS-1$
         /** Used as a constraint for the pipe indicator. */
@@ -451,14 +451,14 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
         public static final String THUMB = "thumb";      //$NON-NLS-1$
         /** Used as a constraint for the label */
         public static final String LABEL = "label";      //$NON-NLS-1$
-    
+
         private LinearScale scale;
         private LinearScaledMarker marker;
         private Track track;
         private Label label;
         private Thumb thumb;
-    
-        
+
+
         @Override
         protected Dimension calculatePreferredSize(IFigure container, int w,
                 int h) {
@@ -467,9 +467,9 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
             d.expand(insets.getWidth(), insets.getHeight());
             return d;
         }
-        
+
         private void horizontalLayout(IFigure container) {
-            Rectangle area = container.getClientArea().getCopy();        
+            Rectangle area = container.getClientArea().getCopy();
             area.x += ADDITIONAL_MARGIN;
             area.width -= 2*ADDITIONAL_MARGIN;
             Dimension scaleSize = new Dimension(0, 0);
@@ -478,32 +478,32 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
             if(scale != null) {
                 if(scale.isVisible()){
                     scaleSize = scale.getPreferredSize(area.width, -1);
-                    scale.setBounds(new Rectangle(area.x, 
-                        area.y + area.height - scaleSize.height, 
+                    scale.setBounds(new Rectangle(area.x,
+                        area.y + area.height - scaleSize.height,
                         scaleSize.width, scaleSize.height));
                     scaleSize.height +=ADDITIONAL_MARGIN;
                 }else{
 //                    scaleSize = scale.getPreferredSize(area.width+2*scale.getMargin(), -1);
                     scaleSize.width=area.width+2*scale.getMargin();
                     scaleSize.height=0;
-                    scale.setBounds(new Rectangle(area.x - scale.getMargin(), 
-                            area.y + area.height - scaleSize.height, 
+                    scale.setBounds(new Rectangle(area.x - scale.getMargin(),
+                            area.y + area.height - scaleSize.height,
                             scaleSize.width, scaleSize.height));
                     scaleSize.width = 0;
 //                    scaleSize.height = 0;
                 }
-                                    
+
             }
-            
+
             if(marker != null && marker.isVisible()) {
                 markerSize = marker.getPreferredSize();
                 marker.setBounds(new Rectangle(marker.getScale().getBounds().x,
                         area.y,
-                        markerSize.width, markerSize.height));            
+                        markerSize.width, markerSize.height));
             }
-            
+
             if(track != null) {
-                trackBounds = new Rectangle(    
+                trackBounds = new Rectangle(
                         scale.getValuePosition(scale.getRange().getLower(), false),
                         area.y + markerSize.height,
                         scale.getTickLength()+ track.getLineWidth(),
@@ -521,22 +521,22 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
                         );
                 thumb.setPoints(newPointList);
             }
-            if(label != null) {    
+            if(label != null) {
                 Dimension labelSize = label.getPreferredSize();
-                label.setBounds(new Rectangle(trackBounds.x + trackBounds.width/2 - labelSize.width/2, 
+                label.setBounds(new Rectangle(trackBounds.x + trackBounds.width/2 - labelSize.width/2,
                         trackBounds.y + trackBounds.height/2 - labelSize.height/2,
                         labelSize.width, labelSize.height));
             }
         }
-    
+
         public void layout(IFigure container) {
             if(horizontal)
                 horizontalLayout(container);
             else
                 verticalLayout(container);
         }
-        
-        
+
+
         @Override
         public void setConstraint(IFigure child, Object constraint) {
             if(constraint.equals(SCALE))
@@ -550,9 +550,9 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
             else if (constraint.equals(LABEL))
                 label = (Label) child;
         }
-    
+
         private void verticalLayout(IFigure container) {
-            Rectangle area = container.getClientArea().getCopy();        
+            Rectangle area = container.getClientArea().getCopy();
             area.y += ADDITIONAL_MARGIN;
             area.height -= 2*ADDITIONAL_MARGIN;
             Dimension scaleSize = new Dimension(0, 0);
@@ -561,38 +561,38 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
             if(scale != null) {
                 if(scale.isVisible()){
                     scaleSize = scale.getPreferredSize(-1, area.height);
-                    scale.setBounds(new Rectangle(area.x + ADDITIONAL_MARGIN, 
-                        area.y, 
+                    scale.setBounds(new Rectangle(area.x + ADDITIONAL_MARGIN,
+                        area.y,
                         scaleSize.width, scaleSize.height));
                     scaleSize.width += ADDITIONAL_MARGIN;
                 }else{
 //                    scaleSize = scale.getPreferredSize(-1, area.height+2*scale.getMargin());
                     scaleSize.width = 0;
                     scaleSize.height = area.height+2*scale.getMargin();
-                    scale.setBounds(new Rectangle(area.x, 
-                        area.y-scale.getMargin(), 
+                    scale.setBounds(new Rectangle(area.x,
+                        area.y-scale.getMargin(),
                         scaleSize.width, scaleSize.height));
                     scaleSize.height = 0;
                 }
-                                    
+
             }
-            
+
             if(marker != null && marker.isVisible()) {
                 markerSize = marker.getPreferredSize();
                 marker.setBounds(new Rectangle(area.x + area.width - markerSize.width - ADDITIONAL_MARGIN,
                         marker.getScale().getBounds().y,
-                        markerSize.width, markerSize.height));            
+                        markerSize.width, markerSize.height));
             }
-            
+
             if(track != null) {
-                trackBounds = new Rectangle(    
+                trackBounds = new Rectangle(
                     area.x + scaleSize.width,
                     scale.getValuePosition(scale.getRange().getUpper(), false),
-                    area.width -markerSize.width - scaleSize.width, 
-                    scale.getTickLength()+ track.getLineWidth());        
+                    area.width -markerSize.width - scaleSize.width,
+                    scale.getTickLength()+ track.getLineWidth());
                 track.setBounds(trackBounds);
             }
-            if(thumb != null && thumb.isVisible()) {    
+            if(thumb != null && thumb.isVisible()) {
                 int h = track.getBounds().width;
                 int b = Thumb.BREADTH;
                 PointList newPointList = new PointList(new int[]{
@@ -602,14 +602,14 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
                         scale.getValuePosition(getCoercedValue(), false) - Thumb.BREADTH/2);
                 thumb.setPoints(newPointList);
             }
-            if(label != null && label.isVisible()) {    
+            if(label != null && label.isVisible()) {
                 Dimension labelSize = label.getPreferredSize();
-                label.setBounds(new Rectangle(trackBounds.x + trackBounds.width/2 - labelSize.width/2, 
+                label.setBounds(new Rectangle(trackBounds.x + trackBounds.width/2 - labelSize.width/2,
                         trackBounds.y + trackBounds.height/2 - labelSize.height/2,
                         labelSize.width, labelSize.height));
             }
         }
-    
+
     }
 }
 

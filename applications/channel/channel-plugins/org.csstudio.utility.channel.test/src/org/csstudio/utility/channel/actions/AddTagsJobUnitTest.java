@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.channel.actions;
 
@@ -22,7 +22,7 @@ import org.junit.Test;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class AddTagsJobUnitTest {
 

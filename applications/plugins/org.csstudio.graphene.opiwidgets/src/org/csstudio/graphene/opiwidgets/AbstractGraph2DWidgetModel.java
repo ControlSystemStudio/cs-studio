@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene.opiwidgets;
 
@@ -16,10 +16,10 @@ import static org.csstudio.graphene.opiwidgets.ModelPropertyConstants.*;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public abstract class AbstractGraph2DWidgetModel extends AbstractSelectionWidgetModel {
-    
+
     public AbstractGraph2DWidgetModel(AbstractSelectionWidgetModelDescription model) {
         super(model);
     }
@@ -36,7 +36,7 @@ public abstract class AbstractGraph2DWidgetModel extends AbstractSelectionWidget
         addProperty(new AxisRangeProperty(PROP_Y_AXIS_RANGE,
                 "Y axis range", WidgetPropertyCategory.Basic, AxisRanges.display()));
     }
-    
+
     protected abstract String getDataType();
 
     public String getDataFormula() {
@@ -47,11 +47,11 @@ public abstract class AbstractGraph2DWidgetModel extends AbstractSelectionWidget
     public boolean isResizableAxis() {
         return getCastedPropertyValue(PROP_RESIZABLE_AXIS);
     }
-    
+
     public AxisRange getXAxisRange() {
         return (AxisRange) getCastedPropertyValue(PROP_X_AXIS_RANGE);
     }
-    
+
     public AxisRange getYAxisRange() {
         return (AxisRange) getCastedPropertyValue(PROP_Y_AXIS_RANGE);
     }

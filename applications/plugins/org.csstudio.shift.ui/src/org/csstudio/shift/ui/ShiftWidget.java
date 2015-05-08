@@ -34,9 +34,9 @@ import org.eclipse.swt.widgets.Text;
 public class ShiftWidget extends Composite {
 
     private boolean editable;
-    
+
     // Model
-    private ShiftBuilder shiftBuilder; 
+    private ShiftBuilder shiftBuilder;
 
     private ShiftClient shiftClient;
     private List<String> types = Collections.emptyList();
@@ -70,7 +70,7 @@ public class ShiftWidget extends Composite {
     private Text owner;
 
     private boolean extraFieldsEditable;
-    
+
     public void addPropertyChangeListener(final PropertyChangeListener listener) {
         changeSupport.addPropertyChangeListener(listener);
     }
@@ -81,9 +81,9 @@ public class ShiftWidget extends Composite {
 
     public ShiftWidget(final Composite parent, int style, final boolean editable, final boolean extraFieldsEditable) {
         super(parent, style);
-        
+
         this.shiftBuilder = ShiftBuilder.withType(defaultText);
-                
+
         this.editable = editable;
         this.extraFieldsEditable = extraFieldsEditable;
         final GridLayout gridLayout = new GridLayout(1, false);
@@ -96,7 +96,7 @@ public class ShiftWidget extends Composite {
         errorBar = new ErrorBar(this, SWT.NONE);
 
         composite = new Composite(this, SWT.NONE | SWT.DOUBLE_BUFFERED);
-        
+
         final GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
         gd_composite.heightHint = 638;
         composite.setLayoutData(gd_composite);
@@ -114,15 +114,15 @@ public class ShiftWidget extends Composite {
         lblNewLabel = new Label(composite, SWT.NONE);
         lblNewLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         lblNewLabel.setText("Type:");
-        
+
         type = new Combo(composite, SWT.READ_ONLY);
         type.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        
+
 
         lblStatus = new Label(composite, SWT.NONE);
         lblStatus.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         lblStatus.setText("Status:");
-        
+
         status = new Text(composite, SWT.NONE);
         status.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 4, 1));
         status.setEditable(false);
@@ -134,11 +134,11 @@ public class ShiftWidget extends Composite {
                 }
             }
         });
-        
+
         lblOwner = new Label(composite, SWT.NONE);
         lblOwner.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
         lblOwner.setText("Owner:");
-        
+
         owner = new Text(composite, SWT.BORDER);
         owner.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
         owner.setEditable(editable);
@@ -150,7 +150,7 @@ public class ShiftWidget extends Composite {
                 }
             }
         });
-        
+
         text = new Text(composite, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED | SWT.V_SCROLL);
         text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 5, 1));
         text.setEditable(extraFieldsEditable);
@@ -162,11 +162,11 @@ public class ShiftWidget extends Composite {
                 }
             }
         });
-        
+
         lblLeadOperator = new Label(composite, SWT.NONE);
         lblLeadOperator.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
         lblLeadOperator.setText("Lead Operator:");
-        
+
         leadOperator = new Text(composite, SWT.BORDER);
         leadOperator.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
         leadOperator.setEditable(editable);
@@ -178,11 +178,11 @@ public class ShiftWidget extends Composite {
                 }
             }
         });
-        
+
         lblShiftPersonal = new Label(composite, SWT.NONE);
         lblShiftPersonal.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
         lblShiftPersonal.setText("Personal on Shift:");
-        
+
         shiftPersonal = new Text(composite, SWT.BORDER);
         shiftPersonal.setEditable(extraFieldsEditable);
         shiftPersonal.addKeyListener(new KeyAdapter() {
@@ -192,13 +192,13 @@ public class ShiftWidget extends Composite {
                     shiftPersonal.getParent().layout();
                 }
             }
-        });        
+        });
         shiftPersonal.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
-        
+
         final Label lblReport = new Label(composite, SWT.NONE);
         lblReport.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
         lblReport.setText("Report:");
-        
+
         report = new Text(composite, SWT.BORDER);
         report.setEditable(extraFieldsEditable);
         report.addKeyListener(new KeyAdapter() {
@@ -210,8 +210,8 @@ public class ShiftWidget extends Composite {
             }
         });
         report.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
-        
-        final AtomicReference<PropertyChangeEvent> eventRef = new AtomicReference<PropertyChangeEvent>();          
+
+        final AtomicReference<PropertyChangeEvent> eventRef = new AtomicReference<PropertyChangeEvent>();
         this.addPropertyChangeListener(new PropertyChangeListener() {
 
         @Override
@@ -247,12 +247,12 @@ public class ShiftWidget extends Composite {
             @Override
             public void run() {
             if (shiftClient != null) {
-                try {                
+                try {
                 types = new ArrayList<String>();
                 for(Type type : shiftClient.listTypes()) {
                     types.add(type.getName());
                 }
-               
+
                 getDisplay().asyncExec(new Runnable() {
 
                     @Override
@@ -268,7 +268,7 @@ public class ShiftWidget extends Composite {
         };
         Executors.newCachedThreadPool().execute(initialize);
     }
-    
+
     private void updateUI() {
         Shift shift = null;
         try {
@@ -279,9 +279,9 @@ public class ShiftWidget extends Composite {
         if (shift != null) {
             // Show the shift
             text.setText(shift.getDescription() == null ? defaultText : shift.getDescription());
-            owner.setText(shift.getOwner() == null ? defaultText : shift.getOwner());        
-            leadOperator.setText(shift.getLeadOperator() == null ? defaultText : shift.getLeadOperator());        
-            shiftPersonal.setText(shift.getOnShiftPersonal() == null ? defaultText : shift.getOnShiftPersonal());        
+            owner.setText(shift.getOwner() == null ? defaultText : shift.getOwner());
+            leadOperator.setText(shift.getLeadOperator() == null ? defaultText : shift.getLeadOperator());
+            shiftPersonal.setText(shift.getOnShiftPersonal() == null ? defaultText : shift.getOnShiftPersonal());
             report.setText(shift.getReport() == null ? defaultText : shift.getReport());
             status.setText(shift.getStatus() == null ? "New" : shift.getStatus());
             if(!type.getItems().equals(types)){

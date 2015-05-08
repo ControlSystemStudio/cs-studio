@@ -8,7 +8,7 @@ public class MultiLineEmbeddedCParser extends
         AbstractDefaultStatementParser<MultiLineEmbeddedCNode> {
 
     // public static String findNextMultiLineEmbeddedC(final String input) {
-    //        
+    //
     // String prePatternString = "([\n\r]+\\s*\\}%\\s*[\n\r]+)";
     // Pattern prePattern = Pattern.compile(prePatternString);
     // Matcher preMatcher = prePattern.matcher(input);

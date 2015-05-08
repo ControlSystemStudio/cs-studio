@@ -32,7 +32,7 @@ public class ArchiveVEnum extends ArchiveVType implements VEnum
         this.labels = labels;
         this.index = index;
     }
-    
+
     @Override
     public List<String> getLabels()
     {
@@ -93,7 +93,7 @@ public class ArchiveVEnum extends ArchiveVType implements VEnum
         return false;
     }
 
-    
+
     @Override
     public String toString()
     {

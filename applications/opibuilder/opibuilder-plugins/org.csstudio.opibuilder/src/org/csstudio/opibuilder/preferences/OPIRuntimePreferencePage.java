@@ -35,25 +35,25 @@ public class OPIRuntimePreferencePage extends FieldEditorPreferencePage
 
     // private static final String RESTART_MESSAGE = "Changes only takes effect after restart.";
     private static final String RESTART_MESSAGE = "Changes only takes effect after restart.";
-    
+
     private String wrongMacroName = "";
 
     private StringTableFieldEditor macrosEditor;
-    
+
     public OPIRuntimePreferencePage() {
         super(FieldEditorPreferencePage.GRID);
         setPreferenceStore(OPIBuilderPlugin.getDefault().getPreferenceStore());
-        setMessage("OPI Runtime Preferences");        
+        setMessage("OPI Runtime Preferences");
     }
 
     @Override
     protected void createFieldEditors() {
         final Composite parent = getFieldEditorParent();
-        
+
         macrosEditor = new StringTableFieldEditor(
-                PreferencesHelper.RUN_MACROS, "Macros: " , parent, new String[]{"Name", "Value"}, 
+                PreferencesHelper.RUN_MACROS, "Macros: " , parent, new String[]{"Name", "Value"},
                 new boolean[]{true, true}, new MacroEditDialog(parent.getShell()), new int[]{120, 120}){
-            
+
             @Override
             public boolean isValid() {
                 String reason;
@@ -66,15 +66,15 @@ public class OPIRuntimePreferencePage extends FieldEditorPreferencePage
                 }
                 return true;
             }
-            
-            
+
+
             @Override
             protected void doStore() {
                 if(!isValid())
                     return;
                 super.doStore();
             }
-            
+
             @Override
             protected void doFillIntoGrid(Composite parent,
                             int numColumns) {
@@ -87,94 +87,94 @@ public class OPIRuntimePreferencePage extends FieldEditorPreferencePage
                     }
                 });
                 tableEditor.getTableViewer().getTable().addFocusListener(new FocusListener() {
-                            
+
                     public void focusLost(FocusEvent e) {
                         boolean valid = isValid();
                         fireStateChanged(IS_VALID, !valid, valid);                            }
-                            
+
                     public void focusGained(FocusEvent e) {
                         boolean valid = isValid();
                         fireStateChanged(IS_VALID, !valid, valid);                            }
                 });
             }
-                    
+
         };
         addField(macrosEditor);
-            
-        IntegerFieldEditor guiRefreshCycleEditor = 
+
+        IntegerFieldEditor guiRefreshCycleEditor =
             new IntegerFieldEditor(PreferencesHelper.OPI_GUI_REFRESH_CYCLE,
                     "OPI GUI Refresh Cycle (ms)", parent);
         guiRefreshCycleEditor.setValidRange(10, 5000);
         guiRefreshCycleEditor.getTextControl(parent).setToolTipText(
                 "The fastest refresh cycle for OPI GUI in millisecond");
-        addField(guiRefreshCycleEditor);    
-            
-        IntegerFieldEditor pulsingMinorPeriodFieldEditor = 
-                new IntegerFieldEditor(PreferencesHelper.PULSING_ALARM_MINOR_PERIOD, 
+        addField(guiRefreshCycleEditor);
+
+        IntegerFieldEditor pulsingMinorPeriodFieldEditor =
+                new IntegerFieldEditor(PreferencesHelper.PULSING_ALARM_MINOR_PERIOD,
                         "Time period of MINOR alarm if pulsing alarm selected (ms)", parent);
         pulsingMinorPeriodFieldEditor.setValidRange(100, 10000);
         pulsingMinorPeriodFieldEditor.getTextControl(parent).setToolTipText(
                     "If the pulsing alarm box is checked for a widget that monitors a PV, " +
                     "then what is the time period of the pulse with the PV is in MINOR alarm severity");
-        addField(pulsingMinorPeriodFieldEditor);        
-        
-        IntegerFieldEditor pulsingMajorPeriodFieldEditor = 
-                new IntegerFieldEditor(PreferencesHelper.PULSING_ALARM_MAJOR_PERIOD, 
+        addField(pulsingMinorPeriodFieldEditor);
+
+        IntegerFieldEditor pulsingMajorPeriodFieldEditor =
+                new IntegerFieldEditor(PreferencesHelper.PULSING_ALARM_MAJOR_PERIOD,
                         "Time period of MINOR alarm if pulsing alarm selected (ms)", parent);
-        pulsingMajorPeriodFieldEditor.setValidRange(100, 10000);        
+        pulsingMajorPeriodFieldEditor.setValidRange(100, 10000);
         pulsingMajorPeriodFieldEditor.getTextControl(parent).setToolTipText(
                     "If the pulsing alarm box is checked for a widget that monitors a PV, " +
                     "then what is the time period of the pulse with the PV is in MINOR alarm severity");
-        addField(pulsingMajorPeriodFieldEditor);        
-        
+        addField(pulsingMajorPeriodFieldEditor);
+
         String[] allPVFactories = SimplePVLayer.getAllPVFactoryExtensions();
         String[][] entries = new String[allPVFactories.length][2];
         for(int i=0; i<allPVFactories.length; i++){
             entries[i][0]=allPVFactories[i];
-            entries[i][1]=allPVFactories[i];            
+            entries[i][1]=allPVFactories[i];
         }
-        ComboFieldEditor pvConnectionLayerEditor = 
-                new ComboFieldEditor(PreferencesHelper.PV_CONNECTION_LAYER, 
-                        "PV Connection Layer", entries, parent);                
+        ComboFieldEditor pvConnectionLayerEditor =
+                new ComboFieldEditor(PreferencesHelper.PV_CONNECTION_LAYER,
+                        "PV Connection Layer", entries, parent);
         addField(pvConnectionLayerEditor);
-        
-        ComboFieldEditor popupConsoleEditor = 
-            new ComboFieldEditor(PreferencesHelper.POPUP_CONSOLE, 
+
+        ComboFieldEditor popupConsoleEditor =
+            new ComboFieldEditor(PreferencesHelper.POPUP_CONSOLE,
                     "Console Popup Level", new String[][]{
                     {"Error, Warning and Info", ConsolePopupLevel.ALL.toString()},
                     {"Only Info", ConsolePopupLevel.ONLY_INFO.toString()},
-                    {"Don't Popup", ConsolePopupLevel.NO_POP.toString()}}, parent);                
+                    {"Don't Popup", ConsolePopupLevel.NO_POP.toString()}}, parent);
         addField(popupConsoleEditor);
-                
-        StringFieldEditor pythonPathEditor = 
+
+        StringFieldEditor pythonPathEditor =
             new StringFieldEditor(PreferencesHelper.PYTHON_PATH, "PYTHONPATH", parent);
         pythonPathEditor.getTextControl(parent).setToolTipText("The path to search python modules");
         addField(pythonPathEditor);
-        
+
         BooleanFieldEditor showCompactModeDialogEditor =
-            new BooleanFieldEditor(PreferencesHelper.SHOW_COMPACT_MODE_DIALOG, 
+            new BooleanFieldEditor(PreferencesHelper.SHOW_COMPACT_MODE_DIALOG,
                     "Show tip dialog about how to exit compact mode", parent);
         addField(showCompactModeDialogEditor);
-        
+
         BooleanFieldEditor showFullScreenDialogEditor =
-            new BooleanFieldEditor(PreferencesHelper.SHOW_FULLSCREEN_DIALOG, 
+            new BooleanFieldEditor(PreferencesHelper.SHOW_FULLSCREEN_DIALOG,
                     "Show tip dialog about how to exit fullscreen", parent);
         addField(showFullScreenDialogEditor);
-        
+
         BooleanFieldEditor startWindowInCompactEditor =
-            new BooleanFieldEditor(PreferencesHelper.START_WINDOW_IN_COMPACT_MODE, 
+            new BooleanFieldEditor(PreferencesHelper.START_WINDOW_IN_COMPACT_MODE,
                     "Start application window in compact mode.", parent);
         addField(startWindowInCompactEditor);
         BooleanFieldEditor showOPIRuntimePerspectiveDialogEditor =
-                new BooleanFieldEditor(PreferencesHelper.SHOW_OPI_RUNTIME_PERSPECTIVE_DIALOG, 
+                new BooleanFieldEditor(PreferencesHelper.SHOW_OPI_RUNTIME_PERSPECTIVE_DIALOG,
                         "Show dialog asking about switching to OPI Runtime perspective before opening OPI in view", parent);
         addField(showOPIRuntimePerspectiveDialogEditor);
     }
 
     public void init(IWorkbench workbench) {
-        
+
     }
-    
+
     @Override
     public void propertyChange(PropertyChangeEvent event) {
         super.propertyChange(event);
@@ -191,7 +191,7 @@ public class OPIRuntimePreferencePage extends FieldEditorPreferencePage
             }
         }
     }
-    
+
     @Override
     public boolean performOk() {
         macrosEditor.tableEditor.getTableViewer().getTable().forceFocus();
@@ -199,5 +199,5 @@ public class OPIRuntimePreferencePage extends FieldEditorPreferencePage
             return false;
         return super.performOk();
     }
-    
+
 }

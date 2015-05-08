@@ -13,11 +13,11 @@ public class ConnectionDeleteCommand extends Command {
 /** Connection instance to disconnect. */
 private final WhenConnection connection;
 
-/** 
+/**
  * Create a command that will disconnect a connection from its endpoints.
  * @param conn the connection instance to disconnect (non-null)
  * @throws IllegalArgumentException if conn is null
- */ 
+ */
 public ConnectionDeleteCommand(final WhenConnection conn) {
     if (conn == null) {
         throw new IllegalArgumentException();

@@ -46,7 +46,7 @@ public abstract class AbstractDefaultStatementParser<N extends AbstractScriptNod
     /**
      * Will be called if the pre-matcher and the matcher has found a possible
      * matching element.
-     * 
+     *
      * @param preMatcher
      * @param mainMatcher
      */

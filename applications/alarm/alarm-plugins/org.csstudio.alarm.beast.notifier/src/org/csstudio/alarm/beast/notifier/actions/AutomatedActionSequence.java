@@ -27,7 +27,7 @@ public class AutomatedActionSequence implements IAutomatedAction {
     public void add(IAutomatedAction action) {
         actions.add(action);
     }
-    
+
     public int size() {
         return actions.size();
     }

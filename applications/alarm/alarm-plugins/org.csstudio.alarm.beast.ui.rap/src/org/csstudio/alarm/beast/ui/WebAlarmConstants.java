@@ -2,7 +2,7 @@ package org.csstudio.alarm.beast.ui;
 
 /**
  * WebDataBrowser constants.
- * 
+ *
  * @author Davy Dequidt
  */
 public class WebAlarmConstants {

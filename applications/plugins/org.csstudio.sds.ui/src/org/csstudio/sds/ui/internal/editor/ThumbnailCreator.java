@@ -73,11 +73,11 @@ public class ThumbnailCreator {
             IFigure figure = getLightweightSystem().getRootFigure();
 
             Rectangle bounds = figure.getBounds();
-            
+
             double factor = Math.min(
                     (double) thumbSize / (double) bounds.width,
                     (double) thumbSize / (double) bounds.height);
-            
+
             Image image = new Image(Display.getCurrent(),
                     (int) Math.ceil((double) bounds.width * factor),
                     (int) Math.ceil((double) bounds.height * factor));
@@ -96,22 +96,22 @@ public class ThumbnailCreator {
         }
 
     }
-    
+
     private static class NoBorderWidgetEditPartFactory extends WidgetEditPartFactory {
 
         public NoBorderWidgetEditPartFactory(ExecutionMode executionMode) {
             super(executionMode);
         }
-        
+
         @Override
         public EditPart createEditPart(EditPart context, Object modelElement) {
-            EditPart result = super.createEditPart(context, modelElement); 
-            
+            EditPart result = super.createEditPart(context, modelElement);
+
             if(modelElement instanceof DisplayModel) {
                 ((DisplayEditPart)result).setExecutionMode(ExecutionMode.RUN_MODE);
             }
             return result;
         }
-        
+
     }
 }

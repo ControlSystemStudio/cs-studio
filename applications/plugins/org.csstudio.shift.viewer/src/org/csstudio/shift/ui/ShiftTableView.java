@@ -43,8 +43,8 @@ import org.epics.util.time.TimeParser;
 
 /**
  * A view to search for shifts and then display them in a tabluar form
- * 
- * 
+ *
+ *
  */
 public class ShiftTableView extends ViewPart {
     private Text text;
@@ -95,7 +95,7 @@ public class ShiftTableView extends ViewPart {
                         }
                         Display.getDefault().asyncExec(new Runnable() {
                             public void run() {
-                                final ShiftSearchDialog dialog = new ShiftSearchDialog(parent.getShell(), shifts, types, 
+                                final ShiftSearchDialog dialog = new ShiftSearchDialog(parent.getShell(), shifts, types,
                                         ShiftSearchUtil.parseSearchString(text.getText()));
                                 dialog.setBlockOnOpen(true);
                                 if (dialog.open() == IDialogConstants.OK_ID) {
@@ -223,7 +223,7 @@ public class ShiftTableView extends ViewPart {
     @Override
     public void setFocus() {
     }
-    
+
     private List<Shift> findShiftsBySearch(final String searchString) {
         final Map<String, String> searchParameters = ShiftSearchUtil.parseSearchString(searchString);
         if(searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_START) || searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_END)) {

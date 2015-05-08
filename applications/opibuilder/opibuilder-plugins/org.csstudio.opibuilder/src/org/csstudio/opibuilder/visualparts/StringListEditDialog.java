@@ -23,10 +23,10 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 public class StringListEditDialog extends Dialog {
-    
-    private String title;    
+
+    private String title;
     private List<String> contents;
-    
+
     private StringTableEditor tableEditor;
 
     public StringListEditDialog(Shell parentShell, List<String> inputData, String dialogTitle) {
@@ -47,11 +47,11 @@ public class StringListEditDialog extends Dialog {
         // at least on OS X, it has some minimum size below which it
         // doesn't properly shrink.
         tableEditor = new StringTableEditor(container,contents);
-        tableEditor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));    
-    
+        tableEditor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
         return container;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -63,10 +63,10 @@ public class StringListEditDialog extends Dialog {
         }
     }
 
-    public List<String> getResult() {        
+    public List<String> getResult() {
         return contents;
     }
-    
+
     @Override
     protected void okPressed() {
         tableEditor.forceFocus();

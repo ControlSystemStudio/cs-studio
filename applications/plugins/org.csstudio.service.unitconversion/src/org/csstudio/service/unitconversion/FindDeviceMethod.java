@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.service.unitconversion;
 
@@ -27,7 +27,7 @@ import com.google.common.collect.Lists;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class FindDeviceMethod extends ServiceMethod {
 

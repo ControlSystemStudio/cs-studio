@@ -18,9 +18,9 @@ import org.csstudio.dal.simple.SimpleDALBroker;
 
 /**
  * Tests for the new narrow interface in DAL.
- * 
+ *
  * The record under test is:
- * 
+ *
  * <pre>
  * record(ai,'Chiller:Pressure:1') {
  *             field(DESC,'DEMO')
@@ -38,9 +38,9 @@ import org.csstudio.dal.simple.SimpleDALBroker;
  *             field(LSV,'NO_ALARM')
  *     }
  * </pre>
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public abstract class AbstractTestBase extends TestCase {
     protected static final String PV = "Chiller:Pressure:1";
@@ -68,7 +68,7 @@ public abstract class AbstractTestBase extends TestCase {
      * Tries to receive a value asynchronously via
      * {@link SimpleDALBroker#getValueAsync(ConnectionParameters, ResponseListener)}
      * and verifies that the specified expected value is delivered.
-     * 
+     *
      * @param ri
      *            the address
      * @throws Exception
@@ -102,7 +102,7 @@ public abstract class AbstractTestBase extends TestCase {
      * via
      * {@link SimpleDALBroker#registerListener(ConnectionParameters, ChannelListener)}
      * and verifies that the specified expected value is delivered.
-     * 
+     *
      * @param ri
      * @throws Exception
      */
@@ -130,7 +130,7 @@ public abstract class AbstractTestBase extends TestCase {
         };
 
         broker.registerListener(new ConnectionParameters(ri, Double.class), listener);
-        
+
         Thread.sleep(15000);
 
         return holder.getValue();

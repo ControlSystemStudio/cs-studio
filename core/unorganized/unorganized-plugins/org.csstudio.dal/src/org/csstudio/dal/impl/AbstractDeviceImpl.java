@@ -259,7 +259,7 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
             CommandProxy cp = deviceProxy.getCommand(name);
             if (cp== null)
                 throw new RemoteException(this,"No such command "+name);
-            
+
             if (cp.isAsynchronous()) {
                 c = new AsynchronousCommandImpl(cp, this, defaultResponseLitener);
                 commands.put(name, c);
@@ -271,8 +271,8 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 
         return c;
     }
-    
-    
+
+
     public AsynchronousCommand getCommandAsync(String name) throws RemoteException {
         Command c= getCommand(name);
         if (c instanceof AsynchronousCommand) {
@@ -481,7 +481,7 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
     }
 
     public boolean isConnecting(){
-        return connectionStateMachine.isConnecting(); 
+        return connectionStateMachine.isConnecting();
     }
 
     public boolean isOperational() {
@@ -573,7 +573,7 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
     public <T, P extends DynamicValueProperty<?>> GroupDataAccess<T, P> getGroupDataAccess(
         Class<T> dataType, Class<P> propertyType)
     {
-        // NOT TO BE DONE 
+        // NOT TO BE DONE
         // auto-generated method stub
         return null;
     }
@@ -648,14 +648,14 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
     protected void setConnectionState(ConnectionState s)
     {
         boolean change= false;
-        
+
         try {
             change= connectionStateMachine.requestNextConnectionState(s);
         } catch (IllegalStateException e) {
             Logger.getLogger(this.getClass()).error("Internal error.", e);
             throw e;
         }
-        
+
         if (!change) {
             return;
         }
@@ -720,7 +720,7 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 
         property.initialize(pp, dp);
         property.addPropertyChangeListener(propertyInterceptor);
-        
+
         if (property.getConnectionState() != ConnectionState.CONNECTED) {
             Logger.getLogger(AbstractDeviceImpl.class).debug("Property '" + name +"' is not connected. Waiting for connection to be established...");
         }
@@ -745,11 +745,11 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
     {
         return deviceProxy;
     }
-    
+
     public Proxy[] releaseProxy(boolean destroy) {
-        
+
         setConnectionState(ConnectionState.DISCONNECTING);
-        
+
         if (properties!=null) {
             Collection<DynamicValueProperty<?>> props = properties.values();
             for (Iterator<DynamicValueProperty<?>> iterator = props.iterator(); iterator.hasNext();) {
@@ -758,12 +758,12 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
                 Proxy[] p=((DataAccessImpl<?>) dynamicValueProperty).releaseProxy(destroy);
             }
         }
-        
+
         Proxy[] temp = new Proxy[]{deviceProxy,directoryProxy};
-        
+
         deviceProxy = null;
         directoryProxy = null;
-        
+
         setConnectionState(ConnectionState.DISCONNECTED);
 
         if (destroy) {
@@ -774,7 +774,7 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
         }
         return temp;
     }
-    
+
     public DirectoryProxy getDirectoryProxy() {
         return directoryProxy;
     }
@@ -782,7 +782,7 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
     public ConnectionState getConnectionState() {
         return connectionStateMachine.getConnectionState();
     }
-    
+
     /**
      * Returns plug type string, which is distinguishing for plug which
      * creates  proxies for particular communication layer.<p>For
@@ -794,7 +794,7 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
         // TODO: missing implementation
         return null;
     }
-    
+
     public DeviceFamily<?> getParentContext() {
         return deviceFamily;
     }

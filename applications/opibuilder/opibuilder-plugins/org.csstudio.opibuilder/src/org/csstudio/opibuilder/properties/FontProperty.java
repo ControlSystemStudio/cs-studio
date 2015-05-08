@@ -26,13 +26,13 @@ public class FontProperty extends AbstractWidgetProperty {
      */
     public static final String XML_ELEMENT_FONT = "fontdata"; //$NON-NLS-1$
 
-    
+
     /**
      * XML attribute name <code>fontName</code>.
      */
     public static final String XML_ELEMENT_FONTNAME= "opifont.name"; //$NON-NLS-1$
-    
-    
+
+
     /**
      * XML attribute name <code>fontName</code>.
      */
@@ -50,8 +50,8 @@ public class FontProperty extends AbstractWidgetProperty {
 
 
     private static final String QUOTE = "\""; //$NON-NLS-1$
-    
-    
+
+
     /**Font Property Constructor. The property value type is {@link OPIFont}.
      * @param prop_id the property id which should be unique in a widget model.
      * @param description the description of the property,
@@ -68,15 +68,15 @@ public class FontProperty extends AbstractWidgetProperty {
      * @param description the description of the property,
      * which will be shown as the property name in property sheet.
      * @param category the category of the widget.
-     * @param defaultValue the default value when the widget is first created. 
+     * @param defaultValue the default value when the widget is first created.
      * It must be a exist font macro name in font file.
      */
     public FontProperty(String prop_id, String description,
             WidgetPropertyCategory category, String defaultValue) {
         super(prop_id, description, category, MediaService.getInstance().getOPIFont(defaultValue));
     }
-    
-    
+
+
 
     /* (non-Javadoc)
      * @see org.csstudio.opibuilder.properties.AbstractWidgetProperty#checkValue(java.lang.Object)
@@ -85,9 +85,9 @@ public class FontProperty extends AbstractWidgetProperty {
     public Object checkValue(Object value) {
         if(value == null)
             return null;
-        
+
         Object acceptedValue = value;
-        
+
         if(value instanceof OPIFont){
             if(((OPIFont)value).getFontData() == null)
                 acceptedValue = null;
@@ -97,7 +97,7 @@ public class FontProperty extends AbstractWidgetProperty {
             acceptedValue = MediaService.getInstance().getOPIFont((String)value);
         }else
             acceptedValue = null;
-        
+
         return acceptedValue;
     }
 
@@ -108,20 +108,20 @@ public class FontProperty extends AbstractWidgetProperty {
     protected PropertyDescriptor createPropertyDescriptor() {
         if(PropertySSHelper.getIMPL() == null)
             return null;
-        return PropertySSHelper.getIMPL().getOPIFontPropertyDescriptor(prop_id, description);        
+        return PropertySSHelper.getIMPL().getOPIFontPropertyDescriptor(prop_id, description);
     }
 
     @Override
     public void writeToXML(Element propElement) {
         OPIFont opiFont = (OPIFont)getPropertyValue();
-        
+
         Element fontElement;
-        
+
         if(!opiFont.isPreDefined()){
             fontElement= new Element(XML_ELEMENT_FONT);
         }else{
             fontElement = new Element(XML_ELEMENT_FONTNAME);
-            fontElement.setText(opiFont.getFontMacroName());            
+            fontElement.setText(opiFont.getFontMacroName());
         }
         FontData fontData = opiFont.getFontData();
         fontElement.setAttribute(XML_ATTRIBUTE_FONT_NAME, fontData.getName());
@@ -129,15 +129,15 @@ public class FontProperty extends AbstractWidgetProperty {
                 "" + fontData.getHeight()); //$NON-NLS-1$
         fontElement.setAttribute(XML_ATTRIBUTE_FONT_STYLE,
                 "" + fontData.getStyle()); //$NON-NLS-1$
-        
-        propElement.addContent(fontElement);        
+
+        propElement.addContent(fontElement);
     }
-    
+
     @Override
     public Object readValueFromXML(Element propElement) {
         Element fontElement = propElement.getChild(XML_ELEMENT_FONT);
         if(fontElement !=null){
-            return new OPIFont(new FontData(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_NAME), 
+            return new OPIFont(new FontData(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_NAME),
                 (int) Double.parseDouble(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_HEIGHT)),
                 Integer.parseInt(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_STYLE))));
         }else{
@@ -147,7 +147,7 @@ public class FontProperty extends AbstractWidgetProperty {
                 String fontHeight=fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_HEIGHT);
                 String fontStyle = fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_STYLE);
                 if(fontName != null && fontHeight != null && fontStyle != null){
-                    FontData fd = new FontData(fontName, (int) Double.parseDouble(fontHeight), 
+                    FontData fd = new FontData(fontName, (int) Double.parseDouble(fontHeight),
                             Integer.parseInt(fontStyle));
                     return MediaService.getInstance().getOPIFont(fontElement.getText(), fd);
                 }
@@ -162,7 +162,7 @@ public class FontProperty extends AbstractWidgetProperty {
     public boolean configurableByRule() {
         return true;
     }
-    
+
     @Override
     public String toStringInRuleScript(Object propValue) {
         OPIFont opiFont = (OPIFont)propValue;
@@ -174,7 +174,7 @@ public class FontProperty extends AbstractWidgetProperty {
                 fontData.getName() + QUOTE + "," + fontData.getHeight() + "," + fontData.getStyle() + ")";
         }
     }
-    
-    
-    
+
+
+
 }

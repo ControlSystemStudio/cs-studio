@@ -40,7 +40,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 
     private IPVListener loadItemsFromPVListener;
     private List<String> meta = null;
-    
+
     private int maxAttempts;
 
     /**
@@ -49,7 +49,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
     public CommonMultiSymbolModel getWidgetModel() {
         return (CommonMultiSymbolModel) getModel();
     }
-    
+
     protected void initializeCommonFigureProperties(
             CommonMultiSymbolFigure figure) {
         CommonMultiSymbolModel model = getWidgetModel();
@@ -100,10 +100,10 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
                 figure.setStates(items);
         }
     }
-    
+
     protected void registerCommonPropertyChangeHandlers() {
         super.registerBasePropertyChangeHandlers();
-        
+
         // Image properties handlers
         registerSymbolImagePropertyHandlers();
         registerImageColorPropertyHandlers();
@@ -112,14 +112,14 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
         registerImageStretchPropertyHandlers();
         registerImageRotationPropertyHandlers();
         registerImageBorderPropertyHandlers();
-        
+
         // Label change handlers
         registerLabelPropertyChangeHandlers();
-        
+
         // PV properties handlers
         registerCommonPVChangeHandlers();
     }
-    
+
     @Override
     protected void doActivate() {
         super.doActivate();
@@ -137,11 +137,11 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
             }
         }
     }
-    
+
     // -----------------------------------------------------------------
     // PV properties handlers
     // -----------------------------------------------------------------
-    
+
     private void registerLoadItemsListener() {
         // load items from PV
         if (getExecutionMode() == ExecutionMode.RUN_MODE) {
@@ -155,7 +155,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
                                 if (value != null && value instanceof VEnum) {
                                     List<String> new_meta = ((VEnum)value).getLabels();
                                     if (meta == null || !meta.equals(new_meta)) {
-                                        meta = new_meta;                                        
+                                        meta = new_meta;
                                         getWidgetModel()
                                                 .setPropertyValue(CommonMultiSymbolModel.PROP_ITEMS, meta);
                                     }
@@ -181,7 +181,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
             }
         };
         setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
-        
+
         // PV_Value
         IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -220,7 +220,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
         };
         setPropertyChangeHandler(CommonMultiSymbolModel.PROP_ITEMS, itemsHandler);
     }
-    
+
     @Override
     public String getValue() {
         return ((CommonMultiSymbolFigure) getFigure()).getCurrentState();
@@ -234,11 +234,11 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
             ((CommonMultiSymbolFigure) getFigure()).setState(((Number) value).intValue());
         else super.setValue(value);
     }
-    
+
     // -----------------------------------------------------------------
     // Label properties handlers
     // -----------------------------------------------------------------
-    
+
     private void registerLabelPropertyChangeHandlers() {
         // show symbol label
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
@@ -262,11 +262,11 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
         };
         setPropertyChangeHandler(CommonMultiSymbolModel.PROP_SYMBOL_LABEL_POS, handler);
     }
-    
+
     // -----------------------------------------------------------------
     // Image properties handlers
     // -----------------------------------------------------------------
-    
+
     /**
      * Registers symbol image property change handler
      */
@@ -284,7 +284,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
         };
         setPropertyChangeHandler(CommonMultiSymbolModel.PROP_SYMBOL_IMAGE_FILE, handler);
     }
-    
+
     private void registerImageColorPropertyHandlers() {
         // on color
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
@@ -450,7 +450,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
                 PermutationMatrix newMatrix = PermutationMatrix.generateFlipHMatrix();
                 PermutationMatrix oldMatrix = imageFigure.getPermutationMatrix();
                 PermutationMatrix result = newMatrix.multiply(oldMatrix);
-                
+
                 setPropertyValue(CommonMultiSymbolModel.PROP_FLIP_HORIZONTAL, (Boolean) newValue);
                 setPropertyValue(CommonMultiSymbolModel.PERMUTATION_MATRIX, result.getMatrix());
                 imageFigure.setPermutationMatrix(result);
@@ -468,7 +468,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
                 PermutationMatrix newMatrix = PermutationMatrix.generateFlipVMatrix();
                 PermutationMatrix oldMatrix = imageFigure.getPermutationMatrix();
                 PermutationMatrix result = newMatrix.multiply(oldMatrix);
-                
+
                 setPropertyValue(CommonMultiSymbolModel.PROP_FLIP_VERTICAL, (Boolean) newValue);
                 setPropertyValue(CommonMultiSymbolModel.PERMUTATION_MATRIX, result.getMatrix());
                 imageFigure.setPermutationMatrix(result);
@@ -552,5 +552,5 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
         };
         Display.getDefault().timerExec(100, task);
     }
-    
+
 }

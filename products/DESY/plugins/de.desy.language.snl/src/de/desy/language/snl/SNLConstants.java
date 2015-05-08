@@ -6,7 +6,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import de.desy.language.snl.internal.SNLCoreActivator;
 
 public enum SNLConstants {
-    
+
     SOURCE_FOLDER("source"),
     GENERATED_FOLDER("generated"),
     BIN_FOLDER("bin"),
@@ -15,7 +15,7 @@ public enum SNLConstants {
     ST_FILE_EXTENSION(".st"),
     I_FILE_EXTENSION(".i"),
     APPLICATION_FILE_EXTENSION("");
-    
+
     private final String _value;
     private final IPreferencesService prefs = Platform.getPreferencesService();
 

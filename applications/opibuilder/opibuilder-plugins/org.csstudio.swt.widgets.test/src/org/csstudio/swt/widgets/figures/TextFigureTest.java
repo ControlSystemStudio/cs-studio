@@ -15,8 +15,8 @@ public class TextFigureTest extends AbstractWidgetTest{
     public Figure createTestWidget() {
         return new TextFigure();
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -27,12 +27,12 @@ public class TextFigureTest extends AbstractWidgetTest{
                 "runMode",
                 "selectable"
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
     @Override
     public boolean isAutoTest() {
         return true;
-    }        
+    }
 }

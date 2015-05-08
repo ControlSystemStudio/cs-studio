@@ -13,7 +13,7 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.RelatedDisplayItem;
 import org.csstudio.utility.adlparser.internationalization.Messages;
 
 /**
- * 
+ *
  * @author hammonds
  *
  */
@@ -25,7 +25,7 @@ public class RelatedDisplay extends ADLAbstractWidget implements IWidgetWithColo
     private ArrayList<RelatedDisplayItem> rdItems = new ArrayList<RelatedDisplayItem>();
     private boolean _isBackColorDefined;
     private boolean _isForeColorDefined;
-    
+
     public RelatedDisplay(ADLWidget adlWidget) {
         super(adlWidget);
         name = new String("related display");
@@ -40,7 +40,7 @@ public class RelatedDisplay extends ADLAbstractWidget implements IWidgetWithColo
                     if (_adlObject != null){
                         _hasObject = true;
                     }
-                    
+
                 }
             }
             for (FileLine fileLine : adlWidget.getBody()){

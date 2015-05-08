@@ -21,9 +21,9 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * Represents a {@link RecordNode}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class RecordFigure extends Panel {
     private Panel connectionIndictor;
@@ -32,12 +32,12 @@ public class RecordFigure extends Panel {
 
     /**
      * Constructor.
-     * 
+     *
      * @param caption the caption
      */
     public RecordFigure(String caption) {
         setLayoutManager(new XYLayout());
-        
+
         // .. border
         setBorder(new RaisedBorder());
 
@@ -54,7 +54,7 @@ public class RecordFigure extends Panel {
         textPanel.setLayoutManager(new FlowLayout());
         add(textPanel);
         setConstraint(textPanel, new Rectangle(20, 2, 165, 20));
-        
+
 
         // .. connection indicator
         connectionIndictor = new Panel();
@@ -62,11 +62,11 @@ public class RecordFigure extends Panel {
         connectionIndictor.setBorder(new LineBorder(CustomMediaFactory.getInstance().getColor(0,0,0), 1));
         add(connectionIndictor);
         setConstraint(connectionIndictor, new Rectangle(186,4,10,10));
-        
+
         // .. tooltip for record information
         recordInformationPanel = new Panel();
         setToolTip(createTooltip(recordInformationPanel));
-        
+
         // .. tooltip for connection state
         connectionStatePanel = new Panel();
         connectionIndictor.setToolTip(createTooltip(connectionStatePanel));
@@ -75,33 +75,33 @@ public class RecordFigure extends Panel {
     public void setConnectionInformation(LinkedHashMap<String, String> infos) {
         updateTooltipInformation(connectionStatePanel, infos);
     }
-    
+
     public void setRecordInformation(LinkedHashMap<String, String> infos) {
         updateTooltipInformation(recordInformationPanel, infos);
     }
-    
+
     private void updateTooltipInformation(Panel tooltipPanel, LinkedHashMap<String, String> infos) {
         tooltipPanel.removeAll();
 
         tooltipPanel.setLayoutManager(new GridLayout(2, false));
-        
+
         for(String key : infos.keySet()) {
-            
+
             Label column1 = new Label(key+":");
             column1.setFont(CustomMediaFactory.getInstance().getDefaultFont(SWT.BOLD));
-            
+
             Label column2 = new Label(infos.get(key));
-            
+
             tooltipPanel.add(column1);
             tooltipPanel.add(column2);
         }
-        
+
     }
-    
+
     public void setConnectionIndictorColor(Color color) {
         connectionIndictor.setBackgroundColor(color);
     }
-    
+
     /**
      *{@inheritDoc}
      */
@@ -127,7 +127,7 @@ public class RecordFigure extends Panel {
 
         tooltip.setBackgroundColor(Display.getCurrent().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
         tooltip.add(content);
-        
+
         return tooltip;
     }
 }

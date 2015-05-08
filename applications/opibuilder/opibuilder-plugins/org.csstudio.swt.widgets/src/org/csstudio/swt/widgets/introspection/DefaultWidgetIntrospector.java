@@ -46,7 +46,7 @@ public class DefaultWidgetIntrospector {
         "showing",
         "updateManager",
         "valid",
-        "beanInfo"        
+        "beanInfo"
     };
 
     public BeanInfo getBeanInfo(Class<?> beanClass) throws IntrospectionException {
@@ -58,31 +58,31 @@ public class DefaultWidgetIntrospector {
         PropertyDescriptor pds[] = bi.getPropertyDescriptors();
 
         List<PropertyDescriptor> filteredPDList = new ArrayList<PropertyDescriptor>();
-        
+
         List<String> nonPropList = Arrays.asList(getNonProperties());
         for(PropertyDescriptor pd : pds){
             if(!nonPropList.contains(pd.getName()) && pd.getWriteMethod() != null && pd.getReadMethod() != null)
                 filteredPDList.add(pd);
         }
-        
+
         int defaultEvent = bi.getDefaultEventIndex();
         int defaultProperty = bi.getDefaultPropertyIndex();
 
-         return new GenericBeanInfo(bd, esds, defaultEvent, 
+         return new GenericBeanInfo(bd, esds, defaultEvent,
                  filteredPDList.toArray(new PropertyDescriptor[filteredPDList.size()]),
                 defaultProperty, mds, null);
-        
+
     }
-    
+
     public String[] getNonProperties(){
         return FIGURE_NON_PROPERTIES;
     }
 
     public String[] concatenateStringArrays(String[] A, String[] B){
-        String[] C= new String[A.length+B.length]; 
-           System.arraycopy(A, 0, C, 0, A.length); 
-           System.arraycopy(B, 0, C, A.length, B.length);          
+        String[] C= new String[A.length+B.length];
+           System.arraycopy(A, 0, C, 0, A.length);
+           System.arraycopy(B, 0, C, A.length, B.length);
            return C;
     }
-    
+
 }

@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 
 /**
  * Specific class representing EdmInt property.
- * 
+ *
  * @author Matevz
  *
  */
@@ -23,7 +23,7 @@ public class EdmInt extends EdmAttribute {
 
     /**
      * Constructor, which parses int property from EdmAttribute general interface.
-     * 
+     *
      * @param genericAttribute    EdmAttribute containing int format data.
      * @param required false if this attribute is optional, else true
      * @throws EdmException    if data from EdmAttribute of invalid format.
@@ -50,7 +50,7 @@ public class EdmInt extends EdmAttribute {
             }else
                 val = Integer.parseInt(stringInt);
             setInitialized(true);
-            log.debug("Parsed " + this.getClass().getName() + 
+            log.debug("Parsed " + this.getClass().getName() +
                     " = " + val);
         }
         catch (Exception e) {

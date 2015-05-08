@@ -31,9 +31,9 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
  * A Sash Container figure.
- * 
+ *
  * @author Xihui
- * 
+ *
  */
 public class SashContainerFigure extends Figure implements Introspectable {
 
@@ -212,9 +212,9 @@ public class SashContainerFigure extends Figure implements Introspectable {
 
     /**
      * style of the sash.
-     * 
+     *
      * @author Xihui Chen
-     * 
+     *
      */
     public enum SashStyle {
 
@@ -403,7 +403,7 @@ public class SashContainerFigure extends Figure implements Introspectable {
         switch (sashStyle) {
         case ROUNDED:
             Rectangle clientArea = getClientArea();
-            Rectangle[] subBounds = getSubPanelsBounds();        
+            Rectangle[] subBounds = getSubPanelsBounds();
             subBounds[0].translate(clientArea.getLocation());
             subBounds[1].translate(clientArea.getLocation());
             subBounds[0].width -=1;
@@ -420,7 +420,7 @@ public class SashContainerFigure extends Figure implements Introspectable {
 
     /**
      * Set layout direction of sash container.
-     * 
+     *
      * @param horizontal
      */
     public void setHorizontal(boolean horizontal) {
@@ -455,7 +455,7 @@ public class SashContainerFigure extends Figure implements Introspectable {
 
     /**
      * Set sash style.
-     * 
+     *
      * @param sashStyle
      */
     public void setSashStyle(SashStyle sashStyle) {
@@ -465,7 +465,7 @@ public class SashContainerFigure extends Figure implements Introspectable {
 
     /**
      * Set Sash width.
-     * 
+     *
      * @param sashWidth
      *            sash width
      */

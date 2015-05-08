@@ -12,9 +12,9 @@ import com.bestcode.mathparser.MathParserFactory;
 
 /**
  * Implementation for the forwardlink() function.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class EvalFieldFunction implements IFieldFunction {
 

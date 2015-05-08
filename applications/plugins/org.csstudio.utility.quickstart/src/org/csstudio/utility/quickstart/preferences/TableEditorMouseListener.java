@@ -27,7 +27,7 @@ public class TableEditorMouseListener extends MouseAdapter {
         _editor = editor;
         _table = table;
     }
-        
+
     /**
      * Dispose the editor before selecting a new row
      * otherwise the cell and not the row will be selected
@@ -39,7 +39,7 @@ public class TableEditorMouseListener extends MouseAdapter {
         Control old = _editor.getEditor();
         if (old != null) old.dispose();
     }
-    
+
     /**
      * Make the selected cell editable with a
      * double click. (Copied from an internet example)
@@ -66,7 +66,7 @@ public class TableEditorMouseListener extends MouseAdapter {
               break;
             }
           }
-          
+
         // The third column is not editable (switch from true to false by
         // mouse)
         if (column == 2) {
@@ -80,7 +80,7 @@ public class TableEditorMouseListener extends MouseAdapter {
             return;
         }
 
-          
+
           // Create the Text object for our editor
           final Text text = new Text(_table, SWT.NONE);
           text.setForeground(item.getForeground());
@@ -113,5 +113,5 @@ public class TableEditorMouseListener extends MouseAdapter {
       }
     }
 
-    
+
 

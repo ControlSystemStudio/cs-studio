@@ -27,7 +27,7 @@ public class RDBGroupConfig extends GroupConfig
         super(name, enabling_channel);
         this.id = id;
     }
-    
+
     /** @return RDB ID of channel group */
     public int getId()
     {

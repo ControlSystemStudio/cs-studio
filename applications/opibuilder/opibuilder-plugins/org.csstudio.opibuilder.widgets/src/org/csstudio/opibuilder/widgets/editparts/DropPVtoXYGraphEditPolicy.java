@@ -23,13 +23,13 @@ import org.eclipse.gef.editpolicies.AbstractEditPolicy;
 public class DropPVtoXYGraphEditPolicy extends AbstractEditPolicy {
 
     public final static String DROP_PV_ROLE = "DropPVEditPolicy"; //$NON-NLS-1$
-    
+
     @Override
     public Command getCommand(Request request) {
-        if(request.getType() == DropPVRequest.REQ_DROP_PV && 
+        if(request.getType() == DropPVRequest.REQ_DROP_PV &&
                 request instanceof DropPVRequest){
-            DropPVRequest dropPVRequest =(DropPVRequest)request; 
-            if(dropPVRequest.getTargetWidget() != null && 
+            DropPVRequest dropPVRequest =(DropPVRequest)request;
+            if(dropPVRequest.getTargetWidget() != null &&
                     dropPVRequest.getTargetWidget() instanceof XYGraphEditPart){
                 CompoundCommand command = new CompoundCommand("Add Traces");
                 XYGraphModel xyGraphModel = (XYGraphModel) dropPVRequest.getTargetWidget().getWidgetModel();
@@ -49,17 +49,17 @@ public class DropPVtoXYGraphEditPolicy extends AbstractEditPolicy {
                 }
                 return command;
             }
-                    
+
         }
         return super.getCommand(request);
     }
-    
+
     @Override
     public EditPart getTargetEditPart(Request request) {
         if(request.getType() == DropPVRequest.REQ_DROP_PV)
             return getHost();
         return super.getTargetEditPart(request);
     }
-    
-    
+
+
 }

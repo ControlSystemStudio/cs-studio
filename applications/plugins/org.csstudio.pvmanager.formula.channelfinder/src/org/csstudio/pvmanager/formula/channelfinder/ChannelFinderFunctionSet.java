@@ -4,7 +4,7 @@ import org.epics.pvmanager.formula.FormulaFunctionSet;
 import org.epics.pvmanager.formula.FormulaFunctionSetDescription;
 
 /**
- * 
+ *
  * @author Kunal Shroff
  *
  */

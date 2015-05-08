@@ -3,7 +3,7 @@ package org.csstudio.utility.adlparser.fileParser;
 public class ADLResource {
     private String _name;
     private Object _value;
-    
+
     public static final String X = "X";
     public static final String Y = "Y";
     public static final String WIDTH = "Width";
@@ -91,12 +91,12 @@ public class ADLResource {
     public static final String CHANNELC = "chanc";
     public static final String CHANNELD = "chand";
     public static final String CALC = "calc";
-    
+
     public ADLResource (String name, Object value){
         this._name = name;
         this._value = value;
     }
-    
+
     /**
      * @param _name the _name to set
      */
@@ -124,6 +124,6 @@ public class ADLResource {
     public Object getValue() {
         return _value;
     }
-    
-    
+
+
 }

@@ -14,7 +14,7 @@ public class RDBTableRow
 {
     /** Model that contains this row */
     final RDBTableModel model;
-    
+
     /** Columns in this row */
     final private String columns[];
 
@@ -26,7 +26,7 @@ public class RDBTableRow
 
     /** Was this row marked for deletion? */
     private boolean was_deleted = false;
-   
+
     /** Initialize
      *  @param model Model that contains this row
      *  @param column_data Strings for the columns in this row
@@ -79,13 +79,13 @@ public class RDBTableRow
     {
         return read_from_rdb;
     }
-    
+
     /** @return <code>true</code> when row was deleted */
     public boolean wasDeleted()
     {
         return was_deleted;
     }
-    
+
     /** @return <code>true</code> when row was edited after
      *          reading original RDB data
      */

@@ -14,16 +14,16 @@ import org.epics.util.time.Timestamp;
 
 /**
  * An instance of this class represents one "kblogrd" process
- * 
+ *
  * @author Takashi Nakamoto
  */
 public class KBLogRDProcess {
     // DO NOT READ OR WRITE THIS VALUE OUTSIDE getUniqueCommandID().
-    private static int uniqueCommandId = 0;    
+    private static int uniqueCommandId = 0;
 
     private final static DateFormat kblogrdTimeFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
     private final static String kblogrdOutFormat = "free";
-    
+
     private String strCommand;
     private String name;
     private KBLogValueIterator iter;
@@ -37,10 +37,10 @@ public class KBLogRDProcess {
     private Timestamp startTime;
     private Timestamp endTime;
     private String kblogrdPath;
-    
+
     /**
      * Initialize the "kblogrd" command execution with given arguments.
-     * 
+     *
      * @param kblogrdPath Path to "kblogrd" command.
      * @param subArchiveName Sub archive name (e.g. BM/DCCT)
      * @param name PV name (e.g. BM_DCCT:HCUR)
@@ -83,22 +83,22 @@ public class KBLogRDProcess {
         this.startTime = start;
         this.endTime = end;
     }
-    
+
     /**
      * This method executes "kblogrd" command, and returns ValueIterator of the obtained archived values.
-     * With this method, error messages are also handled in a separate thread. 
-     * 
-     * This method can be called only once. From the second time, this method does nothing.  
-     * 
+     * With this method, error messages are also handled in a separate thread.
+     *
+     * This method can be called only once. From the second time, this method does nothing.
+     *
      * @return ValueIterator of the obtained archived values.
      */
     public synchronized ValueIterator start() {
         if (started || canceled)
             return null;
-        
+
         commandId = getUniqueCommandID();
         Logger.getLogger(Activator.ID).log(Level.INFO, "Command " + commandId + ": " + strCommand);
-        
+
         try {
             proc = Runtime.getRuntime().exec(strCommand);
             if (stepSecond > 0 && useAverage) {
@@ -113,23 +113,23 @@ public class KBLogRDProcess {
         } catch (IOException e) {
             Logger.getLogger(Activator.ID).log(Level.SEVERE, "Failed to run " + kblogrdPath + " (" + commandId + ").");
         }
-        
+
         if (iter != null)
             started = true;
-        
+
         return (ValueIterator)iter;
     }
-    
+
     public synchronized boolean isFinished() {
         if (iter == null || errHandler == null)
             return false;
-        
+
         if (canceled)
             return true;
-        
+
         return iter.isClosed() && errHandler.isClosed();
     }
-    
+
     /**
      * Cancel execution of kblogrd.
      * Note that this method does not immediately cancel the execution due to blocked I/O.
@@ -137,10 +137,10 @@ public class KBLogRDProcess {
      */
     public synchronized void cancel() {
         Logger.getLogger(Activator.ID).log(Level.FINE, "KBLogRDProcess.cancel() is requested for " + kblogrdPath + " (" + commandId + ").");
-        
+
         if (isFinished())
             return;
-        
+
         // Close the standard output.
         if (iter != null && !iter.isClosed())
             iter.close();
@@ -148,7 +148,7 @@ public class KBLogRDProcess {
         // Close the standard error.
         if (errHandler != null && errHandler.isClosed())
             errHandler.close();
-        
+
         if (proc != null) {
             // Close the standard input.
             try{
@@ -159,17 +159,17 @@ public class KBLogRDProcess {
                 Logger.getLogger(Activator.ID).log(Level.SEVERE,
                         "Failed to close the standard input of " + kblogrdPath + " (" + commandId + ").");
             }
-            
+
             // Destroy the running process.
             proc.destroy();
         }
-        
+
         canceled = true;
     }
 
     /**
      * This must be called every time "kblogrd" command is called.
-     * 
+     *
      * @return Command ID unique in this class.
      */
     private synchronized int getUniqueCommandID() {

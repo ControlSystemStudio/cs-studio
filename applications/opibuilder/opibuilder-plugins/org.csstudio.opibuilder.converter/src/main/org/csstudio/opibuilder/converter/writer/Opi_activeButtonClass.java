@@ -18,7 +18,7 @@ import org.w3c.dom.Element;
 
 /**
  * XML conversion class for Edm_activeRectangleClass
- * 
+ *
  * @author Lei Hu, Xihui Chen
  */
 public class Opi_activeButtonClass extends OpiWidget {
@@ -60,9 +60,9 @@ public class Opi_activeButtonClass extends OpiWidget {
         }else{
             new OpiInt(widgetContext, "data_type", 1);
             new OpiString(widgetContext, "on_state", "1");
-            new OpiString(widgetContext, "off_state", "0");            
+            new OpiString(widgetContext, "off_state", "0");
         }
-        
+
         new OpiBoolean(widgetContext, "show_led", false);
         new OpiBoolean(widgetContext, "square_button", true);
 
@@ -72,7 +72,7 @@ public class Opi_activeButtonClass extends OpiWidget {
 
     /**
      * Create a rule that make a color property alarm sensitive.
-     * 
+     *
      * @param edmWidgetClass
      * @param edmAlarmAttr
      * @param edmAlarmPVAttr

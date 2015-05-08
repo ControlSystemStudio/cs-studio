@@ -13,7 +13,7 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.internationalization.Messages;
 
 /**
- * 
+ *
  * @author hammonds
  *
  */
@@ -22,20 +22,20 @@ public class MessageButton extends ADLAbstractWidget {
     private String press_msg = new String();
     private String release_msg = new String();
     private String color_mode = new String("static");
-    
+
     public MessageButton(ADLWidget adlWidget) {
         super(adlWidget);
         name = new String("message button");
         descriptor = Activator.getImageDescriptor(IImageKeys.ADL_MESSAGE_BUTTON);
         try {
             for (ADLWidget childWidget : adlWidget.getObjects()) {
-                
+
                 if (childWidget.getType().equals("object")){
                     _adlObject = new ADLObject(childWidget);
                     if (_adlObject != null){
                         _hasObject = true;
                     }
-                    
+
                 }
                 else if (childWidget.getType().equals("control")){
                     _adlControl = new ADLControl(childWidget);
@@ -65,7 +65,7 @@ public class MessageButton extends ADLAbstractWidget {
             }
         }
         catch (WrongADLFormatException ex) {
-            
+
         }
     }
 

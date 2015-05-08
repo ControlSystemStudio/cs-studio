@@ -39,9 +39,9 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * A service help to maintain the color macros.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public final class MediaService {
 
@@ -164,7 +164,7 @@ public final class MediaService {
     }
 
     /**
-     * Reload predefined fonts from font file in a background job. 
+     * Reload predefined fonts from font file in a background job.
      */
     public synchronized void reloadFontFile() {
         fontMap.clear();
@@ -173,7 +173,7 @@ public final class MediaService {
             loadPredefinedFonts();
             systemFontName.append(Display.getCurrent().getSystemFont().getFontData()[0]
                     .getName());
-        } else{            
+        } else{
             DisplayUtils.getDisplay().asyncExec(new Runnable() {
                 @Override
                 public void run() {
@@ -188,7 +188,7 @@ public final class MediaService {
         Job job = new Job("Load Font File") {
             @Override
             public IStatus run(IProgressMonitor monitor) {                monitor.beginTask("Connecting to " + fontFilePath, IProgressMonitor.UNKNOWN);
-                
+
                 loadFontFile(systemFontName.toString());
                 latch.countDown();
                 monitor.done();
@@ -335,7 +335,7 @@ public final class MediaService {
     /**
      * Get the color from the predefined color map, which is defined in the
      * color file.
-     * 
+     *
      * @param name
      *            the predefined name of the color.
      * @return the RGB color, or the default RGB value if the name doesn't exist
@@ -354,7 +354,7 @@ public final class MediaService {
     /**
      * Get OPIColor based on name. If no such name exist, use the rgb value as
      * its color.
-     * 
+     *
      * @param name
      *            name of OPIColor
      * @param rgb
@@ -379,7 +379,7 @@ public final class MediaService {
     /**
      * Get the font from the predefined font map, which is defined in the font
      * file.
-     * 
+     *
      * @param name
      *            the predefined name of the font.
      * @return the FontData, or the default font if the name doesn't exist in
@@ -394,7 +394,7 @@ public final class MediaService {
     /**
      * Get the OPIFont by name, use {@link #DEFAULT_UNKNOWN_FONT} if no such a
      * name is found.
-     * 
+     *
      * @param name
      * @return
      * @see #getOPIFont(String, FontData)
@@ -406,7 +406,7 @@ public final class MediaService {
     /**
      * Get the OPIFont based on name. Use the provided fontData if no such a
      * name is found.
-     * 
+     *
      * @param name
      * @param fontData
      * @return

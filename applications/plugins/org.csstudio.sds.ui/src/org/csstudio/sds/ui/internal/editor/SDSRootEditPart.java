@@ -7,14 +7,14 @@ import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ViewportAutoexposeHelper;
 
 class SDSRootEditPart extends ScalableFreeformRootEditPart {
-    
+
     private SDSZoomManager _zoomManager;
-    
+
     public SDSRootEditPart() {
         _zoomManager = new SDSZoomManager((ScalableFigure) getScaledLayers(),
                                           ((Viewport) getFigure()));
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -26,7 +26,7 @@ class SDSRootEditPart extends ScalableFreeformRootEditPart {
         }
         return super.getAdapter(key);
     }
-    
+
     /**
      * {@inheritDoc}
      */

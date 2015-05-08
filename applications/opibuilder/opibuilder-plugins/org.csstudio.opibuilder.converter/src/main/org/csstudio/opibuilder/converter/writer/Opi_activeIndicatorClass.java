@@ -11,7 +11,7 @@ import org.csstudio.opibuilder.converter.model.Edm_activeIndicatorClass;
 
 /**
  * XML conversion class for Edm_activeIndicatorClass
- * 
+ *
  * @author Xihui Chen
  */
 public class Opi_activeIndicatorClass extends Opi_activeBarClass {
@@ -24,7 +24,7 @@ public class Opi_activeIndicatorClass extends Opi_activeBarClass {
     public Opi_activeIndicatorClass(Context con, Edm_activeIndicatorClass r) {
         super(con, r);
         setName(name);
-        new OpiBoolean(widgetContext, "indicator_mode", true);        
+        new OpiBoolean(widgetContext, "indicator_mode", true);
     }
 
 }

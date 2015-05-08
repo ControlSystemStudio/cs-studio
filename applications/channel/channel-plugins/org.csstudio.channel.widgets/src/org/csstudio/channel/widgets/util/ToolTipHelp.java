@@ -10,18 +10,18 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 public class ToolTipHelp extends DefaultToolTip {
-    
+
     private static Color[] windowsBackground =
             new Color[] {SWTResourceManager.getColor(255,255,255), SWTResourceManager.getColor(228,229,240)};
     private static int[] colorSteps = new int[] {100};
-    
+
     private Control control;
 
     public ToolTipHelp(Control control) {
         super(control, NO_RECREATE, false);
         this.control = control;
     }
-    
+
     @Override
     protected Composite createToolTipContentArea(Event event,
             Composite parent) {

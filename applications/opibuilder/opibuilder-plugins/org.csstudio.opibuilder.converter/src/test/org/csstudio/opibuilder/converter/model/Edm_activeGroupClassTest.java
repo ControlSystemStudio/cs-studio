@@ -50,8 +50,8 @@ public class Edm_activeGroupClassTest extends TestCase {
         assertTrue(subGroup0.getAttribute("visMin") instanceof EdmDouble);
         assertEquals(10.78, subGroup0.getVisMax());
         assertTrue(subGroup0.getAttribute("visMax") instanceof EdmDouble);
-        
-        
+
+
         assertEquals(3, subGroup0.getSubEntityCount());
         assertEquals(2, subGroup0.getWidgets().size());
         {
@@ -270,7 +270,7 @@ public class Edm_activeGroupClassTest extends TestCase {
                     assertEquals("2", entity.getAttribute("lineWidth").toString());
                     assertEquals("1", entity.getAttribute("numBits").toString());
                 }
-                
+
                 entity = subGroup01.getSubEntity(3);
                 assertEquals("ByteClass", entity.getType());
                 assertEquals("4", entity.getAttribute("major").toString());
@@ -355,7 +355,7 @@ public class Edm_activeGroupClassTest extends TestCase {
             assertTrue(t.getAttribute("value") instanceof EdmMultilineText);
             assertEquals(true, t.isAutoSize());
             assertTrue(t.getAttribute("autoSize") instanceof EdmBoolean);
-            
+
             entity = subGroup1.getSubEntity(1);
             assertEquals("ByteClass", entity.getType());
             assertEquals("4", entity.getAttribute("major").toString());

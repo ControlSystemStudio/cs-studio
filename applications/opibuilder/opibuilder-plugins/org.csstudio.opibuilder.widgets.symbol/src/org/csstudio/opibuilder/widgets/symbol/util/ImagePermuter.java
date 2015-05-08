@@ -13,9 +13,9 @@ import java.util.Map;
 import org.csstudio.swt.widgets.symbol.util.PermutationMatrix;
 
 public final class ImagePermuter {
-    
+
     private static Map<String, PermutationMatrix> ops = initOperations();
-            
+
     private static Map<String, PermutationMatrix> initOperations() {
         Map<String, PermutationMatrix> ops = new HashMap<String, PermutationMatrix>();
         ops.put("1234", PermutationMatrix.generateIdentityMatrix());
@@ -30,9 +30,9 @@ public final class ImagePermuter {
         ops.put("3214", PermutationMatrix.generateRotationMatrix(90).multiply(PermutationMatrix.generateFlipVMatrix()));
         return ops;
     }
-    
+
     public static double[][] getMatrix(String pos) {
         return ops.get(pos).getMatrix();
     }
-    
+
 }

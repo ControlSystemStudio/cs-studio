@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene;
 
@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class LineGraph2DConfigurationDialog
         extends AbstractPointDatasetGraph2DConfigurationDialog<LineGraph2DWidget, LineGraph2DConfigurationPanel> {

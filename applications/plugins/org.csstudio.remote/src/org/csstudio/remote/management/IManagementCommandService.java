@@ -26,26 +26,26 @@ package org.csstudio.remote.management;
  * <p>
  * Service through which management commands can be executed.
  * </p>
- * 
+ *
  * <p>
  * All parameters and return values used by this service are serializable, so
  * this interface can be used for a remote service.
  * </p>
- * 
+ *
  * @author Joerg Rathlev
  */
 public interface IManagementCommandService {
 
     /**
      * Returns the commands supported by this service.
-     * 
+     *
      * @return the commands supported by this service.
      */
     public CommandDescription[] getSupportedCommands();
 
     /**
      * Executes the specified command.
-     * 
+     *
      * @param commandId
      *            the identifier of the command to execute.
      * @param parameters
@@ -63,7 +63,7 @@ public interface IManagementCommandService {
     /**
      * Returns the dynamic enumeration values for the specified command and
      * parameter.
-     * 
+     *
      * @param commandId
      *            the identifier of the command.
      * @param parameterId

@@ -15,7 +15,7 @@ import org.eclipse.jface.viewers.Viewer;
 
 /**
  * Provides workspace filtering resources as content for a tree viewer.
- * 
+ *
  * @author SOPRA Group
  */
 
@@ -32,7 +32,7 @@ final class WorkspaceResourceContentProvider implements ITreeContentProvider {
 
     /**
      * Creates a new <code>WorkspaceResourcesContentProvider</code>.
-     * 
+     *
      * @param filters
      */
     public WorkspaceResourceContentProvider(String[] filters) {
@@ -85,7 +85,7 @@ final class WorkspaceResourceContentProvider implements ITreeContentProvider {
                     return children.toArray();
                 } catch (CoreException e) {
                     Logger.getLogger(getClass().getName()).log(Level.SEVERE,
-                            "", e); 
+                            "", e);
                 }
             }
         }
@@ -95,7 +95,7 @@ final class WorkspaceResourceContentProvider implements ITreeContentProvider {
     /**
      * Returns whether the given resource should be included in the contents
      * this content provider returns.
-     * 
+     *
      * @param resource
      *            the resource.
      * @return <code>true</code> if the resource should be included,
@@ -149,7 +149,7 @@ final class WorkspaceResourceContentProvider implements ITreeContentProvider {
     /**
      * Specify whether or not to show closed projects in the tree viewer.
      * Default is to show closed projects.
-     * 
+     *
      * @param show
      *            boolean if false, do not show closed projects in the tree
      */

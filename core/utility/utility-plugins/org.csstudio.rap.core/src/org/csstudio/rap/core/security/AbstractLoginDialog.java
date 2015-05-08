@@ -36,7 +36,7 @@ public abstract class AbstractLoginDialog extends Dialog implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * javax.security.auth.callback.CallbackHandler#handle(javax.security.auth
      * .callback.Callback[])

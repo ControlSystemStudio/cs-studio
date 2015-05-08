@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2012 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2012 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
@@ -42,8 +42,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class StringAreaEditor extends FieldEditor {
-    
-    private static final Logger LOG = LoggerFactory.getLogger(StringAreaEditor.class);    
+
+    private static final Logger LOG = LoggerFactory.getLogger(StringAreaEditor.class);
 
     public static int UNLIMITED = -1;
     private Text textField;
@@ -51,11 +51,11 @@ public class StringAreaEditor extends FieldEditor {
     private int textLimit = UNLIMITED;
     private String filePath = null;
     private String defaultText = null;
-    
+
     /**
      * Constructor of StringAreaEditor,
      * initializes <code>width</code> with <code>UNLIMITED</code>
-     * 
+     *
      * @param name            String
      * @param labelText        String
      * @param parent        Composite
@@ -67,7 +67,7 @@ public class StringAreaEditor extends FieldEditor {
         this.filePath = filePath;
         this.defaultText = defaultText;
     }
-    
+
     @Override
     protected void adjustForNumColumns(int numColumns) {
         GridData gd = (GridData) textField.getLayoutData();
@@ -77,7 +77,7 @@ public class StringAreaEditor extends FieldEditor {
         // we assume it is setting the width.
         gd.grabExcessHorizontalSpace = gd.horizontalSpan == 1;
     }
-    
+
     /**
      * Fills this field editor's basic controls into the given parent.
      * <p>
@@ -92,7 +92,7 @@ public class StringAreaEditor extends FieldEditor {
         GridData gd = new GridData();
         gd.verticalAlignment = SWT.TOP;
         myLabel.setLayoutData(gd);
-        
+
         textField = getTextControl(parent);
         gd = new GridData();
         gd.horizontalSpan = numColumns - 1;
@@ -110,7 +110,7 @@ public class StringAreaEditor extends FieldEditor {
         }
         textField.setLayoutData(gd);
     }
-    
+
     /**
      * Sets the field editor's value.
      */
@@ -118,12 +118,12 @@ public class StringAreaEditor extends FieldEditor {
     public void load() {
         textField.setText(readTextFromFile());
     }
-    
+
     @Override
     protected void doLoad() {
         // nothing to do, see load()
     }
-    
+
     private String readTextFromFile() {
         StringBuffer result = new StringBuffer();
         FileReader fileReader = null;
@@ -161,12 +161,12 @@ public class StringAreaEditor extends FieldEditor {
         writeTextToFile(defaultText);
         textField.setText(readTextFromFile());
     }
-    
+
     @Override
     protected void doLoadDefault() {
         // nothing to do, see loadDefault()
     }
-    
+
     /**
      * Saves the field editor's value.
      */
@@ -174,12 +174,12 @@ public class StringAreaEditor extends FieldEditor {
     public void store() {
         writeTextToFile(textField.getText());
     }
-    
+
     @Override
     protected void doStore() {
         // nothing to do, see store()
     }
-    
+
     private void writeTextToFile(String text) {
         try {
             FileWriter fileWriter = new FileWriter(filePath);
@@ -195,7 +195,7 @@ public class StringAreaEditor extends FieldEditor {
     public int getNumberOfControls() {
         return 2;
     }
-    
+
     /**
      * Returns the field editor's value.
      *
@@ -204,7 +204,7 @@ public class StringAreaEditor extends FieldEditor {
     public String getStringValue() {
         return textField.getText();
     }
-    
+
     /**
      * Returns this field editor's text control.
      *
@@ -214,7 +214,7 @@ public class StringAreaEditor extends FieldEditor {
     protected Text getTextControl() {
         return textField;
     }
-    
+
     /**
      * Returns this field editor's text control.
      * <p>
@@ -242,17 +242,17 @@ public class StringAreaEditor extends FieldEditor {
         }
         return textField;
     }
-    
+
     @Override
     public boolean isValid() {
         return true;
     }
-    
+
     @Override
     protected void refreshValidState() {
         // nothing to do, always valid
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -262,7 +262,7 @@ public class StringAreaEditor extends FieldEditor {
             textField.setFocus();
         }
     }
-    
+
     /**
      * Sets this text field's text limit.
      *
@@ -275,7 +275,7 @@ public class StringAreaEditor extends FieldEditor {
             textField.setTextLimit(limit);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -284,5 +284,5 @@ public class StringAreaEditor extends FieldEditor {
         super.setEnabled(enabled, parent);
         getTextControl(parent).setEnabled(enabled);
     }
-    
+
 }

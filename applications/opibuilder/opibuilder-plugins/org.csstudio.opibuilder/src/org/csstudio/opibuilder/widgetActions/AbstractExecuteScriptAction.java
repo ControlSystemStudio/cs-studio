@@ -31,7 +31,7 @@ public abstract class AbstractExecuteScriptAction extends AbstractWidgetAction {
     public static final String PROP_PATH = "path";//$NON-NLS-1$
     public static final String PROP_EMBEDDED = "embedded";//$NON-NLS-1$
     public static final String PROP_SCRIPT_TEXT = "scriptText";//$NON-NLS-1$
-    
+
     private BufferedReader reader = null;
     private InputStream inputStream = null;
 
@@ -41,25 +41,25 @@ public abstract class AbstractExecuteScriptAction extends AbstractWidgetAction {
                 PROP_PATH, "File Path", WidgetPropertyCategory.Basic, new Path(""),
                 new String[]{getFileExtension()}, false));
         addProperty(new StringProperty(
-                PROP_SCRIPT_TEXT, "Script Text", WidgetPropertyCategory.Basic, 
+                PROP_SCRIPT_TEXT, "Script Text", WidgetPropertyCategory.Basic,
                 getScriptHeader(), true, true));
         BooleanProperty embeddedProperty = new BooleanProperty(
                 PROP_EMBEDDED, "Embedded", WidgetPropertyCategory.Basic, false);
         embeddedProperty.addPropertyChangeListener(new PropertyChangeListener() {
-            
+
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {            
+            public void propertyChange(PropertyChangeEvent evt) {
                 getProperty(PROP_PATH).setVisibleInPropSheet(
                         !((Boolean) evt.getNewValue()));
                 getProperty(PROP_SCRIPT_TEXT).setVisibleInPropSheet(
                         ((Boolean) evt.getNewValue()));
             }
         });
-        addProperty(embeddedProperty);    
+        addProperty(embeddedProperty);
         getProperty(PROP_SCRIPT_TEXT).setVisibleInPropSheet(false);
 
     }
-    
+
 
     protected IPath getPath(){
         return (IPath)getPropertyValue(PROP_PATH);
@@ -78,11 +78,11 @@ public abstract class AbstractExecuteScriptAction extends AbstractWidgetAction {
         }
         return absolutePath;
     }
-    
+
     protected boolean isEmbedded(){
         return (Boolean)getPropertyValue(PROP_EMBEDDED);
     }
-    
+
     protected String getScriptText(){
         return (String)getPropertyValue(PROP_SCRIPT_TEXT);
     }
@@ -95,7 +95,7 @@ public abstract class AbstractExecuteScriptAction extends AbstractWidgetAction {
             return desc;
         return  desc + " " + getPath(); //$NON-NLS-1$
     }
-    
+
     /**Get reader of the script file.An instance will be created for later to use.
      * Muse call {@link #closeReader()} to close this reader.
      * @return the reader
@@ -108,19 +108,19 @@ public abstract class AbstractExecuteScriptAction extends AbstractWidgetAction {
         }
         return reader;
     }
-    
+
     protected void closeReader(){
         if(reader !=null){
             try {
                 inputStream.close();
                 reader.close();
-            } catch (IOException e) {            
+            } catch (IOException e) {
             }
             inputStream =null;
             reader = null;
         }
     }
-    
+
     /**
      * Get raw InputStream of the script file. Make sure to call close() of the returned instance.
      * @return InputStream of the script file.
@@ -129,8 +129,8 @@ public abstract class AbstractExecuteScriptAction extends AbstractWidgetAction {
     protected InputStream getInputStream() throws Exception{
         return ResourceUtil.pathToInputStream(getAbsolutePath(), false);
     }
-    
+
     protected abstract String getFileExtension();
-    
+
     protected abstract String getScriptHeader();
 }

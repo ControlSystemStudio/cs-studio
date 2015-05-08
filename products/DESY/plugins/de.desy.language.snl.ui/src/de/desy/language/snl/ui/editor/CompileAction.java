@@ -13,9 +13,9 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 /**
  * Action to trigger the compilation of the *.st file displayed in the SNL
  * Editor without saving.
- * 
+ *
  * @author Kai Meyer (C1 WPS)
- * 
+ *
  */
 public class CompileAction implements IEditorActionDelegate, IWorkbenchWindowActionDelegate {
 
@@ -59,11 +59,11 @@ public class CompileAction implements IEditorActionDelegate, IWorkbenchWindowAct
     }
 
     public void dispose() {
-        
+
     }
 
     public void init(IWorkbenchWindow window) {
-        
+
     }
 
 }

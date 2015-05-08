@@ -14,7 +14,7 @@ public class StandaloneApplicationWorkbenchWindowAdvisor extends WorkbenchWindow
         super(configurer);
     }
 
-    
+
     @Override
     public void postWindowCreate() {
         super.postWindowCreate();
@@ -22,21 +22,21 @@ public class StandaloneApplicationWorkbenchWindowAdvisor extends WorkbenchWindow
         Shell shell = configurer.getWindow().getShell();
         shell.setText("WebOPI");
         shell.setMaximized(true);
-        
+
     }
-    
+
     public void preWindowOpen() {
-        
-        IWorkbenchWindowConfigurer configurer = getWindowConfigurer();    
-       
+
+        IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
+
         configurer.setShowCoolBar(false);
         configurer.setShowMenuBar(false);
-        configurer.setShowStatusLine(false);        
+        configurer.setShowStatusLine(false);
         configurer.setTitle("WebOPI");
 
         configurer.setShellStyle(SWT.NO_TRIM);
     }
-    
-   
-    
+
+
+
 }

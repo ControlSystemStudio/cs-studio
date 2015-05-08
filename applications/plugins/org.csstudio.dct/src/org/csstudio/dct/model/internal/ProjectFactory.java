@@ -20,11 +20,11 @@ public class ProjectFactory {
     private static final String DEFAULT_DBDPATH_KEY = "DEFAULT_DBDPATH";
     private static final String DEFAULT_IOC_KEY = "DEFAULT_IOC";
     private static final String DEFAULT_DCTEXTENSION_KEY = "DEFAULT_DCTEXTENSION";
-    
+
     public static String getDctFileExtension() {
         return prefs.getString(DctActivator.PLUGIN_ID, DEFAULT_DCTEXTENSION_KEY, DEFAULT_DCTEXTENSION, null);
     }
-    
+
     private static String getPrefValue(String key, String defaultValue) {
         if (prefs == null) return defaultValue;
         return prefs.getString(DctActivator.PLUGIN_ID, key, defaultValue, null);
@@ -33,7 +33,7 @@ public class ProjectFactory {
     public static Project createNewDCTProject() {
         return createNewDCTProject(null);
     }
-    
+
     public static Project createNewDCTProjectFile(String fileName) {
         String name = getPrefValue(DEFAULT_DCTPROJECT_NAME_KEY, DEFAULT_DCTPROJECT_NAME);
         if (fileName != null && "<filename>".equals(name)) {
@@ -57,7 +57,7 @@ public class ProjectFactory {
         new ChangeDbdFileCommand(project, root.getAttributeValue("dbd")).execute();
         return project;
     }
-    
+
     public static UUID getIdFromXml(Element xmlElement) {
         String id = xmlElement.getAttributeValue("id");
         UUID uuid = id!=null?UUID.fromString(id):null;

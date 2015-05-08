@@ -82,7 +82,7 @@ protected void bringDown() {
         actionBars.updateActionBars();
         actionBars = null;
     }
-    
+
     super.bringDown();
     // dispose any scaled fonts that might have been created
     disposeScaledFont();
@@ -91,8 +91,8 @@ protected void bringDown() {
 protected CellEditor createCellEditorOn(Composite composite) {
     CellEditor editor =  new TextCellEditor(composite, (multiLine ? SWT.MULTI : SWT.SINGLE) | SWT.WRAP){
         @Override
-        protected void focusLost() {            
-            //in run mode, if the widget has a PV attached, 
+        protected void focusLost() {
+            //in run mode, if the widget has a PV attached,
             //lose focus should cancel the editing except mobile.
                 if (editPart.getExecutionMode() == ExecutionMode.RUN_MODE
                         && !OPIBuilderPlugin.isMobile(getControl().getDisplay())
@@ -106,7 +106,7 @@ protected CellEditor createCellEditorOn(Composite composite) {
                 } else
                     super.focusLost();
         }
-        
+
         @Override
         protected void handleDefaultSelection(SelectionEvent event) {
             //In run mode, hit ENTER should force to write the new value even it doesn't change.
@@ -115,12 +115,12 @@ protected CellEditor createCellEditorOn(Composite composite) {
             }
             super.handleDefaultSelection(event);
         }
-        
+
         @Override
         protected void keyReleaseOccured(KeyEvent keyEvent) {
             //In run mode, CTRL+ENTER will always perform a write if it is multiline text input
-            if (keyEvent.character == '\r' && 
-                    editPart.getExecutionMode() == ExecutionMode.RUN_MODE) { // Return key                
+            if (keyEvent.character == '\r' &&
+                    editPart.getExecutionMode() == ExecutionMode.RUN_MODE) { // Return key
                 if (text != null && !text.isDisposed()
                         && (text.getStyle() & SWT.MULTI) != 0) {
                     if ((keyEvent.stateMask & SWT.CTRL) != 0) {
@@ -145,15 +145,15 @@ private void disposeScaledFont() {
 protected void initCellEditor() {
     // update text
     ITextFigure textFigure = (ITextFigure) getEditPart().getAdapter(ITextFigure.class);
-    
+
 //    AbstractWidgetModel labelModel = (AbstractWidgetModel) getEditPart().getModel();
     getCellEditor().setValue(textFigure.getText());
     if(textFigure.isOpaque() || textFigure.getBorder() instanceof AbstractBackground){
         getCellEditor().getControl().setBackground(
-                textFigure.getBackgroundColor());    
+                textFigure.getBackgroundColor());
     }else {
         getCellEditor().getControl().setBackground(
-                textFigure.getParent().getBackgroundColor());    
+                textFigure.getParent().getBackgroundColor());
     }
     getCellEditor().getControl().setForeground(textFigure.getForegroundColor());
     // update font
@@ -205,10 +205,10 @@ private void saveCurrentActions(IActionBars actionBars) {
 private void updateScaledFont(double zoom) {
     if (cachedZoom == zoom)
         return;
-    
+
     Text text = (Text)getCellEditor().getControl();
     Font font = getEditPart().getFigure().getFont();
-    
+
     disposeScaledFont();
     cachedZoom = zoom;
     if (zoom == 1.0)

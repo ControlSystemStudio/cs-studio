@@ -176,7 +176,7 @@ public final class ConnectionUtilNew {
                 // .. let the behavior initialize the widget before any
                 // connections are opened
                 behavior.initializeWidget(widget);
-                
+
                 final Class javaType = widget.getJavaType();
                 final ConnectionParameters connectionParameters = new ConnectionParameters(
                         new RemoteInfo(RemoteInfo.DAL_TYPE_PREFIX + "EPICS",
@@ -240,7 +240,7 @@ public final class ConnectionUtilNew {
 //                type = ValueType.STRING;
 //            }
 //        }
-        
+
         // 3nd choice
         if (type == null) {
             // take the type hint, provided
@@ -273,7 +273,7 @@ public final class ConnectionUtilNew {
 //        return false;
 //    }
 
-    
+
     static final RemoteInfo translateWithoutCharacteristic(final IProcessVariableAddress pv) {
         String cs = "";
         final String responsibleDalPlugId = pv.getControlSystem().getResponsibleDalPlugId();

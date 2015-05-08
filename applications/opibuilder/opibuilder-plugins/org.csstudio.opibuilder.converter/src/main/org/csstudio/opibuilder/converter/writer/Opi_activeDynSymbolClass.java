@@ -20,14 +20,14 @@ public class Opi_activeDynSymbolClass extends OpiWidget {
     private static final String version = "1.0";
 
     /**
-     * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.  
+     * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.
      */
     public Opi_activeDynSymbolClass(Context con, Edm_activeDynSymbolClass r) {
         super(con, r);
         setTypeId(typeId);
         setVersion(version);
         setName(name);
-        
+
 
         if(r.getFile()!=null)
         {
@@ -36,14 +36,14 @@ public class Opi_activeDynSymbolClass extends OpiWidget {
                 originPath = originPath.replace(".edl", ".opi");
             } else
                 originPath = originPath + ".opi";
-            new OpiString(widgetContext, "opi_file", originPath);                
+            new OpiString(widgetContext, "opi_file", originPath);
         }
         new OpiInt(widgetContext, "border_style", 0);
         new OpiString(widgetContext, "group_name", "0");
         createPVOutputRule(r, "sim://ramp(0,"+(r.getNumStates()-1)+",1,"+r.getRate()+")",
                 "group_name", "\"\"+pvInt0", "DynamicSymbolRule");
-        
-        
+
+
 
     }
 

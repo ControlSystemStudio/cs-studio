@@ -39,7 +39,7 @@ public class CommandItem extends WidgetPart{
 
     private String commandName;
     private String args;
-    
+
     @Override
     void init() {
         name = String.valueOf("command");
@@ -90,7 +90,7 @@ public class CommandItem extends WidgetPart{
         ret[0] = new ADLResource(ADLResource.RD_LABEL, label);
         ret[1] = new ADLResource(ADLResource.RD_NAME, commandName);
         ret[2] = new ADLResource(ADLResource.RD_ARGS, args);
-        
+
         return ret;
     }
 

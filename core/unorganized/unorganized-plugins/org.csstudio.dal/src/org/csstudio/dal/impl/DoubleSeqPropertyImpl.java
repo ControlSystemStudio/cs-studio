@@ -38,7 +38,7 @@ public class DoubleSeqPropertyImpl extends NumericPropertyImpl<double[],Double>
 {
     private int sequenceLength;
     private boolean chInitialized = false;
-    
+
     /**
      * Creates a new DoubleSeqPropertyImpl object.
      *
@@ -51,13 +51,13 @@ public class DoubleSeqPropertyImpl extends NumericPropertyImpl<double[],Double>
         addDataAccessType(LongSeqAccess.class, LongSeqDataAccessWrapper.class);
     }
 
-    
-    
+
+
     private void readCharacteristics() throws DataExchangeException
     {
         if (chInitialized)
             return;
-    
+
         Integer length = null;
         length = (Integer)getCharacteristic(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH);
         if (length==null) {
@@ -78,7 +78,7 @@ public class DoubleSeqPropertyImpl extends NumericPropertyImpl<double[],Double>
             readCharacteristics();
         return sequenceLength;
     }
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.dal.NumericSimpleProperty#getMinimum()
      */
@@ -94,7 +94,7 @@ public class DoubleSeqPropertyImpl extends NumericPropertyImpl<double[],Double>
     public Double getMaximum() throws DataExchangeException {
         return (Double)getCharacteristic(C_MAXIMUM);
     }
-    
+
 }
 
 /* __oOo__ */

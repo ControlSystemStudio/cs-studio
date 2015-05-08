@@ -27,11 +27,11 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 public class AddTagCommandHandler extends AbstractAdaptedHandler<Channel> {
-    
+
     public AddTagCommandHandler() {
         super(Channel.class);
     }
-    
+
     @Override
     protected void execute(List<Channel> channels, ExecutionEvent event) {
         final Shell shell = HandlerUtil.getActiveShell(event);
@@ -72,7 +72,7 @@ public class AddTagCommandHandler extends AbstractAdaptedHandler<Channel> {
             String tagName = dialog.getValue();
             Tag.Builder tag = tag(tagName);
             if (existingTagNames.contains(tagName)) {
-                
+
             } else if (tagName != null && !tagName.equals("")) {
                 CreateTagDialog createTagDialog = new CreateTagDialog(shell,
                         tagName);
@@ -91,5 +91,5 @@ public class AddTagCommandHandler extends AbstractAdaptedHandler<Channel> {
         }
     }
 
-    
+
 }

@@ -26,22 +26,22 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 
 /**
  * <p>Determines the {@link CursorState} of widgets.</p>
- * 
+ *
  * <p>Each rule has its own set of {@code CursorState}s. The states that a rule
  * uses must be declared in the contribution that contributes the rule.</p>
- * 
+ *
  * @see CursorState
- * 
+ *
  * @author Joerg Rathlev
  */
 public abstract class CursorSelectionRule {
-    
+
     /**
      * Returns the ID of the current cursor state of the given widget. The state
      * returned by this method must be one of the states declared for this rule
      * in its contribution. If an undeclared state is returned, the behavior of
      * the display is undefined.
-     * 
+     *
      * @param widget
      *            the widget.
      * @return the ID of the current state of the widget, or <code>null</code>

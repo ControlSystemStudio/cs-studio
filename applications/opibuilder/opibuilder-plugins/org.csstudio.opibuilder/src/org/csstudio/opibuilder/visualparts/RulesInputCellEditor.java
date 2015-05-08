@@ -20,9 +20,9 @@ import org.eclipse.ui.PlatformUI;
  *
  */
 public class RulesInputCellEditor extends AbstractDialogCellEditor {
-    
+
     private RulesInput rulesInput;
-    
+
     private AbstractWidgetModel widgetModel;
 
     public RulesInputCellEditor(Composite parent,final AbstractWidgetModel widgetModel, String title) {
@@ -32,14 +32,14 @@ public class RulesInputCellEditor extends AbstractDialogCellEditor {
 
     @Override
     protected void openDialog(Shell parentShell, String dialogTitle) {
-        RulesInputDialog dialog = 
+        RulesInputDialog dialog =
             new RulesInputDialog(parentShell, rulesInput, widgetModel, dialogTitle);
-        
+
         if(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
                 "org.eclipse.help.ui.HelpView") !=null) //$NON-NLS-1$
             PlatformUI.getWorkbench().getHelpSystem().displayHelp(
                     OPIBuilderPlugin.PLUGIN_ID + ".rule"); //$NON-NLS-1$
-        
+
         if(dialog.open() == Window.OK){
             rulesInput = new RulesInput(dialog.getRuleDataList());
         }
@@ -62,7 +62,7 @@ public class RulesInputCellEditor extends AbstractDialogCellEditor {
             rulesInput = new RulesInput();
         else
             rulesInput = (RulesInput)value;
-            
+
     }
 
 }

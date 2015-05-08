@@ -69,7 +69,7 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
         family = new PropertyFamilyImpl(this);
         connecting= new HashSet<String>();
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.csstudio.dal.spi.AbstractFactorySupport#initialize(org.csstudio.dal.context.AbstractApplicationContext, org.csstudio.dal.spi.LinkPolicy)
@@ -114,7 +114,7 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
             if (p!=null) {
                 return p;
             }
-            
+
             synchronized (this) {
                 long timer= System.currentTimeMillis();
                 while (connecting.contains(uid) && System.currentTimeMillis()-timer<60000) {
@@ -124,7 +124,7 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
                         Logger.getLogger(this.getClass()).debug("Wait interrupted.", e);
                     }
                 }
-                
+
                 p = getFromFamily(uniqueName, type);
                 if (p!=null) {
                     return p;
@@ -133,7 +133,7 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
                 connecting.add(uid);
             }
         }
-        
+
         try {
             // Creates device implementation
             Class<?extends SimpleProperty<?>> impClass = getPlugInstance()
@@ -181,11 +181,11 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
             Class<? extends DynamicValueProperty<?>> type) {
         if (type == null) {
             return family.getFirst(uniqueName);
-        } 
-        
+        }
+
         return family.getFirst(uniqueName,type);
     }
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.dal.spi.PropertyFactory#getProperty(java.lang.String, java.lang.Class, org.csstudio.dal.context.LinkListener)
      */
@@ -217,14 +217,14 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
         Class<?extends DynamicValueProperty<?>> type, LinkListener<?> l)
         throws InstantiationException, RemoteException
     {
-        
+
         String uid= name.getRemoteName()+type;
 
         DynamicValuePropertyImpl<?> property = null;
-        
+
         if (propertiesCached) {
             property= (DynamicValuePropertyImpl<?>)getFromFamily(name.getRemoteName(), type);
-            
+
             if (property==null) {
                 synchronized (this) {
                     long timer= System.currentTimeMillis();
@@ -235,7 +235,7 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
                             Logger.getLogger(this.getClass()).debug("Wait interrupted.", e);
                         }
                     }
-                    
+
                     property= (DynamicValuePropertyImpl<?>)getFromFamily(name.getRemoteName(), type);
 
                     if (property==null) {
@@ -248,28 +248,28 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
         try {
             Class<?extends SimpleProperty<?>> impClass = getPlugInstance()
             .getPropertyImplementationClass(type, name.getRemoteName());
-    
+
             boolean newProp= false;
-            
+
             if (property == null) {
                 // Creates device implementation
-                
+
                 try {
                     property = (DynamicValuePropertyImpl<?>)impClass.getConstructor(String.class,
                             PropertyContext.class)
                         .newInstance(name.getRemoteName(), family);
                     family.add(property);
-    
+
                     newProp=true;
                 } catch (Exception e) {
                     throw new RemoteException(this, "Failed to instantiate '"+name+"'.", e);
                 }
             }
-    
+
             if (l != null) {
                 property.addLinkListener(l);
             }
-            
+
             /*if (!newProp && property.isConnected()) {
                 l.connected(new ConnectionEvent(property, ConnectionState.CONNECTED));
             } else if (!newProp && property.isConnectionFailed()) {

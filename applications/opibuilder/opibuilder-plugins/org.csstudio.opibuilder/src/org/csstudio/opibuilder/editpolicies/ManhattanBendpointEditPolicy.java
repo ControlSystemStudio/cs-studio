@@ -32,14 +32,14 @@ import org.eclipse.swt.graphics.Color;
 /**
  * The editpolicy that allows to move the middle segment of a manhattan
  * conneciton.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class ManhattanBendpointEditPolicy extends SelectionHandlesEditPolicy {
 
 //    private final static int MOVE_HANDLE_SIZE = 8;
-    
+
     private ConnectionRouter originalRouter;
     private Object originalConstraint;
 
@@ -50,10 +50,10 @@ public class ManhattanBendpointEditPolicy extends SelectionHandlesEditPolicy {
         if (points.size() < 4)
             return handles;
         for (int i = 1; i < points.size() - 2; i++) {
-            handles.add(new BendpointMoveHandle(getConnectionEditPart(), i - 1, 
+            handles.add(new BendpointMoveHandle(getConnectionEditPart(), i - 1,
                     new MidpointLocator(getConnection(), i)){
 //                    new MiddlePointLocator(getConnection(), i)) {
-                
+
                 @Override
                 protected Color getBorderColor() {
                     return (isPrimary()) ? ColorConstants.darkGreen : ColorConstants.white;
@@ -71,7 +71,7 @@ public class ManhattanBendpointEditPolicy extends SelectionHandlesEditPolicy {
     public void removeSelectionHandles() {
         super.removeSelectionHandles();
     }
-    
+
     @Override
     public Command getCommand(Request request) {
         if (REQ_MOVE_BENDPOINT.equals(request.getType())) {
@@ -99,7 +99,7 @@ public class ManhattanBendpointEditPolicy extends SelectionHandlesEditPolicy {
         Point newM = request.getLocation().getCopy();
         Point newA, newB;
         getConnection().translateToRelative(newM);
-        
+
         if(oldA.x == oldB.x){    //hozitontal move
             int dx = newM.x - oldA.x;
             newA = oldA.getTranslated(dx, 0);
@@ -110,21 +110,21 @@ public class ManhattanBendpointEditPolicy extends SelectionHandlesEditPolicy {
             newB = oldB.getTranslated(0, dy);
         }
         newPoints.setPoint(newA, aIndex);
-        newPoints.setPoint(newB, aIndex+1);        
+        newPoints.setPoint(newB, aIndex+1);
         newPoints.removePoint(0);
         newPoints.removePoint(newPoints.size()-1);
         return newPoints;
     }
-    
+
     @Override
     public void showSourceFeedback(Request request) {
         if (REQ_MOVE_BENDPOINT.equals(request.getType()))
             showMoveBendpointFeedback((BendpointRequest) request);
     }
-    
+
 
     protected void showMoveBendpointFeedback(BendpointRequest request) {
-        if(originalRouter == null && !(getConnection().getConnectionRouter() 
+        if(originalRouter == null && !(getConnection().getConnectionRouter()
                 instanceof FixedPointsConnectionRouter)){
             originalRouter = getConnection().getConnectionRouter();
             getConnection().setConnectionRouter(new FixedPointsConnectionRouter());
@@ -133,8 +133,8 @@ public class ManhattanBendpointEditPolicy extends SelectionHandlesEditPolicy {
             originalConstraint = getConnection().getRoutingConstraint();
         getConnection().setRoutingConstraint(getNewPoints(request));
     }
-    
-    
+
+
     /**
      * @see org.eclipse.gef.EditPolicy#eraseSourceFeedback(Request)
      */
@@ -142,7 +142,7 @@ public class ManhattanBendpointEditPolicy extends SelectionHandlesEditPolicy {
         if (REQ_MOVE_BENDPOINT.equals(request.getType()))
             eraseConnectionFeedback((BendpointRequest) request);
     }
-    
+
 
     protected void eraseConnectionFeedback(BendpointRequest request) {
         if(originalRouter != null)
@@ -151,35 +151,35 @@ public class ManhattanBendpointEditPolicy extends SelectionHandlesEditPolicy {
         originalConstraint = null;
         originalRouter = null;
     }
-    
-    
-    
+
+
+
     /**
      * Restores the original constraint that was saved before feedback began to
      * show.
      */
     protected void restoreOriginalConstraint() {
         getConnection().setRoutingConstraint(originalConstraint);
-        
+
     }
 
     /**
      * Convenience method for obtaining the host's <code>Connection</code>
      * figure.
-     * 
+     *
      * @return the Connection figure
      */
     protected Connection getConnection() {
         return (Connection) ((ConnectionEditPart) getHost()).getFigure();
     }
-    
+
     protected ConnectionEditPart getConnectionEditPart() {
         return (ConnectionEditPart) getHost();
     }
 
 //    private final static class MiddlePointLocator implements Locator {
 //
-//        private Connection connection; 
+//        private Connection connection;
 //        int index; //index of start point
 //
 //        public MiddlePointLocator(Connection connection, int i) {

@@ -14,10 +14,10 @@ public class SecondsParser
 {
     /** Seconds in a minute */
     final static int SECS_PER_MINUTE=60;
-    
+
     /** Seconds in an hour */
     final static int SECS_PER_HOUR=60*SECS_PER_MINUTE;
-    
+
     /** Parse time string, return seconds.
      *  <p>
      *  Allowed formats:
@@ -28,7 +28,7 @@ public class SecondsParser
      *  </ul>
      *  Special cases:
      *  One overall '-' is allowed to specify negative seconds.
-     *  
+     *
      *  @return The seconds parsed from the string.
      *  @throws Exception on parse error.
      */
@@ -52,7 +52,7 @@ public class SecondsParser
         int i = text.indexOf(sep);
         if (i < 0) // That's it.
             return sign * Double.parseDouble(text);
-        
+
         // There's more; these are the hours or minutes
         double secs = 60 * Double.parseDouble(text.substring(0, i));
 
@@ -61,14 +61,14 @@ public class SecondsParser
             return sign * (secs + Double.parseDouble(text.substring(i+1)));
         // Hours, minutes, and seconds
         secs = 60 * (secs + Double.parseDouble(text.substring(i+1, j)));
-        
+
         // More than two ':'?
         if (text.indexOf(sep, j+1) >= 0)
             throw new Exception("Invalid format");
         // Get the seconds
         return sign * (secs + Double.parseDouble(text.substring(j+1)));
     }
-    
+
     /** Convert seconds into "HH:MM:SS" string.
      *  @param seconds Seconds
      *  @return String with "HH:MM:SS"

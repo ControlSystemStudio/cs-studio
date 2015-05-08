@@ -28,11 +28,11 @@ public class EdmMultiStrings extends AbstractEdmMultiAttributes<EdmString> {
         super(genericEntity, required);
 
     }
-    
+
     @Override
     protected EdmString createEdmAttribute(EdmAttribute genericEntity) throws EdmException{
         return new EdmString(genericEntity, false);
     }
 
-    
+
 }

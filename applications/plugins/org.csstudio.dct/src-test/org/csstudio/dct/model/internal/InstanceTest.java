@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.model.internal;
 
@@ -20,15 +20,15 @@ import org.junit.Test;
 
 /**
  * Test cases for {@link Instance}.
- * 
+ *
  * @author Sven Wende
  *
  */
 public final class InstanceTest {
     private IPrototype prototype1, prototype2;
-    
+
     private Instance instance;
-    
+
     /**
      * @throws java.lang.Exception
      */
@@ -37,11 +37,11 @@ public final class InstanceTest {
         prototype1 = new Prototype("prototype1", UUID.randomUUID());
         prototype1.addRecord(new Record("r1", "ai", UUID.randomUUID()));
         prototype1.addRecord(new Record("r2", "ai", UUID.randomUUID()));
-        
+
         prototype2 = new Prototype("prototype2", UUID.randomUUID());
         prototype2.addRecord(new Record("r3", "ai", UUID.randomUUID()));
         prototype2.addInstance(new Instance(prototype1, UUID.randomUUID()));
-        
+
         instance = new Instance("instance", prototype2, UUID.randomUUID());
         instance.setParameterValue("name_a", "value_a");
         instance.setParameterValue("name_b", "value_b");
@@ -55,44 +55,44 @@ public final class InstanceTest {
         UUID uid = UUID.randomUUID();
         Instance i1 = new Instance(prototype1, uid);
         Instance i2 = new Instance(prototype1, uid);
-        
+
         // .. parent
         assertEquals(i1, i2);
-        
+
         // .. name
         i1.setName("A");
         assertNotSame(i1, i2);
         i2.setName("A");
         assertEquals(i1, i2);
-        
+
         // .. parameter values
         i1.setParameterValue("a","a");
         assertNotSame(i1, i2);
         i2.setParameterValue("a","a");
         assertEquals(i1, i2);
-        
+
         // .. properties
         i1.addProperty("a","a");
         assertNotSame(i1, i2);
         i2.addProperty("a","a");
         assertEquals(i1, i2);
-        
+
         // .. records
         Record record = new Record("r", "ai", uid);
         i1.addRecord(record);
         assertNotSame(i1, i2);
         i2.addRecord(record);
         assertEquals(i1, i2);
-        
+
         // .. instances
         i1.addInstance(instance);
         assertNotSame(i1, i2);
         i2.addInstance(instance);
         assertEquals(i1, i2);
-        
+
     }
 
-    
+
     /**
      * Test method for {@link org.csstudio.dct.model.internal.Instance#Instance(org.csstudio.dct.model.IContainer)}.
      */
@@ -128,10 +128,10 @@ public final class InstanceTest {
     public void testSetParameterValue() {
         // change a parameter value
         instance.setParameterValue("name_a", "value_a_changed");
-        
+
         // add a new parameter value
         instance.setParameterValue("name_c", "value_c");
-        
+
         Map<String, String> values = instance.getParameterValues();
         assertEquals(3, values.size());
         assertEquals("value_a_changed", values.get("name_a"));

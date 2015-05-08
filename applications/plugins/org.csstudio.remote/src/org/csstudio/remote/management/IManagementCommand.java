@@ -25,14 +25,14 @@ package org.csstudio.remote.management;
 /**
  * A management command. This interface must be implement by bundles that want
  * to offer management commands via the management command service.
- * 
+ *
  * @author Joerg Rathlev
  */
 public interface IManagementCommand {
 
     /**
      * Executes this command.
-     * 
+     *
      * @param parameters
      *            the parameters for the command. May be null if the command is
      *            called without parameters.

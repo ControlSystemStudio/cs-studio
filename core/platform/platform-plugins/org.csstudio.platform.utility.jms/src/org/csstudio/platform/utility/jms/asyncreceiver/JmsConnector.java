@@ -35,7 +35,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  * Manages the connections to the JMS servers.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class JmsConnector {
@@ -77,7 +77,7 @@ public final class JmsConnector {
 
     /**
      * Adds the specified connection monitor to this connector.
-     * 
+     *
      * @param monitor
      *            the connection monitor.
      */
@@ -87,7 +87,7 @@ public final class JmsConnector {
 
     /**
      * Removes the specified connection monitor from this connector.
-     * 
+     *
      * @param monitor
      *            the connection monitor.
      */
@@ -141,7 +141,7 @@ public final class JmsConnector {
     /**
      * Connects to the JMS servers. This method blocks until the connection to
      * both servers is established.
-     * 
+     *
      * @param monitor
      *            a progress monitor. Connecting to the first and second JMS
      *            server are reported as subtasks to the monitor.

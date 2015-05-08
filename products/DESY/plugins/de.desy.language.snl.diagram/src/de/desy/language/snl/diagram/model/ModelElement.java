@@ -19,10 +19,10 @@ import java.io.Serializable;
  * the editor can save and restore a binary representation. You might not need
  * this, if you store the model a non-binary form like XML).</li>
  * </ul>
- * 
+ *
  */
 public abstract class ModelElement implements Serializable {
-    
+
     public static final String PARENT = "Shape.Parent";
 
     private static final long serialVersionUID = 1;
@@ -31,11 +31,11 @@ public abstract class ModelElement implements Serializable {
             this);
 
     private String parent;
-    
+
 
     /**
      * Attach a non-null PropertyChangeListener to this object.
-     * 
+     *
      * @param l
      *            a non-null PropertyChangeListener instance
      * @throws IllegalArgumentException
@@ -51,7 +51,7 @@ public abstract class ModelElement implements Serializable {
     /**
      * Report a property change to registered listeners (for example edit
      * parts).
-     * 
+     *
      * @param property
      *            the programmatic name of the property that changed
      * @param oldValue
@@ -80,7 +80,7 @@ public abstract class ModelElement implements Serializable {
      * <p>
      * Override only if necessary.
      * </p>
-     * 
+     *
      * @return this instance
      */
     public Object getEditableValue() {
@@ -106,7 +106,7 @@ public abstract class ModelElement implements Serializable {
 
     /**
      * Deserialization constructor. Initializes transient fields.
-     * 
+     *
      * @see java.io.Serializable
      */
     private void readObject(ObjectInputStream in) throws IOException,
@@ -117,7 +117,7 @@ public abstract class ModelElement implements Serializable {
 
     /**
      * Remove a PropertyChangeListener from this component.
-     * 
+     *
      * @param l
      *            a PropertyChangeListener instance
      */
@@ -143,6 +143,6 @@ public abstract class ModelElement implements Serializable {
             parent = (String)value;
         }
     }
-    
+
     public abstract String getIdentifier();
 }

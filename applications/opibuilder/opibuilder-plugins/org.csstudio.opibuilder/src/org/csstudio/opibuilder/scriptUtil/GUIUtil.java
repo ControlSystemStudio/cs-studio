@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.MessageBox;
  *
  */
 public class GUIUtil {
-    
+
     /**Open a password dialog to allow user to input password.
      * @param dialogMessage the message on the dialog.
      * @param password the password
@@ -48,7 +48,7 @@ public class GUIUtil {
             return true;
         return false;
     }
-    
+
     /**Open a dialog to ask for confirmation.
      * @param dialogMessage the message on the dialog.
      * @return true if user has clicked the YES button. False otherwise.
@@ -65,7 +65,7 @@ public class GUIUtil {
     }
 
 
-    
+
     /**
      * Enter or exit compact mode.
      */
@@ -73,7 +73,7 @@ public class GUIUtil {
         ScriptUtil.executeEclipseCommand(
                 "org.csstudio.opibuilder.actions.compactMode"); //$NON-NLS-1$
     }
-    
+
     /**
      * Enter or exit full screen.
      */

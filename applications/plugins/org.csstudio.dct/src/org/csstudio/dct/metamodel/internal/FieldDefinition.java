@@ -8,9 +8,9 @@ import org.csstudio.dct.metamodel.PromptGroup;
 
 /**
  * Standard implementation of {@link IFieldDefinition}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class FieldDefinition implements IFieldDefinition, Serializable {
     private String extra;
@@ -26,7 +26,7 @@ public final class FieldDefinition implements IFieldDefinition, Serializable {
 
     /**
      * Constructor.
-     * 
+     *
      * @param name
      *            the name
      * @param type
@@ -48,7 +48,7 @@ public final class FieldDefinition implements IFieldDefinition, Serializable {
 
     /**
      * Sets extra.
-     * 
+     *
      * @param extra
      *            extra
      */
@@ -65,7 +65,7 @@ public final class FieldDefinition implements IFieldDefinition, Serializable {
 
     /**
      * Sets the initial value.
-     * 
+     *
      * @param initial
      *            the initial value
      */
@@ -82,7 +82,7 @@ public final class FieldDefinition implements IFieldDefinition, Serializable {
 
     /**
      * Sets the interest.
-     * 
+     *
      * @param interest
      *            the interest
      */
@@ -99,7 +99,7 @@ public final class FieldDefinition implements IFieldDefinition, Serializable {
 
     /**
      * Sets the menu.
-     * 
+     *
      * @param menuDefinition
      *            the menu
      */
@@ -117,7 +117,7 @@ public final class FieldDefinition implements IFieldDefinition, Serializable {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     /**
      *{@inheritDoc}
      */
@@ -127,7 +127,7 @@ public final class FieldDefinition implements IFieldDefinition, Serializable {
 
     /**
      * Sets the prompt.
-     * 
+     *
      * @param prompt
      *            the prompt
      */
@@ -144,7 +144,7 @@ public final class FieldDefinition implements IFieldDefinition, Serializable {
 
     /**
      * Sets the prompt group.
-     * 
+     *
      * @param promptGroup
      *            the prompt group
      */
@@ -161,7 +161,7 @@ public final class FieldDefinition implements IFieldDefinition, Serializable {
 
     /**
      * Sets the size.
-     * 
+     *
      * @param size
      *            the size
      */
@@ -178,7 +178,7 @@ public final class FieldDefinition implements IFieldDefinition, Serializable {
 
     /**
      * Sets the special.
-     * 
+     *
      * @param special
      *            the special
      */
@@ -192,7 +192,7 @@ public final class FieldDefinition implements IFieldDefinition, Serializable {
     public String getType() {
         return type;
     }
-    
+
     public void setType(String type) {
         this.type = type;
     }

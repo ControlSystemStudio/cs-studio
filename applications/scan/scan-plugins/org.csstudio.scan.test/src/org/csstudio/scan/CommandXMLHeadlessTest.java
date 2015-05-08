@@ -35,9 +35,9 @@ import org.csstudio.scan.command.XMLCommandWriter;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-In test of writing/reading a Command sequence as XML
- * 
+ *
  *  All but readXMLUsingEclipseScanCommandFactory() runs as plain JUnit test.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -59,13 +59,13 @@ public class CommandXMLHeadlessTest
 
         cmd = new ConfigLogCommand();
         assertThat(cmd.getCommandID(), equalTo("config_log"));
-        
+
         assertThat(SimpleScanCommandFactory.ID2CommandName("config_log"),
                    equalTo("ConfigLogCommand"));
         assertThat(SimpleScanCommandFactory.ID2CommandName("loop"),
                    equalTo("LoopCommand"));
     }
-    
+
     @Test
     public void testWriteXML() throws Exception
     {
@@ -90,7 +90,7 @@ public class CommandXMLHeadlessTest
         assertTrue(xml.contains("<device>My&lt;&gt;Device</device>"));
         assertTrue(xml.contains("<value>\"Apple&amp;Orange\"</value>"));
     }
-    
+
     public void runReader(final XMLCommandReader reader) throws Exception
     {
         if (xml == null)

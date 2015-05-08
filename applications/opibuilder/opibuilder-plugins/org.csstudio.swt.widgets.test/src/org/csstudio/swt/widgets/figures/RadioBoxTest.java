@@ -15,11 +15,11 @@ public class RadioBoxTest extends AbstractChoiceFigureTest{
     public Figure createTestWidget() {
         return new RadioBoxFigure(true);
     }
-    
-    
-    
+
+
+
     @Override
     public boolean isAutoTest() {
         return true;
-    }        
+    }
 }

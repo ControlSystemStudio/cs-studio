@@ -20,7 +20,7 @@ public class PVTableByPropertyCellLabelProvider extends VTableCellLabelProvider 
     public PVTableByPropertyCellLabelProvider(List<List<Collection<Channel>>> channels) {
         this.channels = channels;
     }
-    
+
     @Override
     public void update(ViewerCell cell) {
         super.update(cell);
@@ -30,16 +30,16 @@ public class PVTableByPropertyCellLabelProvider extends VTableCellLabelProvider 
                 cell.setBackground(SWTResourceManager.getColor(SWT.COLOR_GRAY));
                 cell.setForeground(SWTResourceManager.getColor(SWT.COLOR_GRAY));
             } else if (cellChannels.size() > 1) {
-                cell.setBackground(SWTResourceManager.getColor(187,225,246));                
+                cell.setBackground(SWTResourceManager.getColor(187,225,246));
             }
         }
     }
-    
+
     @Override
     public String getToolTipText(Object element, int row, int column) {
         if (column > 0) {
             Collection<Channel> cellChannels = channels.get(column - 1).get(row);
-            
+
             // No channels in the cell, no tooltip
             // 1 channel in the cell, return the name
             // n channels in the cell, list in alphabetical order
@@ -65,5 +65,5 @@ public class PVTableByPropertyCellLabelProvider extends VTableCellLabelProvider 
             return null;
         }
     }
-    
+
 }

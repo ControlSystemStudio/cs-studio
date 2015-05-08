@@ -22,43 +22,43 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
  * Base figure for a widget based on {@link AbstractScaledWidgetModel}.
- * 
+ *
  * @author Xihui Chen
  *
  */
 public abstract class AbstractScaledWidgetFigure extends Figure implements Introspectable{
 
     protected AbstractScale scale;
-    
+
     protected boolean transparent = true;
-    
+
     protected double value = 50;
-    
-    protected double minimum = 0;    
-    
+
+    protected double minimum = 0;
+
     protected double maximum = 100;
-    
+
     protected int majorTickMarkStepHint =30;
-    
+
     protected boolean showMinorTicks = true;
-    
+
     protected boolean showScale = true;
-    
-    protected boolean logScale = false;    
-    
+
+    protected boolean logScale = false;
+
     protected String valueLabelFormat = ""; //$NON-NLS-1$
-    
+
     public BeanInfo getBeanInfo() throws IntrospectionException {
         return new ScaleWidgetIntrospector().getBeanInfo(this.getClass());
     }
-    
+
     /**
      * @return the coerced value of the widget based on the scale range.
      */
     public double getCoercedValue(){
         return getCoercedValue(value);
     }
-    
+
     /**Coerce a value into range of the scale.
      * @param v the value to be coerced.
      * @return the coerced value
@@ -73,7 +73,7 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
             else
                 return v > range.getLower()?range.getLower(): range.getUpper();
         }
-            
+
 //        return Math.max(scale.getRange().getLower(), Math.min(scale.getRange().getUpper(), value));
     }
     /**
@@ -88,33 +88,33 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
     public double getMaximum() {
         return maximum;
     }
-    
+
     /**
      * @return the minimum
      */
     public double getMinimum() {
         return minimum;
     }
-    
+
     public Range getRange(){
         return new Range(minimum, maximum);
     }
-    
+
     /**
      * @return the scale
      */
     public AbstractScale getScale() {
         return scale;
     }
-    
+
     public double getValue() {
         return value;
     }
-    
+
     public String getValueLabelFormat() {
         return valueLabelFormat;
     }
-    
+
     /**
      * @return the value text after format.
      */
@@ -124,9 +124,9 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
         }else {
             return new DecimalFormat(valueLabelFormat).format(getValue());
         }
-            
+
     }
-    
+
     /**
      * @return the logScale
      */
@@ -139,7 +139,7 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
         return false;
     }
 
-    
+
     /**
      * @return the showMinorTicks
      */
@@ -152,7 +152,7 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
      */
     public boolean isShowScale() {
         return showScale;
-    }    
+    }
 
     /**
      * @return the transparent
@@ -163,7 +163,7 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
     /**
      * {@inheritDoc}
      */
-    public void paintFigure(final Graphics graphics) {        
+    public void paintFigure(final Graphics graphics) {
         if (!transparent) {
             graphics.setBackgroundColor(this.getBackgroundColor());
             Rectangle bounds = this.getBounds().getCopy();
@@ -207,7 +207,7 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
     public void setRange(Range range){
         setRange(range.getLower(), range.getUpper());
     }
-    
+
     /**
      * @param scale the scale to set
      */
@@ -252,8 +252,8 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
         this.value = value;
         //    Math.max(scale.getRange().getLower(), Math.min(scale.getRange().getUpper(), value));
         repaint();
-    }    
-    
+    }
+
     /**
      * @param valueLabelFormat the numeric format pattern for value label.
      */
@@ -268,6 +268,6 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
         this.valueLabelFormat = valueLabelFormat;
         setValue(value);
     }
-    
+
 
 }

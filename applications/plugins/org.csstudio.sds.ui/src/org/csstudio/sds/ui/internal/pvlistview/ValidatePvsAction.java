@@ -25,23 +25,23 @@ public class ValidatePvsAction extends Action {
                 this.serviceValidations = serviceValidations;
                 this.pvListView = pvListView;
     }
-    
+
     @Override
     public String getText() {
         return validationService.getServiceName();
     }
-    
+
     @Override
     public String getToolTipText() {
         return validationService.getServiceDescription();
     }
-    
+
     @Override
     public ImageDescriptor getImageDescriptor() {
         return AbstractUIPlugin.imageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID,
                 "icons/validationButtonImage.png");
     }
-    
+
     @Override
     public void run() {
         pvListView.handleValidationAction(validationService, serviceValidations);

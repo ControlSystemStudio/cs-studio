@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene.opiwidgets;
 
@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ScatterGraph2DWidgetFigure extends AbstractPointDatasetGraph2DWidgetFigure<ScatterGraph2DWidget> {
 

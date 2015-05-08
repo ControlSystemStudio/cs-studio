@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-/**This will help to create the necessary widgets 
+/**This will help to create the necessary widgets
  * to configure an annotation's properties.
  * @author Xihui Chen
  * @author Kay Kasemir Layout tweaks
@@ -53,45 +53,45 @@ public class AnnotationConfigPage {
     private Label xAxisLabel;
     private Label yAxisLabel;
     private Label colorLabel;
-    
+
     public AnnotationConfigPage(XYGraph xyGraph, Annotation annotation) {
         this.xyGraph = xyGraph;
         this.annotation = annotation;
         font = annotation.getFont();
     }
-    
+
     public void createPage(final Composite composite){
         this.composite = composite;
         composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         composite.setLayout(new GridLayout(2, false));
-        
+
         final Label nameLabel = new Label(composite, 0);
         nameLabel.setText(Messages.Annotation_Name);
         nameLabel.setLayoutData(new GridData());
-        
+
         nameText = new Text(composite, SWT.BORDER | SWT.SINGLE);
         nameText.setToolTipText(Messages.Annotation_NameTT);
-        nameText.setLayoutData(new GridData(SWT.FILL, 0, true, false));        
-        
+        nameText.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+
         snapToTrace = new Button(composite, SWT.CHECK);
-        snapToTrace.setText(Messages.Annotation_Snap);        
+        snapToTrace.setText(Messages.Annotation_Snap);
         snapToTrace.setToolTipText(Messages.Annotation_SnapTT);
         snapToTrace.setLayoutData(new GridData(0, 0, false, false, 2, 1));
-        
+
         xAxisLabel = new Label(composite, 0);
-        xAxisLabel.setLayoutData(new GridData());        
-        
-        xAxisOrTraceCombo = new Combo(composite, SWT.DROP_DOWN);        
+        xAxisLabel.setLayoutData(new GridData());
+
+        xAxisOrTraceCombo = new Combo(composite, SWT.DROP_DOWN);
         xAxisOrTraceCombo.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-        
+
         yAxisLabel = new Label(composite, 0);
-        yAxisLabel.setText(Messages.Annotation_YAxis);    
+        yAxisLabel.setText(Messages.Annotation_YAxis);
         yAxisLabel.setLayoutData(new GridData());
-        
+
         yAxisCombo = new Combo(composite, SWT.DROP_DOWN);
         yAxisCombo.setToolTipText(Messages.Annotation_YAxisSnapTT);
         yAxisCombo.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-        
+
         //snapToTrace listener
         snapToTrace.addSelectionListener(new SelectionAdapter()
         {
@@ -124,23 +124,23 @@ public class AnnotationConfigPage {
                 else if(!annotation.isFree() && snapToTrace.getSelection())
                     xAxisOrTraceCombo.select(xyGraph.getPlotArea().
                             getTraceList().indexOf(annotation.getTrace()));
-                
+
                 yAxisLabel.setVisible(!snapToTrace.getSelection());
-                yAxisCombo.setVisible(!snapToTrace.getSelection());    
+                yAxisCombo.setVisible(!snapToTrace.getSelection());
                 composite.layout(true, true);
             }
         });
         //annotation color
         useDefaultColorButton = new Button(composite, SWT.CHECK);
         useDefaultColorButton.setText(Messages.Annotation_ColorFromYAxis);
-        useDefaultColorButton.setLayoutData(new GridData(SWT.FILL, 0, false, false, 2, 1));        
-        
+        useDefaultColorButton.setLayoutData(new GridData(SWT.FILL, 0, false, false, 2, 1));
+
         colorLabel = new Label(composite, 0);
-        colorLabel.setText(Messages.Annotation_Color);        
+        colorLabel.setText(Messages.Annotation_Color);
         colorLabel.setLayoutData(new GridData());
-        
+
         colorSelector = new ColorSelector(composite);
-        colorSelector.getButton().setLayoutData(new GridData());        
+        colorSelector.getButton().setLayoutData(new GridData());
         useDefaultColorButton.addSelectionListener(new SelectionAdapter(){
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -148,10 +148,10 @@ public class AnnotationConfigPage {
                 colorLabel.setVisible(!useDefaultColorButton.getSelection());
             }
         });
-        
+
         fontLabel = new Label(composite, 0);
         fontLabel.setLayoutData(new GridData());
-        
+
         final Button fontButton = new Button(composite, SWT.PUSH);
         fontButton.setText(Messages.Annotation_ChangeFont);
         fontButton.setLayoutData(new GridData());
@@ -170,29 +170,29 @@ public class AnnotationConfigPage {
                 }
             }
         });
-        
+
         final Label cursorLineLabel = new Label(composite, 0);
         cursorLineLabel.setText(Messages.Annotation_Cursor);
         cursorLineLabel.setLayoutData(new GridData());
-        
+
         cursorLineCombo = new Combo(composite, SWT.DROP_DOWN);
         cursorLineCombo.setItems(CursorLineStyle.stringValues());
         cursorLineCombo.setLayoutData(new GridData());
-        
-        showNameButton = new Button(composite, SWT.CHECK);        
+
+        showNameButton = new Button(composite, SWT.CHECK);
         showNameButton.setText(Messages.Annotation_ShowName);
         showNameButton.setLayoutData(new GridData(0, 0, false, false, 2, 1));
-        
-        showSampleInfoButton = new Button(composite, SWT.CHECK);        
+
+        showSampleInfoButton = new Button(composite, SWT.CHECK);
         showSampleInfoButton.setText(Messages.Annotation_ShowInfo);
         showSampleInfoButton.setLayoutData(new GridData(0, 0, false, false, 2, 1));
-        
+
         showPositionButton = new Button(composite, SWT.CHECK);
         showPositionButton.setText(Messages.Annotation_ShowPosition);
         showPositionButton.setLayoutData(new GridData(0, 0, false, false, 2, 1));
         initialize();
     }
-    
+
     /**
      * @return the composite
      */
@@ -201,27 +201,27 @@ public class AnnotationConfigPage {
     }
 
     public void applyChanges(){
-        annotation.setName(nameText.getText());        
-        if(snapToTrace.getSelection())            
+        annotation.setName(nameText.getText());
+        if(snapToTrace.getSelection())
             annotation.setTrace(xyGraph.getPlotArea().getTraceList().get(
-                    xAxisOrTraceCombo.getSelectionIndex()));            
+                    xAxisOrTraceCombo.getSelectionIndex()));
         else
             annotation.setFree(xyGraph.getXAxisList().get(
-                    xAxisOrTraceCombo.getSelectionIndex()), 
+                    xAxisOrTraceCombo.getSelectionIndex()),
                     xyGraph.getYAxisList().get(yAxisCombo.getSelectionIndex()));
-        
+
         if(!useDefaultColorButton.getSelection())
             annotation.setAnnotationColor(XYGraphMediaFactory.getInstance().getColor(
                     colorSelector.getColorValue()));
         else
             annotation.setAnnotationColor(null);
-        
+
         annotation.setFont(font);
         annotation.setCursorLineStyle(CursorLineStyle.values()[
                 cursorLineCombo.getSelectionIndex()]);
         annotation.setShowName(showNameButton.getSelection());
         annotation.setShowSampleInfo(showSampleInfoButton.getSelection());
-        annotation.setShowPosition(showPositionButton.getSelection());    
+        annotation.setShowPosition(showPositionButton.getSelection());
     }
 
     /**
@@ -235,9 +235,9 @@ public class AnnotationConfigPage {
      * @param annotation the annotation to set
      */
     public void setAnnotation(Annotation annotation) {
-        this.annotation = annotation;        
+        this.annotation = annotation;
     }
-    
+
     private void initialize(){
         nameText.setText(annotation.getName());
         nameText.setSelection(0, nameText.getText().length());
@@ -249,25 +249,25 @@ public class AnnotationConfigPage {
             for(Trace trace : xyGraph.getPlotArea().getTraceList())
                 xAxisOrTraceCombo.add(trace.getName());
             xAxisOrTraceCombo.select(xyGraph.getPlotArea().getTraceList().indexOf(
-                    annotation.getTrace()));            
+                    annotation.getTrace()));
         }else{
             for(Axis axis : xyGraph.getXAxisList())
                 xAxisOrTraceCombo.add(axis.getTitle());
             xAxisOrTraceCombo.select(xyGraph.getXAxisList().indexOf(annotation.getXAxis()));
         }
         for(Axis axis : xyGraph.getYAxisList())
-            yAxisCombo.add(axis.getTitle());    
+            yAxisCombo.add(axis.getTitle());
         yAxisCombo.select(xyGraph.getYAxisList().indexOf(annotation.getYAxis()));
         yAxisLabel.setVisible(!snapToTrace.getSelection());
-        yAxisCombo.setVisible(!snapToTrace.getSelection());    
+        yAxisCombo.setVisible(!snapToTrace.getSelection());
         useDefaultColorButton.setSelection(annotation.getAnnotationColor() == null);
         colorLabel.setVisible(!useDefaultColorButton.getSelection());
         colorSelector.getButton().setVisible(annotation.getAnnotationColor() != null);
         colorSelector.setColorValue(
-                annotation.getAnnotationColor() == null ? 
+                annotation.getAnnotationColor() == null ?
                 annotation.getYAxis().getForegroundColor().getRGB() :
                 annotation.getAnnotationColor().getRGB());
-        
+
         fontLabel.setText(Messages.Annotation_Font + (font==null? Messages.Annotation_SystemDefault : font.getFontData()[0].getName()));
         fontLabel.setFont(font);
         cursorLineCombo.select(annotation.getCursorLineStyle().getIndex());
@@ -276,6 +276,6 @@ public class AnnotationConfigPage {
         showPositionButton.setSelection(annotation.isShowPosition());
 
     }
-    
-    
+
+
 }

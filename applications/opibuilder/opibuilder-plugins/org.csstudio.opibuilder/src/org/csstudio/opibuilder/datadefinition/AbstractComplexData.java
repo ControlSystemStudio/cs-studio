@@ -20,19 +20,19 @@ import org.eclipse.core.runtime.Assert;
  *
  */
 public abstract class AbstractComplexData {
-    private Map<String, AbstractWidgetProperty> propertyMap;    
-    
+    private Map<String, AbstractWidgetProperty> propertyMap;
+
     private AbstractWidgetModel widgetModel;
-    
+
     public AbstractComplexData(AbstractWidgetModel widgetModel) {
         this.widgetModel = widgetModel;
         propertyMap = new LinkedHashMap<String, AbstractWidgetProperty>();
         configureProperties();
-        
+
 
     }
-    
-    
+
+
 
     /**Add a property to the widget.
      * @param property the property to be added.
@@ -40,14 +40,14 @@ public abstract class AbstractComplexData {
     public void addProperty(final AbstractWidgetProperty property){
         Assert.isNotNull(property);
         property.setWidgetModel(getWidgetModel());
-        propertyMap.put(property.getPropertyID(), property);                
+        propertyMap.put(property.getPropertyID(), property);
     }
-    
+
     /**
      * The place to add properties.
      */
     protected abstract void configureProperties();
-    
+
     public AbstractWidgetProperty[] getAllProperties(){
         AbstractWidgetProperty[] propArray = new AbstractWidgetProperty[propertyMap.size()];
         int i=0;
@@ -55,11 +55,11 @@ public abstract class AbstractComplexData {
             propArray[i++] = p;
         return propArray;
     }
-    
+
     public Set<String> getAllPropertyIDs() {
         return propertyMap.keySet();
     }
-    
+
     public AbstractComplexData getCopy() {
         AbstractComplexData copy = createInstance();
         for(String id : propertyMap.keySet()){

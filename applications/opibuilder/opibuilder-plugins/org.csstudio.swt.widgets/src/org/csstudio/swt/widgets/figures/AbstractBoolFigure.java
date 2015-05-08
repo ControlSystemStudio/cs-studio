@@ -31,26 +31,26 @@ import org.eclipse.swt.graphics.RGB;
  *
  */
 public class AbstractBoolFigure extends Figure implements Introspectable{
-    
+
     public enum TotalBits {
         BITS_16,
         BITS_32,
         BITS_64
     }
-    
+
     public enum BoolLabelPosition{
-        
-        DEFAULT("Default"),                
-        TOP("Top"),    
+
+        DEFAULT("Default"),
+        TOP("Top"),
         LEFT("Left"),
         CENTER("Center"),
         RIGHT("Right"),
         BOTTOM("Bottom"),
         TOP_LEFT("Top Left"),
-        TOP_RIGHT("Top Right"),    
+        TOP_RIGHT("Top Right"),
         BOTTOM_LEFT("Bottom Left"),
         BOTTOM_RIGHT("Bottom Right");
-        
+
         public static String[] stringValues(){
             String[] result = new String[values().length];
             int i=0;
@@ -63,13 +63,13 @@ public class AbstractBoolFigure extends Figure implements Introspectable{
         BoolLabelPosition(String description){
             this.descripion = description;
         }
-        
+
         @Override
         public String toString() {
             return descripion;
         }
     }
-    
+
     private TotalBits totalBits = TotalBits.BITS_64;
 
     protected Label boolLabel;
@@ -85,7 +85,7 @@ public class AbstractBoolFigure extends Figure implements Introspectable{
     protected String onLabel = "ON";
 
     protected String offLabel = "OFF";
-    
+
     protected BoolLabelPosition boolLabelPosition = BoolLabelPosition.DEFAULT;
 
     protected Color onColor = CustomMediaFactory.getInstance().getColor(
@@ -112,11 +112,11 @@ public class AbstractBoolFigure extends Figure implements Introspectable{
             labelLocation =  defaultLocation;
             return;
         }
-        Rectangle textArea = getClientArea();        
+        Rectangle textArea = getClientArea();
         Dimension textSize = Draw2dSingletonUtil.getTextUtilities().getTextExtents(
                 boolLabel.getText(), getFont());
             int x=0;
-            if(textArea.width > textSize.width){                
+            if(textArea.width > textSize.width){
                 switch (boolLabelPosition) {
                 case CENTER:
                 case TOP:
@@ -128,11 +128,11 @@ public class AbstractBoolFigure extends Figure implements Introspectable{
                 case BOTTOM_RIGHT:
                     x = textArea.width - textSize.width;
                     break;
-                default:                    
+                default:
                     break;
                 }
             }
-            
+
             int y=0;
             if(textArea.height > textSize.height){
                 switch (boolLabelPosition) {
@@ -156,7 +156,7 @@ public class AbstractBoolFigure extends Figure implements Introspectable{
                 labelLocation = new Point(x + textArea.x, y + textArea.y);
     }
 
-    
+
     /**
      * @return the bit
      */
@@ -170,11 +170,11 @@ public class AbstractBoolFigure extends Figure implements Introspectable{
     public boolean getBooleanValue() {
         return booleanValue;
     }
-    
+
     protected Point getLabelLocation(final int x, final int y){
         return getLabelLocation(new Point(x, y));
     }
-    
+
     /**
      * @param defaultLocation The default location.
      * @return the location of the boolean label
@@ -184,7 +184,7 @@ public class AbstractBoolFigure extends Figure implements Introspectable{
             calculateLabelLocation(defaultLocation);
         return labelLocation;
     }
-    
+
     public BoolLabelPosition getBoolLabelPosition() {
         return boolLabelPosition;
     }
@@ -231,7 +231,7 @@ public class AbstractBoolFigure extends Figure implements Introspectable{
         labelLocation = null;
         super.invalidate();
     }
-    
+
     @Override
     public boolean isOpaque() {
         return false;
@@ -267,14 +267,14 @@ public class AbstractBoolFigure extends Figure implements Introspectable{
         super.setEnabled(value);
         repaint();
     }
-    
+
     @Override
     public void setFont(Font f) {
         super.setFont(f);
         boolLabel.setFont(f);
         revalidate();
     }
-    
+
     public void setBoolLabelPosition(BoolLabelPosition labelPosition) {
         this.boolLabelPosition = labelPosition;
         labelPosition = null;
@@ -301,7 +301,7 @@ public class AbstractBoolFigure extends Figure implements Introspectable{
         this.offLabel = offLabel;
         if(!booleanValue)
             boolLabel.setText(offLabel);
-        
+
     }
 
     /**
@@ -389,18 +389,18 @@ public class AbstractBoolFigure extends Figure implements Introspectable{
                 switch (totalBits) {
                 case BITS_16:
                     setValue(booleanValue? value | ((short)1<<bit) : value & ~((short)1<<bit));
-                break;                
+                break;
                 case BITS_32:
                     setValue(booleanValue? value | ((int)1<<bit) : value & ~((int)1<<bit));
                 break;
-                default:                
+                default:
                     setValue(booleanValue? value | (1L<<bit) : value & ~(1L<<bit));
                     break;
-                }            
+                }
             }
         }
     }
-    
+
     public TotalBits getTotalBits() {
         return totalBits;
     }

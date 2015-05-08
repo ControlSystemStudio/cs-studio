@@ -44,19 +44,19 @@ public class StringSeqPropertyImpl extends DynamicValuePropertyImpl<String[]>
         super(String[].class, name, propertyContext);
     }
 
-    
+
     private void readCharacteristics() throws DataExchangeException
     {
         if (chInitialized)
             return;
-    
+
         Integer length = null;
         length = (Integer)getCharacteristic(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH);
         sequenceLength = length.intValue();
         chInitialized = true;
 
     }
-    
+
     /*
      *  (non-Javadoc)
      * @see org.csstudio.dal.SequenceAccess#getSequenceLength()

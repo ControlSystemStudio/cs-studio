@@ -2,9 +2,9 @@ package de.desy.language.snl.parser.nodes;
 
 /**
  * The outline node of an SNL state when condition.
- * 
+ *
  * The source identifier will be the condition required to receive that state.
- * 
+ *
  * @author C1 WPS / KM, MZ
  */
 public class WhenNode extends AbstractSNLNode {

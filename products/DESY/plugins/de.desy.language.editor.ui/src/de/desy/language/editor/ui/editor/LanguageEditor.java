@@ -1,24 +1,24 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
  * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT
  * LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR
- * PURPOSE AND  NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+ * PURPOSE AND  NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, 
+ * IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING,
  * REPAIR OR CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL
- * PART OF THIS LICENSE. NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER 
+ * PART OF THIS LICENSE. NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER
  * EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, 
- * ENHANCEMENTS, OR MODIFICATIONS. THE FULL LICENSE SPECIFYING FOR THE 
- * SOFTWARE THE REDISTRIBUTION, MODIFICATION, USAGE AND OTHER RIGHTS AND 
- * OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES,
+ * ENHANCEMENTS, OR MODIFICATIONS. THE FULL LICENSE SPECIFYING FOR THE
+ * SOFTWARE THE REDISTRIBUTION, MODIFICATION, USAGE AND OTHER RIGHTS AND
+ * OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU
  * MAY FIND A COPY AT {@link http://www.desy.de/legal/license.htm}
  */
 package de.desy.language.editor.ui.editor;
@@ -76,19 +76,19 @@ import de.desy.language.libraries.utils.contract.Contract;
 /**
  * This abstract class provides additional predefined behavior for source code
  * editing of structured programming languages.
- * 
+ *
  * <strong>Note:</strong> You have to register your editor on the Eclipse
  * extension point 'org.eclipse.ui.editor' to make it accessible in Eclipse. If
  * you like to assign your editor to a specified content type you have to
  * register the editor
- * 
+ *
  * To configure the behavior redefine (override) the corresponding
  * implementation-methods; all starting with the keyword 'do'. Cause this editor
  * inherits from TextEditor all configurations possible to a TextEditor also
  * apply to editors based in this class but be careful: please do first search
  * for a do-method before replacing behavior of the TextEditor class cause some
  * configurations used by this class and may be incompatible.
- * 
+ *
  * @author <a href="mailto:kmeyer@c1-wps.de">Kai Meyer</a>
  * @author <a href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * @version 0.2
@@ -129,7 +129,7 @@ public abstract class LanguageEditor extends TextEditor {
 
     /**
      * The token scanner by default used for this editor.
-     * 
+     *
      * @author <a href="mailto:kmeyer@c1-wps.de">Kai Meyer</a>
      * @author <a href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
      * @version 0.2
@@ -146,7 +146,7 @@ public abstract class LanguageEditor extends TextEditor {
          * initialized by getting the rules from the rule-provider during
          * constructor processing (the rule provider have to be fully
          * unidolized).
-         * 
+         *
          * @param ruleProvider
          *            The {@link AbstractRuleProvider}.
          */
@@ -345,14 +345,14 @@ public abstract class LanguageEditor extends TextEditor {
 
     /**
      * Returns the parser of the language viewed in this editor.
-     * 
+     *
      * @return The parser to be used, not null.
      */
     protected abstract AbstractLanguageParser doGetLanguageParser();
 
     /**
      * Returns the id for the partitioner to use.
-     * 
+     *
      * @return The id of the partitioner or null if no partitioner should be
      *         used.
      */
@@ -365,9 +365,9 @@ public abstract class LanguageEditor extends TextEditor {
      * haven't a special damager, we prefer to return an instance of
      * {@link DefaultDamagerRepairer}, this instance should be the same like the
      * one returned by {@link #doGetPresentationRepairer(ITokenScanner)} .
-     * 
+     *
      * Example (damagerRepairer may be a field):
-     * 
+     *
      * <pre>
      * if (this.damagerRepairer == null) {
      *     this.damagerRepairer = new DefaultDamagerRepairer(
@@ -375,7 +375,7 @@ public abstract class LanguageEditor extends TextEditor {
      * }
      * return this.damagerRepairer;
      * </pre>
-     * 
+     *
      * @param codeScannerUsedForHighligthing
      *            The code scanner used internally by the editor; this instance
      *            is passed cause the default damage-repairer requires the token
@@ -390,9 +390,9 @@ public abstract class LanguageEditor extends TextEditor {
      * haven't a special repairer, we prefer to return an instance of
      * {@link DefaultDamagerRepairer}, this instance should be the same like the
      * one returned by {@link #doGetPresentationDamager(ITokenScanner)}.
-     * 
+     *
      * Example (damagerRepairer may be a field):
-     * 
+     *
      * <pre>
      * if (this.damagerRepairer == null) {
      *     this.damagerRepairer = new DefaultDamagerRepairer(
@@ -400,7 +400,7 @@ public abstract class LanguageEditor extends TextEditor {
      * }
      * return this.damagerRepairer;
      * </pre>
-     * 
+     *
      * @param codeScannerUsedForHighligthing
      *            The code scanner used internally by the editor; this instance
      *            is passed cause the default damage-repairer requires the token
@@ -414,14 +414,14 @@ public abstract class LanguageEditor extends TextEditor {
      * Returns the rule provider for text parsing while highlighting to be used
      * for this editor. By default you may create a rule provider which returns
      * an empty list of rules, than you'll get no highlighting.
-     * 
+     *
      * @return Return the rule provider to be used, not null.
      */
     protected abstract AbstractRuleProvider doGetRuleProviderForHighlighting();
 
     /**
      * Redefine this method to offer an own token scanner implementation.
-     * 
+     *
      * @return A valid token scanner for highlighting, not null.
      */
     protected LanguagesEditorsTokenScanner doGetTokenScanner(
@@ -469,7 +469,7 @@ public abstract class LanguageEditor extends TextEditor {
      * Sets the editor input. To offer additional behavior after the input has
      * been set, redefine {@link #doHandleDoSetInputHasBeenCalled(IEditorInput)}
      * .
-     * 
+     *
      * For further information see {@link TextEditor#doSetInput(IEditorInput)}.
      */
     @Override
@@ -522,7 +522,7 @@ public abstract class LanguageEditor extends TextEditor {
 
     /**
      * Returns the presentation damager to be used for this editor.
-     * 
+     *
      * @return Return the presentation damager to be used, not null.
      */
     public final IPresentationDamager getPresentationDamager() {
@@ -535,7 +535,7 @@ public abstract class LanguageEditor extends TextEditor {
 
     /**
      * Returns the presentation repairer to be used for this editor.
-     * 
+     *
      * @return Return the presentation repairer to be used, not null.
      */
     public final IPresentationRepairer getPresentationRepairer() {
@@ -549,7 +549,7 @@ public abstract class LanguageEditor extends TextEditor {
     /**
      * Returns the rule provider for text parsing while highlighting to be used
      * for this editor.
-     * 
+     *
      * @return Return the rule provider to be used, not null.
      */
     public final AbstractRuleProvider getRuleProviderForHighlighting() {
@@ -563,7 +563,7 @@ public abstract class LanguageEditor extends TextEditor {
     /**
      * Initializes the editor. To add additional initialize behavior redefine
      * {@link #doAdditionalInitializing()}.
-     * 
+     *
      * @see org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#initializeEditor()
      */
     @Override
@@ -644,7 +644,7 @@ public abstract class LanguageEditor extends TextEditor {
                     LanguageEditor.this._rootNode = languageParser.parse(
                             document.get(), sourceRessource, progressMonitor);
                     _measurementData = languageParser.getMeasurementData();
-                    
+
                     if (_measurementProvider != null) {
                         _measurementProvider.notifyListener();
                     }
@@ -727,7 +727,7 @@ public abstract class LanguageEditor extends TextEditor {
     }
 
     /**
-     * 
+     *
      * @return the {@link IContentAssistProcessor} for this
      *         {@link LanguageEditor} or null for non.
      */

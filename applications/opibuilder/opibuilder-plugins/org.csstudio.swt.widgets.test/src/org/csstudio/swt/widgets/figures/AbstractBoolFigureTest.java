@@ -12,8 +12,8 @@ public abstract class AbstractBoolFigureTest extends AbstractWidgetTest {
 
     @Override
     public String[] getPropertyNames() {
-        String[] superProps =  super.getPropertyNames();    
-        
+        String[] superProps =  super.getPropertyNames();
+
         String[] myProps = new String[]{
                 "bit",
                 "booleanValue",
@@ -26,5 +26,5 @@ public abstract class AbstractBoolFigureTest extends AbstractWidgetTest {
         };
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
 }

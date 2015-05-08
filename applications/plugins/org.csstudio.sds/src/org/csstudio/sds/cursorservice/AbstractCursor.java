@@ -5,7 +5,7 @@ import org.csstudio.sds.model.IOption;
 /**
  * A mouse cursor. Instances of this class represent mouse cursor graphics that
  * can be used as the cursor graphics for SDS widgets.
- * 
+ *
  * @author swende, Joerg Rathlev
  */
 public abstract class AbstractCursor implements IOption {
@@ -13,15 +13,15 @@ public abstract class AbstractCursor implements IOption {
      * Identifier of this cursor.
      */
     private String _id;
-    
+
     /**
      * The name of this cursor.
      */
     private String _title;
-    
+
     /**
      * Creates a new cursor descriptor.
-     * 
+     *
      * @param id
      *            the id of the cursor.
      * @param title
@@ -36,7 +36,7 @@ public abstract class AbstractCursor implements IOption {
 
     /**
      * Returns the name of this cursor.
-     * 
+     *
      * @return the name of this cursor.
      */
     public final String getTitle() {
@@ -45,7 +45,7 @@ public abstract class AbstractCursor implements IOption {
 
     /**
      * Returns the identifier of this cursor.
-     * 
+     *
      * @return the identifier of this cursor.
      */
     public final String getIdentifier() {

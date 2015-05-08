@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.jobs.Job;
 
 /**
  * @author Kunal Shroff
- * 
+ *
  */
 public class LogQueryJob extends Job {
 

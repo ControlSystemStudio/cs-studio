@@ -15,8 +15,8 @@ public class LEDTest extends AbstractBoolFigureTest{
     public Figure createTestWidget() {
         return new LEDFigure();
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -24,14 +24,14 @@ public class LEDTest extends AbstractBoolFigureTest{
                 "effect3D",
                 "squareLED"
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
     @Override
     public boolean isAutoTest() {
         return true;
     }
 
-        
+
 }

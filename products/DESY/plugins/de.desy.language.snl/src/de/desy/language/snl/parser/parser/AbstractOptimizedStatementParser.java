@@ -15,36 +15,36 @@ public abstract class AbstractOptimizedStatementParser<N extends AbstractSNLNode
     protected int _endOffSet;
     protected N _node;
     private Matcher _matcher;
-    
+
     private final Interval[] _exclusions;
-    
+
     public AbstractOptimizedStatementParser() {
         _exclusions = new Interval[0];
     }
-    
+
     public AbstractOptimizedStatementParser(Interval[] exclusions) {
         assert exclusions != null : "exclusions != null";
-        
+
         _exclusions = exclusions;
     }
 
     @Override
     protected void doFindNext(final CharSequence input, final int startIndex) {
         this._found = false;
-        
+
         final Pattern prePattern = Pattern.compile(getPrePatternString());
         final Matcher preMatcher = prePattern.matcher(input);
         final Pattern postPattern = Pattern.compile(getPostPatternString());
         final Matcher postMatcher = postPattern.matcher(input);
         final Pattern pattern = Pattern.compile(this.getPatternString());
         _matcher = pattern.matcher(input);
-        
+
         int localStart = startIndex;
         while (preMatcher.find(localStart)) {
             localStart = preMatcher.start();
-            
+
             while (postMatcher.find(localStart)) {
-                final int end = postMatcher.end();            
+                final int end = postMatcher.end();
                 this._matcher.region(localStart, end);
                 if (this._matcher.find()) {
                     this.matchFound(postMatcher, this._matcher);
@@ -62,7 +62,7 @@ public abstract class AbstractOptimizedStatementParser<N extends AbstractSNLNode
             }
         }
     }
-    
+
     protected int determineStartPosition(int pos) {
         for (Interval current : _exclusions) {
             if (current.contains(pos)) {
@@ -71,7 +71,7 @@ public abstract class AbstractOptimizedStatementParser<N extends AbstractSNLNode
         }
         return pos;
     }
-    
+
     protected abstract String getPrePatternString();
 
     protected abstract String getPostPatternString();
@@ -81,7 +81,7 @@ public abstract class AbstractOptimizedStatementParser<N extends AbstractSNLNode
     /**
      * Will be called if the pre-matcher and the matcher has found a possible
      * matching element.
-     * 
+     *
      * @param preMatcher
      * @param mainMatcher
      */

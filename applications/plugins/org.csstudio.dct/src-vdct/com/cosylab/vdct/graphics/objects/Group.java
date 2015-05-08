@@ -8,22 +8,22 @@ package com.cosylab.vdct.graphics.objects;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -65,16 +65,16 @@ public class Group
     protected String namePrefix;
     // local view settings
     ViewState localView = null;
-    
-    // template instances fields lookuptable 
+
+    // template instances fields lookuptable
     private Hashtable lookupTable = null;
     private static VDBTemplate editingTemplateData = null;
     private static long openTemplateMacroID = 0;
     private static long openTemplatePortID = 0;
 
     // contains DB structure (entry (include, path, addpath statements), record, expand)
-    protected Vector structure = null; 
-    
+    protected Vector structure = null;
+
 /**
  * Group constructor comment.
  * @param parent com.cosylab.vdct.graphics.objects.ContainerObject
@@ -114,7 +114,7 @@ public void addSubObject(String id, VisibleObject object) {
     com.cosylab.vdct.undo.UndoManager.getInstance().addAction(
         new com.cosylab.vdct.undo.CreateAction(object)
     );
-*/    
+*/
     if (object instanceof com.cosylab.vdct.inspector.Inspectable)
         com.cosylab.vdct.DataProvider.getInstance().fireInspectableObjectAdded((com.cosylab.vdct.inspector.Inspectable)object);
 }
@@ -175,7 +175,7 @@ public void addSubObject(String id, VisibleObject object, boolean create) {
 public boolean checkMove(int dx, int dy) {
     ViewState view = ViewState.getInstance();
 
-    if ((getX()<-dx) || (getY()<-dy) || 
+    if ((getX()<-dx) || (getY()<-dy) ||
         (getX()>(view.getWidth()-getWidth()-dx)) || (getY()>(view.getHeight()-getHeight()-dy)))
         return false;
     else
@@ -187,7 +187,7 @@ public boolean checkMove(int dx, int dy) {
  * @param group java.lang.String
  */
 public Flexible copyToGroup(java.lang.String group) {
-    
+
     String newName;
     String oldName = getAbsoluteName();
     if (group.equals(nullString))
@@ -196,13 +196,13 @@ public Flexible copyToGroup(java.lang.String group) {
         newName = group+Constants.GROUP_SEPARATOR+getName();
 
     ViewState view = ViewState.getInstance();
-        
+
     while (Group.getRoot().findObject(newName, true)!=null)
 //        newName += Constants.COPY_SUFFIX;
             newName = StringUtils.incrementName(newName, Constants.COPY_SUFFIX);
 
     Group g = Group.createGroup(newName);
-    
+
     if (Settings.getInstance().getSnapToGrid())
         g.snapToGrid();
     /*if (group.equals(getNamePrefix()) || group.equals(Constants.CLIPBOARD_NAME)) {
@@ -217,7 +217,7 @@ public Flexible copyToGroup(java.lang.String group) {
         g.setY(getY());
     }
 
-    
+
     Flexible flexible;
     Object[] objs = new Object[getSubObjectsV().size()];
     getSubObjectsV().copyInto(objs);
@@ -233,7 +233,7 @@ public Flexible copyToGroup(java.lang.String group) {
     com.cosylab.vdct.undo.UndoManager.getInstance().setMonitor(false);
     try
     {
-    
+
         for (int i=0; i < objs.length; i++) {
             if (objs[i] instanceof Record)
                 {
@@ -248,7 +248,7 @@ public Flexible copyToGroup(java.lang.String group) {
     {
         com.cosylab.vdct.undo.UndoManager.getInstance().setMonitor(monitoring);
     }
-    
+
     return g;
 
 }
@@ -269,7 +269,7 @@ public static Group createGroup(String name) {
  * Creation date: (4.2.2001 16:23:37)
  */
 public void destroy() {
-    
+
     VisibleObject vo;
     Object[] objs = new Object[subObjectsV.size()];
     subObjectsV.copyInto(objs);
@@ -285,7 +285,7 @@ public void destroy() {
     }
     clear();
     if (getParent()!=null) getParent().removeObject(getName());
-    
+
 }
 /**
  * Insert the method's description here.
@@ -301,13 +301,13 @@ protected void draw(Graphics g, boolean hilited) {
     boolean zoom = Rscale < 1.0 && view.isZoomOnHilited() && view.isHilitedObject(this);
     if (zoom) {
         zoomImage = ZoomPane.getInstance().startZooming(this, true);
-    }    
-    
+    }
+
     int rrx = getRx()-view.getRx();
     int rry = getRy()-view.getRy();
     int rwidth = getRwidth();
     int rheight = getRheight();
-        
+
     // clipping
     if ((!(rrx>view.getViewWidth()) || (rry>view.getViewHeight())
         || ((rrx+rwidth)<0) || ((rry+rheight)<0)) || isZoomRepaint()) {
@@ -316,16 +316,16 @@ protected void draw(Graphics g, boolean hilited) {
             rrx = ZoomPane.getInstance().getLeftOffset();
             rry = ZoomPane.VERTICAL_MARGIN;
         }
-                
+
         if (!hilited) g.setColor(Constants.RECORD_COLOR);
         else if (view.isPicked(this)) g.setColor(Constants.PICK_COLOR);
         else if (view.isSelected(this) ||
                  view.isBlinking(this)) g.setColor(Constants.SELECTION_COLOR);
         else g.setColor(Constants.RECORD_COLOR);
-    
+
         g.fillRect(rrx, rry, rwidth, rheight);
         if (!hilited) g.setColor(Constants.FRAME_COLOR);
-        else g.setColor((view.isHilitedObject(this)) ? 
+        else g.setColor((view.isHilitedObject(this)) ?
                         Constants.HILITE_COLOR : Constants.FRAME_COLOR);
 
         g.drawRect(rrx, rry, rwidth, rheight);
@@ -334,9 +334,9 @@ protected void draw(Graphics g, boolean hilited) {
             g.setFont(getFont());
             g.drawString(getLabel(), rrx+getRlabelX(), rry+getRlabelY());
         }
-    
+
     }
-    
+
     if (zoom && !isZoomRepaint()) {
         rwidth /= Rscale;
         rheight /= Rscale;
@@ -344,14 +344,14 @@ protected void draw(Graphics g, boolean hilited) {
         rry -= (rheight - getRheight())/2;
         if (view.getRx() < 0)
             rrx = rrx < 0 ? 2 : rrx;
-        if (view.getRy() < 0) 
+        if (view.getRy() < 0)
             rry = rry <= 0 ? 2 : rry;
         g.drawImage(zoomImage, rrx,rry, ZoomPane.getInstance());
     }
-    
+
     // paint components
 /*
-    VisualObject vo;                
+    VisualObject vo;
     Enumeration e = getObjects();
     while (e.hasMoreElements()) {
       vo = (VisualObject)(e.nextElement());
@@ -369,16 +369,16 @@ protected void draw(Graphics g, boolean hilited) {
 public Object findObject(String objectName, boolean deep) {
     if (objectName.length()==0 && Group.getRoot()==this)
         return this;
-        
-    String relName = Group.substractRelativeName(getAbsoluteName(), 
+
+    String relName = Group.substractRelativeName(getAbsoluteName(),
                                                  objectName);
-    
+
     if (relName==null)
-        return null;     
+        return null;
     else if (relName.length()==0 || relName.charAt(0)==Constants.GROUP_SEPARATOR)
     {
         com.cosylab.vdct.Console.getInstance().println("Invalid name '"+objectName+"'.");
-        return null;     
+        return null;
     }
     else if (Group.hasTokens(relName))
     {
@@ -392,7 +392,7 @@ public Object findObject(String objectName, boolean deep) {
             //com.cosylab.vdct.Console.getInstance().println("\t objectName="+objectName+", current group="+getAbsoluteName());
             return null;
         }
-        else 
+        else
             return ((Group)parent).findObject(objectName, deep);
     }
     else {
@@ -405,7 +405,7 @@ public Object findObject(String objectName, boolean deep) {
  * @param deep boolean
  */
 public void fixLinks(boolean deep) {
-    
+
     Enumeration e = subObjectsV.elements();
     Object obj;
     while (e.hasMoreElements()) {
@@ -423,7 +423,7 @@ public void fixLinks(boolean deep) {
  * @return java.lang.String
  */
 public String getAbsoluteName() {
-    if (namePrefix.equals("")) return name; 
+    if (namePrefix.equals("")) return name;
     else return namePrefix+Constants.GROUP_SEPARATOR+name;
 }
 /**
@@ -530,7 +530,7 @@ public VisibleObject hiliteComponentsCheck(int x, int y) {
 
     //ViewState view = ViewState.getInstance();
     VisibleObject spotted = null;
-    
+
     Enumeration e = subObjectsV.elements();
     VisibleObject vo;
     while (e.hasMoreElements()) {
@@ -554,7 +554,7 @@ public VisibleObject hiliteComponentsCheck(int x, int y) {
  * Insert the method's description here.
  * Creation date: (1.2.2001 14:09:39)
  */
- 
+
 public void initializeLayout() {
 
     ViewState view = ViewState.getInstance();
@@ -562,26 +562,26 @@ public void initializeLayout() {
     com.cosylab.vdct.Settings.getInstance().setSnapToGrid(false);     // avoid fixes in getX()
     try
     {
-        
+
         // count objects to layout
         int containerCount = 0;
         Enumeration e = getSubObjectsV().elements();
         while (e.hasMoreElements())
             if (e.nextElement() instanceof ContainerObject)
                 containerCount++;
-                    
+
         final int offset = view.getGridSize()*2;
-        
+
         // groups should be the widest
         int nx = (view.getWidth()-offset)/(Constants.GROUP_WIDTH+offset);
         if (nx==0) nx=1;
         int sx = (int)((view.getWidth()-offset)/nx);
         sx = Math.min(sx, Constants.GROUP_WIDTH+offset);
-            
+
         int ny = containerCount/nx+1;
         if (ny==0) ny=1;
         int sy = (int)(view.getHeight()/(ny+1));
-        sy = Math.min(sy, 3*Constants.GROUP_HEIGHT);        
+        sy = Math.min(sy, 3*Constants.GROUP_HEIGHT);
 
         int x = offset/2;
         int y = x;
@@ -594,18 +594,18 @@ public void initializeLayout() {
             if (vo instanceof ContainerObject) {
                 if (vo instanceof Group) ((Group)vo).initializeLayout();
                 if ((vo.getX()<=0) || (vo.getY()<=0) ||
-                    (vo.getY()>=view.getHeight()) || 
+                    (vo.getY()>=view.getHeight()) ||
                     (vo.getX()>=view.getWidth())) {
                     vo.setX(x); vo.setY(y);
                     x+=sx; i++;
                     if (i>=nx) {
-                        x=offset/2; i=0; 
+                        x=offset/2; i=0;
                         y+=sy;
                     }
                 }
             }
         }
-    } 
+    }
     catch (Exception e)
     {
     }
@@ -621,7 +621,7 @@ public void initializeLayout() {
  * @param deep boolean
  */
 public void manageLinks(boolean deep) {
-    
+
     Enumeration e = subObjectsV.elements();
     Object obj;
     while (e.hasMoreElements()) {
@@ -644,11 +644,11 @@ public void manageLinks(boolean deep) {
 public boolean move(int dx, int dy) {
     if (checkMove(dx, dy)) {
         x+=dx;
-        y+=dy;            
+        y+=dy;
         revalidatePosition();
         return true;
     }
-    else 
+    else
         return false;
 }
 /**
@@ -673,7 +673,7 @@ public boolean moveToGroup(java.lang.String group) {
         newName = StringUtils.incrementName(newName, Constants.MOVE_SUFFIX);
         obj = Group.getRoot().findObject(newName, true);
     }
-    
+
     //getRoot().addSubObject(newName, this, true);
     //setAbsoluteName(newName);
 /*    Group g = getRoot().createGroup(newName);
@@ -681,7 +681,7 @@ public boolean moveToGroup(java.lang.String group) {
     getParent().removeObject(getName());
     setParent(null);
     setAbsoluteName(newName);
-    
+
     Group g = (Group)getRoot().findObject(group, true);
     if (g==null) {
         g=Group.createGroup(group);
@@ -695,7 +695,7 @@ public boolean moveToGroup(java.lang.String group) {
         g.setX((int)(view.getRy()/view.getScale()));
     }*/
     g.addSubObject(getName(), this);
-    
+
     Flexible flexible;
     Object[] objs = new Object[subObjectsV.size()];
     getSubObjectsV().copyInto(objs);
@@ -749,14 +749,14 @@ public void paintComponents(Graphics g, boolean hilited, boolean flatten) {
             vo = (VisibleObject)(e.nextElement());
             vo.paint(g, hilited);
         }
-        
+
         e = subObjectsV.elements();
         while (e.hasMoreElements()) {
             vo = (VisibleObject)(e.nextElement());
             vo.postPaint(g, hilited);
         }
     }
-    
+
 }
 
 /**
@@ -771,13 +771,13 @@ public Object removeObject(String id) {
     com.cosylab.vdct.undo.UndoManager.getInstance().addAction(
         new com.cosylab.vdct.undo.DeleteAction((VisibleObject)object)
     );
-*/    
+*/
     Vector structure = Group.getRoot().getStructure();
     if (object instanceof SaveObject)
     {
         structure.remove(object);
     }
-    
+
     if (object instanceof com.cosylab.vdct.inspector.Inspectable)
         com.cosylab.vdct.DataProvider.getInstance().fireInspectableObjectRemoved((com.cosylab.vdct.inspector.Inspectable)object);
     return object;
@@ -811,7 +811,7 @@ public boolean rename(java.lang.String newName) {
     }
 
     return true;
-    
+
 }
 /**
  * Insert the method's description here.
@@ -828,10 +828,10 @@ public void revalidatePosition() {
  * @return boolean
  */
 public boolean selectAllComponents() {
-    
+
     ViewState view = ViewState.getInstance();
     boolean anyNew = false;
-    
+
     Enumeration e = subObjectsV.elements();
     VisibleObject vo;
     while (e.hasMoreElements()) {
@@ -862,12 +862,12 @@ public boolean selectComponentsCheck(int x1, int y1, int x2, int y2) {
 
     ViewState view = ViewState.getInstance();
     boolean anyNew = false;
-    
+
     Enumeration e = subObjectsV.elements();
     VisibleObject vo;
     while (e.hasMoreElements()) {
         vo = (VisibleObject)(e.nextElement());
-        if ((vo instanceof Selectable) && 
+        if ((vo instanceof Selectable) &&
              (vo.intersects(x1, y1, x2, y2)!=null)) {
                 if (view.setAsSelected(vo)) anyNew = true;
         }
@@ -993,12 +993,12 @@ public void unconditionalValidateSubObjects(boolean flat) {
         else
             ((VisibleObject)obj).unconditionalValidation();
     }
-    
+
 }
 
 private void validateFont(double scale, int rwidth, int rheight) {
-    
-    
+
+
     // set appropriate font size
     int x0 = (int)(16*scale);        // insets
     int y0 = (int)(8*scale);
@@ -1007,7 +1007,7 @@ private void validateFont(double scale, int rwidth, int rheight) {
 
     Font font;
     font = FontMetricsBuffer.getInstance().getAppropriateFont(
-                    Constants.DEFAULT_FONT, Font.PLAIN, 
+                    Constants.DEFAULT_FONT, Font.PLAIN,
                     getLabel(), rwidth-x0, rheight-y0);
 
     if (rwidth<(2*x0)) font = null;
@@ -1025,13 +1025,13 @@ private void validateFont(double scale, int rwidth, int rheight) {
  */
 protected void validate() {
   revalidatePosition();
-    
+
   double scale = getRscale();
   int rwidth = (int)(getWidth()*scale);
   int rheight = (int)(getHeight()*scale);
   setRwidth(rwidth);
   setRheight(rheight);
-  validateFont(scale, rwidth, rheight); 
+  validateFont(scale, rwidth, rheight);
 }
 /**
  * Insert the method's description here.
@@ -1045,7 +1045,7 @@ public void validateSubObjects() {
         obj = e.nextElement();
         ((VisibleObject)obj).forceValidation();
     }
-    
+
 }
 /**
  * Insert the method's description here.
@@ -1067,7 +1067,7 @@ public void writeObjects(java.io.DataOutputStream file, NamingContext renamer, b
  */
 public static void writeObjects(Vector elements, java.io.DataOutputStream file, NamingContext renamer, boolean export) throws java.io.IOException {
 
-    
+
  Object obj;
  String name;
  Template template;
@@ -1078,18 +1078,18 @@ public static void writeObjects(Vector elements, java.io.DataOutputStream file, 
 
  int pos;
  VDBFieldData dtypFieldData;
- 
+
  final String comma = ", ";
  final String nl = "\n";
- final String recordStart = nl+DBResolver.RECORD+"("; 
- final String fieldStart = "  "+DBResolver.FIELD+"("; 
- 
+ final String recordStart = nl+DBResolver.RECORD+"(";
+ final String fieldStart = "  "+DBResolver.FIELD+"(";
+
  Enumeration e = elements.elements();
- while (e.hasMoreElements()) 
+ while (e.hasMoreElements())
      {
          obj = e.nextElement();
-    
-         // go through the records    
+
+         // go through the records
          if (obj instanceof Record)
              {
                  record = (Record)obj;
@@ -1098,20 +1098,20 @@ public static void writeObjects(Vector elements, java.io.DataOutputStream file, 
                 if (record.getRecordData().getName().startsWith(Constants.CLIPBOARD_NAME)) continue;
 
                  name = renamer.getResolvedName(recordData.getName());
-                 if (export) 
+                 if (export)
                  {
                      name = renamer.matchAndReplace(name);
                      // warning if macros still exist
                      if (name.indexOf("$(") >= 0 || name.indexOf("${") >= 0)
                          Console.getInstance().println("WARNING: record name '" + name + "' is not fully resolved.");
                  }
-                 
+
                 name = StringUtils.quoteIfMacro(name);
-                
+
                  // write comment
                  if (recordData.getComment()!=null)
                      file.writeBytes(nl+recordData.getComment());
-                     
+
                 // write "record" block
                  file.writeBytes(recordStart+recordData.getType()+comma+name+") {"+nl);
 
@@ -1128,11 +1128,11 @@ public static void writeObjects(Vector elements, java.io.DataOutputStream file, 
                         {
                             fieldData = (VDBFieldData)(e2.nextElement());
                             if ((fieldData.getType()==DBDConstants.DBF_INLINK) ||
-                                (fieldData.getType()==DBDConstants.DBF_OUTLINK)) 
+                                (fieldData.getType()==DBDConstants.DBF_OUTLINK))
                                 break;
                             pos++;
                         }
-            
+
                      if (fieldData!=dtypFieldData)
                          {
                              // move DTYP before first occurence of DBF_INLINK/DBF_OUTLINK fields
@@ -1141,7 +1141,7 @@ public static void writeObjects(Vector elements, java.io.DataOutputStream file, 
                          }
                      }
 
-                // write fields                 
+                // write fields
                  e2 = recordData.getFieldsV().elements();
                 while (e2.hasMoreElements())
                     {
@@ -1150,37 +1150,37 @@ public static void writeObjects(Vector elements, java.io.DataOutputStream file, 
                         // write comment
                         if (fieldData.getComment()!=null)
                             file.writeBytes(fieldData.getComment()+nl);
-                            
+
                         String value = StringUtils.removeQuotes(fieldData.getValue());
-                        
+
                         // first we rename the link if there is one
                         if (((fieldData.getType()==DBDConstants.DBF_INLINK) ||
                                                          (fieldData.getType()==DBDConstants.DBF_OUTLINK) ||
                                                          (fieldData.getType()==DBDConstants.DBF_FWDLINK))
                                                          && !value.startsWith(Constants.HARDWARE_LINK))
                                                        value = renamer.resolveLink(value);
-                        
+
                         if (export)
                         {
                             /*// apply ports
-                            if (namer.getPorts()!=null && value!=null) 
+                            if (namer.getPorts()!=null && value!=null)
                                 value = VDBTemplateInstance.applyPorts(value, namer.getPorts());
-                            
+
                             // apply macro substitutions
-                            if (namer.getSubstitutions()!=null && value!=null)                                 
+                            if (namer.getSubstitutions()!=null && value!=null)
                                  value = VDBTemplateInstance.applyProperties(value, namer.getSubstitutions());*/
-                            value = renamer.matchAndReplace(value);                                   
+                            value = renamer.matchAndReplace(value);
                              // warning if macros still exist
                              if (value != null && (value.indexOf("$(") >= 0 || value.indexOf("${") >= 0))
                                  Console.getInstance().println("WARNING: field value '" + value + "' of '" + fieldData.getFullName() + "' is not fully resolved.");
                         }
-                                                
+
                         // if value is different from init value
                         if (!fieldData.hasDefaultValue())
                         {
-                                //                        write field value                                 
+                                //                        write field value
                                 file.writeBytes(fieldStart+fieldData.getName()+comma+"\""+value+"\")"+nl);
-                    
+
                          }
                         // write field value if has a comment
                          else if (fieldData.getComment()!=null)
@@ -1191,12 +1191,12 @@ public static void writeObjects(Vector elements, java.io.DataOutputStream file, 
                                  file.writeBytes("  "+com.cosylab.vdct.db.DBConstants.commentString+
                                                  DBResolver.FIELD+"("+fieldData.getName()+comma+"\""+value+"\")"+nl);
                             else
-                            {      
+                            {
                                 file.writeBytes(fieldStart+fieldData.getName()+comma+"\""+value+"\")"+nl);
-                            }                                
+                            }
                          }
                      }
-    
+
                     file.writeBytes("}"+nl);
               }
         /*else if (obj instanceof Group)
@@ -1207,25 +1207,25 @@ public static void writeObjects(Vector elements, java.io.DataOutputStream file, 
         else if (obj instanceof Template)
               {
                   template = (Template)obj;
-                  
+
                   // skip templates on clipboard
                   if (!template.getTemplateData().getName().startsWith(Constants.CLIPBOARD_NAME))
                       template.writeObjects(file, renamer, export);
-                  
+
              }
         else if (!export && obj instanceof DBTemplateEntry)
             {
                 writeTemplateData(file, renamer);
                 // !!! TBD multiple templates support
-            }             
+            }
         else if (obj instanceof DBDataEntry)
               {
                   DBDataEntry entry = (DBDataEntry)obj;
-                 
+
                  // write comment
                  if (entry.getComment()!=null)
                      file.writeBytes(entry.getComment()+nl);
-                 
+
                  //write data
                  file.writeBytes(entry.getData()+nl);
              }
@@ -1268,10 +1268,10 @@ public static void writeVDCTData(Vector elements, java.io.DataOutputStream file,
  Record record;
  Template template;
  Connector connector;
- EPICSLinkOut link; 
- EPICSLink field; 
+ EPICSLinkOut link;
+ EPICSLink field;
  Enumeration e2;
- 
+
  final String nl = "\n";
 
  final String comma = ",";
@@ -1301,10 +1301,10 @@ public static void writeVDCTData(Vector elements, java.io.DataOutputStream file,
 
  file.writeBytes(VIEW_START + view.getRx() + comma + view.getRy() +
                   comma + view.getScale() + ending);
-     
+
  Enumeration e = elements.elements();
 
- while (e.hasMoreElements()) 
+ while (e.hasMoreElements())
      {
          obj = e.nextElement();
 
@@ -1317,11 +1317,11 @@ public static void writeVDCTData(Vector elements, java.io.DataOutputStream file,
                  file.writeBytes(RECORD_START+
                      StringUtils.quoteIfMacro(
                          renamer.getResolvedName(record.getRecordData().getName())
-                     ) + comma + record.getX() + comma + record.getY() + 
+                     ) + comma + record.getX() + comma + record.getY() +
                      comma + StringUtils.color2string(record.getColor()) +
                      comma + StringUtils.boolean2str(record.isRight()) +
-                    comma + quote + 
-                renamer.getResolvedName(record.getDescription()) + 
+                    comma + quote +
+                renamer.getResolvedName(record.getDescription()) +
                     quote +    ending);
 
                  e2 = record.getSubObjectsV().elements();
@@ -1330,19 +1330,19 @@ public static void writeVDCTData(Vector elements, java.io.DataOutputStream file,
                      obj = e2.nextElement();
 
                      if (obj instanceof Connector)
-                     {    
+                     {
                          connector = (Connector)obj;
                         String target = NULL;
                         if (connector.getInput()!=null)
                             target = renamer.getResolvedName(connector.getInput().getID());
-                        
+
                         file.writeBytes(CONNECTOR_START+
                              StringUtils.quoteIfMacro(
                                  renamer.getResolvedName(connector.getID())
-                             ) + comma +  
+                             ) + comma +
                              StringUtils.quoteIfMacro(
                                  target
-                             ) + comma + connector.getX() + comma + connector.getY() + 
+                             ) + comma + connector.getX() + comma + connector.getY() +
                              comma + StringUtils.color2string(connector.getColor()) +
                             comma + quote + /*!!!+ StringUtils.removeBegining(connector.getDescription(), path2remove) +*/ quote +
                             comma + connector.getMode() +
@@ -1353,14 +1353,14 @@ public static void writeVDCTData(Vector elements, java.io.DataOutputStream file,
                          if (obj instanceof EPICSLink)
                          {
                              field = (EPICSLink)obj;
-    
+
                              file.writeBytes(FIELD_START+
                                  StringUtils.quoteIfMacro(
                                      renamer.getResolvedName(field.getFieldData().getFullName())
-                                 ) + 
+                                 ) +
                                  comma + StringUtils.color2string(field.getColor()) +
                                  comma + StringUtils.boolean2str(field.isRight()) +
-                                comma + quote + renamer.getResolvedName(field.getDescription()) + quote + 
+                                comma + quote + renamer.getResolvedName(field.getDescription()) + quote +
                                 ending);
 
                           }
@@ -1373,7 +1373,7 @@ public static void writeVDCTData(Vector elements, java.io.DataOutputStream file,
                                  file.writeBytes(LINK_START+
                                      StringUtils.quoteIfMacro(
                                          renamer.getResolvedName(epicsLink.getFieldData().getFullName())
-                                     ) + comma + 
+                                     ) + comma +
                                      StringUtils.quoteIfMacro(
                                          renamer.getResolvedName(outlink.getInput().getID())
                                      ) +
@@ -1404,7 +1404,7 @@ public static void writeVDCTData(Vector elements, java.io.DataOutputStream file,
                   file.writeBytes(GROUP_START+
                      StringUtils.quoteIfMacro(
                          renamer.getResolvedName(group.getAbsoluteName())
-                      ) + comma + group.getX() + comma + group.getY() + 
+                      ) + comma + group.getX() + comma + group.getY() +
                       comma + StringUtils.color2string(group.getColor()) +
                      comma + quote /*+ connector.getDescription() */+ quote +
                      ending);
@@ -1412,11 +1412,11 @@ public static void writeVDCTData(Vector elements, java.io.DataOutputStream file,
              }
           else if (obj instanceof Port) {
             OutLink outlink = (OutLink)obj;
-            if (outlink.getInput() != null) {            
+            if (outlink.getInput() != null) {
                 file.writeBytes(LINK_START+
                          StringUtils.quoteIfMacro(
                              renamer.getResolvedName(outlink.getID())
-                         ) + comma + 
+                         ) + comma +
                          StringUtils.quoteIfMacro(
                              renamer.getResolvedName(outlink.getInput().getID())
                          ) +
@@ -1435,7 +1435,7 @@ public static void writeVDCTData(Vector elements, java.io.DataOutputStream file,
                          renamer.getResolvedName(line.getName())
                       ) +
                       comma + line.getStartVertex().getX() + comma + line.getStartVertex().getY() +
-                      comma + line.getEndVertex().getX() + comma + line.getEndVertex().getY() + 
+                      comma + line.getEndVertex().getX() + comma + line.getEndVertex().getY() +
                       comma + StringUtils.boolean2str(line.getDashed()) +
                       comma + StringUtils.boolean2str(line.getStartArrow()) +
                       comma + StringUtils.boolean2str(line.getEndArrow()) +
@@ -1451,7 +1451,7 @@ public static void writeVDCTData(Vector elements, java.io.DataOutputStream file,
                          renamer.getResolvedName(box.getName())
                       ) +
                       comma + box.getStartVertex().getX() + comma + box.getStartVertex().getY() +
-                      comma + box.getEndVertex().getX() + comma + box.getEndVertex().getY() + 
+                      comma + box.getEndVertex().getX() + comma + box.getEndVertex().getY() +
                       comma + StringUtils.boolean2str(box.getIsDashed()) +
                       comma + StringUtils.color2string(box.getColor()) +
                       comma + (box.getParent() instanceof Border ?  ((Border)box.getParent()).getName() : "null") +
@@ -1466,11 +1466,11 @@ public static void writeVDCTData(Vector elements, java.io.DataOutputStream file,
                          renamer.getResolvedName(box.getName())
                       ) +
                       comma + box.getStartVertex().getX() + comma + box.getStartVertex().getY() +
-                      comma + box.getEndVertex().getX() + comma + box.getEndVertex().getY() + 
+                      comma + box.getEndVertex().getX() + comma + box.getEndVertex().getY() +
                       comma + StringUtils.boolean2str(box.isBorder()) +
-                     comma + quote + box.getFont().getFamily() + quote +    
-                     comma + box.getFont().getSize() +    
-                     comma + box.getFont().getStyle() +    
+                     comma + quote + box.getFont().getFamily() + quote +
+                     comma + box.getFont().getSize() +
+                     comma + box.getFont().getStyle() +
                       comma + StringUtils.color2string(box.getColor()) +
                      comma + quote + StringUtils.removeQuotesAndLineBreaks(box.getDescription()) + quote +
                      comma + (box.getParent() instanceof Border ?  ((Border)box.getParent()).getName() : "null") +
@@ -1485,7 +1485,7 @@ public static void writeVDCTData(Vector elements, java.io.DataOutputStream file,
                  file.writeBytes(nl);
                   file.writeBytes(TEMPLATE_INSTANCE_START+
                       quote + templateName + quote +
-                      comma + template.getX() + comma + template.getY() + 
+                      comma + template.getX() + comma + template.getY() +
                       comma + StringUtils.color2string(template.getColor()) +
                      comma + quote /*+ template.getDescription()*/ + quote +
                      ending);
@@ -1494,9 +1494,9 @@ public static void writeVDCTData(Vector elements, java.io.DataOutputStream file,
                  e2 = template.getSubObjectsV().elements();
                  while (e2.hasMoreElements())
                  {
-                        
+
                      obj = e2.nextElement();
-                                          
+
                      if (obj instanceof EPICSLinkOut)
                      {
                          link = (EPICSLinkOut)obj;
@@ -1505,7 +1505,7 @@ public static void writeVDCTData(Vector elements, java.io.DataOutputStream file,
                              file.writeBytes(LINK_START+
                                  StringUtils.quoteIfMacro(
                                         link.getParent().getHashID() + Constants.FIELD_SEPARATOR + renamer.getResolvedName(link.getFieldData().getFullName())
-                                 ) + comma + 
+                                 ) + comma +
                                  StringUtils.quoteIfMacro(
                                      renamer.getResolvedName(link.getInput().getID())
                                  ) +
@@ -1514,7 +1514,7 @@ public static void writeVDCTData(Vector elements, java.io.DataOutputStream file,
                      if (obj instanceof EPICSLink)
                      {
                          field = (EPICSLink)obj;
-                         
+
                          String name = field.getFieldData().getName();
 
                          file.writeBytes(TEMPLATE_FIELD_START+
@@ -1525,32 +1525,32 @@ public static void writeVDCTData(Vector elements, java.io.DataOutputStream file,
                              comma + field.getFieldData().getVisibility() +
                              ending);
                      }
-                     
+
                      else if (obj instanceof Connector)
                      {
                          connector = (Connector)obj;
                         String target = NULL;
                         if (connector.getInput()!=null)
                             target = renamer.getResolvedName(connector.getInput().getID());
-                        
+
                          file.writeBytes(CONNECTOR_START+
                              StringUtils.quoteIfMacro(
                                  renamer.getResolvedName(connector.getID())
-                             ) + comma +  
+                             ) + comma +
                              StringUtils.quoteIfMacro(
                                  target
-                             ) + comma + connector.getX() + comma + connector.getY() + 
+                             ) + comma + connector.getX() + comma + connector.getY() +
                              comma + StringUtils.color2string(connector.getColor()) +
                             comma + quote + /*!!!+ StringUtils.removeBegining(connector.getDescription(), path2remove) +*/ quote +
                             comma + connector.getMode() +
                             ending);
                       }
-                 }                     
+                 }
 
                  file.writeBytes(nl);
              }
 
-              
+
       }
 
 
@@ -1564,15 +1564,15 @@ private static void writeUsedDBDs(File dbFile, DataOutputStream stream) throws I
 {
      // write used DBDs
     File relativeTo = dbFile.getParentFile();
-    DBDEntry.setBaseDir(relativeTo);     
-     
+    DBDEntry.setBaseDir(relativeTo);
+
      stream.writeBytes(DBResolver.DBD_START);
      Enumeration edbd = DataProvider.getInstance().getCurrentDBDs().elements();
      while (edbd.hasMoreElements())
      {
      //        File dbdFile = (File)edbd.nextElement();
-         DBDEntry entry = (DBDEntry)edbd.nextElement(); 
-         if (entry.getSavesToFile()) { 
+         DBDEntry entry = (DBDEntry)edbd.nextElement();
+         if (entry.getSavesToFile()) {
 
              String file = entry.getValue();
              file = file.replace('\\', '/');
@@ -1596,32 +1596,32 @@ public static void writeTemplateData(DataOutputStream stream, NamingContext rena
 public static void writeTemplateData(DataOutputStream stream, NamingContext renamer, Vector allowedPortMacroSet) throws IOException
 {
     final String nl = "\n";
-    
+
     final String comma = ", ";
     final String quote = "\"";
     final String ending = ")"+nl;
 
     VDBTemplate data = Group.getEditingTemplateData();
-    
+
     // does not have template data (new template case)
     if (data==null)
-        return; 
-    
+        return;
+
      // write comment (even if not template definition is needed)
      if (data.getComment()!=null)
          stream.writeBytes(nl+data.getComment());
 
     // template block not needed
-    if ((data.getRealDescription()==null || data.getRealDescription().length()==0) && 
+    if ((data.getRealDescription()==null || data.getRealDescription().length()==0) &&
           data.getPorts().isEmpty() && data.getMacros().isEmpty())
         return;
-    
+
     // template start
     stream.writeBytes(nl+DBResolver.TEMPLATE+"(");
-    
+
     if (data.getRealDescription()!=null && data.getRealDescription().length()>0)
         stream.writeBytes(quote + StringUtils.removeQuotes(data.getRealDescription()) + quote);
-    
+
     stream.writeBytes(") {"+nl);
 
     final String portStart = "  "+DBResolver.PORT+"(";
@@ -1632,7 +1632,7 @@ public static void writeTemplateData(DataOutputStream stream, NamingContext rena
         VDBPort port = (VDBPort)i.next();
         if (allowedPortMacroSet != null && port.getVisibleObject() != null && !allowedPortMacroSet.contains(port.getVisibleObject()))
             continue;
-            
+
         if (port.getComment()!=null)
             stream.writeBytes(port.getComment()+nl);
 
@@ -1642,8 +1642,8 @@ public static void writeTemplateData(DataOutputStream stream, NamingContext rena
         if (port.getRealDescription()!=null && port.getRealDescription().length()>0)
             stream.writeBytes(comma + quote + StringUtils.removeQuotes(port.getRealDescription()) + quote);
         stream.writeBytes(ending);
-    }    
-    
+    }
+
     boolean first = true;
 
     final String portPrefix = "  #! ";
@@ -1652,7 +1652,7 @@ public static void writeTemplateData(DataOutputStream stream, NamingContext rena
     final String macroPostfix = "(";
     final String NULL = "null";
     final String justComma = ",";
-    
+
     //
     // write port visual data
     //
@@ -1660,7 +1660,7 @@ public static void writeTemplateData(DataOutputStream stream, NamingContext rena
     while (i.hasNext())
     {
         VDBPort port = (VDBPort)i.next();
-    
+
         Port visiblePort = port.getVisibleObject();
         if (visiblePort==null)
             continue;
@@ -1695,27 +1695,27 @@ public static void writeTemplateData(DataOutputStream stream, NamingContext rena
         }
 
         stream.writeBytes(portPostfix);
-        
+
         String target = NULL;
         if (visiblePort.getInput()!=null)
             //target = namer.getResolvedName(visiblePort.getInput().getID());
             target = renamer.resolveLink(visiblePort.getInput().getID());
-        
+
         stream.writeBytes(
             visiblePort.getName() +
             justComma + StringUtils.quoteIfMacro(target) +
-            justComma + visiblePort.getX() + justComma + visiblePort.getY() + 
+            justComma + visiblePort.getX() + justComma + visiblePort.getY() +
             justComma + StringUtils.color2string(visiblePort.getColor()) +
             justComma + port.getVisibility() +
             justComma + visiblePort.isTextPositionNorth());
         stream.writeBytes(ending);
-    }    
+    }
 
     //
     // write macro visual data
     //
     i = data.getMacrosV().iterator();
-    
+
     while (i.hasNext())
     {
         VDBMacro macro = (VDBMacro)i.next();
@@ -1723,7 +1723,7 @@ public static void writeTemplateData(DataOutputStream stream, NamingContext rena
         Macro visibleMacro = macro.getVisibleObject();
         if (visibleMacro==null)
             continue;
-            
+
         if (allowedPortMacroSet != null && !allowedPortMacroSet.contains(visibleMacro))
             continue;
 
@@ -1750,22 +1750,22 @@ public static void writeTemplateData(DataOutputStream stream, NamingContext rena
         }
 
         stream.writeBytes(macroPostfix);
-        
+
         stream.writeBytes(
             visibleMacro.getName() +
             justComma + quote + StringUtils.removeQuotes(macro.getDescription()) + quote +
-            justComma + visibleMacro.getX() + justComma + visibleMacro.getY() + 
+            justComma + visibleMacro.getX() + justComma + visibleMacro.getY() +
             justComma + StringUtils.color2string(visibleMacro.getColor()) +
             justComma + macro.getVisibility() +
             justComma + visibleMacro.isTextPositionNorth());
         stream.writeBytes(ending);
-    }    
+    }
 
     // template end
     stream.writeBytes("}"+nl);
 
 
-/*    
+/*
     // inputs
     Enumeration e = data.getInputs().keys();
     while (e.hasMoreElements())
@@ -1777,9 +1777,9 @@ public static void writeTemplateData(DataOutputStream stream, NamingContext rena
             comma + quote + fdata.getFullName() + quote +
             comma + quote + data.getInputComments().get(key).toString() + quote + ending);
     }
-    
-    if (!data.getInputs().isEmpty()) stream.writeBytes(nl);    
-    
+
+    if (!data.getInputs().isEmpty()) stream.writeBytes(nl);
+
     // outputs
     e = data.getOutputs().keys();
     while (e.hasMoreElements())
@@ -1792,7 +1792,7 @@ public static void writeTemplateData(DataOutputStream stream, NamingContext rena
             comma + quote + data.getOutputComments().get(key).toString() + quote + ending);
     }
 
-    if (!data.getOutputs().isEmpty()) stream.writeBytes(nl);    
+    if (!data.getOutputs().isEmpty()) stream.writeBytes(nl);
 */
 }
 
@@ -1801,22 +1801,22 @@ public static void writeTemplateData(DataOutputStream stream, NamingContext rena
  */
 public static void save(Group group2save, File file, boolean export) throws IOException
 {
-    // create new namer     
+    // create new namer
     String path2remove = group2save.getAbsoluteName();
     if (!path2remove.equals(nullString)) path2remove+=Constants.GROUP_SEPARATOR;
     else path2remove = null;
-    
+
     String addedPrefix=null;
-    if (export && Settings.getInstance().getHierarhicalNames()) { 
+    if (export && Settings.getInstance().getHierarhicalNames()) {
         VDBTemplate template = Group.getEditingTemplateData();
-        String name = template.getId(); 
-        
+        String name = template.getId();
+
         int pos = name.lastIndexOf('.'); //removes file suffix
         if (pos>0) name = name.substring(0, pos);
-        
+
         addedPrefix=name+Constants.HIERARCHY_SEPARATOR;
     }
-    
+
     save(group2save, file, new NamingContext(null, Group.getEditingTemplateData(), addedPrefix, path2remove, export), export);
 }
 
@@ -1826,16 +1826,16 @@ public static void save(Group group2save, File file, boolean export) throws IOEx
 public static void save(Group group2save, File file, NamingContext renamer, boolean export) throws IOException
 {
     DataOutputStream stream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
-    
+
     stream.writeBytes("#! Generated by VisualDCT v"+Version.VERSION+"\n");
-    
-    if (!export)    
+
+    if (!export)
     {
         writeUsedDBDs(file, stream);
     }
-    
+
     writeIncludes(stream);
-    
+
     // if not already present
     // optimize !!!
     boolean found = false;
@@ -1843,7 +1843,7 @@ public static void save(Group group2save, File file, NamingContext renamer, bool
     while (i.hasNext() && !found)
         if (i.next() instanceof DBTemplateEntry)
             found = true;
-    
+
     if (!found)
     {
         // put it after all DBEntry objects
@@ -1855,31 +1855,31 @@ public static void save(Group group2save, File file, NamingContext renamer, bool
     }
 
     // before saving, we position records in a standard way as before
-    // notice that field visibility could move records vertically 
+    // notice that field visibility could move records vertically
     boolean defaultVisibility = Settings.getInstance().isDefaultVisibility();
     boolean hideLinks = Settings.getInstance().isHideLinks();
     try {
         Settings.getInstance().setDefaultVisibility(true);
         Settings.getInstance().setHideLinks(false);
         group2save.updateFields();
-        
-        group2save.writeObjects(stream, renamer, export);    
-        if (!export)    
+
+        group2save.writeObjects(stream, renamer, export);
+        if (!export)
         {
             stream.writeBytes("\n#! Further lines contain data used by VisualDCT\n");
             group2save.writeVDCTData(stream, renamer, export);
         }
-    
+
     } finally {
         Settings.getInstance().setDefaultVisibility(defaultVisibility);
         Settings.getInstance().setHideLinks(hideLinks);
         group2save.updateFields();
     }
-    
-        
+
+
     stream.flush();
     stream.close();
-    
+
     // do the repaint (updateFields can cause some shifts)
     com.cosylab.vdct.events.CommandManager.getInstance().execute("RepaintWorkspace");
 }
@@ -1917,7 +1917,7 @@ public static VDBTemplate getEditingTemplateData()
  * @param editingTemplateData The editingTemplateData to set
  */
 public static void setEditingTemplateData(VDBTemplate editingTemplateData)
-{    
+{
     Group.editingTemplateData = editingTemplateData;
     if (editingTemplateData != null) {
         openTemplateMacroID = editingTemplateData.getMacrosGeneratedID();
@@ -1934,7 +1934,7 @@ public static boolean hasMacroPortsIDChanged() {
 
     if (openTemplateMacroID == 0 && openTemplatePortID == 0) {
         return false;
-    }   
+    }
     if (editingTemplateData != null)
         if (editingTemplateData.getMacrosGeneratedID() == openTemplateMacroID && editingTemplateData.getPortsGeneratedID() == openTemplatePortID) {
             return false;
@@ -1951,10 +1951,10 @@ public static boolean hasMacroPortsIDChanged() {
         return structure;
     }
 
-    
+
     public int getAbsoulteWidth() {
         if (subObjectsV.size() == 0) return getWidth();
-        
+
         int tempw;
         VisibleObject vo = (VisibleObject) subObjectsV.get(0);
         int left = vo.getX();
@@ -1966,14 +1966,14 @@ public static boolean hasMacroPortsIDChanged() {
             if (tempw + vo.getWidth() > right) right = tempw + vo.getWidth();
         }
         return right - left;
-        
+
     }
-    
+
     public int getAbsoulteHeight() {
         if (subObjectsV.size() == 0) return getHeight();
-        
+
         int temph;
-        
+
         VisibleObject vo = (VisibleObject) subObjectsV.get(0);
         int upper = vo.getY();
         int lower = vo.getY() + vo.getHeight();
@@ -1984,7 +1984,7 @@ public static boolean hasMacroPortsIDChanged() {
             if (temph + vo.getHeight() > lower) lower = temph + vo.getHeight();
         }
         return lower - upper;
-        
+
     }
 /**
  * @param linkableMacros
@@ -2007,7 +2007,7 @@ public void generateMacros(HashMap macros, boolean deep) {
 }
 
 /**
- * 
+ *
  * Resets certain parameters of the subobjects (validationsCounter in Record).
  * @param settingsChanged flag whether this method was invoked when settings (settings dialog) were changed
  */

@@ -17,9 +17,9 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * Helper to build log entry message from PV.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
- * 
+ *
  */
 public class PVLogSummary {
 
@@ -104,7 +104,7 @@ public class PVLogSummary {
         builder.append("\n");
         return builder.toString();
     }
-    
+
     public String getHeader() {
         StringBuilder builder = new StringBuilder();
         if (prefix == '*') {

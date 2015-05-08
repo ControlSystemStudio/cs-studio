@@ -15,9 +15,9 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 
 /**
  * Drag and Drop handler for {@link Prototype}s.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class PrototypeDndHandler extends AbstractDnDHandler {
 
@@ -48,7 +48,7 @@ public class PrototypeDndHandler extends AbstractDnDHandler {
             folder = (IFolder) dndTarget;
         } else {
             folder = ((IContainer) dndTarget).getParentFolder();
-            
+
             index = folder.getMembers().indexOf(dndTarget);
             int tmp = folder.getMembers().indexOf(prototype);
             if(tmp>-1 && tmp<index) {

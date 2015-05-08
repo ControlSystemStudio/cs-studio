@@ -16,15 +16,15 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * Base class for all table row adapters that are used to adapt domain objects
  * for a ConvenienceTableWrapper with the following column layout:
- * 
+ *
  * <ul>
  * <li>1. column = Description</li>
  * <li>2. column = Value</li>
  * <li>3. column = Error (optional)</li>
  * </ul>
- * 
+ *
  * @author Sven Wende
- * 
+ *
  * @param <E>
  *            the type of the domain object
  */
@@ -37,7 +37,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
 
     /**
      * Constructor.
-     * 
+     *
      * @param delegate
      *            the delegate
      */
@@ -48,7 +48,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
 
     /**
      * Sets an error.
-     * 
+     *
      * @param error
      *            the error
      */
@@ -58,7 +58,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
 
     /**
      * Returns the domain object.
-     * 
+     *
      * @return the domain object
      */
     public final E getDelegate() {
@@ -252,11 +252,11 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
      */
     public final CellEditor getCellEditor(int column, Composite parent) {
         CellEditor editor = column == 1 ? doGetValueCellEditor(delegate, parent) : null;
-        
+
         if(editor!=null && editor.getControl()!=null) {
             editor.getControl().setFont(getFont(column));
         }
-        
+
         return editor;
     }
 
@@ -270,7 +270,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      * Returns a cell editor for value column. Returns a {@link TextCellEditor}
      * by default. Subclasses may override.
-     * 
+     *
      * @param delegate
      *            the domain object
      * @param parent
@@ -284,7 +284,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      * Returns the background color for the key column for the specified domain
      * object. Default is null. Subclasses may override.
-     * 
+     *
      * @param delegate
      *            the domain object
      * @return the background color for the key column
@@ -296,7 +296,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      * Returns the background color for the value column for the specified
      * domain object. Default is null. Subclasses may override.
-     * 
+     *
      * @param delegate
      *            the domain object
      * @return the background color for the value column
@@ -308,7 +308,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      * Returns the background color for the error column for the specified
      * domain object. Default is null. Subclasses may override.
-     * 
+     *
      * @param delegate
      *            the domain object
      * @return the background color for the error column
@@ -320,7 +320,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      * Returns the font for the key column for the specified domain object.
      * Default is null. Subclasses may override.
-     * 
+     *
      * @param delegate
      *            the domain object
      * @return the font for the key column
@@ -332,7 +332,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      * Returns the font for the value column for the specified domain object.
      * Default is null. Subclasses may override.
-     * 
+     *
      * @param delegate
      *            the domain object
      * @return the font for the value column
@@ -344,7 +344,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      * Returns the font for the error column for the specified domain object.
      * Default is null. Subclasses may override.
-     * 
+     *
      * @param delegate
      *            the domain object
      * @return the font for the error column
@@ -356,7 +356,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      * Returns the foreground color for the key column for the specified domain
      * object. Default is null. Subclasses may override.
-     * 
+     *
      * @param delegate
      *            the domain object
      * @return the foreground color for the key column
@@ -368,7 +368,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      * Returns the foreground color for the value column for the specified
      * domain object. Default is null. Subclasses may override.
-     * 
+     *
      * @param delegate
      *            the domain object
      * @return the foreground color for the value column
@@ -380,7 +380,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      * Returns the foreground color for the error column for the specified
      * domain object. Default is null. Subclasses may override.
-     * 
+     *
      * @param delegate
      *            the domain object
      * @return the foreground color for the error column
@@ -392,7 +392,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      * Returns an image for the specified domain object. Default is null.
      * Subclasses may override.
-     * 
+     *
      * @param delegate
      *            the domain object
      * @return an image
@@ -404,7 +404,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      * Returns the value for the key column. This value will be used as initial
      * value when the key column gets edited.
-     * 
+     *
      * @param delegate
      *            the domain object
      * @return the key for the key column
@@ -418,7 +418,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
      * key in the key column is edited by the user. Subclasses should override
      * if changing the key is a needed feature. The method returns null by
      * default.
-     * 
+     *
      * @param delegate
      *            the domain object
      * @param key
@@ -433,7 +433,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
      * Returns the key for the key column. This value will displayed in the key
      * column when its in normal view state. This method delegates to
      * {@link #doGetKey(Object)} by default. Subclasses may override.
-     * 
+     *
      * @param delegate
      *            the domain object
      * @return the key for the key column
@@ -445,7 +445,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      * Returns the value for the value column. This value will be used as
      * initial value when the value column gets edited.
-     * 
+     *
      * @param delegate
      *            the domain object
      * @return the value for the value column
@@ -459,7 +459,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
      * the value in the value column is edited by the user. Subclasses should
      * override if changing the value is a needed feature. The method returns
      * null by default.
-     * 
+     *
      * @param delegate
      *            the domain object
      * @param value
@@ -474,7 +474,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
      * Returns the value for the value column. This value will displayed in the
      * value column when its in normal view state. This method delegates to
      * {@link #doGetValue(Object)} by default. Subclasses may override.
-     * 
+     *
      * @param delegate
      *            the domain object
      * @return the value for the value column
@@ -486,7 +486,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      * Returns true, if the key in the key column can be modified. Default is
      * false. Subclasses may override.
-     * 
+     *
      * @param delegate
      *            the domain object
      * @return true, if the key in the key column can be modified
@@ -498,7 +498,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      * Returns true, if the value in the value column can be modified. Default
      * is false. Subclasses may override.
-     * 
+     *
      * @param delegate
      *            the domain object
      * @return true, if the value in the value column can be modified
@@ -511,10 +511,10 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
      * Compares this row to the specified row. Returns a negative integer, zero,
      * or a positive integer as this row is less than, equal to, or greater than
      * the specified row. Default is 0 (== equal to). Subclasses may override.
-     * 
+     *
      * @param row
      *            another table row
-     * 
+     *
      * @return a negative integer, zero, or a positive integer as this row is
      *         less than, equal to, or greater than the specified row
      */

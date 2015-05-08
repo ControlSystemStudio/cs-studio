@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui.test;
 
@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Label;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class AutoCompleteSearchProviderView extends ViewPart {
     private Text text;

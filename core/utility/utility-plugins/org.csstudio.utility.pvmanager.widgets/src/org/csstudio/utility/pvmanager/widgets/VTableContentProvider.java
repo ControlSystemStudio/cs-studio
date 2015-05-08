@@ -9,24 +9,24 @@ import org.epics.util.time.Timestamp;
 import org.epics.vtype.VTable;
 
 public class VTableContentProvider implements IStructuredContentProvider {
-    
+
     public static class VTableRow {
         private final int row;
         private final VTable vTable;
-        
+
         public VTableRow(VTable vTable, int row) {
             this.row = row;
             this.vTable = vTable;
         }
-        
+
         public int getRow() {
             return row;
         }
-        
+
         public VTable getVTable() {
             return vTable;
         }
-        
+
         public Object getValue(int column) {
             if (vTable.getColumnType(column).equals(Integer.TYPE)) {
                 return ((ListNumber) vTable.getColumnData(column)).getInt(row);
@@ -45,9 +45,9 @@ public class VTableContentProvider implements IStructuredContentProvider {
                 throw new RuntimeException("Table contain unsupported type " + vTable.getColumnType(column).getName());
             }
         }
-        
+
     }
-    
+
     @Override
     public void dispose() {
         // Nothing to do
@@ -61,15 +61,15 @@ public class VTableContentProvider implements IStructuredContentProvider {
     @Override
     public Object[] getElements(Object inputElement) {
         VTable vTable = (VTable) inputElement;
-        
+
         Object[] result = new Object[vTable.getRowCount()];
-        
+
         for (int i = 0; i < result.length; i++) {
             result[i] = new VTableRow(vTable, i);
         }
-        
+
         return result;
     }
-    
+
 
 }

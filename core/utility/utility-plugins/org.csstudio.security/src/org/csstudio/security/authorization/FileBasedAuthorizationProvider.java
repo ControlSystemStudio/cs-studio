@@ -28,7 +28,7 @@ import javax.security.auth.Subject;
 import org.csstudio.security.SecurityPreferences;
 
 /** AuthorizationProvider that reads configuration from a file
- * 
+ *
  *  <p>See <code>authorization.conf</code> for example.
  *  @author Kay Kasemir
  */
@@ -36,7 +36,7 @@ import org.csstudio.security.SecurityPreferences;
 public class FileBasedAuthorizationProvider implements AuthorizationProvider
 {
     final private String config_file_path;
-    
+
     /** Initialize from preferences
      *  @throws Exception on error
      */
@@ -44,7 +44,7 @@ public class FileBasedAuthorizationProvider implements AuthorizationProvider
     {
         this(SecurityPreferences.getAuthorizationFile());
     }
-    
+
     /** Initialize
      *  @param config_file_path Path to authentication file
      *  @throws Exception on error
@@ -61,11 +61,11 @@ public class FileBasedAuthorizationProvider implements AuthorizationProvider
     private Map<String, List<Pattern>> readConfigurationFile() throws Exception
     {
         final InputStream config_stream = getInputStream(config_file_path);
-        
+
         final Logger logger = Logger.getLogger(getClass().getName());
         final Properties settings = new Properties();
         settings.load(config_stream);
-        
+
         final Map<String, List<Pattern>> rules = new HashMap<>();
         for (String authorization : settings.stringPropertyNames())
         {
@@ -114,7 +114,7 @@ public class FileBasedAuthorizationProvider implements AuthorizationProvider
         }
         return false;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Authorizations getAuthorizations(final Subject user) throws Exception

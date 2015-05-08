@@ -8,12 +8,12 @@ import org.csstudio.diag.postanalyser.Messages;
  *  it take input which might vary for derived types,
  *  and produces outputs which should get displayed.
  *  @author Kay Kasemir
- */ 
+ */
 abstract public class Algorithm
 {
     /** Name of the Algorithm */
     final private String name;
-    
+
     /** Channel with input data */
     protected Channel input;
 
@@ -25,10 +25,10 @@ abstract public class Algorithm
 
     /** Y-Axis label from the last <code>process()</code> run. */
     protected String y_axis_label;
-    
+
     /** One or more outputs from the last <code>process()</code> run. */
     protected AlgorithmOutput[] outputs;
-    
+
     /** Construct new Algorithm */
     public Algorithm(final String name)
     {

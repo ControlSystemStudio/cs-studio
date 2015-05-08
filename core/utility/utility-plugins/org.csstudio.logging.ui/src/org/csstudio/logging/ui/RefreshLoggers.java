@@ -6,7 +6,7 @@ import org.eclipse.core.commands.ExecutionException;
 
 /**
  * Rebuild the logging configuration tree by reloading all the loggers
- * 
+ *
  * @author Kunal Shroff
  *
  */

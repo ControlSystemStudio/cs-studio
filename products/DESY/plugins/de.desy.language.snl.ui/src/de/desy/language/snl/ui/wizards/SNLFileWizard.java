@@ -8,7 +8,7 @@ import org.eclipse.ui.IWorkbench;
 /**
  * This class implements the interface required by the desktop for creating C
  * Files.
- * 
+ *
  * @author mscarpino
  */
 public class SNLFileWizard extends Wizard implements INewWizard {

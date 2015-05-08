@@ -14,11 +14,11 @@ public class WrappableTextFigureTest extends TextFigureTest{
     @Override
     public Figure createTestWidget() {
         return new WrappableTextFigure();
-    }    
-    
+    }
+
 
     @Override
     public boolean isAutoTest() {
         return true;
-    }        
+    }
 }

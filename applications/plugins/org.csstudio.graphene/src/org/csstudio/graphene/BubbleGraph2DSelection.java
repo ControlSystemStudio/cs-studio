@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene;
 
@@ -16,7 +16,7 @@ import org.epics.vtype.VType;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class BubbleGraph2DSelection implements VTypeAdaptable,
         ProcessVariableAdaptable,
@@ -47,7 +47,7 @@ public class BubbleGraph2DSelection implements VTypeAdaptable,
         if (widget.getDataFormula() == null) {
             return null;
         }
-        
+
         return Collections.singleton(new ProcessVariable(widget.getDataFormula()));
     }
 }

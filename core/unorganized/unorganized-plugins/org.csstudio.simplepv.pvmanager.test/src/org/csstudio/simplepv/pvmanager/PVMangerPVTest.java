@@ -18,9 +18,9 @@ import org.junit.Test;
 
 /**
  * Test simple PV Read functionalities. It should run as plugin test.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class PVMangerPVTest {
 
@@ -32,30 +32,30 @@ private static final String PVMANAGER = "pvmanager";
         System.setProperty("java.awt.headless", "true");
         PVManagerPV.setDebug(false);
     }
-    
+
     @Test
     public void testSimpleRead() throws Exception {
-        BasicReadTester tester = 
+        BasicReadTester tester =
                 new BasicReadTester(PVMANAGER, "sim://ramp(0,100,1,0.1)");
         tester.testAll();
-        
-    }
-    
-    @Test
-    public void testBufferingRead() throws Exception {
-        BufferingReadTester tester = 
-                new BufferingReadTester(PVMANAGER, "sim://ramp(0,80,1,0.1)");
-        tester.testAll();        
+
     }
 
-    
+    @Test
+    public void testBufferingRead() throws Exception {
+        BufferingReadTester tester =
+                new BufferingReadTester(PVMANAGER, "sim://ramp(0,80,1,0.1)");
+        tester.testAll();
+    }
+
+
     @Test
     public void testReadWrite() throws Exception {
-        BasicReadWriteTester tester = 
+        BasicReadWriteTester tester =
                 new BasicReadWriteTester(PVMANAGER, "loc://test(0)");
-        tester.testAll();        
+        tester.testAll();
     }
-    
+
     @Test
     public void testBulkOperations() throws Exception{
         BulkTester tester = new BulkTester(PVMANAGER, 10000, new PVNameProvider() {

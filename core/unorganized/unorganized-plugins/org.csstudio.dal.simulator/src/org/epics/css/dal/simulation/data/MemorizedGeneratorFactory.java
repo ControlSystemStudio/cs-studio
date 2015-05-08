@@ -4,8 +4,8 @@ import org.epics.css.dal.simulation.MemoryValueProvider;
 import org.epics.css.dal.simulation.ValueProvider;
 
 /**
- * 
- * <code>MemorizedGeneratorFactory</code> is a factory for memorized 
+ *
+ * <code>MemorizedGeneratorFactory</code> is a factory for memorized
  * value providers
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>

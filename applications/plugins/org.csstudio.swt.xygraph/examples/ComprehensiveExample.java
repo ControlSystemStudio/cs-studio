@@ -97,7 +97,7 @@ class XYGraphTest extends Figure {
         y2Axis.setForegroundColor(XYGraphMediaFactory.getInstance().getColor(XYGraphMediaFactory.COLOR_PINK));
         y2Axis.setTickLableSide(LabelSide.Secondary);
         xyGraph.addAxis(y2Axis);
-        
+
         Axis y3Axis = new Axis("Y-3", true);
         y3Axis.setForegroundColor(XYGraphMediaFactory.getInstance().getColor(XYGraphMediaFactory.COLOR_BLUE));
         y3Axis.setTickLableSide(LabelSide.Secondary);
@@ -105,7 +105,7 @@ class XYGraphTest extends Figure {
         y3Axis.setShowMajorGrid(false);
         y3Axis.setAutoScale(true);
         xyGraph.addAxis(y3Axis);
-        
+
         trace2Provider = new CircularBufferDataProvider(true);
         trace2Provider.setBufferSize(100);
         trace2Provider.setUpdateDelay(100);
@@ -148,16 +148,16 @@ class XYGraphTest extends Figure {
 
         //add key listener to XY-Graph. The key pressing will only be monitored when the
         //graph gains focus.
-        
+
         xyGraph.setFocusTraversable(true);
         xyGraph.setRequestFocusEnabled(true);
-        
+
         xyGraph.getPlotArea().addMouseListener(new MouseListener.Stub(){
             @Override
             public void mousePressed(final MouseEvent me) {
                 xyGraph.requestFocus();
             }
-        });    
+        });
 
 
         xyGraph.addKeyListener(new KeyListener.Stub(){

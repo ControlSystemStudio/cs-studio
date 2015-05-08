@@ -169,23 +169,23 @@ public class MonitorableSharedConnection {
     public synchronized Connection getConnection() {
         return _connection;
     }
-    
+
     public synchronized String getBrokerURI() {
         return _brokerURI;
     }
-    
+
     public synchronized ConnectionMonitorSupport getConnectionMonitorSupport() {
         return _monitorSupport;
     }
-    
+
     public synchronized boolean isInterrupted() {
         return _interrupted;
     }
-    
+
     public synchronized void setInterrupted(boolean isInterrupted) {
         _interrupted = isInterrupted;
     }
-    
+
     public synchronized void setClientId(String id) {
         synchronized (_connection) {
             if (_connection != null) {
@@ -197,7 +197,7 @@ public class MonitorableSharedConnection {
             }
         }
     }
-    
+
     public synchronized String getClientId() {
         String clientId = null;
         try {
@@ -207,15 +207,15 @@ public class MonitorableSharedConnection {
         }
         return clientId;
     }
-    
+
     public synchronized int getHandleCount() {
         return _handleCount;
     }
-    
+
     public synchronized void incHandleCount() {
         _handleCount++;
     }
-    
+
     public synchronized void decHandleCount() {
         if (--_handleCount < 0) {
             _handleCount = 0;
@@ -225,7 +225,7 @@ public class MonitorableSharedConnection {
     public synchronized boolean existOpenHandles() {
         return (_handleCount > 0);
     }
-    
+
     /**
      * Handle which provides access to a {@link MonitorableSharedConnection}.
      *
@@ -235,7 +235,7 @@ public class MonitorableSharedConnection {
 
         protected ConnectionHandle() {
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -295,7 +295,7 @@ public class MonitorableSharedConnection {
 
         protected ConnectionStateTracker() {
         }
-        
+
         @Override
         public void onCommand(final Object command) {
             // do nothing

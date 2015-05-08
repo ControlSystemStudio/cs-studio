@@ -8,22 +8,22 @@ package com.cosylab.vdct;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -44,7 +44,7 @@ public class Settings {
 
     // preferences API class
     private Preferences prefs;
-    
+
     // caching (defaults)
     private boolean snapToGrid = true;
     private boolean showGrid = true;
@@ -55,25 +55,25 @@ public class Settings {
     private boolean windowsPan = false;
     private int recordLength = 40;
     private boolean fastMove = false;
-    
+
     private int canvasWidth = 5000;
     private int canvasHeight = 5000;
-    
+
     private boolean defaultVisibility = true;
     private boolean hideLinks = false;
-    
+
     private boolean wireCrossingAvoidance = true;
-    
+
     private int doubleClickSpeed = -1;
     private int doubleClickSmudge = 4;
-    
+
     private String legendLogo = "";
     private int legendVisibility = 1;
     // 0 not, 1 once, 2 repeated
-    private int legendPosition = 4;  
+    private int legendPosition = 4;
     // 1 2
     // 3 4
-    
+
     private boolean legendNavigatorVisibility = true;
     private int legendNavigatorWidth = 100;
     private int legendNavigatorHeight = 100;
@@ -81,7 +81,7 @@ public class Settings {
  * Settings constructor comment.
  */
 protected Settings() {
-    
+
     // user settings
     prefs = Preferences.userNodeForPackage(this.getClass());
 
@@ -97,29 +97,29 @@ protected Settings() {
     windowsPan = prefs.getBoolean("WindowsPan", windowsPan);
     recordLength = prefs.getInt("RecordLength", recordLength);
     fastMove = prefs.getBoolean("FastMove", fastMove);
-    
+
     doubleClickSpeed = prefs.getInt("DoubleClickSpeed", doubleClickSpeed);
     doubleClickSmudge = prefs.getInt("DoubleClickSmudge", doubleClickSmudge);
-    
+
     canvasWidth = prefs.getInt("CanvasWidth", 5000);
     canvasHeight = prefs.getInt("CanvasHeight", 5000);
     defaultVisibility = prefs.getBoolean("DefaultVisibility", true);
     hideLinks = prefs.getBoolean("HideLinks", false);
     wireCrossingAvoidance = prefs.getBoolean("WireCrossingAvoidance", wireCrossingAvoidance);
-    
+
     legendLogo = prefs.get("LegendLogo", "");
     legendVisibility = prefs.getInt("LegendVisibility", 1);
     legendPosition = prefs.getInt("LegendPosition", 4);
     legendNavigatorVisibility = prefs.getBoolean("LegendNavigatorVisibility", true);
     legendNavigatorWidth = prefs.getInt("LegendNavigatorWidth",100);
     legendNavigatorHeight = prefs.getInt("LegendNavigatorHeight",100);
-    
+
     if (grouping)
     {
         Constants.GROUP_SEPARATOR = (char)prefs.getInt("GroupSeparator", 0);
         if (Constants.GROUP_SEPARATOR=='\0')
             grouping = false;
-    }        
+    }
 }
 /**
  * Insert the method's description here.
@@ -172,7 +172,7 @@ public boolean getGrouping() {
  */
 public String getProperty(String key, String defaultValue) {
     return prefs.get(key, defaultValue);
-    
+
 }
 /**
  * Insert the method's description here.
@@ -244,7 +244,7 @@ public void setGrouping(boolean state) {
     grouping = state;
     prefs.putBoolean("Grouping", state);
     sync();
-    
+
     if (!grouping && Constants.GROUP_SEPARATOR!='\0')
         setGroupSeparator('\0');
 }
@@ -307,7 +307,7 @@ public void setGroupSeparator(char sep) {
             return;
         else
             sep = '\0';
-    
+
     Constants.GROUP_SEPARATOR = sep;
     prefs.putInt("GroupSeparator", (int)(Constants.GROUP_SEPARATOR));
     sync();
@@ -363,11 +363,11 @@ public void saveRecentFiles()
     int i = 0;
     for (; i<files.size(); i++)
         prefs.put(prefix+String.valueOf(i), ((File)files.get(i)).getAbsolutePath());
-        
+
     // add no files
     for (; i<Constants.MAX_RECENT_FILES; i++)
     {
-        String name = prefix+String.valueOf(i); 
+        String name = prefix+String.valueOf(i);
         if (prefs.get(name, null)!=null)
         prefs.remove(name);
     }
@@ -382,7 +382,7 @@ public void loadRecentFiles()
 
     for (int i = 0; i<Constants.MAX_RECENT_FILES; i++)
     {
-        String name = prefix+String.valueOf(i); 
+        String name = prefix+String.valueOf(i);
         String fileName = prefs.get(name, null);
         if (fileName!=null)
         {
@@ -455,7 +455,7 @@ public void loadRecentFiles()
         sync();
     }
 
-    
+
 
     /**
      * @return
@@ -476,7 +476,7 @@ public void loadRecentFiles()
                   .getDesktopProperty("awt.multiClickInterval");
 
                 if (multiclick != null) doubleClickSpeed = multiclick.intValue();
-                        
+
             } catch (Exception e) {
             }
         }
@@ -500,7 +500,7 @@ public void loadRecentFiles()
             doubleClickSpeed = i;
             prefs.putInt("DoubleClickSpeed", doubleClickSpeed);
             sync();
-    }    
+    }
 
     /**
      * @return
@@ -576,7 +576,7 @@ public void loadRecentFiles()
     /**
      * @param i
      */
-    public void setLegendVisibility(int i) {        
+    public void setLegendVisibility(int i) {
         legendVisibility = i;
         prefs.putInt("LegendVisibility", legendVisibility);
         sync();

@@ -26,9 +26,9 @@ import org.eclipse.swt.graphics.Color;
 
 /**
  * The image boolean button figure.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
         SymbolImageListener {
@@ -124,7 +124,7 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
         if (temp != null) {
             Dimension dim = temp.getAutoSizedDimension();
             if (dim == null) return null;
-            return new Dimension(dim.width + getInsets().left + getInsets().right, 
+            return new Dimension(dim.width + getInsets().left + getInsets().right,
                     dim.height + getInsets().bottom + getInsets().top);
         }
         return null;
@@ -143,7 +143,7 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
     public void decrementLoadingCounter() {
         remainingImagesToLoad.decrementAndGet();
     }
-    
+
     public void incrementLoadingCounter() {
         remainingImagesToLoad.incrementAndGet();
     }

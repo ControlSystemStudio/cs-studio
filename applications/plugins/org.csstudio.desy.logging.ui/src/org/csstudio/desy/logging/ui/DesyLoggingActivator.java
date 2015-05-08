@@ -14,7 +14,7 @@ public class DesyLoggingActivator extends AbstractUIPlugin {
 
     // The shared instance
     private static DesyLoggingActivator plugin;
-    
+
     /**
      * The constructor
      */

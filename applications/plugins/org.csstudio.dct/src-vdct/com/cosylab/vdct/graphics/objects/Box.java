@@ -8,22 +8,22 @@ package com.cosylab.vdct.graphics.objects;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -49,20 +49,20 @@ public class Box extends VisibleObject implements BorderObject, Flexible, Movabl
 
 class PopupMenuHandler implements ActionListener
 {
-    
+
 public void actionPerformed(ActionEvent event)
 {
     String action = event.getActionCommand();
     if(action.equals(colorString))
     {
         Color newColor = ColorChooser.getColor(colorTitleString, getColor());
-        
+
         if(newColor != null)
         {
             setColor(newColor);
             currentColor = newColor;
         }
-        
+
         CommandManager.getInstance().execute("RepaintWorkspace");
     }
     else if(action.equals(dashedString))
@@ -75,7 +75,7 @@ public void actionPerformed(ActionEvent event)
 }
 
 }
-    
+
 private String hashId;
 private String name;
 private Vertex startVertex;
@@ -97,11 +97,11 @@ private String getAvailableHashId()
 {
     int number = 0;
     String testHashId = hashIdPrefix + String.valueOf(number);
-    
+
     while(getParent().containsObject(testHashId))
     {
         number++;
-        testHashId = hashIdPrefix + String.valueOf(number);        
+        testHashId = hashIdPrefix + String.valueOf(number);
     }
 
     return testHashId;
@@ -115,25 +115,25 @@ public Box(String parName, Group parentGroup, int posX, int posY, int posX2, int
     endVertex = new Vertex(this, posX2, posY2);
 
     revalidatePosition();
-    
+
     // for move rectangle
     setWidth(Constants.CONNECTOR_WIDTH);
     setHeight(Constants.CONNECTOR_HEIGHT);
-    
+
     setColor(currentColor);
     dashed = currentIsDashed;
-    
+
     if(parName == null)
     {
         hashId = getAvailableHashId();
-    
+
         if(parentGroup.getAbsoluteName().length() > 0)
             name = parentGroup.getAbsoluteName() + Constants.GROUP_SEPARATOR + hashId;
         else
             name = hashId;
     }
     else
-        name = parName;    
+        name = parName;
 }
 
 public void accept(Visitor visitor)
@@ -145,7 +145,7 @@ public boolean checkMove(int dx, int dy)
 {
     if(startVertex.checkMove(dx, dy) && endVertex.checkMove(dx, dy))
         return true;
-    
+
     return false;
 }
 
@@ -180,10 +180,10 @@ public void destroy()
     super.destroy();
     if(getParent() != null)
         getParent().removeObject(Group.substractObjectName(name));
-        
+
     if(!startVertex.isDestroyed())
         startVertex.destroy();
-        
+
     if(!endVertex.isDestroyed())
         endVertex.destroy();
 }
@@ -193,7 +193,7 @@ protected void draw(Graphics g, boolean hilited)
     ViewState view = ViewState.getInstance();
     int offsetX = view.getRx();
     int offsetY = view.getRy();
-    
+
     int posX = getRx() - offsetX;
     int posY = getRy() - offsetY;
     int rwidth = getRwidth();
@@ -208,21 +208,21 @@ protected void draw(Graphics g, boolean hilited)
         posY -= (rheight - getRheight())/2;
         if (view.getRx() < 0)
             posX = posX < 0 ? 2 : posX;
-        if (view.getRy() < 0) 
+        if (view.getRy() < 0)
             posY = posY <= 0 ? 2 : posY;
         Rscale = 1.0;
     }
-    
+
     if (hilited)
         g.setColor(Constants.HILITE_COLOR);
     else
         g.setColor(getVisibleColor());
 
     //double scale = view.getScale();
-    
+
     posX = startVertex.getRx() - offsetX;
     posY = startVertex.getRy() - offsetY;
-        
+
     int posX2 = endVertex.getRx() - offsetX;
     int posY2 = endVertex.getRy() - offsetY;
 
@@ -239,20 +239,20 @@ protected void draw(Graphics g, boolean hilited)
         posY = posY2;
         posY2 = t;
     }
-        
+
     if((dashed) && ((posX != posX2) || (posY != posY2)))
     {
         int curX = posX;
         while(curX <= posX2)
         {
             int curX2 = curX + Constants.DASHED_LINE_DENSITY;
-                
+
             if(curX2 > posX2)
                 curX2 = posX2;
-                
+
             g.drawLine(curX, posY, curX2, posY);
             g.drawLine(curX, posY2, curX2, posY2);
-                
+
             curX += 2 * Constants.DASHED_LINE_DENSITY;
         }
 
@@ -260,13 +260,13 @@ protected void draw(Graphics g, boolean hilited)
         while(curY <= posY2)
         {
             int curY2 = curY + Constants.DASHED_LINE_DENSITY;
-                
+
             if(curY2 > posY2)
                 curY2 = posY2;
-                
+
             g.drawLine(posX, curY, posX, curY2);
             g.drawLine(posX2, curY, posX2, curY2);
-                
+
             curY += 2 * Constants.DASHED_LINE_DENSITY;
         }
     }
@@ -328,9 +328,9 @@ public boolean move(int dx, int dy)
     {
         startVertex.move(dx, dy);
         endVertex.move(dx, dy);
-        
+
         revalidatePosition();
-        
+
         return true;
     }
 
@@ -342,7 +342,7 @@ public boolean moveToGroup(String group)
     String currentParent = Group.substractParentName(getName());
     if(group.equals(currentParent))
         return false;
-    
+
     //String oldName = getName();
     String newName;
     if (group.equals(nullString))
@@ -369,7 +369,7 @@ public boolean moveToGroup(String group)
 
     if (renameNeeded)
         return rename(newName);
-    
+
     getParent().removeObject(Group.substractObjectName(getName()));
     setParent(null);
     Group.getRoot().addSubObject(newName, this, true);
@@ -392,18 +392,18 @@ public boolean rename(String newName)
         name = fullName;
         getParent().addSubObject(newObjName, this);
     }
-    
+
 // move if needed
     moveToGroup(Group.substractParentName(newName));
 
     return true;
 }
-    
+
 public void revalidatePosition()
 {
     startVertex.revalidatePosition();
     endVertex.revalidatePosition();
-    
+
     double rscale = getRscale();
 
     setRx((int)(getX() * rscale));
@@ -421,7 +421,7 @@ protected void validate()
     endVertex.validate();
 
     revalidatePosition();
-    
+
     double rscale = getRscale();
 
     setRwidth((int)(getWidth() * rscale));
@@ -458,31 +458,31 @@ public VisibleObject intersects(int px, int py) {
       if (spotted == null) {
 
           final int DIST = 5;
-          
+
           int rx = getRx();
           int ry = getRy();
           int rw = getRwidth();
           int rh = getRheight();
           boolean insideOuter = ((rx-DIST)<=px) &&
-                              ((ry-DIST)<=py) && 
-                              ((rx+rw+DIST)>=px) && 
+                              ((ry-DIST)<=py) &&
+                              ((rx+rw+DIST)>=px) &&
                               ((ry+rh+DIST)>=py);
           if (insideOuter)
           {
               boolean outsideInner = !(((rx+DIST)<px) &&
-                                    ((ry+DIST)<py) && 
-                                    ((rx+rw-DIST)>px) && 
+                                    ((ry+DIST)<py) &&
+                                    ((rx+rw-DIST)>px) &&
                                     ((ry+rh-DIST)>py));
-             
+
              if (outsideInner)
                  spotted = this;
           }
-          
+
       }
-      
+
       return spotted;
 }
-    
+
 /* (non-Javadoc)
  * @see com.cosylab.vdct.graphics.objects.VisibleObject#getX()
  */

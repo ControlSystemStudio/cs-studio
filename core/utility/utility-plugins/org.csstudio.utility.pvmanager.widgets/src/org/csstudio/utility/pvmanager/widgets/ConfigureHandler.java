@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.pvmanager.widgets;
 
@@ -9,12 +9,12 @@ import org.csstudio.ui.util.AbstractAdaptedHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 
 /**
- * 
+ *
  * A command that opens up the selected configurable widgets configuration
  * panel.
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class ConfigureHandler extends
         AbstractAdaptedHandler<ConfigurableWidget> {

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.nameresolution.internal;
 
@@ -29,9 +29,9 @@ import org.junit.Test;
 
 /**
  * Test class for {@link FieldFunctionService}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class FieldFunctionServiceTest implements IFieldFunction {
     private FieldFunctionService service;
@@ -70,7 +70,7 @@ public final class FieldFunctionServiceTest implements IFieldFunction {
         assertEquals(expectedvars.size(), vars.size());
         assertTrue(vars.containsAll(expectedvars));
     }
-    
+
     /**
      * Test method for
      * {@link FieldFunctionService#resolve(String, org.csstudio.dct.model.IElement)}
@@ -91,11 +91,11 @@ public final class FieldFunctionServiceTest implements IFieldFunction {
         vars.put("o", "$(m)");
         vars.put("p", "$(q)");
         vars.put("q", "7");
-        
-        
-        
-        
-        
+
+
+
+
+
         // .. no vars
         doTestResolve(null, null, vars, false);
         doTestResolve("", "", vars, false);
@@ -105,25 +105,25 @@ public final class FieldFunctionServiceTest implements IFieldFunction {
         doTestResolve("$a", "$a", vars, false);
         doTestResolve("(a)", "(a)", vars, false);
         doTestResolve("$a)", "$a)", vars, false);
-        
+
         // .. simple single vars
         doTestResolve("$(d)", "3", vars, false);
         doTestResolve("_$(d)", "_3", vars, false);
         doTestResolve("$(d)_", "3_", vars, false);
         doTestResolve("_$(d)_", "_3_", vars, false);
         doTestResolve("$(c)$(d)", "23", vars, false);
-        
+
         // .. simple multiple vars
         doTestResolve("$(c)$(d)", "23", vars, false);
         doTestResolve("$(c)$(d)$(c)$(d)", "2323", vars, false);
         doTestResolve("$(d)$(d)$(d)$(d)", "3333", vars, false);
         doTestResolve("_$(c)_$(d)_$(c)_$(d)_", "_2_3_2_3_", vars, false);
         doTestResolve("$(q)$(q)$(p)$(q)", "7777", vars, false);
-        
+
         // .. nested vars
         doTestResolve("$(a)", "1_2>3_4_", vars, false);
         doTestResolve("$(b)", "2>3", vars, false);
-        
+
         // .. erroneous
         doTestResolve("$(x)", null, vars, true);
         doTestResolve("$(f)", null, vars, true);
@@ -131,8 +131,8 @@ public final class FieldFunctionServiceTest implements IFieldFunction {
         doTestResolve("$(m)", null, vars, true);
         doTestResolve("$(n)", null, vars, true);
         doTestResolve("$(o)", null, vars, true);
-        
-        
+
+
     }
 
     private void doTestResolve(String source, String expected, Map<String, String> vars, boolean errorExpected) {

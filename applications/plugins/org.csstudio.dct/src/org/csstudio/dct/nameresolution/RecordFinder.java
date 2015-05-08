@@ -7,9 +7,9 @@ import org.csstudio.dct.util.AliasResolutionUtil;
 
 /**
  * Utility class that helps to find records in a hierarchical model.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class RecordFinder {
     private RecordFinder() {
@@ -18,10 +18,10 @@ public final class RecordFinder {
     /**
      * Searches for a record by name using a path. A path denotes the name from
      * the root of a container to the target record.
-     * 
+     *
      * The method climbs up the container hierarchy in case a record is not
      * found in the starting container.
-     * 
+     *
      * @param path
      *            the path (path segments are separated by a dot)
      * @param container

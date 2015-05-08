@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.Assert;
 
 /**
  * Defines a proposal as it will be displayed.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class Proposal implements Comparable<Proposal> {

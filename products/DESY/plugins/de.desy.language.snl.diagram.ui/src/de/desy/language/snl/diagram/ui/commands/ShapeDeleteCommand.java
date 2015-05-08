@@ -28,7 +28,7 @@ public class ShapeDeleteCommand extends Command {
 
     /**
      * Create a command that will remove the shape from its parent.
-     * 
+     *
      * @param parent
      *            the ShapesDiagram containing the child
      * @param child
@@ -47,7 +47,7 @@ public class ShapeDeleteCommand extends Command {
 
     /**
      * Reconnects a List of Connections with their previous endpoints.
-     * 
+     *
      * @param connections
      *            a non-null List of connections
      */
@@ -60,7 +60,7 @@ public class ShapeDeleteCommand extends Command {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.commands.Command#canUndo()
      */
     @Override
@@ -70,7 +70,7 @@ public class ShapeDeleteCommand extends Command {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.commands.Command#execute()
      */
     @Override
@@ -83,7 +83,7 @@ public class ShapeDeleteCommand extends Command {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.commands.Command#redo()
      */
     @Override
@@ -98,7 +98,7 @@ public class ShapeDeleteCommand extends Command {
 
     /**
      * Disconnects a List of Connections from their endpoints.
-     * 
+     *
      * @param connections
      *            a non-null List of connections
      */
@@ -111,7 +111,7 @@ public class ShapeDeleteCommand extends Command {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.commands.Command#undo()
      */
     @Override

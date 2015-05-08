@@ -127,7 +127,7 @@ public class LibraryFolderPreferencePage extends PreferencePage implements
                 });
 
     }
-    
+
     private void updateButtons() {
         if (tableViewer.getSelection().isEmpty()) {
             removeFolderButton.setEnabled(false);
@@ -139,7 +139,7 @@ public class LibraryFolderPreferencePage extends PreferencePage implements
             boolean enableMoveUp = !(selectionIndex == 0);
             boolean enableMoveDown = !(selectionIndex == tableViewer
                     .getTable().getItemCount() - 1);
-            
+
             removeFolderButton.setEnabled(true);
             moveFolderDownButton.setEnabled(enableMoveDown);
             moveFolderUpButton.setEnabled(enableMoveUp);
@@ -165,7 +165,7 @@ public class LibraryFolderPreferencePage extends PreferencePage implements
                 if (addedFolder != null) {
                     LibraryFolderPreferenceItem newItem = new LibraryFolderPreferenceItem(
                             addedFolder);
-                    // don't add selected folder if it's already been added 
+                    // don't add selected folder if it's already been added
                     boolean alreadyContainsItem = false;
                     for (LibraryFolderPreferenceItem item : getAllItems()) {
                         if(item.getFolderPath().equals(newItem.getFolderPath())) {
@@ -188,7 +188,7 @@ public class LibraryFolderPreferencePage extends PreferencePage implements
                 }
             }
         });
-        
+
         moveFolderUpButton = createPushButton(buttonContainer, "Move folder up", false);
         moveFolderUpButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event e) {

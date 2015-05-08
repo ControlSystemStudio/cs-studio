@@ -10,7 +10,7 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
  * Preference Page for KBLog settings
- * 
+ *
  * @author Takashi Nakamoto
  */
 public class KBLogPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
@@ -18,7 +18,7 @@ public class KBLogPreferencePage extends FieldEditorPreferencePage implements IW
         super(GRID);
         setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(), Activator.ID));
     }
-    
+
     @Override
     protected void createFieldEditors() {
         setMessage(KBLogMessages.PreferenceTitle);

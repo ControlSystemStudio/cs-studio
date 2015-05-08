@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * The trace figure.
- * 
+ *
  * @author Xihui Chen
  * @author Kay Kasemir (synchronization, STEP_HORIZONTALLY tweaks)
  * @author Laurent PHILIPPE (Add trace listeners)
@@ -55,7 +55,7 @@ public class Trace extends Figure implements IDataProviderListener,
 
     /**
      * The way how the trace will be drawn.
-     * 
+     *
      * @author Xihui Chen
      */
     public enum TraceType {
@@ -174,7 +174,7 @@ public class Trace extends Figure implements IDataProviderListener,
 
     /**
      * List of trace listeners
-     * 
+     *
      * @author Laurent PHILIPPE
      */
     final private List<ITraceListener> listeners = new ArrayList<ITraceListener>();
@@ -352,7 +352,7 @@ public class Trace extends Figure implements IDataProviderListener,
 
     /**
      * Draw point with the pointStyle and size of the trace;
-     * 
+     *
      * @param graphics
      * @param pos
      */
@@ -426,7 +426,7 @@ public class Trace extends Figure implements IDataProviderListener,
 
     /**
      * Draw line with the line style and line width of the trace.
-     * 
+     *
      * @param graphics
      * @param p1
      * @param p2
@@ -486,10 +486,10 @@ public class Trace extends Figure implements IDataProviderListener,
         }
         graphics.popState();
     }
-    
+
     /**
       * Draw polyline with the line style and line width of the trace.
-      * 
+      *
      * @param graphics
      * @param pl
      */
@@ -546,22 +546,22 @@ public class Trace extends Figure implements IDataProviderListener,
                     startIndex = 0;
                     endIndex = traceDataProvider.getSize() - 1;
                 }
-                
+
                 // Set of points which were already drawn
                 HashSet<Point> hsPoint = new HashSet<Point>();
-                
-                // List of points for drawing polyline. 
+
+                // List of points for drawing polyline.
                 PointList plPolyline = new PointList();
-                
+
                 // List of bottom/top point in a certain horizontal
                 // pixel location for the BAR line type.
                 HashMap<Integer,Integer> bottomPoints = new HashMap<Integer,Integer>();
                 HashMap<Integer,Integer> topPoints = new HashMap<Integer,Integer>();
-                
+
                 Point maxInRegion = null;
                 Point minInRegion = null;
                 Point lastInRegion = null;
-                
+
                 for (int i = startIndex; i <= endIndex; i++) {
                     ISample dp = traceDataProvider.getSample(i);
                     final boolean dpInXRange = xAxis.getRange().inRange(
@@ -597,13 +597,13 @@ public class Trace extends Figure implements IDataProviderListener,
                                 dp.getXValue(), false), yAxis.getValuePosition(
                                 dp.getYValue(), false));
                         hotSampleist.add(dp);
-                        
+
                         // Do not draw points in the same place to improve performance
                         if (!hsPoint.contains(dpPos)) {
                             drawPoint(graphics, dpPos);
                             hsPoint.add(dpPos);
                         }
-                        
+
                         if (errorBarEnabled && !drawYErrorInArea)
                             drawErrorBar(graphics, dpPos, dp);
                     }
@@ -700,7 +700,7 @@ public class Trace extends Figure implements IDataProviderListener,
                         if (errorBarEnabled && drawYErrorInArea
                                 && traceType != TraceType.BAR)
                             drawYErrorArea(graphics, predp, dp, predpPos, dpPos);
-                        
+
                         switch (traceType) {
                         case SOLID_LINE:
                         case DASH_LINE:
@@ -711,12 +711,12 @@ public class Trace extends Figure implements IDataProviderListener,
 
                             if (traceDataProvider.isChronological()) {
                                 // Line drawing optimization is available only when the trace data
-                                // is ascending sorted on X axis. 
+                                // is ascending sorted on X axis.
                                 if (!predpPos.equals(plPolyline.getLastPoint()) && predpPos.x != plPolyline.getLastPoint().x) {
                                     // The line for this trace is not continuous.
                                     // Draw a polylin at this point, and start to reconstruct a new
                                     // polyline for the rest of the trace.
-                                    
+
                                     if (lastInRegion != null) {
                                         // There were several points which have the same X value.
                                         // Draw lines that connect those points at once.
@@ -726,22 +726,22 @@ public class Trace extends Figure implements IDataProviderListener,
                                             plPolyline.addPoint(maxInRegion);
 
                                         plPolyline.addPoint(lastInRegion);
-                                        
+
                                         minInRegion = null;
                                         maxInRegion = null;
                                         lastInRegion = null;
                                     }
-                                    
+
                                     drawPolyline(graphics, plPolyline);
                                     plPolyline.removeAllPoints();
                                     plPolyline.addPoint(predpPos);
-                                    
+
                                     if (traceType == TraceType.STEP_HORIZONTALLY) {
                                         plPolyline.addPoint(dpPos.x, predpPos.y);
                                     } else if (traceType == TraceType.STEP_VERTICALLY) {
                                         plPolyline.addPoint(predpPos.x, dpPos.y);
                                     }
-                                    
+
                                     plPolyline.addPoint(dpPos);
                                 } else {
                                     if (predpPos.x != dpPos.x) {
@@ -751,7 +751,7 @@ public class Trace extends Figure implements IDataProviderListener,
                                             } else if (traceType == TraceType.STEP_VERTICALLY) {
                                                 plPolyline.addPoint(predpPos.x, dpPos.y);
                                             }
-                                            
+
                                             plPolyline.addPoint(dpPos);
                                         } else {
                                             // There were several points which have the same X value.
@@ -762,7 +762,7 @@ public class Trace extends Figure implements IDataProviderListener,
                                                 plPolyline.addPoint(maxInRegion);
 
                                             plPolyline.addPoint(lastInRegion);
-                                            
+
                                             if (traceType == TraceType.STEP_HORIZONTALLY) {
                                                 plPolyline.addPoint(dpPos.x, lastInRegion.y);
                                             } else if (traceType == TraceType.STEP_VERTICALLY) {
@@ -772,7 +772,7 @@ public class Trace extends Figure implements IDataProviderListener,
                                             // The first point of the next region is drawn anyway.
                                             plPolyline.addPoint(dpPos);
                                         }
-                                        
+
                                         minInRegion = null;
                                         maxInRegion = null;
                                         lastInRegion = null;
@@ -801,7 +801,7 @@ public class Trace extends Figure implements IDataProviderListener,
                                             // There are more than four points which have the same X
                                             // value.
                                             if (lastInRegion.y > maxInRegion.y) {
-                                                maxInRegion = lastInRegion; 
+                                                maxInRegion = lastInRegion;
                                             } else if (lastInRegion.y < minInRegion.y) {
                                                 minInRegion = lastInRegion;
                                             }
@@ -818,16 +818,16 @@ public class Trace extends Figure implements IDataProviderListener,
                                     plPolyline.removeAllPoints();
                                     plPolyline.addPoint(predpPos);
                                 }
-                                
+
                                 if (traceType == TraceType.STEP_HORIZONTALLY) {
                                     plPolyline.addPoint(dpPos.x, predpPos.y);
                                 } else if (traceType == TraceType.STEP_VERTICALLY) {
                                     plPolyline.addPoint(predpPos.x, dpPos.y);
                                 }
-                                
+
                                 plPolyline.addPoint(dpPos);
                             }
-                            
+
                             break;
                         case BAR:
                             if (!use_advanced_graphics && predpPos.x() == dpPos.x()) {
@@ -835,7 +835,7 @@ public class Trace extends Figure implements IDataProviderListener,
                                 Integer posX = new Integer(predpPos.x());
                                 Integer highY;
                                 Integer lowY;
-                                
+
                                 if (dpPos.y() > predpPos.y()) {
                                     highY = new Integer(dpPos.y());
                                     lowY = new Integer(predpPos.y());
@@ -843,9 +843,9 @@ public class Trace extends Figure implements IDataProviderListener,
                                     highY = new Integer(predpPos.y());
                                     lowY = new Integer(dpPos.y());
                                 }
-                                
+
                                 if (bottomPoints.containsKey(posX)) {
-                                    if (lowY.compareTo(bottomPoints.get(posX)) < 0) { 
+                                    if (lowY.compareTo(bottomPoints.get(posX)) < 0) {
                                         bottomPoints.put(posX, lowY);
                                     }
                                     if (highY.compareTo(topPoints.get(posX)) > 0) {
@@ -858,7 +858,7 @@ public class Trace extends Figure implements IDataProviderListener,
                             } else {
                                 // If the X value is different for some reason, or the advanced graphics is
                                 // turned on, fall back to the original drawing algorithm.
-                                drawLine(graphics, predpPos, dpPos);            
+                                drawLine(graphics, predpPos, dpPos);
                             }
                             break;
                         default:
@@ -870,7 +870,7 @@ public class Trace extends Figure implements IDataProviderListener,
                     predp = origin_dp;
                     predpInRange = origin_dpInRange;
                 }
-                
+
                 switch (traceType) {
                 case SOLID_LINE:
                 case DASH_LINE:
@@ -899,7 +899,7 @@ public class Trace extends Figure implements IDataProviderListener,
 
     /**
      * Compute axes intersection considering the 'TraceType'
-     * 
+     *
      * @param dp1
      *            'Start' point of line
      * @param dp2
@@ -967,7 +967,7 @@ public class Trace extends Figure implements IDataProviderListener,
     /**
      * Compute intersection of straight line with axes, no correction for
      * 'TraceType'.
-     * 
+     *
      * @param dp1
      *            'Start' point of line
      * @param dp2
@@ -1028,7 +1028,7 @@ public class Trace extends Figure implements IDataProviderListener,
      * Sanity check: Point x/y was computed to be an axis intersection, but that
      * can fail because of rounding errors or for samples with NaN, Infinity. Is
      * it in the plot area? Is it between the start/end points.
-     * 
+     *
      * @param x
      * @param y
      * @param dp1
@@ -1093,7 +1093,7 @@ public class Trace extends Figure implements IDataProviderListener,
 
         if (yAxis == axis) {
             return;
-        } 
+        }
 
         xyGraph.getLegendMap().get(yAxis).removeTrace(this);
         if (xyGraph.getLegendMap().get(yAxis).getTraceList().size() <= 0) {
@@ -1336,7 +1336,7 @@ public class Trace extends Figure implements IDataProviderListener,
      * could be drawn between inside data and outside data. <b>This method only
      * works for chronological data, which means the data is naturally sorted on
      * xAxis.</b>
-     * 
+     *
      * @return the Range of the index.
      */
     private Range getIndexRangeOnXAxis() {
@@ -1482,7 +1482,7 @@ public class Trace extends Figure implements IDataProviderListener,
 
     /**
      * Hot Sample is the sample on the trace which has been drawn in plot area.
-     * 
+     *
      * @return the hotPointList
      */
     public List<ISample> getHotSampleList() {
@@ -1591,7 +1591,7 @@ public class Trace extends Figure implements IDataProviderListener,
 
     public void axisLogScaleChanged(Axis axis, boolean old, boolean logScale) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

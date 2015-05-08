@@ -50,9 +50,9 @@ import org.slf4j.LoggerFactory;
  * @since 06.05.2009
  */
 public class FaceplateParser {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(FaceplateParser.class);
-    
+
     private static final int WIDTH = 151;
     private static final int HIGHT = 455;
     private static final int X_OFFSET = WIDTH + 5;
@@ -61,15 +61,15 @@ public class FaceplateParser {
     // private static final int HIGHT = 145;
     // private static final int X_OFFSET = WIDTH + 5;
     // private static final int Y_OFFSET = HIGHT;
-    
+
     private static Map<Point, LinkingContainerModel> _facePlateMap = new HashMap<Point, LinkingContainerModel>(20);
     private static int _maxX;
     private static int _maxY;
-    
+
     private FaceplateParser() {
         // Private Constructor
     }
-    
+
     public static void parse(ADLWidget root, DisplayModel displayModel) {
         int groupX = 0;
         _maxX = 0;
@@ -100,10 +100,10 @@ public class FaceplateParser {
                 if(facePlate!=null) {
                     facePlate.setPropertyValue(LinkingContainerModel.PROP_RESOURCE, new Path(path));
                 }
-                
+
             } else if(attribute.equals("faceplateHeight")) {
                 // e.g. faceplateHeight=800
-                
+
                 // Use the default Value
                 // Größe der einzelnen Elemente 125,350
                 if(facePlate == null) {
@@ -158,7 +158,7 @@ public class FaceplateParser {
                 // Use the default Value
                 // height= Integer.parseInt(lineParts[1]);
                 // Größe der einzelnen Elemente 125,350
-                
+
                 int value = 2 * Y_OFFSET + 60;
                 System.out.println("H: " + value);
                 displayModel.setPropertyValue(AbstractWidgetModel.PROP_HEIGHT, value);
@@ -179,7 +179,7 @@ public class FaceplateParser {
                 // Use the default Value
                 // width = Integer.parseInt(lineParts[1]);
                 // Größe der einzelnen Elemente 125,350
-                
+
                 displayModel.setPropertyValue(AbstractWidgetModel.PROP_WIDTH, groupX * (5 + 125) + 5);
             } else if(attribute.equals("groupX")) {
                 // e.g. groupX=0
@@ -191,7 +191,7 @@ public class FaceplateParser {
             } else {
                 LOG.debug("found unhandle Line: {}", line);
             }
-            
+
         }
         if(facePlate != null) {
             try {
@@ -208,7 +208,7 @@ public class FaceplateParser {
         // displayModel.setSize(width, height);
         displayModel.setSize(X_OFFSET * (_maxX + 1), Y_OFFSET * (_maxY + 1) + 60);
     }
-    
+
     private static LabelModel getHeader(String header) {
         try {
             int h = 40;
@@ -227,7 +227,7 @@ public class FaceplateParser {
         }
         return null;
     }
-    
+
     private static LinkingContainerModel getFacePlate(int x, int y) {
         Point key = new Point(x, y);
         LinkingContainerModel linkingContainerModel = _facePlateMap.get(key);
@@ -254,5 +254,5 @@ public class FaceplateParser {
         }
         return linkingContainerModel;
     }
-    
+
 }

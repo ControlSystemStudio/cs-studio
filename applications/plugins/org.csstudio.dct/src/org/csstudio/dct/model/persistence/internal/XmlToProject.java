@@ -26,9 +26,9 @@ import org.jdom.Element;
 
 /**
  * Converter that transforms a xml representation back to a DCT model.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class XmlToProject {
     private Document document;
@@ -50,7 +50,7 @@ public final class XmlToProject {
 
     /**
      * Constructor.
-     * 
+     *
      * @param document
      *            the xml document
      */
@@ -61,7 +61,7 @@ public final class XmlToProject {
 
     /**
      * Returns the DCT project that was read from the provided xml document.
-     * 
+     *
      * @return a DCT project
      */
     public Project getProject() {
@@ -75,7 +75,7 @@ public final class XmlToProject {
 
         // .. create the project
         project = ProjectFactory.createExistingDCTProject(root);
-        
+
         modelElements.put(project.getId(), project);
         preconditions.remove(root);
 
@@ -137,7 +137,7 @@ public final class XmlToProject {
 
     /**
      * Converts the specified xml element to a model element.
-     * 
+     *
      * @param xmlElement
      *            the xml element
      */
@@ -157,9 +157,9 @@ public final class XmlToProject {
 
     /**
      * Creates a folder and links it to the hierarchy.
-     * 
+     *
      * The xml representation for a folder looks like this:
-     * 
+     *
      * <code>
      *     <folder name="{name}" id={id}">
      *         <prototype ...>
@@ -176,7 +176,7 @@ public final class XmlToProject {
      *      ...
      *     </folder>
      * </code>
-     * 
+     *
      * @param xmlFolderElement
      *            the xml element
      */
@@ -210,9 +210,9 @@ public final class XmlToProject {
 
     /**
      * Creates a prototype and links it to the hierarchy.
-     * 
+     *
      * The xml representation for a prototype looks like this:
-     * 
+     *
      * <code>
      *     <prototype name="{name}" id={id}">
      *         <parameter name="${parameterName}" value="{defaultValue}" />
@@ -225,7 +225,7 @@ public final class XmlToProject {
      *      ...
      *     </prototype>
      * </code>
-     * 
+     *
      * @param xmlPrototypeElement
      *            the xml element
      */
@@ -241,7 +241,7 @@ public final class XmlToProject {
         // DETERMINE IDENTIFIERS
         // .. the id of the prototype
         UUID id = ProjectFactory.getIdFromXml(xmlPrototypeElement);
-        
+
         // .. the id of the model element that contains the prototype
         UUID containerId = ProjectFactory.getIdFromXml(xmlPrototypeElement.getParentElement());
 
@@ -271,12 +271,12 @@ public final class XmlToProject {
 
     /**
      * Creates a record and links it properly to the hierarchy.
-     * 
+     *
      * The xml representation for a record looks like this:
-     * 
+     *
      * <instance name="{name}" id={id} parent="{parentId}"> <record
      * ...>...</record> ... <instance ...>...</instance> ... </instance>
-     * 
+     *
      * @param xmlInstanceElement
      *            the xmlElement representing the instance
      */
@@ -347,9 +347,9 @@ public final class XmlToProject {
 
     /**
      * Creates a record and links it properly to the hierarchy.
-     * 
+     *
      * The xml representation for a record looks like this:
-     * 
+     *
      * <code>
      *     <record name="{name}" id={id} parent="{parentRecordId}">
      *         <field name="{fieldName} value={fieldValue} />
@@ -360,7 +360,7 @@ public final class XmlToProject {
      *      ...
      * </record>
      * </code>
-     * 
+     *
      * @param xmlRecordElement
      *            the xmlElement representing the record
      */
@@ -404,19 +404,19 @@ public final class XmlToProject {
         }
 
         assert record != null;
-        
+
         // READ NAME
         String recordName = xmlRecordElement.getAttributeValue("name");
         record.setName(recordName.equals("{inherited}") ? null : recordName);
-        
+
         // READ EPICS NAME
         String epicsName = xmlRecordElement.getAttributeValue("epicsname");
         record.setEpicsName(epicsName.equals("{inherited}") ? null : epicsName);
-        
+
         // READ DISABLED
         String disabled = xmlRecordElement.getAttributeValue("disabled", "{inherited}");
         record.setDisabled(disabled.equals("{inherited}") ? null : Boolean.valueOf(disabled));
-        
+
         // READ FIELD INFORMATION
         for (Element xmlFieldElement : (List<Element>) xmlRecordElement.getChildren("field")) {
             String name = xmlFieldElement.getAttributeValue("name");
@@ -448,13 +448,13 @@ public final class XmlToProject {
 
     /**
      * Reads properties, whoose xml representation looks like this:
-     * 
+     *
      * <code>
      *      ...
      *      <property name="{propertyName}" value="{propertyValue}" />
      *   ...
      * </code>
-     * 
+     *
      * @param container the container
      * @param xmlParentElement the xml element
      */
@@ -472,11 +472,11 @@ public final class XmlToProject {
 
     /**
      * Returns a model element that has already been created.
-     * 
+     *
      * For convenience, the returned element is casted to the type of the
      * variable the result is bound to. This is not static type safe but relies
      * on guaranteed invariants of this class.
-     * 
+     *
      * @param <E>
      *            the expected return type
      * @param id
@@ -497,8 +497,8 @@ public final class XmlToProject {
      * collects preconditions that have to be met, before a certain model
      * element can be created. In many cases, the parents and containers of a
      * model element have to be created before the model element itself.
-     * 
-     * 
+     *
+     *
      * @param xmlElement
      *            the xml element that represents a certain model element
      */
@@ -541,10 +541,10 @@ public final class XmlToProject {
 
     /**
      * Recursive method which determines the preconditions for a prototype.
-     * 
+     *
      * @param xmlElement
      *            an xml element representing a prototype or instance
-     * 
+     *
      * @param conditions
      *            the conditions
      */

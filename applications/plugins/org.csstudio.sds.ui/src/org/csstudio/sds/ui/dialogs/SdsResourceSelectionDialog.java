@@ -49,7 +49,7 @@ public class SdsResourceSelectionDialog extends Dialog implements Listener {
     public void handleEvent(Event event) {
         String filePathPrefix = ResourcesPlugin.getWorkspace().getRoot()
                 .getRawLocation().toOSString();
-        
+
         IPath fullPath = ((ResourceSelectionGroup) event.widget).getFullPath();
 
         List<File> folderList;
@@ -78,10 +78,10 @@ public class SdsResourceSelectionDialog extends Dialog implements Listener {
         int shellHeight = 400;
         int xPos = (parentBounds.width - shellWidth) / 2 + parentBounds.x;
         int yPos = (parentBounds.height - shellHeight) / 2 + parentBounds.y;
-        
+
         newShell.setBounds(xPos, yPos, shellWidth, shellHeight);
     }
-    
+
     @Override
     protected Control createContents(Composite parent) {
         Control result = super.createContents(parent);
@@ -100,7 +100,7 @@ public class SdsResourceSelectionDialog extends Dialog implements Listener {
         sashForm.setLayout(new FillLayout());
         this.resourceTree = new ResourceSelectionGroup(sashForm, this, null,
                 false);
-        
+
         TabFolder tabFolder = new TabFolder(sashForm, SWT.BORDER);
         TabItem libraryTabItem = new TabItem(tabFolder, SWT.BORDER);
         libraryTabItem.setText("Gallery");

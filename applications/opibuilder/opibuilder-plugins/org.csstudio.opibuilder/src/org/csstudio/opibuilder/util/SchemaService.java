@@ -24,7 +24,7 @@ public final class SchemaService {
     private static SchemaService instance;
 
     private Map<String, AbstractWidgetModel> schemaWidgetsMap;
-    
+
 
     private SchemaService() {
         schemaWidgetsMap = new HashMap<String, AbstractWidgetModel>();
@@ -45,10 +45,10 @@ public final class SchemaService {
         final IPath schemaOPI = PreferencesHelper.getSchemaOPIPath();
         if (schemaOPI == null || schemaOPI.isEmpty()) {
             return;
-        }        
+        }
         if(Display.getCurrent() != null){ // in UI thread, show progress dialog
             IRunnableWithProgress job = new IRunnableWithProgress() {
-                
+
                 @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException,
                         InterruptedException {
@@ -63,7 +63,7 @@ public final class SchemaService {
                         Display.getCurrent().getActiveShell()).run(true, false, job);
             } catch (Exception e) {
                 ErrorHandlerUtil.handleError("Failed to load schema", e);
-            } 
+            }
         }
         else
             loadSchema(schemaOPI);
@@ -89,16 +89,16 @@ public final class SchemaService {
         } catch (Exception e) {
             String message = "Failed to load schema file: " + schemaOPI;
             OPIBuilderPlugin.getLogger().log(Level.WARNING,
-                    message, e);                
+                    message, e);
             ConsoleService.getInstance().writeError(message + "\n" + e);//$NON-NLS-1$
         }
     }
-    
+
     private void loadModelFromContainer(AbstractContainerModel containerModel) {
         for(AbstractWidgetModel model : containerModel.getChildren()){
             //always add only the first model of its type that is found
-            //the main container might contain several instances of the same widget 
-            //(e.g. GroupingContainer can appear multiple times; it is by default the base 
+            //the main container might contain several instances of the same widget
+            //(e.g. GroupingContainer can appear multiple times; it is by default the base
             //layer of a tab and sash - we don't want the tab to override our container settings)
             if (!schemaWidgetsMap.containsKey(model.getTypeID())) {
                 schemaWidgetsMap.put(model.getTypeID(), model);
@@ -107,7 +107,7 @@ public final class SchemaService {
                     loadModelFromContainer((AbstractContainerModel) model);
         }
     }
-    
+
     public void applySchema(AbstractWidgetModel widgetModel) {
         if (schemaWidgetsMap.isEmpty())
             return;
@@ -119,7 +119,7 @@ public final class SchemaService {
             }
         }
     }
-    
+
     /**Return the default property value of the widget when it is created.
      * @param typeId typeId of the widget.
      * @param propId propId of the property.

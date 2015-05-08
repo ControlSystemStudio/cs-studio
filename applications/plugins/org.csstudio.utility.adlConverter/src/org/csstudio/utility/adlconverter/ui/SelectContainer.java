@@ -35,7 +35,7 @@ import org.eclipse.core.runtime.IPath;
 public class SelectContainer {
 
     private boolean _selection;
-    
+
     private IPath _iPath;
 
     public void setBool(boolean selection) {
@@ -53,7 +53,7 @@ public class SelectContainer {
     public IPath getiPath() {
         return _iPath;
     }
-    
-    
+
+
 
 }

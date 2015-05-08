@@ -25,5 +25,5 @@ public class SpreadSheetTableFigure extends AbstractSWTWidgetFigure<SpreadSheetT
     @Override
     protected SpreadSheetTable createSWTWidget(Composite parent, int style) {
         return new SpreadSheetTable(parent);
-    }    
+    }
 }

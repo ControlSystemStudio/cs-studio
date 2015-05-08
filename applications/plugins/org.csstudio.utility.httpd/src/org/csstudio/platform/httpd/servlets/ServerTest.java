@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 public class ServerTest extends HttpServlet
 {
     private static final long serialVersionUID = 1L;
-    
+
     private int visitor = 1;
 
     @Override
@@ -29,7 +29,7 @@ public class ServerTest extends HttpServlet
         out.print("<body>\n");
         out.print("<h1>ServerInfo Call # " + visitor + "</h1>");
         ++visitor;
-        
+
         final Enumeration<String> parms = req.getParameterNames();
         while (parms.hasMoreElements())
         {
@@ -37,7 +37,7 @@ public class ServerTest extends HttpServlet
             final String value = req.getParameter(parm);
             out.println(String.format("%s = %s<p>\n", parm, value));
         }
-        
+
         out.print("</body>\n");
         out.print("</html>\n");
         out.close();

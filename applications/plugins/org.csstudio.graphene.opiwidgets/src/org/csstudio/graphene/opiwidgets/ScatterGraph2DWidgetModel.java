@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene.opiwidgets;
 
@@ -10,7 +10,7 @@ import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescrip
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ScatterGraph2DWidgetModel extends AbstractPointDatasetGraph2DWidgetModel {
 

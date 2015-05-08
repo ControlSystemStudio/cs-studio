@@ -18,7 +18,7 @@ import org.epics.util.time.Timestamp;
 public class RDBChannelConfig extends ChannelConfig
 {
     final private int id;
-    
+
     /** Initialize
      *  @param id Channel ID in RDB
      *  @param name Channel name
@@ -37,7 +37,7 @@ public class RDBChannelConfig extends ChannelConfig
     {
         return id;
     }
-    
+
     /** @return Debug representation */
     @Override
     public String toString()

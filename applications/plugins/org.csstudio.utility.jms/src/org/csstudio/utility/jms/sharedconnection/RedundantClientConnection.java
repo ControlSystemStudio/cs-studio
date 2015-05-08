@@ -39,20 +39,20 @@ import org.csstudio.utility.jms.sharedconnection.MonitorableSharedConnection;
  * @since 02.04.2012
  */
 public class RedundantClientConnection {
-    
+
     /** The static array that contains the URL's for the redundant connection */
     private static Vector<String> jmsUrl;
-    
+
     private static String clientId;
-    
+
     private static Map<String, MonitorableSharedConnection> connections;
-    
+
     static {
         jmsUrl = new Vector<String>();
         connections = new HashMap<String, MonitorableSharedConnection>();
         clientId = null;
     }
-    
+
     public static void injectUrls(String url1, String url2) throws ClientConnectionException {
         if ((url1 == null) || (url2 == null)) {
             throw new ClientConnectionException("Argument(s) is(are) null.");
@@ -63,7 +63,7 @@ public class RedundantClientConnection {
         jmsUrl.add(url1);
         jmsUrl.add(url2);
     }
-    
+
     public static void injectUrls(String[] url) throws ClientConnectionException {
         if (url == null) {
             throw new ClientConnectionException("Argument is null.");
@@ -75,13 +75,13 @@ public class RedundantClientConnection {
             jmsUrl.add(s);
         }
     }
-    
+
     public static void injectClientId(String id) {
         clientId = id;
     }
-    
+
     public synchronized static ISharedConnectionHandle[] getConnectionHandles() throws ClientConnectionException {
-        
+
         if (connections.isEmpty()) {
             if (jmsUrl.isEmpty()) {
                 throw new ClientConnectionException("The JMS URL's are not defined. First call staticInject(String[] url).");
@@ -91,7 +91,7 @@ public class RedundantClientConnection {
                 connections.put(s, con);
             }
         }
-        
+
         ISharedConnectionHandle[] result = new ISharedConnectionHandle[connections.size()];
         Iterator<String> iter = connections.keySet().iterator();
         int count = 0;
@@ -103,7 +103,7 @@ public class RedundantClientConnection {
                 throw new ClientConnectionException(e.getMessage());
             }
         }
-        
+
         return result;
     }
 }

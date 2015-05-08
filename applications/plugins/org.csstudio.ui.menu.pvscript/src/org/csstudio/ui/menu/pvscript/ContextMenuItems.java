@@ -22,7 +22,7 @@ import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /** 'Dynamic' context menu contribution.
- * 
+ *
  *  <p>plugin.xml hooks this into the ProcessVariable
  *  context menu.
  *  Creates one entry per registered script.
@@ -47,8 +47,8 @@ public class ContextMenuItems extends CompoundContributionItem
                     NLS.bind(Messages.PreferenceErrorFmt, ex.getMessage()));
             return new IContributionItem[0];
         }
-        
-        
+
+
         final ImageDescriptor script_icon =
             AbstractUIPlugin.imageDescriptorFromPlugin(Activator.ID, "icons/script.gif"); //$NON-NLS-1$
 

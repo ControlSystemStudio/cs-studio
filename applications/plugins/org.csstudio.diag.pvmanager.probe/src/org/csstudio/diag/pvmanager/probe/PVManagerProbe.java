@@ -53,7 +53,7 @@ import org.epics.pvmanager.expression.DesiredRateReadWriteExpression;
  * Probe view.
  */
 public class PVManagerProbe extends ViewPart {
-    
+
     public PVManagerProbe() {
     }
 
@@ -62,14 +62,14 @@ public class PVManagerProbe extends ViewPart {
 
     // The ID of the view as specified by the extension point
     public static final String VIEW_ID = "org.csstudio.diag.pvmanager.probe"; //$NON-NLS-1$
-    
+
     // Next secondary view ID, i.e. next instance of probe should use this number.
     // SYNC on PVManagerProbe.class for access
     private static int next_instance = 1;
-    
+
     private PVFormulaInputBar pvFomulaInputBar;
     private ErrorBar errorBar;
-    
+
     private Composite mainPanel;
     private ViewerPanel viewerPanel;
     private ValuePanel valuePanel;
@@ -77,7 +77,7 @@ public class PVManagerProbe extends ViewPart {
     private ChangeValuePanel changeValuePanel;
     private MetadataPanel metadataPanel;
     private DetailsPanel detailsPanel;
-    
+
     private Composite statusBar;
     private Label statusLabel;
     private Label statusField;
@@ -89,7 +89,7 @@ public class PVManagerProbe extends ViewPart {
 
     private String pvFormula;
     private PV<?, Object> pv;
-    
+
     // Needed to make sure a timeout does not override an exception
     // TODO: put this in pvmanager itself?
     private Exception lastError = null;
@@ -110,7 +110,7 @@ public class PVManagerProbe extends ViewPart {
     public void init(final IViewSite site, final IMemento memento)
             throws PartInitException {
         super.init(site, memento);
-        
+
         // For new instances opened while CSS is running,
         // createNewInstance() tracks the secondary view ID.
         // But if this view was 'restored' from a saved workspace,
@@ -130,7 +130,7 @@ public class PVManagerProbe extends ViewPart {
             if (this_instance >= next_instance)
                 next_instance = this_instance + 1;
         }
-        
+
         // Save the memento
         this.memento = memento;
     }
@@ -186,7 +186,7 @@ public class PVManagerProbe extends ViewPart {
         ScrolledComposite mainScroll = new ScrolledComposite(parent, SWT.V_SCROLL);
         mainScroll.setExpandHorizontal(true);
         mainScroll.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-        
+
         mainPanel = new Composite(mainScroll, SWT.NONE) {
             @Override
             public void layout() {
@@ -299,7 +299,7 @@ public class PVManagerProbe extends ViewPart {
 
     /**
      * Changes the PV currently displayed by probe.
-     * 
+     *
      * @param pvName
      *            the new pv name or null
      */
@@ -390,7 +390,7 @@ public class PVManagerProbe extends ViewPart {
 
     /**
      * Modifies the prove status.
-     * 
+     *
      * @param status
      *            new status to be displayed
      */
@@ -405,7 +405,7 @@ public class PVManagerProbe extends ViewPart {
 
     /**
      * Displays the last error in the status.
-     * 
+     *
      * @param ex
      *            an exception
      */
@@ -492,9 +492,9 @@ public class PVManagerProbe extends ViewPart {
                 }
             });
         }
-        
+
         copyValueAction = new Action(Messages.Probe_copyValueToClipboardButtonText, SWT.NONE) {
-            
+
             public void runWithEvent(Event event) {
                 try {
                     StringWriter writer = new StringWriter();

@@ -8,7 +8,7 @@ public enum PredefinedVariables implements ILanguageElements {
     DESCRIPTION("description", false),
     PARAMETERS("parameters", false),
     PARAMETERTYPES("parameterTypes", true);
-    
+
     private String _elementName;
     private boolean _optional;
 
@@ -20,7 +20,7 @@ public enum PredefinedVariables implements ILanguageElements {
     public String getElementName() {
         return _elementName;
     }
-    
+
     public boolean isOptional() {
         return _optional;
     }

@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Connector that forwards channel events to a behavior strategy class.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class BehaviorConnector implements ChannelListener, org.csstudio.sds.model.IPropertyChangeListener {
     private AbstractWidgetModel widget;
@@ -24,7 +24,7 @@ public final class BehaviorConnector implements ChannelListener, org.csstudio.sd
 
     /**
      * Constructs a connector.
-     * 
+     *
      * @param connectionParameters
      *            the connection parameters (needed for the DAL connection)
      * @param behavior
@@ -86,5 +86,5 @@ public final class BehaviorConnector implements ChannelListener, org.csstudio.sd
     public void propertyValueChanged(Object oldValue, Object newValue) {
         // ignore
     }
-    
+
 }

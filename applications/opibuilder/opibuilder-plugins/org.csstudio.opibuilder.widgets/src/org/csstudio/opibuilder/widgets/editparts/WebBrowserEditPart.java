@@ -16,9 +16,9 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.browser.Browser;
 
 /**The editpart of web browser widget.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public final class WebBrowserEditPart extends AbstractBaseEditPart {
     /**
@@ -29,21 +29,21 @@ public final class WebBrowserEditPart extends AbstractBaseEditPart {
         final WebBrowserModel model = getWidgetModel();
         final AbstractWebBrowserFigure<?> figure = SingleSourceHelper.createWebBrowserFigure(
                 this, model.isShowToolBar());
-        figure.setUrl(model.getURL());    
+        figure.setUrl(model.getURL());
         return figure;
     }
-    
+
     @Override
     public WebBrowserModel getWidgetModel() {
         return (WebBrowserModel)getModel();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected void registerPropertyChangeHandlers() {
-        
+
         // URL
         IWidgetPropertyChangeHandler urlHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -53,10 +53,10 @@ public final class WebBrowserEditPart extends AbstractBaseEditPart {
             }
         };
         setPropertyChangeHandler(WebBrowserModel.PROP_URL, urlHandler);
-    }    
-    
+    }
+
     public Browser getBrowser(){
         return ((AbstractWebBrowserFigure<?>)getFigure()).getBrowser();
     }
-    
+
 }

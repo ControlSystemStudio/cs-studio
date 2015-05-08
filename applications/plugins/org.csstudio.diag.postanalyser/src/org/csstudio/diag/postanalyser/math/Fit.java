@@ -27,7 +27,7 @@ abstract public class Fit
 
     /** @return Value of fit for given input */
     abstract public double getValue(final double x);
-    
+
     /** @return Human-readable representation of the Fit:
      *  Formula, parameters, ...
      */

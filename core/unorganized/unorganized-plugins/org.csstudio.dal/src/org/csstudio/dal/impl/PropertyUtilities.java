@@ -118,17 +118,17 @@ public class PropertyUtilities
         throw new IllegalArgumentException("Class '" + interfaceClass.getName()
             + "' does not have declared implementation class.");
     }
-    
+
     /**
-     * As conveinece method, meant to fix common characteristic aliases. 
+     * As conveinece method, meant to fix common characteristic aliases.
      * @param proxy
      * @param characteristicName
      * @param value
      * @return
-     * @throws DataExchangeException 
+     * @throws DataExchangeException
      */
     public static final Object verifyCharacteristic(DirectoryProxy proxy, String characteristicName, Object value) throws DataExchangeException {
-        
+
         if (value==null && characteristicName!=null) {
             if (characteristicName.equals(CharacteristicInfo.C_DISPLAY_NAME.getName())) {
                 return proxy.getUniqueName();
@@ -149,9 +149,9 @@ public class PropertyUtilities
                 return DataUtil.createMetaData(proxy);
             }
         }
-        
+
         return value;
-        
+
     }
 }
 

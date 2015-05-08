@@ -5,13 +5,13 @@ import de.desy.language.snl.parser.nodes.StateNode;
 public class StateModel extends SNLModel {
 
     private static final long serialVersionUID = 1;
-    
+
     public static final String STATE_NAME_PROP = "StateModel.Name";
 
     public static final String WHENS_PROP = "StateModel.Whens";
-    
+
     private StateNode _stateNode;
-    
+
     public String getIconName() {
         return "ellipse16.gif";
     }
@@ -36,6 +36,6 @@ public class StateModel extends SNLModel {
     @Override
     protected boolean canHaveChildren() {
         return false;
-    }    
-    
+    }
+
 }

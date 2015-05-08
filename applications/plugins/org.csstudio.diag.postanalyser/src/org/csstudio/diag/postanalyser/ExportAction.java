@@ -10,7 +10,7 @@ public class ExportAction extends Action
 {
     final private GUI gui;
     final private Shell shell;
-    
+
     public ExportAction(final GUI gui, final Shell shell)
     {
         super(Messages.GUI_Export);

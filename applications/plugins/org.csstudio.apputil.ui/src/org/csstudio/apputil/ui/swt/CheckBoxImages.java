@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Shell;
  *  That looks more like the native check boxes of the OS,
  *  but sometimes fails, maybe related to the briefly displayed shell
  *  being covered by another window by accident.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -49,7 +49,7 @@ public class CheckBoxImages
     private static final String CHECKED_KEY = "CHECKED";
     private static final String UNCHECK_KEY = "UNCHECKED";
     private static CheckBoxImages instance = null;
-    
+
     /** Singleton */
     private CheckBoxImages(final Control control)
     {
@@ -67,7 +67,7 @@ public class CheckBoxImages
             registry.put(CHECKED_KEY, makeShot(control, true));
         }
     }
-    
+
     /** Create or obtain existing instance of CheckBoxImages
      *  @param control Any control, used to get background color etc.
      *  @return Singleton instance of CheckBoxImages
@@ -78,7 +78,7 @@ public class CheckBoxImages
             instance = new CheckBoxImages(control);
         return instance;
     }
-    
+
     /** @return Image of selected or unselected button image */
     public Image getImage(final boolean selected)
     {
@@ -91,15 +91,15 @@ public class CheckBoxImages
     private Image makeShot(final Control control, final boolean selected)
     {
         final Shell shell = new Shell(control.getShell(), SWT.NO_TRIM);
-    
+
         // otherwise we have a default gray color
         final Color backgroundColor = control.getBackground();
         shell.setBackground(backgroundColor);
-    
+
         final Button button = new Button(shell, SWT.CHECK);
         button.setBackground(backgroundColor);
         button.setSelection(selected);
-    
+
         // Some tweaking that's a compromise between Win32, OSX, ...
         // versions of the actual control.
         final Point bsize = button.computeSize(SWT.DEFAULT, SWT.DEFAULT);
@@ -118,7 +118,7 @@ public class CheckBoxImages
         final Image image = SingleSourcePlugin.getUIHelper().getScreenshot(
                 shell.getDisplay(), button, new Rectangle(0, 0, size, size));
         shell.close();
-    
+
         return image;
     }
 }

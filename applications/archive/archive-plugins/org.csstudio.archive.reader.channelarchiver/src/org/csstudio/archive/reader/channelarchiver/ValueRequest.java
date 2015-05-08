@@ -309,7 +309,7 @@ public class ValueRequest implements AsyncCallback
             final String stat = reader.getStatus(sevr, stat_code);
             final Vector vv = (Vector)sample_hash.get("value");
             final AlarmSeverity severity = sevr.getSeverity();
-            
+
             if (! sevr.hasValue()) {
                 if (si == 0) {
                     samples[si] = new ArchiveVString(time, AlarmSeverity.UNDEFINED, "Disconnected", "#N/A");
@@ -321,7 +321,7 @@ public class ValueRequest implements AsyncCallback
                         samples[si] = new ArchiveVNumberArray(time, AlarmSeverity.UNDEFINED, "Disconnected", (Display) previousSample, ((ArchiveVNumberArray) previousSample).getData());
                     } else if (previousSample instanceof ArchiveVStatistics) {
                         ArchiveVStatistics sample = (ArchiveVStatistics) previousSample;
-                        samples[si] = new ArchiveVStatistics(time, AlarmSeverity.UNDEFINED, "Disconnected", (Display) previousSample, 
+                        samples[si] = new ArchiveVStatistics(time, AlarmSeverity.UNDEFINED, "Disconnected", (Display) previousSample,
                                 sample.getAverage(), sample.getMin(), sample.getMax(), sample.getStdDev(), sample.getNSamples());
                     } else if (previousSample instanceof ArchiveVEnum) {
                         ArchiveVEnum sample = (ArchiveVEnum) previousSample;

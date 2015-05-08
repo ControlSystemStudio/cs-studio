@@ -2,9 +2,9 @@ package org.csstudio.dct.ui.editor.tables;
 
 /**
  * Describes a single column for a {@link ConvenienceTableWrapper}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ColumnConfig {
     private String id;
@@ -13,7 +13,7 @@ public final class ColumnConfig {
 
     /**
      * Constructor.
-     * 
+     *
      * @param id
      *            an unique ID
      * @param title

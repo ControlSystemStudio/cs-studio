@@ -63,10 +63,10 @@ public class DetailsView extends ViewPart {
      * existing objects in adapters or simply return
      * objects as-is. These objects may be sensitive
      * to the current input of the view, or ignore
-     * it and always show the same content 
+     * it and always show the same content
      * (like Task List, for example).
      */
-     
+
     private final class RefreshDetailViewListener implements IPartListener2 {
         public void partVisible(IWorkbenchPartReference partRef) {
         }
@@ -153,13 +153,13 @@ public class DetailsView extends ViewPart {
         column = new TableViewerColumn(_measurementDataViewer, SWT.NONE);
         column.getColumn().setText("Value");
         column.getColumn().setWidth(100);
-        
+
         _measurementDataViewer.setContentProvider(new ArrayContentProvider());
         _measurementDataViewer.setLabelProvider(new DataLabelProvider());
         _measurementDataViewer.setSorter(new NameSorter());
         _measurementDataViewer.getTable().setLinesVisible(true);
         _measurementDataViewer.getTable().setHeaderVisible(true);
-        
+
         GridData griddata = new GridData(SWT.FILL, SWT.FILL, true, true);
         _measurementDataViewer.getTable().setLayoutData(griddata);
 
@@ -167,7 +167,7 @@ public class DetailsView extends ViewPart {
         getSite().getWorkbenchWindow().getPartService().addPartListener(_partListener);
         _partsCreated = true;
     }
-    
+
     private void update(IMeasurementProvider provider) {
         if (_partsCreated) {
             _measurementProvider = provider;
@@ -179,7 +179,7 @@ public class DetailsView extends ViewPart {
             });
         }
     }
-    
+
     private void refreshContent() {
         _resourceLabel.setText(_measurementProvider
                 .getRessourceIdentifier());
@@ -194,7 +194,7 @@ public class DetailsView extends ViewPart {
     public void setFocus() {
         _measurementDataViewer.getControl().setFocus();
     }
-    
+
     @Override
     public void dispose() {
         getSite().getWorkbenchWindow().getPartService().removePartListener(_partListener);

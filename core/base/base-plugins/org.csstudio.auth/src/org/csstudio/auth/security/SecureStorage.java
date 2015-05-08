@@ -14,24 +14,24 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 
-/**Secure Storage is used to save sensitive data such as user name and password in 
+/**Secure Storage is used to save sensitive data such as user name and password in
  * encrypted style. The secure storage file with a name of <code>secure_storage</code>
  * is under the program's "configuration" area.
  * At runtime, this location can be checked via the "osgi.configuration.area" property,
  * which defaults to the "configuration" subdirectory of the "installation" area
  * (see Help/About ..., Installation Details, Configuration).
- * <p> 
+ * <p>
  * To encrypt the sensitive data, a master password provider must be provided which could be
- * configured under <code>General->Security->Secure Storage</code>. For more information, 
+ * configured under <code>General->Security->Secure Storage</code>. For more information,
  * please see {@link ISecurePreferences}
  * </p>
  * <p>
- * Note: SecureStorage is different from {@link SecureStore} whose data is encrypted by 
+ * Note: SecureStorage is different from {@link SecureStore} whose data is encrypted by
  * the login user's password. SecureStorage is used to store sensitive data per installation
  * whereas {@link SecureStore} store sensitive data for per user.
  * </p>
- * This class includes the helpful functions for secure storage. 
- * 
+ * This class includes the helpful functions for secure storage.
+ *
  * @author Xihui Chen
  * @author Helge Rickens
  * @author Kay Kasemir
@@ -44,7 +44,7 @@ public class SecureStorage
     private static URL getStorageURL() throws MalformedURLException
     {
         URL secureStorageLocation;
-        switch (PreferencesHelper.getSecureStorageLocation()) {        
+        switch (PreferencesHelper.getSecureStorageLocation()) {
         case INSTALL_LOCATION:
             secureStorageLocation = Platform.getInstallLocation().getURL();
             break;
@@ -56,11 +56,11 @@ public class SecureStorage
         return new URL(secureStorageLocation + "secure_storage");
     }
 
-    /**Retrieve value of the key specified from the secure storage file  
+    /**Retrieve value of the key specified from the secure storage file
      * @param qualifier path to the root node
      * @param key key with this the value is associated
-     * @return value associated the key. 
-     * If value was stored in an encrypted form, it will be decrypted. 
+     * @return value associated the key.
+     * If value was stored in an encrypted form, it will be decrypted.
      * null if the secure storage file or the key does not exist.
      */
     public static String retrieveSecureStorage(final String qualifier, final String key)
@@ -84,7 +84,7 @@ public class SecureStorage
                 file = new File(url.toURI());
             }
             catch (URISyntaxException e)
-            {   
+            {
                 // ... in which case using the 'Path' (stuff after "file:")
                 // works out:
                 file = new File(url.getPath());
@@ -93,7 +93,7 @@ public class SecureStorage
             {
                 final ISecurePreferences root = SecurePreferencesFactory.open(url, null);
                 if (root != null)
-                {                    
+                {
                     final ISecurePreferences node = root.node(qualifier);
                       final String value = node.get(key, null);
                     //if the key exist in this node, return the value, otherwise return the default preference
@@ -111,12 +111,12 @@ public class SecureStorage
             // infinite loop.
             Logger.getLogger(AuthActivator.ID).log(Level.SEVERE,
                     "Failed to read value of " + key + " from secure storage", e);
-        }        
-        //in case of no value in secure storage, return the preference value 
+        }
+        //in case of no value in secure storage, return the preference value
         return Platform.getPreferencesService().getString(qualifier, key, null, null);
     }
-    
-     /**Get node for security storage. The secure storage file with a name of 
+
+     /**Get node for security storage. The secure storage file with a name of
       * <code>secure_storage</code> is under the directory where the program is installed.
      * @param nodePath path to the root node
      * @return node associated with the nodePath
@@ -124,10 +124,10 @@ public class SecureStorage
      */
     public static ISecurePreferences getNode(String nodePath) throws Exception
     {
-        final URL secureFileLoc = getStorageURL();     
+        final URL secureFileLoc = getStorageURL();
         final ISecurePreferences root = SecurePreferencesFactory.open(secureFileLoc, null);
-        if (root == null)    
+        if (root == null)
             throw new Exception("Unable to get root node of secure storage");
-        return root.node(nodePath);            
-     }    
+        return root.node(nodePath);
+     }
 }

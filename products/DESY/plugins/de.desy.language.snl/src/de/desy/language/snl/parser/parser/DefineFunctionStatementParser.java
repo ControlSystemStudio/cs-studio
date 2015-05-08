@@ -11,7 +11,7 @@ public class DefineFunctionStatementParser extends
     public DefineFunctionStatementParser(Interval[] exclusions) {
         super(exclusions);
     }
-    
+
     @Override
     protected String getPatternString() {
         return getPrePatternString() + "(\\S*\\([[\\s&&[^\\n\\f\\r]][\\S&&[^\\)]]]*\\))(\\s+)([\\S[\\s&&[^\\n\\f\\r]]]*;)([^\\n\\f\\r]*)" + getPostPatternString();
@@ -26,7 +26,7 @@ public class DefineFunctionStatementParser extends
     protected String getPostPatternString() {
         return "([\\n\\f\\r])";
     }
-    
+
     @Override
     protected void matchFound(final Matcher preMatcher,
             final Matcher mainMatcher) {

@@ -7,9 +7,9 @@ import org.csstudio.dct.model.IElement;
 
 /**
  * Collection of utility methods that help comparing things.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class CompareUtil {
     private CompareUtil() {
@@ -17,7 +17,7 @@ public final class CompareUtil {
 
     /**
      * Compares two Objects.
-     * 
+     *
      * @param o1
      *            Object 1
      * @param o2
@@ -42,7 +42,7 @@ public final class CompareUtil {
 
     /**
      * Compares the id´s of two elements.
-     * 
+     *
      * @param o1
      *            element 1
      * @param o2
@@ -69,12 +69,12 @@ public final class CompareUtil {
     /**
      * Returns true, if the specified list contains only objects that are
      * compatible to the specified class type.
-     * 
+     *
      * @param type
      *            the class type
      * @param elements
      *            the list of objects
-     * 
+     *
      * @return true of the list contains only objects of a certain type
      */
     public static boolean containsOnly(Class type, List elements) {
@@ -93,7 +93,7 @@ public final class CompareUtil {
         for (Object o : elements) {
             result.add((E) o);
         }
-        
+
         return result;
     }
 }

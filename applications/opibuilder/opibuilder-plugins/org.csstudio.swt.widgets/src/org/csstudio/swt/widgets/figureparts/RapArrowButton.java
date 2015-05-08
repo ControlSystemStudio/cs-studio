@@ -14,8 +14,8 @@ import org.eclipse.draw2d.ToggleModel;
 import org.eclipse.swt.SWT;
 
 public class RapArrowButton extends ArrowButton{
-    
-    
+
+
     public RapArrowButton() {
         super();
     }
@@ -30,8 +30,8 @@ public class RapArrowButton extends ArrowButton{
                 return new ToggleModel();
             else
                 return new RapButtonModel();
-        }            
+        }
         return super.createDefaultModel();
     }
-    
+
 }

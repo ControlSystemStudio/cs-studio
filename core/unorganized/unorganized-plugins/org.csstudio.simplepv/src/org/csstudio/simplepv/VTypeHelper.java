@@ -43,7 +43,7 @@ import org.epics.vtype.ValueUtil;
 
 /**
  * A center place for VType related operations.
- * 
+ *
  * @author Xihui Chen, Kay Kasemir, carcassi (some of code are learned from
  *         {@link ValueUtil})
  */
@@ -62,7 +62,7 @@ public class VTypeHelper {
 
     /**
      * Format a VType value to string.
-     * 
+     *
      * @param formatEnum
      *            the format
      * @param vValue
@@ -123,7 +123,7 @@ public class VTypeHelper {
     /**
      * Get the basic data type of a single VType value. If it is not a basic
      * data type, it will return BasicDataType.UNKNOWN.
-     * 
+     *
      * @param obj
      *            The PV Manager VType value.
      * @return the data type.
@@ -174,7 +174,7 @@ public class VTypeHelper {
     /**
      * Get double value from a {@link VType} object. It might be casted from
      * other numeric type.
-     * 
+     *
      * @param obj
      *            the VType object.
      * @return double or NaN if no double value is available in the object.
@@ -187,7 +187,7 @@ public class VTypeHelper {
     /**
      * Get double value from a {@link VType} object at index. It might be casted
      * from other numeric type.
-     * 
+     *
      * @param obj
      *            the VType object.
      * @param index
@@ -210,10 +210,10 @@ public class VTypeHelper {
         }
         return Double.NaN;
     }
-    
+
     /**
      * Get double array from a VType object.
-     * 
+     *
      * @param obj
      *            an object implementing a standard type
      * @return the double array from the VType object or empty double array if no double array
@@ -236,11 +236,11 @@ public class VTypeHelper {
         }
         return new double[0];
     }
-    
+
     /**
      * Get the original number value of the VType object without casting. If it
      * is an array, return the first element.
-     * 
+     *
      * @param obj
      *            the VType object value.
      * @return the number or null if it is not a Number.
@@ -280,11 +280,11 @@ public class VTypeHelper {
         }
         return null;
     }
-    
+
     /**
      * Get the original number value of the VType object at a index without
      * casting.
-     * 
+     *
      * @param obj
      *            the VType object value.
      * @return the number or null if it is not a Number.
@@ -319,10 +319,10 @@ public class VTypeHelper {
         }
         return null;
     }
-    
+
     /**
      * Get size of a VType object value.
-     * 
+     *
      * @param obj
      * @return 1 for scalar. Otherwise return size of the array.
      */
@@ -334,13 +334,13 @@ public class VTypeHelper {
         if (obj instanceof Array) {
             return ((Array) obj).getSizes().getInt(0);
         }
-        
+
         if(obj instanceof MultiScalar){
             return ((MultiScalar<?>)obj).getValues().size();
         }
         return 1;
     }
-    
+
     /**Get String from a VType value.
      * @param obj the value
      * @return the String from the VType value.
@@ -348,7 +348,7 @@ public class VTypeHelper {
     public static String getString(VType obj){
         return formatValue(FormatEnum.DEFAULT, obj, -1);
     }
-    
+
     /**Extract the {@link Timestamp} from the VType obj.
      * @param obj the VType object.
      * @return the time or null if there is no time info in the object.
@@ -360,7 +360,7 @@ public class VTypeHelper {
         return null;
     }
 
-    /**Get wrapped array in the VNumberArray object. The wrapped array could be double[], 
+    /**Get wrapped array in the VNumberArray object. The wrapped array could be double[],
      * float[], int[], long[], short[], byte[] etc.
      * @param obj the {@link VType} object.
      * @return the wrapped array or null if no array is wrapped in the object.

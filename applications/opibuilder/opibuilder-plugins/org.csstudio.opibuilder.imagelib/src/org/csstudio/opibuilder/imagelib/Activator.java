@@ -13,7 +13,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
- * The activator class controls the Image Library plug-in life cycle 
+ * The activator class controls the Image Library plug-in life cycle
  * @author Greg Darcourt (Sopra Group)
  */
 public class Activator extends AbstractUIPlugin {
@@ -41,7 +41,7 @@ public class Activator extends AbstractUIPlugin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext
      * )
@@ -53,7 +53,7 @@ public class Activator extends AbstractUIPlugin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
      * )

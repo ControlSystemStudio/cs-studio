@@ -7,16 +7,16 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * Label provider for the changelog table.
- * 
+ *
  */
 class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
 
     private static int count = 0;
-    
+
     public static void resetCount(){
         count = 0;
     }
-    
+
     public Image getColumnImage(final Object element, final int columnIndex) {
         return null;
     }

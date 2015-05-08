@@ -20,7 +20,7 @@ public class TestMain
         final Display display = new Display();
         final Shell shell = new Shell(display);
         shell.setBounds(400, 100, 300, 350);
-        
+
         new ElizaGUI(shell);
 
         shell.open();

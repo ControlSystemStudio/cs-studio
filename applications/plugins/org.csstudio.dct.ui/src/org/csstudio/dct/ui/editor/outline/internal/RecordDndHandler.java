@@ -26,7 +26,7 @@ public class RecordDndHandler extends AbstractDnDHandler<IRecord> {
 
         // .. clone record
         Record clone = RecordFactory.cloneRecord(dndSource.getContainer().getProject(), (IRecord) dndSource);
-        
+
         // .. create command
         cmd.add(new AddRecordCommand(container, clone));
 
@@ -45,13 +45,13 @@ public class RecordDndHandler extends AbstractDnDHandler<IRecord> {
             IRecord targetRecord = (IRecord) dndTarget;
             IRecord record = (IRecord) dndSource;
             cmd.add(new RemoveRecordCommand(record));
-            
+
             int index = targetRecord.getContainer().getRecords().indexOf(targetRecord);
             int tmp = targetRecord.getContainer().getRecords().indexOf(record);
             if(tmp>-1 && tmp<index) {
                 index--;
             }
-            
+
             cmd.add(new AddRecordCommand(targetRecord.getContainer(), record, index));
         }
 

@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * Maps data values to display coordinates.
- * 
+ *
  * @author Joerg Rathlev
  */
 final class LinearAxis implements IAxis {
@@ -35,20 +35,20 @@ final class LinearAxis implements IAxis {
      * The lower bound of the data range of this axis.
      */
     private double _dataLower;
-    
+
     /**
      * The upper bound of the data range of this axis.
      */
     private double _dataUpper;
-    
+
     /**
-     * The size of this axis in display units. 
+     * The size of this axis in display units.
      */
     private int _displaySize;
 
     /**
      * Creates a new axis.
-     * 
+     *
      * @param dataLower
      *            the lower bound of the data range.
      * @param dataUpper
@@ -80,11 +80,11 @@ final class LinearAxis implements IAxis {
                 : (intermediate < Integer.MIN_VALUE ? Integer.MIN_VALUE
                         : (int) intermediate);
     }
-    
+
     /**
      * Checks whether the specified value is a legal value for this axis. For
      * a linear axis, all values except NaN are legal.
-     * 
+     *
      * @param value
      *            the data value to check.
      * @return <code>true</code> if the value is legal, <code>false</code>
@@ -94,16 +94,16 @@ final class LinearAxis implements IAxis {
         // Note: cannot use == or != operator here because NaN != NaN.
         return !Double.isNaN(value);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public List<Tick> calculateTicks(final int minMajorDistance,
             final int minMinorDistance) {
-        
+
         // TODO: calculate minor tickmarks. TickCalculator calculates only
         // major tickmarks.
-        
+
         TickCalculator calc = new TickCalculator();
         if (_dataLower < _dataUpper) {
             calc.setMinimumValue(_dataLower);
@@ -115,16 +115,16 @@ final class LinearAxis implements IAxis {
         calc.setMaximumTickCount(_displaySize / minMajorDistance);
         return calc.calculateTicks();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public List<Tick> calculateIntegerTicks(final int minMajorDistance,
             final int minMinorDistance) {
-        
+
         // TODO: calculate minor tickmarks. TickCalculator calculates only
         // major tickmarks.
-        
+
         TickCalculator calc = new TickCalculator();
         if (_dataLower < _dataUpper) {
             calc.setMinimumValue(_dataLower);

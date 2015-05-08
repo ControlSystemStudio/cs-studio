@@ -33,7 +33,7 @@ public class SendEMailAction extends AbstractSendEMailAction
         opiRuntime = part;
         setId(ID);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected String getImage()

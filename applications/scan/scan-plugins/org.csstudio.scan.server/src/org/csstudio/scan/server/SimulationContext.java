@@ -29,7 +29,7 @@ public class SimulationContext
 
     /** Macros for resolving device names */
     final private MacroContext macros;
-    
+
     final private Map<String, SimulatedDevice> devices = new HashMap<String, SimulatedDevice>();
 
     final private PrintStream log_stream;

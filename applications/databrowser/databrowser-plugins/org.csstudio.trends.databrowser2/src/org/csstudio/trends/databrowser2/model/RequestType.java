@@ -23,10 +23,10 @@ public enum RequestType
      *  request is a waste of memory.
      */
     RAW(Messages.Request_raw),
-    
+
     /** If possible, get data optimized for plotting. */
     OPTIMIZED(Messages.Request_optimized);
-    
+
     final private String name;
 
     private RequestType(String name)

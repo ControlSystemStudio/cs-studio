@@ -52,21 +52,21 @@ import de.desy.tine.definitions.TMode;
 
 /**
  * Implementation of PropertyProxy for Tine DAL plugin.
- * 
+ *
  * @author Jaka Bobnar, Cosylab
  *
  * @param <T>
  */
-public abstract class PropertyProxyImpl<T> 
-    extends AbstractPropertyProxyImpl<T,TINEPlug,MonitorProxyImpl<T>> 
-    implements PropertyProxy<T,TINEPlug>, SyncPropertyProxy<T,TINEPlug>, DirectoryProxy<TINEPlug> 
+public abstract class PropertyProxyImpl<T>
+    extends AbstractPropertyProxyImpl<T,TINEPlug,MonitorProxyImpl<T>>
+    implements PropertyProxy<T,TINEPlug>, SyncPropertyProxy<T,TINEPlug>, DirectoryProxy<TINEPlug>
 {
-    
+
     private PropertyNameDissector dissector;
-    private String deviceName; 
+    private String deviceName;
     private int timeOut = 1000;
     protected TFormat dataFormat;
-    
+
     public PropertyProxyImpl(String name, TINEPlug plug) {
         super(name, plug);
         this.dissector = new PropertyNameDissector(name);
@@ -90,7 +90,7 @@ public abstract class PropertyProxyImpl<T>
         return m;
     }
 
-    
+
     /*
      * (non-Javadoc)
      * @see org.csstudio.dal.proxy.PropertyProxy#getValueAsync(org.csstudio.dal.ResponseListener)
@@ -140,7 +140,7 @@ public abstract class PropertyProxyImpl<T>
             int handle = 0;
             TINERequestImpl<T> request = new TINERequestImpl<T>(this, callback, tLink);
             handle = tLink.attach(mode, request, this.timeOut);
-            
+
             if (handle < 0) {
                 tLink.close();
                 throw new ConnectionFailed(tLink.getError(-handle));
@@ -176,31 +176,31 @@ public abstract class PropertyProxyImpl<T>
         }
         return extractData(dout);
     }
-    
+
     /**
      * Extracts data of type T from the TDataType and returns the data.
      * @param out
      * @return
-     * @throws DataExchangeException 
+     * @throws DataExchangeException
      */
     protected abstract T extractData(TDataType out);
-    
+
     /**
-     * Sets the data to an object which can be sent to Tine. This object is usually 
+     * Sets the data to an object which can be sent to Tine. This object is usually
      * an array of certain type.
-     * 
+     *
      * @param data
      * @return
      */
     protected abstract Object convertDataToObject(T data);
-    
+
     /**
      * Returns the data object which receives data from Tine. This object is usually
      * an array. This object is encapsulated to TDataType and sent to TLink.
      * @return
      */
     protected abstract Object getDataObject();
-    
+
     /*
      * (non-Javadoc)
      * @see org.csstudio.dal.proxy.SyncPropertyProxy#setValueSync(java.lang.Object)
@@ -213,7 +213,7 @@ public abstract class PropertyProxyImpl<T>
         TDataType din = PropertyProxyUtilities.toTDataType(data,PropertyProxyUtilities.getObjectSize(data),true);
         TDataType dout = PropertyProxyUtilities.toTDataType(data,PropertyProxyUtilities.getObjectSize(data),false);
         TLink tl = new TLink(this.deviceName,this.dissector.getDeviceProperty(),dout,din,(short)(TAccess.CA_READ | TAccess.CA_WRITE));
-        
+
         try
         {
             int statusCode = tl.execute(this.timeOut);
@@ -229,7 +229,7 @@ public abstract class PropertyProxyImpl<T>
             setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null, tl.getLastError()));
         }
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.csstudio.dal.proxy.PropertyProxy#isSettable()
@@ -246,7 +246,7 @@ public abstract class PropertyProxyImpl<T>
     private void initializeCharacteristics() {
         try {
             getCharacteristics().putAll(TINEPlug.getInstance().getCharacteristics(this.dissector.getRemoteName(),getNumericType()));
-            
+
             // notify DAL that metadata has been initialized
             updateConditionWith(null, DynamicValueState.HAS_METADATA);
 //                characteristics = PropertyProxyUtilities.getCharacteristics(dissector,getNumericType());
@@ -279,7 +279,7 @@ public abstract class PropertyProxyImpl<T>
     public synchronized void refresh() {
         initializeCharacteristics();
     }
-    
+
     String getDeviceName() {
         return this.deviceName;
     }
@@ -287,17 +287,17 @@ public abstract class PropertyProxyImpl<T>
     PropertyNameDissector getDissector() {
         return this.dissector;
     }
-    
+
     @Override
     protected Object processCharacteristicAfterCache(Object value,
             String characteristicName) {
         return value;
     }
-    
+
     @Override
     protected Object processCharacteristicBeforeCache(Object value,
             String characteristicName) {
         return value;
     }
-    
+
 }

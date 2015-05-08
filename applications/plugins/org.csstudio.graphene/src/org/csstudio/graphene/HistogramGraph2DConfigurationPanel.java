@@ -12,7 +12,7 @@ public class HistogramGraph2DConfigurationPanel extends
     public HistogramGraph2DConfigurationPanel(Composite parent,
             int style) {
         super(parent, style);
-        
+
         btnHighlightFocusValue = new Button(this, SWT.CHECK);
         btnHighlightFocusValue.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
         btnHighlightFocusValue.setText("Highlight Focus Value");
@@ -27,5 +27,5 @@ public class HistogramGraph2DConfigurationPanel extends
         this.btnHighlightFocusValue.setSelection(highlightFocusValue);
         changeSupport.firePropertyChange("highlightFocusValue", null, isHighlightFocusValue());
     }
-    
+
 }

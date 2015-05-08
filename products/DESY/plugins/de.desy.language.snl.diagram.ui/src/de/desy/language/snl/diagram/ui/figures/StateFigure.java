@@ -7,7 +7,7 @@ import org.eclipse.draw2d.LineBorder;
 import de.desy.language.snl.parser.nodes.StateNode;
 
 public class StateFigure extends Label {
-    
+
     private final StateNode _state;
 
     public StateFigure(final StateNode state) {

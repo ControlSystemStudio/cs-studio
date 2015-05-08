@@ -48,7 +48,7 @@ public class SdsThumbnailCreator {
                 displayModel, thumbSize, true);
         return job.getImageData();
     }
-    
+
     private static class ThumbnailCreationJob implements Runnable {
 
         private final Display display;
@@ -78,9 +78,9 @@ public class SdsThumbnailCreator {
         @Override
         public void run() {
             if (!display.isDisposed()) {
-                
+
                 loadLinkingContainersRecursive(displayModel, 10);
-                
+
                 Shell shell = new Shell(display, SWT.NO_TRIM);
                 Image image = null;
                 try {
@@ -122,7 +122,7 @@ public class SdsThumbnailCreator {
                         mockFillLinkingContainer(linkingContainerChildModel);
                     }
                 }
-        
+
                 if (childModel instanceof ContainerModel) {
                     loadLinkingContainersRecursive((ContainerModel) childModel, childRecursionDepth);
                 }
@@ -140,7 +140,7 @@ public class SdsThumbnailCreator {
         }
 
         private void loadLinkingContainer(LinkingContainerModel linkingContainerModel) {
-            
+
             // Load linked resource
             DisplayModel loadedModel = new DisplayModel();
             InputStream inputStream = getInputStream(linkingContainerModel.getResource());
@@ -149,9 +149,9 @@ public class SdsThumbnailCreator {
             }
             List<AbstractWidgetModel> loadedWidgets = loadedModel.getWidgets();
             loadedModel.removeWidgets(loadedWidgets);
-            
+
             linkingContainerModel.addWidgets(loadedWidgets);
-            
+
             linkingContainerModel.setColor(
                     AbstractWidgetModel.PROP_COLOR_BACKGROUND,
                     loadedModel.getColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND));
@@ -165,15 +165,15 @@ public class SdsThumbnailCreator {
         /**
          * Return the {@link InputStream} of the file that is available on the
          * specified path.
-         * 
+         *
          * @param path
          *            The {@link IPath} to the file
-         * 
+         *
          * @return The corresponding {@link InputStream} or null
          */
         private InputStream getInputStream(final IPath path) {
             InputStream result = null;
-        
+
             // try workspace
             IResource r = ResourcesPlugin.getWorkspace().getRoot()
                     .findMember(path, false);
@@ -184,7 +184,7 @@ public class SdsThumbnailCreator {
                     result = null;
                 }
             }
-        
+
             if (result == null) {
                 // try from local file system
                 try {
@@ -192,9 +192,9 @@ public class SdsThumbnailCreator {
                 } catch (FileNotFoundException e) {
                     result = null;
                 }
-        
+
             }
-        
+
             return result;
         }
 
@@ -224,7 +224,7 @@ public class SdsThumbnailCreator {
                 // center figure in image
                 figure.translate((image.getBounds().width - bounds.width) / 2, (image.getBounds().height - bounds.height) / 2);
             }
-            
+
             graphics.scale(factor);
             figure.paint(graphics);
 

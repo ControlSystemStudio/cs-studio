@@ -28,9 +28,9 @@ import org.eclipse.swt.graphics.RGB;
 
 /**
  * This class defines a common model for Boolean Symbol Image widget.
- * 
+ *
  * @author SOPRA Group
- * 
+ *
  */
 public abstract class CommonBoolSymbolModel extends AbstractBoolWidgetModel {
 
@@ -141,7 +141,7 @@ public abstract class CommonBoolSymbolModel extends AbstractBoolWidgetModel {
 //        setPropertyVisibleAndSavable(PROP_DEGREE, false, true);
 //        setPropertyVisibleAndSavable(PROP_FLIP_HORIZONTAL, false, true);
 //        setPropertyVisibleAndSavable(PROP_FLIP_VERTICAL, false, true);
-        
+
         addProperty(new MatrixProperty(PERMUTATION_MATRIX,
                 "Permutation Matrix", WidgetPropertyCategory.Image,
                 PermutationMatrix.generateIdentityMatrix().getMatrix()));
@@ -154,7 +154,7 @@ public abstract class CommonBoolSymbolModel extends AbstractBoolWidgetModel {
 
     /**
      * Get the path to the specified file.
-     * 
+     *
      * @return The path to the specified file
      */
     public IPath getSymbolImagePath() {
@@ -169,7 +169,7 @@ public abstract class CommonBoolSymbolModel extends AbstractBoolWidgetModel {
     /**
      * Get the amount of pixels, which should be cropped from the top edge of
      * the image.
-     * 
+     *
      * @return The amount of pixels
      */
     public int getTopCrop() {
@@ -179,7 +179,7 @@ public abstract class CommonBoolSymbolModel extends AbstractBoolWidgetModel {
     /**
      * Get the amount of pixels, which should be cropped from the bottom edge of
      * the image.
-     * 
+     *
      * @return The amount of pixels
      */
     public int getBottomCrop() {
@@ -189,7 +189,7 @@ public abstract class CommonBoolSymbolModel extends AbstractBoolWidgetModel {
     /**
      * Get the amount of pixels, which should be cropped from the left edge of
      * the image.
-     * 
+     *
      * @return The amount of pixels
      */
     public int getLeftCrop() {
@@ -199,7 +199,7 @@ public abstract class CommonBoolSymbolModel extends AbstractBoolWidgetModel {
     /**
      * Get the amount of pixels, which should be cropped from the right edge of
      * the image.
-     * 
+     *
      * @return The amount of pixels
      */
     public int getRightCrop() {
@@ -208,7 +208,7 @@ public abstract class CommonBoolSymbolModel extends AbstractBoolWidgetModel {
 
     /**
      * Check if the image should be stretched.
-     * 
+     *
      * @return True if stretched, false otherwise
      */
     public boolean getStretch() {
@@ -217,7 +217,7 @@ public abstract class CommonBoolSymbolModel extends AbstractBoolWidgetModel {
 
     /**
      * Check if the widget should be auto sized according the image size.
-     * 
+     *
      * @return True if auto sized, false otherwise
      */
     public boolean isAutoSize() {
@@ -226,7 +226,7 @@ public abstract class CommonBoolSymbolModel extends AbstractBoolWidgetModel {
 
     /**
      * Get the current degree of the image.
-     * 
+     *
      * @return The degree value
      */
     public int getDegree() {
@@ -235,7 +235,7 @@ public abstract class CommonBoolSymbolModel extends AbstractBoolWidgetModel {
 
     /**
      * Check if an horizontal flip was applied.
-     * 
+     *
      * @return True if horizontal flip, false otherwise
      */
     public boolean isFlipHorizontal() {
@@ -244,16 +244,16 @@ public abstract class CommonBoolSymbolModel extends AbstractBoolWidgetModel {
 
     /**
      * Check if an vertical flip was applied.
-     * 
+     *
      * @return True if vertical flip, false otherwise
      */
     public boolean isFlipVertical() {
         return (Boolean) getProperty(PROP_FLIP_VERTICAL).getPropertyValue();
     }
-    
+
     /**
      * Get the current disposition of the image.
-     * 
+     *
      * @return The permutation matrix
      */
     public PermutationMatrix getPermutationMatrix() {
@@ -295,7 +295,7 @@ public abstract class CommonBoolSymbolModel extends AbstractBoolWidgetModel {
         boolean oldValue = (Boolean) getPropertyValue(MonitorBoolSymbolModel.PROP_FLIP_VERTICAL);
         setPropertyValue(MonitorBoolSymbolModel.PROP_FLIP_VERTICAL, !oldValue);
     }
-    
+
     @Override
     public void setPropertyValue(Object id, Object value) {
         // Override obsolete properties

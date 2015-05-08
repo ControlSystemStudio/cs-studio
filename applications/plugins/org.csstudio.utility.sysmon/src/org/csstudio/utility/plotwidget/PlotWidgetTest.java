@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Shell;
 public class PlotWidgetTest
 {
     private static boolean run = true;
-    
+
     @SuppressWarnings("nls")
     public static void main(String[] args)
     {
@@ -57,7 +57,7 @@ public class PlotWidgetTest
                 return new double[] { i, 2*i, i*i };
             }
         };
-        
+
         Display display = new Display();
         Shell shell = new Shell(display);
         shell.setBounds(400, 100, 300, 350);
@@ -68,14 +68,14 @@ public class PlotWidgetTest
 
         PlotWidget plot = new PlotWidget(shell, 0);
         plot.setSamples(samples);
-        
+
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.grabExcessVerticalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         gd.verticalAlignment = SWT.FILL;
         plot.setLayoutData(gd);
-        
+
         Button ok = new Button(shell, SWT.PUSH);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
@@ -89,8 +89,8 @@ public class PlotWidgetTest
             {
                 run = false;
             }
-        });        
-        
+        });
+
         shell.open();
         // Message loop left to the application
         while (run && !shell.isDisposed())

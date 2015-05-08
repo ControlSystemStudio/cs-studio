@@ -16,7 +16,7 @@ public class ShapesEditorActionBarContributor extends ActionBarContributor {
 
     /**
      * Create actions managed by this contributor.
-     * 
+     *
      * @see org.eclipse.gef.ui.actions.ActionBarContributor#buildActions()
      */
     @Override
@@ -28,7 +28,7 @@ public class ShapesEditorActionBarContributor extends ActionBarContributor {
 
     /**
      * Add actions to the given toolbar.
-     * 
+     *
      * @see org.eclipse.ui.part.EditorActionBarContributor#contributeToToolBar(org.eclipse.jface.action.IToolBarManager)
      */
     @Override
@@ -39,7 +39,7 @@ public class ShapesEditorActionBarContributor extends ActionBarContributor {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.gef.ui.actions.ActionBarContributor#declareGlobalActionKeys()
      */

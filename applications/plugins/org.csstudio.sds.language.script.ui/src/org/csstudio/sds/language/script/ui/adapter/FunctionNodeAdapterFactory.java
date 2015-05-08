@@ -6,9 +6,9 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 
 /**
  * The specialized {@link IAdapterFactory} for {@link FunctionNode}s.
- * 
+ *
  * @author C1 WPS / KM, MZ
- * 
+ *
  */
 class FunctionNodeAdapterFactory implements IAdapterFactory {
 

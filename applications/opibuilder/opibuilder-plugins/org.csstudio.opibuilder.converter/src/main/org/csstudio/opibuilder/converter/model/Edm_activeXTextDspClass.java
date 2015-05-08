@@ -5,16 +5,16 @@ package org.csstudio.opibuilder.converter.model;
  *
  */
 public class Edm_activeXTextDspClass extends Edm_activeXTextDspClass_noedit {
-    
+
     @EdmAttributeAn @EdmOptionalAn private boolean editable;
     @EdmAttributeAn @EdmOptionalAn private boolean date;
     @EdmAttributeAn @EdmOptionalAn private boolean file;
     @EdmAttributeAn @EdmOptionalAn private String defDir;
     @EdmAttributeAn @EdmOptionalAn private String fileComponent;
-    
-    
-    
-    
+
+
+
+
     public Edm_activeXTextDspClass(EdmEntity genericEntity) throws EdmException {
         super(genericEntity);
     }
@@ -41,13 +41,13 @@ public class Edm_activeXTextDspClass extends Edm_activeXTextDspClass_noedit {
 
     public String getDefDir() {
         return defDir;
-    }    
-    
+    }
+
     public String getFileComponent() {
         if(getAttribute("fileComponent").isExistInEDL())
             return fileComponent;
         return "";
     }
-    
+
 
 }

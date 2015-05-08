@@ -16,17 +16,17 @@ import org.csstudio.opibuilder.widgets.symbol.multistate.CommonMultiSymbolModel;
  */
 public enum SymbolLabelPosition {
 
-    DEFAULT("Default"),                
-    TOP("Top"),    
+    DEFAULT("Default"),
+    TOP("Top"),
     LEFT("Left"),
     CENTER("Center"),
     RIGHT("Right"),
     BOTTOM("Bottom"),
     TOP_LEFT("Top Left"),
-    TOP_RIGHT("Top Right"),    
+    TOP_RIGHT("Top Right"),
     BOTTOM_LEFT("Bottom Left"),
     BOTTOM_RIGHT("Bottom Right");
-    
+
     public static String[] stringValues() {
         String[] result = new String[values().length];
         int i = 0;

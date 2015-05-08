@@ -5,13 +5,13 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
 
 /**
  * This class defines a tank widget model.
- * 
+ *
  * @author Xihui Chen
  */
 public class TankModel extends AbstractMarkedWidgetModel {
 
     /** The ID of the fill color property. */
-    public static final String PROP_FILL_COLOR = "fill_color"; //$NON-NLS-1$    
+    public static final String PROP_FILL_COLOR = "fill_color"; //$NON-NLS-1$
 
     /** The ID of the show minor ticks property. */
     public static final String PROP_EFFECT3D = "effect3D"; //$NON-NLS-1$
@@ -38,7 +38,7 @@ public class TankModel extends AbstractMarkedWidgetModel {
     /**
      * The ID of this widget model.
      */
-    public static final String ID = "org.csstudio.sds.components.Tank"; //$NON-NLS-1$    
+    public static final String ID = "org.csstudio.sds.components.Tank"; //$NON-NLS-1$
 
     public TankModel() {
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);

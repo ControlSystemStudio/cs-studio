@@ -8,7 +8,7 @@
 package org.csstudio.swt.xygraph.linearscale;
 
 /** A value range of 'start' ... 'end' or 'lower' .. 'upper'.
- * 
+ *
  *  @author Xihui Chen
  *  @author Kay Kasemir Removed a broken and unused copy-constructor, 'final'
  */
@@ -20,7 +20,7 @@ public class Range {
     final private double upper;
 
     /** Initialize with start...end values, sorting them to get lower...upper.
-     * 
+     *
      * @param start
      *            the start value of range
      * @param end
@@ -48,9 +48,9 @@ public class Range {
             else
                 return (value > upper && value < lower);
         }
-            
+
     }
-    
+
     /**If a value in the range or not. The boundary is included.
      * @param value
      * @return true if the value is in the range. Otherwise false.
@@ -59,9 +59,9 @@ public class Range {
         if(lower <= upper)
             return value >= lower && value <= upper;
         else
-            return value >= upper && value <= lower;              
+            return value >= upper && value <= lower;
     }
-    
+
     public boolean isMinBigger(){
         return lower>upper;
     }

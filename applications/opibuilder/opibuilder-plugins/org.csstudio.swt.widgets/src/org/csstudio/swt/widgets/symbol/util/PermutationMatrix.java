@@ -34,7 +34,7 @@ public class PermutationMatrix {
             for (int j = 0; j < matrix[i].length; j++)
                 matrix[i][j] = round(matrix[i][j]);
     }
-    
+
     /**
      * Generate [2,2] identity matrix
      */
@@ -42,7 +42,7 @@ public class PermutationMatrix {
         final double[][] matrix = new double[][] { { 1, 0 }, { 0, 1 } };
         return new PermutationMatrix(matrix);
     }
-    
+
     /**
      * Generate horizontal flip [2,2] matrix
      */
@@ -50,7 +50,7 @@ public class PermutationMatrix {
         final double[][] matrix = new double[][] { { 1, 0 }, { 0, -1 } };
         return new PermutationMatrix(matrix);
     }
-    
+
     /**
      * Generate vertical flip [2,2] matrix
      */
@@ -75,11 +75,11 @@ public class PermutationMatrix {
 
         return new PermutationMatrix(matrix);
     }
-    
+
     public PermutationMatrix multiply(PermutationMatrix pm) {
         double[][] m1 = getMatrix();
         double[][] m2 = pm.getMatrix();
-        
+
         int p1 = m1.length, p2 = m2.length, q2 = m2[0].length;
         double[][] result = new double[p1][q2];
         for (int i = 0; i < p1; i++)
@@ -127,5 +127,5 @@ public class PermutationMatrix {
             return false;
         return true;
     }
-    
+
 }

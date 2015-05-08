@@ -70,7 +70,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
             }
             if(widgetModel.isWrapWords())
                 style |=SWT.WRAP;
-            return new NativeTextFigure(this, style);            
+            return new NativeTextFigure(this, style);
         }else {
             TextFigure labelFigure = createTextFigure();
             initTextFigure(labelFigure);
@@ -88,7 +88,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
     }
 
     /**
-     * 
+     *
      */
     protected void initFields() {
         //Initialize frequently used variables.
@@ -102,7 +102,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 
     protected TextFigure createTextFigure(){
         if(getWidgetModel().isWrapWords())
-            return new WrappableTextFigure(getExecutionMode() == ExecutionMode.RUN_MODE);    
+            return new WrappableTextFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
         return new TextFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
     }
 
@@ -277,7 +277,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
             }
         };
         setPropertyChangeHandler(TextUpdateModel.PROP_SHOW_UNITS, handler);
-        
+
         handler = new IWidgetPropertyChangeHandler(){
             public boolean handleChange(Object oldValue, Object newValue,
                     final IFigure figure) {
@@ -287,9 +287,9 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
             }
         };
         setPropertyChangeHandler(TextUpdateModel.PROP_ROTATION, handler);
-        
+
         handler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 AbstractWidgetModel model = getWidgetModel();
@@ -354,7 +354,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 
         String text = VTypeHelper.formatValue(
                     format, value, tempPrecision);
-        
+
         if(isShowUnits && VTypeHelper.getDisplayInfo(value) != null){
             String units =VTypeHelper.getDisplayInfo(value).getUnits();
             if(units != null && units.trim().length()>0)
@@ -370,13 +370,13 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
             performAutoSize();
 
         return text;
-    }    
+    }
 
-    
+
 
 
     @Override
-    public String getValue() {            
+    public String getValue() {
         if(getFigure() instanceof NativeTextFigure)
             return ((NativeTextFigure)getFigure()).getText();
         return ((TextFigure)getFigure()).getText();
@@ -386,9 +386,9 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
     public void setValue(Object value) {
         String text;
         if(value instanceof Number)
-            text = formatValue(ValueFactory.newVDouble(((Number)value).doubleValue()), 
+            text = formatValue(ValueFactory.newVDouble(((Number)value).doubleValue()),
                     AbstractPVWidgetModel.PROP_PVVALUE);
-        else 
+        else
             text = value.toString();
         setFigureText(text);
     }

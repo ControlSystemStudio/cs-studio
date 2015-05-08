@@ -28,11 +28,11 @@ public class EdmMultiDoubles extends AbstractEdmMultiAttributes<EdmDouble> {
         super(genericEntity, required);
 
     }
-    
+
     @Override
     protected EdmDouble createEdmAttribute(EdmAttribute genericEntity) throws EdmException{
         return new EdmDouble(genericEntity, false);
     }
 
-    
+
 }

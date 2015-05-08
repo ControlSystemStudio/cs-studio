@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.model.internal;
 
@@ -19,7 +19,7 @@ import org.junit.Test;
 
 /**
  * @author Sven Wende
- * 
+ *
  */
 public final class AbstractPropertyContainerTest {
     private static final String NAME = "test";
@@ -37,7 +37,7 @@ public final class AbstractPropertyContainerTest {
             }
 
             public void accept(IVisitor visitor) {
-                
+
             }
 
             public boolean isInherited() {
@@ -113,7 +113,7 @@ public final class AbstractPropertyContainerTest {
             }
 
             public void accept(IVisitor visitor) {
-                
+
             }
 
             public boolean isInherited() {

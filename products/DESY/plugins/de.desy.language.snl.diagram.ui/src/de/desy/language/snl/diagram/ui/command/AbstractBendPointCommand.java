@@ -7,9 +7,9 @@ import de.desy.language.snl.diagram.model.WhenConnection;
 
 /**
  * Abstract superclass for all BendPointCommands.
- * 
+ *
  * @author Kai Meyer, Sebastian Middeke (C1 WPS)
- * 
+ *
  */
 public class AbstractBendPointCommand extends Command {
 
@@ -28,7 +28,7 @@ public class AbstractBendPointCommand extends Command {
 
     /**
      * Constructor.
-     * 
+     *
      * @param model
      *            The model of the connection
      * @param location
@@ -61,7 +61,7 @@ public class AbstractBendPointCommand extends Command {
     public WhenConnection getConnectionModel() {
         return _model;
     }
-    
+
     /**
      * {@inheritDoc}
      */

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.service.channelfinder;
 
@@ -30,7 +30,7 @@ import com.google.common.collect.Lists;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class QueryServiceMethod extends ServiceMethod {
 
@@ -45,7 +45,7 @@ public class QueryServiceMethod extends ServiceMethod {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.epics.pvmanager.service.ServiceMethod#executeMethod(java.util.Map,
      * org.epics.pvmanager.WriteFunction, org.epics.pvmanager.WriteFunction)

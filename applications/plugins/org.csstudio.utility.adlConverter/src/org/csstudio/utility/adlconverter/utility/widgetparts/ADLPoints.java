@@ -45,8 +45,8 @@ public class ADLPoints extends WidgetPart{
 
     /**
      * The default constructor.
-     * 
-     * @param adlPoints An ADLWidget that correspond a ADL Points. 
+     *
+     * @param adlPoints An ADLWidget that correspond a ADL Points.
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
@@ -61,7 +61,7 @@ public class ADLPoints extends WidgetPart{
     void init() {
         /* Not to initialization*/
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -69,7 +69,7 @@ public class ADLPoints extends WidgetPart{
     final void parseWidgetPart(final ADLWidget adlPoints) throws WrongADLFormatException {
 
         assert adlPoints.isType("points") : Messages.ADLPoints_AssertError_Begin+adlPoints.getType()+Messages.ADLPoints_AssertError_End; //$NON-NLS-1$
-        
+
         _pointsList = new PointList(adlPoints.getBody().size());
         for (FileLine  fileLine : adlPoints.getBody()) {
             String points = fileLine.getLine();
@@ -77,29 +77,29 @@ public class ADLPoints extends WidgetPart{
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.ADLPoints_WrongADLFormatException_Begin+points+Messages.ADLPoints_WrongADLFormatException_End);
             }
-            
+
             _pointsList.addPoint(Integer.parseInt(row[0]),Integer.parseInt(row[1]));
         }
     }
 
     /**
      * {@inheritDoc}
-     */ 
+     */
     @Override
     final void generateElements() {
         _widgetModel.setPropertyValue("points", _pointsList); //$NON-NLS-1$
     }
 
     /**
-     * 
-     * @return the Coordinate list. 
+     *
+     * @return the Coordinate list.
      */
     public final PointList getPointsList() {
         return _pointsList;
     }
 
     /**
-     * 
+     *
      * @param pointsList set the Coordinate list.
      */
     public final void setPointsList(final PointList pointsList) {

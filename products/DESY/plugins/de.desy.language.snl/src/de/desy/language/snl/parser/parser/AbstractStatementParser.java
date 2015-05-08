@@ -9,9 +9,9 @@ import de.desy.language.snl.parser.nodes.AbstractSNLNode;
  * embedded C; these parts have to be removed (offsets may have to be fixed
  * after processing) or replaced (recommended) with whitespace chars by the root
  * parser.
- * 
+ *
  * @author C1 WPS / KM, MZ
- * 
+ *
  * @param <N>
  *            The Type of parsed SNL element node.
  */

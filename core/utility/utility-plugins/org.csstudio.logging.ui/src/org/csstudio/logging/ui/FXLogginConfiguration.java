@@ -33,26 +33,26 @@ import com.google.common.base.Joiner;
 
 /**
  * This view lists all the loggers currently available in cs-studio.
- * 
+ *
  * The users can add or remove the consoleViewHandler from any of the logger
  * (since the Handler is only attached to the root Logger the current
  * mechanism simply enables/disables the use of parentHandlers)
- * 
+ *
  * The users can configure the logging Level for these loggers too, thus allow
  * temporary FINE logging.
- *  
+ *
  * @author Kunal Shroff
  *
  */
 public class FXLogginConfiguration extends FXViewPart {
 
     private static final String ID = "org.csstudio.logging.ui.FXLoggingConfiguration";
-    
+
     private static Logger logger = Logger.getLogger(FXLogginConfiguration.class.getName());
-    
+
     private static LogManager manager = LogManager.getLogManager();
     final static TreeItem<NameNode> root = new TreeItem<>(new NameNode(null, null, null, true));
-    
+
 
     @SuppressWarnings("unchecked")
     @Override
@@ -161,7 +161,7 @@ public class FXLogginConfiguration extends FXViewPart {
                     logger.setUseParentHandlers(newValue);
                 }
             });
-            return s; 
+            return s;
             }
         });
 
@@ -196,7 +196,7 @@ public class FXLogginConfiguration extends FXViewPart {
     private final Logger logger;
 
     private boolean enableParentHandler;
-        
+
     public NameNode(String name, String fullName, Logger logger,
         boolean enableParentHandler) {
         this.name = name;
@@ -264,7 +264,7 @@ public class FXLogginConfiguration extends FXViewPart {
                 new NameNode(name, fullName, manager
                     .getLogger(fullName), manager
                     .getLogger(fullName) != null ? true
-                    : false));            
+                    : false));
             newNode.setExpanded(true);
             parent.getChildren().add(newNode);
             parent = newNode;

@@ -23,10 +23,10 @@ import org.eclipse.swt.widgets.Menu;
 
 public class ProcessVariableInputBar extends Composite implements ISelectionProvider {
 
-    
+
     private ProcessVariable processVariable;
     protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
-    
+
     public void addPropertyChangeListener( PropertyChangeListener listener ) {
         changeSupport.addPropertyChangeListener( listener );
     }
@@ -34,22 +34,22 @@ public class ProcessVariableInputBar extends Composite implements ISelectionProv
     public void removePropertyChangeListener( PropertyChangeListener listener ) {
         changeSupport.removePropertyChangeListener( listener );
     }
-    
+
     public ProcessVariable getProcessVariable() {
         return processVariable;
     }
-    
+
     public void setProcessVariable(ProcessVariable processVariable) {
         ProcessVariable oldValue = this.processVariable;
         this.processVariable = processVariable;
         changeSupport.firePropertyChange("processVariable", oldValue, processVariable);
     }
-    
+
     private Combo combo;
-    
+
     /**
      * Create the composite.
-     * 
+     *
      * @param parent
      * @param style
      */
@@ -68,9 +68,9 @@ public class ProcessVariableInputBar extends Composite implements ISelectionProv
                 setProcessVariable(new ProcessVariable(name));
             }
         };
-        
+
         addPropertyChangeListener(new PropertyChangeListener() {
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent event) {
                 if ("processVariable".equals(event.getPropertyName())) {
@@ -83,9 +83,9 @@ public class ProcessVariableInputBar extends Composite implements ISelectionProv
                 }
             }
         });
-        
+
         selectionProvider = new AbstractSelectionProviderWrapper(comboViewer, this) {
-            
+
             @Override
             protected ISelection transform(IStructuredSelection selection) {
                 if (getProcessVariable() != null)
@@ -94,7 +94,7 @@ public class ProcessVariableInputBar extends Composite implements ISelectionProv
                     return new StructuredSelection();
             }
         };
-        
+
         name_helper.loadSettings();
     }
 
@@ -102,13 +102,13 @@ public class ProcessVariableInputBar extends Composite implements ISelectionProv
     protected void checkSubclass() {
         // Disable the check that prevents subclassing of SWT components
     }
-    
+
     @Override
     public void setMenu(Menu menu) {
         super.setMenu(menu);
         combo.setMenu(menu);
     }
-    
+
     private AbstractSelectionProviderWrapper selectionProvider;
 
     @Override
@@ -131,5 +131,5 @@ public class ProcessVariableInputBar extends Composite implements ISelectionProv
     public void setSelection(ISelection selection) {
         selectionProvider.setSelection(selection);
     }
-    
+
 }

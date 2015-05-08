@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.ui.util;
@@ -42,13 +42,13 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 /**
  * A factory, which provides convinience methods for the creation of Images and
  * Fonts.
- * 
+ *
  * All resources created via this factory get automatically disposed, when the
  * application is stopped.
- * 
+ *
  * @author Sven Wende, Xihui Chen
  * @version $Revision$
- * 
+ *
  */
 public final class CustomMediaFactory {
     /**
@@ -62,7 +62,7 @@ public final class CustomMediaFactory {
      */
     private ImageRegistry _imageRegistry;
 
-    
+
 
     /**
      * Map that holds the provided image descriptors.
@@ -91,7 +91,7 @@ public final class CustomMediaFactory {
 
     /**
      * Return the shared instance of this class.
-     * 
+     *
      * @return The shared instance of this class.
      */
     public static synchronized CustomMediaFactory getInstance() {
@@ -104,14 +104,14 @@ public final class CustomMediaFactory {
 
     /**
      * Create the <code>Color</code> for the given color information.
-     * 
+     *
      * @param r
      *            red
      * @param g
      *            green
      * @param b
      *            blue
-     * 
+     *
      * @return The <code>Color</code> for the given color information.
      */
     public Color getColor(final int r, final int g, final int b) {
@@ -120,7 +120,7 @@ public final class CustomMediaFactory {
 
     /**
      * Create the <code>Color</code> for the given <code>RGB</code>.
-     * 
+     *
      * @param rgb
      *            A <code>RGB</code> object.
      * @return The <code>Color</code> for the given <code>RGB</code>.
@@ -131,7 +131,7 @@ public final class CustomMediaFactory {
 
     /**
      * Create the <code>Font</code> for the given information.
-     * 
+     *
      * @param name
      *            The font name.
      * @param height
@@ -147,7 +147,7 @@ public final class CustomMediaFactory {
 
     /**
      * Create the <code>Font</code> for the given <code>FontData</code>.
-     * 
+     *
      * @param fontData
      *            The <code>FontData</code>
      * @return The <code>Font</code> for the given <code>FontData</code>
@@ -160,7 +160,7 @@ public final class CustomMediaFactory {
     /**
      * Create the <code>Font</code> for the given <code>FontData</code> and the
      * given style code.
-     * 
+     *
      * @param fontData
      *            The <code>FontData</code>
      * @param style
@@ -177,7 +177,7 @@ public final class CustomMediaFactory {
     /**
      * Create the <code>Font</code> for the given <code>FontData</code> and the
      * given style code.
-     * 
+     *
      * @param fontData
      *            The <code>FontData</code>
      * @return The <code>Font</code> for the given <code>FontData</code> and the
@@ -189,7 +189,7 @@ public final class CustomMediaFactory {
 
     /**
      * Return the system's default font.
-     * 
+     *
      * @param style
      *            additional styles, e.g. SWT.Bold
      * @return The system's default font.
@@ -200,7 +200,7 @@ public final class CustomMediaFactory {
 
     /**
      * Load the <code>Image</code> from the given path in the given plugin.
-     * 
+     *
      * @param pluginId
      *            The id of the plugin that contains the requested image.
      * @param relativePath
@@ -225,7 +225,7 @@ public final class CustomMediaFactory {
      * But this implementation also supports a hack for testing: If no plugin is
      * running, because for example this is an SWT-only test, the path is used
      * as is, i.e. relative to the current directory.
-     * 
+     *
      * @param plugin
      *            The plugin that contains the requested image.
      * @param pluginId
@@ -235,7 +235,7 @@ public final class CustomMediaFactory {
      * @return The <code>Image</code> from the given path in the given plugin.
      */
     public Image getImageFromPlugin(final Plugin plugin, final String pluginId, final String relativePath) {
-        String key = pluginId + "." + relativePath; //$NON-NLS-1$    
+        String key = pluginId + "." + relativePath; //$NON-NLS-1$
         // does image exist
         if (_imageRegistry.get(key) == null) {
             if (plugin != null) {
@@ -254,7 +254,7 @@ public final class CustomMediaFactory {
     /**
      * Load the <code>ImageDescriptor</code> from the given path in the given
      * plugin.
-     * 
+     *
      * @param pluginId
      *            The id of the plugin that contains the requested image.
      * @param relativePath

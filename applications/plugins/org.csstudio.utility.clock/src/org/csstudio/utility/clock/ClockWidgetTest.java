@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Shell;
 public class ClockWidgetTest
 {
     private static boolean run = true;
-    
+
     @SuppressWarnings("nls")
     public static void main(String[] args)
     {
@@ -41,7 +41,7 @@ public class ClockWidgetTest
         gd.horizontalAlignment = SWT.FILL;
         gd.verticalAlignment = SWT.FILL;
         clock.setLayoutData(gd);
-        
+
         Button ok = new Button(shell, SWT.PUSH);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
@@ -55,8 +55,8 @@ public class ClockWidgetTest
             {
                 run = false;
             }
-        });        
-        
+        });
+
         shell.open();
         // Message loop left to the application
         while (run && !shell.isDisposed())

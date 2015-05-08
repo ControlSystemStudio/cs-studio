@@ -53,7 +53,7 @@ public class Perspective implements IPerspectiveFactory
         //      +-------------
         //      | bottom
         final boolean rcp = SingleSourcePlugin.getUIHelper().getUI() == UI.RCP;
-        
+
         String editor = layout.getEditorArea();
         // Stuff for 'left'
         IFolderLayout left = null;
@@ -61,21 +61,21 @@ public class Perspective implements IPerspectiveFactory
             left = layout.createFolder("left", IPageLayout.LEFT,
                     0.25f, editor);
         }
-        
+
         if (left != null) {
             left.addView(SearchView.ID);
             if (rcp) {
                 left.addView(IPageLayout.ID_RES_NAV);
             }
         }
-        
+
         // Stuff for 'bottom'
         IFolderLayout bottom = null;
         if (rcp || !Preferences.hidePropertiesView()) {
             bottom = layout.createFolder("bottom",IPageLayout.BOTTOM, 0.66f, editor);
             bottom.addView(IPageLayout.ID_PROP_SHEET);
         }
-        
+
         if (bottom != null) {
             if (rcp) bottom.addView(ExportView.ID);
             bottom.addPlaceholder(SampleView.ID);

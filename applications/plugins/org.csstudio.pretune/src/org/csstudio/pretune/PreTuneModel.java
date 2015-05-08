@@ -12,9 +12,9 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
- * 
+ *
  * @author Kunal Shroff
- * 
+ *
  */
 public class PreTuneModel {
     protected final PropertyChangeSupport pcs = new PropertyChangeSupport(this);

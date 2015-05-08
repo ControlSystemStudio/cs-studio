@@ -15,9 +15,9 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Then entry point for debug info display.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class RAPDebugEntryPoint extends AbstractEntryPoint {
     private int lines = 60;
@@ -39,17 +39,17 @@ public class RAPDebugEntryPoint extends AbstractEntryPoint {
             text.setText(DisplayManager.getInstance().getDebugInfo());
             final Text consoleText = new Text(shell, SWT.READ_ONLY | SWT.MULTI
                     | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
-            
+
             String s = RWT.getRequest().getParameter("lines");
             if(s != null)
                 lines = Integer.parseInt(s);
-            
+
             fileName = System.getProperty("catalina.home");
             if (fileName == null || fileName.trim().isEmpty()) {
                 fileName = "C:/Users/5hz/Desktop/webapps/catalina.out";
             } else
-                fileName = fileName + "/logs/catalina.out"; //$NON-NLS-1$    
-            
+                fileName = fileName + "/logs/catalina.out"; //$NON-NLS-1$
+
             ReverseFileReader reader = new ReverseFileReader(fileName);
             lastLength = reader.length();
             consoleText.setText(readCatalinaOut(reader, lines));
@@ -61,7 +61,7 @@ public class RAPDebugEntryPoint extends AbstractEntryPoint {
                 @Override
                 public void run() {
                     text.setText(DisplayManager.getInstance().getDebugInfo());
-                    try {                        
+                    try {
                         ReverseFileReader reader = new ReverseFileReader(fileName);
                         if(reader.length() != lastLength){
                             lastLength = reader.length();
@@ -89,7 +89,7 @@ public class RAPDebugEntryPoint extends AbstractEntryPoint {
     }
 
     public String readCatalinaOut(ReverseFileReader reader, int lastLinesNo) throws Exception {
-            
+
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < lastLinesNo; i++) {
             String line = reader.readLine();

@@ -17,12 +17,12 @@ import org.csstudio.security.authorization.Authorizations;
 public interface SecurityListener
 {
     /** Security settings have changed.
-     * 
+     *
      *  <p>User has logged in or out,
      *  permissions have changed.
-     * 
+     *
      *  <p>May be invoked from in non-GUI thread.
-     *  
+     *
      *  @param subject {@link Subject} for current user or <code>null</code> when not logged in
      *  @param is_current_user Is it the current, OS-authenticated user?
      *                         Or is it a different user, authenticated via name/password?

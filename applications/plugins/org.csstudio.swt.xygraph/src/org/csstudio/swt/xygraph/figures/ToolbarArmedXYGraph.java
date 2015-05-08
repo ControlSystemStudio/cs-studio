@@ -14,7 +14,7 @@ import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 
-/**An graph which consists of a toolbar and an XYGraph. 
+/**An graph which consists of a toolbar and an XYGraph.
  * @author Xihui Chen
  * @author Kay Kasemir added flags
  */
@@ -25,7 +25,7 @@ public class ToolbarArmedXYGraph extends Figure {
 
     private boolean transparent;
     private final static int MARGIN = 3;
-    
+
     /** Construct default graph */
     public ToolbarArmedXYGraph() {
         this(new XYGraph());
@@ -49,23 +49,23 @@ public class ToolbarArmedXYGraph extends Figure {
         toolbar = new XYGraphToolbar(this.xyGraph, flags);
         xyGraph.setOpaque(false);
         toolbar.setOpaque(false);
-        add(toolbar);        
-        add(xyGraph);        
+        add(toolbar);
+        add(xyGraph);
     }
-    
+
     @Override
     protected void layout() {
         Rectangle clientArea = getClientArea().getCopy();
         if(toolbar.isVisible()){
             toolbar.invalidate();
             Dimension size = toolbar.getPreferredSize(clientArea.width - MARGIN, -1);
-            toolbar.setBounds(new Rectangle(clientArea.x + MARGIN, clientArea.y + MARGIN, 
-                    size.width, size.height));            
+            toolbar.setBounds(new Rectangle(clientArea.x + MARGIN, clientArea.y + MARGIN,
+                    size.width, size.height));
             clientArea.y += size.height + 2*MARGIN;
             clientArea.height -= size.height + 2*MARGIN;
         }
         xyGraph.setBounds(new Rectangle(clientArea));
-            
+
         super.layout();
     }
 
@@ -83,14 +83,14 @@ public class ToolbarArmedXYGraph extends Figure {
     public boolean isShowToolbar() {
         return toolbar.isVisible();
     }
-    
+
     /**
      * @return the xyGraph
      */
     public XYGraph getXYGraph() {
         return xyGraph;
     }
-    
+
 
     @Override
     public boolean isOpaque() {
@@ -100,9 +100,9 @@ public class ToolbarArmedXYGraph extends Figure {
      * {@inheritDoc}
      */
     @Override
-    public void paintFigure(final Graphics graphics) {        
-        if (!transparent)        
-            graphics.fillRectangle(getClientArea());        
+    public void paintFigure(final Graphics graphics) {
+        if (!transparent)
+            graphics.fillRectangle(getClientArea());
         super.paintFigure(graphics);
     }
     /**
@@ -118,7 +118,7 @@ public class ToolbarArmedXYGraph extends Figure {
         this.transparent = transparent;
         xyGraph.setTransparent(transparent);
     }
-    
+
     /** Add a button to the tool bar.
      *  New button will be added to the 'end' of the tool bar.
      *  @param button New button

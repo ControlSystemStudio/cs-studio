@@ -25,7 +25,7 @@ public class StatisticsAccumulatorTest
         final double[] data = new double[] { 2, 4, 4, 4, 5, 5, 7, 9 };
         for (double value : data)
             stats.add(value);
-        
+
         assertThat(stats.getNSamples(), equalTo(data.length));
         assertThat(stats.getMin(), equalTo(2.0));
         assertThat(stats.getMax(), equalTo(9.0));

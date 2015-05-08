@@ -29,7 +29,7 @@ import org.eclipse.gef.requests.CreationFactory;
 
 /**
  * {@link CreationFactory} implementation for new widget types.
- * 
+ *
  * @author Kai Meyer, Sven Wende
  */
 public final class WidgetCreationFactory implements CreationFactory {

@@ -38,13 +38,13 @@ public class PluginUsers
                     plugin_users.put(plugin, users);
                 }
                 users.add(site);
-                
+
                 // System.out.println(site + " -> " + plugin);
                 plugin = reader.readLine();
             }
             reader.close();
         }
-        
+
         final String[] plugins = plugin_users.keySet().toArray(new String[0]);
         Arrays.sort(plugins);
 

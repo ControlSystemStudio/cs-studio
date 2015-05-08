@@ -39,7 +39,7 @@ public class CopyWidgetsAction extends SelectionAction {
 
     /**
      * @param part the OPI Editor
-     * @param pasteWidgetsAction pass the paste action will 
+     * @param pasteWidgetsAction pass the paste action will
      * help to update the enable state of the paste action
      * after copy action invoked.
      */
@@ -48,7 +48,7 @@ public class CopyWidgetsAction extends SelectionAction {
         setText("Copy");
         setActionDefinitionId("org.eclipse.ui.edit.copy"); //$NON-NLS-1$
         setId(ActionFactory.COPY.getId());
-        ISharedImages sharedImages = 
+        ISharedImages sharedImages =
             part.getSite().getWorkbenchWindow().getWorkbench().getSharedImages();
         setImageDescriptor(sharedImages
         .getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
@@ -56,7 +56,7 @@ public class CopyWidgetsAction extends SelectionAction {
 
     @Override
     protected boolean calculateEnabled() {
-        if(getSelectedObjects().size() == 0 || 
+        if(getSelectedObjects().size() == 0 ||
                 getSelectedObjects().size() == 1 && getSelectedObjects().get(0) instanceof EditPart
                 && ((EditPart)getSelectedObjects().get(0)).getModel() instanceof DisplayModel)
             return false;
@@ -66,75 +66,75 @@ public class CopyWidgetsAction extends SelectionAction {
         }
         return false;
     }
-    
-    
+
+
     @Override
-    public void run() {    
-        
+    public void run() {
+
         DisplayModel tempModel = new DisplayModel();
         List<AbstractWidgetModel> widgetModels = getSelectedWidgetModels();
         for(AbstractWidgetModel widget : widgetModels){
-            tempModel.addChild(widget, false);            
+            tempModel.addChild(widget, false);
         }
-        
+
         String xml = XMLUtil.widgetToXMLString(tempModel, false);
-        
+
         ((OPIEditor)getWorkbenchPart()).getClipboard()
-            .setContents(new Object[]{xml}, 
+            .setContents(new Object[]{xml},
                 new Transfer[]{OPIWidgetsTransfer.getInstance()});
         Display.getCurrent().asyncExec(new Runnable() {
-            
+
             public void run() {
                 IAction pasteAction = ((ActionRegistry)((OPIEditor)getWorkbenchPart()).getAdapter(ActionRegistry.class)).
                 getAction(ActionFactory.PASTE.getId());
                 if(pasteAction != null){
                     ((PasteWidgetsAction)pasteAction).refreshEnable();
                 }
-                
+
             }
         });
     }
-    
+
     /**
      * Gets the widget models of all currently selected EditParts.
-     * 
-     * @return a list with all widget models that are currently selected. 
-     * The order of the selected widgets was kept. 
+     *
+     * @return a list with all widget models that are currently selected.
+     * The order of the selected widgets was kept.
      */
     protected final List<AbstractWidgetModel> getSelectedWidgetModels() {
         List<?> selection = getSelectedObjects();
-    
+
         List<AbstractWidgetModel> sameParentModels = new ArrayList<AbstractWidgetModel>();
         List<AbstractWidgetModel> differentParentModels = new ArrayList<AbstractWidgetModel>();
         List<AbstractWidgetModel> result = new ArrayList<AbstractWidgetModel>();
         AbstractContainerModel parent = null;
         for (Object o : selection) {
             if (o instanceof AbstractBaseEditPart && !(o instanceof DisplayEditpart)) {
-                AbstractWidgetModel widgetModel = 
+                AbstractWidgetModel widgetModel =
                     (AbstractWidgetModel) ((EditPart) o).getModel();
                 if(parent == null)
                     parent = widgetModel.getParent();
                 if(widgetModel.getParent() == parent)
                     sameParentModels.add(widgetModel);
-                else 
+                else
                     differentParentModels.add(widgetModel);
             }
         }
         //sort widgets to its original order
         if(sameParentModels.size() > 1){
             AbstractWidgetModel[] modelArray = sameParentModels.toArray(new AbstractWidgetModel[0]);
-        
+
             Arrays.sort(modelArray, new Comparator<AbstractWidgetModel>(){
 
                 public int compare(AbstractWidgetModel o1,
                         AbstractWidgetModel o2) {
-                    if(o1.getParent().getChildren().indexOf(o1) > 
+                    if(o1.getParent().getChildren().indexOf(o1) >
                         o2.getParent().getChildren().indexOf(o2))
                         return 1;
                     else
-                        return -1;                    
+                        return -1;
                 }
-                
+
             });
             result.addAll(Arrays.asList(modelArray));
             if(differentParentModels.size() > 0)
@@ -143,7 +143,7 @@ public class CopyWidgetsAction extends SelectionAction {
         }
         if(differentParentModels.size() > 0)
             sameParentModels.addAll(differentParentModels);
-        
+
         return sameParentModels;
     }
 

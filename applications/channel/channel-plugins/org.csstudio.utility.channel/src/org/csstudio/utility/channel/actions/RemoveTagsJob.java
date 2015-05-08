@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.channel.actions;
 
@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.jobs.Job;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class RemoveTagsJob extends Job {
 
@@ -30,7 +30,7 @@ public class RemoveTagsJob extends Job {
     /**
      * create a job to remove a set of tags from a set of channels in
      * channelfinder
-     * 
+     *
      * @param name
      *            - job name
      * @param channels
@@ -53,7 +53,7 @@ public class RemoveTagsJob extends Job {
             for (Iterator<String> iterator = selectedTags.iterator(); iterator
                     .hasNext();) {
                 String tagName = iterator.next();
-                monitor.subTask("Removing tag " + tagName);                
+                monitor.subTask("Removing tag " + tagName);
                 ChannelFinder.getClient().delete(tag(tagName),
                         ChannelUtil.getChannelNames(channels));
                 monitor.worked(1);

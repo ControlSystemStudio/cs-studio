@@ -22,7 +22,7 @@ import org.csstudio.security.internal.PreferenceBasedJAASConfiguration;
 import org.junit.Test;
 
 /** JUnit test of {@link PreferenceBasedJAASConfiguration}
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -40,10 +40,10 @@ public class PreferenceBasedJAASConfigurationUnitTest
             "com.sun.security.auth.module.JndiLoginModule Sufficient debug=\"true\" user.provider.url=\"ldap://localhost:389/ou=People,dc=test,dc=ics\" group.provider.url=\"ldap://localhost:389/ou=People,dc=test,dc=ics\";";
         final Configuration configuration = new PreferenceBasedJAASConfiguration(jaas_config);
         final AppConfigurationEntry[] configs = configuration.getAppConfigurationEntry("ignored");
-        
+
         assertThat(configs.length, equalTo(2));
         assertThat(configs[0].getControlFlag(), equalTo(LoginModuleControlFlag.SUFFICIENT));
         assertThat(configs[0].getLoginModuleName(), equalTo("com.sun.jmx.remote.security.FileLoginModule"));
         assertThat(configs[0].getOptions().get("passwordFile").toString(), equalTo("passwords.conf"));
     }
-}   
+}

@@ -11,14 +11,14 @@ import org.csstudio.simplepv.IPV;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 
 /**
- * The connection handler for PV widget. It will set the enable state of the widget 
+ * The connection handler for PV widget. It will set the enable state of the widget
  * based on control PV's connectivity.
  * @author Xihui Chen
  *
  */
 public class PVWidgetConnectionHandler extends ConnectionHandler{
-    
-    
+
+
     /**
      * @param editpart the editpart must implemented {@link IPVWidgetEditpart}
      */
@@ -32,16 +32,16 @@ public class PVWidgetConnectionHandler extends ConnectionHandler{
         final IPV controlPV = ((IPVWidgetEditpart)editPart).getControlPV();
         if(controlPV != null && controlPV == pv){
         UIBundlingThread.getInstance().addRunnable(
-                editPart.getRoot().getViewer().getControl().getDisplay(), 
+                editPart.getRoot().getViewer().getControl().getDisplay(),
                 new Runnable() {
-            
+
             public void run() {
                 editPart.getFigure().setEnabled(false);
             }
         });
         }
     }
-    
+
 //    @Override
 //    protected void widgetConnectionRecovered(PV pv) {
 //        if(isConnected())
@@ -50,19 +50,19 @@ public class PVWidgetConnectionHandler extends ConnectionHandler{
 //        final PV controlPV = ((IPVWidgetEditpart)editPart).getControlPV();
 //        if(controlPV != null && controlPV == pv){
 //        UIBundlingThread.getInstance().addRunnable(
-//                editPart.getRoot().getViewer().getControl().getDisplay(), 
-//                new Runnable() {            
+//                editPart.getRoot().getViewer().getControl().getDisplay(),
+//                new Runnable() {
 //            public void run() {
 //                editPart.getFigure().setEnabled(
-//                        editPart.getWidgetModel().isEnabled() 
+//                        editPart.getWidgetModel().isEnabled()
 //                        && controlPV.isWriteAllowed());
 //            }
 //        });
 //        }
-//        
+//
 //    }
 
-    
-    
-    
+
+
+
 }

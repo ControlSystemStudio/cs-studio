@@ -8,9 +8,9 @@ import org.eclipse.ui.IEditorPart;
 
 /**
  * Base class for all actions dedicated to a DCT editor instance.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public abstract class AbstractDctEditorAction implements IEditorActionDelegate, CommandStackEventListener {
     private DctEditor editor;
@@ -38,7 +38,7 @@ public abstract class AbstractDctEditorAction implements IEditorActionDelegate, 
     /**
      * Returns the action proxy that handles the presentation portion of the
      * action
-     * 
+     *
      * @return the action proxy that handles the presentation portion of the
      *         action
      */
@@ -48,7 +48,7 @@ public abstract class AbstractDctEditorAction implements IEditorActionDelegate, 
 
     /**
      * Templates method which is called, when the active DCT editor changes.
-     * 
+     *
      * @param editor
      *            the currently active DCT editor
      */

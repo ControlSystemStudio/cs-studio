@@ -8,7 +8,7 @@ import org.csstudio.dct.util.AliasResolutionUtil;
 
 /**
  * UI adapter for {@link IInstance}.
- * 
+ *
  * @author Sven Wende
  */
 @SuppressWarnings("unchecked")
@@ -41,6 +41,6 @@ public final class InstanceWorkbenchAdapter extends BaseWorkbenchAdapter<IInstan
         return instance.getParent() instanceof IInstance ? "icons/instance_inherited.png" : "icons/instance.png";
     }
 
-    
+
 
 }

@@ -44,7 +44,7 @@ import de.desy.tine.definitions.TAccess;
 import de.desy.tine.definitions.TMode;
 
 /**
- * 
+ *
  * @author Jaka Bobnar, Cosylab
  *
  */
@@ -59,41 +59,41 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
     private T oldData;
     private Object dataObject;
     private boolean normal=false;
-    
+
     public MonitorProxyImpl(PropertyProxyImpl<T> source, ResponseListener<T> l) {
         super(source, l);
         this.proxy = source;
         proxy.addMonitor(this);
     }
-        
+
     public void initialize(final Object data) throws RemoteException {
-        try {                
+        try {
             if (this.tLink != null) {
                 this.tLink.close();
             }
-            
+
             this.dataObject = data;
             TDataType dout = PropertyProxyUtilities.toTDataType(dataObject,PropertyProxyUtilities.getObjectSize(data),true);
             TDataType din = new TDataType();
             short access = TAccess.CA_READ;
-                        
+
             this.tLink = new TLink(this.proxy.getDeviceName(),this.proxy.getDissector().getDeviceProperty(),dout,din,access);
-                        
+
             short mode;
             if (this.heartbeat) {
                 mode = TMode.CM_POLL;
             } else {
                 mode = TMode.CM_REFRESH;
             }
-            
+
             int handle = 0;
             handle = this.tLink.attach(mode,this,(int)this.timeTrigger);
-            
-            
+
+
             if (handle < 0) {
                 throw new ConnectionFailed(this.tLink.getError(-handle));
             }
-            
+
         } catch (Exception e) {
             DynamicValueCondition condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null,"Error initializing proxy");
             this.proxy.setCondition(condition);
@@ -114,7 +114,7 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
      * @see org.csstudio.dal.proxy.MonitorProxy#refresh()
      */
     public void refresh() {
-        
+
     }
 
     /*
@@ -194,14 +194,14 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
         if (this.timeTrigger == trigger) {
             return;
         }
-        this.timeTrigger = trigger;        
+        this.timeTrigger = trigger;
         try {
             initialize(this.dataObject);
         } catch (RemoteException e) {
             throw new DataExchangeException(getSource(), "Cannot set timer trigger", e);
         }
     }
-    
+
     /*
      * (non-Javadoc)
      * @see de.desy.tine.client.TCallback#callback(int, int)
@@ -216,14 +216,14 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
         } else {
             this.proxy.setConnectionState(ConnectionState.CONNECTED);
         }
-        
+
         TDataType dout = this.tLink.getOutputDataObject();
         T data = this.proxy.extractData(dout);
         Timestamp timestamp = new Timestamp(this.tLink.getLastTimeStamp(),0);
         ResponseImpl<T> response = new ResponseImpl<T>(getSource(),this,data,"",true, e,null,timestamp,false);
 
         this.proxy.updateValueReponse(response);
-        
+
         if (this.heartbeat) {
             addResponse(response);
             if (e == null && !this.normal) {

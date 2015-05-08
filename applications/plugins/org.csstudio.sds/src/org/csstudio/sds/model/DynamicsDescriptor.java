@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.model;
@@ -33,10 +33,10 @@ import org.csstudio.dal.DynamicValueState;
 
 /**
  * Descriptor for the dynamic behavior of <code>ElementProperties</code>.
- * 
+ *
  * @author Alexander Will, Stefan Hofer, Sven Wende
  * @version $Revision: 1.20 $
- * 
+ *
  */
 public final class DynamicsDescriptor implements Cloneable {
     /**
@@ -63,7 +63,7 @@ public final class DynamicsDescriptor implements Cloneable {
 
     /**
      * Standard constructor.
-     * 
+     *
      * @param ruleId
      *            The ID of the associated rule.
      */
@@ -76,7 +76,7 @@ public final class DynamicsDescriptor implements Cloneable {
 
     /**
      * Return the output channel.
-     * 
+     *
      * @return The output channel.
      */
     public ParameterDescriptor getOutputChannel() {
@@ -85,7 +85,7 @@ public final class DynamicsDescriptor implements Cloneable {
 
     /**
      * Set the output channel.
-     * 
+     *
      * @param outputChannel
      *            The output channel
      */
@@ -95,7 +95,7 @@ public final class DynamicsDescriptor implements Cloneable {
 
     /**
      * Add an input channel.
-     * 
+     *
      * @param inputChannel
      *            An input channel.
      */
@@ -106,7 +106,7 @@ public final class DynamicsDescriptor implements Cloneable {
 
     /**
      * Removes the specified input channel.
-     * 
+     *
      * @param inputChannel
      *            The input channel to remove.
      */
@@ -120,7 +120,7 @@ public final class DynamicsDescriptor implements Cloneable {
     /**
      * Check whether the given input channel does already belong to this
      * dynamics descriptor.
-     * 
+     *
      * @param inputChannel
      *            An input channel.
      * @return True, if the given input channel does already belong to this
@@ -133,7 +133,7 @@ public final class DynamicsDescriptor implements Cloneable {
 
     /**
      * Return the input channels.
-     * 
+     *
      * @return The input channels.
      */
     public ParameterDescriptor[] getInputChannels() {
@@ -143,7 +143,7 @@ public final class DynamicsDescriptor implements Cloneable {
 
     /**
      * Return the ID of the associated rule.
-     * 
+     *
      * @return The ID of the associated rule.
      */
     public String getRuleId() {
@@ -171,7 +171,7 @@ public final class DynamicsDescriptor implements Cloneable {
     /**
      * Returns the property values, which should be applied for certain
      * connection states.
-     * 
+     *
      * @return the property values, which should be applied for certain
      *         connection states
      */
@@ -182,7 +182,7 @@ public final class DynamicsDescriptor implements Cloneable {
     /**
      * Sets the property values, which should be applied for certain connection
      * states.
-     * 
+     *
      * @param values
      *            the property values, which should be applied for certain
      *            connection states
@@ -194,14 +194,14 @@ public final class DynamicsDescriptor implements Cloneable {
             assert state != null : "state != null";
             assert values.get(state) != null : "values.get("+ state +") != null";
         }
-        
+
         _connectionStateDependentPropertyValues = values;
     }
 
     /**
      * Returns the property values, which should be applied for certain
      * condition states.
-     * 
+     *
      * @return the property values, which should be applied for certain
      *         condition states
      */
@@ -212,7 +212,7 @@ public final class DynamicsDescriptor implements Cloneable {
     /**
      * Sets the property values, which should be applied for certain condition
      * states.
-     * 
+     *
      * @param values
      *            the property values, which should be applied for certain
      *            condition states
@@ -236,7 +236,7 @@ public final class DynamicsDescriptor implements Cloneable {
         for (ParameterDescriptor parameter : _inputChannels) {
             clonedParameters.add(parameter.clone());
         }
-        
+
         clone._useOnlyConnectionStates = this._useOnlyConnectionStates;
 
         clone._inputChannels = clonedParameters;
@@ -276,7 +276,7 @@ public final class DynamicsDescriptor implements Cloneable {
 
     /**
      * Set the ID of the associated rule.
-     * 
+     *
      * @param ruleId
      *            The rule ID to set.
      */
@@ -287,7 +287,7 @@ public final class DynamicsDescriptor implements Cloneable {
     /**
      * Sets whether this {@link DynamicsDescriptor} should only use the
      * connection states.
-     * 
+     *
      * @param choice
      *            The choice
      */
@@ -298,7 +298,7 @@ public final class DynamicsDescriptor implements Cloneable {
     /**
      * Return if this {@link DynamicsDescriptor} uses only the connection
      * states.
-     * 
+     *
      * @return <code>true</code> if this {@link DynamicsDescriptor} uses only
      *         the connection states, <code>false</code> otherwise
      */

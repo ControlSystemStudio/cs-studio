@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 /**
  * Specific class containing a list of EdmColor instances, parsed from
  * EdmColorsList file.
- * 
+ *
  * @author Matevz
  *
  */
@@ -52,8 +52,8 @@ public class EdmColorsList extends EdmEntity {
         //always has 0 as the undefined color
         colorsMap.put(0, new EdmColor(null, 0,0,0));
         colorsNameMap = new HashMap<String, EdmColor>();
-    
-        // parse subentities of generic ColorsList EdmEntity; 
+
+        // parse subentities of generic ColorsList EdmEntity;
         // each subentity should be generic EdmColor
         for (String id : genericColors.getAttributeIdSet()) {
             int index = Integer.parseInt(id);
@@ -69,10 +69,10 @@ public class EdmColorsList extends EdmEntity {
     private void populateMenuColorsMap(EdmEntity colorsData) throws EdmException {
 
         menuColorsMap = new HashMap<Integer, EdmColor>();
-        
+
         // Create a set of all defined colors to check if they are all in the menumap.
         Set<EdmColor> nonMenuColors = new HashSet<EdmColor>(colorsMap.values());
-        
+
         int menuInd = 0;
         for (int entityInd = 0; entityInd < colorsData.getSubEntityCount(); entityInd++) {
             EdmEntity entity = colorsData.getSubEntity(entityInd);
@@ -87,7 +87,7 @@ public class EdmColorsList extends EdmEntity {
                 log.warn("Menumap contains an undefined color: " + colorName);
             }
         }
-        
+
         if (!nonMenuColors.isEmpty()) {
             log.warn("Color definitions exist that are not in menumap. Adding them at the end.");
             Iterator<EdmColor> iterator = nonMenuColors.iterator();
@@ -124,14 +124,14 @@ public class EdmColorsList extends EdmEntity {
     public EdmColor getMenuColor(int index) {
         return menuColorsMap.get(index);
     }
-    
+
     /**
      * Returns the color with the given name.
      */
     public EdmColor getColor(String name) {
         return colorsNameMap.get(name);
     }
-    
+
     /**
      * Maps static color with specified index. This method is only for test purposes.
      * @param index Index of static color.

@@ -164,7 +164,7 @@ public class SimulatorPlug extends AbstractPlug
         return t;
     }
 
-    
+
     /* (non-Javadoc)
      * @see org.epics.css.dal.proxy.AbstractPlug#createNewProxy(java.lang.String, java.lang.Class)
      */
@@ -297,7 +297,7 @@ public class SimulatorPlug extends AbstractPlug
     {
         Class<?extends PropertyProxy<?,?>> impl = super
             .getPropertyProxyImplementationClass(type,implType,propertyName);
-        
+
         if (impl == null) {
             return SimulatorUtilities.getPropertyProxyImplementationClass(type,implType);
         } else {
@@ -318,7 +318,7 @@ public class SimulatorPlug extends AbstractPlug
             return impl;
         }
     }
-    
+
     /**
      * Returns simulated property proxy.
      * @param uniqueName proxy name
@@ -527,7 +527,7 @@ public class SimulatorPlug extends AbstractPlug
                 new String[]{ "On", "Off", "not connected" });
             characteristicsEN.put(EnumPropertyCharacteristics.C_ENUM_VALUES,
                 new Double[]{ 1.1, 1.2, 1.3 });
-            characteristicsEN.put(CharacteristicInfo.C_META_DATA.getName(), 
+            characteristicsEN.put(CharacteristicInfo.C_META_DATA.getName(),
                     DataUtil.createMetaData(characteristicsEN));
             simulatorContext.bind(ppi,
                 new EnumPropertyProxyImpl(ppi.toString(),null), characteristicsEN);
@@ -587,12 +587,12 @@ public class SimulatorPlug extends AbstractPlug
         // TODO Auto-generated method stub
         return null;
     }
-    
+
     public DeviceProxy<?> getDeviceProxyFromCache1(String uniqueName) {
         DeviceProxy<?> proxy = super._getDeviceProxyFromCache(uniqueName);
         return proxy;
     }
-    
+
     public DirectoryProxy<?> getDirectoryProxyFromCache1(String uniqueName) {
         DirectoryProxy<?> proxy = super._getDirectoryProxyFromCache(uniqueName);
         return proxy;

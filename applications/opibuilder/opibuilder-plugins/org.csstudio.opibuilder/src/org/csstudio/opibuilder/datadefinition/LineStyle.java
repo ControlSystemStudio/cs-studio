@@ -24,14 +24,14 @@ import org.csstudio.ui.util.SWTConstants;
         DOT("Dot", SWTConstants.LINE_DOT),
         DASH_DOT("DashDot", SWTConstants.LINE_DASHDOT),
         Dash_DOTDOT("DashDotDot", SWTConstants.LINE_DASHDOTDOT);
-                
+
         String description;
         int style;
         LineStyle(String description, int style){
             this.description = description;
             this.style = style;
         }
-        
+
         /**
          * @return SWT line style {SWT.LINE_SOLID,
             SWT.LINE_DASH, SWT.LINE_DOT, SWT.LINE_DASHDOT, SWT.LINE_DASHDOTDOT }
@@ -39,12 +39,12 @@ import org.csstudio.ui.util.SWTConstants;
         public int getStyle() {
             return style;
         }
-        
+
         @Override
         public String toString() {
             return description;
         }
-        
+
         public static String[] stringValues(){
             String[] sv = new String[values().length];
             int i=0;

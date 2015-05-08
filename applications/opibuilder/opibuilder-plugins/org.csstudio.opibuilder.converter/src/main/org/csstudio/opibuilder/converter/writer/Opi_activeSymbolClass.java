@@ -20,7 +20,7 @@ import org.w3c.dom.Element;
 
 /**
  * XML conversion class for Edm_activeSymbolClass
- * 
+ *
  * @author Xihui Chen
  */
 public class Opi_activeSymbolClass extends OpiWidget {
@@ -74,11 +74,11 @@ public class Opi_activeSymbolClass extends OpiWidget {
             for(int i=0; i<r.getNumPvs(); i++){
                 if(i!=0)
                     pvsb.append("+");
-                pvsb.append("(pv").append(i).append("==0?0:1)*").append(Math.pow(2, i));                
+                pvsb.append("(pv").append(i).append("==0?0:1)*").append(Math.pow(2, i));
             }
             pvsb.append(")");
             String pvs = pvsb.toString();
-            
+
             for (int i = 0; i < r.getNumStates(); i++) {
                 Element valueNode = widgetContext.getDocument().createElement("value");
                 double min = 0, max = 0;
@@ -88,13 +88,13 @@ public class Opi_activeSymbolClass extends OpiWidget {
                     max = maxMap.get("" + i).get();
                 valueNode.setTextContent("" + i);
                 StringBuilder sb = new StringBuilder();
-                sb.append(pvs).append(">=").append(min).append("&&").append(pvs).append("<").append(max);                
+                sb.append(pvs).append(">=").append(min).append("&&").append(pvs).append("<").append(max);
                 expressions.put(sb.toString(), valueNode);
             }
             Element valueNode = widgetContext.getDocument().createElement("value");
             valueNode.setTextContent("0");
             expressions.put("true", valueNode);
-            
+
             List<String> pvnames = new ArrayList<String>();
             for(int i=0; i<r.getNumPvs(); i++){
                 pvnames.add(convertPVName(
@@ -123,12 +123,12 @@ public class Opi_activeSymbolClass extends OpiWidget {
                 }
                 if(shiftMap.containsKey(key)){
                     shiftCount = shiftMap.get(key).get();
-                }                
-                pvsb.append("(pvInt").append(i).append('&').append(andMask).append('^').append(xorMask).append("<<").append(shiftCount).append(')');                
+                }
+                pvsb.append("(pvInt").append(i).append('&').append(andMask).append('^').append(xorMask).append("<<").append(shiftCount).append(')');
             }
             pvsb.append(")");
             String pvs = pvsb.toString();
-            
+
             for (int i = 0; i < r.getNumStates(); i++) {
                 Element valueNode = widgetContext.getDocument().createElement("value");
                 double min = 0, max = 0;
@@ -138,20 +138,20 @@ public class Opi_activeSymbolClass extends OpiWidget {
                     max = maxMap.get("" + i).get();
                 valueNode.setTextContent("" + i);
                 StringBuilder sb = new StringBuilder();
-                sb.append(pvs).append(">=").append(min).append("&&").append(pvs).append("<").append(max);                
+                sb.append(pvs).append(">=").append(min).append("&&").append(pvs).append("<").append(max);
                 expressions.put(sb.toString(), valueNode);
             }
             Element valueNode = widgetContext.getDocument().createElement("value");
             valueNode.setTextContent("0");
             expressions.put("true", valueNode);
-            
+
             List<String> pvnames = new ArrayList<String>();
             for(int i=0; i<r.getNumPvs(); i++){
                 pvnames.add(convertPVName(
                         r.getControlPvs().getEdmAttributesMap().get(""+i).get()));
             }
             new OpiRule(widgetContext, "symbol_multi_pvs", "group_name", false, pvnames, expressions);
-        
+
         }
 
     }

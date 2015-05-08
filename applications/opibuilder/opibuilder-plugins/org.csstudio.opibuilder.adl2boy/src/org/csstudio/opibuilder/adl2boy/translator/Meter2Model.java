@@ -40,7 +40,7 @@ public class Meter2Model extends AbstractADL2Model {
             widgetModel.setPropertyValue(AbstractPVWidgetModel.PROP_FORECOLOR_ALARMSENSITIVE, false);
             //TODO Meter2Model Figure out what to do if colorMode is discrete
         }
-        
+
         //TODO Add PV Limits to Meter2Model
         // Decorate the meter Model
         //TODO Meter2Model cannot show value or channel at this time. can this be added to the widget or do we need to make a grouping container.

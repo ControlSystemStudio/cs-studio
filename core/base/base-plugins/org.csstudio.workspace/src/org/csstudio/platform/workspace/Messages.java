@@ -12,7 +12,7 @@ public class Messages extends NLS
     public static String LoginDialog_UserName;
 
     public static String StartupDialog_SelectWorkspace;
-    
+
     public static String Workspace_AskAgain;
     public static String Workspace_AskAgainTT;
     public static String Workspace_Browse;
@@ -35,7 +35,7 @@ public class Messages extends NLS
     public static String Workspace_LockErrorTitle;
     public static String Workspace_NestedErrorFMT;
     public static String Workspace_ContainsWorkspacesErrorFMT;
-    
+
     static
     {
         // initialize resource bundle

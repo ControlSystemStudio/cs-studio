@@ -9,7 +9,7 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 
 /**
  * Section implementation for {@link DoubleArrayProperty}.
- * 
+ *
  * @author Sven Wende
  *
  */
@@ -30,12 +30,12 @@ public final class DoubleArraySection extends AbstractTextSection<DoubleArrayPro
         if (text.equals("")) {
             return new double[0];
         }
-        
-        
+
+
         String value = text.replaceAll(",", ";");
         String[] strings = value.split(";");
-        
-        double[] result = new double[strings.length]; 
+
+        double[] result = new double[strings.length];
         for (int i=0;i<strings.length;i++) {
             try {
             Double d = Double.valueOf(strings[i].trim());
@@ -62,7 +62,7 @@ public final class DoubleArraySection extends AbstractTextSection<DoubleArrayPro
             getTextControl().setText(getStringRepresentation(propertyValue));
         }
     }
-    
+
     private String getStringRepresentation(double[] array) {
         StringBuffer buffer = new StringBuffer();
         if (array.length>0) {
@@ -72,7 +72,7 @@ public final class DoubleArraySection extends AbstractTextSection<DoubleArrayPro
                 buffer.append(array[i]);
             }
         }
-        return buffer.toString();    
+        return buffer.toString();
     }
 
     /**

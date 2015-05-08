@@ -9,7 +9,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 
 /**Help to handle the startup dialog and input from it, for example user name and password.
- * 
+ *
  * @author Xihui Chen
  *
  */
@@ -20,9 +20,9 @@ public class StartupHelper {
     private String username = null;
     private String password = ""; //$NON-NLS-1$
     private Boolean show_Workspace = false;
-    private Boolean show_Login = false;        
+    private Boolean show_Login = false;
     private String productName;
-    
+
     /**Constructor
      * @param shell
      *            the parent shell.
@@ -47,15 +47,15 @@ public class StartupHelper {
         this.username = userName;
         this.password = password;
         this.show_Workspace = show_Workspace;
-        this.show_Login = show_Login;        
+        this.show_Login = show_Login;
 
         final IProduct product = Platform.getProduct();
         if (product != null)
             productName = product.getName();
         if (productName == null)
             productName = "CSS"; //$NON-NLS-1$
-    }    
-    
+    }
+
     /**set show_Workspace
      * @param show_Workspace the show_Workspace to set
      */
@@ -72,10 +72,10 @@ public class StartupHelper {
         this.show_Login = show_Login;
     }
 
-    
+
     @SuppressWarnings("nls")
     public boolean openStartupDialog(){
-        
+
         String title="", message="";
         if (show_Login)
         {
@@ -88,7 +88,7 @@ public class StartupHelper {
             message += Messages.StartupHelper_LoginTip;
         }
         if (show_Workspace)
-        {                                
+        {
             if(!title.equals(""))
                 title += Messages.StartupHelper_And;
             if(!message.equals(""))
@@ -96,19 +96,19 @@ public class StartupHelper {
             title += Messages.StartupHelper_SelectWorkspace;
             message += NLS.bind(
                     Messages.StartupHelper_SelectWorkspaceTip,
-                    productName);            
+                    productName);
         }
-        
+
         StartupDialog startupDialog = new StartupDialog(shell, title, message, username, password,
                 workspace_info, !force_prompt, show_Login, show_Workspace);
         if(!startupDialog.prompt())
             return false; // in case of cancel selected
-        
+
         username = startupDialog.getUser();
         password = startupDialog.getPassword();
         return true;
     }
-    
+
     /**
      * @return the user name from startup dialog
      */
@@ -121,5 +121,5 @@ public class StartupHelper {
      */
     public String getPassword() {
         return password;
-    }    
+    }
 }

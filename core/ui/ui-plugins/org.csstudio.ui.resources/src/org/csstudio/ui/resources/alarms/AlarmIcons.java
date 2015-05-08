@@ -6,7 +6,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * 
+ *
  * <code>AlarmIcons</code> provides access to icons that can be used by the alarm system in order to more clearly
  * present the state of an individual alarm.
  *

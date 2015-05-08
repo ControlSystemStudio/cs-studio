@@ -19,9 +19,9 @@ import org.csstudio.platform.utility.jms.JMSConnectionFactory;
 
 /**
  * Simple JMS publisher for test purpose. Publish messages on a given URL/Topic.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
- * 
+ *
  */
 public class SimpleJMSPublisher {
 

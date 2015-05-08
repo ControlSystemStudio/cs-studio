@@ -22,30 +22,30 @@ import org.epics.vtype.ValueFactory;
 
 /**
  * ValueIterator that reads data from kblogrd via the standard output.
- * 
+ *
  * @author Takashi Nakamoto
  */
 public class KBLogRawValueIterator implements KBLogValueIterator {
     private static final String charset = "US-ASCII";
-    
+
     private VType nextValue;
-    private Object nextValueMutex; 
-    
+    private Object nextValueMutex;
+
     private String pvName;
     private int commandId;
     private String kblogrdPath;
-    
+
     private DateFormat timeFormat;
-    
+
     private BufferedReader stdoutReader;
     private boolean closed;
     private Object closedMutex;
     private boolean initialized;
     private Object initializedMutex;
-    
+
     /**
      * Constructor of KBLogRawValueIterator.
-     * 
+     *
      * @param kblogrdStdOut InputStream obtained from the standard output of "kblogrd".
      * @param name PVName
      * @param kblogrdPath Path to "kblogrd" command.
@@ -62,30 +62,30 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
         this.nextValue = null;
         this.nextValueMutex = new Object();
         this.timeFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS", Locale.US);
-        
+
         Logger.getLogger(Activator.ID).log(Level.FINE,
                 "Start to read the standard output of " + kblogrdPath + " (" + commandId + ").");
-        
+
         try {
             stdoutReader = new BufferedReader(new InputStreamReader(kblogrdStdOut, charset));
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(Activator.ID).log(Level.WARNING,
                     "Character set " + charset + " is not supported in this platform. System default charset will be used as a fallback.");
-            
+
             stdoutReader = new BufferedReader(new InputStreamReader(kblogrdStdOut));
         }
     }
-    
+
     /**
      * Parse time stamp of the output from kblogrd in 'free' format.
-     * 
+     *
      * @param str String to parse.
      * @return Obtained time stamp.
      */
     private Timestamp parseTimestamp(String str) {
-        // Append "0" at the end so that the last part of string represents millisecond. 
+        // Append "0" at the end so that the last part of string represents millisecond.
         String strTime = str + "0";
-        
+
         try {
             Date date;
             synchronized (timeFormat) {
@@ -105,15 +105,15 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
             if (closed)
                 return null;
         }
-        
+
         try{
             String line;
-            
+
             // Try to read lines until a valid value is obtained.
             while ((line = stdoutReader.readLine()) != null) {
                 if (line.isEmpty())
                     continue;
-            
+
                 int firstTab = line.indexOf("\t");
                 int secondTab = line.indexOf("\t", firstTab+1);
                 if (firstTab == -1 || secondTab == -1) {
@@ -130,7 +130,7 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
                             "Invalid line in " + kblogrdPath + " (" + commandId + ") output: " + line);
                     continue;
                 }
-                
+
                 // Parse time stamp.
                 Timestamp time = parseTimestamp(strTime);
                 if (time == null) {
@@ -138,25 +138,25 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
                             "Invalid timestamp in " + kblogrdPath + " (" + commandId + ") output: " + strTime);
                     continue;
                 }
-                
+
                 // Check the PV name just in case.
                 if (!pvName.equals(strName)) {
                     Logger.getLogger(Activator.ID).log(Level.WARNING,
                             "Unexpected values of '" + strName + "' were obtained while reading values of '" + pvName + "' via " + kblogrdPath + " (" + commandId +").");
                     continue;
                 }
-                
+
                 // Parse double value.
                 try {
                     if (strValue.indexOf("\t") == -1) {
                         // scalar value
-                        
+
                         boolean integer = false;
                         double doubleValue = 0;
                         long longValue = 0;
                         AlarmSeverity severity = AlarmSeverity.NONE;
                         String status = "";
-                        
+
                         if (strValue.equals("Connected")) {
                             doubleValue = 0;
                             status = KBLogMessages.StatusConnected;
@@ -190,7 +190,7 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
                             status = KBLogMessages.StatusNormal;
                             severity = AlarmSeverity.NONE;
                         }
-    
+
                         if (integer) {
                             return new ArchiveVNumber(time,
                                     severity,
@@ -208,7 +208,7 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
                         // array
                         boolean integer = true;
                         String[] strElements = strValue.split("\t");
-                        
+
                         // if there is one double value in the array, the array will
                         // be a double array. Otherwise, it will be a long array.
                         for (String strElement : strElements) {
@@ -217,10 +217,10 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
                                 break;
                             }
                         }
-                        
+
                         if (integer) {
                             long[] longArray = new long[strElements.length];
-                            for (int i=0; i<strElements.length; i++) { 
+                            for (int i=0; i<strElements.length; i++) {
                                 longArray[i] = Long.parseLong(strElements[i]);
                             }
                             return new ArchiveVNumberArray(time,
@@ -230,7 +230,7 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
                                     longArray);
                         } else {
                             double[] doubleArray = new double[strElements.length];
-                            for (int i=0; i<strElements.length; i++) { 
+                            for (int i=0; i<strElements.length; i++) {
                                 doubleArray[i] = Double.parseDouble(strElements[i]);
                             }
                             return new ArchiveVNumberArray(time,
@@ -246,7 +246,7 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
                     continue;
                 }
             }
-            
+
             // No more value.
             return null;
         } catch (IOException ex) {
@@ -264,7 +264,7 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
                 initialized = true;
             }
         }
-        
+
         synchronized (nextValueMutex) {
             return nextValue != null;
         }
@@ -278,11 +278,11 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
                 initialized = true;
             }
         }
-        
+
         synchronized (nextValueMutex) {
             VType ret = nextValue;
             nextValue = decodeNextValue();
-            
+
             return ret;
         }
     }
@@ -293,32 +293,32 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
             synchronized (closedMutex) {
                 if (closed)
                     return;
-                
+
                 // The standard output will be forcibly closed so that next call of the next() method
                 // will return null and quits the data acquisition.
                 stdoutReader.close();
                 closed = true;
             }
-            
+
             Logger.getLogger(Activator.ID).log(Level.FINEST,
                     "End of reading the standard output of " + kblogrdPath + " (" + commandId + ").");
         } catch (IOException ex) {
-            Logger.getLogger(Activator.ID).log(Level.SEVERE, 
+            Logger.getLogger(Activator.ID).log(Level.SEVERE,
                     "An error occurred while closing the pipe to stdout of " + kblogrdPath + " (" + commandId + ").", ex);
         }
     }
-    
+
     @Override
     public boolean isClosed() {
         synchronized (closedMutex) {
             return closed;
         }
     }
-    
+
     public int getCommandID() {
         return commandId;
     }
-    
+
     public String getPathToKBLogRD() {
         return kblogrdPath;
     }

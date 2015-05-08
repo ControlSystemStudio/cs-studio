@@ -31,7 +31,7 @@ import org.epics.vtype.VTable;
 
 /**
  * Basic ui component that can display a VTable on screen.
- * 
+ *
  * @author carcassi
  */
 public class VTableDisplay extends BeanComposite implements ISelectionProvider {
@@ -39,7 +39,7 @@ public class VTableDisplay extends BeanComposite implements ISelectionProvider {
     private Table table;
     private Composite tableContainer;
     private VTableCellLabelProvider cellLabelProvider;
-    
+
     @Override
     public void setMenu(Menu menu) {
         super.setMenu(menu);
@@ -48,20 +48,20 @@ public class VTableDisplay extends BeanComposite implements ISelectionProvider {
 
     /**
      * Creates a new display.
-     * 
+     *
      * @param parent
      */
     public VTableDisplay(Composite parent) {
         super(parent, SWT.NONE);
         tableContainer = this;
         tableContainer.setLayout(new FillLayout(SWT.HORIZONTAL));
-        
+
         tableViewer = new TableViewer(tableContainer, SWT.BORDER | SWT.FULL_SELECTION);
         table = tableViewer.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
         table.addListener(SWT.MenuDetect, new Listener() {
-            
+
             @Override
             public void handleEvent(Event event) {
                 Point pt = table.toControl(new Point(event.x, event.y));
@@ -80,7 +80,7 @@ public class VTableDisplay extends BeanComposite implements ISelectionProvider {
             }
         });
         table.addListener(SWT.MouseUp, new Listener() {
-            
+
             @Override
             public void handleEvent(Event event) {
                 ViewerCell cell = tableViewer.getCell(new Point(event.x, event.y));
@@ -97,28 +97,28 @@ public class VTableDisplay extends BeanComposite implements ISelectionProvider {
         tableViewer.setLabelProvider(getCellLabelProvider());
         VTableToolTipSupport.enableFor(tableViewer,ToolTip.NO_RECREATE);
     }
-    
+
     @Override
     public void setFont(final Font font)
     {
         super.setFont(font);
         table.setFont(font);
     }
-    
+
     public void addSelectionListener(SelectionListener listener) {
         table.addSelectionListener(listener);
     }
-    
+
     public void removeSelecctionListener(SelectionListener listener) {
         table.removeSelectionListener(listener);
     }
-    
+
     // The current table being displayed
     private VTable vTable;
-    
+
     /**
      * Changes the current table being displayed.
-     * 
+     *
      * @param vTable the new table
      */
     public void setVTable(VTable vTable) {
@@ -130,13 +130,13 @@ public class VTableDisplay extends BeanComposite implements ISelectionProvider {
         }
         changeSupport.firePropertyChange("vTable", oldVTable, vTable);
     }
-    
+
     public VTableCellLabelProvider getCellLabelProvider() {
         if (cellLabelProvider == null)
             cellLabelProvider = new VTableCellLabelProvider();
         return cellLabelProvider;
     }
-    
+
     public void setCellLabelProvider(VTableCellLabelProvider cellLabelProvider) {
         this.cellLabelProvider = cellLabelProvider;
         for (TableColumn column: table.getColumns()) {
@@ -145,24 +145,24 @@ public class VTableDisplay extends BeanComposite implements ISelectionProvider {
         tableViewer.setLabelProvider(cellLabelProvider);
         refreshColumns();
     }
-    
+
     private void refreshColumns() {
         int requiredCount = 0;
         if (vTable != null)
             requiredCount = vTable.getColumnCount();
-        
+
         if (table.getColumnCount() == requiredCount)
             return;
-        
+
         while (table.getColumnCount() > requiredCount) {
             table.getColumn(table.getColumnCount() - 1).dispose();
         }
-        
+
         while (table.getColumnCount() < requiredCount) {
             TableViewerColumn newViewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
             newViewerColumn.setLabelProvider(getCellLabelProvider());
         }
-        
+
         TableColumnLayout layout = new TableColumnLayout();
         tableContainer.setLayout(layout);
         for (int i = 0; i < requiredCount; i++) {
@@ -170,25 +170,25 @@ public class VTableDisplay extends BeanComposite implements ISelectionProvider {
             layout.setColumnData(table.getColumn(i), new ColumnWeightData(1, 30));
         }
         tableContainer.layout();
-        
+
     }
 
     /**
      * Returns the current image being displayed.
-     * 
+     *
      * @return the current table
      */
     public VTable getVTable() {
         return vTable;
     }
-    
+
     private List<ISelectionChangedListener> selectionChangedListeners = new ArrayList<ISelectionChangedListener>();
 
     @Override
     public void addSelectionChangedListener(ISelectionChangedListener listener) {
         selectionChangedListeners.add(listener);
     }
-    
+
     private ISelection selection = new StructuredSelection();
 
     @Override
@@ -209,7 +209,7 @@ public class VTableDisplay extends BeanComposite implements ISelectionProvider {
             this.selection = new StructuredSelection();
         fireSelectionChangedListener();
     }
-    
+
     private void fireSelectionChangedListener() {
         for (ISelectionChangedListener listener : selectionChangedListeners) {
             listener.selectionChanged(new SelectionChangedEvent(this, getSelection()));

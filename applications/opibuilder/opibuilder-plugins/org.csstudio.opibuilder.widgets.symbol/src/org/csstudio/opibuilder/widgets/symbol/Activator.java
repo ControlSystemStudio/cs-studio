@@ -13,7 +13,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
- * The activator class controls the Symbol plug-in life cycle 
+ * The activator class controls the Symbol plug-in life cycle
  * @author SOPRA Group
  */
 public class Activator extends AbstractUIPlugin {
@@ -21,7 +21,7 @@ public class Activator extends AbstractUIPlugin {
     /**
      *  The Symbol plug-in ID
      */
-    public static final String PLUGIN_ID = "org.csstudio.opibuilder.widgets.symbol"; 
+    public static final String PLUGIN_ID = "org.csstudio.opibuilder.widgets.symbol";
 
     /**
      *  The shared instance of the Symbol plug-in
@@ -32,7 +32,7 @@ public class Activator extends AbstractUIPlugin {
      * The logger
      */
     private static final Logger LOGGER = Logger.getLogger(PLUGIN_ID);
-    
+
     /**
      * The default constructor
      */
@@ -68,7 +68,7 @@ public class Activator extends AbstractUIPlugin {
 
     /**
      * Get the logger for Symbol plug-in.
-     * @return the logger 
+     * @return the logger
      */
     public static Logger getLogger() {
         return LOGGER;

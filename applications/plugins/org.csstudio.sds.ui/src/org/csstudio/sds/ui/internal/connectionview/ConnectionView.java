@@ -26,12 +26,12 @@ public class ConnectionView extends ViewPart {
     public void createPartControl(Composite parent) {
         Composite main = new Composite(parent, SWT.NONE);
         main.setLayout(new GridLayout(1, false));
-        
+
         connectionTree = new TreeViewer(main);
         connectionTree.getTree().setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
         connectionTree.setLabelProvider(createLabelProvider());
         connectionTree.setContentProvider(createContentProvider());
-        
+
         openDisplayListener = new IOpenDisplayListener() {
             @Override
             public void openDisplayChanged() {
@@ -49,15 +49,15 @@ public class ConnectionView extends ViewPart {
 
     private ITreeContentProvider createContentProvider() {
         return new ITreeContentProvider() {
-            
+
             @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             }
-            
+
             @Override
             public void dispose() {
             }
-            
+
             @Override
             public boolean hasChildren(Object element) {
                 if (element instanceof DisplayModel) {
@@ -68,12 +68,12 @@ public class ConnectionView extends ViewPart {
                 }
                 return false;
             }
-            
+
             @Override
             public Object getParent(Object element) {
                 return null;
             }
-            
+
             @Override
             public Object[] getElements(Object inputElement) {
                 if (inputElement instanceof DisplayModel[]) {
@@ -81,7 +81,7 @@ public class ConnectionView extends ViewPart {
                 }
                 return null;
             }
-            
+
             @Override
             public Object[] getChildren(Object parentElement) {
                 if (parentElement instanceof DisplayModel) {
@@ -119,7 +119,7 @@ public class ConnectionView extends ViewPart {
     public void setFocus() {
         connectionTree.getTree().setFocus();
     }
-    
+
     @Override
     public void dispose() {
         RunModeService.getInstance().removeOpenDisplayListener(openDisplayListener);

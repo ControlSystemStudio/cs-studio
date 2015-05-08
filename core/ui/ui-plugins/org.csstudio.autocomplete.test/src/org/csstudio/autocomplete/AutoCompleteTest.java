@@ -105,12 +105,12 @@ public class AutoCompleteTest {
     public void testHelper() {
         String content = "*C4PS*.CALC";
         Pattern pattern = AutoCompleteHelper.convertToPattern(content);
-        
+
         Matcher matcher = pattern.matcher("UTIL-C4PS-AF92:BUSBAR1.CALC");
         Assert.assertTrue(matcher.matches());
-        
+
         matcher = pattern.matcher("UTIL-C4PS-AF92:BUSBAR12CALC");
         Assert.assertFalse(matcher.matches());
     }
-    
+
 }

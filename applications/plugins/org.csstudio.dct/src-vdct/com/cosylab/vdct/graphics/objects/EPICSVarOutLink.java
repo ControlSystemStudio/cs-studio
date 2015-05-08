@@ -8,22 +8,22 @@ package com.cosylab.vdct.graphics.objects;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -51,7 +51,7 @@ public class EPICSVarOutLink extends EPICSVarLink implements OutLink
         public void actionPerformed(ActionEvent e) {
             String action = e.getActionCommand();
 /*            if (action.equals(colorString))
-            {            
+            {
                 Color newColor = ColorChooser.getColor(selectTitle, getColor());
                 if (newColor!=null)
                     setColor(newColor);
@@ -74,10 +74,10 @@ public class EPICSVarOutLink extends EPICSVarLink implements OutLink
             {
                 destroy();
             }
-            
+
         }
     }
-    
+
     protected InLink inlink = null;
     protected boolean disconnected = true;
     protected LinkProperties properties = null;
@@ -185,12 +185,12 @@ private com.cosylab.vdct.graphics.objects.EPICSVarOutLink.PopupMenuHandler creat
     public void disconnect(Linkable disconnector) {
         if (/*!disconnected &&*/ (outlinks.contains(disconnector) || disconnector==inlink)) {
             if (outlinks.contains(disconnector)) outlinks.removeElement(disconnector);
-            
-            if (inlink==disconnector) 
+
+            if (inlink==disconnector)
             {
                 removeLink();
             }
-            
+
             if (outlinks.size()==0 && inlink==null) {
                 destroy();
             }
@@ -210,31 +210,31 @@ private com.cosylab.vdct.graphics.objects.EPICSVarOutLink.PopupMenuHandler creat
         if (inlink!=null)
         {
             com.cosylab.vdct.graphics.ViewState view = com.cosylab.vdct.graphics.ViewState.getInstance();
-            
+
             double Rscale = view.getScale();
             boolean zoom = (Rscale < 1.0) && view.isZoomOnHilited() && view.isHilitedObject(this);
-                
+
             g.setColor(hilited && view.isHilitedObject(this) && !zoom ? Constants.HILITE_COLOR : getVisibleColor());
-    
+
             boolean isRightSide = isRight();
             // draw missing tail
 //            if (outlinks.size()!=0)
 //            {
-                
+
                 if (zoom) {
                     zoomImage = ZoomPane.getInstance().startZooming(this,!isZoomRepaint());
                 }
-                
+
                 int rrx;            // rrx, rry is center
                 if (isRightSide)
                     rrx = getRx()+r+getRwidth()-view.getRx();
-                else 
+                else
                     rrx = getRx()-r-view.getRx();
-            
+
                 int rry = (int)(getRscale()*getInY()- view.getRy());
-                int linkx = (int)(getRscale()*getInX() - view.getRx());    
-                
-                
+                int linkx = (int)(getRscale()*getInX() - view.getRx());
+
+
                 if (getParent().isZoomRepaint()) {
                     if (isRightSide) {
                         rrx = getX() - getParent().getX() + getWidth() + ZoomPane.getInstance().getLeftOffset();
@@ -251,24 +251,24 @@ private com.cosylab.vdct.graphics.objects.EPICSVarOutLink.PopupMenuHandler creat
                     }
                     rry = ZoomPane.VERTICAL_MARGIN + getHeight()/2;
                 }
-                
+
                 if (isZoomRepaint() || getParent().isZoomRepaint()) {
-                    if (isRightSide) 
+                    if (isRightSide)
                         linkx = ZoomPane.getInstance().getWidth();
                     else
                         linkx = 0;
                 }
-                
+
                 if (isRightSide)
                     g.drawLine(rrx+2*r, rry, linkx, rry);
-                else  
+                else
                     g.drawLine(linkx, rry, rrx-3*r, rry);
 //            }
-            
+
             LinkDrawer.drawLink(g, this, inlink, getQueueCount(), isRightSide);
         }
         super.draw(g, hilited);
-    
+
     }
 
     /**
@@ -278,7 +278,7 @@ private com.cosylab.vdct.graphics.objects.EPICSVarOutLink.PopupMenuHandler creat
     {
         if (inlink!=null)
             updateLink();
-            
+
         if (inlink==null && outlinks.size()==0)
             destroy();
     }
@@ -298,7 +298,7 @@ private com.cosylab.vdct.graphics.objects.EPICSVarOutLink.PopupMenuHandler creat
             properties = new LinkProperties(getFieldData());
         }
     }
-    
+
     /**
      * Insert the method's description here.
      * Creation date: (30.1.2001 12:25:44)
@@ -310,7 +310,7 @@ private com.cosylab.vdct.graphics.objects.EPICSVarOutLink.PopupMenuHandler creat
             removeLink();
             return;
         }
-        
+
         else if (!newProperties.getTarget().equals(properties.getTarget()) ||
                  !hasEndpoint) {
             // find endpoint
@@ -325,15 +325,15 @@ private com.cosylab.vdct.graphics.objects.EPICSVarOutLink.PopupMenuHandler creat
             InLink il = EPICSLinkOut.getTarget(newProperties, true);
             OutLink ol = (OutLink)preendpoint;
             ol.setInput(il);
-            if (il!=null) { 
+            if (il!=null) {
                 il.setOutput(ol, null);
                 hasEndpoint = true;
             }
             else hasEndpoint = false;
         }
-    
+
         properties = newProperties;
-    
+
     }
 
 
@@ -350,7 +350,7 @@ private com.cosylab.vdct.graphics.objects.EPICSVarOutLink.PopupMenuHandler creat
                       || (getLeftX()<inlink.getLeftX() && inlink.getLeftX()<getRightX() && getRightX()<inlink.getRightX());
         /*    return getMaxX()<inlink.getMinX()
                           || (inlink.getMinX()<getMinX() && getMinX() < inlink.getMaxX() && inlink.getMaxX() < getMaxX());                      */
-            /*if (inlink instanceof Connector) {    
+            /*if (inlink instanceof Connector) {
                 return (inlink.getInX()>(getX()+getWidth()/2));
             }
             else if (inlink instanceof EPICSLinkOut) {            // not cycling
@@ -362,7 +362,7 @@ private com.cosylab.vdct.graphics.objects.EPICSVarOutLink.PopupMenuHandler creat
                 VisibleObject obj = (VisibleObject)inlink;
                 return ((obj.getX()+obj.getWidth()/2)>(getX()+getWidth()/2));
             }
-            else 
+            else
                 return true;*/
         }
         else
@@ -378,16 +378,16 @@ private com.cosylab.vdct.graphics.objects.EPICSVarOutLink.PopupMenuHandler creat
         LinkProperties newProperties = new LinkProperties(fieldData);
         properties = newProperties;
     }
-    
+
 /**
  * Insert the method's description here.
  * Creation date: (4.5.2001 8:00:56)
  * @return java.util.Vector
  */
 public java.util.Vector getItems() {
-    
+
     if (getLinkCount()==0 && inlink==null) return null;
-    
+
     Vector items = new Vector();
 
     ActionListener al = createPopupmenuHandler();
@@ -397,23 +397,23 @@ public java.util.Vector getItems() {
     colorItem.addActionListener(al);
     items.addElement(colorItem);
     */
-    
+
     if (getInput() != null)
     {
         JMenuItem addItem = new JMenuItem(addConnectorString);
         addItem.addActionListener(al);
         items.addElement(addItem);
-    
+
         items.add(new JSeparator());
     }
-    
+
     if (getParent() instanceof Record)
     {
         Record parRec = (Record)getParent();
         boolean isFirst = parRec.isFirstField(this);
         boolean isLast = parRec.isLastField(this);
-        
-    
+
+
         if (!isFirst)
         {
             JMenuItem upItem = new JMenuItem(moveUpString);
@@ -421,7 +421,7 @@ public java.util.Vector getItems() {
             upItem.setIcon(new ImageIcon(getClass().getResource("/images/up.gif")));
             items.addElement(upItem);
         }
-    
+
         if (!isLast)
         {
             JMenuItem downItem = new JMenuItem(moveDownString);
@@ -429,11 +429,11 @@ public java.util.Vector getItems() {
             downItem.setIcon(new ImageIcon(getClass().getResource("/images/down.gif")));
             items.addElement(downItem);
         }
-    
+
         if (!(isFirst && isLast))
             items.add(new JSeparator());
     }
-    
+
     JMenuItem removeItem = new JMenuItem(removeString);
     removeItem.addActionListener(al);
     items.addElement(removeItem);

@@ -59,7 +59,7 @@ public class ScanSampleUnitTest
         String text = ScanSampleFormatter.formatCompactDateTime(date);
         System.out.println(date + " -> " + text);
         assertThat(text.length(), equalTo(8));
-        
+
         // Different day
         date = new Date(date.getTime() + 25l*60*60*1000);
         text = ScanSampleFormatter.formatCompactDateTime(date);

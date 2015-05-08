@@ -2,9 +2,9 @@ package org.csstudio.rap.core;
 
 /**
  * Information about the browser that is opening the RAP application.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class BrowserInfo {
     public static final String ANDROID = "android"; //$NON-NLS-1$
@@ -12,7 +12,7 @@ public class BrowserInfo {
     public static final String IPOD = "ipod"; //$NON-NLS-1$
     public static final String IPAD = "ipad"; //$NON-NLS-1$
     public static final String BLACKBERRY = "blackberry"; //$NON-NLS-1$
-    
+
     private String userAgentHeader;
     private String browserName;
     private String browserVersion;
@@ -38,7 +38,7 @@ public class BrowserInfo {
     public String getOs() {
         return os;
     }
-    
+
     public String getUserAgentHeader() {
         return userAgentHeader;
     }

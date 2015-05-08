@@ -18,7 +18,7 @@ public class EdmDoubleTest extends TestCase {
         assertEquals(13.14, d1.get());
         assertEquals(true, d1.isRequired());
         assertEquals(true, d1.isInitialized());
-        
+
         // required null
         try {
             EdmDouble d2 = new EdmDouble(null, true);
@@ -28,23 +28,23 @@ public class EdmDoubleTest extends TestCase {
         catch (EdmException e) {
             assertEquals(EdmException.REQUIRED_ATTRIBUTE_MISSING, e.getType());
         }
-        
+
         // optional
         EdmDouble d3 = new EdmDouble(new EdmAttribute("13.15"), false);
         assertEquals(13.15, d3.get());
         assertEquals(false, d3.isRequired());
         assertEquals(true, d3.isInitialized());
-        
+
         // optional null
         EdmDouble d4;
         d4 = new EdmDouble(null, false);
         assertEquals(false, d4.isRequired());
         assertEquals(false, d4.isInitialized());
     }
-    
+
     public void testWrongInput() throws EdmException {
         EdmAttribute a = new EdmAttribute("abc");
-        
+
         try {
             a = new EdmDouble(a, true);
         }
@@ -53,10 +53,10 @@ public class EdmDoubleTest extends TestCase {
         }
         assertFalse(a.isInitialized());
     }
-    
+
     public void testWrongInput2() throws EdmException {
         EdmAttribute a = new EdmAttribute("abc");
-        
+
         try {
             new EdmDouble(a, false);
         }

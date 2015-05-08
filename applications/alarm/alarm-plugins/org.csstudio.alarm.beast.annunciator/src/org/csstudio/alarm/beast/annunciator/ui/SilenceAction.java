@@ -29,7 +29,7 @@ public class SilenceAction extends Action
 
         this.view = view;
     }
-    
+
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);

@@ -12,14 +12,14 @@ import org.epics.vtype.VImage;
 
 /**
  * Basic ui component that can display a VImage on screen.
- * 
+ *
  * @author carcassi
  */
 public class VImageDisplay extends BeanComposite {
 
     /**
      * Creates a new display.
-     * 
+     *
      * @param parent
      */
     public VImageDisplay(Composite parent) {
@@ -27,40 +27,40 @@ public class VImageDisplay extends BeanComposite {
         super(parent, SWT.NO_BACKGROUND);
         addPaintListener(paintListener);
     }
-    
+
     // The current image being displayed
     private VImage vImage;
-    
+
     // Whether the image should be horizontally or vertically stretched to the full size of the display.
-    // Any combination of SWT.HORIZONTAL or SWT.VERTICAL are allowed    
+    // Any combination of SWT.HORIZONTAL or SWT.VERTICAL are allowed
     private int stretched = SWT.NONE;
-    
+
     // How the image should be allowed. Any combination of SWT.LEFT, SWT.RIGHT, SWT.TOP, SWT.BOTTOM
     // is allowed
     private int alignment = SWT.LEFT | SWT.TOP;
 
     /**
      * In which direction the image should be stretched.
-     * 
+     *
      * @return the current property value
      */
     public int getStretched() {
         return stretched;
     }
-    
+
     /**
      * Changes in which direction the image should be stretched. Possible values are SWT.NONE,
      * SWT.HORIZONTAL, SWT.VERTICAL, SWT.HORIZONTAL | SWT.VERTICAL
-     * 
+     *
      * @param stretched the new property value
      */
     public void setStretched(int stretched) {
         this.stretched = stretched;
     }
-    
+
     /**
      * Changes the current image being displayed. Triggers a redraw.
-     * 
+     *
      * @param vImage the new property value
      */
     public void setVImage(VImage vImage) {
@@ -71,10 +71,10 @@ public class VImageDisplay extends BeanComposite {
             changeSupport.firePropertyChange("vTable", oldVImage, vImage);
         }
     }
-    
+
     /**
      * Where the image is positioned in the widget.
-     * 
+     *
      * @return current alignment
      */
     public int getAlignment() {
@@ -85,7 +85,7 @@ public class VImageDisplay extends BeanComposite {
      * Changes where the image is position in the widget. Possible values are
      * SWT.CENTER,
      * SWT.TOP, SWT.BOTTOM, SWT.LEFT, SWT.RIGHT, the four corners (i.e. SWT.TOP | SWT.LEFT).
-     * 
+     *
      * @param alignment
      */
     public void setAlignment(int alignment) {
@@ -97,24 +97,24 @@ public class VImageDisplay extends BeanComposite {
 
     /**
      * Returns the current image being displayed.
-     * 
+     *
      * @return the current property value
      */
     public VImage getVImage() {
         return vImage;
     }
-    
+
     private PaintListener paintListener = new PaintListener() {
-        
+
         @Override
         public void paintControl(PaintEvent e) {
             GC gc = e.gc;
-            
+
             if (vImage != null) {
                 Image image = SWTUtil.toImage(gc, vImage);
                 int x;
                 int width;
-                
+
                 if ((stretched & SWT.HORIZONTAL) != 0) {
                     width = getClientArea().width;
                     x = 0;
@@ -128,7 +128,7 @@ public class VImageDisplay extends BeanComposite {
                         x = (getClientArea().width - image.getBounds().width)/2;
                     }
                 }
-                
+
                 int y;
                 int height;
                 if ((stretched & SWT.VERTICAL) != 0) {
@@ -144,8 +144,8 @@ public class VImageDisplay extends BeanComposite {
                         y = (getClientArea().height - image.getBounds().height)/2;
                     }
                 }
-                
-                
+
+
 
                 gc.drawImage(image, 0, 0, image.getBounds().width, image.getBounds().height,
                         x, y, width, height);
@@ -153,7 +153,7 @@ public class VImageDisplay extends BeanComposite {
                 drawBackground(gc, x + width, 0, getClientArea().width, getClientArea().height, 0, 0);
                 drawBackground(gc, 0, 0, getClientArea().width, y, 0, 0);
                 drawBackground(gc, 0, y + height, getClientArea().width, getClientArea().height, 0, 0);
-                
+
                 image.dispose();
             } else {
                 // If image is not set, just paint the background

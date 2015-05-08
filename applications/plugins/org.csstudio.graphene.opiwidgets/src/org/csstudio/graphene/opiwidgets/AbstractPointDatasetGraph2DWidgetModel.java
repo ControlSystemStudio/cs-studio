@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene.opiwidgets;
 
@@ -11,10 +11,10 @@ import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescrip
 
 /**
  * @author shroffk
- * 
+ *
  */
 public abstract class AbstractPointDatasetGraph2DWidgetModel extends AbstractGraph2DWidgetModel {
-    
+
     public AbstractPointDatasetGraph2DWidgetModel(AbstractSelectionWidgetModelDescription model) {
         super(model);
     }
@@ -29,7 +29,7 @@ public abstract class AbstractPointDatasetGraph2DWidgetModel extends AbstractGra
                 "Y Column Expression (VString)", WidgetPropertyCategory.Basic, ""));
 
     }
-    
+
     protected String getDataType() {
         return "VTable";
     }

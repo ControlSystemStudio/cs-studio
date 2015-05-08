@@ -13,7 +13,7 @@ public class EditorUIActivator extends AbstractUIPlugin {
 
     // The shared instance
     private static EditorUIActivator plugin;
-    
+
     /**
      * The constructor
      */

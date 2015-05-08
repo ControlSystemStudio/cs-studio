@@ -39,7 +39,7 @@ public class IOUtils
         copy(stream, result);
         return result.toByteArray();
     }
-    
+
     /** Copy from one stream to another
      *  @param input Where to read
      *  @param output Where to write

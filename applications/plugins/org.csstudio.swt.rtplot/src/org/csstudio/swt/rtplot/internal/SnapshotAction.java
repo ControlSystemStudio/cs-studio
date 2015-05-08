@@ -46,13 +46,13 @@ public class SnapshotAction<XTYPE extends Comparable<XTYPE>> extends Action
     {
         final Shell shell = plot.getShell();
         final AtomicReference<String> path = new AtomicReference<String>();
-        
+
         // Use background thread because of potentially lengthy file I/O
         final Job job = new Job(Messages.Snapshot)
         {
             @Override
             protected IStatus run(final IProgressMonitor progress)
-            {                
+            {
                 progress.beginTask(Messages.Snapshot, IProgressMonitor.UNKNOWN);
                 while (true) // Repeat until success or cancel
                 {
@@ -72,7 +72,7 @@ public class SnapshotAction<XTYPE extends Comparable<XTYPE>> extends Action
                     });
                     if (path.get() == null) // cancelled?
                         break;
-        
+
                     try
                     {    // Create snapshot, save to file
                         final ImageLoader loader = new ImageLoader();

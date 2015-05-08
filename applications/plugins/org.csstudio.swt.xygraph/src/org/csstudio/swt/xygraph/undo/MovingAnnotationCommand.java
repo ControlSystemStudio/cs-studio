@@ -16,19 +16,19 @@ import org.eclipse.draw2d.geometry.Point;
  *
  */
 public class MovingAnnotationCommand implements IUndoableCommand {
-    
+
     private Annotation annotation;
     private Point beforeMovePosition;
     private Point afterMovePosition;
     private ISample beforeMoveSnappedSample;
     private ISample afterMoveSnappedSample;
     private double beforeDx, beforeDy, afterDx, afterDy;
-    
-    
+
+
     public MovingAnnotationCommand(Annotation annotation) {
         this.annotation = annotation;
     }
-    
+
     public void redo() {
         if(annotation.isFree())
             annotation.setCurrentPosition(afterMovePosition, false);
@@ -44,17 +44,17 @@ public class MovingAnnotationCommand implements IUndoableCommand {
             annotation.setCurrentSnappedSample(beforeMoveSnappedSample, false);
         annotation.setdxdy(beforeDx, beforeDy);
     }
-    
+
     public void setBeforeDxDy(double dx, double dy){
         beforeDx = dx;
         beforeDy = dy;
     }
-    
+
     public void setAfterDxDy(double dx, double dy){
         afterDx = dx;
         afterDy = dy;
     }
-    
+
     /**
      * @param beforeMovePosition the beforeMovePosition to set
      */
@@ -82,7 +82,7 @@ public class MovingAnnotationCommand implements IUndoableCommand {
     public void setAfterMoveSnappedSample(ISample afterMoveSnappedSample) {
         this.afterMoveSnappedSample = afterMoveSnappedSample;
     }
-    
+
     @Override
     public String toString() {
         return "Move Annotation";

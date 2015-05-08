@@ -22,19 +22,19 @@ public class OpiDoubleTest extends TestCase {
         Document doc = XMLFileHandler.createDomDocument();
         Element parent = doc.createElement("root");
         doc.appendChild(parent);
-        
+
         String name = "doubleElement";
         String val = "12.3";
         EdmDouble d = new EdmDouble(new EdmAttribute(val), true);
-        
+
         Context context = new Context(doc, parent, null, 0, 0);
         OpiDouble o = new OpiDouble(context, name, d);
         assertTrue(o instanceof OpiAttribute);
-        
+
         // testing
         Element x = (Element)doc.getElementsByTagName(name).item(0);
         assertEquals(val, x.getTextContent());
-        
+
         //XMLFileHandler.writeXML(doc);
     }
 }

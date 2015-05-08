@@ -9,13 +9,13 @@ import org.csstudio.dal.simple.SimpleDALBroker;
 
 /**
  * Collects runtime information for a display.
- * 
+ *
  * When a display is opened in run mode, we bind this runtime context to the
  * {@link DisplayModel} to be able to access that information via widget
  * controllers, e.g. to close the current shell on a menu button click.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class RuntimeContext {
     private IPath _displayFilePath;
@@ -25,13 +25,13 @@ public class RuntimeContext {
 
     /**
      * Constructor.
-     * 
+     *
      * @param windowHandle
      *            a runtime window handle
-     * 
+     *
      * @param displayFilePath
      *            the path of the opened file at runtime
-     * 
+     *
      * @param aliases
      *            the runtime aliases
      */

@@ -12,10 +12,10 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * Dialog used by the waterfall widget to modify the WaterfallWidget.
- * 
+ *
  * @author carcassi
  */
-public class PVTableByPropertyConfigurationDialog 
+public class PVTableByPropertyConfigurationDialog
 extends AbstractConfigurationDialog<PVTableByPropertyWidget, PVTableByPropertyConfigurationPanel>  {
 
     public PVTableByPropertyConfigurationDialog(PVTableByPropertyWidget widget) {
@@ -26,13 +26,13 @@ extends AbstractConfigurationDialog<PVTableByPropertyWidget, PVTableByPropertyCo
         addInitialValues("columnProperty", widget.getColumnProperty());
         addInitialValues("columnTags", widget.getColumnTags());
     }
-    
+
     protected void onPropertyChange(PropertyChangeEvent evt) {
         getWidget().setRowProperty(getConfigurationComposite().getRowProperty());
         getWidget().setColumnProperty(getConfigurationComposite().getColumnProperty());
         getWidget().setColumnTags(getConfigurationComposite().getColumnTags());
     }
-    
+
     @SuppressWarnings("unchecked")
     protected void populateInitialValues() {
         getConfigurationComposite().setPossibleProperties((Collection<String>) getInitialValues().get("possibleProperties"));

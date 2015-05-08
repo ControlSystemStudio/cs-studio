@@ -46,9 +46,9 @@ public class NewSNLPresentationDamager implements IPresentationDamager {
             final int lineIndex = _document.getLineOfOffset(event.getOffset());
             int lineOffset = _document.getLineOffset(lineIndex);
             int lineLength = _document.getLineLength(lineIndex);
-            
+
             Interval oldInterval = getSurroundingComment(event.getOffset());
-            
+
             determineComments();
             Interval interval = getSurroundingComment(event.getOffset());
             if (interval == null) {
@@ -70,7 +70,7 @@ public class NewSNLPresentationDamager implements IPresentationDamager {
             }
             IRegion result = new Region(lineOffset, lineLength);
             if (event.getLength() > 0 ) {
-                _rememberedRegion = result; 
+                _rememberedRegion = result;
             }
             return result;
         } catch (BadLocationException e) {
@@ -78,7 +78,7 @@ public class NewSNLPresentationDamager implements IPresentationDamager {
             return new Region(event.getOffset(), 1);
         }
     }
-    
+
     private void determineComments() throws BadLocationException {
         _comments.clear();
         int beginIndex = 0;
@@ -86,22 +86,22 @@ public class NewSNLPresentationDamager implements IPresentationDamager {
         while (beginIndex >= 0 && endIndex >= 0) {
             beginIndex = _document.get().indexOf("/*", endIndex);
             endIndex = _document.get().indexOf("*/", beginIndex);
-            if (beginIndex >= 0 && !shouldMarkerBeIgnored(beginIndex) && 
+            if (beginIndex >= 0 && !shouldMarkerBeIgnored(beginIndex) &&
                     endIndex >= 0 && !shouldMarkerBeIgnored(endIndex)) {
                 int start = _document.getLineOffset(_document.getLineOfOffset(beginIndex));
-                _comments.add(new Interval(start, endIndex));            
+                _comments.add(new Interval(start, endIndex));
             }
         }
-        
+
         beginIndex = 0;
         endIndex = 0;
         while (beginIndex >= 0 && endIndex >= 0) {
             beginIndex = _document.get().indexOf("%{", endIndex);
             endIndex = _document.get().indexOf("}%", beginIndex);
-            if (beginIndex >= 0 && !shouldMarkerBeIgnored(beginIndex) && 
+            if (beginIndex >= 0 && !shouldMarkerBeIgnored(beginIndex) &&
                     endIndex >= 0 && !shouldMarkerBeIgnored(endIndex)) {
                 int start = _document.getLineOffset(_document.getLineOfOffset(beginIndex));
-                _comments.add(new Interval(start, endIndex));            
+                _comments.add(new Interval(start, endIndex));
             }
         }
     }

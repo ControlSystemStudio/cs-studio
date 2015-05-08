@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.olog.properties;
 
@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ContextPropertyWidgetFactory implements PropertyWidgetFactory {
 

@@ -115,7 +115,7 @@ public class OpiDisplayTest extends TestCase {
             assertEquals("1.0", e.getAttribute("version"));
 
             XMLFileHandler.isElementEqual("EDM Rectangle", "name", e);
-            
+
             XMLFileHandler.isElementEqual("4", "x", e);
             XMLFileHandler.isElementEqual("45", "y", e);
             XMLFileHandler.isElementEqual("111", "width", e);

@@ -10,14 +10,14 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Redirect root directory to servlet "DataBrowser". This can help to access
  * DataBrowser without specifying the servlet name "DataBrowser".
- * 
+ *
  * @author Davy Dequidt
- * 
+ *
  */
 public class RedirectServlet extends HttpServlet {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 7368589913921209513L;
 

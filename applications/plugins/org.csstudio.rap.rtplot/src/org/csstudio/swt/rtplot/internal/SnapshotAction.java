@@ -48,7 +48,7 @@ public class SnapshotAction<XTYPE extends Comparable<XTYPE>> extends Action
     public void run()
     {
         final Shell shell = plot.getShell();
-        
+
         // Use background thread because of potentially lengthy file I/O
         shell.getDisplay().syncExec(() ->
         {
@@ -63,14 +63,14 @@ public class SnapshotAction<XTYPE extends Comparable<XTYPE>> extends Action
                 sendDownload(stream.toByteArray(), "snapshot.png");
             }
             catch (Exception ex)
-            {                
+            {
                     MessageDialog.openError(shell, Messages.Snapshot,
                             NLS.bind("Cannot save snapshot.\n\nDetail:\n{0}",ex.getMessage()));
             }
-            
+
         });
     }
-    
+
     public static void sendDownload(byte[] data, String filename) {
         DownloadService service = new DownloadService(data, filename);
         service.register();

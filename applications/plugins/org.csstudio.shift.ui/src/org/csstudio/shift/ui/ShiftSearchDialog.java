@@ -53,7 +53,7 @@ public class ShiftSearchDialog extends Dialog {
     List<String> shifts = Collections.emptyList();
     List<String> types = Collections.emptyList();
     Map<String, String> searchParameters = new LinkedHashMap<String, String>();
- 
+
     public ShiftSearchDialog(final Shell parentShell, final List<String> shifts, final List<String> types, final Map<String, String> initialSearchParameters) {
         super(parentShell);
         this.shifts = shifts;
@@ -152,7 +152,7 @@ public class ShiftSearchDialog extends Dialog {
             }
         });
 
-        textStatus.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));        
+        textStatus.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 //
         final Label lbShifts = new Label(container, SWT.NONE);
         lbShifts.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));

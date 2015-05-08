@@ -9,7 +9,7 @@ package org.csstudio.opibuilder.converter.model;
 
 /**
  * @author Xihui Chen
- * 
+ *
  */
 public class Edm_relatedDisplayClass extends EdmWidget {
 
@@ -26,9 +26,9 @@ public class Edm_relatedDisplayClass extends EdmWidget {
     @EdmAttributeAn @EdmOptionalAn private EdmMultiBooleans closeDisplay;
     @EdmAttributeAn @EdmOptionalAn private boolean icon;
     @EdmAttributeAn @EdmOptionalAn private boolean invisible;
-    
 
-    
+
+
 
     public Edm_relatedDisplayClass(EdmEntity genericEntity) throws EdmException {
         super(genericEntity);

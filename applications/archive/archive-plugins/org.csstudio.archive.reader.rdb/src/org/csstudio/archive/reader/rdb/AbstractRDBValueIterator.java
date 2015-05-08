@@ -38,23 +38,23 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
 {
     final protected RDBArchiveReader reader;
     final protected int channel_id;
-    
+
     protected Display display = null;
     protected List<String> labels = null;
 
     /** SELECT ... for the array samples. */
     private PreparedStatement sel_array_samples = null;
-    
+
     /** Before version 3.1.0, we would look for array
      *  values in the array_val table until we are sure
      *  that there are no array samples.
      *  Than we stopped looking for array samples
      *  to speed things up.
-     *  
+     *
      *  Since version 3.1.0, there is the option of using a
      *  BLOB and the sample table contains an is_array indicator,
      *  so we know for sure right away.
-     *  
+     *
      *  To remain compatible with old data, we still assume
      *  there are array values until we know otherwise.
      */
@@ -113,7 +113,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
                         result.getDouble(2),  // upperDisplayLimit
                         result.getDouble(1),  // lowerCtrlLimit
                         result.getDouble(2)); // upperCtrlLimit
-            
+
             }
         }
         finally
@@ -123,7 +123,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         // No numeric display meta data
         return null;
     }
-    
+
     /** @return Numeric meta data information for the channel or <code>null</code>
      *  @throws Exception on error
      */
@@ -310,7 +310,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
             datatype = result.getString(7);
         else
             datatype = result.getString(8);
-            
+
         // ' ' or NULL indicate: Scalar, not an array
         if (datatype == null || " ".equals(datatype) || result.wasNull())
             return new double [] { dbl0 };

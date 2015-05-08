@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Enable auto-completed content on the specified {@link Control}.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class AutoCompleteWidget {
@@ -35,7 +35,7 @@ public class AutoCompleteWidget {
 
     /**
      * Enable auto-completed content on the specified widget.
-     * 
+     *
      * @param control {@link Combo} or {@link Text}
      * @param type see {@link AutoCompleteTypes}
      */
@@ -48,7 +48,7 @@ public class AutoCompleteWidget {
 
     /**
      * Enable auto-completed content on the specified widget.
-     * 
+     *
      * @param control {@link Combo} or {@link Text}
      * @param type see {@link AutoCompleteTypes}
      * @param historyHandlers control which trigger add entry event on history
@@ -65,7 +65,7 @@ public class AutoCompleteWidget {
 
     /**
      * Enable auto-completed content on the specified widget.
-     * 
+     *
      * @param control {@link Combo} or {@link Text}
      * @param type see {@link AutoCompleteTypes}
      */
@@ -78,7 +78,7 @@ public class AutoCompleteWidget {
 
     /**
      * Enable auto-completed content on the specified widget.
-     * 
+     *
      * @param control {@link Combo} or {@link Text}
      * @param type see {@link AutoCompleteTypes}
      * @param historyHandlers control which trigger add entry event on history
@@ -96,7 +96,7 @@ public class AutoCompleteWidget {
     /**
      * Return a character array representing the keyboard input triggers used
      * for firing the ContentProposalAdapter.
-     * 
+     *
      * @return - character array of trigger chars
      */
     protected static char[] getAutoactivationChars() {
@@ -117,7 +117,7 @@ public class AutoCompleteWidget {
     /**
      * Returns KeyStroke object which when pressed will fire the
      * ContentProposalAdapter.
-     * 
+     *
      * @return - the activation keystroke
      */
     protected static KeyStroke getActivationKeystroke() {

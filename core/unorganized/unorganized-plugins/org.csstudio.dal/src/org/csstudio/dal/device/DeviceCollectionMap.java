@@ -184,7 +184,7 @@ public class DeviceCollectionMap<T extends AbstractDevice>
 
         return new DeviceGroupListener[0];
     }
-    
+
     /**
      * Notifies all the <code>GroupListener<code> objects, about members added/removed.
      *

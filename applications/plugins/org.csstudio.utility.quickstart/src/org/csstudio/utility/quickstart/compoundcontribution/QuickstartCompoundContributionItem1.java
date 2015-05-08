@@ -2,7 +2,7 @@ package org.csstudio.utility.quickstart.compoundcontribution;
 
 import org.eclipse.jface.action.IContributionItem;
 
-public class QuickstartCompoundContributionItem1 extends 
+public class QuickstartCompoundContributionItem1 extends
         AbstractQuickstartCompoundContributionItem {
 
     /**
@@ -27,5 +27,5 @@ public class QuickstartCompoundContributionItem1 extends
     protected IContributionItem[] getContributionItems() {
         return getItemsForMenuNo(1, commandID, compoundID);
     }
-    
+
 }

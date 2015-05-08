@@ -10,7 +10,7 @@ public class Edm_activeRadioButtonClass extends EdmWidget {
     public Edm_activeRadioButtonClass(EdmEntity genericEntity) throws EdmException {
         super(genericEntity);
     }
-    
+
     public EdmColor getSelectColor() {
         return selectColor;
     }

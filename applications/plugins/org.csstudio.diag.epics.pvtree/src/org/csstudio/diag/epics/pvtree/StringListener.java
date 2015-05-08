@@ -14,7 +14,7 @@ import org.csstudio.vtype.pv.PVListenerAdapter;
 import org.epics.vtype.VType;
 
 /** {@link IPVListener} that extracts text from value.
- * 
+ *
  *  <p>Derived class determines how to handle the text.
  *  @author Kay Kasemir
  */
@@ -45,12 +45,11 @@ abstract public class StringListener extends PVListenerAdapter
                     e);
         }
     }
-    
+
     @Override
     public void disconnected(final PV pv)
     {
         handleError(pv.getName() + " disconnected");
     }
-    
+
 };
-        

@@ -22,14 +22,14 @@ import org.eclipse.osgi.util.NLS;
  */
 public class ChangeTabIndexAction extends AbstractWidgetTargetAction {
 
-    
+
 
     public void run(IAction action) {
         int activeTabIndex = getSelectedTabWidget().getActiveTabIndex();
         InputDialog newIndexDialog = new InputDialog(
                 null, "Change Tab Index", "New Index", "" + activeTabIndex,
                 new IInputValidator() {
-                    
+
                     public String isValid(String newText) {
                         try {
                             int newIndex = Integer.parseInt(newText);
@@ -47,22 +47,22 @@ public class ChangeTabIndexAction extends AbstractWidgetTargetAction {
             if( newIndex != activeTabIndex){
                 Command command = new ChangeTabIndexCommand(getSelectedTabWidget(), newIndex);
                     execute(command);
-                
+
             }
         }
-        
-        
+
+
     }
 
-    
+
     /**
      * Gets the widget models of all currently selected EditParts.
-     * 
+     *
      * @return a list with all widget models that are currently selected
      */
     protected final TabEditPart getSelectedTabWidget() {
         return (TabEditPart)selection.getFirstElement();
     }
-    
+
 
 }

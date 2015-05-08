@@ -24,7 +24,7 @@ package org.csstudio.platform.utility.jms;
 
 /**
  * Monitors a JMS connection.
- * 
+ *
  * @author Joerg Rathlev
  */
 public interface IConnectionMonitor {
@@ -33,7 +33,7 @@ public interface IConnectionMonitor {
      * Called when the connection to the messaging system is established.
      */
     void onConnected();
-    
+
     /**
      * Called when the connection to the messaging system is closed or
      * interrupted.

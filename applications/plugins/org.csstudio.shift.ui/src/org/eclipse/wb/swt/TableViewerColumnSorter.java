@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Table;
  * Helper for sorting {@link TableViewer} by one of its {@link TableViewerColumn}s.
  * <p>
  * Originally from http://wiki.eclipse.org/index.php/JFaceSnippets, Snippet040TableViewerSorting.
- * 
+ *
  * @author Tom Schindl <tom.schindl@bestsolution.at>
  * @author Konstantin Scheglov <Konstantin.Scheglov@gmail.com>
  */
@@ -118,7 +118,7 @@ public class TableViewerColumnSorter extends ViewerComparator {
         return 0;
     }
     /**
-     * 
+     *
      * @return the value to compare in {@link #doCompare(Viewer, Object, Object)}. Be default tries to get it
      *         from {@link EditingSupport}. May return <code>null</code>.
      */

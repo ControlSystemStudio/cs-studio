@@ -94,7 +94,7 @@ public class DefaultDeviceFactoryService implements DeviceFactoryService
                 throw new IllegalArgumentException(
                     "Could not load factory implementation: " + t);
             }
-            
+
             if (cl != null) {
                 try {
                     DeviceFactory df = (DeviceFactory)cl.newInstance();

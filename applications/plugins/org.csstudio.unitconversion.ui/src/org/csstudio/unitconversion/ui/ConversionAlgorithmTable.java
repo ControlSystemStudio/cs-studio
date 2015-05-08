@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.unitconversion.ui;
 
@@ -26,12 +26,12 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 /**
- * 
+ *
  * A Simple Widget to Display the conversionAlgortithms assocaited with a device
- * 
- * 
+ *
+ *
  * @author shroffk
- * 
+ *
  */
 public class ConversionAlgorithmTable extends Composite {
 

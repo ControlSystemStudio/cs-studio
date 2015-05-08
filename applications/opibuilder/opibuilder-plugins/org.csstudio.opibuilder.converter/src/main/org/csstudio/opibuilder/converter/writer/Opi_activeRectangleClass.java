@@ -14,7 +14,7 @@ import org.csstudio.opibuilder.converter.model.Edm_activeRectangleClass;
 /**
  * XML conversion class for Edm_activeRectangleClass. (Use this as the standard
  * example for all other widgets!)
- * 
+ *
  * @author Matevz, Xihui Chen
  */
 public class Opi_activeRectangleClass extends OpiWidget {
@@ -37,12 +37,12 @@ public class Opi_activeRectangleClass extends OpiWidget {
         new OpiColor(widgetContext, "line_color", r.getLineColor(), r);
 
         // If a boolean property is not exist in edl file, it is false.
-        // If Double or Int property is not exist, it is 0. 
+        // If Double or Int property is not exist, it is 0.
         new OpiBoolean(widgetContext, "transparent", !r.isFill());
 
         new OpiColor(widgetContext, "background_color", r.getFillColor(), r);
 
-        
+
         new OpiBoolean(widgetContext, "visible", !r.isInvisible());
 
         // If a string property is not exist, it is null.

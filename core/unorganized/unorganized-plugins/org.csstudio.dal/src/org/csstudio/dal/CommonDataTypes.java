@@ -1,7 +1,7 @@
 package org.csstudio.dal;
 
 /**
- * 
+ *
  * <code>CommonDataTypes</code> lists the common types of data that can appear
  * in the control system. These are mainly the primitive types.
  *

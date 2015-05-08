@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene.opiwidgets;
 
@@ -10,7 +10,7 @@ import org.eclipse.draw2d.IFigure;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class IntensityGraph2DWidgetEditPart extends AbstractGraph2DWidgetEditpart<IntensityGraph2DWidgetFigure, IntensityGraph2DWidgetModel> {
 
@@ -20,7 +20,7 @@ public class IntensityGraph2DWidgetEditPart extends AbstractGraph2DWidgetEditpar
         configure(figure, getWidgetModel());
         return figure;
     }
-    
+
     @Override
     protected void configure(IntensityGraph2DWidgetFigure figure, IntensityGraph2DWidgetModel model) {
         super.configure(figure, model);

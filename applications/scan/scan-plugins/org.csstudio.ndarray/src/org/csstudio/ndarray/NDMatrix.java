@@ -50,7 +50,7 @@ public class NDMatrix
               flat.setInt(i, 1);
         return new NDArray(flat, shape, type == NDType.BOOL);
     }
-    
+
     /** Create array for range
      *  @param start Initial value
      *  @param stop Next-to-end value, not included in result

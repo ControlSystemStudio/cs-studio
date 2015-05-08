@@ -94,7 +94,7 @@ public class NoResourceEditorInput implements IEditorInput
     public IEditorInput getOriginEditorInput() {
         return orig;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if(obj ==null)
@@ -103,7 +103,7 @@ public class NoResourceEditorInput implements IEditorInput
             return orig.equals(((NoResourceEditorInput)obj).getOriginEditorInput());
         return orig.equals(obj);
     }
-    
+
     @Override
     public int hashCode() {
         return orig.hashCode();

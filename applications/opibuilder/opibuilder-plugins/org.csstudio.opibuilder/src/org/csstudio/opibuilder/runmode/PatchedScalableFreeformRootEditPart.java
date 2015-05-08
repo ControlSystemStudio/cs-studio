@@ -21,14 +21,14 @@ public class PatchedScalableFreeformRootEditPart extends
         ScalableFreeformRootEditPart {
 
     private ZoomManager zoomManager;
-    
+
     public PatchedScalableFreeformRootEditPart() {
         zoomManager = new ZoomManager((ScalableFigure)getScaledLayers(),
                                     ((Viewport)getFigure())){
             @Override
             public String[] getZoomLevelsAsText() {
                 String[] originItems = super.getZoomLevelsAsText();
-                if (getZoomLevelContributions() != null) {                    
+                if (getZoomLevelContributions() != null) {
                     String[] result = new String[originItems.length];
                     int contriSize = getZoomLevelContributions().size();
                     for(int i=0; i<originItems.length; i++){
@@ -38,13 +38,13 @@ public class PatchedScalableFreeformRootEditPart extends
                 }else
                     return super.getZoomLevelsAsText();
             }
-                
+
         };
     }
-    
+
     @Override
     public ZoomManager getZoomManager() {
         return zoomManager;
     }
-    
+
 }

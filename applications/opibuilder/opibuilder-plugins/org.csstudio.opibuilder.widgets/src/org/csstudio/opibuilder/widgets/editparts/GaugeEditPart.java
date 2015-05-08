@@ -21,9 +21,9 @@ import org.eclipse.draw2d.IFigure;
 /**
  * EditPart controller for the Gauge widget. The controller mediates between
  * {@link GaugeModel} and {@link GaugeFigure}.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
 
@@ -35,16 +35,16 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
         final GaugeModel model = getWidgetModel();
 
         GaugeFigure gauge = new GaugeFigure();
-        
-        initializeCommonFigureProperties(gauge, model);        
+
+        initializeCommonFigureProperties(gauge, model);
         gauge.setNeedleColor(CustomMediaFactory.getInstance().getColor((model.getNeedleColor())));
-        gauge.setEffect3D(model.isEffect3D());    
+        gauge.setEffect3D(model.isEffect3D());
         gauge.setGradient(model.isRampGradient());
-        
+
         return gauge;
 
     }
-    
+
     @Override
     public GaugeModel getWidgetModel() {
         return (GaugeModel)getModel();
@@ -56,7 +56,7 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
     @Override
     protected void registerPropertyChangeHandlers() {
         registerCommonPropertyChangeHandlers();
-        
+
         //needle Color
         IWidgetPropertyChangeHandler needleColorColorHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -67,9 +67,9 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
                 return false;
             }
         };
-        setPropertyChangeHandler(GaugeModel.PROP_NEEDLE_COLOR, needleColorColorHandler);    
-        
-        
+        setPropertyChangeHandler(GaugeModel.PROP_NEEDLE_COLOR, needleColorColorHandler);
+
+
         //effect 3D
         IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -80,8 +80,8 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
                 return false;
             }
         };
-        setPropertyChangeHandler(GaugeModel.PROP_EFFECT3D, effect3DHandler);    
-        
+        setPropertyChangeHandler(GaugeModel.PROP_EFFECT3D, effect3DHandler);
+
         //Ramp gradient
         IWidgetPropertyChangeHandler gradientHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -92,19 +92,19 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
                 return false;
             }
         };
-        setPropertyChangeHandler(GaugeModel.PROP_RAMP_GRADIENT, gradientHandler);    
-        
+        setPropertyChangeHandler(GaugeModel.PROP_RAMP_GRADIENT, gradientHandler);
+
         final IWidgetPropertyChangeHandler sizeHandler = new IWidgetPropertyChangeHandler() {
-            
+
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 if(((Integer)newValue) < GaugeModel.MINIMUM_SIZE)
                     newValue = GaugeModel.MINIMUM_SIZE;
                 getWidgetModel().setSize((Integer)newValue, (Integer)newValue);
                 return false;
             }
-        };        
+        };
         PropertyChangeListener sizeListener = new PropertyChangeListener() {
-        
+
             public void propertyChange(PropertyChangeEvent evt) {
                 sizeHandler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
             }
@@ -113,8 +113,8 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
             addPropertyChangeListener(sizeListener);
         getWidgetModel().getProperty(AbstractWidgetModel.PROP_HEIGHT).
             addPropertyChangeListener(sizeListener);
-        
-        
+
+
     }
 
 }

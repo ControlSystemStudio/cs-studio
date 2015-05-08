@@ -25,9 +25,9 @@ import org.eclipse.ui.internal.WorkbenchWindow;
 
 /**
  * The action to make CSS full screen.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 @SuppressWarnings("restriction")
 public class CompactModeAction extends Action implements
@@ -53,7 +53,7 @@ public class CompactModeAction extends Action implements
 
     /**
      * Constructor.
-     * 
+     *
      * @param part
      *            The workbench part associated with this PrintAction
      */
@@ -71,7 +71,7 @@ public class CompactModeAction extends Action implements
         FullScreenAction fullScreenAction = WorkbenchWindowService.getInstance().
                 getFullScreenAction(window);
         if( fullScreenAction != null && fullScreenAction.isInFullScreen()){
-            MessageDialog.openWarning(shell, "Warning", 
+            MessageDialog.openWarning(shell, "Warning",
                     "This operation does not work in full screen. \n" +
                     "Please exit full screen (press F11) and try again.");
             return;
@@ -86,21 +86,21 @@ public class CompactModeAction extends Action implements
             WorkbenchWindowService.setInCompactMode(false);
             setText(COMPACT_MODE);
             setImageDescriptor(compactModeImage);
-        } else {            
+        } else {
             if(PreferencesHelper.isShowCompactModeDialog()){
                 TipDialog dialog = new TipDialog(shell, "Tip", "Press F8 to exit compact mode.");
                 dialog.open();
                 if(!dialog.isShowThisDialogAgain())
                     PreferencesHelper.setShowCompactModeDialog(false);
             }
-            
+
             if (window instanceof WorkbenchWindow
                     && !((WorkbenchWindow) window).getCoolBarVisible()) {
                 toolbarWasInvisible = true;
             } else {
                 toolbarWasInvisible = false;
                 WorkbenchWindowService.setToolbarVisibility((WorkbenchWindow) window, false);
-                
+
                 //toggleToolbarAction.run();
             }
             shell.setMenuBar(null);
@@ -121,24 +121,24 @@ public class CompactModeAction extends Action implements
     }
 
     public void init(IWorkbenchWindow window) {
-        
+
         if(WorkbenchWindowService.getInstance().getCompactModeAction(window) != null){
             copyFrom(WorkbenchWindowService.getInstance().getCompactModeAction(window));
             WorkbenchWindowService.getInstance().registerCompactModeAction(this, window);
             return;
         }
-        
+
         setId(ID);
         this.window = window;
         //if already registered
-        
+
         shell = window.getShell();
-        
+
         menuBar = shell.getMenuBar();
         if(menuBar == null &&
                 WorkbenchWindowService.getInstance().getCompactModeAction(window) != null)
             menuBar = WorkbenchWindowService.getInstance().getCompactModeAction(window).getMenuBar();
-        
+
         WorkbenchWindowService.getInstance().registerCompactModeAction(this, window);
 
 //        if (WorkbenchWindowService.isInCompactMode()) {
@@ -160,12 +160,12 @@ public class CompactModeAction extends Action implements
 
     protected Menu getMenuBar() {
         return menuBar;
-    }    
-    
+    }
+
     public boolean isInCompactMode() {
         return inCompactMode;
     }
-    
+
     public void copyFrom(CompactModeAction action){
         this.shell=action.shell;
         this.window=action.window;
@@ -175,5 +175,5 @@ public class CompactModeAction extends Action implements
         setText(action.getText());
         setImageDescriptor(action.getImageDescriptor());
     }
-    
+
 }

@@ -17,19 +17,19 @@ import java.util.regex.Pattern;
  * is able to create the notification string from the property value, a map of
  * available property values or a channel. Notification support can use
  * this to go from the current selection to the appropriate selection notification string.
- * 
+ *
  * @author carcassi
  */
 public class ChannelNotificationExpression {
-    
+
     private final List<String> requiredProperties = new ArrayList<String>();
     private final List<String> textTokens = new ArrayList<String>();
     private static final String TOKEN_PATTERN = "#\\((\\w*)\\)|#\\(Channel Name\\)";
     private static final Pattern PATTERN = Pattern.compile(TOKEN_PATTERN);
-    
+
     /**
      * Parses the string and creates a new notification.
-     * 
+     *
      * @param notificationString the notification string
      */
     public ChannelNotificationExpression(String notificationString) {
@@ -49,17 +49,17 @@ public class ChannelNotificationExpression {
 
     /**
      * Returns the full list of required properties.
-     * 
+     *
      * @return a list of strings
      */
     public List<String> getRequiredProperties() {
         return Collections.unmodifiableList(requiredProperties);
     }
-    
+
     /**
      * Creates a notification given the property values in the same order given returned
      * by {@link ChannelNotificationExpression#getRequiredProperties()}.
-     * 
+     *
      * @param propertyValues the values
      * @return the new notification string
      */
@@ -75,7 +75,7 @@ public class ChannelNotificationExpression {
 
     /**
      * Creates a new notification string given a map of property name/value.
-     * 
+     *
      * @param map a map from names to values
      * @return the notification string
      */
@@ -97,7 +97,7 @@ public class ChannelNotificationExpression {
 
     /**
      * Creates a new notification string based on the properties of the given channel.
-     * 
+     *
      * @param channel the selected channel
      * @return the notification string
      */
@@ -107,12 +107,12 @@ public class ChannelNotificationExpression {
         for (n = 0; n < requiredProperties.size(); n++) {
             builder.append(textTokens.get(n));
             String propertyName = requiredProperties.get(n);
-            
+
             // Check if the property is actually the channel name
             if ("Channel Name".equals(propertyName)) {
                 builder.append(channel.getName());
             } else {
-                
+
                 // Find a matching property
                 Property property = channel.getProperty(propertyName);
                 if (property != null) {
@@ -134,10 +134,10 @@ public class ChannelNotificationExpression {
     public String notification(Collection<Channel> channels) {
         if (channels.size() == 1)
             return notification(channels.iterator().next());
-        
+
         if (channels.isEmpty())
             return "";
-                    
+
         List<String> commonValues = new ArrayList<String>();
         for (String propertyName : getRequiredProperties()) {
             Collection<String> values = ChannelUtil.getPropValues(channels, propertyName);

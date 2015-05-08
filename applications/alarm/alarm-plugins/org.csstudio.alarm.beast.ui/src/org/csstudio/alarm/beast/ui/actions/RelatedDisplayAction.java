@@ -41,7 +41,7 @@ public class RelatedDisplayAction extends AbstractExecuteAction
               AlarmTreeActionIcon.createIcon("icons/related_display.gif",  //$NON-NLS-1$
                         tree_position),
               related_display.getTeaser(), related_display.getDetails());
-        
+
         // Related display actions are disabled in RAP version
         if (SingleSourcePlugin.getUIHelper().getUI().equals(UI.RAP)) {
             setEnabled(false);

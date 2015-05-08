@@ -94,7 +94,7 @@ public class ModelBasedPlot
             public void changedXAxis(final Axis<Instant> x_axis)
             {
                 final AxisRange<Instant> range = x_axis.getValueRange();
-                listener.ifPresent((l) -> l.timeAxisChanged(plot.isScrolling(), range.getLow(), range.getHigh()));  
+                listener.ifPresent((l) -> l.timeAxisChanged(plot.isScrolling(), range.getLow(), range.getHigh()));
             }
 
             @Override
@@ -129,7 +129,7 @@ public class ModelBasedPlot
                     findModelItem(trace).setSelectedSample(trace.getSelectedSample());
                 listener.ifPresent((l) -> l.selectedSamplesChanged());
             }
-            
+
             @Override
             public void changedToolbar(final boolean visible)
             {

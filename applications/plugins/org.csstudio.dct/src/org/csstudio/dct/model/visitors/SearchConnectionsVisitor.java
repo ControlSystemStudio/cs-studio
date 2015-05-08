@@ -23,9 +23,9 @@ import org.csstudio.dct.nameresolution.internal.ForwardLinkFieldFunction;
 /**
  * Visitor implementation that can be used to find instances using their
  * prototype´s id as search criteria.
- * 
+ *
  * @author swende
- * 
+ *
  */
 public final class SearchConnectionsVisitor implements IVisitor {
     private Set<ConnectionDescriptor> connections;
@@ -101,7 +101,7 @@ public final class SearchConnectionsVisitor implements IVisitor {
     /**
      * Deep search for record connections (forward and/or datalinks) in a
      * project.
-     * 
+     *
      * @param project
      *            the project
      * @return all connections
@@ -110,7 +110,7 @@ public final class SearchConnectionsVisitor implements IVisitor {
         assert project != null;
 
         connections = new HashSet<ConnectionDescriptor>();
-        
+
         project.accept(this);
 
         return connections;

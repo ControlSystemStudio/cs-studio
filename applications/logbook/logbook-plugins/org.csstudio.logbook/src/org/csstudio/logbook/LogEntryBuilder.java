@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook;
 
@@ -13,9 +13,9 @@ import java.util.Map;
 
 /**
  * A builder for a default implementation on the {@link LogEntry} interface
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class LogEntryBuilder {
 
@@ -37,7 +37,7 @@ public class LogEntryBuilder {
 
     /**
      * Create a constructor with the text _text_
-     * 
+     *
      * @param text - the initial text to create the builder with.
      * @return LogEntryBuilder
      */
@@ -47,18 +47,18 @@ public class LogEntryBuilder {
 
     /**
      * Set the level of the log entry
-     * 
+     *
      * @param Level
      * @return LogEntryBuilder
      */
     public LogEntryBuilder setLevel(String level){
     this.level = level;
-    return this;    
+    return this;
     }
-    
+
     /**
      * Append the _text_ to the existing text in the builder
-     * 
+     *
      * @param text - the text to the appended
      * @return LogEntryBuilder
      */
@@ -69,7 +69,7 @@ public class LogEntryBuilder {
 
     /**
      * Replace the existing text in the builder with _text_
-     * 
+     *
      * @param text
      * @return LogEntryBuilder
      */
@@ -80,7 +80,7 @@ public class LogEntryBuilder {
 
     /**
      * set the owner of this logEntry
-     * 
+     *
      * @param owner
      *            - name of the owner
      * @return LogEntryBuilder
@@ -92,7 +92,7 @@ public class LogEntryBuilder {
 
     /**
      * Append the tag described by _tagBuilder_ to the existing tagBuilders
-     * 
+     *
      * @param tagBuilder
      * @return LogEntryBuilder
      */
@@ -103,7 +103,7 @@ public class LogEntryBuilder {
 
     /**
      * Remove the tag with the name _tagName_
-     * 
+     *
      * @param tagName
      * @return LogEntryBuilder
      */
@@ -111,7 +111,7 @@ public class LogEntryBuilder {
     this.tags.remove(tagName);
     return this;
     }
-    
+
 
     public void removeProperty(String propertyname) {
     this.properties.remove(propertyname);
@@ -119,7 +119,7 @@ public class LogEntryBuilder {
 
     /**
      * Set the list of tags to _tags_
-     * 
+     *
      * @param tags
      * @return LogEntryBuilder
      */
@@ -134,7 +134,7 @@ public class LogEntryBuilder {
     /**
      * Append the property described by the _propertyBuilder_ to the existing
      * properties
-     * 
+     *
      * @param propertyBuilder
      * @return LogEntryBuilder
      */
@@ -145,7 +145,7 @@ public class LogEntryBuilder {
 
     /**
      * Append the logbook described by _logbookBuilder_ to the existing logbooks
-     * 
+     *
      * @param logbookBuilder
      * @return LogEntryBuilder
      */
@@ -156,7 +156,7 @@ public class LogEntryBuilder {
 
     /**
      * Reomve the logbook identified by _logbookName_
-     * 
+     *
      * @param logbookName
      * @return
      */
@@ -167,7 +167,7 @@ public class LogEntryBuilder {
 
     /**
      * Set the list of logbooks to _logbooks_
-     * 
+     *
      * @param logbooks
      * @return
      */
@@ -181,7 +181,7 @@ public class LogEntryBuilder {
 
     /**
      * Append _attachment_ to the existing attachments
-     * 
+     *
      * @param attachment
      * @return LogEntryBuilder
      * @throws IOException
@@ -194,7 +194,7 @@ public class LogEntryBuilder {
 
     /**
      * Remove the attachment identified by the name _name_
-     * 
+     *
      * @param name
      * @return
      */
@@ -205,7 +205,7 @@ public class LogEntryBuilder {
 
     /**
      * Set the attachments to _attachments_
-     * 
+     *
      * @param attachments
      * @return LogEntryBuilder
      * @throws IOException
@@ -223,7 +223,7 @@ public class LogEntryBuilder {
 
     /**
      * Create a logEntryBuilder initialized using the _logEntry_
-     * 
+     *
      * @param logEntry
      * @return LogEntryBuilder
      * @throws IOException
@@ -262,7 +262,7 @@ public class LogEntryBuilder {
 
     /**
      * Build LogEntry object using the parameters set in the builder
-     * 
+     *
      * @return LogEntry - a immutable instance of the {@link LogEntry}
      * @throws IOException
      */
@@ -274,9 +274,9 @@ public class LogEntryBuilder {
 
     /**
      * A Default implementation of the {@link LogEntry}
-     * 
+     *
      * @author shroffk
-     * 
+     *
      */
     private class LogEntryImpl implements LogEntry {
 
@@ -351,7 +351,7 @@ public class LogEntryBuilder {
     public String getLevel() {
         return level;
     }
-    
+
     @Override
     public String getText() {
         return text;

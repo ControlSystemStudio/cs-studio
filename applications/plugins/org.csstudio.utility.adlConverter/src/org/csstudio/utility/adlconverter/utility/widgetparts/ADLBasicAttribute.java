@@ -44,10 +44,10 @@ public class ADLBasicAttribute extends WidgetPart{
 
     /**
      * The default constructor.
-     * 
-     * @param adlBasicAttribute An ADLWidget that correspond a ADL Basic Attribute. 
+     *
+     * @param adlBasicAttribute An ADLWidget that correspond a ADL Basic Attribute.
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
-     * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.    
+     * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
     public ADLBasicAttribute(final ADLWidget adlBasicAttribute, final AbstractWidgetModel parentWidgetModel) throws WrongADLFormatException {
         super(adlBasicAttribute, parentWidgetModel);
@@ -62,7 +62,7 @@ public class ADLBasicAttribute extends WidgetPart{
     /** Is type of fill.*/
     private String _fill;
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -70,10 +70,10 @@ public class ADLBasicAttribute extends WidgetPart{
     void init() {
         /* Not to initialization*/
     }
-    
+
     /**
      * @param adlBasicAttribute The ADL String for an ADL Basic Attribute.
-     * @throws WrongADLFormatException this exception was thrown the String not an valid ADL Basic Attribute String. 
+     * @throws WrongADLFormatException this exception was thrown the String not an valid ADL Basic Attribute String.
      */
     @Override
     final void parseWidgetPart(final ADLWidget adlBasicAttribute) throws WrongADLFormatException {
@@ -81,7 +81,7 @@ public class ADLBasicAttribute extends WidgetPart{
         for (ADLWidget adlWidget : adlBasicAttribute.getObjects()) {
             if(adlWidget.getType().equals("attr")){
                 for (FileLine fileLine : adlWidget.getBody()) {
-                    adlBasicAttribute.addBody(fileLine);    
+                    adlBasicAttribute.addBody(fileLine);
                 }
             }
         }
@@ -106,7 +106,7 @@ public class ADLBasicAttribute extends WidgetPart{
             }
         }
     }
-    
+
     /**
      * Generate all Elements from ADL Basic Attributes.
      */
@@ -129,7 +129,7 @@ public class ADLBasicAttribute extends WidgetPart{
         }
         _widgetModel.setPropertyValue(RectangleModel.PROP_TRANSPARENT, transperncy);
         _widgetModel.setPropertyValue(ArcModel.PROP_TRANSPARENT, transperncy);
-        
+
         String style = "1"; // Line //$NON-NLS-1$
         if (_style==null){
             style = "1";  // Line //$NON-NLS-1$
@@ -190,7 +190,7 @@ public class ADLBasicAttribute extends WidgetPart{
             _widgetModel.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE, _style);
         }
     }
-    
+
     /** @return the fill */
     public final Double getFill() {
         try{

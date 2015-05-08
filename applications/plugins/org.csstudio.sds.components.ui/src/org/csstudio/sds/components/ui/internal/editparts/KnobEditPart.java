@@ -10,9 +10,9 @@ import org.eclipse.swt.graphics.Color;
 /**
  * EditPart controller for the knob widget. The controller mediates between
  * {@link KnobModel} and {@link KnobFigure}.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 
@@ -24,10 +24,10 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
         final KnobModel model = (KnobModel) getWidgetModel();
 
         KnobFigure knob = new KnobFigure();
-        
-        initializeCommonFigureProperties(knob, model);        
+
+        initializeCommonFigureProperties(knob, model);
         knob.setBulbColor(getModelColor(KnobModel.PROP_KNOB_COLOR));
-        knob.setEffect3D(model.isEffect3D());    
+        knob.setEffect3D(model.isEffect3D());
         knob.setThumbColor(getModelColor(KnobModel.PROP_THUMB_COLOR));
         knob.setValueLabelVisibility(model.isShowValueLabel());
         knob.setGradient(model.isRampGradient());
@@ -35,11 +35,11 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
         knob.addKnobListener(new KnobFigure.IKnobListener() {
             public void knobValueChanged(final double newValue) {
                 if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-                    model.setPropertyManualValue(KnobModel.PROP_VALUE, newValue);            
+                    model.setPropertyManualValue(KnobModel.PROP_VALUE, newValue);
                 }
             }
-        });        
-        
+        });
+
         return knob;
 
     }
@@ -50,24 +50,24 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
     @Override
     protected void registerPropertyChangeHandlers() {
         registerCommonPropertyChangeHandlers();
-        
+
         //knob color
         setPropertyChangeHandler(KnobModel.PROP_KNOB_COLOR, new ColorChangeHandler<KnobFigure>(){
             @Override
             protected void doHandle(KnobFigure figure, Color color) {
                 figure.setBulbColor(color);
             }
-        });    
-        
-    
+        });
+
+
         //thumbColor
         setPropertyChangeHandler(KnobModel.PROP_THUMB_COLOR, new ColorChangeHandler<KnobFigure>(){
             @Override
             protected void doHandle(KnobFigure figure, Color color) {
                 figure.setThumbColor(color);
             }
-        });        
-        
+        });
+
         //effect 3D
         IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -79,8 +79,8 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
             }
         };
         setPropertyChangeHandler(KnobModel.PROP_EFFECT3D, effect3DHandler);
-        
-        
+
+
         //show value label
         IWidgetPropertyChangeHandler valueLabelHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -92,7 +92,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
             }
         };
         setPropertyChangeHandler(KnobModel.PROP_SHOW_VALUE_LABEL, valueLabelHandler);
-        
+
         //Ramp gradient
         IWidgetPropertyChangeHandler gradientHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -103,10 +103,10 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
                 return true;
             }
         };
-        setPropertyChangeHandler(KnobModel.PROP_RAMP_GRADIENT, gradientHandler);    
-        
+        setPropertyChangeHandler(KnobModel.PROP_RAMP_GRADIENT, gradientHandler);
+
         //enabled. WidgetBaseEditPart will force the widget as disabled in edit model,
-        //which is not the case for the knob        
+        //which is not the case for the knob
         IWidgetPropertyChangeHandler enableHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
@@ -118,8 +118,8 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
                 return true;
             }
         };
-        setPropertyChangeHandler(KnobModel.PROP_ENABLED, enableHandler);    
-        
+        setPropertyChangeHandler(KnobModel.PROP_ENABLED, enableHandler);
+
         //increment
         IWidgetPropertyChangeHandler incrementHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -131,7 +131,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
             }
         };
         setPropertyChangeHandler(KnobModel.PROP_INCREMENT, incrementHandler);
-        
+
     }
 
 }

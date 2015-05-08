@@ -28,7 +28,7 @@ public class AddTagDialog extends TitleAreaDialog {
 
     /**
        * Creates the dialog's contents
-       * 
+       *
        * @param parent the parent composite
        * @return Control
        */
@@ -44,10 +44,10 @@ public class AddTagDialog extends TitleAreaDialog {
         return contents;
       }
 
-      
+
     /**
      * Creates the gray area
-     * 
+     *
      * @param parent
      *            the parent composite
      * @return Control
@@ -55,10 +55,10 @@ public class AddTagDialog extends TitleAreaDialog {
     protected Control createDialogArea(Composite parent) {
         Composite composite = (Composite) super.createDialogArea(parent);
                         new Label(composite, SWT.NONE);
-                        
+
                         Label tagNameLabel = new Label(composite, SWT.NONE);
                         tagNameLabel.setText("Tag Name:");
-                
+
                         combo = new Combo(composite, SWT.NONE);
                         combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
                         combo.setItems(tagNames.toArray(new String[tagNames.size()]));
@@ -73,9 +73,9 @@ public class AddTagDialog extends TitleAreaDialog {
                             public void widgetDefaultSelected(SelectionEvent e) {
                             }
                         });
-                        
+
                         combo.addModifyListener(new ModifyListener() {
-                            
+
                             @Override
                             public void modifyText(ModifyEvent e) {
                                 tagName = ((Combo) e.getSource()).getText();

@@ -28,7 +28,7 @@ public class Activator extends AbstractUIPlugin {
 
     final private static Logger logger = Logger.getLogger(PLUGIN_ID);
 
-    
+
     /*
      * (non-Javadoc)
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
@@ -57,7 +57,7 @@ public class Activator extends AbstractUIPlugin {
     public static Activator getDefault() {
         return plugin;
     }
-    
+
     public static Logger getLogger() {
         return logger;
     }

@@ -30,7 +30,7 @@ import org.eclipse.ui.IWorkbenchPart;
  *
  */
 public class InsertRowAction implements IObjectActionDelegate {
-    
+
     private class InsertRowDialog extends Dialog {
         private boolean isBefore;
 
@@ -50,7 +50,7 @@ public class InsertRowAction implements IObjectActionDelegate {
         protected Control createDialogArea(Composite parent) {
             getShell().setText("Insert Row");
             Composite container = (Composite) super.createDialogArea(parent);
-            
+
             Group grpPosition = new Group(container, SWT.NONE);
             grpPosition.setText("Insert");
             GridData gd_grpPosition = new GridData(SWT.CENTER, SWT.CENTER, true, false, 1, 1);
@@ -60,22 +60,22 @@ public class InsertRowAction implements IObjectActionDelegate {
             fillLayout.marginWidth = 5;
             fillLayout.spacing = 5;
             grpPosition.setLayout(fillLayout);
-            
+
             final Button beforeRadio = new Button(grpPosition, SWT.RADIO);
             beforeRadio.setText("Before this row");
             beforeRadio.setSelection(true);
             isBefore = true;
-            
+
             beforeRadio.addSelectionListener(new SelectionAdapter() {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     isBefore = beforeRadio.getSelection();
                 }
             });
-            
+
             Button afterRadio = new Button(grpPosition, SWT.RADIO);
             afterRadio.setText("After this row");
-            
+
             return container;
         }
 
@@ -86,7 +86,7 @@ public class InsertRowAction implements IObjectActionDelegate {
 
     private IStructuredSelection selection;
     private IWorkbenchPart targetPart;
-    
+
     public InsertRowAction() {
     }
 
@@ -102,13 +102,13 @@ public class InsertRowAction implements IObjectActionDelegate {
             tableEditPart.getTable().insertRow(0);
             return;
         }
-        
+
         InsertRowDialog dialog = new InsertRowDialog(targetPart.getSite().getShell());
         if (dialog.open() == Dialog.OK){
             boolean before = dialog.isBefore();
             tableEditPart.getTable().insertRow(tableEditPart.getMenuTriggeredCell().x + (before? 0:1));
         }
-        
+
     }
 
     public void selectionChanged(IAction action, ISelection selection) {
@@ -116,8 +116,8 @@ public class InsertRowAction implements IObjectActionDelegate {
             this.selection = (IStructuredSelection) selection;
         }
     }
-    
-    private TableEditPart getSelectedWidget(){ 
+
+    private TableEditPart getSelectedWidget(){
         if(selection.getFirstElement() instanceof TableEditPart){
             return (TableEditPart)selection.getFirstElement();
         }else

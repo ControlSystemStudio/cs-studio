@@ -44,7 +44,7 @@ import org.eclipse.swt.widgets.Display;
 public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigure{
 
     private TotalBits totalBits = TotalBits.BITS_64;
-    
+
     private static final int BOX_SIZE = 14;
 
     private static final int GAP = 4;
@@ -63,7 +63,7 @@ public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigur
         new ArrayList<IManualValueChangeListener>();
 
     private boolean runMode;
-    
+
     private String text;
 
     private Boolean support3d;
@@ -73,20 +73,20 @@ public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigur
     public CheckBoxFigure(final boolean runMode) {
         this.runMode = runMode;
         final BoxFigure boxFigure = new BoxFigure();
-        setContents(boxFigure);    
+        setContents(boxFigure);
         if(!runMode)
             setEventHandler(null);
         else
             setCursor(Cursors.HAND);
         addActionListener(new ActionListener() {
-            
+
             public void actionPerformed(ActionEvent event) {
                 if(runMode){
                     fireManualValueChange(!boolValue);
                 }
             }
         });
-        
+
         if (runMode && !Activator.isRAP()){
             addMouseMotionListener(new MouseMotionListener.Stub() {
 
@@ -152,7 +152,7 @@ public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigur
     public Color getSelectedColor() {
         return selectedColor;
     }
-    
+
     /**
      * @return the value
      */
@@ -171,8 +171,8 @@ public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigur
     public boolean isRunMode() {
         return runMode;
     }
-    
-    
+
+
 
     /**
      * @param bit the bit to set
@@ -190,19 +190,19 @@ public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigur
         this.boolValue = boolValue;
         updateValue();
     }
-    
+
     @Override
     public void setEnabled(boolean value) {
         super.setEnabled(value);
         repaint();
     }
 
-    
+
     public void setSelectedColor(Color selectedColor) {
         this.selectedColor = selectedColor;
         repaint();
     }
-    
+
     /**
      * @param value the value to set
      */
@@ -254,14 +254,14 @@ public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigur
                 switch (totalBits) {
                 case BITS_16:
                     setValue(boolValue? value | ((short)1<<bit) : value & ~((short)1<<bit));
-                break;                
+                break;
                 case BITS_32:
                     setValue(boolValue? value | ((int)1<<bit) : value & ~((int)1<<bit));
                 break;
-                default:                
+                default:
                     setValue(boolValue? value | (1L<<bit) : value & ~(1L<<bit));
                     break;
-                }                
+                }
             }
         }
         repaint();
@@ -270,7 +270,7 @@ public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigur
     public BeanInfo getBeanInfo() throws IntrospectionException {
         return new LabelWidgetIntrospector().getBeanInfo(this.getClass());
     }
-    
+
     public void setText(String text) {
         this.text = text;
         repaint();
@@ -280,7 +280,7 @@ public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigur
         return text;
     }
 
-    
+
     public TotalBits getTotalBits() {
         return totalBits;
     }
@@ -304,20 +304,20 @@ public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigur
             graphics.pushState();
             if(support3d)
                 graphics.setBackgroundPattern(
-                    GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), 
-                            square.x, square.y+1, 
+                    GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
+                            square.x, square.y+1,
                             square.x, square.y+square.height,
                             ColorConstants.white, graphics.getBackgroundColor()));
             graphics.fillRoundRectangle(square, 4, 4);
             graphics.setForegroundColor(
                     CustomMediaFactory.getInstance().getColor(130, 130, 130));
             graphics.drawRoundRectangle(square, 4, 4);
-            
+
             if(boolValue){
                 graphics.translate(square.x, square.y);
                 graphics.setLineWidth(3);
                 graphics.setForegroundColor(selectedColor);
-            
+
                 graphics.drawPolyline(new int[]{
                         3, (int) (BOX_SIZE*0.45),  (int) (BOX_SIZE*0.45), BOX_SIZE*3/4-1, BOX_SIZE-2, 3
                 });
@@ -335,7 +335,7 @@ public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigur
             graphics.drawText(text, square.getRight().getTranslated(GAP, -textSize.height/2));
 
             super.paintClientArea(graphics);
-            
+
         }
     }
 

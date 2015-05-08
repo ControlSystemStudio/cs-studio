@@ -14,11 +14,11 @@ import org.epics.vtype.io.CSVIO;
 
 /**
  * Command to copy the selected value to clipboard.
- * 
+ *
  * @author carcassi
  */
 public class CopyValueToClipboardHandler extends AbstractAdaptedHandler<VType> {
-    
+
     private CSVIO export = new CSVIO();
 
     public CopyValueToClipboardHandler() {

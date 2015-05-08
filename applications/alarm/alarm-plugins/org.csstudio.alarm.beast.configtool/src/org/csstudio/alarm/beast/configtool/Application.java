@@ -121,7 +121,7 @@ public class Application implements IApplication
             // Returning non-null will end the application
             return "";
         }
-        
+
         this.url = url.get();
         this.user = (user.get() == null || user.get().isEmpty()) ? null : user.get();
         this.password = (password.get() == null || password.get().isEmpty()) ? null : password.get();
@@ -136,13 +136,13 @@ public class Application implements IApplication
         if (root.get().isEmpty())
             return "Missing configuration root name\n" + parser.getHelp();
         this.root = root.get();
-        
-        if (do_delete.get().length() > 0) 
+
+        if (do_delete.get().length() > 0)
         {
             delete = true;
             path = do_delete.get();
         }
-        
+
         if (do_export.get())
             mode = Mode.EXPORT;
         else if (do_modify.get())
@@ -151,18 +151,18 @@ public class Application implements IApplication
             mode = Mode.IMPORT;
         else if (convert_alh.get())
             mode = Mode.CONVERT_ALH;
-        else if (delete) 
+        else if (delete)
         {
             mode = Mode.DELETE;
             return null;
         }
         else
             return "Specify import or export or alh conversion\n" + parser.getHelp();
-        
+
         if (file.get().isEmpty())
             return "Missing file name\n" + parser.getHelp();
         this.filename = file.get();
-        
+
         return null;
     }
 
@@ -172,7 +172,7 @@ public class Application implements IApplication
     {
         final String version = (String)
                 context.getBrandingBundle().getHeaders().get("Bundle-Version");
-        
+
         // Create parser for arguments and run it.
         final String args[] =
             (String []) context.getArguments().get("application.args");
@@ -326,7 +326,7 @@ public class Application implements IApplication
                 break;
             case MODIFY:
                 {
-                    if(delete) 
+                    if(delete)
                     {
                         final AlarmTreeItem item = config.getAlarmTree().getItemByPath(path);
                         if (item == null)
@@ -364,7 +364,7 @@ public class Application implements IApplication
             config.close();
         }
     }
-    
+
     /** IApplication stop */
     @Override
     public void stop()

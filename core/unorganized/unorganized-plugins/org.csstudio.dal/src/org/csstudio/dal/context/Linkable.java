@@ -151,11 +151,11 @@ public interface Linkable extends Identifiable
      * @throws RemoteException if remote operation fails
      */
     void suspend() throws RemoteException;
-    
+
     /**
      * Returns the current life cycle state of this
-     * <code>Linkable</code>. 
-     * 
+     * <code>Linkable</code>.
+     *
      * @return connection status
      */
     ConnectionState getConnectionState();

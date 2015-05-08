@@ -38,7 +38,7 @@ public class ADLMonitor extends ADLConnected {
 
     /**
      * The default constructor.
-     * 
+     *
      * @param adlWidget
      *            An ADLWidget that correspond a ADL Monitor.
      * @param parentWidgetModel

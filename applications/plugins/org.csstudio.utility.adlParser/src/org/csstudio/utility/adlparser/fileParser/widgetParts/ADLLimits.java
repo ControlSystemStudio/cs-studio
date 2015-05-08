@@ -19,7 +19,7 @@ public class ADLLimits extends WidgetPart {
     private String precSrc;
     /**Default value for PREC */
     private int precDefault;
-    
+
     public ADLLimits(ADLWidget widgetPart) throws WrongADLFormatException {
         super(widgetPart);
     }
@@ -30,7 +30,7 @@ public class ADLLimits extends WidgetPart {
     public ADLLimits(){
         super();
     }
-    
+
     @Override
     public Object[] getChildren() {
         Object[] ret = new Object[6];
@@ -40,7 +40,7 @@ public class ADLLimits extends WidgetPart {
         ret[3] = new ADLResource(ADLResource.HOPR_DEFAULT, new Float(hoprDefault));
         ret[4] = new ADLResource(ADLResource.PREC_SRC, new String(precSrc));
         ret[5] = new ADLResource(ADLResource.PREC_DEFAULT, new Float(precDefault));
-        
+
         return ret;
     }
 

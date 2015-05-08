@@ -11,7 +11,7 @@ import org.junit.Assert;
 import junit.framework.TestCase;
 
 /** Test of the linear transformation.
- * 
+ *
  * @author Kay Kasemir
  */
 public class LinearTransformTest extends TestCase
@@ -22,7 +22,7 @@ public class LinearTransformTest extends TestCase
     public void testTransform()
     {
         ITransform t = new LinearTransform();
-        
+
         // Default 1:1
         Assert.assertEquals(0.0, t.transform(0.0), 0.01);
         Assert.assertEquals(1.0, t.transform(1.0), 0.01);

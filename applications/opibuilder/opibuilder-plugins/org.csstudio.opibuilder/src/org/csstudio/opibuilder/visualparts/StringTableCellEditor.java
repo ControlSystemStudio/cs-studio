@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 public class StringTableCellEditor extends AbstractDialogCellEditor {
-    
+
     private String[][] data;
 
     private TitlesProvider columnTitles;
@@ -29,7 +29,7 @@ public class StringTableCellEditor extends AbstractDialogCellEditor {
     private CellEditorType[] cellEditorTypes;
 
     private Object[] cellEditorDatas;
-    
+
     public StringTableCellEditor(Composite parent, String title, TitlesProvider columnTitles,
             CellEditorType[] cellEditorTypes, Object[] cellEditorDatas) {
         super(parent, title);
@@ -40,12 +40,12 @@ public class StringTableCellEditor extends AbstractDialogCellEditor {
 
     @Override
     protected void openDialog(Shell parentShell, String dialogTitle) {
-            
-        StringTableEditDialog dialog = 
+
+        StringTableEditDialog dialog =
             new StringTableEditDialog(parentShell, arrayToList(data), dialogTitle,
                     columnTitles.getTitles(), cellEditorTypes, cellEditorDatas);
         if(dialog.open() == Window.OK){
-            data = listToArray(dialog.getResult());            
+            data = listToArray(dialog.getResult());
         }
     }
 
@@ -64,9 +64,9 @@ public class StringTableCellEditor extends AbstractDialogCellEditor {
         if(value == null || !(value instanceof String[][]))
             data = new String[0][0];
         else
-            data = (String[][])value;            
+            data = (String[][])value;
     }
-    
+
     private List<String[]> arrayToList(String[][] content){
         List<String[]> input = new ArrayList<String[]>();
         if (content.length <= 0) {
@@ -78,14 +78,14 @@ public class StringTableCellEditor extends AbstractDialogCellEditor {
             for (int j = 0; j < col; j++) {
                 if(j < content[i].length)
                     row[j]=content[i][j];
-                else 
+                else
                     row[j]="";
             }
             input.add(row);
         }
         return input;
     }
-    
+
     private String[][] listToArray(List<String[]> list){
         int col = 0;
         if(list.size() >0){
@@ -99,7 +99,7 @@ public class StringTableCellEditor extends AbstractDialogCellEditor {
         }
         return result;
     }
-    
-    
+
+
 
 }

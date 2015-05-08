@@ -8,9 +8,9 @@ import org.eclipse.gef.commands.Command;
 /**
  * Table adapter that allows for an easy adaption of an arbitrary property of a
  * domain object.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class BeanPropertyTableRowAdapter extends AbstractTableRowAdapter<IElement> {
     private String key;
@@ -19,7 +19,7 @@ public final class BeanPropertyTableRowAdapter extends AbstractTableRowAdapter<I
 
     /**
      * Constructor.
-     * 
+     *
      * @param key
      *            the key for the key column
      * @param delegate
@@ -77,8 +77,8 @@ public final class BeanPropertyTableRowAdapter extends AbstractTableRowAdapter<I
 
         if (value != null) {
             Object value2set = value;
-            
-            
+
+
             try {
                 // type conversions
                 PropertyUtilsBean util = new PropertyUtilsBean();
@@ -91,13 +91,13 @@ public final class BeanPropertyTableRowAdapter extends AbstractTableRowAdapter<I
                 } else if (clazz == Double.class || "double".equalsIgnoreCase(clazz.getName())) {
                     value2set = Double.parseDouble(value.toString());
                 }
-                
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            
-            
-            
+
+
+
             result = new ChangeBeanPropertyCommand(delegate, property, value2set);
         }
 

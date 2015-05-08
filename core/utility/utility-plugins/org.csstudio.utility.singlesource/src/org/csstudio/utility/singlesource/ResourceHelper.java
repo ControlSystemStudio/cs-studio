@@ -23,12 +23,12 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPathEditorInput;
 
 /** Helper for accessing resources.
- * 
+ *
  *  <p>This implementation provides the common support.
  *  Derived classes can add support that is specific to RCP or RAP.
- *  
+ *
  *  <p>Client code should obtain a {@link ResourceHelper} via the {@link SingleSourcePlugin}
- *  
+ *
  *  @author Kay Kasemir
  *  @author Xihui Chen, Abadie Lana, Eric Berryman - ResourceUtil of BOY, contributions to PV Table
  */
@@ -63,14 +63,14 @@ public class ResourceHelper
             return ((IPathEditorInput) input).getPath();
         return null;
     }
-    
+
     /** Check if a path is actually a URL (http://, ftp://, ..)
      *  @param url Possible URL
      *  @return <code>true</code> if considered a URL, <code>false</code> for file path
      */
     private boolean isURL(final String path)
     {
-        try 
+        try
         {
             new URL(path);
         }
@@ -82,9 +82,9 @@ public class ResourceHelper
     }
 
     /** Check if a path exists
-     * 
+     *
      *  <p>Default implementation is limited to local files and URLs.
-     *  
+     *
      *  @param path Path to workspace file, local file, URL
      *  @return <code>true</code> if the path points to an existing item
      */
@@ -109,7 +109,7 @@ public class ResourceHelper
     }
 
     /** Adapt a path to some other class
-     * 
+     *
      *  @param path {@link IPath} to adapt
      *  @param adapter Desired class, for example IFile
      *  @return Adapted path or <code>null</code>
@@ -124,14 +124,14 @@ public class ResourceHelper
     }
 
     /** Obtain input stream for path
-     * 
+     *
      *  <p>Depending on the implementation, the path may be
      *  <ul>
      *  <li>Workspace location
      *  <li>Local file
      *  <li>URL
      *  </ul>
-     *  
+     *
      *  <p>Default implementation is limited to local files.
      *
      *  @param path IPath
@@ -144,20 +144,20 @@ public class ResourceHelper
         final File file = getFilesystemFile(path);
         if (file != null)
             return new FileInputStream(file);
-        
+
         // Try URL
         return new URL(path.toString()).openStream();
     }
 
     /** Obtain input stream for editor input
-     * 
+     *
      *  <p>Depending on the implementation, the path may be
      *  <ul>
      *  <li>Workspace location
      *  <li>Local file
      *  <li>TODO URL
      *  </ul>
-     *  
+     *
      *  <p>Default implementation is limited to local files.
      *
      *  @param input IEditorInput
@@ -177,18 +177,18 @@ public class ResourceHelper
             final IPath path = ((PathEditorInput) input).getPath();
             return getInputStream(path);
         }
-        
+
         // Didn't find anything. Log adapters to aid in future extension of this code.
         final Logger logger = Logger.getLogger(getClass().getName());
         logger.fine("Cannot read from " + input.getClass().getName());
         for (String adapt : Platform.getAdapterManager().computeAdapterTypes(input.getClass()))
             logger.finer("Would adapt to " + adapt);
-        
+
         return null;
     }
-    
+
     /** Check if editor input is writeable
-     * 
+     *
      *  <p>Default implementation is limited to local files.
      *
      *  @param input {@link IEditorInput}
@@ -203,20 +203,20 @@ public class ResourceHelper
         {   // File is either writable, or doesn't exist, yet, so we assume it could be written
             return file.canWrite()  ||  !file.exists();
         }
-        
+
         return false;
     }
-    
+
     /** Obtain output stream for editor input
-     * 
+     *
      *  <p>Depending on the implementation, the path may be
      *  <ul>
      *  <li>Workspace location
      *  <li>Local file
      *  </ul>
-     *  
+     *
      *  <p>Default implementation is limited to local files.
-     *  
+     *
      *  @param input {@link IEditorInput}
      *  @return {@link OutputStream} or <code>null</code> if input cannot be resolved
      *  @throws Exception on error
@@ -227,17 +227,17 @@ public class ResourceHelper
         final File file = getFilesystemFile(input);
         if (file != null)
             return new FileOutputStream(file);
-        
+
         // Didn't find anything. Log adapters to aid in future extension of this code.
         final Logger logger = Logger.getLogger(getClass().getName());
         logger.fine("Cannot write to " + input.getClass().getName());
         for (String adapt : Platform.getAdapterManager().computeAdapterTypes(input.getClass()))
             logger.finer("Would adapt to " + adapt);
-        
+
         return null;
     }
-    
-    /** Attempt to locate file system file, outside of the workspace 
+
+    /** Attempt to locate file system file, outside of the workspace
      *  @param input {@link IEditorInput}
      *  @return {@link File} or <code>null</code>
      */

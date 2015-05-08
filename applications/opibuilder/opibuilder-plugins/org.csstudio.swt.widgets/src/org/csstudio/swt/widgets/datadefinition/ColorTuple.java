@@ -25,10 +25,10 @@ public class ColorTuple implements Comparable<ColorTuple>{
             return -1;
         else if(this.equals(o))
             return 0;
-        else            
+        else
             return 1;
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -57,9 +57,9 @@ public class ColorTuple implements Comparable<ColorTuple>{
                 .doubleToLongBits(other.value))
             return false;
         return true;
-    }        
-    
-    
-    
-    
+    }
+
+
+
+
 }

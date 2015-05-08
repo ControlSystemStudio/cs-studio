@@ -13,7 +13,7 @@ package org.csstudio.alarm.beast.notifier;
  *
  */
 public enum EActionStatus {
-    
+
     PENDING(Messages.Status_PENDING, 0),
     NO_DELAY(Messages.Status_NO_DELAY, 1),
     EXECUTED(Messages.Status_EXECUTED, 2),
@@ -24,7 +24,7 @@ public enum EActionStatus {
 
     final private String display_name;
     final private int priority;
-    
+
     EActionStatus(final String display_name, final int priority) {
         this.display_name = display_name;
         this.priority = priority;

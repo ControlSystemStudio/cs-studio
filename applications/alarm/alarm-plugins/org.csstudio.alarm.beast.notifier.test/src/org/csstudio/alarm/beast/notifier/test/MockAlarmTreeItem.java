@@ -16,9 +16,9 @@ import org.csstudio.alarm.beast.client.GDCDataStructure;
 /**
  * Mock for {@link AlarmTreeItem}. Overwrite package defined methods to allow
  * test classes to write guidance, displays, commands and automated actions.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
- * 
+ *
  */
 @SuppressWarnings("all")
 public class MockAlarmTreeItem extends AlarmTreeItem {

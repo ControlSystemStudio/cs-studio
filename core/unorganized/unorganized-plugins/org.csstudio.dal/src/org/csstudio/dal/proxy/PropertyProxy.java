@@ -75,8 +75,8 @@ public interface PropertyProxy<T, P extends AbstractPlug> extends Proxy<P>
 
     /**
      * Creates new value subscription and returns monitor proxy, which
-     * controls the subscription. If parameter are provided (non-<code>null</code>), 
-     * then returned monitor must have implemented {@link ExpertMonitor} interface. 
+     * controls the subscription. If parameter are provided (non-<code>null</code>),
+     * then returned monitor must have implemented {@link ExpertMonitor} interface.
      *
      * @param callback The callback that receives the response.
      * @param parameters special parameters when expert monitor is to be created, by default it can be null and returned monitor is normal monitor.
@@ -94,7 +94,7 @@ public interface PropertyProxy<T, P extends AbstractPlug> extends Proxy<P>
      * @return remote condition
      */
     public DynamicValueCondition getCondition();
-    
+
     /**
      * Returns the latest response the proxy received with updated value.
      *

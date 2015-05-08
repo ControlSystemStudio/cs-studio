@@ -5,13 +5,13 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
 
 /**
  * This class defines a XMeter widget model.
- * 
+ *
  * @author Xihui Chen
  */
 public class XMeterModel extends AbstractMarkedWidgetModel {
 
     /** The ID of the fill color property. */
-    public static final String PROP_NEEDLE_COLOR = "needle_color"; //$NON-NLS-1$    
+    public static final String PROP_NEEDLE_COLOR = "needle_color"; //$NON-NLS-1$
 
     /** The ID of the Ramp Gradient. */
     public static final String PROP_RAMP_GRADIENT = "ramp_gradient"; //$NON-NLS-1$
@@ -28,7 +28,7 @@ public class XMeterModel extends AbstractMarkedWidgetModel {
     /**
      * The ID of this widget model.
      */
-    public static final String ID = "org.csstudio.sds.components.XMeter"; //$NON-NLS-1$    
+    public static final String ID = "org.csstudio.sds.components.XMeter"; //$NON-NLS-1$
 
     public XMeterModel() {
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);

@@ -4,10 +4,10 @@ import org.csstudio.dal.AccessType;
 import org.csstudio.dal.simple.MetaData;
 
 /**
- * 
+ *
  * <code>MetaDataImpl</code> is a default implementation of the {@link MetaData}
- * interface, which receives all data through a constructor and returns it 
- * through the interface methods. 
+ * interface, which receives all data through a constructor and returns it
+ * through the interface methods.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -21,7 +21,7 @@ public class MetaDataImpl implements MetaData {
     private final double warningLow;
     private final double warningHigh;
     private final double alarmLow;
-    private final double alarmHigh; 
+    private final double alarmHigh;
     private final String[] enumDescriptions;
     private final Object[] enumValues;
     private final String format;
@@ -31,11 +31,11 @@ public class MetaDataImpl implements MetaData {
     private final AccessType accessType;
     private final String hostname;
     private final int sequenceLength;
-    
-    protected MetaDataImpl(String name, String description, Number displayLow, Number displayHigh, 
-            Number warningLow, Number warningHigh, Number alarmLow, Number alarmHigh, 
+
+    protected MetaDataImpl(String name, String description, Number displayLow, Number displayHigh,
+            Number warningLow, Number warningHigh, Number alarmLow, Number alarmHigh,
             String[] enumDescriptions, Object[] enumValues,    String format, String units,
-            Integer sequenceLength, Integer precision, String dataType, 
+            Integer sequenceLength, Integer precision, String dataType,
             AccessType accessType, String hostname) {
         this.name = name;
         this.description = description;
@@ -55,7 +55,7 @@ public class MetaDataImpl implements MetaData {
         this.hostname = hostname;
         this.sequenceLength = sequenceLength != null ? sequenceLength : 1;
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.csstudio.dal.simple.MetaData#getAccessType()
@@ -215,9 +215,9 @@ public class MetaDataImpl implements MetaData {
     public int getSequenceLength() {
         return sequenceLength;
     }
-    
+
     public static MetaData createUninitializedMetaData() {
-        return new MetaDataImpl(null, null, null, null, null, null, null, null, 
+        return new MetaDataImpl(null, null, null, null, null, null, null, null,
                 null, null,    null, null, null, null, null, null, null);
     }
 }

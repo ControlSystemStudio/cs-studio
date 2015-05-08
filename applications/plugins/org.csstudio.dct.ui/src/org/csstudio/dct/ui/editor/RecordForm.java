@@ -39,9 +39,9 @@ import org.csstudio.domain.common.LayoutUtil;
 
 /**
  * Editing component for {@link IRecord}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
     private ConvenienceTableWrapper recordFieldTable;
@@ -50,7 +50,7 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 
     /**
      * Constructor.
-     * 
+     *
      * @param editor
      *            the editor instance
      */
@@ -116,7 +116,7 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
         recordFieldTable = WidgetUtil.create3ColumnTable(composite, commandStack);
         GridDataFactory.fillDefaults().grab(true, true).applyTo(recordFieldTable.getViewer().getControl());
 
-        
+
         // .. the expand item
         ExpandItem expandItem = new ExpandItem(bar, SWT.NONE);
         expandItem.setText("Fields");
@@ -177,7 +177,7 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
     }
 
     /**
-     * 
+     *
      *{@inheritDoc}
      */
     @Override
@@ -191,7 +191,7 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 
     /**
      * Returns the currently selected property.
-     * 
+     *
      * @return the selected property or null
      */
     public String getSelectedField() {

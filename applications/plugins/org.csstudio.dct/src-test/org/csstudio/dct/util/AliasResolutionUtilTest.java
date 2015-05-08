@@ -11,9 +11,9 @@ import org.junit.Test;
 
 /**
  * Test class for {@link AliasResolutionUtil}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class AliasResolutionUtilTest {
     private IRecord record1;
@@ -22,7 +22,7 @@ public final class AliasResolutionUtilTest {
 
     /**
      * Setup.
-     * 
+     *
      * @throws Exception
      */
     @Before

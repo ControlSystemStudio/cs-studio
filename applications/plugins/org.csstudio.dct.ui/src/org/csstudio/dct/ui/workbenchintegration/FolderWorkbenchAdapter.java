@@ -7,7 +7,7 @@ import org.csstudio.dct.model.IFolder;
 
 /**
  * UI adapter for folders.
- * 
+ *
  * @author Sven Wende
  */
 public class FolderWorkbenchAdapter extends BaseWorkbenchAdapter<IFolder> {

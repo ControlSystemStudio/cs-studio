@@ -99,7 +99,7 @@ public class Application implements IApplication {
                 System.out.println(app_info);
                 return IApplication.EXIT_OK;
             }
-        
+
         // Create the display
         final Display display = PlatformUI.createDisplay();
 
@@ -317,7 +317,7 @@ public class Application implements IApplication {
         {
             parameters.putAll(p.readStartupParameters(display, context));
         }
-        
+
         // Extension point should have handled command line arguments.
         // For "-help", it should have displayed all accepted options, then quit.
         final String args[] = (String[]) context.getArguments().get("application.args");
@@ -332,7 +332,7 @@ public class Application implements IApplication {
                         + "  -pluginCustomization /path/to/my/settings.ini: Eclipse plugin defaults\n");
                 System.exit(0);
             }
-        
+
         return parameters;
     }
 
@@ -525,7 +525,7 @@ public class Application implements IApplication {
         final CSSStartupExtensionPoint[] points = configurationElements.get(type);
         if (points != null)
             return (T[]) points;
-        
+
         // Query registry
         final IConfigurationElement[] config = Platform.getExtensionRegistry()
                 .getConfigurationElementsFor(CSSStartupExtensionPoint.NAME);

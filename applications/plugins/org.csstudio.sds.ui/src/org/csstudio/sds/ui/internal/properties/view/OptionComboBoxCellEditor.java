@@ -24,23 +24,23 @@ import org.eclipse.swt.widgets.Control;
 
 /**
  * Cell editor implementation that uses a combo box.
- * 
+ *
  * The editor displays a set of {@link IOption}´s. When one of the options is
  * chosen, the identifier of that option (see {@link IOption#getIdentifier()})
  * is returned as selected value for this cell editor.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class OptionComboBoxCellEditor extends CellEditor {
     private AbstractListViewer _viewer;
-    private CCombo _combobox; 
+    private CCombo _combobox;
     private IOption[] _options;
     private IOption _selection;
 
     /**
      * Constructor.
-     * 
+     *
      * @param parent
      *            the parent composite
      * @param options
@@ -66,26 +66,26 @@ public class OptionComboBoxCellEditor extends CellEditor {
         _combobox.setEditable(false);
         _combobox.setVisibleItemCount(20);
         _viewer = new ComboViewer(_combobox);
-        
+
         _viewer.setLabelProvider(new LabelProvider());
         _viewer.setContentProvider(new ArrayContentProvider());
         _combobox.setFont(parent.getFont());
 
         _combobox.addKeyListener(new KeyAdapter() {
-            // hook key pressed - see PR 14201  
+            // hook key pressed - see PR 14201
             public void keyPressed(KeyEvent e) {
                 keyReleaseOccured(e);
             }
         });
-        
+
         _combobox.addSelectionListener(new SelectionAdapter() {
             public void widgetDefaultSelected(SelectionEvent event) {
                 applyEditorValueAndDeactivate();
             }
-            
+
             public void widgetSelected(SelectionEvent event) {
                 ISelection sel = _viewer.getSelection();
-                
+
                 if(sel instanceof IStructuredSelection) {
                     _selection = (IOption) ((IStructuredSelection) sel).getFirstElement();
                     applyEditorValueAndDeactivate();

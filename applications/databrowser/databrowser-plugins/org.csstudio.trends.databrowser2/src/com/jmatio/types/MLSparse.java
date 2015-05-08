@@ -10,9 +10,9 @@ public class MLSparse extends MLNumericArray<Double>
 {
     int nzmax;
     private SortedSet<IndexMN> indexSet;
-    private SortedMap<IndexMN, Double> real;  
-    private SortedMap<IndexMN, Double> imaginary;  
-    
+    private SortedMap<IndexMN, Double> real;
+    private SortedMap<IndexMN, Double> imaginary;
+
     /**
      * @param name
      * @param dims
@@ -24,7 +24,7 @@ public class MLSparse extends MLNumericArray<Double>
         super(name, dims, MLArray.mxSPARSE_CLASS, attributes);
         this.nzmax = nzmax;
     }
-    
+
     protected void allocate()
     {
         real = new TreeMap<IndexMN, Double>();
@@ -34,10 +34,10 @@ public class MLSparse extends MLNumericArray<Double>
         }
         indexSet = new TreeSet<IndexMN>();
     }
-    
+
     /**
      * Gets maximum number of non-zero values
-     * 
+     *
      * @return
      */
     public int getMaxNZ()
@@ -46,7 +46,7 @@ public class MLSparse extends MLNumericArray<Double>
     }
     /**
      * Gets row indices
-     * 
+     *
      * <tt>ir</tt> points to an integer array of length nzmax containing the row indices of
      * the corresponding elements in <tt>pr</tt> and <tt>pi</tt>.
      */
@@ -61,15 +61,15 @@ public class MLSparse extends MLNumericArray<Double>
         return ir;
     }
     /**
-     * Gets column indices. 
-     * 
+     * Gets column indices.
+     *
      * <tt>jc</tt> points to an integer array of length N+1 that contains column index information.
      * For j, in the range <tt>0&lt;=j&lt;=N–1</tt>, <tt>jc[j]</tt> is the index in ir and <tt>pr</tt> (and <tt>pi</tt>
      * if it exists) of the first nonzero entry in the jth column and <tt>jc[j+1]–1</tt> index
      * of the last nonzero entry. As a result, <tt>jc[N]</tt> is also equal to nnz, the number
      * of nonzero entries in the matrix. If nnz is less than nzmax, then more nonzero
      * entries can be inserted in the array without allocating additional storage
-     * 
+     *
      * @return
      */
     public int[] getJC()
@@ -85,7 +85,7 @@ public class MLSparse extends MLNumericArray<Double>
         }
         return jc;
     }
-    
+
     /* (non-Javadoc)
      * @see com.paradigmdesigner.matlab.types.GenericArrayCreator#createArray(int, int)
      */
@@ -105,7 +105,7 @@ public class MLSparse extends MLNumericArray<Double>
         }
         return new Double(0);
     }
-    
+
     /* (non-Javadoc)
      * @see com.jmatio.types.MLNumericArray#getReal(int)
      */
@@ -174,7 +174,7 @@ public class MLSparse extends MLNumericArray<Double>
         throw new IllegalArgumentException("Can't get Sparse array elements by index. " +
         "Please use getImaginary(int index) instead.");
     }
-    
+
     /**
      * Returns the real part (PR) array. PR has length number-of-nonzero-values.
      *
@@ -194,7 +194,7 @@ public class MLSparse extends MLNumericArray<Double>
         }
         return ad;
     }
-    
+
     /**
      * Returns the imaginary part (PI) array. PI has length number-of-nonzero-values.
      *
@@ -221,7 +221,7 @@ public class MLSparse extends MLNumericArray<Double>
     {
         StringBuffer sb = new StringBuffer();
         sb.append(name + " = \n");
-        
+
         for ( IndexMN i : indexSet )
         {
             sb.append("\t(");
@@ -233,29 +233,29 @@ public class MLSparse extends MLNumericArray<Double>
                 sb.append("+" + getImaginary(i.m, i.n) );
             }
             sb.append("\n");
-            
+
         }
-        
+
         return sb.toString();
     }
-    
+
     /**
      * Matrix index (m,n)
-     * 
+     *
      * @author Wojciech Gradkowski <wgradkowski@gmail.com>
      */
     private class IndexMN implements Comparable<IndexMN>
     {
         int m;
         int n;
-        
+
         public IndexMN( int m, int n )
         {
             this.m = m;
             this.n = n;
         }
-        
-        
+
+
         /* (non-Javadoc)
          * @see java.lang.Comparable#compareTo(java.lang.Object)
          */
@@ -297,12 +297,12 @@ public class MLSparse extends MLNumericArray<Double>
     {
         if ( bytes.length != getBytesAllocated() )
         {
-            throw new IllegalArgumentException( 
-                        "To build from byte array I need array of size: " 
+            throw new IllegalArgumentException(
+                        "To build from byte array I need array of size: "
                                 + getBytesAllocated() );
         }
         return ByteBuffer.wrap( bytes ).getDouble();
-        
+
     }
     public byte[] getByteArray(Double value)
     {
@@ -311,7 +311,7 @@ public class MLSparse extends MLNumericArray<Double>
         buff.putDouble( value );
         return buff.array();
     }
-    
+
     public Class<Double> getStorageClazz()
     {
         return Double.class;

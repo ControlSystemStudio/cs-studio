@@ -107,13 +107,13 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
             symbolBrowser.setEnabled(false);
         }
     }
-    
+
     @Override
     public void setEnabled(boolean value) {
         super.setEnabled(value);
         setCursor(!isEditMode() && value ? Cursors.HAND : null);
     }
-    
+
     @Override
     public synchronized void setState(int stateIndex) {
         super.setState(stateIndex);
@@ -137,7 +137,7 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
     // ************************************************************
     // Control listeners
     // ************************************************************
-    
+
     /**
      * Listeners that react on manual value change events.
      */
@@ -145,7 +145,7 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
 
     /**
      * Add a control listener which will be executed when pressed or released
-     * 
+     *
      * @param listener
      *            the listener to add
      */
@@ -171,11 +171,11 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
             }
         }
     }
-    
+
     // ************************************************************
     // Button presser actions
     // ************************************************************
-    
+
     class ButtonPresser extends MouseListener.Stub {
         public void mousePressed(MouseEvent me) {
             if (me.button != 1)
@@ -199,11 +199,11 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
             }
         }
     }
-    
+
     // ************************************************************
     // SWT figure initialization
     // ************************************************************
-    
+
     private void initSymbolBrowser() {
         // initialize symbol browser with images
         symbolBrowser.clear();
@@ -220,10 +220,10 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
         String currentState = statesStr.get(currentStateIndex);
         symbolBrowser.setCurrentState(currentState);
         symbolBrowser.initCurrentDisplay();
-        
+
         Rectangle bounds = getBounds().getCopy();
         translateToAbsolute(bounds);
-        
+
         int xPos = bounds.x + bounds.width;
         int yPos = bounds.y;
         int width = symbolBrowser.getSize().x;
@@ -239,7 +239,7 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
             return;
         }
         for (Entry<Integer, SymbolImage> entry : images.entrySet()) {
-            symbolBrowser.addImage(statesStr.get(entry.getKey()), 
+            symbolBrowser.addImage(statesStr.get(entry.getKey()),
                     entry.getValue().getOriginalImageData());
         }
     }
@@ -252,7 +252,7 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
     // ************************************************************
     // Confirm dialog
     // ************************************************************
-    
+
     /**
      * @return the condition when confirm dialog should be shown.
      */
@@ -279,10 +279,10 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
     public void setPassword(String password) {
         this.password = password;
     }
-    
+
     /**
      * open a confirm dialog.
-     * 
+     *
      * @return false if user canceled, true if user pressed OK or no confirm
      *         dialog needed.
      */
@@ -320,5 +320,5 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
         }
         return false;
     }
-    
+
 }

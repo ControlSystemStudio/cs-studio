@@ -18,14 +18,14 @@ import org.eclipse.swt.widgets.Table;
  *  which are meant to replace the PV's value with a "user" value
  *  which can later be saved to the PV after ELog entry
  *  @author Kay Kasemir
- *  
+ *
  *    reviewed by Delphy 01/29/09
  */
 public class ModelCellEditor extends EditingSupport
 {
     /** Cell index within Model's Instance that this editor edits */
     final int cell_index;
-    
+
     /** Initialize
      *  @param table_viewer TableViewer that displays the model
      *  @param cell_index Cell index within a Model's Instance

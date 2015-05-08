@@ -8,7 +8,7 @@ import org.epics.vtype.VType;
 
 public class VTableWidgetSelection implements VTypeAdaptable, ProcessVariableAdaptable {
     private final VTableWidget vTableWidget;
-    
+
     public VTableWidgetSelection(VTableWidget vTableWidget) {
         this.vTableWidget = vTableWidget;
     }

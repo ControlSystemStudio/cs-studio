@@ -12,10 +12,10 @@ import org.csstudio.dal.simple.SimpleDALBroker;
  * {@link SimpleDALBroker#getValue(RemoteInfo)} and asynchronously via
  * {@link SimpleDALBroker#getValueAsync(ConnectionParameters, ResponseListener)}
  * .
- * 
- * 
+ *
+ *
  * The record under test is:
- * 
+ *
  * <pre>
  * record(ai,'Chiller:Pressure:1') {
  *             field(DESC,'DEMO')
@@ -33,9 +33,9 @@ import org.csstudio.dal.simple.SimpleDALBroker;
  *             field(LSV,'NO_ALARM')
  *     }
  * </pre>
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class DataAccessLayerTest2 extends AbstractTestBase {
 

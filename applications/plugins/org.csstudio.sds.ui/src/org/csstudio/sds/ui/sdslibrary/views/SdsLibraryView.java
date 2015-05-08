@@ -59,7 +59,7 @@ public class SdsLibraryView extends ViewPart {
 
     /**
      * The constructor.
-     * 
+     *
      * @throws FileNotFoundException
      */
     public SdsLibraryView() {
@@ -117,7 +117,7 @@ public class SdsLibraryView extends ViewPart {
         dragSource.setTransfer(new Transfer[] { WidgetModelTransfer
                 .getInstance() });
         SdsLibraryDragSourceEffect effect = new SdsLibraryDragSourceEffect(libraryPanel, getSite().getPage());
-        
+
         dragSource.setDragSourceEffect(effect);
         dragSource.addDragListener(new DragSourceAdapter() {
 
@@ -142,13 +142,13 @@ public class SdsLibraryView extends ViewPart {
             }
         });
     }
-    
+
     @Override
     public void dispose() {
         if (preferenceChangeListener != null) {
             this.libraryFolderPreferenceService.removeChangeListener(preferenceChangeListener);
         }
-        
+
         super.dispose();
     }
 
@@ -161,7 +161,7 @@ public class SdsLibraryView extends ViewPart {
         assert libraryFolders != null;
 
         List<File> folders = new ArrayList<File>();
-        
+
         String filePathPrefix = ResourcesPlugin.getWorkspace().getRoot()
                 .getRawLocation().toOSString();
         for (LibraryFolderPreferenceItem folderItem : libraryFolders) {
@@ -177,13 +177,13 @@ public class SdsLibraryView extends ViewPart {
                 }
             }
         }
-        
+
         libraryPanel.setFolders(folders);
     }
 
     @Override
     protected void finalize() throws Throwable {
-        
+
         super.finalize();
     }
 }

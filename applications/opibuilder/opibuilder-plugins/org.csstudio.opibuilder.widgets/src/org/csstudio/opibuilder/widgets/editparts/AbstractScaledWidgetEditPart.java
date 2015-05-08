@@ -229,7 +229,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
     public void setValue(Object value) {
         if(value instanceof Number)
             ((AbstractScaledWidgetFigure)getFigure()).setValue(((Number)value).doubleValue());
-        else 
+        else
             super.setValue(value);
     }
 

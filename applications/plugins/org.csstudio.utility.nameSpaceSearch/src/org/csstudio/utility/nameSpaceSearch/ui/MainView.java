@@ -81,7 +81,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
- * 
+ *
  * @author hrickens
  * @author $Author$
  * @version $Revision$
@@ -112,7 +112,7 @@ public class MainView extends ViewPart {
     private Button _searchButton;
 
     /**
-     * 
+     *
      * @author hrickens
      * @author $Author$
      * @version $Revision$
@@ -207,10 +207,10 @@ public class MainView extends ViewPart {
      * Pushbutton to start search [serachButton]. - A result-table to view the
      * result [ergebnissTable]. - Header as Button to Sort the table. - D&D/MB3
      * function on a row.
-     * 
+     *
      * @param parent
      *            the Parent Composite.
-     * 
+     *
      **/
     @Override
     public final void createPartControl(final Composite parent) {
@@ -300,7 +300,7 @@ public class MainView extends ViewPart {
         // Make Table row Drageble
 
         new ControlSystemDragSource(getResultTableView().getControl()) {
-            
+
             @Override
             public Object getSelection() {
                 final Object[] obj = ((IStructuredSelection)getResultTableView().getSelection()).toArray();
@@ -310,7 +310,7 @@ public class MainView extends ViewPart {
                 return pvs;
             }
         };
-        
+
         // MB3
         makeContextMenu();
         getSearchText().forceFocus();
@@ -329,12 +329,12 @@ public class MainView extends ViewPart {
     }
 
     /***************************************************************************
-     * 
+     *
      * @param searchTemp
      *            - Clear the resulttable - start a LDAP search - fill the
      *            resulttable - first step generate the tableheadbuttons for
      *            sort the table
-     * 
+     *
      ***************************************************************************/
     protected void search(final String search) {
         // clear Leere die Tabelle
@@ -348,7 +348,7 @@ public class MainView extends ViewPart {
         String filter = RECORD.getNodeTypeName() + FIELD_ASSIGNMENT
                 + searchTemp; //$NON-NLS-1$
 
-        //(hrickens) [09.05.2011]: It will not automatically search with wildcard at the end 
+        //(hrickens) [09.05.2011]: It will not automatically search with wildcard at the end
 //        if (searchTemp.compareTo(FIELD_WILDCARD) != 0) {
 //            filter = filter.concat(FIELD_WILDCARD); //$NON-NLS-1$
 //        }
@@ -381,7 +381,7 @@ public class MainView extends ViewPart {
 
         final ILdapService service = Activator.getDefault().getLdapService();
         if (service != null) {
-            _readerJob = 
+            _readerJob =
                 service.createLdapReaderJob(params,
                                             new ILdapReadCompletedCallback() {
                                                 @Override
@@ -518,9 +518,9 @@ public class MainView extends ViewPart {
     }
 
     /**
-     * 
+     *
      * - Make the searchtext. - Layout - Dropsource
-     * 
+     *
      * @return
      */
     private Text makeSearchField(final Composite parent) {
@@ -531,7 +531,7 @@ public class MainView extends ViewPart {
         getSearchText().setToolTipText(Messages.MainView_ToolTip);
 
         new ControlSystemDropTarget(getSearchText(), ProcessVariable.class, String.class) {
-            
+
             @Override
             public void handleDrop(Object item) {
                 if (item instanceof ProcessVariable)
@@ -541,7 +541,7 @@ public class MainView extends ViewPart {
             }
             }
         };
-        
+
 //        // Eclipse
 //        final int operations = DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT;
 //        final DropTarget target = new DropTarget(getSearchText(), operations);

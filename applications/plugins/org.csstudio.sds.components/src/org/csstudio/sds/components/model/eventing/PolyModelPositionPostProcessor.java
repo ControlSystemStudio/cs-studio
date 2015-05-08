@@ -12,7 +12,7 @@ public class PolyModelPositionPostProcessor extends
         assert widget != null : "widget != null";
         return new SetLocationCommand(widget);
     }
-    
+
     private static class SetLocationCommand extends Command {
 
         private final AbstractPolyModel widget;
@@ -20,12 +20,12 @@ public class PolyModelPositionPostProcessor extends
         public SetLocationCommand(AbstractPolyModel widget) {
             this.widget = widget;
         }
-        
+
         @Override
         public void execute() {
             widget.setLocation(widget.getX(),widget.getY());
         }
-        
+
     }
 
 }

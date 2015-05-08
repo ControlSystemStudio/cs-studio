@@ -53,7 +53,7 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 
 
     private boolean innerTrig;
-    
+
     private IntensityGraphFigure graph;
 
     /** VTable columns used to publish values for the pixel info PV */
@@ -62,7 +62,7 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 
     /** VTable column types used to publish values for the pixel info PV */
     final private static List<Class<?>> pixel_info_table_types = Arrays.<Class<?>>asList(double.class, double.class, double.class, int.class);
-    
+
     @Override
     protected IFigure doCreateFigure() {
         IntensityGraphModel model = getWidgetModel();
@@ -120,7 +120,7 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
                     }
                 });
             }
-            
+
             if (model.getPixelInfoPV().trim().length() > 0)
             {   // Listen to pixel info, forward to PV
                 graph.addPixelInfoListener(new IPixelInfoListener()
@@ -139,7 +139,7 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
                 });
             }
         }
-        
+
         updatePropSheet();
 
         return graph;
@@ -161,9 +161,9 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
                 IntensityGraphModel.PROP_COLOR_MAP, !rgbMode);
         getWidgetModel().setPropertyVisible(
                 IntensityGraphModel.PROP_SHOW_RAMP, !rgbMode);
-        
+
     }
-    
+
     @Override
     protected void registerPropertyChangeHandlers() {
         innerUpdateGraphAreaSizeProperty();
@@ -176,12 +176,12 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
                 if(newValue == null)
                     return false;
                 VType value = (VType)newValue;
-                
+
                     if(value instanceof VNumberArray){
                         setValue(((VNumberArray)value).getData());
                         return false;
                     }
-                            
+
                 ((IntensityGraphFigure)figure).setDataArray(VTypeHelper.getDoubleArray(value));
 
                 return false;
@@ -381,21 +381,21 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
                         }else
                             innerTrig = false;
                     }
-        });        
+        });
 
-    
+
         getWidgetModel().getProperty(IntensityGraphModel.PROP_RGB_MODE).addPropertyChangeListener(new PropertyChangeListener() {
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 updatePropSheet();
-                ((IntensityGraphFigure)getFigure()).setInRGBMode((Boolean)(evt.getNewValue()));                
+                ((IntensityGraphFigure)getFigure()).setInRGBMode((Boolean)(evt.getNewValue()));
             }
         });
 
-        
+
         handler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 ((IntensityGraphFigure)getFigure()).setColorDepth(getWidgetModel().getColorDepth());
@@ -403,9 +403,9 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
             }
         };
         setPropertyChangeHandler(IntensityGraphModel.PROP_COLOR_DEPTH, handler);
-        
+
         handler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 ((IntensityGraphFigure)getFigure()).setSingleLineProfiling((Boolean)newValue);
@@ -413,10 +413,10 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
             }
         };
         setPropertyChangeHandler(IntensityGraphModel.PROP_SINGLE_LINE_PROFILING, handler);
-        
+
 
         handler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 ((IntensityGraphFigure)getFigure()).setROIColor(((OPIColor)newValue).getSWTColor());
@@ -436,8 +436,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
                 getWidgetModel().getSize().height - d.height);
         innerTrig = false; // reset innerTrig to false after each inner triggering
     }
-    
-    
+
+
     private void registerROIAmountChangeHandler() {
         PropertyChangeListener listener = new PropertyChangeListener() {
 
@@ -499,10 +499,10 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
         };
         AbstractWidgetProperty countProperty = getWidgetModel().getProperty(IntensityGraphModel.PROP_ROI_COUNT);
         countProperty.addPropertyChangeListener(listener);
-        
+
         //init
         int currentCount = (Integer) getPropertyValue(IntensityGraphModel.PROP_ROI_COUNT);
-        listener.propertyChange(new PropertyChangeEvent(countProperty, IntensityGraphModel.PROP_ROI_COUNT, 0, 
+        listener.propertyChange(new PropertyChangeEvent(countProperty, IntensityGraphModel.PROP_ROI_COUNT, 0,
                 currentCount));
         for(int i=0; i<currentCount; i++){
             for(final ROIProperty roiProperty: ROIProperty.values()){
@@ -512,10 +512,10 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
                     setROIProperty(getROIName(i), roiProperty, propertyValue);
             }
         }
-        
-        
+
+
     }
-    
+
     private static String getROIName(int index){
         return "ROI_" + index; //$NON-NLS-1$
     }
@@ -528,19 +528,19 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
                 if(i>=(Integer)getPropertyValue(IntensityGraphModel.PROP_ROI_COUNT)){
                     getWidgetModel().setPropertyVisible(propID, false);
                 }
-                setPropertyChangeHandler(propID, 
+                setPropertyChangeHandler(propID,
                         new IWidgetPropertyChangeHandler() {
-                    
+
                     @Override
                     public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                         setROIProperty(roiName, roiProperty, newValue);
                         return false;
-                    }                    
+                    }
                 });
             }
         }
     }
-    
+
     private void setROIProperty(final String roiName, final ROIProperty roiProperty, Object newValue) {
         switch (roiProperty) {
         case TITLE:
@@ -605,15 +605,15 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
             axis.setForegroundColor(CustomMediaFactory.getInstance().getColor(((OPIColor)newValue).getRGBValue()));
             break;
         case MAX:
-            String axisID = (axis == graph.getXAxis())? 
-                    IntensityGraphModel.X_AXIS_ID : IntensityGraphModel.Y_AXIS_ID;                
+            String axisID = (axis == graph.getXAxis())?
+                    IntensityGraphModel.X_AXIS_ID : IntensityGraphModel.Y_AXIS_ID;
             double lower = (Double) getPropertyValue(
                     IntensityGraphModel.makeAxisPropID(axisID, AxisProperty.MIN.propIDPre));
             axis.setRange(lower, (Double)newValue);
             break;
         case MIN:
-            String axisID2 = (axis == graph.getXAxis())? 
-                    IntensityGraphModel.X_AXIS_ID : IntensityGraphModel.Y_AXIS_ID;                
+            String axisID2 = (axis == graph.getXAxis())?
+                    IntensityGraphModel.X_AXIS_ID : IntensityGraphModel.Y_AXIS_ID;
             double upper = (Double) getPropertyValue(
                     IntensityGraphModel.makeAxisPropID(axisID2, AxisProperty.MAX.propIDPre));
             axis.setRange((Double)newValue, upper);
@@ -653,7 +653,7 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
         return ((IntensityGraphFigure)getFigure()).getDataArray();
     }
 
-    
+
     @Override
     public void setValue(Object value) {
         if(value instanceof double[]){
@@ -675,13 +675,13 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
         else if(value instanceof int[]){
             ((IntensityGraphFigure)getFigure()).setDataArray((int[]) value);
         }
-        
+
         else
             super.setValue(value);
     }
 
 
-    
+
     @Override
     public void deactivate() {
         ((IntensityGraphFigure)getFigure()).dispose();

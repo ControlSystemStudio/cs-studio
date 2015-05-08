@@ -24,11 +24,11 @@ public class ChoiceButtonEditpart extends AbstractChoiceEditPart {
                 getExecutionMode() == ExecutionMode.RUN_MODE);
         return figure;
     }
-    
+
     @Override
     public ChoiceButtonModel getWidgetModel() {
         return (ChoiceButtonModel)getModel();
     }
-    
+
 
 }

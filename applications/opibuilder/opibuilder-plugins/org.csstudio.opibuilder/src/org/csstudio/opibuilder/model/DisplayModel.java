@@ -27,11 +27,11 @@ import org.osgi.framework.Version;
 
 /**
  * The root model for an OPI Display.
- * 
+ *
  * @author Alexander Will, Sven Wende, Kai Meyer (class of same name in SDS)
  * @author Xihui Chen
  * @author Takashi Nakamoto @ Cosylab (Property for frame rate)
- * 
+ *
  */
 public class DisplayModel extends AbstractContainerModel {
 
@@ -73,7 +73,7 @@ public class DisplayModel extends AbstractContainerModel {
      * zoom operation will not work.
      */
     public static final String PROP_AUTO_ZOOM_TO_FIT_ALL = "auto_zoom_to_fit_all"; //$NON-NLS-1$
-    
+
     /**
      * Automatically scale all widgets when window resizes.
      */
@@ -81,21 +81,21 @@ public class DisplayModel extends AbstractContainerModel {
 
     /**
      * Frame rate in Hz.
-     * This is the hidden property which can be referred only from scripts. 
+     * This is the hidden property which can be referred only from scripts.
      * The value is valid only when running mode. In edit mode, it is always -1.
      */
     public static final String PROP_FRAME_RATE = "frame_rate"; //$NON-NLS-1$
 
     private GraphicalViewer viewer;
-    
+
     private IOPIRuntime opiRuntime;
 
     private IPath opiFilePath;
 
     private int displayID;
-    
+
     private boolean FreshRateEnabled= false;
-    
+
     /**
      * Create a Display Model which is the root model for an OPI.
      * Only use this constructor if this model doesn't relate to
@@ -131,15 +131,15 @@ public class DisplayModel extends AbstractContainerModel {
         addProperty(new BooleanProperty(PROP_AUTO_ZOOM_TO_FIT_ALL,
                 "Auto Zoom to Fit All", WidgetPropertyCategory.Behavior, false));
         addProperty(new ComplexDataProperty(
-                PROP_AUTO_SCALE_WIDGETS, "Auto Scale Widgets (at Runtime)", 
+                PROP_AUTO_SCALE_WIDGETS, "Auto Scale Widgets (at Runtime)",
                 WidgetPropertyCategory.Behavior, new DisplayScaleData(this), "Scale Widgets as windows resizes"));
-    
+
         addProperty(new BooleanProperty(PROP_SHOW_CLOSE_BUTTON,
                 "Show Close Button", WidgetPropertyCategory.Display, true));
         Version version = new Version(0, 0, 0);
         addProperty(new VersionProperty(PROP_BOY_VERSION, "BOY Version",
                 WidgetPropertyCategory.Basic, version.toString()));
-        
+
         addProperty(new DoubleProperty(PROP_FRAME_RATE, "Frame Rate",
                 WidgetPropertyCategory.Display, -1.0));
 
@@ -160,7 +160,7 @@ public class DisplayModel extends AbstractContainerModel {
         removeProperty(PROP_SCALE_OPTIONS);
 
     }
-    
+
     /**
      * @return true if Children should be auto scaled when this container is resized.
      */
@@ -211,14 +211,14 @@ public class DisplayModel extends AbstractContainerModel {
     public void setOpiRuntime(IOPIRuntime opiRuntime) {
         this.opiRuntime = opiRuntime;
     }
-    
+
     /**
      * @return the {@link IOPIRuntime} if it is in run mode.
      */
     public IOPIRuntime getOpiRuntime() {
         return opiRuntime;
     }
-    
+
     /**
      * @return the opiFilePath
      */
@@ -228,7 +228,7 @@ public class DisplayModel extends AbstractContainerModel {
 
     /**
      * Set the viewer of the display model if this model belongs to a viewer.
-     * 
+     *
      * @param viewer
      *            the viewer to set
      */
@@ -265,15 +265,15 @@ public class DisplayModel extends AbstractContainerModel {
     /**
      * @return the list of connections belongs to this display model.
      */
-    public List<ConnectionModel> getConnectionList() {        
+    public List<ConnectionModel> getConnectionList() {
         return getConnectionList(this);
     }
-    
+
     /**
      * In connections are spanning over multiple display models (e.g. via linking containers),
-     * and if one of those sub display models is reloaded, all the links will become invalid - 
+     * and if one of those sub display models is reloaded, all the links will become invalid -
      * the previously existing widgets will no longer exist. This methods intends to reconnect
-     * such broken connections, by resetting the connectors sources and targets. 
+     * such broken connections, by resetting the connectors sources and targets.
      */
     public void syncConnections() {
         List<AbstractWidgetModel> allDescendants = getAllDescendants();
@@ -285,17 +285,17 @@ public class DisplayModel extends AbstractContainerModel {
                         connectionModel.resync();
                     }
                 }
-            } 
+            }
             if(!widget.getTargetConnections().isEmpty()){
                 for(ConnectionModel connectionModel: widget.getTargetConnections()){
                     if(!allDescendants.contains(connectionModel.getSource())){
                         connectionModel.resync();
                     }
                 }
-            } 
-        }       
+            }
+        }
     }
-        
+
     private List<ConnectionModel> getConnectionList(AbstractContainerModel container){
         Set<ConnectionModel> connectionModels = new HashSet<ConnectionModel>();
         List<AbstractWidgetModel> allDescendants = getAllDescendants();
@@ -306,15 +306,15 @@ public class DisplayModel extends AbstractContainerModel {
                         connectionModels.add(connectionModel);
                     }
                 }
-            } 
+            }
             if(!widget.getTargetConnections().isEmpty()){
                 for(ConnectionModel connectionModel: widget.getTargetConnections()){
                     if(allDescendants.contains(connectionModel.getSource())){
                         connectionModels.add(connectionModel);
                     }
                 }
-            } 
-        }        
+            }
+        }
         return new ArrayList<>(connectionModels);
     }
 
@@ -337,7 +337,7 @@ public class DisplayModel extends AbstractContainerModel {
         return null;
     }
 
-    
+
     @Override
     public void scale(double widthRatio, double heightRatio) {
         int minWidth = getDisplayScaleData().getMinimumWidth();
@@ -347,7 +347,7 @@ public class DisplayModel extends AbstractContainerModel {
         int minHeight = getDisplayScaleData().getMinimumHeight();
         if(minHeight < 0){
             minHeight = getHeight();
-        }        
+        }
         if(getWidth() *widthRatio < minWidth)
             widthRatio = minWidth/(double)getWidth();
         if(getHeight()*heightRatio < minHeight)
@@ -355,14 +355,14 @@ public class DisplayModel extends AbstractContainerModel {
         for(AbstractWidgetModel child : getChildren())
             child.scale(widthRatio, heightRatio);
     }
-    
+
     /**!!! This is function only for test purpose. It might be removed in future!
      * @return true if calculating fresh rate is enabled.
      */
     public boolean isFreshRateEnabled() {
         return FreshRateEnabled;
     }
-    
+
     /**
      * When a new frame rate is notified by GUI toolkit side, this method
      * shall be called to set the up-to-date frame rate.
@@ -371,5 +371,5 @@ public class DisplayModel extends AbstractContainerModel {
     public void setFrameRate(double rate) {
         setPropertyValue(PROP_FRAME_RATE, rate);
     }
-    
+
 }

@@ -18,10 +18,10 @@ public class AddTag2ChannelsJob extends Job {
 
     private Tag.Builder tag;
     private Collection<Channel> channels;
-    
+
     /**
      * create a job to add a tag _tag_ to a group of channels
-     * 
+     *
      * @param name - job name
      * @param channels - collection of channels to which the tag is to be added
      * @param tag - builder of the the tag to be added
@@ -34,7 +34,7 @@ public class AddTag2ChannelsJob extends Job {
 
     @Override
     protected IStatus run(IProgressMonitor monitor) {
-        monitor.beginTask("Adding Tags to channels", IProgressMonitor.UNKNOWN);        
+        monitor.beginTask("Adding Tags to channels", IProgressMonitor.UNKNOWN);
         try {
             ChannelFinder.getClient().update(tag, ChannelUtil.getChannelNames(channels));
         } catch (ChannelFinderException e) {
@@ -44,7 +44,7 @@ public class AddTag2ChannelsJob extends Job {
                             .getStatus()
                             .getStatusCode(), e
                             .getMessage(), e.getCause());
-        }        
+        }
         monitor.done();
         return Status.OK_STATUS;
     }

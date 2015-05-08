@@ -41,7 +41,7 @@ public class AlarmTreeItemUnitTest
         {
                 new GDCDataStructure("reset PV123", "caput PV123 Reset")
         };
-        
+
         final AADataStructure automated_actions[] = new AADataStructure[]
         {
                 new AADataStructure("Send Mail", "paul@home.there", 30)

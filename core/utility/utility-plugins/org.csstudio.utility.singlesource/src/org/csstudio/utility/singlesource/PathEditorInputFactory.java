@@ -24,7 +24,7 @@ public class PathEditorInputFactory implements IElementFactory
 
     /** Memento tag for the path */
     final public static String TAG_PATH = "path";
-    
+
     /** {@inheritDoc} */
     @Override
     public IAdaptable createElement(final IMemento memento)

@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.epics.util.time.Timestamp;
 
 /**
- * 
+ *
  * <code>ApplianceNonNumericOptimizedValueIterator</code> loads every N-th value
  * from the archive, where N is calculated as totalNumberOfPoints/requestedPoints.
  *
@@ -14,13 +14,13 @@ import org.epics.util.time.Timestamp;
  */
 public class ApplianceNonNumericOptimizedValueIterator extends ApplianceValueIterator {
 
-    
+
     private final int requestedPoints;
     private final int totalNumberOfPoints;
-    
+
     /**
      * Constructor that fetches data from appliance archive reader.
-     * 
+     *
      * @param reader instance of appliance archive reader
      * @param name name of the PV
      * @param start start of the time period
@@ -28,7 +28,7 @@ public class ApplianceNonNumericOptimizedValueIterator extends ApplianceValueIte
      * @param requestedPoints number of requested points
      * @param totalNumberofPoints the number of all points in the archive
      * @param listener the listener that is notified when the iterator is closed
-     * 
+     *
      * @throws IOException if there was an error during the data fetch process
      * @throws ArchiverApplianceException if it is not possible to load optimized data for the selected PV
      */
@@ -40,7 +40,7 @@ public class ApplianceNonNumericOptimizedValueIterator extends ApplianceValueIte
         this.totalNumberOfPoints = totalNumberOfPoints;
         fetchData();
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.csstudio.archive.reader.appliance.ApplianceValueIterator#fetchDataInternal(java.lang.String)

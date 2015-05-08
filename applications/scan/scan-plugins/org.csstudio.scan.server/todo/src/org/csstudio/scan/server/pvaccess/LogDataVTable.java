@@ -22,7 +22,7 @@ public class LogDataVTable implements DataLogListener{
 
     private  PVTopStructure pvTop;
     private static final PVDataCreate pvDataCreate = PVFactory.getPVDataCreate();
-    
+
     public LogDataVTable( PVTopStructure pvTop) {
         super();
         this.pvTop = pvTop;
@@ -36,7 +36,7 @@ public class LogDataVTable implements DataLogListener{
             ScanData scanData;
             try {
                 scanData = datalog.getScanData();
-                
+
                 PVStringArray labelsField =
                         (PVStringArray)pvField.getScalarArrayField("labels", ScalarType.pvString);
                     String[] labels;
@@ -68,21 +68,21 @@ public class LogDataVTable implements DataLogListener{
                             i++;
                         }
                         ((PVDoubleArray)scalarArray).put(0, samples.size(), colDouble, 0);
-                        
+
                     }
                 }
-                    
+
                 BitSet bitSet = new BitSet(pvField.getNumberFields());
                 // refreshing whole structure, I need to learn to send just new data
                 bitSet.set(0);
                 pvTop.notifyListeners(bitSet);
-                    
+
             } catch (Exception e) {
 
                 e.printStackTrace();
             }
 
-            
+
     }
 
 }

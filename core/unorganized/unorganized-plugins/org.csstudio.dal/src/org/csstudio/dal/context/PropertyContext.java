@@ -97,7 +97,7 @@ public interface PropertyContext
      * @return names of properties in this collection
      */
     public String[] getPropertyNames();
-    
+
     /**
      * Returns plug type string, which is distinguishing for plug which
      * creates  proxies for particular communication layer.<p>For

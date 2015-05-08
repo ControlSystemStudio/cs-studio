@@ -22,7 +22,7 @@ import org.csstudio.autocomplete.parser.IContentParser;
 
 /**
  * Parses content to determine if it matches a defined data source prefix.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class DataSourceParser implements IContentParser {

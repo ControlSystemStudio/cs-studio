@@ -67,18 +67,18 @@ public interface Proxy<P extends AbstractPlug> extends Identifiable
      * @return state of connection to remote object
      */
     public ConnectionState getConnectionState();
-    
+
     /**
      * Returns plug instance which governs this proxy object.
-     * Plug implementation decided how plug reference is provided to the 
+     * Plug implementation decided how plug reference is provided to the
      * proxy implementation. Preferred way is trough constructor.
      * @return
      */
     public P getPlug();
-    
+
     /**
      * Returns short description of connection to remote host.
-     * For example: CHANNEL_A@PROTOCOL/HOST:PORT  
+     * For example: CHANNEL_A@PROTOCOL/HOST:PORT
      * @return
      */
     public String getConnectionInfo();

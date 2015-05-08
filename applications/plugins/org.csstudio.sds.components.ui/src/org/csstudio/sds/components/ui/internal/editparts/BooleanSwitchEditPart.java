@@ -9,7 +9,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * 
+ *
  * @author Kai Meyer (C1 WPS)
  *
  */
@@ -57,7 +57,7 @@ public class BooleanSwitchEditPart extends AbstractWidgetEditPart {
             }
         };
         setPropertyChangeHandler(BooleanSwitchModel.PROP_VALUE, valueHandler);
-        
+
         // 3d effect
         IWidgetPropertyChangeHandler effectHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -69,7 +69,7 @@ public class BooleanSwitchEditPart extends AbstractWidgetEditPart {
             }
         };
         setPropertyChangeHandler(BooleanSwitchModel.PROP_3D_EFFECT, effectHandler);
-        
+
         // on color
         setPropertyChangeHandler(BooleanSwitchModel.PROP_ON_COLOR, new ColorChangeHandler<BoolSwitchFigure>(){
             @Override
@@ -77,7 +77,7 @@ public class BooleanSwitchEditPart extends AbstractWidgetEditPart {
                 figure.setOnColor(color);
             }
         });
-        
+
         // off color
         setPropertyChangeHandler(BooleanSwitchModel.PROP_OFF_COLOR, new ColorChangeHandler<BoolSwitchFigure>(){
             @Override
@@ -85,7 +85,7 @@ public class BooleanSwitchEditPart extends AbstractWidgetEditPart {
                 figure.setOffColor(color);
             }
         });
-        
+
         // on label
         IWidgetPropertyChangeHandler onLabelHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -97,7 +97,7 @@ public class BooleanSwitchEditPart extends AbstractWidgetEditPart {
             }
         };
         setPropertyChangeHandler(BooleanSwitchModel.PROP_ON_LABEL, onLabelHandler);
-        
+
         // on label
         IWidgetPropertyChangeHandler offLabelHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -109,7 +109,7 @@ public class BooleanSwitchEditPart extends AbstractWidgetEditPart {
             }
         };
         setPropertyChangeHandler(BooleanSwitchModel.PROP_OFF_LABEL, offLabelHandler);
-        
+
         // value
         IWidgetPropertyChangeHandler showLabelHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,

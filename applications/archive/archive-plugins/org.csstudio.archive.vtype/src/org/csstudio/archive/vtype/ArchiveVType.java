@@ -21,11 +21,11 @@ public class ArchiveVType implements Alarm, Time, VType
 {
     /** Alarm status message for 'OK' */
     final public static String STATUS_OK = "NO_ALARM";
-    
+
     final private Timestamp timestamp;
     final private AlarmSeverity severity;
     final private String status;
-    
+
     public ArchiveVType(final Timestamp timestamp,
             final AlarmSeverity severity, final String status)
     {
@@ -33,9 +33,9 @@ public class ArchiveVType implements Alarm, Time, VType
         this.severity = severity;
         this.status = status;
     }
-    
+
     @Override
-    public AlarmSeverity getAlarmSeverity() 
+    public AlarmSeverity getAlarmSeverity()
     {
         return severity;
     }
@@ -79,10 +79,10 @@ public class ArchiveVType implements Alarm, Time, VType
     {
         if (this == obj)
             return true;
-        
+
         if (! (obj instanceof VType))
             return false;
-        
+
         if (! (obj instanceof Alarm))
             return false;
         final Alarm alarm = (Alarm) obj;
@@ -90,7 +90,7 @@ public class ArchiveVType implements Alarm, Time, VType
             return false;
         if (! status.equals(alarm.getAlarmName()))
             return false;
-        
+
         if (! (obj instanceof Time))
             return false;
 

@@ -18,11 +18,11 @@ public class Opi_RegTextupdateClass extends Opi_TextupdateClass {
     private static final String name = "EDM Reg. Text Update";
 
     /**
-     * Converts the Edm_TextupdateClass to OPI TextUpdate widget XML.  
+     * Converts the Edm_TextupdateClass to OPI TextUpdate widget XML.
      */
     public Opi_RegTextupdateClass(Context con, Edm_RegTextupdateClass t) {
         super(con,t);
         setName(name);
     }
-    
+
 }

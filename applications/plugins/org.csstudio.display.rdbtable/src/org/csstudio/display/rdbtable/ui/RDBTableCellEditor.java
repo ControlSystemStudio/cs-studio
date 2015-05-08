@@ -16,14 +16,14 @@ import org.eclipse.swt.widgets.Table;
 
 /** Editor for a cell in a table that displays RDBTableModel data,
  *  i.e. each row is an RDBTableRow
- *  
+ *
  *  @author Kay Kasemir
  */
 public class RDBTableCellEditor extends EditingSupport
 {
     /** Index of column to edit */
     final private int column;
-    
+
     /** Initialize
      *  @param table_viewer TableViewer that displays the model
      *  @param cell_index Cell index within a Model's Instance

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.service.channelfinder;
 
@@ -8,7 +8,7 @@ import org.epics.pvmanager.service.ServiceDescription;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ChannelFinderService extends Service {
 
@@ -17,7 +17,7 @@ public class ChannelFinderService extends Service {
      */
     public ChannelFinderService() {
     super(new ServiceDescription("cf", "ChannelFinder service")
-    .addServiceMethod(new QueryServiceMethod()));    
+    .addServiceMethod(new QueryServiceMethod()));
     }
 
 }

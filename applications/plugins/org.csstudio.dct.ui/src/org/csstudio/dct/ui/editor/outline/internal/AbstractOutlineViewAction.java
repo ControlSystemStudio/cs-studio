@@ -8,9 +8,9 @@ import org.eclipse.ui.views.contentoutline.ContentOutline;
 
 /**
  * Base class for actions that are used in the outline´s view menu.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 abstract class AbstractOutlineViewAction implements IViewActionDelegate {
     private ContentOutline outline;
@@ -46,7 +46,7 @@ abstract class AbstractOutlineViewAction implements IViewActionDelegate {
 
     /**
      * Performs this action.
-     * 
+     *
      * @param outlinePage
      *            the outline page
      * @param action

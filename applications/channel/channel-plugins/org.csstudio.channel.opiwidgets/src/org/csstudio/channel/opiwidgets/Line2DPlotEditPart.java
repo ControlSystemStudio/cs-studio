@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.channel.opiwidgets;
 
@@ -9,14 +9,14 @@ import org.eclipse.draw2d.IFigure;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class Line2DPlotEditPart extends
         AbstractChannelWidgetEditPart<Line2DPlotFigure, Line2DPlotModel> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.csstudio.channel.opiwidgets.AbstractChannelWidgetEditPart#doCreateFigure
      * ()
@@ -30,7 +30,7 @@ public class Line2DPlotEditPart extends
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.csstudio.opibuilder.editparts.AbstractBaseEditPart#
      * registerPropertyChangeHandlers()
      */
@@ -56,7 +56,7 @@ public class Line2DPlotEditPart extends
             line2dPlotWidget.setChannelQuery(line2dPlotModel.getChannelQuery());
         }
         line2dPlotWidget.setConfigurable(line2dPlotModel.isConfigurable());
-        
+
     }
 
 }

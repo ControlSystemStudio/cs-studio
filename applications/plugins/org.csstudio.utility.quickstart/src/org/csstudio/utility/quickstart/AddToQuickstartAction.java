@@ -18,17 +18,17 @@ import org.eclipse.ui.PlatformUI;
  * Class for extension point 'popupMenu'. Executes the popupMenu action
  * for sds files and adds the selected file to the preferences of
  * quickstart menu.
- * 
+ *
  * @author jhatje
  *
  */
 public class AddToQuickstartAction implements IObjectActionDelegate {
-    
+
     /**
      * The current selection.
      */
     private IStructuredSelection _selection;
-    
+
     public AddToQuickstartAction() {
         super();
     }
@@ -71,11 +71,11 @@ public class AddToQuickstartAction implements IObjectActionDelegate {
             }
         }
     }
-    
+
     /**
      * Delete all entries at the end in quickstart list until the
      * number matches the predefined number of menu items.
-     * 
+     *
      * @param sdsFileList
      * @return
      */
@@ -83,7 +83,7 @@ public class AddToQuickstartAction implements IObjectActionDelegate {
         //list length is ok.
         if (sdsFileList.split(";").length < 20) {
             return sdsFileList;
-        //list length is too long.    
+        //list length is too long.
         } else {
             int indexOfColon = sdsFileList.lastIndexOf(";");
             sdsFileList = sdsFileList.substring(0, (indexOfColon + 1));

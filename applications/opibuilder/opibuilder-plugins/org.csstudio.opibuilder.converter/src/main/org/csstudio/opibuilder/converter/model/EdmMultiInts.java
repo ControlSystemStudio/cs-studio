@@ -28,11 +28,11 @@ public class EdmMultiInts extends AbstractEdmMultiAttributes<EdmInt> {
         super(genericEntity, required);
 
     }
-    
+
     @Override
     protected EdmInt createEdmAttribute(EdmAttribute genericEntity) throws EdmException{
         return new EdmInt(genericEntity, false);
     }
 
-    
+
 }

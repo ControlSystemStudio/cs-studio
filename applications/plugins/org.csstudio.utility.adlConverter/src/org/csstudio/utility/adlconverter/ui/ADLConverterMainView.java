@@ -91,7 +91,7 @@ import org.slf4j.LoggerFactory;
 public class ADLConverterMainView extends ViewPart {
 
     private static final Logger LOG = LoggerFactory.getLogger(ADLConverterMainView.class);
-    
+
     /**
      * Default Constructor.
      */
@@ -226,7 +226,7 @@ public class ADLConverterMainView extends ViewPart {
         generateFpButton.setText("Faceplates");
         rowData = new RowData(80, 25);
         generateFpButton.setLayoutData(rowData);
-        
+
         // Listener
         openSourceButton.addSelectionListener(new SelectionAdapter() {
 
@@ -241,7 +241,7 @@ public class ADLConverterMainView extends ViewPart {
                         Messages.ADLConverterMainView_AllFileSourceDialogFileDes };
                 dialog.setFilterNames(names);
                 String[] ext = new String[] {
-                        "*.adl;*.mfp;*.stc", "*.adl", "*.mfp", "*.stc", "*.*" }; // Windows wild cards //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5 
+                        "*.adl;*.mfp;*.stc", "*.adl", "*.mfp", "*.stc", "*.*" }; // Windows wild cards //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5
                 dialog.setFilterExtensions(ext);
                 String path = _preferences
                         .getString(ADLConverterPreferenceConstants.P_STRING_Path_Source);
@@ -252,7 +252,7 @@ public class ADLConverterMainView extends ViewPart {
                 for (String name : files) {
                     _avaibleFilesList.add(new File(path, name));
                 }
-                
+
                 setAvaibleFilesInput();
                 _avaibleFiles.getList().selectAll();
                 refreshexamplePathLabel();
@@ -551,14 +551,14 @@ public class ADLConverterMainView extends ViewPart {
         });
 
         generateFpButton.addSelectionListener(new SelectionAdapter() {
-            
+
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 Creator.createDisplays();
             }
-            
+
         });
-        
+
     }
 
     private void makeMenu() {
@@ -889,7 +889,7 @@ public class ADLConverterMainView extends ViewPart {
 
     /**
      * Extract the relative path part from example file path.
-     * 
+     *
      * @param file
      *            the example file.
      * @return the relative path.
@@ -924,9 +924,9 @@ public class ADLConverterMainView extends ViewPart {
     }
 
     protected void setAvaibleFilesInput() {
-        _avaibleFiles.setInput(_avaibleFilesList);                
+        _avaibleFiles.setInput(_avaibleFilesList);
     }
-    
+
     /**
      * {@inheritDoc}
      */

@@ -4,7 +4,7 @@ import java.io.Writer;
 import org.epics.vtype.io.CSVIO;
 
 public class SimpleDataTextExport implements DataExportFormat {
-    
+
     private CSVIO io = new CSVIO();
 
     @Override

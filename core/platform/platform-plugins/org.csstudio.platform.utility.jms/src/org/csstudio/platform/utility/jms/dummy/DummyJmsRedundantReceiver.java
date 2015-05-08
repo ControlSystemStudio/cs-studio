@@ -9,15 +9,15 @@ import javax.jms.Message;
 import org.csstudio.platform.libs.jms.IJmsRedundantReceiver;
 
 /**
- * 
+ *
  * @author Goesta Steen
  */
 public class DummyJmsRedundantReceiver implements IJmsRedundantReceiver {
 
     private boolean isConnected = true;
     private HashMap<String,  LinkedBlockingQueue<Message>> map = new HashMap<String,  LinkedBlockingQueue<Message>>();
-     
-    
+
+
     public void closeAll() {
         map = null;
         isConnected = false;
@@ -44,7 +44,7 @@ public class DummyJmsRedundantReceiver implements IJmsRedundantReceiver {
         }
         return null;
     }
-    
+
     public void addMessage(String subscriberName, Message message) {
         LinkedBlockingQueue<Message> queue = map.get(subscriberName);
         if (queue != null) {

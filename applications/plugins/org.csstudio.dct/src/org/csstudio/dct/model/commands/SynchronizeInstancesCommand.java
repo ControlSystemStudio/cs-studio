@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.model.commands;
 
@@ -15,9 +15,9 @@ import org.eclipse.gef.commands.CompoundCommand;
 /**
  * Synchronizes instance structures of two containers. Mainly for use after cloning
  * or copying an instance.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class SynchronizeInstancesCommand extends Command {
     private IInstance target;
@@ -27,7 +27,7 @@ public final class SynchronizeInstancesCommand extends Command {
 
     /**
      * Constructor.
-     * 
+     *
      * @param delegate
      *            the object
      * @param propertyName

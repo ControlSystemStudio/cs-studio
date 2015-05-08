@@ -28,22 +28,22 @@ public class Opi_activePipClass extends OpiWidget {
     private static final String version = "1.0";
 
     /**
-     * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.  
+     * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.
      */
     public Opi_activePipClass(Context con, Edm_activePipClass r) {
         super(con, r);
         setTypeId(typeId);
         setVersion(version);
         setName(name);
-        
+
 
         if(r.getDisplaySource()!=null)
         {
             if(r.getDisplaySource().equals("menu") && r.getDisplayFileName()!=null && r.getFilePv()!=null){
-                
+
                 Map<String, EdmString> displayFileMap = r.getDisplayFileName().getEdmAttributesMap();
                 if(displayFileMap.size()>0){
-                    
+
                     Map<String, EdmString> symbolsMap=null;
                     if(r.getSymbols()!=null)
                         symbolsMap = r.getSymbols().getEdmAttributesMap();
@@ -53,7 +53,7 @@ public class Opi_activePipClass extends OpiWidget {
                     boolean f= false;
                     for(String key : displayFileMap.keySet()){
                         if(f)
-                            sb.append("else ");                        
+                            sb.append("else ");
                         f=true;
                         sb.append("if(pv0=="+key+"){\n");
                         boolean append = true;
@@ -81,33 +81,33 @@ public class Opi_activePipClass extends OpiWidget {
                             }
                         }
                         sb.append("widget.setPropertyValue(\"macros\", macroInput);\n");
-                        
+
                         sb.append("widget.setPropertyValue(\"opi_file\",\""+
                                 convertFileExtention(displayFileMap.get(key).get()) +"\");\n");
-                        
+
                         sb.append("}\n");
                     }
-                    
+
                     LinkedHashMap<String, Boolean> pvNames = new LinkedHashMap<String, Boolean>();
                     pvNames.put(convertPVName(r.getFilePv()), true);
-                    
+
                     new OpiScript(widgetContext, "OPIFileScript", pvNames , sb.toString());
                 }
-                
-                
-                
-                
+
+
+
+
             }else if (r.getFile() != null) {
                 String originPath = r.getFile();
                 originPath = convertFileExtention(originPath);
                 new OpiString(widgetContext, "opi_file", originPath);
             }
         }
-        
+
         if(r.getDisplaySource()==null && r.getFilePv()!=null){
             createPVOutputRule(r, convertPVName(r.getFilePv()), "opi_file", "pvStr0", "OPIFileFromPVRule");
         }
-        
+
         new OpiString(widgetContext, "resize_behaviour", "2");
 
         log.debug("Edm_activePipClass written.");

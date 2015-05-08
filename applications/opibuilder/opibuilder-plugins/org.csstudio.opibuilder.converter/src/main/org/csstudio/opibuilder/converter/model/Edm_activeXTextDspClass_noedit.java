@@ -23,12 +23,12 @@ public class Edm_activeXTextDspClass_noedit extends EdmWidget {
     @EdmAttributeAn @EdmOptionalAn private boolean useDisplayBg;
     @EdmAttributeAn @EdmOptionalAn private int precision;
     @EdmAttributeAn @EdmOptionalAn private String fontAlign;
-    
+
     public Edm_activeXTextDspClass_noedit(EdmEntity genericEntity) throws EdmException {
         super(genericEntity);
     }
-    
-    
+
+
     public boolean isLimitsFromDb() {
         return limitsFromDb;
     }
@@ -61,7 +61,7 @@ public class Edm_activeXTextDspClass_noedit extends EdmWidget {
         return "left";
     }
 
-    
+
 
 
     /**
@@ -71,11 +71,11 @@ public class Edm_activeXTextDspClass_noedit extends EdmWidget {
         return controlPv;
     }
 
-    
+
     public String getFormat() {
         return format;
     }
-    
+
     public boolean isAutoHeight() {
         return autoHeight;
     }

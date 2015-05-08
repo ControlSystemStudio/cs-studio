@@ -25,18 +25,18 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 public class ScriptChoiceDialog extends Dialog {
-    
+
     private boolean isEmbedded;
 
     public ScriptChoiceDialog(Shell parentShell) {
         super(parentShell);
-    }    
+    }
 
-    
+
     @Override
     protected Control createContents(Composite parent) {
         parent.setLayout(new GridLayout(1, true));
-        
+
         Button chooseFileButton = new Button(parent, SWT.PUSH);
         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
         gd.heightHint = 50;
@@ -73,6 +73,6 @@ public class ScriptChoiceDialog extends Dialog {
         return isEmbedded;
     }
 
-    
+
 
 }

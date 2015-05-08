@@ -5,9 +5,9 @@ import org.eclipse.core.runtime.Platform;
 
 /**
  * A Helper to find the {@link LogbookClientFactory} registered via extension points
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class LogbookClientManager {
 
@@ -16,7 +16,7 @@ public class LogbookClientManager {
     }
 
     /**
-     * 
+     *
      * @return the registered LogbookClientFactory
      * @throws Exception
      */
@@ -27,7 +27,7 @@ public class LogbookClientManager {
             throw new Exception("Got " + configs.length + " instead of 1 "
                     + LogbookClientFactory.EXTENSION_ID + " implementations");
         return (LogbookClientFactory) configs[0].createExecutableExtension("class");
-            
+
     }
 
 }

@@ -11,9 +11,9 @@ import de.desy.language.editor.ui.editor.highlighting.RuleUtils;
 /**
  * This rule searches for an embedded c statement. Each separator has to stand
  * alone (except blanks) in its line. The separators are '%{' and '}%'.
- * 
+ *
  * @author C1 WPS / KM, MZ
- * 
+ *
  */
 public class EmbeddedCCodeRule implements IRule {
 

@@ -16,7 +16,7 @@ import org.csstudio.autocomplete.parser.ContentDescriptor;
 
 /**
  * @author Fred Arnaud (Sopra Group) - ITER
- * 
+ *
  */
 public class SysContentDescriptor extends ContentDescriptor {
 

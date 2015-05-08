@@ -75,7 +75,7 @@ public class EDM2OPIConverterPlugin extends AbstractUIPlugin {
                     final String message = "Failed to convert color file. ";
                     EDM2OPIConverterPlugin.getLogger().log(Level.WARNING, message, e);
                     ConsoleService.getInstance().writeError(message + e.getMessage());
-                } 
+                }
             }
         };
 
@@ -94,7 +94,7 @@ public class EDM2OPIConverterPlugin extends AbstractUIPlugin {
     private void convertColorFile(){
             if(opiColorFolder == null)
                 return;
-            
+
             String colorDef = System.getProperty("edm2xml.colorsOutput");
             String colorsFile = System.getProperty("edm2xml.colorsFile");
             if(colorsFile==null || colorsFile.isEmpty() || colorDef==null||colorDef.isEmpty())
@@ -105,7 +105,7 @@ public class EDM2OPIConverterPlugin extends AbstractUIPlugin {
             } catch (Exception e) {
                 ErrorHandlerUtil.handleError("Error in converting EDM color file", e);
             }
-        
+
     }
 
 
@@ -150,7 +150,7 @@ public class EDM2OPIConverterPlugin extends AbstractUIPlugin {
     {
         return Logger.getLogger(PLUGIN_ID);
     }
-    
+
     /**Get the IFile from IPath.
      * @param path Path to file in workspace
      * @return the IFile. <code>null</code> if no IFile on the path, file does not exist, internal error.

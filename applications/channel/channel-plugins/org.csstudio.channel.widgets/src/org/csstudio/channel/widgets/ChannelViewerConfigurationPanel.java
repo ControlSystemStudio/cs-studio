@@ -75,32 +75,32 @@ public class ChannelViewerConfigurationPanel extends
         propertyListWidget.setSelectedValues(properties);
     }
 
-    public List<String> getSelectedProperties() {        
+    public List<String> getSelectedProperties() {
         return propertyListWidget.getSelectedValues();
     }
-    
+
 
     public void setPossibleProperties(List<String> list) {
         propertyListWidget.setPossibleValues(list);
     }
-    
+
     public List<String> getPossibleProperties() {
         return propertyListWidget.getPossibleValues();
     }
-    
+
     public void setSelectedTags(List<String> tags) {
         tagListWidget.setSelectedValues(tags);
     }
 
-    public List<String> getSelectedTags() {        
+    public List<String> getSelectedTags() {
         return tagListWidget.getSelectedValues();
     }
-    
+
     public void setPossibleTags(List<String> tags) {
         tagListWidget.setPossibleValues(tags);
     }
 
-    public List<String> getPossibleTags() {        
+    public List<String> getPossibleTags() {
         return tagListWidget.getPossibleValues();
     }
 

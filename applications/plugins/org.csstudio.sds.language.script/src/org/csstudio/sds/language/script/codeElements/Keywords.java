@@ -3,7 +3,7 @@ package org.csstudio.sds.language.script.codeElements;
 import de.desy.language.editor.core.ILanguageElements;
 
 public enum Keywords implements ILanguageElements {
-    
+
     VAR("var"),
     RETURN("return"),
     IF("if"),
@@ -36,7 +36,7 @@ public enum Keywords implements ILanguageElements {
     VOID("void"),
     WITH("with"),
     IMPORTPACKAGE("importPackage");
-    
+
     private String _elementName;
 
     private Keywords(String elementName) {

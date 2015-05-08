@@ -31,7 +31,7 @@ public class ScriptInfoEditor extends RowEditDialog
     {
         super(shell);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected void configureShell(final Shell newShell)
@@ -39,7 +39,7 @@ public class ScriptInfoEditor extends RowEditDialog
         super.configureShell(newShell);
         newShell.setText(Messages.ScriptInfoDlgTitle);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected Control createDialogArea(Composite parent)

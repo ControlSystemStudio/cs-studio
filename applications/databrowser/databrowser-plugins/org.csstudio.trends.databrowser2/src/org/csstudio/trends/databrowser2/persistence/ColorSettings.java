@@ -5,7 +5,7 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * XML DTO for {@link Color}.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class ColorSettings {

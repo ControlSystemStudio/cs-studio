@@ -13,22 +13,22 @@ import org.epics.util.time.Timestamp;
 
 /**
  * ArchiveReader for kblog
- * 
+ *
  * @author Takashi Nakamoto
  */
 public class KBLogArchiveReader implements ArchiveReader {
     private final static String scheme = "kblog://";
-    private String kblogRoot; 
+    private String kblogRoot;
     private ArchiveInfo[] archiveInfos;
     private ArrayList<KBLogRDProcess> kblogrdProcesses;
-    
+
     private String kblogrdPath;
     private String relPathToLCFDir;
-    private boolean reduceData; 
-    
+    private boolean reduceData;
+
     /**
      * Constructor of KBLogArchiveReader.
-     * 
+     *
      * @param url URL must start with "kblog://".
      */
     public KBLogArchiveReader(final String url, final String kblogrdPath, String relPathToSubarchiveList, String relPathToLCFDir, final boolean reduceData)
@@ -36,29 +36,29 @@ public class KBLogArchiveReader implements ArchiveReader {
         this.kblogrdPath = kblogrdPath;
         this.relPathToLCFDir = relPathToLCFDir;
         this.reduceData = reduceData;
-        
+
         // Parse URL
         if (!url.startsWith(scheme)) {
             Logger.getLogger(Activator.ID).log(Level.WARNING, "Wrong URL for KBLogArchiveReader: " + url);
         }
         kblogRoot = url.substring(scheme.length());
-        
+
         // Obtain sub archive names
         String[] subArchives = KBLogUtil.getSubArchives(kblogRoot, relPathToSubarchiveList);
         if (subArchives.length == 0) {
             Logger.getLogger(Activator.ID).log(Level.WARNING, "Failed to find archives in " + kblogRoot);
         }
-        
+
         archiveInfos = new ArchiveInfo[subArchives.length];
-        for (int i=0; i<subArchives.length; i++) { 
+        for (int i=0; i<subArchives.length; i++) {
             int key = i + 1;
             archiveInfos[i] = new ArchiveInfo(subArchives[i], "", key);
         }
-        
+
         // Container of kblogrd processes.
         kblogrdProcesses = new ArrayList<KBLogRDProcess>();
     }
-    
+
     @Override
     public String getServerName() {
         return KBLogMessages.ArchiveServerName;
@@ -103,8 +103,8 @@ public class KBLogArchiveReader implements ArchiveReader {
             Timestamp end) throws UnknownChannelException, Exception {
         String subArchiveName = archiveInfos[key-1].getName();
         KBLogRDProcess kblogrdProcess = new KBLogRDProcess(kblogrdPath, subArchiveName, name, start, end, 0, false);
-        
-        return kblogrdProcess.start();        
+
+        return kblogrdProcess.start();
     }
 
     @Override
@@ -122,19 +122,19 @@ public class KBLogArchiveReader implements ArchiveReader {
         // At least, two points are required to draw a chart.
         if (count == 1)
             count = 2;
-        
+
         int stepSecond = (int)Math.floor(diff / (count-1));
         if (stepSecond <= 0) {
             // No need to thin out values.
             return getRawValues(key, name, start, end);
         }
-        
+
         String subArchiveName = archiveInfos[key-1].getName();
         KBLogRDProcess kblogrdProcess = new KBLogRDProcess(kblogrdPath, subArchiveName, name, start, end, stepSecond, !reduceData);
         synchronized (kblogrdProcesses) {
             kblogrdProcesses.add(kblogrdProcess);
         }
-        
+
         return kblogrdProcess.start();
     }
 
@@ -144,19 +144,19 @@ public class KBLogArchiveReader implements ArchiveReader {
         // this method is not called when users request the cancellation
         // of searching.
         //
-        // See the implementation of 
+        // See the implementation of
         // org.csstudio.trends.databrowser2.archive.SearchJob
         // for more details.
-        
+
         Logger.getLogger(Activator.ID).log(Level.FINE, "KBLogArchiveReader.cancel() is requested.");
-        
+
         synchronized (kblogrdProcesses) {
             KBLogRDProcess[] procs = kblogrdProcesses.toArray(new KBLogRDProcess[0]);
             for (KBLogRDProcess proc : procs) {
                 if (!proc.isFinished()) {
                     proc.cancel();
                 }
-                
+
                 kblogrdProcesses.remove(proc);
             }
         }

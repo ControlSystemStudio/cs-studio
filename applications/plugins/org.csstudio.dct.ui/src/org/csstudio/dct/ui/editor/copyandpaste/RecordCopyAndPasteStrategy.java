@@ -33,13 +33,13 @@ public class RecordCopyAndPasteStrategy implements ICopyAndPasteStrategy {
             for (IElement e : copiedElements) {
                 if (e instanceof IRecord) {
                     IRecord r = (IRecord) e;
-                    // TODO (hrickens) [26.08.2011]: Code duplication! Same code on BaseCopyAndPasteStrategy.chainPrototype(IPrototype prototype2Copy, CompoundCommand commandChain, Map<UUID, IPrototype> alreadyCreatedPrototypes, IProject project, IFolder targetFolder) 
+                    // TODO (hrickens) [26.08.2011]: Code duplication! Same code on BaseCopyAndPasteStrategy.chainPrototype(IPrototype prototype2Copy, CompoundCommand commandChain, Map<UUID, IPrototype> alreadyCreatedPrototypes, IProject project, IFolder targetFolder)
                     IRecord nr = RecordFactory.createRecord(project, r.getType(), r.getName(), UUID.randomUUID());
 
                     cmd.add(new ChangeBeanPropertyCommand(nr, "epicsName", r.getEpicsName()));
                     cmd.add(new ChangeBeanPropertyCommand(nr, "disabled", r.getDisabled()));
                     cmd.add(new ChangeBeanPropertyCommand(nr, "name", r.getName()));
-                    
+
                     cmd.add(new AddRecordCommand((IContainer) c, nr));
 
                     for (String key : r.getFields().keySet()) {
@@ -80,7 +80,7 @@ public class RecordCopyAndPasteStrategy implements ICopyAndPasteStrategy {
                 result &= e instanceof IRecord;
             }
         }
-        
+
         return result;
     }
 
@@ -93,7 +93,7 @@ public class RecordCopyAndPasteStrategy implements ICopyAndPasteStrategy {
                 result &= e instanceof IContainer;
             }
         }
-        
+
         return result;
     }
 

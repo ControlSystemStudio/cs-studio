@@ -5,9 +5,9 @@ import org.eclipse.swt.graphics.RGB;
 
 /**
  * Describes a named color.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class NamedColor {
     private String name;
@@ -21,7 +21,7 @@ public class NamedColor {
         assert description.trim().length() > 0 : "description.trim().length() > 0";
         assert hex != null : "hex != null";
         assert hex.trim().length() > 0 : "hex.trim().length() > 0";
-        
+
         this.name = name;
         this.description = description;
         this.hex = hex;
@@ -42,7 +42,7 @@ public class NamedColor {
     public String getHex() {
         return hex;
     }
-    
+
     private static RGB toRgb(String hex) {
         assert ColorAndFontUtil.isHex(hex);
         int r = Integer.valueOf(hex.substring(1, 3), 16);

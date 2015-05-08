@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.channel.widgets;
 
@@ -12,7 +12,7 @@ import org.eclipse.jface.viewers.Viewer;
 import com.swtdesigner.TableViewerColumnSorter;
 /**
  * @author shroffk
- * 
+ *
  */
 public class TableViewerChannelTagSorter extends TableViewerColumnSorter {
 

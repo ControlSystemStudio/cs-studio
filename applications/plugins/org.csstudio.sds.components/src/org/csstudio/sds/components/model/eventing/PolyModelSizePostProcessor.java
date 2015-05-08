@@ -12,7 +12,7 @@ public class PolyModelSizePostProcessor extends
         assert widget != null : "widget != null";
         return new SetSizeCommand(widget);
     }
-    
+
     private static class SetSizeCommand extends Command {
 
         private final AbstractPolyModel widget;
@@ -20,12 +20,12 @@ public class PolyModelSizePostProcessor extends
         public SetSizeCommand(AbstractPolyModel widget) {
             this.widget = widget;
         }
-        
+
         @Override
         public void execute() {
             widget.setSize(widget.getWidth(),widget.getHeight());
         }
-        
+
     }
 
 }

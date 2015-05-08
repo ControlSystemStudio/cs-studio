@@ -20,7 +20,7 @@ import edu.stanford.slac.archiverappliance.PB.EPICSEvent.VectorShort;
 import edu.stanford.slac.archiverappliance.PB.EPICSEvent.VectorString;
 
 /**
- * 
+ *
  * <code>TestGenMsgIteratorWaveform</code> is a message generator for waveform data.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
@@ -40,8 +40,8 @@ public class TestGenMsgIteratorWaveform extends TestGenMsgIteratorRaw {
             {8, -17, -115, -90, 4, 16, -3, -22, -91, -94, 2, 26, -128, 1, 0, 0, 0, 0, 0, 0, 42, 64, 0, 0, 0, 0, 0, 0, 44, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -16, 63, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 8, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 20, 64, 0, 0, 0, 0, 0, 0, 24, 64, 0, 0, 0, 0, 0, 0, 28, 64, 0, 0, 0, 0, 0, 0, 32, 64, 0, 0, 0, 0, 0, 0, 34, 64, 0, 0, 0, 0, 0, 0, 36, 64, 0, 0, 0, 0, 0, 0, 38, 64, 0, 0, 0, 0, 0, 0, 40, 64, 0, 0, 0, 0, 0, 0, 42, 64},
             {8, -70, -111, -52, 1, 16, -35, -61, -15, -105, 2, 26, -128, 1, 0, 0, 0, 0, 0, 0, 24, 64, 0, 0, 0, 0, 0, 0, 32, 64, 0, 0, 0, 0, 0, 0, 8, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 20, 64, 0, 0, 0, 0, 0, 0, 32, 64, 0, 0, 0, 0, 0, 0, 34, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 24, 64, 0, 0, 0, 0, 0, 0, 28, 64, 0, 0, 0, 0, 0, 0, 34, 64, 0, 0, 0, 0, 0, 0, 28, 64, 0, 0, 0, 0, 0, 0, 36, 64, 0, 0, 0, 0, 0, 0, 20, 64, 58, 21, 10, 4, 68, 69, 83, 67, 18, 13, 116, 101, 115, 116, 32, 112, 118, 32, 119, 97, 118, 101, 49, 58, 12, 10, 3, 69, 71, 85, 18, 5, 117, 110, 105, 116, 115, 58, 9, 10, 4, 80, 82, 69, 67, 18, 1, 50, 64, 0}
     };
-            
-    
+
+
     public static final double[][] VALUE_DOUBLE = {
         {3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 0.0, 1.0, 2.0, 3.0},
         {5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 0.0, 1.0, 2.0, 3.0, 4.0, 5.0},
@@ -102,42 +102,42 @@ public class TestGenMsgIteratorWaveform extends TestGenMsgIteratorRaw {
         {0, 1076494336, 0, 1076625408, 0, 0, 0, 1072693248, 0, 1073741824, 0, 1074266112, 0, 1074790400, 0, 1075052544, 0, 1075314688, 0, 1075576832, 0, 1075838976, 0, 1075970048, 0, 1076101120, 0, 1076232192, 0, 1076363264, 0, 1076494336},
         {0, 1075314688, 0, 1075838976, 0, 1074266112, 0, 1073741824, 0, 1075052544, 0, 1075838976, 0, 1075970048, 0, 0, 0, 1074266112, 0, 1074790400, 0, 1075314688, 0, 1075576832, 0, 1075970048, 0, 1075576832, 0, 1076101120, 0, 1075052544}
     };
-    
+
     /**
      * Constructs a new message iterator.
-     * 
+     *
      * @param name the pv name
-     * @param start the start time 
+     * @param start the start time
      * @param end the end time
      */
     public TestGenMsgIteratorWaveform(String name, Timestamp start, Timestamp end) {
         super(name, start, end);
     }
-        
+
     /**
      * Initializes the epics messages.
-     * 
+     *
      * @param name the name of the PV
      * @param start the start time of the requested samples
      * @param end the end time of the requested samples
-     * @throws InvalidProtocolBufferException 
+     * @throws InvalidProtocolBufferException
      */
     protected void initialize(String name, Timestamp start, Timestamp end) throws InvalidProtocolBufferException {
-        
+
         if (name.contains("nth")) {
             initializeNth(name,start,end);
         } else {
             initializeNormal(name,start,end);
-        }    
+        }
     }
-    
+
     private void initializeNormal(String name, Timestamp start, Timestamp end) throws InvalidProtocolBufferException {
         Calendar startCal = Calendar.getInstance();
         startCal.setTime(start);
         PayloadType payloadType = PayloadType.WAVEFORM_DOUBLE;
         GeneratedMessage[] message = new GeneratedMessage[MESSAGE_LIST_LENGTH];
         Number[][] values = new Number[MESSAGE_LIST_LENGTH][];
-        
+
         if (name.contains("double")) {
             payloadType = PayloadType.WAVEFORM_DOUBLE;
             for (int i = 0; i < MESSAGE_LIST_LENGTH; i++) {
@@ -147,7 +147,7 @@ public class TestGenMsgIteratorWaveform extends TestGenMsgIteratorRaw {
                 }
                 message[i] = VectorDouble.parseFrom(BYTES[i]);
             }
-            
+
         } else if (name.contains("float")) {
             payloadType = PayloadType.WAVEFORM_FLOAT;
             for (int i = 0; i < MESSAGE_LIST_LENGTH; i++) {
@@ -166,7 +166,7 @@ public class TestGenMsgIteratorWaveform extends TestGenMsgIteratorRaw {
                 }
                 message[i] = VectorInt.parseFrom(BYTES[i]);
             }
-            
+
         } else if (name.contains("short")) {
             payloadType = PayloadType.WAVEFORM_SHORT;
             for (int i = 0; i < MESSAGE_LIST_LENGTH; i++) {
@@ -196,12 +196,12 @@ public class TestGenMsgIteratorWaveform extends TestGenMsgIteratorRaw {
                 message[i] = VectorEnum.parseFrom(new byte[]{8, -70, -111, -52, 1, 16, -35, -61, -15, -105, 2, 26, -128, 1, 0, 0, 0, 0, 0, 0, 24, 64, 0, 0, 0, 0, 0, 0, 32, 64, 0, 0, 0, 0, 0, 0, 8, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 20, 64, 0, 0, 0, 0, 0, 0, 32, 64, 0, 0, 0, 0, 0, 0, 34, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 24, 64, 0, 0, 0, 0, 0, 0, 28, 64, 0, 0, 0, 0, 0, 0, 34, 64, 0, 0, 0, 0, 0, 0, 28, 64, 0, 0, 0, 0, 0, 0, 36, 64, 0, 0, 0, 0, 0, 0, 20, 64, 58, 21, 10, 4, 68, 69, 83, 67, 18, 13, 116, 101, 115, 116, 32, 112, 118, 32, 119, 97, 118, 101, 49, 58, 12, 10, 3, 69, 71, 85, 18, 5, 117, 110, 105, 116, 115, 58, 9, 10, 4, 80, 82, 69, 67, 18, 1, 50, 64, 0});
             }
         }
-        
+
         info = PayloadInfo.newBuilder().setPvname(name)
                 .setType(payloadType)
                 .setYear(startCal.get(Calendar.YEAR)).build();
         epicsMessageList = new ArrayList<EpicsMessage>();
-        
+
         long s = start.getTime();
         for (int i = 0; i < MESSAGE_LIST_LENGTH; i++) {
             epicsMessageList.add(new TestEpicsMessage(s + i, values[i],SEVERITIES[i],STATUS[i%STATUS.length],message[i], info));
@@ -211,13 +211,13 @@ public class TestGenMsgIteratorWaveform extends TestGenMsgIteratorRaw {
     private void initializeNth(String name, Timestamp start, Timestamp end) throws InvalidProtocolBufferException {
         Calendar startCal = Calendar.getInstance();
         startCal.setTime(start);
-        
+
         int n = Integer.parseInt(name.substring(4,name.indexOf('(')));
-        
+
         PayloadType payloadType = PayloadType.WAVEFORM_DOUBLE;
         GeneratedMessage[] message = new GeneratedMessage[MESSAGE_LIST_LENGTH/n];
         Number[][] values = new Number[MESSAGE_LIST_LENGTH/n][];
-        
+
         if (name.contains("double")) {
             payloadType = PayloadType.WAVEFORM_DOUBLE;
             for (int i = 0; i < MESSAGE_LIST_LENGTH; i+=n) {
@@ -227,7 +227,7 @@ public class TestGenMsgIteratorWaveform extends TestGenMsgIteratorRaw {
                 }
                 message[i/n] = VectorDouble.parseFrom(BYTES[i]);
             }
-            
+
         } else if (name.contains("float")) {
             payloadType = PayloadType.WAVEFORM_FLOAT;
             for (int i = 0; i < MESSAGE_LIST_LENGTH; i+=n) {
@@ -246,7 +246,7 @@ public class TestGenMsgIteratorWaveform extends TestGenMsgIteratorRaw {
                 }
                 message[i/n] = VectorInt.parseFrom(BYTES[i]);
             }
-            
+
         } else if (name.contains("short")) {
             payloadType = PayloadType.WAVEFORM_SHORT;
             for (int i = 0; i < MESSAGE_LIST_LENGTH; i+=n) {
@@ -276,17 +276,17 @@ public class TestGenMsgIteratorWaveform extends TestGenMsgIteratorRaw {
                 message[i/n] = VectorEnum.parseFrom(new byte[]{8, -70, -111, -52, 1, 16, -35, -61, -15, -105, 2, 26, -128, 1, 0, 0, 0, 0, 0, 0, 24, 64, 0, 0, 0, 0, 0, 0, 32, 64, 0, 0, 0, 0, 0, 0, 8, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 20, 64, 0, 0, 0, 0, 0, 0, 32, 64, 0, 0, 0, 0, 0, 0, 34, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 24, 64, 0, 0, 0, 0, 0, 0, 28, 64, 0, 0, 0, 0, 0, 0, 34, 64, 0, 0, 0, 0, 0, 0, 28, 64, 0, 0, 0, 0, 0, 0, 36, 64, 0, 0, 0, 0, 0, 0, 20, 64, 58, 21, 10, 4, 68, 69, 83, 67, 18, 13, 116, 101, 115, 116, 32, 112, 118, 32, 119, 97, 118, 101, 49, 58, 12, 10, 3, 69, 71, 85, 18, 5, 117, 110, 105, 116, 115, 58, 9, 10, 4, 80, 82, 69, 67, 18, 1, 50, 64, 0});
             }
         }
-        
+
         info = PayloadInfo.newBuilder().setPvname(name)
                 .setType(payloadType)
                 .setYear(startCal.get(Calendar.YEAR)).build();
         epicsMessageList = new ArrayList<EpicsMessage>();
-        
+
         long s = start.getTime();
         for (int i = 0; i < MESSAGE_LIST_LENGTH; i+=n) {
             epicsMessageList.add(new TestEpicsMessage(s + i, values[i/n],SEVERITIES[i],STATUS[i%STATUS.length],message[i/n], info));
         }
     }
 
-    
+
 }

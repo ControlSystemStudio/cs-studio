@@ -19,22 +19,22 @@ import org.eclipse.draw2d.ToggleButton;
  */
 public class ChoiceButtonFigure extends AbstractChoiceFigure {
 
-    
+
     public ChoiceButtonFigure(boolean runMode) {
         super(runMode);
         selectedColor = ColorConstants.buttonLightest;
     }
-    
+
     @Override
     protected Toggle createToggle(String text) {
         return new ColorToggleButton(text);
     }
-    
+
     class ColorToggleButton extends ToggleButton{
-        
+
         /**
          * Constructs a ToggleButton with the passed string as its text.
-         * 
+         *
          * @param text the text to be displayed on the button
          * @since 2.0
          */
@@ -43,7 +43,7 @@ public class ChoiceButtonFigure extends AbstractChoiceFigure {
             if(runMode)
                 setCursor(Cursors.HAND);
         }
-        
+
         /**
          * Draws a checkered pattern to emulate a toggle button that is in the selected state.
          * @param graphics    The Graphics object used to paint
@@ -56,6 +56,6 @@ public class ChoiceButtonFigure extends AbstractChoiceFigure {
             graphics.restoreState();
         }
     }
-    
+
 
 }

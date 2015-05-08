@@ -163,7 +163,7 @@ public class SVGSymbolImage extends AbstractSymbolImage {
         int cropedWidth = imgWidth - (int) Math.round(scale * (leftCrop + rightCrop));
         int cropedHeight = imgHeight - (int) Math.round(scale * (bottomCrop + topCrop));
 
-        Dimension newImgDimension = new Dimension((int) Math.round(cropedWidth / scale), 
+        Dimension newImgDimension = new Dimension((int) Math.round(cropedWidth / scale),
                 (int) Math.round(cropedHeight / scale));
         if (imgDimension == null || newImgDimension.width != imgDimension.width
                 || newImgDimension.height != imgDimension.height)
@@ -180,7 +180,7 @@ public class SVGSymbolImage extends AbstractSymbolImage {
     public void setAbsoluteScale(double newScale) {
         double oldScale = scale;
         super.setAbsoluteScale(newScale);
-        if (oldScale != newScale) 
+        if (oldScale != newScale)
             resizeImage();
     }
 
@@ -296,7 +296,7 @@ public class SVGSymbolImage extends AbstractSymbolImage {
         try {
             IPath workSpacePath = ResourceUtil.workspacePathToSysPath(new Path("/")); //$NON-NLS-1$
             String uri = "file://"
-                    + (workSpacePath == null ? "" : workSpacePath.toOSString()) //$NON-NLS-1$ 
+                    + (workSpacePath == null ? "" : workSpacePath.toOSString()) //$NON-NLS-1$
                     + imagePath.toString();
             svgDocument = factory.createDocument(uri, inputStream);
             svgHandler = new SVGHandler((SVGDocument) svgDocument);

@@ -233,7 +233,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
     private Point originLocation;
 
     private Version versionOnFile;
-    
+
     //If the model was parsed from the file, then this would be the line number in the file at which this widget is located
     private int lineNumber = -1;
 
@@ -1090,7 +1090,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 
     /**
      * Sets the line number at which this model is stored in the opi file. The line number can only be set once.
-     * 
+     *
      * @param lineNumber the line number
      */
     public void setLineNumber(int lineNumber) {
@@ -1098,12 +1098,12 @@ public abstract class AbstractWidgetModel implements IAdaptable,
             this.lineNumber = lineNumber;
         }
     }
-    
+
     /**
      * Returns the line number at which this widget model is stored in the opi file. Be aware that this number might
      * not be accurate - if the widget was changed after it has been loaded or if it is new than there is no guarantee
      * that the line number represents the actual state.
-     * 
+     *
      * @return the line number in the opi file
      */
     public int getLineNumber() {

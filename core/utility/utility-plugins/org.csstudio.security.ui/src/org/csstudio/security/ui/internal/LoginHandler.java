@@ -30,7 +30,7 @@ public class LoginHandler extends AbstractHandler
         {
             LoginJob.logout();
         }
-        
+
         return null;
     }
 }

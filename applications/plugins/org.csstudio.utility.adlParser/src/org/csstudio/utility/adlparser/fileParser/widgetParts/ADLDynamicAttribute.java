@@ -71,8 +71,8 @@ public class ADLDynamicAttribute extends WidgetPart{
 
     /**
      * The default constructor.
-     * 
-     * @param adlDynamicAttribute An ADLWidget that correspond a ADL Dynamic Attribute. 
+     *
+     * @param adlDynamicAttribute An ADLWidget that correspond a ADL Dynamic Attribute.
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
@@ -100,7 +100,7 @@ public class ADLDynamicAttribute extends WidgetPart{
         _calc = String.valueOf("");
 
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -111,7 +111,7 @@ public class ADLDynamicAttribute extends WidgetPart{
         for (ADLWidget adlWidget : adlDynamicAttribute.getObjects()) {
             if(adlWidget.getType().equals("attr")){
                 for (FileLine fileLine : adlWidget.getBody()) {
-                    adlDynamicAttribute.addBody(fileLine);    
+                    adlDynamicAttribute.addBody(fileLine);
                 }
             }
         }
@@ -120,7 +120,7 @@ public class ADLDynamicAttribute extends WidgetPart{
         _color=false;
 
         for (FileLine parameter : adlDynamicAttribute.getBody()) {
-            if(parameter.getLine().trim().startsWith("//")){ 
+            if(parameter.getLine().trim().startsWith("//")){
                 continue;
             }
             String head = parameter.getLine().replaceAll("\"", "").split("=")[0]; //$NON-NLS-1$

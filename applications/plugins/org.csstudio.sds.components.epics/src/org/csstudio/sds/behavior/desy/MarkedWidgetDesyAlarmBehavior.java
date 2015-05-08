@@ -105,7 +105,7 @@ public class MarkedWidgetDesyAlarmBehavior<W extends AbstractMarkedWidgetModel> 
 
             widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_LO_LEVEL, meta.getWarnLow());
             widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LO, !Double.isNaN(meta.getWarnLow()));
-            
+
             switch (meta.getAccessType()) {
                 case NONE:
                     widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService.getInstance()

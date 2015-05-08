@@ -15,7 +15,7 @@ import org.junit.Test;
 /** JUnit Test of the SpeechPriorityQueue.
  *  @author Delphy Armstrong
  *  @author Kay Kasemir
- *  
+ *
  *      reviewed by Delphy 1/29/09
  */
 @SuppressWarnings("nls")
@@ -29,13 +29,13 @@ public class SpeechPriorityQueueUnitTest
     {
         Severity.initialize(Preferences.DEFAULT_SEVERITIES);
         final SpeechPriorityQueue q = new SpeechPriorityQueue();
-      
+
         // Basic add/remove(poll)
         q.add(Severity.fromString("MINOR"), "Test");
         final AnnunciationMessage item = q.poll();
         assertEquals("Test", item.getMessage());
         assertEquals("MINOR", item.getSeverity().getName());
-        
+
         // Check priority order
         q.add(Severity.fromString("MINOR"), "Three");
         q.add(Severity.fromString("MAJOR"), "Two");

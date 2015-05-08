@@ -19,11 +19,11 @@ import static org.csstudio.ui.util.ReflectUtil.*;
  */
 public class AdapterUtil
 {
-    
+
     /**
      * Returns all class names that an object of that class can be
      * converted to.
-     * 
+     *
      * @param clazz a class
      * @return all the class names with registered adapterFactories
      */
@@ -33,15 +33,15 @@ public class AdapterUtil
             // Check for adapters in platform
             return Platform.getAdapterManager().computeAdapterTypes(clazz);
         }
-        
+
         // No types found
         return new String[0];
     }
-    
+
     /**
      * Returns the current selection converted to an array of the desired type,
      * or to an empty array if not possible.
-     * 
+     *
      * @param <T> requested type
      * @param selection a selection
      * @param clazz the desired type
@@ -50,7 +50,7 @@ public class AdapterUtil
     public static <T> T[] convert(ISelection selection, Class<T> clazz) {
         if (selection instanceof IStructuredSelection) {
             IStructuredSelection strucSelection = (IStructuredSelection) selection;
-            
+
             @SuppressWarnings("unchecked")
             T[] result = (T[]) convert(strucSelection.toArray(), ReflectUtil.toArrayClass(clazz.getName()));
             if (result != null)
@@ -60,13 +60,13 @@ public class AdapterUtil
         T[] result = (T[]) Array.newInstance(clazz, 0);
         return result;
     }
-    
-    /** 
+
+    /**
      * Adapts an object to the desired type. This method, on top of
      * the standard adapter facility, adds support for arrays. If any of the
      * arguments represents an array, it will
      * use object to object adaptation to create it.
-     * 
+     *
      * @param obj Object to adapt
      * @param targetClass Desired class name
      * @return Object that matches the <code>targetClass</code> or <code>null</code>
@@ -77,7 +77,7 @@ public class AdapterUtil
         if (isInstance(obj, targetClass)) {
             return obj;
         }
-        
+
         // If object is of the right class, but the target is an array,
         // return a single element array
         if (isArray(targetClass) && isInstance(obj, getComponentType(targetClass))) {
@@ -85,12 +85,12 @@ public class AdapterUtil
             result[0] = obj;
             return result;
         }
-        
+
         // If the object to adapt is an array,
         // adapt each element
         if (obj instanceof Object[]) {
             Object[] elementsToAdapt = (Object[]) obj;
-            
+
             // If target class is not an array, and
             // there is only one element, adapt only that
             // and return it
@@ -103,7 +103,7 @@ public class AdapterUtil
                     throw new IllegalArgumentException("Trying to adapt an array " + obj + " to a single object of type " + targetClass);
                 }
             }
-            
+
             // Target class is an array
             List<Object> adaptedElements = new ArrayList<Object>();
             String adaptedElementType = getComponentType(targetClass);
@@ -137,7 +137,7 @@ public class AdapterUtil
                 return adaptedElements.toArray(result);
             }
         }
-        
+
         // Time to try out the registered adapterFactories to the platform
         if (Platform.isRunning()) {
             final Object adapted =
@@ -145,7 +145,7 @@ public class AdapterUtil
             if (adapted != null)
                 return adapted;
         }
-        
+
         // No adapter was found. Check if target class is array, and try the single
         // element conversion
         if (isArray(targetClass)) {

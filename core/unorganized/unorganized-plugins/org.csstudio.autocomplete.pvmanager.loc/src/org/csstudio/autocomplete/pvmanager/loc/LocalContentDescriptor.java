@@ -59,7 +59,7 @@ public class LocalContentDescriptor extends ContentDescriptor {
             return initialValuesTypes.size() == 1 ? "number" : "number,...";
         return "initialValue";
     }
-    
+
     public boolean checkParameters() {
         if (initialValues.size() == 0 || vType == null)
             return true;

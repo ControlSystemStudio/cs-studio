@@ -8,22 +8,22 @@ package com.cosylab.vdct.util;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -76,7 +76,7 @@ public static String getFileName(String fileName) {
     if (pos<0) return fileName;
 
     return fileName.substring(pos+1);
-    
+
 }
 /**
  * Insert the method's description here.
@@ -94,7 +94,7 @@ public static java.awt.Color int2color(int rgb) {
         case 0xffffff : return Color.white;
         default: return new Color(rgb);
     }
-    
+
 }
 /**
  * This method was created in VisualAge.
@@ -113,7 +113,7 @@ public static String quoteIfMacro(String str) {
         for (int i=0; (i<len) && !needsQuotes; i++)
             if (nonMacroChars.indexOf(str.charAt(i))<0) needsQuotes=true;
     }
-            
+
     if (needsQuotes) return QUOTE+str+QUOTE;
     else return str;
 }
@@ -136,7 +136,7 @@ public static String removeBegining(String str, String begining) {
 public static String replaceEnding(String str, String s1, String s2) {
     if (str.equals(s1)) return s2;
     else if (!str.endsWith(s1)) return str;
-    
+
     int pos = str.lastIndexOf(s1);
     if (pos<0) return str;
     return str.substring(0, str.length()-s1.length())+s2;
@@ -172,9 +172,9 @@ public static String replaceFileName(String fileName, String newFN) {
     if (pos<0) return newFN;
 
     String onlyFN = fileName.substring(pos+1);
-    
+
     return replaceEnding(fileName, onlyFN, newFN);
-    
+
 }
 /**
  * This method was created in VisualAge.
@@ -201,7 +201,7 @@ public static java.awt.Color string2color(String str) {
         case 0xffffff : return Color.white;
         default: return new Color(rgb);
     }
-    
+
 }
 /**
  * Insert the method's description here.
@@ -245,7 +245,7 @@ public static String incrementName(String newName, String suffix)
 
         int len = String.valueOf(Integer.parseInt(snum)).length();
         snum = String.valueOf(Integer.parseInt(snum)+1);
-        
+
         // preserve number of digits
         if (snum.length()>len && i>0 && newName.charAt(i-1)=='0')
             i--;

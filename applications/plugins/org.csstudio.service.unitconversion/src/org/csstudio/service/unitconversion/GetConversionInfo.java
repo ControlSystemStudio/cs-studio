@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.service.unitconversion;
 
@@ -26,7 +26,7 @@ import com.google.common.collect.Lists;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class GetConversionInfo extends ServiceMethod {
 

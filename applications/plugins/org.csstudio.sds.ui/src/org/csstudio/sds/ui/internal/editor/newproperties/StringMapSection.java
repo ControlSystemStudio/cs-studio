@@ -45,9 +45,9 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 /**
  * Section implementation for {@link StringMapProperty}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class StringMapSection extends AbstractBaseSection<StringMapProperty> {
     private TableViewer tableViewer;
@@ -71,12 +71,12 @@ public class StringMapSection extends AbstractBaseSection<StringMapProperty> {
     @Override
     protected void doCreateControls(final Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
         parent.setLayout(new FormLayout());
-        
+
         FormData fd;
-        
+
         // .. table for viewing and editing the entries
         Composite tableComposite = new Composite(parent, SWT.NONE);
-        
+
         fd = new FormData();
         fd.left = new FormAttachment(0,0);
         fd.right = new FormAttachment(100,-10);
@@ -120,7 +120,7 @@ public class StringMapSection extends AbstractBaseSection<StringMapProperty> {
                 }
             }
         });
-        
+
         fd = new FormData();
         fd.left = new FormAttachment(0,0);
         fd.right = new FormAttachment(100,0);
@@ -213,9 +213,9 @@ public class StringMapSection extends AbstractBaseSection<StringMapProperty> {
 
     /**
      * Content proposal for aliases.
-     * 
+     *
      * @author Sven Wende
-     * 
+     *
      */
     private static class AliasContentProposal implements IContentProposal {
         private String content;
@@ -247,9 +247,9 @@ public class StringMapSection extends AbstractBaseSection<StringMapProperty> {
 
     /**
      * Row adapter for the table entries.
-     * 
+     *
      * @author Sven Wende
-     * 
+     *
      */
     private class MapEntryTableRowAdapter implements ITableRow {
         private final Map<String, String> map;
@@ -304,7 +304,7 @@ public class StringMapSection extends AbstractBaseSection<StringMapProperty> {
         /**
          * Returns the characters which activate the content proposal popup
          * menu. Default is "$" Subclasses may override.
-         * 
+         *
          * @return the characters which activate the content proposal popup menu
          */
         private char[] getContentProposalActivationCharacters() {
@@ -314,7 +314,7 @@ public class StringMapSection extends AbstractBaseSection<StringMapProperty> {
         /**
          * Returns the keystroke which activates the content proposal popup
          * menu. Default is CTRL+Space Subclasses may override.
-         * 
+         *
          * @return the keystroke which activates the content proposal popup menu
          */
         private KeyStroke getContentProposalActivationKeystroke() {

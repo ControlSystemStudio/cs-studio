@@ -13,9 +13,9 @@ import org.eclipse.ui.model.IWorkbenchAdapter2;
 
 /**
  * Adapter factory that covers all elements of the DCT model.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 @SuppressWarnings("unchecked")
 public final class ModelAdapterFactory implements IAdapterFactory {

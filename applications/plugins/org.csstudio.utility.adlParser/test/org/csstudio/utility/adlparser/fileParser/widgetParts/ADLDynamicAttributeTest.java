@@ -26,7 +26,7 @@ public class ADLDynamicAttributeTest extends TestCase {
         } catch (WrongADLFormatException e) {
             fail("This should pass");
         }
-        
+
         try {
             attribute = new ADLDynamicAttribute(setupWithAttrSublevelDynamicADLWidget());
             assertTrue( "Test default Name ", attribute.getName().equals("dynamic attribute"));
@@ -39,7 +39,7 @@ public class ADLDynamicAttributeTest extends TestCase {
         } catch (WrongADLFormatException e) {
             fail("This should pass");
         }
-        
+
         try {
             attribute = new ADLDynamicAttribute(setupWithColorModeDiscreteDynamicADLWidget());
             assertTrue( "Test default Name ", attribute.getName().equals("dynamic attribute"));
@@ -52,14 +52,14 @@ public class ADLDynamicAttributeTest extends TestCase {
         } catch (WrongADLFormatException e) {
             fail("This should pass");
         }
-        
+
         try {
             attribute = new ADLDynamicAttribute(setupBadDynamicADLWidget1());
             fail("This should pass.  A parameter has a bad name");
         } catch (WrongADLFormatException e) {
             //OK
         }
-        
+
         //TODO add more test cases to testADLDynamicAttributeADLWidget
     }
 
@@ -71,11 +71,11 @@ public class ADLDynamicAttributeTest extends TestCase {
         assertTrue( "Test default chanb", attribute.get_chanb().equals(""));
         assertTrue( "Test default chanc", attribute.get_chanc().equals(""));
         assertTrue( "Test default chand", attribute.get_chand().equals(""));
-        
+
     }
 
     /**
-     *     
+     *
      * @return
      */
     private ADLWidget setupDynamicADLWidget() {
@@ -91,7 +91,7 @@ public class ADLDynamicAttributeTest extends TestCase {
     }
 
     /**
-     *     
+     *
      * @return
      */
     private ADLWidget setupWithAttrSublevelDynamicADLWidget() {

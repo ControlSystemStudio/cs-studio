@@ -40,7 +40,7 @@ public class Demo2 {
      * Implementation of monitor listener.
      */
     private static class MonitorListenerImpl implements MonitorListener {
-        
+
         /**
          * @see gov.aps.jca.event.MonitorListener#monitorChanged(gov.aps.jca.event.MonitorEvent)
          */
@@ -53,7 +53,7 @@ public class Demo2 {
                 System.err.println("Monitor error: " + event.getStatus());
         }
     }
-    
+
     private static class ConnectionListenerImpl implements ConnectionListener {
         private AtomicBoolean onlyOnce = new AtomicBoolean(false);
         public void connectionChanged(final ConnectionEvent ev) {
@@ -69,18 +69,18 @@ public class Demo2 {
             }
         }
     }
-    
+
     /**
      * JCA context.
      */
     private Context context = null;
-    
+
     /**
      * Initialize JCA context.
      * @throws CAException    throws on any failure.
      */
     private void initialize() throws CAException {
-        
+
         // Get the JCALibrary instance.
         JCALibrary jca = JCALibrary.getInstance();
 
@@ -96,30 +96,30 @@ public class Demo2 {
      * Destroy JCA context.
      */
     private void destroy() {
-        
+
         try {
 
             // Destroy the context, check if never initialized.
             if (context != null)
                 context.destroy();
-            
+
         } catch (Throwable th) {
             th.printStackTrace();
         }
     }
 
-    
+
     public void execute() {
 
         try {
-            
+
             // initialize context
             initialize();
 
             // Create the Channel to connect to the PV.
             /*Channel channel1 =*/ context.createChannel("manyChannel_001", new ConnectionListenerImpl());
             /*Channel channel2 =*/ context.createChannel("nonexisting", new ConnectionListenerImpl());
-            
+
             // ... forever
             synchronized (this) {
                 this.wait();
@@ -136,10 +136,10 @@ public class Demo2 {
         }
 
     }
-    
-    
+
+
     /**
-     * Program entry point. 
+     * Program entry point.
      * @param args    command-line arguments
      */
     public static void main(String[] args) {
@@ -147,5 +147,5 @@ public class Demo2 {
         // execute
         new Demo2().execute();
     }
-    
+
 }

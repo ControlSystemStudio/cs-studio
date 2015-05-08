@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OpenDataBrowserActionHandler implements IWidgetActionHandler {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(OpenDataBrowserActionHandler.class);
 
     private static final String STRIP_TOOL_ID = "org.csstudio.platform.ui.striptool";
@@ -25,10 +25,10 @@ public class OpenDataBrowserActionHandler implements IWidgetActionHandler {
 
     OpenDataBrowserActionModel dataBrowserModel = (OpenDataBrowserActionModel) action;
     IPath path = dataBrowserModel.getResource();
-    
+
     LOG.debug("OpenDataBrowserActionHandler.executeAction()");
     LOG.debug("Open " + path.lastSegment() + " in Data Browser");
-    
+
     IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
         final IConfigurationElement[] configs = Platform.getExtensionRegistry()
                 .getConfigurationElementsFor(STRIP_TOOL_ID);

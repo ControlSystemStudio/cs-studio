@@ -14,9 +14,9 @@ import org.eclipse.swt.SWT;
 
 /**
  * Section implementation for {@link TooltipProperty}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class TooltipSection extends AbstractTextSection<TooltipProperty, String> {
 
@@ -31,12 +31,12 @@ public class TooltipSection extends AbstractTextSection<TooltipProperty, String>
     public int getTextHeight() {
         return STANDARD_WIDGET_HEIGHT * 6;
     }
-    
+
     @Override
     protected int getTextControlStyle() {
         return SWT.MULTI | SWT.V_SCROLL;
     }
-    
+
     /**
      *{@inheritDoc}
      */
@@ -44,7 +44,7 @@ public class TooltipSection extends AbstractTextSection<TooltipProperty, String>
     protected String getConvertedValue(String text) {
         return text;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -93,7 +93,7 @@ public class TooltipSection extends AbstractTextSection<TooltipProperty, String>
 
     /**
      * Describes a proposal.
-     * 
+     *
      * @author Sven Wende
      */
     private static final class WidgetPropertContentProposal implements IContentProposal {

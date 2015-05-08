@@ -14,7 +14,7 @@ public class BooleanOption extends Option
 {
     /** Current value */
     private boolean value = false;
-    
+
     /** Construct String option
      *  @param parser Parser to which to add
      *  @param option Option name: "-something"
@@ -44,7 +44,7 @@ public class BooleanOption extends Option
         }
         return 0;
     }
-    
+
     @Override
     public String toString()
     {

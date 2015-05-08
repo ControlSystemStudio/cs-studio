@@ -8,9 +8,9 @@
 package org.csstudio.apputil.time;
 
 /** Extract relative date/time specifications from a string.
- *  
+ *
  *  @see #parse(String)
- *  
+ *
  *  @author Sergei Chevtsov developed the original code for the
  *          Java Archive Viewer, from which this code heavily borrows.
  *  @author Kay Kasemir
@@ -20,7 +20,7 @@ public class RelativeTimeParser
 {
     /** Characters that are considered part of a number */
     static private final String NUMBER_CHARS = "+-0123456789.";
-    
+
     /** Extract a relative year, month, day, hour, minute, second from string.
      *  <p>
      *  The text has to follow the format
@@ -28,9 +28,9 @@ public class RelativeTimeParser
      *  <p>
      *  Spaces between the number and the date/time identifier are allowed.
      *  Date/time identifiers may be appreviated, so
-     *  <code>-3 years</code>, 
-     *  <code>-3 year</code>, 
-     *  <code>-3 ye</code>, and 
+     *  <code>-3 years</code>,
+     *  <code>-3 year</code>,
+     *  <code>-3 ye</code>, and
      *  <code>-3y</code> are all equivalent.
      *  <p>
      *  To distinguish for example minutes from month, the 'M' for month
@@ -44,7 +44,7 @@ public class RelativeTimeParser
      *  as well as the relative year, month, day, hour, minute, second.
      *  In case nothing was found, the last item position will be
      *  &lt;0, and the relative date/time pieces are all 0.
-     * 
+     *
      *  @param text
      *  @return Array [ next char, year, month, day, hour, minute, second ]
      */
@@ -71,7 +71,7 @@ public class RelativeTimeParser
         return new RelativeTimeParserResult(new RelativeTime(ymdhms),
                                             offset_of_next_char);
     }
-    
+
     /** In case text contains "-24 token", return the number 24.
      *  @param token The token to look for.
      *  @param text  The text to analyze.
@@ -100,7 +100,7 @@ public class RelativeTimeParser
         // Parse the number.
         // For some reason Integer.parseInt doesn't like "+...",
         // but I want to allow that, so chop it off
-        final String number = text.charAt(start) == '+' ? 
+        final String number = text.charAt(start) == '+' ?
                          text.substring(start + 1, end)
                        : text.substring(start,     end);
         try
@@ -111,8 +111,8 @@ public class RelativeTimeParser
         {
             throw new Exception("Cannot parse number for '" + token + "'");
         }
-    }        
-    
+    }
+
     /** Locate position of token in text, also recognizing an abbreviated token.
      *  <p>
      *  Except when comparing only the first characters, the match is
@@ -124,7 +124,7 @@ public class RelativeTimeParser
     public static int[] locateTokenPiece(final String token, final String text)
     {
         final String lc_text = text.toLowerCase();
-        
+
         // Try the full token, case-insensitive,
         // then smaller pieces of the token,
         // until we finally try just the first character.
@@ -141,7 +141,7 @@ public class RelativeTimeParser
             // Nothing found? Try smaller piece of token.
             if (start < 0)
                 continue;
-            // Found what looks like the token piece, but we only care if 
+            // Found what looks like the token piece, but we only care if
             // it's the start of a word. We don't want to accidentally
             // recognize the final 's' in "Months" as the start of "seconds".
             if (start > 0)

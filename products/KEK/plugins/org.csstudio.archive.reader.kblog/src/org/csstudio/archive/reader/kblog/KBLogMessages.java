@@ -4,7 +4,7 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * Externalized strings
- * 
+ *
  * @author Takashi Nakamoto
  */
 public class KBLogMessages extends NLS {
@@ -24,12 +24,12 @@ public class KBLogMessages extends NLS {
     public static String StatusNaN;
     public static String ArchiveServerName;
     public static String ArchiveServerDescription;
-    
+
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, KBLogMessages.class);
     }
-    
+
     private KBLogMessages()
     {
         // Prevent instantiation

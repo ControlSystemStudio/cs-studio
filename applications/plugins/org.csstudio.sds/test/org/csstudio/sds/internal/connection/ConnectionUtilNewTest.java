@@ -21,7 +21,7 @@ public class ConnectionUtilNewTest {
         verifyEquality(ri1, ConnectionUtilNew.translateWithoutCharacteristic(pv1), null);
         verifyEquality(ri2, ConnectionUtilNew.translateWithoutCharacteristic(pv2), "graphMin");
     }
-    
+
     private void verifyEquality(RemoteInfo r1, RemoteInfo r2, String characteristic) {
         assertEquals(r1.getPlugType(), r2.getPlugType());
         assertEquals(r1.getRemoteName(), r2.getRemoteName());

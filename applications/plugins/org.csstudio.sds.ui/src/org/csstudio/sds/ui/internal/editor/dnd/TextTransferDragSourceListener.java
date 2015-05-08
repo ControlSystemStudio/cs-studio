@@ -8,9 +8,9 @@ import org.eclipse.swt.dnd.TextTransfer;
 
 /**
  * Drag source listener for SDS that provides a single {@link String}.
- * 
+ *
  * @author swende
- * 
+ *
  */
 public class TextTransferDragSourceListener extends AbstractDragSourceListener<String> {
 

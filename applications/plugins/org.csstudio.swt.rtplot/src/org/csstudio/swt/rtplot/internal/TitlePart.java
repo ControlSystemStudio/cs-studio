@@ -27,7 +27,7 @@ public class TitlePart extends PlotPart
     {
         super(name, listener);
     }
-    
+
     /** @param gc
      *  @param font
      *  @return Desired height in pixels
@@ -43,16 +43,16 @@ public class TitlePart extends PlotPart
         gc.setFont(orig_font);
         return size.y;
     }
-    
+
     /** {@inheritDoc} */
     public void paint(final GC gc, final SWTMediaPool media, final Font font)
     {
         super.paint(gc, media);
-        
+
         final String text = getName();
         if (text.isEmpty())
             return;
-        
+
         final Font orig_font = gc.getFont();
         gc.setFont(font);
         final Color old_fg = gc.getForeground();
@@ -60,7 +60,7 @@ public class TitlePart extends PlotPart
 
         final Rectangle bounds = getBounds();
         final Point size = gc.textExtent(text);
-        
+
         final int tx = bounds.x + (bounds.width - size.x) / 2;
         final int ty = bounds.y + (bounds.height - size.y) / 2;
         gc.drawText(text, tx, ty, true);

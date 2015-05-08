@@ -52,14 +52,14 @@ import com.cosylab.naming.URIName;
 public final class SimulatorUtilities
 {
     public static final String CONNECTION_DELAY = "connectionDelay";
-    
+
     private static HashMap<String, Object> configurations;
-    
+
     static {
         configurations  = new HashMap<String, Object>();
         configurations.put(CONNECTION_DELAY, new Long(0));
     }
-    
+
     private SimulatorUtilities()
     {
         super();
@@ -78,24 +78,24 @@ public final class SimulatorUtilities
     public static Class<?extends PropertyProxy<?,?>> getPropertyProxyImplementationClass(
         Class<?extends SimpleProperty<?>> propertyType, Class<?extends SimpleProperty<?>> implType)
     {
-        
+
         if (propertyType!=null) {
             String n= propertyType.getName();
             n= n.substring(n.lastIndexOf('.')+1);
             n= "org.epics.css.dal.simulation."+n+"ProxyImpl";
-            
+
             try {
                 return (Class<?extends PropertyProxy<?,?>>)Class.forName(n);
             } catch (ClassNotFoundException e) {
                 // noop
             }
         }
-        
+
         if (implType!=null) {
             String n= implType.getName();
             n= n.substring(n.lastIndexOf('.')+1,n.length()-4);
             n= "org.epics.css.dal.simulation."+n+"ProxyImpl";
-            
+
             try {
                 return (Class<?extends PropertyProxy<?,?>>)Class.forName(n);
             } catch (ClassNotFoundException e) {
@@ -160,12 +160,12 @@ public final class SimulatorUtilities
             URIName uri = new URIName(null, SimulatorPlug.DEFAULT_AUTHORITY,
                     propertyUniqueName, null);
             Attributes attr = ctx.getAttributes(uri);
-            
+
             if (attr==null) {
                 attr=new org.epics.css.dal.directory.Attributes();
                 ctx.bind(uri, null, attr);
             }
-            
+
             Object characteristic = null;
 
             if (attr instanceof org.epics.css.dal.directory.Attributes) {
@@ -211,15 +211,15 @@ public final class SimulatorUtilities
             throw new RuntimeException("Cannot instantiate URIName.", e);
         }
     }
-    
+
     public static Object getConfiguration(String configName) {
         return configurations.get(configName);
     }
-    
+
     public static void putConfiguration(String configName, Object config) {
         configurations.put(configName, config);
     }
-    
+
 }
 
 /* __oOo__ */

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.channel.actions;
 
@@ -21,10 +21,10 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class RemoveTagCommandHandler extends AbstractAdaptedHandler<Channel> {
-    
+
     public RemoveTagCommandHandler() {
         super(Channel.class);
     }
@@ -34,7 +34,7 @@ public class RemoveTagCommandHandler extends AbstractAdaptedHandler<Channel> {
         Shell shell = HandlerUtil.getActiveShell(event);
         ElementListSelectionDialog selectTags = new ElementListSelectionDialog(
                 shell, new LabelProvider());
-        
+
         selectTags.setTitle("Tag Selection");
 
         selectTags.setMessage("Select the Tags to be removed (* = any string, ? = any char):");

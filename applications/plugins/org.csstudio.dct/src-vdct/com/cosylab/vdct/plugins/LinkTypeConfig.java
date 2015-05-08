@@ -8,22 +8,22 @@ package com.cosylab.vdct.plugins;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -43,12 +43,12 @@ import com.cosylab.vdct.plugin.config.LinkTypeConfigPlugin;
 import com.cosylab.vdct.xml.XMLManager;
 
 /**
- * A default LinkTypeConfig plugin. 
+ * A default LinkTypeConfig plugin.
  * It reads link type configuration from an XML file. The file name is defined by VDCT_LINK_CONFIG_FILE filename located
  * in user home directory (or in VDCT_CONFIG_DIR dir). Use VDCT_LINK_CONFIG_FILE_ENV environment variable to override this default setting.
  * An example of XML file:
  * <?xml version="1.0" encoding="UTF-8"?>
- * 
+ *
  * <links>
  *    <link type="CONSTANT" pattern=".*" default="" description="CONSTANT" />
  *    <link type="PV_LINK" pattern=".*" default="" description="PV_LINK" />
@@ -62,15 +62,15 @@ import com.cosylab.vdct.xml.XMLManager;
  *    <link type="RF_IO" pattern="#R\d+ M\d+ D\d+ E\d+( )*( @.*)?" default="#R0 M0 D0 E0 @" description="RF_IO - #Rcryo Mmicro Ddataset Eelement"  />
  *    <link type="VXI_IO" pattern="#V\d+ (C\d+)?+  S\d+( )*( @.*)?" default="#V0 C0 S0 @" description="VXI_IO - #Vframe Cslot Ssignal @parm"  />
  * </links>
- * 
+ *
  * @author Matej Sekoranja
  */
 public class LinkTypeConfig implements LinkTypeConfigPlugin
 {
-    
+
     public static final String VDCT_LINK_CONFIG_FILE = ".vdctlinks.xml";
     public static final String VDCT_LINK_CONFIG_FILE_ENV = "VDCT_LINK_CONFIG";
-    
+
     /**
      * @see com.cosylab.vdct.plugin.config.LinkTypeConfigPlugin#getLinkTypeConfig()
      */
@@ -82,7 +82,7 @@ public class LinkTypeConfig implements LinkTypeConfigPlugin
         try
         {
             fileName = Constants.getConfigFile(VDCT_LINK_CONFIG_FILE, VDCT_LINK_CONFIG_FILE_ENV);
-        
+
             // is file does not exists, load default file
             if (!(new java.io.File(fileName).exists()))
             {
@@ -99,7 +99,7 @@ public class LinkTypeConfig implements LinkTypeConfigPlugin
             com.cosylab.vdct.Console.getInstance().println(e);
             return null;
         }
-    
+
         if (doc==null)
         {
             com.cosylab.vdct.Console.getInstance().println("[LinkTypeConfigPlugin] Invalid link type configuration file '"+fileName+"'.");
@@ -107,13 +107,13 @@ public class LinkTypeConfig implements LinkTypeConfigPlugin
         }
 
         Hashtable table = new Hashtable();
-                        
+
         int count = 0;
         //Node node = doc.getElementsByTagName("links").item(0);
         NodeList nodes = doc.getElementsByTagName("link");
         for (int i=0; i<nodes.getLength(); i++)
         {
-            Element e = (Element)nodes.item(i); 
+            Element e = (Element)nodes.item(i);
             String type = e.getAttribute("type");
             String pattern = e.getAttribute("pattern");
             String def = e.getAttribute("default");
@@ -130,7 +130,7 @@ public class LinkTypeConfig implements LinkTypeConfigPlugin
                     com.cosylab.vdct.Console.getInstance().println("[LinkTypeConfigPlugin] Invalid pattern '"+pattern+"' for link type '"+type+"'. Skipping...");
                     com.cosylab.vdct.Console.getInstance().println(pse);
                     com.cosylab.vdct.Console.getInstance().println();
-                } 
+                }
             }
             else if (type!=null)
                 com.cosylab.vdct.Console.getInstance().println("[LinkTypeConfigPlugin] Invalid configuration for link type '"+type+"'. Skipping...");
@@ -138,7 +138,7 @@ public class LinkTypeConfig implements LinkTypeConfigPlugin
                 com.cosylab.vdct.Console.getInstance().println("[LinkTypeConfigPlugin] Invalid configuration found. Skipping....");
         }
         com.cosylab.vdct.Console.getInstance().println("[LinkTypeConfigPlugin] Loaded "+count+" link type configuration(s).");
-        
+
         return table;
     }
 

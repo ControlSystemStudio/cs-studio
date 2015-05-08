@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.model.commands;
 
@@ -8,7 +8,7 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * Undoable command that adds a property.
- * 
+ *
  * @author Sven Wende
  */
 public final class AddPropertyCommand extends Command {
@@ -16,7 +16,7 @@ public final class AddPropertyCommand extends Command {
     private String key;
     /**
      * Constructor.
-     * 
+     *
      * @param container
      *            the property container
      * @param key

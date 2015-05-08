@@ -30,16 +30,16 @@ import de.desy.tine.definitions.TFormat;
 import de.desy.tine.types.SPECTRUM;
 
 /**
- * 
+ *
  * @author Jaka Bobnar, Cosylab
  *
  */
 public class DoubleSeqPropertyProxyImpl extends PropertyProxyImpl<double[]>{
-    
+
     private Object value;
 //    private double[] value;
     private int length;
-    
+
     /**
      * Constructs a new DoubleSeqPropertyProxy.
      * @param name
@@ -49,7 +49,7 @@ public class DoubleSeqPropertyProxyImpl extends PropertyProxyImpl<double[]>{
 //        value = new double[length];
         switch (TINEPlug.getInstance().getTFormat(getUniqueName()).getValue()) {
             case TFormat.CF_SPECTRUM: {
-                this.value = new SPECTRUM(); 
+                this.value = new SPECTRUM();
                 break;
             }
             default: {
@@ -81,7 +81,7 @@ public class DoubleSeqPropertyProxyImpl extends PropertyProxyImpl<double[]>{
         } else {
             return new double[this.length];
         }
-        
+
     }
 
     /*

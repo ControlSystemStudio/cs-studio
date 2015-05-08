@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.metamodel.internal;
 
@@ -15,16 +15,16 @@ import org.junit.Test;
 
 /**
  * Test class for {@link RecordDefinition}.
- * 
+ *
  * @author Sven Wende
  *
  */
 public final class RecordDefinitionTest {
 
     private RecordDefinition recordDefinition;
-    
+
     private IFieldDefinition fieldDefinition1, fieldDefinition2;
-    
+
     /**
      * @throws java.lang.Exception
      */
@@ -45,7 +45,7 @@ public final class RecordDefinitionTest {
     public void testRecordDefinition() {
         assertEquals("ai", recordDefinition.getType());
     }
-    
+
     /**
      * Test method for
      * {@link org.csstudio.dct.metamodel.internal.RecordDefinition#getFieldDefinitions(String)}.

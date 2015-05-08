@@ -27,7 +27,7 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 
 /**
  * Widget initializer for the strip chart widget.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class StripChartInitializer extends AbstractEpicsWidgetInitializer {

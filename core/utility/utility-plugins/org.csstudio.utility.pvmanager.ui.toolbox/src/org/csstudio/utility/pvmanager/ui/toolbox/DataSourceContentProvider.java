@@ -13,7 +13,7 @@ import org.epics.pvmanager.DataSource;
 import org.epics.pvmanager.PVManager;
 
 public class DataSourceContentProvider implements IStructuredContentProvider {
-    
+
     public static Object ALL = new Object() {
         public String toString() {return "All";};
     };
@@ -40,11 +40,11 @@ public class DataSourceContentProvider implements IStructuredContentProvider {
             DataSource dataSource = ((CompositeDataSource) PVManager.getDefaultDataSource()).getDataSources().get(dataSourceName);
             addChannels(channels, dataSourceName, dataSource);
         }
-        
+
         Collections.sort(channels);
         return channels.toArray();
     }
-    
+
     private void addChannels(List<DataSourceChannel> channels, String dataSourceName, DataSource dataSource) {
         for (ChannelHandler channelHandler : dataSource.getChannels().values()) {
             channels.add(new DataSourceChannel(dataSourceName, channelHandler));

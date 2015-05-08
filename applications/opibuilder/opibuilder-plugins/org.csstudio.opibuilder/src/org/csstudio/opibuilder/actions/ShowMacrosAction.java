@@ -28,8 +28,8 @@ import org.eclipse.ui.IWorkbenchPart;
 public class ShowMacrosAction implements IObjectActionDelegate {
 
     private IStructuredSelection selection;
-    private IWorkbenchPart targetPart;    
-    
+    private IWorkbenchPart targetPart;
+
 
 
     public void run(IAction action) {
@@ -45,7 +45,7 @@ public class ShowMacrosAction implements IObjectActionDelegate {
                 "To reflect the latest changes, please reopen the OPI and show macros again.");
         ConsoleService.getInstance().writeInfo(sb.toString());
         MessageDialog.openInformation(targetPart.getSite().getShell(),
-                "Predefined Macros", sb.toString());        
+                "Predefined Macros", sb.toString());
     }
 
     public void selectionChanged(IAction action, ISelection selection) {
@@ -59,8 +59,8 @@ public class ShowMacrosAction implements IObjectActionDelegate {
         this.targetPart = targetPart;
     }
 
-    
-    private EditPart getSelectedWidget(){ 
+
+    private EditPart getSelectedWidget(){
         if(selection.getFirstElement() instanceof EditPart){
             return (EditPart)selection.getFirstElement();
         }else

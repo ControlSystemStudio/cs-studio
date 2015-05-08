@@ -15,7 +15,7 @@ public class PVAccessServer {
 
     private static ServerContextImpl serverContext;
     private final ScanServerImpl scan_server;
-    
+
 
     public PVAccessServer(ScanServerImpl scan_server) {
         super();

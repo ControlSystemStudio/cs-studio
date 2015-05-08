@@ -85,10 +85,10 @@ public class PVTableEditor extends EditorPart
         // "Site is incorrect" error results if the site is not set:
         setSite(site);
         setInput(new NoResourceEditorInput(input));
-        
+
         try
         {
-            final InputStream stream = 
+            final InputStream stream =
                 SingleSourcePlugin.getResourceHelper().getInputStream(input);
             if (stream != null)
             {
@@ -121,13 +121,13 @@ public class PVTableEditor extends EditorPart
             {
                 // Ignore
             }
-            
+
             @Override
             public void tableItemsChanged()
             {
                 // Ignore
             }
-            
+
             @Override
             public void modelChanged()
             {
@@ -160,7 +160,7 @@ public class PVTableEditor extends EditorPart
     {
         return model;
     }
-    
+
     /** @return Table viewer */
     public TableViewer getTableViewer()
     {
@@ -204,7 +204,7 @@ public class PVTableEditor extends EditorPart
         catch (Exception ex)
         {
             ExceptionDetailsErrorDialog.openError(getSite().getShell(), Messages.Error, ex);
-        }        
+        }
         if (monitor != null)
             monitor.done();
         // Mark as clean
@@ -216,7 +216,7 @@ public class PVTableEditor extends EditorPart
     public void doSaveAs()
     {
         final ResourceHelper resources = SingleSourcePlugin.getResourceHelper();
-        
+
         // If there is an original file name, try to display it
         final IPath original = resources.getPath(getEditorInput());
         IPath path = null;
@@ -234,7 +234,7 @@ public class PVTableEditor extends EditorPart
             if (! valid)
                 MessageDialog.openError(getSite().getShell(), Messages.Error, Messages.InvalidFileExtension);
         }
-        
+
         // Get file for the new resource's path.
         final IEditorInput new_input = new PathEditorInput(path);
         try
@@ -254,14 +254,14 @@ public class PVTableEditor extends EditorPart
 
     @Override
     public boolean isDirty()
-    {   
-        return is_dirty;  
+    {
+        return is_dirty;
     }
 
     @Override
     public boolean isSaveAsAllowed()
-    {  
-        return true; 
+    {
+        return true;
     }
 
 

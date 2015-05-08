@@ -21,15 +21,15 @@ public class OpiFont extends OpiAttribute {
     private static final int NORMAL = 0;
     private static final int BOLD = 1 << 0;
     private static final int ITALIC = 1 << 1;
-    
+
     private final double fontScale = 0.76;
 
-    private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.OpiFont");    
+    private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.OpiFont");
 
     /**
-     * Creates an element: 
+     * Creates an element:
      * <tag>
-     *        <font fontName="fontNameValue" height="heightValue" style="styleValue" /> 
+     *        <font fontName="fontNameValue" height="heightValue" style="styleValue" />
      * </tag>
      * styleValue is determined this way:
      *         0 - medium, regular
@@ -44,7 +44,7 @@ public class OpiFont extends OpiAttribute {
         propertyContext.getElement().appendChild(fontElement);
 
         String fontName = f.getName();
-        
+
         int size = (int) (f.getSize() * fontScale);
         String height = String.valueOf(size);
 

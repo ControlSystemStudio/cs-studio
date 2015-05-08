@@ -27,9 +27,9 @@ import org.eclipse.swt.widgets.Widget;
  * This class is a copy from the abstract eclipse class 'ListEditor' with
  * changes that now the items are not displayed in a 'List' but in a 'Table'. In
  * addition it is possible to edit the items in the table.
- * 
+ *
  * @author jhatje
- * 
+ *
  */
 public class PreferenceTableEditor extends FieldEditor {
 
@@ -79,7 +79,7 @@ public class PreferenceTableEditor extends FieldEditor {
 
     /**
      * Creates a list field editor.
-     * 
+     *
      * @param name
      *            the name of the preference this field editor works on
      * @param labelText
@@ -118,7 +118,7 @@ public class PreferenceTableEditor extends FieldEditor {
 
     /**
      * Creates the Add, Remove, Up, and Down button in the given button box.
-     * 
+     *
      * @param box
      *            the box for the buttons
      */
@@ -135,7 +135,7 @@ public class PreferenceTableEditor extends FieldEditor {
      * <p>
      * Subclasses must implement this method.
      * </p>
-     * 
+     *
      * @param items
      *            the list of items
      * @return the combined string
@@ -171,7 +171,7 @@ public class PreferenceTableEditor extends FieldEditor {
 
     /**
      * Helper method to create a push button.
-     * 
+     *
      * @param parent
      *            the parent control
      * @param key
@@ -257,7 +257,7 @@ public class PreferenceTableEditor extends FieldEditor {
         }
     }
 
-    
+
 
     /*
      * (non-Javadoc) Method declared on FieldEditor.
@@ -286,7 +286,7 @@ public class PreferenceTableEditor extends FieldEditor {
     /**
      * Returns this field editor's button box containing the Add, Remove, Up,
      * and Down button.
-     * 
+     *
      * @param parent
      *            the parent control
      * @return the button box
@@ -318,7 +318,7 @@ public class PreferenceTableEditor extends FieldEditor {
 
     /**
      * Returns this field editor's table control.
-     * 
+     *
      * @param parent
      *            the parent control
      * @return the list control
@@ -368,7 +368,7 @@ public class PreferenceTableEditor extends FieldEditor {
      * <p>
      * Subclasses must implement this method.
      * </p>
-     * 
+     *
      * @return a new item
      */
     protected String getNewInputObject() {
@@ -385,7 +385,7 @@ public class PreferenceTableEditor extends FieldEditor {
     /**
      * Returns this field editor's selection listener. The listener is created
      * if necessary.
-     * 
+     *
      * @return the selection listener
      */
     private SelectionListener getSelectionListener() {
@@ -401,7 +401,7 @@ public class PreferenceTableEditor extends FieldEditor {
      * This method is internal to the framework; subclassers should not call
      * this method.
      * </p>
-     * 
+     *
      * @return the shell
      */
     protected Shell getShell() {
@@ -417,7 +417,7 @@ public class PreferenceTableEditor extends FieldEditor {
      * <p>
      * Subclasses must implement this method.
      * </p>
-     * 
+     *
      * @param stringList
      *            the string
      * @return an array of <code>String</code>
@@ -463,7 +463,7 @@ public class PreferenceTableEditor extends FieldEditor {
 
     /**
      * Moves the currently selected item up or down.
-     * 
+     *
      * @param up
      *            <code>true</code> if the item should move up, and
      *            <code>false</code> if it should move down

@@ -7,9 +7,9 @@ import org.csstudio.dct.metamodel.IChoice;
 
 /**
  * Standard implementation of {@link IChoice}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class Choice implements IChoice, Serializable {
     private String description;
@@ -33,7 +33,7 @@ public final class Choice implements IChoice, Serializable {
     public String getDescription() {
         return description;
     }
-    
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -44,7 +44,7 @@ public final class Choice implements IChoice, Serializable {
     public String getId() {
         return id;
     }
-    
+
     public void setId(String id) {
         this.id = id;
     }

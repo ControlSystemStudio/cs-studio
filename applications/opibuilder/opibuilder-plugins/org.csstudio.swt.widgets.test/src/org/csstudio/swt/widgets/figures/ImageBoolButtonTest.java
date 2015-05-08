@@ -20,8 +20,8 @@ public class ImageBoolButtonTest extends AbstractBoolControlFigureTest{
         boolButton.setOnImagePath(new Path("C:\\Users\\5hz\\Pictures\\reset_switch_on.gif"));
         return boolButton;
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -30,14 +30,14 @@ public class ImageBoolButtonTest extends AbstractBoolControlFigureTest{
                 "onImagePath",
                 "stretch"
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
     @Override
     public boolean isAutoTest() {
         return true;
     }
 
-        
+
 }

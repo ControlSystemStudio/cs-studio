@@ -21,7 +21,7 @@ public abstract class AbstractScaledWidgetTest extends AbstractWidgetTest {
 
     @Override
     public String[] getPropertyNames() {
-        String[] superProps =  super.getPropertyNames();    
+        String[] superProps =  super.getPropertyNames();
         List<String> superPropList = new ArrayList<String>();
         for(String p : superProps){
             if(!p.equals("opaque"))
@@ -39,11 +39,11 @@ public abstract class AbstractScaledWidgetTest extends AbstractWidgetTest {
         };
         return concatenateStringArrays(superPropList.toArray(new String[]{}), scaleProps);
     }
-    
-    
+
+
     @Override
-    public Object generateTestData(PropertyDescriptor pd, Object seed) {    
-        if(seed !=null && seed instanceof Integer){            
+    public Object generateTestData(PropertyDescriptor pd, Object seed) {
+        if(seed !=null && seed instanceof Integer){
             if(pd.getName().equals("logScale"))
                 return super.generateTestData(pd, (Integer)seed  +1);
             if(pd.getName().equals("range"))

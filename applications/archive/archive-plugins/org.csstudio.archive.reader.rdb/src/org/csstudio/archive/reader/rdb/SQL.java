@@ -19,10 +19,10 @@ public class SQL
 {
     // 'status' table
     final public String sel_stati;
-    
+
     // 'severity' table
     final public String sel_severities;
-    
+
     // Meta data tables
     final public String numeric_meta_sel_by_channel;
     final public String enum_sel_num_val_by_channel;
@@ -38,7 +38,7 @@ public class SQL
     final public String sample_sel_by_id_start_end_with_blob;
     final public String sample_sel_array_vals;
     final public String sample_count_by_id_start_end;
-    
+
     /** Initialize SQL statements
      *  @param dialect RDB dialect
      *  @param prefix Schema (table) prefix, including "." etc. as needed
@@ -50,7 +50,7 @@ public class SQL
         else
             if (prefix.length() > 0   &&   !prefix.endsWith("."))
                 prefix = prefix + ".";
-                
+
         // 'status' table
         sel_stati = "SELECT status_id, name FROM " + prefix + "status";
 
@@ -62,10 +62,10 @@ public class SQL
         " low_warn_lmt, high_warn_lmt," +
         " low_alarm_lmt, high_alarm_lmt," +
         " prec, unit FROM " + prefix + "num_metadata WHERE channel_id=?";
-        
+
         enum_sel_num_val_by_channel = "SELECT enum_nbr, enum_val FROM "
             + prefix + "enum_metadata WHERE channel_id=? ORDER BY enum_nbr";
-        
+
         // 'channel' table
         if (dialect == RDBUtil.Dialect.Oracle)
         {   // '\\' because Java swallows one '\', be case-insensitive by using all lowercase
@@ -83,7 +83,7 @@ public class SQL
         }
 
         channel_sel_by_name = "SELECT channel_id FROM " + prefix + "channel WHERE name=?";
-    
+
         // 'sample' table
         if (dialect == RDBUtil.Dialect.Oracle)
         {

@@ -44,7 +44,7 @@ public class ModelUnitTest
     /** Counter for received updates from cells */
     private AtomicInteger updates = new AtomicInteger(0);
     private AtomicInteger values = new AtomicInteger(0);
-    
+
     @Before
     public void setup()
     {
@@ -182,7 +182,7 @@ public class ModelUnitTest
     public void testSaveRestore() throws Exception
     {
         final AtomicReference<String> pv_value = new AtomicReference<>("");
-        
+
         // Get PV that we'll change via the Cell
         final PV<VType, Object> pv = PVManager.readAndWrite(vType("loc://limit1(3.14)"))
                 .readListener(new PVReaderListener<VType>()

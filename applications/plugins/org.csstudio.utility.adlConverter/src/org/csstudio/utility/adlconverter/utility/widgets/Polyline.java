@@ -42,8 +42,8 @@ public class Polyline extends Widget{
 
     /**
      * @param polyline The ADL String for a Polyline
-     * @param storedDynamicAttribute 
-     * @param storedBasicAttribute 
+     * @param storedDynamicAttribute
+     * @param storedBasicAttribute
      */
     public Polyline(final ADLWidget polyline, AbstractWidgetModel abstractWidgetModel, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) {
         super(polyline, storedBasicAttribute, storedDynamicAttribute);
@@ -79,17 +79,17 @@ public class Polyline extends Widget{
             }
             _widget.setWidth(maxX-minX);
             _widget.setHeight(maxY-minY);
-            
+
         }else {
             _widget.setWidth(getObject().getWidth());
             _widget.setHeight(getObject().getHeight());
         }
         _widget.setPropertyValue(PolylineModel.PROP_FILL, 100.0);
         ADLHelper.checkAndSetLayer(_widget, abstractWidgetModel);
-        
+
     }
 
-   
+
     /**
      * Set the style of the polyline.
      * @param style the style to set.
@@ -111,7 +111,7 @@ public class Polyline extends Widget{
     final void setWidgetType() {
         _widget = createWidgetModel(PolylineModel.ID);
     }
-    
+
     /**
      * {@inheritDoc}
      */

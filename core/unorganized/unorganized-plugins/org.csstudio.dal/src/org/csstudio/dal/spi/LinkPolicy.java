@@ -29,12 +29,12 @@ public enum LinkPolicy {
          * device or property is implementing <code>Connectable</code> interface.
          * By default this interface is not provided.
          */
-    NO_LINK_POLICY, 
+    NO_LINK_POLICY,
     /**
          * Constant for factory policy in which <code>getDevice</code> returns
          * device already synchronously linked.
          */
-    SYNC_LINK_POLICY, 
+    SYNC_LINK_POLICY,
     /**
          * Constant for factory policy in which <code>getDevice</code> returns
          * device with initiated asynchronous link procedure.

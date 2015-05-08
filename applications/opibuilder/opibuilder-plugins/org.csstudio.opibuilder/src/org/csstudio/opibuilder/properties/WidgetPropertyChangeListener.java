@@ -21,9 +21,9 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * The listener on widget property change.
- * 
+ *
  * @author Sven Wende (class of same name in SDS)
- * @author Xihui Chen 
+ * @author Xihui Chen
  *
  */
 public class WidgetPropertyChangeListener implements PropertyChangeListener {
@@ -31,7 +31,7 @@ public class WidgetPropertyChangeListener implements PropertyChangeListener {
     private AbstractBaseEditPart editpart;
     private AbstractWidgetProperty widgetProperty;
     private List<IWidgetPropertyChangeHandler> handlers;
-    
+
     /**Constructor.
      * @param editpart backlint to the editpart, which uses this listener.
      */
@@ -41,9 +41,9 @@ public class WidgetPropertyChangeListener implements PropertyChangeListener {
         this.widgetProperty = property;
         handlers = new ArrayList<IWidgetPropertyChangeHandler>();
     }
-    
+
     public void propertyChange(final PropertyChangeEvent evt) {
-        Runnable runnable = new Runnable() {            
+        Runnable runnable = new Runnable() {
             public synchronized void run() {
                 if(editpart == null || !editpart.isActive()){
                     return;
@@ -52,18 +52,18 @@ public class WidgetPropertyChangeListener implements PropertyChangeListener {
                     IFigure figure = editpart.getFigure();
                     h.handleChange(
                             evt.getOldValue(), evt.getNewValue(), figure);
-                    
+
                 }
             }
-        };        
+        };
         Display display = editpart.getViewer().getControl().getDisplay();
         WidgetIgnorableUITask task = new WidgetIgnorableUITask(widgetProperty, runnable, display);
-            
+
         GUIRefreshThread.getInstance(
                 editpart.getExecutionMode() == ExecutionMode.RUN_MODE)
                 .addIgnorableTask(task);
     }
-    
+
     /**Add handler, which is informed when a property changed.
      * @param handler
      */
@@ -71,7 +71,7 @@ public class WidgetPropertyChangeListener implements PropertyChangeListener {
         assert handler != null;
         handlers.add(handler);
     }
-    
+
     public void removeAllHandlers(){
         handlers.clear();
     }

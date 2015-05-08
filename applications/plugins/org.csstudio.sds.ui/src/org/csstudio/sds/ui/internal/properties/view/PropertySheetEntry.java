@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.sds.ui.internal.properties.view;
@@ -54,9 +54,9 @@ import org.eclipse.swt.widgets.Composite;
  * a result we are forced to refresh the entire entry tree when a property
  * changes value.
  * </p>
- * 
+ *
  * @since 3.0 (was previously internal)
- * 
+ *
  * @author Sven Wende
  */
 public class PropertySheetEntry extends EventManager implements
@@ -78,9 +78,9 @@ public class PropertySheetEntry extends EventManager implements
      * The dynamics descriptors of the properties we are displaying/editing.
      */
     private DynamicsDescriptor[] _dynamicsDescriptors = new DynamicsDescriptor[0];
-    
+
     private List<Map<String, String>> _aliases = new ArrayList<Map<String,String>>();
-    
+
     private Map<String, String> _alias;
 
     /**
@@ -181,7 +181,7 @@ public class PropertySheetEntry extends EventManager implements
 
         // See if the value changed and if so update
         Object newValue = _editor.getValue();
-        
+
         boolean changed = false;
         if (_values.length > 1) {
             changed = true;
@@ -202,7 +202,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * Return the unsorted intersection of all the
      * <code>IPropertyDescriptor</code>s for the objects.
-     * 
+     *
      * @return List
      */
     @SuppressWarnings("unchecked")
@@ -267,7 +267,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * Returns an map of property descritptors (keyed on id) for the given
      * property source.
-     * 
+     *
      * @param source
      *            a property source for which to obtain descriptors
      * @return a table of decriptors keyed on their id
@@ -334,7 +334,7 @@ public class PropertySheetEntry extends EventManager implements
 
             // loop through the objects getting our property value from each
             List<Map<String, String>> newAliases = new ArrayList<Map<String,String>>();
-            
+
             for (int i = 0; i < currentSources.length; i++) {
                 IPropertySource source = _parent
                         .getPropertySource(currentSources[i]);
@@ -345,14 +345,14 @@ public class PropertySheetEntry extends EventManager implements
             setAliases(newAliases);
         }
 
-     
+
     /**
      * Factory method to create a new child <code>PropertySheetEntry</code>
      * instance.
      * <p>
      * Subclasses may overwrite to create new instances of their own class.
      * </p>
-     * 
+     *
      * @return a new <code>PropertySheetEntry</code> instance for the
      *         descriptor passed in
      * @since 3.1
@@ -446,7 +446,7 @@ public class PropertySheetEntry extends EventManager implements
 
     /**
      * Returns the descriptor for this entry.
-     * 
+     *
      * @return the descriptor for this entry
      * @since 3.1 (was previously private)
      */
@@ -481,7 +481,7 @@ public class PropertySheetEntry extends EventManager implements
 
     /**
      * Returns the edit value for the object at the given index.
-     * 
+     *
      * @param index
      *            the value object index
      * @return the edit value for the object at the given index
@@ -529,7 +529,7 @@ public class PropertySheetEntry extends EventManager implements
 
     /**
      * Returns the parent of this entry.
-     * 
+     *
      * @return the parent entry, or <code>null</code> if it has no parent
      * @since 3.1
      */
@@ -539,7 +539,7 @@ public class PropertySheetEntry extends EventManager implements
 
     /**
      * Returns an property source for the given object.
-     * 
+     *
      * @param object
      *            an object for which to obtain a property source or
      *            <code>null</code> if a property source is not available
@@ -597,7 +597,7 @@ public class PropertySheetEntry extends EventManager implements
 
     /**
      * Returns the value objects of this entry.
-     * 
+     *
      * @return the value objects of this entry
      * @since 3.1 (was previously private)
      */
@@ -688,7 +688,7 @@ public class PropertySheetEntry extends EventManager implements
 
     /**
      * Refresh the entry tree from the root down.
-     * 
+     *
      * @since 3.1 (was previously private)
      */
     protected final void refreshFromRoot() {
@@ -762,7 +762,7 @@ public class PropertySheetEntry extends EventManager implements
 
     /**
      * Set the descriptor.
-     * 
+     *
      * @param newDescriptor
      *            the descriptor
      */
@@ -779,10 +779,10 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * Set the error text. This should be set to null when the current value is
      * valid, otherwise it should be set to a error string.
-     * 
+     *
      * @param newErrorText
      *            the new error text
-     * 
+     *
      */
     protected final void setErrorText(final String newErrorText) {
         _errorText = newErrorText;
@@ -792,7 +792,7 @@ public class PropertySheetEntry extends EventManager implements
 
     /**
      * Sets the parent of the entry to be propertySheetEntry.
-     * 
+     *
      * @param propertySheetEntry
      *            the parent entry
      */
@@ -804,7 +804,7 @@ public class PropertySheetEntry extends EventManager implements
      * Sets a property source provider for this entry. This provider is used to
      * obtain an <code>IPropertySource</code> for each of this entries
      * objects. If no provider is set then a default provider is used.
-     * 
+     *
      * @param provider
      *            IPropertySourceProvider
      */
@@ -820,7 +820,7 @@ public class PropertySheetEntry extends EventManager implements
      * call our parent to update the property we represent with the given value.
      * We then trigger a model refresh.
      * <p>
-     * 
+     *
      * @param newValue
      *            the new value
      */
@@ -845,7 +845,7 @@ public class PropertySheetEntry extends EventManager implements
      * Updating the child entries will typically call this method on the child
      * entries and thus the entire entry tree is updated
      * </p>
-     * 
+     *
      * @param objects
      *            the new values for this entry
      */
@@ -883,7 +883,7 @@ public class PropertySheetEntry extends EventManager implements
      * <p>
      * Subclasses may override to set the property value in some custom way.
      * </p>
-     * 
+     *
      * @param child
      *            the child entry that changed its value
      */
@@ -925,7 +925,7 @@ public class PropertySheetEntry extends EventManager implements
     public final DynamicAspectsWizard getDynamicsDescriptionConfigurationWizard() {
         return new DynamicAspectsWizard(_dynamicsDescriptor, _alias, _descriptor, getValues()[0]);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -947,7 +947,7 @@ public class PropertySheetEntry extends EventManager implements
         fireValueChanged();
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -971,7 +971,7 @@ public class PropertySheetEntry extends EventManager implements
         fireValueChanged();
 
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -1017,7 +1017,7 @@ public class PropertySheetEntry extends EventManager implements
      * The dynamics descriptor of the specified child entry has changed.
      * Therefore we must set this change into our value objects. We must inform
      * our parent so that it can update its value objects
-     * 
+     *
      * @param child
      *            the child entry that changed its value
      */
@@ -1037,7 +1037,7 @@ public class PropertySheetEntry extends EventManager implements
 
     /**
      * Gets the dynamics descriptor with the specified index.
-     * 
+     *
      * @param index
      *            the index
      * @return a dynamics descriptor

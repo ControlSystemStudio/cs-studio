@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.channel.opiwidgets;
 
@@ -9,10 +9,10 @@ import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescrip
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class TunerModel extends AbstractChannelWidgetModel {
-    
+
     public TunerModel() {
         super(AbstractSelectionWidgetModelDescription.newModelFrom(TunerWidget.class));
     }

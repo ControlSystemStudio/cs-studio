@@ -2,11 +2,11 @@ package de.desy.language.snl.configurationservice;
 
 /**
  * Constants used in the preference pages of SNL-development tools.
- * 
+ *
  * All constants are post-fixes to be a suffix of the plug-in Id.
  */
 public enum PreferenceConstants {
-    
+
     /**
      * Post-fix for the bold-style constant to be added to the type id.
      */
@@ -21,7 +21,7 @@ public enum PreferenceConstants {
      * Post-fix of preference id for epics base location.
      */
     EPICS_BASE_LOCATION_POST_FIX(".epics.base-location"),
-    
+
     /**
      * Post-fix of preference id for epics seq location.
      */
@@ -36,17 +36,17 @@ public enum PreferenceConstants {
      * SNC location / directory.
      */
     SNC_LOCATION_POST_FIX(".compiler.location"),
-    
+
     /**
      * C Compiler location / directory.
      */
     C_COMPILER_LOCATION_POST_FIX(".c_compiler.location"),
-    
+
     /**
      * Pre Compiler location / directory.
      */
     PRE_COMPILER_LOCATION_POST_FIX(".pre_compiler.location"),
-    
+
     /**
      * Application Compiler location / directory.
      */
@@ -62,17 +62,17 @@ public enum PreferenceConstants {
      * Post-fix for the underline-style constant to be added to the type id.
      */
     UNDERLINE_POST_FIX(".underline"),
-    
+
     /**
      * Post-fix for the target platform constant to be added to the type id.
      */
     TARGET_PLATFORM(".targetplatform"),
-    
+
     /**
      * Post-fix for the option enable compilation after save.
      */
     SAVE_AND_COMPILE_POST_FIX(".saveAndCompile"),
-    
+
     /**
      * Post-fix for the option to keep generated files.
      */
@@ -85,7 +85,7 @@ public enum PreferenceConstants {
 
     /**
      * Initializer of enum elements.
-     * 
+     *
      * @param preferenceStoreId
      *            The id to be used in the preference store for this element.
      */
@@ -96,7 +96,7 @@ public enum PreferenceConstants {
 
     /**
      * Id used in the preference store.
-     * 
+     *
      * @return A not-null, non-empty string to be used as id in the preference
      *         store.
      */

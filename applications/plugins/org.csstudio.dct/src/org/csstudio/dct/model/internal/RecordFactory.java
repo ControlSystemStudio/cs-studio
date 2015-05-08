@@ -10,18 +10,18 @@ import org.csstudio.dct.model.IRecord;
 
 /**
  * Factory that creates records.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class RecordFactory {
     private RecordFactory() {
     }
-    
+
     /**
      * Creates a record. The record is equipped with all fields that are known
      * for the type of record.
-     * 
+     *
      * @param project
      *            the project
      * @param type
@@ -44,27 +44,27 @@ public final class RecordFactory {
         }
 
         Record result = new Record(name, type, id);
-        
+
         // link to record definition
         result.setParentRecord(base);
 
         // add properties needed for record functions
         Map<String, String> properties = ExtensionPointUtil.getRecordAttributes();
-        
+
         for(String key : properties.keySet()) {
             result.addProperty(key, properties.get(key));
         }
-        
+
         return result;
     }
-    
+
     public static Record cloneRecord(IProject project, IRecord original) {
         assert project != null;
         assert original != null;
 
         String type  = original.getType();
         String name = original.getName();
-        
+
         IRecord base = project.getBaseRecord(type);
 
         if (base == null) {
@@ -72,22 +72,22 @@ public final class RecordFactory {
         }
 
         Record clone = new Record(name, type, UUID.randomUUID());
-        
+
         // link to record definition
         clone.setParentRecord(base);
 
         // add properties needed for record functions
         Map<String, String> properties = ExtensionPointUtil.getRecordAttributes();
-        
+
         for(String key : properties.keySet()) {
             clone.addProperty(key, properties.get(key));
         }
-        
+
         // copy field values from original
         for(String key : original.getFields().keySet()) {
             clone.addField(key, original.getField(key));
         }
-        
+
         return clone;
     }
 

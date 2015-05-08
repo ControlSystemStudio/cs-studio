@@ -35,7 +35,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 
 /**The action bar contributor for OPI editor.
- * @author Sven Wende & Alexander Will(original author), Xihui Chen (since import from SDS 2009/9) 
+ * @author Sven Wende & Alexander Will(original author), Xihui Chen (since import from SDS 2009/9)
  *
  */
 public class OPIEditorActionBarContributor extends ActionBarContributor {
@@ -54,14 +54,14 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
 
         addRetargetAction(new MatchWidthRetargetAction());
         addRetargetAction(new MatchHeightRetargetAction());
-        
+
         addRetargetAction(new AlignmentRetargetAction(PositionConstants.TOP));
         addRetargetAction(new AlignmentRetargetAction(PositionConstants.MIDDLE));
         addRetargetAction(new AlignmentRetargetAction(PositionConstants.BOTTOM));
         addRetargetAction(new AlignmentRetargetAction(PositionConstants.LEFT));
         addRetargetAction(new AlignmentRetargetAction(PositionConstants.CENTER));
         addRetargetAction(new AlignmentRetargetAction(PositionConstants.RIGHT));
-        
+
         RetargetAction a = new RetargetAction(
                 GEFActionConstants.TOGGLE_GRID_VISIBILITY,
                 "Toggle Grid Visibility", IAction.AS_CHECK_BOX);
@@ -74,20 +74,20 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
         a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
                 OPIBuilderPlugin.PLUGIN_ID, "icons/snap2geometry.png"));
         addRetargetAction(a);
-        
+
         a = new RetargetAction(GEFActionConstants.TOGGLE_RULER_VISIBILITY,
                 "Toggle Ruler Visibility", IAction.AS_CHECK_BOX);
         a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
                 OPIBuilderPlugin.PLUGIN_ID, "icons/ruler.png"));
         addRetargetAction(a);
-        
+
         //This is only for action displaying in toolbar
         a = new RetargetAction(RunOPIAction.ID, "Run OPI"){
             @Override
             public boolean isEnabled() {
                 return true;
             }
-            
+
             //make this action always runnable even the part is not active
             @Override
             protected void setActionHandler(IAction newHandler) {
@@ -95,15 +95,15 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
                     return;
                 super.setActionHandler(newHandler);
             }
-            
+
         };
         a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
                 OPIBuilderPlugin.PLUGIN_ID, "icons/run.gif"));
         //same defid can help to display the accelerator key.
-        a.setActionDefinitionId(RunOPIAction.ACITON_DEFINITION_ID);        
+        a.setActionDefinitionId(RunOPIAction.ACITON_DEFINITION_ID);
         addRetargetAction(a);
-        
-        
+
+
         for(DistributeType dt : DistributeType.values()){
             if(dt != DistributeType.HORIZONTAL_GAP){
                 a = new RetargetAction(dt.getActionID(), dt.getLabel());
@@ -112,27 +112,27 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
             }
         }
         //This is only for action displaying in toolbar
-        a = new RetargetAction(DistributeType.HORIZONTAL_GAP.getActionID(), 
+        a = new RetargetAction(DistributeType.HORIZONTAL_GAP.getActionID(),
                 DistributeType.HORIZONTAL_GAP.getLabel(), IAction.AS_DROP_DOWN_MENU);
         a.setImageDescriptor(DistributeType.HORIZONTAL_GAP.getImageDescriptor());
         a.setMenuCreator(new IMenuCreator() {
             Menu menu;
-            public Menu getMenu(Menu parent) {                
+            public Menu getMenu(Menu parent) {
                 return null;
             }
-        
+
             public Menu getMenu(Control parent) {
                 if(menu !=null)
                     return menu;
                 MenuManager manager = new MenuManager();
-                for(DistributeType dt : DistributeType.values()){                    
+                for(DistributeType dt : DistributeType.values()){
                     if(dt != DistributeType.HORIZONTAL_GAP)
                         manager.add(getAction(dt.getActionID()));
                 }
                 menu = manager.createContextMenu(parent);
                 return menu;
             }
-        
+
             public void dispose() {
                 if(menu != null){
                     menu.dispose();
@@ -141,7 +141,7 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
             }
         });
         addRetargetAction(a);
-        
+
     }
 
     @Override
@@ -154,7 +154,7 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
         tbm.add(getAction(GEFActionConstants.TOGGLE_GRID_VISIBILITY));
         tbm.add(getAction(GEFActionConstants.TOGGLE_RULER_VISIBILITY));
         tbm.add(getAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY));
-        
+
         tbm.add(new Separator());
         tbm.add(getAction(GEFActionConstants.ALIGN_LEFT));
         tbm.add(getAction(GEFActionConstants.ALIGN_CENTER));
@@ -167,19 +167,19 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
         tbm.add(new Separator());
         tbm.add(getAction(GEFActionConstants.MATCH_WIDTH));
         tbm.add(getAction(GEFActionConstants.MATCH_HEIGHT));
-        
+
         tbm.add(new Separator());
         tbm.add(getAction(DistributeType.HORIZONTAL_GAP.getActionID()));
-        
+
         tbm.add(new Separator());
         tbm.add(getAction(GEFActionConstants.ZOOM_IN));
         tbm.add(getAction(GEFActionConstants.ZOOM_OUT));
         tbm.add(new ZoomComboContributionItem(getPage()));
-        
+
         tbm.add(new Separator());
-        tbm.add(getAction(RunOPIAction.ID));        
+        tbm.add(getAction(RunOPIAction.ID));
     }
-    
+
     @Override
     protected void declareGlobalActionKeys() {
         addGlobalActionKey(ActionFactory.PRINT.getId());

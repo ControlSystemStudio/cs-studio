@@ -7,9 +7,9 @@ import de.desy.language.snl.parser.nodes.SyncStatementNode;
 
 /**
  * The specialized {@link IAdapterFactory} for {@link SyncStatementNode}s.
- * 
+ *
  * @author C1 WPS / KM, MZ
- * 
+ *
  */
 class SyncNodeAdapterFactory implements IAdapterFactory {
 

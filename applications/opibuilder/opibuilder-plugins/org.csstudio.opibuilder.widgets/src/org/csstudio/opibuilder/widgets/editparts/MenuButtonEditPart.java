@@ -61,14 +61,14 @@ import org.epics.vtype.VEnum;
 import org.epics.vtype.VType;
 
 /**
- * 
+ *
  * @author Helge Rickens, Kai Meyer, Xihui Chen
- * 
+ *
  */
 public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
-    
+
     class MenuButtonFigure extends Label implements ITextFigure{
-        
+
     }
 
     private IPVListener loadActionsFromPVListener;
@@ -139,18 +139,18 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
         super.createEditPolicies();
         if(getExecutionMode() == ExecutionMode.EDIT_MODE)
             installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new TextDirectEditPolicy());
-    }    
-    
+    }
+
 
     @Override
     public void performRequest(Request request){
         if (getExecutionMode() == ExecutionMode.EDIT_MODE &&(
                 request.getType() == RequestConstants.REQ_DIRECT_EDIT ||
                 request.getType() == RequestConstants.REQ_OPEN))
-            new TextEditManager(this, 
+            new TextEditManager(this,
                     new LabelCellEditorLocator(getFigure()), false).show();
     }
-    
+
     @Override
     public MenuButtonModel getWidgetModel() {
         return (MenuButtonModel) getModel();
@@ -158,7 +158,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 
     /**
      * Show Menu
-     * 
+     *
      * @param point
      *            the location of the mouse-event
      * @param absolutX
@@ -237,7 +237,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
                                     }
                                 }
                             }
-                        
+
                         };
                     pv.addListener(loadActionsFromPVListener);
                 }
@@ -358,7 +358,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
     public void setValue(Object value) {
         ((Label) getFigure()).setText(value.toString());
     }
-    
+
     @Override
     public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
         if(key == ITextFigure.class)

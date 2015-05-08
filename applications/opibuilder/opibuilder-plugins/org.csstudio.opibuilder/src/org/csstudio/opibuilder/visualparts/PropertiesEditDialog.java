@@ -26,35 +26,35 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 public class PropertiesEditDialog extends Dialog {
-    
+
     private TableViewer propertiesViewer;
     private PropertyData[] propertyDataArray;
     private String dialogTitle;
-    public PropertiesEditDialog(Shell parentShell, 
+    public PropertiesEditDialog(Shell parentShell,
             AbstractWidgetProperty[] properties, String dialogTitle) {
         super(parentShell);
-            this.dialogTitle = dialogTitle;             
+            this.dialogTitle = dialogTitle;
             propertyDataArray = new PropertyData[properties.length];
             int i=0;
             for(AbstractWidgetProperty prop :properties){
-                propertyDataArray[i++] = new PropertyData(prop, 
+                propertyDataArray[i++] = new PropertyData(prop,
                         prop.getPropertyValue());
             }
-        
+
         // Allow resize
         setShellStyle(getShellStyle() | SWT.RESIZE);
     }
-    
+
     public PropertyData[] getOutput(){
         return propertyDataArray;
     }
-    
+
     @Override
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
         newShell.setText(dialogTitle);
     }
-    
+
     @Override
     protected Control createDialogArea(Composite parent) {
         final Composite parent_Composite = (Composite) super.createDialogArea(parent);
@@ -63,21 +63,21 @@ public class PropertiesEditDialog extends Dialog {
         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
         gd.widthHint = 320;
         rightComposite.setLayoutData(gd);
-    
+
         propertiesViewer = createPropertiesViewer(rightComposite);
-    
+
         propertiesViewer.setInput(propertyDataArray);
-        
+
         return parent_Composite;
-    
+
     }
-    
+
     private TableViewer createPropertiesViewer(Composite parent) {
         TableViewer viewer = new TableViewer(parent, SWT.V_SCROLL
                 | SWT.H_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
         viewer.getTable().setLinesVisible(true);
         viewer.getTable().setHeaderVisible(true);
-        TableViewerColumn tvColumn = new TableViewerColumn(viewer, SWT.NONE);        
+        TableViewerColumn tvColumn = new TableViewerColumn(viewer, SWT.NONE);
         tvColumn.getColumn().setText("Property");
         tvColumn.getColumn().setMoveable(false);
         tvColumn.getColumn().setWidth(150);
@@ -88,16 +88,16 @@ public class PropertiesEditDialog extends Dialog {
         EditingSupport editingSupport = new PropertyDataEditingSupport(viewer,
                 viewer.getTable());
         tvColumn.setEditingSupport(editingSupport);
-        
-        
+
+
         viewer.setContentProvider(new ArrayContentProvider());
-        viewer.setLabelProvider(new PropertyDataLabelProvider());        
+        viewer.setLabelProvider(new PropertyDataLabelProvider());
         viewer.getTable().setLayoutData(
                 new GridData(SWT.FILL, SWT.FILL, true, true));
         return viewer;
     }
-    
-    
+
+
 
 }
 
@@ -105,9 +105,9 @@ public class PropertiesEditDialog extends Dialog {
 //
 ///**
 // * The {@link EditingSupport} for the value columns of the property table.
-// * 
+// *
 // * @author Xihui Chen
-// * 
+// *
 // */
 //class PropertyDataEditingSupport extends EditingSupport {
 //
@@ -115,11 +115,11 @@ public class PropertiesEditDialog extends Dialog {
 //     * The {@link Table} where this {@link EditingSupport} is embedded.
 //     */
 //    private final Table table;
-//    
+//
 //
 //    /**
 //     * Constructor.
-//     * 
+//     *
 //     * @param viewer
 //     *            The {@link ColumnViewer} for this
 //     *            {@link EditingSupport}.
@@ -147,8 +147,8 @@ public class PropertiesEditDialog extends Dialog {
 //    protected CellEditor getCellEditor(final Object element) {
 //        PropertyData propertyData;
 //        if((propertyData = getSelectedProperty()) != null){
-//            return propertyData.property.getPropertyDescriptor().createPropertyEditor(table);                
-//        }            
+//            return propertyData.property.getPropertyDescriptor().createPropertyEditor(table);
+//        }
 //        return null;
 //    }
 //
@@ -162,17 +162,17 @@ public class PropertiesEditDialog extends Dialog {
 //        }
 //        return null;
 //    }
-//    
-//    
+//
+//
 //    /**
 //     * {@inheritDoc}
 //     */
 //    @Override
 //    protected Object getValue(final Object element) {
-//        if (element instanceof PropertyData) {            
+//        if (element instanceof PropertyData) {
 //                return ((PropertyData)element).tmpValue;
 //            }
-//        
+//
 //        return null;
 //    }
 //
@@ -184,7 +184,7 @@ public class PropertiesEditDialog extends Dialog {
 //        if (element instanceof PropertyData) {
 //            PropertyData prop = (PropertyData) element;
 //            if (prop != null) {
-//                prop.tmpValue = value;    
+//                prop.tmpValue = value;
 //                getViewer().refresh();
 //            }
 //        }
@@ -194,9 +194,9 @@ public class PropertiesEditDialog extends Dialog {
 //
 ///**
 //* The {@link LabelProvider} for the properties table.
-//* 
+//*
 //* @author Xihui Chen
-//* 
+//*
 //*/
 //class PropertyDataLabelProvider extends LabelProvider implements
 //                ITableLabelProvider {
@@ -208,9 +208,9 @@ public class PropertiesEditDialog extends Dialog {
 //                    final int columnIndex) {
 //                if (columnIndex == 1 && element instanceof PropertyData) {
 //                    PropertyData propertyData = (PropertyData) element;
-//                    
+//
 //                    if (propertyData != null) {
-//                        if (propertyData.property.getPropertyDescriptor().getLabelProvider() != null) 
+//                        if (propertyData.property.getPropertyDescriptor().getLabelProvider() != null)
 //                            return propertyData.property.getPropertyDescriptor().getLabelProvider().
 //                                getImage(propertyData.tmpValue);
 //                    }
@@ -228,7 +228,7 @@ public class PropertiesEditDialog extends Dialog {
 //                    if (columnIndex == 0) {
 //                        return propertyData.property.getDescription();
 //                    }
-//                    
+//
 //                    if (propertyData != null && propertyData.property.getPropertyDescriptor().getLabelProvider() != null) {
 //                        return propertyData.property.getPropertyDescriptor().getLabelProvider().getText(
 //                                propertyData.tmpValue);
@@ -239,6 +239,6 @@ public class PropertiesEditDialog extends Dialog {
 //                }
 //                return "error";
 //            }
-//        
+//
 //
 //}

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.olog.property.shift;
 
@@ -10,9 +10,9 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author shroffk
- * 
+ *
  * TODO a public constructor is mandated by the extension framework.
- * 
+ *
  */
 public class ShiftPropertyWidgetFactory implements PropertyWidgetFactory {
 

@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /**
- * 
+ *
  */
 package org.csstudio.dal.tine;
 
@@ -29,12 +29,12 @@ import com.cosylab.util.CommonException;
 
 /**
  * This exception signals that connection to remote system has failed for some reason.
- * 
+ *
  * @author Igor Kriznar (igor.kriznarATcosylab.com)
  *
  */
 public class ConnectionFailed extends CommonException {
-    
+
     private static final long serialVersionUID = 1L;
     /**
      * Creates new instance of ConnectionFailed.

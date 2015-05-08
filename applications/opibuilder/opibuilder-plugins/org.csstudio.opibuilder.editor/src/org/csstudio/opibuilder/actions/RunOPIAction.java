@@ -36,7 +36,7 @@ public class RunOPIAction extends Action implements IWorkbenchWindowActionDelega
 
     public static String ID = "org.csstudio.opibuilder.editor.run"; //$NON-NLS-1$
     public static String ACITON_DEFINITION_ID = "org.csstudio.opibuilder.runopi"; //$NON-NLS-1$
-    
+
   public RunOPIAction() {
      super("Run OPI", CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
              OPIBuilderPlugin.PLUGIN_ID, "icons/run.gif"));     //$NON-NLS-1$
@@ -51,38 +51,38 @@ public class RunOPIAction extends Action implements IWorkbenchWindowActionDelega
         if(activeEditor instanceof OPIEditor){
             if(PreferencesHelper.isAutoSaveBeforeRunning() && activeEditor.isDirty())
                 activeEditor.doSave(null);
-            
+
             //It seems that the synch with editor is not necessary
             DisplayModel displayModel = ((OPIEditor)activeEditor).getDisplayModel();
-            
-            IEditorInput input = activeEditor.getEditorInput();    
-            
-            
+
+            IEditorInput input = activeEditor.getEditorInput();
+
+
             IPath path = null;
                 path = ResourceUtil.getPathInEditor(input);
-                RunModeService.getInstance().runOPI(path, TargetWindow.RUN_WINDOW,  
+                RunModeService.getInstance().runOPI(path, TargetWindow.RUN_WINDOW,
                         new Rectangle(displayModel.getLocation(), displayModel.getSize()));
-    
+
         }
-            
+
     }
-  
+
       @Override
       public boolean isEnabled() {
           return true;
       }
-      
+
       @Override
       public void setEnabled(boolean enabled) {
           super.setEnabled(true);
       }
 
     public void dispose() {
-        
+
     }
 
     public void init(IWorkbenchWindow window) {
-        
+
     }
 
     public void run(IAction action) {
@@ -90,6 +90,6 @@ public class RunOPIAction extends Action implements IWorkbenchWindowActionDelega
     }
 
     public void selectionChanged(IAction action, ISelection selection) {
-        
+
     }
 }

@@ -17,7 +17,7 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 public class EnumPropertyDescriptor extends PropertyDescriptor
 {
     final Class<? extends Enum<?>> enum_type;
-    
+
     /** Initialize
      *  @param id ID to edit
      *  @param label Label to show
@@ -29,7 +29,7 @@ public class EnumPropertyDescriptor extends PropertyDescriptor
         super(id, label);
         this.enum_type = enum_type;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public CellEditor createPropertyEditor(final Composite parent)

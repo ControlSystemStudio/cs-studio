@@ -17,7 +17,7 @@ import org.eclipse.gef.requests.DirectEditRequest;
  * @author Xihui Chen
  *
  */
-public class TextUpdateDirectEditPolicy 
+public class TextUpdateDirectEditPolicy
     extends DirectEditPolicy {
 
     /**
@@ -26,11 +26,11 @@ public class TextUpdateDirectEditPolicy
     protected Command getDirectEditCommand(DirectEditRequest edit) {
         String labelText = (String)edit.getCellEditor().getValue();
         TextUpdateEditPart label = (TextUpdateEditPart)getHost();
-        TextIndicatorEditCommand command = 
+        TextIndicatorEditCommand command =
             new TextIndicatorEditCommand((TextUpdateModel)label.getModel(),labelText);
         return command;
     }
-    
+
     /**
      * @see DirectEditPolicy#showCurrentEditValue(DirectEditRequest)
      */
@@ -39,16 +39,16 @@ public class TextUpdateDirectEditPolicy
         //((LabelFigure)getHostFigure()).setText(value);
         //hack to prevent async layout from placing the cell editor twice.
         //getHostFigure().getUpdateManager().performUpdate();
-        
-    
+
+
     }
 
 
 static class TextIndicatorEditCommand extends Command    {
-    
+
     private String newText, oldText;
     private TextUpdateModel label;
-    
+
     public TextIndicatorEditCommand(TextUpdateModel l, String s) {
     label = l;
     if (s != null)
@@ -56,12 +56,12 @@ static class TextIndicatorEditCommand extends Command    {
     else
         newText = "";  //$NON-NLS-1$
     }
-    
+
     public void execute() {
         oldText = label.getText();
         label.setPropertyValue(TextUpdateModel.PROP_TEXT, newText, true);//setText(newText);
     }
-    
+
     public void undo() {
         label.setText(oldText);
     }

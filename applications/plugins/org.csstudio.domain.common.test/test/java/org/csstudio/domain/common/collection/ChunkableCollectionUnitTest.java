@@ -12,7 +12,7 @@ import org.junit.Test;
 
 /**
  * Test of the chunkable collection
- * 
+ *
  * @author jpenning
  * @author $Author: jpenning $
  * @version $Revision: 1.1 $

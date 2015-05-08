@@ -2,9 +2,9 @@ package org.csstudio.logbook;
 
 /**
  * A Factory to create clients to the Logbook service
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public interface LogbookClientFactory {
 
@@ -13,19 +13,19 @@ public interface LogbookClientFactory {
 
     /**
      * Get an instance of the client object used to make log entries
-     * 
+     *
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     public LogbookClient getClient() throws Exception;
 
     /**
      * Get an instance of the logbookClient with the usercredentails.
-     * 
+     *
      * @param username
      * @param password
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     public LogbookClient getClient(String username, String password) throws Exception;
 

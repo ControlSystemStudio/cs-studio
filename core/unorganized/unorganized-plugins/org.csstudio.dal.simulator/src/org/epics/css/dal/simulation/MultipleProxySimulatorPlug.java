@@ -33,7 +33,7 @@ import org.epics.css.dal.simulation.ps.PowerSupplyImpl;
 /**
  * An instance of simulator plug which provides separate Directory and Property Proxies.
  * <p><code>For testing purposes only</code></p>
- * 
+ *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
@@ -49,7 +49,7 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
         protected TimerTask task;
         protected boolean destroyed = false;
 
-        
+
         public MonitorProxyI(SinglePropertyProxyImpl<T> source, ResponseListener<T> l) {
             super(source, l);
             this.proxy = source;
@@ -174,7 +174,7 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
             }
 
             destroyed = true;
-            
+
             proxy.removeMonitor(this);
         }
 
@@ -190,30 +190,30 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
         {
             // Override in order to clean up cached values.
         }
-        
+
     }
-    
+
     public static class DoublePropertyProxyImpl extends SinglePropertyProxyImpl<Double> {
 
         public DoublePropertyProxyImpl(String name, MultipleProxySimulatorPlug plug) {
             super(name,plug);
             // TODO Auto-generated constructor stub
         }
-        
+
     }
-    
-    public static class SinglePropertyProxyImpl<E> extends AbstractPropertyProxyImpl<E, MultipleProxySimulatorPlug, MonitorProxyI<E>> implements 
+
+    public static class SinglePropertyProxyImpl<E> extends AbstractPropertyProxyImpl<E, MultipleProxySimulatorPlug, MonitorProxyI<E>> implements
         PropertyProxy<E,MultipleProxySimulatorPlug>,SyncPropertyProxy<E,MultipleProxySimulatorPlug> {
 
         protected ValueProvider<E> valueProvider = new MemoryValueProvider<E>();
         protected boolean isSettable = true;
-        
+
         public SinglePropertyProxyImpl(String name, MultipleProxySimulatorPlug plug) {
             super(name,plug);
             setConnectionState(ConnectionState.READY);
             delayedConnect(1000);
         }
-        
+
         public void refresh() {
             // TODO Auto-generated method stub
         }
@@ -224,18 +224,18 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
             // TODO Auto-generated method stub
             return null;
         }
-        
+
         @Override
         protected Object processCharacteristicAfterCache(Object value,
                 String characteristicName) {
             return value;
         }
-        
+
         public String[] getCharacteristicNames() throws DataExchangeException {
             // TODO Auto-generated method stub
             return null;
         }
-        
+
         @Override
         protected Object processCharacteristicBeforeCache(Object value,
                 String characteristicName) {
@@ -315,8 +315,8 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
             }
         }
     }
-    
-    public static class SingleDeviceProxyImpl extends AbstractProxyImpl<MultipleProxySimulatorPlug> implements 
+
+    public static class SingleDeviceProxyImpl extends AbstractProxyImpl<MultipleProxySimulatorPlug> implements
             DeviceProxy<MultipleProxySimulatorPlug> {
 
         protected MultipleProxySimulatorPlug plug;
@@ -324,15 +324,15 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
         protected Map<String, PropertyProxy<?,MultipleProxySimulatorPlug>> propertyProxies;
         protected Map<String, CommandProxy> commands = new HashMap<String, CommandProxy>();
         protected Map<String, Class<?extends SimpleProperty<?>>> propertyTypes = new HashMap<String, Class<? extends SimpleProperty<?>>>();
-        
+
         public SingleDeviceProxyImpl(String name, MultipleProxySimulatorPlug plug) {
             super(name,plug);
             this.plug = MultipleProxySimulatorPlug.getInstance();
             setConnectionState(ConnectionState.READY);
             delayedConnect(2000);
-            
+
         }
-                
+
         public void delayedConnect(long timeout)
         {
             setConnectionState(ConnectionState.CONNECTING);
@@ -395,15 +395,15 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
 
         public void refresh() {
             // TODO Auto-generated method stub
-            
-        }        
-        
+
+        }
+
         public Class<?extends SimpleProperty<?>> getPropertyType(String propertyName)
         {
             return propertyTypes.get(propertyName);
         }
     }
-    
+
     private static MultipleProxySimulatorPlug instance;
 
     public static final MultipleProxySimulatorPlug getInstance()
@@ -419,7 +419,7 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
 
         return instance;
     }
-    
+
     protected MultipleProxySimulatorPlug(Properties configuration) {
         super(configuration);
         registerPropertyProxyImplementationClass(DoublePropertyImpl.class, DoublePropertyProxyImpl.class);
@@ -429,19 +429,19 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
         registerDeviceProxyImplementationClass(PowerSupplyImpl.class, SingleDeviceProxyImpl.class);
         registerDeviceProxyImplementationClass(AbstractDeviceImpl.class, SingleDeviceProxyImpl.class);
     }
-    
+
     @Override
     protected DirectoryProxy<MultipleProxySimulatorPlug> createNewDirectoryProxy(String uniqueName) {
         try {
             PropertyProxyImpl<?> proxy = new PropertyProxyImpl<Object>(uniqueName,this,Object.class);
             return (DirectoryProxy)proxy;
-            
+
         } catch (Exception e) {
             Logger.getLogger(this.getClass()).warn("Simulator error.", e);
         }
         return null;
     }
-    
+
     @Override
     protected <TT extends PropertyProxy<?,?>> TT createNewPropertyProxy(String uniqueName, Class<TT> type) throws ConnectionException {
         try {
@@ -456,7 +456,7 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
                 + "' for type '" + type.getName() + "'.", e);
         }
     }
-    
+
     @Override
     protected <T extends DeviceProxy<?>> T createNewDeviceProxy(String uniqueName, Class<T> type) throws ConnectionException {
         try {

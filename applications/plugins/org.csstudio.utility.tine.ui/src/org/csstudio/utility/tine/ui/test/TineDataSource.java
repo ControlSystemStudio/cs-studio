@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.utility.tine.ui.test;
@@ -45,14 +45,14 @@ public class TineDataSource //extends AbstractDataSource implements TLinkCallbac
     String[] value = new String[1];
     String[] buffer = new String[300];
     Hashtable monitoredDeviceNames; // current device name / TLink object
-    
-    TineDataSource ( String name, int wakeupTime, int priority, 
+
+    TineDataSource ( String name, int wakeupTime, int priority,
         int nameSpaceType, int accessType, int minScanTime, int defaultScanTime)
     {
 /*        initDataSource ( name, wakeupTime, priority, nameSpaceType, accessType, minScanTime, defaultScanTime);
-        
+
         System.out.println( "java.home is : " + System.getProperty( "java.home"));
-        
+
         monitoredDeviceNames = new Hashtable();
         //registerObjectAndMethod ( this);
 */    }
@@ -65,15 +65,15 @@ public class TineDataSource //extends AbstractDataSource implements TLinkCallbac
 //        //
 //        // do the things to get the value
 //        //
-//        /* 
+//        /*
 //        float[] value = new float[500];
 //        TDataType dout = new TDataType( value);
 //        TDataType din = new TDataType();
 //        */
-//        
+//
 ////        TLink linkToData = new TLink( "/HERA/HEPBPM/WL197 MX/POSITIONS.X", dout, din, TAccess.CA_READ);
 //        TLink linkToData = new TLink( deviceName);
-//        
+//
 //        //
 //        // set the array delimiter
 //        // the default is <CR>
@@ -81,7 +81,7 @@ public class TineDataSource //extends AbstractDataSource implements TLinkCallbac
 //        // but we are looking here for 'real' data ...
 //        //
 //        linkToData.setArrayDelimiter(" ");
-//        
+//
 //        if (( cc = linkToData.execute(3000)) == 0) {
 ////        if (( cc = linkToData.execute()) == 0) {
 //            //
@@ -106,14 +106,14 @@ public class TineDataSource //extends AbstractDataSource implements TLinkCallbac
 //        }
 //
 //        return ;
-    }   
+    }
     public int registerMonitor ( String requestName)
     {
         int errorCode = -1;
 //        String deviceName;
-//        
+//
 //        deviceName = deviceNameWithoutDataSourceName(requestName);
-//        
+//
 //        incrementDiagCounter ( "RegisterMonitor");
 //        TLink linkToData = new TLink( requestName);
 //        //
@@ -125,18 +125,18 @@ public class TineDataSource //extends AbstractDataSource implements TLinkCallbac
 //        linkToData.setArrayDelimiter(" ");
 //        int linkid = linkToData.attach( TMode.CM_REFRESH, this, 1000 );
 //        monitoredDeviceNames.put( requestName, linkToData);
-//        
+//
 ////        JCALib.addChannelName( deviceName);
 //        //
         return errorCode;
     }
-    
+
     public int deregisterMonitor ( String requestName)
     {
         int errorCode = -1;
 //        String deviceName;
 //        TLink linkToData;
-//        
+//
 //        deviceName = deviceNameWithoutDataSourceName( requestName);
 //        incrementDiagCounter ( "DeregisterMonitor");
 //        if ( monitoredDeviceNames.containsKey(requestName)) {
@@ -146,20 +146,20 @@ public class TineDataSource //extends AbstractDataSource implements TLinkCallbac
 //        } else {
 //            MainFrame.errlog ("TINE : error stopping monitor for " + deviceName);
 //        }
-//        
+//
         return errorCode;
     }
-    
+
     public void callback (TLink link)
     {
-//        registry.updateValueInRegistry ( "TINE|"+link.getFullDeviceName()+ "/" + link.getProperty(), 
+//        registry.updateValueInRegistry ( "TINE|"+link.getFullDeviceName()+ "/" + link.getProperty(),
 //        link.getOutputDataObject().toString());
     }
-    
+
     public void displayNameSpaceBrowser (Object calledFrom) {
 //        if ( newBrowser == null) {
 //            newBrowser = new TineNameSpaceBrowser((Component)calledFrom, this);
-//        } 
+//        }
 //        newBrowser.setVisible( true);
 //        ((JTextField)calledFrom).setText(newBrowser.getSelectedName());
 //        // return the result as a string
@@ -179,10 +179,10 @@ public class TineDataSource //extends AbstractDataSource implements TLinkCallbac
         else return null;
     }
     public String[] getDeviceProperties(String context, String server, String device) {
-        if(!context.equals(NameSpaceBrowser.NA) && 
+        if(!context.equals(NameSpaceBrowser.NA) &&
            !server.equals(NameSpaceBrowser.NA) &&
            !device.equals(NameSpaceBrowser.NA))
-            return TQuery.getDeviceProperties(context, server, device);        
+            return TQuery.getDeviceProperties(context, server, device);
         else return null;
     }
 }

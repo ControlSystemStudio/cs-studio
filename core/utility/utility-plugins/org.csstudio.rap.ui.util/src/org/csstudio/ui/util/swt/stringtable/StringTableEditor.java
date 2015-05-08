@@ -42,9 +42,9 @@ public class StringTableEditor extends Composite
     public enum CellEditorType{
         TEXT,
         CHECKBOX,
-        DROPDOWN    
+        DROPDOWN
     }
-    
+
     private static final String DELETE = "delete"; //$NON-NLS-1$
     private static final String DOWN = "down"; //$NON-NLS-1$
     private static final String UP = "up"; //$NON-NLS-1$
@@ -63,7 +63,7 @@ public class StringTableEditor extends Composite
         images.put(DOWN, Activator.getImageDescriptor("icons/down.gif")); //$NON-NLS-1$
         images.put(DELETE, Activator.getImageDescriptor("icons/delete.gif")); //$NON-NLS-1$
     }
-    
+
     /** Creates an editable table.  The size of headers array implies the number of columns.
      * @param parent The composite which the table resides in. Cannot be null.
      * @param headers Contains the header for each column. Cannot be null.
@@ -175,7 +175,7 @@ public class StringTableEditor extends Composite
         });
     }
 
-    /** Create a string list editor which is a table with only one column. 
+    /** Create a string list editor which is a table with only one column.
      *  @param parent Parent widget
      *  @param items List of strings, will be changed in-place
      */

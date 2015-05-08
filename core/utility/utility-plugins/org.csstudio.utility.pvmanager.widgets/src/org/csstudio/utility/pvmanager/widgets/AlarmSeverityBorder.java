@@ -24,26 +24,26 @@ public class AlarmSeverityBorder extends Composite {
         fillLayout.marginHeight = 0;
         setLayout(fillLayout);
     }
-    
+
     public AlarmSeverity getAlarmSeverity() {
         return alarmSeverity;
     }
-    
+
     public void setAlarmSeverity(AlarmSeverity alarmSeverity) {
         if (alarmSeverity == null) {
             throw new NullPointerException("Alarm severity should not be null");
         }
-        
+
         if (alarmSeverity.equals(this.alarmSeverity)) {
             return;
         }
-        
+
         AlarmSeverity oldAlarmSeverity = this.alarmSeverity;
         this.alarmSeverity = alarmSeverity;
-        
+
         java.awt.Color awtColor = new java.awt.Color(ValueUtil.colorFor(alarmSeverity));
         setBackground(SWTResourceManager.getColor(awtColor.getRed(), awtColor.getGreen(), awtColor.getBlue()));
-        
+
         if (AlarmSeverity.NONE.equals(oldAlarmSeverity) || AlarmSeverity.NONE.equals(alarmSeverity)) {
             int newBorderSize;
             if (AlarmSeverity.NONE.equals(alarmSeverity)) {
@@ -58,8 +58,8 @@ public class AlarmSeverityBorder extends Composite {
             this.layout();
         }
     }
-    
-    
+
+
 
     @Override
     protected void checkSubclass() {

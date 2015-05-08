@@ -27,11 +27,11 @@ public class ScriptParser extends AbstractLanguageParser {
     protected Node doParse(CharSequence input, IResource sourceResource,
             IProgressMonitor progressMonitor) {
         if (input.length()>0) {
-            RuleNode ruleNode = new RuleNode(sourceResource.getName(),0,input.length());  
+            RuleNode ruleNode = new RuleNode(sourceResource.getName(),0,input.length());
             List<CommentNode> allComments = this.findAndAddAllComments(input.toString());
             List<VariableNode> allVariables = this.findAndAddAllVariables(input.toString());
             List<FunctionNode> allFunctions = this.findAndAddAllFunctions(input.toString());
-            
+
             //remove commented functions
             FunctionNode[] functionNodes = allFunctions.toArray(new FunctionNode[allFunctions.size()]);
             for (FunctionNode function : functionNodes) {
@@ -39,7 +39,7 @@ public class ScriptParser extends AbstractLanguageParser {
                     allFunctions.remove(function);
                 }
             }
-            
+
             //remove commented variables
             VariableNode[] varNodes = allVariables.toArray(new VariableNode[allVariables.size()]);
             for (VariableNode var : varNodes) {
@@ -47,10 +47,10 @@ public class ScriptParser extends AbstractLanguageParser {
                     allVariables.remove(var);
                 }
             }
-            
+
             checkPredefinedVariables(ruleNode, allVariables);
             checkPredefinedFunctions(ruleNode, allFunctions);
-            
+
             List<VariableNode> globalVariables = new LinkedList<VariableNode>(allVariables);
             for (FunctionNode function : allFunctions) {
                 for (VariableNode variable : allVariables) {
@@ -69,12 +69,12 @@ public class ScriptParser extends AbstractLanguageParser {
             for (FunctionNode function : allFunctions) {
                 ruleNode.addChild(function);
             }
-            
-            return ruleNode;    
+
+            return ruleNode;
         }
         return null;
     }
-    
+
     private boolean isCommented(List<CommentNode> comments, AbstractScriptNode node) {
         for (CommentNode comment : comments) {
             if (comment.hasOffsets() && node.hasOffsets()) {
@@ -83,23 +83,23 @@ public class ScriptParser extends AbstractLanguageParser {
         }
         return false;
     }
-    
+
     private List<CommentNode> findAndAddAllComments(final String input) {
         List<CommentNode> nodes = new ArrayList<CommentNode>();
         final CommentParser commentParser = new CommentParser();
-        
+
         commentParser.findNext(input);
-        
+
         while (commentParser.hasFoundElement()) {
             final CommentNode commentNode = commentParser.getLastFoundAsNode();
             nodes.add(commentNode);
-            
+
             final int lastEndPosition = commentParser.getEndOffsetLastFound();
-            
+
             //search next one
             commentParser.findNext(input, lastEndPosition);
         }
-        
+
         return nodes;
     }
 
@@ -120,7 +120,7 @@ public class ScriptParser extends AbstractLanguageParser {
         }
         return nodes;
     }
-    
+
     private List<FunctionNode> findAndAddAllFunctions(final String input) {
         List<FunctionNode> nodes = new LinkedList<FunctionNode>();
         final FunctionParser predefinedFunctionParser = new FunctionParser();
@@ -138,20 +138,20 @@ public class ScriptParser extends AbstractLanguageParser {
         }
         return nodes;
     }
-    
+
     private boolean isSubNode(Node parentNode, Node subNode) {
         if (parentNode.hasOffsets() && subNode.hasOffsets()) {
             return (parentNode.getStatementStartOffset()<subNode.getStatementStartOffset() && parentNode.getStatementEndOffset()>subNode.getStatementEndOffset());
         }
         return false;
     }
-    
+
     private void checkPredefinedVariables(Node parentNode, List<VariableNode> variables) {
         Contract.requireNotNull("variables", variables);
         List<String> errors = new ArrayList<String>(PredefinedVariables.values().length);
         List<String> warnings = new ArrayList<String>();
         boolean returnVariableFound = false;
-        
+
         for (PredefinedVariables predefVar : PredefinedVariables.values()) {
             boolean found = false;
             for (VariableNode node : variables) {
@@ -186,7 +186,7 @@ public class ScriptParser extends AbstractLanguageParser {
             }
         }
     }
-    
+
     private void checkPredefinedFunctions(Node parentNode, List<FunctionNode> functions) {
         Contract.requireNotNull("functions", functions);
         for (PredefinedFunctions predefFun : PredefinedFunctions.values()) {

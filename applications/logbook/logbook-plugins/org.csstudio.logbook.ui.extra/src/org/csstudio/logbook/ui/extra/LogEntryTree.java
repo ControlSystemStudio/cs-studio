@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui.extra;
 
@@ -55,7 +55,7 @@ import com.google.common.collect.Collections2;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class LogEntryTree extends Composite implements ISelectionProvider {
 
@@ -98,7 +98,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
             break;
         case "expanded":
             //TODO shroffk fix the refresh
-            FontMetrics fm = new GC(Display.getCurrent()).getFontMetrics();    
+            FontMetrics fm = new GC(Display.getCurrent()).getFontMetrics();
             grid.setItemHeight(fm.getHeight() * rowSize);
             gridTreeViewer.getGrid().setAutoHeight(expanded);
             gridTreeViewer.setInput(createModel(logEntries));
@@ -137,8 +137,8 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
     };
 
     grid = gridTreeViewer.getGrid();
-    grid.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));    
-    FontMetrics fm = new GC(Display.getCurrent()).getFontMetrics();    
+    grid.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+    FontMetrics fm = new GC(Display.getCurrent()).getFontMetrics();
     grid.setItemHeight(fm.getHeight() * rowSize);
     grid.setAutoHeight(expanded);
     grid.setRowsResizeable(true);
@@ -214,7 +214,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
         public String getText(Object element) {
         LogEntryTreeModel item = ((LogEntryTreeModel) element);
         StringBuffer owner = new StringBuffer();
-        if (item != null && item.logEntry != null){            
+        if (item != null && item.logEntry != null){
             owner.append(item.creater);
             if (item.logEntry.getModifiedDate() != null &&
                 item.logEntry.getCreateDate().getTime()/1000 != item.logEntry.getModifiedDate().getTime()/1000){
@@ -256,8 +256,8 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
             @Override
             public String apply(Logbook logbook) {
                 return logbook.getName();
-            }            
-            });            
+            }
+            });
             return Joiner.on(System.getProperty("line.separator")).join(logbookNames);
         }
         }
@@ -282,8 +282,8 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
             @Override
             public String apply(Tag tag) {
                 return tag.getName();
-            }            
-            });            
+            }
+            });
             return Joiner.on(System.getProperty("line.separator")).join(tagNames);
         }
         }
@@ -345,9 +345,9 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
     this.logEntryOrder = logEntryOrder;
     changeSupport.firePropertyChange("logEntryOrder", oldValue, this.logEntryOrder);
     }
-    
+
     /**
-     * 
+     *
      * @return
      */
     public int getRowSize() {
@@ -355,7 +355,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
     }
 
     /**
-     * 
+     *
      * @param rowSize
      */
     public void setRowSize(int rowSize) {
@@ -375,7 +375,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
      * @param expanded the expanded to set
      */
     public void setExpanded(boolean expanded) {
-    boolean oldValue = this.expanded;    
+    boolean oldValue = this.expanded;
         this.expanded = expanded;
         changeSupport.firePropertyChange("expanded", oldValue, this.expanded);
     }
@@ -486,18 +486,18 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
         List<LogEntry> versions = new ArrayList<LogEntry>();
         model.put((Long) logEntry.getId(), versions);
         }
-        model.get(logEntry.getId()).add(logEntry);      
+        model.get(logEntry.getId()).add(logEntry);
     }
 
     for (Entry<Long, List<LogEntry>> entry : model.entrySet()) {
-        List<LogEntry> entries = entry.getValue();        
+        List<LogEntry> entries = entry.getValue();
         String creater = "";
         if(logEntryOrder == SWT.UP){
         Collections.sort(entries, new Comparator<LogEntry>(){
             @Override
             public int compare(LogEntry o1, LogEntry o2) {
             return o1.getModifiedDate().compareTo(o2.getModifiedDate());
-            }            
+            }
         });
         creater = entries.get(0).getOwner();
         }else{
@@ -505,7 +505,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
             @Override
             public int compare(LogEntry o1, LogEntry o2) {
             return o2.getModifiedDate().compareTo(o1.getModifiedDate());
-            }            
+            }
         });
         creater = entries.get(entries.size()-1).getOwner();
         }
@@ -526,7 +526,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
         Date d2 =  o2.logEntry.getCreateDate();
         return d2.compareTo(d1);
         }
-        
+
     });
     return root;
     }

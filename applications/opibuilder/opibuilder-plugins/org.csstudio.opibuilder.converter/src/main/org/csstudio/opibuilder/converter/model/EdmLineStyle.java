@@ -11,12 +11,12 @@ import org.apache.log4j.Logger;
 
 /**
  * Specific class representing lineStyle property.
- * 
+ *
  * @author SSah
  *
  */
 public class EdmLineStyle extends EdmAttribute {
-    
+
     public static final int SOLID = 0;
     public static final int DASH = 1;
 
@@ -24,12 +24,12 @@ public class EdmLineStyle extends EdmAttribute {
 
     private static final String solidString = "solid";
     private static final String dashString = "dash";
-    
+
     private int val;
 
     /**
      * Constructor, which parses lineStyle property from EdmAttribute general interface.
-     * 
+     *
      * @param genericAttribute    EdmAttribute containing lineStyle string format data.
      * @param required false if this attribute is optional, else true
      * @throws EdmException    if data from EdmAttribute of invalid format.
@@ -53,7 +53,7 @@ public class EdmLineStyle extends EdmAttribute {
                 "Unrecognized line style '" + valueString + "'.", null);
             }
             setInitialized(true);
-        
+
         } else {
             if (isRequired()) {
                 log.warn("Missing required property.");

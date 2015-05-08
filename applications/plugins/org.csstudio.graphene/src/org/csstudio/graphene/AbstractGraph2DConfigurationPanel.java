@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene;
 
@@ -14,11 +14,11 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class AbstractGraph2DConfigurationPanel extends
         AbstractConfigurationPanel {
-    
+
     private Text textDataFormula;
     private Button btnResizableAxis;
 

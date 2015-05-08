@@ -11,7 +11,7 @@ public class LinePartsTest  extends TestCase {
     private LineParts rowLine = new LineParts(rowLineContents);
     @Before
     public void setUp() throws Exception {
-        
+
     }
 
     @Test

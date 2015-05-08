@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.pvmanager.ui.toolbox;
 
@@ -18,7 +18,7 @@ import org.epics.pvmanager.service.ServiceMethod;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ServiceTreeContentProvider implements ITreeContentProvider {
 
@@ -26,7 +26,7 @@ public class ServiceTreeContentProvider implements ITreeContentProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.viewers.IContentProvider#dispose()
      */
     @Override
@@ -35,7 +35,7 @@ public class ServiceTreeContentProvider implements ITreeContentProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface
      * .viewers.Viewer, java.lang.Object, java.lang.Object)

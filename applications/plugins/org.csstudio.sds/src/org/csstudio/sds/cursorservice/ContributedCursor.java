@@ -25,7 +25,7 @@ package org.csstudio.sds.cursorservice;
 
 /**
  * A cursor contributed by another plug-in.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class ContributedCursor extends AbstractCursor {
@@ -34,7 +34,7 @@ public final class ContributedCursor extends AbstractCursor {
      * The bundle in which this cursor is located.
      */
     private final String _bundle;
-    
+
     /**
      * The name of the graphics file in the bundle.
      */
@@ -42,7 +42,7 @@ public final class ContributedCursor extends AbstractCursor {
 
     /**
      * Creates a new contributed cursor.
-     * 
+     *
      * @param id
      *            the id of this cursor.
      * @param title
@@ -60,19 +60,19 @@ public final class ContributedCursor extends AbstractCursor {
         _bundle = bundle;
         _image = image;
     }
-    
+
     /**
      * Returns the name of the bundle in which this cursor is located.
-     * 
+     *
      * @return the name of the bundle in which this cursor is located.
      */
     public String getBundle() {
         return _bundle;
     }
-    
+
     /**
      * Returns the name of the graphics file in the bundle.
-     * 
+     *
      * @return the name of the graphics file in the bundle.
      */
     public String getImage() {

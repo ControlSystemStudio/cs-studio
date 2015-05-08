@@ -1,7 +1,7 @@
 package de.desy.language.snl.parser;
 
 public class Interval {
-    
+
     private final int _start;
     private final int _end;
 
@@ -20,7 +20,7 @@ public class Interval {
     public int getEnd() {
         return _end;
     }
-    
+
     public boolean contains(int position) {
         return (_start <= position && position <= _end);
     }

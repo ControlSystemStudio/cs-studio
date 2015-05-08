@@ -18,9 +18,9 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 /**
  * Section implementation for {@link ArrayOptionProperty}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class ArrayOptionSection extends AbstractBaseSection<ArrayOptionProperty> {
 
@@ -37,7 +37,7 @@ public class ArrayOptionSection extends AbstractBaseSection<ArrayOptionProperty>
     @Override
     protected void doCreateControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
         parent.setLayout(new FormLayout());
-        
+
         // .. create a combo and the corresponding viewer
         CCombo combo = getWidgetFactory().createCCombo(parent, SWT.BORDER | SWT.READ_ONLY);
 
@@ -45,7 +45,7 @@ public class ArrayOptionSection extends AbstractBaseSection<ArrayOptionProperty>
         fd.left = new FormAttachment(0,0);
         fd.right = new FormAttachment(50,0);
         combo.setLayoutData(fd);
-        
+
         optionViewer = new ComboViewer(combo);
         optionViewer.setLabelProvider(new LabelProvider() {
             @Override

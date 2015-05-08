@@ -27,9 +27,9 @@ import org.eclipse.ui.actions.ActionFactory;
 
 /**
  * The action to print display.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class PrintDisplayAction extends WorkbenchPartAction {
 
@@ -37,7 +37,7 @@ public class PrintDisplayAction extends WorkbenchPartAction {
 
     /**
      * Constructor for PrintAction.
-     * 
+     *
      * @param part
      *            The workbench part associated with this PrintAction
      */

@@ -16,23 +16,23 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 /** JUnit tests of the TimeParser
- * 
+ *
  *  The tests "work", but everything relative to 'now' could
  *  fail around times of daylight saving transitions.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class TimeParserUnitTest extends TestCase
 {
-    private final DateFormat format = 
+    private final DateFormat format =
                       new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-    
+
     @Test
     public void testAbsoluteTimeParser() throws Exception
     {
         Calendar cal;
-        
+
         // Full time with nanoseconds
         cal = AbsoluteTimeParser.parse("2007/06/01 14:00:24.156959772");
         System.out.println(cal.getTime());
@@ -43,7 +43,7 @@ public class TimeParserUnitTest extends TestCase
         assertEquals( 0, cal.get(Calendar.MINUTE));
         assertEquals(24, cal.get(Calendar.SECOND));
         assertEquals(156, cal.get(Calendar.MILLISECOND));
-        
+
         // Full time, with extra spaces
         cal = AbsoluteTimeParser.parse("   2007/01/18    12:10:13.123     ");
         System.out.println(cal.getTime());
@@ -62,7 +62,7 @@ public class TimeParserUnitTest extends TestCase
         // Copy, or same instance?
         // But in any case should the values match what we had in cal.
         assertEquals(cal, cal3);
-        
+
         // Only date, no time
         cal = AbsoluteTimeParser.parse("2007/01/18");
         System.out.println(cal.getTime());
@@ -99,7 +99,7 @@ public class TimeParserUnitTest extends TestCase
         assertEquals(00, cal2.get(Calendar.MINUTE));
         assertEquals(24, cal2.get(Calendar.SECOND));
         assertEquals(156, cal2.get(Calendar.MILLISECOND));
-        
+
         // Only month and day, but no year
         cal = AbsoluteTimeParser.parse(cal, "02/15 13:45");
         System.out.println(cal.getTime());
@@ -111,7 +111,7 @@ public class TimeParserUnitTest extends TestCase
         assertEquals( 0, cal.get(Calendar.SECOND));
         assertEquals( 0, cal.get(Calendar.MILLISECOND));
     }
-    
+
     @Test
     public void testRelativeTimeParser() throws Exception
     {
@@ -125,7 +125,7 @@ public class TimeParserUnitTest extends TestCase
         assertEquals( 0, result.getRelativeTime().get(RelativeTime.MINUTES));
         assertEquals( 0, result.getRelativeTime().get(RelativeTime.SECONDS));
         assertEquals( 0, result.getRelativeTime().get(RelativeTime.MILLISECONDS));
-        
+
         result = RelativeTimeParser.parse("   30 minutes -2 mon     ");
         System.out.println(result);
         assertEquals(20, result.getOffsetOfNextChar());
@@ -160,12 +160,12 @@ public class TimeParserUnitTest extends TestCase
         assertEquals( 0, result.getRelativeTime().get(RelativeTime.MINUTES));
         assertEquals( 0, result.getRelativeTime().get(RelativeTime.SECONDS));
         assertEquals(-123, result.getRelativeTime().get(RelativeTime.MILLISECONDS));
-        
+
         // now
         result = RelativeTimeParser.parse("   NoW ");
         assertEquals(true, result.getRelativeTime().isNow());
     }
-    
+
     @Test
     public void testTimeParser() throws Exception
     {
@@ -201,7 +201,7 @@ public class TimeParserUnitTest extends TestCase
                            start_time + " ... " + end_time);
         assertEquals("2007/05/04 08:15:00", start_time);
         assertEquals("2007/05/06 23:45:09", end_time);
-        
+
         // abs, rel. Also hours that roll over into next day.
         start = "2006/01/29 12:00:00";
         end = "6M 12h";
@@ -225,7 +225,7 @@ public class TimeParserUnitTest extends TestCase
         long now = Calendar.getInstance().getTimeInMillis() / 1000;
         double end_diff_sec = now - start_end.getEnd().getTimeInMillis()/1000;
         assertEquals(0.0, end_diff_sec, 10.0);
-        
+
         // rel (back), rel(back)
         start = "-6h";
         end = "-2h";
@@ -240,7 +240,7 @@ public class TimeParserUnitTest extends TestCase
         end_diff_sec = now - start_end.getEnd().getTimeInMillis()/1000;
         assertEquals(8*60*60.0, start_diff_sec, 10.0);
         assertEquals(2*60*60.0, end_diff_sec, 10.0);
-        
+
         // rel(back), rel(forward)
         start = "-60 days";
         end = "+60 days";
@@ -259,7 +259,7 @@ public class TimeParserUnitTest extends TestCase
             System.out.println("Looks like we crossed daylight saving time");
         // An "error" of one hour is allowed in this test in case we cross daylight saving time
         assertEquals(-60.0*24.0*60*60.0, end_diff_sec, 10.0 + 60.0*60.0);
-        
+
         // rel, now
         start = "-6h";
         end = "now";
@@ -274,7 +274,7 @@ public class TimeParserUnitTest extends TestCase
         end_diff_sec = now - start_end.getEnd().getTimeInMillis()/1000;
         assertEquals(6*60*60.0, start_diff_sec, 10.0);
         assertEquals(0.0, end_diff_sec, 10.0);
-    
+
         // rel, now
         start = "-6h";
         end = "";
@@ -308,7 +308,7 @@ public class TimeParserUnitTest extends TestCase
         assertEquals(30*24*60*60.0, start_diff_sec, 1.2*60*60.0);
         assertEquals(0.0, end_diff_sec, 10.0);
     }
-    
+
     @Test
     public void testPerformance() throws Exception
     {

@@ -19,12 +19,12 @@ extends AbstractConfigurationDialog<ChannelTreeByPropertyWidget, ChannelTreeByPr
         addInitialValues("selectedProperties", widget.getProperties());
         addInitialValues("showChannelNames", widget.isShowChannelNames());
     }
-    
+
     protected void onPropertyChange(PropertyChangeEvent evt) {
         getWidget().setProperties(getConfigurationComposite().getSelectedProperties());
         getWidget().setShowChannelNames(getConfigurationComposite().isShowChannelNames());
     }
-    
+
     @SuppressWarnings("unchecked")
     protected void populateInitialValues() {
         getConfigurationComposite().setChannels((Collection<Channel>) getInitialValues().get("channels"));
@@ -37,5 +37,5 @@ extends AbstractConfigurationDialog<ChannelTreeByPropertyWidget, ChannelTreeByPr
             Shell shell) {
         return new ChannelTreeByPropertyConfigurationPanel(shell, SWT.DIALOG_TRIM);
     }
-    
+
 }

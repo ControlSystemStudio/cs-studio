@@ -15,8 +15,8 @@ public class ScrollbarTest extends AbstractWidgetTest{
     public Figure createTestWidget() {
         return new ScrollbarFigure();
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -29,11 +29,11 @@ public class ScrollbarTest extends AbstractWidgetTest{
                 "value",
                 "horizontal",
                 "showValueTip"
-                
+
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
-            
+
+
 }

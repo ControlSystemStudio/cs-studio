@@ -17,9 +17,9 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 
 /**
  * Implementation for the sensorid() function.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class SensorIdFieldFunction implements IFieldFunction {
 

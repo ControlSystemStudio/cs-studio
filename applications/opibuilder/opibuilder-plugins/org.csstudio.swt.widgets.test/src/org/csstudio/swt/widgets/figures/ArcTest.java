@@ -15,8 +15,8 @@ public class ArcTest extends AbstractShapeWidgetTest{
     public Figure createTestWidget() {
         return new ArcFigure();
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -26,12 +26,12 @@ public class ArcTest extends AbstractShapeWidgetTest{
                 "totalAngle",
                 "fill"
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
     @Override
     public boolean isAutoTest() {
         return true;
-    }        
+    }
 }

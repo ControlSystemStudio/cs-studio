@@ -81,7 +81,7 @@ import org.slf4j.LoggerFactory;
  * @since 22.10.2007
  */
 public class ADLDisplayImporter extends AbstractDisplayImporter {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(ADLDisplayImporter.class);
     /**
      * Store the Display to finalize if the colormap not finalize.
@@ -90,29 +90,29 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
     private int _status;
     private static boolean _createFolderNever = false;
     private static boolean _createFolderAllways = false;
-    
+
     /**
      * Default Constructor.
      */
     public ADLDisplayImporter() {
         // Default Constructor.
     }
-    
+
     /**
      * {@inheritDoc}
-     * 
+     *
      * @throws CoreException
      */
     @Override
     public final boolean importDisplay(final String sourceFile,
                                        final IPath targetProject,
                                        final String targetFileName) throws CoreException {
-        
+
         _status = 0;
         ADLWidget storedBasicAttribute = null;
         ADLWidget storedDynamicAttribute = null;
         ADLWidget root = ParserADL.getNextElement(new File(sourceFile));
-        
+
         // this is the target display model
         DisplayModel displayModel = new DisplayModel();
         _storDisplay = null;
@@ -132,7 +132,7 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
                 .addLayer(new Layer(Messages.ADLDisplayImporter_ADLActionLayerName,
                                     Messages.ADLDisplayImporter_ADLActionLayerDes),
                           4);
-        
+
         // search and set the color map
         for (ADLWidget adlWidget : root.getObjects()) {
             if(adlWidget.getType().equals("color map")) { //$NON-NLS-1$
@@ -275,11 +275,11 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
                 LOG.error("Error:_", e);
             }
         }
-        
+
         // create the target file in the workspace
         return createFile(targetProject, targetFileName, displayModel);
     }
-    
+
     public boolean importFaceplate(final String sourceFile,
                                    final IPath targetProject,
                                    final String targetFileName) throws CoreException {
@@ -288,7 +288,7 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
         FaceplateParser.parse(root, displayModel);
         return createFile(targetProject, targetFileName, displayModel);
     }
-    
+
     public boolean importStripTool(final String sourceFile,
                                    final IPath targetProject,
                                    final String targetFileName) throws CoreException, IOException {
@@ -297,7 +297,7 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
         StripToolParser.parse(sourceFile, stripTool);
         return createFile(targetProject, targetFileName, stripTool);
     }
-    
+
     private boolean createFile(IPath targetProject, String targetFileName, DisplayModel displayModel) throws CoreException {
         DisplayModelInputStream.setXMLHeader("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"); //$NON-NLS-1$
         DisplayModelInputStream modelInputStream = (DisplayModelInputStream) PersistenceUtil
@@ -312,7 +312,7 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
         }
         return true;
     }
-    
+
     private boolean createFile(IPath targetProject, String targetFileName, StripTool stripTool) throws CoreException,
                                                                                                IOException {
         IFile fileOut = handelPathAndFile(targetProject, targetFileName);
@@ -327,7 +327,7 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
         }
         return true;
     }
-    
+
     private IFile handelPathAndFile(IPath targetProject, String targetFileName) throws CoreException {
         IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
         IPath filePath = targetProject.append(targetFileName.trim());
@@ -345,7 +345,7 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
                         Messages.ADLDisplayImporter_Dialog_No2All_Button, "cancel"};
                 Formatter f = new Formatter();
                 f.format("Dir \"%s\" not exist!\r\nCreat this Folder?", targetProject);
-                
+
                 MessageDialog md = new MessageDialog(Display.getCurrent().getActiveShell(),
                                                      Messages.ADLDisplayImporter_Dialog_Header_Directory_not_exist,
                                                      null,
@@ -353,7 +353,7 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
                                                      MessageDialog.WARNING,
                                                      dialogButtonsText,
                                                      0);
-                
+
                 switch (md.open()) {
                     case 1:
                         _createFolderAllways = true;
@@ -376,10 +376,10 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
         }
         return workspaceRoot.getFile(filePath);
     }
-    
+
     /**
      * Generate a Folder and parent folder.
-     * 
+     *
      * @param folder
      *            the lowest folder in the tree to generated
      * @throws CoreException
@@ -394,9 +394,9 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
             }
         }
         folder.create(true, true, null);
-        
+
     }
-    
+
     /**
      * @param adlWidget
      *            the Main display widget.
@@ -419,17 +419,17 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
             LOG.error("Error: ",e);
         }
     }
-    
+
     /**
      * @return
      */
     public int getStatus() {
         return _status;
     }
-    
+
     public static void reset() {
         _createFolderAllways = false;
         _createFolderNever = false;
     }
-    
+
 }

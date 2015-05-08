@@ -129,7 +129,7 @@ public class SVGHandler {
      * The amount of animation limiting.
      */
     protected float animationLimitingAmount;
-    
+
     protected GVTBuilder builder;
 
     private RenderingHints renderingHints;
@@ -385,7 +385,7 @@ public class SVGHandler {
                     if (disposed) {
                         return;
                     }
-                    // This will call SVGAnimationEngine.start(long documentStartTime) 
+                    // This will call SVGAnimationEngine.start(long documentStartTime)
                     // with System.currentTimeMillis()
                     updateManager.dispatchSVGLoadEvent();
                     updateManager.manageUpdates(renderer);
@@ -432,7 +432,7 @@ public class SVGHandler {
 
     /**
      * Sets the animation limiting mode to a percentage of CPU.
-     * 
+     *
      * @param pc the maximum percentage of CPU to use (0 &lt; pc ≤ 1)
      */
     public void setAnimationLimitingCPU(float pc) {
@@ -445,7 +445,7 @@ public class SVGHandler {
 
     /**
      * Sets the animation limiting mode to a number of frames per second.
-     * 
+     *
      * @param fps the maximum number of frames per second (fps &gt; 0)
      */
     public void setAnimationLimitingFPS(float fps) {
@@ -713,7 +713,7 @@ public class SVGHandler {
         double width = originalDimension.getWidth();
         double height = originalDimension.getHeight();
 
-        double[] flatmatrix = new double[] { 
+        double[] flatmatrix = new double[] {
                 matrix[0][0], matrix[1][0],
                 matrix[0][1], matrix[1][1] };
         AffineTransform at = new AffineTransform(flatmatrix);
@@ -736,9 +736,9 @@ public class SVGHandler {
         svgRootNode.setAttributeNS(null, "preserveAspectRatio", "none");
 
         // current Transformation Matrix
-        double[][] CTM = { 
+        double[][] CTM = {
                 { matrix[0][0], matrix[0][1], 0 },
-                { matrix[1][0], matrix[1][1], 0 }, 
+                { matrix[1][0], matrix[1][1], 0 },
                 { 0, 0, 1 } };
         // create the transform matrix
         StringBuilder sb = new StringBuilder();

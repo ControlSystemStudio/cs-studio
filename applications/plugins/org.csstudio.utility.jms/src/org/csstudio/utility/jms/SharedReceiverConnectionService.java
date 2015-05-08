@@ -33,19 +33,19 @@ import org.csstudio.utility.jms.sharedconnection.MonitorableSharedConnection;
  * Service which manages shared connections for receiving JMS messages. The
  * settings for the connection are read from the preferences of the JMS Utility
  * plug-in.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class SharedReceiverConnectionService {
-    
+
     /*
      * The current implementation is hard-coded to use two connections.
      * TODO: implement 1..n connections.
      */
-    
+
     private final MonitorableSharedConnection _connection1;
     private final MonitorableSharedConnection _connection2;
-    
+
     private final String consumerUrl1;
     private final String consumerUrl2;
     private final String clientId;
@@ -63,7 +63,7 @@ public class SharedReceiverConnectionService {
 
     /**
      * Returns handles to the shared connections.
-     * 
+     *
      * @return handles to the shared connections.
      * @throws JMSException
      *             if one of the underlying shared connections could not be
@@ -86,7 +86,7 @@ public class SharedReceiverConnectionService {
     /**
      * Starts a message listener that will listen on the shared receiver
      * connections.
-     * 
+     *
      * @param listener
      *            the listener.
      * @param topics

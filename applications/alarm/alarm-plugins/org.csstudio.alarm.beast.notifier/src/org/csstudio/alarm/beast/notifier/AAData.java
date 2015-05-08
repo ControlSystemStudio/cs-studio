@@ -9,9 +9,9 @@ package org.csstudio.alarm.beast.notifier;
 
 /**
  * Details about an automated action.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
- * 
+ *
  */
 public class AAData {
 

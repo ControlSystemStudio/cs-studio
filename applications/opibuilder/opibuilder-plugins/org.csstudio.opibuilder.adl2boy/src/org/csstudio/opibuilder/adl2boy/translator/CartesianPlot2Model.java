@@ -45,7 +45,7 @@ public class CartesianPlot2Model extends AbstractADL2Model {
         if (traces.size() > 0){
             widgetModel.setPropertyValue(XYGraphModel.PROP_TRACE_COUNT, traces.size());
             for (int ii = 0; ii< traces.size(); ii++){
-                String tracePropertyPrefix = new String("trace_"+ii+"_"); 
+                String tracePropertyPrefix = new String("trace_"+ii+"_");
                 ADLPlotTrace trace = traces.get(ii);
                 widgetModel.setPropertyValue(new String(tracePropertyPrefix+"x_pv"), trace.getxData());
                 widgetModel.setPropertyValue(new String(tracePropertyPrefix+"y_pv"), trace.getyData());
@@ -63,12 +63,12 @@ public class CartesianPlot2Model extends AbstractADL2Model {
                 }
             }
         }
-        
-        
+
+
         //TODO Add Point Style to CartesianPlot2Model
         //TODO CartesianPlot2Model - Add TriggerChannel
         //TODO CartesianPlot2Model - Add EraseChannel.  Not supported by XYGraph.
-        //TODO CartesianPlot2Model - Add EraseMode.  Not supported by XYGraph. 
+        //TODO CartesianPlot2Model - Add EraseMode.  Not supported by XYGraph.
     }
 
     @Override

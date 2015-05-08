@@ -191,7 +191,7 @@ public class DOMHelper
             return text;
         }
     }
-    
+
     /** Locate a sub-element tagged 'name', return its integer value.
      *
      *  <p>Will only go one level down, not search the whole tree.

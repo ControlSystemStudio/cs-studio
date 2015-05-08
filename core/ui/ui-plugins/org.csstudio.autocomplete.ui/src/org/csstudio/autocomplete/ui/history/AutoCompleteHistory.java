@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Listener;
 
 /**
  * Handles history of auto-completed fields.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class AutoCompleteHistory {
@@ -43,11 +43,11 @@ public class AutoCompleteHistory {
 
         installListener(control);
     }
-    
+
     /**
      * Install listeners on specified control to add an entry in the history
      * when a {@link SelectionEvent} is raised.
-     * 
+     *
      * @param control
      */
     public void installListener(final Control control) {
@@ -88,7 +88,7 @@ public class AutoCompleteHistory {
      * is already in the history, this value is bring to the first place in the
      * file. The maximum number of entries in the history is defined by
      * preferences.
-     * 
+     *
      * @param newEntry
      */
     public synchronized void addEntry(final String newEntry) {

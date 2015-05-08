@@ -25,7 +25,7 @@ class StopResponse extends AbstractResponse
     {
         super(model);
     }
-    
+
     @Override
     protected void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
@@ -35,7 +35,7 @@ class StopResponse extends AbstractResponse
 
         html.text("Engine will shut down....");
         model.requestStop();
-        
+
         html.close();
     }
 }

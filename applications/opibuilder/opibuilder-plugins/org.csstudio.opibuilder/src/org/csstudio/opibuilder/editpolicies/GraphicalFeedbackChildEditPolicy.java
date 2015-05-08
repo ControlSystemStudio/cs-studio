@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.opibuilder.editpolicies;
@@ -49,21 +49,21 @@ import org.eclipse.gef.requests.ChangeBoundsRequest;
      * with dashes is drawn. This feedback can be tailored by contributing a
      * {@link IGraphicalFeedbackFactory} via the extension point
      * org.csstudio.sds.graphicalFeedbackFactories.
-     * 
-     * @author Sven Wende (original author), Xihui Chen (since import from SDS 2009/9) 
-     * 
+     *
+     * @author Sven Wende (original author), Xihui Chen (since import from SDS 2009/9)
+     *
 */
 public final class GraphicalFeedbackChildEditPolicy extends ResizableEditPolicy {
         /**
          * The edit part.
          */
         private final AbstractBaseEditPart _child;
-        
+
         private final IGraphicalFeedbackFactory feedbackFactory;
 
         /**
          * Standard constructor.
-         * 
+         *
          * @param child
          *            An edit part.
          */
@@ -77,7 +77,7 @@ public final class GraphicalFeedbackChildEditPolicy extends ResizableEditPolicy 
          */
         @Override
         protected IFigure createDragSourceFeedbackFigure() {
-            
+
             IFigure feedbackFigure = feedbackFactory
                     .createDragSourceFeedbackFigure(
                             (AbstractWidgetModel) _child.getModel(),
@@ -91,7 +91,7 @@ public final class GraphicalFeedbackChildEditPolicy extends ResizableEditPolicy 
 
         /**
          * Shows or updates feedback for a change bounds request.
-         * 
+         *
          * @param request
          *            the request
          */
@@ -142,7 +142,7 @@ public final class GraphicalFeedbackChildEditPolicy extends ResizableEditPolicy 
             if (hostEP.getModel() instanceof IPVWidgetModel
                     && ((AbstractWidgetModel) (hostEP.getModel()))
                             .getProperty(IPVWidgetModel.PROP_PVNAME)
-                            .isVisibleInPropSheet()) {    
+                            .isVisibleInPropSheet()) {
                     handleList.add(new PVWidgetSelectionHandle(
                         (GraphicalEditPart) hostEP));
             }

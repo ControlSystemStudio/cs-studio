@@ -31,7 +31,7 @@ public class TestHelper
     {
         return new ArchiveVNumber(Timestamp.now(), AlarmSeverity.NONE, "OK", display, value);
     }
-    
+
     /** @param samples {@link SampleBuffer} to dump
      *  @return Sample count
      */

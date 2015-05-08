@@ -9,7 +9,7 @@ public class LibraryFolderPreferenceItem {
     public LibraryFolderPreferenceItem(String folderPath) {
         assert folderPath != null : "Precondition failed: folderPath != null";
         assert !folderPath.contains(",") : "Precondition failed: !folderPath.contains(\",\")";
-        
+
         this.folderPath = folderPath;
         this.isChecked = true;
     }
@@ -56,10 +56,10 @@ public class LibraryFolderPreferenceItem {
             return false;
         return true;
     }
-    
+
     @Override
     public String toString() {
         return "checked: "+isChecked+", path: "+getFolderPath();
     }
-    
+
 }

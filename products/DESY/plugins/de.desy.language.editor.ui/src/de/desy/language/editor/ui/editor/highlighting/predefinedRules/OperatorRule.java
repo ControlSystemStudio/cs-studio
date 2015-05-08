@@ -15,16 +15,16 @@ import org.eclipse.jface.text.rules.IToken;
 
 /**
  * Rule to recognize operators.
- * 
+ *
  * @author P.Tomaszewski
- * 
+ *
  * TODO Move this class and its Test to
  * de.desy.snl.editor.draft.ui.extension.predefinedRules
  */
 public class OperatorRule extends SingleCharRule {
     /**
      * Creates new rule.
-     * 
+     *
      * @param token
      *            Style token.
      */

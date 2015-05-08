@@ -26,7 +26,7 @@ public class ChannelTreeByPropertyConfigurationPanel extends
 
     /**
      * Create the composite.
-     * 
+     *
      * @param parent
      * @param style
      */

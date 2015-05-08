@@ -15,7 +15,7 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLPlotcom;
 import org.csstudio.utility.adlparser.internationalization.Messages;
 
 /**
- * 
+ *
  * @author hammonds
  *
  */
@@ -30,7 +30,7 @@ public class CartesianPlot extends ADLAbstractWidget {
     private ADLPlotData xAxisData = null;
     private ADLPlotData y1AxisData = null;
     private ADLPlotData y2AxisData = null;
-    
+
     public CartesianPlot(ADLWidget adlWidget) {
         super(adlWidget);
         name = new String("cartesian plot");

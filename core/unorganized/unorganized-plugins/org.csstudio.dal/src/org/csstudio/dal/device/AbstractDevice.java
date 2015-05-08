@@ -53,9 +53,9 @@ public interface AbstractDevice extends AsynchronousCommandContext,
      * @return String DVUN for this property
      */
     public String getUniqueName();
-    
+
     /**
-     * Returns parent device context, only 
+     * Returns parent device context, only
      * <code>DeviceFamily</code> exists at the moment.
      *
      * @return parent context

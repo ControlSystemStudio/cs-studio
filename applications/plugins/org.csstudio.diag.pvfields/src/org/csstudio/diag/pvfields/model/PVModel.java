@@ -31,7 +31,7 @@ import org.eclipse.core.runtime.RegistryFactory;
 /** PVModel that performs lookup,
  *  then starts all {@link PVField}s to they'll update
  *  when the PVs change.
- *   
+ *
  *  @author Kay Kasemir
  */
 public class PVModel
@@ -41,7 +41,7 @@ public class PVModel
     private Map<String, String> properties;
     private List<PVField> fields;
     private Thread lookupThread;
-    
+
     public PVModel(final String name, final PVModelListener listener)
     {
         this.name = name;
@@ -51,7 +51,7 @@ public class PVModel
         final Runnable lookup = new Runnable()
         {
             @Override
-            public void run() 
+            public void run()
             {
                 performLookup(name);
             }
@@ -59,7 +59,7 @@ public class PVModel
         lookupThread = new Thread(lookup, "Lookup");
         lookupThread.start();
     }
-    
+
     /** Locate all DataProviders in registry
      *  @return {@link DataProvider}s
      */
@@ -68,7 +68,7 @@ public class PVModel
         final List<DataProvider> providers = new ArrayList<>();
         // Always use at least the EPICSDataProvider
         providers.add(new EPICSDataProvider());
-        
+
         final IExtensionRegistry registry =  RegistryFactory.getRegistry();
         if (registry != null)
         {
@@ -94,7 +94,7 @@ public class PVModel
         }
         return providers.toArray(new DataProvider[providers.size()]);
     }
-    
+
     /** Perform the lookup, invoke listener when done
      *  @param name Channel/PV name
      */
@@ -118,7 +118,7 @@ public class PVModel
             };
             results.add(executors.submit(callable));
         }
-        
+
         // Merge their results
         // Will effectively wait for the first data provider to return,
         // then the next one and so on.

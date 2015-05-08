@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.metamodel.internal;
 
@@ -10,14 +10,14 @@ import org.junit.Test;
 
 /**
  * Test class for {@link Choice}.
- * 
+ *
  * @author Sven Wende
  *
  */
 public final class ChoiceTest {
 
     private Choice choice;
-    
+
     /**
      * @throws java.lang.Exception
      */

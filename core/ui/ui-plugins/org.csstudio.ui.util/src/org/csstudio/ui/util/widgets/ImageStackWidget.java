@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.ui.util.widgets;
 
@@ -47,9 +47,9 @@ import org.eclipse.wb.swt.SWTResourceManager;
 
 /**
  * A widget to display a set of Images
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class ImageStackWidget extends Composite {
 
@@ -69,7 +69,7 @@ public class ImageStackWidget extends Composite {
 
     /**
      * Adds a listener, notified a porperty has been changed.
-     * 
+     *
      * @param listener
      *            a new listener
      */
@@ -79,7 +79,7 @@ public class ImageStackWidget extends Composite {
 
     /**
      * Removes a listener.
-     * 
+     *
      * @param listener
      *            listener to be removed
      */
@@ -146,7 +146,7 @@ public class ImageStackWidget extends Composite {
                 event.gc.drawImage(img, x, y);
             }
         }
-        
+
         @Override
         protected void measure(Event event, Object element) {
             String imageName = element == null ? "" : element.toString();
@@ -155,7 +155,7 @@ public class ImageStackWidget extends Composite {
             double scale = determineImageScale(imageData, 85, 85);
             event.height = (int) (scale * imageData.height) + 10;
         }
-        
+
         private double determineImageScale(ImageData imgData,
                 int targetWidth, int targetHeight) {
             if (imgData == null) {
@@ -327,7 +327,7 @@ public class ImageStackWidget extends Composite {
      * Set multiple Images to the widget, this will remove all existing images.
      * In the imageInputStreamMap - the key defines the imageName and the value
      * is an inputStream to the Image
-     * 
+     *
      * @param imageInputStreamsMap
      *            - a map of image names and image input streams
      * @throws IOException
@@ -346,7 +346,7 @@ public class ImageStackWidget extends Composite {
 
     /**
      * Add a single Image to the stack
-     * 
+     *
      * @param name
      *            - the name to Identify the Image.
      * @param imageInputStream
@@ -364,7 +364,7 @@ public class ImageStackWidget extends Composite {
 
     /**
      * Remove the Image identified by name
-     * 
+     *
      * @param name
      *            - the name of the Image to be removed
      * @throws IOException
@@ -392,7 +392,7 @@ public class ImageStackWidget extends Composite {
 
     /**
      * Return an InputStream for the Image identified by name
-     * 
+     *
      * @param name
      *            - name of the Image
      * @return InputStream - to the Image identified by name
@@ -404,7 +404,7 @@ public class ImageStackWidget extends Composite {
     /**
      * get a set of all the image Names associated with the Images being
      * displayed by this widget
-     * 
+     *
      * @return Set of strings containing the names of all Images
      */
     public Set<String> getImageNames() {
@@ -413,7 +413,7 @@ public class ImageStackWidget extends Composite {
 
     /**
      * get the name of the current Image in focus
-     * 
+     *
      * @return String imageName of the Image in focus
      */
     public String getSelectedImageName() {
@@ -422,7 +422,7 @@ public class ImageStackWidget extends Composite {
 
     /**
      * set the Image to be brought into focus using its imageName
-     * 
+     *
      * @param selectedImageName
      */
     public void setSelectedImageName(String selectedImageName) {

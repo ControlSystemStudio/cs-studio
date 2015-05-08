@@ -19,16 +19,16 @@ public class Edm_TextupdateClass extends EdmWidget {
     @EdmAttributeAn private String controlPv;
 
     @EdmAttributeAn @EdmOptionalAn private boolean fill;
-    
+
     @EdmAttributeAn @EdmOptionalAn private String displayMode;
     @EdmAttributeAn @EdmOptionalAn private int precision;
-    
+
     @EdmAttributeAn @EdmOptionalAn private String fontAlign;
 
     @EdmAttributeAn @EdmOptionalAn private int lineWidth;
     @EdmAttributeAn @EdmOptionalAn private boolean lineAlarm;
 
-    
+
     public Edm_TextupdateClass(EdmEntity genericEntity) throws EdmException {
         super(genericEntity);
     }
@@ -69,5 +69,5 @@ public class Edm_TextupdateClass extends EdmWidget {
     public boolean isLineAlarm() {
         return lineAlarm;
     }
-    
+
 }

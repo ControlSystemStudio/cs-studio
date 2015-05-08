@@ -112,7 +112,7 @@ public class DisplayCacheValue implements Serializable {
 
         return null;
     }
-    
+
     public static class Tuple<T1, T2> {
         private T1 p1;
         private T2 p2;
@@ -121,11 +121,11 @@ public class DisplayCacheValue implements Serializable {
             this.p1 = p1;
             this.p2 = p2;
         }
-        
+
         public T1 getP1() {
             return p1;
         }
-        
+
         public T2 getP2() {
             return p2;
         }

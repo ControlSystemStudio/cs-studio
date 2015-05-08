@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.autocomplete.shift;
 
@@ -35,7 +35,7 @@ AbstractAutoCompleteSearchProvider() {
 
 /**
 * Configure the KeyValueMap to be used to provide the search proposals.
-* 
+*
 * @return Map<String, List<String>> where the keys are the search Keywords
 *         and the values are the list of possible values
 */
@@ -51,7 +51,7 @@ public AutoCompleteResult listResult(ContentDescriptor desc, int limit) {
     if (keyValueMap == null) {
         keyValueMap = Collections.unmodifiableMap(initializeKeyValueMap());
     }
-    
+
     final AutoCompleteResult result = new AutoCompleteResult();
     final String searchString = desc.getOriginalContent().trim();
     String fixedFirstPart;
@@ -100,7 +100,7 @@ public AutoCompleteResult listResult(ContentDescriptor desc, int limit) {
     for (String key : keyValueMap.keySet()) {
         result.addProposal(new Proposal(searchString + ' ' + key + ":", false));
         result.setCount(result.getCount() + 1);
-    
+
     }
     return result;
 }

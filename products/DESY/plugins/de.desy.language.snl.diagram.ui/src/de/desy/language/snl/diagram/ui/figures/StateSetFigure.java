@@ -9,7 +9,7 @@ import org.eclipse.draw2d.XYLayout;
 import de.desy.language.snl.parser.nodes.StateSetNode;
 
 public class StateSetFigure extends Label {
-    
+
     private final StateSetNode _state;
 
     public StateSetFigure(final StateSetNode state) {
@@ -26,7 +26,7 @@ public class StateSetFigure extends Label {
         this.setBorder(lineBorder);
         this.setLayoutManager(new XYLayout());
     }
-    
+
 //    /**
 //     * {@inheritDoc}
 //     */

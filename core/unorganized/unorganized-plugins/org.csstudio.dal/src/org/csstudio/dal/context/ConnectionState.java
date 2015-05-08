@@ -40,21 +40,21 @@ public enum ConnectionState {
      * the failure the <code>Connectable</code> again returned to the initial
      * state.
      */
-    INITIAL, 
+    INITIAL,
     /**
      * A constant indicating that the <code>Connectable</code> is ready to
      * connect. This state is entered when all properties that connectable object
      * needs to connect have been set and the <code>connect</code> method can be
      * called without throwing an exception.
      */
-    READY, 
+    READY,
     /**
      * A constant indicating that connection is in progress. During this state
      * most of the functionality of the <code>Connectable</code> is suspended.
      * Note, however, that the <code>Connectable</code> can be destroyed while
      * it is in this state.
      */
-    CONNECTING, 
+    CONNECTING,
     /**
      * A constant indicating that the <code>Connectable</code> and the pluggable
      * system have successfully completed the connection, that is, that the
@@ -62,12 +62,12 @@ public enum ConnectionState {
      * exception. The transition to this state will be acompanied by
      * <code>connected</code> being invoked on all listeners.
      */
-    CONNECTED, 
+    CONNECTED,
     /**
      * A constant indicating that the <code>Connectable</code> and the pluggable
-     * system have successfully completed the connection plus has retrieved basic 
-     * set of meta-data and has requested and is receiving live value updates 
-     * from remote connection.  
+     * system have successfully completed the connection plus has retrieved basic
+     * set of meta-data and has requested and is receiving live value updates
+     * from remote connection.
      * The transition to this state will be accompanied by
      * <code>operational</code> being invoked on all listeners.
      */
@@ -91,11 +91,11 @@ public enum ConnectionState {
      * <code>Connectable</code> returning <code>true</code> on
      * <code>isConnected()</code> call.
      */
-    CONNECTION_FAILED, 
+    CONNECTION_FAILED,
     /**
      * A constant indicating that disconnection is in progress.
      */
-    DISCONNECTING, 
+    DISCONNECTING,
     /**
      * A constant indicating that a successfully established connection has been
      * broken either on purpose or because of network failure.
@@ -104,7 +104,7 @@ public enum ConnectionState {
      * will be acompanied by <code>disconnected</code> being invoked on all
      * listeners.
      */
-    DISCONNECTED, 
+    DISCONNECTED,
     /**
      * A constant indicating that the connectable object has been destroyed,
      * probably because its enclosing context is being destroyed. Destroyed
@@ -114,10 +114,10 @@ public enum ConnectionState {
      * <code>isConnected()</code> call.
      */
     DESTROYED;
-    
-    
+
+
     /**
-     * Return true if connection was successfully established. Actual connection 
+     * Return true if connection was successfully established. Actual connection
      * state might be CONNECTED, CONNECTION_LOST or OPERATIONAL.
      * @return if connection process has been successfully completed.
      */

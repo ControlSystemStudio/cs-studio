@@ -27,7 +27,7 @@ import org.eclipse.swt.dnd.TransferData;
 
 /**
  * Drop target listener that processes a single {@link String}.
- * 
+ *
  * @author Sven Wende
  */
 public final class TextTransferDropTargetListener extends AbstractDropTargetListener<TextTransfer> {

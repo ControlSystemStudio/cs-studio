@@ -10,7 +10,7 @@ import org.epics.util.array.ListNumber;
 public class ListNumberWrapper implements IPrimaryArrayWrapper {
 
     private ListNumber listNumber;
-    
+
     public ListNumberWrapper(ListNumber listNumber) {
         this.listNumber = listNumber;
     }

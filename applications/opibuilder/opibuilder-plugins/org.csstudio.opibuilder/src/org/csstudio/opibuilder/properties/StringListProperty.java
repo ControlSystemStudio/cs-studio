@@ -22,7 +22,7 @@ import org.jdom.Element;
  *
  */
 public class StringListProperty extends AbstractWidgetProperty {
-    
+
     /**
      * XML ELEMENT name <code>INCLUDE_PARENT_MACROS</code>.
      */
@@ -37,8 +37,8 @@ public class StringListProperty extends AbstractWidgetProperty {
      */
     public StringListProperty(String prop_id, String description,
             WidgetPropertyCategory category, List<String> default_value) {
-        super(prop_id, description, category, 
-                default_value == null? Collections.EMPTY_LIST: default_value);        
+        super(prop_id, description, category,
+                default_value == null? Collections.EMPTY_LIST: default_value);
     }
 
     @SuppressWarnings("unchecked")
@@ -47,15 +47,15 @@ public class StringListProperty extends AbstractWidgetProperty {
         if(value == null)
             return null;
         List<String> acceptableValue = null;
-        if(value instanceof List){    
-            if(((List<?>) value).size() == 0 || 
+        if(value instanceof List){
+            if(((List<?>) value).size() == 0 ||
                     (((List<?>) value).size() > 0 && ((List<?>) value).get(0) instanceof String))
-            acceptableValue = (List<String>)value;            
-        }        
+            acceptableValue = (List<String>)value;
+        }
         return acceptableValue;
     }
 
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public Object getPropertyValue() {
@@ -69,8 +69,8 @@ public class StringListProperty extends AbstractWidgetProperty {
         }else
             return super.getPropertyValue();
     }
-    
-    
+
+
     @Override
     protected PropertyDescriptor createPropertyDescriptor() {
         if(PropertySSHelper.getIMPL() == null)
@@ -80,20 +80,20 @@ public class StringListProperty extends AbstractWidgetProperty {
 
     @Override
     public List<String> readValueFromXML(Element propElement) {
-        List<String> result = new ArrayList<String>();        
+        List<String> result = new ArrayList<String>();
         for(Object oe : propElement.getChildren()){
             Element se = (Element)oe;
             if(se.getName().equals(XML_ELEMENT_ITEM))
                 result.add(se.getText());
-        }        
+        }
         return result;
-        
+
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void writeToXML(Element propElement) {
-        List<String> data = (List<String>)propertyValue;        
+        List<String> data = (List<String>)propertyValue;
         for(String item : data){
             Element newElement = new Element(XML_ELEMENT_ITEM);
             newElement.setText(item);

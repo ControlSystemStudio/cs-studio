@@ -11,7 +11,7 @@ public class ShiftViewerPerspective implements IPerspectiveFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui
      * .IPageLayout)

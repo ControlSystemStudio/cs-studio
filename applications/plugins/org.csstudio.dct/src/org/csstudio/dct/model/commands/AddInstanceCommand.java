@@ -12,9 +12,9 @@ import org.eclipse.gef.commands.CompoundCommand;
 
 /**
  * Command that adds an instance to a folder or container.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class AddInstanceCommand extends Command {
     private boolean processInitialization;
@@ -26,7 +26,7 @@ public final class AddInstanceCommand extends Command {
 
     /**
      * Constructor.
-     * 
+     *
      * @param folder
      *            the folder
      * @param instance
@@ -47,7 +47,7 @@ public final class AddInstanceCommand extends Command {
 
     /**
      * Constructor.
-     * 
+     *
      * @param folder
      *            the folder
      * @param instance
@@ -59,7 +59,7 @@ public final class AddInstanceCommand extends Command {
 
     /**
      * Constructor.
-     * 
+     *
      * @param container
      *            the container
      * @param instance
@@ -80,7 +80,7 @@ public final class AddInstanceCommand extends Command {
 
     /**
      * Constructor.
-     * 
+     *
      * @param container
      *            the container
      * @param instance

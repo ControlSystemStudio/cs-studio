@@ -39,7 +39,7 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Open top OPIs in run mode.
- * 
+ *
  * @author Xihui Chen
  */
 public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
@@ -56,7 +56,7 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
         final Map<IPath, MacrosInput> topOPIs = loadTopOPIs();
         if (topOPIs == null)
             return null;
-        
+
         fillMenu(topOPIs, opiListMenu);
         return opiListMenu;
     }
@@ -76,7 +76,7 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
                     final Image image = PlatformUI.getWorkbench().getEditorRegistry().
                             getImageDescriptor(path.toOSString()).createImage();
                     item.setImage(image);
-                    item.addDisposeListener(new DisposeListener() {                        
+                    item.addDisposeListener(new DisposeListener() {
                         @Override
                         public void widgetDisposed(DisposeEvent e) {
                             image.dispose();

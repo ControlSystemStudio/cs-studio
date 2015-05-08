@@ -23,54 +23,54 @@ import org.epics.pvdata.pv.Structure;
 *  @author Nikolay Malitsky
 */
 public class ArchivesRequest {
- 
+
  private String commandName = "getArchives";
- 
+
  //  {string command}
  private Structure requestType;
- 
+
  // { infoType [] archives; }
  private Structure responseType;
- 
+
  // {int key, string name, string path}
  private Structure infoType;
- 
+
  private ArchiveInfo archive_infos[];
- 
+
  public ArchivesRequest(){
      createRequestType();
      createResponseType();
  }
 
  /** Read info from data server */
- public void read(RPCClientImpl client, double REQUEST_TIMEOUT) 
+ public void read(RPCClientImpl client, double REQUEST_TIMEOUT)
          throws Exception {
-         
+
      // send request
 
     PVStructure pvRequest = createRequest();
     PVStructure pvResult = client.request(pvRequest, REQUEST_TIMEOUT);
-     
+
      // process result
 
-    PVStructureArray infos = pvResult.getStructureArrayField("archives"); 
-     
-     StructureArrayData data = new StructureArrayData();       
+    PVStructureArray infos = pvResult.getStructureArrayField("archives");
+
+     StructureArrayData data = new StructureArrayData();
      infos.get(0, infos.getLength(), data);
-          
+
      archive_infos = new ArchiveInfo[data.data.length];
     for(int i=0; i < data.data.length; i++) {
-         
+
         PVStructure info = data.data[i];
 
         int key     = info.getIntField("key").get();
         String name = info.getStringField("name").get();
         String path = info.getStringField("path").get();
-        
-         archive_infos[i] = new ArchiveInfo(name, path, key);     
+
+         archive_infos[i] = new ArchiveInfo(name, path, key);
     }
  }
-     
+
  /** @return Returns all the archive infos obtained in the request. */
  public ArchiveInfo[] getArchiveInfos() {
     return archive_infos;
@@ -92,68 +92,68 @@ public class ArchivesRequest {
  public String getName() {
      return commandName;
  }
- 
+
  public PVStructure createRequest(){
-     
+
      PVDataCreate dataCreate = PVDataFactory.getPVDataCreate();
-     
+
      PVStructure request = dataCreate.createPVStructure(requestType);
-     
+
      PVString commandField = request.getStringField("command");
      commandField.put(commandName);
-     
-     return request;     
+
+     return request;
  }
-   
+
  // private methods
- 
+
  private void createRequestType(){
-     
+
      FieldCreate fieldCreate = FieldFactory.getFieldCreate();
-     
+
      String[] names = new String[1];
      Field[] fields = new Field[1];
-     
+
      names[0] = "command";
      fields[0] = fieldCreate.createScalar(ScalarType.pvString);
-     
-     requestType = fieldCreate.createStructure(names, fields);     
+
+     requestType = fieldCreate.createStructure(names, fields);
  }
- 
+
  private void createInfoType(){
-     
+
      FieldCreate fieldCreate = FieldFactory.getFieldCreate();
-     
+
      String[] names = new String[3];
      Field[] fields = new Field[3];
-     
+
      names[0] = "key";
      fields[0] = fieldCreate.createScalar(ScalarType.pvInt);
-     
+
      names[1] = "name";
      fields[1] = fieldCreate.createScalar(ScalarType.pvString);
-     
+
      names[2] = "path";
      fields[2] = fieldCreate.createScalar(ScalarType.pvString);
-     
-     infoType = fieldCreate.createStructure(names, fields);     
-     
+
+     infoType = fieldCreate.createStructure(names, fields);
+
  }
- 
+
  private void createResponseType(){
-     
+
     createInfoType();
-   
+
     FieldCreate fieldCreate = FieldFactory.getFieldCreate();
-    
+
      String[] names = new String[1];
      Field[] fields = new Field[1];
 
      names[0] = "archives";
      fields[0] = fieldCreate.createStructureArray(infoType);
-     
+
      responseType = fieldCreate.createStructure(names, fields);
  }
- 
+
 }
 

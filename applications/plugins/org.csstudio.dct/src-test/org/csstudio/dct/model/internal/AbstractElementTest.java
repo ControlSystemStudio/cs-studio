@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.model.internal;
 
@@ -14,9 +14,9 @@ import org.junit.Test;
 
 /**
  * Test cases for {@link AbstractElement}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class AbstractElementTest {
     private static final String NAME = "test";
@@ -33,7 +33,7 @@ public class AbstractElementTest {
         element = new AbstractElement(NAME, ID) {
 
             public void accept(IVisitor visitor) {
-                
+
             }
 
             public boolean isInherited() {
@@ -41,7 +41,7 @@ public class AbstractElementTest {
             }
         };
     }
-    
+
     /**
      * Test method for
      * {@link org.csstudio.dct.model.internal.AbstractElement#getId()}.
@@ -80,7 +80,7 @@ public class AbstractElementTest {
     public final void testEqualsHashCode() {
         AbstractElement element2 = new AbstractElement(NAME, ID) {
             public void accept(IVisitor visitor) {
-                
+
             }
 
             public boolean isInherited() {
@@ -88,10 +88,10 @@ public class AbstractElementTest {
             }};
         assertEquals(element, element2);
         assertEquals(element.hashCode(), element2.hashCode());
-        
+
         AbstractElement element3 = new AbstractElement("othername", ID) {
             public void accept(IVisitor visitor) {
-                
+
             }
 
             public boolean isInherited() {
@@ -99,10 +99,10 @@ public class AbstractElementTest {
             }};
         assertNotSame(element, element3);
         assertNotSame(element.hashCode(), element3.hashCode());
-        
+
         AbstractElement element4 = new AbstractElement(NAME, UUID.randomUUID()) {
             public void accept(IVisitor visitor) {
-                
+
             }
 
             public boolean isInherited() {

@@ -81,7 +81,7 @@ public interface DataAccess<T>
 
     /**
      * Returns <code>true</code> if has any registered dynamic value listener.
-     * This is optimization method, faster then calling up array of listeners an checking if 0. 
+     * This is optimization method, faster then calling up array of listeners an checking if 0.
      *
      * @return <code>true</code> if has any registered dynamic value listener
      */

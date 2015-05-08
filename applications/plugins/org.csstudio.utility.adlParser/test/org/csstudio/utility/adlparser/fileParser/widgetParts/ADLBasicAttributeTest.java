@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
@@ -38,7 +38,7 @@ public class ADLBasicAttributeTest extends TestCase {
             fail("This should pass");
             e.printStackTrace();
         }
-        
+
         try {
             attribute = new ADLBasicAttribute(setupBasicADLWidget());
             assertEquals("Testing color on BasicAttribute", attribute.getClr(), 5);
@@ -50,7 +50,7 @@ public class ADLBasicAttributeTest extends TestCase {
             fail("This should pass");
             e.printStackTrace();
         }
-        
+
         try {
             attribute = new ADLBasicAttribute(setupColorCommentedADLWidget());
             assertEquals("Testing color on BasicAttribute", attribute.getClr(), 0);
@@ -69,16 +69,16 @@ public class ADLBasicAttributeTest extends TestCase {
         } catch (WrongADLFormatException e) {
             //OK
         }
-        
+
         try {
             attribute = new ADLBasicAttribute(setupBadADLWidget2());
             fail("This should not pass, one of the parameters is misspelled");
         } catch (WrongADLFormatException e) {
             //OK
         }
-        
+
     }
-    
+
 
     /**
      * Test method for {@link org.csstudio.utility.adlparser.fileParser.widgetParts.ADLBasicAttribute#ADLBasicAttribute()}.
@@ -90,11 +90,11 @@ public class ADLBasicAttributeTest extends TestCase {
         assertTrue( "Test default style ", attribute.getStyle().equals("solid"));
         assertTrue( "Test default fill ", attribute.getFill().equals("solid"));
         assertFalse( "Test if color is defined", attribute.isColorDefined());
-        
+
     }
 
     /**
-     *     
+     *
      * @return
      */
     private ADLWidget setupBasicADLWidget() {
@@ -108,7 +108,7 @@ public class ADLBasicAttributeTest extends TestCase {
     }
 
     /**
-     *     
+     *
      * @return
      */
     private ADLWidget setupWithAttrSublevelADLWidget() {
@@ -124,7 +124,7 @@ public class ADLBasicAttributeTest extends TestCase {
     }
 
     /**
-     *     
+     *
      * @return
      */
     private ADLWidget setupColorCommentedADLWidget() {

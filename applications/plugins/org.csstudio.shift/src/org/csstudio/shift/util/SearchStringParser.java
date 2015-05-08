@@ -12,15 +12,15 @@ public class SearchStringParser {
 
     /**
      * Given a search string of the form
-     * 
+     *
      * some space separated text keyword1:valueA, ValueB keyword2: 1234, a b c
      * d, xyz
-     * 
+     *
      * returns a map with the keys mapping to the keywords (the default one
      * being "text") and the value consist of a single string represent
-     * 
+     *
      * TODO re-evalute the regular expression.
-     * 
+     *
      * @param string
      * @return
      */

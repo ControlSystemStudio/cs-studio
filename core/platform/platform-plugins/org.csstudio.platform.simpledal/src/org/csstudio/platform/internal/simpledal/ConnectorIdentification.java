@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.platform.internal.simpledal;
 
@@ -9,16 +9,16 @@ import org.csstudio.platform.model.pvs.ValueType;
 /**
  * Identifies a unique connector. A connector is unique by the process variable
  * it is connected to and the expected return type for values.
- * 
+ *
  * Connecting to the same process variable with a different expected return type
  * will result in a second physical connection.
- * 
+ *
  * Addressing characteristics does not lead to different connections - in fact
  * the same connector (with Object as expected return type) will be used for all
  * characteristics.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 class ConnectorIdentification {
     private IProcessVariableAddress _processVariableAddress;
@@ -26,7 +26,7 @@ class ConnectorIdentification {
 
     /**
      * Constructor.
-     * 
+     *
      * @param processVariableAddress
      *            the process variable address
      * @param valueType
@@ -43,7 +43,7 @@ class ConnectorIdentification {
 
     /**
      * Returns the process variable address.
-     * 
+     *
      * @return the process variable address
      */
     public IProcessVariableAddress getProcessVariableAddress() {
@@ -52,7 +52,7 @@ class ConnectorIdentification {
 
     /**
      * The expected value type.
-     * 
+     *
      * @return the expected value type
      */
     public ValueType getValueType() {

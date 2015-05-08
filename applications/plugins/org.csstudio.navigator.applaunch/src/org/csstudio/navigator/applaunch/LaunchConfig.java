@@ -20,7 +20,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /** Launch configuration
- * 
+ *
  *  <p>Can parse the launch config XML file
  *
  *  @author Kay Kasemir
@@ -37,9 +37,9 @@ public class LaunchConfig
         command = "";
         icon_name = "icon:run";
     }
-    
+
     /** Initialize
-     *  @param file {@link File} with launch config 
+     *  @param file {@link File} with launch config
      *  @throws Exception on error in launch config
      */
     public LaunchConfig(final File file) throws Exception
@@ -48,14 +48,14 @@ public class LaunchConfig
     }
 
     /** Initialize
-     *  @param stream {@link InputStream} with launch config 
+     *  @param stream {@link InputStream} with launch config
      *  @throws Exception on error in launch config
      */
     public LaunchConfig(final InputStream stream) throws Exception
     {
         this(DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(stream));
     }
-    
+
     /** Initialize
      *  @param doc {@link Document} with launch config
      *  @throws Exception on error in config doc
@@ -68,7 +68,7 @@ public class LaunchConfig
         final Element root_node = doc.getDocumentElement();
         if (!root_node.getNodeName().equals("application"))
             throw new Exception("Expecting <application>");
-        
+
         command = DOMHelper.getSubelementString(root_node, "command");
         if (command.isEmpty())
             throw new Exception("Missing <command>");
@@ -110,7 +110,7 @@ public class LaunchConfig
             return null;
         return descr.createImage();
     }
-    
+
     public String getXML()
     {
         return

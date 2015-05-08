@@ -21,7 +21,7 @@ import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 /**
  * Generic data container for Edm widget or group.
  * Base class for all specific Edm widget classes.
- * 
+ *
  * @author Matevz
  *
  */
@@ -47,8 +47,8 @@ public class EdmEntity extends Object {
      * Constructs an instance of EdmEntity from data of another EdmEntity instance.
      * If given EdmEntity is an extended Edm class, its annotated properties will
      * be parsed and replaced with specific extensions of EdmAttribute and EdmWidget
-     * instances. 
-     * 
+     * instances.
+     *
      * @param genericEntity EdmEntity to copy.
      * @throws EdmException if there is a parsing error.
      */
@@ -126,16 +126,16 @@ public class EdmEntity extends Object {
                             f.set(this, s.get());
                             isEdmAttribute = false;
                         }
-                        
-                        
-                        
+
+
+
                         // Specialize sub-entities recursively.
                         else if (f.getType().equals(Vector.class)) {
                             f.set(this, parseWidgets());
                             isEdmAttribute = false;
                         }
 
-                        // Initialize non-primitive fields - EdmAttribute subclasses. 
+                        // Initialize non-primitive fields - EdmAttribute subclasses.
                         else if (EdmAttribute.class.isAssignableFrom(f.getType())){
 
                             Object attribute = f.getType().getConstructor(EdmAttribute.class, boolean.class)
@@ -169,7 +169,7 @@ public class EdmEntity extends Object {
                 throw (EdmException)e;
             else {
                 throw new EdmException(EdmException.SPECIFIC_PARSING_ERROR,
-                "Error when parsing annotated field.", 
+                "Error when parsing annotated field.",
                 e instanceof InvocationTargetException? e.getCause():e);
             }
         }
@@ -188,7 +188,7 @@ public class EdmEntity extends Object {
      * Id must be unique.
      * @param id    Unique id of attribute.
      * @param a        Attribute to add.
-     * @throws EdmException 
+     * @throws EdmException
      */
     public void addAttribute(String id, EdmAttribute a) throws EdmException {
         if (attributeMap.containsKey(id))
@@ -216,7 +216,7 @@ public class EdmEntity extends Object {
     }
 
     /**
-     * Returns the number of subentities in an entity. 
+     * Returns the number of subentities in an entity.
      * @return    The number of subentities.
      */
     public int getSubEntityCount() {
@@ -295,12 +295,12 @@ public class EdmEntity extends Object {
                 } else {
                     log.warn("Class not declared: " + wType);
                 }
-            }catch (Exception e) {                    
+            }catch (Exception e) {
                     if(e instanceof ClassNotFoundException){
                         ConsoleService.getInstance().writeWarning(wType + " is not convertible.");
                     }else
                         ErrorHandlerUtil.handleError("Parse widget error.",
-                            e instanceof InvocationTargetException? e.getCause():e);                
+                            e instanceof InvocationTargetException? e.getCause():e);
             }
         }
         return w;

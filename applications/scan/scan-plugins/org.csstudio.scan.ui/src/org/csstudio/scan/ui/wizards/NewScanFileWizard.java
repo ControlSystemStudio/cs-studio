@@ -21,7 +21,7 @@ import org.eclipse.ui.part.FileEditorInput;
 
 /**
  * The Class NewScanFileWizard.
- * @author benhad naceur @ sopra group 
+ * @author benhad naceur @ sopra group
  */
 public class NewScanFileWizard extends Wizard implements INewWizard {
 
@@ -40,7 +40,7 @@ public class NewScanFileWizard extends Wizard implements INewWizard {
      */
     @Override
     public void addPages() {
-        scanFilePage =new NewScanFileWizardPage("ScanFilePage", selection); 
+        scanFilePage =new NewScanFileWizardPage("ScanFilePage", selection);
         addPage(scanFilePage);
     }
 

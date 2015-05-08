@@ -16,8 +16,8 @@ public class CheckBoxTest extends AbstractLabelWidgetTest{
         CheckBoxFigure boolButton = new CheckBoxFigure(true);
         return boolButton;
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -27,14 +27,14 @@ public class CheckBoxTest extends AbstractLabelWidgetTest{
                 "bit",
                 "boolValue"
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
     @Override
     public boolean isAutoTest() {
         return true;
     }
 
-        
+
 }

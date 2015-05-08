@@ -14,7 +14,7 @@ public class OpenChannelViewer extends AbstractAdaptedHandler<ChannelQuery> {
     public OpenChannelViewer() {
         super(ChannelQuery.class);
     }
-    
+
     @Override
     protected void execute(List<ChannelQuery> queries, ExecutionEvent event) throws PartInitException {
         if (!queries.isEmpty()) {

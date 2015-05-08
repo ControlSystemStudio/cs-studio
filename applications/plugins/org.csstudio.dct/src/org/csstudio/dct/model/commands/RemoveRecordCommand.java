@@ -5,9 +5,9 @@ import org.csstudio.dct.model.IRecord;
 
 /**
  * Command that removes a {@link IRecord} from a container.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class RemoveRecordCommand extends AbstractRecordCommand {
 
@@ -26,7 +26,7 @@ public final class RemoveRecordCommand extends AbstractRecordCommand {
         this.record = record;
         assert container==record.getContainer();
     }
-    
+
     /**
      *{@inheritDoc}
      */

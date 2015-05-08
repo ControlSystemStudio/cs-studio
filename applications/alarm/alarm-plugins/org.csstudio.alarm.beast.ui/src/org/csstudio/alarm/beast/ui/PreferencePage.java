@@ -56,7 +56,7 @@ public class PreferencePage extends FieldEditorPreferencePage
     protected void createFieldEditors()
     {
         final Composite parent = getFieldEditorParent();
-        
+
         // Overall configuration name
         addField(new StringFieldEditor(Preferences.ROOT_COMPONENT, Messages.Preferences_RootComponent, parent));
 

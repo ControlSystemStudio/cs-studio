@@ -9,9 +9,9 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * Popup menu action for the outline view that disabled a record.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class DisableRecordAction extends AbstractOutlineAction {
 
@@ -26,7 +26,7 @@ public final class DisableRecordAction extends AbstractOutlineAction {
 
         IRecord record = (IRecord) selection.get(0);
         Command command = new ChangeBeanPropertyCommand(record, "disabled", true);
-        
+
         return command;
     }
 

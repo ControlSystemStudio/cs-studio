@@ -8,9 +8,9 @@ import org.csstudio.dct.model.IElement;
 /**
  * Base class for elements of the graphical model which represent nodes. Nodes
  * may be connected by {@link Connection}s.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  * @param <E>
  */
 public abstract class AbstractNode<E extends IElement> extends AbstractBase {
@@ -24,7 +24,7 @@ public abstract class AbstractNode<E extends IElement> extends AbstractBase {
 
     /**
      * Standard constructor.
-     * 
+     *
      * @param element
      *            the corresponding element in the original dct model
      */
@@ -38,7 +38,7 @@ public abstract class AbstractNode<E extends IElement> extends AbstractBase {
 
     /**
      * Accept method for the standard GOF visitor pattern.
-     * 
+     *
      * @param visitor
      *            the visitor
      */
@@ -47,17 +47,17 @@ public abstract class AbstractNode<E extends IElement> extends AbstractBase {
     /**
      * Subclasses should return an appropriate caption for the node depending on
      * the supplied element from the original dct model.
-     * 
+     *
      * @param element
      *            the orgiginal element from the dct model
-     * 
+     *
      * @return an appropriate caption
      */
     protected abstract String doGetCaption(E element);
 
     /**
      * Returns the corresponding element in the original dct model.
-     * 
+     *
      * @return the corresponding element in the original dct model
      */
     public E getElement() {
@@ -66,7 +66,7 @@ public abstract class AbstractNode<E extends IElement> extends AbstractBase {
 
     /**
      * Returns a list of outgoing connections.
-     * 
+     *
      * @return a non-null List instance, the list may be empty
      */
     public List<Connection> getSourceConnections() {
@@ -75,7 +75,7 @@ public abstract class AbstractNode<E extends IElement> extends AbstractBase {
 
     /**
      * Returns a list of incoming connections.
-     * 
+     *
      * @return a non-null List instance, the list may be empty
      */
     public List<Connection> getTargetConnections() {
@@ -84,7 +84,7 @@ public abstract class AbstractNode<E extends IElement> extends AbstractBase {
 
     /**
      * Returns the caption of this element.
-     * 
+     *
      * @return a non-null String instance
      */
     public String getCaption() {
@@ -96,7 +96,7 @@ public abstract class AbstractNode<E extends IElement> extends AbstractBase {
     /**
      * Add an incoming or outgoing connection to this node. This method will be
      * called from the {@link Connection}.
-     * 
+     *
      * @param connection
      *            a connection
      */
@@ -116,7 +116,7 @@ public abstract class AbstractNode<E extends IElement> extends AbstractBase {
      * Removes an incoming or outgoing connection from this node. This method
      * should stay package protected and will be called from the Connection
      * class only.
-     * 
+     *
      * @param connection
      *            a connection
      */

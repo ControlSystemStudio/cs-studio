@@ -21,17 +21,17 @@ public class Edm_activeLineClass extends EdmWidget {
     @EdmAttributeAn private int numPoints;
     @EdmAttributeAn private EdmPointsList xPoints;
     @EdmAttributeAn private EdmPointsList yPoints;
-    
-    
+
+
     @EdmAttributeAn @EdmOptionalAn private int lineWidth;
-    @EdmAttributeAn @EdmOptionalAn private EdmLineStyle lineStyle;    
+    @EdmAttributeAn @EdmOptionalAn private EdmLineStyle lineStyle;
     @EdmAttributeAn @EdmOptionalAn private String arrows;
     @EdmAttributeAn @EdmOptionalAn private boolean closePolygon;
     @EdmAttributeAn @EdmOptionalAn private boolean lineAlarm;
     @EdmAttributeAn @EdmOptionalAn private boolean fill;
     @EdmAttributeAn @EdmOptionalAn private boolean fillAlarm;
-    
-    
+
+
 
 
     public Edm_activeLineClass(EdmEntity genericEntity) throws EdmException {
@@ -46,11 +46,11 @@ public class Edm_activeLineClass extends EdmWidget {
     public EdmPointsList getXPoints() {
         return xPoints;
     }
-    
+
     public EdmPointsList getYPoints() {
         return yPoints;
     }
-    
+
     public EdmColor getLineColor() {
         return lineColor;
     }
@@ -70,8 +70,8 @@ public class Edm_activeLineClass extends EdmWidget {
     public boolean isFill(){
         return fill;
     }
-    
-    
+
+
     /**
      * @return the arrows
      */

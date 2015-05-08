@@ -117,7 +117,7 @@ public class ResourceUtilTest {
         {
             final String message = ex.getMessage();
             System.out.println(message);
-            assertTrue(ex.getCause() instanceof FileNotFoundException);                    
+            assertTrue(ex.getCause() instanceof FileNotFoundException);
         }
 
         // URL to non-existing resource
@@ -182,34 +182,34 @@ public class ResourceUtilTest {
             System.out.println(inputLine);
         in.close();
     }
-    
+
     @Test
     @Ignore
     public void testIsExistingWorkspaceFile(){
         assertEquals(ResourceUtil.isExistingWorkspaceFile(WORKSCPACE_PATH), true);
     }
-    
+
     @Test
     public void testIsExistingLocalFile() {
         assertEquals(ResourceUtil.isExistingLocalFile(LOCAL_PATH),true);
         assertEquals(ResourceUtil.isExistingLocalFile(LOCAL_PATH2),true);
 
     }
-    
-    @Test 
+
+    @Test
     public void testIsURL(){
         assertEquals(ResourceUtil.isURL(URL_PATH.toString()), true);
         assertEquals(ResourceUtil.isURL(LOCAL_PATH.toString()), false);
     }
-    
+
     @Test
     public void testIsExistingURL(){
         assertEquals(ResourceUtil.isExistingURL(URL_PATH, true), true);
         assertEquals(ResourceUtil.isExistingURL(URL_PATH.append("main.opi"), true), true);
         assertEquals(ResourceUtil.isExistingURL(URL_PATH.append("main2.opi"), true), false);
     }
-    
-    @Test 
+
+    @Test
     public void testGetFileOnSearchPath(){
         IPath p = ResourceUtil.getFileOnSearchPath(new Path("main.opi"), true);
         System.out.println(p);

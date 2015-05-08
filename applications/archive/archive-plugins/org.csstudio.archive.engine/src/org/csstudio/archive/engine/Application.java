@@ -39,7 +39,7 @@ public class Application implements IApplication
 
     /** Application model */
     private EngineModel model;
-    
+
     /** Option: if skip reading last sample time or not */
     private boolean skip_last = false;
 
@@ -53,7 +53,7 @@ public class Application implements IApplication
         // Display configuration info
         final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
         final String app_info = context.getBrandingName() + " " + version;
-        
+
         // Create the parser and run it.
         final ArgParser parser = new ArgParser();
         final BooleanOption help_opt = new BooleanOption(parser, "-help", "Display help");
@@ -114,7 +114,7 @@ public class Application implements IApplication
             }
             return false;
         }
-        
+
         if (engine_name_opt.get() == null)
         {
             System.out.println("Missing option " + engine_name_opt.getOption());

@@ -35,7 +35,7 @@ import org.eclipse.swt.graphics.Color;
 /**
  * Abstract base class for the edit parts of chart widgets (waveform, strip
  * chart).
- * 
+ *
  * @author Joerg Rathlev
  */
 abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
@@ -45,7 +45,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
      * {@code AbstractChartModel} base class. This method is provided for the
      * convenience of subclasses, which can call this method in their
      * implementation of {@link #doCreateFigure()}.
-     * 
+     *
      * @param figure
      *            the figure.
      * @param model
@@ -75,7 +75,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
         figure.setYAxisLabel(model.getYAxisLabel());
         figure.setDataPointDrawingStyle(model.getDataPointDrawingStyle());
     }
-    
+
     /**
      * Registers property change handlers for the properties defined in
      * {@code AbstractChartModel}. This method is provided for the convenience
@@ -90,7 +90,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
     }
 
     /**
-     * Registers a change handler for the label property. 
+     * Registers a change handler for the label property.
      */
     private void registerLabelChangeHandler() {
         IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
@@ -103,9 +103,9 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
         };
         setPropertyChangeHandler(WaveformModel.PROP_LABEL, labelHandler);
     }
-    
+
     /**
-     * Registers change handlers for the axes properties. 
+     * Registers change handlers for the axes properties.
      */
     private void registerAxesChangeHandlers() {
         // max
@@ -129,7 +129,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
     }
 
     /**
-     * 
+     *
      */
     private void setPropYAxisLabelHandler() {
         IWidgetPropertyChangeHandler yAxisLabelHandler = new IWidgetPropertyChangeHandler() {
@@ -144,7 +144,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
     }
 
     /**
-     * 
+     *
      */
     private void setPropXAxisScalingHandler() {
         // x-axis label
@@ -160,7 +160,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
     }
 
     /**
-     * 
+     *
      */
     private void setPropYAxisScalingHandler() {
         IWidgetPropertyChangeHandler yAxisScalingHandler = new IWidgetPropertyChangeHandler() {
@@ -175,7 +175,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
     }
 
     /**
-     * 
+     *
      */
     private void setPropShowAxesHandler() {
         IWidgetPropertyChangeHandler scaleHandler = new IWidgetPropertyChangeHandler() {
@@ -191,7 +191,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
     }
 
     /**
-     * 
+     *
      */
     private void setPropShowGridLinesHandler() {
         IWidgetPropertyChangeHandler ledgerLinesHandler = new IWidgetPropertyChangeHandler() {
@@ -207,7 +207,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
     }
 
     /**
-     * 
+     *
      */
     private void setPropLabeledTicksHandler() {
         IWidgetPropertyChangeHandler showValuesHandler = new IWidgetPropertyChangeHandler() {
@@ -288,13 +288,13 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
         };
         setPropertyChangeHandler(BargraphModel.PROP_BORDER_WIDTH, borderHandler);
         setPropertyChangeHandler(BargraphModel.PROP_BORDER_STYLE, borderHandler);
-        
+
         setDataPointDrawingStyleHandler();
-        setGridLinesColorHandler();        
+        setGridLinesColorHandler();
     }
 
     /**
-     * 
+     *
      */
     private void setGridLinesColorHandler() {
         setPropertyChangeHandler(WaveformModel.PROP_GRID_LINE_COLOR, new ColorChangeHandler<AbstractChartFigure>() {
@@ -306,7 +306,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
     }
 
     /**
-     * 
+     *
      */
     private void setDataPointDrawingStyleHandler() {
         IWidgetPropertyChangeHandler drawingStyleHandler = new IWidgetPropertyChangeHandler() {
@@ -321,7 +321,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
     }
 
     /**
-     * 
+     *
      */
     private void setPropTransparentHandler() {
         IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
@@ -337,7 +337,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
     }
 
     /**
-     * 
+     *
      */
     private void setPropLineWidthHandler() {
         IWidgetPropertyChangeHandler lineWidthHandler = new IWidgetPropertyChangeHandler() {
@@ -353,7 +353,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
     }
 
     /**
-     * 
+     *
      */
     private void setPropLineChartHandler() {
         IWidgetPropertyChangeHandler connectionLinesHandler = new IWidgetPropertyChangeHandler() {
@@ -367,7 +367,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
         };
         setPropertyChangeHandler(WaveformModel.PROP_LINE_CHART, connectionLinesHandler);
     }
-    
+
     /**
      * Registers change handlers for the plot color properties.
      */

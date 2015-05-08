@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.opibuilder.visualparts;
@@ -57,8 +57,8 @@ import org.eclipse.swt.widgets.ToolBar;
 
 /**
  * A table cell editor for values of type PointList.
- *  
- * @author Kai Meyer (original author), Xihui Chen (since import from SDS 2009/9) 
+ *
+ * @author Kai Meyer (original author), Xihui Chen (since import from SDS 2009/9)
  */
 public final class PointListCellEditor extends AbstractDialogCellEditor {
 
@@ -74,7 +74,7 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
     /**
      * Creates a new string cell editor parented under the given control. The
      * cell editor value is a PointList.
-     * 
+     *
      * @param parent
      *            The parent table.
      */
@@ -118,7 +118,7 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
     protected Object doGetValue() {
         return this.listToPointList(_pointList);
     }
-    
+
     /**
      * Creates a new PointList with the Points of the given List.
      * @param list
@@ -148,10 +148,10 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
             _orgPointList.add(list.getPoint(i));
         }
     }
-    
+
     /**
      * This class represents a Dialog to add, edit and remove Points of a PointList.
-     * 
+     *
      * @author Kai Meyer
      */
     private final class PointListInputDialog extends Dialog {
@@ -194,7 +194,7 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
          * <p>
          * Note that the <code>open</code> method blocks for input dialogs.
          * </p>
-         * 
+         *
          * @param parentShell
          *            the parent shell, or <code>null</code> to create a top-level
          *            shell
@@ -202,7 +202,7 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
          *            the dialog title, or <code>null</code> if none
          * @param dialogMessage
          *            the dialog message, or <code>null</code> if none
-         
+
          */
         public PointListInputDialog(final Shell parentShell, final String dialogTitle,
                 final String dialogMessage) {
@@ -210,7 +210,7 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
             _title = dialogTitle;
             _message = dialogMessage;
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -221,7 +221,7 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
                 shell.setText(_title);
             }
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -239,7 +239,7 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
                 data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
                 label.setLayoutData(data);
             }
-            
+
             Composite toolBarComposite = new Composite(composite,SWT.BORDER);
             GridLayout gridLayout = new GridLayout(1,false);
             gridLayout.marginLeft = 0;
@@ -251,22 +251,22 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
             toolBarComposite.setLayout(gridLayout);
             GridData grid = new GridData(SWT.FILL,SWT.FILL,true,true);
             toolBarComposite.setLayoutData(grid);
-            
+
             ToolBarManager toolbarManager = new ToolBarManager(SWT.FLAT);
             ToolBar toolBar = toolbarManager.createControl(toolBarComposite);
             GridData gid = new GridData();
             gid.horizontalAlignment = GridData.FILL;
             gid.verticalAlignment = GridData.BEGINNING;
             toolBar.setLayoutData(gid);
-            
-            this.createActions(toolbarManager); 
-            _viewer = this.createListViewer(toolBarComposite);        
+
+            this.createActions(toolbarManager);
+            _viewer = this.createListViewer(toolBarComposite);
             this.hookPopupMenu(_viewer);
             this.hookDoubleClick(_viewer);
 
             return composite;
         }
-        
+
         /**
          * Creates Actions and adds them to the given {@link ToolBarManager}.
          * @param manager
@@ -342,10 +342,10 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
             manager.add(_downAction);
             manager.update(true);
         }
-        
+
         /**
          * Creates the viewer for the List.
-         * @param parent 
+         * @param parent
          *                 The parent composite for the viewer
          * @return ListViewer
          *                 The ListViewer
@@ -380,7 +380,7 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
             viewer.getList().setFocus();
             return viewer;
         }
-        
+
         /**
          * Adds a Popup menu to the given ListViewer.
          * @param viewer
@@ -398,7 +398,7 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
             Menu menu = popupMenu.createContextMenu(viewer.getList());
             viewer.getList().setMenu(menu);
         }
-        
+
         /**
          * Adds doubleclick support to the given ListViewer.
          * @param viewer
@@ -426,7 +426,7 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
             int index = _viewer.getList().getItemCount();
             int[] selectedIndices = _viewer.getList().getSelectionIndices();
             if (selectedIndices.length>0) {
-                index = selectedIndices[0]; 
+                index = selectedIndices[0];
             }
             PointDialog dialog = new PointDialog(this.getParentShell(),"Point", null, index, isNew);
             if (dialog.open()==Window.OK) {
@@ -435,7 +435,7 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
             _viewer.getList().setSelection(index);
             this.refreshActions();
         }
-        
+
         /**
          * Removes the current selected Points from the List.
          */
@@ -452,7 +452,7 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
             }
             refreshActions();
         }
-        
+
         /**
          * Enables or disables the RemoveButton.
          */
@@ -466,10 +466,10 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
             _upAction.setEnabled(_viewer.getList().getSelectionIndices().length==1 && _viewer.getList().getSelectionIndex()>0);
             _downAction.setEnabled(_viewer.getList().getSelectionIndices().length==1 && _viewer.getList().getSelectionIndex()<_viewer.getList().getItemCount()-1);
         }
-        
+
         /**
-         * Moves the current selected Point one step up or down, depending on the given boolean. 
-         * @param up 
+         * Moves the current selected Point one step up or down, depending on the given boolean.
+         * @param up
          *             True, if the Point should be moved up, false otherwise
          */
         private void movePoint(final boolean up) {
@@ -492,7 +492,7 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
             _viewer.getList().setSelection(newIndex);
             this.refreshActions();
         }
-        
+
         /**
          * Sets the input on the viewer and refreshes it.
          */
@@ -500,9 +500,9 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
             _viewer.setInput(_pointList.toArray(new Point[_pointList.size()]));
             _viewer.refresh();
         }
-        
+
     }
-    
+
     /**
      * This class represents a Dialog for editing a Point.
      * @author Kai Meyer
@@ -532,14 +532,14 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
          * A boolean, which indicates if the Point is new.
          */
         private boolean _isNew;
-        
+
         /**
          * Creates an input dialog with OK and Cancel buttons. Note that the dialog
          * will have no visual representation (no widgets) until it is told to open.
          * <p>
          * Note that the <code>open</code> method blocks for input dialogs.
          * </p>
-         * 
+         *
          * @param parentShell
          *            the parent shell, or <code>null</code> to create a top-level
          *            shell
@@ -562,7 +562,7 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
                 _index = initialValue;
             }
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -573,7 +573,7 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
                 shell.setText(_title);
             }
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -613,7 +613,7 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
             }
             return composite;
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -626,9 +626,9 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
                 }
                 _pointList.add(_index, new Point(_xSpinner.getSelection(), _ySpinner.getSelection()));
             }
-            //_pointList.add(new Point(_xSpinner.getSelection(), _ySpinner.getSelection()));            
+            //_pointList.add(new Point(_xSpinner.getSelection(), _ySpinner.getSelection()));
             super.okPressed();
         }
     }
-    
+
 }

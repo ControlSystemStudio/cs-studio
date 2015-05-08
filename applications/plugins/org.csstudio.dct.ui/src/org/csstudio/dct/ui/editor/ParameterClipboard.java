@@ -7,7 +7,7 @@ import org.csstudio.dct.model.internal.Parameter;
 
 /**
  * Simple bean acting as clipboard for parameters.
- * 
+ *
  * @author Sven Wende
  */
 public class ParameterClipboard {
@@ -24,7 +24,7 @@ public class ParameterClipboard {
     public List<Parameter> getContent() {
         return content!=null?new ArrayList<Parameter>(content):null;
     }
-    
+
     public boolean isEmpty() {
         return content==null;
     }

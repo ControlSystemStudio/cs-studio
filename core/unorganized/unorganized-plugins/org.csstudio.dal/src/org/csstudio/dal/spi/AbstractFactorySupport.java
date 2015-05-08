@@ -37,9 +37,9 @@ import javax.naming.directory.DirContext;
 
 /**
  * This is convenience implementation of common factory code.
- * 
+ *
  * <p>
- * This class implements plug sharing behaviour. By default plug instance is shared. 
+ * This class implements plug sharing behaviour. By default plug instance is shared.
  * There are two ways to for plug or application control plug sharing:
  * </p>
  * <ul>
@@ -47,13 +47,13 @@ import javax.naming.directory.DirContext;
  * decides for only one option: or is plug share or not. Plug sharing can not be changed later
  * trough application configuration.</li>
  * <li>Sharing of plug is enabled or disabled with parameter provided with configuration with
- * application context. This is possible if this factory is created with default constructor.</li> 
+ * application context. This is possible if this factory is created with default constructor.</li>
  * </ul>
- * 
- * <p>If plug is not shared, then plug instance will be created using application 
+ *
+ * <p>If plug is not shared, then plug instance will be created using application
  * context as constructor parameter.</p>
- * 
- *  
+ *
+ *
  * @see AbstractFactorySupport#AbstractFactorySupport(boolean)
  * @see AbstractFactory#SHARE_PLUG
  *
@@ -74,7 +74,7 @@ public abstract class AbstractFactorySupport implements AbstractFactory
         public void destroying(LifecycleEvent event)
         {
             destroyAll();
-            
+
             try
             {
                 if (plug != null)
@@ -103,15 +103,15 @@ public abstract class AbstractFactorySupport implements AbstractFactory
 
     /**
      * Default constructor. Plug sharing option is provided with application context or default
-     * sharing policy is used. 
+     * sharing policy is used.
      */
     protected AbstractFactorySupport()
     {
     }
 
     /**
-     * Constructor for those DAL implementations, which want to force from code plug factory to 
-     * share or not share 
+     * Constructor for those DAL implementations, which want to force from code plug factory to
+     * share or not share
      *
      */
     protected AbstractFactorySupport(boolean plugShared)
@@ -130,7 +130,7 @@ public abstract class AbstractFactorySupport implements AbstractFactory
      * @return plug implemntation class
      */
     protected abstract Class<?extends AbstractPlug> getPlugClass();
-    
+
     /**
      * Returns instance of plug, which must be used by this factory. Plug is created if necessary.
      * @return instance of plug dedicated to this factory.
@@ -146,9 +146,9 @@ public abstract class AbstractFactorySupport implements AbstractFactory
             } catch (Exception e) {
                 Logger.getLogger(this.getClass()).debug("Heuristic plug instantiation failed, another try available.", e);
             }
-            
+
             if (plug == null) {
-                try { 
+                try {
                     plug = (AbstractPlug)getPlugClass()
                         .getMethod("getInstance", new Class[]{ Properties.class })
                         .invoke(null, new Object[]{ ctx.getConfiguration() });
@@ -190,19 +190,19 @@ public abstract class AbstractFactorySupport implements AbstractFactory
         this.ctx = ctx;
         this.linkPolicy = policy;
         ctx.addLifecycleListener(lifecycleListener);
-        
+
         if (plugShared==null) {
             String s= ctx.getConfiguration().getProperty(SHARE_PLUG);
             if (s != null) {
                 plugShared=Boolean.valueOf(s);
             }
         }
-        
+
         String s= ctx.getConfiguration().getProperty(Plugs.PROPERTIES_FROM_CACHE);
         if (s !=null) {
-            
+
             propertiesCached= Boolean.parseBoolean(s);
-            
+
         }
     }
 
@@ -243,7 +243,7 @@ public abstract class AbstractFactorySupport implements AbstractFactory
         // TODO Auto-generated method stub
         return false;
     }
-    
+
 }
 
 /* __oOo__ */

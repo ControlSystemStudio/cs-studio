@@ -9,9 +9,9 @@ import org.eclipse.rap.rwt.RWT;
 
 /**
  * Utility for request related functions.
- * 
+ *
  * @author Davy Dequidt
- * 
+ *
  */
 public class RequestUtil {
 

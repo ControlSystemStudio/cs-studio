@@ -32,7 +32,7 @@ public class AlarmTableContentProvider implements ILazyContentProvider
     private TableViewer table_viewer;
     private AlarmTreePV[] alarms;
     private Comparator<AlarmTreePV> comparator = AlarmComparator.getComparator(ColumnInfo.SEVERITY, false);
-    
+
     /** Update the list of alarms to display.
      *  @param alarms
      */

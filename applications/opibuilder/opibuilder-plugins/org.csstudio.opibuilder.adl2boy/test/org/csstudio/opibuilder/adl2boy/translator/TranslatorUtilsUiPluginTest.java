@@ -61,7 +61,7 @@ public class TranslatorUtilsUiPluginTest extends TestCase {
         assertEquals("display grid spacing", 5, display.getPropertyValue(DisplayModel.PROP_GRID_SPACE));
         assertEquals("display grid on", false, display.getPropertyValue(DisplayModel.PROP_SHOW_GRID));
         assertEquals("display snap to grid", false, display.getPropertyValue(DisplayModel.PROP_SNAP_GEOMETRY));
-        
+
     }
 
 }

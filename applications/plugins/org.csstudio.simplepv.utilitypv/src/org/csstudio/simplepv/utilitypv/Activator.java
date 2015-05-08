@@ -21,9 +21,9 @@ public class Activator implements BundleActivator {
 
     // The plug-in ID
     public static final String PLUGIN_ID = "org.csstudio.simplepv.utilitypv"; //$NON-NLS-1$
-        
+
     final private static Logger logger = Logger.getLogger(PLUGIN_ID);
-    
+
     @Override
     public void start(BundleContext context) throws Exception {
 
@@ -33,7 +33,7 @@ public class Activator implements BundleActivator {
     public void stop(BundleContext context) throws Exception {
 
     }
-    
+
     public static Logger getLogger() {
         return logger;
     }

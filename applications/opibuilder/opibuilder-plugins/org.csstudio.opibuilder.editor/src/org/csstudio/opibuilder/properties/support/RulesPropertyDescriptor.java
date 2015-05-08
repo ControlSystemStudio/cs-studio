@@ -21,12 +21,12 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  *
  */
 public class RulesPropertyDescriptor extends TextPropertyDescriptor {
-    
+
     private AbstractWidgetModel widgetModel;
-    
+
     /**
      * Creates an property descriptor with the given id and display name.
-     * 
+     *
      * @param id
      *            the id of the property
      * @param displayName
@@ -48,5 +48,5 @@ public class RulesPropertyDescriptor extends TextPropertyDescriptor {
         }
         return editor;
     }
-    
+
 }

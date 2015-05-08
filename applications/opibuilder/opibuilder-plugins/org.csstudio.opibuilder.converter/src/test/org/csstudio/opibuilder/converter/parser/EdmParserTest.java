@@ -15,7 +15,7 @@ public class EdmParserTest extends TestCase {
 
     public void testFileDoesNotExist() {
         String fileName = "test.edl";
-        
+
         try {
             @SuppressWarnings("unused")
             EdmParser edmParser = new EdmParser(fileName);

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui.util;
 
@@ -27,7 +27,7 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class IFileUtil {
 
@@ -165,7 +165,7 @@ public class IFileUtil {
     /**
      * This will do the cleanup once the editor associated with the temporary
      * file has been closed
-     * 
+     *
      * @param part
      * @param file
      */

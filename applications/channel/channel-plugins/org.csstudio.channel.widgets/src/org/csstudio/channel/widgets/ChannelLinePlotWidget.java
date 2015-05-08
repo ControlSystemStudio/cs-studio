@@ -544,7 +544,7 @@ public class ChannelLinePlotWidget extends AbstractChannelQueryResultWidget
 
     /**
      * A helper function to set all the appropriate
-     * 
+     *
      * @param control
      */
     private void setRange(StartEndRangeWidget control,

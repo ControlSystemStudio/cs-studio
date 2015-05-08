@@ -12,7 +12,7 @@ public class Messages extends NLS
     public static String ColumnConfigDescription;
     public static String ColumnConfigTitle;
     public static String ConfigureColumns;
-    
+
     static
     {
         // initialize resource bundle

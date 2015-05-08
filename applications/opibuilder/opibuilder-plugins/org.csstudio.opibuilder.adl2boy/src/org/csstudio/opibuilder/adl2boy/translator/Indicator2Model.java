@@ -16,11 +16,11 @@ public class Indicator2Model extends AbstractADL2Model {
         super(adlWidget, colorMap, parentModel);
     }
 
-    
+
     @Override
     public void processWidget(ADLWidget adlWidget) {
         // TODO Auto-generated method stub
-        
+
     }
 
 
@@ -28,7 +28,7 @@ public class Indicator2Model extends AbstractADL2Model {
     public void makeModel(ADLWidget adlWidget,
             AbstractContainerModel parentModel) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

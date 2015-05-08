@@ -12,7 +12,7 @@ import org.epics.pvmanager.DataSource;
 import org.epics.pvmanager.PVManager;
 
 public class DataSourceSummaryContentProvider implements IStructuredContentProvider {
-    
+
     @Override
     public void dispose() {
         // Nothing to do
@@ -40,7 +40,7 @@ public class DataSourceSummaryContentProvider implements IStructuredContentProvi
             return new Object[] {dataSource};
         }
     }
-    
+
     @SuppressWarnings("unused")
     private void addChannels(List<DataSourceChannel> channels, String dataSourceName, DataSource dataSource) {
         for (ChannelHandler channelHandler : dataSource.getChannels().values()) {

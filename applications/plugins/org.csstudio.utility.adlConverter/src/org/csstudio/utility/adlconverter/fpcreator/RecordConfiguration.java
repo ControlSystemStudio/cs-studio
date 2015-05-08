@@ -24,8 +24,8 @@ package org.csstudio.utility.adlconverter.fpcreator;
 import java.util.ArrayList;
 
 /**
- * TODO (jhatje) : 
- * 
+ * TODO (jhatje) :
+ *
  * @author jhatje
  * @since 01.06.2012
  */
@@ -42,7 +42,7 @@ public class RecordConfiguration {
 
     /**
      * @param recordType
-     * @return 
+     * @return
      */
     public ArrayList<EpicsRecord> getRecordsOfType(EpicsRecordTypesEnum recordType) {
         ArrayList<EpicsRecord> recordList = new ArrayList<EpicsRecord>();
@@ -53,5 +53,5 @@ public class RecordConfiguration {
         }
         return recordList;
     }
-    
+
 }

@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * Simple meter widget.
- * 
+ *
  * @author Kay Kasemir
  * @author Gabriele Carcassi
  */
@@ -93,7 +93,7 @@ public class MeterWidget extends Canvas
         // super(parent, style | SWT.NO_BACKGROUND);
         super(parent, SWT.NO_BACKGROUND);
         addDisposeListener(new DisposeListener() {
-            
+
             @Override
             public void widgetDisposed(DisposeEvent e) {
                 invalidateScale();
@@ -110,7 +110,7 @@ public class MeterWidget extends Canvas
 
     /**
      * Configure the meter.
-     * 
+     *
      *  @param min Minimum value.
      *  @param lowAlarm Lower alarm limit.
      *  @param lowWarning Lower warning limit.
@@ -132,7 +132,7 @@ public class MeterWidget extends Canvas
                 this.max == max && this.precision == precision) {
             return;
         }
-        
+
         if (min > max)
         {   // swap
             this.min = min;
@@ -155,13 +155,13 @@ public class MeterWidget extends Canvas
             this.lowAlarm = lowAlarm;
         else
             this.lowAlarm = this.min;
-        
+
         if (lowWarning > this.min  &&  lowWarning < this.max)
             this.lowWarning = lowWarning;
         else
             this.lowWarning = this.lowAlarm;
 
-        
+
         if (highAlarm > this.min  &&  highAlarm < this.max)
             this.highAlarm = highAlarm;
         else
@@ -182,13 +182,13 @@ public class MeterWidget extends Canvas
     {
         if (this.value == value)
             return;
-        
+
         this.value = value;
         if (!isDisposed()) {
             redraw();
         }
     }
-    
+
     @Override
     public void setEnabled(boolean enabled) {
         // When the widget is disabled, force the redraw.
@@ -240,21 +240,21 @@ public class MeterWidget extends Canvas
         }
         return endAngle + (startAngle - endAngle) * (max-value) / (max-min);
     }
-    
+
     private PaintListener paintListener = new PaintListener() {
-        
+
         @Override
         public void paintControl(PaintEvent e) {
             //long start = System.nanoTime();
-            
+
             final GC gc = e.gc;
 
             // Get the rectangle that exactly fills the 'inner' area
             // such that drawRectangle() will match.
             Rectangle displayArea = getClientArea();
-            
+
             //paintScale(client_rect, gc);
-            
+
             // Background and border
             gc.setForeground(faceColor);
             gc.setBackground(backgroundColor);
@@ -283,16 +283,16 @@ public class MeterWidget extends Canvas
                 gc.drawString(message,
                  (displayArea.width-size.x)/2, (displayArea.height-size.y)/2, true);
             }
-            
+
             //System.out.println("MeterWidget paint: " + (System.nanoTime() - start));
         }
     };
-    
+
     private void paintNeedle(final GC gc) {
         gc.setLineWidth(LINE_WIDTH);
         gc.setLineCap(SWT.CAP_ROUND);
         gc.setLineJoin(SWT.JOIN_ROUND);
-        
+
         final double needle_angle = getAngle(value);
         final int needle_x_radius = (int)((1 - 0.5*scaleWidth)*x_radius);
         final int needle_y_radius = (int)((1 - 0.5*scaleWidth)*y_radius);
@@ -442,7 +442,7 @@ public class MeterWidget extends Canvas
 
             final String label_text = fmt.format(label_value);
             final Point size = scale_gc.textExtent(label_text);
-            
+
             // Don't print the numbers if disabled
             if (getEnabled()) {
                 scale_gc.drawString(label_text,

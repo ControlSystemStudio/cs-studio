@@ -19,9 +19,9 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Action that adds an instance.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class AddInstanceAction extends AbstractOutlineAction {
 

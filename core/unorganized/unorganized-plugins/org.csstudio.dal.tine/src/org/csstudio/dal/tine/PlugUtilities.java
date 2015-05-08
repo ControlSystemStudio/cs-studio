@@ -33,7 +33,7 @@ import org.csstudio.dal.spi.Plugs;
 import org.csstudio.dal.spi.PropertyFactoryService;
 
 public class PlugUtilities {
-    
+
     public static void configureTINEPlug(Properties p)
     {
         String[] s = Plugs.getPlugNames(p);

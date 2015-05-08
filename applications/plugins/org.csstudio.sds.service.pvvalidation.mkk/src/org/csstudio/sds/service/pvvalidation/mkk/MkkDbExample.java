@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 public class MkkDbExample {
 
     private static final Logger LOG = LoggerFactory.getLogger(MkkDbExample.class);
-    
+
     private String _url = "jdbc:oracle:thin:@(DESCRIPTION = "
             + "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv01.desy.de)(PORT = 1521)) "
             + "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv02.desy.de)(PORT = 1521)) "
@@ -29,7 +29,7 @@ public class MkkDbExample {
     private String _password = "mkklog";
 
     private String _pvStmt = "select count(*) from EPICS_REC where RECORD_NAME like ?";
-    
+
     public void checkPv(List<IProcessVariableAddress> _pvAdresses,
                 IProcessVariableAddressValidationCallback _callback) {
         RDBUtil _rdbUtil;
@@ -38,10 +38,10 @@ public class MkkDbExample {
         try {
             _rdbUtil = RDBUtil.connect(_url, _user, _password, true);
             connection = _rdbUtil.getConnection();
-            
+
             final PreparedStatement checkPvName =
                     connection.prepareStatement(_pvStmt);
-            
+
             for (IProcessVariableAddress pvAddress : _pvAdresses) {
                 String comment = null;
                 String sdsPvName = pvAddress.getRawName();
@@ -72,7 +72,7 @@ public class MkkDbExample {
      * Remove characteristic, type hint and field from raw name.
      * Otherwise the name does not match with DB result.
      * @param rawName
-     * @return 
+     * @return
      */
     private String stripRawName(String rawName) {
         if (rawName.contains("[")) {

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.olog.property.shift;
 
@@ -20,7 +20,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class OpenShiftLogViewer extends AbstractHandler {
 
@@ -43,7 +43,7 @@ public class OpenShiftLogViewer extends AbstractHandler {
             + ShiftPropertyWidget.attrIdName + ":"
             + ((Shift) strucSelection.getFirstElement()).getId();
         } else {
-        
+
         }
     } else {
         // TODO invalid selection

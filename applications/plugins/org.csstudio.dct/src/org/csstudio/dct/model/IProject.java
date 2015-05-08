@@ -8,16 +8,16 @@ import org.csstudio.dct.model.internal.BaseRecord;
 
 /**
  * Represents a project.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public interface IProject extends IElement {
 
     /**
      * Returns the database definition (the meta model which is parsed from a
      * dbd file).
-     * 
+     *
      * @return the database definition
      */
      IDatabaseDefinition getDatabaseDefinition();
@@ -25,7 +25,7 @@ public interface IProject extends IElement {
     /**
      * Sets the database definition (the meta model which is parsed from a dbd
      * file)
-     * 
+     *
      * @param databaseDefinition
      *            the database definition
      */
@@ -33,7 +33,7 @@ public interface IProject extends IElement {
 
     /**
      * Returns a base record for a specified record type.
-     * 
+     *
      * @param type
      *            the record type
      * @return a base record or null
@@ -42,7 +42,7 @@ public interface IProject extends IElement {
 
     /**
      * Returns a map with all currently available base records.
-     * 
+     *
      * @return a map with all currently available base record
      */
      Map<String, BaseRecord> getBaseRecords();
@@ -79,7 +79,7 @@ public interface IProject extends IElement {
 
     /**
      * Returns the list of records that will be rendered in a db file.
-     * 
+     *
      * @deprecated svw: use a visitor to replace the functionality
      * @return the list of records that will be rendered in a db file
      */

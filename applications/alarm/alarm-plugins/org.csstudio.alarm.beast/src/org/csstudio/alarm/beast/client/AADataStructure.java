@@ -14,23 +14,23 @@ package org.csstudio.alarm.beast.client;
 public class AADataStructure {
     /** Maximum length of title used for the 'teaser' */
     final private static int MAX_TEASER = 30;
-    
-    /**The brief description of the Automated Action, 
+
+    /**The brief description of the Automated Action,
      * which will be displayed in the context menu. */
     final private String title;
-    
-    /**The details text under the title. You must use empty string ("") not null if there is no details 
+
+    /**The details text under the title. You must use empty string ("") not null if there is no details
      * under the title. */
     final private String details;
-    
+
     /**The delay for the action. */
     final private int delay;
-    
+
     /**
      * Set title and details in the structure
-     * @param title The brief description of the Guidance/Display/Command, 
+     * @param title The brief description of the Guidance/Display/Command,
      * which will be displayed in the context menu.
-     * @param details The details text under the title. 
+     * @param details The details text under the title.
      * You must use empty string ("") <b>not</b> null if there is no details under the title.
      */
     public AADataStructure(final String title, final String details, final int delay)
@@ -39,7 +39,7 @@ public class AADataStructure {
         this.details = details;
         this.delay = delay;
     }
-    
+
     /**
      * @return the title
      */
@@ -50,7 +50,7 @@ public class AADataStructure {
     /**
      * Get short version of title that's suitable for action text shown in
      * context menu. Matches the title unless the title is too long.
-     * 
+     *
      * @return Teaser string
      */
     public String getTeaser() {
@@ -58,14 +58,14 @@ public class AADataStructure {
             return title.substring(0, MAX_TEASER) + "..."; //$NON-NLS-1$
         return title;
     }
-    
+
     /**
      * @return the details
      */
     public String getDetails() {
         return details;
     }
-    
+
     /**
      * @return the delay
      */

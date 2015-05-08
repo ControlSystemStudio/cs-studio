@@ -11,7 +11,7 @@ import org.csstudio.opibuilder.widgetActions.AbstractOpenOPIAction;
 import org.eclipse.jface.action.Action;
 
 /** The action open default related display in different target.
- * 
+ *
  * @author Xihui Chen
  *
  */
@@ -22,9 +22,9 @@ public class OpenRelatedDisplayAction extends Action {
         TAB,
         NEW_WINDOW
     }
-    
+
     private AbstractOpenOPIAction openDisplayAction;
-    
+
     private OPEN_DISPLAY_TARGET  target;
 
     public OpenRelatedDisplayAction(AbstractOpenOPIAction openDisplayAction,
@@ -44,12 +44,12 @@ public class OpenRelatedDisplayAction extends Action {
             break;
         }
     }
-    
+
     @Override
     public void run() {
         openDisplayAction.setCtrlPressed(false);
         openDisplayAction.setShiftPressed(false);
-        
+
         switch (target) {
         case TAB:
             openDisplayAction.setCtrlPressed(true);
@@ -59,10 +59,10 @@ public class OpenRelatedDisplayAction extends Action {
             break;
         default:
             break;
-        }                                            
-        openDisplayAction.run();    
-        
-        
+        }
+        openDisplayAction.run();
+
+
     }
-    
+
 }

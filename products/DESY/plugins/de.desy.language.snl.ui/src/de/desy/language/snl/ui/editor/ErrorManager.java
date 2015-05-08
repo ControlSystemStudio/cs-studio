@@ -15,9 +15,9 @@ import de.desy.language.snl.ui.SNLUiActivator;
 
 /**
  * A Manger for errors occurred during compilation.
- * 
+ *
  * @author Kai Meyer (C1 WPS)
- * 
+ *
  */
 public class ErrorManager {
 
@@ -26,14 +26,14 @@ public class ErrorManager {
      */
     private Shell _shell;
     private final String _lineSeparator;
-    
+
     public ErrorManager() {
         _lineSeparator = System.getProperty("line.separator");
     }
 
     /**
      * Sets the shell used for the error dialog.
-     * 
+     *
      * @param shell
      *            The shell for the dialog
      */
@@ -46,7 +46,7 @@ public class ErrorManager {
      * <code>lineNumber</code> and the <code>errorMessage</code> are used for
      * the marker. If the marker can't be created, then a dialog displaying the
      * error will appear.
-     * 
+     *
      * @param source
      *            The file where the marker belongs to
      * @param lineNumber
@@ -66,13 +66,13 @@ public class ErrorManager {
             createErrorFeedback("Error during compilation", "", errorList);
         } catch (CoreException e) {
             e.printStackTrace();
-            
+
         }
     }
 
     /**
      * Shows the given message in a {@link ErrorDialog}.
-     * 
+     *
      * @param dialogTitle
      *            The title for the {@link ErrorDialog}
      * @param message
@@ -100,17 +100,17 @@ public class ErrorManager {
             }
         }
         Exception exception = new Exception(buffer.toString());
-        
+
         IStatus status = new Status(IStatus.ERROR, SNLUiActivator.PLUGIN_ID,
                 message, exception);
-        
+
         ErrorDialog
                 .openError(_shell, "Compilation fails!", dialogTitle, status);
     }
 
     /**
      * Checks if a shell used for the dialog is set.
-     * 
+     *
      * @return <code>true</code> if a shell is set, <code>false</code>
      *         otherwise.
      */

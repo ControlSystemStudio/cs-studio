@@ -16,9 +16,9 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 
 /**
  * Implementation for the datalink() function.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class DataLinkFieldFunction implements IFieldFunction {
 

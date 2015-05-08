@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Display;
 /** Replace the default LaunchConfig icon with
  *  one that is (optionally) specified within
  *  the launch config file.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -33,7 +33,7 @@ public class IconDecorator implements ILabelDecorator
 {
     /** Cache of icon images by name */
     final private Map<String, Image> icons = new HashMap<String, Image>();
-    
+
     /** {@inheritDoc} */
     @Override
     public void addListener(ILabelProviderListener listener)
@@ -87,7 +87,7 @@ public class IconDecorator implements ILabelDecorator
             return false;
         return "org.csstudio.navigator.applaunch.application".equals(type.getId());
     }
-    
+
     @Override
     public Image decorateImage(final Image original, final Object element)
     {
@@ -100,7 +100,7 @@ public class IconDecorator implements ILabelDecorator
         // but enablement markup in plugin.xml should
         // already assert that we only get the correct content type
         // if (! isApplicationConfig(file)) ...
-        
+
         try
         {
             final LaunchConfig config = new LaunchConfig(file.getContents());

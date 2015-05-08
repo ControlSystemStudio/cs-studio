@@ -18,8 +18,8 @@ public class MeterTest extends AbstractRoundRampedWidgetTest{
     public Figure createTestWidget() {
         return new MeterFigure();
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -31,15 +31,15 @@ public class MeterTest extends AbstractRoundRampedWidgetTest{
         String[] myProps = new String[]{
                 "needleColor"
         };
-        
+
         return concatenateStringArrays(superPropList.toArray(new String[]{}), myProps);
     }
-    
+
     @Override
     public boolean isAutoTest() {
         return true;
     }
 
 
-        
+
 }

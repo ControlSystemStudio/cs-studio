@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.model.internal;
 
@@ -20,9 +20,9 @@ import org.junit.Test;
 
 /**
  * Test cases for {@link Folder}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class FolderTest {
     private Folder folder;

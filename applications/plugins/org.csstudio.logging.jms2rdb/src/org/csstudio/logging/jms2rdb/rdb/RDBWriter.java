@@ -87,7 +87,7 @@ public class RDBWriter
         }
 
         sql = new SQL(rdb_util, schema);
-        
+
         if (sql.select_next_message_id != null)
             next_message_id_statement =
                 connection.prepareStatement(sql.select_next_message_id);

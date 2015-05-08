@@ -40,19 +40,19 @@ public class AnnunciatorTest
 
     @Test
     public static void testFreeTTSAnnunciator() throws Exception
-    {        
+    {
         talk("Plain Free T T S", new FreeTTSAnnunciator(voice_name));
     }
 
     @Test
     public static void testFreeTTS_JSAPI_Annunciator() throws Exception
-    {       
+    {
         talk("Java Speech A P I", new FreeTTS_JSAPI_Annunciator(voice_name));
     }
 
     @Test
     public static void testExternalAnnunciator() throws Exception
-    {       
+    {
         talk("External command", new ExternalAnnunciator());
     }
 
@@ -64,7 +64,7 @@ public class AnnunciatorTest
         talker.say("SNS DTL MEBT Vac Diag RFQ Tgt Util Ctl PPS MPS Lin");
         talker.close();
     }
-    
+
     public static void main(final String[] args) throws Exception
     {
         if (args.length == 1)

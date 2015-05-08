@@ -215,7 +215,7 @@ public class ConsoleCommands implements CommandProvider
 
         return null;
     }
-    
+
     /** 'commands' command */
     public Object _commands(final CommandInterpreter intp)
     {
@@ -233,7 +233,7 @@ public class ConsoleCommands implements CommandProvider
         }
         return null;
     }
-    
+
     /** 'data' command */
     public Object _data(final CommandInterpreter intp)
     {
@@ -332,7 +332,7 @@ public class ConsoleCommands implements CommandProvider
         }
         return _scans(intp);
     }
-    
+
     /** 'removeCompleted' command */
     public Object _removeCompleted(final CommandInterpreter intp)
     {

@@ -9,7 +9,7 @@ public class ShiftAdapterFactory implements IAdapterFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.core.runtime.IAdapterFactory#getAdapter(java.lang.Object,
      * java.lang.Class)
@@ -18,7 +18,7 @@ public class ShiftAdapterFactory implements IAdapterFactory {
     public Object getAdapter(final Object adaptableObject, final Class adapterType) {
         final Shift shift = ((Shift) adaptableObject);
         if (adapterType == ShiftBuilder.class) {
-            return ShiftBuilder.shift(shift);           
+            return ShiftBuilder.shift(shift);
         } else {
             return null;
         }
@@ -26,7 +26,7 @@ public class ShiftAdapterFactory implements IAdapterFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
      */
     @Override

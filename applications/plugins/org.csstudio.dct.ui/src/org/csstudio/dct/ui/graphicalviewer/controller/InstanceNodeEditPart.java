@@ -24,9 +24,9 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Controller for an {@link InstanceNode}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class InstanceNodeEditPart extends AbstractGraphicalEditPart implements NodeEditPart, PropertyChangeListener {
 

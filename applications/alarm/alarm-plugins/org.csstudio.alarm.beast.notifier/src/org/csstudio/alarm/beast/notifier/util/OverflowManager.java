@@ -10,9 +10,9 @@ package org.csstudio.alarm.beast.notifier.util;
 /**
  * Manage an update rate per minute. If the update frequency is too fast,
  * overflow is set to <code>true</code>.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
- * 
+ *
  */
 public class OverflowManager {
 

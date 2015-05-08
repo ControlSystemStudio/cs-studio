@@ -4,7 +4,7 @@ import org.csstudio.sds.language.script.codeElements.PredefinedVariables;
 
 /**
  * The outline node of an SNL variable.
- * 
+ *
  * @author C1 WPS / KM, MZ
  */
 public class VariableNode extends AbstractScriptNode {
@@ -39,11 +39,11 @@ public class VariableNode extends AbstractScriptNode {
     protected String doGetSourceIdentifier() {
         return this._variableName;
     }
-    
+
     public boolean isPredefined() {
         return _predefinedVariable!=null;
     }
-    
+
     public PredefinedVariables getPredefinedVariable() {
         return _predefinedVariable;
     }

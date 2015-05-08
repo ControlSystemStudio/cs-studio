@@ -92,7 +92,7 @@ public class ByteModel extends AbstractWidgetModel {
 
     /**
      * Gets the orientation.
-     * 
+     *
      * @return the orientation.
      */
     public boolean getOrientation() {

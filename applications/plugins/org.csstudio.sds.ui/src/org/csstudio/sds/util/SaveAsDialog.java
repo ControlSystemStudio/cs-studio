@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.util;
@@ -49,15 +49,15 @@ import org.eclipse.swt.widgets.Shell;
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
- * 
+ *
  * <p>
  * <b>Code is based upon <code>org.eclipse.ui.dialogs.SaveAsDialog</code> in
  * plugin <code>org.eclipse.ui.ide</code>.</b>
  * </p>
- * 
+ *
  * @author Alexander Will
  * @version $Revision$
- * 
+ *
  */
 public final class SaveAsDialog extends TitleAreaDialog {
     /**
@@ -89,7 +89,7 @@ public final class SaveAsDialog extends TitleAreaDialog {
      * The OK button.
      */
     private Button _okButton;
-    
+
     /**
      * The default file extension.
      */
@@ -97,7 +97,7 @@ public final class SaveAsDialog extends TitleAreaDialog {
 
     /**
      * Creates a new Save As dialog for no specific file.
-     * 
+     *
      * @param parentShell
      *            the parent shell
      */
@@ -181,7 +181,7 @@ public final class SaveAsDialog extends TitleAreaDialog {
      * created. See the <code>IFile.create</code> method and the
      * <code>ContainerGenerator</code> class.
      * </p>
-     * 
+     *
      * @return the path, or <code>null</code> if Cancel was pressed
      */
     public IPath getResult() {
@@ -256,7 +256,7 @@ public final class SaveAsDialog extends TitleAreaDialog {
     /**
      * Sets the completion state of this dialog and adjusts the enable state of
      * the Ok button accordingly.
-     * 
+     *
      * @param value
      *            <code>true</code> if this dialog is compelete, and
      *            <code>false</code> otherwise
@@ -267,7 +267,7 @@ public final class SaveAsDialog extends TitleAreaDialog {
 
     /**
      * Sets the original file to use.
-     * 
+     *
      * @param originalFile
      *            the original file
      */
@@ -279,7 +279,7 @@ public final class SaveAsDialog extends TitleAreaDialog {
      * Set the original file name to use. Used instead of
      * <code>setOriginalFile</code> when the original resource is not an
      * IFile. Must be called before <code>create</code>.
-     * 
+     *
      * @param originalName
      *            default file name
      */
@@ -289,7 +289,7 @@ public final class SaveAsDialog extends TitleAreaDialog {
 
     /**
      * Set the file extension.
-     * 
+     *
      * @param fileExtension
      *            The file extension to set
      */
@@ -299,7 +299,7 @@ public final class SaveAsDialog extends TitleAreaDialog {
 
     /**
      * Returns whether this page's visual components all contain valid values.
-     * 
+     *
      * @return <code>true</code> if valid, and <code>false</code> otherwise
      */
     private boolean validatePage() {

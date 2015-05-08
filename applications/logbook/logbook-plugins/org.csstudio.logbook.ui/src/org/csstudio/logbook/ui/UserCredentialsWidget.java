@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -11,12 +11,12 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
 
 /**
- * 
+ *
  * A Simple Widget which requests username and password. The widget is
  * horizontally organized.
- * 
+ *
  * @author shroffk TODO replace with secure storage
- * 
+ *
  */
 public class UserCredentialsWidget extends Composite {
     private Text username;

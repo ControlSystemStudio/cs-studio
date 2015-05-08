@@ -14,7 +14,7 @@ public class SNLDiagram extends SNLElement {
 
     /**
      * Add a shape to this diagram.
-     * 
+     *
      * @param child
      *            a non-null shape instance
      * @return true, if the shape was added, false otherwise
@@ -36,7 +36,7 @@ public class SNLDiagram extends SNLElement {
 
     /**
      * Remove a shape from this diagram.
-     * 
+     *
      * @param child
      *            a non-null shape instance;
      * @return true, if the shape was removed, false otherwise

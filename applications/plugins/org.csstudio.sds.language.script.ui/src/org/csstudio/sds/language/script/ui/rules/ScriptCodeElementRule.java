@@ -20,7 +20,7 @@ public class ScriptCodeElementRule implements IRule {
 
     /**
      * Creates a rule for just one code element.
-     * 
+     *
      * @param codeElementToMatch
      *            The code element to match.
      * @param tokenToDeliverOnMatch
@@ -34,7 +34,7 @@ public class ScriptCodeElementRule implements IRule {
 
     /**
      * Creates a rule for a whole enumeration of code elements.
-     * 
+     *
      * @param <T>
      *            Just the type of the enumeration elements
      * @param codeElementsEnum
@@ -49,7 +49,7 @@ public class ScriptCodeElementRule implements IRule {
 
     /**
      * Creates a rule for an array of code elements.
-     * 
+     *
      * @param codeElementsToMatch
      *            The array of code elements to match.
      * @param tokenToDeliverOnMatch

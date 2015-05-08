@@ -20,15 +20,15 @@ public class Edm_activeUpdownButtonClass extends EdmWidget {
     @EdmAttributeAn @EdmOptionalAn private boolean limitsFromDb;
     @EdmAttributeAn @EdmOptionalAn private double scaleMin;
     @EdmAttributeAn @EdmOptionalAn private double scaleMax;
-    
-    
+
+
 
 
     public Edm_activeUpdownButtonClass(EdmEntity genericEntity) throws EdmException {
         super(genericEntity);
     }
-    
-    
+
+
     public double getCoarseValue() {
         return coarseValue;
     }

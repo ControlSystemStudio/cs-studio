@@ -10,10 +10,10 @@ import de.desy.language.snl.configurationservice.ICompilerOptionsService;
 
 /*
  * Original compiler command
- * /usr/bin/g++ -o sncProgram  -L/scratch/EpicsR3.14.10/base/../unbundled/seq/lib/linux-x86 
+ * /usr/bin/g++ -o sncProgram  -L/scratch/EpicsR3.14.10/base/../unbundled/seq/lib/linux-x86
  * -L/scratch/EpicsR3.14.10/base/lib/linux-x86 -Wl,
  * -rpath,/scratch/EpicsR3.14.10/base/../unbundled/seq/lib/linux-x86 -Wl,
- * -rpath,/scratch/EpicsR3.14.10/base/lib/linux-x86       -m32               sncProgram.o    
+ * -rpath,/scratch/EpicsR3.14.10/base/lib/linux-x86       -m32               sncProgram.o
  * -lseq -lpv -lcas -lgdd -lasHost -ldbStaticHost -lregistryIoc -lca -lCom
  */
 public class ApplicationCompilerConfiguration extends

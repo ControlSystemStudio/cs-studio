@@ -12,7 +12,7 @@ import org.csstudio.opibuilder.converter.model.Edm_activeChoiceButtonClass;
 
 /**
  * XML conversion class for Edm_activeRectangleClass
- * 
+ *
  * @author Matevz
  */
 public class Opi_activeChoiceButtonClass extends OpiWidget {
@@ -39,7 +39,7 @@ public class Opi_activeChoiceButtonClass extends OpiWidget {
 
         new OpiBoolean(widgetContext, "horizontal", r.getOrientation() != null
                 && r.getOrientation().equals("horizontal"));
-        
+
         new OpiColor(widgetContext, "selected_color", r.getSelectColor(), r);
 
         log.debug("Edm_activeChoiceButtonClass written.");

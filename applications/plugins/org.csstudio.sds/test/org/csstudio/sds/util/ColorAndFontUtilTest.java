@@ -9,7 +9,7 @@ import org.junit.Test;
 
 /**
  * Test class for {@link ColorAndFontUtil}.
- * 
+ *
  * @author Sven Wende
  *
  */
@@ -29,7 +29,7 @@ public class ColorAndFontUtilTest {
         assertEquals("Arial, bold, italic", ColorAndFontUtil.toFontString("Arial", -1, true, true));
         assertEquals("Arial, 10, bold, italic", ColorAndFontUtil.toFontString("Arial", 10, true, true));
     }
-    
+
     @Test
     public void testRgbToHex() {
         assertEquals("#ff0000", ColorAndFontUtil.toHex(255, 0, 0));
@@ -39,7 +39,7 @@ public class ColorAndFontUtilTest {
         assertEquals("#00ffff", ColorAndFontUtil.toHex(0, 255, 255));
         assertEquals("#0000ff", ColorAndFontUtil.toHex(0, 0, 255));
     }
-    
+
     @Test
     public void testIsHex() {
         assertTrue(ColorAndFontUtil.isHex("#123456"));
@@ -54,7 +54,7 @@ public class ColorAndFontUtilTest {
         assertFalse(ColorAndFontUtil.isHex(""));
         assertFalse(ColorAndFontUtil.isHex(null));
     }
-    
+
     @Test
     public void testIsVariable() {
         assertTrue(ColorAndFontUtil.isVariable("${aa}"));

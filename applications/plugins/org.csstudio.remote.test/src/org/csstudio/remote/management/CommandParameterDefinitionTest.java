@@ -37,18 +37,18 @@ import org.junit.Test;
 
 /**
  * Test for CommandParameterDefinition and CommandParameter.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class CommandParameterDefinitionTest {
-    
+
     private CommandParameterDefinition stringParam;
     private CommandParameterDefinition intParam;
     private CommandParameterDefinition enumParam;
     private CommandParameterDefinition dynamicEnumParam;
-    
+
     private CommandParameterEnumValue enumValue;
-    
+
     @Before
     public void setUp() {
         enumValue = new CommandParameterEnumValue("enum", "Enum");
@@ -84,7 +84,7 @@ public class CommandParameterDefinitionTest {
         assertEquals("string", stringParam.getIdentifier());
         assertEquals("String", stringParam.getLabel());
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void testStringParameterRequiresIdentifier() throws Exception {
         new Builder()
@@ -93,7 +93,7 @@ public class CommandParameterDefinitionTest {
                 .setLabel("label")
                 .build();
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void testStringParameterRequiresLabel() throws Exception {
         new Builder()
@@ -102,22 +102,22 @@ public class CommandParameterDefinitionTest {
                 .setLabel(null)
                 .build();
     }
-    
+
     @Test
     public void testLegalStringParameterValues() throws Exception {
         assertTrue(stringParam.isLegalParameterValue("foo"));
         assertTrue(stringParam.isLegalParameterValue(""));
-        
+
         assertFalse(stringParam.isLegalParameterValue(null));
         assertFalse(stringParam.isLegalParameterValue(new Object()));
         assertFalse(stringParam.isLegalParameterValue(42));
     }
-    
+
     @Test
     public void testStringParameterHasNoEnumerationValues() throws Exception {
         assertNull(stringParam.getEnumerationValues());
     }
-    
+
     @Test
     public void testIntegerParameterDefinition() throws Exception {
         assertEquals(CommandParameterType.INTEGER, intParam.getType());
@@ -126,18 +126,18 @@ public class CommandParameterDefinitionTest {
         assertEquals(Integer.MIN_VALUE, intParam.getMinimum());
         assertEquals(Integer.MAX_VALUE, intParam.getMaximum());
     }
-    
+
     @Test
     public void testLegalIntegerParameterValues() throws Exception {
         assertTrue(intParam.isLegalParameterValue(0));
         assertTrue(intParam.isLegalParameterValue(Integer.MIN_VALUE));
         assertTrue(intParam.isLegalParameterValue(Integer.MAX_VALUE));
-        
+
         assertFalse(intParam.isLegalParameterValue(null));
         assertFalse(intParam.isLegalParameterValue(new Object()));
         assertFalse(intParam.isLegalParameterValue("foo"));
     }
-    
+
     @Test
     public void testLegalIntegerParameterValuesWithBounds() throws Exception {
         CommandParameterDefinition def = new Builder()
@@ -147,17 +147,17 @@ public class CommandParameterDefinitionTest {
                 .setMinimum(0)
                 .setMaximum(100)
                 .build();
-        
+
         assertTrue(def.isLegalParameterValue(0));
         assertTrue(def.isLegalParameterValue(50));
         assertTrue(def.isLegalParameterValue(100));
-        
+
         assertFalse(def.isLegalParameterValue(-1));
         assertFalse(def.isLegalParameterValue(Integer.MIN_VALUE));
         assertFalse(def.isLegalParameterValue(101));
         assertFalse(def.isLegalParameterValue(Integer.MAX_VALUE));
     }
-    
+
     @Test
     public void testEnumerationParameterDefinition() throws Exception {
         assertEquals(CommandParameterType.ENUMERATION, enumParam.getType());
@@ -168,26 +168,26 @@ public class CommandParameterDefinitionTest {
         assertArrayEquals(new CommandParameterEnumValue[] {enumValue},
                 enumParam.getEnumerationValues());
     }
-    
+
     @Test
     public void testLegalEnumerationParameterValues() throws Exception {
         assertTrue(enumParam.isLegalParameterValue("enum"));
-        
+
         // undefined enumeration value
         assertFalse(enumParam.isLegalParameterValue("foo"));
-        
+
         assertFalse(enumParam.isLegalParameterValue(null));
         assertFalse(enumParam.isLegalParameterValue(new Object()));
         assertFalse(enumParam.isLegalParameterValue(42));
     }
-    
+
     @Test
     public void testDynamicEnumerationParameterDefinition() throws Exception {
         assertEquals(CommandParameterType.DYNAMIC_ENUMERATION, dynamicEnumParam.getType());
         assertEquals("dynamic", dynamicEnumParam.getIdentifier());
         assertEquals("Dynamic", dynamicEnumParam.getLabel());
     }
-    
+
     @Test
     public void testLegalDynamicEnumerationParameterValues() throws Exception {
         // the values of a dynamic enumeration are not defined in the parameter

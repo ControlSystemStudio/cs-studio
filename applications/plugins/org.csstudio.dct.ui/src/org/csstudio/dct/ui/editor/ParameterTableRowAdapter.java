@@ -8,15 +8,15 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * Table adapter for Parameters.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ParameterTableRowAdapter extends AbstractTableRowAdapter<Parameter> {
 
     /**
      * Constructor.
-     * 
+     *
      * @param parameter
      *            a parameter
      */

@@ -5,9 +5,9 @@ import org.csstudio.dct.model.IRecord;
 
 /**
  * Command that adds a {@link IRecord} to a container.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class AddRecordCommand extends AbstractRecordCommand {
     private IContainer container;
@@ -19,7 +19,7 @@ public final class AddRecordCommand extends AbstractRecordCommand {
         this.record = record;
         this.index=index;
     }
-    
+
     /**
      * Constructor.
      * @param container the record container

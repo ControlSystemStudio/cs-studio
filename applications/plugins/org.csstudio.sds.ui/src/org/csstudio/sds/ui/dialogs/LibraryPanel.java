@@ -88,7 +88,7 @@ public class LibraryPanel extends Composite {
                 }
             }
         });
-        
+
         initResourceListener();
     }
 
@@ -101,18 +101,18 @@ public class LibraryPanel extends Composite {
         switch (layout) {
         case GroupedGrid:
             itemRenderer = new DefaultGalleryItemRenderer();
-            groupRenderer = new DefaultGalleryGroupRenderer(); 
-            
+            groupRenderer = new DefaultGalleryGroupRenderer();
+
             break;
         case UngroupedGrid:
             itemRenderer = new DefaultGalleryItemRenderer();
-            groupRenderer = new NoGroupRenderer(); 
-            
+            groupRenderer = new NoGroupRenderer();
+
             break;
         case UngroupedList:
             itemRenderer = new ListItemRenderer();
             itemHeight = 40;
-            groupRenderer = new NoGroupRenderer(); 
+            groupRenderer = new NoGroupRenderer();
             gallery.addControlListener(new ControlAdapter() {
                 @Override
                 public void controlResized(ControlEvent e) {
@@ -126,10 +126,10 @@ public class LibraryPanel extends Composite {
             break;
         default:
             itemRenderer = new DefaultGalleryItemRenderer();
-            groupRenderer = new DefaultGalleryGroupRenderer(); 
+            groupRenderer = new DefaultGalleryGroupRenderer();
             break;
         }
-        
+
         groupRenderer.setItemHeight(itemHeight);
         groupRenderer.setItemWidth(100);
         groupRenderer.setAutoMargin(true);

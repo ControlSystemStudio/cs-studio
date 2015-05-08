@@ -46,20 +46,20 @@ import com.cosylab.util.ListenerList;
 public class PropertyCollectionMap<T extends DynamicValueProperty<?>>
     implements PropertyCollection<T>
 {
-    
+
     class PIterator<Tt> implements Iterator<Tt> {
         private Iterator<Tt[]> it;
         private Tt[] elements;
         private int i=0;
-        
+
         public PIterator(Iterator<Tt[]> it) {
             this.it=it;
         }
-        
+
         public boolean hasNext() {
             return (elements!=null && elements.length>i) || it.hasNext();
         }
-        
+
         public Tt next() {
             if (elements!=null) {
                 if (i<elements.length) {
@@ -69,7 +69,7 @@ public class PropertyCollectionMap<T extends DynamicValueProperty<?>>
                     return next();
                 }
             }
-            
+
             elements= it.next();
             i=0;
             return next();
@@ -78,7 +78,7 @@ public class PropertyCollectionMap<T extends DynamicValueProperty<?>>
             throw new UnsupportedOperationException();
         }
     }
-    
+
     protected Class<T> type;
     protected ListenerList groupListeners;
     protected Map<String, T[]> properties;
@@ -122,7 +122,7 @@ public class PropertyCollectionMap<T extends DynamicValueProperty<?>>
         }
         if (type.isAssignableFrom(property.getClass())) {
             T[] t= get(((T)property).getName());
-            if (t!=null) { 
+            if (t!=null) {
                 for (int i = 0; i < t.length; i++) {
                     if (t[i]==property) {
                         return true;
@@ -168,7 +168,7 @@ public class PropertyCollectionMap<T extends DynamicValueProperty<?>>
     public <E extends T> E[] toArray(E[] array)
     {
         ArrayList<E> l= new ArrayList<E>(size);
-        
+
         for (T t : this) {
             if (array.getClass().getComponentType().isAssignableFrom(t.getClass())) {
                 l.add((E)t);
@@ -197,7 +197,7 @@ public class PropertyCollectionMap<T extends DynamicValueProperty<?>>
     {
         return properties.containsKey(name);
     }
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.dal.group.PropertyCollection#contains(java.lang.String)
      */
@@ -216,18 +216,18 @@ public class PropertyCollectionMap<T extends DynamicValueProperty<?>>
         }
         return t;
     }
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.dal.group.PropertyCollection#get(java.lang.String)
      */
     public <A extends T> A[] get(String name, Class<A> type) {
-        
+
         T[] t= get(name);
         if (t==null) {
             return (A[])Array.newInstance(type, 0);
         }
         ArrayList<A> l= new ArrayList<A>(t.length);
-        
+
         for (int i = 0; i < t.length; i++) {
             if (type.isAssignableFrom(t[i].getClass())) {
                 l.add((A)t[i]);
@@ -235,7 +235,7 @@ public class PropertyCollectionMap<T extends DynamicValueProperty<?>>
         }
         return l.toArray((A[])Array.newInstance(type, l.size()));
     }
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.dal.group.PropertyCollection#get(java.lang.String)
      */
@@ -246,7 +246,7 @@ public class PropertyCollectionMap<T extends DynamicValueProperty<?>>
         }
         return null;
     }
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.dal.group.PropertyCollection#get(java.lang.String)
      */
@@ -261,8 +261,8 @@ public class PropertyCollectionMap<T extends DynamicValueProperty<?>>
         }
         return null;
     }
-    
-    
+
+
 
     /* (non-Javadoc)
      * @see org.csstudio.dal.group.PropertyCollection#getPropertyNames()
@@ -339,12 +339,12 @@ public class PropertyCollectionMap<T extends DynamicValueProperty<?>>
     protected void add(T property)
     {
         String name= ((DynamicValueProperty<?>)property).getName();
-        
+
         T[] t = (T[])Array.newInstance(type, 1);
         t[0] = property;
 
         T[] p= get(property.getName());
-        
+
         if (p==null||p.length==0) {
             properties.put(name, t);
         } else {
@@ -378,14 +378,14 @@ public class PropertyCollectionMap<T extends DynamicValueProperty<?>>
                 }
             }
         }
-        
+
         size--;
-        
+
         t = (T[])Array.newInstance(property.getClass(), 1);
         t[0] = property;
         fireGroupEvent(new PropertyGroupEvent<T>(this, t), false);
     }
-    
+
     protected void clear() {
         properties.clear();
     }

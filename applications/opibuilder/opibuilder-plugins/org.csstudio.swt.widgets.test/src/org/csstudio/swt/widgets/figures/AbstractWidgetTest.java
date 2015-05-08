@@ -198,7 +198,7 @@ public abstract class AbstractWidgetTest {
                 return ((Integer)seed)%2 ==0;
             }
             return Math.random() > 0.5;
-            
+
         } else if(propType == Color.class) {
             return CustomMediaFactory.getInstance().getColor(
                                     new RGB((int) (Math.random()*255),(int) (Math.random()*255),(int) (Math.random()*255)));
@@ -221,20 +221,20 @@ public abstract class AbstractWidgetTest {
                 }
             }
             return Math.random() *100;
-            
+
         } else if(propType == int.class) {
             if(seed != null && seed instanceof Integer){
                 if(((Integer)seed)%REPEAT_COUNT==1)
                     return Integer.MAX_VALUE;
                 else if(((Integer)seed)%REPEAT_COUNT==2)
-                    return Integer.MIN_VALUE;               
+                    return Integer.MIN_VALUE;
                 else if(((Integer)seed)%REPEAT_COUNT==3)
                     return 0;
                 else
                 return (int)(Math.random()*100);
             }
             return (int)(Math.random()*100);
-            
+
         }else if(propType == String.class){
             return "Hello, I'm " + seed;
         }else if(propType == Font.class) {

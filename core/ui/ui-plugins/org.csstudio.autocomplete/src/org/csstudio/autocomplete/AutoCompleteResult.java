@@ -17,7 +17,7 @@ import org.csstudio.autocomplete.tooltips.TooltipDataHandler;
 
 /**
  * Result provided by {@link IAutoCompleteProvider}.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class AutoCompleteResult {

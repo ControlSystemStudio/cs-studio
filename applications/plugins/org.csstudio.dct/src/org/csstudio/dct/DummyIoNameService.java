@@ -5,9 +5,9 @@ import java.util.List;
 
 /**
  * Dummy implementation of {@link IoNameService}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class DummyIoNameService implements IoNameService {
 

@@ -9,9 +9,9 @@ import org.eclipse.swt.graphics.Color;
 /**
  * EditPart controller for the Thermometer widget. The controller mediates between
  * {@link ThermometerModel} and {@link RefreshableThermoFigure}.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 
@@ -23,11 +23,11 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
         ThermometerModel model = (ThermometerModel) getWidgetModel();
 
         RefreshableThermoFigure thermometer = new RefreshableThermoFigure();
-        
-        initializeCommonFigureProperties(thermometer, model);        
+
+        initializeCommonFigureProperties(thermometer, model);
         thermometer.setFillColor(getModelColor(ThermometerModel.PROP_FILL_COLOR));
         thermometer.setFahrenheit(model.isFahrenheit());
-        thermometer.setShowBulb(model.isShowBulb());    
+        thermometer.setShowBulb(model.isShowBulb());
         thermometer.setFillBackgroundColor(getModelColor(ThermometerModel.PROP_FILLBACKGROUND_COLOR));
         thermometer.setEffect3D(model.isEffect3D());
         return thermometer;
@@ -40,23 +40,23 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
     @Override
     protected void registerPropertyChangeHandlers() {
         registerCommonPropertyChangeHandlers();
-        
+
         //fillColor
         setPropertyChangeHandler(ThermometerModel.PROP_FILL_COLOR, new ColorChangeHandler<RefreshableThermoFigure>(){
             @Override
             protected void doHandle(RefreshableThermoFigure figure, Color color) {
                 figure.setFillColor(color);
             }
-        });    
-        
+        });
+
         //fillBackgroundColor
         setPropertyChangeHandler(ThermometerModel.PROP_FILLBACKGROUND_COLOR, new ColorChangeHandler<RefreshableThermoFigure>(){
             @Override
             protected void doHandle(RefreshableThermoFigure figure, Color color) {
                 figure.setFillBackgroundColor(color);
             }
-        });    
-        
+        });
+
         //show bulb
         IWidgetPropertyChangeHandler showBulbHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -67,8 +67,8 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
                 return true;
             }
         };
-        setPropertyChangeHandler(ThermometerModel.PROP_SHOW_BULB, showBulbHandler);    
-        
+        setPropertyChangeHandler(ThermometerModel.PROP_SHOW_BULB, showBulbHandler);
+
         //fahrenheit
         IWidgetPropertyChangeHandler fahrenheitHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -80,7 +80,7 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
             }
         };
         setPropertyChangeHandler(ThermometerModel.PROP_FAHRENHEIT, fahrenheitHandler);
-        
+
         //effect 3D
         IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -91,8 +91,8 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
                 return true;
             }
         };
-        setPropertyChangeHandler(ThermometerModel.PROP_EFFECT3D, effect3DHandler);    
-        
+        setPropertyChangeHandler(ThermometerModel.PROP_EFFECT3D, effect3DHandler);
+
     }
 
 }

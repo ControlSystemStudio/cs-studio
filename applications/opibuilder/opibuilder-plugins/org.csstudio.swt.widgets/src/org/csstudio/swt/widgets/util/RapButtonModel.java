@@ -91,14 +91,14 @@ public class RapButtonModel extends ButtonModel{
 //     * {@link #REPEAT_FIRING_BEHAVIOR}).
 //     */
     protected ButtonStateTransitionListener firingBehavior;
-    
+
 //    {
 //        installFiringBehavior();
 //    }
 //
 ////    /**
 ////     * Registers the given listener as an ActionListener.
-////     * 
+////     *
 ////     * @param listener
 ////     *            The ActionListener to add
 ////     * @since 2.0
@@ -111,7 +111,7 @@ public class RapButtonModel extends ButtonModel{
 //
 //    /**
 //     * Registers the given listener as a ChangeListener.
-//     * 
+//     *
 //     * @param listener
 //     *            The ChangeListener to add
 //     * @since 2.0
@@ -124,7 +124,7 @@ public class RapButtonModel extends ButtonModel{
 //
     /**
      * Registers the given listener as a ButtonStateTransitionListener.
-     * 
+     *
      * @param listener
      *            The ButtonStateTransitionListener to add
      * @since 2.0
@@ -141,7 +141,7 @@ public class RapButtonModel extends ButtonModel{
     /**
      * Notifies any ActionListeners on this ButtonModel that an action has been
      * performed.
-     * 
+     *
      * @since 2.0
      */
     protected void fireActionPerformed() {
@@ -155,7 +155,7 @@ public class RapButtonModel extends ButtonModel{
 //    /**
 //     * Notifies any listening ButtonStateTransitionListener that the pressed
 //     * state of this button has been cancelled.
-//     * 
+//     *
 //     * @since 2.0
 //     */
 //    protected void fireCanceled() {
@@ -168,7 +168,7 @@ public class RapButtonModel extends ButtonModel{
     /**
      * Notifies any listening ButtonStateTransitionListener that this button has
      * been pressed.
-     * 
+     *
      * @since 2.0
      */
     protected void firePressed() {
@@ -182,7 +182,7 @@ public class RapButtonModel extends ButtonModel{
     /**
      * Notifies any listening ButtonStateTransitionListener that this button has
      * been released.
-     * 
+     *
      * @since 2.0
      */
     protected void fireReleased() {
@@ -192,11 +192,11 @@ public class RapButtonModel extends ButtonModel{
         while (iter.hasNext())
             ((ButtonStateTransitionListener) iter.next()).released();
     }
-    
+
     /**
      * Notifies any listening ButtonStateTransitionListener that this button has
      * been cancelled.
-     * 
+     *
      * @since 2.0
      */
     protected void fireCanceled() {
@@ -206,12 +206,12 @@ public class RapButtonModel extends ButtonModel{
         while (iter.hasNext())
             ((ButtonStateTransitionListener) iter.next()).canceled();
     }
-    
+
 //
 //    /**
 //     * Notifies any listening ButtonStateTransitionListeners that this button
 //     * has resumed activity.
-//     * 
+//     *
 //     * @since 2.0
 //     */
 //    protected void fireResume() {
@@ -224,7 +224,7 @@ public class RapButtonModel extends ButtonModel{
     /**
      * Notifies any listening ChangeListeners that this button's state has
      * changed.
-     * 
+     *
      * @param property
      *            The name of the property that changed
      * @since 2.0
@@ -240,7 +240,7 @@ public class RapButtonModel extends ButtonModel{
 //    /**
 //     * Notifies any listening ButtonStateTransitionListeners that this button
 //     * has suspended activity.
-//     * 
+//     *
 //     * @since 2.0
 //     */
 //    protected void fireSuspend() {
@@ -256,7 +256,7 @@ public class RapButtonModel extends ButtonModel{
 //
 //    /**
 //     * Returns the group to which this model belongs.
-//     * 
+//     *
 //     * @return The ButtonGroup to which this model belongs
 //     * @since 2.0
 //     */
@@ -266,7 +266,7 @@ public class RapButtonModel extends ButtonModel{
 //
 //    /**
 //     * Returns an object representing user data.
-//     * 
+//     *
 //     * @return User data
 //     * @since 2.0
 //     */
@@ -276,7 +276,7 @@ public class RapButtonModel extends ButtonModel{
 //
 //    /**
 //     * Sets the firing behavior for this button.
-//     * 
+//     *
 //     * @since 2.0
 //     */
 //    protected void installFiringBehavior() {
@@ -286,7 +286,7 @@ public class RapButtonModel extends ButtonModel{
 //    /**
 //     * Returns <code>true</code> if this button is armed. If a button is armed,
 //     * it will fire an ActionPerformed when released.
-//     * 
+//     *
 //     * @return <code>true</code> if this button is armed
 //     * @since 2.0
 //     */
@@ -296,7 +296,7 @@ public class RapButtonModel extends ButtonModel{
 //
 //    /**
 //     * Returns <code>true</code> if this button is enabled.
-//     * 
+//     *
 //     * @return <code>true</code> if this button is enabled
 //     * @since 2.0
 //     */
@@ -306,7 +306,7 @@ public class RapButtonModel extends ButtonModel{
 //
 //    /**
 //     * Returns <code>true</code> if the mouse is over this button.
-//     * 
+//     *
 //     * @return <code>true</code> if the mouse is over this button
 //     * @since 2.0
 //     */
@@ -316,7 +316,7 @@ public class RapButtonModel extends ButtonModel{
 //
 //    /**
 //     * Returns <code>true</code> if this button is pressed.
-//     * 
+//     *
 //     * @return <code>true</code> if this button is pressed
 //     * @since 2.0
 //     */
@@ -327,7 +327,7 @@ public class RapButtonModel extends ButtonModel{
 //    /**
 //     * Returns the selection state of this model. If this model belongs to any
 //     * group, the group is queried for selection state, else the flags are used.
-//     * 
+//     *
 //     * @return <code>true</code> if this button is selected
 //     * @since 2.0
 //     */
@@ -341,7 +341,7 @@ public class RapButtonModel extends ButtonModel{
 //
 //    /**
 //     * Removes the given ActionListener.
-//     * 
+//     *
 //     * @param listener
 //     *            The ActionListener to remove
 //     * @since 2.0
@@ -352,7 +352,7 @@ public class RapButtonModel extends ButtonModel{
 //
 //    /**
 //     * Removes the given ChangeListener.
-//     * 
+//     *
 //     * @param listener
 //     *            The ChangeListener to remove
 //     * @since 2.0
@@ -363,7 +363,7 @@ public class RapButtonModel extends ButtonModel{
 //
     /**
      * Removes the given ButtonStateTransitionListener.
-     * 
+     *
      * @param listener
      *            The ButtonStateTransitionListener to remove
      * @since 2.0
@@ -378,7 +378,7 @@ public class RapButtonModel extends ButtonModel{
 //    /**
 //     * Sets this button to be armed. If a button is armed, it will fire an
 //     * ActionPerformed when released.
-//     * 
+//     *
 //     * @param value
 //     *            The armed state
 //     * @since 2.0
@@ -394,7 +394,7 @@ public class RapButtonModel extends ButtonModel{
 //
 //    /**
 //     * Sets this button to be enabled.
-//     * 
+//     *
 //     * @param value
 //     *            The enabled state
 //     * @since 2.0
@@ -417,11 +417,11 @@ public class RapButtonModel extends ButtonModel{
      * performed events are not fired until the mouse button is released.
      * {@link #REPEAT_FIRING_BEHAVIOR} causes action performed events to fire
      * repeatedly until the mouse button is released.
-     * 
+     *
      * @param type
      *            The firing behavior type
      * @since 2.0
-     * 
+     *
      */
     public void setFiringBehavior(int type) {
         if (firingBehavior != null)
@@ -488,7 +488,7 @@ public class RapButtonModel extends ButtonModel{
     class Task extends TimerTask {
 
         private Timer timer;
-        
+
         private Display display;
 
         public Task(Timer timer) {

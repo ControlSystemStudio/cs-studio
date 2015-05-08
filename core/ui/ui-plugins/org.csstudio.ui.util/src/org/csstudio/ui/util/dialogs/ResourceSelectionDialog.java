@@ -40,7 +40,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * This class represents a Dialog to choose a file in the workspace.
- * 
+ *
  * @author Kai Meyer, Joerg Rathlev
  */
 //TODO: Copied from org.csstudio.platform.ui. Review is needed.
@@ -49,17 +49,17 @@ public final class ResourceSelectionDialog extends Dialog implements Listener {
      * The message to display, or <code>null</code> if none.
      */
     private String _message;
-    
+
     /**
      * The {@link WorkspaceTreeComposite} for this dialog.
      */
     private ResourceSelectionGroup _resourceSelectionGroup;
-    
+
     /**
      * The file extensions of files that will be shown for selection.
      */
     private String[] _fileExtensions;
-    
+
     /**
      * The path of the selected resource.
      */
@@ -73,7 +73,7 @@ public final class ResourceSelectionDialog extends Dialog implements Listener {
      * <p>
      * Note that the <code>open</code> method blocks for input dialogs.
      * </p>
-     * 
+     *
      * @param parentShell
      *            the parent shell, or <code>null</code> to create a top-level
      *            shell
@@ -92,11 +92,11 @@ public final class ResourceSelectionDialog extends Dialog implements Listener {
         _message = dialogMessage;
         _fileExtensions = fileExtensions;
     }
-    
+
     /**
      * Sets the initially selected resource. Must be called before the dialog is
      * displayed.
-     * 
+     *
      * @param path
      *            the path to the initially selected resource.
      */
@@ -130,12 +130,12 @@ public final class ResourceSelectionDialog extends Dialog implements Listener {
             data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
             label.setLayoutData(data);
         }
-        
+
         // The New Project and New Folder actions will be shown if there are
         // no file extensions, i.e. if the dialog is opened to select a folder.
-        boolean showNewContainerActions = (_fileExtensions == null 
+        boolean showNewContainerActions = (_fileExtensions == null
                 || _fileExtensions.length == 0);
-        
+
         _resourceSelectionGroup = new ResourceSelectionGroup(composite, this,
                 _fileExtensions, showNewContainerActions);
         new Label(composite, SWT.NONE).setText("Resource Path:");
@@ -161,7 +161,7 @@ public final class ResourceSelectionDialog extends Dialog implements Listener {
 
     /**
      * Returns the path to the selected resource.
-     * 
+     *
      * @return the path to the selected resource, or <code>null</code> if no
      *         resource was selected.
      */
@@ -169,7 +169,7 @@ public final class ResourceSelectionDialog extends Dialog implements Listener {
         return _path;
     }
 
-    public void handleEvent(Event event) {        
+    public void handleEvent(Event event) {
        if(event != null){
            ResourceSelectionGroup widget = (ResourceSelectionGroup) event.widget;
            if(widget != null &&  widget.getFullPath() != null ){

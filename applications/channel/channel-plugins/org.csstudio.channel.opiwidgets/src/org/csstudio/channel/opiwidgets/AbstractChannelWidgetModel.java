@@ -15,17 +15,17 @@ import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescrip
  * all channel based widgets, some of which may in the future be pushed to the BOY base classes.
  * <p>
  * Adds Channel query property.
- * 
+ *
  * @author carcassi
  */
 public abstract class AbstractChannelWidgetModel extends AbstractSelectionWidgetModel {
-    
+
     public AbstractChannelWidgetModel(AbstractSelectionWidgetModelDescription model) {
         super(model);
     }
-    
-    public static final String CHANNEL_QUERY = "channel_query"; //$NON-NLS-1$    
-    
+
+    public static final String CHANNEL_QUERY = "channel_query"; //$NON-NLS-1$
+
     @Override
     protected void configureBaseProperties() {
         super.configureBaseProperties();
@@ -34,16 +34,16 @@ public abstract class AbstractChannelWidgetModel extends AbstractSelectionWidget
 
     /**
      * Returns the channel finder query.
-     * 
+     *
      * @return a query
      */
     public ChannelQuery getChannelQuery() {
         return ChannelQuery.query((String) getCastedPropertyValue(CHANNEL_QUERY)).build();
     }
-    
+
     /**
      * Returns the property as a parsed list of trimmed strings.
-     * 
+     *
      * @param propertyName name of the property
      * @return parsed list of strings
      */

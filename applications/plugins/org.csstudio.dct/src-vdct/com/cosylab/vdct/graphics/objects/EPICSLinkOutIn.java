@@ -8,22 +8,22 @@ package com.cosylab.vdct.graphics.objects;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -111,7 +111,7 @@ public abstract class EPICSLinkOutIn extends EPICSLinkOut implements MultiInLink
     {
         // create if necessary
         Vector outlinks = getOutlinks();
-        
+
         if (prevOutput!=null) outlinks.removeElement(prevOutput);
         if (!outlinks.contains(output)) {
             outlinks.addElement(output);
@@ -125,7 +125,7 @@ public abstract class EPICSLinkOutIn extends EPICSLinkOut implements MultiInLink
     public void valueWithNoRecord()
     {
         if (isDestroyed()) return;
-        
+
         if (outlinks!=null && outlinks.size()>0)
         {
             setDestroyed(true);
@@ -152,13 +152,13 @@ public abstract class EPICSLinkOutIn extends EPICSLinkOut implements MultiInLink
                     OutLink start = EPICSLinkOut.getStartPoint(outlink);
                     if (start!=null)
                         start.disconnect(this);
-                    else 
+                    else
                         outlink.disconnect(this);
                 }
                 outlinks.clear();
             }
         }
-        
+
     }
     /**
      */
@@ -167,7 +167,7 @@ public abstract class EPICSLinkOutIn extends EPICSLinkOut implements MultiInLink
             outlinks.removeElement(disconnector);
             super.disconnect(disconnector);
 
-            if (inlink==null && outlinks.size()==0) 
+            if (inlink==null && outlinks.size()==0)
                 destroy();
         }
     }
@@ -192,12 +192,12 @@ public abstract class EPICSLinkOutIn extends EPICSLinkOut implements MultiInLink
         // if there is a special case with ports/macros handle it
         if ((disconnected || inlink==null ||
             !inlink.getLayerID().equals(getLayerID())) &&
-            outlinks!=null && outlinks.size()==1) 
+            outlinks!=null && outlinks.size()==1)
         {
                 OutLink outlink = (OutLink)outlinks.firstElement();
                 return getRightX()<=outlink.getLeftX()
-                          || (outlink.getLeftX()<getLeftX() && getLeftX() < outlink.getRightX() && outlink.getRightX() < getRightX());                
-                /* (outlink instanceof Connector) {    
+                          || (outlink.getLeftX()<getLeftX() && getLeftX() < outlink.getRightX() && outlink.getRightX() < getRightX());
+                /* (outlink instanceof Connector) {
                     return (outlink.getOutX()>(getX()+getWidth()/2));
                 }
                 else if (outlink instanceof EPICSLinkOut) {            // not cycling
@@ -209,10 +209,10 @@ public abstract class EPICSLinkOutIn extends EPICSLinkOut implements MultiInLink
                     VisibleObject obj = (VisibleObject)outlink;
                     return ((obj.getX()+obj.getWidth()/2)>(getX()+getWidth()/2));
                 }
-                else 
+                else
                     return super.isRight();*/
         }
-        else 
+        else
             return super.isRight();
     }
 
@@ -234,16 +234,16 @@ public abstract class EPICSLinkOutIn extends EPICSLinkOut implements MultiInLink
         }
         return starts;
     }
-    
+
     public int getLeftOffset() {
         if (isRight()) return 0;
         return Math.abs(2*r+labelLen);
-        
+
     }
 
     public int getRightOffset() {
         if (!isRight()) return 0;
-        
+
         return Math.abs(2*r + labelLen);
     }
 

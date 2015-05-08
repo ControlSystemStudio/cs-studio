@@ -16,15 +16,15 @@ import org.eclipse.swt.widgets.ExpandBar;
 
 /**
  * Editing form for projects.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ProjectForm extends AbstractForm<IProject> {
 
     /**
      * Constructor.
-     * 
+     *
      * @param editor
      *            the editor instance
      */
@@ -68,7 +68,7 @@ public final class ProjectForm extends AbstractForm<IProject> {
 
     /**
      * Row adapter for the dbd file setting.
-     * 
+     *
      * @author Sven Wende
      *
      */
@@ -125,7 +125,7 @@ public final class ProjectForm extends AbstractForm<IProject> {
     }
 
     /**
-     * 
+     *
      *{@inheritDoc}
      */
     @Override

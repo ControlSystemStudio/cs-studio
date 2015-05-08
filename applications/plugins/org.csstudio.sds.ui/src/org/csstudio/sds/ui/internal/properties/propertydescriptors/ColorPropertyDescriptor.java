@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.sds.ui.internal.properties.propertydescriptors;
@@ -46,22 +46,22 @@ import org.eclipse.swt.widgets.Display;
  * </p>
  * <p>
  * Example:
- * 
+ *
  * <pre>
  * IPropertyDescriptor pd = new ColorPropertyDescriptor(&quot;fg&quot;, &quot;Foreground Color&quot;);
  * </pre>
- * 
+ *
  * </p>
- * 
+ *
  * @author Sven Wende
  */
 public final class ColorPropertyDescriptor extends PropertyDescriptor {
 
     static ImageRegistry imageRegistry = new ImageRegistry();
-    
+
     /**
      * Creates an property descriptor with the given id and display name.
-     * 
+     *
      * @param id
      *            the id of the property
      * @param displayName
@@ -83,20 +83,20 @@ public final class ColorPropertyDescriptor extends PropertyDescriptor {
         if (getValidator() != null) {
             editor.setValidator(getValidator());
         }
-        
-        
+
+
         return new TextCellEditor(parent);
     }
 
     /**
      * A label provider for RGB value, which displays a small colored icon and
      * the RGB value as String as well.
-     * 
+     *
      * @author swende
-     * 
+     *
      */
     private final class RgbLabelProvider extends LabelProvider {
-        
+
         /**
          * {@inheritDoc}
          */
@@ -105,13 +105,13 @@ public final class ColorPropertyDescriptor extends PropertyDescriptor {
             Color color = SdsUiPlugin.getDefault().getColorAndFontService().getColor((String)element);
             RGB rgb = color.getRGB();
             String id = "SDS.COLORPROPERTY.ICON_"+rgb.red+"_"+rgb.green+"_"+rgb.blue;
-        
+
             if(imageRegistry.get(id)==null) {
                 imageRegistry.put(id, createIcon(rgb));
             } else {
-                return imageRegistry.get(id);    
+                return imageRegistry.get(id);
             }
-            
+
             return imageRegistry.get(id);
         }
 
@@ -125,7 +125,7 @@ public final class ColorPropertyDescriptor extends PropertyDescriptor {
 
         /**
          * Creates a small icon using the specified color.
-         * 
+         *
          * @param rgb
          *            the color
          * @return an icon

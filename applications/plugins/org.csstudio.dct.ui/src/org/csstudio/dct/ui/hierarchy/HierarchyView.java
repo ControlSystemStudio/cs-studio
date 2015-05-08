@@ -33,9 +33,9 @@ import org.eclipse.ui.part.ViewPart;
 /**
  * View that displays all instances for the prototype that is selected in the
  * outline view.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class HierarchyView extends ViewPart implements IPartListener, ISelectionListener {
     private IPrototype currentPrototype;

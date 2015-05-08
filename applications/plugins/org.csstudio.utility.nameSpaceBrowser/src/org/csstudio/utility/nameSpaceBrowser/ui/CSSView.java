@@ -93,22 +93,22 @@ public class CSSView extends Composite implements Observer {
 
     class CSSLabelProvider implements ILabelProvider, IFontProvider{
 
-        
+
         private final Font _font;
         private final Font _boldFont;
 
 
         /**
          * Constructor.
-         * @param font 
+         * @param font
          */
         public CSSLabelProvider(Font font) {
             FontData fontData = font.getFontData()[0];
             _font = new Font(null, fontData);
             _boldFont = new Font(null, new FontData(fontData.getName(), fontData.getHeight(), SWT.BOLD));
         }
-        
-        
+
+
         /**
          * (@inheritDoc)
          */
@@ -260,7 +260,7 @@ public class CSSView extends Composite implements Observer {
             }
         }
         _nameSpace.stop();
-        
+
         ((GridLayout) _parent.getLayout()).numColumns--;
         super.dispose();
         _parent.layout(false);
@@ -330,7 +330,7 @@ public class CSSView extends Composite implements Observer {
     /**
      * Creates the new child CSSView.
      * @param viewParams
-     * @throws Exception 
+     * @throws Exception
      */
     protected void makeChild(final CSSViewParameter viewParams) throws Exception {
         _parent.setRedraw(false);
@@ -479,7 +479,7 @@ public class CSSView extends Composite implements Observer {
 
     /**
      * @param selection
-     * @throws Exception 
+     * @throws Exception
      *
      */
     private void makeListField(final String selection) throws Exception {
@@ -638,7 +638,7 @@ public class CSSView extends Composite implements Observer {
         _parent.pack();
 
         new ControlSystemDragSource(_tableViewer.getControl()) {
-            
+
             @Override
             public Object getSelection() {
                 final Object[] obj = ((IStructuredSelection)_tableViewer.getSelection()).toArray();
@@ -648,8 +648,8 @@ public class CSSView extends Composite implements Observer {
                 return pvs;
             }
         };
-        
-        
+
+
         // Make List Drageble
         //        new ProcessVariableDragSource(listViewer.getControl(), listViewer);
         //        new ProcessVariableDragSource(listViewer.getList(), listViewer);

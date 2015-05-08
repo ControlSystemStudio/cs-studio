@@ -46,7 +46,7 @@ class FreeTTS_JSAPI_Annunciator extends BaseAnnunciator
                         "No sound card available.", e);
             }
         }
-        
+
         FreeTTSHacks.perform();
 
         // Start the synthesizer

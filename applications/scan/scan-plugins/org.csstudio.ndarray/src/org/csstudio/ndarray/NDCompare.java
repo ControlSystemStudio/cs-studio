@@ -46,7 +46,7 @@ public class NDCompare
         return true;
     }
 
-    
+
     /** @param a N-dim array
      *  @return Array, length matching the rank of input, where element [d] has indices of non-zero elements for dimension d
      */
@@ -59,7 +59,7 @@ public class NDCompare
         while (count_iter.hasNext())
             if (count_iter.nextByte() != 0)
                 ++count;
-        
+
         final NDArray result = NDMatrix.zeros(NDType.INT32, new NDShape(a.getRank(), count));
         int next_result = 0;
         final ShapeIterator iter = new ShapeIterator(a.getShape());
@@ -76,7 +76,7 @@ public class NDCompare
         return result;
     }
 
-    
+
     /** Binary operation */
     private interface BinaryOperation
     {

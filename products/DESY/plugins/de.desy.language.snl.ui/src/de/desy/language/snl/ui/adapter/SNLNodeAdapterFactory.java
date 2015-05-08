@@ -13,9 +13,9 @@ import de.desy.language.snl.parser.nodes.AbstractSNLNode;
  * This class generate {@link IWorkbenchAdapter} for {@link AbstractSNLNode}s.
  * If a special {@link IAdapterFactory} is registered for a specific type of an
  * {@link AbstractSNLNode}, that factory is used.
- * 
+ *
  * @author C1 WPS / KM
- * 
+ *
  */
 public class SNLNodeAdapterFactory implements IAdapterFactory {
 
@@ -72,7 +72,7 @@ public class SNLNodeAdapterFactory implements IAdapterFactory {
     /**
      * Adds the given {@link IAdapterFactory} to the given {@link Map} for every
      * type the factory supports.
-     * 
+     *
      * @param factory The {@link IAdapterFactory} to be added
      * @param adapterMap The {@link Map} to add the factory
      */

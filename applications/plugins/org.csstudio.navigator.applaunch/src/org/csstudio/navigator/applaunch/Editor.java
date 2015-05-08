@@ -44,14 +44,14 @@ public class Editor implements IEditorLauncher
         final LaunchConfigDialog dlg = new LaunchConfigDialog(shell, config);
         if (dlg.open() != Window.OK)
             return;
-        
+
         // Update file
         try
         {
             final FileOutputStream stream = new FileOutputStream(path.toFile());
             stream.write(dlg.getConfig().getXML().getBytes());
             stream.close();
-            
+
             // Since we changed a file in the workspace, refresh it.
             ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
         }

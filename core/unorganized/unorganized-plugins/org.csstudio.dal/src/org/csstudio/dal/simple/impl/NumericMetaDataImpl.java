@@ -5,7 +5,7 @@ import org.csstudio.dal.simple.MetaData;
 
 @Deprecated
 public final class NumericMetaDataImpl implements MetaData {
-    
+
     private final double alarmHigh;
     private final double alarmLow;
     private final double displayHigh;
@@ -14,7 +14,7 @@ public final class NumericMetaDataImpl implements MetaData {
     private final double warnLow;
     private final int precision;
     private final String units;
-    
+
     public NumericMetaDataImpl(double displayLow, double displayHigh, double warnLow, double warnHigh, double alarmLow, double alarmHigh, int precision, String units) {
         this.alarmHigh = alarmHigh;
         this.alarmLow = alarmLow;
@@ -54,16 +54,16 @@ public final class NumericMetaDataImpl implements MetaData {
     public String[] getStates() {
         return new String[0];
     }
-    
+
     public Object getStateValue(int state) {
         //default value
         return null;
     }
-    
+
     public Object[] getStateValues() {
         return new Object[0];
     }
-    
+
 
     public String getUnits() {
         return units;

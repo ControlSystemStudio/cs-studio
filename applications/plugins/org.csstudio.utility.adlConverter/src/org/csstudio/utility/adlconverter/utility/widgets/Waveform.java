@@ -47,19 +47,19 @@ import org.slf4j.LoggerFactory;
 public class Waveform extends Widget {
 
     private static final Logger LOG = LoggerFactory.getLogger(Waveform.class);
-    
+
     /**
      * @param widget ADLWidget that describe the Waveform.
-     * @param storedDynamicAttribute 
-     * @param storedBasicAttribute 
-     * @throws WrongADLFormatException 
+     * @param storedDynamicAttribute
+     * @param storedBasicAttribute
+     * @throws WrongADLFormatException
      */
     public Waveform(final ADLWidget widget, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
         super(widget, storedBasicAttribute, storedDynamicAttribute);
-        
+
         _widget.setPropertyValue(AbstractChartModel.PROP_SHOW_AXES, 3);
         _widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE, BorderStyleEnum.RAISED.getIndex());
-        
+
         for (ADLWidget waveformPart : widget.getObjects()) {
             if(waveformPart.getType().equalsIgnoreCase("plotcom")){
                 plotcom(waveformPart);
@@ -100,13 +100,13 @@ public class Waveform extends Widget {
                 _widget.setPropertyValue(AbstractChartModel.PROP_DATA_POINT_DRAWING_STYLE, dot);
             }else if(row[0].equals("trigger")){ //$NON-NLS-1$
             }
-            
+
         }
     }
 
     /**
      * @param waveformPart
-     * @throws WrongADLFormatException 
+     * @throws WrongADLFormatException
      */
     private void yAxis(ADLWidget waveformPart) throws WrongADLFormatException {
         String id ="";
@@ -115,14 +115,14 @@ public class Waveform extends Widget {
             int stop = waveformPart.getType().indexOf('_', start);
             if(stop>0){
                 int idInt = Integer.parseInt(waveformPart.getType().substring(start+1,stop));
-                
+
                 if(idInt>1){
                     id = Integer.toString(idInt-1);
                 }
             }
         }
 
-        
+
         for (FileLine fileLine : waveformPart.getBody()) {
             String waveform = fileLine.getLine();
             String[] row = waveform.split("=");
@@ -163,7 +163,7 @@ public class Waveform extends Widget {
 
     /**
      * @param waveformPart
-     * @throws WrongADLFormatException 
+     * @throws WrongADLFormatException
      */
     private void xAxis(ADLWidget waveformPart) throws WrongADLFormatException {
         for (FileLine fileLine : waveformPart.getBody()) {
@@ -212,7 +212,7 @@ public class Waveform extends Widget {
 
     /**
      * @param waveformPart
-     * @throws WrongADLFormatException 
+     * @throws WrongADLFormatException
      */
     @SuppressWarnings("restriction")
     private void trace(ADLWidget waveformPart) throws WrongADLFormatException {
@@ -269,7 +269,7 @@ public class Waveform extends Widget {
 
     /**
      * @param waveformPart
-     * @throws WrongADLFormatException 
+     * @throws WrongADLFormatException
      */
     private void plotcom(ADLWidget waveformPart) throws WrongADLFormatException {
         for (FileLine fileLine : waveformPart.getBody()) {
@@ -310,6 +310,6 @@ public class Waveform extends Widget {
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel(WaveformModel.ID);  
+        _widget = createWidgetModel(WaveformModel.ID);
     }
 }

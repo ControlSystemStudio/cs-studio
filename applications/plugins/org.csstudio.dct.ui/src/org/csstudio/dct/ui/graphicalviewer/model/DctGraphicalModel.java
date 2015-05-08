@@ -4,15 +4,15 @@ import org.csstudio.dct.model.IProject;
 
 /**
  * The root of the graphical dct model.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class DctGraphicalModel extends AbstractContainerNode<IProject> {
 
     /**
      * Standard constructor.
-     * 
+     *
      * @param project
      *            the dct project that is represented graphically
      */

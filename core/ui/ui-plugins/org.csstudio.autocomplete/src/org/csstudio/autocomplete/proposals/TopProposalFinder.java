@@ -21,7 +21,7 @@ import org.csstudio.autocomplete.AutoCompleteHelper;
 /**
  * Helper that uses delimiters to find the common matching token in a provided
  * list using delimiters.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class TopProposalFinder {

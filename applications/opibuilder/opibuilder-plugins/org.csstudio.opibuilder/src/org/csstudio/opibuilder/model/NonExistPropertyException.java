@@ -12,7 +12,7 @@ package org.csstudio.opibuilder.model;
  * @author Xihui Chen
  *
  */
-public class NonExistPropertyException extends RuntimeException {        
+public class NonExistPropertyException extends RuntimeException {
     private static final long serialVersionUID = 1L;
     private String propID;
     private String widgetName;
@@ -20,7 +20,7 @@ public class NonExistPropertyException extends RuntimeException {
         this.propID = propID;
         this.widgetName = widgetName;
     }
-    
+
     @Override
     public String getMessage() {
         return widgetName + " does not have property: " + propID;

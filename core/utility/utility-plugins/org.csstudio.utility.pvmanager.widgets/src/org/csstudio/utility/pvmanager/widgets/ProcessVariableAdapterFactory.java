@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.pvmanager.widgets;
 
@@ -10,9 +10,9 @@ import org.eclipse.core.runtime.IAdapterFactory;
 
 /**
  * Adapter factor for the ProcessVariableAdaptable.
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class ProcessVariableAdapterFactory implements IAdapterFactory {
 

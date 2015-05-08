@@ -209,7 +209,7 @@ public class TreeItem
             item = item.getChild(steps[i]);
         return item;
     }
-    
+
     /** Dump this item and sub-items.
      *  To be called by outside code.
      *  Derived classes should override <code>dump_item()</code>

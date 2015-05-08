@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * Definition for a function that can be integrated in the data source language.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class DSFunction implements Comparable<DSFunction> {

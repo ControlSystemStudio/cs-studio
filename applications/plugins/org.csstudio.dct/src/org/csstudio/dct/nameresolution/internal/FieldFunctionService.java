@@ -23,9 +23,9 @@ import org.eclipse.core.runtime.Platform;
 
 /**
  * Default implementation of {@link IFieldFunctionService}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class FieldFunctionService implements IFieldFunctionService {
 
@@ -85,13 +85,13 @@ public final class FieldFunctionService implements IFieldFunctionService {
 
     /**
      * Resolves all variables in a source String.
-     * 
+     *
      * @param source
      *            the source String
      * @param aliases
      *            a map, which contains values for variables
      * @throws AliasResolutionException
-     * 
+     *
      * @return the resolved String in which all variables are replaced by their
      *         values
      */
@@ -102,7 +102,7 @@ public final class FieldFunctionService implements IFieldFunctionService {
     /**
      * This method is called recursively, to apply alias substitutions to the
      * provided input text.
-     * 
+     *
      * @param input
      *            the text input
      * @param markerList
@@ -114,10 +114,10 @@ public final class FieldFunctionService implements IFieldFunctionService {
      *            handled via the same recursive call)
      * @param aliases
      *            the existing aliases as provided by the user
-     * 
+     *
      * @return a canonical name in which all aliases are replaced by their real
      *         values
-     * 
+     *
      * @throws AliasResolutionException
      */
     private static String doResolveVariablesRecursively(final String input, final List<String> markerList, final boolean isAlias,
@@ -187,14 +187,14 @@ public final class FieldFunctionService implements IFieldFunctionService {
     /**
      * Generates a regular expression which is used to replace aliases in
      * arbitrary texts.
-     * 
+     *
      * @param aliasName
      *            the alias name, which should be found (without the bordering
      *            "$" signs
-     * 
+     *
      * @return a regular expression which is used to replace aliases in
      *         arbitrary texts
-     * 
+     *
      */
     private static Pattern createSearchPattern(final String aliasName) {
         return Pattern.compile("(\\$\\(" + aliasName + "\\))");
@@ -209,7 +209,7 @@ public final class FieldFunctionService implements IFieldFunctionService {
 
     /**
      * Registers a field function.
-     * 
+     *
      * @param name
      *            the function name
      * @param function
@@ -228,16 +228,16 @@ public final class FieldFunctionService implements IFieldFunctionService {
 
     /**
      * Applies all function in the specified source String recursively.
-     * 
+     *
      * @param source
      *            the source String
      * @param record
      *            the record which contains the field with this function
      * @param fieldName
      *            the name of the field that contains this function
-     * 
+     *
      * @return the evaluated target String
-     * 
+     *
      * @throws Exception
      */
     private String findAndApplyFunctions(String source, IRecord record, String fieldName) throws Exception {
@@ -264,7 +264,7 @@ public final class FieldFunctionService implements IFieldFunctionService {
 
     /**
      * Resolves a function to a plain String.
-     * 
+     *
      * @param functionName
      *            the name of the function
      * @param parameters
@@ -273,9 +273,9 @@ public final class FieldFunctionService implements IFieldFunctionService {
      *            the record which contains the field with this function
      * @param fieldName
      *            the name of the field that contains this function
-     * 
+     *
      * @return a plain String with the evaluation result of the function
-     * 
+     *
      * @throws Exception
      */
     private String applyFunction(String functionName, String[] parameters, IRecord record, String fieldName) throws Exception {

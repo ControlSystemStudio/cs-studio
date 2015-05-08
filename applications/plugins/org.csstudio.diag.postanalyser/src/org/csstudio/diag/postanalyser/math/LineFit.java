@@ -10,7 +10,7 @@ public class LineFit extends Fit
 {
     private double slope;
     private double intersect;
-    
+
     /** Perform fit of data to line <code>y = a*x + b</code>
      *  with slope <code>a</code> and y-axis intersection <code>b</code>.
      *  @param x Array of 'x' values
@@ -26,7 +26,7 @@ public class LineFit extends Fit
         // resulting in numerical errors.
         // So we map them relative to x0
         final double x0 = x[0];
-        
+
         // Variable names close to
         // http://en.wikipedia.org/wiki/Linear_least_squares
         double Sx = 0.0;

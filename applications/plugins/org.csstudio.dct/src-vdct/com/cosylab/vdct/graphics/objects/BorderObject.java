@@ -18,11 +18,11 @@ package com.cosylab.vdct.graphics.objects;
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  * @version $Id$
- * 
+ *
  * @since VERSION
  */
 public interface BorderObject {
-    
+
     public String getName();
-    
+
 }

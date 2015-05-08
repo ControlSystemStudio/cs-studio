@@ -14,7 +14,7 @@ import org.epics.pvmanager.PVReaderListener;
 import org.epics.vtype.VType;
 
 /** {@link IPVListener} that extracts text from value.
- * 
+ *
  *  <p>Derived class determines how to handle the text.
  *  @author Kay Kasemir
  */
@@ -30,7 +30,7 @@ abstract public class StringListener implements PVReaderListener<VType>
                     exception);
             handleError(exception);
         }
-        
+
 
         if (event.isValueChanged()) {
             try
@@ -48,9 +48,9 @@ abstract public class StringListener implements PVReaderListener<VType>
             }
         }
         // TODO Auto-generated method stub
-        
+
     }
-    
+
     /** @param error Error to handle */
     public void handleError(final Exception error)
     {
@@ -61,4 +61,3 @@ abstract public class StringListener implements PVReaderListener<VType>
     abstract public void handleText(final String text);
 
 };
-        

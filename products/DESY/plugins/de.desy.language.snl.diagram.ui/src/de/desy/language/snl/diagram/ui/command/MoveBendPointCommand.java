@@ -6,9 +6,9 @@ import de.desy.language.snl.diagram.model.WhenConnection;
 
 /**
  * The command to move a BendPoint.
- * 
+ *
  * @author Kai Meyer, Sebastian Middeke (C1 WPS)
- * 
+ *
  */
 public class MoveBendPointCommand extends AbstractBendPointCommand {
 
@@ -19,7 +19,7 @@ public class MoveBendPointCommand extends AbstractBendPointCommand {
 
     /**
      * Constructor.
-     * 
+     *
      * @param model
      *            The model of the connection
      * @param location

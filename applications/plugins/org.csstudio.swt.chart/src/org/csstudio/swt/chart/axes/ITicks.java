@@ -20,7 +20,7 @@ public interface ITicks
 
     /** @return Returns the number formatted according to the tick precision. */
     public String format(double num);
-    
+
     /** @return Returns the number formatted with some extra precision. */
     public String format(double num, int extra_precision);
 }

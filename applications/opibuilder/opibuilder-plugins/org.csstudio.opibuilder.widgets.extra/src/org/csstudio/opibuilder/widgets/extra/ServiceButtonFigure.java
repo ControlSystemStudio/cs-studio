@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.opibuilder.widgets.extra;
 
@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ServiceButtonFigure extends
     AbstractSWTWidgetFigure<ServiceButton> {

@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.preferences.IScopeContext;
  * <p>
  * Server preferences are stored on my_product.war/plugin_customization.ini.
  * <p>
- * The path for preferences defined in the server scope hierarchy is: 
+ * The path for preferences defined in the server scope hierarchy is:
  * <code>/server/&lt;qualifier&gt;</code>
  * <p>
  * This class is not intented to be subclassed. It may be instantiated.
@@ -23,11 +23,11 @@ import org.eclipse.core.runtime.preferences.IScopeContext;
 public final class ServerScope implements IScopeContext {
 
   /**
-   * String constant (value of <code>"session"</code>) used for the 
+   * String constant (value of <code>"session"</code>) used for the
    * scope name for the session preference scope.
    */
   public static final String SCOPE = "server"; //$NON-NLS-1$
-  
+
   /**
    * Create and return a new session scope instance.
    */

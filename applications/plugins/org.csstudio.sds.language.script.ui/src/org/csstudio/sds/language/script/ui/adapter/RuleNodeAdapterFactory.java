@@ -7,9 +7,9 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 
 /**
  * The specialized {@link IAdapterFactory} for {@link VariableNode}s.
- * 
+ *
  * @author C1 WPS / KM, MZ
- * 
+ *
  */
 class RuleNodeAdapterFactory implements IAdapterFactory {
 

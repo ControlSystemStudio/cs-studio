@@ -17,12 +17,12 @@ import org.csstudio.opibuilder.converter.model.Edm_TextupdateClass;
 public class Opi_TextupdateClass extends OpiWidget {
 
     private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.Opi_TextupdateClass");
-    private static final String typeId = "TextUpdate";    
+    private static final String typeId = "TextUpdate";
     private static final String name = "EDM Text Update";
     private static final String version = "1.0";
 
     /**
-     * Converts the Edm_TextupdateClass to OPI TextUpdate widget XML.  
+     * Converts the Edm_TextupdateClass to OPI TextUpdate widget XML.
      */
     public Opi_TextupdateClass(Context con, Edm_TextupdateClass t) {
         super(con,t);
@@ -30,15 +30,15 @@ public class Opi_TextupdateClass extends OpiWidget {
         setName(name);
         setVersion(version);
 
-        new OpiString(widgetContext, "pv_name", convertPVName(t.getControlPv()));        
+        new OpiString(widgetContext, "pv_name", convertPVName(t.getControlPv()));
         new OpiBoolean(widgetContext, "transparent", !t.isFill());
-        
+
         int align = 0;
-        if (t.getFontAlign()!=null){            
+        if (t.getFontAlign()!=null){
             if(t.getFontAlign().equals("right"))
                 align = 2;
             else if(t.getFontAlign().equals("center"))
-                align = 1;            
+                align = 1;
         }
         new OpiInt(widgetContext, "horizontal_alignment", align);
 
@@ -67,15 +67,15 @@ public class Opi_TextupdateClass extends OpiWidget {
                 mode = 3;
             }
         }
-        
+
         new OpiBoolean(widgetContext, "precision_from_pv", precisionFromPV);
         new OpiBoolean(widgetContext, "show_units", showUnits);
         new OpiInt(widgetContext, "format_type", mode);
         new OpiInt(widgetContext, "precision", t.getPrecision());
-        
+
         new OpiColor(widgetContext, "foreground_color", t.getFgColor(), t);
-        
+
         log.debug("Edm_TextupdateClass written.");
     }
-    
+
 }

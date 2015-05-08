@@ -10,11 +10,11 @@ package org.csstudio.apputil.time;
 import java.util.concurrent.TimeUnit;
 
 /** Helper for checking a delay or timeout.
- * 
+ *
  *  <p>Does not actively run a timer or issue any action.
  *  Meant to be used in loops that need to check if a certain
  *  time has passed.
- *  
+ *
  *  TODO Move to apputil
  *  @author Kay Kasemir
  */
@@ -22,7 +22,7 @@ public class DelayCheck
 {
     final private long milli_duration;
     private long next_expiration_milli;
-    
+
     public DelayCheck(long duration, TimeUnit units)
     {
         milli_duration = units.toMillis(duration);

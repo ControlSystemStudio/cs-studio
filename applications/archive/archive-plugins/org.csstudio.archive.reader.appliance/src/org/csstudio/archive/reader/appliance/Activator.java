@@ -15,15 +15,15 @@ public class Activator extends Plugin {
 
     // The shared instance
     private static Activator plugin;
-    
+
     private Boolean useStatistics;
-    
+
     /**
      * The constructor
      */
     public Activator() {
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.eclipse.core.runtime.Plugin#start(org.osgi.framework.BundleContext)
@@ -33,7 +33,7 @@ public class Activator extends Plugin {
         super.start(context);
         plugin = this;
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
@@ -52,7 +52,7 @@ public class Activator extends Plugin {
     public static Activator getDefault() {
         return plugin;
     }
-    
+
     /**
      * @return true if statistics type should be used for optimized data or false if normal type
      *             should be used

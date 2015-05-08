@@ -13,7 +13,7 @@ public class PvSearchFolderPreferenceService {
 
     private static final String PV_SEARCH_FOLDER_ITEMS = "pv_search_folder_items";
     private final IPreferenceStore preferenceStore;
-    
+
     private final List<PvSearchFolderPreferenceChangeListener> listeners;
 
     public PvSearchFolderPreferenceService(IPreferenceStore preferenceStore) {
@@ -21,9 +21,9 @@ public class PvSearchFolderPreferenceService {
 
         this.preferenceStore = preferenceStore;
         this.listeners = new ArrayList<PvSearchFolderPreferenceService.PvSearchFolderPreferenceChangeListener>();
-        
+
         preferenceStore.setDefault(PV_SEARCH_FOLDER_ITEMS, "");
-        
+
         preferenceStore.addPropertyChangeListener(new IPropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent event) {
@@ -60,13 +60,13 @@ public class PvSearchFolderPreferenceService {
 
     public void addChangeListener(PvSearchFolderPreferenceChangeListener changeListener) {
         assert changeListener != null : "Precondition failed: changeListener != null";
-        
+
         this.listeners.add(changeListener);
     }
-    
+
     public void removeChangeListener(PvSearchFolderPreferenceChangeListener changeListener) {
         assert changeListener != null : "Precondition failed: changeListener != null";
-        
+
         this.listeners.remove(changeListener);
     }
 

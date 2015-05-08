@@ -98,7 +98,7 @@ public class WorkQueueUnitTest
         final double seconds = (end-start)/1000.0;
         assertEquals(0.0, seconds, 0.01);
     }
-    
+
     // Meant to run in JProfiler, used to
     // determine queue performance
     // @Ignore

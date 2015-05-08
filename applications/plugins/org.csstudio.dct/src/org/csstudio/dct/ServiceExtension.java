@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct;
 
@@ -30,11 +30,11 @@ public class ServiceExtension<E> {
     public E getService() {
         return service;
     }
-    
+
     public String getPluginId() {
         return pluginId;
     }
-    
+
     public String getIconPath() {
         return iconPath;
     }

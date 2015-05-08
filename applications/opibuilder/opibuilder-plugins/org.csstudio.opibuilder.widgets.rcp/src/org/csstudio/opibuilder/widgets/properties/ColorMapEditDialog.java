@@ -61,21 +61,21 @@ import org.eclipse.swt.widgets.ToolBar;
  * @author Xihui Chen
  *
  */
-public class ColorMapEditDialog extends HelpTrayDialog {    
-    
+public class ColorMapEditDialog extends HelpTrayDialog {
+
     private Action addAction;
     private Action copyAction;
     private Action removeAction;
     private Action moveUpAction;
     private Action moveDownAction;
-    
+
     private TableViewer colorListViewer;
-    
+
     private List<ColorTuple> colorList;
     private PredefinedColorMap predefinedColorMap;
     private boolean autoScale;
     private boolean interpolate;
-    
+
     private String title;
     private Combo preDefinedMapCombo;
     private double[] mapData;
@@ -85,7 +85,7 @@ public class ColorMapEditDialog extends HelpTrayDialog {
 
     public ColorMapEditDialog(Shell parentShell, ColorMap colorMap, String dialogTitle, double min, double max) {
         super(parentShell);
-        setShellStyle(getShellStyle() | SWT.RESIZE);        
+        setShellStyle(getShellStyle() | SWT.RESIZE);
         colorList = new LinkedList<ColorTuple>();
         for(Double value : colorMap.getMap().keySet())
             colorList.add(new ColorTuple(value, colorMap.getMap().get(value)));
@@ -99,7 +99,7 @@ public class ColorMapEditDialog extends HelpTrayDialog {
         for(int j=0; j<256; j++)
             mapData[j] = min + j*(max-min)/255.0;
     }
-    
+
     public ColorMap getOutput() {
         ColorMap result = new ColorMap();
         if(predefinedColorMap == PredefinedColorMap.None){
@@ -107,7 +107,7 @@ public class ColorMapEditDialog extends HelpTrayDialog {
             for(ColorTuple tuple : colorList)
                 map.put(tuple.value, tuple.rgb);
             result.setColorMap(map);
-        }        
+        }
         result.setAutoScale(autoScale);
         result.setInterpolate(interpolate);
         result.setPredefinedColorMap(predefinedColorMap);
@@ -124,10 +124,10 @@ public class ColorMapEditDialog extends HelpTrayDialog {
             shell.setText(title);
         }
     }
-    
+
     /**
      * Creates a label with the given text.
-     * 
+     *
      * @param parent
      *            The parent for the label
      * @param text
@@ -139,29 +139,29 @@ public class ColorMapEditDialog extends HelpTrayDialog {
         label.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, false,
                 false, 2, 1));
     }
-    
+
     @Override
     protected String getHelpResourcePath() {
         return "/" + OPIBuilderPlugin.PLUGIN_ID + "/html/Widgets/IntensityGraph.html#colorMap"; //$NON-NLS-1$; //$NON-NLS-2$
     }
-    
+
     @Override
     protected Control createDialogArea(Composite parent) {
         final Composite parent_Composite = (Composite) super.createDialogArea(parent);
-        
-        final Composite mainComposite = new Composite(parent_Composite, SWT.None);            
+
+        final Composite mainComposite = new Composite(parent_Composite, SWT.None);
         mainComposite.setLayout(new GridLayout(2, false));
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         gridData.heightHint = 300;
         mainComposite.setLayoutData(gridData);
-        
+
         final Composite leftComposite = new Composite(mainComposite, SWT.None);
         leftComposite.setLayout(new GridLayout(1, false));
         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
         gd.widthHint = 250;
         leftComposite.setLayoutData(gd);
         createLabel(leftComposite, "Color Map:");
-        
+
         Composite toolBarComposite = new Composite(leftComposite, SWT.BORDER);
         GridLayout gridLayout = new GridLayout(1, false);
         gridLayout.marginLeft = 0;
@@ -173,7 +173,7 @@ public class ColorMapEditDialog extends HelpTrayDialog {
         toolBarComposite.setLayout(gridLayout);
         gd = new GridData(SWT.FILL, SWT.FILL, true, true);
         toolBarComposite.setLayoutData(gd);
-        
+
         ToolBarManager toolbarManager = new ToolBarManager(SWT.FLAT);
         ToolBar toolBar = toolbarManager.createControl(toolBarComposite);
         GridData grid = new GridData();
@@ -186,24 +186,24 @@ public class ColorMapEditDialog extends HelpTrayDialog {
         toolbarManager.add(removeAction);
         toolbarManager.add(moveUpAction);
         toolbarManager.add(moveDownAction);
-        
+
         toolbarManager.update(true);
-        
+
         colorListViewer = createColorListViewer(toolBarComposite);
         colorListViewer.setInput(colorList);
-        
+
         Composite rightComposite = new Composite(mainComposite, SWT.NONE);
         rightComposite.setLayout(new GridLayout(1, false));
         gd = new GridData(SWT.FILL, SWT.FILL, true, true);
         gd.widthHint = 340;
         rightComposite.setLayoutData(gd);
         this.createLabel(rightComposite, "Use predefined color map:");
-        
+
         preDefinedMapCombo = new Combo(rightComposite, SWT.DROP_DOWN | SWT.READ_ONLY);
         preDefinedMapCombo.setLayoutData(new GridData(SWT.LEFT, SWT.BOTTOM, false,false));
         preDefinedMapCombo.setItems(PredefinedColorMap.getStringValues());
-        
-        
+
+
         int i=0;
         for(PredefinedColorMap colorMap : PredefinedColorMap.values()){
             if(predefinedColorMap == colorMap)
@@ -212,37 +212,37 @@ public class ColorMapEditDialog extends HelpTrayDialog {
                 i++;
         }
         preDefinedMapCombo.select(i);
-        
-            
-        
+
+
+
         final Button InterpolateCheckBox = new Button(rightComposite, SWT.CHECK);
         InterpolateCheckBox.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, false,false));
         InterpolateCheckBox.setSelection(interpolate);
         InterpolateCheckBox.setText("Interpolate");
-        
+
         final Button autoScaleCheckBox = new Button(rightComposite, SWT.CHECK);
         autoScaleCheckBox.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, false,false));
         autoScaleCheckBox.setSelection(autoScale);
         autoScaleCheckBox.setText("Auto Scale");
         autoScaleCheckBox.setToolTipText("Scale the color map values to the range of" +
                 " (" + min + ", " + max + ")." ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        
+
         Group group = new Group(rightComposite, SWT.None);
         group.setLayoutData(new GridData(SWT.FILL, SWT.END, true, true));
         group.setLayout(new GridLayout(2, false));
         group.setText("Output" + " (" + min + "~" + max + ")" ); //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-3$
-        
+
         colorMapLabel = new Label(group, SWT.None);
         colorMapLabel.setLayoutData(new GridData(SWT.FILL, SWT.END, true, true));
-        
-            
+
+
         refreshGUI();
-        
+
         preDefinedMapCombo.addModifyListener(new ModifyListener(){
             public void modifyText(ModifyEvent e) {
                 predefinedColorMap = PredefinedColorMap.values()[preDefinedMapCombo.getSelectionIndex()];
-                if(preDefinedMapCombo.getSelectionIndex() != 0){                    
-                    LinkedHashMap<Double, RGB> map = 
+                if(preDefinedMapCombo.getSelectionIndex() != 0){
+                    LinkedHashMap<Double, RGB> map =
                         PredefinedColorMap.values()[preDefinedMapCombo.getSelectionIndex()].getMap();
                     colorList.clear();
                     for(Entry<Double, RGB> entry : map.entrySet())
@@ -252,7 +252,7 @@ public class ColorMapEditDialog extends HelpTrayDialog {
                 refreshGUI();
             }
         });
-        
+
         InterpolateCheckBox.addSelectionListener(new SelectionAdapter(){
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -260,7 +260,7 @@ public class ColorMapEditDialog extends HelpTrayDialog {
                 refreshGUI();
             }
         });
-        
+
         autoScaleCheckBox.addSelectionListener(new SelectionAdapter(){
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -268,50 +268,50 @@ public class ColorMapEditDialog extends HelpTrayDialog {
                 refreshGUI();
             }
         });
-        
+
         return parent_Composite;
-        
-        
+
+
     }
 
     /**
      * Refresh GUI when color map data changed.
      */
     private void refreshGUI() {
-        
+
         Image originalImage= new Image(Display.getCurrent(),
                 getOutput().drawImage(mapData, 256, 1, max, min));
-        
-            
+
+
         if(colorMapImage != null && !colorMapImage.isDisposed()){
             colorMapImage.dispose();
             colorMapImage = null;
         }
         colorMapImage = new Image(Display.getCurrent(), 300,40);
         GC gc = new GC(colorMapImage);
-        gc.drawImage(originalImage, 0, 0, 256, 1, 
-                0, 0, colorMapImage.getBounds().width, colorMapImage.getBounds().height);        
+        gc.drawImage(originalImage, 0, 0, 256, 1,
+                0, 0, colorMapImage.getBounds().width, colorMapImage.getBounds().height);
         colorMapLabel.setImage(colorMapImage);
         colorMapLabel.setAlignment(SWT.CENTER);
         gc.dispose();
         originalImage.dispose();
     }
-    
-    
+
+
     @Override
-    public boolean close() {        
+    public boolean close() {
         if(colorMapImage != null && !colorMapImage.isDisposed()){
             colorMapImage.dispose();
             colorMapImage = null;
         }
         return super.close();
     }
-    
+
     /**
      * Refreshes the enabled-state of the actions.
      */
     private void refreshToolbarOnSelection() {
-        
+
         IStructuredSelection selection = (IStructuredSelection) colorListViewer
                 .getSelection();
         if (!selection.isEmpty()
@@ -320,7 +320,7 @@ public class ColorMapEditDialog extends HelpTrayDialog {
             moveUpAction.setEnabled(true);
             moveDownAction.setEnabled(true);
             copyAction.setEnabled(true);
-            
+
         } else {
             removeAction.setEnabled(false);
             moveUpAction.setEnabled(false);
@@ -328,8 +328,8 @@ public class ColorMapEditDialog extends HelpTrayDialog {
             copyAction.setEnabled(false);
         }
     }
-    
-    
+
+
     /**
      * @param tuple the tuple to be selected
      */
@@ -343,11 +343,11 @@ public class ColorMapEditDialog extends HelpTrayDialog {
         preDefinedMapCombo.select(0);
         refreshGUI();
     }
-    
-    
+
+
     /**
      * Creates and configures a {@link TableViewer}.
-     * 
+     *
      * @param parent
      *            The parent for the table
      * @return The {@link TableViewer}
@@ -357,21 +357,21 @@ public class ColorMapEditDialog extends HelpTrayDialog {
                 | SWT.H_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
         viewer.getTable().setLinesVisible(true);
         viewer.getTable().setHeaderVisible(true);
-        
-        final TableViewerColumn tvColumn = new TableViewerColumn(viewer, SWT.NONE);        
+
+        final TableViewerColumn tvColumn = new TableViewerColumn(viewer, SWT.NONE);
         tvColumn.getColumn().setText("Value");
         tvColumn.getColumn().setMoveable(false);
         tvColumn.getColumn().setWidth(100);
         tvColumn.setEditingSupport(new ValueColumnEditingSupport(viewer, viewer.getTable()));
-        
-        
+
+
         tvColumn.getColumn().addSelectionListener(new SelectionAdapter(){
             @Override
             public void widgetSelected(SelectionEvent e) {
                 Table table = viewer.getTable();
                 int dir = table.getSortDirection();
                 dir = dir == SWT.UP ? SWT.DOWN : SWT.UP;
-                viewer.getTable().setSortDirection(dir);    
+                viewer.getTable().setSortDirection(dir);
                 Object[] colorTupleArray = colorList.toArray();
                 Arrays.sort(colorTupleArray);
                 colorList.clear();
@@ -387,19 +387,19 @@ public class ColorMapEditDialog extends HelpTrayDialog {
                 viewer.refresh();
             }
         });
-        
-        
+
+
         final TableViewerColumn colorColumn = new TableViewerColumn(viewer, SWT.NONE);
         colorColumn.getColumn().setText("Color");
         colorColumn.getColumn().setMoveable(false);
         colorColumn.getColumn().setWidth(100);
-        colorColumn.setEditingSupport(new ColorColumnEditingSupport(viewer, viewer.getTable()));    
-        
+        colorColumn.setEditingSupport(new ColorColumnEditingSupport(viewer, viewer.getTable()));
+
         viewer.setContentProvider(new ArrayContentProvider());
         viewer.setLabelProvider(new ColorListLabelProvider());
         viewer.getTable().setSortColumn(tvColumn.getColumn());
         viewer.getTable().setSortDirection(SWT.UP);
-        
+
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(final SelectionChangedEvent event) {
                 refreshToolbarOnSelection();
@@ -409,14 +409,14 @@ public class ColorMapEditDialog extends HelpTrayDialog {
                 new GridData(SWT.FILL, SWT.FILL, true, true));
         return viewer;
     }
-    
+
     /**
      * Creates the actions.
      */
-    private void createActions() {    
+    private void createActions() {
         addAction = new Action("Add") {
             @Override
-            public void run() {    
+            public void run() {
                 ColorTuple tuple = new ColorTuple(0, new RGB(0,0,0));
                 colorList.add(tuple);
                 refreshColorListViewerForAction(tuple);
@@ -426,7 +426,7 @@ public class ColorMapEditDialog extends HelpTrayDialog {
         addAction.setImageDescriptor(CustomMediaFactory.getInstance()
                 .getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
                         "icons/add.gif"));
-        
+
         copyAction = new Action() {
             @Override
             public void run() {
@@ -437,7 +437,7 @@ public class ColorMapEditDialog extends HelpTrayDialog {
                     ColorTuple o = (ColorTuple)selection.getFirstElement();
                     ColorTuple tuple = new ColorTuple(o.value, o.rgb);
                     colorList.add(tuple);
-                    refreshColorListViewerForAction(tuple);        
+                    refreshColorListViewerForAction(tuple);
                 }
             }
         };
@@ -448,8 +448,8 @@ public class ColorMapEditDialog extends HelpTrayDialog {
                 .getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
                         "icons/copy.gif"));
         copyAction.setEnabled(false);
-        
-        
+
+
         removeAction = new Action() {
             @Override
             public void run() {
@@ -485,7 +485,7 @@ public class ColorMapEditDialog extends HelpTrayDialog {
                         colorList.remove(tuple);
                         colorList.add(i-1, tuple);
                         refreshColorListViewerForAction(tuple);
-                    }    
+                    }
                 }
             }
         };
@@ -510,7 +510,7 @@ public class ColorMapEditDialog extends HelpTrayDialog {
                         colorList.remove(tuple);
                         colorList.add(i+1, tuple);
                         refreshColorListViewerForAction(tuple);
-                    }            
+                    }
                 }
             }
         };
@@ -519,11 +519,11 @@ public class ColorMapEditDialog extends HelpTrayDialog {
         moveDownAction.setImageDescriptor(CustomMediaFactory.getInstance()
                 .getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
                         "icons/search_next.gif"));
-        moveDownAction.setEnabled(false);        
-    
+        moveDownAction.setEnabled(false);
+
     }
-    
-    
+
+
     private final static class ColorListLabelProvider extends LabelProvider implements ITableLabelProvider{
 
         public Image getColumnImage(Object element, int columnIndex) {
@@ -540,9 +540,9 @@ public class ColorMapEditDialog extends HelpTrayDialog {
                 return new OPIColor(((ColorTuple)element).rgb).toString();
             return null;
         }
-        
+
     }
-    
+
     private final class ValueColumnEditingSupport extends EditingSupport{
 
         private Table table;
@@ -573,19 +573,19 @@ public class ColorMapEditDialog extends HelpTrayDialog {
         protected void setValue(Object element, Object value) {
             if(element instanceof ColorTuple){
                 String s = value == null ? "0" : value.toString(); //$NON-NLS-1$
-                try {                    
+                try {
                     ((ColorTuple)element).value = Double.parseDouble(s);
                     getViewer().refresh();
                     preDefinedMapCombo.select(0);
                     refreshGUI();
-                } catch (NumberFormatException e) {            
-                }                
-            }                
+                } catch (NumberFormatException e) {
+                }
+            }
         }
-        
+
     }
-    
-    
+
+
     private final class ColorColumnEditingSupport extends EditingSupport{
 
         private Table table;
@@ -614,17 +614,17 @@ public class ColorMapEditDialog extends HelpTrayDialog {
 
         @Override
         protected void setValue(Object element, Object value) {
-            if(element instanceof ColorTuple){                                    
+            if(element instanceof ColorTuple){
                 ((ColorTuple)element).rgb = (RGB)value;
                 getViewer().refresh();
                 preDefinedMapCombo.select(0);
                 refreshGUI();
-            }                
+            }
         }
-        
-    }
-    
 
-    
+    }
+
+
+
 
 }

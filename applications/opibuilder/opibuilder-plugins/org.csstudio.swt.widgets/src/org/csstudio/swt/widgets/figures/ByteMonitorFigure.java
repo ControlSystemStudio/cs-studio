@@ -43,22 +43,22 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
     private Color onColor = ColorConstants.green;
     /** The color to be displayed if a bit is 0 */
     private Color offColor = ColorConstants.darkGreen;
-    
+
     /** Give the objects representing the bits a 3dEffect */
     private boolean effect3D = true;
     private boolean squareLED = false;
-    
+
     /** LEDs */
     private List<LEDFigure> ledFigures = new ArrayList<LEDFigure>();
-    
+
     /** Labels */
     private List<TextFigure> textFigures = new ArrayList<TextFigure>();
     private List<String> labels = new ArrayList<String>();
-    
+
     public ByteMonitorFigure() {
         setNumBits(16);
     }
-    
+
     private LEDFigure createLED(){
         LEDFigure led = new LEDFigure();
         led.setShowBooleanLabel(false);
@@ -68,14 +68,14 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
         led.setEffect3D(effect3D);
         return led;
     }
-    
+
     private TextFigure createText(){
         TextFigure text = new TextFigure();
         text.setText("");
         alignText(text);
         return text;
     }
-    
+
     /**
      * Color the rectangles with values appropriate for the value.  Rectangles are colored with onColor if the bit
      * is 1.  They are colored offColor if the bit is 0.
@@ -94,12 +94,12 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
                 led.setBooleanValue(true);
             }
             else {
-                
+
                 led.setBooleanValue(false);
             }
         }
 
-        
+
     }
 
     /**
@@ -156,8 +156,8 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
         return effect3D;
     }
     /**
-     * Check if shapes corresponding to bits should be vertical or horizontal.  Bits are displayed horizontally 
-     * if true and vertically if false. 
+     * Check if shapes corresponding to bits should be vertical or horizontal.  Bits are displayed horizontally
+     * if true and vertically if false.
      * @return the isHorizontal
      */
     public boolean isHorizontal() {
@@ -192,19 +192,19 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
             if (isHorizontal){
                 int avgWidth = clientArea.width/numBits;
                 int startX = clientArea.x;
-                
+
                 int ledHeight = 0;
                 if (avgWidth > clientArea.height || squareLED) {
                     ledHeight = clientArea.height;
                 } else {
                     ledHeight = avgWidth;
                 }
-                
+
                 for (LEDFigure led : ledFigures) {
                     led.setBounds(new Rectangle(startX,clientArea.y, avgWidth, ledHeight));
                     startX += avgWidth;
                 }
-                
+
                 startX = clientArea.x;
                 for (TextFigure text : textFigures) {
                     if (squareLED) {
@@ -220,20 +220,20 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
             else {
                 int avgHeight = clientArea.height/numBits;
                 int startY = clientArea.y;
-                
+
                 int ledWidth = 0;
                 if (avgHeight > clientArea.width || squareLED) {
                     ledWidth = clientArea.width;
                 } else {
                     ledWidth = avgHeight;
                 }
-                
+
                 for (LEDFigure led : ledFigures) {
                     led.setBounds(new Rectangle(
                             clientArea.x, startY, ledWidth, avgHeight));
                     startY += avgHeight;
                 }
-                
+
                 startY = clientArea.y;
                 for (TextFigure text : textFigures) {
                     if (squareLED) {
@@ -264,19 +264,19 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
     }
 
     /**
-     * sets the direction that shapes corresponding to bits should be displayed.  Bits are displayed horizontally 
-     * if true and vertically if false. 
+     * sets the direction that shapes corresponding to bits should be displayed.  Bits are displayed horizontally
+     * if true and vertically if false.
      * @param isHorizontal the isHorizontal to set
      */
     public void setHorizontal(boolean isHorizontal) {
         if(this.isHorizontal == isHorizontal)
             return;
         this.isHorizontal = isHorizontal;
-        
+
         for (TextFigure text : textFigures) {
             alignText(text);
         }
-        
+
         layout();
         revalidate();
     }
@@ -345,7 +345,7 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
     }
 
     /**
-     * Set if the displayed LEDs should be square or round.  
+     * Set if the displayed LEDs should be square or round.
      * @param squareLED boolean true if square, false if round
      */
     public void setSquareLED(boolean squareLED) {
@@ -364,7 +364,7 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
 
     /**
      * Set the starting bit for the display
-     * @param startBit 
+     * @param startBit
      */
     public void setStartBit(int startBit) {
         if(this.startBit == startBit || startBit <0 || startBit +numBits > MAX_BITS)
@@ -376,16 +376,16 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
     /**
      * @param value the value to set
      */
-    public void setValue(int value) {        
+    public void setValue(int value) {
         setValue((long)value);
     }
-    
+
     public void setValue(double value){
         setValue((long)value);
     }
-    
+
     /**
-     * Change the value to the last read value 
+     * Change the value to the last read value
      * @param value
      */
     public void setValue(long value){
@@ -401,7 +401,7 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
         this.labels = labels;
         updateLabels();
     }
-    
+
     private void updateLabels() {
         for (int i = 0; i<textFigures.size(); i++) {
             TextFigure text;
@@ -410,7 +410,7 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
             } else {
                 text = textFigures.get(textFigures.size() - i - 1);
             }
-            
+
             if (i < labels.size()) {
                 text.setText(labels.get(i));
             } else {
@@ -418,7 +418,7 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
             }
         }
     }
-    
+
     private void alignText(TextFigure text) {
         if (isHorizontal) {
             text.setRotate(270.0);

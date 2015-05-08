@@ -49,7 +49,7 @@ abstract public class GUIUpdateThrottle extends Thread
              Preferences.getGuiThrottleSuppressionMillis());
     }
 
-    
+
     /** Initialize
      *  @param initial_millis Delay [ms] for the initial update after trigger
      *  @param suppression_millis Delay [ms] for the suppression of a burst of events

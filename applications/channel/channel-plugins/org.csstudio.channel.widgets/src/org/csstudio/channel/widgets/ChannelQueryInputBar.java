@@ -22,14 +22,14 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 
-public class ChannelQueryInputBar extends AbstractChannelQueryWidget 
+public class ChannelQueryInputBar extends AbstractChannelQueryWidget
     implements ISelectionProvider {
 
     private Combo combo;
-    
+
     /**
      * Create the composite.
-     * 
+     *
      * @param parent
      * @param style
      */
@@ -56,9 +56,9 @@ public class ChannelQueryInputBar extends AbstractChannelQueryWidget
                 setChannelQuery(ChannelQuery.query(queryText).build());
             }
         };
-        
+
         addPropertyChangeListener(new PropertyChangeListener() {
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent event) {
                 if ("channelQuery".equals(event.getPropertyName())) {
@@ -71,9 +71,9 @@ public class ChannelQueryInputBar extends AbstractChannelQueryWidget
                 }
             }
         });
-        
+
         selectionProvider = new AbstractSelectionProviderWrapper(comboViewer, this) {
-            
+
             @Override
             protected ISelection transform(IStructuredSelection selection) {
                 if (getChannelQuery() != null)
@@ -82,9 +82,9 @@ public class ChannelQueryInputBar extends AbstractChannelQueryWidget
                     return new StructuredSelection();
             }
         };
-        
+
         combo.addFocusListener(new FocusListener() {
-            
+
             @Override
             public void focusLost(FocusEvent e) {
                 // If focus is lost and the text is different,
@@ -98,13 +98,13 @@ public class ChannelQueryInputBar extends AbstractChannelQueryWidget
                     setChannelQuery(ChannelQuery.query(comboText).build());
                 }
             }
-            
+
             @Override
             public void focusGained(FocusEvent e) {
                 // Nothing to do
             }
         });
-        
+
         name_helper.loadSettings();
     }
 
@@ -112,13 +112,13 @@ public class ChannelQueryInputBar extends AbstractChannelQueryWidget
     protected void checkSubclass() {
         // Disable the check that prevents subclassing of SWT components
     }
-    
+
     @Override
     public void setMenu(Menu menu) {
         super.setMenu(menu);
         combo.setMenu(menu);
     }
-    
+
     private AbstractSelectionProviderWrapper selectionProvider;
 
     @Override
@@ -141,5 +141,5 @@ public class ChannelQueryInputBar extends AbstractChannelQueryWidget
     public void setSelection(ISelection selection) {
         selectionProvider.setSelection(selection);
     }
-    
+
 }

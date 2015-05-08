@@ -24,7 +24,7 @@ package org.csstudio.auth.security;
 /**
  * Information about the usage of a registered authorization ID. Instances of
  * this class are immutable.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class AuthorizationIdUsage {
@@ -35,7 +35,7 @@ public final class AuthorizationIdUsage {
 
     /**
      * Creates a new authorization ID usage description.
-     * 
+     *
      * @param location
      *            a description of the location where the ID is used. For
      *            example, a description of the action which is associated with
@@ -58,7 +58,7 @@ public final class AuthorizationIdUsage {
      * Returns a description of the location where the authorization ID is used.
      * For example, a description of the action which is associated with the
      * authorization ID.
-     * 
+     *
      * @return a description of the location where the authorization ID is used.
      */
     public String getLocation() {
@@ -67,17 +67,17 @@ public final class AuthorizationIdUsage {
 
     /**
      * Returns whether using the associated action is allowed by default.
-     * 
+     *
      * @return <code>true</code> if using the associated action is allowed by
      *         default, <code>false</code> otherwise.
      */
     public boolean isAllowedByDefault() {
         return _allowByDefault;
     }
-    
+
     /**
      * Returns the name of the plug-in which contributed this usage description.
-     * 
+     *
      * @return the name of the plug-in which contributed this usage description.
      */
     public String getPlugIn() {

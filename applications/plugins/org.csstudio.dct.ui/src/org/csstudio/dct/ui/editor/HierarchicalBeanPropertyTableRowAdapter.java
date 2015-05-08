@@ -11,9 +11,9 @@ import org.eclipse.swt.graphics.RGB;
 /**
  * Table adapter that allows for an easy adaption of an arbitrary property of a
  * domain object.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class HierarchicalBeanPropertyTableRowAdapter extends AbstractTableRowAdapter<IElement> {
     private String key;
@@ -22,7 +22,7 @@ public final class HierarchicalBeanPropertyTableRowAdapter extends AbstractTable
 
     /**
      * Constructor.
-     * 
+     *
      * @param key
      *            the key for the key column
      * @param delegate

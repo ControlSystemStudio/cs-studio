@@ -14,9 +14,9 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 
 /**
  * Implementation for the forwardlink() function.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ForwardLinkFieldFunction implements IFieldFunction {
 

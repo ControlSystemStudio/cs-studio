@@ -9,15 +9,15 @@ import org.eclipse.swt.widgets.ExpandBar;
 
 /**
  * Editing form for folders.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class FolderForm extends AbstractForm<IFolder> {
 
     /**
      * Constructor.
-     * 
+     *
      * @param editor
      *            the editor instance
      */
@@ -57,7 +57,7 @@ public final class FolderForm extends AbstractForm<IFolder> {
     }
 
     /**
-     * 
+     *
      *{@inheritDoc}
      */
     @Override

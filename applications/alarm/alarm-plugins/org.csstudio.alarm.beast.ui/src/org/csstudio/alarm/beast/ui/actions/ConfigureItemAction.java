@@ -99,7 +99,7 @@ public class ConfigureItemAction extends Action
     public static void performItemConfiguration(final Shell shell,
             final AlarmClientModel model, final AlarmTreeItem item)
     {
-        final ItemConfigDialog dlg = new ItemConfigDialog(shell, item, model, false);    
+        final ItemConfigDialog dlg = new ItemConfigDialog(shell, item, model, false);
         dlg.open();
     }
 }

@@ -33,7 +33,7 @@ public class Screenshot
         final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
         return getScreenshot(shell.getDisplay(), shell, shell.getBounds());
     }
-    
+
     /** @param display Display
      *  @param drawable Drawable
      *  @param bounds bounds of that drawable

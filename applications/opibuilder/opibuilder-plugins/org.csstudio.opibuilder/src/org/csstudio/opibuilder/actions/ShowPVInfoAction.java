@@ -35,9 +35,9 @@ import org.epics.vtype.Display;
  *
  */
 public class ShowPVInfoAction implements IObjectActionDelegate {
-    
+
     private final class PVsInfoDialog extends MessageDialog {
-        
+
         private Map<String, IPV> pvMap;
 
         public PVsInfoDialog(Shell parentShell, String dialogTitle, Map<String, IPV> pvMap) {
@@ -45,51 +45,51 @@ public class ShowPVInfoAction implements IObjectActionDelegate {
                     MessageDialog.INFORMATION, new String[] { JFaceResources.getString("ok")}, 0); //$NON-NLS-1$
             this.pvMap = pvMap;
         }
-        
+
         @Override
         protected Control createCustomArea(Composite parent) {
-            if(pvMap == null || pvMap.size() == 0)        
+            if(pvMap == null || pvMap.size() == 0)
                 return super.createCustomArea(parent);
-            parent.setLayout(new FillLayout());            
-            TabFolder tabFolder = new TabFolder(parent, SWT.None);            
+            parent.setLayout(new FillLayout());
+            TabFolder tabFolder = new TabFolder(parent, SWT.None);
             for(Entry<String, IPV> entry : pvMap.entrySet()){
                 TabItem tabItem = new TabItem(tabFolder, SWT.None);
                 tabItem.setText(entry.getKey());
                 Text text = new Text(tabFolder, SWT.MULTI|SWT.READ_ONLY);
                 text.setText(getPVInfo(entry.getValue()));
-                tabItem.setControl(text);                
-                
+                tabItem.setControl(text);
+
             }
             return tabFolder;
-            
+
         }
-        
+
     }
 
     private IStructuredSelection selection;
     private IWorkbenchPart targetPart;
-    
+
     public ShowPVInfoAction() {
     }
 
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
         this.targetPart = targetPart;
     }
-    
-    
+
+
 
     public void run(IAction action) {
-        if(getSelectedWidget() == null || 
+        if(getSelectedWidget() == null ||
                 getSelectedWidget().getAllPVs() == null ||
                 getSelectedWidget().getAllPVs().size() == 0){
             MessageDialog.openInformation(null, "No PV", "No related PV on this widget.");
             return;
         }
-        
+
         PVsInfoDialog dialog = new PVsInfoDialog(
                 targetPart.getSite().getShell(), "PV Info", getSelectedWidget().getAllPVs());
         dialog.open();
-        
+
     }
 
     private String getPVInfo(IPV pv) {
@@ -97,15 +97,15 @@ public class ShowPVInfoAction implements IObjectActionDelegate {
         if(!pv.isStarted())
             stateInfo.append("Not started");
         else if (pv.isConnected()) {
-            stateInfo.append("Connected");            
+            stateInfo.append("Connected");
             if (pv.isPaused())
-                stateInfo.append(" Paused");    
-            else 
+                stateInfo.append(" Paused");
+            else
                 stateInfo.append(" Running");
         }else
             stateInfo.append("Connecting");
-        
-        
+
+
         StringBuilder sb = new StringBuilder();
         sb.append("Name: " + pv.getName() + "\n"); //$NON-NLS-2$
         sb.append("State: " + stateInfo + "\n"); //$NON-NLS-2$
@@ -144,8 +144,8 @@ public class ShowPVInfoAction implements IObjectActionDelegate {
             this.selection = (IStructuredSelection) selection;
         }
     }
-    
-    private AbstractBaseEditPart getSelectedWidget(){ 
+
+    private AbstractBaseEditPart getSelectedWidget(){
         if(selection.getFirstElement() instanceof AbstractBaseEditPart){
             return (AbstractBaseEditPart)selection.getFirstElement();
         }else

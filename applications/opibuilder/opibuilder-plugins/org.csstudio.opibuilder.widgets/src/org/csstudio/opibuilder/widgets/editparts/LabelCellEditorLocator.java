@@ -24,11 +24,11 @@ public class LabelCellEditorLocator
     {
 
         private IFigure labelFigure;
-    
+
         public LabelCellEditorLocator(IFigure figure) {
             setLabel(figure);
         }
-    
+
         public void relocate(CellEditor celleditor) {
             Text text = (Text)celleditor.getControl();
             if(OPIBuilderPlugin.isRAP())
@@ -44,14 +44,14 @@ public class LabelCellEditorLocator
                 rect.height=fontHeight;
             text.setBounds(rect.x, rect.y, rect.width, rect.height);
         }
-    
+
         /**
          * Returns the stickyNote figure.
          */
         protected IFigure getLabel() {
             return labelFigure;
         }
-    
+
         /**
          * Sets the Sticky note figure.
          * @param stickyNote The stickyNote to set

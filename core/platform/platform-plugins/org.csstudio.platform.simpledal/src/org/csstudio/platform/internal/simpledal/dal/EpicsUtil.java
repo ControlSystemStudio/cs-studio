@@ -14,15 +14,15 @@ import org.csstudio.dal.context.LinkAdapter;
 /**
  * Utility methods for accessing characteristics and dealing with DAL
  * properties.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class EpicsUtil {
 
     /**
      * Waits until DAL property is connected or timeout has elapsed
-     * 
+     *
      * @param property
      *            the DAL property
      * @param timeout
@@ -60,7 +60,7 @@ public class EpicsUtil {
                 return false;
             } else {
                 property.addLinkListener(link);
-                
+
                 try {
                     link.wait(timeout);
                 } catch (Exception e) {
@@ -78,7 +78,7 @@ public class EpicsUtil {
 
     /**
      * Returns EPICS favored status string for DAL condition.
-     * 
+     *
      * @param cond
      *            DAL condition
      * @return EPICS favored status string for DAL condition
@@ -92,7 +92,7 @@ public class EpicsUtil {
 
     /**
      * Converts DAL condition to EPICS favored severity string.
-     * 
+     *
      * @param condition
      *            DAL condition
      * @return EPICS favored severity string

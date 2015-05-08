@@ -145,7 +145,7 @@ public class AveragedValueIterator implements ValueIterator
             return last_value;
         // Create time stamp in center of averaging window ('bin')
         final Timestamp bin_time = average_window_end.minus(TimeDuration.ofSeconds(seconds/2));
-        
+
         // Return the min/max/average
         final ArchiveVStatistics result = new ArchiveVStatistics(bin_time, severity, status, display, stats);
         if (debug)
@@ -159,7 +159,7 @@ public class AveragedValueIterator implements ValueIterator
     private boolean isHigherSeverity(final AlarmSeverity current,
                                      final AlarmSeverity new_severity)
     {
-        return new_severity.ordinal() > current.ordinal(); 
+        return new_severity.ordinal() > current.ordinal();
     }
 
     /** Try to get numeric value for interpolation.

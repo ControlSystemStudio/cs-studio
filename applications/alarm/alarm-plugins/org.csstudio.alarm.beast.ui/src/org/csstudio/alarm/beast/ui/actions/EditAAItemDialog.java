@@ -25,9 +25,9 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Automated action edit dialog.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
- * 
+ *
  */
 public class EditAAItemDialog extends RowEditDialog {
     private Text titleText, delayText, detailsText;
@@ -52,14 +52,14 @@ public class EditAAItemDialog extends RowEditDialog {
         parent_composite = (Composite) super.createDialogArea(parent);
         parent_composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         parent_composite.setLayout(new GridLayout());
-        
+
         // Header part
         header = new Composite(parent_composite, SWT.NONE);
         header.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
         header.setLayout(new GridLayout(2, false));
         header.setSize(0, 0);
         header.setVisible(false);
-        
+
         // Content part
         content = new Composite(parent_composite, SWT.NONE);
         content.setLayout(new GridLayout(2, false));

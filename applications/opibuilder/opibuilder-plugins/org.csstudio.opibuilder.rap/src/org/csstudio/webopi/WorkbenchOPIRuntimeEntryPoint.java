@@ -16,6 +16,6 @@ public class WorkbenchOPIRuntimeEntryPoint implements EntryPoint {
         WorkbenchAdvisor advisor = new ApplicationWorkbenchAdvisor();
         return PlatformUI.createAndRunWorkbench(display, advisor);
 
-    }    
+    }
 
 }

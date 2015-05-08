@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.sds.ui.properties;
@@ -53,7 +53,7 @@ import org.eclipse.swt.widgets.Composite;
  * <code>TextCellEditor</code></li>
  * <li><code>ComboBoxPropertyDescriptor - edits with a
  *      <code>ComboBoxCellEditor</code></code></li>
- * <li><code>ColorPropertyDescriptor - edits with a 
+ * <li><code>ColorPropertyDescriptor - edits with a
  *      <code>ColorCellEditor</code></code></li>
  * </ul>
  * </p>
@@ -116,7 +116,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
 
     /**
      * Creates a new property descriptor with the given id and display name.
-     * 
+     *
      * @param id
      *            the id
      * @param displayName
@@ -133,7 +133,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
     /**
      * Returns true if the values of a property that is described by this
      * descriptor are compatible to the specified Java type.
-     * 
+     *
      * @param type
      *            the Java type
      * @return true, if the values are compatible to the specified type, false
@@ -145,7 +145,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * The <code>PropertyDescriptor</code> implementation of this
      * <code>IPropertyDescriptor</code> method returns <code>null</code>.
      * <p>
@@ -159,7 +159,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
      * Returns <code>true</code> if this property descriptor is to be always
      * considered incompatible with any other property descriptor. This prevents
      * a property from displaying during multiple selection.
-     * 
+     *
      * @return <code>true</code> to indicate always incompatible
      */
     protected final boolean getAlwaysIncompatible() {
@@ -220,7 +220,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
 
     /**
      * Gets the ICellEditorValidator of this PropertyDescriptor.
-     * 
+     *
      * @return ICellEditorValidator The ICellEditorValidator of this
      *         PropertyDescriptor
      */
@@ -230,7 +230,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
 
     /**
      * Checks if this PropertyDescriptor has a LabelProvider.
-     * 
+     *
      * @return boolean True if this PropertyDescriptor has a LabelProvider,
      *         false otherwise
      */
@@ -272,7 +272,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
      * Sets a flag indicating whether this property descriptor is to be always
      * considered incompatible with any other property descriptor. Setting this
      * flag prevents a property from displaying during multiple selection.
-     * 
+     *
      * @param flag
      *            <code>true</code> to indicate always incompatible
      */
@@ -282,7 +282,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
 
     /**
      * Sets the category for this property descriptor.
-     * 
+     *
      * @param category
      *            the category for the descriptor, or <code>null</code> if
      *            none
@@ -296,7 +296,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
      * Sets the description for this property descriptor. The description should
      * be limited to a single line so that it can be displayed in the status
      * line.
-     * 
+     *
      * @param description
      *            the description, or <code>null</code> if none
      * @see #getDescription
@@ -313,7 +313,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
      * Valid values for these flags are declared as constants on
      * <code>IPropertySheetEntry</code>
      * </p>
-     * 
+     *
      * @param value
      *            the filter flags
      * @see #getFilterFlags
@@ -324,7 +324,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
 
     /**
      * Sets the help context id for this property descriptor.
-     * 
+     *
      * NOTE: Help support system API's changed since 2.0 and arrays of contexts
      * are no longer supported.
      * <p>
@@ -333,7 +333,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
      * parameter types are deprecated. The plural name for this method is
      * unfortunate.
      * </p>
-     * 
+     *
      * @param contextIds
      *            the help context ids, or <code>null</code> if none
      * @see #getHelpContextIds
@@ -348,7 +348,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
      * If no label provider is set an instance of <code>LabelProvider</code>
      * will be created as the default when needed.
      * </p>
-     * 
+     *
      * @param provider
      *            the label provider for the descriptor, or <code>null</code>
      *            if the default label provider should be used
@@ -365,14 +365,14 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
      * [Issue: This method should be unnecessary is the cell editor's own
      * validator is used. ]
      * </p>
-     * 
+     *
      * @param validator
      *            the cell input validator, or <code>null</code> if none
      */
     public final void setValidator(final ICellEditorValidator validator) {
         _validator = validator;
     }
-    
+
     public PropertyTypesEnum getPropertyType() {
         return _compatiblePropertyType;
     }

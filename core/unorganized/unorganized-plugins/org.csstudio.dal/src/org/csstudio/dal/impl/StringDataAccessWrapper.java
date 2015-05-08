@@ -80,7 +80,7 @@ public class StringDataAccessWrapper extends AbstractDataAccessWrapper<String>
         switch (conversion) {
         case ENUM_TO_STRING: {
             String strVal = new String();
-            try 
+            try
             {
 
             long index = ((Long)value).longValue();

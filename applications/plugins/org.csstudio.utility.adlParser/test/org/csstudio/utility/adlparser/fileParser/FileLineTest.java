@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.adlparser.fileParser;
 
@@ -25,7 +25,7 @@ public class FileLineTest  extends TestCase {
      */
     @Before
     public void setUp() throws Exception {
-        
+
     }
 
     /**
@@ -48,7 +48,7 @@ public class FileLineTest  extends TestCase {
         assertTrue("Test Null line " + nullLine.getLine(), nullLine.getLine().equals(testString));
         testLine.setLine(nullString);
         assertTrue("Test test line " + testLine.getLine(), testLine.getLine().equals(""));
-        
+
     }
 
     /**
@@ -78,7 +78,7 @@ public class FileLineTest  extends TestCase {
         assertTrue("Test with quotes & space", FileLine.getTrimmedValue(" \" " + testString2 + " \" ").equals(testString2));
         assertFalse("Test Switching case", FileLine.getTrimmedValue(testString2.toLowerCase()).equals(testString2));
         assertFalse("Test Switching case", FileLine.getTrimmedValue(testString2.toUpperCase()).equals(testString2));
-        
+
     }
 
     /**

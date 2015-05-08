@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.ui.editparts;
@@ -38,9 +38,9 @@ import org.eclipse.swt.SWT;
 
 /**
  * A Figure that contains Layer.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class LayeredWidgetPane extends FreeformLayeredPane {
 
@@ -70,7 +70,7 @@ public final class LayeredWidgetPane extends FreeformLayeredPane {
 
     /**
      * Constructor.
-     * 
+     *
      * @param showBorder
      *            Show the border?
      */
@@ -101,7 +101,7 @@ public final class LayeredWidgetPane extends FreeformLayeredPane {
 
     /**
      * Sets if the border of the display should be shown.
-     * 
+     *
      * @param showBorder
      *            True if the border should be shown, false otherwise
      */
@@ -124,7 +124,7 @@ public final class LayeredWidgetPane extends FreeformLayeredPane {
 
     /**
      * Sets the bounds of the display.
-     * 
+     *
      * @param width
      *            The width
      * @param height
@@ -140,7 +140,7 @@ public final class LayeredWidgetPane extends FreeformLayeredPane {
     /**
      * Sets the visibility of the Layer specified by the given layerId to
      * <i>visible</i>.
-     * 
+     *
      * @param layerId
      *            The id of the Layer
      * @param visible
@@ -154,7 +154,7 @@ public final class LayeredWidgetPane extends FreeformLayeredPane {
 
     /**
      * Move the Layer specified by the given layerId to the new index.
-     * 
+     *
      * @param layerId
      *            The id of the Layer
      * @param newIndex
@@ -171,7 +171,7 @@ public final class LayeredWidgetPane extends FreeformLayeredPane {
     /**
      * Adds the given IFigure at the given index and inserts the IFigure to the
      * Layer specified by the given layerId.
-     * 
+     *
      * @param layerId
      *            The id of the Layer
      * @param widgetFigure
@@ -195,7 +195,7 @@ public final class LayeredWidgetPane extends FreeformLayeredPane {
         // add the figure to the layer at the right index position
 
         // FIXME: Sven Wende: Optimieren der Performance bei dieser Einfügeoperation!
-        
+
         List<IFigure> widgetsInLayer = layer.getChildren();
 
         int insertIndex = 0;
@@ -220,7 +220,7 @@ public final class LayeredWidgetPane extends FreeformLayeredPane {
 
     /**
      * Removes the given IFigure.
-     * 
+     *
      * @param widgetFigure
      *            The IFigure that should be removed
      */
@@ -254,7 +254,7 @@ public final class LayeredWidgetPane extends FreeformLayeredPane {
 
     /**
      * Creates a new FreeFormLayer.
-     * 
+     *
      * @return Layer The new FreeFormLayer
      */
     private Layer createFreeFormLayer() {
@@ -266,7 +266,7 @@ public final class LayeredWidgetPane extends FreeformLayeredPane {
     /**
      * Adds a new Layer with the given <i>layerName</i> at the given index to
      * this Pane.
-     * 
+     *
      * @param layerName
      *            The name of the new Layer
      * @param index
@@ -282,7 +282,7 @@ public final class LayeredWidgetPane extends FreeformLayeredPane {
     /**
      * Removes the Layer with the given <i>layerName</i> and adds all contained
      * IFigure to the Layer with the name <i>fallBackLayerName</i>.
-     * 
+     *
      * @param layerName
      *            The name of the Layer, which should be removed
      * @param fallBackLayerName
@@ -313,7 +313,7 @@ public final class LayeredWidgetPane extends FreeformLayeredPane {
     /**
      * Moves the given IFigure from the Layer specified by the <i>oldLayerName</i>
      * to the Layer specified by the <i>newLayerName</i>.
-     * 
+     *
      * @param figure
      *            The IFigure, which should be moved
      * @param oldLayerName
@@ -336,7 +336,7 @@ public final class LayeredWidgetPane extends FreeformLayeredPane {
 
     /**
      * Returns true if a Layer with the given name exists.
-     * 
+     *
      * @param layerName
      *            The name of a Layer
      * @return boolean True if the Layer exists, false otherwise

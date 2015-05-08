@@ -150,7 +150,7 @@ public class PvListView extends ViewPart {
                 tableSortComparator = new ProcessVariableAddressComparator();
                 treeViewer.setInput(pvsToWidgets);
             }
-            
+
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
@@ -607,7 +607,7 @@ public class PvListView extends ViewPart {
         }
 
     }
-    
+
     private class ProcessVariableValidationResultComparator implements Comparator<IProcessVariableAddress> {
 
         private final int serviceIndex;
@@ -617,7 +617,7 @@ public class PvListView extends ViewPart {
             this.serviceIndex = serviceIndex;
             secondaryComparator = new ProcessVariableAddressComparator();
         }
-        
+
         @Override
         public int compare(IProcessVariableAddress pv0,
                 IProcessVariableAddress pv1) {
@@ -631,12 +631,12 @@ public class PvListView extends ViewPart {
             if(result == 0) {
                 result = secondaryComparator.compare(pv0, pv1);
             }
-            
+
             return result;
         }
-        
+
     }
-    
+
     private class ProcessVariableAddressComparator implements Comparator<IProcessVariableAddress> {
         @Override
         public int compare(IProcessVariableAddress pv1,

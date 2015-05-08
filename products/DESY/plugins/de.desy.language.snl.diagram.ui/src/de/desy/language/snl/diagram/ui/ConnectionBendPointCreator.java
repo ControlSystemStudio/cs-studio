@@ -11,7 +11,7 @@ import de.desy.language.snl.diagram.model.SNLModel;
 import de.desy.language.snl.diagram.model.WhenConnection;
 
 public class ConnectionBendPointCreator {
-    
+
     private static final int TOLERANCE = 10;
 
     private int _separation;
@@ -32,7 +32,7 @@ public class ConnectionBendPointCreator {
     /**
      * Calculates the points necessary for the re-routing of the
      * {@link Connection}.
-     * 
+     *
      * @param source
      *            The start point of the {@link Connection}
      * @param target
@@ -49,7 +49,7 @@ public class ConnectionBendPointCreator {
         assert source != null : "source != null";
         assert target != null : "target != null";
         assert index >= 0 : "index >= 0";
-        
+
         final Point firstAnchorPoint = source.getLocation().getCopy();
         final Point secondAnchorPoint = target.getLocation().getCopy();
 
@@ -68,24 +68,24 @@ public class ConnectionBendPointCreator {
 
         final int deltaX = secondAnchorPoint.x - firstAnchorPoint.x;
         final int deltaY = secondAnchorPoint.y - firstAnchorPoint.y;
-        
+
         int firstXOrientation = deltaX / Math.max(1, Math.abs(deltaX));
         if (firstXOrientation == 0) {
             firstXOrientation = 1;
         }
         Dimension firstRelativeDimension = new Dimension((int)(firstXOrientation * firstAdjacentLeg), -(int)(firstXOrientation * firstOppositeLeg));
         Dimension secondRelativeDimension = new Dimension(-(int)(firstXOrientation * secondAdjacentLeg), (int)(firstXOrientation * secondOppositeLeg));
-        
+
         Point firstBendPoint = firstAnchorPoint.getCopy();
         firstBendPoint.translate(firstRelativeDimension);
         Point secondBendPoint = secondAnchorPoint.getCopy();
         secondBendPoint.translate(secondRelativeDimension);
-        
+
         if (deltaX > TOLERANCE) {
             firstBendPoint.x = firstBendPoint.x + source.getSize().width;
         } else if (deltaX < -TOLERANCE) {
             secondBendPoint.x = secondBendPoint.x + target.getSize().width;
-        } 
+        }
         if (deltaY > TOLERANCE) {
             firstBendPoint.y = firstBendPoint.y + source.getSize().height;
         } else if (deltaY < -TOLERANCE) {
@@ -94,7 +94,7 @@ public class ConnectionBendPointCreator {
             firstBendPoint.y = firstBendPoint.y + source.getSize().height / 2;
             secondBendPoint.y = secondBendPoint.y + target.getSize().height / 2;
         }
-        
+
         final List<Point> result = new ArrayList<Point>(2);
         result.add(firstBendPoint);
         result.add(secondBendPoint);
@@ -104,7 +104,7 @@ public class ConnectionBendPointCreator {
 
     /**
      * Calculates the angle of the {@link Connection}.
-     * 
+     *
      * @param firstPoint
      *            The start point of the {@link Connection}.
      * @param lastPoint
@@ -135,7 +135,7 @@ public class ConnectionBendPointCreator {
 
     /**
      * Calculates the length of the first re-routing segment.
-     * 
+     *
      * @param distance
      *            The default distance between two {@link Connection}s
      * @param index
@@ -153,7 +153,7 @@ public class ConnectionBendPointCreator {
 
     /**
      * Sets the space between two {@link Connection}s.
-     * 
+     *
      * @param separation
      * @requires separation >= 0
      */
@@ -165,7 +165,7 @@ public class ConnectionBendPointCreator {
 
     /**
      * Returns the space between two {@link Connection}s.
-     * 
+     *
      * @return The space.
      */
     public int getSeparation() {

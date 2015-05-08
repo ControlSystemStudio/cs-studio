@@ -19,7 +19,7 @@ import de.desy.language.snl.diagram.model.StateSetModel;
 
 /**
  * Utility class that can create a GEF Palette.
- * 
+ *
  * @see #createPalette()
  */
 final class ShapesEditorPaletteFactory {
@@ -48,7 +48,7 @@ final class ShapesEditorPaletteFactory {
     /**
      * Creates the PaletteRoot and adds all palette elements. Use this factory
      * method to create a new palette for your graphical editor.
-     * 
+     *
      * @return a new PaletteRoot
      */
     static PaletteRoot createPalette() {

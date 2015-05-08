@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Slider;
 public class MeterWidgetTest
 {
     private static boolean run = true;
-    
+
     @SuppressWarnings("nls")
     public static void main(final String[] args)
     {
@@ -36,9 +36,9 @@ public class MeterWidgetTest
         gd.horizontalAlignment = SWT.FILL;
         gd.verticalAlignment = SWT.FILL;
         meter.setLayoutData(gd);
-        
+
         meter.setLimits(0, 0.0, 2.0, 8.0, 9.0, 10.0, 2);
-        
+
         final Slider slider = new Slider(shell, SWT.HORIZONTAL);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
@@ -55,7 +55,7 @@ public class MeterWidgetTest
                 meter.setValue(value);
             }
         });
-        
+
         Button ok = new Button(shell, SWT.PUSH);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
@@ -69,9 +69,9 @@ public class MeterWidgetTest
             {
                 run = false;
             }
-        });        
+        });
 
-        
+
         shell.open();
         // Message loop left to the application
         while (run && !shell.isDisposed())

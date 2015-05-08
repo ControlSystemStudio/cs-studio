@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.ui.util.widgets;
 
@@ -23,9 +23,9 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * A widget with which allows you to select a range from a predefine range of
  * values.
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class StartEndRangeWidget extends Canvas {
 
@@ -33,7 +33,7 @@ public class StartEndRangeWidget extends Canvas {
     private volatile double min = Double.NaN;
     private volatile double max = Double.NaN;
     private volatile boolean rangeSet;
-    
+
     // Selected range
     private volatile double selectedMin = Double.NaN;
     private volatile double selectedMax = Double.NaN;
@@ -56,7 +56,7 @@ public class StartEndRangeWidget extends Canvas {
 
     /**
      * Adds a listener, notified if the range or the selected range changes.
-     * 
+     *
      * @param listener
      *            a new listener.
      */
@@ -66,7 +66,7 @@ public class StartEndRangeWidget extends Canvas {
 
     /**
      * Removes a listener.
-     * 
+     *
      * @param listener
      *            listener to be removed.
      */
@@ -85,13 +85,13 @@ public class StartEndRangeWidget extends Canvas {
 
     /**
      * Create a the StartEndRangeWidget widget.
-     * 
+     *
      * @param parent
      * @param style
      */
     public StartEndRangeWidget(Composite parent, int style) {
     super(parent, SWT.DOUBLE_BUFFERED);
-    
+
     addControlListener(new ControlListener() {
 
         @Override
@@ -120,14 +120,14 @@ public class StartEndRangeWidget extends Canvas {
 
     /**
      * Get the current minimum value of the range.
-     * 
+     *
      * @return
      */
     public double getMin() {
     return min;
     }
 
-    @Deprecated    
+    @Deprecated
     public void setMin(double min) {
     if (this.min != min) {
         if (min <= this.max) {
@@ -151,7 +151,7 @@ public class StartEndRangeWidget extends Canvas {
 
     /**
      * Get the current maximum value of the range.
-     * 
+     *
      * @return
      */
     public double getMax() {
@@ -182,7 +182,7 @@ public class StartEndRangeWidget extends Canvas {
     public boolean isRangeSet() {
         return rangeSet;
     }
-    
+
     /**
      * Reset the widget.
      */
@@ -195,13 +195,13 @@ public class StartEndRangeWidget extends Canvas {
     // Selected range
     selectedMin = Double.NaN;
     selectedMax = Double.NaN;
-    
+
     recalculateDistancePerPx();
     }
 
     /**
      * get the minimum value of the selected range.
-     * 
+     *
      * @return
      */
     public double getSelectedMin() {
@@ -238,7 +238,7 @@ public class StartEndRangeWidget extends Canvas {
 
     /**
      * Get the maximum value of the selected range.
-     * 
+     *
      * @return
      */
     public double getSelectedMax() {
@@ -247,7 +247,7 @@ public class StartEndRangeWidget extends Canvas {
 
     /**
      * Set the maximum value of the selected range.
-     * 
+     *
      * @param selectedMax
      */
     public void setSelectedMax(double selectedMax) {
@@ -276,7 +276,7 @@ public class StartEndRangeWidget extends Canvas {
 
     /**
      * Set the selected range for the widget.
-     * 
+     *
      * @param selectedMin
      * @param selectedMax
      */
@@ -298,7 +298,7 @@ public class StartEndRangeWidget extends Canvas {
     /**
      * Set the new min and max for the widget. The widget will resize while also
      * attempting to retain the previous selected range if possible.
-     * 
+     *
      * @param min
      * @param max
      */
@@ -307,8 +307,8 @@ public class StartEndRangeWidget extends Canvas {
         if (min <= max) {
         this.min = min;
         this.max = max;
-        // there was no prior range set 
-        // or the old selected range no longer fits in the current range 
+        // there was no prior range set
+        // or the old selected range no longer fits in the current range
         // reset the selected range
         if (!rangeSet ||
              selectedMax <= this.min ||
@@ -327,7 +327,7 @@ public class StartEndRangeWidget extends Canvas {
             this.selectedMax = this.max;
             followMax = true;
             }
-            
+
         }
         rangeSet = true;
         recalculateDistancePerPx();
@@ -340,8 +340,8 @@ public class StartEndRangeWidget extends Canvas {
 
     /**
      * Set both the range and the selected range of the widget.
-     * 
-     * @param min  
+     *
+     * @param min
      * @param max
      * @param selectedMin
      * @param selectedMax
@@ -368,7 +368,7 @@ public class StartEndRangeWidget extends Canvas {
 
     /**
      * Set the orientation of the widget (either horizontal or vertical) {@link ORIENTATION}.
-     * 
+     *
      * @param orientation
      */
     public void setOrientation(ORIENTATION orientation) {
@@ -380,7 +380,7 @@ public class StartEndRangeWidget extends Canvas {
 
     /**
      * Get the size of the current range.
-     * 
+     *
      * @return
      */
     public double getRange() {
@@ -389,7 +389,7 @@ public class StartEndRangeWidget extends Canvas {
 
     /**
      * Get the size of the selected range
-     * 
+     *
      * @return
      */
     public double getSelectedRange() {
@@ -420,11 +420,11 @@ public class StartEndRangeWidget extends Canvas {
     @Override
     public void mouseDoubleClick(MouseEvent e) {
         if(rangeSet){
-        
+
         setRanges(min, max, min, max);
         }
     }
-    
+
     @Override
     public void mouseDown(MouseEvent e) {
         // Save the starting point
@@ -527,7 +527,7 @@ public class StartEndRangeWidget extends Canvas {
 
     /**
      * Drawing function
-     * 
+     *
      * The things that need to be painted are 2 arcs, fills for the arcs and
      * binding lines.
      */

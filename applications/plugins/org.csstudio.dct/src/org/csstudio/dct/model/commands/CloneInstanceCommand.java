@@ -25,7 +25,7 @@ public final class CloneInstanceCommand extends Command {
 
     /**
      * Clones the specified instance an adds it to a container.
-     * 
+     *
      * @param original
      *            the instance
      * @param targetContainer
@@ -39,7 +39,7 @@ public final class CloneInstanceCommand extends Command {
 
     /**
      * Clones the specified instance an adds it to a container.
-     * 
+     *
      * @param original
      *            the instance
      * @param targetContainer
@@ -62,7 +62,7 @@ public final class CloneInstanceCommand extends Command {
 
     /**
      * Clones the specified instance an adds it to a folder.
-     * 
+     *
      * @param original
      *            the instance
      * @param targetContainer
@@ -86,7 +86,7 @@ public final class CloneInstanceCommand extends Command {
 
     /**
      * Clones the specified instance an adds it to a container.
-     * 
+     *
      * @param original
      *            the instance
      * @param targetContainer
@@ -147,7 +147,7 @@ public final class CloneInstanceCommand extends Command {
         // .. synchronize the instance structures
         //FIXME:
         chain.add(new SynchronizeInstancesCommand(original, instance, targetProject));
-        
+
         // .. synchronize the record structures
         chain.add(new SynchronizeRecordsCommand(original, instance, targetProject));
 

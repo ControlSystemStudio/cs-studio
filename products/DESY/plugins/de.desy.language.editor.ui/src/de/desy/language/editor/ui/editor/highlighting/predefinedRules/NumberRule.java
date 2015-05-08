@@ -19,9 +19,9 @@ import org.eclipse.jface.text.rules.Token;
 
 /**
  * Recognizes integer and float numbers.
- * 
+ *
  * @author P.Tomaszewski
- * 
+ *
  * TODO Move this class and its Test to
  * de.desy.snl.editor.draft.ui.extension.predefinedRules
  */
@@ -31,7 +31,7 @@ public class NumberRule implements IRule {
 
     /**
      * Creates new number rule.
-     * 
+     *
      * @param token
      *            Style token.
      */
@@ -104,7 +104,7 @@ public class NumberRule implements IRule {
 
     /**
      * Checks if start of number.
-     * 
+     *
      * @param ch
      *            Char to check.
      * @return <b>true</b> if Number.
@@ -116,7 +116,7 @@ public class NumberRule implements IRule {
 
     /**
      * Checks if part of hex number;
-     * 
+     *
      * @param ch
      *            Char to check.
      * @return <b>true</b>

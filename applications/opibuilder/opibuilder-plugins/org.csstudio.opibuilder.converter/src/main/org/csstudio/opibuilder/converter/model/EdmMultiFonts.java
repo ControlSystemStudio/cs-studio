@@ -28,11 +28,11 @@ public class EdmMultiFonts extends AbstractEdmMultiAttributes<EdmFont> {
         super(genericEntity, required);
 
     }
-    
+
     @Override
     protected EdmFont createEdmAttribute(EdmAttribute genericEntity) throws EdmException{
         return new EdmFont(genericEntity, false);
     }
 
-    
+
 }

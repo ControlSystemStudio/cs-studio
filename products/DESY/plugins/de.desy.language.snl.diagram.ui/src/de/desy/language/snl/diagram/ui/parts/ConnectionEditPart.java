@@ -32,7 +32,7 @@ import de.desy.language.snl.diagram.ui.command.MoveBendPointCommand;
  * This edit part must implement the PropertyChangeListener interface, so it can
  * be notified of property changes in the corresponding model element.
  * </p>
- * 
+ *
  */
 class ConnectionEditPart extends AbstractConnectionEditPart implements
         PropertyChangeListener {
@@ -51,7 +51,7 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
      */
     @Override
@@ -116,7 +116,7 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
      */
     @Override

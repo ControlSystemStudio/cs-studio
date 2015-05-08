@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.channel.widgets;
 
@@ -12,9 +12,9 @@ import java.util.Set;
 
 /**
  * A Helper class which return items which can be displayed in a jface table.
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class TunerSetpointTableModel {
 

@@ -12,7 +12,7 @@ public class XYGraphEditPart extends AbstractWidgetEditPart {
     protected IFigure doCreateFigure() {
         XYGraphModel model = (XYGraphModel) getWidgetModel();
         ToolbarArmedXYGraph figure = new ToolbarArmedXYGraph();
-        
+
         figure.setBackgroundColor(getModelColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND));
         figure.setTransparent(model.isTransparent());
         figure.setShowToolbar(model.isToolbarVisible());
@@ -21,7 +21,7 @@ public class XYGraphEditPart extends AbstractWidgetEditPart {
         figure.getXYGraph().setTitleFont(getModelFont(XYGraphModel.PROP_TITLE_FONT));
         figure.getXYGraph().setTitleColor(getModelColor(XYGraphModel.PROP_TITLE_COLOR));
         figure.getXYGraph().setShowLegend(model.isLegendVisible());
-        
+
         return figure;
     }
 

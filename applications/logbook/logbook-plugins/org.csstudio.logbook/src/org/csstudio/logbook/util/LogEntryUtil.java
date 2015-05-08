@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.util;
 
@@ -13,9 +13,9 @@ import org.csstudio.logbook.Tag;
 
 /**
  * Utility Class for common operations on an LogEntry/LogEntries
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class LogEntryUtil {
 
@@ -28,7 +28,7 @@ public class LogEntryUtil {
 
     /**
      * Return a list of names of all the tags added to this logEntry
-     * 
+     *
      * @param logEntry
      * @return
      */
@@ -42,7 +42,7 @@ public class LogEntryUtil {
 
     /**
      * Return a list of names of all the logbook added to this logEntry
-     * 
+     *
      * @param logEntry
      * @return
      */
@@ -56,7 +56,7 @@ public class LogEntryUtil {
 
     /**
      * Return a list of names of all the properties added to this logEntry
-     * 
+     *
      * @param logEntry
      * @return
      */
@@ -67,7 +67,7 @@ public class LogEntryUtil {
         }
         return propertyNames;
     }
-    
+
     public static Property getProperty(LogEntry logEntry, String PropertyName){
         for (Property property : logEntry.getProperties()) {
             if(property.getName().equalsIgnoreCase(PropertyName)){

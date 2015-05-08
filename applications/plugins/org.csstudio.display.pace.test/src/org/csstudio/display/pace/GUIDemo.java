@@ -17,7 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /** Standalone GUI test, run as JUnit test.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -37,7 +37,7 @@ public class GUIDemo
         final Display display = Display.getDefault();
         final Shell shell = new Shell(display);
         shell.setBounds(10, 100, 800, 600);
-        
+
         // Exceptions are not expected and handled by JUnit
         // framework by displaying them.
         final Model model =
@@ -50,7 +50,7 @@ public class GUIDemo
         while (!shell.isDisposed())
             if (!display.readAndDispatch())
                 display.sleep();
-        
+
         // Model shutdown
         model.stop();
     }

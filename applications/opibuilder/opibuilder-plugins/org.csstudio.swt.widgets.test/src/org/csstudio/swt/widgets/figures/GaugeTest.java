@@ -15,8 +15,8 @@ public class GaugeTest extends AbstractRoundRampedWidgetTest{
     public Figure createTestWidget() {
         return new GaugeFigure();
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -24,14 +24,14 @@ public class GaugeTest extends AbstractRoundRampedWidgetTest{
                 "effect3D",
                 "needleColor"
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
     @Override
     public boolean isAutoTest() {
         return true;
     }
 
-        
+
 }

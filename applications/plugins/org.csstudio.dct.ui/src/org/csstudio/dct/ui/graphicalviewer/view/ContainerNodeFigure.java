@@ -107,7 +107,7 @@ public class ContainerNodeFigure extends Panel {
     public Panel getInstanceArea() {
         return instanceArea;
     }
-    
+
     public void addMouseListener(MouseListener listener) {
         clickable.addMouseListener(listener);
     }

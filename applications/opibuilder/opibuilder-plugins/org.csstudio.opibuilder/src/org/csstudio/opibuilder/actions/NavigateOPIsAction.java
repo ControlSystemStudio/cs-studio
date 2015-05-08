@@ -30,17 +30,17 @@ import org.eclipse.ui.actions.ActionFactory;
  *
  */
 public class NavigateOPIsAction extends Action implements IDisplayOpenManagerListener {
-    
+
     private static final String BACK = "Back";
     private static final String FORWARD = "Forward";
     private DisplayOpenManager manager;
-    private boolean recreateMenu;    
+    private boolean recreateMenu;
     private boolean forward;
-    
+
 
     private class MenuCreator implements IMenuCreator {
         private Menu historyMenu;
-        
+
 
         public Menu getMenu(Menu parent) {
             setMenu(new Menu(parent));
@@ -55,12 +55,12 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
             initMenu();
             return historyMenu;
         }
-        
+
         private void setMenu(Menu menu) {
             dispose();
             historyMenu = menu;
         }
-        
+
         private void initMenu() {
             historyMenu.addMenuListener(new MenuAdapter() {
                 @Override
@@ -76,19 +76,19 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
                 }
             });
         }
-        
+
         private void fillMenu(final Menu menu) {
             if (manager == null)
                 return;
-            Object[] entries = forward ? 
-                    manager.getForwardStackEntries() : manager.getBackStackEntries();            
+            Object[] entries = forward ?
+                    manager.getForwardStackEntries() : manager.getBackStackEntries();
             RunnerInput[] runnerInputArray = new RunnerInput[entries.length];
             int i=entries.length-1;
             for(final Object o : entries){
                 runnerInputArray[i--] = (RunnerInput)o;
             }
-            
-            for(final RunnerInput input : runnerInputArray){                
+
+            for(final RunnerInput input : runnerInputArray){
                 final MenuItem menuItem = new MenuItem(menu, SWT.None);
                 menuItem.setText(input.getName());
                 menuItem.addSelectionListener(new SelectionAdapter(){
@@ -102,11 +102,11 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
                     }
                 });
             }
-            
+
             recreateMenu = false;
         }
-       
-        public void dispose() {            
+
+        public void dispose() {
             if (historyMenu != null) {
                 for (int i = 0; i < historyMenu.getItemCount(); i++) {
                     MenuItem menuItem = historyMenu.getItem(i);
@@ -118,8 +118,8 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
         }
     }
 
-    
-    
+
+
     public NavigateOPIsAction(boolean forward) {
         this.forward = forward;
         ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
@@ -133,8 +133,8 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
                     .getImageDescriptor(ISharedImages.IMG_TOOL_FORWARD_DISABLED));
             setActionDefinitionId("org.eclipse.ui.navigate.forwardHistory"); //$NON-NLS-1$
         } else {
-            setText("&Back"); 
-            setToolTipText(BACK);        
+            setText("&Back");
+            setToolTipText(BACK);
             setId(ActionFactory.BACKWARD_HISTORY.getId());
             setImageDescriptor(sharedImages
                     .getImageDescriptor(ISharedImages.IMG_TOOL_BACK));
@@ -144,7 +144,7 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
         }
         setMenuCreator(new MenuCreator());
     }
-    
+
     @Override
     public void run() {
         if(manager == null)
@@ -154,14 +154,14 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
         else
             manager.goBack();
     }
-    
+
     @Override
     public boolean isEnabled() {
         if (manager == null)
             return false;
         return forward?manager.canForward() : manager.canBackward();
     }
-    
+
     public void setDisplayOpenManager(DisplayOpenManager manager) {
         if (this.manager != null) {
             this.manager.removeListener(this);
@@ -176,7 +176,7 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
     public void displayOpenHistoryChanged(DisplayOpenManager manager) {
         update();
     }
-    
+
     public void update(){
         if (manager == null) return;
         setEnabled(isEnabled());
@@ -193,12 +193,12 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
                 setToolTipText(BACK);
         }
     }
-    
+
     /**
      * Disposes of all resources allocated by this action.
      */
     public void dispose() {
         setDisplayOpenManager(null);
     }
-    
+
 }

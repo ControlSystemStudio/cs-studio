@@ -20,19 +20,19 @@ import org.eclipse.ui.actions.ActionFactory;
 public class CutWidgetsAction extends CopyWidgetsAction {
 
     private DeleteAction deleteAction;
-    
+
     public CutWidgetsAction(OPIEditor part, DeleteAction deleteAction) {
         super(part);
         this.deleteAction = deleteAction;
         setText("Cut");
         setActionDefinitionId("org.eclipse.ui.edit.cut"); //$NON-NLS-1$
         setId(ActionFactory.CUT.getId());
-        ISharedImages sharedImages = 
+        ISharedImages sharedImages =
             part.getSite().getWorkbenchWindow().getWorkbench().getSharedImages();
         setImageDescriptor(sharedImages
         .getImageDescriptor(ISharedImages.IMG_TOOL_CUT));
     }
-    
+
     @Override
     public void run() {
         super.run();

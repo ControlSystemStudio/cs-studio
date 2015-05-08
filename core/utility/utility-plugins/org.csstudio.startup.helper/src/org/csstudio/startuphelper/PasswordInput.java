@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 
 class EraserThread implements Runnable {
        private boolean stop;
-     
+
        /**
         *@param The prompt displayed to the user
         */

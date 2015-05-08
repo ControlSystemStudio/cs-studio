@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.channel.actions;
 
@@ -13,14 +13,14 @@ import org.eclipse.jface.viewers.Viewer;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ChannelTreeContentProvider implements IStructuredContentProvider,
         ITreeContentProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java
      * .lang.Object)
@@ -32,7 +32,7 @@ public class ChannelTreeContentProvider implements IStructuredContentProvider,
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.viewers.IContentProvider#dispose()
      */
     @Override
@@ -42,7 +42,7 @@ public class ChannelTreeContentProvider implements IStructuredContentProvider,
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface
      * .viewers.Viewer, java.lang.Object, java.lang.Object)
@@ -54,7 +54,7 @@ public class ChannelTreeContentProvider implements IStructuredContentProvider,
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.
      * Object)
@@ -80,7 +80,7 @@ public class ChannelTreeContentProvider implements IStructuredContentProvider,
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object
      * )
@@ -95,7 +95,7 @@ public class ChannelTreeContentProvider implements IStructuredContentProvider,
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.
      * Object)

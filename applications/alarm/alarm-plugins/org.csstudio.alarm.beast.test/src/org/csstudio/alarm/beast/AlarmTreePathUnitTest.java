@@ -43,7 +43,7 @@ public class AlarmTreePathUnitTest
         assertThat(path.length, equalTo(4));
         assertThat(path[1], equalTo("to"));
 
-        
+
         // Sub-path
         final String new_path = AlarmTreePath.makePath(path, 2);
         assertThat(new_path, equalTo("/path/to"));
@@ -105,7 +105,7 @@ public class AlarmTreePathUnitTest
         path = AlarmTreePath.makePath(items, items.length);
         assertThat(path, equalTo("/path/to/sim:\\/\\/sine"));
     }
-    
+
     @Test
     public void testPathUpdate()
     {

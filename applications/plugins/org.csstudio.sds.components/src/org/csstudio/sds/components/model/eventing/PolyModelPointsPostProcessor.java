@@ -29,8 +29,8 @@ import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.gef.commands.Command;
 
 /**
- * TODO (hrickens) : 
- * 
+ * TODO (hrickens) :
+ *
  * @author hrickens
  * @author $Author: $
  * @since 19.10.2010
@@ -55,7 +55,7 @@ public class PolyModelPointsPostProcessor extends
         return new SetPointsCommand(widget);
     }
 
-    
+
     private static class SetPointsCommand extends Command {
 
         private final AbstractPolyModel widget;
@@ -63,7 +63,7 @@ public class PolyModelPointsPostProcessor extends
         public SetPointsCommand(AbstractPolyModel widget) {
             this.widget = widget;
         }
-        
+
         @Override
         public void execute() {
             PointList pointList = widget.getPoints();
@@ -72,6 +72,6 @@ public class PolyModelPointsPostProcessor extends
             widget.setX(pointList.getBounds().x);
             widget.setY(pointList.getBounds().y);
         }
-        
+
     }
 }

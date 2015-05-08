@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.sds.ui.internal.viewer;
 
@@ -17,9 +17,9 @@ import org.eclipse.ui.internal.ObjectPluginAction;
 
 /**
  * Patched graphical viewer implementation.
- * 
+ *
  * @author swende
- * 
+ *
  */
 public class PatchedGraphicalViewer extends ScrollingGraphicalViewer {
     private MenuManager contextMenu;

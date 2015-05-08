@@ -12,7 +12,7 @@ public class MacrosInputTest {
     MacrosInput macrosInput = new MacrosInput(
             new LinkedHashMap<String, String>(), true);
     String persistResult;
-    
+
     @Before
     public void setup(){
         macrosInput.put("m1", "v1");
@@ -20,7 +20,7 @@ public class MacrosInputTest {
         macrosInput.put("m3", "123");
         persistResult="\"true\",\"m1=v1\",\"m2=\",\"m3=123\"";
     }
-    
+
     @Test
     public void testToPersistenceString() {
         String s=macrosInput.toPersistenceString();
@@ -28,7 +28,7 @@ public class MacrosInputTest {
     }
 
     @Test
-    public void testRecoverFromString() throws Exception {        
+    public void testRecoverFromString() throws Exception {
         assertEquals(macrosInput, MacrosInput.recoverFromString(persistResult));
     }
 

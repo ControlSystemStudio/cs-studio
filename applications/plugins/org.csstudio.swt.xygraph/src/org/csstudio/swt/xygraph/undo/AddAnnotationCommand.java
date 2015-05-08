@@ -16,10 +16,10 @@ import org.csstudio.swt.xygraph.figures.XYGraph;
  *
  */
 public class AddAnnotationCommand implements IUndoableCommand {
-    
+
     private XYGraph xyGraph;
     private Annotation annotation;
-    
+
     public AddAnnotationCommand(XYGraph xyGraph, Annotation annotation) {
         this.xyGraph = xyGraph;
         this.annotation = annotation;
@@ -32,7 +32,7 @@ public class AddAnnotationCommand implements IUndoableCommand {
     public void undo() {
         xyGraph.removeAnnotation(annotation);
     }
-    
+
     @Override
     public String toString() {
         return Messages.Annotation_Add;

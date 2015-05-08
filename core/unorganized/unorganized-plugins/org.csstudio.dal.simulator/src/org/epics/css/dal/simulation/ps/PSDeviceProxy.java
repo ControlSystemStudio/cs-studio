@@ -52,7 +52,7 @@ public class PSDeviceProxy extends DeviceProxyImpl implements DeviceProxy<Simula
 {
     private Map<String, Class<?extends PropertyProxy<?,SimulatorPlug>>> propertyProxyTypes;
     private long delay = 0;
-    
+
     /**
      * Creates a new DeviceProxyImpl object.
      *
@@ -62,7 +62,7 @@ public class PSDeviceProxy extends DeviceProxyImpl implements DeviceProxy<Simula
     {
         this(name, plug, (Long)SimulatorUtilities.getConfiguration(SimulatorUtilities.CONNECTION_DELAY));
     }
-    
+
     /**
      * Creates a new DeviceProxyImpl object.
      *
@@ -120,7 +120,7 @@ public class PSDeviceProxy extends DeviceProxyImpl implements DeviceProxy<Simula
 
         delayedConnect(delay);
     }
-    
+
     public void delayedConnect(long timeout)
     {
         setConnectionState(ConnectionState.CONNECTING);

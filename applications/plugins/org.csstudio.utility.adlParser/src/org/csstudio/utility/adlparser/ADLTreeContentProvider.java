@@ -101,9 +101,9 @@ public class ADLTreeContentProvider extends TreeNodeContentProvider {
             Object [] ret = { ((ADLResource)inputElement).getValue().toString() };
             return  ret;
         }
-        
+
         return new Object[0];
     }
 
-    
+
 }

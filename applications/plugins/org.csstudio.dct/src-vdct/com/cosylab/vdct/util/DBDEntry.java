@@ -25,9 +25,9 @@ import com.cosylab.vdct.Settings;
  */
 public class DBDEntry {
     private static File baseDir = null;
-    
+
     private String value;
-    
+
     private boolean savesToFile = true;
     private boolean relative = false;
 
@@ -35,15 +35,15 @@ public class DBDEntry {
         this.value = value;
         relativityTest();
     }
-    
+
     /**
-     * 
+     *
      */
     private void relativityTest() {
         if (value.indexOf('$')==-1 && !new File(value).isAbsolute()) {
-            value = getFile().getPath();     
+            value = getFile().getPath();
             relative = true;
-        } 
+        }
     }
 
     /**
@@ -64,10 +64,10 @@ public class DBDEntry {
 
     public File getFile() {
         File f = new File( matchAndReplace(value) );
-        
+
         // if not absolute, make relative to DB file
         if (!f.isAbsolute()) f = new File(baseDir, value);
-        
+
         try {
             return f.getCanonicalFile();
         } catch (IOException ioe) {
@@ -76,7 +76,7 @@ public class DBDEntry {
         }
         return f.getAbsoluteFile();
     }
-    
+
     public String toString() {
         return getFile().toString();
     }
@@ -96,30 +96,30 @@ public class DBDEntry {
 
     public static String matchAndReplace(String value) {
         if (value==null || value.indexOf('$')<0) return value;
-        
+
         Pattern macrop = Pattern.compile("\\$\\(([^\\$]+)\\)");
-        
+
         Matcher macro = macrop.matcher(value);
         StringBuffer result=new StringBuffer();
         while (macro.find()) {
             String macron=macro.group(1);
-            
+
             String replacement1 = getProperties().getProperty(macron);
             if (replacement1 == null) {
                 macro.appendReplacement(result, macron.replaceAll("\\$","\\\\\\$"));
                 continue;
             }
-            
-            
+
+
             getProperties().remove(macron);  // to avoid infinite loop
             String replacement2 = matchAndReplace(replacement1);
             getProperties().setProperty(macron, replacement2); // to speedup lookups
-            
+
             macro.appendReplacement(result, replacement2.replaceAll("\\$","\\\\\\$"));
         }
-        
+
         macro.appendTail(result);
-        
+
         return result.toString();
     }
 
@@ -154,7 +154,7 @@ public class DBDEntry {
     public static Properties getProperties() {
         if (properties==null) {
             properties = new Properties(System.getProperties());
-            
+
             // import from epics release file
             File f = new File(properties.getProperty("EPICS_BASE")+"/configure/RELEASE");
             if (f.canRead()) {
@@ -166,7 +166,7 @@ public class DBDEntry {
                         if (line.matches("[^#=].*=.*")) {
                             String[] strs=line.split("=",2);
                             if (strs.length==2) properties.put(strs[0].trim(),strs[1].trim());
-                        }    
+                        }
                     }
                 } catch (FileNotFoundException e) {
                     //can't happen
@@ -182,7 +182,7 @@ public class DBDEntry {
                 }
             }
         }
-        
+
         return properties;
     }
     /**

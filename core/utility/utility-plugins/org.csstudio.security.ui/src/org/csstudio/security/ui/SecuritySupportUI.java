@@ -25,11 +25,11 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /** UI support for security.
- * 
+ *
  *  <p>Actions can register to be enabled/disabled based on authorization.
- *  
+ *
  *  @see #registerAction(IAction, String)
- *  
+ *
  *  @author Kay Kasemir
  */
 public class SecuritySupportUI implements BundleActivator, SecurityListener
@@ -54,9 +54,9 @@ public class SecuritySupportUI implements BundleActivator, SecurityListener
     {
         SecuritySupport.removeListener(this);
     }
-    
+
     /** Register action to be enabled/disabled based on current authorization
-     *  
+     *
      *  <p>Ideally, actions should be unregistered when this behavior is no
      *  longer required.
      *  Omitting the de-registration will "work" since a weak reference is used,
@@ -117,7 +117,7 @@ public class SecuritySupportUI implements BundleActivator, SecurityListener
             {
                 // Is it enabled?
                 final boolean enabled = authorizations != null  &&  authorizations.haveAuthorization(authorization);
-                
+
                 // Loop over actions that need to be updated for this authorization
                 final Iterator<WeakReference<IAction>> action_refs = authorized_actions.get(authorization).iterator();
                 while (action_refs.hasNext())

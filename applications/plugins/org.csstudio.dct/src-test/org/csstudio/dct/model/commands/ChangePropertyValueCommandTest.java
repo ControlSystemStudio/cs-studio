@@ -11,9 +11,9 @@ import org.junit.Test;
 
 /**
  * Test class for {@link ChangePropertyValueCommand}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ChangePropertyValueCommandTest {
     private IPropertyContainer container;

@@ -25,37 +25,37 @@ import org.epics.vtype.AlarmSeverity;
  */
 @SuppressWarnings("nls")
 final class ServerInfoRequest {
-          
+
     private String commandName = "getInfo";
-    
+
     //  {string command}
     private Structure requestType;
-    
+
     /** String used for an OK status and severity
      *  (more generic than the EPICS 'NO_ALARM')
      */
     final static String NO_ALARM = "OK";
-    
-    private String description;    
+
+    private String description;
     private int version;
     private String how_strings[];
     private String status_strings[];
     private Map<Integer, SeverityImpl> severities;
-    
+
     public ServerInfoRequest(){
         createRequestType();
         severities = new HashMap<Integer, SeverityImpl>();
     }
 
     /** Read info from data server */
-    public void read(RPCClientImpl client, double REQUEST_TIMEOUT) 
+    public void read(RPCClientImpl client, double REQUEST_TIMEOUT)
             throws Exception {
-        
+
         // send request
 
     PVStructure pvRequest = createRequest();
     PVStructure pvResult  = client.request(pvRequest, REQUEST_TIMEOUT);
-        
+
         // process result
         //    { int32             ver,
         //      string            desc,
@@ -68,12 +68,12 @@ final class ServerInfoRequest {
         //      }                 sevr[]
         //    } = archiver.info()
 
-        version     = pvResult.getIntField("ver").get(); 
+        version     = pvResult.getIntField("ver").get();
         description = pvResult.getStringField("desc").get();
-        
+
         // Get 'how'. Silly code to copy that into a type-safe vector.
         setHows(pvResult);
-       
+
         // Same silly code for the status strings. Better way?
         setStat(pvResult);
 
@@ -100,7 +100,7 @@ final class ServerInfoRequest {
     public String[] getStatusStrings() {
         return status_strings;
     }
-    
+
         /** @return Returns the severity infos. */
     public Map<Integer, SeverityImpl> getSeverities(){
         return severities;
@@ -127,100 +127,100 @@ final class ServerInfoRequest {
         }
         return result.toString();
     }
-    
+
     public String getName() {
         return commandName;
     }
-    
+
     public PVStructure createRequest(){
-        
+
         PVDataCreate dataCreate = PVDataFactory.getPVDataCreate();
-        
+
         PVStructure request = dataCreate.createPVStructure(requestType);
-        
+
         PVString commandField = request.getStringField("command");
         commandField.put(commandName);
-        
-        return request;     
+
+        return request;
     }
-    
+
     // private methods
-    
+
     private void createRequestType(){
-        
+
         FieldCreate fieldCreate = FieldFactory.getFieldCreate();
-        
+
         String[] names = new String[1];
         Field[] fields = new Field[1];
-        
+
         names[0] = "command";
         fields[0] = fieldCreate.createScalar(ScalarType.pvString);
-        
-        requestType = fieldCreate.createStructure(names, fields);     
+
+        requestType = fieldCreate.createStructure(names, fields);
     }
-    
+
     private void setHows(PVStructure pvResult){
-            
-        PVStringArray howsArray =  (PVStringArray) 
+
+        PVStringArray howsArray =  (PVStringArray)
              pvResult.getScalarArrayField("how", ScalarType.pvString);
-        
+
         int length = howsArray.getLength();
-        
+
         StringArrayData howsData = new StringArrayData();
         howsArray.get(0, length, howsData);
-        
+
         how_strings = new String[length];
         for (int i=0; i < length; ++i){
             how_strings[i] = howsData.data[i];
         }
-        
+
     }
-    
+
     private void setStat(PVStructure pvResult){
-            
-        PVStringArray statArray =  (PVStringArray) 
+
+        PVStringArray statArray =  (PVStringArray)
              pvResult.getScalarArrayField("stat", ScalarType.pvString);
-        
+
         int length = statArray.getLength();
-        
+
         StringArrayData statData = new StringArrayData();
         statArray.get(0, length, statData);
-        
+
         status_strings = new String[length];
-        for (int i=0; i < length; ++i){            
+        for (int i=0; i < length; ++i){
             status_strings[i] = statData.data[i];
             // Patch "NO ALARM" into "OK"
             if (status_strings[i].equals("NO_ALARM"))
                 status_strings[i] = NO_ALARM;
         }
-        
+
     }
-    
+
     private void setSevr(PVStructure pvResult){
-        
-       PVStructureArray sevrs = pvResult.getStructureArrayField("sevr"); 
-        
-        StructureArrayData data = new StructureArrayData();       
+
+       PVStructureArray sevrs = pvResult.getStructureArrayField("sevr");
+
+        StructureArrayData data = new StructureArrayData();
         sevrs.get(0, sevrs.getLength(), data);
-                     
+
         for(int i = 0; i < sevrs.getLength(); i++){
-            
+
             PVStructure info = data.data[i];
 
             int num        = info.getIntField("num").get();
             String  sevr   = info.getStringField("sevr").get();
             int int_has_value  = info.getIntField("has_value").get();
             int int_txt_stat   = info.getIntField("txt_stat").get();
-            
+
             boolean has_value = false;
             if(int_has_value > 0) has_value = true;
-            
+
             boolean txt_stat = false;
-            if(int_txt_stat > 0) txt_stat = true;           
-                      
+            if(int_txt_stat > 0) txt_stat = true;
+
             // Patch "NO ALARM" into "OK"
             AlarmSeverity severity;
-            
+
             if ("NO_ALARM".equals(sevr)  ||  NO_ALARM.equals(sevr))
                 severity = AlarmSeverity.NONE;
             else if ("MINOR".equals(sevr))
@@ -231,12 +231,12 @@ final class ServerInfoRequest {
                 severity = AlarmSeverity.INVALID;
             else
                 severity = AlarmSeverity.UNDEFINED;
-            
-            severities.put(num, 
+
+            severities.put(num,
                     new SeverityImpl(severity, sevr, has_value, txt_stat));
-            
+
         }
     }
-    
+
 }
 

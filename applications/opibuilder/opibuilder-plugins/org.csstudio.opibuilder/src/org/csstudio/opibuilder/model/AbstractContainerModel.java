@@ -35,7 +35,7 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
      * Macros of the container, which will be available to its children.
      */
     public static final String PROP_MACROS = "macros"; //$NON-NLS-1$
-    
+
 
     final private AbstractWidgetProperty childrenProperty;
 
@@ -131,7 +131,7 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
     public List<AbstractWidgetModel> getChildren() {
         return childrenList;
     }
-    
+
     /**
      * @return all descendants of this container.
      */
@@ -210,7 +210,7 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
         return (MacrosInput)getCastedPropertyValue(PROP_MACROS);
     }
 
-    /**Add a macro to the container. 
+    /**Add a macro to the container.
      * This method must be called before this widget is activated.
      * @param macroName name of the macro
      * @param macroValue value of the macro
@@ -235,9 +235,9 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
     public boolean isChildrenOperationAllowable(){
         return true;
     }
-    
 
-    
+
+
     @Override
     public void scale(double widthRatio, double heightRatio) {
         super.scale(widthRatio, heightRatio);

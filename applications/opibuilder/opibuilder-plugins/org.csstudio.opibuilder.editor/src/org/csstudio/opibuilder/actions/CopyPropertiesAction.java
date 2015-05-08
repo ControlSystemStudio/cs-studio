@@ -45,16 +45,16 @@ import org.jdom.output.XMLOutputter;
  *
  */
 public class CopyPropertiesAction extends SelectionAction {
-    
+
     private static final String ROOT_ELEMENT = "PropCopyData";  //$NON-NLS-1$
 
     public static final String PROPID_ELEMENT = "Properties";  //$NON-NLS-1$
 
     public static final String ID = "org.csstudio.opibuilder.actions.copyproperties";
-    
+
     /**
      * @param part the OPI Editor
-     * @param pasteWidgetsAction pass the paste action will 
+     * @param pasteWidgetsAction pass the paste action will
      * help to update the enable state of the paste action
      * after copy action invoked.
      */
@@ -73,8 +73,8 @@ public class CopyPropertiesAction extends SelectionAction {
             return true;
         return false;
     }
-    
-    
+
+
     @Override
     public void run() {
         PropertiesSelectDialog dialog = new PropertiesSelectDialog(null, getSelectedWidgetModels().get(0));
@@ -83,38 +83,38 @@ public class CopyPropertiesAction extends SelectionAction {
             if(!propList.isEmpty()){
                 AbstractWidgetModel widget = getSelectedWidgetModels().get(0);
                 Element widgetElement = XMLUtil.widgetToXMLElement(widget);
-                
+
                 Element propertisElement = new Element(PROPID_ELEMENT);
-                
+
                 for(String propID : propList){
                     propertisElement.addContent(new Element(propID));
                 }
                 Element rootElement = new Element(ROOT_ELEMENT);
-                
+
                 rootElement.addContent(widgetElement);
                 rootElement.addContent(propertisElement);
-                
+
                 XMLOutputter xmlOutputter = new XMLOutputter(Format.getRawFormat());
                 String xmlString = xmlOutputter.outputString(rootElement);
-                
+
                 ((OPIEditor)getWorkbenchPart()).getClipboard()
-                    .setContents(new Object[]{xmlString}, 
+                    .setContents(new Object[]{xmlString},
                     new Transfer[]{PropertiesCopyDataTransfer.getInstance()});
             }
         }
-        
+
     }
-    
+
     /**
      * Gets the widget models of all currently selected EditParts.
-     * 
+     *
      * @return a list with all widget models that are currently selected
      */
     protected final List<AbstractWidgetModel> getSelectedWidgetModels() {
         List<?> selection = getSelectedObjects();
-    
+
         List<AbstractWidgetModel> selectedWidgetModels = new ArrayList<AbstractWidgetModel>();
-    
+
         for (Object o : selection) {
             if (o instanceof EditPart) {
                 selectedWidgetModels.add((AbstractWidgetModel) ((EditPart) o)

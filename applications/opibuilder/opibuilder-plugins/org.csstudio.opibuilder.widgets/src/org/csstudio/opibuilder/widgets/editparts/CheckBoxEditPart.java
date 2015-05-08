@@ -49,16 +49,16 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 
         return figure;
     }
-    
+
     @Override
     protected void createEditPolicies() {
         super.createEditPolicies();
         if(getExecutionMode() == ExecutionMode.EDIT_MODE)
             installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new TextDirectEditPolicy());
     }
-    
+
     protected void performDirectEdit(){
-        new TextEditManager(this, 
+        new TextEditManager(this,
                 new LabelCellEditorLocator(getFigure()), false).show();
     }
 
@@ -97,8 +97,8 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
                     break;
                 default:
                     break;
-                }                
-                
+                }
+
                 figure.setValue(VTypeHelper.getDouble((VType)newValue));
                 return true;
             }
@@ -146,7 +146,7 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
             }
         };
         setPropertyChangeHandler(CheckBoxModel.PROP_AUTOSIZE, handler);
-        
+
         handler = new IWidgetPropertyChangeHandler(){
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
@@ -199,7 +199,7 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
     public Boolean getValue() {
         return ((CheckBoxFigure)getFigure()).getBoolValue();
     }
-    
+
     @Override
     public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
         if(key == ITextFigure.class)

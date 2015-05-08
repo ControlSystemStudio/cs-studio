@@ -8,22 +8,22 @@ package com.cosylab.vdct.graphics.objects;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -45,7 +45,7 @@ import com.cosylab.vdct.graphics.popup.*;
 /**
  * Insert the type's description here.
  * Creation date: (30.1.2001 12:26:07)
- * @author Matej Sekoranja 
+ * @author Matej Sekoranja
  */
 public abstract class EPICSLinkOut extends EPICSLink implements OutLink, Popupable, Inspectable {
 
@@ -53,7 +53,7 @@ public abstract class EPICSLinkOut extends EPICSLink implements OutLink, Popupab
         public void actionPerformed(ActionEvent e) {
             String action = e.getActionCommand();
             if (action.equals(colorString))
-            {            
+            {
                 Color newColor = ColorChooser.getColor(selectTitle, getColor());
                 if (newColor!=null)
                     setColor(newColor);
@@ -76,7 +76,7 @@ public abstract class EPICSLinkOut extends EPICSLink implements OutLink, Popupab
             {
                 destroy();
             }
-            
+
         }
     }
     private static javax.swing.ImageIcon icon = null;
@@ -138,7 +138,7 @@ private com.cosylab.vdct.graphics.objects.EPICSLinkOut.PopupMenuHandler createPo
  * Called when VARIABLE link (source) was destroyed
  */
 public void sourceDestroyed() {
-    destroy();    
+    destroy();
 }
 
 /**
@@ -167,7 +167,7 @@ public static void destroyChain(Linkable link, OutLink out) {
         if (out instanceof Connector) {
             ((Connector)out).destroy();            // connectors
         }
-            
+
     }
 //    if (link instanceof EPICSLink)
         //((VisibleObject)link).destroy();
@@ -209,7 +209,7 @@ public static String generateConnectorID(EPICSLink outlink) {
         if (outlink.getParent() != null)
             rootName = outlink.getParent().getHashID() + Constants.CONNECTOR_FIELD_SEPARATOR + rootName;
     }
-    
+
     if (!outlink.getParent().containsObject(rootName)){
         return rootName;}
     else {
@@ -294,8 +294,8 @@ public java.util.Vector getItems() {
         Record parRec = (Record)getParent();
         boolean isFirst = parRec.isFirstField(this);
         boolean isLast = parRec.isLastField(this);
-        
-    
+
+
         if (!isFirst)
         {
             JMenuItem upItem = new JMenuItem(moveUpString);
@@ -303,7 +303,7 @@ public java.util.Vector getItems() {
             upItem.setIcon(new ImageIcon(getClass().getResource("/images/up.gif")));
             items.addElement(upItem);
         }
-    
+
         if (!isLast)
         {
             JMenuItem downItem = new JMenuItem(moveDownString);
@@ -311,11 +311,11 @@ public java.util.Vector getItems() {
             downItem.setIcon(new ImageIcon(getClass().getResource("/images/down.gif")));
             items.addElement(downItem);
         }
-    
+
         if (!(isFirst && isLast))
             items.add(new JSeparator());
     }
-    
+
     JMenuItem removeItem = new JMenuItem(removeString);
     removeItem.addActionListener(al);
     items.addElement(removeItem);
@@ -346,7 +346,7 @@ public String getName() {
 public int getOutX() {
     if (isRight())
         return getRightX();
-    else 
+    else
         return getLeftX();
 }
 /**
@@ -431,15 +431,15 @@ public static InLink getTarget(LinkProperties link, boolean allowLinkOutAsTarget
             return templateLink;
         }
     }
-    
+
     // else macro check (w/o .VAL ending)
     otherLinkObj = Group.getRoot().getLookupTable().get(link.getRecord());
     if (otherLinkObj!=null && otherLinkObj instanceof InLink)
         return (InLink)otherLinkObj;
-        
+
     if (doNotSearchRecordFields)
-        return null;    
-    
+        return null;
+
     Object obj = Group.getRoot().findObject(recName, true);
     if (obj==null || !(obj instanceof Record)) return null;
     Record record = (Record)obj;
@@ -460,15 +460,15 @@ public static InLink getTarget(LinkProperties link, boolean allowLinkOutAsTarget
         if (subObject instanceof InLink)
             inlink = (InLink)subObject;
     }
-    // not yet        
+    // not yet
     else {
         VDBFieldData target = record.getRecordData().getField(link.getVarName());
         if ((target==null) ||
             (LinkProperties.getType(target)!=LinkProperties.VARIABLE_FIELD && !allowLinkOutAsTarget)) return null;
-        else { 
+        else {
             //inlink = new EPICSVarLink(record, target);
             //record.addLink(inlink);
-            
+
             EPICSLink el = record.initializeLinkField(target);
             if (el instanceof InLink)
             {
@@ -487,12 +487,12 @@ public static InLink getTarget(LinkProperties link, boolean allowLinkOutAsTarget
  */
 public boolean isRight() {
     if (disconnected || inlink==null ||
-        !inlink.getLayerID().equals(getLayerID())) 
+        !inlink.getLayerID().equals(getLayerID()))
         return super.isRight();
     else {
         return getRightX()<=inlink.getLeftX()
           || (getLeftX()<inlink.getLeftX() && inlink.getLeftX()<getRightX() && getRightX()<inlink.getRightX());
-        /*if (inlink instanceof Connector) {    
+        /*if (inlink instanceof Connector) {
             return (inlink.getInX()>(getX()+getWidth()/2));
         }
         else if (inlink instanceof EPICSLinkOut) {            // not cycling
@@ -504,7 +504,7 @@ public boolean isRight() {
             VisibleObject obj = (VisibleObject)inlink;
             return ((obj.getX()+obj.getWidth()/2)>(getX()+getWidth()/2));
         }
-        else 
+        else
             return super.isRight();*/
     }
 }
@@ -518,10 +518,10 @@ public void setColor(Color newColor) {
         Linkable link = this;
         while (link instanceof OutLink && !(link instanceof EPICSVarOutLink)) {
             link = ((OutLink)link).getInput();
-            if (link instanceof VisibleObject) 
+            if (link instanceof VisibleObject)
                 ((VisibleObject)link).setColor(newColor);
         }
-        if (link instanceof VisibleObject) 
+        if (link instanceof VisibleObject)
             ((VisibleObject)link).setColor(newColor);
 }
 /**
@@ -576,7 +576,7 @@ private void updateLink() {
         InLink il = getTarget(newProperties);
         OutLink ol = (OutLink)preendpoint;
         ol.setInput(il);
-        if (il!=null) { 
+        if (il!=null) {
             il.setOutput(ol, null);
             hasEndpoint = true;
         }
@@ -590,11 +590,11 @@ private void updateLink() {
 protected void validateFontAndDimension(double Rscale, int rwidth, int rheight) {
     label2 = properties.getOptions();
     labelLen = (int)(Constants.LINK_LABEL_LENGTH*Rscale);
-    
+
     if (labelLen<15) font2 = null;
     else {
       font2 = FontMetricsBuffer.getInstance().getAppropriateFont(
-                      Constants.DEFAULT_FONT, Font.PLAIN, 
+                      Constants.DEFAULT_FONT, Font.PLAIN,
 //                      label2, labelLen, getRheight());
                       maxLenStr, labelLen, rheight);
       if (font2!=null) {
@@ -650,8 +650,8 @@ public void validateLink()
 
 public int getRightX() {
     if (inlink==null || !getLayerID().equals(inlink.getLayerID()))
-        return getX()+getWidth()+Constants.TAIL_LENGTH;     
-    else    
+        return getX()+getWidth()+Constants.TAIL_LENGTH;
+    else
         return getX()+getWidth()+Constants.TAIL_LENGTH + getVerticalPosition()*Constants.LINK_SLOT_WIDTH;
 }
 

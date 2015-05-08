@@ -16,15 +16,15 @@ public class ScaledSliderTest extends AbstractMarkedWidgetTest{
     public Figure createTestWidget() {
         ScaledSliderFigure slider = new ScaledSliderFigure();
         slider.addManualValueChangeListener(new IManualValueChangeListener() {
-            
+
             public void manualValueChanged(double newValue) {
                 System.out.println("slider Dragged: " + newValue);
             }
         });
         return slider;
     }
-    
-    
+
+
     @Override
     public String[] getPropertyNames() {
         String[] superProps =  super.getPropertyNames();
@@ -37,15 +37,15 @@ public class ScaledSliderTest extends AbstractMarkedWidgetTest{
                 "stepIncrement",
                 "pageIncrement"
         };
-        
+
         return concatenateStringArrays(superProps, myProps);
     }
-    
+
     @Override
     public boolean isAutoTest() {
         return true;
     }
 
-    
-        
+
+
 }

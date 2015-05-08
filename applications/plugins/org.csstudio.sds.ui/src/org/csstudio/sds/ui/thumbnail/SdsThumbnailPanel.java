@@ -360,26 +360,26 @@ public class SdsThumbnailPanel extends Composite {
     public interface LibraryPanelListener {
         void onSelectionChanged(SdsThumbnailPanel libraryPanel);
     }
-    
+
     private class ThumbnailCreationRunnable implements Runnable {
 
         private final List<File> displayList;
         private final Display display;
-        
+
         private boolean isCanceled = false;
 
         public ThumbnailCreationRunnable(List<File> displayList, Display display) {
             this.displayList = displayList;
             this.display = display;
         }
-        
+
         public void cancel() {
             this.isCanceled = true;
         }
-        
+
         @Override
         public void run() {
-            
+
             for (int fileIndex = 0; fileIndex < displayList.size() && !isCanceled; fileIndex++) {
                 final File file = displayList.get(fileIndex);
                 final ImageData imageData = displayInfoService.getImage(file);

@@ -18,7 +18,7 @@ import org.eclipse.gef.requests.DirectEditRequest;
  * @author Xihui Chen
  *
  */
-public class SpinnerDirectEditPolicy 
+public class SpinnerDirectEditPolicy
     extends DirectEditPolicy {
 
     /**
@@ -30,7 +30,7 @@ public class SpinnerDirectEditPolicy
         SpinnerEditCommand command = new SpinnerEditCommand((LabelModel)spinner.getModel(),labelText);
         return command;
     }
-    
+
     /**
      * @see DirectEditPolicy#showCurrentEditValue(DirectEditRequest)
      */
@@ -39,16 +39,16 @@ public class SpinnerDirectEditPolicy
         //((LabelFigure)getHostFigure()).setText(value);
         //hack to prevent async layout from placing the cell editor twice.
         //getHostFigure().getUpdateManager().performUpdate();
-        
-    
+
+
     }
 
 
 static class SpinnerEditCommand extends Command    {
-    
+
     private String newText, oldText;
     private LabelModel label;
-    
+
     public SpinnerEditCommand(LabelModel l, String s) {
     label = l;
     if (s != null)
@@ -56,12 +56,12 @@ static class SpinnerEditCommand extends Command    {
     else
         newText = "";  //$NON-NLS-1$
     }
-    
+
     public void execute() {
         oldText = label.getText();
         label.setPropertyValue(TextUpdateModel.PROP_TEXT, newText, true);
     }
-    
+
     public void undo() {
         label.setText(oldText);
     }

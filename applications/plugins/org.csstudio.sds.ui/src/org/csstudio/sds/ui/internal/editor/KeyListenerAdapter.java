@@ -7,7 +7,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 
 public class KeyListenerAdapter implements KeyListener {
-    
+
     private List<Integer> _pressedKeys;
 
     public KeyListenerAdapter() {

@@ -41,7 +41,7 @@ public class SNLFilePage extends WizardNewFileCreationPage {
 
     /**
      * Creates the overall visual aspect of the page.
-     * 
+     *
      * @param parent
      *            The <code>Composite</code> containing the page
      */
@@ -97,7 +97,7 @@ public class SNLFilePage extends WizardNewFileCreationPage {
     /**
      * Creates a new file resource as requested by the user. If everything is OK
      * then answer true. If not, false will cause the dialog to stay open.
-     * 
+     *
      * @return whether creation was successful
      */
     public boolean finish() {

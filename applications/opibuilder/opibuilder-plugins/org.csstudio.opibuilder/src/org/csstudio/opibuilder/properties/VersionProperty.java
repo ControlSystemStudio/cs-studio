@@ -20,17 +20,17 @@ public class VersionProperty extends UnchangableStringProperty{
             WidgetPropertyCategory category, String defaultValue) {
         super(prop_id, description, category, defaultValue);
     }
-    
+
     @Override
-    public void writeToXML(Element propElement) {            
+    public void writeToXML(Element propElement) {
         setPropertyValue(OPIBuilderPlugin.getDefault().getBundle().getVersion().toString());
         super.writeToXML(propElement);
     }
-    
+
     @Override
     public boolean configurableByRule() {
         return false;
-    }    
-        
+    }
+
 
 }

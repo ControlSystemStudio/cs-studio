@@ -14,9 +14,9 @@ import org.eclipse.ui.menus.CommandContributionItem;
 
 /**
  * Abstract class that creates the command for the quickstart menu.
- * Here are all stuff that is independent from a hard coded 
+ * Here are all stuff that is independent from a hard coded
  * menu number to avoid duplicated code.
- * 
+ *
  * @author jhatje
  *
  */
@@ -47,9 +47,9 @@ public abstract class AbstractQuickstartCompoundContributionItem extends
      * with the menu name or if not set the file name is set.
      * Otherwise an invalid command that will not be displayed
      * will be set.
-     * 
+     *
      * @param menuNo Number of the menu command
-     * @param commandIDNo 
+     * @param commandIDNo
      * @param compoundIDNo
      * @return
      */
@@ -72,7 +72,7 @@ public abstract class AbstractQuickstartCompoundContributionItem extends
                     //-> using the file name
                     menuText = fileName;
                 } else {
-                    //Set the menu name 
+                    //Set the menu name
                     menuText = filePath[1];
                 }
                 currentCommandID = commandIDNo;
@@ -92,6 +92,6 @@ public abstract class AbstractQuickstartCompoundContributionItem extends
                 currentCommandID, Collections.emptyMap(), null, null, null, menuText,
                 null, null, SWT.NONE);
         return items;
-        
+
     }
 }

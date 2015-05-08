@@ -19,9 +19,9 @@ import org.csstudio.dct.model.IVisitor;
  * Represents an implicit base record that contains all standard field
  * definitions for a record definition. Each real record in a model will inherit
  * from a base record.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class BaseRecord implements IRecord {
     private IRecordDefinition recordDefinition;
@@ -30,7 +30,7 @@ public final class BaseRecord implements IRecord {
 
     /**
      * Constructor.
-     * 
+     *
      * @param recordDefinition
      *            the record definition
      */
@@ -40,7 +40,7 @@ public final class BaseRecord implements IRecord {
 
     /**
      * Sets the record definition.
-     * 
+     *
      * @param recordDefinition
      *            the record definition
      */

@@ -30,7 +30,7 @@ public class OPIBuilderMacroUtil {
      * @return the string in which the macros have been replaced with the real value.
      */
     public static String replaceMacros(AbstractWidgetModel widgetModel, String input){
-        
+
         try {
             return MacroUtil.replaceMacros(input, new WidgetMacroTableProvider(widgetModel));
         } catch (InfiniteLoopException e) {
@@ -56,7 +56,7 @@ public class OPIBuilderMacroUtil {
         }
         return macroMap;
     }
-    
+
 }
 
 
@@ -72,20 +72,20 @@ class WidgetMacroTableProvider implements IMacroTableProvider{
         this.widgetModel = widgetModel;
         macroMap = OPIBuilderMacroUtil.getWidgetMacroMap(widgetModel);
     }
-    
-    public String getMacroValue(String macroName) {    
+
+    public String getMacroValue(String macroName) {
         if(macroMap != null && macroMap.containsKey(macroName))
             return macroMap.get(macroName);
         else if(widgetModel.getAllPropertyIDs().contains(macroName)){
             Object propertyValue = widgetModel.getRawPropertyValue(macroName);
             if(propertyValue != null)
                 return propertyValue.toString();
-        }        
+        }
         if(macroName.equals(OPIBuilderMacroUtil.DID))
             return OPIBuilderMacroUtil.DID +"_" + //$NON-NLS-1$
                 widgetModel.getRootDisplayModel().getDisplayID();
         else if (macroName.equals(OPIBuilderMacroUtil.DNAME))
-            return widgetModel.getRootDisplayModel().getName();        
+            return widgetModel.getRootDisplayModel().getName();
         else if (macroName.equals(OPIBuilderMacroUtil.DLOC)) {
             String uri = ResourceUtil.workspacePathToSysPath(widgetModel.getRootDisplayModel().getOpiFilePath()).toFile().getParentFile().toURI().toString();
             // Fix the file protocol: we need 'file:///' for absolute paths
@@ -94,7 +94,7 @@ class WidgetMacroTableProvider implements IMacroTableProvider{
             }
             return uri;
         }
-        
+
         return null;
     }
 }

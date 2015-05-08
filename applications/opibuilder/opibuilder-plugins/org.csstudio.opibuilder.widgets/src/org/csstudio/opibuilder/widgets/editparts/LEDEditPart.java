@@ -33,24 +33,24 @@ public class LEDEditPart extends AbstractBoolEditPart{
         final LEDModel model = getWidgetModel();
 
         LEDFigure led = new LEDFigure();
-        
-        initializeCommonFigureProperties(led, model);            
+
+        initializeCommonFigureProperties(led, model);
         led.setEffect3D(model.isEffect3D());
         led.setSquareLED(model.isSquareLED());
         return led;
-        
-        
+
+
     }
 
     @Override
     public LEDModel getWidgetModel() {
         return (LEDModel)getModel();
     }
-    
+
     @Override
     protected void registerPropertyChangeHandlers() {
         registerCommonPropertyChangeHandlers();
-        
+
         //effect 3D
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -61,8 +61,8 @@ public class LEDEditPart extends AbstractBoolEditPart{
                 return true;
             }
         };
-        setPropertyChangeHandler(LEDModel.PROP_EFFECT3D, handler);    
-        
+        setPropertyChangeHandler(LEDModel.PROP_EFFECT3D, handler);
+
         //Sqaure LED
         handler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -77,22 +77,22 @@ public class LEDEditPart extends AbstractBoolEditPart{
                 return true;
             }
         };
-        setPropertyChangeHandler(LEDModel.PROP_SQUARE_LED, handler);    
-        
+        setPropertyChangeHandler(LEDModel.PROP_SQUARE_LED, handler);
+
         //force square size
         final IWidgetPropertyChangeHandler sizeHandler = new IWidgetPropertyChangeHandler() {
-            
+
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 if(getWidgetModel().isSquareLED())
                     return false;
                 if(((Integer)newValue) < LEDModel.MINIMUM_SIZE)
-                    newValue = LEDModel.MINIMUM_SIZE;            
+                    newValue = LEDModel.MINIMUM_SIZE;
                 getWidgetModel().setSize((Integer)newValue, (Integer)newValue);
                 return false;
             }
-        };        
+        };
         PropertyChangeListener sizeListener = new PropertyChangeListener() {
-        
+
             public void propertyChange(PropertyChangeEvent evt) {
                 sizeHandler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
             }
@@ -101,7 +101,7 @@ public class LEDEditPart extends AbstractBoolEditPart{
             addPropertyChangeListener(sizeListener);
         getWidgetModel().getProperty(AbstractWidgetModel.PROP_HEIGHT).
             addPropertyChangeListener(sizeListener);
-    
+
         //nStates
         getWidgetModel().getProperty(LEDModel.PROP_NSTATES).addPropertyChangeListener(new PropertyChangeListener() {
             @Override
@@ -109,8 +109,8 @@ public class LEDEditPart extends AbstractBoolEditPart{
                 initializeNStatesProperties((Integer)evt.getOldValue(), (Integer)evt.getNewValue(), (LEDFigure)getFigure(), getWidgetModel());
             }
         });
-        
-        
+
+
         //stateFallbackLabel
         getWidgetModel().getProperty(LEDModel.PROP_STATE_FALLBACK_LABEL).addPropertyChangeListener(new PropertyChangeListener() {
             @Override
@@ -118,8 +118,8 @@ public class LEDEditPart extends AbstractBoolEditPart{
                 initializeStateFallbackLabel((String)evt.getOldValue(), (String)evt.getNewValue(), (LEDFigure)getFigure(), getWidgetModel());
             }
         });
-        
-        
+
+
         //stateFallbackColor
         getWidgetModel().getProperty(LEDModel.PROP_STATE_FALLBACK_COLOR).addPropertyChangeListener(new PropertyChangeListener() {
             @Override
@@ -127,8 +127,8 @@ public class LEDEditPart extends AbstractBoolEditPart{
                 initializeStateFallbackColor(((OPIColor)evt.getOldValue()).getSWTColor(), ((OPIColor)evt.getNewValue()).getSWTColor(), (LEDFigure)getFigure(), getWidgetModel());
             }
         });
-        
-        
+
+
         for(int idx=0; idx<LEDFigure.MAX_NSTATES; idx++) {
             final int state = idx;
             //stateLabelN
@@ -158,12 +158,12 @@ public class LEDEditPart extends AbstractBoolEditPart{
     @Override
     protected void initializeCommonFigureProperties(
             final AbstractBoolFigure abstractFigure, final AbstractBoolWidgetModel abstractModel) {
-        
+
         super.initializeCommonFigureProperties(abstractFigure, abstractModel);
-        
+
         LEDModel model = (LEDModel)abstractModel;
         LEDFigure figure = (LEDFigure)abstractFigure;
-        
+
         initializeNStatesProperties(LEDFigure.MAX_NSTATES, model.getNStates(), figure, model);
         initializeStateFallbackLabel(null, model.getStateFallbackLabel(), figure, model);
         initializeStateFallbackColor(null, model.getStateFallbackColor(), figure, model);
@@ -173,7 +173,7 @@ public class LEDEditPart extends AbstractBoolEditPart{
             initializeStateValue(state, 0.0, model.getStateValue(state), figure, model);
         }
     }
-    
+
     protected void initializeNStatesProperties(int oldNStates, int newNStates, LEDFigure figure, LEDModel model) {
         if(newNStates <= 2) {
             model.setPropertyVisible(LEDModel.PROP_ON_COLOR, true);
@@ -209,23 +209,23 @@ public class LEDEditPart extends AbstractBoolEditPart{
         }
         figure.setNStates(newNStates);
     }
-    
+
     protected void initializeStateFallbackLabel(String oldLabel, String newLabel, LEDFigure figure, LEDModel model) {
         figure.setStateFallbackLabel(newLabel);
     }
-    
+
     protected void initializeStateFallbackColor(Color oldColor, Color newColor, LEDFigure figure, LEDModel model) {
         figure.setStateFallbackColor(newColor);
     }
-    
+
     protected void initializeStateLabel(int state, String oldLabel, String newLabel, LEDFigure figure, LEDModel model) {
         figure.setStateLabel(state, newLabel);
     }
-    
+
     protected void initializeStateColor(int state, Color oldColor, Color newColor, LEDFigure figure, LEDModel model) {
         figure.setStateColor(state, newColor);
     }
-    
+
     protected void initializeStateValue(int state, double oldValue, double newValue, LEDFigure figure, LEDModel model) {
         figure.setStateValue(state, newValue);
     }

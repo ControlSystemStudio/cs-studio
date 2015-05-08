@@ -61,7 +61,7 @@ public class RelativeTimeUnitTest
         assertEquals(0, rel.get(RelativeTime.MINUTES));
         assertEquals(0, rel.get(RelativeTime.SECONDS));
         assertEquals(0, rel.get(RelativeTime.MILLISECONDS));
-    
+
         // Negative fractional days & hours  ->  hours & minutes
         ymdhms = new double[] { 0.0, 0.0, -10.5, -1.5, 0.0, 0.0 };
         rel = new RelativeTime(ymdhms);
@@ -83,7 +83,7 @@ public class RelativeTimeUnitTest
         assertEquals(-30, rel.get(RelativeTime.MINUTES));
         assertEquals(23, rel.get(RelativeTime.SECONDS));
         assertEquals(321, rel.get(RelativeTime.MILLISECONDS));
-        
+
         rel = new RelativeTime(3.14);
         assertEquals("3.14 seconds", rel.toString());
 

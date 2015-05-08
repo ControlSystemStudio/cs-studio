@@ -2,9 +2,9 @@ package org.csstudio.sds.ui.internal.editor.newproperties.table;
 
 /**
  * Describes a single column for a {@link ConvenienceTableWrapper}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ColumnConfig {
     private String id;
@@ -15,7 +15,7 @@ public final class ColumnConfig {
 
     /**
      * Constructor.
-     * 
+     *
      * @param id
      *            an unique ID
      * @param title
@@ -33,7 +33,7 @@ public final class ColumnConfig {
 
     /**
      * Returns an unique id for the column.
-     * 
+     *
      * @return an unique id
      */
     public String getId() {
@@ -42,7 +42,7 @@ public final class ColumnConfig {
 
     /**
      * Returns a title for the column.
-     * 
+     *
      * @return a title
      */
     public String getTitle() {
@@ -51,7 +51,7 @@ public final class ColumnConfig {
 
     /**
      * Returns the minimum column width.
-     * 
+     *
      * @return the column width
      */
     public int getMinimumWidth() {
@@ -60,7 +60,7 @@ public final class ColumnConfig {
 
     /**
      * Returns the column weight.
-     * 
+     *
      * @return the column weight
      */
 
@@ -70,7 +70,7 @@ public final class ColumnConfig {
 
     /**
      * Returns true, if the column is resizable.
-     * 
+     *
      * @return true for resizable columns
      */
     public boolean isResizable() {

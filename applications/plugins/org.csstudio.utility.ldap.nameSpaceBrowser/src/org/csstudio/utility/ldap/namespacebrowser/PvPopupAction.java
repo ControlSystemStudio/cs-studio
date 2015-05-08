@@ -38,7 +38,7 @@
 // * @since 25.05.2011
 // */
 //public class PvPopupAction extends ProcessVariablePopupAction {
-//    
+//
 //    @Override
 //    public void handlePVs(IProcessVariable[] pvNames) {
 //        if(pvNames.length < 1) {

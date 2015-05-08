@@ -17,7 +17,7 @@ public class BooleanSwitchShowLabelPostProcessor extends
                     String propertyId) {
                 return !widget.getBooleanProperty(propertyId);
             }
-        
+
             @Override
             protected String[] getPropertyIds() {
                 return new String[] {BooleanSwitchModel.PROP_ON_LABEL, BooleanSwitchModel.PROP_OFF_LABEL};

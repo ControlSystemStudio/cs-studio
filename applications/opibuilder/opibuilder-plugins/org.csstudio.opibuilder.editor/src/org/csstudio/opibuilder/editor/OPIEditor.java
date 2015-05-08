@@ -214,7 +214,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
     private Clipboard clipboard;
 
     private SelectionSynchronizer synchronizer;
-    
+
     private OPIHelpContextProvider helpContextProvider;
 
 
@@ -243,7 +243,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 
         }
         else
-            super.init(site, input instanceof NoResourceEditorInput ? input : new NoResourceEditorInput(input)); 
+            super.init(site, input instanceof NoResourceEditorInput ? input : new NoResourceEditorInput(input));
     }
 
     @Override
@@ -270,7 +270,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
                 return super.getAdapter(key);
             }
         };
-        
+
         // set clipping strategy for connection layer of connection can be hide
         // when its source or target is not showing.
         ConnectionLayer connectionLayer = (ConnectionLayer) root
@@ -284,7 +284,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
             new OPIEditorContextMenuProvider(viewer, getActionRegistry());
         viewer.setContextMenu(cmProvider);
         getSite().registerContextMenu(cmProvider, viewer);
-        
+
         // Grid Action
         IAction action = new ToggleGridAction(getGraphicalViewer()){
             @Override
@@ -507,7 +507,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
         action = new CopyPropertiesAction(this);
         registry.registerAction(action);
         getSelectionActions().add(action.getId());
-        
+
         action = new ReplaceWidgetsAction(this);
         registry.registerAction(action);
         getSelectionActions().add(action.getId());
@@ -666,7 +666,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
                     try {
                         String wuid = (String) marker.getAttribute(AbstractWidgetModel.PROP_WIDGET_UID);
                         if (wuid == null) {
-                            //if wuid is not stored in the marker try to find it based on character 
+                            //if wuid is not stored in the marker try to find it based on character
                             Integer charStart = (Integer) marker.getAttribute(IMarker.CHAR_START);
                             if (charStart == null) {
                                 return;
@@ -681,14 +681,14 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
                         if (widget == null) {
                             return;
                         }
-                        // Get the widget editPart 
+                        // Get the widget editPart
                         Object obj = getGraphicalViewer().getEditPartRegistry().get(widget);
                         if (obj != null && obj instanceof AbstractBaseEditPart) {
                             EditPart widgetEditPart = (AbstractBaseEditPart) obj;
-                            
+
                             // Reveal the widget
                             getGraphicalViewer().reveal(widgetEditPart);
-                            
+
                             // Find the closest selectable part
                             while (widgetEditPart!=null && !widgetEditPart.isSelectable()) {
                                 widgetEditPart = widgetEditPart.getParent();
@@ -768,8 +768,8 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
     @Override
     protected Control getGraphicalControl() {
         return rulerComposite;
-    }    
-    
+    }
+
     /**
      * @return the origin editor input before wrapped by {@link NoResourceEditorInput}.
      */
@@ -897,7 +897,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
             ErrorHandlerUtil.handleError(message, e, true, true);
             getEditorSite().getPage().closeEditor(this, false);
         }
-        
+
     }
 
     private IPath getOPIFilePath() {
@@ -917,13 +917,13 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
     protected void initializeGraphicalViewer() {
         super.initializeGraphicalViewer();
         GraphicalViewer viewer = getGraphicalViewer();
-        
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), 
+
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(),
                 "org.csstudio.opibuilder.opi_editor"); //$NON-NLS-1$
-        
+
         viewer.setContents(displayModel);
         displayModel.setViewer(viewer);
-        
+
         viewer.addDropTargetListener(createTransferDropTargetListener());
         viewer.addDropTargetListener(new ProcessVariableNameTransferDropPVTargetListener(viewer));
         viewer.addDropTargetListener(new TextTransferDropPVTargetListener(viewer));
@@ -942,7 +942,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
             if (getOriginEditorInput() instanceof FileEditorInput) {
                 InputStream in = new ByteArrayInputStream(content.getBytes("UTF-8")); //$NON-NLS-1$
                 try {
-                    IFile file = ((FileEditorInput) getOriginEditorInput()).getFile();                    
+                    IFile file = ((FileEditorInput) getOriginEditorInput()).getFile();
                     file.setContents(
                         in, false, false, null);
                     in.close();
@@ -1146,7 +1146,7 @@ class OutlinePage     extends ContentOutlinePage     implements IAdaptable{
             if(helpContextProvider == null)
                 helpContextProvider =new OPIHelpContextProvider(getGraphicalViewer());
             return helpContextProvider;
-        }            
+        }
         return OPIEditor.this.getAdapter(type);
     }
 

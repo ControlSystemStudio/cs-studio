@@ -93,7 +93,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
                     if (child.getModel() instanceof IPVWidgetModel
                             && ((AbstractWidgetModel) (child.getModel()))
                                     .getProperty(IPVWidgetModel.PROP_PVNAME)
-                                    .isVisibleInPropSheet()) {            
+                                    .isVisibleInPropSheet()) {
                             handleList.add(new PVWidgetSelectionHandle(
                                 (GraphicalEditPart) child));
                     }
@@ -112,7 +112,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
         IGraphicalFeedbackFactory feedbackFactory =
             WidgetsService.getInstance().getWidgetFeedbackFactory(widgetModel.getTypeID());
-        
+
         Command cmd = null;
         if(feedbackFactory != null)
             cmd = feedbackFactory.createChangeBoundsCommand(
@@ -120,12 +120,12 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
         if(cmd == null)
             cmd = new WidgetSetConstraintCommand(
                     widgetModel, request, (Rectangle)constraint);
-        
+
         List<ConnectionModel> allConnections = new ArrayList<ConnectionModel>(
                 part.getWidgetModel().getSourceConnections());
         allConnections.addAll(part.getWidgetModel().getTargetConnections());
         if(part.getWidgetModel() instanceof AbstractContainerModel){
-            for(AbstractWidgetModel d : 
+            for(AbstractWidgetModel d :
                 ((AbstractContainerModel)part.getWidgetModel()).getAllDescendants()){
                 allConnections.addAll(d.getSourceConnections());
                 allConnections.addAll(d.getTargetConnections());
@@ -255,7 +255,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
                     (Rectangle)getConstraintFor(request), false, true);
         return widgetCreateCommand;
     }
-    
+
 
 
 

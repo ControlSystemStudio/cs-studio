@@ -49,6 +49,6 @@ public class ModelDemo implements ModelListener
     @Override
     public void onErrorModel(String errorMsg) {
         // TODO Auto-generated method stub
-        
+
     }
 }

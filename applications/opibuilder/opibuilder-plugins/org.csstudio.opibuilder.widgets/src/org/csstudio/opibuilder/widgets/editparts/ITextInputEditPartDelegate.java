@@ -20,8 +20,8 @@ public interface ITextInputEditPartDelegate {
 
     public void registerPropertyChangeHandlers();
 
-    public void updatePropSheet();    
-    
+    public void updatePropSheet();
+
     public void createEditPolicies();
 
 

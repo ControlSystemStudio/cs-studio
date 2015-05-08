@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.channel.actions;
 
@@ -14,10 +14,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
- * 
+ *
  */
 public class InfoCommandHandler extends AbstractAdaptedHandler<Channel> {
-    
+
     public InfoCommandHandler() {
         super(Channel.class);
     }
@@ -38,12 +38,12 @@ public class InfoCommandHandler extends AbstractAdaptedHandler<Channel> {
             e.printStackTrace();
         }
     }
-    
+
     private Object createChannelModel(Collection<Channel> channels){
-        ChannelTreeModel root = new ChannelTreeModel(0,null);        
+        ChannelTreeModel root = new ChannelTreeModel(0,null);
         for (Channel channel : channels) {
             root.getChild().add(channel);
         }
-        return root;        
+        return root;
     }
 }

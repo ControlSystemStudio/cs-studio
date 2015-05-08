@@ -18,20 +18,20 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
 /** SWT Tree with workaround for MULTI-selection issue
- * 
+ *
  *  See Bug 259141:
  *  Tree.getSelection() is extremely slow with SWT.VIRTUAL and SWT.MULTI
  *  https://bugs.eclipse.org/bugs/show_bug.cgi?id=259141
- *  
+ *
  *  <p>When allowing selection of multiple items in SWT.TREE,
  *  this can be very slow.
  *  Expanding a tree branch can take 10 seconds, while the same tree
  *  with SWT.SINGLE reacts without observable delay.
- *  
+ *
  *  <p>A workaround submitted to the bug report by
  *  Nicolas Bros <nbros@mia-software.com>
  *  allows usage of the Tree with SWT.VIRTUAL and SWT.MULTI
- *  
+ *
  *  @author Kay Kasemir
  */
 public class MultiSelectionTree extends Tree

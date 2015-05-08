@@ -23,14 +23,14 @@ import org.slf4j.LoggerFactory;
 /**
  * Implementation of a {@link IActionFilter} adapter for {@link IElement}
  * objects.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ActionFilterAdapter implements IActionFilter {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(ActionFilterAdapter.class);
-    
+
     private static final String ATTR_ERROR = "error";
 
     /**
@@ -51,9 +51,9 @@ public final class ActionFilterAdapter implements IActionFilter {
 
     /**
      * Visitor that finds error markers.
-     * 
+     *
      * @author Sven Wende
-     * 
+     *
      */
     static final class FindErrorMarkerVisitor implements IVisitor {
         private boolean errorFound;
@@ -72,7 +72,7 @@ public final class ActionFilterAdapter implements IActionFilter {
                     }
                 }
             } catch (CoreException e) {
-                // 
+                //
                 LOG.warn("Warn", e);
             }
 

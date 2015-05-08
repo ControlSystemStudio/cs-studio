@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.model.commands;
 
@@ -19,9 +19,9 @@ import org.junit.Test;
 
 /**
  * Test class for {@link AddInstanceCommand}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class AddInstanceCommandTest extends AbstractTestCommand {
     private IPrototype prototypeA;
@@ -77,7 +77,7 @@ public final class AddInstanceCommandTest extends AbstractTestCommand {
         assertTrue(instanceB.getDependentContainers().isEmpty());
         assertTrue(prototypeB.getDependentContainers().isEmpty());
     }
-    
+
     private void verifyAlways() {
         assertEquals(instanceA.getParent(), prototypeA);
         assertEquals(instanceB.getParent(), prototypeB);
@@ -85,7 +85,7 @@ public final class AddInstanceCommandTest extends AbstractTestCommand {
         assertNotSame(instanceA, instanceB);
         assertTrue(prototypeA.getDependentContainers().contains(instanceA));
         assertNull(instanceA.getContainer());
-        
+
     }
-    
+
 }

@@ -14,7 +14,7 @@ public class RuleFoldersPreferencePage extends FieldEditorPreferencePage
     protected void createFieldEditors() {
         addField(new FolderFieldEditor(PreferenceConstants.PROP_RULE_FOLDERS, "Additional folders containing rules", getFieldEditorParent()));
     }
-    
+
     /**
      * {@inheritDoc}
      */

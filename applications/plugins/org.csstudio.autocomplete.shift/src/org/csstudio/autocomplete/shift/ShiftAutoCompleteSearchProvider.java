@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.autocomplete.shift;
 
@@ -38,14 +38,14 @@ public class ShiftAutoCompleteSearchProvider extends AbstractAutoCompleteSearchP
                 "1dayAgo", "lastWeek", "1weekAgo"));
             List<String> status = new ArrayList<String>(Arrays.asList("active", "end", "signed"));
             keyValueMap.put(ShiftSearchUtil.SEARCH_KEYWORD_SHIFTS, shifts);
-            keyValueMap.put(ShiftSearchUtil.SEARCH_KEYWORD_TYPE, types);       
+            keyValueMap.put(ShiftSearchUtil.SEARCH_KEYWORD_TYPE, types);
             keyValueMap.put(ShiftSearchUtil.SEARCH_KEYWORD_START, timeOptions);
             keyValueMap.put(ShiftSearchUtil.SEARCH_KEYWORD_END, timeOptions);
             keyValueMap.put(ShiftSearchUtil.SEARCH_KEYWORD_STATUS, status);
             keyValueMap.put(ShiftSearchUtil.SEARCH_KEYWORD_OWNER, new ArrayList<String>());
             keyValueMap.put(ShiftSearchUtil.SEARCH_KEYWORD_CLOSEUSER, new ArrayList<String>());
             keyValueMap.put(ShiftSearchUtil.SEARCH_KEYWORD_LEADOPERATOR, new ArrayList<String>());
-    
+
             return keyValueMap;
         } catch (Exception e1) {
             return Collections.emptyMap();

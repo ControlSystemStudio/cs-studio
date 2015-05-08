@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -49,9 +49,9 @@ import org.eclipse.wb.swt.ResourceManager;
 
 /**
  * A view to search for logEntries and then display them in a table form
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class LogTableView extends ViewPart {
     private Text text;
@@ -66,7 +66,7 @@ public class LogTableView extends ViewPart {
 
     private List<String> logbooks = Collections.emptyList();
     private List<String> tags = Collections.emptyList();
-    
+
     // GUI
     private Label label;
     private ErrorBar errorBar;
@@ -75,10 +75,10 @@ public class LogTableView extends ViewPart {
     private Link previousPage;
     private Label labelPage;
     private Link nextPage;
-    private Button configureButton;    
-    
+    private Button configureButton;
+
     protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
-    
+
     // Model
     private PeriodicLogQuery logQuery;
     private int resultSize;
@@ -93,7 +93,7 @@ public class LogTableView extends ViewPart {
         Display.getDefault().asyncExec(new Runnable() {
 
         @Override
-        public void run() {            
+        public void run() {
             ISelection selection = logEntryTable.getSelection();
             if (result.lastException != null) {
             errorBar.setException(result.lastException);
@@ -112,9 +112,9 @@ public class LogTableView extends ViewPart {
     }
 
     };
-    
+
     private IMemento memento;
-    
+
     public LogTableView() {
     }
 
@@ -133,10 +133,10 @@ public class LogTableView extends ViewPart {
     gridLayout.marginHeight = 1;
     gridLayout.marginWidth = 1;
     parent.setLayout(gridLayout);
-    
+
     errorBar = new ErrorBar(parent, SWT.NONE);
     errorBar.setLayoutData(new  GridData(SWT.CENTER, SWT.CENTER, true, false, 4, 1));
-    errorBar.setMarginBottom(5);    
+    errorBar.setMarginBottom(5);
 
     changeSupport.addPropertyChangeListener("searchString",
         new PropertyChangeListener() {
@@ -178,15 +178,15 @@ public class LogTableView extends ViewPart {
         }
         }
     });
-    text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));    
-    
-    btnNewButton = new Button(parent, SWT.NONE);    
+    text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+
+    btnNewButton = new Button(parent, SWT.NONE);
     try {
         resultSize = preferenceService.getInt("org.csstudio.logbook.ui","Result.size", 100, null);
     } catch (Exception ex) {
         errorBar.setException(ex);
     }
-    
+
     btnNewButton.addSelectionListener(new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent e) {
@@ -232,7 +232,7 @@ public class LogTableView extends ViewPart {
         }
     });
     btnNewButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
-    btnNewButton.setText("Adv Search");    
+    btnNewButton.setText("Adv Search");
 
     configureButton = new Button(parent, SWT.NONE);
     configureButton.setImage(ResourceManager.getPluginImage(
@@ -247,7 +247,7 @@ public class LogTableView extends ViewPart {
                                         logEntryTable.isExpanded(),
                                         -1,
                                         logEntryTable.getRowSize());
-            
+
             dialog.setBlockOnOpen(true);
             if (dialog.open() == IDialogConstants.OK_ID) {
                 logEntryTable.setExpanded(dialog.isExpandable());
@@ -257,7 +257,7 @@ public class LogTableView extends ViewPart {
         });
         }
     });
-    
+
     // Add AutoComplete support, use type logEntrySearch
     new AutoCompleteWidget(text, "LogentrySearch");
 
@@ -269,7 +269,7 @@ public class LogTableView extends ViewPart {
     logEntryTable.setExpanded(expanded);
     int rowSize = preferenceService.getInt("org.csstudio.logbook.viewer", "row.size", 1, null);
     logEntryTable.setRowSize(rowSize);
-    
+
     logEntryTable.addMouseListener(new MouseAdapter() {
         @Override
         public void mouseDoubleClick(MouseEvent evt) {
@@ -288,7 +288,7 @@ public class LogTableView extends ViewPart {
     navigator = new Composite(parent, SWT.NONE);
     navigator.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 4, 1));
     navigator.setLayout(new GridLayout(3, false));
-    
+
     previousPage = new Link(navigator, SWT.NONE);
     previousPage.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false));
     previousPage.addSelectionListener(new SelectionAdapter() {
@@ -298,14 +298,14 @@ public class LogTableView extends ViewPart {
             setPage(page - 1);
         }
         }
-    });    
+    });
     previousPage.setEnabled(false);
     previousPage.setText("<a>Previous page</a>");
-    
+
     labelPage = new Label(navigator, SWT.NONE);
     labelPage.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
     labelPage.setText(String.valueOf(page));
-    
+
     nextPage = new Link(navigator, SWT.NONE);
     nextPage.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
     nextPage.addSelectionListener(new SelectionAdapter() {
@@ -317,7 +317,7 @@ public class LogTableView extends ViewPart {
     });
     nextPage.setEnabled(false);
     nextPage.setText("<a>Next page</a>");
-    
+
     PopupMenuUtil.installPopupForView(logEntryTable, getSite(), logEntryTable);
     initializeClient();
     }
@@ -329,7 +329,7 @@ public class LogTableView extends ViewPart {
         logQuery.stop();
     }
     }
-    
+
     private boolean initializeClient() {
     if (logbookClient == null) {
         try {
@@ -344,7 +344,7 @@ public class LogTableView extends ViewPart {
             query.append(" page:" + page);
             query.append(" limit:" + resultSize);
         }
-        int delay = preferenceService.getInt("org.csstudio.logbook.viewer", "auto.refresh.rate", 3, null);        
+        int delay = preferenceService.getInt("org.csstudio.logbook.viewer", "auto.refresh.rate", 3, null);
         logQuery = new PeriodicLogQuery(query.toString(), logbookClient, delay>0?delay:1, TimeUnit.MINUTES);
         logQuery.addLogQueryListener(listener);
         logQuery.start();
@@ -357,7 +357,7 @@ public class LogTableView extends ViewPart {
         return true;
     }
     }
-    
+
     private void search() {
     final StringBuilder searchString = new StringBuilder(text.getText());
     if (initializeClient()) {
@@ -383,22 +383,22 @@ public class LogTableView extends ViewPart {
     this.page = page;
     changeSupport.firePropertyChange("page", null, this.page);
     }
-    
+
     public void setSearchString(String searchString) {
     // Do not ignore events where the search string is the same, we need to re-execute the query
     // setting the old value to null
     this.searchString = searchString;
     changeSupport.firePropertyChange("searchString", null, this.searchString);
     }
-    
+
     public String getSearchString(){
     return this.searchString;
     }
-    
+
     @Override
     public void setFocus() {
     }
-    
+
     @Override
     public void saveState(IMemento memento) {
     super.saveState(memento);

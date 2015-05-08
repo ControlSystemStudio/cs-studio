@@ -6,9 +6,9 @@
 package org.csstudio.logbook;
 
 /**
- * 
+ *
  * A builder for a default implementation of the {@link Tag}
- * 
+ *
  * @author shroffk
  */
 public class TagBuilder {
@@ -57,9 +57,9 @@ public class TagBuilder {
 
     /**
      * A Default implementation for the {@link Tag}
-     * 
+     *
      * @author shroffk
-     * 
+     *
      */
     private class TagImpl implements Tag {
 

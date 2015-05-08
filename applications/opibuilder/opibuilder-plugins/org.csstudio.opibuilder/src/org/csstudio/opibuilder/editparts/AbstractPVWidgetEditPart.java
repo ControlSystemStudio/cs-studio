@@ -22,15 +22,15 @@ import org.epics.vtype.VType;
 public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart implements IPVWidgetEditpart{
 
     protected PVWidgetEditpartDelegate delegate;
-    
+
     public AbstractPVWidgetEditPart() {
         delegate = new PVWidgetEditpartDelegate(this);
     }
-    
+
     @Override
     protected void doActivate() {
         super.doActivate();
-        delegate.doActivate();            
+        delegate.doActivate();
     }
     @Override
     public void activate() {
@@ -38,7 +38,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
         //PV should be started at the last step.
         delegate.startPVs();
     }
-    
+
     @Override
     public void addSetPVValueListener(ISetPVValueListener listener) {
         delegate.addSetPVValueListener(listener);
@@ -49,7 +49,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
         Border border = delegate.calculateBorder();
         if(border == null)
             return super.calculateBorder();
-        else 
+        else
             return border;
     }
 
@@ -57,7 +57,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
     protected ConnectionHandler createConnectionHandler() {
         return new PVWidgetConnectionHandler(this);
     }
-    
+
     @Override
     protected void createEditPolicies() {
         super.createEditPolicies();
@@ -72,22 +72,22 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
             super.doDeActivate();
         }
     }
-    
+
     @Override
     public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
-        if(key == ProcessVariable.class){            
+        if(key == ProcessVariable.class){
             return new ProcessVariable(getPVName());
         }
         return super.getAdapter(key);
     }
-    
+
     /**
      * @return A String array with all PV names from PV properties.
      */
     public String[] getAllPVNames(){
         return delegate.getAllPVNames();
     }
-    
+
     /**
      * @return the control PV. null if no control PV on this widget.
      */
@@ -95,9 +95,9 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
         return delegate.getControlPV();
     }
 
-    /**Get the PV corresponding to the <code>PV Name</code> property. 
+    /**Get the PV corresponding to the <code>PV Name</code> property.
      * It is same as calling <code>getPV("pv_name")</code>.
-     * @return the PV corresponding to the <code>PV Name</code> property. 
+     * @return the PV corresponding to the <code>PV Name</code> property.
      * null if PV Name is not configured for this widget.
      */
     public IPV getPV(){
@@ -111,12 +111,12 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
     public IPV getPV(String pvPropId){
         return delegate.getPV(pvPropId);
     }
-    
+
     public PVWidgetEditpartDelegate getPVWidgetEditpartDelegate() {
         return delegate;
     }
 
-    
+
     /**
      * @return the first PV name.
      */
@@ -124,7 +124,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
         return delegate.getPVName();
     }
 
-    
+
     /**Get value from one of the attached PVs.
      * @param pvPropId the property id of the PV. It is "pv_name" for the main PV.
      * @return the {@link IValue} of the PV.
@@ -132,7 +132,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
     public VType getPVValue(String pvPropId){
         return delegate.getPVValue(pvPropId);
     }
-    
+
     @Override
     protected void initFigure(IFigure figure) {
         super.initFigure(figure);
@@ -149,14 +149,14 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
 
     @Override
     protected void registerBasePropertyChangeHandlers() {
-        super.registerBasePropertyChangeHandlers();        
+        super.registerBasePropertyChangeHandlers();
         delegate.registerBasePropertyChangeHandlers();
     }
-    
+
     public void setIgnoreOldPVValue(boolean ignoreOldValue) {
         delegate.setIgnoreOldPVValue(ignoreOldValue);
     }
-    
+
     /**Set PV to given value. Should accept Double, Double[], Integer, String, maybe more.
      * @param pvPropId
      * @param value
@@ -164,7 +164,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
     public void setPVValue(String pvPropId, Object value){
         delegate.setPVValue(pvPropId, value);
     }
-    
+
     @Override
     public boolean isPVControlWidget() {
         return delegate.isPVControlWidget();

@@ -5,19 +5,19 @@ import org.eclipse.gef.commands.Command;
 
 /**
  * Undoable command which removes a folder from the model.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class RemoveFolderCommand extends Command {
     private IFolder folder;
     private IFolder container;
     private int index;
-    
+
 
     /**
      * Constructor.
-     * 
+     *
      * @param folder
      *            the folder which will contain the new prototype
      */

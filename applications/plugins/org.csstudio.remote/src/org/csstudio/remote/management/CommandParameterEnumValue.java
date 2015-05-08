@@ -27,20 +27,20 @@ import java.io.Serializable;
 /**
  * Value of a command parameter of type {@link CommandParameterType#ENUMERATION}
  * or {@link CommandParameterType#DYNAMIC_ENUMERATION}.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class CommandParameterEnumValue implements Serializable {
-    
+
     private static final long serialVersionUID = 2L;
-    
+
     private final String _label;
-    
+
     private final Serializable _value;
-    
+
     /**
      * Creates a new enumeration value.
-     * 
+     *
      * @param value
      *            the value. Must not be null.
      * @param label
@@ -51,29 +51,29 @@ public final class CommandParameterEnumValue implements Serializable {
         if ((value == null) || (label == null)) {
             throw new NullPointerException("value and label must not be null");
         }
-        
+
         _value = value;
         _label = label;
     }
-    
+
     /**
      * Returns the value.
-     * 
+     *
      * @return the value.
      */
     public Serializable getValue() {
         return _value;
     }
-    
+
     /**
      * Returns the label.
-     * 
+     *
      * @return the label.
      */
     public String getLabel() {
         return _label;
     }
-    
+
     /**
      * {@inheritDoc}
      */

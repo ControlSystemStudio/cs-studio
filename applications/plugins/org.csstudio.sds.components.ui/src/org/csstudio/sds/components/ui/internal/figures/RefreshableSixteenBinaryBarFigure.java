@@ -19,7 +19,7 @@ import org.eclipse.swt.graphics.Font;
 
 /**
  * Sixteen Bit Binary Bar widget figure.
- * 
+ *
  * @author Alen Vrecko, Joerg Rathlev
  */
 public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
@@ -64,7 +64,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
     private Color _offColor;
 
     /**
-     * 
+     *
      * Constructor.
      */
     public RefreshableSixteenBinaryBarFigure() {
@@ -149,7 +149,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 
     /**
      * Sets the orientation (horizontal==true | vertical==false).
-     * 
+     *
      * @param horizontal
      *            The orientation.
      */
@@ -167,7 +167,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
     }
 
     /**
-     * 
+     *
      * {@inheritDoc}
      */
     @SuppressWarnings("rawtypes")
@@ -193,7 +193,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
     }
 
     /**
-     * 
+     *
      * @param showLabels
      *            .
      */
@@ -205,7 +205,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
     }
 
     /**
-     * 
+     *
      * @param newValue
      *            the new Binary value
      */
@@ -215,7 +215,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
     }
 
     /**
-     * 
+     *
      * @param font
      *            .
      */
@@ -227,7 +227,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
     }
 
     /**
-     * 
+     *
      * @param onColor
      *            .
      */
@@ -241,7 +241,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
     }
 
     /**
-     * 
+     *
      * @param offColor
      *            .
      */
@@ -255,7 +255,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
     }
 
     /**
-     * 
+     *
      * @param internalFrameThickness
      *            .
      */
@@ -267,7 +267,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
     }
 
     /**
-     * 
+     *
      * @param internalFrameColor
      *            .
      */
@@ -281,7 +281,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
     /**
      * Applies the current settings for the internal frame thickness and color
      * to the given box.
-     * 
+     *
      * @param box
      *            the box.
      */
@@ -310,7 +310,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 
     /**
      * Sets the range of bits that are displayed by this figure.
-     * 
+     *
      * @param from
      *            the index of the lowest bit to display.
      * @see #setBitRangeTo(int)
@@ -322,7 +322,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 
     /**
      * Sets the range of bits that are displayed by this figure.
-     * 
+     *
      * @param to
      *            the index of the highest bit to display.
      * @see #setBitRangeFrom(int)
@@ -334,7 +334,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 
     /**
      * Returns the number of bits displayed in this figure.
-     * 
+     *
      * @return the number of bits displayed in this figure.
      */
     private int numberOfBits() {

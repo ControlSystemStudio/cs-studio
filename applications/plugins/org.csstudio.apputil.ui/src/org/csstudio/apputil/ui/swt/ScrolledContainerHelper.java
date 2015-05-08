@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Composite;
 public class ScrolledContainerHelper
 {
     /** Create the 'automatic' scroll bars.
-     * 
+     *
      * @param parent The parent shell
      * @param width Minimum width that triggers horizontal scroll bar.
      * @param height Minimum height that triggers vertical scroll bar.
@@ -31,14 +31,14 @@ public class ScrolledContainerHelper
                                    final int width,
                                    final int height)
     {
-        final ScrolledComposite scroll = 
+        final ScrolledComposite scroll =
             new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
         final Composite scrolled_content = new Composite(scroll, 0);
         scroll.setContent(scrolled_content);
         scroll.setExpandHorizontal(true);
         scroll.setExpandVertical(true);
         scroll.setMinWidth(width);
-        scroll.setMinHeight(height);   
+        scroll.setMinHeight(height);
         return scrolled_content;
     }
 }

@@ -51,12 +51,12 @@ public class ToleranceAction extends PVTableAction
             for (int i=0; i<N; ++i)
                 items.add(model.getItem(i));
         }
-        
+
         if (items.isEmpty())
             return;
-        
+
         double tolerance = items.get(0).getTolerance();
-        
+
         final InputDialog dlg = new InputDialog(viewer.getControl().getShell(),
                 Messages.Tolerance, Messages.EnterTolerance,
                 Double.toString(tolerance),
@@ -78,10 +78,10 @@ public class ToleranceAction extends PVTableAction
                         return Messages.EnterPositiveTolerance;
                     }
                 });
-        
+
         if (dlg.open() != Window.OK)
             return;
-        
+
         tolerance = Double.parseDouble(dlg.getValue());
         for (PVTableItem item : items)
             item.setTolerance(tolerance);

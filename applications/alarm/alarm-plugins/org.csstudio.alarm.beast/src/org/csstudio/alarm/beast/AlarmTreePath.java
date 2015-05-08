@@ -40,7 +40,7 @@ public class AlarmTreePath
         {
             if (! isPath(path))
                 result.append(PATH_SEP);
-            // Skip path it it's only '/' 
+            // Skip path it it's only '/'
             if (!PATH_SEP.equals(path))
                 result.append(path);
         }
@@ -107,7 +107,7 @@ public class AlarmTreePath
         final String elements[] = splitPath(path);
         return elements[elements.length-1];
     }
-    
+
     /** Determine modified path
      *  @param path Original path
      *  @param modifier Path modifier: "segments/to/add", "/absolute/new/path", ".."

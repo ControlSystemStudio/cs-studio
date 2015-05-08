@@ -20,10 +20,10 @@ import org.epics.pvmanager.PVReaderListener;
 import org.epics.vtype.VType;
 
 /** Field of a record, providing original and current value.
- * 
+ *
  *  <p>Original value might be obtained from a {@link DataProvider}.
  *  Current value is fetched from control system.
- * 
+ *
  *  @author Kay Kasemir
  */
 public class PVField
@@ -32,7 +32,7 @@ public class PVField
     final private String original_value;
     private volatile String current_value = "<disconnected>";
     private PVReader<VType> pv;
-    
+
     /** Initialize
      *  @param name Full name of the field, i.e. record name.field
      *  @param original_value Original value
@@ -62,7 +62,7 @@ public class PVField
     {
         return original_value;
     }
-    
+
     /** @return Current value */
     public String getCurrentValue()
     {
@@ -94,7 +94,7 @@ public class PVField
     {
         if (pv != null)
             throw new IllegalStateException("Already started");
-        
+
         final PVReaderListener<VType> pv_listener = new PVReaderListener<VType>()
         {
             @Override

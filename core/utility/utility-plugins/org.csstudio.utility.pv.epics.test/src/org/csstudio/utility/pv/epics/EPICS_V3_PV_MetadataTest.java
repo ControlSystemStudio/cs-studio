@@ -19,7 +19,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /** Test of meta data
- * 
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -27,7 +27,7 @@ public class EPICS_V3_PV_MetadataTest implements PVListener
 {
     /** Update counter */
     private int updates = 0;
-    
+
     @Override
     public void pvValueUpdate(final PV pv)
     {
@@ -81,7 +81,7 @@ public class EPICS_V3_PV_MetadataTest implements PVListener
     }
 
     /** Test of meta data changes
-     * 
+     *
      *  <p>For R3.14.11 IOCs, this is only supported for the
      *  enumeration strings of MBBI/MBBO records, so this test
      *  tries to update the ONST of a record, expecting to get
@@ -96,7 +96,7 @@ public class EPICS_V3_PV_MetadataTest implements PVListener
         }
         final PV meta_pv = TestUtil.getPV("enum.ONST");
         meta_pv.start();
-        
+
         final PV pv = TestUtil.getPV("enum");
         pv.addListener(this);
         pv.start();
@@ -117,12 +117,12 @@ public class EPICS_V3_PV_MetadataTest implements PVListener
             System.out.println(meta);
             assertEquals("one", meta.getState(1));
             assertEquals("one", value.format());
-            
+
             // For IOCs, we may actually get another update because the meta data monitor
             // also sends an update. From the gateway, we will not get that meta data monitor...
             // Wait a little to get over this uncertainty
             Thread.sleep(1000);
-            
+
             // Change the meta data, should get a value update
             synchronized (this)
             {
@@ -140,7 +140,7 @@ public class EPICS_V3_PV_MetadataTest implements PVListener
             System.out.println(meta);
             assertEquals("Uno!", meta.getState(1));
             assertEquals("Uno!", value.format());
-            
+
             // Restore, assert that this is read back
             synchronized (this)
             {

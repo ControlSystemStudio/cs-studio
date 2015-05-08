@@ -5,7 +5,7 @@ import org.epics.vtype.VType;
 
 /**
  * An adapter factory that transforms VTypeAdaptable object to VTypes.
- * 
+ *
  * @author carcassi
  */
 public class VTypeAdapterFactory implements IAdapterFactory {

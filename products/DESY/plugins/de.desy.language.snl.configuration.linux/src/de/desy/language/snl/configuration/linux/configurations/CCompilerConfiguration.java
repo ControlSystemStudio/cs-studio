@@ -9,11 +9,11 @@ import de.desy.language.snl.compilerconfiguration.AbstractCompilerConfiguration;
 import de.desy.language.snl.configurationservice.ICompilerOptionsService;
 
 public class CCompilerConfiguration extends AbstractCompilerConfiguration {
-    
+
     public CCompilerConfiguration(ICompilerOptionsService service) {
         super(service);
     }
-    
+
     /* (non-Javadoc)
      * @see de.desy.language.snl.ui.editor.compilerconfiguration.ICompilerConfiguration#getCompilerOptions()
      */
@@ -45,42 +45,42 @@ public class CCompilerConfiguration extends AbstractCompilerConfiguration {
         result.add(sourceFile);
         return result;
     }
-    
+
     /* (non-Javadoc)
      * @see de.desy.language.snl.ui.editor.compilerconfiguration.ICompilerConfiguration#getErrorPattern()
      */
     public Pattern getErrorPattern() {
         return null;
     }
-    
+
     /* (non-Javadoc)
      * @see de.desy.language.snl.ui.editor.compilerconfiguration.ICompilerConfiguration#getCompilerPath()
      */
     protected String getCompilerPath() {
         return getCompilerOptionService().getCCompilerPath();
     }
-    
+
     /* (non-Javadoc)
      * @see de.desy.language.snl.ui.editor.compilerconfiguration.ICompilerConfiguration#getSourceFolder()
      */
     public String getSourceFolder() {
         return SNLConstants.GENERATED_FOLDER.getValue();
     }
-    
+
     /* (non-Javadoc)
      * @see de.desy.language.snl.ui.editor.compilerconfiguration.ICompilerConfiguration#getTargetFolder()
      */
     public String getTargetFolder() {
         return SNLConstants.BIN_FOLDER.getValue();
     }
-    
+
     /* (non-Javadoc)
      * @see de.desy.language.snl.ui.editor.compilerconfiguration.ICompilerConfiguration#getSourceFileExtension()
      */
     public String getSourceFileExtension() {
         return SNLConstants.C_FILE_EXTENSION.getValue();
     }
-    
+
     /* (non-Javadoc)
      * @see de.desy.language.snl.ui.editor.compilerconfiguration.ICompilerConfiguration#getTargetFileExtension()
      */

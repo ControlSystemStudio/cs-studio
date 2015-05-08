@@ -11,9 +11,9 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 /**
  * Section implementation which acts as fallback when no other section
  * implementation is available for the current selection.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class MissingImplementationSection extends AbstractBaseSection<WidgetProperty> {
 

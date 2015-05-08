@@ -29,20 +29,20 @@ public class ControlMultiSymbolModel extends CommonMultiSymbolModel {
 
     /** If a confirm dialog should be shown before performing action. */
     public static final String PROP_CONFIRM_DIALOG = "show_confirm_dialog"; //$NON-NLS-1$
-    
+
     /** The password needed to perform action*/
     public static final String PROP_PASSWORD = "password"; //$NON-NLS-1$
-    
+
     /** The message which will be shown on confirm dialog. */
-    public static final String PROP_CONFIRM_TIP = "confirm_message"; //$NON-NLS-1$    
-    public static final String DEFAULT_CONFIRM_TIP = "Are your sure you want to do this?";    
-    
+    public static final String PROP_CONFIRM_TIP = "confirm_message"; //$NON-NLS-1$
+    public static final String DEFAULT_CONFIRM_TIP = "Are your sure you want to do this?";
+
     /**
-     * The action which will be executed when widget is pushed. It is the index the actions in 
+     * The action which will be executed when widget is pushed. It is the index the actions in
      * actions property.
      */
     public static final String PROP_PUSH_ACTION_INDEX = "push_action_index"; //$NON-NLS-1$
-    
+
     @Override
     protected void configureProperties() {
         super.configureProperties();
@@ -58,28 +58,28 @@ public class ControlMultiSymbolModel extends CommonMultiSymbolModel {
                 "Push Action Index", WidgetPropertyCategory.Behavior, 0, 0,
                 Integer.MAX_VALUE));
     }
-    
+
     /**
      * @return true if the confirm dialog should be shown, false otherwise
      */
     public boolean getShowConfirmDialog() {
         return (Boolean) getProperty(PROP_CONFIRM_DIALOG).getPropertyValue();
     }
-    
+
     /**
      * @return the password
      */
     public String getPassword() {
         return (String) getProperty(PROP_PASSWORD).getPropertyValue();
     }
-    
+
     /**
      * @return the confirm tip
      */
     public String getConfirmTip() {
         return (String) getProperty(PROP_CONFIRM_TIP).getPropertyValue();
     }
-    
+
     /**
      * Return the index of the selected WidgetAction from the ActionData.
      * The Action is running when the button is released.
@@ -88,5 +88,5 @@ public class ControlMultiSymbolModel extends CommonMultiSymbolModel {
     public int getPushActionIndex() {
         return (Integer) getProperty(PROP_PUSH_ACTION_INDEX).getPropertyValue();
     }
-    
+
 }

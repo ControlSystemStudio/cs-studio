@@ -33,7 +33,7 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * Action which cuts the selected widgets into the clipboard.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class CutWidgetsAction extends AbstractCutCopyWidgetsAction {
@@ -45,7 +45,7 @@ public final class CutWidgetsAction extends AbstractCutCopyWidgetsAction {
 
     /**
      * Creates a new cut action.
-     * 
+     *
      * @param workbenchPart
      *            the workbench part.
      */
@@ -72,7 +72,7 @@ public final class CutWidgetsAction extends AbstractCutCopyWidgetsAction {
     /**
      * Deletes the widgets from the editor. The modification is labeled as a cut
      * operation and can be undone by the user.
-     * 
+     *
      * @param widgets
      *            the widgets.
      */
@@ -85,7 +85,7 @@ public final class CutWidgetsAction extends AbstractCutCopyWidgetsAction {
 
     /**
      * Returns the currently open display editor.
-     * 
+     *
      * @return the currently open display editor
      */
     private DisplayEditor getDisplayEditor() {

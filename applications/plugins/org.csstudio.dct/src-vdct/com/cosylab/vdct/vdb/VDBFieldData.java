@@ -8,22 +8,22 @@ package com.cosylab.vdct.vdb;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -61,7 +61,7 @@ public class VDBFieldData implements InspectableProperty, Debuggable, ChangableV
 
     private static final String debugDefault = "###";
     protected String debugValue = debugDefault;
-    
+
     private int positionIndex = -1;
     /**
      * ISO 8601 date formatter.
@@ -69,12 +69,12 @@ public class VDBFieldData implements InspectableProperty, Debuggable, ChangableV
     private static final SimpleDateFormat timeFormatter =
     //    new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         new SimpleDateFormat("HH:mm:ss.SSS");
-    
+
     protected String debugValueTimeStamp = "n/a";
     protected short severity = 0;
     protected boolean connected = false;
     private static final String NAME_VAL = "VAL";
-    
+
     protected int visibility = NON_DEFAULT_VISIBLE;
 
 /**
@@ -181,22 +181,22 @@ public java.lang.String[] getSelectableValues() {
                         values.addElement(dbdData.getInit_value()+com.cosylab.vdct.Constants.MENU_DEFAULT_VALUE_INDICATOR);
                     else
                         values.addElement(com.cosylab.vdct.Constants.NONE);
-                        
+
                         while (e.hasMoreElements())
                             values.addElement(e.nextElement().toString());
-                    }                    
+                    }
                     else Console.getInstance().println("Menu '"+dbdData.getMenu_name()+"' not found...");
             }
             else if (dbdData.getField_type() == DBDConstants.DBF_DEVICE) {
-                
+
                     Enumeration e = dbd.getDevices().elements();
                     DBDDeviceData dev;
-                    
+
                      if (dbdData.getInit_value().length()!=0)
                         values.addElement(dbdData.getInit_value()+com.cosylab.vdct.Constants.MENU_DEFAULT_VALUE_INDICATOR);
                     else
                         values.addElement(com.cosylab.vdct.Constants.NONE);
-                    
+
                     while (e.hasMoreElements()) {
                         dev = (DBDDeviceData)(e.nextElement());
                         if (record.getType().equals(dev.getRecord_type()))
@@ -211,7 +211,7 @@ public java.lang.String[] getSelectableValues() {
             // !!!
             new com.cosylab.vdct.util.StringQuickSort().sort(choices);
             return choices;
-            
+
     }
     else return null;
 }
@@ -238,7 +238,7 @@ public java.lang.String getValue() {
         else
             return value;    // if it is not monitored return non-debug value
     }
-    
+
 }
 /**
  * Insert the method's description here.
@@ -272,14 +272,14 @@ public boolean hasDefaultValue() {
         // if initial value is specified, than it is explicitly written
         if ((value.equals(com.cosylab.vdct.Constants.NONE) && dbdData.getInit_value().length()==0) ||
             (dbdData.getInit_value().length()>0 &&
-             value.equals(dbdData.getInit_value()+com.cosylab.vdct.Constants.MENU_DEFAULT_VALUE_INDICATOR))) 
+             value.equals(dbdData.getInit_value()+com.cosylab.vdct.Constants.MENU_DEFAULT_VALUE_INDICATOR)))
             return true;
         else
             return false;
     }
     else if (!value.equals(dbdData.getInit_value()))
         return false;
-    else 
+    else
         return true;
 
 }
@@ -324,9 +324,9 @@ public void setDebugValue(String newValue, Date timeStamp, short severity)
     if (com.cosylab.vdct.plugin.debug.PluginDebugManager.isDebugState())
     {
         debugValueTimeStamp = timeFormatter.format(timeStamp);
-        debugValue = newValue; 
+        debugValue = newValue;
         this.severity = severity;
-        
+
         if (record!=null) record.fieldValueChanged(this);
     }
 }
@@ -432,7 +432,7 @@ public void setValueSilently(java.lang.String newValue) {
 public String getToolTipText()
 {
     String type = DBDResolver.getFieldType(dbdData.getField_type());
-    
+
     if ((dbdData.getField_type()==DBDConstants.DBF_INLINK) ||
         (dbdData.getField_type()==DBDConstants.DBF_OUTLINK))
     {
@@ -445,10 +445,10 @@ public String getToolTipText()
                 type = type+" ["+DataProvider.getInstance().getEditDescriptionLinkType(linkType)+"]";
         }
     }
-    
+
     return type;
 }
- 
+
 /**
  * Insert the method's description here.
  * Creation date: (24/8/99 15:29:04)
@@ -485,7 +485,7 @@ public boolean isValid()
             if (m.matches())
                 return true;
             else
-                return false;            
+                return false;
         }
     }
     return true;
@@ -561,7 +561,7 @@ public void initialize() {
  */
 public void setConnected(boolean connected) {
     this.connected = connected;
-    
+
     // update
     if (record!=null) record.fieldValueChanged(this);
 }

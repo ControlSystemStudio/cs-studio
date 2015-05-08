@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class PVNameConversionTest {
 
-    // Note that there may be different correct ways of rendering 
+    // Note that there may be different correct ways of rendering
     // these PVs, and these tests rely on the ordering provided here in the
     // answers.
     // All backslashes must be doubled in java String literals.

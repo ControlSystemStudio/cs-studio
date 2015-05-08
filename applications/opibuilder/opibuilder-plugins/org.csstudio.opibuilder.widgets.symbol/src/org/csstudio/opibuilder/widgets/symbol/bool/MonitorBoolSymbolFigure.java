@@ -20,5 +20,5 @@ public class MonitorBoolSymbolFigure extends CommonBoolSymbolFigure {
         super();
         add(boolLabel);
     }
-    
+
 }

@@ -7,9 +7,9 @@ import de.desy.language.snl.parser.nodes.OptionStatementNode;
 
 /**
  * The specialized {@link IAdapterFactory} for {@link OptionStatementNode}s.
- * 
+ *
  * @author C1 WPS / KM, MZ
- * 
+ *
  */
 class OptionNodeAdapterFactory implements IAdapterFactory {
 

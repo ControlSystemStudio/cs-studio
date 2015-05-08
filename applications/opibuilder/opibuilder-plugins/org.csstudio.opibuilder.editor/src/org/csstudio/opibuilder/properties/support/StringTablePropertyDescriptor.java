@@ -20,25 +20,25 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 /**
  * Descriptor for a property that has a value which should be edited with a String Table
  * cell editor.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public final class StringTablePropertyDescriptor extends TextPropertyDescriptor {
-    
+
     private String displayName;
     private TitlesProvider columnTitles;
     private CellEditorType[] cellEditorTypes;
     private Object[] cellEditorDatas;
     /**
      * Standard constructor.
-     * 
+     *
      * @param id
      *            the id of the property
      * @param displayName
      *            the name to display for the property
      */
-    public StringTablePropertyDescriptor(final Object id, final String displayName, 
+    public StringTablePropertyDescriptor(final Object id, final String displayName,
             final TitlesProvider tilesProvider, CellEditorType[] cellEditorTypes,  Object[] cellEditorDatas) {
         super(id, displayName);
         this.displayName = displayName;
@@ -71,6 +71,6 @@ public final class StringTablePropertyDescriptor extends TextPropertyDescriptor 
             editor.setValidator(getValidator());
         }
         return editor;
-    }    
+    }
 
 }

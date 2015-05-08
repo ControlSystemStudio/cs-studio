@@ -18,23 +18,23 @@ import org.eclipse.swt.SWT;
 
 /**
  * Abstract EditPart controller for the shape widgets.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public abstract class AbstractShapeEditPart extends AbstractPVWidgetEditPart {
-    
-    
+
+
     @Override
     public AbstractShapeModel getWidgetModel() {
         return (AbstractShapeModel)getModel();
     }
-    
+
     @Override
     protected IFigure createFigure() {
         Shape shape = (Shape) super.createFigure();
         AbstractShapeModel model = getWidgetModel();
-        shape.setOutline(model.getLineWidth() != 0);    
+        shape.setOutline(model.getLineWidth() != 0);
         shape.setLineWidth(model.getLineWidth());
         shape.setLineStyle(model.getLineStyle());
         if(GraphicsUtil.useAdvancedGraphics()){
@@ -46,7 +46,7 @@ public abstract class AbstractShapeEditPart extends AbstractPVWidgetEditPart {
         }
         return shape;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -64,13 +64,13 @@ public abstract class AbstractShapeEditPart extends AbstractPVWidgetEditPart {
                     shape.setOutline(true);
                     shape.setLineWidth((Integer) newValue);
                 }
-                
+
                 return true;
             }
         };
         setPropertyChangeHandler(AbstractShapeModel.PROP_LINE_WIDTH,
                 lineWidthHandler);
-        
+
         // line style
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -83,20 +83,20 @@ public abstract class AbstractShapeEditPart extends AbstractPVWidgetEditPart {
         };
         setPropertyChangeHandler(AbstractShapeModel.PROP_LINE_STYLE,
                 handler);
-        
+
         handler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 if(GraphicsUtil.useAdvancedGraphics())
                     ((Shape) figure).setAntialias(((Boolean)newValue)?SWT.ON:null);
                 return false;
             }
-        };        
+        };
         setPropertyChangeHandler(AbstractShapeModel.PROP_ANTIALIAS, handler);
-        
+
         handler = new IWidgetPropertyChangeHandler() {
-            
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 if (GraphicsUtil.useAdvancedGraphics()) {
@@ -107,11 +107,11 @@ public abstract class AbstractShapeEditPart extends AbstractPVWidgetEditPart {
                 }
                 return false;
             }
-        };        
+        };
         setPropertyChangeHandler(AbstractShapeModel.PROP_ALPHA, handler);
-        
-        
+
+
     }
-    
-    
+
+
 }

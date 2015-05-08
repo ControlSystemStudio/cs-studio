@@ -4,7 +4,7 @@ import com.cosylab.vdct.dbd.DBDConstants;
 
 public enum PromptGroup {
     ALL (-1, "", "All"),
-    
+
     UNDEFINED(-1, "", "Undefined"),
 
     COMMON(DBDConstants.GUI_COMMON, "GUI_COMMON", "Common"),
@@ -78,16 +78,16 @@ public enum PromptGroup {
     public String getDescription() {
         return description;
     }
-    
+
     public static PromptGroup findByType(int type) {
         PromptGroup result = UNDEFINED;
-        
+
         for(PromptGroup g : values()) {
             if(g.getVdctType() == type) {
                 result = g;
             }
         }
-        
+
         return result;
     }
 }

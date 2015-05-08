@@ -31,40 +31,40 @@ import org.eclipse.ui.IWorkbenchPart;
  *
  */
 public class ChangeOrderAction extends SelectionAction {
-    
-    public enum OrderType{        
+
+    public enum OrderType{
         TO_FRONT("Bring to Front", "icons/shape_move_front.png"), //$NON-NLS-2$
         TO_BACK("Send to Back", "icons/shape_move_back.png"),    //$NON-NLS-2$
         STEP_FRONT("Bring Forward", "icons/shape_move_forwards.png"), //$NON-NLS-2$
         STEP_BACK("Send Backward", "icons/shape_move_backwards.png");//$NON-NLS-2$
-        
+
         private String label;
         private String iconPath;
         private OrderType(String label, String iconPath) {
             this.label = label;
             this.iconPath = iconPath;
         }
-        
+
         public String getLabel(){
             return label;
         }
-        
+
         public String getActionID(){
             return "org.csstudio.opibuilder.actions." + toString(); //$NON-NLS-1$
         }
-        
+
         public ImageDescriptor getImageDescriptor(){
             return CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
                     OPIBuilderPlugin.PLUGIN_ID, iconPath);
         }
-        
+
     }
-    
-    
+
+
     private static class IndexedWidget implements Comparable<IndexedWidget>{
-        
+
         private Integer index;
-        
+
         private AbstractWidgetModel widget;
 
         public IndexedWidget(int index, AbstractWidgetModel widget) {
@@ -78,16 +78,16 @@ public class ChangeOrderAction extends SelectionAction {
         public final int getIndex() {
             return index;
         }
-        
+
         /**
          * @return the widget
          */
         public final AbstractWidgetModel getWidget() {
             return widget;
         }
-        
+
         public int compareTo(IndexedWidget o) {
-            
+
             return index.compareTo(Integer.valueOf(o.getIndex()));
         }
 
@@ -115,11 +115,11 @@ public class ChangeOrderAction extends SelectionAction {
                 return false;
             return true;
         }
-        
-        
-        
+
+
+
     }
-    
+
     private OrderType orderType;
 
     public ChangeOrderAction(IWorkbenchPart part, OrderType orderType) {
@@ -132,24 +132,24 @@ public class ChangeOrderAction extends SelectionAction {
     }
 
     @Override
-    protected boolean calculateEnabled() {        
-        if(getSelectedObjects().size() == 0 || 
+    protected boolean calculateEnabled() {
+        if(getSelectedObjects().size() == 0 ||
                 getSelectedObjects().size() == 1 && getSelectedObjects().get(0) instanceof EditPart
                 && ((EditPart)getSelectedObjects().get(0)).getModel() instanceof DisplayModel)
             return false;
-        Map<AbstractContainerModel, List<IndexedWidget>> widgetMap = 
+        Map<AbstractContainerModel, List<IndexedWidget>> widgetMap =
             new HashMap<AbstractContainerModel, List<IndexedWidget>>();
         fillWidgetMap(widgetMap);
-        
+
         //create compound command
-        for(final Map.Entry<AbstractContainerModel, List<IndexedWidget>> entry 
+        for(final Map.Entry<AbstractContainerModel, List<IndexedWidget>> entry
                 : widgetMap.entrySet()){
             //sort the list in map by the widget's original order in its container
             AbstractContainerModel container = entry.getKey();
             List<IndexedWidget> widgetList = entry.getValue();
-            Collections.sort(widgetList);        
-            
-            int newIndex;            
+            Collections.sort(widgetList);
+
+            int newIndex;
             switch (orderType) {
             case TO_FRONT:
                 newIndex = container.getChildren().size() -1;
@@ -160,7 +160,7 @@ public class ChangeOrderAction extends SelectionAction {
             case STEP_BACK:
                 newIndex = widgetList.get(0).getIndex() -1;
                 break;
-            case TO_BACK:                
+            case TO_BACK:
             default:
                 newIndex = 0;
                 break;
@@ -174,23 +174,23 @@ public class ChangeOrderAction extends SelectionAction {
         }
         return false;
     }
-    
+
     @Override
     public void run() {
-        Map<AbstractContainerModel, List<IndexedWidget>> widgetMap = 
+        Map<AbstractContainerModel, List<IndexedWidget>> widgetMap =
             new HashMap<AbstractContainerModel, List<IndexedWidget>>();
         fillWidgetMap(widgetMap);
-        
+
         CompoundCommand compoundCommand = new CompoundCommand(orderType.getLabel());
-        
+
         //create compound command
         for(final Map.Entry<AbstractContainerModel, List<IndexedWidget>> entry : widgetMap.entrySet()){
             //sort the list in map by the widget's original order in its container
             AbstractContainerModel container = entry.getKey();
             List<IndexedWidget> widgetList = entry.getValue();
-            Collections.sort(widgetList);        
-            
-            int newIndex;            
+            Collections.sort(widgetList);
+
+            int newIndex;
             switch (orderType) {
             case TO_FRONT:
                 newIndex = container.getChildren().size() -1;
@@ -201,12 +201,12 @@ public class ChangeOrderAction extends SelectionAction {
             case STEP_BACK:
                 newIndex = widgetList.get(0).getIndex() -1;
                 break;
-            case TO_BACK:                
+            case TO_BACK:
             default:
                 newIndex = 0;
                 break;
             }
-            
+
             //reorder
             switch (orderType) {
             case TO_FRONT:
@@ -225,7 +225,7 @@ public class ChangeOrderAction extends SelectionAction {
                 break;
             default:
                 break;
-            }            
+            }
         }
         execute(compoundCommand);
     }
@@ -235,24 +235,24 @@ public class ChangeOrderAction extends SelectionAction {
      */
     private void fillWidgetMap(
             Map<AbstractContainerModel, List<IndexedWidget>> widgetMap) {
-        
+
         for(Object selection : getSelectedObjects()){
             if(selection instanceof AbstractBaseEditPart){
                 AbstractBaseEditPart widgetEditpart = (AbstractBaseEditPart)selection;
                 AbstractWidgetModel widgetModel = (AbstractWidgetModel) widgetEditpart.getModel();
                 if(widgetEditpart.getParent() != null && widgetModel.getParent()!=null){
-                    AbstractContainerModel containerModel = 
+                    AbstractContainerModel containerModel =
                         (AbstractContainerModel) widgetEditpart.getParent().getModel();
-                    
+
                     if(!widgetMap.containsKey(containerModel)){
                         widgetMap.put(containerModel, new LinkedList<IndexedWidget>());
                     }
                     widgetMap.get(containerModel).add(
-                            new IndexedWidget(containerModel.getIndexOf(widgetModel), widgetModel));                
+                            new IndexedWidget(containerModel.getIndexOf(widgetModel), widgetModel));
                 }
             }
         }
     }
-    
-    
+
+
 }

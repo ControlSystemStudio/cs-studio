@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -17,11 +17,11 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 
 /**
- * 
+ *
  * A View to create log entries.
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public class CreateLogEntryView extends ViewPart {
     private LogEntryWidget logEntryWidget;
